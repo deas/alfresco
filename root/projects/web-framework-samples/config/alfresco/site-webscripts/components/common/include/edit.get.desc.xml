@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Include</shortname>
+  <description>Includes Content into the Page</description>
+  <url>/component/common/include/edit</url>
+</webscript>

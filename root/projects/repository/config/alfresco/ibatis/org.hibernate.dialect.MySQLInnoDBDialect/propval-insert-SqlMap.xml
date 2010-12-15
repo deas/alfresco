@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alfresco.propval">
+
+    <insert id="insert_PropertyClass" parameterClass="PropertyClass" >
+        <include refid="insert_PropertyClass_AutoIncrement"/>
+        <selectKey resultClass="long" keyProperty="id" type="post">
+            KEY_COLUMN:GENERATED_KEY
+        </selectKey>
+    </insert>
+
+    <insert id="insert_PropertyStringValue" parameterClass="PropertyStringValue" >
+        <include refid="insert_PropertyStringValue_AutoIncrement"/>
+        <selectKey resultClass="long" keyProperty="id" type="post">
+            KEY_COLUMN:GENERATED_KEY
+        </selectKey>
+    </insert>
+
+    <insert id="insert_PropertyDoubleValue" parameterClass="PropertyDoubleValue" >
+        <include refid="insert_PropertyDoubleValue_AutoIncrement"/>
+        <selectKey resultClass="long" keyProperty="id" type="post">
+            KEY_COLUMN:GENERATED_KEY
+        </selectKey>
+    </insert>
+
+    <insert id="insert_PropertySerializableValue" parameterMap="parameter_PropertySerializableValue" >
+        <include refid="insert_PropertySerializableValue_AutoIncrement"/>
+        <selectKey resultClass="long" keyProperty="id" type="post">
+            KEY_COLUMN:GENERATED_KEY
+        </selectKey>
+    </insert>
+
+    <insert id="insert_PropertyValue" parameterClass="PropertyValue" >
+        <include refid="insert_PropertyValue_AutoIncrement"/>
+        <selectKey resultClass="long" keyProperty="id" type="post">
+            KEY_COLUMN:GENERATED_KEY
+        </selectKey>
+    </insert>
+
+    <insert id="insert_PropertyRoot" parameterMap="parameter_PropertyRoot" >
+        <include refid="insert_PropertyRoot_AutoIncrement"/>
+        <selectKey resultClass="long" keyProperty="id" type="post">
+            KEY_COLUMN:GENERATED_KEY
+        </selectKey>
+    </insert>
+
+    <insert id="insert_PropertyUniqueContext" parameterClass="PropertyUniqueContext" >
+        <include refid="insert_PropertyUniqueContext_AutoIncrement"/>
+        <selectKey resultClass="long" keyProperty="id" type="post">
+            KEY_COLUMN:GENERATED_KEY
+        </selectKey>
+    </insert>
+
+</sqlMap>

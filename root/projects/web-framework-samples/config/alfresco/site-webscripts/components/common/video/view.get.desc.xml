@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Video</shortname>
+  <description>Displays Video</description>
+  <family>component</family>
+  <url>/component/common/video</url>
+</webscript>

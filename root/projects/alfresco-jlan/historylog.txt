@@ -1,0 +1,2011 @@
+Version 4.0.0
+-------------
+Added crash recovery support to the MySql and Oracle database interfaces. Creates a lock file in the
+caching area to indicate if the server shutdown cleanly. Added the <useCrashRecovery/> configuration
+tag to enable recovery of files that do not have a save request but have been updated.
+
+Split XML configuration parsing into CIFS only and all file servers.
+
+Added JdkLoggingDebug debug output class.
+
+Split configuration into configuration sections to break dependencies. ServerConfiguration is now a
+container for configuration sections.
+
+Updated code to use Java5 as the base version. Code now uses generics.
+
+Added seperate FTPAuthenticator interface, with a LocalAuthenticator implementation that uses the
+configured user list.
+
+Changed initialization methods to use the ConfigElement class, previously they used the NameValueList
+class. Added version of the ConfigElement class for use when running the JLAN servers standalone, when
+running within Alfresco the code will use a different implementation of ConfigElement.
+
+Added domain mapping support to the passthru authentication. Mapping is done via subnet or address range.
+
+Added the TransactionalFilesystemInterface for use by filesystems that need to commit a transaction at the
+end of request.
+
+Added pseudo file/folder classes for injecting dummy files/folders into a filesystem.
+
+Removed printer shared device classes.
+
+Fixed invalid SQL in the OracleDBInterface.createFileRecord() method, due to SQL having a
+semi-colon on the end.
+
+Fixed problem in MySQL and Oracle search contexts not closing the search so the NFS folder
+search did not return the correct end of search flag setting for an empty folder, and would
+not close the search leaking the search handle.
+
+Fixed debug output in NFSServer.procReadDirPlus() to output the correct number of entries
+returned, was off by one.
+
+Version 3.7.23
+--------------
+Fixed a bug in the FileSegment class with the readable file length. Moved the readable file length to the
+FileSegmentInfo class so that all clients of a file can monitor the readable file length as the file is
+being loaded to the cache area.
+
+Version 3.7.22
+--------------
+Moved table prefix initialization code into the OracleDBInterface class.
+
+Reverted table prefix change to JdbcDBInterface and MySQLDbInterface classes.
+
+Changed various fields in the JdbcDbInterface class to be protected so that they are accessible to
+the OracleDbInterface initialization code.
+
+Version 3.7.21
+--------------
+Added the <TablePrefix> configuration tag to the JdbcDBInterface to allow multiple database
+filesystems to exist within a single database by prefixing each set of tables/indexes/sequences.
+
+Updated the OracleDBInterface and MySQLDBInterface to support the database table prefix.
+
+Added missing code to readSymbolicLink() and deleteSymbolicLinkRecord() methods in the
+OracleDBInterface class.
+
+Fixed a bug in the OracleDBInterface.createStreamRecord() method not setting the stream id from
+the stream id sequence.
+
+Version 3.7.20
+--------------
+Reverted changes to server code found by FindBugs analyzer.
+
+Version 3.7.19
+--------------
+Fixed debug output in CachedNetworkFile.readFile().
+
+When the database connection is back online file requests that have been saved in the in-memory queue
+have the associated file size updated in the database using the size of the temporary cache file, in
+the JdbcDBInterface.databaseOnlineStatus() method.
+
+Various fixes in the MySQLDBInterface class for handling of special characters in file names.
+
+Various fixes in the OracleDBInterface class for handling of special characters in file names. The
+checkNameForSpecialChars() method is overridden in order to use the '' escape required single quotes.
+
+Fixes for issues found by the FindBugs analyzer.
+
+Added support for the offline file deletes list, when the database comes back online then delete the file records.
+
+Added check to ObjectIdFileLoader.closeFile() so that an updated file is not queued for save if the delete on
+close flag is set. Also, queue the delete to the offline delete queue if the database is offline.
+
+Added offline delete list to DBDeviceContext.
+
+Added the DeleteFileRequest, and FileRequest.DELETE type, used for offline file deletes.
+
+Version 3.7.18
+--------------
+Fixed debug output in MountServer and NFSServer shutdownServer() methods.
+
+Version 3.7.17
+--------------
+Added support for the NetBIOS adapter status request to the NetBIOSNameServer class. Used by some clients
+to get the NetBIOS name of the server after using DNS to resolve the address.
+
+Made various changes to CacheNetworkFile.readFile() when there is a file load error, throw an I/O exception
+rather than returning a zero length read.
+
+The ObjectIdFileLoader.loadFile() method now sets the file segment error status, deletes the
+temporary file, clears the readable file length and signals waiting threads when there is an
+error status returned from the loadFileData() method.
+
+Changed NTProtocolHandler.procReadAndX() to return an NTFileOffline status code if the file read
+throws an I/O exception.
+
+Version 3.7.16
+--------------
+Added NFS file cache I/O timer, close timer and debug configurable values to the ServerConfiguration
+class.
+
+Added parsing for the new NFS configuration values, <FileCache><io seconds>[:<close secs>]</FileCache>
+and <fileCacheDebug/> to the XMLServerConfiguration class.
+
+Added two stage expiry to the NFS file cache so that file handles are released quickly but files are
+cached for longer. File cache I/O timer, close timer and debug are now configurable.
+
+Version 3.7.15
+--------------
+Fixed NullPointerException in ObjectIdFileLoader.closeFile() when the SrvSession is null.
+
+Version 3.7.14
+--------------
+Fixed bug in MySQLDBInterface.queueFileRequest() using the wrong field index when queueing a transaction
+request.
+
+Removed debug output from MySQLDBInterface.queueFileRequest().
+
+Updated OracleDBInterface to support symbolic links and file request attributes.
+
+Changed the DBDiskDriver maximum file check in writeFile() and truncateFile() to mark the file for
+delete when a write/extend is over the maximum file size, so that the file does not get saved by a
+file loader.
+
+Version 3.7.13
+--------------
+Fixed bug in PassthruAuthenticator.authenticateShareConnect() that was not checking if the user has access
+to a particular share.
+
+Version 3.7.12
+--------------
+Added support for the FileInfoLevel.PathAllEAs file information level in the QueryInfoPacker.
+
+Fixed several problems in the CachedNetworkFile.readFile() method. Make sure the temporary file exists
+in the cache area before queueing the file load request.  When polling the cache file to see if enough
+data has been loaded to satisfy the read use the readable length to determine if there is enough data.
+When polling the cache file increment the total wait time using the elapsed time rather than the
+data wait timeout as the thread may have been signalled by the loader thread before the timeout.
+
+Version 3.7.11
+--------------
+Reset the last loaded sequence number if there is a database error when loading file request records,
+in the BackgroundLoadSave class.
+
+Added the <offlineFileSize> configuration tag for the database filesystem. Files above this size will be
+marked as offline.
+
+Remove the file state for a new file in the DBDiskDriver.createFile() method if there is an exception
+during the file create.
+
+Add the offline file attribute to all files, or files above a specified size, in the DBDiskDriver search
+and get file information calls.
+
+Fixed a bug in the DBDiskDriver.setFileInformation() method where the cached file information was not
+updated with the new file attributes value.
+
+Changed the DBInterface.startSearch() method to return a DBSearchContext.
+
+Added the offline files and offline file size fields to the DBSearchContext.
+
+Changed the JdbcDBInterface.isOnline() method to try and open a new connection when the database is marked
+as offline, to speed up recovery from database connection problems.
+
+Clear the queued flag and reset the status of a file segment that is deleted whilst queued for saving, in 
+the ObjectIdFileLoader.deleteFile() method.
+
+Changed DBConnectionPool.getConnection() to return after the first attempt to open a new connection fails
+when the database is offline.
+
+Added support for the 'accept' name to the Win32 JNI NetBIOS code. To allow only the specified client to
+connect to the JLAN Server.
+
+Version 3.7.10
+--------------
+Added toString() method to NameValueList, to help debugging.
+
+Fixed a search handle leak in the NTProtocolHandler find first/find next processing, when the 'Close
+Search' flag is set and the search results span more than the first reply packet.
+
+Fixed a NullPointerException in the PassthruAuthenticator when there are no online passthru servers
+available. The code now returns a logon failure status to the client.
+
+Changed the FileLoader.closeFile() method to add the SrvSession parameter.
+
+Added attribute support to the FileRequest class to allow name/value pairs to be attached to the file
+request. The attributes are persisted to the queue database table and passed to the file loader load
+and save methods.
+
+Added support for saving/loading the file request attributes to the MySQLDBInterface. Added a new 'Attribs'
+field to the file request queue table to store the attributes in 'name=value,name=value,...' format in a
+VARCHAR field.
+
+Added support for file request attributes to the ObjectIdFileLoader. Changed the savefileData() abstract method
+to add the attributes NameValueList parameter. Added the setRequiredAttributes() method to configure the
+required attributes to collect when the file is closed.
+
+Speeded up the database connection recovery in the DBConnectionPool reaper thread.
+
+Added DiskOfflineException catch blocks to the NTProtocolHandler procReadAndX() and procWriteAndX() methods.
+
+Added database offline checks to the DBDiskDriver readFile(), writeFile() and setFileInformation() methods.
+
+Version 3.7.9
+-------------
+Added the shared device name to the DeviceContext class, plus get/set methods.
+
+Added getShareName() method to the ObjectIdFileLoader.
+
+Changed XMLServerConfiguration to set the shared device name in the device context during parsing.
+
+Fixed various bugs in the PassthruAuthenticator. Updated the passthru authentication code adding the
+PassthruServers and PassthruServerDetails classes.
+
+Version 3.7.8
+-------------
+Added check to the NTProtocolHandler.procNTCreateAndX() method to check that an existing file is not a 
+directory when the CreateNonDirectory option flag is set, now returns a NTFileIsADirectory status code.
+
+Added the hasSymbolLinksEnabled() method to the SymbolicLinkInterface to allow symbolic links to be
+enabled/disabled. Mainly for use by the DBDiskDriver to hand off to the DBInterface.
+
+Changed the NFSServer to check if symbolic links are enabled as well as checking if the driver implements
+the SymbolicLinkInterface, in the procFsInfo(), procReadLink() and procSymLink() methods.
+
+Added support for symbolic links to the DBDiskDriver.
+
+Added support for a maximum file size to the DBDiskDriver, via the <MaxFileSize> configuration tag.
+
+Added support for symbolic links to the JdbcDBInterface.
+
+Aded support for symbolic links to the MySQLDBInterface implementation.
+
+Version 3.7.7
+-------------
+Added the DiskOfflineException to allow a filesystem driver to signal that it is not available, but may be
+able to receover.
+
+Added the isOnline() method to the DBInterface.
+
+Added the OnlineCheckInterval configuration variable to JDBC database interface. Specifies how often (in minutes)
+the database connection pool will check free connections to see if the database connection is valid.
+
+Added checks to the database filesystem driver to see if the database is online, if not then a disk offline exception
+is thrown.
+
+Added in-memory queueing of save file requests when there is a database error to the mySQL, Derby and Oracle database
+interfaces.
+
+Added catch blocks for the new DiskOfflineException to NTProtocolHandler, to convert the exception into a path not
+found error status.
+
+Added DBConnectionPoolListener interface to signal datbase online/offline events to a database interface.
+
+Added online/offline checking to the DBConnectionPool.
+
+Version 3.7.6
+-------------
+Fixed check for 64 bit Windows in the XML configuration parsing so that Windows x64 uses the older Netbios() API
+calls as Winsock NetBIOS is not available on 64 bit Windows.
+
+Added FileNameException. DiskInterface createFile(), openFile() and renameFile() may throw this exception if the
+file name is too long or contains invalid characters.
+
+Fixed a bug in the SMBSrvPacket method where relative paths were restricted to 255 characters. The code will now
+check for the null terminator up to the length of the buffer.
+
+Added file name length checks to the DBDiskDriver to make sure the specified file/folder name is not longer than
+the file name field in the database.
+
+Version 3.7.5
+-------------
+Added ability to specify the Win32NetBIOS LANA as an IP address or network adapter name in the lana="..." attribute.
+
+Fixed bug in Win32NetBIOS.getLANAForAdapterName() using the long network adapter name, now uses the short name
+such as 'eth0'.
+
+Fixed a bug in the NTLMv2 encrption where the domain/target name was being uppercased.
+
+Added FileOpenParams.getAccessMode() method.
+
+Fixed check for IPC$ share in NTProtocolHandler procTreeConnectAndX() and procChainedTreeConnectAndX().
+
+Added database connection check to the DBConnectionPool to check for bad connections and keep connections alive.
+
+Version 3.7.4
+-------------
+Added interrupt of the LANA monitor thread and clearing of the global LANA monitor to Win32NetBIOSLanaMonitor.shutdownRequest().
+
+Fixed a problem in the EnterpriseCifsAuthenticator when the client uses NTLMSSP.
+
+Fixed several problems in the DBDiskDriver that caused empty temporary files to be left in the cache area.
+
+Version 3.7.3
+-------------
+Added DBSearchContext constructor that stores the associated Statement that was used to create the ResultSet. This is
+required by Oracle to close cursors at the end of the search. Changed the Oracle database interface to store the associated
+statement.
+
+Fixed renamFile() SQL bug in Oracle database interface.
+
+Fixed setFileInformation() SQL bug using wrong field names for ArchivedFile and FileMode in Oracle database interface.
+
+Version 3.7.2
+-------------
+Added DiskDeviceContext.getFilesystemType() method to allow a filesystem to return a type of either
+FileSystem.TypeFAT or FileSystem.TypeNTFS. Allows a filesystem to appear as NTFS without requiring
+the filesystem driver to implement the NTFSStreamsInterface.
+
+Version 3.7.1
+-------------
+Fixed problems in mySQL, Derby and Oracle database interface classes getFileId(). The filename was not
+being uppercased when compared to the database field with UPPER(FileName).
+
+Added SecurityDescriptorInterface optional interface that a filesystem driver can implement to allow
+save and load of per file security descriptors.
+
+Fixed bug in SID.loadSID() miscalculating the sub-authority count.
+
+Version 3.7.0
+-------------
+Check for a Netware style path in JavaFileDiskDriver.mapPath() and remove the leading slash.
+
+Added sleep to Win32NetBIOSLanaMonitor to prevent heavy CPU usage when there are no valid network adapters.
+
+Changed the JavaFileDiskDriver folder search code so that it generates file ids that are identical to the
+ids generated by buildFileInformation(), to fix a problem with NFS clients getting confused due to the
+changing ids.
+
+Added proper virtual circuit support to the SMB/CIFS server, and authentication.
+
+Add checks to XMLServerConfiguration so that the SMB/FTP/NFS sections are not parsed if the server is disabled in the
+main <servers> configuration section.
+
+Added a constructor to the com.starla.smb.dcerpc.UUID class to allow the class to be used by the SMBServer to generate
+the server GUID, rather than using the Java5 specific java.util.UUID class.
+
+Updated the FTP server to support APPE, SITE, MLST, MLSD, OPTS, FEAT commands. Updated the MDTM, SIZE and LIST commands.
+
+Added UTF-8 support to the FTP server.
+
+Added the FTPSiteInterface interface to allow site specific FTP commands to be implemented, via the SITE command.
+
+Added the FTPSiteInterface configuration id, added the FTP site interface field and getter/setter methods to the
+server configuration.
+
+Added <siteInterface> configuration sub-section to the FTP server configuration.
+
+Added a test FTP site interface, com.starla.jlansrv.TestFTPSiteInterface, that echoes the SITE request parameters.
+ 
+Added the UsersInterface interface to provide user account details to the CifsAuthenticator class. The DefaultUsersInterface
+implementation provides backwards compatability using the users list from the XML configuration file.
+
+Fixed problems in the FileStateCache rename handling when a folder is renamed. Any cached file states below the renamed folder
+are now updated.
+
+Fixed subtle problem in the file state caching code caused by the DBDiskDriver uppercasing file name components.
+
+Changed the CifsAuthenticator.validatePassword() method to use the UserAccount class. If the UserAccount MD4 password is set it
+will be used in preference to the plaintext password.
+
+Added the <md4> configuration tag to the <localuser> so that the password can be specified as a hex-ASCII MD4 hash of the password.
+
+The JavaFileSearchContext now marks Desktop.ini, Thumbs.db and files/folders starting with '.' as hidden.
+
+Changed XML configuraton parsing so that the <host> <broadcast> setting is only parsed when it is required by one or more of
+the protocol types enabled for the current platform.
+
+Fixed problem in the mySQL database interfaces not escaping special characters in the file name field in getFileId().
+
+Added check for zero length maximum buffer size in the CIFS session setup that causes exceptions in transaction requests. Windows
+Vista sends zero in this field.
+
+Add flag and set/get methods to control CifsAuthenticator advertising extended security during the session setup. Added checks
+to the SMBSrvSession.procSMBNegotiate to enable/disable extended security flag in the SMB header flags.
+
+Added server GUID to SMBServer, and removed active flag, session id and shutdown flag as they are in the base
+NetworkServer class.
+
+Added a generic setup object to the SMBSrvSession for use by the new authentication mechanisms when using a multi-stage
+logon.
+
+Changed SMB/CIFS Core, LanMan and NT protocol handlers to use the new CifsAuthenticator class. The new CIFS authentication
+handles more of the initial protocol negotiation to allow support for newer authentication mechanisms such as NTLMSSP, 
+SPNEGO, Kerberos/AD, NTLMv2.
+
+Added SecurityMode class with CIFS security mode constants.
+
+Changed background load/save thread startup call to pass recovery file count. Fixes bug in ObjectIdFileLoader initialization
+when there are files to be recovered from the cache directory.
+
+Fixed check for non-directory in DBDiskDriver.createDirectory() so that it throws an exception.
+
+Added check for FileSegment error status to return an error from the readFile() method.
+
+Changed BackgroundLoadSave.startThreads() to add a count of pending records so that the queue loading can be started.
+
+Added shutdownRequest() method to FileStateCache and changed expiry thread to use a class variable to allow thread shutdown.
+
+Fixed problem in the DiskDeviceContext.CloseContext() to shutdown the file state cache and change notification handler threads.
+
+Updated ServerConfiguration.determinePlatformType() check for Solaris. Changed authenticator to use CifsAuthenticator.
+
+Added com.starla.server.auth.spnego package with SPNEGO implementation for CIFS.
+
+Added per session settings to the pssthru autentication session to be in line with JLAN Client changes.
+
+Added the com.starla.server.auth.kerberos package.
+
+Added the com.starla.server.auth.asn package with ASN.1 encoding/decoding implementation.
+
+Added MD4 hashed password field to the UserAccount class, and associated getter/setter.
+
+Added support for newer encryption mechanisms to PasswordEncryptor.
+
+Added AuthContext, AuthenticatorException, CifsAuthenticator, EnterpriseCifsAuthenticator, NTLanManAuthContext classes and updated
+the DefaultAuthenticator, LocalAuthenticator classes to use the new CIFS authentication integration.
+
+Added the Version class to store version constants for the release and each protocol server component.
+
+Changed the SrvSession base class to use an AuthContext instead of the challenge.
+
+Fixed problem in the NFS server shutdown not shutting down the thread pool.
+
+Added deallocateRpcPacket() method to the TcpRpcPacketHandler, and implement in the MultiThreadedTcpTpcPacketHandler to release packets back to the
+packet pool.
+
+Added enumeration of the network interface list to get the server IP address list in NetBIOSNameServer.run() when the InetAddress.getAllByName() call
+fails to get the address list or only gets an address of 127.0.0.1.
+
+Added FTP abort processing via the ABOR command.
+
+Fixed bug in FTP change working dirctory processing, check that the path exists.
+
+Added 'adapter=<adapter-name>' to <bindto> configuration for SMB/CIFS and FTP servers to allow name of adapter to be used, such as 'eth0' or 'en0'.
+
+Fixed bug in default disk size in XMLServerConfiguration.addDiskShare(), now defaults to an 80Gb drive with 90% free space.
+
+Added restart support to the sample JLANServer application.
+
+Fixed problems with shutdown of the change notification event thread in NotifyChangeHandler.
+
+Fixed bug in NetBIOS LANA monitor code when extending the LANA listener array.
+
+Added 64-bit check to the Win32Utils and Win32NetBIOS static initializers to load the correct DLL for the platform.
+
+Fixed problem with DBConnectionPool thread not closing down.
+
+Added com.starla.util.X64 class with 64-bit Windows detection.
+
+Fixed problem in FileLock.hasOverLap().
+
+Fixed bug in FTP packUnixDate() using the seconds value, should be minutes.
+
+Version 3.6.0
+-------------
+Added fix for memory leak in MySQLSearchContext.closeSearch().
+
+Added fix to NetBIOSName.findBestMatchAddress().
+
+Changed FileOpenParams toString() to dump the NFS mode in octal.
+
+Added support for symbolic links to NFS server. Added the optional SymbolicLinkInterface interface.
+
+Added handling of the FTP LIST -a option to include hidden files in the listing, in FTPSrvSession.procList().
+
+Fixed problem in NFS server where filesystem id was being reported using the file id, this caused certain
+operations to assume that a volume to volume operation was required when a simple rename would work. The
+NFS server now reports the share id as the filesystem id.
+
+Fixed bug in FTPSrvSession.procFileSize() not passing the session to the DiskInterface.getFileInformation() call.
+
+Fixed problem in NTProtocolHandler.procNTCreateAndX() that would break offline file support. A parameter count
+of 34 is always returned now.
+
+Added support for SetBasicInfo information level to Trans2SetPath handling in NTProtocolHandler.
+
+Added SrvSession field to the FileOpenParams class.
+
+DBDiskDriver createFile() and openFile() methods now set the callers SrvSession in the FileOpenParams so that
+the database interface can retrieve user information.
+
+Fix problem in ONC/RPC processing where response packet header may already have been written so the
+offsets are different to a request packet in the buildErrorResponse() method.
+
+Added code to RpcNetworkServer.unregisterRPCServer() to remove port registrations with portmapper on shutdown.
+Added calls to unregisterRPCServer() in NFS and mount server shutdownServer() method.
+
+Added processing of multi-homed name register in NetBIOSNameServer.
+
+Added the XMLServerConfiguration.loadConfiguration(Document) method so the configuration can be loaded
+from an in-memory document or other source.
+
+Shutdown servers in reverse order in the JLANServer application so that the portmapper is shutdown after the
+NFS and mount servers.
+
+Changed SessionSocketHandler shutdownRequest() method so it is not final so it can be overridden.
+
+Split the PacketHandler base class to remove the socket specific code and created a new SocketPacketHandler
+class for the Java socket based packet handlers.
+
+NTProtocolHandler now returns the NTObjectNameInvalid status in the procNTCreateAndX() and
+procTrans2QueryPath() methods if the file name is for an NTFS stream and streams are not supported
+by the filesystem driver.
+
+Fixed a problem in the NTProtocolHandler procTreeConnectAndX() and procChainedTreeConnectAndX()
+methods where the default filesystem type was reported as 'FAT32', it now reports as 'FAT'.
+
+Added the WinsockNetBIOSPacketHandler class, changed the Win32NetBIOSSessionSocketHandler to use
+either the Win32 Netbios() API code or the new Winsock NetBIOS code.
+
+Added the LanaListener interface and changed the Win32NetBIOSLanaMonitor to use the new Win32NetBIOS
+waitForNetworkAddressChange() JNI method rather than polling for LANA changes.
+
+Added account disabled (AUTH_ACCDISABLED) and password expired (AUTH_PWDEXPIRED) status codes
+to the SrvAuthenticator to be returned by the authenticateUser() method.
+
+Fixed many wrong packet formats in the NFS error responses.
+
+Fixed problem in DBDiskDriver where file retention details have not been loaded when a file is
+only accessed via name. Added the getRetentionDetailsForState() method and call from the
+deleteFile(), renameFile() and setFileInformation() methods.
+
+Fixed problem in ObjectIdFileLoader where the FileSegment status was not set correctly when there is
+an error in the saveFile() method. Added a catch for the FileOfflineException in the loadFile() method.
+
+Changed the Win32NetBIOS LanaEnum() method to be private and added a new LanaEnumerate() method that
+checks if there are any valid network adapters before calling LanaEnum(). If there are no valid
+network adapters it can cause a Windows crash or the system to run very slow.
+
+Added Winsock Netbios based JNI code on Windows that does not have the 254 session limit of the
+Netbios() API call.
+
+Added api attribute to the <Win32NetBIOS/> configuration tag to allow original Netbios() API to be used
+or newer Winsock NetBIOS based code to be used.
+
+Added platforms attribute to the <tcpipSMB/> and <netbiosSMB/> configuration tags to allow a single
+multi-platform configuration.
+
+Fixed bug in ServerConfiguration.setNFSServerPort().
+
+Version 3.5.2
+-------------
+Check if the path is the root directory or share path in the FTP server return file processing
+and return an error.
+
+Fixed problem in NFS Pathconf reply packet format.
+
+Added code to NTProtocolHandler.procWriteAndX() to send out change notifications
+for file size changes.
+
+Set the delete on close flag for a file if the CreateDeleteOnClose flag is set when the
+file is created.
+
+Changed status code returned from NTProtocolHandler.procNTCreateAndX() call when a
+Windows client is trying to open the registry service. The code now returns an
+access denied status which is handled much quicker by the client.
+
+Fixed bug in DCERPCHandler.processDCERPCRead(), now sets the return status code.
+
+Fixed bug in CoreProtocolHandler.procWriteFile() when unpacking the write offset the
+value would go negative at 2Gb due to the way the two 16bit values were converted to
+an int value, now uses a long.
+
+Fixed bug in SrvsvcDCEHandler.netShareEnum not setting the return status code in the
+DCE/RPC response.
+
+Moved client specific DCE/RPC classes to the com.starla.smb.dcerpc.client package.
+
+Added call to shutdown the database interface when the device context is closed for a
+database filesystem.
+
+Added file sharing mode to FileState and allowsOpen() check to test if a file open is
+allowed according to the sharing mode.
+
+Added PathNotFoundException, to distinguish between a path not existing and the file/folder
+on the end of the path not existing.
+
+Fixed a bug in FileOpenParams not setting the create directory option if the directory
+attribute was set.
+
+Added delayed read support for SMB/CIFS read requests, filesystem driver can throw a
+FilesystemPendingException for a read request and process the read request out of
+sequence.
+
+Fixed problems with ServerConfiguration setting of timezone offset value.
+
+Added JCE provider configuration value to the ServerConfiguration class.
+
+Changed PassthruAuthenticator to use a cut down version of the JLAN Client SessionFactory
+to break the dependency on the JLAN Client code, and reduce the kit size. Created a new
+com.starla.server.auth.passthru package.
+
+Removed DES and MD4 classes from com.starla.server.auth package, code now uses JCE provider.
+
+Added GetLocalDomainName() native method to the Win32NetBIOS class.
+
+Changed FileLockList.allowsLock() to not check that the owner process id matches.
+
+Fixed problem in FileLock.setLength(), negative lock values are treated as a whole
+file lock.
+
+Moved LocalAuthenticator class to the com.starla.server.auth package.
+
+Changed the XMLServerConfiguration to load the xml file using a Reader. Added the <JCEProvider>
+configuration tag to the <security> section.
+
+JLANServer application is now a class that can be extended. Added check point callbacks
+to allow application to be used in console, service or UI environments.
+
+Win32NetBIOS session socket handler now adds a workstation name for the local server.
+
+Changed WildCard.setPattern() so that the pattern string is only uppercased if the pattern
+is not case sensitive.
+
+Added GetDiskFreeSpace() and GetDiskTotalSpace() native methods to Win32Utils.
+
+Added com.starla.server.filesys.PathNotFoundException. This exception should be returned by
+filesystems when the path does not exist (as opposed to the file/folder at the end of the
+path).
+
+Version 3.5.1
+-------------
+Added the com.starla.server.filesys.db.CachedSearchContext class. Used by the DBDiskDriver.startSearch
+when a client performs a none wildcard search and the file information is already cached.
+
+Added the SMBServer.getServerIPAddresses() method to get the list of local IP addresses using the
+java.net.NetworkInterface class. The previous InetAddress code will be required for pre Java 1.4,
+and is commented out in the method.
+
+Normalize the watch path in the NotifyRequest constructor by converting '/' to '\'.
+
+Fixed a problem in the change notification code where the notify enum flag was not being
+reset after sending buffered change notifications causing the server to use 100% CPU as the
+client would continually reset the notification request.
+
+Fixed NullPointerException in NotifyChangeHandler debug output.
+
+Added code to the NotifyRequest class constructors to normalize a path string to SMB/CIFS format by
+converting '/' to '\'.
+
+Added default flags and flags2 SMB header field values to the SMBSrvSession class. Default flags/flags2
+values are ORed with the SMB header values before sending an SMB response.
+
+Added catch block for AccessDeniedException in NTProtocolHandler.procReadAndX().
+
+Fixed NullPointerExceptions in NTProtocolHandler.procNTTransactNotifyChange() debug output.
+
+Fixed wrong notification call in NTProtocolHandler.procDeleteDirectory().
+
+Changed IPCHandler debug output so that they use the DBG_IPC debug level, rather than the DBG_FILE
+debug level.
+
+Added the MemoryBackgroundLoadSave class to use an in-memory file load/save request queue.
+
+Updated the DerbyBaseDBInterface, DerbyDBInterface, MySQLBaseDBInterface, MySQLDBInterface, OracleBaseDBInterface
+and OracleDBInterface due to changes in the DBInteface.
+
+Changed the DBInterface interface so that all calls that had a file id parameter now also have a parent
+directory id parameter.
+
+The DBDeviceContext initialize() code now checks if the database interface class also implements the
+FileLoader interface, if a file loader was not specified in the configuration. This allows the database
+interface and file loader to be implemented in s single class.
+
+Changed the CachedNetworkFile instance variables to be protected so they are accessible by derived classes.
+Added the createFileRequest() method that allows a derived class to override the file request type that is
+created.
+
+Changed the FileState class to use a FileStatus value to indicate if a file exists, is a directory or status
+has not been checked.
+
+Added Unknown status code to FileStatus class.
+
+Added convenience methods to FileAttribute class (isArchived(), isDirectory(), isReadOnly(), isSystem()).
+
+Version 3.5.0
+-------------
+Removed the com.starla.smb.server.disk.jdbc package/classes as they have been superseded by
+the new database filesystem classes.
+
+Fixed a problem in the SrvTransactBuffer() constructors that were not calling the base class
+constructor. This caused buffers to be allocated that were not used.
+
+Added code to the NotifyChangeHandler.sendBufferedNotifications() method, previously empty.
+
+Removed trailing 32bit/longword value from the file information structure InfoDirectoryBoth
+find first/next packing method, FindInfoPacker.packInfoDirectoryBoth(). The extra field could
+cause the find first/next processing to return a buffer that was longer than the client requested.
+The extra field appears to be data alignment rather than part of the structure.
+
+Fixed a problem with the multiplex-id being sign extended when unpacked from an asynchronous
+notification register SMB request. This caused the client to not see some notification
+responses when the multiplex-id was greater than 32767. Changed SMBSrvPacket.getMultiplexId()
+to return an int rather than narrowing the value to a short.
+
+Fixed a problem in NFSServer.procSetAttr() when the client specified the date/time for the
+access or modify date/time. The time value was read from the buffer incorrectly.
+
+The Win32NetBIOSSessionSocketHandler will create a session handler for each available LANA if a
+specific LANA is not specified in the configuration. Previously the code would use the first
+available LANA.
+
+Added support to the Win32NetBIOSSessionSocketHandler to handle the network adapter going offline
+and online. When offline the socket handler will poll the available LANAs to watch for the LANA
+reappearring and will reinitialize the NetBIOS name and listen request.
+
+Added the com.starla.smb.server.win32.Win32NetBIOSLanaMonitor class. Creates a thread that
+monitors the available NetBIOS LANAs and adds new session handlers for LANAs that appear when
+a network adapter comes online.
+
+Fixed various problems in the asynchronous notifcation handler, paths were not being generated
+relative to the path being watched, files created in the root directory being watched would not
+always generate events.
+
+Changed the JDBCDiskDriver code to use the new com.starla.server.filesys.db classes.
+
+Added setter flags to the StreamInfo class, added creation, modification and access date/times.
+
+Changed the SMBServer to use a Vector of host announcer objects. Added the addHostAnnouncer() and
+addSessionHandler() methods. Removed the enableAnnouncer() and disableAnnouncer() methods.
+Changed the run() method to call the various session socket handler createSessionHandler()
+static methods.
+
+In the NTProtocolHandler.procTrans2SetFile() method file date/times are set using the server
+side date/time if specified as -1 in the request.
+
+Added support for the SetPath transaction (procTrans2SetPath() method) in the NTProtocolHandler.
+
+The NTProtocolHandler.procTrans2QueryFileSys() method returns device attributes and filesystem
+attributes from the DiskDeviceContext.
+
+The NTProtocolHandler will set the logon type to indicate a null session if the session setup is
+called with an empty username and password.
+
+Added support for the NT I/O control transaction in the NTProtocolHandler class. The request will
+be passes to the filesystem driver if it implements the optional IOCtlInterface.
+
+Added checks to the NTProtocolHandler tree connect code to allow null sessions to only connect
+to the IPC$ named pipe share.
+
+Added the TcpipSMBSessionSocketHandler.createSessionHandlers() static method to create the
+incoming session listener thread(s) for TCP/IP native SMB (port 445).
+
+Added the NetBIOSSessionSocketHandler.createSessionHandlers() static method to create the incoming
+session listener thread(s) for TCP/IP NetBIOS.
+
+Disabled the 8.3 name generation in FindInfoPacker.
+
+Added the com.starla.smb.nt.NTIOCtl class containing I/O control constants and static methods
+for extracting I/O control code fields.
+
+Changed the HostAnnouncer class to be an abstract base class with TcpipNetBIOSHostAnnouncer and
+Win32NetBIOSHostAnnouncer implementations.
+
+Changed SrvsvcDCEHandler.netShareEnum() to only return shares that are marked as available.
+
+Added the FileLoader.getRequiredDBFeatures() method, used to make sure the database interface
+has the required features implemented.
+
+Added the com.starla.filesys.db.oracle package containing the Oracle database interface
+implementation.
+
+Added the com.starla.filesys.db.mysql package containing the mySQL database interface implementation.
+
+Added the com.starla.filesys.db.derby package containing the Cloudscape/Derby database interface
+implementation.
+
+Added the com.starla.filesys.db package containing the refactored database filesystem driver and
+file loader.
+
+Added file retention details to the FileState class.
+
+Added the com.starla.server.filesys.IOCtlInterface optional interface that a filesystem driver
+may implement to receive I/O control requests. Added IOControlNotImplementedException class.
+
+Added FileName.makeRelativePath() method.
+
+Added FileInfo.getSetFileInformationFlags() to return the bit-mask controlling the file information
+values to be set.
+
+Added DiskDeviceContext filesystem and device attributes flags.
+
+Added the com.starla.server.filesys.FileSystem class containing the filesystem attributes constants
+that may be set in the DiskDeviceContext class.
+
+Added the com.starla.server.filesys.DeviceAttributes class containing the device attributes constants
+that may be set in the DiskDeviceContext class.
+
+Changed the ShareMapper.getShareList() method to add a parameter to control if unavailable shares are
+returned or not.
+
+Added the SharedDeviceList.removeUnavailableShares() method to filter out shared devices that are
+marked as unavailable.
+
+Removed the cache enabled variable and associated methods from the SharedDevice class, no longer used.
+
+Added the DeviceContext available flag, and isAvailable() and setAvailable(boolean) methods. If a device
+is marked as unavailable the shared device will not appear in the normal share lists.
+
+Changed Win32 host announce state to default to disabled, in the ServerConfiguration class.
+
+Changed the ClientInfo class to use a logon type value (rather than the guest flag). Logon type
+may be normal, guest, null or admin.
+
+Added NetworkServer.getFullShareList() to return the full list of shares, changed getShareList()
+to return the list of available shares (shared devices may be marked as unavailable).
+
+Changed MountServer and NFSServer to use the list of available shares.
+
+Added Win32NetBIOS FindName(), getAdapterNameForLANA(), getIPAddressForLANA(), getLANAForAdapterName(),
+getLANAForIPAddress() and getNetworkAdapterList() methods.
+
+Changed LocalAuthenticator.authenticateUser() to support null sessions.
+
+Added check in FTPSrvSession.listFilesForPath() to check if returned file information is valid when
+searching a directory.
+
+Version 3.4.0
+-------------
+Removed the broadcast mask check for the TCPIP native SMB setting (<tcpipSMB/>) in the XML
+configuration class.
+
+Fixed bug in FTPSrvSession.procReturnFile() not releasing the data port via the FTPServer class
+when port ranges are in use.
+
+Changed 'enum' variable name to 'enm' as 'enum' is a reserved word in JDK 5.0, code now compiles
+under JDK 5.0.
+
+Added calls to the DeviceInterface.treeOpened() method from the NTProtocolHandler
+procTreeConnectAndX() and procChainedTreeConnectAndX() methods.
+
+Added a flags value to the com.starla.smb.dcerpc.info.ShareInfo class. Added support for
+returning the 1005 information level that is requested by the MS Indexing Service.
+
+Fixed bug in NFS proc SetAttr() not checking the time value type, it can be either set to a
+client value with the value in the request or the server time with no value in the request.
+
+Fixed bug in NFS procReaddirPlus() returning the '.' and '..' entry handles as files rather directory
+type handles.
+
+Fixed bug in NFS procReaddir() not returning the correct information for the '..' entry.
+
+Fixed bug in NFS procMkdir() not returning the correct format packet.
+
+Fixed bug in NFS procLookup() when the path equals '..'.
+
+Fixed bug in NFS procCommit() processing returning the wrong format packet.
+
+Fixed debug output from NFS server sessions. Debug setting was not being propogated from the NFS server to the
+session, and output was not being sent via the session debug output methods.
+
+Added write verifier field to the NFSServer, set to the system clock value when the NFS server is created.
+
+Added NFS set attribute time setting constants to the NFS class.
+
+Disabled the localhost/127.0.0.1 check in the JLANServer application.
+
+Removed com.starla.nfs, com.starla.nfs.mountd and com.starla.nfs.nfsd packages.
+
+Removed com.starla.ui.utils package.
+
+Version 3.4.0 (beta 1)
+----------------------
+Changed JDBCDiskDriver setFileInformation() to check the FileInfo setter flags to determine
+which fields are to be set.
+
+Added the XMLServerConfiguration save configuration code. Added support for the new <DriveMappings>
+configuration section parsing. 
+
+Added the com.starla.smb.util package, plus DriveMapping and DriveMappingList classes.
+
+Added drive mapping/unmapping support to the SMBServer when running under Windows NT onwards. Using
+the Win32Utils MapNetworkDrive()/DeleteNetworkDrive() calls drives may be mapped to JLAN Server
+shares from the local host.
+
+Changed NTProtocolHandler procTrans2SetFile() to use the FileInfo setter flags to indicate which
+fields are valid. The SetDispostionInfo/NTFileDispositionInfo set file information level now calls
+the DiskInterface.setFileInformation() call with the delete on close flag state, the method may
+return an AccessDeniedException to indicate the file cannot be marked for delete.
+
+Changed CoreProtocolHandler setFileInformation() and setFileAttributes() to use the FileInfo
+setter flags to indicate which fields are being set.
+
+Added the setter flags and delete on close flag to the FileInfo class. The setter flags indicate
+which values are valid for the DiskInterface.setFileInformation() call.
+
+Added the mapped drives list to the ServerConfiguration class.
+
+Added the SMBMappedDrives configuration item id to the ConfigId class.
+
+Added the gid and uid ACL types to the default types list of the DefaultAccessControlManager class.
+
+The NFS server procSetAttr() method now uses the FileInfo setter flags to indicate which
+fields are valid when calling DiskInterface.setFileInformation().
+
+Fixed a bug in the NFS server procRead() processing, the returned buffer must be rounded
+to a 4 byte boundary.
+
+Changed MountServer to return the list of available authentication types by getting the
+types list from the configured RpcAuthenticator class in procMount().
+
+Changed MountEntryList class to use older Vector methods for .NET compatability.
+
+Fixed bug in RpcPacket.unpackString() not advancing the buffer pointer by the string length.
+
+Added the debug flag to the DefaultRpcAuthenticator class, enabled via the <Debug/> tag within the
+configuration.
+
+Added the com.starla.oncrpc.AuthType getTypeAsString() static method.
+
+Changed the Win32NetBIOS GetComputerName() method to GetLocalNetBIOSName().
+
+Added code to the FTP server to enforce a data socket range if specified in the configuration. Added
+FTPDataSessionTable class to track the open data sockets.
+
+Removed the check for the JDOM classes from the JLANServerService application.
+
+Added the MapNetworkDrive() and DeleteNetworkDrive() Win32 API wrapper methods to the Win32Utils
+native code class.
+
+Added the GidAccessControl and UidAccessControl access control types, and associated parser classes.
+
+Version 3.4.0 (alpha 5)
+-----------------------
+Removed checks for RemoteTea classes in the JLANServer and JLANServerService applications.
+
+Removed the RemoteTea based NFS server code from the JLAN Server Jar. The source code for the old NFS
+server and modified RemoteTea package is now in the oldNFS\ sub-directory of the source kit.
+
+Changed ServerConfiguration to default to using the new NFS server code in the com.starla.oncrpc.nfs package.
+
+Added new XML configuration tags. For SMB added <HostAnnouncerPort> and <Win32NetBIOS lana="..."/>. For
+FTP added <dataPorts rangeFrom=".." rangeTo=".."/>. For NFS replaced <UDPThreadPool> and <TCPThreadPool>
+with <ThreadPool>, and added <PacketPool>, <<PortMapperPort>, <MountServerPort>, <NFSServerPort>,
+<mountServerDebug/>, <portMapperDebug/> and <rpcAuthenticator>.
+
+Added Debug.println(Throwable) method.
+
+Added call to fire server shutdown event from all network server shutdownServer() methods.
+
+Added NetBIOS MaxReceiveSize constant, multiple Win32 NetBIOS receives must be issued to receive more
+than this amount of data (64K).
+
+Added multi-threaded UDP and TCP RPC handlers to the ONC/RPC package. Changed the NFS server to use the
+multi-threaded handlers for increased performance.
+
+Added RpcAuthenticator interface for ONC/RPC authentication. Default implementation in the
+DefaultRpcAuthenticator class implements null and Unix authentication types.
+
+Added group list to the ClientInfo class, for Unix RPC authentication.
+
+Added configuration ids SMBWin32NBLana, SMBAnncePort, FTPDataPortLow, FTPDataPortHigh, NFSThreads,
+NFSPortMapPort, NFSMountPort, NFSServerPort, NFSPacketPool, NFSPortMapDebug, NFSMountDebug,
+NFSRpcAuthenticator. Added new configuration values and associated getter/setter methods to the
+ServerConfiguration class.
+
+Changed HostAnnouncer constructor to either use the default port or the specified port.
+
+Swapped the setting of the last write date/time and the modification date/time in NTProtocolHandler
+procTrans2SetFile().
+
+Added the SMBServer.getSessions() method to return the active session list.
+
+Changed the SMBServer.enableAnnouncer() method to set the host announcer port if a non-standard port
+has been specified in the configuration.
+
+Changed the SMBSrvSession TreeConnection list to use a Hashtable.
+
+Added support for the delete file on close flag to the JavaFileDiskDriver closeFile() method.
+
+Added call to sync the file descriptor before truncating a file in JavaNetworkFile.truncateFile().
+
+Added support for handling receives larger than 64K in the Win32NetBIOSPacketHandler.readPacket() method.
+
+Changed the return value from the Win32 NetBIOS receive native code so that it includes the received length
+and the NetBIOS status code. In the case of an incomplete receive the status code is non-zero but the
+receive buffer may not have been completely filled by the first receive request.
+
+Changed the Win32NetBIOSSessionHandler to use the LANA from the configuration, if specified, else use the
+first available LANA.
+
+Version 3.4.0 (alpha 4)
+-----------------------
+Fixed a problem in FindInfoPacker.pack8Dot3Name() when the client does not set the Unicode flag in the
+request (such as smbfs) the 8.3 name structure was packed as ASCII and not the correct length. The 8.3
+name structure is now always packed as Unicode.
+
+Fixed ServerConfiguration.getWin32HostAnnounceInterval() returning the wrong value.
+
+Added the DataPacker.getIntelLong() method.
+
+Added the Win32NetBIOS.GetComputerName() method to retrieve the local Windows server name.
+
+Removed 'MOUNT' NFS debug option.
+
+Win32NetBIOSPacketHandler now handles receive requests that overrun the initial buffer. The Netbios()
+API can only receive 64K at a time. The readPacket() method can now extend the buffer up to 128K (the
+limit for TCP/IP RFC NetBIOS).
+
+Added logic to detect if the file attributes should be updated in the NTProtocolHandler
+procTrans2SetFile() method.
+
+Fixed a problem in the FindInfoPacker.pack8Dot3Name() method not padding file extensions to 3 characters.
+
+JavaNetworkFile now flushes the file after truncating.
+
+JavaFileDiskDriver rounds the file size to the nearest 512 byte boundary for the allocation size.
+
+Fixed a problem in the JDBCDiskDriver that allowed MS Word to open a read-only file for write access. The
+openFile() method now throws an AccessDeniedException.
+
+Changed the NTProtocolHandler.procTrans2SetFile() method so that the last write date/time is set, if specified
+in the request.
+
+Removed the com.starla.smbsrv.test package (DemoAuthenticator and PrintSpooler classes). Removed the
+com.starla.ui.utils package.
+
+Version 3.4.0 (alpha 3)
+-----------------------
+Rewrote the XMLServerConfiguration class to use DOM, removed the use of JDOM and requirement to use external
+XML parser classes/Jars.
+
+Changed FTPSrvSession to use older JDK methods for J# compatability.
+
+Version 3.4.0 (alpha 2)
+-----------------------
+NFSSrvSessionFactory.updateSession() now checks if the ClientInformation object has been allocated and either
+updates the existing or creates a new ClientInformation object.
+
+Changed the nfs_abserver.dispatchOncRpcCall() so that the NFSSrvSessionFactory.updateSession() method is
+called for every request as the authentication details can change.
+
+Removed the Win32NetBIOS variable from the Win32NetBIOSPacketHandler and Win32NetBIOSSessionSocketHandler
+classes.
+
+Removed the Win32NetBIOS variable from the Win32NetBIOSHostAnnouncer as the Win32NetBIOS class is now static.
+
+Changed the NetBIOSName.getNetBIOSName() method to return a byte[];
+
+Changed the Win32NetBIOS methods to use a byte[] for NetBIOS names, rather than a String.
+
+Changed the JLANServer application to use the createServer() call to create the FTP server using reflection.
+
+Changed the JLANServer to use the ConsoleIO class.
+
+Added the com.starla.util.ConsoleIO class to wrapper the console input functions, for differences in Java
+and J# handling of the console.
+
+Version 3.4.0 (alpha 1)
+-----------------------
+Added parsing of the <Win32Announce> configuration item to the XMLServerConfiguration class.
+
+Added configuration items to enable/disable the Win32 NetBIOS host announcer and set the Win32 host
+announcement interval.
+
+Added the SMBWin32NBAnnounce configuration item id to the ConfigId class.
+
+Moved checks for the JDOM classes to the Java version of the XMLServerConfiguration class.
+
+Added use of the Win32NetBIOSHostAnnouncer to the SMBServer.
+
+Added the com.starla.smb.mailslot.win32.Win32NetBIOSHostAnnouncer class that can announce the SMB/CIFS
+server to a workgroup/domain via the Win32 NetBIOS native interface.
+
+Removed instanceof checks in the JavaFileDiskDriver as calls are supported on the base class. Added file seek within
+the JavaNetworkFile.readFile() method.
+
+Fixed problems in the NFSMountServerCore.mountPath() and NFSServerCore.NFSPROC3_FSTAT_3() methods
+where a null SrvSession was passed to the DiskInterface.getFileInformation() method.
+
+Changed java.util.Vector calls to use the older addElement(), elementAt(), removeElementAt() and
+removeAllElements() calls to allow the majority of the server code to compile using J#.
+
+Fixed problem in FindInfoPacker.pack8Dot3Name() when the file extension is longer than 3 characters the
+extension would be truncated to 2 characters rather then 3, and the structure that is packed would be
+short by two bytes.
+
+Added the Win32 NetBIOS configuration tag <Win32NetBIOS name="..." accept="..."/>, where 'name' is the
+Win32 NetBIOS name (defaults to the main SMB server name if not specified) and 'accept' is the client name
+to allow connections from (defaults to '*' for any client).
+
+NTProtocolHandler only sets the client IP address if available, the address is not available for Win32
+NetBIOS sessions, in procSessionSetup().
+
+In SMBServer, replaced the individual session socket handler instance variables with a Vector that contains
+the active session socket handler instances.
+
+SMBSrvSession checks for Win32 NetBIOS in the constructor and skips to the SMBNEGOTIATE state, as for native
+SMB.
+
+Added a new protocol type constant, PROTOCOL_WIN32NETBIOS, to the SMBSrvPacket to identify Win32 NetBIOS.
+
+Changed the SessionSocketHandler class to allow non-socket based handlers to be used, for the Win32 NetBIOS
+based session handler.
+
+Changed the PacketHandler class to allow non-socket based handlers to be used, for the Win32 NetBIOS based
+packet handler.
+
+FindInfoPacker now packs 8.3 format names for the InfoDirectoryBoth and InfoMacHfsInfo information levels.
+
+Added missing 32bit field to the end of the InfoDirectoryBoth/0x104 FindFirst/Next information level, in
+FindInfoPacker.packInfoDirectoryBoth().
+
+Mac support flags are now packer in big endian format in DiskInfoPacker.packMacFsInformation().
+
+Version 3.3.2
+-------------
+Fixed a bug in the JDBCDiskDriver where the streams table creation would be attempted when the streams table name
+had not been specified in the configuration.
+
+Changed the NTProtocolHandler.procTrans2QueryFileSys() call to only return a valid response to the InfoMacHsInfo
+Macintosh specific information level if the filesystem does NOT support NTFS streams (as per the information
+from Thursby).
+
+Removed Core SMB/CIFS dialect from the default dialects that will be negotiated with the client, in the
+ServerConfiguration default constructor.
+
+Added support for NTCreateAndX with a chained ReadAndX, used by the Thursby DAVE SMB/CIFS client.
+
+Fixed a problem in NTProtocolHandler.procAndXCommands() where a chained file close would not set the correct AndX
+offsets in the response.
+
+Added scaling of disk size information in the older CoreProtocolHandler.procDiskAttributes() method as it can only
+handle 16bit values.
+
+Fixed a problem in the CoreProtocolHandler.procWriteAndCloseFile() method, the buffer only contains the data to be written.
+
+Fixed a problem with the NetBIOSPacketHandler handling of session keep-alive messages. PacketHandler.readPacket() can now
+return length zero, SMBSrvSession will ignore the zero length packet and read the next packet.
+
+Longword aligned the data block in SMBSrvTransPacket.doTransactionResponse().
+
+Added code to QueryInfoPacker.packAllFileInfo() as newer versions of Linux smbfs use a different information level to get
+path information.
+
+Added resume id support to directory searches in NTProtocolHandler.procTrans2FindFirst()/procTrans2FindNext().
+
+Fixed a problem with file name packing in the FindInfoPacker.packInfoStandard() method. Added the clearNextOffset()
+method to clear the offset to the next file structure at the end of a buffer.
+
+Change JavaFileDiskDriver and JavaFileSearchContext so the file/folder creation date is never newer than the file
+modify date. The file creation date has to be faked as java.io.File does not provide it.
+
+Changed the SrcsvcDCEHandler due to changes to the base DCE/RPC information classes that are shared with the JLAN
+Client code. netShareEnum() now fills in the path details for information levels 2 and 502.
+
+Version 3.3.1
+-------------
+Fixes to NTProtocolHandler.procTrans2FindFirst() to support Mac OS X DAVE client.
+
+NFS server NFSPROC3_READDIR_3() and NFSPROC_READDIRPLUS_3() now check that the reply is within the maximum count
+limit specified by the client.
+
+NFS server NFSPROC3_READDIR_3() and NFSPROC3_READDIRPLUS_3() now add file id cache entries for each file/sub-directory
+in the search if the filesystem driver does not implement the FileIdInterface.
+
+Fixed NFS problems with cookies returned by NFSPROC3_READDIR_3() and NFSPROC3_READDIRPLUS_3() methods for '.' and '..'
+directories. Added FileInfo.getDirectoryIdLong() to fix problem with sign extend of parent directory id when returning
+a ReadDir/ReadDirPlus structure.
+
+NFS mount server MOUNTPROC_EXPORT_1() filters the share list to only return details of disk shares.
+
+Updated jlanserver.dtd to add new 3.3 tags. Changed the <user> tag in the <users> block to <localuser>, so as not to
+clash with the new <user> access control tag.
+
+Added check to JDBCDiskDriver.createContext() to check if the streams database table name is valid when the file loader
+supports NTFS streams and streams are enabled.
+
+Added a boolean flag to the DiskInfoPacker.packMacFsInformation() method to indicate if the filesystem supports NTFS
+streams or not.
+
+Changed NTProtocolHandler.procTrans2QueryFileSys() to respond to the Mac information level even if Mac extensions are
+disabled. Thursby DAVE uses the response to determine if the filesystem supports NTFS.
+
+Added the FileInfo.getFileIdLong() method to return the file id as a long, and also mask any sign extension.
+
+Removed m_ipAddr variable from SMBServer as it was masking the m_ipAddr variable of the NetworkServer class. Added
+NetworkServer.setServerAddresses() method to allow SMBServer to set IP address array.
+
+Allocate the weak consistency cache object before filling in with the attributes in NFSServerCore.NFSPROC3_WRITE_3().
+
+Changed order of checking in NFSServerCore.NFSPROC3_ACCESS_3() so that write access is checked first, mask was not
+right when session has read/write access.
+
+Removed debug from NFSServerCore.generatePath().
+
+Version 3.3.0
+-------------
+Check for time values of -1 in the NTProtocolHandler.procTrans2SetFile() method. Spec states zero will be sent if the
+time is not to be changed but Windows clients usually send -1.
+
+Fixed problem in NotifyChangeHandler sendChangeNotifications() method with incorrect packet format. The problem
+caused NT4 clients to log errors to the eventlog.
+
+Fixed bug in JavaNetworkFile when there is not enough free disk space to extend a file, not throws a DiskFullException.
+NTProtocolHandler also catches Exceptions in the procTrans2SetFile() method to avoid exceptions causing the session to be
+closed.
+
+Local NetBIOS names are now added to the list of available names before the name registration broadcasts are sent out so
+that the server can respond to name lookups quicker. If there is an error during the registration it is removed from the
+local name table.
+
+Renamed FilePermission class to FileAccess so it does not clash with java.io.FilePermission.
+
+JavaFileDiskDriver global creation date value should be a milliseconds value, removed divide by 1000.
+
+NFS RPC dispatcher now rejects calls to the NFSACL program with a program unavailable status.
+
+NFSSrvSession now stores the details of active searches. As 32bit resume cookies are used the lower 24bits are the resume
+index and the top 8bits the search index.
+
+NFS server now returns pre/post operation attributes. Changes to ReadDir/ReadDirPlus processing to handle Solaris NFS
+clients (cookies are now 32bit, searches can be restarted).
+
+Added handling of dump and export requests in NFS mount server. Mount server now keeps track of active mounts.
+
+Fixed bug in widening of file offset in NTProtocolHandler.procReadAndX() when the offset is between 2-4Gb causing a negative
+offset value.
+
+Added <globalAccessControl> list configuration section, as part of the <security> section. The global access control list
+is used for shares that do not have an access control list configured.
+
+NetBIOS name server only fires a ServerError event if not shutting down, as the shutdown causes the pending socket read to
+throw an exception.
+
+Set the TCP no delay socket option in the PacketHandler constructor to avoid asynchronous notifications being buffered
+causing Windows clients to disconnect if the actual packet was sent at the wrong time.
+
+Changed NTProtocolHandler.procLockingAndX() to call the LockManager.createLockObject() call to create the FileLock
+instance, to allow the class to be extended by the lock manager instance.
+
+Fixed a problem in the JDBCDiskDriver findParentDirectoryId() and findParentDirectoryIdList() methods not uppercasing the
+directory name before checking the FileStateCache or searching the filesystem database.
+
+Fixed a problem in the JDBCDiskDriver.deleteDirectory() method where directories that contain files/folders that
+are marked as deleted would prevent the directory from being deleted.
+
+Fixed a problem where the archived attribute was not being returned by the JDBCDiskDriver. The
+JDBCDiskDriver.getInfoFromRecord() and JDBCDiskSearchContext.nextFileInfo() methods were not loading the Archived
+value from the database.
+
+Added WINS server support to the NetBIOSNameServer. Added the <WINS> configuration section to the <smb> <host> section
+of the XML configuration.
+
+Added DiskFullException, thrown when a file write or extend exceeds the available quota for the shared filesystem.
+
+Added DirectoryNotEmptyException, thrown by a DiskInterface when an deleteDirectory() is called when the
+directory contains files/folders.
+
+Removed NFS v2 support from the NFS server.
+
+Updated NFS server to add session support using the NFSSrvSession class. Added access control checking to the NFS
+server.
+
+Updated FTPServer/FTPSrvSession to add access control checking.
+
+Updated CoreProtocolHandler, LanManProtocolHandler and NTProtocolHandler to add checks for read/write access
+to the filesystem.
+
+Fixed missing SQL parameter problem in JDBCDiskDriver.createStream(). Fixed ClassCastException problem caused by
+JDBCDiskDriver.getFileInformation() creating a FileInfo object for stream information rather than a JDBCFileInfo.
+
+Added access control list field and accessor methods to the SharedDevice base class.
+
+Added hasReadAccess() and hasWriteAccess() convenience methods to the TreeConnection class.
+
+Added access control manager and parameters to ServerConfiguration. Added the SecurityACLManager configuration id.
+
+Added the com.starla.server.auth.acl package to contain the access control classes/interfaces.
+
+Added protocol name and remote client name fields to the SrvSession class.
+
+Version 3.2.0
+-------------
+Added updating of the ChangeDate field for renameFile(), truncateFile() and setFileInformation() calls to the
+JDBCDiskDriver.
+
+Changed the JLANServer and JLANServerService applications to use the reflection API to create the network server
+objects.
+
+Changed the JLANServer and JLANServerService to store the active server list in the ServerConfiguration object.
+
+Added server Java package fields to the ServerConfiguration to allow alternate server implementations to be loaded from
+a different Java package. In this release it allows the NFS/mount/portmap servers to be replaced by specifying the
+<package>a.b.c</package> value in the <NFS> XML configuration section.
+
+Added active network server list to the ServerConfiguration so that protocol servers may find other servers if required.
+
+Added updating of the access, modify and/or change date/time values in JDBCDiskDriver.setFileInformation(), if date/time
+values are specified in the input FileInfo object.
+
+Fixed problems in the NFSPROC3_SETATTR_3() processing, return the updated file attributes to the client, pack the ctime
+value if available. Return a valid failure status object if an error occurs.
+
+Removed the dependency between the NFS server and mount server.
+
+Changed the com.starla.util.MemorySize class to handle terabyte values, specified as 'nT'. This allows the static
+disk size configuration value <size totalSize="..." freeSize="..."/> to specify large virtual disk sizes.
+
+Changed the getDiskFreeSizeKb(), getDiskFreeSizeMb(), getDiskSizeKb()and getDiskSizeMb() methods to return a
+long value.
+
+Changed FTPSrvSession.procStoreFile() to allow existing files to be overwritten.
+
+Added better handling of exceptions in the FTPSrvSession procReturnFile() and procStoreFile() methods to handle
+socket disconnections, download/upload cancel by the client.
+
+Fixed problem in the FTPPath.isRelativePath() method returning the wrong status.
+
+Changed FTP server to use the configured ShareMapper to get share lists and allow creating of dynamic shares for
+FTP clients.
+
+Added dynamic share cleanup to the SrvSession.closeSession() method.
+
+Fixed a performance problem in the FTP server where the FTP command socket was taking 200ms to get a low level TCP
+ACK from the client by enabling the TCPNoDelay option on the socket.
+
+Added CheckLocalIPAddress flag to the JLANServer application to disable checking for the loopback address.
+
+Changed NFSHandle to use the hash of the share name as the share id so that the handle is valid after restarting
+the JLAN server.
+
+Added findShare() and getShareList() methods to the base NetworkServer class.
+
+Split core file server classes from the SMB/CIFS server into new packages :-
+	com.starla.server
+	com.starla.server.auth
+	com.starla.server.config
+	com.starla.server.core
+	com.starla.server.filesys
+	com.starla.server.filesys.cache
+	com.starla.server.filesys.loader
+	com.starla.server.locking
+	com.starla.server.print
+
+Added new optional filesystem driver interface - FileIdInterface.
+
+Changed the FileInfo class to use long values for creation, modify and access date/time. Added group id, user id and
+mode fields to support NFS.
+
+Changed the DiskInterface.createDirectory() method to use the FileOpenParams class to allow passing of gid, uid and
+mode settings.
+
+Removed call to NetworkFile.incrementWriteCount() in the SMB, FTP and NFS protocol handler layers. The method
+must be called in the NetworkFile.writeFile() implementation.
+
+Removed print queue list from the SMBServer class.
+
+Moved the FileListener list and methods from the SMBServer to the NetworkServer class.
+
+Added trashcan facility to the JDBCDiskDriver where files are marked as deleted rather than being deleted.
+
+Added better wildcard search support to the JDBCDiskDriver. Wildcards such as '*.ext' or 'name.*'  are converted
+to 'SELECT ... LIKE()', more complex wildcards use the WildCard class to provide a filter for which files to
+return.
+
+Added numberOfEntries() method to the SearchContext abstract class, to return the number of files/folders in
+the search.
+
+Changed the ThreadedFileLoader to create a FileSegment per open of a file, only the FileSegmentInfo is shared now
+as it contains the details of the temporary file. This fixes a number of subtle problems/exceptions that are
+generated when two or more clients are accessing the same file that has been loaded into the cache area.
+
+Version 3.1.2
+-------------
+Added static final boolean values to the Debug class to control compiling in of debug statements. Most debug output is
+controlled via the Debug.EnableInfo boolean, setting to false can significantly increase server performance. Java
+compiler completely removes debug statement code from the class file when the appropriate Debug.Enable... flag is set
+to false.
+
+Fixed problem in FTPSrvSession with generatePathForRequest() checking for file/directory existence when creating new
+files/directories. Added a new generatePathForRequest() method with a 'checkExists' flag.
+
+Added support for complex wildcard searches to the JDBCDiskDriver. Wildcards such as 'name.*' and '*.ext' use a LIKE
+clause in the SQL SELECT, more complex wildcards use the WildCard class to post-process the resultset.
+
+Version 3.1.1
+-------------
+Fixed bug in CoreProtocolHandler.procWriteFile() using the wrong variable to check the write length.
+
+Added DumpSearches() method to com.starla.nfs.SearchCache.
+
+Added 'delete on close' flag to NetworkFile, plus hasDeleteOnClose() and setDeleteOnClose() methods.
+
+Added check for directory in NTProtocolHandler.procNTCreateAndX() if create disposition indicates file/directory should
+exist, so that the correct status is returned.
+
+Added processing of the NTTransactCreate NT transaction code in NTProtocolHandler. This method is called when a file is
+created with extended attributes and/or a security descriptor.
+
+Added SetDispositionInfo/NTFileDispositionInfo processing to NTProtocolHandler.procTrans2SetFile(), this is used to mark
+a file/directory for delete.
+
+Changed parameter block/data block length check to use the received parameter/data block lengths.
+
+Added copy constructor to NTTransPacket class.
+
+Added an asynchronous response queue to SMBSrvSession so that change notification response SMBs can be fed into the
+reply stream at the appropriate point. The Windows clients are very sensitive as to when they receive asynchronous
+notifications and it can cause the client to disconnect the session.
+
+Fixed problems in SrvTransactBuffer using the wrong parameter/data block length/offset values.
+
+Added a global creation date/time value to the JavaFileDiskDriver to be returned in file information requests, as the
+java.io.File class only has a modification date/time value.
+
+Removed read-only check in CachedNetworkFile truncateFile() and writeFile() methods as a file may be created with a
+read-only attribute but must still be writeable to copy the initial data into it.
+
+Added database connection pool configuration variable to JDBCDeviceContext. The <ConnectionPool> configuration variable
+may be specified as <initial_size>:<max_size> or just <max_size>.
+
+JDBCDiskDriver.createFile() now uses 'SELECT LAST_INSERT_ID()' to read back the allocated file id for the new file/directory.
+
+JDBCDiskDriver.closeFile() checks for the delete on close flag being set on a file and deletes the file/directory/stream.
+
+Added transaction processing support to the JDBCFileLoader. This allows file below a specified size to be packed into Jar files
+and written to the database as a single BLOB. The small file size, Jar size, number of files per Jar and Jar compression
+level are all configurable.
+
+Added stream id to the com.starla.smb.server.loader.CachedFileInfo class.
+
+Added FileSegment.signalDataAvailable() method. This is used by the data loader thread to signal that data is available to
+waiting SMB/NFS/FTP threads. The signalling significantly increases the performance for small file loading.
+
+Added constructor/methods to the com.starla.util.db.DBConnectionPool class to allow the initial and maximum pool size
+to be configured.
+
+Changed the NotifyChangeHandler class to use the SMBSrvSession.sendAsynchReponseSMB() method when sending change
+notification SMBs.
+
+Version 3.1.0
+-------------
+JavaFileDiskDriver.createContext() now converts relative paths to absolute paths, and validates
+that the path exists.
+
+Fixed problem with mapping network path to local path under Linux in JavaFileDiskDriver that caused
+directory searches to fail.
+
+Increased the per user/per share open file maximum to 256 (from 64) and initial slots to 8 (from 4).
+
+Added com.starla.app.JLANServerService application that implements the ServiceWrapper WrapperListener
+interface.
+
+Changed Debug interface to be a global class with a DebugInterface implementation. Changed ConsoleDebug
+and LogFileDebug to implement DebugInterface.
+
+Moved DemoAuthenticator class from com.starla.smbsrv.test package to com.starla.jlansrv package, and
+renamed to LocalAuthenticator.
+
+Added PassthruAuthenticator class. Uses a domain controller or other server to provide user
+authentication for users accessing the JLAN Server.
+
+Added com.starla.locking package and code file locking classes (FileLock, FileLockList, FileLockException,
+FileUnlockException, LockConflictException, NotLockedException).
+
+NetBIOSName.setName() changed to trim trailing spaces from the name string.
+
+Added process id variable to SrvSession, to keep track of lock owner. Added getProcessId() and
+setProcessId(int) methods.
+
+Added com.starla.server.locking package and server side locking classes/interface (FileLockingInterface,
+FileLockListener, LockManager).
+
+Added com.starla.smb.LockingAndX class containing SMB LockingAndX constants.
+
+Added NTTransGetUserQuota and NTTransSetUserQuota NT transaction types to PacketType class.
+
+Added Win32 error code processing to SMBErrorText class. Added NT locking error codes to SMBStatus, changed
+some NT error codes to be Win32 error codes (NT error codes are 0xC0xxxxxx format).
+
+Added oplock request flag definitions for the NTCreateAndX SMB to the WinNT class.
+
+Fixed bug in DCEBuffer.putHandle() not extending the buffer by the required amount.
+
+Added DCEBuffer.putBytes(byte[],int,int) method. to allow specifying buffer alignment after packing the
+bytes.
+
+Added WelKnownSID class.
+
+Added Authenticator.authenticateUserPlainText() for use by protocols that use a plain text password (such
+as FTP).
+
+Added NTFS streams and file locking variables to the NetworkFile class.
+
+NTProtocolHandler now returns a security descriptor that allows Everyone access to the file/directory.
+
+NTProtocolHandler.procNTCreateAndX() returns dummy oplock status if oplock requested. Fixed bug in response
+parameter count, should be 34 when the extended response flag is not set and 42 when set. This fixes a
+problem when copying files with NT4.
+
+Added file locking support to the FileState class.
+
+Added the FileStateLockManager implementation of a LockManager that uses the FileState/FileStateCache
+classes to keep track of locks. Used by the JDBCDiskDriver.
+
+Added flag variable to JDBCDeviceContext to control whether NTFS streams support is enabled.
+
+Added NTFS streams and file locking support to the JDBCDiskDriver virtual filesystem, by implementing
+the NTFSStreamsInterface and FileLockingInterface.
+
+Added NTFS streams support to the JDBCFileLoader.
+
+Changed the NotifyChangeHandler to use a seperate thread to process asynchronous change events.
+
+Added com.starla.smb.server.ntfs package and NTFS streams classes/interfaces (NTFSStreamsInterface,
+StreamInfo, StreamInfoList).
+
+Fixed several problems in the FTP path parsing code, mainly to add support for relative paths.
+
+Added FTP SIZE command support.
+
+Version 3.0.1
+-------------
+ProtocolHandler.getVolumeInformation() checks with driver if it implements DiskVolumeInterface whether
+the DiskDeviceContext returned null from getVolumeInformation() or not.
+
+Fixed problem in JavaFileDiskDriver.renameFile() using local path to check file existence.
+
+Fixed problems with file sizes over 2Gb in JDBCDiskDriver, CachedNetworkFile, ThreadedFileLoader.
+
+Added configurable sub-directory and file prefix to ThreadedFileLoader. To allow multiple shares to
+use the same temporary directory.
+
+Version 3.0.0
+-------------
+Renamed to version 3.0.0 for final release.
+
+Version 2.1.0 beta7
+-------------------
+Changed NFS COMMIT_3 processing to call DiskInterface.closeFile() to sppedup flushing of file data in
+JDBCDiskDriver.
+
+Change notification now sends buffered notifications, buffered whilst waiting for a change notification
+to be reset by the client.
+
+Fixed NFS READ_3 debug statement.
+
+Updated jlanserver.dtd DTD file to latest JLAN server configuration format.
+
+Changed NetBIOSNameServer to add support for multi-homed server, register names against multiple IP
+addresses and name queries report multiple IP addresses.
+
+Added check to JLANServer application to see if local IP address resolves to '127.0.0.1', this indicates
+a problem in the hosts file under Linux.
+
+Fixed data alignment problem in WkssvcDCEHandler.netWkstaGetInfo().
+
+Fixed bug in ThreadedFileLoader.fileStateExpired() allowing queued file states to be expired.
+
+Version 2.1.0 beta6
+-------------------
+Zero length Write SMB should truncate/extend file to write offset, changed CoreProtocolHandler. Does not
+affect the WriteAndX SMB.
+
+Changed ShareMapper interface to use SrvSession base class. Updated DefaultShareMapper.
+
+Changed Authenticator.initialize() method to add ServerConfiguration parameter. Added getUserDetails()
+abstract method.
+
+Changed FTPSrvSession to use Authenticator.getUserDetails() to validate user.
+
+Updated DemonAuthenticator to update initialize() and add getUserDetails() method.
+
+Added processing of SetAllocationInfo in NTProtocolHandler.procTrans2SetFile() method, chain through
+to truncateFile() in DiskInterface.
+
+Added checks for file/directory exists in JavaFileDiskDriver renameFile() processing.
+
+Added minimal code to NFS DUMP and EXPORT processing in mount server to stop errors when using
+'showmount' command.
+
+Added NFS SETATTR processing (v2 and v3).
+
+Changed FTPSrvSession to use SrvSession base class.
+
+Added JLAN Server Programmers Guide PDF file to kit.
+
+Added FTP root directory, configure using <rootDirectory>/path</rootDirectory>. Allows setting root
+directory to a particular share or sub-directory of a share.
+
+Added FileSharingException class.
+
+Added SMBStatus.NTSharingViolation status code.
+
+NTProtocolHandler.procOpenAndX and NTCreateAndX now catch FileSharingException and returns sharing
+conflict/validation error.
+
+Added SharingMode.NOSHARING constant.
+
+Added FileSharingException catch blocks to LanManProtocolHandler and CoreProtocolHandler.
+
+Fixed NFS READDIR bug, continuation skipped one file as the while loop was losing one entry per request.
+Updated READDIR_2, READDIR_3 and READDIRPLUS_3.
+
+Increment write count in NFS WRITE_2 and WRITE_3 so that file is updated when closed in JDBCDiskDriver.
+
+Increment write count in FTP store file processing.
+
+Fixed bug in transact notify change processing not aligning buffer pointer correctly before reading
+NOTIFY_SETUP block.
+
+Added code to change NotifyChangeHandler to check if path matches registered notify.
+
+Added change notification support to FTP store file, delete file, create directory and delete directory.
+
+Version 2.1.0 beta5
+-------------------
+Fixed problem in NFS remove and access code (v3).
+
+Fixed problem in JDBCDiskDriver not updating cached details after rename file.
+
+Fixed problem in NFS server code when using rsize/wsize=32K under Linux (and others). Writing over 32K
+to a file would give an I/O error. Increased the buffer size to 64K.
+
+Implemented NFS Pathconf method to fix problem with HP client.
+
+Removed SMBSrvFileInfo class. Changed FileInfo.resetInfo() to be public, added FileInfo.setSize() method.
+
+Removed DiskInterface checkDirectory() and isDirectory() methods, use fileExists() instead.
+
+NetworkServer added stored server exception. Added hasException(), getException(), setException() and
+clearException() methods.
+
+Added ServerListener to NetworkServer. Inform listener of server events - startup, active, shutdown and
+error.
+
+Added NetworkServer debugPrintln(Exception ex) method.
+
+Debug interface changed to be a class. Added debugPrintln(Exception ex) to print exception stacktrace
+to debug device.
+
+Removed Swing code.
+
+Changed SMBSrvSession to extend SrvSession base class.
+
+Changed DiskInterface to use SrvSession in all methods. Changed DeviceInterface to use SrvSession in all
+methods that used an SMBSrvSession.
+
+Added AccessDeniedException catch to writeFile(), truncateFile() and renameFile() handling.
+
+NamedFileLoader is now a seperate interface, does not extend FileLoader.
+
+Added directory flag to NameFileLoader.renameFileDirectory() method.
+
+Added NameFileLoader.setFileInformation() method.
+
+Updated JDBCDiskDriver.setFileInformation() and NTProtocolHandler.procTrans2SetFile() to catch
+AccessDeniedException if attempt to update locked/retained file.
+
+Added flushFile() abstract method to NetworkFile. Added flush code to JDBCDiskDriver.
+
+Fixed problem with FileState/FileSegmentInfo status after temporary file is deleted. File data load
+request would not be queued for subsequent file access.
+
+Version 2.1.0 beta1
+-------------------
+Changed ServerConfiguration to handle more logic for dynamic class configuration, for configuration items
+that load classes dynamically - debug, shares, authenticator, sharemapper.
+
+Added saveConfiguration() to XMLServerConfiguration.
+
+Share configuration NameValueList is saved as part of the DeviceContext, to support saving of the
+configuration.
+
+ServerConfiguration stores NameValueList for debug, authenticator and sharemapper, so that configuration
+can be re-generated.
+
+Version 2.1.0
+-------------
+Major new features:-
+o JDBC based filesystem with pluggable file loader interface.
+  The filesystem structure details are contained within a JDBC database table. A file loader class is used
+  to load/store the file data.
+  
+  Packages com.starla.smb.server.disk.jdbc, com.starla.smb.server.loader, com.starla.smb.server.cache.
+  
+  Two sample file loader implementations included:-
+  o com.starla.smb.server.loader.SimpleFileLoader
+    Uses the local filesystem to store the file data.
+  o com.starla.smb.server.disk.jdbc.JDBCFileLoader
+    Uses database BLOB fields to store file data.
+
+o FTP server using the core virtual filesystem interface.
+  Package com.starla.ftp.
+  
+o NFS server using the core virtual filesystem interface.
+  Uses the Remote-Tea ONC/RPC implementation.
+  Packages com.starla.nfs, com.starla.nfs.mountd, com.starla.nfs.nfsd.
+  
+o Share mapper interface.
+  Allows creation of shares dynamically and supports virtual hosting.
+  
+Version 2.0.7
+-------------
+Fixed a problem in the NetBIOSPacketHandler.writePacket() where requests over 64K were not setting the
+>64K flag and adjusting the data length.
+
+Fixed a problem in the NetBIOSPacketHandler.readPacket() and TcpipSMBPacketHandler.readPacket() where
+the read could go into a loop if the connection was closed by the remote client.
+
+Fixed a problem in the NTProtocolHandler.procTrans2QueryFile() where the parameter block of the transaction
+was not being returned. This caused some SMB clients to send many query file/zero byte writes to set the end
+of the file when copying a file.
+
+Fixed problem in NetBIOSPacketHandler.readPacket() and TcpipSMBPacketHandler.readPacket() where occasional
+'Invalid header, len=n' IOExceptions were thrown when the server was under heavy load.
+
+Removed use of GNU regular expression code in WildCard class. Added WildCard.matchesComplexWildcard() method
+to handle complex wildcard patterns.
+
+Version 2.0.6
+-------------
+Expanded the WildCard class to provide better support for wildcard search combinations. Now uses the
+gnu.regexp package for complex wildcard patterns (included in the kit).
+
+Fixed bug in Unicode wildcard conversion, '.?' is converted to '"<' by the client but was converted to '"?'.
+
+Added TreeConnection.getFileTableLength() method, allows a disk driver to enumerate the open file list.
+
+Fixed bug in NT transaction processing, parameter count/offset being read from wrong parameters in the
+transaction request, in NTProtocolHandler.procNTTransaction() method.
+
+Added handling of FileBasicInfo (level 0x101) to the NTProtocolHandler.procTrans2SetFile() method.
+
+Added FTP configuration variables/methods to ServerConfiguration.
+
+Added catch for SocketException in SMBSrvSession, rather than dumping an exception trace when the client
+closes the socket rather than closing down cleanly.
+
+Cleaned up various modules where Eclipse had added variables/methods automatically.
+
+Version 2.0.5
+-------------
+Fixed bug in Unicode string unpacking in DataPacker.getUnicodeString().
+
+Fixed bug in CoreProtocolHandler.procSetFileInformation() passing the short file name to the DiskInterface.
+
+Added support for Unicode wildcards when NT LM 0.12 dialect is negotiated. Wildcards are converted to the
+standard DOS wildcards before passing to the DiskInterface.
+
+Lock and unlock count parameters were decoded the wrong way round in NTProtocolHandler.procLockingAndX().
+
+Removed redundent server socket instance variable from SMBServer.
+
+Version 2.0.4
+-------------
+Added SetPathInformation transaction processing to NTProtocolHandler.
+
+NTProtocolHandler.procLockingAndX() returns DOSNotLocked for unlock requests.
+
+Added Unicode string unpacking support to CoreProtocolHandler. The Linux smbfs uses many of the older protocol
+SMBs but using Unicode strings.
+
+Added DOSNotLocked to SMBStatus class.
+
+DataPacker.getDataString() now has a flag to indicate if a Unicode or ASCII string is being unpacked.
+
+Fixed NullPointerException in NTProtocolHandler.procNTCreateAndX() when processing a 'create if does not exist'
+open request on a directory.
+
+Version 2.0.3
+-------------
+SMBServer.findShare() is now does a case insensitive search for the required share.
+
+Added SMBSrvPacket.setBuffer() method.
+
+Added SMBSrvFileInfo.setSize(long) method.
+
+QueryInfoPacker.packStandardFileInfo() delete pending and directory flag are short values, Ethereal does not
+decode the packet properly.
+
+NTProtocolHandler.procNTCreateAndX(), moved check for opening a stream to before debug output.
+
+NTProtoclHandler.procNTTransactIOCtl() now returns NTNotImplemented status.
+
+NTProtocolHandler.procNTTransactNotifyChange() gets tree id from ntPkt parameter, not global SMB packet.
+
+NTProtocolHandler.procTrans2FindFirst() returns NTNoSuchFile status if no files to return.
+
+NTProtocolHandler.procTrans2QueryPath() checks if file/directory exists, returns NTObjectNotFound status
+if file/directory does not exist.
+
+NTProtocolHandler.procTrans2SetFile() now handles FileInfoLevel.SetEndOfFileInfo to set file length (via
+the new DiskInterface.truncateFile() method).
+
+NTProtocolHandler.procWriteAndX() now handles writes >64K properly, and returns the correct response using
+the undocumented parameter 4 value.
+
+NTTransPacket getDataBlockCount() and getDataBlockOffset() were using the wrong parameter.
+
+TcpipSMBPacketHandler.readPacket() now allocates a new buffer if the existing buffer is too short for the
+packet being received, rather than throwing an exception.
+
+NetBIOSPacketHandler.readPacket() now allocates a new buffer if the existing buffer is too short for the
+packet being received, rather than throwing an exception.
+
+NetBIOSPacketHandler.readPacket() was not checking the size overflow flag that indicates a packet over
+64K.
+
+Fixed problem in FileInfoPacker.packInfoStandard(), when packing ASCII file names the name should be null
+terminated, Unicode strings are not.
+
+Added truncateFile() method to DiskInterface, used by the core server code when opening a file with
+truncate and for setting the file length.
+
+DiskInfoPacker.packStandardInfo() was returning a file system identifier to indicate an NT file system, now returns
+a value to indicate unknown file system.
+
+Added NTInvalidDeviceRequest to SMBStatus, returned from NT IOCtl transaction request.
+
+NT file open/create actions were not correct, changed as per latest SNIA spec.
+
+The LanMan SMB dialect strings in the Dialect class did not match the client strings so LanMan dialect could
+not negotiated.
+
+FileLoader now uses NameValueList in the initializeLoader() method.
+
+Added SMBSrvSession getRemoteAddress() method to return the client network address.
+
+LanManProtocolHandler and NTProtocolHandler set the client network address during session setup, in the
+ClientInfo object.
+
+Added initialize(NameValueList) method to the Authenticator base class.
+
+Added client network address to ClientInfo class, plus hasClientAddress(), getClientAddress() and
+setClientAddress().
+
+XMLConfiguration now uses NameValueList to pass parameters to Debug and Authenticator classes.
+
+Changed Debug interface to use NameValueList for the initialize() method.
+
+Added com.starla.util.NameValue and NameValueList classes.
+
+Removed com.starla.app.TextServerConfiguration class, no longer used by the demo application.
+
+Version 2.0.2
+-------------
+Added shutdownServer() method to the JLANServer application to allow running as an NT service using the
+JavaService wrapper.
+
+Changed JLANServer application to default to a configuration file named 'jlanserver.xml' in the user.home
+directory.
+
+Fixed bug in CoreProtocolHandler.procDeleteDirectory() and NTProtocolHandler.procDeleteDirectory() when the
+directory to be deleted contains files, now returns a DOSDirectoryNotEmpty error status.
+
+Added check for files in the JavaFileDiskDriver.deleteDirectory() method. Throws an AccessDeniedException if
+the directory to be deleted is not empty.
+
+Version 2.0.1
+-------------
+Fixed problems in NTProtocolHandler returning long/NT error codes when the client specified short/DOS style
+error codes. Found when testing against smbfs under Linux.
+
+Version 2.0.0
+-------------
+Fixed bug in DemoAuthenticator not giving access to the share for guest users when the guest account is enabled.
+
+Addeds support to the DemoAuthenticator for the LanMan password that Win98 will use instead of the NTLM password
+even though NT dialect is negotiated.
+
+Fixed bug in JavaFileSearchContext.initSearch() when the share was mapped to a root directory. A path such
+as 'C:\' would be parsed and 'C:' would be used to get the list of files, this resulted in the current working
+directory on the driver being used rather than the root path.
+
+Fixed bug in SMBSrvSession.procSMBNegotiate() not returning the correct client dialect index.
+
+Changed JLANServer application to only use XML format configuration.
+
+XMLConfiguration uppercases host, domain and share names. Trims whitespace from debug flag names, whitespace was
+causing the debug flag name to mismatch and not be enabled.
+
+Changed threading in the NetBIOSNameServer to use a single thread for add/delete name broadcasting.
+
+Fixed thread synchronization bug in NetBIOSNameServer, in the add name thread.
+
+Added NT dialect support, many updates.
+
+Version 1.6.0
+-------------
+Fixed ArrayIndexOutOfBoundsException in SMBSrvSession.findConnection().
+
+Added the VolumeInfo class, to hold the volume label, serial number and creation date/time for a volume.
+
+Changed DiskInterface.getVolumeLabel() to getVolumeInformation(), return type is now a VolumeInfo object.
+Fixed JavaFileDiskDriver, CachingDiskDrvier and JDBCDiskDriver implementations.
+
+Added support for information levels InfoFsVolume(0x102), InfoFsSize(0x103), InfoFsDevice(0x104) and
+InfoFsAttribute(0x105) to the DiskInfoPacker class.
+
+Added support for information levels InfoDirectory(0x101), InfoFullDirectory(0x102), InfoNames(0x103)
+and InfoDirectoryBoth(0x104) to FileInfoPacker class.
+
+Added real name and comment to the UserAccount class.
+
+Added XMLServerConfiguration class, using the JDOM API.
+
+Added XML configuration support to the JLANServer demo. If the configuration file name ends with '.xml' the
+XML configuration is used.
+
+Fixed problem with JDBC disk driver not returning the file size when a file was opened.
+
+Added treeOpened() and treeClosed() methods to the DeviceInterface. Added calls to treeOpened()/treeClosed()
+in CoreProtocolHandler and LanManProtocolHandler tree connect/disconnect.
+
+Added display of the share details when the server starts if debug is enabled.
+
+Added DiskDeviceContext and PrintDeviceContext classes that extend the DeviceContext base class.
+
+Fixed ArrayBoundsException in SMBSrvSession.findConnection().
+
+Fixed a bug in the DCERPCHandler.processDCERPCRequest() method, the maximum reply size was being ignored. If
+more data is available than the maximum reply size the data must be truncated, the client will read the
+remaining data by issuing read requests on the pipe.
+
+Added enable flags to ServerConfiguration for NetBIOS SMB and/or TCP/IP native SMB support. Added native TCP/IP SMB
+port.
+
+Added com.starla.smb.TcpipSMB class, for native TCP SMB constants.
+
+Added abstract class com.starla.smb.server.SessionSocketHandler, and derived classes NetBIOSSessionSocketHandler and
+TcpipSMBSessionSocketHandler.
+
+Added NetBIOSSessionSocketHandler and TcpipSMBSessionSocketHandler instance variables to SMBServer. Creation
+of the required session socket handler(s) is controlled via the ServerConfiguration.
+
+Added SMBHANDLER=NetBIOS,TCPIP to the TextServerConfiguration. Specify NetBIOS and/or TCPIP to enable the specified
+SMB protocol handler(s).
+
+Fixed a bug in the LanManProtocolHandler not chaining a TreeConnect request to the CoreProtocolHandler.
+
+LanManProtocolHandler procReadAndX() and procWriteAndX() now use DBG_FILEIO debug setting.
+
+Added guest enable flag to the Authenticator class, and set/get methods.
+
+Added file creation/modification dates to the NetworkFile class.
+
+Version 1.5.1
+-------------
+Fixed problem in NetBIOSDatagramSocket, used a Java2 1.4 method.
+
+Version 1.5.0
+-------------
+Fixed bug in LanManProtocolHandler.procTrans2QueryPath that caused a NullPointerException when an invalid path was
+specified. Triggered by mounting an SMBFS from Linux and running a 'find .' on the mounted drive.
+
+Added new interface com.starla.smb.server.ShareListener.
+
+Added new class com.starla.smb.dcerpc.server.WkssvcDCEHandler to handle the workstation service requests. Implemented
+the netWkstaGetInfo DCE/RPC request.
+
+Updated SrvsvcDCEHandler, implemented the netServerGetInfo and netShareGetInfo DCE/RPC requests.
+
+Added the DBG_STATECACHE debug flag to the SMBSrvSession class, and STATECACHE debug option to the TextServerConfiguration
+class.
+
+Updated the com.starla.smb.server.cache FileState and FileStateCache classes. Added the file state cache instance
+variable to the TreeConnection. Added the cacheable flag to the DeviceContext class to enable the file state cache
+on a per share basis.
+
+Changed the DiskInterface to use a TreeConnection parameter, instead of the previous DeviceContext. The DeviceContext is
+available via the TreeConnection.getContext() method. Updated the CoreProtocolHandler and LanManProtocolHandler to use the
+new interface.
+
+Moved the Java File disk driver and associated classes to the com.starla.smb.server.disk package. Renamed the driver to
+JavaFileDiskDriver, renamed the search context class to JavaFileSearchContext.
+
+Changed the DCESerializable interface so that the writeObject() method can be used to output single objects and lists of
+objects. For lists of objects the strings must be packed after the objects so a second DCEBuffer can be used to store the
+strings whilst the list is being output.
+
+Added the DCESerializableList interface.
+
+Added code to NetBIOSNameServer processNameRegister() and processNameRelease() methods to add/remove remote host NetBIOS
+names from the remote names hashtable.
+
+Added the netbiosReleaseRemoteName() method to the com.starla.netbios.server.RemoteNameListener interface.
+
+Updated NetBIOSNameServer to use Debug interface.
+
+Added NBDEBUG=true|false to the TextServerConfiguration to enable NetBIOSNameServer debug output. Debug output goes to the
+same debug device that is configured for the SMB server.
+
+Changed the com.starla.util.HexDump class to allow output to a Debug interface.
+
+Created the com.starla.smb.mailslot package. Moved the MailSlot and HostAnnouncer classes to the new package. Created the
+SMBMailslotPacket, HostAnnounceInfo, and HostListener classes, and HostAnnounceListener interface.
+
+Added the com.starla.netbios.NetBIOSDatagramSocket class to allow access to the same socket from different classes/components.
+Updated the HostAnnounceListener and HostAnnouncer to use the NetBIOSDatagramSocket singleton.

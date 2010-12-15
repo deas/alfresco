@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+    <bean id="CMISMapping" class="org.alfresco.cmis.mapping.CMISMapping" >
+        <property name="serviceRegistry">
+            <ref bean="ServiceRegistry" />
+        </property>
+        <property name="CMISService">
+            <ref bean="CMISService" />
+        </property>
+    </bean>
+
+    <bean id="CMISService" class="org.alfresco.cmis.mapping.CMISServicesImpl">
+        <property name="CMISSpecVersion"><value>1.0</value></property>
+        <property name="CMISSpecTitle"><value>Version 1.0 OASIS Standard</value></property>
+        <property name="defaultStore"><value>${spaces.store}</value></property>
+        <property name="defaultRootPath"><value>/${spaces.company_home.childname}</value></property>
+        <property name="dictionaryService" ref="dictionaryService" />
+        <property name="namespaceService" ref="namespaceService" />
+        <property name="CMISDictionaryService" ref="CMISDictionaryService" />
+        <property name="CMISRenditionService" ref="CMISRenditionService" />
+        <property name="searchService" ref="SearchService" />
+        <property name="transactionHelper" ref="retryingTransactionHelper" />
+        <property name="tenantAdminService" ref="tenantAdminService" />
+        <property name="nodeService" ref="NodeService" />
+        <property name="fileFolderService" ref="FileFolderService" />
+        <property name="contentService" ref="ContentService" />
+        <property name="repository" ref="repositoryHelper" />
+        <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
+        <property name="versionService" ref="VersionService" />
+        <property name="mimetypeService" ref="MimetypeService" />
+    </bean>
+    
+    <bean id="CMISDictionaryService" class="org.alfresco.cmis.dictionary.CMISStrictDictionaryService" >
+        <property name="dictionaryService">
+            <ref bean="dictionaryService" />
+        </property>
+        <property name="dictionaryDAO">
+            <ref bean="dictionaryDAO" />
+        </property>
+        <property name="CMISMapping">
+            <ref bean="CMISMapping" />
+        </property>
+        <property name="tenantService">
+            <ref bean="tenantService" />
+        </property>
+    </bean>
+    
+    <bean id="CMIS.DictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="dictionaryBootstrap">
+        <property name="models">
+            <list>
+                <value>alfresco/model/cmisModel.xml</value>
+                <value>alfresco/model/cmisTestModel.xml</value>
+            </list>
+        </property>
+    </bean>
+   
+    <bean id="CMISQueryService" class="org.alfresco.cmis.search.CMISQueryServiceImpl" >
+        <property name="CMISDictionaryService">
+            <ref bean="CMISDictionaryService" />
+        </property>
+        <property name="CMISService">
+            <ref bean="CMISService" />
+        </property>
+        <property name="queryEngine">
+            <ref bean="adm.luceneQueryEngine" />
+        </property>
+        <property name="nodeService">
+            <ref bean="nodeService" />
+        </property>
+        <property name="alfrescoDictionaryService">
+            <ref bean="dictionaryService" />
+        </property>
+    </bean>
+
+    <bean id="CMISRenditionService" class="org.alfresco.cmis.renditions.CMISRenditionServiceImpl">
+        <property name="renditionKindMapping">
+            <map>
+                <entry key="cmis:thumbnail">
+                    <list><value>doclib</value></list>
+                </entry>
+                <entry key="alf:webpreview">
+                    <list><value>webpreview</value><value>imgpreview</value></list>
+                </entry>
+            </map>
+        </property>
+        <property name="customRenditions">
+            <list>
+                <bean class="org.alfresco.cmis.renditions.CMISRenditionImpl">
+                    <property name="streamId"><value>alf:icon16</value></property>
+                    <property name="mimeType"><value>image/gif</value></property>
+                    <property name="kind"><value>alf:icon16</value></property>
+                    <property name="width"><value>16</value></property>
+                    <property name="height"><value>16</value></property>
+                </bean>
+                <bean class="org.alfresco.cmis.renditions.CMISRenditionImpl">
+                    <property name="streamId"><value>alf:icon32</value></property>
+                    <property name="mimeType"><value>image/gif</value></property>
+                    <property name="kind"><value>alf:icon32</value></property>
+                    <property name="width"><value>32</value></property>
+                    <property name="height"><value>32</value></property>
+                </bean>
+            </list>
+        </property>
+        <property name="thumbnailService">
+            <ref bean="ThumbnailService" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+    </bean>
+
+    <bean id="CMISChangeLogService" class="org.alfresco.cmis.changelog.CMISChangeLogServiceImpl">
+        <property name="cmisAuditApplicationName" value="CMISChangeLog" />
+        <property name="changesOnTypeCapability">
+            <list>
+                <value>FOLDER</value>
+                <value>DOCUMENT</value>
+            </list>
+        </property>
+        <property name="auditService" ref="auditService" />
+    </bean>
+
+    <bean id="CMISChangeLogDataExtractor" class="org.alfresco.cmis.changelog.CMISChangeLogDataExtractor">        
+        <property name="cmisService" ref="CMISService" />
+        <property name="registry" ref="auditModel.extractorRegistry" />        
+    </bean>
+    
+    <bean id="CMISAccessControlService" class="org.alfresco.cmis.acl.CMISAccessControlServiceImpl" >
+        <!-- Valid values are: NONE, DISCOVER, MANAGE -->
+        <property name="aclCapabilityEnum" value="MANAGE" />
+        <!-- Valid values are: BASIC, REPOSITORY, BOTH -->
+        <property name="aclSupportedPermissionEnum" value="BOTH" />
+        <!-- Alfrecso only supports PROPAGATE -->
+        <property name="aclPropagationEnum" value="PROPAGATE" />
+        <property name="permissionModelDao" ref="permissionsModelDAO" />
+        <property name="permissionService" ref="PermissionService" />
+        <property name="CMISMapping" ref="CMISMapping" />
+        <property name="CMISDictionaryService" ref="CMISDictionaryService" />
+        <property name="nodeService" ref="NodeService" />
+    </bean>
+
+    <bean id="lucene.sql.cmis.strict" class="org.alfresco.repo.search.impl.lucene.LuceneCmisStrictSqlQueryLanguage" >
+        <property name="cmisQueryService">
+            <ref bean="CMISQueryService" />
+        </property>
+        <property name="factories">
+            <list>
+                <ref bean="admLuceneIndexerAndSearcherFactory" />
+                <ref bean="admLuceneUnIndexedIndexerAndSearcherFactory" />
+                <ref bean="avmLuceneIndexerAndSearcherFactory" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="lucene.sql.alfresco" class="org.alfresco.repo.search.impl.lucene.LuceneAlfrescoSqlQueryLanguage">
+        <property name="cmisQueryService">
+            <ref bean="CMISQueryService" />
+        </property>
+        <property name="factories">
+            <list>
+                <ref bean="admLuceneIndexerAndSearcherFactory" />
+                <ref bean="admLuceneUnIndexedIndexerAndSearcherFactory" />
+                <ref bean="avmLuceneIndexerAndSearcherFactory" />
+            </list>
+        </property>
+    </bean>
+	
+   
+    <bean id="adm.luceneQueryEngine" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.repo.search.impl.querymodel.QueryEngine</value>
+        </property>
+        <property name="target">
+            <ref bean="adm.luceneQueryEngineImpl"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref bean="adm.luceneQueryEngineSecurity"/>
+            </list>
+        </property>
+    </bean>
+   
+   <bean id="adm.luceneQueryEngineSecurity" class="net.sf.acegisecurity.intercept.method.aopalliance.MethodSecurityInterceptor">
+        <property name="authenticationManager"><ref bean="authenticationManager"/></property>
+        <property name="accessDecisionManager"><ref bean="accessDecisionManager"/></property>
+        <property name="afterInvocationManager"><ref bean="afterInvocationManager"/></property>
+        <property name="objectDefinitionSource">
+            <value>
+               org.alfresco.repo.search.impl.querymodel.QueryEngine.executeQuery=ACL_ALLOW,AFTER_ACL_NODE.sys:base.Read
+               org.alfresco.repo.search.impl.querymodel.QueryEngine.getQueryModelFactory=ACL_ALLOW
+            </value>
+        </property>
+    </bean>
+   
+</beans>

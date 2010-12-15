@@ -1,0 +1,336 @@
+diff -ru old/com/icegreen/greenmail/imap/commands/CommandParser.java new/com/icegreen/greenmail/imap/commands/CommandParser.java
+--- old/com/icegreen/greenmail/imap/commands/CommandParser.java	2007-04-06 04:33:38.000000000 -0500
++++ new/com/icegreen/greenmail/imap/commands/CommandParser.java	2009-06-01 03:56:52.000000000 -0500
+@@ -12,15 +12,19 @@
+ import com.icegreen.greenmail.store.MessageFlags;
+ 
+ import javax.mail.Flags;
++
++import org.apache.commons.logging.LogFactory;
++
+ import java.text.DateFormat;
+ import java.text.ParseException;
+ import java.text.SimpleDateFormat;
+ import java.util.ArrayList;
+ import java.util.Date;
++import java.util.Locale;
+ 
+ /**
+  * @author Darrell DeBoer <darrell@apache.org>
+- * @version $Revision: 109034 $
++ * @version $Revision: 109034 $ QuickFix: Additional date parsing procedures was added in the dateTime method (2009-02-04)
+  */
+ public class CommandParser {
+     private static final char[] EMPTY_CHAR_ARRAY = new char[0];
+@@ -106,13 +110,37 @@
+         } else {
+             throw new ProtocolException("DateTime values must be quoted.");
+         }
+-
++        // Quick fix for DateTime parsing.
++        // 
+         DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss zzzz");
+-        try {
+-            return dateFormat.parse(dateString);
+-        } catch (ParseException e) {
++        Date result = null;
++        try
++        {
++            result = dateFormat.parse(dateString);
++        }
++        catch (ParseException e)
++        {
++            String message = String.format("Unparseble date '%s'. Pattern used: 'dd-MMM-yyyy hh:mm:ss zzzz'", dateString);
++            LogFactory.getLog(CommandParser.class).warn(message);
++        }
++        if (result == null)
++        {
++            dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss Z", Locale.ENGLISH);
++            try
++            {
++                result = dateFormat.parse(dateString);
++            }
++            catch (ParseException e)
++            {
++                String message = String.format("Unparseble date '%s'. Pattern used: 'dd-MMM-yyyy hh:mm:ss Z'", dateString);
++                LogFactory.getLog(CommandParser.class).warn(message);
++            }
++        }
++        if (result == null)
++        {
+             throw new ProtocolException("Invalid date format.");
+         }
++        return result;
+     }
+ 
+     /**
+diff -ru old/com/icegreen/greenmail/imap/commands/FetchCommand.java new/com/icegreen/greenmail/imap/commands/FetchCommand.java
+--- old/com/icegreen/greenmail/imap/commands/FetchCommand.java	2007-04-06 04:33:38.000000000 -0500
++++ new/com/icegreen/greenmail/imap/commands/FetchCommand.java	2009-06-01 03:56:50.000000000 -0500
+@@ -311,14 +311,27 @@
+             FetchRequest fetch = new FetchRequest();
+ 
+             char next = nextNonSpaceChar(request);
++            if ('(' == next)
++            {
+             consumeChar(request, '(');
+ 
+             next = nextNonSpaceChar(request);
+-            while (next != ')') {
++            }
++            boolean a = true;
++            try
++            {
++
++                while (true && next != ')')
++                {
+                 addNextElement(request, fetch);
+                 next = nextNonSpaceChar(request);
+             }
+-
++            }
++            catch (ProtocolException e)
++            {
++                a = false;
++            }
++            if (a)
+             consumeChar(request, ')');
+ 
+             return fetch;
+@@ -328,11 +341,20 @@
+                 throws ProtocolException {
+             char next = nextCharInLine(command);
+             StringBuffer element = new StringBuffer();
+-            while (next != ' ' && next != '[' && next != ')') {
++            try
++            {
++
++                while (next != ' ' && next != '[' && next != ')')
++                {
+                 element.append(next);
+                 command.consume();
+                 next = nextCharInLine(command);
+             }
++            }
++            catch (ProtocolException e)
++            {
++                next = ')';
++            }
+             String name = element.toString();
+             // Simple elements with no '[]' parameters.
+             if (next == ' ' || next == ')') {
+@@ -389,8 +411,16 @@
+                 String parameter = sectionIdentifier.toString();
+ 
+                 String partial = null;
++                try
++                {
+                 next = nextCharInLine(command);
+-                if ('<' == next) {
++                }
++                catch (ProtocolException e)
++                {
++                    next = ')';
++                }
++                if ('<' == next)
++                {
+                     partial = "";
+                     consumeChar(command, '<');
+                     next = nextCharInLine(command);
+diff -ru old/com/icegreen/greenmail/imap/commands/StatusCommand.java new/com/icegreen/greenmail/imap/commands/StatusCommand.java
+--- old/com/icegreen/greenmail/imap/commands/StatusCommand.java	2007-04-06 04:33:38.000000000 -0500
++++ new/com/icegreen/greenmail/imap/commands/StatusCommand.java	2009-06-01 03:56:50.000000000 -0500
+@@ -44,7 +44,8 @@
+ 
+         MailFolder folder = getMailbox(mailboxName, session, true);
+ 
+-        StringBuffer buffer = new StringBuffer(mailboxName);
++        // Quotes mailboxName, for correct representation of name with whitespaces
++        StringBuffer buffer = new StringBuffer("\"" + mailboxName + "\"");
+         buffer.append(SP);
+         buffer.append("(");
+ 
+diff -ru old/com/icegreen/greenmail/imap/ImapConstants.java new/com/icegreen/greenmail/imap/ImapConstants.java
+--- old/com/icegreen/greenmail/imap/ImapConstants.java	2007-04-06 04:33:38.000000000 -0500
++++ new/com/icegreen/greenmail/imap/ImapConstants.java	2009-06-01 05:29:00.000000000 -0500
+@@ -20,7 +20,7 @@
+ 
+     String USER_NAMESPACE = "#mail";
+ 
+-    char HIERARCHY_DELIMITER_CHAR = '.';
++    char HIERARCHY_DELIMITER_CHAR = '/';
+     char NAMESPACE_PREFIX_CHAR = '#';
+     String HIERARCHY_DELIMITER = String.valueOf(HIERARCHY_DELIMITER_CHAR);
+     String NAMESPACE_PREFIX = String.valueOf(NAMESPACE_PREFIX_CHAR);
+diff -ru old/com/icegreen/greenmail/imap/ImapSessionFolder.java new/com/icegreen/greenmail/imap/ImapSessionFolder.java
+--- old/com/icegreen/greenmail/imap/ImapSessionFolder.java	2007-04-06 04:33:38.000000000 -0500
++++ new/com/icegreen/greenmail/imap/ImapSessionFolder.java	2009-06-01 03:56:52.000000000 -0500
+@@ -40,15 +40,9 @@
+         _folder = null;
+     }
+ 
+-    public int getMsn(long uid) throws FolderException {
+-        long[] uids = _folder.getMessageUids();
+-        for (int i = 0; i < uids.length; i++) {
+-            long messageUid = uids[i];
+-            if (uid == messageUid) {
+-                return i + 1;
+-            }
+-        }
+-        throw new FolderException("No such message.");
++    public int getMsn(long uid) throws FolderException
++    {
++        return _folder.getMsn(uid);
+     }
+ 
+     public void signalDeletion() {
+@@ -175,7 +169,8 @@
+         return _folder.getUnseenCount();
+     }
+ 
+-    public long appendMessage(MimeMessage message, Flags flags, Date internalDate) {
++    public long appendMessage(MimeMessage message, Flags flags, Date internalDate) throws FolderException
++    {
+         return _folder.appendMessage(message, flags, internalDate);
+     }
+ 
+@@ -227,7 +222,8 @@
+         _folder.replaceFlags(flags, uid, silentListener, addUid);
+     }
+ 
+-    public void deleteAllMessages() {
++    public void deleteAllMessages() throws FolderException
++    {
+         _folder.deleteAllMessages();
+     }
+ 
+diff -ru old/com/icegreen/greenmail/store/MailFolder.java new/com/icegreen/greenmail/store/MailFolder.java
+--- old/com/icegreen/greenmail/store/MailFolder.java	2007-04-06 04:33:40.000000000 -0500
++++ new/com/icegreen/greenmail/store/MailFolder.java	2009-06-01 03:56:52.000000000 -0500
+@@ -47,9 +47,9 @@
+ 
+     long getUidNext();
+ 
+-    long appendMessage(MimeMessage message, Flags flags, Date internalDate);
++    long appendMessage(MimeMessage message, Flags flags, Date internalDate) throws FolderException;
+ 
+-    void deleteAllMessages();
++    void deleteAllMessages() throws FolderException;
+ 
+     void expunge() throws FolderException;
+ 
+diff -ru old/com/icegreen/greenmail/store/SimpleMessageAttributes.java new/com/icegreen/greenmail/store/SimpleMessageAttributes.java
+--- old/com/icegreen/greenmail/store/SimpleMessageAttributes.java	2007-05-14 06:47:22.000000000 -0500
++++ new/com/icegreen/greenmail/store/SimpleMessageAttributes.java	2009-06-01 03:56:52.000000000 -0500
+@@ -120,10 +120,17 @@
+         size = GreenMailUtil.getBody(part).length();
+ 
+         // Section 1 - Message Headers
+-        if (part instanceof MimeMessage) {
+-            try {
+-                subject = ((MimeMessage) part).getSubject();
+-            } catch (MessagingException me) {
++        if (part instanceof MimeMessage)
++        {
++            try
++            {
++                // We need subject field with encoding information (like "=?koi8-r?B?097N097J083J?=")
++                // for multilanguage support.
++                subject = ((MimeMessage) part).getHeader("Subject")[0];
++                // subject = ((MimeMessage) part).getSubject();
++            }
++            catch (MessagingException me)
++            {
+ //                if (DEBUG) getLogger().debug("Messaging Exception for getSubject: " + me);
+             }
+         }
+@@ -411,8 +418,11 @@
+             buf.append(SP);
+             buf.append(NIL); // should add route-addr
+             buf.append(SP);
+-            try {
+-                MailAddress mailAddr = new MailAddress(netAddr.getAddress());
++            try
++            {
++                // remove quotes from address to avoid double quoating
++                String formatedAddress = netAddr.getAddress().replaceAll("\"", "");
++                MailAddress mailAddr = new MailAddress(formatedAddress);
+                 buf.append(Q + mailAddr.getUser() + Q);
+                 buf.append(SP);
+                 buf.append(Q + mailAddr.getHost() + Q);
+diff -ru old/com/icegreen/greenmail/util/GreenMailUtil.java new/com/icegreen/greenmail/util/GreenMailUtil.java
+--- old/com/icegreen/greenmail/util/GreenMailUtil.java	2007-10-09 18:05:42.000000000 -0500
++++ new/com/icegreen/greenmail/util/GreenMailUtil.java	2009-06-01 07:02:24.000000000 -0500
+@@ -5,7 +5,14 @@
+ */
+ package com.icegreen.greenmail.util;
+ 
+-import java.io.*;
++import java.io.BufferedReader;
++import java.io.ByteArrayInputStream;
++import java.io.ByteArrayOutputStream;
++import java.io.IOException;
++import java.io.InputStream;
++import java.io.OutputStream;
++import java.io.StringReader;
++import java.io.UnsupportedEncodingException;
+ import java.util.Properties;
+ import java.util.Random;
+ 
+@@ -25,7 +32,7 @@
+ /**
+  * @author Wael Chatila
+  * @version $Id: $
+- * @since Jan 29, 2006
++ * @since Jan 29, 2006 Changed newMimeMessage(String param) for UTF-8 support.
+  */
+ public class GreenMailUtil {
+     /**
+@@ -74,13 +81,25 @@
+      *
+      * @throws MessagingException
+      */
+-    public static MimeMessage newMimeMessage(String mailString) throws MessagingException {
+-        try {
+-            byte[] bytes = mailString.getBytes("US-ASCII");
++    public static MimeMessage newMimeMessage(String mailString) throws MessagingException
++    {
++        try
++        {
++            // Writer w = new FileWriter("Message_from_GreenMailUtil_" + System.currentTimeMillis() + ".eml");
++            // w.write(mailString);
++            // w.flush();
++            // w.close();
++            byte[] bytes = mailString.getBytes("UTF-8");
+             return newMimeMessage(new ByteArrayInputStream(bytes));
+-        } catch (UnsupportedEncodingException e) {
++        }
++        catch (UnsupportedEncodingException e)
++        {
+             throw new RuntimeException(e);
+         }
++        // catch (IOException e)
++        // {
++        // throw new RuntimeException(e);
++        // }
+     }
+ 
+     public static boolean hasNonTextAttachments(Part m) {
+@@ -296,4 +315,5 @@
+         mimeMessage.setContent(multiPart);
+         Transport.send(mimeMessage, tos);
+     }
++
+ }
+ 
+diff -ru old/com/icegreen/greenmail/imap/ImapRequestLineReader.java new/com/icegreen/greenmail/imap/ImapRequestLineReader.java
+--- old/com/icegreen/greenmail/imap/ImapRequestLineReader.java  2010-05-11 13:49:48.000000000 +0300
++++ new/com/icegreen/greenmail/imap/ImapRequestLineReader.java  2010-05-11 13:48:00.000000000 +0300
+@@ -162,6 +162,7 @@
+             throws ProtocolException {
+         try {
+             output.write('+');
++            output.write(' ');
+             output.write('\r');
+             output.write('\n');
+             output.flush();

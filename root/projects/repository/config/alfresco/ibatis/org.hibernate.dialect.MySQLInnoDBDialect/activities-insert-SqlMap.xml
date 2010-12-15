@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alfresco.activities">
+
+   <insert id="insert_activity_feedcontrol" parameterClass="FeedControl">
+      <include refid="alfresco.activities.insert_ActivityFeedControl_AutoIncrement"/>
+      <selectKey resultClass="long" keyProperty="id" type="post">
+         KEY_COLUMN:GENERATED_KEY
+      </selectKey>
+      
+   </insert>
+   
+   <insert id="insert_activity_feed" parameterClass="ActivityFeed">
+      <include refid="alfresco.activities.insert_ActivityFeed_AutoIncrement"/>
+      <selectKey resultClass="long" keyProperty="id" type="post">
+         KEY_COLUMN:GENERATED_KEY
+      </selectKey>
+      
+   </insert>
+   
+   <insert id="insert_activity_post" parameterClass="ActivityPost">
+      <include refid="alfresco.activities.insert_ActivityPost_AutoIncrement"/>
+      <selectKey resultClass="long" keyProperty="id" type="post">
+         KEY_COLUMN:GENERATED_KEY
+      </selectKey>
+      
+   </insert>
+   
+</sqlMap>

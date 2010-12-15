@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>File Upload Post GG</shortname>
+  <description>Upload file content and meta-data into Repository for iGoogle Gadgets</description>
+  <url>/aggadget/upload</url>
+  <authentication>user</authentication>
+</webscript>

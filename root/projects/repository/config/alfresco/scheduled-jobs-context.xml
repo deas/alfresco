@@ -1,0 +1,519 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+    <!--                 -->
+    <!-- Scheduled tasks -->
+    <!--                 -->
+
+    <bean id="ftsIndexerTrigger" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <bean id="ftsIndexerJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="jobClass">
+                    <value>org.alfresco.repo.search.impl.lucene.fts.FTSIndexerJob</value>
+                </property>
+                <property name="jobDataAsMap">
+                    <map>
+                        <entry key="bean">
+                            <ref bean="LuceneFullTextSearchIndexer" />
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="startDelayMinutes">
+            <value>1</value>
+        </property>
+        <property name="repeatIntervalMinutes">
+            <value>1</value>
+        </property>
+    </bean>
+
+    <!-- This has now been moved into the bootstrap process and is not required here -->
+    <!--
+    <bean id="indexRecoveryTrigger" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <bean class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="jobClass">
+                    <value>org.alfresco.repo.node.index.IndexRecoveryJob</value>
+                </property>
+                <property name="jobDataAsMap">
+                    <map>
+                        <entry key="indexRecoveryComponent">
+                            <ref bean="indexRecoveryComponent" />
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="startDelayMinutes">
+            <value>1</value>
+        </property>
+        <property name="repeatCount">
+            <value>0</value>
+        </property>
+    </bean>
+    -->
+    
+    <bean id="tempFileCleanerTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <bean id="tempFileCleanerJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="jobClass">
+                    <value>org.alfresco.util.TempFileProvider$TempFileCleanerJob</value>
+                </property>
+                <property name="jobDataAsMap">
+                    <map>
+                        <entry key="protectHours">
+                            <value>1</value>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <!-- Repeat hourly on the half hour -->
+        <property name="cronExpression">
+            <value>0 30 * * * ?</value>
+        </property>
+    </bean>
+
+    <bean id="contentStoreCleanerJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.content.cleanup.ContentStoreCleanupJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="contentStoreCleaner">
+                    <ref bean="contentStoreCleaner" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="contentStoreCleanerTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="contentStoreCleanerJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="cronExpression">
+            <value>${system.content.orphanCleanup.cronExpression}</value>
+        </property>
+    </bean>
+
+    <bean id="contentUrlConverterJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.admin.patch.impl.ContentUrlConverterPatch$ContentUrlConverterJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="contentUrlConverter">
+                    <ref bean="patch.convertContentUrls" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="contentUrlConverterTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="contentUrlConverterJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="cronExpression">
+            <value>${system.content.contentUrlConverter.cronExpression}</value>
+        </property>
+    </bean>
+
+    <bean id="nodeServiceCleanupJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.node.cleanup.NodeCleanupJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="nodeCleanupWorker">
+                    <ref bean="nodeCleanupRegistry" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="nodeServiceCleanupTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="nodeServiceCleanupJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="cronExpression">
+            <value>0 0 21 * * ?</value>
+        </property>
+    </bean>
+
+    <bean id="indexBackupJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.search.impl.lucene.AbstractLuceneIndexerAndSearcherFactory$LuceneIndexBackupJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="luceneIndexBackupComponent">
+                    <ref bean="luceneIndexBackupComponent" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="indexBackupTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="indexBackupJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <!-- trigger at 3am each day -->
+        <property name="cronExpression">
+            <value>0 0 3 * * ?</value>
+        </property>
+    </bean>
+
+    <!-- enable DEBUG for 'org.alfresco.repo.cache.EhCacheTracerJob' and enable scheduler property to activate -->
+    <bean id="ehCacheTracerJob" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <bean id="ehCacheTracerJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="jobClass">
+                    <value>org.alfresco.repo.cache.EhCacheTracerJob</value>
+                </property>
+            </bean>
+        </property>
+        <!-- enable this to activate bean
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        -->
+        <!-- start after an hour and repeat hourly -->
+        <property name="startDelayMinutes">
+            <value>60</value>
+        </property>
+        <property name="repeatIntervalMinutes">
+            <value>60</value>
+        </property>
+    </bean>
+    
+    <bean id="avmOrphanReaperJob" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <bean id="avmOrphanReaperJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="jobClass">
+                    <value>org.alfresco.repo.avm.OrphanReaperJob</value>
+                </property>
+		        <property name="jobDataAsMap">
+            		<map>
+                		<entry key="orphanReaper">
+                    		<ref bean="orphanReaper"/>
+                		</entry>
+            		</map>
+        		</property>
+            </bean>
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory"/>
+        </property>
+        <property name="startDelayMinutes">
+            <value>1</value>
+        </property>
+        <property name="repeatIntervalMinutes">
+            <value>1</value>
+        </property>
+    </bean>
+
+    <!-- Job to scan for expired content in website staging areas -->
+    <bean id="avmExpiredContentTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <bean id="avmExpiredContentJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="jobClass">
+                    <value>org.alfresco.repo.avm.AVMExpiredContentJob</value>
+                </property>
+                <property name="jobDataAsMap">
+                    <map>
+                       <entry key="expiredContentProcessor">
+                           <ref bean="avmExpiredContentProcessor" />
+                       </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <!-- trigger at 3:30am each day -->
+        <property name="cronExpression">
+            <value>0 30 3 * * ?</value>
+        </property>
+    </bean>
+        
+    <!-- enable scheduler property to activate -->
+    <bean id="userUsageCollapseJob" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <bean id="userUsageTrackingJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="jobClass">
+                    <value>org.alfresco.repo.usage.UserUsageCollapseJob</value>
+                </property>
+               <property name="jobDataAsMap">
+	               <map>
+		               	<entry key="userUsageTrackingComponent">
+		                    <ref bean="userUsageTrackingComponent" />
+		                </entry>
+		           </map>
+	           </property>
+	        </bean>
+        </property>
+        
+        <!-- enable this to activate bean -->
+        
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+			    
+        <!-- start after 5 minutes and repeat every 5 minutes -->
+        <property name="startDelayMinutes">
+            <value>5</value>
+        </property>
+        <property name="repeatIntervalMinutes">
+            <value>5</value>
+        </property>
+          
+    </bean>
+    
+    <!-- There is a job available to purge old deploymentattempt nodes  -->
+    <!-- from the repository. The maximum age of the node can be configured. -->
+    <!-- See the wiki (http://wiki.alfresco.com/wikiDeployment) for details -->
+    <!-- and the deployment-attempt-cleaner-context.xml.sample file. -->
+    
+
+    <!-- Activities Feed Cleaner -->
+    
+    <bean id="feedCleanerJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.activities.feed.cleanup.FeedCleanupJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="feedCleaner">
+                    <ref bean="feedCleaner" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="feedCleanerTrigger" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <ref bean="feedCleanerJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="startDelayMinutes">
+            <value>5</value>
+        </property>
+        <property name="repeatIntervalMinutes">
+            <value>10</value>
+        </property>
+    </bean>
+    
+    <bean id="feedGeneratorJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.activities.feed.FeedGeneratorJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="feedGenerator">
+                    <ref bean="feedGenerator" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="feedGeneratorTrigger" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <ref bean="feedGeneratorJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="startDelayMinutes">
+            <value>0</value>
+        </property>
+        <property name="repeatInterval">
+            <value>30000</value> <!-- 30000 msecs = 30 seconds -->
+        </property>
+    </bean>
+    
+    <!-- Activities Post Lookup (for secondary lookup) -->
+    
+    <bean id="postLookupJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.activities.post.lookup.PostLookupJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="postLookup">
+                    <ref bean="postLookup" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="postLookupTrigger" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <ref bean="postLookupJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="startDelayMinutes">
+            <value>1</value>
+        </property>
+        <property name="repeatInterval">
+            <value>15000</value> <!-- 15000 msecs = 15 seconds -->
+        </property>
+    </bean>
+    
+    <!-- Activities Post Cleaner -->
+    
+    <bean id="postCleanerJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.activities.post.cleanup.PostCleanupJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="postCleaner">
+                    <ref bean="postCleaner" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="postCleanerTrigger" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <ref bean="postCleanerJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="startDelayMinutes">
+            <value>10</value>
+        </property>
+        <property name="repeatIntervalMinutes">
+            <value>10</value>
+        </property>
+    </bean>
+   
+    <bean id="migrateVersionStoreJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.admin.patch.impl.MigrateVersionStorePatch$MigrateVersionStoreJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="migrateVersionStore">
+                    <ref bean="patch.migrateVersionStore"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="migrateVersionStoreTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="migrateVersionStoreJobDetail"/>
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory"/>
+        </property>
+        <property name="cronExpression">
+            <value>${version.store.migrateVersionStore.cronExpression}</value>
+        </property>
+    </bean>
+    
+    <!-- enable scheduler property to activate -->
+    <bean id="versionStoreMigrationCleanupJob" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <bean id="versionStoreMigrationCleanupDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="jobClass">
+                    <value>org.alfresco.repo.version.MigrationCleanupJob</value>
+                </property>
+               <property name="jobDataAsMap">
+                   <map>
+                        <entry key="versionMigrator">
+                            <ref bean="versionMigrator"/>
+                        </entry>
+                        <entry key="tenantAdminService">
+                            <ref bean="tenantAdminService"/>
+                        </entry>
+                        <entry key="onlyUseDeprecatedV1">
+                            <value>${version.store.onlyUseDeprecatedV1}</value>
+                        </entry>
+                        <entry key="batchSize">
+                            <value>${version.store.migrateCleanupJob.batchSize}</value>
+                        </entry>
+                        <entry key="threadCount">
+                            <value>${version.store.migrateCleanupJob.threadCount}</value>
+                        </entry>
+                        <entry key="migrateRunAsScheduledJob">
+                            <value>${version.store.migrateVersionStore.runAsScheduledJob}</value>
+                        </entry>
+                   </map>
+               </property>
+            </bean>
+        </property>
+        
+        <!-- enable this to activate bean -->
+        
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+                
+        <!-- start after bootstrap (1 minute) and run once -->
+        <property name="startDelayMinutes">
+            <value>1</value>
+        </property>
+        <property name="repeatCount">
+            <value>0</value>
+        </property>
+          
+    </bean>
+
+    <!-- Tagging Service Scope Updates -->
+    <!-- (Catches any updates queued but not executed around repo shutdown -->
+    
+    <bean id="taggingStartupJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.tagging.UpdateTagScopesQuartzJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="updateTagsAction">
+                    <ref bean="update-tagscope" />
+                </entry>
+                <entry key="actionService">
+                    <ref bean="ActionService" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="taggingStartupTrigger" class="org.alfresco.util.TriggerBean">
+        <property name="jobDetail">
+            <ref bean="taggingStartupJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="startDelayMinutes">
+            <value>2</value>
+        </property>
+        <property name="repeatIntervalMinutes">
+            <value>60</value> <!-- Periodically catch any that get missed -->
+        </property>
+    </bean>
+    
+</beans>

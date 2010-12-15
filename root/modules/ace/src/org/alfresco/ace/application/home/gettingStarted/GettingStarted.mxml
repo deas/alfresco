@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<home:GettingStartedClass 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:home="org.alfresco.ace.application.home.gettingStarted.*" 
+	xmlns:acc="org.alfresco.ace.control.textAccordian.*"
+	label="Getting Started">
+
+	<mx:VBox id="mainVBox" 
+		     width="100%" height="100%" 
+			 minHeight="{mainVBox.height}" 
+			 verticalAlign="middle" horizontalAlign="center" 
+			 styleName="homeMain">		
+		
+		<mx:Spacer width="15"/>
+		
+		<mx:HBox width="100%" height="100%">
+		
+			<mx:Spacer width="15"/>
+			
+			<mx:VBox height="100%" width="100%" verticalAlign="top">
+							
+				<mx:Spacer height="20"/>
+				
+				<acc:TextAccordian id="textAccordian" height="100%" width="100%" verticalAlign="top">
+					<acc:TextAccordianItem 
+						id="firstItem"
+						title="Welcome to Alfresco Enterprise Connections" 
+						content="I have clearly change this content does it appear in the UI??? dsf asdf asdf wef sdfqewfasdf aedfsdf asdfqwef aasdf qwefsadf aedf asdf asdfqwefdfv asdf qwefs df asdfqwef adsf qasdf awef asdfqwef asdf wef asdf adf"
+						value="videos/ACEVideo1.flv"/>				
+					<acc:TextAccordianItem 
+						title="Search Introduction" 
+						content="This is some content ... blar blar blar"
+						value="videos/testFilm2.flv"/>			
+					<acc:TextAccordianItem 
+						title="Knowledge Base Introduction" 
+						content="This is some content ... blar blar blar"
+						value="videos/testFilm1.flv"/>				
+				</acc:TextAccordian>
+			
+			</mx:VBox>
+			
+			<mx:Spacer width="15"/>	
+		
+			<mx:Box horizontalAlign="right" height="100%" verticalAlign="middle">							
+				
+				<mx:VideoDisplay  
+					id="videoDisplay"
+					styleName="homeVideo"
+					source="videos/ACEVideo1.flv"				
+					height="192" width="240" autoPlay="false" autoRewind="true" alpha="0.25">					
+				</mx:VideoDisplay>	 
+				
+				<mx:VBox id="playBox" 
+						 verticalAlign="middle" horizontalAlign="center" 
+						 includeInLayout="false" visible="true" 
+						 height="192" width="240"
+						 horizontalScrollPolicy="off"
+						 verticalScrollPolicy="off">		
+					<mx:Image source="@Embed(source='play_control.png')"/>	
+				</mx:VBox>
+				
+				<mx:VBox id="pauseBox" 
+					     verticalAlign="middle" horizontalAlign="center" 
+					     includeInLayout="false" visible="false" 
+					     height="192" width="240"
+						 horizontalScrollPolicy="off"
+						 verticalScrollPolicy="off">						
+					<mx:Image source="@Embed(source='pause_control.png')"/>
+				</mx:VBox>
+				
+			</mx:Box>
+			
+			<mx:Spacer width="15"/>	
+				
+		</mx:HBox>		
+		
+		<mx:Spacer width="15"/>
+				
+	</mx:VBox>
+				
+		
+	
+</home:GettingStartedClass>

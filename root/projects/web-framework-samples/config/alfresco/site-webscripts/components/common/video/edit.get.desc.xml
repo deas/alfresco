@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Video</shortname>
+  <description>Displays Video</description>
+  <url>/component/common/video/edit</url>
+</webscript>

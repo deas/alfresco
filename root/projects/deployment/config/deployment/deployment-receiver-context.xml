@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<!--  Stand alone deployment server configuration -->
+
+<beans>
+
+    <!--  command queue for deployment service -->
+    <bean id="deploymentReceiverCommandQueue" class="org.alfresco.deployment.impl.server.DeploymentCommandQueueImpl" > 
+    </bean> 
+
+        
+    <!--  Reader management -->
+    <bean id="deploymentReaderManagement" class="org.alfresco.deployment.impl.server.ReaderManagementPool" > 
+    </bean> 
+    
+    <!--  This is the common configuration for all file system receivers -->
+    <bean id="fileSystemReceiverService" class="org.alfresco.deployment.impl.fsr.FileSystemReceiverServiceImpl"
+          init-method="init">
+          
+        <!-- Will an error be thrown if the FSR overwrites files outside its control -->
+        <property name="errorOnOverwrite"><value>${deployment.filesystem.errorOnOverwrite}</value></property>
+        
+        <!--  Where to store temporary data -->  
+        <property name="dataDirectory">
+            <value>${deployment.filesystem.datadir}</value>
+        </property>
+        
+        <!--  Where to log information -->
+        <property name="logDirectory">
+            <value>${deployment.filesystem.logdir}</value>
+        </property>
+        
+        <property name="commandQueue"><ref bean="deploymentReceiverCommandQueue" /></property>
+        
+    </bean>
+    
+    <!--  Housekeeper for the file system service deployment receivers -->
+    <bean id="fileSystemReceiverHousekeeper" class="org.alfresco.deployment.impl.fsr.FileSystemReceiverHousekeeper"
+    	init-method="init">
+    	<property name="fileSystemReceiverService"><ref bean="fileSystemReceiverService"/></property> 
+    </bean>
+    
+    <!--  Housekeeper for the deployment queue  -->
+    <bean id="commandQueueHousekeeper" class="org.alfresco.deployment.impl.server.DeploymentCommandQueueHousekeeper"
+    	init-method="init">
+    	<property name="commandQueue"><ref bean="deploymentReceiverCommandQueue" /></property>
+    </bean>
+    
+    <!-- This is the deployment engine  -->
+    <bean id="deploymentReceiverEngine" 
+    	class="org.alfresco.deployment.impl.server.DeploymentReceiverEngineImpl" 
+        init-method="init">
+        
+        <!-- How long to wait before polling housekeeping -->
+        <property name="pollDelay"><value>5000</value></property>
+        
+        <property name="commandQueue"><ref bean="deploymentReceiverCommandQueue" /></property>
+        
+        <property name="readerManagement">
+        	<ref bean="deploymentReaderManagement" />
+        </property>
+        
+        <!--  The authenticator to access the deployment receiver engine (for shutdown) -->
+        <property name="authenticator">
+        	<bean class="org.alfresco.deployment.impl.server.DeploymentReceiverAuthenticatorSimple">
+        	   	<property name="user"><value>${deployment.user}</value></property>
+              	<property name="password"><value>${deployment.password}</value></property>
+        	</bean>
+        </property>
+        
+        <!-- Define your content transformers here 
+        <property name="transformers"> 
+            <list>
+            </list>
+        </property>
+        -->
+        
+        <!-- Define your housekeepers here -->
+        <property name="housekeepers">
+        	<set>
+        	<ref bean="commandQueueHousekeeper"/>
+        	</set>
+        </property>
+    </bean>
+    
+    <!--  The remote interface for the deployment server -->
+    
+	<bean id="deploymentReceiverTransportRMI" class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service">
+			<ref bean="deploymentReceiverEngine"/>
+		</property>
+		<property name="serviceInterface">
+			<value>org.alfresco.deployment.DeploymentReceiverTransport</value>
+		</property>
+		<property name="serviceName">
+			<value>deployment</value>
+		</property>
+		<property name="registryPort">
+			<value>${deployment.rmi.port}</value>
+		</property>
+		<property name="servicePort">
+			<value>${deployment.rmi.service.port}</value>
+		</property>
+	</bean>
+	
+</beans>

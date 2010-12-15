@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<!-- references to XML configurations -->
+<beans>
+
+    <!--
+         Import the core parts of the context. They are required
+         for anything to work
+    -->
+    <import resource="classpath:alfresco/application-context-core.xml" />
+
+    <!--
+         Import the higher level parts of the context. These can be
+         skipped, provided you don't need the features they deliver
+    -->
+    <import resource="classpath:alfresco/application-context-highlevel.xml" />
+
+    <import resource="classpath*:alfresco/transfer-service-context.xml"/>
+
+    <!--
+         Import activation extensions for Multi-Tenancy.
+    -->
+    <import resource="classpath:alfresco/mt/mt-base-context.xml"/>
+    <import resource="classpath*:alfresco/extension/mt/*-context.xml"/>
+    
+    <!--
+         Import all modules and related components.
+         Extensions are explicitly imported after this so that the default
+         mechanism can still be used to override module-specific beans.
+    -->
+    <import resource="classpath*:alfresco/module-context.xml" />
+
+    <!--  Import Spring WebScripts framework beans -->
+    <import resource="classpath*:org/springframework/extensions/webscripts/*-context.xml" />
+
+    <!--  Import client beans -->
+    <import resource="classpath*:alfresco/web-client-application-context.xml" />
+
+    <!--
+         Import Enterprise-Only Extensions
+    -->
+    <import resource="classpath*:alfresco/enterprise/*-context.xml"/>
+
+    <!--
+         Import of general extensions and bean overrides.
+
+         To give developers final control over the tuning
+         of their own local build, the dev-context.xml file
+         is processed last  (note: dev-context.xml isn't
+         part of the source tree itself).
+
+         For details, see:
+         http://wiki.alfresco.com/wiki/Developer_Runtime_Configuration
+    -->
+    <import resource="classpath*:alfresco/extension/*-context.xml"/>
+    <import resource="classpath*:alfresco/deprecated-context.xml"/>
+    <import resource="classpath*:alfresco/extension/dev-context.xml" />
+
+</beans>

@@ -1,0 +1,69 @@
+/*
+ * Copyright (C) 2009-2010 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.alfresco.deployment.impl.server;
+
+import java.util.Arrays;
+
+/**
+ * This is a very simple implementation of an authenticator for the deployment receiver.
+ * 
+ * It contains a spring configured user id and password.
+ */
+public class DeploymentReceiverAuthenticatorSimple implements DeploymentReceiverAuthenticator
+{
+	private String user;
+	private char[] password;
+	
+	/**
+	 * Are the user and password valid for this deployment receiver?
+	 * @param user
+	 * @param password
+	 * @return true, yes - go ahead.
+	 */
+	public boolean logon(String user, char[] password)
+	{
+	    
+		if(this.user.equals(user) && Arrays.equals(this.password, password))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setPassword(char[] password) {
+		this.password = password;
+	}
+
+	public char[] getPassword() {
+		return password;
+	}
+
+}

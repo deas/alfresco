@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Welcome</title>
+   <title-id>page.siteIndex.title</title-id>
+   <description>Landing page for users - will create user site dashboard as required and forward to it</description>
+   <description-id>page.siteIndex.description</description-id>
+   <template-instance>site-index</template-instance>
+   <authentication>user</authentication>
+</page>

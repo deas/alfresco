@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>File Update Post GG</shortname>
+  <description>Update file content and meta-data in Repository for iGoogle Gadgets</description>
+  <url>/aggadget/update</url>
+  <authentication>user</authentication>
+</webscript>

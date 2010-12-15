@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template-instance>
+   <template-type>org/alfresco/rmsearch</template-type>
+   <properties>
+      <pageFamily>rmsearch</pageFamily>
+   </properties>
+   <components>
+      <component>
+         <region-id>title</region-id>
+         <url>/components/title/collaboration-title</url>
+      </component>
+      <component>
+         <region-id>navigation</region-id>
+         <url>/components/navigation/collaboration-navigation</url>
+      </component>
+      <component>
+         <region-id>search</region-id>
+         <url>/components/rmsearch/rmsearch</url>
+      </component>
+   </components>
+</template-instance>

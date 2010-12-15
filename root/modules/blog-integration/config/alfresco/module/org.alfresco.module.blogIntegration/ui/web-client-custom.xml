@@ -1,0 +1,115 @@
+<alfresco-config>
+   
+   <config evaluator="aspect-name" condition="blg:blogDetails">
+      <property-sheet>
+         <separator name="sepBlogDetails" display-label="Blog Details" component-generator="HeaderSeparatorGenerator" />         
+         <show-property name="blg:blogImplementation" component-generator="BlogSelectorGenerator"/>
+         <show-property name="blg:id" />         
+         <show-property name="blg:name" />
+         <show-property name="blg:description" />
+         <show-property name="blg:url" component-generator="LinkGenerator"/>
+         <show-property name="blg:userName" />
+         <show-property name="blg:password" />     
+      </property-sheet>
+   </config>   
+   
+   <config evaluator="aspect-name" condition="blg:blogPost">
+      <property-sheet>
+         <separator name="seprmTransferInstrustions" display-label="Blog Post Details" component-generator="HeaderSeparatorGenerator"  show-in-edit-mode="false"/> 
+         <show-property name="blg:postId" show-in-edit-mode="false"/>
+         <show-property name="blg:link" component-generator="LinkGenerator"  show-in-edit-mode="false"/>
+         <show-property name="blg:posted"  show-in-edit-mode="false"/>
+         <show-property name="blg:lastUpdate"  show-in-edit-mode="false"/>
+         <show-property name="blg:published"  show-in-edit-mode="false"/>             
+      </property-sheet>
+   </config>
+   
+   <config>
+      <actions>
+            
+         <action id="addBlogDetails">      
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>org.alfresco.module.blogIntegration.ui.AddBlogDetailsEvaluator</evaluator>
+            <label>Add Blog Details</label>
+            <image>/images/icons/edit_icon.gif</image>
+		    <action-listener>#{org_alfresco_module_blogIntegration_BlogDetailsActionListener.executeScript}</action-listener>
+		    <params>
+		        <param name="id">#{actionContext.id}</param>
+         		<param name="action">add</param>
+      		</params>
+         </action>    
+         
+         <action id="removeBlogDetails">      
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>org.alfresco.module.blogIntegration.ui.RemoveBlogDetailsEvaluator</evaluator>
+            <label>Remove Blog Details</label>
+            <image>/images/icons/edit_icon.gif</image>
+		    <action-listener>#{org_alfresco_module_blogIntegration_BlogDetailsActionListener.executeScript}</action-listener>
+		    <params>
+		        <param name="id">#{actionContext.id}</param>
+         		<param name="action">remove</param>
+      		</params>
+         </action>                        
+         
+         <action id="postBlog">      
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>org.alfresco.module.blogIntegration.ui.PostBlogEvaluator</evaluator>
+            <label>Post To Blog</label>
+            <image>/images/icons/edit_icon.gif</image>
+		    <action-listener>#{org_alfresco_module_blogIntegration_BlogActionListener.executeScript}</action-listener>
+		    <params>
+		        <param name="id">#{actionContext.id}</param>
+         		<param name="action">post</param>
+      		</params>
+         </action>                        
+         
+         <action id="updateBlog">      
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>org.alfresco.module.blogIntegration.ui.UpdateBlogEvaluator</evaluator>
+            <label>Update Blog Post</label>
+            <image>/images/icons/edit_icon.gif</image>
+		    <action-listener>#{org_alfresco_module_blogIntegration_BlogActionListener.executeScript}</action-listener>
+		    <params>
+		        <param name="id">#{actionContext.id}</param>
+         		<param name="action">update</param>
+      		</params>
+         </action>                                  
+         
+         <action id="removeBlog">      
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>org.alfresco.module.blogIntegration.ui.UpdateBlogEvaluator</evaluator>
+            <label>Remove Blog Post</label>
+            <image>/images/icons/edit_icon.gif</image>
+		    <action-listener>#{org_alfresco_module_blogIntegration_BlogActionListener.executeScript}</action-listener>
+		    <params>
+		        <param name="id">#{actionContext.id}</param>
+         		<param name="action">remove</param>
+      		</params>
+         </action>  
+         
+         <action-group id="space_details_actions">
+            <action idref="addBlogDetails" />   
+            <action idref="removeBlogDetails" />           
+         </action-group>
+
+         
+         <action-group id="doc_details_actions">
+            <action idref="postBlog" />      
+			<action idref="updateBlog" />      
+            <action idref="removeBlog" />      
+         </action-group> 
+         
+      </actions>
+   </config>		
+
+</alfresco-config>

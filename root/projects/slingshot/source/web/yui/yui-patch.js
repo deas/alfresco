@@ -1,0 +1,183 @@
+/**
+ * Patch to Menu to allow empty groups to remain in the menu structure.
+ * Required by: Sites dynamic drop-down menu.
+ * Patches: YUI 2.6.0, YUI 2.7.0
+ * Escalated: Yes, but closed as "by design"
+ */
+(function()
+{
+   var Lang = YAHOO.lang,
+      Dom = YAHOO.util.Dom,
+      _FIRST_OF_TYPE = "first-of-type";
+
+   YAHOO.widget.Menu.prototype._removeItemFromGroupByIndex = function (p_nGroupIndex, p_nItemIndex, p_keepEmptyGroup) {
+
+       var nGroupIndex = Lang.isNumber(p_nGroupIndex) ? p_nGroupIndex : 0,
+           aGroup = this._getItemGroup(nGroupIndex),
+           aArray,
+           oItem,
+           oUL;
+
+       if (aGroup) {
+
+           aArray = aGroup.splice(p_nItemIndex, 1);
+           oItem = aArray[0];
+    
+           if (oItem) {
+    
+               // Update the index and className properties of each member        
+               this._updateItemProperties(nGroupIndex);
+    
+               if (aGroup.length === 0 && !p_keepEmptyGroup) {
+    
+                   // Remove the UL
+                   oUL = this._aListElements[nGroupIndex];
+    
+                   if (this.body && oUL) {
+                       this.body.removeChild(oUL);
+                   }
+    
+                   // Remove the group from the array of items
+                   this._aItemGroups.splice(nGroupIndex, 1);
+    
+                   // Remove the UL from the array of ULs
+                   this._aListElements.splice(nGroupIndex, 1);
+    
+                   /*
+                        Assign the "first-of-type" class to the new first UL 
+                        in the collection
+                   */
+                   oUL = this._aListElements[0];
+    
+                   if (oUL) {
+                       Dom.addClass(oUL, _FIRST_OF_TYPE);
+                   }            
+               }
+
+               this.itemRemovedEvent.fire(oItem);
+               this.changeContentEvent.fire();
+           }
+       }
+
+      // Return a reference to the item that was removed
+      return oItem;
+   };
+
+   YAHOO.widget.Menu.prototype._removeItemFromGroupByValue = function (p_nGroupIndex, p_oItem, p_keepEmptyGroup) {
+
+       var aGroup = this._getItemGroup(p_nGroupIndex),
+           nItems,
+           nItemIndex,
+           returnVal,
+           i;
+
+       if (aGroup) {
+           nItems = aGroup.length;
+           nItemIndex = -1;
+    
+           if (nItems > 0) {
+               i = nItems-1;
+               do {
+                   if (aGroup[i] == p_oItem) {
+                       nItemIndex = i;
+                       break;    
+                   }
+               }
+               while (i--);
+        
+               if (nItemIndex > -1) {
+                   returnVal = this._removeItemFromGroupByIndex(p_nGroupIndex, nItemIndex, p_keepEmptyGroup);
+               }
+           }
+       }
+       return returnVal;
+   };
+
+   YAHOO.widget.Menu.prototype.removeItem = function (p_oObject, p_nGroupIndex, p_keepEmptyGroup) {
+       var oItem,
+          returnVal;
+    
+       if (!Lang.isUndefined(p_oObject)) {
+           if (p_oObject instanceof YAHOO.widget.MenuItem) {
+               oItem = this._removeItemFromGroupByValue(p_nGroupIndex, p_oObject, p_keepEmptyGroup);           
+           }
+           else if (Lang.isNumber(p_oObject)) {
+               oItem = this._removeItemFromGroupByIndex(p_nGroupIndex, p_oObject, p_keepEmptyGroup);
+           }
+
+           if (oItem) {
+               oItem.destroy();
+               returnVal = oItem;
+           }
+       }
+
+      return returnVal;
+   };
+})();
+
+/**
+ * Patch to Container to prevent IE6 trying to set properties on elements that have been removed from the DOM.
+ * This function is called via a setTimer(), so this patch fixes a race condition.
+ * Required by: Document List "Loading Document Library..." pop-up.
+ * Patches: YUI 2.7.0
+ */
+(function()
+{
+   /**
+   * Adjusts the size of the shadow based on the size of the element.
+   * @method sizeUnderlay
+   */
+   YAHOO.widget.Panel.prototype.sizeUnderlay = function()
+   {
+       var oUnderlay = this.underlay,
+           oElement;
+
+       if (oUnderlay) {
+           oElement = this.element;
+           if (oElement) {
+              oUnderlay.style.width = oElement.offsetWidth + "px";
+              oUnderlay.style.height = oElement.offsetHeight + "px";
+           }
+       }
+   };
+})();
+
+/**
+ * Patch Button to not hide Menus if the item being clicked on has a submenu, or the Menu has been configured to remain open.
+ * The patch gives the Button the same behaviour as the native Menu; Button overrides certain Menu functions.
+ * Required by: Header component's User Menu when clicking in the "My Status" text box.
+ * Patches: YUI 2.8.1
+ */
+(function()
+{
+   var _SUBMENU = "submenu",
+      _KEEP_OPEN = "keepopen";
+
+   /**
+   * @method _onMenuClick
+   * @description "click" event handler for the button's menu.
+   * @private
+   * @param {String} p_sType String representing the name of the event  
+   * that was fired.
+   * @param {Array} p_aArgs Array of arguments sent when the event 
+   * was fired.
+   */
+   YAHOO.widget.Button.prototype._onMenuClick = function (p_sType, p_aArgs)
+   {
+      var oItem = p_aArgs[1],
+      oSrcElement;
+
+      if (oItem) {
+         this.set("selectedMenuItem", oItem);
+         oSrcElement = this.get("srcelement");
+         if (oSrcElement && oSrcElement.type == "submit") {
+            this.submitForm();
+         }
+         
+         var oMenu = this._menu;
+         if (oMenu && !oItem.cfg.getProperty(_SUBMENU) && !oMenu.cfg.getProperty(_KEEP_OPEN)) {
+            this._hideMenu();
+         }
+      }
+   };
+})();

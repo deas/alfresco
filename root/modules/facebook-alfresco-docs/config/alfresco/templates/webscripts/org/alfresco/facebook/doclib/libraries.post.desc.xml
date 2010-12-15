@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Facebook ADL View Libraries</shortname>
+  <description>Facebook Alfresco Document Library - View Libraries</description>
+  <url>/facebook/alfrescodoclib/libraries/{uid}</url>
+  <format default="fbml"/>
+  <authentication>user</authentication>
+</webscript>

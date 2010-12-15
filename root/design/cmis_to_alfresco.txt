@@ -1,0 +1,200 @@
+CMIS to Alfresco Mapping
+
+Issues:
+
+- GetRelationship permission on relationship
+- create permission missing  - createFolder, createDocument, createRelationship
+- permission on getAllowableActions??
+
+
+Key:
+
+wip   prototype implementation
+done  as defined in spec
+    * Todo: identify mapping
+    ! Potential issue
+    - Decision not to map to CMIS (only when optional in CMIS)
+
+
+Capabilities:
+
+      Multi-filing -> TRUE
+      Unfiling -> FALSE
+      Version-specific-filing -> FALSE
+      PWC-Updatable -> TRUE
+      Query-non-latest-versions -> FALSE  
+      Inner-join -> FALSE
+      Outer-join -> FALSE
+      Full-text-query -> Full-text + Properties
+
+
+Model Mapping:
+
+Note: Node Refs are serialized ${sys:store_protocol}://${sys:store_id}/${sys:node-uuid}
+
+Object properties:
+
+      OBJECT_ID  -> sys:referencable node ref (as a String) + "/{versionLabel}" if versioned
+    - URI
+      OBJECT_TYPE_ID   -> M2TypeDefinition.name (note: refer to Meta Model mapping) as a String
+      CREATED_BY  -> cm:creator
+      CREATION_DATE  -> cm:created
+      LAST_MODIFIED_BY  -> cm:modifier
+      LAST_MODIFICATION_DATE  -> cm:modified
+    * CHANGE_TOKEN  -> 
+
+Document (inc. Object) properties:
+
+      NAME  -> cm:name
+      IS_IMMUTABLE  -> TRUE if cm:lockable.lockType == readonly || cm:versionable.auto-version == false
+      IS_LATEST_VERSION  -> TRUE  (FALSE if PWC)
+      IS_MAJOR_VERSION  -> VersionService().getCurrentVersion().getVersionType() == VersionType.MAJOR   (FALSE if PWC)
+      IS_LATEST_MAJOR_VERSION  -> IS_MAJOR_VERSION
+      VERSION_LABEL -> cm:versionLabel
+      VERSION_SERIES_ID -> sys:referencable node ref (as a String)
+      VERSION_SERIES_IS_CHECKED_OUT  -> TRUE if COCI.getWorkingCopy is not null
+      VERSON_SERIES_CHECKED_OUT_BY  ->  if COCI.getWorkingCopy is not null cm:lockable.lockOwner
+      VERSION_SERIES_CHECKED_OUT_ID  -> if COCI.getWorkingCopy is not null then COCI.getWorkingCopy noderef as String
+      CHECKIN_COMMENT  -> VersionService().getCurrentVersion().getDescription()
+      CONTENT_STREAM_ALLOWED  -> ContentStreamAllowed.ALLOWED.toString()
+      CONTENT_STREAM_LENGTH  -> cm:content.size
+      CONTENT_STREAM_MIMETYPE  -> cm:content.mimetype
+      CONTENT_STREAM_FILENAME  -> cm:name
+    - CONTENT_STREAM_URI
+
+  NOTE: We may need to duplicate IS_MAJOR & DESCRIPTION on cm:versionable for performance
+        reasons.
+
+Folder (inc. Object) properties:
+
+      NAME  -> cm:name
+      PARENT  -> primary parent node ref
+      ALLLOWED_CHILD_OBJECT_TYPES  -> M2ChildAssociationDefinition.targetClassName
+
+Relationship (inc. Object) properties:
+
+      OBJECT_TYPE_ID   -> M2AssociationDefinition.name (note: refer to Meta Model mapping)
+    - CREATED_BY
+    - CREATION_DATE
+    - LAST_MODIFIED_BY
+    - LAST_MODIFICATION_DATE
+      SOURCE_ID  -> AssociationRef.sourceRef node ref
+      TARGET_ID  -> AssociationRef.targetRef node ref
+
+    * NOT SUPPOPRTED AT ALL  
+
+Meta Model Mapping:
+
+Base Object Types:
+
+      DOCUMENT_OBJECT_TYPE  -> cm:content type
+      FOLDER_OBJECT_TYPE  -> cm:folder type
+      RELATIONSHIP_OBJECT_TYPE  -> simulate (no natural mapping)
+
+    ! NOTE: This means any type outside the cm:content and cm:folder hierarchy
+            is not exposed via the CMIS interface.
+
+Object Type Definition:
+
+      ObjectTypeId  -> M2TypeDefinition.name - serialized as {uri}localName
+      ObjectTypeQueryName  -> M2TypeDefinition.name - serialized as prefix_localName
+         Note: For above base types, use name as defined in CMIS spec
+      ObjectTypeDisplayName  -> M2TypeDefinition.title
+      ParentTypeId  -> M2TypeDefinition.parentName - serialized as {uri}localName
+      RootTypeQueryName  -> as defined in CMIS spec
+      Description  -> M2TypeDefinition.description
+      Creatable  -> true for files and folders and false otherwise
+      Fileable  -> true for files and folders and false otherwise
+      Queryable -> true for files and folders and false otherwise
+      Controllable -> false
+      Versionable  -> document type has cm:versionable mandatory aspect ? true : false
+      ContentStreamAllowed  -> type == cm:content ? ALLOWED : NOT_ALLOWED
+      AllowedSourceTypes -> Assocs - DD source definition if a valid CMIS type
+      AllowedTargetTypes -> Assocs - DD target definition if a valid CMIS type
+
+Property Type Definition:
+
+      PropertyName  -> M2PropertyDefinition.name - serialized as prefix_localName
+      PropertyId   -> M2PropertyDefinition.name - serialized as {uri}localName or just the CMIS propertyname
+      DisplayName  -> M2PropertyDefinition.title
+      Description  -> M2PropertyDefinition.description
+      IsInherited  -> true if the type definition is inherited from a super type 
+                      (or a mandatory aspect inherits from another aspect)
+      PropertyType  -> M2PropertyDefinition.dataType (note: refer to Property Type mapping)
+      Cardinality  -> M2PropertyDefinition.isMultiValued
+      MaximumLength -> Set if there is an appropriate constraint
+    - SchemaURI -> null
+    - Encoding -> null
+      Choices  -> M2PropertyDefinition.constraints["list of values"], if any
+      OpenChoice  -> false
+      Required  -> M2PropertyDefinition.isMandatoryEnforced
+      DefaultValue  -> M2PropertyDefinition.defaultValue
+      Updatability  -> M2PropertyDefinition.isProtected
+      Queryable - if indexed
+      Orderable - if indexed and tokenisation supports ordering
+
+Property Type Mapping:
+
+      String  -> d:text, d:mltext (server locale only?), d:category?
+      Decimal  -> d:float, d:double
+      Integer  -> d:int, d:long
+      Boolean  -> d:boolean
+      DateTime  -> d:date, d:datetime
+    - URI
+      ID  -> d:text
+    - XML
+    - HTML
+  
+  ID Mapping
+
+    In the cmis model a data type of d:qname, d:noderef is mapped to a CMIS ID in type and property definitions.
+    They are converted to text in the property mapping. 
+
+  Alfresco data types not mapped:
+  
+      d:any, d:content, d:childassocref, d:assocref, d:path, d:locale,
+      d:version
+  
+    ! Note: Any Alfresco property whose data type is not mapped to CMIS MUST be 
+            excluded from CMIS type definitions
+
+
+Permissions:
+
+Document:
+
+      DeleteObject  -> DeleteNode
+      UpdateProperties  -> WriteProperties
+      CheckOut  -> CheckOut
+      CancelCheckout  -> CancelCheckOut
+      CheckIn  -> CheckIn (on PWC)
+      DeleteAllVersions  -> TRUE
+      AddDocumentToFolder  -> LinkChildren
+    * RemoveDocumentFromFolder
+      SetContentStream  -> WriteContent
+      DeleteContentStream  -> WriteProperties
+      GetAllVersions  -> TRUE
+      GetDocumentParents  -> TRUE
+      GetRelationships  -> TRUE
+      GetProperties  -> ReadProperties
+      GetContentStream  -> ReadContent
+    ! MoveObject  -> DeleteNode?
+
+Folder:
+
+      DeleteObject  -> DeleteNode
+      DeleteTree  -> DeleteNode
+      UpdateProperties  -> WriteProperties
+      GetChildren  -> ReadChildren
+      GetDescendants  -> ReadChildren
+      GetFolderParent  -> TRUE
+      GetProperties  -> ReadProperties
+      GetRelationships  -> TRUE
+    ! MoveObject  -> DeleteNode?
+
+Relationship:
+
+      DeleteObject  -> TRUE
+      UpdateProperties  -> N/A
+      GetProperties  -> N/A
+    ! GetRelationships

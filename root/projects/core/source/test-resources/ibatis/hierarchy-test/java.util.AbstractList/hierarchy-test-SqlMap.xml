@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="org.alfresco.ibatis">
+
+   <typeAlias alias="TestDAO" type="org.alfresco.ibatis.HierarchicalSqlMapClientFactoryBeanTest$TestDAO"/>
+
+   <resultMap id="TestOneResult" class="TestDAO">
+      <result property="id" column="sequence_id"/>
+      <result property="propOne" column="prop_one"/>
+      <result property="propTwo" column="prop_two"/>
+   </resultMap>
+
+   <select id="java.util.AbstractList" parameterClass="TestDAO" resultClass="TestDAO">
+      <![CDATA[
+      select 
+         id as id,
+         prop_one as propOne,
+         prop_two as propTwo
+      from 
+         dummy_table
+      where
+         id = #id# 
+      ]]>
+   </select>
+
+</sqlMap>

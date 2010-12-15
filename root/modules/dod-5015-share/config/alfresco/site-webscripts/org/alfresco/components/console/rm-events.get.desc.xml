@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Admin Console Record Management Events</shortname>
+  <description>Administration Console - Record Management Tool Events</description>
+  <url>/components/console/rm-events</url>
+  <family>rm-console</family>
+</webscript>

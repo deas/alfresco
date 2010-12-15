@@ -1,0 +1,184 @@
+CMIS REST Resources
+
+Issues:
+
+1) Query post to any collection?
+2) getProperties() - returnVersion apply to PWCs
+
+
+Key:
+
+cmis   cross-referenced in spec
+wip    prototype implementation
+impl   implemented as defined in spec
+test   unit test
+
+
+Notation:
+
+    NOTE: As per the CMIS spec, URIs are not defined, although I would expect most 
+          Repositories to provide a single URI template per Resource.
+
+    - Resource Name
+    
+      + Method description [CMIS method reference]
+        [response body format <res] HTTPMETHOD [?arguments] [req> request body format]
+      + ...
+
+  
+Resources:
+
+cmis- Repository
+    
+      + Retrieve repository info [getRepositoryInfo()]
+        app service doc <res GET
+
+cmis- Root Folder Children
+cmis- Folder Children
+    
+      + Retrieve children of folder [getChildren()]
+        atom feed <res GET ?{type}&{filter?}&{maxItems?}&{skipCount?}
+      + Create document [createDocument()]
+        atom entry <res POST req> atom entry (of document)
+      + Create folder [createFolder()]
+        atom entry <res POST req> atom entry (of folder)
+      + Create document / folder in sub-folder (from root folder only) [createDocument()/createFolder()]
+        atom entry <res POST ?{folderId} req> atom entry
+      + File existing document to folder [createDocument(), addDocumentToFolder()]
+        atom entry <res POST req> atom entry (of existing document)
+      + Move existing folder to folder [createFolder(), moveObject()]
+        atom entry <res POST ?{removeFrom} req> atom entry (of existing folder)
+      + Move existing document to folder [moveObject()]
+        atom entry <res POST ?{removeFrom} req> atom entry (of existing document)
+        
+cmis- Queries
+      + Query
+        atom feed <res POST req> query
+    
+cmis- Folder Descendants
+    
+      + Retrieve descendants of folder [getDescendants()]
+        atom feed <res GET ?{type}&{filter?}&{depth?}
+      + Delete folder and children [deleteTree()]
+        DELETE ?{continueOnFailure?}&{unfileMultiFileDocuments}
+    
+    - Folder Parent
+    
+      + Retrieve folder parent [getFolderParent()]
+        atom feed <res GET ?{filter?}&{returnToRoot?}
+    
+    - Document Parents
+    
+      + Retrieve document parents [getDocumentParents()]
+        atom feed <res GET ?{filter?}&{returnToRoot?}
+    
+cmis- Document Versions
+    
+      + Retrieve versions of document [getAllVersions()]
+        atom feed <res GET ?{filter?}
+      + Delete all versions
+        DELETE
+
+cmis- Document    
+cmis- Folder
+    
+      + Retrieve properties of document or folder [getProperties()]
+        atom entry <res GET ?{filter?}&{returnVersion?}
+      + Update properties of document or folder [updateProperties()]
+        atom entry <res PUT req> atom entry
+      + Delete document or folder (if empty) [deleteObject()]
+        DELETE
+    
+    - Object (Document / Folder) Relationships
+    
+      + Retrieve relationships associated with object
+        atom feed <res GET ?{relationshipType?}&{includeSubRelationshipTypes?}&{filter?}&{maxItems?}&{skipCount?}&{direction?}
+      + Create relationship [createRelationship()]
+        atom entry <res POST req> atom entry (of relationship)
+    
+cmis- Relationship
+    
+!      + Retrieve properties of relationship [getProperties()??]
+         atom entry <res GET
+!      + Update properties of relationship [updateProperties()??]
+         atom entry <res PUT req> atom entry
+!      + Delete relationship [delete??]
+         DELETE
+
+cmis- Policy
+
+       TODO:
+    
+    - Document Private Working Copy
+    
+      + Retrieve properties of private working copy [getProperties()]
+        atom entry <res GET ?{filter?}&{returnVersion?}
+      + Update properties of private working copy [updateProperties()]
+        atom entry <res PUT req> atom entry
+      + Cancel checkout [cancelCheckout()]
+        DELETE
+      + Checkin [checkin()]
+        atom entry <res PUT ?{checkinComment}&{major} req> atom entry
+        
+cmis- Content Stream
+    
+      + Retrieve content stream [getContentStream()]
+        mimetype <res GET ?{returnVersion?}
+      + Write content stream [setContentStream()]
+        PUT req> mimetype
+      + Delete content stream [deleteContentStream()]
+        DELETE
+    
+cmis- Allowable Actions
+    
+      + Retrieve allowable actions for document / folder [getAllowableActions()]
+        atom entry <res GET
+      
+cmis- Checked Out (User has access to)
+    
+      + Retrieve list of checked-out documents user has access to [getCheckedOut()]
+        atom feed <res GET ?{filter?}&{maxItems?}&{skipCount?}&{folderId?}
+      + Check out document [checkOut()]
+        atom entry (of PWC) <res POST atom entry (of document)
+    
+cmis- Types
+    
+      + Retrieve type definitions [getTypes()]
+        atom feed <res GET ?{type}&{returnPropertyDefinitions?}&{maxItems?}&{skipCount?}
+        
+cmis- Type Definition
+    
+      + Retrieve type definition [getTypeDefinition()]
+        atom entry <res GET ?{includeInheritedProperties?}
+    
+cmis- Unfiled
+    
+      + Retrieve all unfiled documents [getUnfiled()]
+        atom feed <res GET ?{filter?}&{maxItems?}&{skipCount?}
+      + Create unfiled document [createDocument(), removeDocumentFromFolder()]
+        atom entry <res POST req> atom entry
+
+
+Collections (atom service collection -> Resource):
+
+    cmis:collectionType="root" -> Folder Children (root folder)
+    cmis:collectionType="unfiled" -> Unfiled
+    cmis:collectionType="checkedout" -> Checked Out
+    cmis:collectionType="types" -> Types
+
+Links (atom link rel type -> Resource):
+
+    rel="enclosure" -> Content Stream
+    rel="edit" -> Object, Document Private Working Copy
+    rel="edit-media" -> Content Stream
+    rel="cmis-allowableactions" -> Allowable Actions
+    rel="cmis-type" -> Type Definition
+    rel="cmis-relationships" -> Object Relationships
+    rel="cmis-allversions" -> Document Versions
+    rel="cmis-stream" -> Content Stream
+    rel="cmis-source" -> Object
+    rel="cmis-target" -> Object
+    rel="cmis-parents" -> Document Parents
+    rel="cmis-parent" -> Folder Parent
+    rel="cmis-children" -> Folder Children
+    rel="cmis-descendants" -> Folder Descendants

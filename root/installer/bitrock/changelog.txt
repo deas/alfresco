@@ -1,0 +1,56 @@
+============= CHANGELOG ============
+
+Version 3.3G-20100415-1      2010-08-27
+* Fixed installation on Windows
+
+Version 3.3-0                   2010-08-06
+* Update Alfresco to 3.3g version
+
+Version 3.0-2                   2009-07-17
+* Fix libpng issue that prevented Alfresco for starting on OSX.
+
+Version 3.0-1                   2009-06-12
+* Fix MySQL issue when a previous MySQL instance is installed.
+
+Version 3.0			2009-02-27
+* Updated Alfresco to version 3.0
+
+Version 3.0.0b                  2009-01-16
+* Updated Alfresco to version 3.0.0b
+
+Version 2.9.0B-1		2008-08-12
+* Fixed installation on Linux 64 bits systems
+
+Version 2.9.0B-0                2008-06-08
+* Updated Alfresco to version 2.9.0B
+
+Version 2.1.0-7			2008-05-15
+* Updated Openoffice to version 2.3
+* Fixed bug where data_dir was not correctly defined
+
+Version 2.1.0-6			2008-04-03
+* Fixed ImageMagick delegates.xml error
+
+Version 2.1.0-5			2008-03-05
+* Fixed installation bug related to SELinux
+
+Version 2.1.0-4			2008-01-23
+* Fixed MySQL error on OS X
+
+Version 2.1.0-3			2008-01-23
+* Added support for native intel and ppc OS X
+
+Version: 2.1.0-2		2008-01-02
+* Fixed MySQL timing issue
+
+Version: 2.1.0-1		2007-12-05
+* Fixed openoffice installation problem
+
+Version: 2.1.0			2007-11-29
+* Initial release
+* Alfresco community 2.1.0
+* OpenOffice 2.0.1
+* Apache Tomcat 5.5.25
+* MySQL 5.0.45
+* ImageMagick 6.3.6
+* JDK 1.5.0

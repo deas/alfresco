@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view:view xmlns:view="http://www.alfresco.org/view/repository/1.0">
+<!--  WCM DEPLOYED FOLDER -->
+  <cm:folder 
+	xmlns:nt="http://www.jcp.org/jcr/nt/1.0" 
+	xmlns:alf="http://www.alfresco.org" 
+	xmlns:d="http://www.alfresco.org/model/dictionary/1.0" 
+	xmlns:view="http://www.alfresco.org/view/repository/1.0" 
+	xmlns:act="http://www.alfresco.org/model/action/1.0" 
+	xmlns:app="http://www.alfresco.org/model/application/1.0" 	
+	xmlns:cm="http://www.alfresco.org/model/content/1.0" 
+	xmlns:sys="http://www.alfresco.org/model/system/1.0" 
+	xmlns:custom="custom.model" xmlns=""         
+	view:childName="${spaces.wcm_deployed.childname}">
+
+    <view:aspects>
+      <app:uifacets></app:uifacets>
+    </view:aspects>
+    <view:properties>
+      <cm:description>Deployed Web Projects. Content deployed from an WCM Authoring environment.</cm:description>
+      <app:icon>space-icon-default</app:icon>
+      <cm:title>Deployed Web Projects</cm:title>
+      <cm:name>Web Deployed</cm:name>
+    </view:properties>
+  </cm:folder>
+</view:view>

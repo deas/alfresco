@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<!--  DEPLOYMENT SERVER CONFIGURATION - Sample Target used for tests -->
+
+<beans>
+
+	<!--
+		Sample filesystem target - edit and rename to make active.
+	-->
+	
+	<bean
+		class="org.alfresco.deployment.impl.server.DeploymentTargetRegistrationBean"
+		init-method="register">
+
+		<!--  Your target name goes here -->
+		<property name="name">
+			<value><!--  the name of your target --></value>
+		</property>
+	
+		<property name="registry">
+			<ref bean="deploymentReceiverEngine" />
+		</property>
+		<property name="target">
+			<bean
+				class="org.alfresco.deployment.impl.fsr.FileSystemDeploymentTarget"
+				init-method="init">
+				
+				<!--  where do you want your files to go -->
+				<property name="rootDirectory">
+					<value><!--  where to put deployed assets --></value>
+				</property>
+				
+				<!--  where to store meta data for sampleTarget-->
+        		<property name="metaDataDirectory">
+            		<value><!--  where to store metadata --></value>
+        		</property>	
+				
+				<property name="autoFix">
+					<value>true</value>
+				</property>
+				
+				<!--  Add your prepare callbacks here -->
+				<property name="prepare">
+					<list>
+						<bean class="org.alfresco.deployment.SampleRunnable" />
+					</list>
+				</property>
+				
+				<!--  Add your postCommit callbacks here -->
+				<property name="postCommit">
+					<list>
+						<bean class="org.alfresco.deployment.SampleRunnable" />
+					</list>
+				</property>
+				
+				<property name="fileSystemReceiverService">
+					<ref bean="fileSystemReceiverService" />
+				</property>
+				
+				<!--  How should access to this target be controlled ? -->
+				<property name="authenticator">
+					<bean
+						class="org.alfresco.deployment.impl.server.DeploymentReceiverAuthenticatorSimple">
+						<property name="user">
+							<value><!--  user here --></value>
+						</property>
+						<property name="password">
+							<value><!--  password here --></value>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>	
+</beans>

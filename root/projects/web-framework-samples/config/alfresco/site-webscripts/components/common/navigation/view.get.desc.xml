@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Navigation</shortname>
+  <description>Displays Navigation</description>
+  <family>component</family>
+  <url>/component/common/navigation</url>
+</webscript>

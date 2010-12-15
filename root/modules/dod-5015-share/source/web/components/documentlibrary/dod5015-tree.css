@@ -1,0 +1,48 @@
+.treeview .tree
+{
+   padding: 0.5em 0 1em;
+}
+
+.treeview .ygtvspacer
+{
+   width: 18px;
+}
+
+.treeview .ygtvchildren
+{
+   width: 150%;
+}
+
+.treeview .ygtvitem
+{
+   background-color: #ffffff;
+   overflow-x: hidden;
+}
+
+.treeview .ygtvitem .folders-trimmed
+{
+   color: #f00;
+}
+
+.treeview .ygtvlabel,
+.treeview .ygtvlabel:link,
+.treeview .ygtvlabel:visited,
+.treeview .ygtvlabel:hover
+{
+   background: none;
+   color: #000;
+}
+
+.treeview .ygtverror,
+.treeview .ygtverror:link,
+.treeview .ygtverror:visited,
+.treeview .ygtverror:hover
+{
+   background: red;
+   color: white;
+}
+
+.treeview .selected
+{
+   background-color: #d2e5f2;
+}

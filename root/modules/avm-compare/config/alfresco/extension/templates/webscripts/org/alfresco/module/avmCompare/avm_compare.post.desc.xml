@@ -1,0 +1,8 @@
+<webscript>
+   <shortname>Compare AVM directories</shortname>
+   <description>Compares two AVM directories (src_version,src_path,dst_version,dst_path)</description>
+   <url>/admin/avm_compare?src_version={version}&amp;src_path={path}&amp;dst_version={version}&amp;dst_path={path}</url>
+   <format default="text">extension</format>
+   <authentication>admin</authentication>
+   <transaction>required</transaction>
+</webscript>

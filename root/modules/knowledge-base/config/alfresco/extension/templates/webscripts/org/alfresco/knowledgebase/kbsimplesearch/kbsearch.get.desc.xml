@@ -1,0 +1,15 @@
+<webscript>
+	
+	<!-- Details of the web script -->
+	<shortname>Knowledge Base Article Search</shortname>
+  	<description>Finds all published knowledge base articles that match the search critera.</description>
+   	
+   	<!-- Web script URL's -->
+   	<url>/kb/search?q={searchTerm}&amp;p={startPage?}&amp;c={count?}</url>
+   	<url>/kb/search.atom?q={searchTerm}&amp;p={startPage?}&amp;c={count?}</url>
+   
+   	<format default="html">extension</format>
+   	<authentication>guest</authentication>
+   	<transaction>required</transaction>
+   	
+</webscript>

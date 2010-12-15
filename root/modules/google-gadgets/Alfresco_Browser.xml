@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+
+<ModulePrefs
+   title="Alfresco Browser"
+   description="Alfresco Document and Folder Browser"
+   author="Alfresco Software"
+   scrolling="true"
+   height="350">
+</ModulePrefs>
+
+<UserPref
+   name="path"
+   display_name="Starting Folder"
+   required="false" />
+
+<UserPref name="sortby" display_name="Sort By" default_value="Name" datatype="enum" >
+   <EnumValue value="Name" />
+   <EnumValue value="Date" />
+   <EnumValue value="Size" />
+</UserPref>
+
+<Content
+   type="url"
+   href="http://localhost:8080/alfresco/wcservice/aggadget/folder/?dummy=1"
+/>
+
+</Module>

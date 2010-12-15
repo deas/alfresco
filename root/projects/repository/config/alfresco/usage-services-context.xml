@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<!-- Beans pertinent to content usage / quota service -->
+<beans>
+
+   <bean id="usageService" class="org.springframework.aop.framework.ProxyFactoryBean">
+      <property name="target">
+         <ref bean="usageServiceImpl" />
+      </property>
+      <property name="interceptorNames">
+         <list>
+            <value>multiTNodeServiceInterceptor</value>
+         </list>
+      </property>
+   </bean>
+   
+   <bean id="usageServiceImpl" class="org.alfresco.repo.usage.UsageServiceImpl">
+      <property name="usageDAO" ref="usageDAO"/>
+   </bean>
+   
+   <bean id="contentUsageImpl" class="org.alfresco.repo.usage.ContentUsageImpl" init-method="init">
+      <property name="personService" ref="personService"/>
+      <property name="nodeService" ref="nodeService"/>
+      <property name="policyComponent" ref="policyComponent"/>
+      <property name="usageService" ref="usageService"/>
+      <property name="authenticationContext" ref="authenticationContext"/>
+      <property name="tenantService" ref="tenantService"/>
+      <property name="enabled">
+         <value>${system.usages.enabled}</value>
+      </property>
+      <property name="stores">
+         <list>
+            <value>workspace://SpacesStore</value>
+         </list>
+      </property>
+   </bean>
+   
+   <bean id="usageQuotaProtector" class="org.alfresco.repo.usage.UsageQuotaProtector" init-method="init">
+      <property name="authorityService" ref="authorityService"/>
+      <property name="policyComponent" ref="policyComponent"/>
+      <property name="contentUsageService" ref="contentUsageImpl"/>
+   </bean>
+   
+</beans>

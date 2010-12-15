@@ -1,0 +1,14 @@
+<webscript>
+	
+	<!-- Details of the web script -->
+	<shortname>Knowledge Base Article Search</shortname>
+  	<description>Picks up all categories subcategories under Alfresco knowledge Base</description>
+   	
+   	<!-- Web script URL's -->
+   	<url>/kb/getCategories</url>
+
+   	<format default="html">extension</format>
+   	<authentication>guest</authentication>
+   	<transaction>required</transaction>
+   	
+</webscript>

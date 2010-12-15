@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Edit Details Post GG</shortname>
+  <description>Edit node properties for iGoogle Gadgets</description>
+  <url>/aggadget/editdetails</url>
+  <authentication>user</authentication>
+</webscript>

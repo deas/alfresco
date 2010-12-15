@@ -1,0 +1,29 @@
+/* CSS file */
+
+.navViewStack
+{
+	border-style:solid;
+   	border-thickness:0;
+   
+   	border-skin: ClassReference("org.alfresco.ace.control.gradient.SimpleGradientBorder");
+   	fill-colors: #ffffff, #f4fdfd;
+}
+
+.navViewLightBackground
+{
+	background-color: #ffffff;
+}
+
+.navViewShadowBackground
+{
+	border-style:solid;
+   	border-thickness:0;
+   
+   	border-skin: ClassReference("org.alfresco.ace.control.gradient.SimpleGradientBorder");
+   	fill-colors: #d0d0d0, #ffffff;
+}
+
+.navViewTabControl
+{
+	background-color: #e1e2e3;
+}

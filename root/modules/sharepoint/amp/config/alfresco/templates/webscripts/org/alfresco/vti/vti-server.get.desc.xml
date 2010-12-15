@@ -1,0 +1,10 @@
+<webscript>
+   <shortname>Vti Server Details</shortname>
+   <description>
+      This script returns Vti Server parameters for use elsewhere (e.g. Share DocLib)
+   </description>
+   <url>/api/vti/serverDetails</url>
+   <format default="json">extension</format>
+   <authentication>user</authentication>
+   <transaction>required</transaction>
+</webscript>

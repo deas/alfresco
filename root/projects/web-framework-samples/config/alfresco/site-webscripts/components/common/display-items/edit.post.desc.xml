@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Display Items</shortname>
+  <description>Display Items</description>
+  <url>/component/common/display-items/edit</url>
+</webscript>

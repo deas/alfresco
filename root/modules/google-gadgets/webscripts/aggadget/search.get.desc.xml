@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Folder Listing Sample</shortname>
+  <description>Sample demonstrating the listing of folder contents</description>
+  <url>/aggadget/search?q={searchTerms}&amp;p={startPage?}&amp;c={count?}&amp;l={language?}</url>
+  <format default="html">argument</format>
+  <authentication>user</authentication>
+  <transaction>required</transaction>
+</webscript>

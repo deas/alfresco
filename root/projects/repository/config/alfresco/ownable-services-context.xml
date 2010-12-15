@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+    <bean id="ownableService" class="org.alfresco.repo.ownable.impl.OwnableServiceImpl" init-method="init">
+        <property name="nodeService">
+            <ref bean="nodeService"/>
+        </property>
+        <property name="authenticationService">
+            <ref bean="authenticationService"/>
+        </property>
+        <property name="nodeOwnerCache">
+            <ref bean="nodeOwnerCache"/>
+        </property>
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+    </bean>
+</beans>

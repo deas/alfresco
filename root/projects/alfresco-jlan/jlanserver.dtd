@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT ConnectionPool (#PCDATA)>
+<!ELEMENT CacheCheckInterval (#PCDATA)>
+<!ELEMENT CacheTime (#PCDATA)>
+<!ELEMENT dataPorts EMPTY>
+<!ATTLIST dataPorts
+	rangeFrom NMTOKEN #REQUIRED
+	rangeTo NMTOKEN #REQUIRED
+>
+<!ELEMENT Debug EMPTY>
+<!ELEMENT DriveMappings (mapDrive+)>
+<!ELEMENT DSN (#PCDATA)>
+<!ELEMENT FTP (bindto?,port?,allowAnonymous?,rootDirectory?,dataPorts?,package?,debug?)>
+<!ELEMENT FileDataTable (#PCDATA)>
+<!ELEMENT FileProcessor (#PCDATA)>
+<!ELEMENT StreamsDataTable (#PCDATA)>
+<!ELEMENT JarDataTable (#PCDATA)>
+<!ELEMENT FileLoader (Debug|FileDataTable|StreamsDataTable|FilesPerJar|JarCompressionLevel|KeepJars|MaxConnections|MaximumFilesPerDirectory|MemoryQueueSize|PoolAddress|QueueLowWaterMark|RetentionPeriod|RootPath|Simulate|SizePerJar|SmallFileSize|StatsTable|TempDirectory|ThreadPoolSize|TransactionTimeout|ConnectionPool|JarDataTable|class|FileProcessor)*>
+<!ELEMENT FileSystemTable (#PCDATA)>
+<!ELEMENT FilesPerJar (#PCDATA)>
+<!ELEMENT gid EMPTY>
+<!ATTLIST gid
+	access NMTOKEN #REQUIRED
+	id NMTOKEN #REQUIRED
+>
+<!ELEMENT HostAnnouncerPort (#PCDATA)>
+<!ELEMENT JCEProvider (#PCDATA)>
+<!ELEMENT JDBCDriverClass (#PCDATA)>
+<!ELEMENT JarCompressionLevel (#PCDATA)>
+<!ELEMENT KeepJars EMPTY>
+<!ELEMENT enableTrashCan EMPTY>
+<!ELEMENT TrashCan EMPTY>
+<!ELEMENT LocalPath (#PCDATA)>
+<!ELEMENT mapDrive EMPTY>
+<!ATTLIST mapDrive
+	drive NMTOKEN #REQUIRED
+	interactive NMTOKEN #IMPLIED
+	password NMTOKEN #REQUIRED
+	prompt NMTOKEN #IMPLIED
+	share NMTOKEN #REQUIRED
+	username NMTOKEN #REQUIRED
+>
+<!ELEMENT MaxConnections (#PCDATA)>
+<!ELEMENT MaximumFilesPerDirectory (#PCDATA)>
+<!ELEMENT MemoryQueueSize (#PCDATA)>
+<!ELEMENT MountServerPort (#PCDATA)>
+<!ELEMENT mountServerDebug EMPTY>
+<!ELEMENT NFSServerPort (#PCDATA)>
+<!ELEMENT package (#PCDATA)>
+<!ELEMENT PortMapperPort (#PCDATA)>
+<!ELEMENT portMapperDebug EMPTY>
+<!ELEMENT ThreadPool (#PCDATA)>
+<!ELEMENT PacketPool (#PCDATA)>
+<!ELEMENT NFS (enablePortMapper?,debug?,ThreadPool?,PacketPool?,MountServerPort?,PortMapperPort?,NFSServerPort?,mountServerDebug?,portMapperDebug?,rpcAuthenticator?,package?)*>
+<!ELEMENT Password (#PCDATA)>
+<!ELEMENT PoolAddress (#PCDATA)>
+<!ELEMENT QueueLowWaterMark (#PCDATA)>
+<!ELEMENT RetentionPeriod (#PCDATA)>
+<!ELEMENT rpcAuthenticator (class,Debug)>
+<!ELEMENT RootPath (#PCDATA)>
+<!ELEMENT SMB (host?,sessionDebug?,netbiosDebug?,announceDebug?,bindto?,netBIOSSMB?)*>
+<!ELEMENT SQLDebug EMPTY>
+<!ELEMENT Simulate EMPTY>
+<!ELEMENT SizePerJar (#PCDATA)>
+<!ELEMENT SmallFileSize (#PCDATA)>
+<!ELEMENT StatsTable (#PCDATA)>
+<!ELEMENT TempDirectory (#PCDATA)>
+<!ELEMENT ThreadPoolSize (#PCDATA)>
+<!ELEMENT TransactionTimeout (#PCDATA)>
+<!ELEMENT uid EMPTY>
+<!ATTLIST uid
+	access NMTOKEN #REQUIRED
+	id NMTOKEN #REQUIRED
+>
+<!ELEMENT Username (#PCDATA)>
+<!ELEMENT WINS (primary,secondary?)>
+<!ELEMENT QuotaDebug EMPTY>
+<!ELEMENT QuotaManagement EMPTY>
+<!ELEMENT user EMPTY>
+<!ATTLIST user
+	access NMTOKEN #REQUIRED
+	name CDATA #REQUIRED
+>
+<!ELEMENT Win32Announce EMPTY>
+<!ATTLIST Win32Announce interval NMTOKEN #REQUIRED>
+<!ELEMENT Win32NetBIOS EMPTY>
+<!ATTLIST Win32NetBIOS
+	lana NMTOKEN #REQUIRED
+	name NMTOKEN #REQUIRED
+>
+<!ELEMENT accessControl (user?,address?,domain?,protocol?,uid?,gid?)*>
+<!ATTLIST accessControl default NMTOKEN #IMPLIED>
+<!ELEMENT accessControlManager (class,debug,rule)>
+<!ELEMENT address EMPTY>
+<!ATTLIST address
+	access NMTOKEN #REQUIRED
+	ip NMTOKEN #IMPLIED
+	mask NMTOKEN #IMPLIED
+	subnet NMTOKEN #IMPLIED
+>
+<!ELEMENT administrator EMPTY>
+<!ELEMENT alias EMPTY>
+<!ATTLIST alias names CDATA #REQUIRED>
+<!ELEMENT allowAnonymous EMPTY>
+<!ELEMENT allowGuest EMPTY>
+<!ELEMENT announceDebug EMPTY>
+<!ELEMENT append EMPTY>
+<!ELEMENT authenticator (class,mode,allowGuest)>
+<!ELEMENT bindto (#PCDATA)>
+<!ELEMENT broadcast (#PCDATA)>
+<!ELEMENT class (#PCDATA)>
+<!ELEMENT comment (#PCDATA)>
+<!ELEMENT debug (output?)>
+<!ATTLIST debug flags CDATA #IMPLIED>
+<!ELEMENT disableNTFSStreams EMPTY>
+<!ELEMENT domain EMPTY>
+<!ATTLIST domain
+	access NMTOKEN #REQUIRED
+	name NMTOKEN #REQUIRED
+>
+<!ELEMENT Domain (#PCDATA)>
+<!ELEMENT Server  (#PCDATA)>
+<!ELEMENT StreamsTable (#PCDATA)>
+<!ELEMENT disableChangeNotification EMPTY>
+<!ELEMENT diskshare (accessControl?|disableChangeNotification?|driver|size?|volume?)*>
+<!ATTLIST diskshare
+	comment CDATA #IMPLIED
+	name NMTOKEN #REQUIRED
+>
+<!ELEMENT driver (CacheCheckInterval?|CacheTime?|DSN?|Debug?|FileLoader?|FileSystemTable?|JDBCDriverClass?|LocalPath?|Password?|SQLDebug?|Username?|StreamsTable?|disableNTFSStreams?|ConnectionPool?|QuotaDebug?|QuotaManagement?|class)*>
+<!ELEMENT enablePortMapper EMPTY>
+<!ELEMENT global (timezone)>
+<!ELEMENT globalAccessControl (user+,gid+,uid+,address+,protocol+,domain+)*>
+<!ATTLIST globalAccessControl default NMTOKEN #REQUIRED>
+<!ELEMENT home (#PCDATA)>
+<!ELEMENT host (alias?,broadcast?,smbdialects?,comment?,bindto?,netBIOSSMB?,tcpipSMB?,Win32NetBIOS?,Win32Announcer?,hostAnnounce?,HostAnnouncerPort?,WINS?)*>
+<!ATTLIST host
+	domain NMTOKEN #REQUIRED
+	name NMTOKEN #REQUIRED
+>
+<!ELEMENT hostAnnounce EMPTY>
+<!ATTLIST hostAnnounce interval NMTOKEN #REQUIRED>
+<!ELEMENT jlanserver (servers,global?,SMB?,FTP?,NFS?,debug?,shareMapper?,shares,security?)>
+<!ELEMENT logFile (#PCDATA)>
+<!ELEMENT localuser (password,realname?,comment?,administrator?,home?)>
+<!ATTLIST localuser name CDATA #REQUIRED>
+<!ELEMENT mode (#PCDATA)>
+<!ELEMENT netBIOSSMB EMPTY>
+<!ATTLIST netBIOSSMB
+  bindto NMTOKEN #REQUIRED
+  sessionPort NMTOKEN #REQUIRED
+  datagramPort NMTOKEN #REQUIRED
+  namingPort NMTOKEN #REQUIRED
+>
+<!ELEMENT netbiosDebug EMPTY>
+<!ELEMENT output (class,logFile?,append?)>
+<!ELEMENT password (#PCDATA)>
+<!ELEMENT port (#PCDATA)>
+<!ELEMENT primary (#PCDATA)>
+<!ELEMENT protocol EMPTY>
+<!ATTLIST protocol
+	access NMTOKEN #REQUIRED
+	type NMTOKEN #REQUIRED
+>
+<!ELEMENT realname (#PCDATA)>
+<!ELEMENT rootDirectory (#PCDATA)>
+<!ELEMENT rule (#PCDATA)>
+<!ELEMENT secondary (#PCDATA)>
+<!ELEMENT security (accessControlManager?,globalAccessControl?,authenticator?,users?)>
+<!ELEMENT servers (SMB?,FTP?,NFS?)>
+<!ELEMENT sessionDebug EMPTY>
+<!ATTLIST sessionDebug flags CDATA #REQUIRED>
+<!ELEMENT shareMapper (class,debug?)>
+<!ELEMENT shares (diskshare+)>
+<!ELEMENT size EMPTY>
+<!ATTLIST size
+	freeSize NMTOKEN #IMPLIED
+	totalSize NMTOKEN #REQUIRED
+>
+<!ELEMENT smbdialects (#PCDATA)>
+<!ELEMENT tcpipSMB EMPTY>
+<!ELEMENT timezone EMPTY>
+<!ATTLIST timezone name NMTOKEN #REQUIRED>
+<!ELEMENT localuser (password,realname?,comment?,administrator?,home?)>
+<!ELEMENT users (localuser+)>
+<!ELEMENT volume EMPTY>
+<!ATTLIST volume label NMTOKEN #REQUIRED>

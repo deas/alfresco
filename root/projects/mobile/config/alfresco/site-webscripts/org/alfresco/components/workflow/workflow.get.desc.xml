@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>workflow</shortname>
+  <description>Workflow: View Component</description>
+  <url>/components/workflow/workflow</url>
+</webscript>

@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Admin Console Record Management Define Roles</shortname>
+  <description>Administration Console - Record Management Tool Define Roles</description>
+  <url>/components/console/rm-define-roles</url>
+  <family>rm-console</family>
+</webscript>

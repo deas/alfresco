@@ -1,0 +1,20 @@
+<toolbar>
+   <actionSets>
+      <actionSet id="default">
+         <action type="action-link" id="onActionCutoff" permission="ApproveRecordsScheduledForCutoff,cutoff" asset="record-folder,record,record-nonelec" label="menu.selected-items.cutoff" />
+         <action type="action-link" id="onActionDestroy" permission="DestroyRecordsScheduledForDestruction,destroy" asset="record-folder,record,record-nonelec" label="menu.selected-items.destroy" />
+         <action type="action-link" id="onActionTransfer" permission="AuthorizeAllTransfers,transfer" asset="record-folder,record,record-nonelec" label="menu.selected-items.transfer" />
+         <action type="action-link" id="onActionTransferComplete" permission="AuthorizeAllTransfers" asset="transfer" label="menu.selected-items.transfer-complete" />
+         <action type="action-link" id="onActionAccession" permission="AuthorizeNominatedTransfers,accession" asset="record-folder,record,record-nonelec" label="menu.selected-items.accession" />
+         <action type="action-link" id="onActionAccessionComplete" permission="AuthorizeNominatedTransfers" asset="accession" label="menu.selected-items.accession-complete" />
+         <action type="action-link" id="onActionUndoCutoff" permission="CreateModifyRecordsInCutoffFolders,undo-cutoff" asset="record-folder,record,record-nonelec" label="menu.selected-items.undo-cutoff" />
+         <action type="action-link" id="onActionFreeze" permission="freeze" asset="record-folder,record,record-nonelec" label="menu.selected-items.freeze" />
+         <action type="action-link" id="onActionUnfreeze" permission="unfreeze" asset="record-folder,record,record-nonelec" label="menu.selected-items.unfreeze" />
+         <action type="action-link" id="onActionCopyTo" permission="" asset="record-series|record-category|record-folder|record,record-nonelec|undeclared-record,undeclared-record-nonelec" label="menu.selected-items.copy-to" />
+         <action type="action-link" id="onActionMoveTo" permission="Delete" asset="record-category|record-folder|record,record-nonelec|undeclared-record,undeclared-record-nonelec" label="menu.selected-items.move-to" />
+         <action type="action-link" id="onActionFileTo" permission="" asset="record-folder|record,record-nonelec|undeclared-record,undeclared-record-nonelec" label="menu.selected-items.file-to" />
+         <action type="action-link" id="onActionExport" permission="" asset="record-series,record-category,record-folder,record,record-nonelec,undeclared-record,undeclared-record-nonelec" label="menu.selected-items.export" />
+         <action type="action-link" id="onActionDelete" permission="Delete" label="menu.selected-items.delete" />
+      </actionSet>
+   </actionSets>
+</toolbar>

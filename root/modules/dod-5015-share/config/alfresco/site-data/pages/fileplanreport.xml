@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <id>fileplanreport</id>
+   <title>File Plan Report</title>
+   <title-id>page.fileplanReport.title</title-id>
+   <description>File Plan Report</description>
+   <description-id>page.fileplanReport.description</description-id>
+   <template-instance>fileplanreport</template-instance>
+   <authentication>user</authentication>
+</page>

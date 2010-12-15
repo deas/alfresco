@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<component>
+   <scope>template</scope>
+   <region-id>search</region-id>
+   <source-id>search</source-id>
+   <url>/components/search/search</url>
+</component>

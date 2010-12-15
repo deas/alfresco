@@ -1,0 +1,20 @@
+<webscript>
+   <shortname>List groups</shortname>
+   <description><![CDATA[
+      Searches for groups. 
+      <br />
+      The following optional parameters are available:-
+      <ul>
+      <li>shortNameFilter - returns those groups with a partial match on shortName.  You can use the pattern matching characters * to match zero or more characters or ? to match one character.</li>
+      <li>zone - returns only groups that are in the specified zone, otherwise it returns groups from all zones.</li>
+      </ul>
+      <br />
+      Returns an Array of groups in JSON format.
+   ]]>
+   </description>
+   <url>/api/groups?shortNameFilter={shortNameFilter?}&amp;zone={zone?}</url>
+   <format default="json">argument</format>
+   <authentication>user</authentication>
+   <transaction allow="readonly">required</transaction>
+   <lifecycle>draft_public_api</lifecycle>
+</webscript>

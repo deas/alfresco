@@ -1,0 +1,712 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+    <!-- Records Management Service Registry -->
+
+    <bean id="RecordsManagementServiceRegistry" class="org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementServiceRegistryImpl" />    
+    
+    <!-- Disposition selection strategy -->
+    <bean id="org_alfresco_module_dod5015_dispositionSelectionStrategy"
+          class="org.alfresco.module.org_alfresco_module_dod5015.DispositionSelectionStrategy" >        
+        <property name="recordsManagementService" ref="recordsManagementService"/>
+        <property name="nodeService" ref="nodeService"/>
+    </bean>
+
+    <!-- Copy policy management for records -->
+    <bean id="recordCopyBehaviours" class="org.alfresco.module.org_alfresco_module_dod5015.RecordCopyBehaviours" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent"/>
+        </property>
+        <property name="recordsManagementServiceRegistry">
+            <ref bean="RecordsManagementServiceRegistry"/>
+        </property>
+    </bean>
+
+    <!-- Records Management Service -->
+    
+    <bean id="recordsManagementService" class="org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementServiceImpl"
+          depends-on="org_alfresco_module_dod5015_dictionaryBootstrap" init-method="init">        
+        <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry"/>
+        <property name="rmActionService" ref="recordsManagementActionService"/>
+        <property name="nodeService" ref="nodeService"/>
+        <property name="policyComponent" ref="policyComponent"/>
+        <property name="dispositionSelectionStrategy">
+           <ref local="org_alfresco_module_dod5015_dispositionSelectionStrategy" />
+        </property>
+    </bean>
+    
+    <bean id="RecordsManagementService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService</value>
+        </property>
+        <property name="target">
+            <ref bean="recordsManagementService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="RecordsManagementService_transaction"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="RecordsManagementService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordsManagementRoots=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordsManagementRoot=RM.Read.0,AFTER_RM.FilterNode
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getNodeRefPath=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecord=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordDeclared=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordFolderDeclared=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordFolder=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordsManagementContainer=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordFolders=RM.Read.0,AFTER_RM.FilterNode
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecords=RM.Read.0,AFTER_RM.FilterNode
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getDispositionSchedule=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getDispositionPeriodProperties=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.addDispositionActionDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.canDispositionActionDefinitionsBeRemoved=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.removeDispositionActionDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.updateDispositionActionDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isNextDispositionActionEligible=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getNextDispositionAction=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getCompletedDispositionActions=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getLastCompletedDispostionAction=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getVitalRecordDefinition=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getNextRecordIdentifier=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>
+    
+    <!-- Records Management Security Service -->
+    
+    <bean id="recordsManagementSecurityService" class="org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityServiceImpl" depends-on="org_alfresco_module_dod5015_dictionaryBootstrap" init-method="init">        
+        <property name="voter" ref="rmEntryVoter"/>
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="permissionService" ref="PermissionService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="policyComponent" ref="policyComponent"/>
+        <property name="recordsManagementService" ref="RecordsManagementService"/>
+    </bean>
+    
+    <bean id="RecordsManagementSecurityService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService</value>
+        </property>
+        <property name="target">
+            <ref bean="recordsManagementSecurityService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="RecordsManagementSecurityService_transaction"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="RecordsManagementSecurityService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementSecurityService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementSecurityService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[  
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.getProtectedAspects=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.getProtectedProperties=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.getCapabilities=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.getCapability=RM_ALLOW                  
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.setPermission=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.deletePermission=RM_ALLOW                            
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.bootstrapDefaultRoles=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.getRoles=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.getRolesByUser=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.getRole=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.existsRole=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.hasRMAdminRole=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.createRole=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.updateRole=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.deleteRole=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService.assignRoleToAuthority=RM_ALLOW                     
+                ]]>
+            </value>
+        </property>
+    </bean>
+    
+    <!-- Records Management Action Service -->
+    
+    <bean id="recordsManagementActionService" class="org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionServiceImpl" init-method="init">        
+        <property name="policyComponent" ref="policyComponent"/>
+        <property name="nodeService" ref="NodeService"/>
+    </bean>
+    
+    <bean id="RecordsManagementActionService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService</value>
+        </property>
+        <property name="target">
+            <ref bean="recordsManagementActionService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="RecordsManagementActionService_transaction"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="RecordsManagementActionService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementActionService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
+    
+    <bean id="RecordsManagementActionService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[  
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.getRecordsManagementActions=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.getDispositionActions=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.getRecordsManagementAction=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.getDispositionAction=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.executeRecordsManagementAction=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.executeRecordsManagementAction=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.executeRecordsManagementAction=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.executeRecordsManagementAction=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.executeRecordsManagementAction=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.register=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>
+    
+    <!-- Records Management Event Service -->
+    
+    <bean id="recordsManagementEventService" class="org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventServiceImpl">
+      <property name="nodeService" ref="NodeService"/>
+      <property name="contentService" ref="ContentService"/>
+    </bean>
+    
+    <bean id="RecordsManagementEventService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService</value>
+        </property>
+        <property name="target">
+            <ref bean="recordsManagementEventService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="RecordsManagementEventService_transaction"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="RecordsManagementEventService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementEventService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
+   
+    <bean id="RecordsManagementEventService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[  
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.registerEventType=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.getEventTypes=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.getEventType=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.getEvents=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.getEvent=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.addEvent=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.removeEvent=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.existsEvent=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>
+    
+    <!-- Records Management Admin Service -->
+    
+    <bean id="recordsManagementAdminService" class="org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminServiceImpl" init-method="init">
+        <property name="dictionaryService">
+            <ref bean="DictionaryService"/>
+        </property>
+        <property name="namespaceService">
+            <ref bean="NamespaceService"/>
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="policyComponent">
+            <ref bean="policyComponent"/>
+        </property>
+        <property name="contentService">
+            <ref bean="contentService"/>
+        </property>
+    </bean>
+    
+    <bean id="RecordsManagementAdminService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService</value>
+        </property>
+        <property name="target">
+            <ref bean="recordsManagementAdminService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="RecordsManagementAdminService_transaction"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="RecordsManagementAdminService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementAdminService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
+    
+    <bean id="RecordsManagementAdminService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[  
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomPropertyDefinitions=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.addCustomPropertyDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.setCustomPropertyDefinitionLabel=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.setCustomPropertyDefinitionConstraint=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.removeCustomPropertyDefinitionConstraints=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.removeCustomPropertyDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.addCustomAssocDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.addCustomChildAssocDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.updateCustomAssocDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.updateCustomChildAssocDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomReferenceDefinitions=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomReferencesFrom=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomReferencesTo=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomChildReferences=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomParentReferences=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.addCustomReference=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.removeCustomReference=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomConstraintDefinitions=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.addCustomConstraintDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.removeCustomConstraintDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.changeCustomConstraintValues=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getQNameForClientId=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.splitSourceTargetId=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCompoundIdFor=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>
+    
+    <!-- Records Management Audit Service -->
+    
+    <bean id="recordsManagementAuditService" class="org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditServiceImpl" init-method="init">
+        <property name="policyComponent" ref="policyComponent" />
+        <property name="dictionaryService" ref="dictionaryService" />
+        <property name="transactionService" ref="transactionService" />
+        <property name="nodeService" ref="nodeService" />
+        <property name="auditComponent" ref="auditComponent" />
+        <property name="auditService" ref="auditService" />
+        <property name="contentService" ref="ContentService" />
+        <property name="recordsManagementService" ref="RecordsManagementService" />
+        <property name="recordsManagementActionService" ref="RecordsManagementActionService" />
+    </bean>
+    
+    <bean id="RecordsManagementAuditService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService</value>
+        </property>
+        <property name="target">
+            <ref bean="recordsManagementAuditService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="RecordsManagementAuditService_transaction"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="RecordsManagementAuditService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementAuditService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="RecordsManagementAuditService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[  
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.clear=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getAuditTrail=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getAuditTrailFile=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getDateLastStarted=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getDateLastStopped=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.isEnabled=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.start=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.stop=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.fileAuditTrailAsRecord=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getAuditEvents=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>
+    
+    <!--  Custom EMail Mapping Service -->
+    
+    <bean id="customEmailMappingService" 
+      class="org.alfresco.module.org_alfresco_module_dod5015.email.CustomEmailMappingServiceImpl" >
+      <property name="extracter" ref="extracter.RFC822" />
+      <property name="nodeService" ref="nodeService" />
+      <property name="contentService" ref="contentService"/>
+      <property name="namespacePrefixResolver">
+            <ref bean="namespaceService"></ref>
+      </property>
+      <property name="policyComponent"><ref bean="policyComponent" /></property>
+      <property name="transactionService"><ref bean="transactionService" /></property>
+   
+    </bean>
+    
+    
+    <bean id="CustomEmailMappingService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+    
+        <bean id="CustomEmailMappingService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[ 
+                    org.alfresco.module.org_alfresco_module_dod5015.email.CustomEmailMappingService.getCustomMappings=RM_ALLOW
+                    org.alfresco.module.org_alfresco_module_dod5015.email.CustomEmailMappingService.addCustomMapping=RM_ALLOW
+                    org.alfresco.module.org_alfresco_module_dod5015.email.CustomEmailMappingService.deleteCustomMapping=RM_ALLOW
+                    org.alfresco.module.org_alfresco_module_dod5015.email.CustomEmailMappingService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>
+
+        
+    <bean id="CustomEmailMappingService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.alfresco.module.org_alfresco_module_dod5015.email.CustomEmailMappingService</value>
+            </list>
+        </property>
+        <property name="targetName">
+            <value>customEmailMappingService</value>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="CustomEmailMappingService_transaction"/>
+                <idref local="CustomEmailMappingService_security"/>
+                <idref bean="exceptionTranslator"/>
+            </list>
+        </property>
+    </bean>
+    
+    <!--  RM Notification Service -->
+            
+    <bean id="recordsManagementNotificationService" class="org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationServiceImpl" >        
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="actionService" ref="ActionService"/>
+        <property name="searchService" ref="SearchService"/>
+        <property name="templateService" ref="TemplateService"/>
+        <property name="recordsManagementSecurityService" ref="RecordsManagementSecurityService"/>
+        <property name="personService" ref="PersonService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="emailFrom" value="${mail.from.default}"/>
+    </bean>
+    
+    <bean id="RecordsManagementNotificationService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService</value>
+        </property>
+        <property name="target">
+            <ref bean="recordsManagementNotificationService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="RecordsManagementNotificationService_transaction"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="RecordsManagementNotificationService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementNotificationService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="RecordsManagementNotificationService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[  
+                org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.getNotificationEvents=RM_ALLOW
+				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.getNotificationTypes=RM_ALLOW
+				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.sendNotificationToUser=RM_ALLOW
+				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.sendNotificationToGroup=RM_ALLOW
+				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.sendNotificationToRole=RM_ALLOW    
+				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>
+    
+    
+    <!-- RM caveats -->
+    
+    <bean id="caveatConfigService" class="org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigServiceImpl">
+        <property name="policyComponent" ref="policyComponent"/>
+        <property name="contentService" ref="contentService"/>
+        <property name="dictionaryService" ref="dictionaryService"/>
+        <property name="namespaceService" ref="namespaceService"/>
+        <property name="authorityService" ref="authorityService"/>
+        <property name="personService" ref="personService"/>
+        <property name="nodeService" ref="nodeService"/>
+        <property name="recordsManagementAdminService" ref = "recordsManagementAdminService"/>
+        <property name="caveatAspects">
+            <list>
+                <value>{http://www.alfresco.org/model/recordsmanagement/1.0}recordComponentIdentifier</value>
+            </list>
+        </property>
+        <property name="caveatModels">
+            <list>
+                <value>{http://www.alfresco.org/model/rmcustom/1.0}rmcustom</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="rmListOfValuesContraintInit" class="org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint">
+        <property name="caveatConfigService" ref="caveatConfigService"/>
+    </bean>
+    
+    <bean id="CaveatConfigService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[ 
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.getRMAllowedValues=RM_ALLOW  
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.hasAccess=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.getRMConstraint=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.getAllRMConstraints=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.getListDetails=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.updateOrCreateCaveatConfig=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.addRMConstraint=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.updateRMConstraintAllowedValues=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.updateRMConstraintTitle=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.deleteRMConstraint=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.addRMConstraintListValue=RM_ALLOW 
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.updateRMConstraintListAuthority=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.removeRMConstraintListAuthority=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.updateRMConstraintListValue=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.removeRMConstraintListValue=RM_ALLOW
+                   org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>         
+
+    <bean id="CaveatConfigService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="CaveatConfigService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService</value>
+            </list>
+        </property>
+        <property name="targetName">
+            <value>caveatConfigService</value>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="CaveatConfigService_transaction"/>
+                <idref local="CaveatConfigService_security"/>
+                <idref bean="exceptionTranslator"/>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- Search Behaviour -->
+    
+    <bean id="recordsManagementSearchBehaviour" class="org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementSearchBehaviour" init-method="init">        
+        <property name="nodeService" ref="nodeService"/>
+        <property name="recordsManagementService" ref="recordsManagementService"/>
+        <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry"/>
+        <property name="policyComponent" ref="policyComponent"/>
+    </bean>
+    
+    <!-- Period Properties -->
+    
+    <bean id="DispositionPeriodProperties" class="org.alfresco.module.org_alfresco_module_dod5015.DispositionPeriodProperties">
+        <property name="propertyList">
+            <list>
+                <value>{http://www.alfresco.org/model/recordsmanagement/1.0}cutOffDate</value>
+                <value>{http://www.alfresco.org/model/recordsmanagement/1.0}dispositionAsOf</value>
+                <value>{http://www.alfresco.org/model/recordsmanagement/1.0}dateFiled</value>
+                <value>{http://www.alfresco.org/model/recordsmanagement/1.0}publicationDate</value>
+            </list>
+        </property>
+    </bean>
+    
+</beans>    

@@ -1,0 +1,1 @@
+<fb:redirect url="${facebook.canvasURL}/library/${library.id}"/>

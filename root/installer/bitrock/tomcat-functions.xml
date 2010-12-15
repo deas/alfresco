@@ -1,0 +1,32 @@
+<component>
+    <name>tomcatfunctions</name>
+    <show>0</show>
+    <selected>1</selected>
+    <functionDefinitionList>
+        <actionDefinition name="tomcatUserAdd">
+            <parameterList>
+                <stringParameter name="tomcatUserName" />
+                <stringParameter name="tomcatUserPassword" />
+                <stringParameter name="tomcatUserRole" description="Currently only one role is accepted." />
+                <stringParameter name="tomcatUserConfigurationFile" default="${tomcat_server_directory}/conf/tomcat-users.xml" />
+            </parameterList>
+            <actionList>
+                <substitute>
+                    <files>${tomcatUserConfigurationFile}</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>&lt;tomcat-users&gt;</pattern>
+                            <value>&lt;tomcat-users&gt;
+&lt;role rolename="${tomcatUserRole}"/&gt;</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>&lt;/tomcat-users&gt;</pattern>
+                            <value>&lt;user username="${tomcatUserName}" password="${tomcatUserPassword}" roles="${tomcatUserRole}"/&gt;
+&lt;/tomcat-users&gt;</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+            </actionList>
+        </actionDefinition>
+    </functionDefinitionList>
+</component>

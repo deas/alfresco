@@ -1,0 +1,203 @@
+#viewRoles
+{
+   text-align: left;
+   padding: 1em;
+}
+
+#viewRoles h2
+{
+   font-size: 123.1%;
+   margin: 0.5em 0 0.5em 0;
+   color: #515D6B;
+   float: left;
+   font-weight: bold;
+}
+
+#viewRoles h3
+{
+   font-size: 118%;
+   margin: 0.5em 0;
+   color: #515D6B;
+   font-weight: bold;
+   padding: 0 0 0 0.5em;
+}
+
+#viewRoles div.capabilities-header
+{
+   font-size: 118%;
+   color: #515D6B;
+   font-weight: bold;
+   padding: 0.5em 0 0.5em 0.5em;
+}
+
+#viewRoles span.yui-button
+{
+   float: right;
+}
+
+#newRole
+{
+   float: right;
+   margin-bottom: 1em;
+}
+
+.view-role-list
+{
+   clear: both;
+   border: 1px solid #444444;
+}
+
+#roleContent
+{
+   text-align: right;
+   border-left: 1px solid #444444;
+}
+
+#roleContent *
+{
+   text-align: left;
+}
+
+#roleSelection .list-header
+{
+   margin-right: -7%;
+   border-bottom: 1px solid #999;
+}
+
+#roleContent .list-header
+{
+   border-bottom: 1px solid #999;
+}
+
+#roleContent ul.capabilities-list
+{
+   text-align: left;
+   margin: 0 0;
+   clear: both;
+}
+
+#roleContent ul.capabilities-list li
+{
+   clear: both;
+   padding: 0.4em;
+}
+
+#editRole,
+#deleteRole
+{
+   margin-top: 0.333em;
+}
+
+#roles
+{
+   width: 100%;
+}
+
+#roles,
+.roleCapabilities
+{
+   overflow: auto;
+   height: 24em;
+}
+
+#roles ul
+{
+   margin: 0.5em;
+}
+
+#roles a
+{
+   display: block;
+   padding: 0.333em;
+   text-decoration: none;
+}
+
+#manageRoles
+{
+   text-align: left;
+   padding: 1em;
+}
+
+#manageRoles h2,
+#manageRoles h3,
+#manageRoles legend
+{
+   font-size: 118%;
+   margin: 0.5em 0 0;
+   clear: left;
+   color: #515D6B;
+   float: left;
+   font-weight: bold;
+   padding-top: 0.333em;
+}
+
+#manageRoles h2
+{
+   float: none;
+   font-size: 123.1%;
+   margin-bottom: 0.5em;
+}
+
+#manageRoles h3
+{
+   float: none;
+   padding-left: 0;
+}
+
+#manageRoles fieldset
+{
+   width: 100%;
+   margin-top: -0.1em;
+   margin-bottom: 1em;
+}
+
+#manageRoles label
+{
+   margin-left: 0.5em;
+}
+
+#manageRoles input
+{
+   margin-left: 0.5em;
+}
+
+#manageRoles #roleName
+{
+   display: block;
+}
+
+#manageRoles ul.capabilities
+{
+   border-top: 1px solid #999999;
+   text-align: left;
+   margin: 0 0;
+   clear: both;
+}
+
+#manageRoles ul.capabilities li
+{
+   clear: both;
+   padding: 0.4em;
+}
+
+#manageRoles ul.capabilities li label
+{
+   display: inline;
+   margin: 0 0.5em;
+}
+
+#manageRoles span.yui-button
+{
+   float: right;
+}
+
+#manageRoles #submit,
+#manageRoles #submitCancel
+{
+   float: left;
+}
+
+#manageRoles ol li button
+{
+   margin: 0 0.5em;
+}

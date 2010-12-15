@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT alfresco-config (plug-ins?,config*)>   
+<!ELEMENT plug-ins (evaluators?,element-readers?)>
+<!ELEMENT evaluators (evaluator*)>
+<!ELEMENT element-readers (element-reader*)>
+<!ELEMENT evaluator EMPTY>
+<!ELEMENT element-reader EMPTY>
+<!ELEMENT config ANY>
+
+<!ATTLIST evaluator id CDATA #REQUIRED class CDATA #REQUIRED>
+<!ATTLIST element-reader element-name CDATA #REQUIRED class CDATA #REQUIRED>
+<!ATTLIST config evaluator CDATA #IMPLIED condition CDATA #IMPLIED>
+

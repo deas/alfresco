@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Create Folder Post GG</shortname>
+  <description>Create Folder and meta-data in Repository for iGoogle Gadgets</description>
+  <url>/aggadget/createfolder</url>
+  <authentication>user</authentication>
+</webscript>

@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Audio</shortname>
+  <description>Plays Audio</description>
+  <family>component</family>
+  <url>/component/common/audio</url>
+</webscript>

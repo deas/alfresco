@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <!--
+      Create a property placeholder configurer so that properties can be substituted from a .properties file. Note that
+      the prefix must be altered from the default to avoid wrongly substituting a property value in Spring Surf which
+      contains ${.
+   -->
+   <bean id="clientApiConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders">
+            <value>true</value>
+        </property>
+        <property name="locations">
+            <list>
+                <value>classpath:alfresco/wcmqs-api.properties</value>
+                <value>classpath*:alfresco/extension/wqsapi-custom.properties</value>
+            </list>
+        </property>
+        <property name="placeholderPrefix" value="%{" />
+   </bean>
+
+   <!-- CMIS Session factory for anonymous visitors to the website -->
+   <bean id="guestSessionFactory" class="org.alfresco.wcm.client.util.impl.GuestSessionFactoryImpl">
+      <constructor-arg value="%{wcmqs.api.alfresco.cmis}" />
+      <constructor-arg value="%{wcmqs.api.user}" />
+      <constructor-arg value="%{wcmqs.api.password}" />
+      <constructor-arg value="%{wcmqs.api.repositoryPollMilliseconds}" /> <!-- Poll for repository -->
+   </bean>
+
+   <!-- Pool of anonymous CMIS sessions -->
+   <bean id="guestSessionPool" class="org.apache.commons.pool.impl.GenericObjectPool">
+      <constructor-arg ref="guestSessionFactory" />
+      <constructor-arg value="20" /> <!-- maxActive -->
+      <constructor-arg value="0" /> <!-- whenExhausedAction -->
+      <constructor-arg value="30" /> <!-- maxWait -->
+      <constructor-arg value="20" /> <!-- maxIdle -->
+   </bean>
+
+   <!-- Session pool facade which wraps the two types of session pool -->
+   <bean id="sessionPool" class="org.alfresco.wcm.client.util.impl.CmisSessionPoolImpl">
+      <constructor-arg ref="guestSessionPool" />
+   </bean>
+
+   <!--  Section factory -->
+   <bean id="sectionFactory" class="org.alfresco.wcm.client.impl.SectionFactoryCmisImpl">
+      <property name="sectionsRefreshAfter" value="%{wcmqs.api.sectionCacheSeconds}" />
+      <property name="assetFactory" ref="assetFactory" />
+      <property name="dictionaryService" ref="dictionaryService" />
+      <property name="collectionFactory" ref="collectionFactory" />
+   </bean>
+
+   <!--  Collection factory -->
+   <bean id="collectionFactory" class="org.alfresco.wcm.client.impl.CollectionFactoryWebserviceImpl">
+      <property name="assetFactory" ref="assetFactory" />
+      <property name="webscriptCaller" ref="webscriptCaller" />
+   </bean>
+
+   <!-- Class for converting between CMIS ids and url safe representations of the id -->
+   <bean id="cmisIdEncoder" class="org.alfresco.wcm.client.util.impl.AlfrescoCmisIdEncoderImpl" />
+
+   <!-- Url Utils -->
+   <bean id="urlUtils" class="org.alfresco.wcm.client.util.impl.UrlUtilsImpl">
+      <property name="cmisIdEncoder" ref="cmisIdEncoder" />
+   </bean>
+
+   <!--  Asset factory -->
+   <bean id="assetFactory" class="org.alfresco.wcm.client.impl.CachingAssetFactoryImpl">
+      <property name="delegate" ref="%{wcmqs.api.assetFactoryType}AssetFactory" />
+      <property name="cache">
+         <bean class="org.alfresco.wcm.client.impl.cache.EhCacheAdapter">
+            <property name="cache">
+               <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+                  <property name="cacheManager">
+                     <ref bean="ehCacheManager" />
+                  </property>
+                  <property name="cacheName">
+                     <value>assetCache</value>
+                  </property>
+               </bean>
+            </property>
+         </bean>
+      </property>
+   </bean>
+
+   <bean id="cmisAssetFactory" class="org.alfresco.wcm.client.impl.AssetFactoryCmisImpl">
+      <property name="collectionFactory" ref="collectionFactory" />
+      <property name="sectionFactory" ref="sectionFactory" />
+   </bean>
+
+   <bean id="webscriptAssetFactory" class="org.alfresco.wcm.client.impl.AssetFactoryWebscriptImpl" lazy-init="true">
+      <property name="collectionFactory" ref="collectionFactory" />
+      <property name="sectionFactory" ref="sectionFactory" />
+      <property name="supportingAssetFactory" ref="cmisAssetFactory" />
+      <property name="webscriptCaller" ref="webscriptCaller" />
+   </bean>
+
+
+   <!-- Service for fetching site data. Implements a cache. -->
+   <bean id="webSiteService" class="org.alfresco.wcm.client.impl.WebSiteServiceImpl">
+      <property name="webSiteCacheRefreshAfter" value="%{wcmqs.api.websiteCacheSeconds}" />
+      <property name="urlUtils" ref="urlUtils" />
+      <property name="sectionFactory" ref="sectionFactory" />
+      <property name="assetFactory" ref="assetFactory" />
+      <property name="webscriptCaller" ref="webscriptCaller" />
+      <property name="logoFilename" value="logo.%" />
+      <property name="formIdCache">
+         <bean class="org.alfresco.wcm.client.impl.cache.EhCacheAdapter">
+            <property name="cache">
+               <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+                  <property name="cacheManager">
+                     <ref bean="ehCacheManager" />
+                  </property>
+                  <property name="cacheName">
+                     <value>formIdCache</value>
+                  </property>
+               </bean>
+            </property>
+         </bean>
+      </property>
+   </bean>
+
+   <!--  Dictionary service -->
+   <bean id="dictionaryService" class="org.alfresco.wcm.client.impl.DictionaryServiceImpl" />
+
+   <!--  Web script caller -->
+   <bean id="webscriptCaller" class="org.alfresco.wcm.client.impl.WebScriptCallerImpl" init-method="init">
+      <property name="baseUrl" value="%{wcmqs.api.alfresco.webscript}" />
+      <property name="credentials">
+         <bean class="org.apache.commons.httpclient.UsernamePasswordCredentials">
+            <constructor-arg value="%{wcmqs.api.user}" />
+            <constructor-arg value="%{wcmqs.api.password}" />
+         </bean>
+      </property>
+   </bean>
+
+   <!--  EH Cache manager -->
+   <bean name="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" />
+
+   <!--
+      <bean id="collectionService" parent="baseScriptExtension"
+      class="org.alfresco.wcm.client.service.CollectionService"> <property name="extensionName"
+      value="collectionService"/> <property name="collectionFactory" ref="collectionFactory"/> </bean>
+   -->
+
+</beans>

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<!--  DEPLOYMENT SERVER CONFIGURATION - DEFAULT TARGET -->
+
+<beans>
+	
+	<!--  
+	
+	Defines and registers the deployment target with the name "default" 
+	Which is a FileSystemDeploymentTarget with the "deploymentReceiverEngine"
+	-->
+
+	<bean
+		class="org.alfresco.deployment.impl.server.DeploymentTargetRegistrationBean"
+		init-method="register">
+
+		<property name="name">
+			<value>${deployment.filesystem.default.name}</value>
+		</property>
+		<property name="registry">
+			<ref bean="deploymentReceiverEngine" />
+		</property>
+		<property name="target">
+			<bean class="org.alfresco.deployment.impl.fsr.FileSystemDeploymentTarget"
+				init-method="init">
+				
+				<!--  Where too store content -->
+				<property name="rootDirectory">
+					<value>${deployment.filesystem.default.rootdir}</value>
+				</property>
+
+				<!--  Where to store metadata -->
+				<property name="metaDataDirectory">
+					<value>${deployment.filesystem.metadatadir}/${deployment.filesystem.default.name}</value>
+				</property>
+
+				<property name="autoFix">
+					<value>${deployment.filesystem.autofix}</value>
+				</property>
+				<property name="fileSystemReceiverService">
+					<ref bean="fileSystemReceiverService" />
+				</property>
+
+				<!--  how to authenticate for this particular target -->
+				<property name="authenticator">
+					<bean
+						class="org.alfresco.deployment.impl.server.DeploymentReceiverAuthenticatorSimple">
+						<property name="user">
+							<value>${deployment.filesystem.default.user}</value>
+						</property>
+						<property name="password">
+							<value>${deployment.filesystem.default.password}</value>
+						</property>
+					</bean>
+				</property>
+
+				<property name="name">
+					<value>${deployment.filesystem.default.name}</value>
+				</property>
+
+				<!--
+					Target Event Handlers <property name="prepare"> <list> <bean
+					class="org.alfresco.deployment.SampleRunnable"/> </list>
+					</property> <property name="postCommit"> <list> <bean
+					class="org.alfresco.deployment.SampleRunnable"/> </list>
+					</property>
+				-->
+			</bean>
+		</property>
+	</bean>
+
+</beans>

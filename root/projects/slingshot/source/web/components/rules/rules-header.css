@@ -1,0 +1,9 @@
+.rules-header
+{
+   padding: 1em;
+}
+
+.rules-header .rules-actions
+{
+   text-align: right;
+}

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+    <import resource="classpath:alfresco/module/org.alfresco.module.RecordsManagement/context/bootstrap-context.xml" />
+    <import resource="classpath:alfresco/module/org.alfresco.module.RecordsManagement/context/script-context.xml" />
+    <import resource="classpath:alfresco/module/org.alfresco.module.RecordsManagement/context/action-context.xml" />
+    <import resource="classpath:alfresco/module/org.alfresco.module.RecordsManagement/context/behaviour-context.xml" />
+    
+    <bean id="org_alfresco_module_RecordsManagement_ConfigBootstrap" class="org.alfresco.web.config.WebClientConfigBootstrap" init-method="init">
+       <property name="configs">
+         <list>
+            <value>classpath:alfresco/module/org.alfresco.module.RecordsManagement/ui/web-client-custom.xml</value>
+         </list>
+       </property>
+    </bean>
+    
+</beans>

@@ -1,0 +1,11 @@
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Alfresco2007.csproj.ResolveComReference.cache
+obj\Debug\Alfresco2007.Properties.Resources.resources
+obj\Debug\Alfresco2007.UserControl1.resources
+obj\Debug\Alfresco2007.csproj.GenerateResource.Cache
+.\bin\Debug\Alfresco2007.dll
+.\bin\Debug\Alfresco2007.pdb
+.\bin\Debug\Alfresco2007.dll.manifest
+obj\Debug\Alfresco2007.dll
+obj\Debug\Alfresco2007.pdb
+obj\Debug\Alfresco2007.Ribbon1.xml

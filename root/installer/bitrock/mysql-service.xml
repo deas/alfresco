@@ -1,0 +1,89 @@
+<component>
+    <name>mysqlservice</name>
+    <description>MySQL Service</description>
+    <canBeEdited>1</canBeEdited>
+    <selected>1</selected>
+    <show>0</show>
+    <parameterList>
+        <stringParameter>
+            <name>mysqlservice_service_name</name>
+            <title></title>
+            <explanation></explanation>
+            <value></value>
+            <default>${product_shortname}MySQL</default>
+            <ask>0</ask>
+        </stringParameter>
+	<stringParameter>
+	    <name>mysqlservice_startup</name>
+	    <ask>0</ask>
+	    <default>auto</default>
+	    <value>auto</value>
+	    <cliOptionShow>0</cliOptionShow>
+	</stringParameter>
+    </parameterList>
+    <readyToInstallActionList>
+        <actionGroup>
+            <actionList>
+                <getUniqueWindowsServiceName>
+                    <serviceName>${mysqlservice_service_name}</serviceName>
+                    <displayName>${product_fullname} MySQL Service</displayName>
+                    <selectedServiceNameVariable>mysql_unique_service_name</selectedServiceNameVariable>
+                    <selectedDisplayNameVariable>MySQLUniqueDisplayName</selectedDisplayNameVariable>
+                </getUniqueWindowsServiceName>
+            </actionList>
+            <ruleEvaluationLogic>and</ruleEvaluationLogic>
+            <ruleList>
+                <platformTest type="windows"/>
+                <compareText text="${component(mysql).parameter(mysql_installation_type).value}" logic="equals" value="bundled"/>
+                <compareText text="${component(mysql).parameter(mysql_upgrade).value}" logic="equals" value="0"/>
+            </ruleList>
+        </actionGroup>
+    </readyToInstallActionList>
+    <postInstallationActionList>
+        <actionGroup>
+            <actionList>
+                <substitute>
+                    <files>${mysql_root_directory}/scripts/ctl.bat; ${mysql_root_directory}/scripts/servicerun.bat; ${mysql_root_directory}/scripts/serviceinstall.bat</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>@@BITROCK_MYSQL_ROOTDIR@@</pattern>
+                            <value>${mysql_root_directory}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_MYSQL_PORT@@</pattern>
+                            <value>${mysql_port}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_MYSQL_SERVICE_NAME@@</pattern>
+                            <value>${mysql_unique_service_name}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+                <runProgram>
+                    <progressText>Installing MySQL as a Windows service with name ${mysql_unique_service_name}</progressText>
+                    <program>${mysql_root_directory.dos}\scripts\serviceinstall.bat</program>
+                    <programArguments>INSTALL</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <customErrorMessage>Unable to install MySQL as a service with name ${mysql_unique_service_name}</customErrorMessage>
+                </runProgram>
+                <waitForPort port="${database_port}" timeout="10000"/>
+		<runProgram>
+		    <program>sc</program>
+		    <programArguments>config ${mysql_unique_service_name} start= ${mysqlservice_startup}</programArguments>
+		    <ruleList>
+			<platformTest type="windows"/>
+			<compareText text="${mysqlservice_startup}" logic="does_not_equal" value="auto" />
+		    </ruleList>
+		</runProgram>
+            </actionList>
+            <ruleEvaluationLogic>and</ruleEvaluationLogic>
+            <ruleList>
+                <platformTest type="windows"/>
+                <compareText text="${component(mysql).parameter(mysql_installation_type).value}" logic="equals" value="bundled"/>
+                <compareText text="${component(mysql).parameter(mysql_upgrade).value}" logic="equals" value="0"/>
+            </ruleList>
+        </actionGroup>
+    </postInstallationActionList>
+</component>
+

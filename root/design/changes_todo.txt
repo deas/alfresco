@@ -1,0 +1,147 @@
+Internal Implementation Modifications...
+
+a) Version supported is now 0.7
+
+
+TODO: TC ISSUES to RAISE
+
+
+
+TODO:
+x Implement RESTful Move (CMIS-88)
+x service document: folder tree atom link
+- service document: uri templates
+- service document: changes collection
+x properties: id vs name vs queryname vs displayname
+- acls
+- renditions
+- query parser to use query name on property definition
+- type definition - allowedSource and target types
+- add all properties to CMISConstants and CMISObject getters
+- Abdera extension - fill out CMISCapabilities
+- think about renaming cmisxxx root objects to cmisrepoxxx
+x folder tree resource
+- folder by path resource
+x query GET
+- folder by path uri template
+- include allowable actions on relationship
+x query uri template
+- add content-location support to web scripts
+- tests: getBaseTypes, getTypeDescendants, getTypeChildren etc
+x delete on folder tree resource (copy of descendants.delete)
+x add links to feeds (check part 2)
+- ObjectId => store_type/store_id/id
+- principal names for anonymous / anyone (in service document)
+- change token
+- query tests via query names (driven from type definitions)
+- case sensitivity of identifiers in query (in result row)
+- CMISScript: Check args against specification (args enum)
+
+
+====================================
+
+Release Notes - OASIS Content Management Interoperability Services (CMIS) TC - Version Draft 0.63
+
+** Bug
+x    * [CMIS-88] - POST to Children resource is confusing 
+x    * [CMIS-308] - AtomPub content streams need clarification
+-    * [CMIS-322] - Add cmis logo to documents
+x    * [CMIS-341] - Rename repositoryInfo lastChangeToken to lastChangeLogToken
+x    * [CMIS-350] - cmis:PathName is missing in enumPropertiesFolder
+-    * [CMIS-356] - AtomPub binding: includeACLs parameter is not mentioned for getChildren().
+x    * [CMIS-366] - queryName in Property filters 
+-    * [CMIS-368] - Clarification of application/cmisatom+xml media type
+x   * [CMIS-371] - change collectionType from attribute to element
+-    * [CMIS-372] - How should repository specific information be conveyed in WS binding
+x    * [CMIS-373] - getProperties and includeACLs
+?    * [CMIS-375] - Wrong link relation
+-    * [CMIS-376] - Typo: Root Folder Collections
+-    * [CMIS-377] - Clarify distinction between collections and feeds
+-    * [CMIS-378] - No description of Query GET method
+x    * [CMIS-380] - Part 2: Relationship atom entry rel 'via'
+-    * [CMIS-381] - Typo: getAllVersions
+-    * [CMIS-382] - Part 2: Clarify rel 'up' for root folder
+-    * [CMIS-384] - Part 2: Clarify folder descendants resource and links may not be provided
+-    * [CMIS-385] - Part 2: Clarify folder descendants resource and links may not be provided
+-    * [CMIS-386] - Part 2: Clarify describedBy link
+    * [CMIS-387] - Part 2: Section 9.8 Folder Parent Entry required?
+x    * [CMIS-388] - all-versions link inconsistency
+x    * [CMIS-390] - Type*.xml examples do not comply with schema
+-    * [CMIS-391] - Incomplete edit - change AllowedChildObjectTypeNames to AllowedChildObjectTypeIds in schema in enumPropertiesFolder
+-    * [CMIS-392] - Query.xml does not comply with schema
+x    * [CMIS-394] - Property filters are ambiguous
+-    * [CMIS-395] - Base Type Id inconsistencies
+x    * [CMIS-396] - Consistent use of case in identifiers
+x    * [CMIS-397] - Typo: cmis:policyText
+x    * [CMIS-398] - choice model confusion
+-    * [CMIS-400] - ChangeToken missing in setContentStreamResponse
+-    * [CMIS-401] - Multiple xs:any lack a minOccurs attribute
+-    * [CMIS-404] - ACLs: AllowableActions Mapping should be able to map >1 permission to an action
+-    * [CMIS-406] - Service.xml example does not comply with the schema
+-    * [CMIS-407] - capabilityChangesOnType is required even if capabilityChanges is none
+-    * [CMIS-408] - AtomPub: Wrong starting tag for ACL documents
+-    * [CMIS-409] - getPropertiesOfLatestVersion method is included in 2 ports
+x    * [CMIS-411] - Inconsistent capitalization of attributes (displayname, localname)
+-    * [CMIS-412] - folderNotValid references should be removed
+-    * [CMIS-413] - enumServiceException.type in CMIS-Messaging schema is not defined in part 1 or part 2 exceptions
+-    * [CMIS-414] - Part 1 reference to constraintViolationException for createFolder should refer to constraint exception
+-    * [CMIS-415] - typo in property definition standard attributes localName and localNamespace
+-    * [CMIS-417] - enumReturnVersion is not needed anymore
+-    * [CMIS-418] - examples contain link rel="type" which isn't in atompub bindings doc
+-    * [CMIS-421] - getContentChanges: includeACL and filter not described
+-    * [CMIS-423] - supportedPermissions missing from cmisACLCapabilityType
+-    * [CMIS-426] - similar to policies, state relationships are optional
+-    * [CMIS-427] - clarify ID address spacing of Object IDs
+-    * [CMIS-428] - Typos in domain model 3.4.2 and 3.4.3
+-    * [CMIS-429] - Clarify getProperties output
+x    * [CMIS-431] - createRelationship has redundant sourceObjectId and targetObjectId parameters
+-    * [CMIS-438] - remove thinclientURI from RepositoryEntries in schema
+x    * [CMIS-439] - remove xml property type
+-    * [CMIS-440] - change html property type to be xs:string and follow atom behavior - html encode < as &lt;
+x    * [CMIS-441] - remove XHTML property type
+-    * [CMIS-444] - use rfc language (for now) and be consistent in documents
+    * [CMIS-446] - make uri templates mandatory
+-    * [CMIS-448] - add base object type support to cmsRepositoryInfo
+-    * [CMIS-450] - Remove all operand *.Type in P1 AllowableActions mapping
+-    * [CMIS-452] - change filter to be the same as sql select clause
+-    * [CMIS-457] - Clarify non-versionable doc behavior
+-    * [CMIS-460] - support includePolicyIDs wherever includeACL is used
+-    * [CMIS-463] - Remove CMIS:Delete from basic permissions
+x    * [CMIS-464] - remove repositoryRelationship from p1 & p2' & schema
+-    * [CMIS-465] - Should clarify request/response Media Types
+-    * [CMIS-469] - Make the usage of include* options consistent across all of the operations that return object collections
+-    * [CMIS-471] - add getObjectOfLatestVersion (symmetric)
+-    * [CMIS-475] - Clarify cmisContentStreamType.uri
+-    * [CMIS-477] - Clarify supportedBaseTypes in cmisRepositoryInfoType
+-    * [CMIS-481] - Rendition attributes: mismatch between p1 and schema
+-    * [CMIS-484] - getRelationships vs getObjectRelationships
+-    * [CMIS-486] - enumPropertyType still contains xhtml and xml
+-    * [CMIS-490] - CMIS-RestAtom: enumArguments is outdated
+x    * [CMIS-492] - Add distinguishing attributes to REST binding
+-    * [CMIS-494] - Move cmis:href from propertyId to rest binding
+x    * [CMIS-512] - overwriteFlag input parameter is missing in schema
+-    * [CMIS-513] - The meaning of "content stream" is confusing.
+-    * [CMIS-514] - Updating for abstract principals
+-    * [CMIS-516] - Restful binding document sections 8.3 and 8.4 need to remove or clarify paging in link relation sections
+-    * [CMIS-517] - enumReturnVersion documentation in CMIS-RestAtom.xsd refer to getProperties
+-    * [CMIS-518] - includeProperties missing from schema
+
+** Improvement
+-    * [CMIS-278] - Define element names for repositoryInfo and contentStream in CMIS-Core.xsd
+x    * [CMIS-405] - In type definitions rename baseTypeId to baseId for consistency
+x   * [CMIS-410] - Clarify getTypeDescendants when typeId == null and depth != -1
+-    * [CMIS-419] - deleteTree should also have an "allVersions" parameter
+-    * [CMIS-424] - replace getRenditions() with an optional parameter includeRenditions for getProperties()
+-    * [CMIS-447] - Add new getObject()
+-    * [CMIS-470] - clarify URI template handling
+-    * [CMIS-497] - extension parameters make code bloated and unreadbable
+x    * [CMIS-505] - getObjectParents confusing
+-    * [CMIS-520] - Inconsistent use of abstract attribute in XML schema
+
+** New Feature
+x    * [CMIS-357] - 3.1.2 Paging - optionally return number of items in the collection
+x    * [CMIS-523] - AtomPub: Add URI template typebyid
+
+** Sub-task
+-    * [CMIS-345] - How should CMIS-274 be reflected in AtomPub
+

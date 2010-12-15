@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Console Tools</shortname>
+  <description>Reusable Tools component for all Console pages</description>
+  <url>/components/console/tools</url>
+</webscript>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/aopalliance.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hrtlib.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jakarta-oro-2.0.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jta.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jug-asl-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/odmg-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saxpath.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/j2ee/portlet_20.jar" sourcepath="src/portlet_20_src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/portlet_20_doc.zip!/doc"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/openoffice/jut.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jibx/jibx-bind.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bcel.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jibx/jibx-run.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/acegi-security-0.8.2_patched.jar" sourcepath="src/acegi-security-0.8.2_patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/activation.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mail.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bcprov-jdk15-1.45.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bcmail-jdk15-1.45.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxrpc.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jmagick/JMagick.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/addressing-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/opensaml-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jcr-1.0.jar" sourcepath="src/jcr_src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/freemarker-2.3.16-patched.jar" sourcepath="src/freemarker-2.3.16-patched.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/jid3lib-0.5.4.jar" sourcepath="src/jid3lib-0.5.4-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1-beta-8.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/htmlparser-1.6.jar" sourcepath="src/htmlparser-1.6-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-beanutils-1.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-collections-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-digester-1.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-discovery-0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-el.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-logging-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-validator.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-core-0.8-SNAPSHOT.jar" sourcepath="src/tika-core-0.8-SNAPSHOT.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-0.8-SNAPSHOT.jar" sourcepath="src/tika-parsers-0.8-SNAPSHOT.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/myfaces-api-1.1.5.jar" sourcepath="src/myfaces_src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/myfaces-impl-1.1.5.jar" sourcepath="src/myfaces_src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-codec-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/joda-time-1.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/rhino-js-1.6R7.jar" sourcepath="src/rhino-js-1.6R7-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/jbpm/bsh-1.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jbpm/springmodules-jbpm31.jar" sourcepath="src/springmodules-jbpm31-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/xpp3-1.1.3_8.jar"/>
+	<classpathentry kind="lib" path="lib/openoffice/openoffice-sandbox-2.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/openoffice/xstream-1.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jstl-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/standard.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-fileupload-1.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons/commons-pool-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jooconverter-2.1.0.jar" sourcepath="src/jooconverter-2.1.0-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/hibernate-3.2.6-patched.jar" sourcepath="src/hibernate-3.2.6-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cglib-2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/truezip.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xalan-2.7.0/xalan.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlsec-1.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/j2ee/jsp.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/j2ee/servlet.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ant-1.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/devenv/mysql-connector-java-5.1.7-bin.jar"/>
+	<classpathentry kind="lib" path="lib/postgresql-8.4-701.jdbc3.jar"/>
+	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guessencoding-1.0.jar" sourcepath="src/guessencoding-1.0-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-lang-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/icu4j_3_6_1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/subetha-smtp.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/axis-1.4.jar" sourcepath="src/axis-1.4-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/shale-test-1.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/facebook_070716.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlrpc.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bliki-3.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-httpclient-3.1.jar" sourcepath="src/commons-httpclient-3.1-src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/docs/apidocs"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/json.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.5.11.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jgroups/jgroups-2.8.0-b2.jar" sourcepath="src/jgroups-2.8.0-b2.src.zip"/>
+	<classpathentry kind="lib" path="lib/jsr107cache-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-core-0.4.0-incubating.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-extensions-json-0.4.0-incubating.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-i18n-0.4.0-incubating.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-parser-0.4.0-incubating.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cxf-2.2.2-patched.jar" sourcepath="src/apache-cxf-2.2.2-patched-src.zip"/>
+	<classpathentry kind="lib" path="lib/FastInfoset-1.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/geronimo-activation_1.1_spec-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/geronimo-annotation_1.0_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/geronimo-stax-api_1.0_spec-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/geronimo-ws-metadata_2.0_spec-1.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxb-api-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxb-impl-2.1.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxb-xjc-2.1.7.jar"/>
+	<classpathentry kind="lib" path="lib/jaxws-api-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/neethi-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/stax-utils-20060502.jar"/>
+	<classpathentry kind="lib" path="lib/wsdl4j-1.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/wstx-asl-3.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="lib/xml-resolver-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.core-3.0.0.jar" sourcepath="src/org.springframework.core-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.beans-3.0.0.jar" sourcepath="src/org.springframework.beans-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.expression-3.0.0.jar" sourcepath="src/org.springframework.expression-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.context-3.0.0.jar" sourcepath="src/org.springframework.context-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.context.support-3.0.0.jar" sourcepath="src/org.springframework.context.support-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.transaction-3.0.0.jar" sourcepath="src/org.springframework.transaction-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.aop-3.0.0.jar" sourcepath="src/org.springframework.aop-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.asm-3.0.0.jar" sourcepath="src/org.springframework.asm-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.jdbc-3.0.0.jar" sourcepath="src/org.springframework.jdbc-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.orm-3.0.0.jar" sourcepath="src/org.springframework.orm-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web-3.0.0.jar" sourcepath="src/org.springframework.web-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/geronimo-jaxws_2.1_spec-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.7-beta3-20100915.jar" sourcepath="src/poi-3.7-beta3-20100915.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.7-beta3-20100915.jar" sourcepath="src/poi-3.7-beta3-20100913.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.7-beta3-20100915.jar" sourcepath="src/poi-3.7-beta3-20100915.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-core-2.4.1.jar" sourcepath="src/lucene-2.4.1-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-snowball-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/stringtemplate-3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ibatis-2.3.4.726-patched.jar" sourcepath="src/ibatis-2.3.4.726-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/jboss/jboss-vfs-2.1.0.GA.jar" sourcepath="lib/jboss/jboss-vfs-2.1.0.GA-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/greenmail-1.3-patched.jar" sourcepath="src/greenmail-1.3-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/jbpm/jbpm-identity-3.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jbpm/jbpm-jpdl-3.3.1.jar" sourcepath="src/jbpm-jpdl-3.2.2-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/jutf7-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mockito-all-1.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/abdera/stax-api-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit-4.6.jar" sourcepath="src/junit-4.6-src.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/XmlSchema-1.4.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/antlr-3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-regex-2.4.1.jar" sourcepath="src/lucene-2.4.1-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" sourcepath="src/spring-surf-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" sourcepath="src/spring-surf-core-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" sourcepath="src/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT-tests.jar" sourcepath="src/spring-webscripts-1.0.0.CI-SNAPSHOT-test-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" sourcepath="src/spring-webscripts-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" sourcepath="src/spring-webscripts-api-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-2009-09-27.jar" sourcepath="src/PDFRenderer-2009-09-27-src.zip"/>
+	<classpathentry kind="lib" path="lib/org.springframework.webmvc-3.0.0.jar" sourcepath="src/org.springframework.webmvc-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/abdera/axiom-impl-1.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/abdera/axiom-api-1.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.2.2.jar" sourcepath="src/commons-dbcp-1.2.2-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-compress-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-io-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/openoffice/openoffice-juh-3.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/openoffice/openoffice-jurt-3.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/openoffice/openoffice-ridl-3.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/openoffice/openoffice-unoil-3.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/fop/avalon-framework-4.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/fop/batik-all-1.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/fop/fop-0.94.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/fop/xmlgraphics-commons-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/chiba-1.3.0-patched.jar" sourcepath="src/chiba-1.3.0-patched-src.zip"/>
+	<classpathentry kind="lib" path="lib/commons/commons-jxpath-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/opencmis-test-browser-0.1-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bsf-2.4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ehcache-core-2.0.0.jar" sourcepath="src/ehcache-core-2.0.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT.jar" sourcepath="src/spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drew-image-metadata-extractor-2.4.0-beta-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netcdf-java-4.0.41.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tagsoup-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wss4j-1.5.4-patched.jar" sourcepath="src/wss4j-1.5.4-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/google/gdata-client-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/google/gdata-core-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/google/gdata-docs-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/google/gdata-media-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/google/google-collect-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-tck-atompub-0.1-incubating-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.2.1.jar" sourcepath="src/pdfbox-1.2.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/urlrewritefilter-3.1.0.jar" sourcepath="src/urlrewritefilter-3.1.0-src.zip"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

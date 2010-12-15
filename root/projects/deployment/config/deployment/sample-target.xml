@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<!--  DEPLOYMENT SERVER CONFIGURATION - Sample Target used for tests -->
+
+<beans>
+
+	<!--
+		Define and register the deployment target called "sampleTarget which
+		is used for unit tests
+	-->
+	<bean
+		class="org.alfresco.deployment.impl.server.DeploymentTargetRegistrationBean"
+		init-method="register">
+
+		<!-- What's the name of your target? -->
+		<property name="name">
+			<value>${deployment.filesystem.sampleTarget.name}</value>
+		</property>
+		
+		<!--  Register with the deploymentReceiverEngine -->
+		<property name="registry">
+			<ref bean="deploymentReceiverEngine" />
+		</property>
+		
+		<property name="target">
+		
+			<!-- This is the definition of the target - you could also add a reference to a bean which already exists -->
+			<bean
+				class="org.alfresco.deployment.impl.fsr.FileSystemDeploymentTarget"
+				init-method="init">
+				
+				<!--  Where to store the deployed content -->
+				<property name="rootDirectory">
+					<value>${deployment.filesystem.sampleTarget.rootdir}</value>
+				</property>
+				
+				<!--  where to store meta data for sampleTarget-->
+        		<property name="metaDataDirectory">
+            		<value>${deployment.filesystem.sampleTarget.metadatadir}</value>
+        		</property>
+				
+				<property name="autoFix">
+					<value>${deployment.filesystem.autofix}</value>
+				</property>
+				
+				<!--  Prepare callbacks go here -->
+				<property name="prepare">
+					<list>
+						<bean class="org.alfresco.deployment.SampleRunnable" />
+						<bean class="org.alfresco.deployment.impl.fsr.FSRunnableTester">
+							<property name="throwException">
+								<value>false</value>
+							</property>
+						</bean>
+					</list>
+				</property>
+				
+				<!--  Post Commit Actions Go Here -->
+				<property name="postCommit">
+					<list>
+						<bean class="org.alfresco.deployment.SampleRunnable" />
+					</list>
+				</property>
+				
+				<property name="fileSystemReceiverService">
+					<ref bean="fileSystemReceiverService" />
+				</property>
+				
+				<property name="name"><value>${deployment.filesystem.sampleTarget.name}</value></property>
+				
+            <!--  The user/password autherticator for sampleTarget -->
+				<property name="authenticator">
+					<bean
+						class="org.alfresco.deployment.impl.server.DeploymentReceiverAuthenticatorSimple">
+						<property name="user">
+							<value>${deployment.filesystem.sampleTarget.user}</value>
+						</property>
+						<property name="password">
+							<value>${deployment.filesystem.sampleTarget.password}</value>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>	
+</beans>

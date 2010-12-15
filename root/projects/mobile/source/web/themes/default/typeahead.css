@@ -1,0 +1,99 @@
+.content form div.typeahead 
+{
+/*   position:absolute;
+   top:5em;
+   left:0;
+   width:100%;
+   height:480px;*/
+   position:relative;
+   top:0;
+   left:0;
+   height:480px;
+   margin:0 1em;
+}
+.landscape .typeahead
+{
+   height:320px;
+}
+.typeahead .deactive {
+   display:none;
+}
+.typeahead .header {
+  height:43px; 
+  line-height:43px;
+  background:#6d84a2 url(header-bg.png) 0 0 repeat-x;
+  color:#fff;
+  font-size:20px; font-weight:bold;
+  text-shadow:rgba(0,0,0,0.6) 0 -1px 0;
+  text-align:center;
+  border-bottom:1px solid #2d3642;
+}
+
+.typeahead .wrapper {
+  position:relative;  /* needed */
+  z-index:1;      /* needed and important */
+  height:120px;   /* needed */
+  overflow:hidden;  /* suggested */
+  border:1px solid black;
+  background-color:#fff;
+  margin:0;
+}
+
+.typeahead .scrollContent {
+  margin:0;
+  padding:0;
+  width:100%;
+  padding-bottom:60px;
+  position:absolute;
+}
+
+.typeahead .scrollContent li {
+  margin:0;
+  width:100%;
+  padding:0.5em;
+  padding-left:10px;
+  font-size:0.9em;
+  border-bottom:1px solid #e0e0e0;
+  list-style:none;
+}
+
+.typeahead .scrollContent li p {
+padding:0;
+margin:0;
+color:black;
+}
+.typeahead .scrollContent li a {
+display:block;
+clear:both;
+margin:0 0 0.3em 0;
+color:black;
+text-decoration: none;
+}
+
+.typeahead #sw-cancel {
+   position:absolute;
+   left:235px;
+   top:0;
+   margin:-33px 0 0 0;
+}
+
+.typeahead .searchField {
+   line-height:16px;
+   padding:0.5em;
+   margin-left:3em;
+   vertical-align:12%;
+}
+
+/*---*/
+
+
+.typeahead,
+.content form div.wrapper 
+{
+   width:225px;
+   text-align:left;
+}
+.activeTypeAhead .content form .typeAhead
+{
+   width:211px;
+}

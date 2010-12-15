@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Node Details GG</shortname>
+  <description>Folder and Document details page for iGoogle Gadgets</description>
+  <url>/aggadget/details?id={id}</url>
+  <authentication>user</authentication>
+</webscript>

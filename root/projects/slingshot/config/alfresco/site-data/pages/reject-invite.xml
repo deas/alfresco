@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Reject invite</title>
+   <title-id>page.rejectInvite.title</title-id>
+   <description>Reject invite page. Rejects an invite request</description>
+   <description-id>page.rejectInvite.description</description-id>
+   <template-instance>reject-invite</template-instance>
+   <authentication>none</authentication>
+</page>

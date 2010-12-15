@@ -1,0 +1,34 @@
+.results
+{
+   margin: 4px 0px;
+}
+
+.results .yui-dt table
+{
+	border: 1px solid #C0C0C0;
+}
+
+/*
+.results td.yui-dt-asc,
+.results td.yui-dt-desc
+{
+   background-color: #ffffff !important;
+}
+*/
+
+.results tr.yui-dt-odd
+{
+   cursor: auto;
+   background-color: #f0f0f0 !important;
+}
+
+.results tr.yui-dt-even
+{
+   cursor: auto;
+   background-color: #ffffff !important;
+}
+
+.results img
+{
+   vertical-align: -20%;
+}

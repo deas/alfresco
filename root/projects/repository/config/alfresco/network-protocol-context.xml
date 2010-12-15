@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+ 
+<beans>
+   <!-- Note - many beans in this file are not directly used -->
+   <!--  within the main context. Instead, they are used by -->
+   <!--  beans defined within the fileServer subsystem -->
+
+   <!-- File Server Configuration -->
+   <bean id="fileServerConfigurationBase"
+         abstract="true"
+         destroy-method="closeConfiguration">
+      <property name="authenticationService">
+         <ref bean="authenticationService"/>
+      </property>
+      <property name="authenticationComponent">
+         <ref bean="authenticationComponent"/>
+      </property>
+      <property name="nodeService">
+         <ref bean="NodeService"/>
+      </property> 
+      <property name="tenantService">
+         <ref bean="tenantService" />
+      </property>
+      <property name="searchService">
+         <ref bean="SearchService" />
+      </property>
+      <property name="namespaceService">
+         <ref bean="namespaceService" />
+      </property>      
+      <property name="personService">
+         <ref bean="personService"/>
+      </property>
+      <property name="transactionService">
+         <ref bean="transactionService"/>
+      </property>
+      <property name="authorityService">
+         <ref bean="authorityService"/>
+      </property>
+      <property name="diskInterface">
+         <ref bean="contentDiskDriver"/>
+      </property>
+      <property name="avmDiskInterface">
+         <ref bean="avmDiskDriver"/>
+      </property>
+   </bean>
+
+   <!-- Filesystem Interface -->
+   <bean id="contentDiskDriver" class="org.alfresco.filesys.repo.ContentDiskDriver" >
+      <constructor-arg>
+         <ref bean="cifsHelper" />
+      </constructor-arg>
+      <property name="transactionService"><ref bean="transactionService" /></property>
+      <property name="nodeService"><ref bean="NodeService" /></property>
+      <property name="searchService"><ref bean="SearchService" /></property>
+      <property name="namespaceService"><ref bean="namespaceService" /></property>
+      <property name="contentService"><ref bean="ContentService" /></property>
+      <property name="mimetypeService"><ref bean="MimetypeService" /></property>
+      <property name="permissionService"><ref bean="permissionService"/></property>
+      <property name="authenticationContext"><ref bean="authenticationContext"/></property>
+	  <property name="authenticationService"><ref bean="authenticationService"/></property>
+      <property name="sysAdminParams"><ref bean="sysAdminParams"/></property>
+      <property name="fileFolderService"><ref bean="FileFolderService" /></property>
+	  <property name="serviceRegistry"><ref bean="ServiceRegistry"/></property>
+      <property name="nodeMonitorFactory"><ref bean="nodeMonitorFactory"/></property>
+      <property name="nodeArchiveService"><ref bean="nodeArchiveService" /></property>
+	  <property name="lockService"><ref bean="lockService" /></property>
+      <property name="policyFilter"><ref bean="policyBehaviourFilter" /></property>
+	  <property name="dictionaryService"><ref bean="dictionaryService" /></property>
+   </bean>
+   
+   <bean id="nodeMonitorFactory" class="org.alfresco.filesys.repo.NodeMonitorFactory">
+      <property name="transactionService"><ref bean="transactionService" /></property>
+      <property name="nodeService"><ref bean="nodeService" /></property>
+      <property name="fileFolderService"><ref bean="fileFolderService" /></property>
+      <property name="permissionService"><ref bean="permissionService"/></property>
+      <property name="policyComponent"><ref bean="policyComponent"/></property>
+   </bean>
+   
+   <bean id="cifsHelper" class="org.alfresco.filesys.repo.CifsHelper">
+      <property name="dictionaryService"><ref bean="dictionaryService" /></property>
+      <property name="nodeService"><ref bean="NodeService" /></property>
+      <property name="fileFolderService"><ref bean="FileFolderService" /></property>
+      <property name="mimetypeService"><ref bean="mimetypeService" /></property>
+      <property name="permissionService"><ref bean="permissionService"/></property>
+      <property name="allowWrites"><value>${server.transaction.allow-writes}</value></property>
+   </bean>
+   
+   <!-- WCM/AVM Filesystem Interface -->
+   <bean id="avmDiskDriver" class="org.alfresco.filesys.avm.AVMDiskDriver">
+      <property name="avmService"><ref bean="AVMLockingAwareService"/></property>
+      <property name="transactionService"><ref bean="transactionService"/></property>
+      <property name="authenticationComponent"><ref bean="authenticationComponent"/></property>
+      <property name="authenticationService"><ref bean="authenticationService"/></property>
+      <property name="mimetypeService"><ref bean="mimetypeService"/></property>
+      <property name="serviceRegistry"><ref bean="ServiceRegistry"/></property>
+      <property name="nodeService"><ref bean="NodeService"/></property>
+      
+      <property name="createStoreListener"><ref bean="createStoreTxnListener"/></property>
+      <property name="purgeStoreListener"><ref bean="purgeStoreTxnListener"/></property>
+      <property name="createVersionListener"><ref bean="createVersionTxnListener"/></property>
+      <property name="purgeVersionListener"><ref bean="purgeVersionTxnListener"/></property>
+   </bean>
+</beans>

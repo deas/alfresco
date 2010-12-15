@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Portlet: Edit Site</title>
+   <title-id>page.portletEditDocLibSite.title</title-id>
+   <description>Edit the Site for the Share DocLib portlet</description>
+   <description-id>page.portletEditDocLibSite.description</description-id>
+   <template-instance>portlet-edit-doclib-site</template-instance>
+   <authentication>user</authentication>
+</page>

@@ -1,0 +1,1593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view:view xmlns:view="http://www.alfresco.org/view/repository/1.0">
+  <view:metadata>
+    <view:exportBy>admin</view:exportBy>
+    <view:exportDate>2007-01-29T14:00:31.683Z</view:exportDate>
+    <view:exporterVersion>1.4.1 (build-100)</view:exporterVersion>
+    <view:exportOf>/app:company_home/cm:Records_x0020_Space</view:exportOf>
+  </view:metadata>
+  <cm:folder xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:childName="cm:Records Space">
+    <view:aspects>
+      <cm:auditable></cm:auditable>
+      <app:uifacets></app:uifacets>
+      <sys:referenceable></sys:referenceable>
+    </view:aspects>
+    <view:properties>
+      <cm:modifier>admin</cm:modifier>
+      <cm:modified>2007-01-16T22:13:52.562Z</cm:modified>
+      <app:icon>space-icon-doc</app:icon>
+      <cm:description>Space for storing records</cm:description>
+      <sys:node-uuid>d893ed80-a5ad-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+      <cm:creator>admin</cm:creator>
+      <sys:node-dbid>473</sys:node-dbid>
+      <sys:store-protocol>workspace</sys:store-protocol>
+      <cm:title></cm:title>
+      <cm:name>Records Space</cm:name>
+      <sys:store-identifier>SpacesStore</sys:store-identifier>
+      <cm:created>2007-01-16T22:06:42.125Z</cm:created>
+    </view:properties>
+    <view:associations>
+      <cm:contains>
+        <cm:folder view:childName="cm:DOD Records">
+          <view:aspects>
+            <cm:auditable></cm:auditable>
+            <app:uifacets></app:uifacets>
+            <sys:referenceable></sys:referenceable>
+            <cm:templatable></cm:templatable>
+          </view:aspects>
+          <view:properties>
+            <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+            <cm:description>DOD 5015.2 Test Area</cm:description>
+            <app:icon>space-icon-doc</app:icon>
+            <sys:node-uuid>30a71455-a5ae-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+            <sys:node-dbid>474</sys:node-dbid>
+            <cm:title>DOD 5015.2 Test Area</cm:title>
+            <cm:created>2007-01-16T22:09:09.765Z</cm:created>
+            <cm:modifier>admin</cm:modifier>
+            <cm:modified>2007-01-17T10:43:58.140Z</cm:modified>
+            <cm:creator>admin</cm:creator>
+            <sys:store-protocol>workspace</sys:store-protocol>
+            <cm:name>DOD Records</cm:name>
+            <sys:store-identifier>SpacesStore</sys:store-identifier>
+          </view:properties>
+          <view:associations>
+            <cm:contains>
+              <cm:folder view:childName="cm:Series 0031">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-16T22:29:29.171Z</cm:modified>
+                  <cm:description>COMBATANT COMMAND COMMANDER/DEPUTY COMMANDER/CHIEF OF STAFF CORRESPONDENCE</cm:description>
+                  <app:icon>space-icon-cd</app:icon>
+                  <sys:node-uuid>29771035-a5af-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>479</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>COMBATANT COMMAND COMMANDER/DEPUTY COMMANDER/CHIEF OF STAFF CORRESPONDENCE</cm:title>
+                  <cm:name>Series 0031</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:16:07.187Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0031-01 Combatant Command Correspondence">
+                      <view:aspects>
+                        <cm:templatable></cm:templatable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:transferInstructions></rma:transferInstructions>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:transferLocation>ISF</rma:transferLocation>
+                        <rma:vitalRecordIndicator>true</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>0747c5d1-a5b1-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>N1-288-00-1 item 42</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Year_x0020_End</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>false</rma:cutoffOnSuperseded>
+                        <cm:created>2007-01-16T22:29:29.171Z</cm:created>
+                        <rma:holdPeriodValue>2</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:transferBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:None</rma:transferBlockUnit>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Daily</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>true</rma:discretionaryHold>
+                        <rma:eventTrigger>Obsolete</rma:eventTrigger>
+                        <rma:destroyImmediately>false</rma:destroyImmediately>
+                        <cm:name>0031-01 Combatant Command Correspondence</cm:name>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Memorandums issued/signed by the commander/deputy commander/chief of staff of the combatant command, Command Policy Memorandums serially numbered, and Command Numbered Memorandums, correspondence, messages, briefings, reports, and all related background material.</cm:description>
+                        <sys:node-dbid>488</sys:node-dbid>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>Combatant Command Correspondence</cm:title>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Daily</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>true</rma:permanentRecordIndicator>
+                        <cm:modified>2007-01-16T22:42:23.640Z</cm:modified>
+                        <rma:dispositionInstructions>Permanent. Cut off annually, hold 2 years beyond end of commander/deputy commander/chief of staff tour of duty, then transfer to Inactive Storage Facility (ISF.) Accession to NARA 25 years after cutoff.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:destroyBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:None</rma:destroyBlockUnit>
+                        <rma:recordCategoryIdentifier>0031-01</rma:recordCategoryIdentifier>
+                        <rma:transferImmediately>true</rma:transferImmediately>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations></view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:folder view:childName="cm:Series 0105">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-16T22:47:42.421Z</cm:modified>
+                  <cm:description>UNIT MANNING DOCUMENTS (UMDs)</cm:description>
+                  <app:icon>space-icon-cd</app:icon>
+                  <sys:node-uuid>3fd11c03-a5af-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>480</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>UNIT MANNING DOCUMENTS (UMDs)</cm:title>
+                  <cm:name>Series 0105</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:16:44.671Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0105-01 Unit Manning Documents">
+                      <view:aspects>
+                        <cm:auditable></cm:auditable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <sys:referenceable></sys:referenceable>
+                        <app:uifacets></app:uifacets>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                        <cm:templatable></cm:templatable>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:vitalRecordIndicator>false</rma:vitalRecordIndicator>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>931a8782-a5b3-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>N1-218-89-1 item 002</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>false</rma:cutoffOnSuperseded>
+                        <cm:created>2007-01-16T22:47:42.406Z</cm:created>
+                        <rma:holdPeriodValue>1</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <cm:name>0105-01 Unit Manning Documents</cm:name>
+                        <rma:destroyImmediately>true</rma:destroyImmediately>
+                        <rma:eventTrigger></rma:eventTrigger>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Consisting of: draft manpower document and monthly strength report forwarded to OSD and other activities. Which are: maintained by personnel office as the official record copy.</cm:description>
+                        <sys:node-dbid>490</sys:node-dbid>
+                        <cm:title>Unit Manning Documents</cm:title>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <rma:cutoffOnObsolete>false</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <cm:modified>2007-01-16T22:55:28.031Z</cm:modified>
+                        <rma:dispositionInstructions>Cut off every 3 months, hold 3 months, then destroy/delete.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:recordCategoryIdentifier>0105-01</rma:recordCategoryIdentifier>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations></view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:folder view:childName="cm:Series 0106">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-17T09:45:33.171Z</cm:modified>
+                  <cm:description>MANPOWER AND PRODUCTIVITY ENHANCEMENT STUDIES</cm:description>
+                  <app:icon>space-icon-cd</app:icon>
+                  <sys:node-uuid>55168283-a5af-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>481</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>MANPOWER AND PRODUCTIVITY ENHANCEMENT STUDIES</cm:title>
+                  <cm:name>Series 0106</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:17:20.359Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0106-01 ManpowerStudies Supporting Data">
+                      <view:aspects>
+                        <cm:countable></cm:countable>
+                        <cm:templatable></cm:templatable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:transferInstructions></rma:transferInstructions>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:transferLocation>ISF</rma:transferLocation>
+                        <rma:vitalRecordIndicator>false</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>928452eb-a60e-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>N1-218-89-1 item 002</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:cutoffOnSuperseded>true</rma:cutoffOnSuperseded>
+                        <cm:counter>1</cm:counter>
+                        <cm:created>2007-01-17T09:39:05.625Z</cm:created>
+                        <rma:holdPeriodValue>1</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:transferBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Annually</rma:transferBlockUnit>
+                        <rma:containsRecordFolders>true</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <rma:eventTrigger>Obsolete or Superseded</rma:eventTrigger>
+                        <rma:destroyImmediately>true</rma:destroyImmediately>
+                        <cm:name>0106-01 ManpowerStudies Supporting Data</cm:name>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Documents created in connection with manpower surveys and studies covering personnel authorizations, manning levels, manpower analysis and requirements, workload and performance measures, staffing standards, and related documentation. Which are: maintained by any JS/combatant command activity as the official record copy</cm:description>
+                        <sys:node-dbid>491</sys:node-dbid>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>ManpowerStudies Supporting Data</cm:title>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <cm:modified>2007-01-17T10:31:35.546Z</cm:modified>
+                        <rma:dispositionInstructions>Destroy/delete when superseded by a like survey or study, or when no longer needed, whichever is later.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:recordCategoryIdentifier>0106-01</rma:recordCategoryIdentifier>
+                        <rma:transferImmediately>false</rma:transferImmediately>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>false</rma:processHold>
+                      </view:properties>
+                      <view:associations>
+                        <cm:contains>
+                          <cm:folder view:childName="cm:Folder 001 - Staffing Strategies">
+                            <view:aspects>
+                              <rma:record></rma:record>
+                              <cm:templatable></cm:templatable>
+                              <cm:auditable></cm:auditable>
+                              <sys:referenceable></sys:referenceable>
+                              <app:uifacets></app:uifacets>
+                              <rma:cutoffSchedule></rma:cutoffSchedule>
+                              <rma:userSpecifiedData></rma:userSpecifiedData>
+                              <sys:incomplete></sys:incomplete>
+                              <cm:author></cm:author>
+                              <cm:referencing></cm:referencing>
+                            </view:aspects>
+                            <view:properties>
+                              <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                              <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:record_template.ftl</cm:template>
+                              <app:icon>space-icon-default</app:icon>
+                              <sys:node-uuid>e7f13441-a615-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                              <rma:dateReceived>2007-01-17T10:31:00.000Z</rma:dateReceived>
+                              <rma:mediaFormat>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:mediaFormat>
+                              <rma:subject>Staffing Strategies</rma:subject>
+                              <cm:created>2007-01-17T10:31:35.390Z</cm:created>
+                              <rma:dateFiled>2007-01-17T10:31:00.000Z</rma:dateFiled>
+                              <cm:creator>admin</cm:creator>
+                              <rma:originatingOrganization>Defense Information Systems Agency</rma:originatingOrganization>
+                              <cm:name>Folder 0001 - Folder 001 - Staffing Strategies</cm:name>
+                              <sys:store-identifier>SpacesStore</sys:store-identifier>
+                              <cm:undefined>
+                                <view:value view:isNull="true"></view:value>
+                              </cm:undefined>
+                              <rma:recordNote></rma:recordNote>
+                              <cm:description>Destroy/delete when superseded by a like survey or study, or when no longer needed, whichever is later.</cm:description>
+                              <rma:publicationDate>2007-01-17T10:31:00.000Z</rma:publicationDate>
+                              <sys:node-dbid>500</sys:node-dbid>
+                              <rma:cutoffEvent></rma:cutoffEvent>
+                              <rma:supplementalMarkingList>
+                                <view:values>
+                                  <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                                </view:values>
+                              </rma:supplementalMarkingList>
+                              <cm:title>Staffing Strategies</cm:title>
+                              <cm:author></cm:author>
+                              <cm:modifier>admin</cm:modifier>
+                              <cm:modified>2007-01-17T10:32:37.750Z</cm:modified>
+                              <rma:originator>admin</rma:originator>
+                              <sys:store-protocol>workspace</sys:store-protocol>
+                              <rma:recordIdentifier>0106-01-0001</rma:recordIdentifier>
+                              <rma:addressee>admin</rma:addressee>
+                            </view:properties>
+                            <view:associations></view:associations>
+                          </cm:folder>
+                        </cm:contains>
+                      </view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:folder view:childName="cm:Series 0205">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-17T09:51:12.406Z</cm:modified>
+                  <cm:description>PAYROLL CORRESPONDENCE</cm:description>
+                  <app:icon>space-icon-cd</app:icon>
+                  <sys:node-uuid>6bd25d69-a5af-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>482</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>PAYROLL CORRESPONDENCE</cm:title>
+                  <cm:name>Series 0205</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:17:58.562Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0205-02 Merit Pay Records">
+                      <view:aspects>
+                        <cm:countable></cm:countable>
+                        <cm:templatable></cm:templatable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:vitalRecordIndicator>true</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>ab1d844c-a60f-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>N1-218-00-3 item 2</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Year_x0020_End</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>true</rma:cutoffOnSuperseded>
+                        <cm:counter>1</cm:counter>
+                        <cm:created>2007-01-17T09:46:56.390Z</cm:created>
+                        <rma:holdPeriodValue>7</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <rma:eventTrigger></rma:eventTrigger>
+                        <rma:destroyImmediately>true</rma:destroyImmediately>
+                        <cm:name>0205-02 Merit Pay Records</cm:name>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Information for a merit pay unit listing covered employees. Consisting of: initial salary, computation of funds for the unit, salary increases granted automatically, merit pay increases granted based on points received from a performance appraisal rating, and similar information. Which are: maintained by any JS/combatant command activity.</cm:description>
+                        <sys:node-dbid>492</sys:node-dbid>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>Merit Pay Records</cm:title>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <cm:modified>2007-01-17T10:33:49.718Z</cm:modified>
+                        <rma:dispositionInstructions>Cut off on computation of pay increase, hold 7 years, then destroy/delete.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:recordCategoryIdentifier>0205-02</rma:recordCategoryIdentifier>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations>
+                        <cm:contains>
+                          <cm:folder view:childName="cm:Folder 001 - Jayne Dough">
+                            <view:aspects>
+                              <rma:record></rma:record>
+                              <cm:templatable></cm:templatable>
+                              <cm:auditable></cm:auditable>
+                              <rma:vitalrecord></rma:vitalrecord>
+                              <sys:referenceable></sys:referenceable>
+                              <app:uifacets></app:uifacets>
+                              <rma:cutoffSchedule></rma:cutoffSchedule>
+                              <rma:userSpecifiedData></rma:userSpecifiedData>
+                              <sys:incomplete></sys:incomplete>
+                              <cm:author></cm:author>
+                              <cm:referencing></cm:referencing>
+                            </view:aspects>
+                            <view:properties>
+                              <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                              <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:record_template.ftl</cm:template>
+                              <app:icon>space-icon-default</app:icon>
+                              <sys:node-uuid>37e7f00c-a616-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                              <rma:dateReceived>2007-01-17T10:33:00.000Z</rma:dateReceived>
+                              <rma:mediaFormat>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:mediaFormat>
+                              <rma:subject>Cut off on computation of pay increase, hold 7 years, then destroy/delete.</rma:subject>
+                              <cm:created>2007-01-17T10:33:49.546Z</cm:created>
+                              <rma:dateFiled>2007-01-17T10:33:00.000Z</rma:dateFiled>
+                              <rma:cutoffDateTime>2007-03-31T23:59:00.000+01:00</rma:cutoffDateTime>
+                              <cm:creator>admin</cm:creator>
+                              <rma:originatingOrganization>Defense Information Systems Agency</rma:originatingOrganization>
+                              <cm:name>Folder 0001 - Folder 001 - Jayne Dough</cm:name>
+                              <sys:store-identifier>SpacesStore</sys:store-identifier>
+                              <rma:prevReviewDate>2007-01-17T10:33:00.000Z</rma:prevReviewDate>
+                              <cm:undefined>
+                                <view:value view:isNull="true"></view:value>
+                              </cm:undefined>
+                              <rma:recordNote></rma:recordNote>
+                              <cm:description>Cut off on computation of pay increase, hold 7 years, then destroy/delete.</cm:description>
+                              <rma:publicationDate>2007-01-17T10:33:00.000Z</rma:publicationDate>
+                              <sys:node-dbid>501</sys:node-dbid>
+                              <rma:cutoffEvent></rma:cutoffEvent>
+                              <rma:supplementalMarkingList>
+                                <view:values>
+                                  <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                                </view:values>
+                              </rma:supplementalMarkingList>
+                              <cm:title>Jayne Dough</cm:title>
+                              <cm:author></cm:author>
+                              <cm:modifier>admin</cm:modifier>
+                              <rma:nextReviewDate>2007-03-31T23:59:00.000+01:00</rma:nextReviewDate>
+                              <cm:modified>2007-01-17T10:34:21.562Z</cm:modified>
+                              <rma:originator>admin</rma:originator>
+                              <sys:store-protocol>workspace</sys:store-protocol>
+                              <rma:recordIdentifier>0205-02-0001</rma:recordIdentifier>
+                              <rma:addressee>admin</rma:addressee>
+                            </view:properties>
+                            <view:associations></view:associations>
+                          </cm:folder>
+                        </cm:contains>
+                      </view:associations>
+                    </rma:filePlan>
+                    <rma:filePlan view:childName="cm:0205-03 Differential and Allowances">
+                      <view:aspects>
+                        <cm:auditable></cm:auditable>
+                        <sys:referenceable></sys:referenceable>
+                        <app:uifacets></app:uifacets>
+                        <cm:countable></cm:countable>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                        <cm:templatable></cm:templatable>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:vitalRecordIndicator>true</rma:vitalRecordIndicator>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>43b4044c-a610-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>TBD</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Annually</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>false</rma:cutoffOnSuperseded>
+                        <cm:counter>1</cm:counter>
+                        <cm:created>2007-01-17T09:51:12.390Z</cm:created>
+                        <rma:holdPeriodValue>25</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>true</rma:discretionaryHold>
+                        <cm:name>0205-03 Differential and Allowances</cm:name>
+                        <rma:eventTrigger>All allowances terminated.</rma:eventTrigger>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Differential and allowances. Consisting of: information to assist overseas civilian personnel offices to document employee eligibility for foreign post differential and foreign quarters and post allowances, including SF 1190 (Foreign Allowances Application, Grant, and Report) and similar information. Which are: maintained by any JS/combatant command activity</cm:description>
+                        <sys:node-dbid>493</sys:node-dbid>
+                        <cm:title>Differential and Allowances</cm:title>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <cm:modified>2007-01-17T10:43:13.125Z</cm:modified>
+                        <rma:dispositionInstructions>Cut off at end of FY in which all allowances are terminated; final disposition TBD.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:recordCategoryIdentifier>0205-03</rma:recordCategoryIdentifier>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations>
+                        <cm:contains>
+                          <cm:folder view:childName="cm:Folder 001 - SF 1190 Data">
+                            <view:aspects>
+                              <rma:record></rma:record>
+                              <cm:templatable></cm:templatable>
+                              <cm:auditable></cm:auditable>
+                              <rma:vitalrecord></rma:vitalrecord>
+                              <sys:referenceable></sys:referenceable>
+                              <app:uifacets></app:uifacets>
+                              <rma:cutoffSchedule></rma:cutoffSchedule>
+                              <rma:userSpecifiedData></rma:userSpecifiedData>
+                              <sys:incomplete></sys:incomplete>
+                              <cm:author></cm:author>
+                              <cm:referencing></cm:referencing>
+                            </view:aspects>
+                            <view:properties>
+                              <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                              <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:record_template.ftl</cm:template>
+                              <app:icon>space-icon-default</app:icon>
+                              <sys:node-uuid>87bd9a91-a617-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                              <rma:dateReceived>2007-01-17T10:43:00.000Z</rma:dateReceived>
+                              <rma:mediaFormat>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:mediaFormat>
+                              <rma:subject>Cut off at end of FY in which all allowances are terminated; final disposition TBD.</rma:subject>
+                              <cm:created>2007-01-17T10:43:12.968Z</cm:created>
+                              <rma:dateFiled>2007-01-17T10:43:00.000Z</rma:dateFiled>
+                              <cm:creator>admin</cm:creator>
+                              <rma:originatingOrganization>Defense Information Systems Agency</rma:originatingOrganization>
+                              <cm:name>Folder 0001 - Folder 001 - SF 1190 Data</cm:name>
+                              <sys:store-identifier>SpacesStore</sys:store-identifier>
+                              <rma:prevReviewDate>2007-01-17T10:43:00.000Z</rma:prevReviewDate>
+                              <cm:undefined>
+                                <view:value view:isNull="true"></view:value>
+                              </cm:undefined>
+                              <rma:recordNote></rma:recordNote>
+                              <cm:description>Cut off at end of FY in which all allowances are terminated; final disposition TBD.</cm:description>
+                              <rma:publicationDate>2007-01-17T10:43:00.000Z</rma:publicationDate>
+                              <sys:node-dbid>502</sys:node-dbid>
+                              <rma:cutoffEvent></rma:cutoffEvent>
+                              <rma:supplementalMarkingList>
+                                <view:values>
+                                  <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                                </view:values>
+                              </rma:supplementalMarkingList>
+                              <cm:title>SF 1190 Data</cm:title>
+                              <cm:author></cm:author>
+                              <cm:modifier>admin</cm:modifier>
+                              <cm:modified>2007-01-17T10:43:27.500Z</cm:modified>
+                              <rma:originator>admin</rma:originator>
+                              <sys:store-protocol>workspace</sys:store-protocol>
+                              <rma:addressee>admin</rma:addressee>
+                              <rma:recordIdentifier>0205-03-0001</rma:recordIdentifier>
+                            </view:properties>
+                            <view:associations></view:associations>
+                          </cm:folder>
+                        </cm:contains>
+                      </view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:folder view:childName="cm:Series 0216">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-17T10:14:56.328Z</cm:modified>
+                  <cm:description>STANDARDS OF CONDUCT</cm:description>
+                  <app:icon>space-icon-cd</app:icon>
+                  <sys:node-uuid>8334ffa1-a5af-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>483</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>STANDARDS OF CONDUCT</cm:title>
+                  <cm:name>Series 0216</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:18:37.765Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0216-01 Standards of Conduct Correspondence">
+                      <view:aspects>
+                        <cm:templatable></cm:templatable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                        <cm:copiedfrom></cm:copiedfrom>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:vitalRecordIndicator>false</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>1ce8f4a5-a613-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>GRS 1 item 27</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:filePlanNote>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:filePlanNote>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:None</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>true</rma:cutoffOnSuperseded>
+                        <rma:destroyBlockValue>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:destroyBlockValue>
+                        <cm:created>2007-01-17T10:11:35.796Z</cm:created>
+                        <rma:holdPeriodValue>2</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <rma:eventTrigger>Obsolete or Superseded</rma:eventTrigger>
+                        <rma:destroyImmediately>true</rma:destroyImmediately>
+                        <cm:name>0216-01 Standards of Conduct Correspondence</cm:name>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Correspondence, memorandums, and other records relating to code of ethics and standards of conduct. Which are: maintained by any JS/combatant command activity.</cm:description>
+                        <cm:source>../../../cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-02_x0020_Merit_x0020_Pay_x0020_Records</cm:source>
+                        <sys:node-dbid>494</sys:node-dbid>
+                        <rma:nextDestroyDate>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:nextDestroyDate>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>Standards of Conduct Correspondence</cm:title>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <rma:recordFolders>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:recordFolders>
+                        <cm:modified>2007-01-17T10:14:56.328Z</cm:modified>
+                        <rma:dispositionInstructions>Destroy/delete when superseded or obsolete.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:destroyBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:destroyBlockUnit>
+                        <rma:recordCategoryIdentifier>0216-01</rma:recordCategoryIdentifier>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>false</rma:processHold>
+                      </view:properties>
+                      <view:associations></view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:folder view:childName="cm:Series 0220">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-17T10:17:32.000Z</cm:modified>
+                  <cm:description>LABOR MANAGEMENT RELATIONS RECORDS</cm:description>
+                  <app:icon>space-icon-default</app:icon>
+                  <sys:node-uuid>b7281a05-a5af-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>484</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>LABOR MANAGEMENT RELATIONS RECORDS</cm:title>
+                  <cm:name>Series 0220</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:20:04.890Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0220-04 Memorandums of Agreement Under Labor Management Relations">
+                      <view:aspects>
+                        <cm:countable></cm:countable>
+                        <cm:templatable></cm:templatable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                        <cm:copiedfrom></cm:copiedfrom>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:vitalRecordIndicator>false</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>a096fa7a-a613-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>N1-218-00-3 item 13</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:filePlanNote>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:filePlanNote>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Year_x0020_End</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>true</rma:cutoffOnSuperseded>
+                        <rma:destroyBlockValue>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:destroyBlockValue>
+                        <cm:counter>3</cm:counter>
+                        <cm:created>2007-01-17T10:15:16.718Z</cm:created>
+                        <rma:holdPeriodValue>4</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <rma:destroyImmediately>true</rma:destroyImmediately>
+                        <cm:name>0220-04 Memorandums of Agreement Under Labor Management Relations</cm:name>
+                        <rma:eventTrigger>Obsolete or Superseded</rma:eventTrigger>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Consisting of: initial union proposals, counter proposals, working documents, and approved agreements. Which are: maintained by any JS/combatant command activity.</cm:description>
+                        <cm:source>../../../cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-02_x0020_Merit_x0020_Pay_x0020_Records</cm:source>
+                        <sys:node-dbid>495</sys:node-dbid>
+                        <rma:nextDestroyDate>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:nextDestroyDate>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>Memorandums of Agreement Under Labor Management Relations</cm:title>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <rma:recordFolders>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:recordFolders>
+                        <cm:modified>2007-01-17T21:45:31.156Z</cm:modified>
+                        <rma:dispositionInstructions>Cut off when superseded or obsolete, hold 4 years, then destroy/delete.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:destroyBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</rma:destroyBlockUnit>
+                        <rma:recordCategoryIdentifier>0204-04</rma:recordCategoryIdentifier>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations>
+                        <cm:contains>
+                          <cm:folder view:childName="cm:Folder 001 - Agreement on Union Representation on Adverse Action Cases">
+                            <view:aspects>
+                              <rma:record></rma:record>
+                              <cm:templatable></cm:templatable>
+                              <cm:auditable></cm:auditable>
+                              <sys:referenceable></sys:referenceable>
+                              <app:uifacets></app:uifacets>
+                              <rma:cutoffSchedule></rma:cutoffSchedule>
+                              <rma:userSpecifiedData></rma:userSpecifiedData>
+                              <sys:incomplete></sys:incomplete>
+                              <cm:author></cm:author>
+                              <cm:referencing></cm:referencing>
+                            </view:aspects>
+                            <view:properties>
+                              <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                              <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:record_template.ftl</cm:template>
+                              <app:icon>space-icon-default</app:icon>
+                              <sys:node-uuid>ea08da09-a673-11db-8689-916cc48ea4c1</sys:node-uuid>
+                              <rma:dateReceived>2007-01-17T21:44:00.000Z</rma:dateReceived>
+                              <rma:mediaFormat>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:mediaFormat>
+                              <rma:subject>Cut off when superseded or obsolete, hold 4 years, then destroy/delete.</rma:subject>
+                              <cm:created>2007-01-17T21:44:31.562Z</cm:created>
+                              <rma:dateFiled>2007-01-17T21:44:00.000Z</rma:dateFiled>
+                              <cm:creator>admin</cm:creator>
+                              <rma:originatingOrganization>Defense Information Systems Agency</rma:originatingOrganization>
+                              <cm:name>Folder 001 - Agreement on Union Representation on Adverse Action Cases</cm:name>
+                              <sys:store-identifier>SpacesStore</sys:store-identifier>
+                              <cm:undefined>
+                                <view:value view:isNull="true"></view:value>
+                              </cm:undefined>
+                              <rma:recordNote></rma:recordNote>
+                              <cm:description>Cut off when superseded or obsolete, hold 4 years, then destroy/delete.</cm:description>
+                              <rma:publicationDate>2007-01-17T21:44:00.000Z</rma:publicationDate>
+                              <sys:node-dbid>505</sys:node-dbid>
+                              <rma:cutoffEvent></rma:cutoffEvent>
+                              <rma:supplementalMarkingList>
+                                <view:values>
+                                  <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                                </view:values>
+                              </rma:supplementalMarkingList>
+                              <cm:title>Agreement on Union Representation on Adverse Action Cases</cm:title>
+                              <cm:author>Defense Information Systems Agency</cm:author>
+                              <cm:modifier>admin</cm:modifier>
+                              <cm:modified>2007-01-17T21:45:31.156Z</cm:modified>
+                              <rma:originator>admin</rma:originator>
+                              <sys:store-protocol>workspace</sys:store-protocol>
+                              <rma:recordIdentifier>0204-04-0002</rma:recordIdentifier>
+                              <rma:addressee>admin</rma:addressee>
+                            </view:properties>
+                            <view:associations></view:associations>
+                          </cm:folder>
+                        </cm:contains>
+                      </view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:folder view:childName="cm:Series 0414">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-17T10:20:55.437Z</cm:modified>
+                  <cm:description>LAW LIBRARIES</cm:description>
+                  <app:icon>space-icon-cd</app:icon>
+                  <sys:node-uuid>c9ddd605-a5af-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>485</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>LAW LIBRARIES</cm:title>
+                  <cm:name>Series 0414</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:20:36.281Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0414-01 Library Acquisition Records">
+                      <view:aspects>
+                        <cm:countable></cm:countable>
+                        <cm:templatable></cm:templatable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                        <cm:copiedfrom></cm:copiedfrom>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:vitalRecordIndicator>false</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>06b0d384-a614-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>GRS 3 item 3a(1)(a)</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:filePlanNote>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:filePlanNote>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Year_x0020_End</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>false</rma:cutoffOnSuperseded>
+                        <rma:destroyBlockValue>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:destroyBlockValue>
+                        <cm:counter>1</cm:counter>
+                        <cm:created>2007-01-17T10:18:08.015Z</cm:created>
+                        <rma:holdPeriodValue>6</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <rma:destroyImmediately>true</rma:destroyImmediately>
+                        <cm:name>0414-01 Library Acquisition Records</cm:name>
+                        <rma:eventTrigger>Cut off after final payment</rma:eventTrigger>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Consisting of: requisitions, receiving reports, purchase orders, packing lists, requests for issue or turn-in, and related records which are control records accumulated by librarians for material procured from centrally-funded sources that exceed $2,000. Which are: maintained by any JS/combatant command activity.</cm:description>
+                        <cm:source>../../../cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-02_x0020_Merit_x0020_Pay_x0020_Records</cm:source>
+                        <sys:node-dbid>496</sys:node-dbid>
+                        <rma:nextDestroyDate>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:nextDestroyDate>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>Library Acquisition Records</cm:title>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <rma:recordFolders>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:recordFolders>
+                        <cm:modified>2007-01-17T21:47:19.671Z</cm:modified>
+                        <rma:dispositionInstructions>Cut off after final payment; hold 6 years, 3 months, then destroy/delete.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:destroyBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</rma:destroyBlockUnit>
+                        <rma:recordCategoryIdentifier>0414-01</rma:recordCategoryIdentifier>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations>
+                        <cm:contains>
+                          <cm:folder view:childName="cm:McMillian Publishing">
+                            <view:aspects>
+                              <rma:record></rma:record>
+                              <cm:templatable></cm:templatable>
+                              <cm:auditable></cm:auditable>
+                              <sys:referenceable></sys:referenceable>
+                              <app:uifacets></app:uifacets>
+                              <rma:cutoffSchedule></rma:cutoffSchedule>
+                              <rma:userSpecifiedData></rma:userSpecifiedData>
+                              <sys:incomplete></sys:incomplete>
+                              <cm:author></cm:author>
+                              <cm:referencing></cm:referencing>
+                            </view:aspects>
+                            <view:properties>
+                              <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                              <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:record_template.ftl</cm:template>
+                              <app:icon>space-icon-default</app:icon>
+                              <sys:node-uuid>4e1d6d84-a674-11db-8689-916cc48ea4c1</sys:node-uuid>
+                              <rma:dateReceived>2007-01-17T21:47:00.000Z</rma:dateReceived>
+                              <rma:mediaFormat>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:mediaFormat>
+                              <rma:subject>Cut off after final payment; hold 6 years, 3 months, then destroy/delete.</rma:subject>
+                              <cm:created>2007-01-17T21:47:19.468Z</cm:created>
+                              <rma:dateFiled>2007-01-17T21:47:00.000Z</rma:dateFiled>
+                              <cm:creator>admin</cm:creator>
+                              <rma:originatingOrganization>Defense Information Systems Agency</rma:originatingOrganization>
+                              <cm:name>Folder 0001 - McMillian Publishing</cm:name>
+                              <sys:store-identifier>SpacesStore</sys:store-identifier>
+                              <cm:undefined>
+                                <view:value view:isNull="true"></view:value>
+                              </cm:undefined>
+                              <rma:recordNote></rma:recordNote>
+                              <cm:description>Cut off after final payment; hold 6 years, 3 months, then destroy/delete.</cm:description>
+                              <rma:publicationDate>2007-01-17T21:47:00.000Z</rma:publicationDate>
+                              <sys:node-dbid>506</sys:node-dbid>
+                              <rma:cutoffEvent></rma:cutoffEvent>
+                              <rma:supplementalMarkingList>
+                                <view:values>
+                                  <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                                </view:values>
+                              </rma:supplementalMarkingList>
+                              <cm:title>McMillian Publishing</cm:title>
+                              <cm:author></cm:author>
+                              <cm:modifier>admin</cm:modifier>
+                              <cm:modified>2007-01-17T21:47:48.421Z</cm:modified>
+                              <rma:originator>admin</rma:originator>
+                              <sys:store-protocol>workspace</sys:store-protocol>
+                              <rma:recordIdentifier>0414-01-0001</rma:recordIdentifier>
+                              <rma:addressee>admin</rma:addressee>
+                            </view:properties>
+                            <view:associations></view:associations>
+                          </cm:folder>
+                        </cm:contains>
+                      </view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:folder view:childName="cm:Series 0927">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-17T10:26:12.796Z</cm:modified>
+                  <cm:description>FOIA CONTROL</cm:description>
+                  <app:icon>space-icon-cd</app:icon>
+                  <sys:node-uuid>dee7bb3b-a5af-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>486</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>FOIA CONTROL</cm:title>
+                  <cm:name>Series 0927</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:21:11.593Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0927-01 FOIA Response Register">
+                      <view:aspects>
+                        <cm:templatable></cm:templatable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                        <cm:copiedfrom></cm:copiedfrom>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:vitalRecordIndicator>false</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>7e45c59d-a614-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>GRS 14 item 13a</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:filePlanNote>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:filePlanNote>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Year_x0020_End</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>false</rma:cutoffOnSuperseded>
+                        <rma:destroyBlockValue>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:destroyBlockValue>
+                        <cm:created>2007-01-17T10:21:28.640Z</cm:created>
+                        <rma:holdPeriodValue>6</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <rma:eventTrigger>Cut off on date of last entry</rma:eventTrigger>
+                        <rma:destroyImmediately>true</rma:destroyImmediately>
+                        <cm:name>0927-01 FOIA Response Register</cm:name>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Files maintained for control purposes in responding to requests, including registers and similar records listing date, nature and purpose of request, and name and address of requestor. Consisting of: the register or listing. Which are: maintained by any JS/combatant command activity as the official record copy.</cm:description>
+                        <cm:source>../../../cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-02_x0020_Merit_x0020_Pay_x0020_Records</cm:source>
+                        <sys:node-dbid>497</sys:node-dbid>
+                        <rma:nextDestroyDate>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:nextDestroyDate>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>FOIA Response Register</cm:title>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <rma:recordFolders>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:recordFolders>
+                        <cm:modified>2007-01-17T10:23:30.906Z</cm:modified>
+                        <rma:dispositionInstructions>Cut off on date of last entry, hold 6 years, then destroy/delete.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:destroyBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</rma:destroyBlockUnit>
+                        <rma:recordCategoryIdentifier>0927-01</rma:recordCategoryIdentifier>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations></view:associations>
+                    </rma:filePlan>
+                    <rma:filePlan view:childName="cm:0927-04 FOIA Reports">
+                      <view:aspects>
+                        <cm:templatable></cm:templatable>
+                        <rma:destroyInstructions></rma:destroyInstructions>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                        <cm:copiedfrom></cm:copiedfrom>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:vitalRecordIndicator>false</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>ceb867cf-a614-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>GRS 14 item 14</rma:dispositionAuthority>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:filePlanNote>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:filePlanNote>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Year_x0020_End</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>false</rma:cutoffOnSuperseded>
+                        <rma:destroyBlockValue>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:destroyBlockValue>
+                        <cm:created>2007-01-17T10:23:43.609Z</cm:created>
+                        <rma:holdPeriodValue>2</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <rma:eventTrigger></rma:eventTrigger>
+                        <rma:destroyImmediately>true</rma:destroyImmediately>
+                        <cm:name>0927-04 FOIA Reports</cm:name>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Consisting of: reports relating to recurring reports and one-time information requirements on implementation of FOIA, including annual reports to Congress. Which are: maintained by any JS/combatant command activity.</cm:description>
+                        <cm:source>../../../cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-02_x0020_Merit_x0020_Pay_x0020_Records</cm:source>
+                        <sys:node-dbid>498</sys:node-dbid>
+                        <rma:nextDestroyDate>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:nextDestroyDate>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>FOIA Reports</cm:title>
+                        <rma:cutoffOnObsolete>false</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Annually</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>false</rma:permanentRecordIndicator>
+                        <rma:recordFolders>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:recordFolders>
+                        <cm:modified>2007-01-17T10:26:12.796Z</cm:modified>
+                        <rma:dispositionInstructions>Cut off annually, hold 2 years, then destroy/delete.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:destroyBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</rma:destroyBlockUnit>
+                        <rma:recordCategoryIdentifier>0927-04</rma:recordCategoryIdentifier>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations></view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:folder view:childName="cm:Series 0942">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <sys:referenceable></sys:referenceable>
+                  <app:uifacets></app:uifacets>
+                </view:aspects>
+                <view:properties>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-17T10:28:49.265Z</cm:modified>
+                  <cm:description>SCIENCE ADVISOR RECORDS/ACTIVITIE</cm:description>
+                  <app:icon>space-icon-default</app:icon>
+                  <sys:node-uuid>23e10c33-a5b0-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <cm:creator>admin</cm:creator>
+                  <sys:node-dbid>487</sys:node-dbid>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:title>SCIENCE ADVISOR RECORDS/ACTIVITIE</cm:title>
+                  <cm:name>Series 0942</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                  <cm:created>2007-01-16T22:23:07.296Z</cm:created>
+                </view:properties>
+                <view:associations>
+                  <cm:contains>
+                    <rma:filePlan view:childName="cm:0942-01 Science Advisor Records">
+                      <view:aspects>
+                        <cm:countable></cm:countable>
+                        <cm:templatable></cm:templatable>
+                        <cm:auditable></cm:auditable>
+                        <app:uifacets></app:uifacets>
+                        <sys:referenceable></sys:referenceable>
+                        <rma:transferInstructions></rma:transferInstructions>
+                        <rma:userSpecifiedData></rma:userSpecifiedData>
+                        <cm:copiedfrom></cm:copiedfrom>
+                      </view:aspects>
+                      <view:properties>
+                        <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                        <rma:transferLocation>RHA</rma:transferLocation>
+                        <rma:vitalRecordIndicator>true</rma:vitalRecordIndicator>
+                        <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:fileplan_template.ftl</cm:template>
+                        <app:icon>space-icon-default</app:icon>
+                        <sys:node-uuid>376b62fa-a615-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                        <rma:dispositionAuthority>N1-218-00-10 item 44</rma:dispositionAuthority>
+                        <rma:filePlanNote>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:filePlanNote>
+                        <rma:defaultMediaType>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:defaultMediaType>
+                        <rma:holdPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Year_x0020_End</rma:holdPeriodUnit>
+                        <rma:cutoffOnSuperseded>false</rma:cutoffOnSuperseded>
+                        <cm:counter>3</cm:counter>
+                        <cm:created>2007-01-17T10:26:39.250Z</cm:created>
+                        <rma:holdPeriodValue>5</rma:holdPeriodValue>
+                        <cm:creator>admin</cm:creator>
+                        <rma:transferBlockUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:None</rma:transferBlockUnit>
+                        <rma:containsRecordFolders>false</rma:containsRecordFolders>
+                        <rma:vitalRecordReviewPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:Calendar_x0020_Quater_x0020_End</rma:vitalRecordReviewPeriodUnit>
+                        <rma:discretionaryHold>false</rma:discretionaryHold>
+                        <rma:eventTrigger>Completion of study</rma:eventTrigger>
+                        <cm:name>0942-01 Science Advisor Records</cm:name>
+                        <sys:store-identifier>SpacesStore</sys:store-identifier>
+                        <rma:vitalRecordReviewPeriodValue>1</rma:vitalRecordReviewPeriodValue>
+                        <cm:description>Records generated by the science advisor. Consisting of: reports, studies, tasking orders, and similar records. Reports are usually informal and unpublished. Records may be generated at all activities. Which are: maintained by any JS/combatant command activity as the official record copy.</cm:description>
+                        <cm:source>../../../cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-02_x0020_Merit_x0020_Pay_x0020_Records</cm:source>
+                        <sys:node-dbid>499</sys:node-dbid>
+                        <rma:cutoffPeriodValue>1</rma:cutoffPeriodValue>
+                        <cm:title>Science Advisor Records</cm:title>
+                        <rma:cutoffOnObsolete>true</rma:cutoffOnObsolete>
+                        <rma:processCutoff>true</rma:processCutoff>
+                        <rma:defaultMarkingList>
+                          <view:values>
+                            <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                          </view:values>
+                        </rma:defaultMarkingList>
+                        <cm:modifier>admin</cm:modifier>
+                        <rma:cutoffPeriodUnit>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Date_x0020_Period/cm:TBD</rma:cutoffPeriodUnit>
+                        <rma:permanentRecordIndicator>true</rma:permanentRecordIndicator>
+                        <rma:recordFolders>
+                          <view:value view:isNull="true"></view:value>
+                        </rma:recordFolders>
+                        <cm:modified>2007-01-17T21:51:34.343Z</cm:modified>
+                        <rma:dispositionInstructions>Permanent. Cut off on completion of study, hold 5 years, then transfer by CY block to RHA. Accession to NARA in 5-year blocks 25 years after cutoff.</rma:dispositionInstructions>
+                        <sys:store-protocol>workspace</sys:store-protocol>
+                        <rma:recordCategoryIdentifier>0942-01</rma:recordCategoryIdentifier>
+                        <rma:transferImmediately>true</rma:transferImmediately>
+                        <rma:defaultOriginatingOrganization>Defense Information Systems Agency</rma:defaultOriginatingOrganization>
+                        <rma:processHold>true</rma:processHold>
+                      </view:properties>
+                      <view:associations>
+                        <cm:contains>
+                          <cm:folder view:childName="cm:Ft. Huachuca Environmental Impact Study">
+                            <view:aspects>
+                              <rma:record></rma:record>
+                              <cm:templatable></cm:templatable>
+                              <cm:auditable></cm:auditable>
+                              <rma:vitalrecord></rma:vitalrecord>
+                              <sys:referenceable></sys:referenceable>
+                              <app:uifacets></app:uifacets>
+                              <rma:cutoffSchedule></rma:cutoffSchedule>
+                              <rma:userSpecifiedData></rma:userSpecifiedData>
+                              <sys:incomplete></sys:incomplete>
+                              <cm:author></cm:author>
+                              <cm:referencing></cm:referencing>
+                            </view:aspects>
+                            <view:properties>
+                              <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                              <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:record_template.ftl</cm:template>
+                              <app:icon>space-icon-default</app:icon>
+                              <sys:node-uuid>bd55420e-a674-11db-8689-916cc48ea4c1</sys:node-uuid>
+                              <rma:dateReceived>2007-01-17T21:50:26.062Z</rma:dateReceived>
+                              <rma:mediaFormat>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:mediaFormat>
+                              <rma:subject>
+                                <view:value view:isNull="true"></view:value>
+                              </rma:subject>
+                              <cm:created>2007-01-17T21:50:26.062Z</cm:created>
+                              <rma:dateFiled>2007-01-17T21:50:26.062Z</rma:dateFiled>
+                              <cm:creator>admin</cm:creator>
+                              <rma:originatingOrganization>Defense Information Systems Agency</rma:originatingOrganization>
+                              <cm:name>Folder 0001 - Ft. Huachuca Environmental Impact Study</cm:name>
+                              <sys:store-identifier>SpacesStore</sys:store-identifier>
+                              <rma:prevReviewDate>2007-01-17T21:50:26.281Z</rma:prevReviewDate>
+                              <cm:undefined>
+                                <view:value view:isNull="true"></view:value>
+                              </cm:undefined>
+                              <rma:recordNote>
+                                <view:value view:isNull="true"></view:value>
+                              </rma:recordNote>
+                              <cm:description>Permanent. Cut off on completion of study, hold 5 years, then transfer by CY block to RHA. Accession to NARA in 5-year blocks 25 years after cutoff.</cm:description>
+                              <rma:publicationDate>2007-01-17T21:50:26.062Z</rma:publicationDate>
+                              <sys:node-dbid>507</sys:node-dbid>
+                              <rma:supplementalMarkingList>
+                                <view:values>
+                                  <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                                </view:values>
+                              </rma:supplementalMarkingList>
+                              <cm:title>Ft. Huachuca Environmental Impact Study</cm:title>
+                              <rma:nextReviewDate>2007-03-31T23:59:26.281+01:00</rma:nextReviewDate>
+                              <cm:modifier>admin</cm:modifier>
+                              <cm:modified>2007-01-17T21:50:26.312Z</cm:modified>
+                              <rma:originator>admin</rma:originator>
+                              <sys:store-protocol>workspace</sys:store-protocol>
+                              <rma:recordIdentifier>0942-01-0001</rma:recordIdentifier>
+                              <rma:addressee>admin</rma:addressee>
+                            </view:properties>
+                            <view:associations></view:associations>
+                          </cm:folder>
+                          <cm:folder view:childName="cm:Ft. Huachuca Pollution Advisory Report">
+                            <view:aspects>
+                              <rma:record></rma:record>
+                              <cm:templatable></cm:templatable>
+                              <cm:auditable></cm:auditable>
+                              <rma:vitalrecord></rma:vitalrecord>
+                              <sys:referenceable></sys:referenceable>
+                              <app:uifacets></app:uifacets>
+                              <rma:cutoffSchedule></rma:cutoffSchedule>
+                              <rma:userSpecifiedData></rma:userSpecifiedData>
+                              <sys:incomplete></sys:incomplete>
+                              <cm:author></cm:author>
+                              <cm:referencing></cm:referencing>
+                            </view:aspects>
+                            <view:properties>
+                              <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                              <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:record_template.ftl</cm:template>
+                              <app:icon>space-icon-default</app:icon>
+                              <sys:node-uuid>d249ca78-a674-11db-8689-916cc48ea4c1</sys:node-uuid>
+                              <rma:dateReceived>2007-01-17T21:51:01.343Z</rma:dateReceived>
+                              <rma:mediaFormat>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:mediaFormat>
+                              <rma:subject>
+                                <view:value view:isNull="true"></view:value>
+                              </rma:subject>
+                              <cm:created>2007-01-17T21:51:01.343Z</cm:created>
+                              <rma:dateFiled>2007-01-17T21:51:01.343Z</rma:dateFiled>
+                              <cm:creator>admin</cm:creator>
+                              <rma:originatingOrganization>Defense Information Systems Agency</rma:originatingOrganization>
+                              <cm:name>Folder 0002 - Ft. Huachuca Pollution Advisory Report</cm:name>
+                              <sys:store-identifier>SpacesStore</sys:store-identifier>
+                              <rma:prevReviewDate>2007-01-17T21:51:01.562Z</rma:prevReviewDate>
+                              <cm:undefined>
+                                <view:value view:isNull="true"></view:value>
+                              </cm:undefined>
+                              <rma:recordNote>
+                                <view:value view:isNull="true"></view:value>
+                              </rma:recordNote>
+                              <cm:description>Permanent. Cut off on completion of study, hold 5 years, then transfer by CY block to RHA. Accession to NARA in 5-year blocks 25 years after cutoff.</cm:description>
+                              <rma:publicationDate>2007-01-17T21:51:01.343Z</rma:publicationDate>
+                              <sys:node-dbid>508</sys:node-dbid>
+                              <rma:supplementalMarkingList>
+                                <view:values>
+                                  <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                                </view:values>
+                              </rma:supplementalMarkingList>
+                              <cm:title>Ft. Huachuca Pollution Advisory Report</cm:title>
+                              <rma:nextReviewDate>2007-03-31T23:59:01.562+01:00</rma:nextReviewDate>
+                              <cm:modifier>admin</cm:modifier>
+                              <cm:modified>2007-01-17T21:51:01.609Z</cm:modified>
+                              <rma:originator>admin</rma:originator>
+                              <sys:store-protocol>workspace</sys:store-protocol>
+                              <rma:recordIdentifier>0942-01-0002</rma:recordIdentifier>
+                              <rma:addressee>admin</rma:addressee>
+                            </view:properties>
+                            <view:associations></view:associations>
+                          </cm:folder>
+                          <cm:folder view:childName="cm:Ft. Huachuca Wildlife Diversity Study">
+                            <view:aspects>
+                              <rma:record></rma:record>
+                              <cm:templatable></cm:templatable>
+                              <cm:auditable></cm:auditable>
+                              <rma:vitalrecord></rma:vitalrecord>
+                              <sys:referenceable></sys:referenceable>
+                              <app:uifacets></app:uifacets>
+                              <rma:cutoffSchedule></rma:cutoffSchedule>
+                              <rma:userSpecifiedData></rma:userSpecifiedData>
+                              <sys:incomplete></sys:incomplete>
+                              <cm:author></cm:author>
+                              <cm:referencing></cm:referencing>
+                            </view:aspects>
+                            <view:properties>
+                              <rma:privacyActSystem>N/A</rma:privacyActSystem>
+                              <cm:template>/app:company_home/app:dictionary/app:content_templates/cm:record_template.ftl</cm:template>
+                              <app:icon>space-icon-default</app:icon>
+                              <sys:node-uuid>e5e46834-a674-11db-8689-916cc48ea4c1</sys:node-uuid>
+                              <rma:dateReceived>2007-01-17T21:51:34.109Z</rma:dateReceived>
+                              <rma:mediaFormat>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Media_x0020_Types/cm:Electronic</rma:mediaFormat>
+                              <rma:subject>
+                                <view:value view:isNull="true"></view:value>
+                              </rma:subject>
+                              <cm:created>2007-01-17T21:51:34.109Z</cm:created>
+                              <rma:dateFiled>2007-01-17T21:51:34.109Z</rma:dateFiled>
+                              <cm:creator>admin</cm:creator>
+                              <rma:originatingOrganization>Defense Information Systems Agency</rma:originatingOrganization>
+                              <cm:name>Folder 0003 - Ft. Huachuca Wildlife Diversity Study</cm:name>
+                              <sys:store-identifier>SpacesStore</sys:store-identifier>
+                              <rma:prevReviewDate>2007-01-17T21:51:34.281Z</rma:prevReviewDate>
+                              <cm:undefined>
+                                <view:value view:isNull="true"></view:value>
+                              </cm:undefined>
+                              <rma:recordNote>
+                                <view:value view:isNull="true"></view:value>
+                              </rma:recordNote>
+                              <cm:description>Permanent. Cut off on completion of study, hold 5 years, then transfer by CY block to RHA. Accession to NARA in 5-year blocks 25 years after cutoff.</cm:description>
+                              <rma:publicationDate>2007-01-17T21:51:34.109Z</rma:publicationDate>
+                              <sys:node-dbid>509</sys:node-dbid>
+                              <rma:supplementalMarkingList>
+                                <view:values>
+                                  <view:value>/cm:generalclassifiable/cm:Records_x0020_Categories/cm:Markings/cm:NONE</view:value>
+                                </view:values>
+                              </rma:supplementalMarkingList>
+                              <cm:title>Ft. Huachuca Wildlife Diversity Study</cm:title>
+                              <rma:nextReviewDate>2007-03-31T23:59:34.281+01:00</rma:nextReviewDate>
+                              <cm:modifier>admin</cm:modifier>
+                              <cm:modified>2007-01-17T21:51:34.328Z</cm:modified>
+                              <rma:originator>admin</rma:originator>
+                              <sys:store-protocol>workspace</sys:store-protocol>
+                              <rma:recordIdentifier>0942-01-0003</rma:recordIdentifier>
+                              <rma:addressee>admin</rma:addressee>
+                            </view:properties>
+                            <view:associations></view:associations>
+                          </cm:folder>
+                        </cm:contains>
+                      </view:associations>
+                    </rma:filePlan>
+                  </cm:contains>
+                </view:associations>
+              </cm:folder>
+              <cm:content view:childName="cm:notes">
+                <view:aspects>
+                  <cm:auditable></cm:auditable>
+                  <cm:titled></cm:titled>
+                  <sys:referenceable></sys:referenceable>
+                  <app:inlineeditable></app:inlineeditable>
+                  <cm:author></cm:author>
+                </view:aspects>
+                <view:properties>
+                  <app:editInline>true</app:editInline>
+                  <cm:description></cm:description>
+                  <sys:node-uuid>a2a3217b-a617-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+                  <sys:node-dbid>503</sys:node-dbid>
+                  <cm:content>contentUrl=classpath:alfresco/module/org.alfresco.module.RecordsManagement/bootstrap/records_space/content0.html|mimetype=text/html|size=531|encoding=UTF-8</cm:content>
+                  <cm:title></cm:title>
+                  <cm:author></cm:author>
+                  <cm:created>2007-01-17T10:43:58.078Z</cm:created>
+                  <cm:modifier>admin</cm:modifier>
+                  <cm:modified>2007-01-17T10:44:02.718Z</cm:modified>
+                  <cm:creator>admin</cm:creator>
+                  <sys:store-protocol>workspace</sys:store-protocol>
+                  <cm:name>notes</cm:name>
+                  <sys:store-identifier>SpacesStore</sys:store-identifier>
+                </view:properties>
+                <view:associations></view:associations>
+              </cm:content>
+            </cm:contains>
+          </view:associations>
+        </cm:folder>
+        <cm:content view:childName="cm:DOD 5015-2 Records Management Specification.pdf">
+          <view:aspects>
+            <cm:titled></cm:titled>
+            <cm:auditable></cm:auditable>
+            <sys:referenceable></sys:referenceable>
+            <cm:author></cm:author>
+          </view:aspects>
+          <view:properties>
+            <cm:description>Design Criteria Standard for Electronic Records Management Software Applications</cm:description>
+            <sys:node-uuid>71875b25-a5ae-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+            <sys:node-dbid>475</sys:node-dbid>
+            <cm:content>contentUrl=classpath:alfresco/module/org.alfresco.module.RecordsManagement/bootstrap/records_space/content1.pdf|mimetype=application/pdf|size=281556|encoding=UTF-8</cm:content>
+            <cm:title>DoD 5015.2-STD, June 19, 2002</cm:title>
+            <cm:author>ASD(C3I)</cm:author>
+            <cm:created>2007-01-16T22:10:58.515Z</cm:created>
+            <cm:modifier>admin</cm:modifier>
+            <cm:modified>2007-01-16T22:11:08.000Z</cm:modified>
+            <cm:creator>admin</cm:creator>
+            <sys:store-protocol>workspace</sys:store-protocol>
+            <cm:name>DOD 5015-2 Records Management Specification.pdf</cm:name>
+            <sys:store-identifier>SpacesStore</sys:store-identifier>
+          </view:properties>
+          <view:associations></view:associations>
+        </cm:content>
+        <cm:content view:childName="cm:DOD Compliance Requirements.doc">
+          <view:aspects>
+            <cm:titled></cm:titled>
+            <cm:auditable></cm:auditable>
+            <sys:referenceable></sys:referenceable>
+            <cm:author></cm:author>
+          </view:aspects>
+          <view:properties>
+            <cm:description>Records Management Application Certification Test Procedures</cm:description>
+            <sys:node-uuid>86369c35-a5ae-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+            <sys:node-dbid>476</sys:node-dbid>
+            <cm:content>contentUrl=classpath:alfresco/module/org.alfresco.module.RecordsManagement/bootstrap/records_space/content2.doc|mimetype=application/msword|size=898560|encoding=UTF-8</cm:content>
+            <cm:title>RMA Certification Test Procedures</cm:title>
+            <cm:author>RMA Team</cm:author>
+            <cm:created>2007-01-16T22:11:33.250Z</cm:created>
+            <cm:modifier>admin</cm:modifier>
+            <cm:modified>2007-01-16T22:11:55.578Z</cm:modified>
+            <cm:creator>admin</cm:creator>
+            <sys:store-protocol>workspace</sys:store-protocol>
+            <cm:name>DOD Compliance Requirements.doc</cm:name>
+            <sys:store-identifier>SpacesStore</sys:store-identifier>
+          </view:properties>
+          <view:associations></view:associations>
+        </cm:content>
+        <cm:folder view:childName="cm:Transfer">
+          <view:aspects>
+            <cm:auditable></cm:auditable>
+            <sys:referenceable></sys:referenceable>
+            <app:uifacets></app:uifacets>
+          </view:aspects>
+          <view:properties>
+            <cm:modifier>admin</cm:modifier>
+            <cm:modified>2007-01-16T22:12:28.984Z</cm:modified>
+            <cm:description>Location for records transfer</cm:description>
+            <app:icon>space-icon-cd</app:icon>
+            <sys:node-uuid>a7657bde-a5ae-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+            <cm:creator>admin</cm:creator>
+            <sys:node-dbid>477</sys:node-dbid>
+            <sys:store-protocol>workspace</sys:store-protocol>
+            <cm:title>Location for records transfer</cm:title>
+            <cm:name>Transfer</cm:name>
+            <sys:store-identifier>SpacesStore</sys:store-identifier>
+            <cm:created>2007-01-16T22:12:28.968Z</cm:created>
+          </view:properties>
+          <view:associations></view:associations>
+        </cm:folder>
+        <cm:folder view:childName="cm:Users">
+          <view:aspects>
+            <cm:auditable></cm:auditable>
+            <sys:referenceable></sys:referenceable>
+            <app:uifacets></app:uifacets>
+          </view:aspects>
+          <view:properties>
+            <cm:modifier>admin</cm:modifier>
+            <cm:modified>2007-01-16T22:13:52.546Z</cm:modified>
+            <cm:description>User Spaces for Test Users</cm:description>
+            <app:icon>space-icon-default</app:icon>
+            <sys:node-uuid>d938eaa4-a5ae-11db-b705-a76dc4fc3b7b</sys:node-uuid>
+            <cm:creator>admin</cm:creator>
+            <sys:node-dbid>478</sys:node-dbid>
+            <sys:store-protocol>workspace</sys:store-protocol>
+            <cm:title>User Spaces for Test Users</cm:title>
+            <cm:name>Users</cm:name>
+            <sys:store-identifier>SpacesStore</sys:store-identifier>
+            <cm:created>2007-01-16T22:13:52.531Z</cm:created>
+          </view:properties>
+          <view:associations></view:associations>
+        </cm:folder>
+      </cm:contains>
+    </view:associations>
+  </cm:folder>
+  <view:reference xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0942/cm:_x0030_942-01_x0020_Science_x0020_Advisor_x0020_Records/cm:Ft._x0020_Huachuca_x0020_Pollution_x0020_Advisory_x0020_Report">
+    <view:associations>
+      <rma:filePlan>
+        <view:reference view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0942/cm:_x0030_942-01_x0020_Science_x0020_Advisor_x0020_Records"></view:reference>
+      </rma:filePlan>
+    </view:associations>
+  </view:reference>
+  <view:reference xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0414/cm:_x0030_414-01_x0020_Library_x0020_Acquisition_x0020_Records/cm:McMillian_x0020_Publishing">
+    <view:associations>
+      <rma:filePlan>
+        <view:reference view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0414/cm:_x0030_414-01_x0020_Library_x0020_Acquisition_x0020_Records"></view:reference>
+      </rma:filePlan>
+    </view:associations>
+  </view:reference>
+  <view:reference xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0942/cm:_x0030_942-01_x0020_Science_x0020_Advisor_x0020_Records/cm:Ft._x0020_Huachuca_x0020_Wildlife_x0020_Diversity_x0020_Study">
+    <view:associations>
+      <rma:filePlan>
+        <view:reference view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0942/cm:_x0030_942-01_x0020_Science_x0020_Advisor_x0020_Records"></view:reference>
+      </rma:filePlan>
+    </view:associations>
+  </view:reference>
+  <view:reference xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-03_x0020_Differential_x0020_and_x0020_Allowances/cm:Folder_x0020_001_x0020_-_x0020_SF_x0020_1190_x0020_Data">
+    <view:associations>
+      <rma:filePlan>
+        <view:reference view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-03_x0020_Differential_x0020_and_x0020_Allowances"></view:reference>
+      </rma:filePlan>
+    </view:associations>
+  </view:reference>
+  <view:reference xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0220/cm:_x0030_220-04_x0020_Memorandums_x0020_of_x0020_Agreement_x0020_Under_x0020_Labor_x0020_Management_x0020_Relations/cm:Folder_x0020_001_x0020_-_x0020_Agreement_x0020_on_x0020_Union_x0020_Representation_x0020_on_x0020_Adverse_x0020_Action_x0020_Cases">
+    <view:associations>
+      <rma:filePlan>
+        <view:reference view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0220/cm:_x0030_220-04_x0020_Memorandums_x0020_of_x0020_Agreement_x0020_Under_x0020_Labor_x0020_Management_x0020_Relations"></view:reference>
+      </rma:filePlan>
+    </view:associations>
+  </view:reference>
+  <view:reference xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-02_x0020_Merit_x0020_Pay_x0020_Records/cm:Folder_x0020_001_x0020_-_x0020_Jayne_x0020_Dough">
+    <view:associations>
+      <rma:filePlan>
+        <view:reference view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0205/cm:_x0030_205-02_x0020_Merit_x0020_Pay_x0020_Records"></view:reference>
+      </rma:filePlan>
+    </view:associations>
+  </view:reference>
+  <view:reference xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0942/cm:_x0030_942-01_x0020_Science_x0020_Advisor_x0020_Records/cm:Ft._x0020_Huachuca_x0020_Environmental_x0020_Impact_x0020_Study">
+    <view:associations>
+      <rma:filePlan>
+        <view:reference view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0942/cm:_x0030_942-01_x0020_Science_x0020_Advisor_x0020_Records"></view:reference>
+      </rma:filePlan>
+    </view:associations>
+  </view:reference>
+  <view:reference xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0106/cm:_x0030_106-01_x0020_ManpowerStudies_x0020_Supporting_x0020_Data/cm:Folder_x0020_001_x0020_-_x0020_Staffing_x0020_Strategies">
+    <view:associations>
+      <rma:filePlan>
+        <view:reference view:pathref="cm:Records_x0020_Space/cm:DOD_x0020_Records/cm:Series_x0020_0106/cm:_x0030_106-01_x0020_ManpowerStudies_x0020_Supporting_x0020_Data"></view:reference>
+      </rma:filePlan>
+    </view:associations>
+  </view:reference>
+</view:view>

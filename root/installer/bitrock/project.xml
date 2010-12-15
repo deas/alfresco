@@ -1,0 +1,320 @@
+<project>
+    <vendor>Alfresco Software, Inc.</vendor>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <fullName>Alfresco Community Edition Stack</fullName>
+    <shortName>alfresco</shortName>
+    <version>3.4.b-1</version>
+    <installerFilename>${product_shortname}-community-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
+    <licenseFile></licenseFile>
+    <readmeFile>${alfresco_readme_file}</readmeFile>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
+    <logoImage>images/alfresco_top_right.png</logoImage>
+    <splashImage>images/splash.png</splashImage>
+    <allowLanguageSelection>1</allowLanguageSelection>
+    <productDisplayIcon>${installdir}/alfresco.ico</productDisplayIcon>
+    <defaultLanguage>en</defaultLanguage>
+    <defaultUnixDirectoryPermissions>755</defaultUnixDirectoryPermissions>
+    <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
+    <allowComponentSelection>1</allowComponentSelection>
+    <leftImage>images/alfresco_left.png</leftImage>
+    <allowedLanguages>en fr es it de ja</allowedLanguages>
+	
+    <platformOptionsList>
+        <platformOptions>
+            <platform>osx</platform>
+            <height>430</height>
+        </platformOptions>
+    </platformOptionsList>
+
+    <customLanguageFileList>
+        <language> 
+          <code>en</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-en.po</file>
+        </language>
+
+        <language> 
+          <code>fr</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-fr.po</file>
+        </language>
+
+        <language> 
+          <code>es</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-es.po</file>
+        </language>
+
+        <language> 
+          <code>de</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-de.po</file>
+        </language>
+
+        <language> 
+          <code>it</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-it.po</file>
+        </language>
+
+        <language> 
+          <code>ja</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-ja.po</file>
+        </language>	
+    </customLanguageFileList>
+
+    <componentList>
+        <include file="alfresco-customstack-build-settings.xml" />
+        <include file="alfresco-build-settings.xml" />
+        <include file="alfresco-functions.xml" />
+
+        <include file="alfresco-linux-building-on-windows-patch.xml" />
+        <include file="alfresco-osx-building-on-windows-patch.xml" />
+        <include file="alfresco-linux-x64-building-on-windows-patch.xml" />
+
+        <include file="base-java-settings.xml"/>
+	<include file="base-tomcat-settings.xml"/>
+	<include file="base-parameter-dir.xml" />
+	<include file="base-parameter-admindb.xml" />
+	<include file="base-readme.xml"/>
+	<include file="base-licenses.xml"/>
+
+        <include file="alfresco-mysql-question.xml" />
+
+	<include file="common.xml" />
+	<include file="tomcat-java.xml" />	
+	<include file="mysql.xml" />
+	<include file="java.xml" />
+	<include file="tomcat.xml" />
+
+	<include file="ctlscript.xml" />
+	<include file="mysql-service.xml" />
+
+    	<include file="alfrescodm.xml" />
+        <include file="alfresco-apply-amps.xml" />
+    	<include file="alfrescodm-database.xml" />
+        <!-- AMP extensions -->
+        <include file="alfresco-sharepoint.xml" />
+        <include file="alfresco-records-management.xml" />
+	<include file="alfresco-wcmqs.xml" />
+	<include file="alfrescowcm.xml" />
+        <include file="alfresco-quickr.xml" />
+	<include file="base-unix-service.xml" />
+
+	<include file="openoffice.xml"/>
+	<include file="imagemagick.xml"/>
+    	<include file="swftools.xml"/>
+        <include file="alfresco-customstack-settings.xml" />
+        <include file="alfresco-customstack-shortcuts.xml" />
+
+        <!-- Tomcat cannot be started earlier, it needs to be done once alfresco is configured -->
+	<include file="tomcat-service.xml" />
+
+    </componentList>
+
+    <parameterList>
+        <stringParameter name="reserved_ports" ask="0" value="" />
+    </parameterList>
+
+    <postInstallationActionList>
+	<actionGroup>
+	    <actionList>
+		   <runProgram>
+		      <progressText>Stopping MySQL...</progressText>
+		      <program>${installdir}/${ctlscript_unix}</program>
+		      <programArguments>stop mysql</programArguments>
+		      <ruleList>
+                 <platformTest type="unix" />
+              </ruleList>
+           </runProgram>
+           <runProgram>
+		      <progressText>Stopping MySQL...</progressText>
+		      <program>${mysql_root_directory.dos}\scripts\servicerun.bat</program>
+		      <programArguments>STOP</programArguments>
+		      <ruleList>
+			     <platformTest type="windows" />
+              </ruleList>
+           </runProgram>
+		   <waitForPort port="${database_port}" timeout="10000" state="free" />
+	    </actionList>
+	    <ruleList>
+			<isTrue value="${alfrescomysqlquestion_bundled}" /> 
+	    </ruleList>
+	</actionGroup>
+        <!--<actionGroup>
+            <actionList>
+                <runProgram>
+                    <progressText>Starting Tomcat...</progressText>
+                    <program>${installdir}/${ctlscript_unix}</program>
+                    <programArguments>start tomcat</programArguments>
+                    <ruleList>
+                        <platformTest type="unix" />
+                    </ruleList>
+                </runProgram>
+                <waitForPort port="${application_server_port}" timeout="10000"/>
+            </actionList>
+            <ruleList>
+                <isTrue value="${alfrescomysqlquestion_bundled}" />
+            </ruleList>
+        </actionGroup>-->
+    </postInstallationActionList>
+    
+    <finalPageActionList>
+	<!--<actionGroup>
+	    <progressText>Launch ${product_fullname} now?</progressText>
+	    <actionList>
+		<launchBrowser> 
+		    <url>http://${application_server_domain}:${application_server_port}/alfresco</url>
+		    <ruleList>
+			<compareText text="${installer_ui}" logic="equals" value="gui"/>
+		    </ruleList>
+		</launchBrowser>
+	    </actionList>
+	    <ruleList>
+		<compareText text="${application_server_installation_type}" logic="equals" value="bundled" />
+		<compareText text="${installer_ui}" logic="equals" value="gui"/>
+	    </ruleList>
+	</actionGroup>-->
+	<actionGroup>
+	    <progressText>Launch ${product_fullname} Share</progressText>
+	    <actionList>
+		<showProgressDialog title="Starting servers ..." >
+		    <actionList>
+			<runProgram>
+			    <progressText>Starting servers. Please be patient.</progressText>
+			    <program>${installdir}/${ctlscript_unix}</program>
+			    <programArguments>start &amp;</programArguments>
+			    <ruleList>
+				<platformTest type="unix" />
+			    </ruleList>
+			</runProgram>
+			<actionGroup>
+                            <actionList>
+				<foreach values="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20" variables="iteration" progressText="Starting servers. Please be patient">
+                                    <actionList>
+                                        <wait ms="1000" />
+				    </actionList>
+				</foreach>
+			    </actionList>
+                            <ruleList>
+                                <platformTest type="unix" />
+			    </ruleList>
+			</actionGroup>
+			<runProgram>
+			    <progressText>Starting servers. Please be patient.</progressText>
+			    <program>${installdir}/servicerun.bat</program>
+			    <programArguments>START</programArguments>
+			    <ruleList>
+				<platformTest type="windows" />
+			    </ruleList>
+			</runProgram>
+		    </actionList>
+		</showProgressDialog>
+		<waitForPort port="${application_server_port}" timeout="10000" />
+		<launchBrowser> 
+		    <url>http://${application_server_domain}:${application_server_port}/share</url>
+		    <ruleList>
+			<compareText text="${installer_ui}" logic="equals" value="gui"/>
+		    </ruleList>
+		</launchBrowser>
+	    </actionList>
+	    <ruleList>
+		<compareText text="${application_server_installation_type}" logic="equals" value="bundled" />
+		<compareText text="${installer_ui}" logic="equals" value="gui"/>
+                <isTrue value="${alfrescomysqlquestion_bundled}" />
+	    </ruleList>
+	</actionGroup>
+	<showInfo>
+            <text>You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat.</text>
+            <ruleList>
+                <compareText text="${application_server_installation_type}" logic="equals" value="existing" />
+	    </ruleList>
+	</showInfo>
+    </finalPageActionList>
+    
+    <installationAbortedActionList>
+	<deleteFile path="${installdir}/tomcat" />
+	<deleteFile path="${installdir}/mysql" />  
+    </installationAbortedActionList>
+
+    <preUninstallationActionList>
+        <setInstallerVariable name="deleteConfirm" value="yes" />
+	<runProgram>
+	    <progressText>Stopping servers</progressText>
+	    <program>${installdir}/${ctlscript_unix}</program>
+	    <programArguments>stop &gt; /dev/null 2&gt; /dev/null</programArguments>
+	    <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<actionGroup>
+	    <actionList>
+		<runProgram>
+		    <progressText>Stopping services</progressText>
+		    <program>${installdir}/servicerun.bat</program>
+		    <programArguments>STOP</programArguments>
+		</runProgram>
+		<runProgram>
+		    <progressText>Uninstalling services</progressText>
+		    <program>${installdir}/serviceinstall.bat</program>
+		    <programArguments>REMOVE</programArguments>
+		</runProgram>
+	    </actionList>
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+	</actionGroup>	
+	<deleteFile>
+	    <abortOnError>0</abortOnError>
+	     <path>${installdir}/apps/${product_shortname}</path>
+	</deleteFile>
+	<actionGroup>
+	    <abortOnError>0</abortOnError>
+	    <actionList>
+		<deleteFile>
+		    <path>${installdir}/tomcat/bin/setenv.sh</path>
+		</deleteFile>
+		<deleteFile>
+		    <path>${installdir}/tomcat</path>
+		</deleteFile>
+	    </actionList>
+	    <ruleList>
+		<compareText text="${component(tomcat).parameter(tomcat_installation_type).value}" logic="equals" value="bundled" />
+	    </ruleList>
+	</actionGroup>
+	<actionGroup>
+	    <abortOnError>0</abortOnError>
+	    <actionList>
+		<deleteFile>
+		    <path>${installdir}/mysql/tmp</path>
+		</deleteFile>
+		<deleteFile>
+		    <path>${installdir}/mysql/data</path>
+		</deleteFile>
+                <deleteFile path="${installdir}/mysql" />
+	    </actionList>
+	    <ruleList>
+		<compareText text="${deleteConfirm}" logic="equals" value="yes" />
+		<compareText text="${component(mysql).parameter(mysql_installation_type).value}" logic="equals" value="bundled" />
+	    </ruleList>
+	</actionGroup>
+    </preUninstallationActionList>
+    <postUninstallationActionList>
+        <deleteFile path="${installdir}/tomcat" />
+        <deleteFile path="${installdir}/mysql" />
+        <deleteFile path="${installdir}" >
+            <ruleList>
+                <fileTest path="${installdir}" condition="is_empty"/>
+            </ruleList>
+        </deleteFile>
+		<deleteFile path="/etc/init.d/${component(baseunixservice).parameter(baseunixservice_script_name).value}">
+            <ruleList>
+			    <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <compareText text="${component(baseunixservice).parameter(baseunixservice_install_as_service).value}" logic="equals" value="1"/>
+                <platformTest type="unix"/>
+		        <fileTest condition="exists" path="/etc/init.d/${component(baseunixservice).parameter(baseunixservice_script_name).value}"/>
+			</ruleList>        
+	    </deleteFile>
+    </postUninstallationActionList>
+</project>

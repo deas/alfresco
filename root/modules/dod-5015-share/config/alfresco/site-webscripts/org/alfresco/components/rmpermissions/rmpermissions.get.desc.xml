@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Records Permissions</shortname>
+  <description>Records Permissions Component</description>
+  <url>/components/rmpermissions/rmpermissions</url>
+</webscript>

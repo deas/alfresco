@@ -1,0 +1,42 @@
+.userRights
+{
+   margin: 1em 10px;
+   width: 100%;
+}
+
+.userRights h1,
+.userRights h2
+{
+   font-weight: bold;
+}
+
+.userRights h2
+{
+   margin: 1em 0;
+}
+
+.userRights dl
+{
+   border: 1px solid #7F7F7F;
+}
+
+.userRights dt
+{
+   padding: 3px;
+}
+
+.userRights dd
+{
+   padding-left: 50%;
+}
+
+.userRights dt.odd,
+.userRights dd.odd
+{
+   background-color: #EDF5FF;
+}
+
+.userRights p
+{
+   padding-top: 0;
+}

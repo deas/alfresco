@@ -1,0 +1,37 @@
+<component>
+    <name>javasettings</name>
+    <description>Set Installer Variables Java</description>
+    <canBeEdited>1</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+    <initializationActionList>
+<!-- Java component variables -->
+<setInstallerVariable name="component(java).parameter(java_installation_type).ask" value="0"/>
+        <!-- this tag is modified automatically, please don't modified it manually -->
+        <setInstallerVariable name="component(java).parameter(java_installation_type).value" value="bundled"/>
+        <setInstallerVariable>
+            <name>component(java).parameter(java_installation_type).value</name>
+            <value>existing</value>
+            <ruleList>
+                <platformTest type="osx"/>
+            </ruleList>
+        </setInstallerVariable>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable>
+                    <name>component(java).parameter(java_min_version).value</name>
+                    <value>1.5.0</value>
+                </setInstallerVariable>
+
+<!--<setInstallerVariable>
+		    <name>component(java).parameter(java_max_version).value</name>
+		    <value>1.5</value>
+		</setInstallerVariable>-->
+            </actionList>
+            <ruleList>
+                <compareText text="${java_installation_type}" logic="equals" value="existing"/>
+            </ruleList>
+        </actionGroup>
+    </initializationActionList>
+</component>
+

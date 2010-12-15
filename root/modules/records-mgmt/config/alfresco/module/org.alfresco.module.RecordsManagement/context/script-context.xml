@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+    
+    <!-- Java script API -->
+    
+    <bean id="org_alfresco_module_RecordsManagement_Script" parent="baseJavaScriptExtension" class="org.alfresco.module.recordsManagement.RecordsManagementScript">
+        <property name="extensionName">
+            <value>rm</value>
+        </property>               
+        <property name="serviceRegistry">
+            <ref bean="ServiceRegistry"/>
+        </property>
+    </bean>
+    
+    <bean id="org_alfresco_module_RecordsManagement_ActionListener" class="org.alfresco.module.recordsManagement.ui.RecordsManagementActionListener">               
+        <property name="serviceRegistry">
+            <ref bean="ServiceRegistry"/>
+        </property>
+    </bean>
+    
+    <!-- Scheduled scripts -->
+    
+    <bean id="org_alfresco_module_RecordsManagement_scheduledCutoffJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.jscript.ExecuteScriptJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="scriptLocation">
+                    <bean class="org.alfresco.repo.jscript.ClasspathScriptLocation">
+		            	<constructor-arg>
+		            		<value>alfresco/module/org.alfresco.module.RecordsManagement/script/scheduled/scheduled_cutoff.js</value>
+		            	</constructor-arg>
+		            </bean>
+                </entry>
+                <entry key="scriptService">
+                    <ref bean="ScriptService"/>
+                </entry>
+                <entry key="authenticationComponent">
+                	<ref bean="authenticationComponent"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="org_alfresco_module_RecordsManagement_scheduledCutoffTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="org_alfresco_module_RecordsManagement_scheduledCutoffJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="cronExpression">
+            <!-- Execute @ 2:30 am every day -->
+            <value>0 * * * * ?</value>
+        </property>
+    </bean>   
+    
+    <bean id="org_alfresco_module_RecordsManagement_scheduledRemoveHoldJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>org.alfresco.repo.jscript.ExecuteScriptJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="scriptService">
+                    <ref bean="ScriptService"/>
+                </entry>
+                <entry key="scriptLocation">
+                    <bean class="org.alfresco.repo.jscript.ClasspathScriptLocation">
+		            	<constructor-arg>
+		            		<value>alfresco/module/org.alfresco.module.RecordsManagement/script/scheduled/scheduled_removeHold.js</value>
+		            	</constructor-arg>
+		            </bean>
+                </entry>
+                <entry key="authenticationComponent">
+                	<ref bean="authenticationComponent"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+        
+    <bean id="org_alfresco_module_RecordsManagement_scheduledRemoveHoldTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="org_alfresco_module_RecordsManagement_scheduledRemoveHoldJobDetail" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="cronExpression">
+            <!-- Execute @ 2:30 am every day -->
+            <value>0 * * * * ?</value>
+        </property>
+    </bean>
+    
+</beans>

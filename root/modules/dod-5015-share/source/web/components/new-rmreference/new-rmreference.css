@@ -1,0 +1,20 @@
+.new-rmreference .heading 
+{
+   color:#333333;
+   font-size:154%;
+   padding:1em 1em 0;
+}
+#selection
+{
+   display:none;
+   padding: 2px 0 3px 1.5em;
+   background: transparent url(../../components/images/generic-file-16.png) no-repeat scroll 0 0;
+   margin:0.5em 0;
+}
+#selection.active
+{
+   display: block;
+}
+input#submitCreate {
+   width:auto;
+}

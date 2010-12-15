@@ -1,0 +1,1 @@
+model.appType = context.attributes.portletHost ? "portlet-" : "";

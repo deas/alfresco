@@ -1,0 +1,1047 @@
+/* Site-wide Styles */
+
+body
+{
+   font-family: Arial, sans-serif;
+   font-size: 81%;
+   color: #515D6B;
+}
+
+a,
+a:visited,
+a:hover
+{
+   color: #000;
+   text-decoration: none;
+}
+
+a:hover
+{
+   text-decoration: underline;
+}
+
+h1
+{
+   font-family: Helvetica, Arial, sans-serif;
+   font-size: 146.5%;
+   font-weight: normal;
+}
+
+h2
+{
+   font-weight: bold;
+   font-size: 123.1%;
+}
+
+h2.thin
+{
+   font-weight: normal;
+}
+
+h1 .light,
+h1 .lighter,
+h2 .light,
+h2 .lighter
+{
+   color: #c7dbeb;
+}
+
+h3
+{
+   font-weight: bold;
+   font-size: 108%;
+}
+
+h4
+{
+   font-weight: bold;
+}
+
+h3 .light,
+h3 .lighter,
+h4 .light,
+h4 .lighter
+{
+   color: #a2a2a2;
+}
+
+hr
+{
+   color: #E4E4E4;
+   background-color: #E4E4E4;
+}
+
+label,
+.share-form .viewmode-label
+{
+   color: #606060;
+   margin-right: 0.4em;
+}
+
+.alfresco-share .sticky-wrapper
+{
+   background-color: #fff;
+}
+
+.label
+{
+   font-weight: bold;
+}
+
+.error
+{
+   background: white !important;
+   color: red !important;
+   font-weight: bold;
+   padding: 0.2em 1em;
+}
+
+.error-alt
+{
+   background-color: red !important;
+   color: white !important;
+   font-weight: bold;
+   padding: 0.2em 1em;
+}
+
+.light
+{
+   font-weight: normal;
+}
+
+.lighter
+{
+   font-size: 93%;
+   font-weight: normal;
+}
+
+/* DASHLETS */
+
+.dashlet
+{
+   border: 1px solid #bababa;
+   background-color: white;
+}
+
+.dashlet .title
+{
+   background-color: #d7e0e7;
+   background-image: url(images/dashlet-title-bg.png);
+   background-repeat: repeat-x;
+   border-bottom: 1px dashed #bababa;
+   color: #262d35;
+}
+
+.dashlet .feed
+{
+   background-image: url(images/feed-icon-16.png);
+   background-repeat: no-repeat;
+}
+
+.dashlet .toolbar
+{
+   background-color: #f6f6f6;
+   border-bottom: 1px solid #d3d3d3;
+}
+
+/*.dashlet .toolbar a
+{
+   color: #5497c4;
+}
+*/
+
+.dashlet .body
+{
+   background-color: #F9FCFD;
+}
+
+/*.dashlet .body a,
+.dashlet .body a:visited,
+.dashlet .body a:hover
+{
+   color: #4f94c9;
+}*/
+
+.dashlet .detail-list-item
+{
+   border-bottom: 1px dashed #e9e9e9;
+}
+
+.yui-skin-default .yui-panel
+{
+   border-bottom: medium none;
+}
+
+.yui-skin-default .mask
+{
+   opacity: 0.2;
+}
+
+.yui-skin-default .yui-panel .hd,
+.yui-skin-default .yui-panel .bdft,
+.yui-skin-default .yui-panel .ft
+{
+   color: #515D6B;
+   background: #E3EBEC;
+   border-bottom: 1px solid #C4C5C5;
+   border-left-color: #C4C5C5;
+   border-right-color: #C4C5C5;
+}
+
+.yui-skin-default .yui-panel .hd
+{
+   font-size: 123.1%;
+   font-weight: bold;
+   border-bottom: 1px solid #C4C5C5;
+}
+
+.yui-skin-default .yui-panel .bdft
+{
+   font-size: 100%;
+   border-top: 1px solid #C4C5C5;
+}
+
+.yui-skin-default .yui-panel .ft
+{
+   border-top: 1px solid #C4C5C5;
+   padding: 5px;
+}
+
+.yui-skin-default .yui-panel .bd
+{
+   color: #515D6B;
+   background-color: #F9FBFD;
+   border-left-color: #C4C5C5;
+   border-right-color: #C4C5C5;
+}
+
+.yui-skin-default .yui-panel .bd .yui-resize .yui-resize-handle
+{
+   background-color: #F9FBFD;
+}
+
+/* Data Lists: DataTable (Needs to appear before yui-dt-highlighted rule) */
+
+.yui-skin-default .datagrid tr.yui-dt-even
+{
+   background-color: #ffffff;
+}
+.yui-skin-default .datagrid tr.yui-dt-even td.yui-dt-asc,
+.yui-skin-default .datagrid tr.yui-dt-even td.yui-dt-desc
+{
+   background-color: #f8f8f8;
+}
+
+.yui-skin-default .datagrid tr.yui-dt-odd
+{
+   background-color: #f8f8f8;
+}
+.yui-skin-default .datagrid tr.yui-dt-odd td.yui-dt-asc,
+.yui-skin-default .datagrid tr.yui-dt-odd td.yui-dt-desc
+{
+   background-color: #f0f0f0;
+}
+
+/* End Data Lists */
+
+.yui-skin-default .yui-dt-data tr.yui-dt-highlighted td.yui-dt-asc,
+.yui-skin-default .yui-dt-data tr.yui-dt-highlighted td.yui-dt-desc
+{
+   background-color: #f5faff;
+   cursor: auto;
+}
+
+.yui-skin-default .yui-dt-message,
+.yui-skin-default .yui-dt-message tr.yui-dt-highlighted
+{
+   background-color: white;
+}
+
+/* Style the default message  */
+
+.yui-skin-default #message .bd
+{
+   background-color: #808080;
+   color: white;
+}
+
+.yui-skin-default #message .bd span.wait
+{
+   background-image: url(images/wait.gif);
+   background-repeat: no-repeat;
+}
+
+.yui-skin-default .yui-overlay-hidden #message .bd span.wait
+{
+   display: none;
+}
+
+/* Style the default prompt and user input pop-ups */
+
+.yui-skin-default #prompt,
+.yui-skin-default #userInput
+{
+   border-top: 1px solid #C4C5C5;
+   border-bottom: 1px solid #C4C5C5;
+   background-color: #E3EBEC;
+}
+
+.yui-skin-default #prompt .bd,
+.yui-skin-default #userInput .bd
+{
+   
+}
+
+.yui-skin-default #prompt .ft,
+.yui-skin-default #userInput .ft
+{
+   border-left: 1px solid #c4c5c5;
+   border-right: 1px solid #c4c5c5;
+   background-color: #e3ebec;
+}
+
+/* Page title and navigation styles */
+
+.page-title
+{
+   background-color: #6CA5CE;
+   border-width: 1px 0 0 0;
+   color: white;
+}
+
+.page-title a,
+.page-title a:visited
+{
+   color: #000;
+}
+
+.page-title a:hover
+{
+   color: #fff;
+}
+
+.page-title h1 span
+{
+   color: #fff;
+}
+
+.site-navigation
+{
+   background-color: #73B4DA;
+   background-image: url(../../components/images/navigation-bg.png);
+   border-bottom: 1px solid #4B86ae;
+   border-top: 1px dotted #bbd6e7;
+   color: white;
+}
+
+span.navigation-separator,
+span.navigation-item,
+span.navigation-item-alt
+{
+   color: #9fc6e1;
+}
+
+span.navigation-item a,
+span.navigation-item a:visited
+{
+   color: #0D3B57;
+}
+
+span.navigation-item a.active-page,
+span.navigation-item a.active-page:visited,
+span.navigation-item a:hover
+{
+   color: #fff;
+}
+
+span.navigation-separator
+{
+   border-right: 1px dotted #457A9C;
+}
+
+span.navigation-separator-alt
+{
+   border-right: 1px solid #457A9C;
+}
+
+/* Standard toolbars */
+
+.share-toolbar,
+.toolbar
+{
+   border-bottom: 1px solid #C7CCCE;
+}
+
+.share-toolbar .action-bar,
+.toolbar .action-bar
+{
+   border-right: 1px solid #9eb0b7;
+}
+
+.share-toolbar .separator,
+.toolbar .separator
+{
+   border: medium none;
+   border-right: 1px dotted #457A9C;
+}
+
+.share-toolbar .backLink
+{
+   background-image: url(../../components/images/back-arrow.png);
+   background-position: left center;
+   background-repeat: no-repeat;
+   color: #333333;
+   padding: 0 5px 0 19px;
+   margin-right: 5px;
+}
+
+.share-toolbar .forwardLink
+{
+   background-image: url(../../components/images/forward-arrow-16.png);
+   background-position: right center;
+   background-repeat: no-repeat;
+   color: #333333;
+   padding: 0 21px 0 5px;
+   margin-right: 5px;
+}
+
+
+strong
+{
+   font-weight: bold;
+}
+
+em
+{
+   font-style: italic;
+}
+
+.rich-content a.wiki-missing-page
+{
+   color: #CC2200 !important;
+}
+
+/* Share forms */
+
+.share-form .form-container .form-fields
+{
+   border: 1px solid #c2c2c2 !important;
+   background-color: #f5fff2;
+}
+
+.yui-skin-default .yui-navset .yui-content
+{
+   background: #e4f7d4;
+}
+
+select,
+input[type="text"],
+input[type="password"],
+textarea,
+.form-element-border,
+.share-form .yui-dt table   
+{
+   border: 1px solid #C5D6E2;
+   font-weight: normal;
+}
+
+.share-form .yui-dt table td.yui-dt-last 
+{
+   border-right: none;
+}
+
+.form-element-background-color
+{
+   background-color: #FFFFFF;
+}
+
+/* same as theme-color-2 */
+
+.toolbar .link a:hover,
+.members-bar .member-link a:hover
+{
+   color: #038603;
+}
+
+/* Richtext Editor Plug-ins */
+
+.yui-toolbar-container .yui-toolbar-alfresco-imagelib span.yui-toolbar-icon,
+span.mce_alfresco-imagelibrary
+{
+   background-position: 0 0 !important;
+   background-image: url(images/alfresco-imagelib.png) !important;
+}
+
+.mce_alfresco-imagelibrary img
+{
+   background-position: 0px 2px !important;
+}
+
+/* Point the YUI button to the themed sprite */
+
+.yui-skin-default .yui-button
+{
+   background-image: url(images/sprite.png);
+}
+
+/* Override YUI Button styles for - flat button style */
+
+.yui-skin-default div.flat-button span.yui-button
+{
+   background: none;
+   border-color: transparent;
+}
+
+.yui-skin-default div.flat-button span.yui-button span.first-child
+{
+   border-color: transparent;
+}
+
+.yui-skin-default div.flat-button span.yui-button-hover
+{
+   background: transparent url(images/sprite.png) repeat-x scroll 0 0;
+   border-color: #808080;
+}
+
+.yui-skin-default div.flat-button span.yui-button-hover span.first-child
+{
+   border-color: #808080;
+}
+
+.yui-skin-default div.flat-button span.yui-radio-button-checked,
+.yui-skin-default div.flat-button span.yui-checkbox-button-checked
+{
+   background: #6ca5ce none;
+}
+
+/* Override YUI Button styles for - title button style */
+
+.yui-skin-default .title-button .yui-button
+{
+   background: transparent url(images/title-button-bg.png) repeat-x 0 0;
+}
+
+.yui-skin-default .title-button a:hover
+{
+   color: #000;
+}
+
+.yui-skin-default .title-button .yui-button .first-child,
+.yui-skin-default .title-button .yui-button
+{
+   border-color: #286A99;
+}
+
+/* Paginator link styling */
+
+.yui-skin-default .yui-pg-container span
+{
+   color: #606060;
+}
+
+.yui-skin-default .yui-pg-container span.yui-pg-page.yui-pg-current-page
+{
+   color: #333333;
+   font-weight: bold;
+}
+
+.yui-skin-default .yui-pg-container a.yui-pg-first,
+.yui-skin-default .yui-pg-container a.yui-pg-previous,
+.yui-skin-default .yui-pg-container a.yui-pg-page,
+.yui-skin-default .yui-pg-container a.yui-pg-next,
+.yui-skin-default .yui-pg-container a.yui-pg-last
+{
+   border-color: #CBCBCB;
+   color: #2B6EB5;
+   text-decoration: none;
+}
+
+.yui-skin-default .yui-pg-container a.yui-pg-first:hover,
+.yui-skin-default .yui-pg-container a.yui-pg-previous:hover,
+.yui-skin-default .yui-pg-container a.yui-pg-page:hover,
+.yui-skin-default .yui-pg-container a.yui-pg-next:hover,
+.yui-skin-default .yui-pg-container a.yui-pg-last:hover
+{
+   text-decoration: underline;
+}
+
+/* A combination of a link and splitbutton wrapped inside a span */
+
+.yui-skin-default .link-menu-button .yui-button span button
+{
+   color: #4C4C4C;
+   font-size: 2px;
+   background-image: url(images/link-menu-button-arrow.png);
+   background-position: center center;
+}
+
+body.yui-skin-default .link-menu-button .yui-button.yui-button-hover
+{
+   background-color: #FFFFFF;
+   border: 1px solid #7BA9CE;
+}
+
+body.yui-skin-default .link-menu-button.link-menu-button-menu-active .yui-button.yui-button-hover
+{
+   border-color: transparent;
+   background-color: transparent;
+}
+
+.yui-skin-default .link-menu-button .yui-button span.first-child,
+.yui-skin-default .link-menu-button .yui-button.yui-button-activeoption span.first-child,
+.yui-skin-default .link-menu-button .yui-button.yui-button-hover span.first-child
+{
+   border-width: 0;
+}
+
+.yui-skin-default .link-menu-button span.link-menu-button-link
+{
+   border-right: 1px #BDBDBD solid;
+}
+
+body.yui-skin-default .link-menu-button.link-menu-button-menu-active
+{
+   background-color: #FFFFFF;
+   border: 1px solid #7BA9CE;
+}
+
+.yui-skin-default .link-menu-button.link-menu-button-menu-active .yui-button.yui-menu-button-hover
+{
+   border: 1px solid #FFFFFF;
+}
+
+.topiclist .yui-dt-liner
+{
+   padding: 0;
+}
+
+/* blog/wiki action items links */
+
+body.yui-skin-default .wikipage .editPage a:hover,
+body.yui-skin-default .wikipage .deletePage a:hover,
+body.yui-skin-default .wikipage .detailsPage a:hover,
+body.yui-skin-default .nodeEdit .onEditBlogPost a:hover,
+body.yui-skin-default .nodeEdit .onDeleteBlogPost a:hover
+{
+   
+}
+
+/* YUI Menu */
+
+body.yui-skin-default .yuimenu .bd
+{
+   border: 1px solid #6CA5CE;
+}
+
+/* YUI Menu roll over state*/
+
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected
+{
+   background-color: #6CA5CE;
+}
+
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel,
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel a
+{
+   color: #6CA5CE;
+}
+
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel,
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel a
+{
+   color: #FFF;
+}
+
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel-disabled,
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel-disabled a
+{
+   color: #A6A6A6;
+   cursor: default;
+}
+
+/*end YUI Menu */
+
+/* Location */
+
+.yui-skin-default .location-path,
+.yui-skin-default .location-site
+{
+   background-position: left 50%;
+   background-repeat: no-repeat;
+   padding: 2px 0 2px 20px;
+}
+
+.yui-skin-default .location-none
+{
+   margin-left: 0.5em;
+}
+
+.yui-skin-default .location-path
+{
+   background-image: url(../../components/documentlibrary/images/folder-closed-16.png);
+   margin-left: 0.5em;
+}
+
+.yui-skin-default .location-site
+{
+   background-image: url(../../components/images/site-16.png);
+}
+
+/* end Location*/
+
+/* Doclist */
+
+body.yui-skin-default .doclist .more-actions a:active,
+body.yui-skin-default .doclist .more-actions a:hover
+{
+   background-color: #6CA5CE;
+}
+
+body.yui-skin-default .doclist div.more-actions
+{
+   border: 1px solid #6CA5CE;
+}
+
+body.yui-skin-default .doclist .action-set a:active,
+body.yui-skin-default .doclist .action-set a:hover,
+body.yui-skin-default .doclist .action-set .highlighted
+{
+   border: 1px solid #6CA5CE;
+}
+
+body.yui-skin-default .doclist tr.yui-dt-highlighted,
+body.yui-skin-default .doclist tr.yui-dt-highlighted
+{
+   background-color: #f4faff;
+}
+
+body.yui-skin-default .yui-dt-data tr.yui-dt-highlighted,
+body.yui-skin-default .links-body tr.links-selected-row,
+body.yui-skin-default .over,
+.topicview
+{
+   background-color: #f4faff;
+}
+
+body.yui-skin-default .doclist tr.yui-dt-odd.yui-dt-highlighted td.yui-dt-last,
+body.yui-skin-default .doclist tr.yui-dt-even.yui-dt-highlighted td.yui-dt-last
+{
+   border-left: 1px solid #c5e6e9;
+}
+
+body.yui-skin-default .categoryview .category .ygtvtn,
+body.yui-skin-default .categoryview .category .ygtvtm,
+body.yui-skin-default .categoryview .category .ygtvtmh, body.yui-skin-default .categoryview .category .ygtvtmhh,
+body.yui-skin-default .categoryview .category .ygtvtp,
+body.yui-skin-default .categoryview .category .ygtvtph, body.yui-skin-default .categoryview .category .ygtvtphh,
+body.yui-skin-default .categoryview .category .ygtvln,
+body.yui-skin-default .categoryview .category .ygtvlm,
+body.yui-skin-default .categoryview .category .ygtvlmh, body.yui-skin-default .categoryview .category .ygtvlmhh,
+body.yui-skin-default .categoryview .category .ygtvlp,
+body.yui-skin-default .categoryview .category .ygtvlph, body.yui-skin-default .categoryview .category .ygtvlphh,
+body.yui-skin-default .categoryview .category .ygtvdepthcell
+{
+   background-image: url(images/categoryview-sprite.gif);
+}
+
+/* end doclist */
+
+/* invite page */
+
+.inviteusersbyemail .byemailbody
+{
+   background-color: #fbfbfb;
+}
+
+.people-finder .results
+{
+   background-color: #f6f9fc;
+}
+
+/* filter list link */
+
+.yui-skin-default li.selected,
+.yui-skin-default .treeview .selected,
+.yui-skin-default .categoryview .selected,
+body.yui-skin-default .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a.yui-columnbrowser-item-selected
+{
+   background-color: #D2E5F2;
+}
+
+/* these rules need to be separate from the above for ie6 */
+.yui-skin-default .treeview .selected > table,
+.yui-skin-default .categoryview .selected > table
+{
+   background-color: #D2E5F2;
+}
+
+.yui-skin-default .filter a.disabled,
+.yui-skin-default .filter a.disabled:active,
+.yui-skin-default .filter a.disabled:hover,
+.yui-skin-default .filter a.disabled:visited,
+.yui-skin-default .tags a.disabled,
+.yui-skin-default .tags a.disabled:active,
+.yui-skin-default .tags a.disabled:hover,
+.yui-skin-default .tags a.disabled:visited
+{
+   color: #a6a6a6;
+   cursor: not-allowed;
+}
+
+.yui-skin-default .filter a:hover,
+.yui-skin-default .tags a:hover
+{
+   text-decoration: none;
+}
+
+/* Link color */
+
+body.yui-skin-default .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a.yui-columnbrowser-item-selected a,
+li.selected a.filter-link,
+li.selected a.tool-link, 
+li.selected a.archive-link,
+li.selected a.tag-link,
+li.selected span.tag,
+body.yui-skin-default .treeview .selected table .ygtvlabel, 
+body.yui-skin-default .treeview .selected table .ygtvlabel:link, 
+body.yui-skin-default .treeview .selected table .ygtvlabel:visited, 
+body.yui-skin-default .treeview .selected table .ygtvlabel:hover,
+body.yui-skin-default .categoryview .selected table .ygtvlabel,
+body.yui-skin-default .categoryview .selected table .ygtvlabel:link,
+body.yui-skin-default .categoryview .selected table .ygtvlabel:visited,
+body.yui-skin-default .categoryview .selected table .ygtvlabel:hover
+{
+   
+}
+
+body.yui-skin-default .treeview .selected div.ygtvchildren table .ygtvlabel, 
+body.yui-skin-default .treeview .selected div.ygtvchildren table .ygtvlabel:link, 
+body.yui-skin-default .treeview .selected div.ygtvchildren table .ygtvlabel:visited, 
+body.yui-skin-default .treeview .selected div.ygtvchildren table .ygtvlabel:hover,
+body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel,
+body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:link,
+body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:visited,
+body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:hover
+{
+   
+}
+
+.yui-skin-default .node .nodeTitle a,
+.yui-skin-default .node .nodeURL a,
+.yui-skin-default .nodeAttrValue a,
+.yui-skin-default .nodeFooter .tag a,
+.yui-skin-default .detail .tag a,
+.yui-skin-default a.wiki-tag-link,
+.yui-skin-default .node .userLink a,
+.yui-skin-default .site-members h3 a,
+.yui-skin-default .yui-calendar td.calcell a,
+.yui-skin-default .doclist .documents a,
+.yui-skin-default .attrValue a,
+.yui-skin-default .detail .item a,
+.yui-skin-default .info .meta-value a,
+.yui-skin-default .rules-none a
+{
+   color: #4F94C9;
+}
+
+.yui-skin-default .postview .nodeTitle a
+{
+   color: #606060;
+}
+
+.yui-skin-default .site-navigation
+{
+   background-image: url(./images/navigation-bg.png);
+}
+
+.yui-skin-default .rules-list a
+{
+   color: #515D6B;
+}
+
+/* Calendar */
+
+.yui-skin-default #calendar .yui-calendar td.calcell.selected a
+{
+   background-color: #EBEFF1;
+}
+
+.yui-skin-default .dayview h2, .weekview h2,
+.yui-skin-default .calendar.weekview thead th,
+.yui-skin-default .calendar.monthview thead th
+{
+   color: #000;
+}
+
+/* End Calendar */
+
+.cmis .body a
+{
+   color: #6CA5CE;
+}
+
+/* Twisters */
+
+.alfresco-twister-open
+{
+   background: transparent url(images/expanded.png) no-repeat scroll 0 50%;
+}
+
+.alfresco-twister-closed
+{
+   background: transparent url(images/collapsed.png) no-repeat scroll 0 50% !important;
+}
+
+/* Theme colors */
+
+.theme-color-1,
+a.theme-color-1,
+a.theme-color-1:visited,
+a.theme-color-1:hover
+{
+   color: #6CA5CE;
+}
+
+.theme-color-2,
+a.theme-color-2,
+a.theme-color-2:visited,
+a.theme-color-2:hover
+{
+   color: #038603;
+}
+
+.theme-color-3,
+a.theme-color-3,
+a.theme-color-3:visited,
+a.theme-color-3:hover
+{
+   color: #C7DBEB;
+}
+
+.theme-color-4,
+a.theme-color-4,
+a.theme-color-4:visited,
+a.theme-color-4:hover
+{
+   color: #009300;
+}
+
+/* Theme background colors */
+
+.theme-color-5,
+a.theme-color-5,
+a.theme-color-5:visited,
+a.theme-color-5:hover
+{
+   color: #fff;
+}
+
+.theme-bg-color-1,
+div.theme-bg-color-1
+{
+   background-color: #6CA5CE;
+}
+
+.theme-bg-color-2,
+div.theme-bg-color-2
+{
+   background-color: #fffbdd;
+}
+
+.theme-bg-color-3,
+div.theme-bg-color-3
+{
+   background-color: #DEE8ED;
+}
+
+.theme-bg-color-4,
+div.theme-bg-color-4
+{
+   background-color: #EBEFF1;
+}
+
+.theme-bg-color-5,
+div.theme-bg-color-5
+{
+   background-color: #2B6EB5;
+}
+
+.theme-bg-color-6,
+div.theme-bg-color-6
+{
+   background-color: #F4FAFF;
+}
+
+/* Used for editing - same as meta data fields */
+
+.theme-bg-color-7,
+div.theme-bg-color-7
+{
+   background-color: #F5FFF2;
+}
+
+
+.theme-bg-1
+{
+
+}
+
+.theme-bg-2
+{
+   background-color: #E3EAEC;
+}
+
+.theme-bg-selected
+{
+   background-color: #73B4DA;
+}
+
+/* Theme border type/colors */
+
+.theme-border-1
+{
+   border-color: #457f63;
+   border-style: dotted;
+}
+
+.theme-border-2
+{
+   border-color: #2B6EB5;
+}
+
+.theme-border-3
+{
+   border: 1px solid #c6c6c6 !important;
+}
+
+.theme-border-4
+{
+   border: 1px solid #DDD6A0;
+}
+
+.docfolder-label
+{
+   overflow:auto;
+}
+
+.docfolder-input
+{
+   width: 203px; 
+   vertical-align: top; 
+   margin-top: 2px;
+}
+
+.tree-div
+{
+   height: 200px;
+   overflow: auto;
+   margin-left: 5px;
+}
+
+.ygtvlabel, .ygtvlabel:link, .ygtvlabel:visited, .ygtvlabel:hover
+{
+   background-color: #F9FBFD;
+   cursor: pointer;
+   margin-left: 2px;
+   text-decoration: none;
+}

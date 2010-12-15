@@ -1,0 +1,38 @@
+<project name="utils">
+
+   <!-- ************************************************************************** -->
+   <!-- ** This file contains the utility targets used by the main build script ** -->
+   <!-- ************************************************************************** -->
+   
+   <target name="dump-properties" depends="init, dump-env-properties, dump-dir-properties, dump-file-properties" />
+   
+   <target name="dump-env-properties" depends="init">
+      <echo level="info">ant.project.name = ${ant.project.name}</echo>
+      <echo level="info">basedir = ${basedir}</echo>
+      <echo level="info">dir.projects = ${dir.projects}</echo>
+      <echo level="info">user.home = ${user.home}</echo>
+      <echo level="info">version.number = ${version.number}</echo>
+      <echo level="info">home.jboss = ${home.jboss}</echo>
+      <echo level="info">home.tomcat = ${home.tomcat}</echo>
+      <echo level="info">home.findbugs = ${home.findbugs}</echo>
+      <echo level="info">ant.home = ${ant.home}</echo>
+   </target>
+
+   <target name="dump-dir-properties" depends="init">
+       <echoproperties prefix="dir" />
+   </target>
+
+   <target name="dump-file-properties" depends="init">
+      <echoproperties prefix="file" />
+   </target>
+
+   <target name="dump-arbitary-properties" depends="init">
+      <fail unless="prefix" message="You must supply a prefix i.e. -Dprefix=file.name" />
+      <echoproperties prefix="${prefix}" />
+   </target>
+
+   <target name="dump-all-properties" depends="init">
+      <echoproperties />
+   </target>
+
+</project>

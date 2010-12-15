@@ -1,0 +1,40 @@
+v0.6 to v0.61 Changes Implemented by Alfresco:
+
+1) CHANGE: Enum Capability Join
+
+Was: nojoin, inneronly, innerandouter
+Now: none, inneronly, innerandouter
+
+2) ADDED: ACL Capability
+
+NOTE: Not defined in spec yet, waiting on ACL proposal
+
+3) CHANGE: Property definition
+
+Was: cmis:updateability
+Now: cmis:updatability
+
+4) REMOVED: cmis:index from cmis:choice
+
+5) ADDED: PATCH method for Updates
+
+Supported for updates to:
+- Documents, Folders
+- Private Working Copies
+
+6) CHANGE: atom link 'type' for Type Definitions
+
+Was: link to self
+Now: link to base type definition
+
+7) CHANGE: atom link 'parent'
+
+Was: named 'parent'
+Now: named 'parents'
+
+NOTE: Abdera CMIS Extension no longer defines CMISConstants.REL_PARENT
+
+
+Internal Implementation Modifications...
+
+a) Version supported is now 0.61

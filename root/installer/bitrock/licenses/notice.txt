@@ -1,0 +1,39 @@
+Portions of this product distribution require certain copyright or other notices to 
+be included with the product distribution.  These notice may also appear in individual 
+source files.
+
+This product includes software developed by The Apache Software Foundation 
+(http://www.apache.org/).
+
+Portions of this product are:
+Copyright 2001 The Apache Software Foundation.  
+Copyright 2000-2002 The Apache Software Foundation
+Copyright 2004 The Apache Software Foundation
+Copyright 1997, 1998 Sun Microsystems, Inc.
+Copyright 2003 - 2004 Greg Luck.  
+Copyright 2001-2004 The OpenSymphony Group
+Copyright 2003-2005 www.pdfbox.org
+Copyright 1999 E. Wray Johnson. 
+Copyright 2001-2005 MetaStuff, Ltd. 
+Copyright 2003 The Werken Company
+Copyright 2002 Vlad Roubtsov 
+Copyright 2002 Extreme! Lab, Indiana University
+Copyright 2003-2004, Dennis M. Sosnoski
+Copyright 2005 Moxiecode Systems AB
+
+
+All rights reserved.
+
+This product includes software developed by Heng Yuan http://www.cs.ucla.edu/~heng/JSCookMenu
+
+This product also includes software developed by Clinton Begin (http://www.ibatis.com). 
+
+This product is distributed with software developed by ImageMagick Studio LLC (http://www.imagemagick.org)
+
+This product is distributed with software developed by Rainer Böhme and Matthias Kramm (http://www.swftools.org)
+
+This product includes software developed by the Spring Framework Project (http://www.springframework.org).
+
+This product includes software developed by the OpenSymphony Group (http://www.opensymphony.com/).
+
+This product includes software developed by the Indiana University  Extreme! Lab (http://www.extreme.indiana.edu/)

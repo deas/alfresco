@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!-- Alfresco JLAN Server ANT Script -->
+
+<!-- Build the standalone version of the Alfresco JLAN Server Jars -->
+
+<project name="Alfresco JLAN Server" default="createJar" basedir=".">
+  <!-- Create the JLAN Server Jar (without database interface implementations) -->
+	<target name="createJar">
+    <mkdir dir="build/standalone"/>
+    <javac destdir="build/standalone" classpath="service/wrapper.jar" debug="on">
+      <src path="source/java"/>
+	  <src path="source/standalone-java"/>
+      <include name="**/*.java"/>
+      <exclude name="org/alfresco/jlan/server/filesys/db/mysql/**"/>
+      <exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
+      <exclude name="org/alfresco/jlan/server/filesys/db/derby/**"/>
+    </javac>
+    
+    <mkdir dir="jars"/>
+ 		<delete file="jars/alfresco-jlan.jar" quiet="true"/>
+ 		<jar jarfile="jars/alfresco-jlan.jar"
+ 			 manifest="source/meta-inf/alfrescojlan_manifest.mf"
+       basedir="build/standalone"/>
+	</target>
+
+  <!-- Create the JLAN Server Jar (with database interface implementations for Derby/mySQL) -->
+	<target name="createJarDB">
+    <mkdir dir="build/standalone"/>
+    <javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar" debug="on">
+      <src path="source/java"/>
+	  <src path="source/standalone-java"/>
+      <include name="**/*.java"/>
+      <exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
+    </javac>
+    
+ 		<delete file="jars/alfresco-jlan-db.jar" quiet="true"/>
+ 		<jar jarfile="jars/alfresco-jlan-db.jar"
+ 			 manifest="source/meta-inf/alfrescojlan_manifest.mf"
+       basedir="build/standalone"/>
+	</target>
+
+  <!-- Create the JLAN Server Jar (with database interface implementations for Oracle/Derby/mySQL) -->
+  <!--                                                                                             -->
+  <!-- Requires the Oracle ojdbc14.jar to be copied to the libs/ /folder                           -->
+  
+	<target name="createJarDBOracle">
+    <mkdir dir="build/standalone"/>
+    <javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar" debug="on">
+      <src path="source/java"/>
+	  <src path="source/standalone-java"/>
+      <include name="**/*.java"/>
+    </javac>
+    
+ 		<delete file="jars/alfresco-jlan-dbora.jar" quiet="true"/>
+ 		<jar jarfile="jars/alfresco-jlan-dbora.jar"
+ 			 manifest="source/meta-inf/alfrescojlan_manifest.mf"
+       basedir="build/standalone"/>
+	</target>
+
+  <!-- Create a kit for deploying the Alfresco JLAN Server -->
+  <target name="createKit" depends="createJar,createJarDB">
+    <delete dir="build/kitting" quiet="true"/>
+    <mkdir dir="build/kitting"/>
+    
+    <copy todir="build/kitting" file="runsrv.bat"/>
+    <copy todir="build/kitting" file="runsrv.sh"/>
+    <copy todir="build/kitting" file="jlanConfig.xml"/>
+    <copy todir="build/kitting" file="jlanserver.dtd"/>
+    
+    <copy todir="build/kitting/service">
+      <fileset dir="service"/>
+    </copy> 
+    <copy todir="build/kitting/jars">
+      <fileset dir="jars"/>
+    </copy>
+    <copy todir="build/kitting/jni">
+      <fileset dir="jni"/>
+    </copy>
+    <copy todir="build/kitting/libs">
+      <fileset dir="libs"/>
+    </copy>
+    <copy todir="build/kitting/guides">
+      <fileset dir="guides"/>
+    </copy>
+            
+    <delete file="build/alfresco-jlan.zip" quiet="true"/>
+		<zip zipfile="build/alfresco-jlan.zip" basedir="build/kitting"/>
+		<delete dir="build/kitting" quiet="true"/>
+    
+  </target>
+  
+  <!-- Generate the JLAN Server Javadocs -->	
+	<target name="createDocs">
+    <mkdir dir="javadoc"/>
+		<javadoc sourcepath="source/java"
+			packagenames="org.alfresco.jlan.*"
+			defaultexcludes="yes"
+			destdir="javadoc"
+			version="true"
+			use="true"
+			windowtitle="Alfresco JLAN Server API">
+			<group title="Alfresco JLAN Server Application" packages="org.alfresco.jlan.app"/>
+			<group title="Core Server" packages="org.alfresco.jlan.server*"/>
+			<group title="SMB Server" packages="org.alfresco.jlan.smb*"/>
+			<group title="NetBIOS Server" packages="org.alfresco.jlan.netbios*"/>
+			<group title="FTP Server" packages="org.alfresco.jlan.ftp*"/>
+			<group title="NFS Server" packages="org.alfresco.jlan.oncrpc*"/>
+      <group title="Database Filesystem" packages="org.alfresco.jlan.server.filesys.db*"/>
+			<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+		</javadoc>
+	</target>
+
+  <!-- Generate native code header files -->
+  <target name="generateNativeCodeHeaders" depends="createJar">
+    <javah class="org.alfresco.jlan.netbios.win32.Win32NetBIOS" destdir="source/c/Win32NetBIOS" classpath="build/standalone"/>
+    <javah class="org.alfresco.jlan.util.win32.Win32Utils" destdir="source/c/Win32Utils" classpath="build/standalone"/>
+  </target>
+</project>

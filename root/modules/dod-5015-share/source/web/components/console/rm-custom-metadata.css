@@ -1,0 +1,181 @@
+/* History Manager */
+#yui-history-iframe
+{
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 1px;
+   height: 1px;
+   visibility: hidden;
+}
+
+/* Metadata Tool */
+.metadata
+{
+   color: #000;
+   margin: 16px 10px 10px;
+}
+
+.metadata .title
+{
+   font-size: 123.1%;
+   font-weight: bold;
+   color: #515D6B;
+   padding-bottom: 0.5em;
+}
+
+.metadata .align-right
+{
+   text-align: right;
+}
+
+.metadata .hidden
+{
+   display: none;
+}
+
+.metadata .left
+{
+   float: left;
+}
+
+.metadata .right
+{
+   float: right;
+}
+
+.metadata .separator
+{
+   border-left: 1px solid #444444;
+   height: 30em;
+   overflow-x: hidden;
+   overflow-y: scroll;
+}
+
+.metadata .view-main
+{
+   border: 1px solid #444444;
+}
+
+.metadata .list-header
+{
+   font-size: 116%;
+   font-weight: bold;
+   color: #515D6B;
+   padding: 0.4em;
+   border-bottom: 1px solid #D7D7D7;
+   margin-right: -7%;
+}
+
+.metadata .list-title
+{
+   font-size: 116%;
+   font-weight: bold;
+   color: #515D6B;
+   padding: 0.4em;
+}
+
+.metadata .list-title-button
+{
+   float: right;
+   margin-top: 2px;
+}
+
+.metadata .object-list li
+{
+   padding: 1em 0.6em 1em 4em;
+   margin-right: -7%;
+   border-bottom: 1px solid #D7D7D7;
+   cursor: pointer;
+}
+
+.metadata li.recordSeries
+{
+   background-image: url(../documentlibrary/images/record-series-32.png);
+   background-repeat: no-repeat;
+   background-position: 0.3em 0.3em;
+}
+
+.metadata li.recordCategory
+{
+   background-image: url(../documentlibrary/images/record-category-32.png);
+   background-repeat: no-repeat;
+   background-position: 0.3em 0.3em;
+}
+
+.metadata li.recordFolder
+{
+   background-image: url(../documentlibrary/images/record-folder-32.png);
+   background-repeat: no-repeat;
+   background-position: 0.3em 0.3em;
+}
+
+.metadata li.record
+{
+   background-image: url(../documentlibrary/images/record-32.png);
+   background-repeat: no-repeat;
+   background-position: 0.3em 0.3em;
+}
+
+.metadata p
+{
+   line-height: 1.4em;
+   padding: 0px;
+}
+
+.metadata p.property-title
+{
+   font-size: 116%;
+   font-weight: bold;
+}
+
+.metadata .no-property-item
+{
+   padding: 0.3em;
+   font-weight: bold;
+}
+
+.metadata .property-item
+{
+   padding: 0.3em;
+   border-bottom: 1px solid #D7D7D7;
+}
+
+.metadata .property-actions
+{
+   float: right;
+   margin-right: 0.5em;
+   margin-top: 0.5em;
+}
+
+.metadata .create-main
+{
+   margin-left: 0.5em;
+}
+
+.metadata .label-row
+{
+   padding: 0.333em;
+}
+
+.metadata .field-row
+{
+   padding: 0.333em 0.333em 0.5em 0.333em;
+}
+
+.metadata select
+{
+   min-width: 15.5em;
+}
+
+.metadata label
+{
+   padding-left: 0.333em;
+}
+
+.metadata .button-row
+{
+   padding-top: 1em;
+   margin-top: 1em;
+   border-top: 1px solid #D7D7D7;
+}

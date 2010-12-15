@@ -1,0 +1,43 @@
+/* History Manager */
+#yui-history-iframe
+{
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 1px;
+   height: 1px;
+   visibility: hidden;
+}
+
+.application
+{
+   margin: 16px 10px 10px;
+}
+
+.application .title
+{
+   font-size: 123.1%;
+   font-weight: bold;
+   padding-bottom: 0.5em;
+}
+
+.application .row
+{
+   padding: 0.333em;
+}
+
+.application .label
+{
+   display: block;
+   float: left;
+   padding: 0.2em 0.8em 0 1em;
+   width: 10em;
+   font-weight: bold;
+}
+
+.application .buttons
+{
+   padding-bottom: 1em;
+   padding-top: 0.5em;
+   text-align: center;
+}

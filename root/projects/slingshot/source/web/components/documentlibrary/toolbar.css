@@ -1,0 +1,319 @@
+.toolbar
+{
+   margin: 0px -10px;
+   visibility: hidden;
+}
+
+.toolbar .header-bar,
+.toolbar .nav-bar
+{
+   clear: both;
+   min-height: 1.7em;
+   padding: 4px 0.5em 9px;
+}
+
+.toolbar .left div,
+.toolbar .nav-bar div
+{
+   float: left;
+}
+
+.toolbar .toolbar-hidden
+{
+   display: none;
+}
+
+.toolbar .left
+{
+   float: left;
+}
+
+.toolbar .right
+{
+   float: right;
+}
+
+.toolbar .customize,
+.toolbar .hide-navbar,
+.toolbar .rss-feed
+{
+   float: left;
+}
+
+.toolbar .selected-items li
+{
+   width: auto;
+}
+
+.toolbar .selected-items li.yuimenuitem-disabled
+{
+   display: none;
+}
+
+.toolbar .selected-items .yuimenuitemlabel span,
+.toolbar .create-content .yuimenuitemlabel span
+{
+   background-position: 2px 50%;
+   background-repeat: no-repeat;
+   cursor: pointer;
+   display: block;
+   margin-left: -4px;
+   min-height: 16px;
+   padding: 2px 0px 1px 24px;
+}
+
+.toolbar .selected-items hr
+{
+   padding: 0px;
+}
+
+.toolbar .onActionCopyTo
+{
+   background-image: url(images/copy-to-16.png);
+}
+
+.toolbar .onActionMoveTo
+{
+   background-image: url(images/move-to-16.png);
+}
+
+.toolbar .onActionDelete
+{
+   background-image: url(images/remove-16.png);
+}
+
+.toolbar .onActionAssignWorkflow
+{
+   background-image: url(../images/workflow-16.png);
+}
+
+.toolbar .onActionManagePermissions
+{
+   background-image: url(images/permissions-16.png);
+}
+
+.toolbar .onActionDeselectAll
+{
+   background-image: url(images/select-none-16.png);
+}
+
+
+/* Navigation Bar */
+
+.toolbar .nav-bar
+{
+   border-top: 2px solid #f0f3f4;
+   overflow-y: hidden;
+   padding-bottom: 8px;
+}
+
+.toolbar .nav-bar .breadcrumb
+{
+   float: none !important;
+   margin-left: 7em;
+   padding: 0.3em 0.5em 0;
+}
+
+.toolbar .breadcrumb .crumb
+{
+   border: 1px solid transparent;
+   font-size: 100%;
+   line-height: 1.4em;
+   padding: 1px 2px 1px 0;
+}
+
+.toolbar .breadcrumb a.icon
+{
+   border: 1px solid transparent;
+}
+
+.xtoolbar .breadcrumb a.icon:active,
+.xtoolbar .breadcrumb a.icon:hover,
+.xtoolbar .breadcrumb div.highlighted
+{
+   background-color: #fff;
+   border: 1px solid #6ca5ce;
+   text-decoration: none;
+}
+
+.toolbar .breadcrumb div.actions
+{
+   background-color: #fff;
+   border: 1px solid #6ca5ce;
+   clear: left;
+   margin-left: -22px;
+   margin-top: 1px;
+   position: absolute;
+   width: 200px;
+}
+
+.toolbar .breadcrumb .icon
+{
+   background-position: 2px 50%;
+   background-repeat: no-repeat;
+   margin-left: -1px;
+   padding: 2px 0 3px 16px;
+}
+
+.toolbar .breadcrumb .filter-path
+{
+   background-image: url(images/folder-open-16.png);
+}
+
+.toolbar .breadcrumb .filter-category
+{
+   background-image: url(images/category-16.png);
+}
+
+.toolbar .breadcrumb .label,
+.toolbar .breadcrumb .folder
+{
+   font-weight: normal;
+   margin-left: 2px;
+}
+
+.toolbar .breadcrumb .separator
+{
+   border: medium none;
+   margin: 2px 4px 0 0;
+   padding: 0.1em 0 0.3em 0.3em;
+}
+
+
+.toolbar .description
+{
+   padding: 5px 0.5em;
+}
+
+.toolbar .description div.message
+{
+   color: #000;
+   font-size: 108%;
+}
+
+.toolbar .description span.more
+{
+   color: #515d6b;
+   margin-left: 0.3em;
+}
+
+
+/* Header- and Navigation-Bar Buttons */
+
+.toolbar .create-content ul
+{
+   min-width: 12em;
+}
+.toolbar .create-content span.first-child
+{
+   background: transparent url(images/create-content-16.png) no-repeat 12px 4px;
+   padding-left: 22px; 
+}
+.toolbar .create-content .yui-button-disabled span.first-child
+{
+   background-image: url(images/create-content-disabled-16.png);
+}
+
+.toolbar .create-content .html-file
+{
+   background-image: url(../images/filetypes/html-file-16.png);
+}
+.toolbar .create-content .plain-text-file
+{
+   background-image: url(../images/filetypes/text-file-16.png);
+}
+.toolbar .create-content .xml-file
+{
+   background-image: url(../images/filetypes/xml-file-16.png);
+}
+.toolbar .create-content .doc-file
+{
+   background-image: url(../images/filetypes/doc-file-16.png);
+}
+.toolbar .create-content .xls-file
+{
+   background-image: url(../images/filetypes/xls-file-16.png);
+}
+.toolbar .create-content .ppt-file
+{
+   background-image: url(../images/filetypes/ppt-file-16.png);
+}
+
+.toolbar .new-folder span.first-child
+{
+   background: transparent url(images/folder-new-16.png) no-repeat 12px 4px;
+   padding-left: 22px; 
+}
+.toolbar .new-folder .yui-button-disabled span.first-child
+{
+   background-image: url(images/folder-new-disabled-16.png);
+}
+
+.toolbar .file-upload span.first-child
+{
+   background: transparent url(images/upload-16.png) no-repeat 12px 4px;
+   padding-left: 22px; 
+}
+.toolbar .file-upload .yui-button-disabled span.first-child
+{
+   background-image: url(images/upload-disabled-16.png);
+}
+
+.toolbar .customize span.first-child
+{
+   background: transparent url(images/customize-16.png) no-repeat 12px 4px;
+   padding-left: 22px;
+}
+.toolbar .customize .yui-button-disabled span.first-child
+{
+   background-image: url(images/customize-disabled-16.png);
+}
+
+.toolbar .rss-feed span.first-child
+{
+   background: transparent url(images/feed-icon-16.png) no-repeat 12px 4px;
+   padding-left: 22px;
+}
+.toolbar .rss-feed .yui-button-disabled span.first-child
+{
+   background-image: url(images/feed-icon-disabled-16.png);
+}
+
+.toolbar .folder-up span.first-child
+{
+   background: transparent url(images/up-arrow-16.png) no-repeat 12px 4px;
+   padding-left: 22px; 
+}
+.toolbar .folder-up .yui-button-disabled span.first-child
+{
+   background-image: url(images/up-arrow-disabled-16.png);
+}
+
+
+/* Messages */
+.toolbar-file-list
+{
+   max-height: 15em;
+   overflow-y: auto;
+   padding: 0.5em;
+   text-align: left;
+}
+
+.toolbar-file-list span
+{
+   background-position: 1px 0px;
+   background-repeat: no-repeat;
+   display: block;
+   min-height: 18px;
+   padding-left: 20px;
+}
+
+.toolbar-file-list span.folder
+{
+   background-image: url(images/folder-open-16.png);
+}
+
+.toolbar-file-list span.document
+{
+   background-image: url(images/generic-16.png);
+}

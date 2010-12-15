@@ -1,0 +1,37 @@
+.folder-actions
+{
+   background-color: #fafafa;
+   padding: 1.5em 1em 1.5em 1.5em;
+   border-left: 1px solid #cccccc;
+   margin-right: -10px;
+}
+
+.folder-actions .heading
+{
+   color: #333333;
+   font-size: 131%;
+   padding-bottom: 1.0em;
+}
+
+.folder-actions .doclist
+{
+   visibility: visible;
+}
+
+.folder-actions .doclist .action-set a,
+.folder-actions .doclist .action-set a:visited
+{
+   border: 1px solid #fafafa;
+}
+
+.folder-actions .doclist .action-set a:active,
+.folder-actions .doclist .action-set a:hover
+{
+   background-color: #fafafa;
+   text-decoration: underline;
+}
+
+.folder-actions .doclist .action-set div
+{
+   padding: 0.3em;
+}

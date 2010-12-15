@@ -1,0 +1,31 @@
+<component>
+    <name>imagemagickwriteproperties</name>
+    <description>ImageMagick Write Properties</description>
+    <canBeEdited>0</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+    <readyToInstallActionList>
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>ImageMagick</section>
+                    <key>imagemagick_root_directory</key>
+                    <variable>imagemagick_root_directory</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <fileExists path="${installdir}/properties.ini"/>
+            </ruleList>
+        </actionGroup>
+    </readyToInstallActionList>
+    <postInstallationActionList>
+        <iniFileSet>
+            <file>${installdir}/properties.ini</file>
+            <section>ImageMagick</section>
+            <key>imagemagick_root_directory</key>
+            <value>${imagemagick_root_directory}</value>
+        </iniFileSet>
+    </postInstallationActionList>
+</component>
+

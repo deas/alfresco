@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexLibProperties version="1">
+<includeClasses>
+<classEntry path="org.alfresco.framework.service.authentication.AuthenticationError"/>
+<classEntry path="org.alfresco.framework.service.authentication.AuthenticationService"/>
+<classEntry path="org.alfresco.framework.service.authentication.InvalidCredentialsError"/>
+<classEntry path="org.alfresco.framework.service.authentication.LoginCompleteEvent"/>
+<classEntry path="org.alfresco.framework.service.authentication.LogoutCompleteEvent"/>
+<classEntry path="org.alfresco.framework.service.error.ErrorRaisedEvent"/>
+<classEntry path="org.alfresco.framework.service.error.ErrorService"/>
+<classEntry path="org.alfresco.framework.service.webscript.ConfigService"/>
+<classEntry path="org.alfresco.framework.service.webscript.FailureEvent"/>
+<classEntry path="org.alfresco.framework.service.webscript.SuccessEvent"/>
+<classEntry path="org.alfresco.framework.service.webscript.WebScriptError"/>
+<classEntry path="org.alfresco.framework.service.webscript.WebScriptService"/>
+</includeClasses>
+<includeResources/>
+<namespaceManifests/>
+</flexLibProperties>

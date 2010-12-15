@@ -1,0 +1,47 @@
+/* CSS file */
+
+@font-face
+{
+	src: url("fonts/arial.ttf");
+	fontFamily: "Alfresco";
+	fontWeight: normal;
+}
+
+@font-face
+{
+	src: url("fonts/arialbd.ttf");
+	fontFamily: "Alfresco";
+	fontWeight: bold;
+}
+
+VBox
+{
+	horizontalGap:1; 
+	verticalGap:1;
+}
+
+HBox
+{
+	horizontalGap:1; 
+	verticalGap:1;
+}
+
+Application
+{
+	font-family: "Alfresco";
+	font-size: 12;
+}
+
+.mainApplication
+{
+	background-color: #929292; 
+	
+	border-thickness: 5;
+	border-style: solid;
+	border-color: #929292;
+}
+
+.lightBackground
+{
+	background-color: #ffffff;
+}

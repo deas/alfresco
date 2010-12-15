@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+   
+   <!-- Override the config source to include Mobile config -->
+   <bean id="webframework.configsource" class="org.springframework.extensions.config.source.UrlConfigSource">
+      <constructor-arg>
+         <list>
+            <!-- Spring Web Scripts -->
+            <value>classpath:org/springframework/extensions/webscripts/spring-webscripts-config.xml</value>
+            <value>classpath:META-INF/spring-webscripts-config-custom.xml</value>
+            <value>jar:*!/META-INF/spring-webscripts-config-custom.xml</value>
+            
+            <!-- Spring Surf -->
+            <value>classpath:org/springframework/extensions/surf/spring-surf-config.xml</value>
+            <value>classpath:org/springframework/extensions/surf/spring-surf-config-remote.xml</value>
+            <value>classpath:META-INF/spring-surf-config-custom.xml</value>
+            <value>jar:*!/META-INF/spring-surf-config-custom.xml</value>
+            
+            <!-- Mobile Specific Configuration -->
+            <value>classpath:alfresco/web-framework-config-application.xml</value>
+            
+            <!-- Surf Autowire Support -->
+            <value>webapp:WEB-INF/surf.xml</value>
+         </list>
+      </constructor-arg>
+   </bean>
+   
+   <!-- Override WebScript Messages - add Mobile application messages -->
+   <bean id="webscripts.resources" class="org.springframework.extensions.surf.util.ResourceBundleBootstrapComponent">
+      <property name="resourceBundles">
+         <list>
+            <value>webscripts.messages.webscripts</value>
+            <value>alfresco.messages.mobile</value>
+         </list>
+      </property>
+   </bean>
+   
+   <!-- Override Web Framework Abstract Handler Mappings -->
+   <bean id="webframeworkHandlerMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" abstract="true">
+      <property name="interceptors">
+         <list>
+            <ref bean="requestContextInterceptor"/>
+            <ref bean="themeInterceptor"/>
+         </list>
+      </property>
+      <property name="mappings">
+         <value>
+            /system/**=remoteController
+            /proxy/**=endpointController
+            /resource/**=resourceController
+            /dologin/**=loginController
+         </value>
+      </property>
+   </bean>
+   
+   <!-- "no-component" processor -->
+   <bean id="webframework.rendition.processor.nocomponent" class="org.springframework.extensions.surf.site.EmptyRegionRenderer" />
+   
+</beans>

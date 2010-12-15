@@ -1,0 +1,1 @@
+model.lists = ['listA', 'listB'];

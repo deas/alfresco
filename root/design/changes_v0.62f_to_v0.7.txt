@@ -1,0 +1,237 @@
+v0.62f to v0.7 Changes Implemented by Alfresco:
+
+1) CHANGED: CMIS Namespaces
+
+Was: http://docs.oasis-open.org/ns/cmis/core/200901
+     http://docs.oasis-open.org/ns/cmis/messaging/200901
+     http://docs.oasis-open.org/ns/cmis/restatom/200901
+Now: http://docs.oasis-open.org/ns/cmis/core/200908/
+     http://docs.oasis-open.org/ns/cmis/messaging/200908/
+     http://docs.oasis-open.org/ns/cmis/restatom/200908/
+
+2) REMOVED: repositoryInfo from Service Document
+
+CMIS-464
+
+3) CHANGED: lastChangeToken in Service Document
+
+Was: lastChangeToken
+Now: latestChangeLogToken
+
+CMIS-341
+
+4) CHANGED: capabilityChangesOnType
+
+Was: capabilityChangesOnType in capabilities
+Now: changesOnType in repositoryInfo
+
+CMIS-407
+
+5) ADDED: capabilityGetFolderTree
+
+CMIS-unknown
+
+6) CHANGED: capabilityPWCUpdateable
+
+Was: capabilityPWCUpdateable
+Now: capabilityPWCUpdatable
+
+CMIS-unknown
+
+7) CHANGED: cmisra:collectionType
+
+Was: attribute on service document collection
+Now: element in service document collection
+
+CMIS-371
+
+8) CHANGED: property pdId
+
+Was: pdId
+Now: propertyDefinitionId
+
+CMIS-411
+
+----- checkpoint -------
+
+9) CHANGED: type baseTypeId
+
+Was: baseTypeId
+Now: baseId
+
+CMIS-491, CMIS-405
+
+10) CHANGED: type fulltextindexed
+
+Was: fulltextindexed
+Now: fulltextIndexed
+
+CMIS-422
+
+11) ADDED: type cmisra:id
+
+CMIS-492
+
+12) REMOVED: xml property type
+
+CMIS-439
+
+13) ADDED: allowable action canGetFolderTree
+
+14) CHANGED: allowable action canGetRelationships
+
+Was: canGetRelationships
+Now: canGetObjectRelationships
+
+15) ADDED: relationship type allowed source/target types
+
+Note: CMIS-569 issue
+
+16) CHANGED: case of identifier names
+
+Was: UpperCase
+Now: camelCase
+
+CMIS-396
+
+17) CHANGED: property PathName
+
+Was: PathName
+Now: path
+
+CMIS-350
+
+----- checkpoint -------
+
+18) ADDED: support for cmisra:content streams
+
+CMIS-308
+
+----- checkpoint -------
+
+19) CHANGED: all-versions link
+
+Was: all-versions
+Now: version-history
+
+CMIS-388
+
+20) REMOVED: repositoryRelationship
+
+CMIS-464
+
+21) CHANGED: overwriteFlag error code
+
+Was: HTTP 500
+Now: HTTP 409
+
+22) CHANGED: getTypeDescendants
+
+Was: depth default to 1
+Now: depth default to -1
+Was: depth of 0 valid
+Now: depth of 0 invalid
+
+CMIS-410
+
+23) ADDED: cmis:numItems in feeds
+
+CMIS-357
+
+----- checkpoint -------
+
+24) ADDED: AtomPub move service implementation
+
+CMIS-88
+
+----- checkpoint -------
+
+25) CHANGED: Property filters
+
+Was: By property id
+Now: By property query name
+
+CMIS-366
+CMIS-394
+
+26) ADDED: type by id uri template
+
+CMIS-523
+
+27) ADDED: objectbypath uri template
+
+28) CHANGED: objectbyid variables
+
+Was: id, filter, includeAllowableActions, includeRelationships
+Now: id, filter, includeAllowableActions, includePolicyIds, includeRelationships, includeACL, renditionFilter
+
+28) CHANGED: uri template types
+
+Was: entrybyid, entrybypath
+Now: objectbyid, objectbypath
+
+====== AtomPub TCK ======
+
+29) ADDED: initial skeleton for Type Definitions in Abdera CMIS Extension
+
+30) ADDED: URI Templates to Abdera CMIS Extension
+
+31) CHANGED: property filter tests
+
+Was: by property id
+Now: by query name
+
+32) REMOVED: patch tests
+
+----- checkpoint -------
+
+33) ADDED: cmisra:pathSegment
+
+34) ADDED: cmisra:relativePathSegment
+
+CMIS-505
+
+35) REMOVED: cmis:id from workspace
+
+----- checkpoint -------
+
+36) CHANGED: Chemistry: AtomPub TCK updates
+
+- Add tests for getObjectById, getObjectByPath URI templates
+- Tighten tests for content streams
+- Minor adjustments to custom type tests
+
+37) ADDED: Abdera CMIS extension: add getPath() to CMISObject
+
+38) CHANGED: Alfresco CMIS URL bindings
+
+- CMIS front page:               /service/cmis/index.html
+- CMIS AtomPub service document: /service/cmis
+- CMIS resources:
+
+  <!-- by object id -->
+  /cmis/i/{id}                note: defaults to workspace:SpacesStore
+  /cmis/s/{store}/i/{id}
+  /cmis/r/{repo}/i/{id}       note: not implemented yet
+  
+  <!-- by path -->
+  /cmis/p{path}               note: defaults to workspace:SpacesStore
+  /cmis/s/{store}/p{path}
+  /cmis/r/{repo}/p{path}      note: not implemented yet
+ 
+  where:
+    {id} = <guid> | <guid>;<version>
+    {path} = <path>
+    {store} = <store_type>:<store_id> | <store_id> (defaults to workspace)
+    {repo} = <repository_guid> | <user-defined name>
+
+  e.g.
+    /cmis/i/{id}          => object details (props etc)
+    /cmis/i/{id}/content  => object content
+    /cmis/i/{id}/rels     => object relationships  
+  
+39) CHANGED: delete content stream
+
+Was: delete node
+Now: only delete content stream
+

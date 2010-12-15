@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Invite</title>
+   <title-id>page.invitesites.title</title-id>
+   <description>Invite Sites Page</description>
+   <description-id>page.invitesites.description</description-id>
+   <template-instance>invitesites</template-instance>
+   <authentication>user</authentication>
+</page>

@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Navigation</shortname>
+  <description>Displays Navigation</description>
+  <url>/component/common/navigation/edit</url>
+</webscript>

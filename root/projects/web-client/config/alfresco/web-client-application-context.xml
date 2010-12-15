@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+   <!-- ===================================== -->
+   <!-- Web Client Config Sources             -->
+   <!-- ===================================== -->
+   
+   <bean id="webClientConfigSource" parent="repoUrlConfigSource">
+      <constructor-arg>
+         <list>
+            <value>classpath:alfresco/web-client-config.xml</value>
+            <value>classpath:alfresco/web-client-config-dialogs.xml</value>
+            <value>classpath:alfresco/web-client-config-wizards.xml</value>
+            <value>classpath:alfresco/web-client-config-properties.xml</value>
+            <value>classpath:alfresco/web-client-config-navigation.xml</value>
+            <value>classpath:alfresco/web-client-config-wcm.xml</value>
+            <value>classpath:alfresco/web-client-config-actions.xml</value>
+            <value>classpath:alfresco/web-client-config-forum-actions.xml</value>
+
+            <value>classpath:alfresco/web-client-config-wcm-actions.xml</value>
+            <value>classpath:alfresco/web-client-config-workflow-actions.xml</value>
+            <value>classpath:alfresco/extension/web-client-config-custom.xml</value>
+            <value>jar:*!/META-INF/web-client-config-custom.xml</value>
+            <value>workspace://SpacesStore/${spaces.company_home.childname}/${spaces.dictionary.childname}/app:webclient_extension/cm:web-client-config-custom.xml</value>
+         </list>
+      </constructor-arg>
+   </bean>
+   
+   <bean id="repoUrlConfigSource" class="org.alfresco.repo.config.source.RepoUrlConfigSource" abstract="true">
+      <property name="tenantService" ref="tenantService"/>
+      <property name="searchService" ref="SearchService"/>
+      <property name="contentService" ref="ContentService"/>
+      <property name="namespaceService" ref="NamespaceService"/>
+      <property name="nodeService" ref="NodeService"/>
+   </bean>
+   
+   
+   <!-- ===================================== -->
+   <!-- Web Client Config Data Cache          -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for in-memory GlobalConfig -->
+   
+   <bean name="globalConfigSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.globalConfigCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for in-memory GlobalConfig -->
+   
+   <bean name="globalConfigCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="globalConfigSharedCache" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.globalConfigTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>10</value>
+      </property>
+   </bean>
+   
+   
+   <!-- ===================================== -->
+   <!-- Web Client Config Service             -->
+   <!-- ===================================== -->
+   
+   <bean id="webClientConfigService" class="org.alfresco.repo.config.xml.RepoXMLConfigService">
+       <constructor-arg>
+         <ref bean="webClientConfigSource" />
+      </constructor-arg>
+      
+      <property name="tenantAdminService" ref="tenantAdminService"/>  
+      <property name="transactionService" ref="transactionComponent"/>
+      <property name="authenticationContext" ref="authenticationContext"/>
+      
+      <property name="configDataCache"   ref="globalConfigCache"/>
+      
+   </bean>
+   
+   <bean id="webClientConfigAdminInterpreter" class="org.alfresco.web.config.ConfigAdminInterpreter" parent="interpreterBase">
+      <property name="repoXMLConfigService" ref="webClientConfigService"/>
+   </bean>
+   
+   <bean id="webClientConfigAdminInterpreterHelp" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">
+      <property name="resourceBundles">
+         <list>
+             <value>alfresco.messages.webclient-config-admin-interpreter-help</value>
+         </list>
+      </property>       
+   </bean>
+   
+   <!-- NOTE: This references a bean in the repository Spring configuration -->
+   <bean id="dataDictionary" class="org.alfresco.web.bean.repository.DataDictionary">
+      <constructor-arg>
+         <ref bean="DictionaryService" />
+      </constructor-arg>
+   </bean>
+
+   <!-- NOTE: This references a bean in the repository Spring configuration -->
+   <bean id="FormsService" class="org.alfresco.web.forms.FormsService">
+      <constructor-arg>
+         <ref bean="ContentService" />
+      </constructor-arg>
+      <constructor-arg>
+         <ref bean="NodeService" />
+      </constructor-arg>
+      <constructor-arg>
+         <ref bean="NamespaceService" />
+      </constructor-arg>
+      <constructor-arg>
+         <ref bean="SearchService" />
+      </constructor-arg>
+      <constructor-arg>
+         <ref bean="policyComponent" />
+      </constructor-arg>
+   </bean>
+
+   <!-- NOTE: This references a bean in the repository Spring configuration -->
+   <bean id="Schema2XFormsProperties" class="org.alfresco.web.forms.xforms.Schema2XFormsProperties">
+      <constructor-arg>
+         <ref bean="ContentService" />
+      </constructor-arg>
+      <constructor-arg>
+         <ref bean="NamespaceService" />
+      </constructor-arg>
+      <constructor-arg>
+         <ref bean="NodeService" />
+      </constructor-arg>
+      <constructor-arg>
+         <ref bean="SearchService" />
+      </constructor-arg>
+      <property name="locations">
+        <list>
+            <!-- TODO currently WCM form string will override form string, which may not be desired -->           
+            <value>alfresco:/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.wcm_content_forms.childname}/${form.name}/cm:strings</value>
+            <value>alfresco:/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.wcm_content_forms.childname}/cm:strings</value>
+            
+            <value>alfresco:/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.content_forms.childname}/${form.name}/cm:strings</value>
+            <value>alfresco:/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.content_forms.childname}/cm:strings</value>
+         
+            <value>classpath:alfresco/messages/webclient</value>
+       </list>
+      </property>
+      <property name="formatCaption">
+         <value>${xforms.formatCaption}</value>
+      </property>
+   </bean>
+   
+    <!-- ===================================== -->
+    <!-- Web Script Beans             -->
+    <!-- ===================================== -->
+
+   <!--  Alfresco Web Client Authenticator (Servlet based) -->
+   <bean id="webscripts.authenticator.webclient" class="org.alfresco.repo.web.scripts.servlet.WebClientAuthenticatorFactory" />
+   
+   <bean id="webscripts.authenticator.jsr168.webclient" class="org.alfresco.repo.web.scripts.portlet.WebClientPortletAuthenticatorFactory" lazy-init="true"/>
+
+   <bean id="RemoteUserMapper" class="org.alfresco.repo.management.subsystems.ChainingSubsystemProxyFactory">
+      <property name="applicationContextManager">
+         <ref bean="Authentication" />
+      </property>
+      <property name="interfaces">
+         <list>
+            <value>org.alfresco.repo.webdav.auth.RemoteUserMapper</value>
+            <value>org.alfresco.repo.management.subsystems.ActivateableBean</value>
+         </list>
+      </property>
+      <property name="sourceBeanName">
+         <value>remoteUserMapper</value>
+      </property>
+   </bean>
+
+   <bean id="AuthenticationFilter" class="org.alfresco.repo.management.subsystems.ChainingSubsystemProxyFactory">
+      <property name="applicationContextManager">
+         <ref bean="Authentication" />
+      </property>
+      <property name="interfaces">
+         <list>
+            <value>org.alfresco.repo.web.filter.beans.DependencyInjectedFilter</value>
+         </list>
+      </property>
+      <property name="sourceBeanName">
+         <value>authenticationFilter</value>
+      </property>
+      <!-- Fall back to the default alfresco implementation -->
+      <property name="defaultTarget">
+         <ref bean="defaultAuthenticationFilter"/>
+      </property>
+   </bean>
+
+   <bean id="defaultAuthenticationFilter" class="org.alfresco.web.app.servlet.AuthenticationFilter">
+      <property name="configService">
+         <ref bean="webClientConfigService" />
+      </property>
+   </bean>
+    
+   <bean id="GlobalAuthenticationFilter" class="org.alfresco.repo.management.subsystems.ChainingSubsystemProxyFactory">
+      <property name="applicationContextManager">
+         <ref bean="Authentication" />
+      </property>
+      <property name="interfaces">
+         <list>
+            <value>org.alfresco.repo.web.filter.beans.DependencyInjectedFilter</value>
+         </list>
+      </property>
+      <property name="sourceBeanName">
+         <value>globalAuthenticationFilter</value>
+      </property>
+      <!-- Fall back to a benign default implementation -->
+      <property name="defaultTarget">
+         <bean class="org.alfresco.repo.web.filter.beans.NullFilter" />
+      </property>
+   </bean>
+
+   <bean id="WebscriptAuthenticationFilter" class="org.alfresco.repo.management.subsystems.ChainingSubsystemProxyFactory">
+      <property name="applicationContextManager">
+         <ref bean="Authentication" />
+      </property>
+      <property name="interfaces">
+         <list>
+            <value>org.alfresco.repo.web.filter.beans.DependencyInjectedFilter</value>
+         </list>
+      </property>
+      <property name="sourceBeanName">
+         <value>webscriptAuthenticationFilter</value>
+      </property>
+      <!-- Fall back to a benign default implementation -->
+      <property name="defaultTarget">
+         <bean class="org.alfresco.repo.web.filter.beans.NullFilter" />
+      </property>
+   </bean>
+
+   <bean id="WebDavAuthenticationFilter" class="org.alfresco.repo.management.subsystems.ChainingSubsystemProxyFactory">
+      <property name="applicationContextManager">
+         <ref bean="Authentication" />
+      </property>
+      <property name="interfaces">
+         <list>
+            <value>org.alfresco.repo.web.filter.beans.DependencyInjectedFilter</value>
+         </list>
+      </property>
+      <property name="sourceBeanName">
+         <value>webDavAuthenticationFilter</value>
+      </property>
+      <!-- Fall back to the default alfresco implementation -->
+      <property name="defaultTarget">
+         <bean class="org.alfresco.repo.webdav.auth.AuthenticationFilter">
+            <property name="authenticationService">
+               <ref bean="AuthenticationService" />
+            </property>
+            <property name="personService">
+               <ref bean="PersonService" />
+            </property>
+            <property name="nodeService">
+               <ref bean="NodeService" />
+            </property>
+            <property name="transactionService">
+               <ref bean="TransactionService" />
+            </property>
+            <property name="authenticationComponent">
+               <ref bean="AuthenticationComponent" />
+            </property>
+            <property name="remoteUserMapper">
+               <ref bean="RemoteUserMapper" />
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <bean id="SharepointAuthenticationHandler" class="org.alfresco.repo.management.subsystems.ChainingSubsystemProxyFactory">
+      <property name="applicationContextManager">
+         <ref bean="Authentication" />
+      </property>
+      <property name="interfaces">
+         <list>
+            <value>org.alfresco.repo.webdav.auth.AuthenticationDriver</value>
+         </list>
+      </property>
+      <property name="sourceBeanName">
+         <value>sharepointAuthenticationHandler</value>
+      </property>
+      <!-- Fall back to the default alfresco implementation -->
+      <property name="defaultTarget">
+         <bean class="org.alfresco.web.sharepoint.auth.BasicAuthenticationHandler">
+            <property name="authenticationService">
+               <ref bean="AuthenticationService" />
+            </property>
+            <property name="personService">
+               <ref bean="PersonService" />
+            </property>
+         </bean>
+      </property>
+   </bean>
+
+</beans>

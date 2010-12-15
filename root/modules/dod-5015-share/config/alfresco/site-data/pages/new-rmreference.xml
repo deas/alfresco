@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>New Reference</title>
+   <title-id>page.newRmReference.title</title-id>
+   <description>New Reference</description>
+   <description-id>page.newRmReference.description</description-id>
+   <template-instance>new-rmreference</template-instance>
+   <authentication>user</authentication>
+</page>

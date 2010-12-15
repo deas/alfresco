@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>events</shortname>
+  <description>Disposition Schedule View Component</description>
+  <url>/components/fileplan/disposition</url>
+</webscript>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view:view xmlns:view="http://www.alfresco.org/view/repository/1.0">
+  <cm:folder xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:alf="http://www.alfresco.org" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:custom="custom.model" xmlns="" view:childName="cm:FB5607893292">
+    <view:aspects>
+      <app:uifacets/>
+    </view:aspects>
+    <view:acl>
+      <view:ace view:access="ALLOWED">
+        <view:authority>GROUP_EVERYONE</view:authority>
+        <view:permission>Contributor</view:permission>
+      </view:ace>
+    </view:acl>
+    <view:properties>
+      <app:icon>space-icon-default</app:icon>
+      <cm:description>Storage for Facebook Alfresco Document Library</cm:description>
+      <cm:title>Alfresco Document Library</cm:title>
+      <cm:name>FB5607893292</cm:name>
+    </view:properties>
+  </cm:folder>
+</view:view>

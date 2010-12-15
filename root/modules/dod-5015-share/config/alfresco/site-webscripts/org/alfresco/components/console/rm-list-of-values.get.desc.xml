@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Admin Console Record Management List of Values</shortname>
+  <description>Administration Console - Record Management Tool List of Values</description>
+  <url>/components/console/rm-list-of-values</url>
+  <family>rm-console</family>
+</webscript>

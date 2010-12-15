@@ -1,0 +1,219 @@
+CMIS Atom Feed / Entry Serialization
+
+Issues:
+
+x why repository SHOULD attempt to populate content (e.g. table of properties)?
+  Isn't that covered by atom:summary?
+x no cmis mapping for atom:updated (although mandatory)
+x feed link - "self" for URI returning feed/entry (not "alternate")
+x entry link == cmis:uri ???
+x link["cmis-stream"] equivalent to "edit-media" & "enclosure"??
+x actions entry contains link["cmis-parent"]??
+
+
+Key:
+
+wip    prototype implementation
+done   as defined in spec
+
+    ?  optional in atom
+    ?C optional in atom with CMIS model mapping
+    +  mandatory in atom
+    +C mandatory in atom with CMIS model mapping
+    |  sometimes mandatory in atom
+    |C sometimes mandatory in atom with CMIS model mapping
+
+
+APP Service Document
+
+    +  app:service
+    +    app:workspace cmis:id
+    +      atom:title
+    ?      app:collection cmis:collectionType
+    +        atom:title
+    ?        app:accept
+    ?        app:categories
+
+           cmis:repositoryInfo
+             cmis:repositoryId
+             cmis:repositoryName
+             cmis:repositoryDescription
+             cmis:vendorName
+             cmis:productName
+             cmis:productVersion
+             cmis:capabilities
+               cmis:capabilityMultifiling
+               cmis:capabilityUnfiling
+               cmis:capabilityVersionSpecificFiling
+               cmis:capabilityAllVersionsSearchable
+               cmis:capabilityPWCUpdatable
+               cmis:capabilityInnerJoin
+               cmis:capabilityOuterJoin
+ 
+
+Atom Feed
+    
+(from syndication spec)
+    
+done|C atom:author (1 or more, unless all entries have author - 0 or more)  -> CREATED_BY
+    ?  atom:category (0 or more)
+    ?  atom:contributor (0 or more) (name, uri?, email?)
+done?  atom:generator (0 or 1)
+done?  atom:icon (0 or 1)
+done+C atom:id (1)  -> OBJECT_ID
+    ?  atom:logo (0 or 1)
+    ?  atom:rights (0 or 1)
+    ?  atom:subtitle (0 or 1)
+done+C atom:title (1)  -> NAME (if folder), or repository specific
+wip +C atom:updated (1)  -> LAST_MODIFIED_DATE??
+done?  atom:link ["self"] (0 or 1)  note: this is the preferred URI for retrieving Atom Feed
+    ?  atom:link ["alternate"] (0 or more)  note: this is equivalent to no "rel" attribute
+    ?  atom:link ["related"] (0 or more)
+    ?  atom:link ["enclosure"] (0 or 1)
+    ?  atom:link ["via"] (0 or more)
+    
+(from app spec)
+    
+done?  atom:link ["first"] (0 or more)   note: for paging
+done?  atom:link ["next"] (0 or more)  note: for paging
+done?  atom:link ["previous"] (0 or more)  note: for paging
+done?  atom:link ["last"] (0 or more)  note: for paging
+    
+    
+Atom Entry
+    
+(from syndication spec)
+    
+done|C atom:author (if in Feed - 0 or more, otherwise 1 or more)  -> CREATED_BY
+    ?  atom:category (0 or more)
+done?C atom:content (0 or 1)  -> CONTENT_STREAM (link or inline for text,html,xhtml) or best efforts CMIS OBJECT summary
+    ?  atom:contributor (0 or more) (name, uri?, email?)
+done+C atom:id (1)  -> OBJECT_ID
+done?C atom:published (0 or 1)  -> CREATED_DATE
+    ?  atom:rights (0 or 1)
+    ?  atom:source (0 or 1)
+done|C atom:summary (if 'out of line' or base64 atom:content - 1, otherwise 0 or 1)  -> best efforts CMIS OBJECT summary
+done+C atom:title (1)  -> document: NAME or best efforts, folder: NAME
+wip +C atom:updated (1)  -> LAST_MODIFIED_DATE??
+    |C atom:link ["alternate"] (0 or more, if no atom:content - 1 or more)  -> CONTENT_STREAM
+    ?  atom:link ["related"] (0 or more)
+done?  atom:link ["self"] (0 or 1)
+done?C atom:link ["enclosure"] (0 or 1)  -> CONTENT_STREAM
+    ?  atom:link ["via"] (0 or more)
+    
+(from app spec)
+    
+done?C app:edited (0 or 1)  -> LAST_MODIFIED_DATE
+    ?  app:control (0 or 1)
+done?  atom:link ["edit"] (0 or 1)  note: for editable member URIs (get, update, delete)
+done?  atom:link ["edit-media"] (0 or more)  note: for editable member media resources  -> CONTENT_STREAM
+    
+(from cmis spec)
+    
+    for (abstract) object:
+    
+done?C atom:link ["cmis-allowableactions"] (0 or 1 entry)  -> cmis getAllowableActions()
+    +C atom:link ["cmis-type"] (1 entry) -> cmis getTypeDefinition()  note: equivalent to "self" for type definition
+    
+for document (derives from object):
+    
+done+C cmis:object (1)  -> DOCUMENT serialization
+done     cmis:object_id  -> OBJECT_ID
+    ?    cmis:uri  -> URI
+done!    cmis:objectType  -> OBJECT_TYPE_ID or ObjectTypeQueryName
+done!    cmis:baseType   -> RootTypeQueryName??
+done     cmis:createdBy  -> CREATED_BY
+done     cmis:creationDate  -> CREATION_DATE
+done     cmis:lastModifiedBy  -> LAST_MODIFIED_BY
+done     cmis:lastModificationDate  -> LAST_MODIFICATION_DATE
+    !    cmis:isCurrentVersion
+    !    cmis:isCheckedOut
+done     cmis:contentStreamLength  -> CONTENT_STREAM_LENGTH
+done     cmis:contentStreamMimetype  -> CONTENT_STREAM_MIMETYPE
+done     cmis:contentStreamName  -> CONTENT_STREAM_FILENAME
+done     cmis:contentStreamUri  -> CONTENT_STREAM_URI
+    !    cmis:keyword
+    !    cmis:name  -> NAME
+done|C atom:link ["cmis-relationships"] (0 or 1 feed, unless has relationships, 1 feed) -> cmis getRelationships()
+done|C atom:link ["cmis-parents"] (1 feed, unless unfiled - 0)  -> cmis getDocumentParents()
+done+C atom:link ["cmis-allversions"] (1 feed)  -> cmis getAllVersions()
+done|C atom:link ["cmis-stream"] (0 or 1, unless has content stream, 1) -> cmis getContentStream()
+    
+for relationship (derives from object):
+    
+    +C cmis:object (1)  -> RELATIONSHIP serialization
+         cmis:id  -> OBJECT_ID
+         cmis:uri  -> URI
+    !    cmis:objectType  -> OBJECT_TYPE_ID or ObjectTypeQueryName
+    !    cmis:baseType  -> RootTypeQueryName??
+         cmis:source  -> SOURCE_ID
+         cmis:target  -> TARGET_ID
+    +C atom:link ["cmis-source"] (1 entry)  -> cmis relationship.source_id
+    +C atom:link ["cmis-target"] (1 entry)  -> cmis relationship.target_id
+    
+for (abstract) hierarchy (derives from object):
+    
+done|C atom:link ["cmis-parent"] (1 entry, unless root - 0)  -> cmis getFolderParent() / getTypeDefinition().parentId
+done+C atom:link ["cmis-children"] (1 feed)  -> cmis getChildren() / getTypeDefinition().children (derived)
+done+C atom:link ["cmis-descendants"] (1 feed)  -> cmis getDescendants() / getTypeDefinition().descendants (derived)
+    
+for folder (derives from hierarchy):
+    
+done+C cmis:object (1)  -> FOLDER serialization
+done     cmis:object_id  -> OBJECT_ID
+         cmis:uri  -> URI
+    !    cmis:objectType  -> OBJECT_TYPE_ID or ObjectTypeQueryName
+done!    cmis:baseType  -> RootTypeQueryName??
+done     cmis:createdBy  -> CREATED_BY
+done     cmis:creationDate  -> CREATION_DATE
+done     cmis:lastModifiedBy  -> LAST_MODIFIED_BY
+done     cmis:lastModificationDate  -> LAST_MODIFIED_DATE
+done     cmis:name  -> NAME
+done     cmis:parent  -> PARENT
+done|C atom:link ["cmis-relationships"] (0 or 1 feed, unless has relationships, 1 feed) -> cmis getRelationships()
+         
+for type (derives from hierarchy):
+    
+    +C cmis:type (1)  -> TYPE serialization
+         cmis:id  -> ObjectTypeId
+    !    cmis:root-type  -> RootTypeQueryName??
+    !    cmis:name  -> ObjectTypeQueryName??
+         cmis:displayname  -> ObjectTypeDisplayName
+         cmis:parent  -> ParentTypeId
+         cmis:versionable  -> Versionable
+         cmis:description  -> Description
+         cmis:constraint  -> Constraints
+         cmis:property
+           cmis:type  -> PropertyType
+           cmis:name  -> PropertyName
+           cmis:displayname  -> DisplayName
+           cmis:description  -> Description
+           cmis:default  -> DefaultValue
+           cmis:single_value_property  -> Cardinality
+           cmis:maximumlength  -> MaximumLength
+           cmis:choice  -> Choices
+           cmis:required  -> Required
+           cmis:updatable  -> Updatability
+           cmis:queryable  -> Queryable
+           cmis:orderable  -> Orderable
+          
+for actions:
+    
+    +C cmis:actions (1)  -> ACTIONS serialization
+         cmis:delete  -> DeleteObject
+         cmis:updateproperties  -> UpdateProperties
+         cmis:getproperties  -> GetProperties
+         cmis:getrelationships  -> GetRelationships
+    !    cmis:getparents  -> GetDocumentParents or GetFolderParent
+         cmis:move  -> MoveObject
+    !    cmis:deleteversion  -> DeleteAllVersions??
+         cmis:deletecontent  -> DeleteContentStream
+         cmis:checkout  -> CheckOut
+         cmis:cancelcheckout  -> CancelCheckout
+         cmis:checkin  -> CheckIn
+         cmis:setcontent  -> SetContentStream
+         cmis:getallversions  -> GetAllVersions
+         cmis:addtofolder  -> AddDocumentToFolder
+         cmis:removefromfolder  -> RemoveDocumentFromFolder
+         cmis:viewcontent  -> GetContentStream
+         cmis:getchildren  -> GetChildren

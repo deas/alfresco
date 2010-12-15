@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Delete Item GG</shortname>
+  <description>Delete item confirmation for iGoogle Gadgets</description>
+  <url>/aggadget/delete</url>
+  <authentication>user</authentication>
+</webscript>

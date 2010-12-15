@@ -1,0 +1,16 @@
+
+<!--
+This component is not compatible with base-param-adminaccount.xml
+-->
+<component>
+    <name>admindb</name>
+    <description>To show database root password</description>
+    <canBeEdited>1</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+    <initializationActionList>
+        <setInstallerVariable name="component(mysql).parameter(mysql_credentials).ask" value="1"/>
+        <setInstallerVariable name="component(mysql).parameter(mysql_credentials).parameter(mysql_root_user).ask" value="0"/>
+    </initializationActionList>
+</component>
+

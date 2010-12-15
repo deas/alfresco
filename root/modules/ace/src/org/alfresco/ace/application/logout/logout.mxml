@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<logout:LogoutClass 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:logout="org.alfresco.ace.application.logout.*" 
+	xmlns:link="org.alfresco.ace.control.hyperlink.*" 
+	width="17%" height="100%"	
+	styleName="logout">	
+	
+	
+   <!-- Import css style sheet -->
+   <mx:Style source="logout.css"/> 
+
+   <mx:HBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+
+		<!-- Show image -->
+		<mx:VBox height="100%">
+			<mx:Spacer height="10"/>
+			<mx:Image source="@Embed(source='/images/user_icon.png')"/>	
+		</mx:VBox>   
+   		
+   		<mx:Spacer width="5"/>
+   			
+        <!-- User name and logout link -->
+		<mx:VBox horizontalAlign="left" verticalAlign="top" height="100%">
+			
+			<mx:Spacer height="7"/>
+      		<link:HyperLink id="logoutBtn" text="Logout" click="logout()" styleName="logoutLink" rolledOverStyleName="logoutLinkRollOver"/>
+  	  		<mx:Image id="visibilityImage" />
+  	  		
+  	  	</mx:VBox>
+  
+	</mx:HBox>	
+	
+</logout:LogoutClass>
+				            

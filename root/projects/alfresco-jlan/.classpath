@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="org/alfresco/jlan/app/|org/alfresco/jlan/server/filesys/db/derby/|org/alfresco/jlan/server/filesys/db/mysql/|org/alfresco/jlan/server/filesys/db/oracle/|org/alfresco/jlan/smb/util/" kind="src" path="source/java"/>
+	<classpathentry kind="lib" path="libs/cryptix-jce-provider.jar"/>
+	<classpathentry kind="lib" path="service/wrapper.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

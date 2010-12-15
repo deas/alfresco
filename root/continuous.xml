@@ -1,0 +1,1547 @@
+<project name="continuous"
+         default="continuous" >
+
+   <!-- ********************************** -->
+   <!-- ** Initialisation/Configuration ** -->
+   <!-- ********************************** -->
+
+   <!-- Allow the path of the imported script to be overriden -->
+   <property name="build.script" value="build.xml" />
+   <import file="${basedir}/${build.script}" />
+
+   <!-- We ant Java 1.6 and Ant 1.7, to make the scripting simple -->
+   <fail message="Ant 1.7 or higher is required to build. ${ant.version} detected">
+     <!-- antversion tag not available in 1.6 which is unhelpful -->
+     <condition><contains string="${ant.version}" substring="1.6." /></condition>
+   </fail>
+   <fail message="Ant 1.7 or higher is required to build. ${ant.version} detected">
+     <condition><not><antversion atleast="1.7" /></not></condition>
+   </fail>
+
+   <target name="continuous-init" 
+           depends="init">
+      <property file="continuous.properties"/>
+   </target>
+	
+   <target name="bootstrap-wcm-test" depends="continuous-init" >
+   	  <!-- enable wcm for unit tests -->
+   	  <echo message="enable wcm for tests" />
+      <copy file="${file.name.wcm.bootstrap}" todir="${dir.project.repository}/${dir.name.source}/${dir.name.test.resources}/alfresco/extension" />
+   </target>
+
+   <target name="init-test" 
+           depends="continuous-init,bootstrap-wcm-test">
+      <mkdir dir="${dir.continuous.dist}" />
+   </target>
+
+
+   <!-- ********************** -->
+   <!-- ** Cleaning targets ** -->
+   <!-- ********************** -->
+
+   <target name="clean-continuous"
+           description="Cleans just the continuous build area" 
+           depends="continuous-init">
+      <delete quiet="yes" 
+              includeEmptyDirs="true" 
+              dir="${dir.continuous.build}" />
+   </target>
+
+   <!-- *********************** -->
+   <!-- ** Top level targets ** -->
+   <!-- *********************** -->
+
+   <target name="continuous" 
+           description="Performs a full clean, runs all tests and creates all distribution files"
+           depends="clean-continuous, 
+                    clean, 
+                    -reset-database,
+                    set-build-number,
+                    init-test,
+                    test,
+                    distribute,
+                    generate-checksums" />
+
+   <target name="continuous-core" 
+           description="Performs a full clean, runs all tests and creates all patch distribution files"
+           depends="clean-continuous, 
+                    clean, 
+                    -reset-database,
+                    set-build-number,
+                    init-test,
+                    test,
+                    distribute-core,
+                    generate-checksums" />
+
+   <target name="continuous-without-tests" 
+           description="Performs a full clean and creates all distribution files but does not run any tests"
+           depends="clean-continuous, 
+                    clean, 
+                    -reset-database, 
+                    distribute,
+                    generate-checksums" />
+   
+   <target name="continuous-without-distribute" 
+           description="Performs a full clean and runs all tests but does not generate any distribution files"
+           depends="clean-continuous, 
+                    clean, 
+                    -reset-database,
+                    set-build-number,
+                    init-test,
+                    test" />
+
+   <target name="distribute" 
+           description="Creates the distribution files for all platforms"
+           depends="set-build-number,
+                    incremental, 
+                    distribute-core,
+                    distribute-non-core,
+                    revert-changes" />
+
+   <target name="distribute-patch" 
+           description="Creates the distribution files for all platforms"
+           depends="set-build-number,
+                    incremental, 
+                    distribute-core,
+                    revert-changes" />
+
+   <target name="distribute-non-core" 
+           description="Creates the distribution files for all platforms"
+           depends="distribute-core-amps,
+                    distribute-sdk, 
+                    distribute-installers,
+                    distribute-extras,
+                    distribute-fdk,
+                    distribute-docs" />
+
+   <target name="distribute-core" 
+           description="Creates the patch distribution files for all platforms"
+           depends="assemble-commands,
+                    distribute-core-amps,
+                    assemble-tomcat,
+                    distribute-war,
+                    distribute-wcm,
+                    distribute-webserviceclient,
+                    distribute-extensions-office2003,
+                    distribute-deployment,
+                    distribute-webeditor,
+                    distribute-wcmqs-extension" />
+
+   <target name="set-build-number"
+           depends="continuous-init, set-build-devbox-number, set-revision-number">
+      <property file="distribute.properties" />
+   </target>
+
+   <target name="set-build-devbox-number"
+           if="alf.build.number">
+      <exec executable="svn">
+         <arg line="revert ${dir.project.repository.config}/alfresco/version.properties"/>
+      </exec>
+      <replace file="${dir.project.repository.config}/alfresco/version.properties"
+               token="@build-number@"
+               value="${alf.build.number}"
+               summary="yes" />
+      <replace file="${dir.project.repository.config}/alfresco/version.properties"
+               token="version.edition=Community"
+               value="version.edition=${file.name.codeline}"
+               summary="yes" />
+   </target>
+
+   <target name="set-revision-number"
+           depends="continuous-init"
+           unless="alf.build.number">
+      <taskdef name="svn"
+               classname="org.tigris.subversion.svnant.SvnTask">
+         <classpath refid="classpath.compile" />
+      </taskdef>
+
+      <svn>
+         <status path="${basedir}" revisionProperty="svn.revision" />
+      </svn>
+      <exec executable="svn">
+         <arg line="revert ${dir.project.repository.config}/alfresco/version.properties"/>
+      </exec>
+      <replace file="${dir.project.repository.config}/alfresco/version.properties"
+               token="@build-number@"
+               value="r${svn.revision}"
+               summary="yes" />
+      <replace file="${dir.project.repository.config}/alfresco/version.properties"
+               token="version.edition=Community"
+               value="version.edition=${file.name.codeline}"
+               summary="yes" />
+   </target>
+
+   <target name="set-build-number-cc"
+           depends="continuous-init"
+           if="build.release">
+      <replace file="${dir.project.repository.config}/alfresco/version.properties" 
+               token="@build-number@" 
+               value="${label}" />
+      <replace file="${dir.project.repository.config}/alfresco/version.properties"
+               token="@code-line@"
+               value="${file.name.codeline}"
+               summary="yes" />
+   </target>
+
+   <target name="revert-changes"
+           depends="continuous-init">
+      <exec executable="svn">
+         <arg line="revert ${dir.project.repository.config}/alfresco/version.properties"/>
+      </exec>
+   </target>
+
+   <target name="generate-checksums"
+           description="Generates checksum files for the distibution files" 
+           depends="continuous-init">
+      <delete>
+         <fileset dir="${dir.continuous.dist}" 
+                  includes="*.MD5"/>
+      </delete>
+      <checksum>
+         <fileset dir="${dir.continuous.dist}"/>
+      </checksum>
+   </target>
+
+   <!-- **************************************************** -->
+   <!-- ** Database targets (for internal script use only)** -->
+   <!-- **************************************************** -->
+ 
+  <target name="reset-database" 
+          depends="-drop-database, 
+                   -create-database" />
+   <target name="-reset-database" 
+           depends="-drop-database, 
+                    -create-database" />
+
+   <target name="load-database-properties"
+           depends="continuous-init">
+      <!-- If a DB properties override file was supplied, copy it into place -->
+      <script language="javascript" classpath="${classpath.bsf_javascript}"> <![CDATA[
+         importClass(java.io.File);
+         var repoConfigPath = project.getProperty("dir.project.repository.config");
+         var globalFile = new File(repoConfigPath + "/alfresco/module/test/alfresco-global.properties" );
+
+         var propfile = project.getProperty("DB_PROPERTIES");
+
+         // Always clean up the old one
+         var del = project.createTask("delete");
+         del.setFile( globalFile );
+         del.perform();
+
+         if(propfile != null) {
+            // Copy in the new one
+            var copy = project.createTask("copy");
+            copy.setFile( new File(propfile) );
+            copy.setTofile( globalFile );
+            copy.perform();
+         }
+      ]]></script>
+
+      <!-- Grab dev-context.xml and test-context.xml, from the repo config + home dir -->
+      <!-- Then, load the repository properties files, in order -->
+      <!-- Note - ant property loading works differently to spring, so we -->
+      <!--  need to load in the reverse order! -->
+      <script language="javascript" classpath="${classpath.bsf_javascript}"> <![CDATA[
+         importClass(java.util.regex.Matcher);
+         importClass(java.util.regex.Pattern);
+         importClass(java.io.File);
+         importClass(java.io.FileInputStream);
+         importClass(java.io.InputStreamReader);
+         importClass(java.io.BufferedReader);
+         importClass(java.lang.System);
+
+         var fail = project.createTask("fail");
+         var loadfile = project.createTask("loadfile");
+         loadfile.setFailonerror(false);
+
+         var repoConfigPath = project.getProperty("dir.project.repository.config");
+
+         var repoPropMatcher = Pattern.compile("<bean id=\"repository-properties\"(.*?)</bean>", Pattern.DOTALL);
+         var locationsMatcher = Pattern.compile("<property name=\"locations\"(.*?)</property>", Pattern.DOTALL);
+         var valueMatcher = Pattern.compile("<value>(.*?)</value>", Pattern.DOTALL);
+
+         var propertiesDefs = new Array();
+         var propertiesFiles = new Array();
+         var count = 0;
+
+         for each (var dirp in ["user.home", "dir.project.repository.config"]) {
+            var dir = project.getProperty(dirp) + "/alfresco/extension/";
+            for each (var xmlc in ["dev-context","test-context"]) {
+               var xmlfile = new File(dir + xmlc + ".xml");
+               count++;
+
+               loadfile.setProperty("xml"+count);
+               loadfile.setSrcFile(xmlfile);
+               loadfile.perform();
+ 
+               var xml = project.getProperty("xml"+count);
+               if(xml != null) {
+                  var rpm = repoPropMatcher.matcher(xml);
+                  if(rpm.find()) {
+                      var lm = locationsMatcher.matcher( rpm.group() );
+                      if(lm.find()) {
+                         var vm = valueMatcher.matcher( lm.group(0) );
+                         while(vm.find()) {
+                            var property = vm.group(1);
+                            var pfn;
+
+                            // Support things like <value>${foo}</value>
+                            if(property.startsWith("${")) {
+                               var sysProp = property.substring(2, property.length()-1);
+                               property = project.getProperty(sysProp);
+                               if(property == null) {
+                                  fail.setMessage("Can't resolve " + vm.group(0));
+                                  fail.perform();
+                               }
+                            }
+
+                            // Get the FS path to the property file
+                            if(property.startsWith("classpath:")) {
+                               pfn = repoConfigPath + "/" + property.substring(10);
+                            } else if(property.startsWith("file:")) {
+                               pfn = property.substring(5);
+                            } else {
+                               pfn = property;
+                            }
+   
+                            if(pfn != null) {
+                               var pf = new File(pfn);
+                               if(pf.exists()) {
+                                  propertiesDefs.push( property );
+                                  propertiesFiles.push( pf );
+                               }
+                            }
+                         }
+                      }
+                  }
+               }
+            }
+         }
+
+         // If they gave a properties override file, that goes first
+         var propfile = project.getProperty("DB_PROPERTIES");
+         if(propfile != null) {
+            propertiesFiles.push( new File(propfile) );
+            propertiesDefs.push( propfile );
+         }
+
+         // Now load the files, in reverse order
+         for(var i=(propertiesFiles.length-1); i>=0; i--) {
+            var pf = propertiesFiles[i];
+            var property = propertiesDefs[i];
+
+            var echoT = project.createTask("echo");
+            echoT.setMessage("Loading DB property " + property);
+            echoT.perform();
+
+            var propertyT = project.createTask("property");
+            propertyT.setFile(pf);
+            propertyT.perform();
+         } 
+
+         // Try to figure out what database engine they wanted
+         var dbtype = "unknown";
+         var dburl = project.getProperty("db.url");
+         if(dburl == null) {
+            fail.setMessage("No {db.url} property found, which is required");
+            fail.perform();
+         } else if(dburl.startsWith("jdbc:mysql://")) {
+            dbtype = "mysql";
+         } else if(dburl.startsWith("jdbc:postgresql:")) {
+            dbtype = "postgresql";
+         } else if(dburl.startsWith("jdbc:oracle:")) {
+            dbtype = "oracle";
+
+            // Ensure we were given sys credentials too
+            if(project.getProperty("db.master.username") == null) {
+               fail.setMessage("Property db.master.username not given (normally 'sys as sysdba')");
+               fail.perform();
+            }
+            if(project.getProperty("db.master.password") == null) {
+               fail.setMessage("Property db.master.password not given");
+               fail.perform();
+            }
+         } else if(dburl.startsWith("jdbc:db2//")) {
+            dbtype = "db2"; // DB2 type 4
+
+            // We need the JDBC connection URL for the default database
+            var slashslash = dburl.indexOf("db2//");
+            var dbnameslash = dburl.indexOf("/", slashslash+6);
+            var masterURL = dburl.substring(0, dbnameslash) + "/default";
+            project.setProperty("db.master.url", masterURL);
+         } else if(dburl.startsWith("jdbc:db2:")) {
+            dbtype = "db2"; // DB2 type 2
+            project.setProperty("db.master.url", "jdbc:db2:default");
+         } else if(dburl.startsWith("jdbc:microsoft:sqlserver://")) {
+            // We need the JDBC connection URL for the master database
+            var masterURL = dburl.substring(0, dburl.indexOf(";databaseName=")) +
+               ";databaseName=master";
+
+            fail.setMessage("The Microsoft SQL Server JDBC driver isn't supported, please use JTDS");
+            fail.perform();
+         } else if(dburl.startsWith("jdbc:jtds:sqlserver://")) {
+            dbtype = "mssql";
+
+            // We need the JDBC connection URL for the master database
+            var slashslash = dburl.indexOf("://");
+            var dbnameslash = dburl.indexOf("/", slashslash+4);
+            var masterURL = dburl.substring(0, dbnameslash) + "/master";
+            project.setProperty("db.master.url", masterURL);
+         }
+
+         project.setProperty("db.type",dbtype);
+      ]]></script>
+      <echo message="DB Type is ${db.type}"/>
+      <echo message="DB Name is ${db.name}"/>
+   </target>
+
+   <target name="-create-database" 
+           depends="continuous-init, load-database-properties">
+       <antcall target="-create-database-${db.type}" />
+   </target>
+   <target name="-create-database-unknown">
+      <fail message="Unknown database type for JDBC url '${db.url}'" />
+   </target>
+   <target name="-create-database-mysql">
+      <sql driver="${db.driver}" 
+           url="jdbc:mysql:///" 
+           classpathref="classpath.compile" 
+           print="yes"
+           userid="${db.username}" 
+           password="${db.password}">
+         create database if not exists ${db.name};
+         create database if not exists ${db.name}_test;
+      </sql>
+   </target>
+   <target name="-create-database-postgresql">
+      <!-- PostGreSQL lacks a "if not exists" for creating databases -->
+      <!-- So, do it as two statements, ignoring errors -->
+      <sql driver="${db.driver}" 
+           url="jdbc:postgresql:template1"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           onerror="continue"
+           userid="${db.username}" 
+           password="${db.password}">
+         create database ${db.name};
+      </sql>
+      <sql driver="${db.driver}" 
+           url="jdbc:postgresql:template1"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           onerror="continue"
+           userid="${db.username}" 
+           password="${db.password}">
+         create database ${db.name}_test;
+      </sql>
+   </target>
+   <target name="-create-database-mssql">
+      <!-- MS SQL Server lacks a "if not exists" for creating databases -->
+      <!-- So, do it as two statements, ignoring errors -->
+      <sql driver="${db.driver}" 
+           url="${db.master.url}"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           onerror="continue"
+           userid="${db.username}" 
+           password="${db.password}">
+         CREATE DATABASE ${db.name};
+         ALTER DATABASE ${db.name} SET ALLOW_SNAPSHOT_ISOLATION ON;
+      </sql>
+      <sql driver="${db.driver}" 
+           url="${db.master.url}"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           onerror="continue"
+           userid="${db.username}" 
+           password="${db.password}">
+         CREATE DATABASE ${db.name}_test;
+         ALTER DATABASE ${db.name}_test SET ALLOW_SNAPSHOT_ISOLATION ON;
+      </sql>
+   </target>
+   <target name="-create-database-oracle">
+      <!-- Really user + schema, rather than oracle database -->
+      <sql driver="${db.driver}" 
+           url="${db.url}"
+           classpathref="classpath.compile" 
+           print="yes"
+           userid="${db.master.username}" 
+           password="${db.master.password}">
+         grant connect,resource to ${db.username} identified by ${db.password};
+         grant connect,resource to ${db.username}_test identified by ${db.password};
+      </sql>
+   </target>
+   <target name="-create-database-db2">
+       <!-- DB name must be <= 8 chars including the _test suffix !!! -->
+       <!-- Use db2 cmdline since no ability to create database via JDBC (not even using procedure call to "admin_cmd") :-( -->
+       <exec executable="db2cmd">
+         <arg line="/c /i db2 create database ${db.name} using codeset UTF-8 territory default pagesize 32 K"/>
+       </exec>
+       <!-- increase logfilsz for certain unit tests that run large txns (see ALF-4241) -->
+       <exec executable="db2cmd">
+         <arg line="/c /i db2 update database configuration for ${db.name} using logfilsiz 4096"/>
+       </exec>
+       <exec executable="db2cmd">
+         <arg line="/c /i db2 create database ${db.name}_test using codeset UTF-8 territory default pagesize 32 K"/>
+       </exec>
+       <!-- increase logfilsz for certain unit tests that run large txns (see ALF-4241) -->
+       <exec executable="db2cmd">
+         <arg line="/c /i db2 update database configuration for ${db.name}_test using logfilsiz 4096"/>
+       </exec>
+   </target>
+
+   <target name="-drop-database" 
+           depends="continuous-init, load-database-properties">
+       <antcall target="-drop-database-${db.type}" />
+
+      <delete verbose="true">
+         <fileset dir="${basedir}" 
+                  includes="**/alfresco.log" />
+      </delete>
+      <delete dir="${dir.test.alfdata}" 
+              quiet="yes" 
+              includeEmptyDirs="true" />
+      <delete dir="${dir.project.repository}/alf_data" 
+              quiet="yes" 
+              includeEmptyDirs="true"  />
+      <delete dir="${dir.project.remoteapi}/alf_data" 
+              quiet="yes" 
+              includeEmptyDirs="true" />
+   </target>
+   <target name="-drop-database-unknown">
+      <fail message="Unknown database type for JDBC url '${db.url}'" />
+   </target>
+   <target name="-drop-database-mysql">
+      <sql driver="${db.driver}" 
+           url="jdbc:mysql:///" 
+           classpathref="classpath.compile" 
+           print="yes"
+           userid="${db.username}" 
+           password="${db.password}">
+         drop database if exists ${db.name};
+         drop database if exists ${db.name}_test;
+      </sql>
+   </target>
+   <target name="-drop-database-postgresql">
+      <sql driver="${db.driver}" 
+           url="jdbc:postgresql:template1"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           userid="${db.username}" 
+           password="${db.password}">
+         drop database if exists ${db.name};
+         drop database if exists ${db.name}_test;
+      </sql>
+   </target>
+   <target name="-drop-database-mssql">
+      <!-- MS SQL Server lacks a "if exists" for dropping databases -->
+      <!-- So, do it as two statements, ignoring errors -->
+      <sql driver="${db.driver}" 
+           url="${db.master.url}"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           onerror="continue"
+           userid="${db.username}" 
+           password="${db.password}">
+         drop database ${db.name};
+      </sql>
+      <sql driver="${db.driver}" 
+           url="${db.master.url}"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           onerror="continue"
+           userid="${db.username}" 
+           password="${db.password}">
+         drop database ${db.name}_test;
+      </sql>
+   </target>
+   <target name="-drop-database-oracle">
+      <!-- Really user + schema, rather than oracle database -->
+      <!-- Oracle lacks a "if exists" for dropping users -->
+      <!-- So, do it as two statements, ignoring errors -->
+      <sql driver="${db.driver}" 
+           url="${db.url}"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           onerror="continue"
+           userid="${db.master.username}" 
+           password="${db.master.password}">
+         drop user ${db.username} cascade;
+      </sql>
+      <sql driver="${db.driver}" 
+           url="${db.url}"
+           classpathref="classpath.compile" 
+           print="yes"
+           autocommit="yes"
+           onerror="continue"
+           userid="${db.master.username}" 
+           password="${db.master.password}">
+         drop user ${db.username}_test cascade;
+      </sql>
+   </target>
+   <target name="-drop-database-db2">
+       <!-- Use db2 cmdline since no ability to drop database via JDBC (not even using procedure call to "admin_cmd") ??? -->
+       <exec executable="db2cmd">
+         <arg line="/c /i db2 drop database ${db.name}"/>
+       </exec>
+       <exec executable="db2cmd">
+         <arg line="/c /i db2 drop database ${db.name}_test"/>
+       </exec>
+   </target>
+
+
+   <!-- ***************** -->
+   <!-- ** WCM targets ** -->
+   <!-- ***************** -->
+
+   <target name="distribute-wcm" 
+           description="Creates the distibution files for WCM"
+           depends="assemble-virtual">
+      <tar destfile="${dir.continuous.assemble}/temp.tar" 
+           longfile="gnu">
+         <tarfileset dir="${dir.continuous.assemble.virtualtomcat}" 
+                     prefix="virtual-tomcat"
+                     excludes="**/bin/*.sh" />
+         <tarfileset dir="${dir.continuous.assemble.virtualtomcat}/bin"
+                     prefix="virtual-tomcat/bin"
+                     includes="*.sh" 
+                     mode="755" />
+         <tarfileset dir="${dir.project.installer}"
+                     includes="wcm-bootstrap-context.xml" />
+         <tarfileset dir="${dir.project.installer}/wcm-commands"
+                     prefix="bin" 
+                     mode="755"/>
+         <tarfileset dir="${dir.project.webclient.xforms.examples}"
+                     prefix="wcm-examples"
+                     excludes="unit-tests/**" />
+      </tar>
+	  <zip destfile="${dir.continuous.dist}/${file.name.dist.wcm}.zip">
+        <tarfileset src="${dir.continuous.assemble}/temp.tar"/>
+      </zip>
+      <delete quiet="yes" file="${dir.continuous.assemble}/temp.tar" />
+   </target>
+
+   <target name="assemble-virtual"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.dist}" />
+      <delete quiet="yes"
+              includeEmptyDirs="true"
+              dir="${dir.continuous.assemble.virtualtomcat}" />
+      <unzip src="${dir.name.binaries}/tomcat/${file.name.zip.tomcatvirt.custom}"
+             dest="${dir.continuous.assemble}" />
+      <move file="${dir.continuous.assemble}/${file.name.base.zip.tomcatvirt.custom}"
+            tofile="${dir.continuous.assemble.virtualtomcat}" />
+      <move file="${dir.continuous.assemble.virtualtomcat}/server/lib/servlets-ssi.renametojar" 
+            tofile="${dir.continuous.assemble.virtualtomcat}/server/lib/servlets-ssi.jar" />
+      <deploy-virtual-tomcat location="${dir.continuous.assemble.virtualtomcat}" />
+   </target>
+
+
+   <target name="assemble-commands"
+           depends="package-bm-remote, package-mmt">
+           
+      <mkdir dir="${dir.continuous.assemble.commands}" />
+      <copy todir="${dir.continuous.assemble.commands}">
+         <fileset dir="${dir.project.jlan}/jni" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.commands}">
+         <fileset dir="${dir.installer.bitrock}/bitrock/alfresco/commands" />
+      </copy>
+      
+   </target>
+	  
+	                    
+   <target name="assemble-tomcat"
+           depends="continuous-init, set-build-number">
+      <mkdir dir="${dir.continuous.dist}" />
+
+      <!-- copy project files common to both platforms -->
+      <copy todir="${dir.continuous.assemble.tomcat}/webapps">
+         <fileset dir="${dir.project.webclient.dist}" 
+                  includes="${file.name.war.webclient}" />
+         <fileset dir="${dir.project.slingshot.dist}"
+                  includes="${file.name.war.slingshot}" />
+      </copy>
+
+      <!-- make sure the context is set for no serialization -->
+      <copy todir="${dir.continuous.assemble.tomcat}/conf" 
+            file="${dir.project.3rdparty.distro}/context.xml"/>
+      <!-- make sure the server is set for UTF-8 -->
+      <copy todir="${dir.continuous.assemble.tomcat}/conf" 
+            file="${dir.project.3rdparty.distro}/server.xml"/>
+      <!-- make sure the server is set for shared loader -->
+      <copy todir="${dir.continuous.assemble.tomcat}/conf" 
+            file="${dir.project.3rdparty.distro}/catalina.properties"/>
+
+      <!-- Copy any required common libs -->
+      <copy todir="${dir.continuous.assemble.tomcat}/lib"
+            file="${dir.project.3rdparty.lib}/devenv/${file.name.jar.mysql.connector}" />
+
+      <!-- Add config to shared location -->
+      <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/extension">
+         <fileset dir="${dir.project.repository.config}/alfresco/extension" />
+         <fileset dir="${dir.project.webclient.config}/alfresco/extension" />
+         <fileset dir="${dir.project.datamodel.config}/alfresco/extension" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.tomcat}/shared/classes"
+         file="${dir.project.repository.config}/alfresco-global.properties.sample" />
+      <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/web-extension">
+         <fileset dir="${dir.project.slingshot.config}/alfresco/web-extension" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/messages">
+         <fileset dir="${dir.project.installer.messages}" />
+      </copy>
+
+   </target>
+
+   <!-- *********************** -->
+   <!-- ** Installer targets ** -->
+   <!-- *********************** -->
+
+   <!-- Try and pick appropriate exe - assumes mac=OSX and unix=Linux -->
+   <target name="set-bitrock-builder">
+      <condition property="platformExe" value="${file.name.bitrock.exe.win}">
+      	 <os family="windows" />
+      </condition>
+      <condition property="platformExe" value="${file.name.bitrock.exe.osx}">
+      	 <os family="mac" />
+      </condition>
+      <condition property="platformExe" value="${file.name.bitrock.exe.linux}">
+      	 <os family="unix" />
+      </condition>
+      
+      <echo message="Using binaries_folder=${dir.name.binaries}"/>
+
+   </target>
+
+
+   <!-- Build installers in parallel -->
+   <target name="distribute-installers"
+           depends="continuous-init, set-build-number, set-bitrock-builder" >
+      <parallel>
+
+         <!-- Windows Installers -->
+
+         <!-- Main Installer -->
+         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win.txt" failifexecutionfails="false">
+            <arg line='build project.xml windows --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}" java_distribution_directory="${installer.build.binaries.win32.java}" tomcat_distribution_directory="${installer.build.binaries.win32.tomcat}"'/>
+         </exec>
+      
+      <!-- Main 64-bit Installer -->
+         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win64.txt" failifexecutionfails="false">
+            <arg line='build project.xml windows --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win64}" binaries_folder="${installer.build.binaries.win64}" java_distribution_directory="${installer.build.binaries.win64.java}" tomcat_distribution_directory="${installer.build.binaries.win64.tomcat}"'/>
+         </exec>
+      
+      <!-- Deployment Installer -->
+         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-win.txt" failifexecutionfails="false">
+            <arg line='build deployment.xml windows --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.win}"'/>
+         </exec>
+
+         <!-- OS X Installers -->
+
+         <!-- Main Installer -->
+         <!-- Sequence installer then tarball -->
+	     <sequential>
+            <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-osx.txt" failifexecutionfails="false">
+               <arg line='build project.xml osx --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}" java_distribution_directory="${installer.build.binaries.osx86.java}" tomcat_distribution_directory="${installer.build.binaries.osx86.tomcat}"'/>
+            </exec>
+            <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx}.tar.gz"
+                 longfile="gnu"
+                 compression="gzip">
+               <tarfileset dir="${dir.continuous.dist}/${file.name.dist.installer.osx}"
+                           prefix="${file.name.dist.installer.osx}" mode="755"/>
+            </tar>
+            <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.installer.osx}" />
+         </sequential>
+
+         <!-- Deployment Installer -->
+         <!-- Sequence installer then tarball -->
+         <sequential>
+            <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-osx.txt" failifexecutionfails="false">
+               <arg line='build deployment.xml osx --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.osx}"'/>
+            </exec>
+            <tar destfile="${dir.continuous.dist}/${file.name.dist.deployment.osx}.tar.gz"
+                 longfile="gnu"
+                 compression="gzip">
+               <tarfileset dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}"
+                           prefix="${file.name.dist.deployment.osx}" mode="755"/>
+            </tar>
+            <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}" />
+         </sequential>
+
+         <!-- Linux Installers -->
+   
+         <!-- Main Installer -->
+         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux.txt" failifexecutionfails="false">
+            <arg line='build project.xml linux --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux}" binaries_folder="${installer.build.binaries.lin32}" java_distribution_directory="${installer.build.binaries.lin32.java}" tomcat_distribution_directory="${installer.build.binaries.lin32.tomcat}"'/>
+         </exec>          
+      
+         <!-- Main 64-bit Installer -->
+         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="false">
+            <arg line='build project.xml linux-x64 --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}" java_distribution_directory="${installer.build.binaries.lin64.java}" tomcat_distribution_directory="${installer.build.binaries.lin64.tomcat}"'/>
+         </exec>          
+
+         <!-- Deployment Installer -->
+         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-linux.txt" failifexecutionfails="false">
+            <arg line='build deployment.xml linux --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
+         </exec>
+
+      </parallel>
+   </target>
+
+
+   <!-- ***************** -->
+   <!-- ** WAR targets ** -->
+   <!-- ***************** -->
+
+   <target name="distribute-war"
+           description="Creates the WAR file distribution for all platforms"
+           depends="continuous-init" >
+      <mkdir dir="${dir.continuous.dist}" />
+
+      <tar destfile="${dir.continuous.assemble}/temp.tar" 
+           longfile="gnu">
+         <tarfileset dir="${dir.installer.bitrock}"
+                     includes="licenses/**" />
+         <tarfileset dir="${dir.installer.bitrock}"
+                     includes="README.txt" />
+         <tarfileset dir="${dir.continuous.assemble.tomcat}"
+                     prefix="web-server" />
+         <tarfileset dir="${dir.project.installer}/war-commands"
+                     prefix="bin" 
+                     mode="755"/>
+         <!-- Only DLLs and JARs from assemble area -->
+         <tarfileset dir="${dir.continuous.assemble}/commands"
+                     prefix="bin" 
+                     includes="**/*.dll,**/*.jar"/>
+      </tar>
+	  <zip destfile="${dir.continuous.dist}/${file.name.dist.war}.zip">
+        <tarfileset src="${dir.continuous.assemble}/temp.tar"/>
+      </zip>
+      <delete quiet="yes" file="${dir.continuous.assemble}/temp.tar" />
+
+   </target>
+
+
+   <!-- ******************************** -->
+   <!-- ** Web Service Client targets ** -->
+   <!-- ******************************** -->
+
+   <target name="distribute-webserviceclient"
+           description="Creates the web service client distribution file for all platforms"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.dist}" />
+
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.webserviceclient}.zip">
+         <zipfileset dir="${dir.project.webserviceclient.dist}" />
+         <zipfileset dir="${dir.project.webserviceclient.config}/alfresco" 
+                     prefix="alfresco"/>
+         <fileset file="${dir.project.webserviceclient}/README_ws_client.txt" />
+      </zip>
+
+   </target>
+
+
+   <!-- ************************ -->
+   <!-- ** Quick Start Bundle ** -->
+   <!-- ************************ -->
+
+   <target name="distribute-wcmqs-extension">
+
+      <tar destfile="${dir.continuous.assemble}/temp.tar" 
+           longfile="gnu">
+         <tarfileset dir="${dir.module.wcmquickstart.dist}" includes="${file.name.amp.wcmquickstart}" />
+         <tarfileset dir="${dir.module.wcmquickstart-share.dist}" includes="${file.name.amp.wcmquickstart-share}" />
+         <tarfileset dir="${dir.module.wcmquickstart.dist}" includes="${file.name.amp.wcmquickstart}" />
+         <tarfileset dir="${dir.module.wcmquickstart}" includes="README_wcmqs.txt" />
+         <tarfileset dir="${dir.project.wcmquickstart-webapp.config}/alfresco/web-extension" includes="**/*" />
+        <tarfileset dir="${dir.continuous.assemble}" includes="${file.name.war.webeditor}, ${file.name.war.wcmquickstart-webapp}" />
+      </tar>
+	  <zip destfile="${dir.continuous.dist}/${file.name.dist.wcmqs}.zip">
+        <tarfileset src="${dir.continuous.assemble}/temp.tar"/>
+      </zip>
+      <delete quiet="yes" file="${dir.continuous.assemble}/temp.tar" />
+
+   </target>
+      
+   <!-- *************************** -->
+   <!-- ** Office Add-in targets ** -->
+   <!-- *************************** -->
+   
+   <target name="distribute-extensions-office2003"
+           description="Creates the Office 2003 Extensions distribution files"
+           depends="distribute-extensions-office2003-word,
+                    distribute-extensions-office2003-excel,
+                    distribute-extensions-office2003-powerpoint,
+                    distribute-extensions-office2003-all" >
+
+      <mkdir dir="${dir.continuous.dist}" />
+
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.extension-office2003-bundle}.zip">
+         <zipfileset file="${dir.continuous.assemble}/${file.name.dist.extension-office2003-word}.zip" />
+         <zipfileset file="${dir.continuous.assemble}/${file.name.dist.extension-office2003-excel}.zip" />
+         <zipfileset file="${dir.continuous.assemble}/${file.name.dist.extension-office2003-powerpoint}.zip" />
+         <zipfileset file="${dir.continuous.assemble}/${file.name.dist.extension-office2003-all}.zip" />
+      </zip>
+   </target>
+   <target name="distribute-extensions-office2003-word"
+           description="Creates the Word 2003 Extensions distribution files"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble}" />
+
+      <zip destfile="${dir.continuous.assemble}/${file.name.dist.extension-office2003-word}.zip">
+         <zipfileset dir="${dir.project.extension.office.word2003}"
+                     includes="readme.rtf,
+                               setup.exe,
+                               AlfrescoWord2003Setup.msi" />
+         <zipfileset dir="${dir.project.extension.office.word2003}/Office2003PIA"
+                     prefix="Office2003PIA"
+                     includes="o2003pia.msi" />
+      </zip>
+   </target>
+
+   <target name="distribute-extensions-office2003-excel"
+           description="Creates the Excel 2003 Extensions distribution files"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble}" />
+
+      <zip destfile="${dir.continuous.assemble}/${file.name.dist.extension-office2003-excel}.zip">
+         <zipfileset dir="${dir.project.extension.office.excel2003}"
+                     includes="readme.rtf,
+                               setup.exe,
+                               AlfrescoExcel2003Setup.msi" />
+         <zipfileset dir="${dir.project.extension.office.excel2003}/Office2003PIA"
+                     prefix="Office2003PIA"
+                     includes="o2003pia.msi" />
+      </zip>
+   </target>
+
+   <target name="distribute-extensions-office2003-powerpoint"
+           description="Creates the PowerPoint 2003 Extensions distribution files"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble}" />
+
+      <zip destfile="${dir.continuous.assemble}/${file.name.dist.extension-office2003-powerpoint}.zip">
+         <zipfileset dir="${dir.project.extension.office.powerpoint2003}"
+                     includes="readme.rtf,
+                               setup.exe,
+                               AlfrescoPowerPoint2003Setup.msi" />
+         <zipfileset dir="${dir.project.extension.office.powerpoint2003}/Office2003PIA"
+                     prefix="Office2003PIA"
+                     includes="o2003pia.msi" />
+      </zip>
+   </target>
+
+   <target name="distribute-extensions-office2003-all"
+           description="Creates the 3-in-1 Office 2003 Extensions distribution files"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble}" />
+
+      <zip destfile="${dir.continuous.assemble}/${file.name.dist.extension-office2003-all}.zip">
+         <zipfileset dir="${dir.project.extension.office.all2003}"
+                     includes="readme.rtf,
+                               setup.exe,
+                               AlfrescoOffice2003Setup.msi" />
+         <zipfileset dir="${dir.project.extension.office.all2003}/Office2003PIA"
+                     prefix="Office2003PIA"
+                     includes="o2003pia.msi" />
+      </zip>
+   </target>
+
+   <!-- ************************ -->
+   <!-- ** Deployment targets ** -->
+   <!-- ************************ -->
+      
+   <target name="distribute-deployment" 
+           depends="continuous-init, set-build-number"
+           description="Creates a zip file containing the deployment receiver">
+      <mkdir dir="${dir.continuous.dist}" />
+      <copy file="${dir.project.deployment.dist}/${file.name.zip.deployment}"
+            tofile="${dir.continuous.dist}/${file.name.dist.deployment}.zip" />
+   </target>
+   
+
+   <!-- ************************************ -->
+   <!-- ** Module Management Tool targets ** -->
+   <!-- ************************************ -->
+   
+   <target name="assemble-mmt" 
+           depends="continuous-init">
+
+      <!-- Create the required directory structure -->
+      <mkdir dir="${dir.continuous.dist}" />
+      <mkdir dir="${dir.continuous.assemble.mmt}" />
+
+      <!-- extract the one-jar file -->
+      <unjar src="${dir.project.3rdparty.lib}/one-jar/one-jar-boot-0.96-RC4.jar"
+             dest="${dir.continuous.assemble.mmt}" 
+             overwrite="true" />
+      <!-- remove unwanted files -->
+      <delete >
+         <fileset dir="${dir.continuous.assemble.mmt}">
+            <include name="**/*.java" />
+            <include name="**/boot-manifest.mf" />
+         </fileset>
+      </delete>
+
+      <!-- copy required jars into lib folder -->
+      <copy todir="${dir.continuous.assemble.mmt}/lib" 
+            flatten="false">
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/jug-asl-2.0.0.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/truezip.jar" />
+      </copy>
+      
+      <!-- unjar the spring surf core JAR -->
+      <unjar dest="${dir.continuous.assemble.mmt}/tmp-spring-surf" overwrite="true">
+         <fileset dir="${dir.project.3rdparty.lib}/spring-surf" includes="spring-surf-core-*.jar" />
+      </unjar>
+
+      <!-- get the files for the main mmt jar -->
+      <copy todir="${dir.continuous.assemble.mmt}/tmp-mmt-jar" 
+            flatten="false">
+         
+         <fileset dir="${dir.project.core.classes}" 
+                  includes="org/alfresco/error/AlfrescoRuntimeException.class" />
+         <fileset dir="${dir.project.core.classes}" 
+                  includes="org/alfresco/util/Pair.class" />
+         <fileset dir="${dir.project.core.classes}" 
+                  includes="org/alfresco/util/VersionNumber.class" />
+         <fileset dir="${dir.continuous.assemble.mmt}/tmp-spring-surf" 
+                  includes="org/springframework/extensions/surf/util/I18NUtil.class" />
+         <fileset dir="${dir.continuous.assemble.mmt}/tmp-spring-surf" 
+                  includes="org/springframework/extensions/surf/util/ISO8601DateFormat.class" />
+         <fileset dir="${dir.continuous.assemble.mmt}/tmp-spring-surf" 
+                           includes="org/springframework/extensions/surf/exception/PlatformRuntimeException.class" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/repo/module/tool/default-file-mapping.properties" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/repo/module/**/*.class" />
+         <fileset dir="${dir.project.repository.classes}"
+                  includes="org/alfresco/service/cmr/module/**/*.class" />
+      </copy>
+      <!-- copy in a manifest file -->
+      <copy tofile="${dir.continuous.assemble.mmt}/tmp-mmt-jar/META-INF/MANIFEST.MF" >
+         <fileset dir="${dir.project.repository}/source/meta-inf" 
+                  includes="mmt-manifest.mf" />
+      </copy>
+      <!-- jar the main mmt classes -->
+      <mkdir dir="${dir.continuous.assemble.mmt}/main" />
+      <jar destfile="${dir.continuous.assemble.mmt}/main/main.jar" 
+           manifest="${dir.continuous.assemble.mmt}/tmp-mmt-jar/META-INF/MANIFEST.MF" 
+           update="false" >
+         <fileset dir="${dir.continuous.assemble.mmt}/tmp-mmt-jar">
+            <include name="**/*" />
+         </fileset>
+      </jar>
+      <!-- Remove temp files -->
+      <delete dir="${dir.continuous.assemble.mmt}/tmp-mmt-jar" />
+      <delete dir="${dir.continuous.assemble.mmt}/tmp-spring-surf" />
+   </target>
+   
+   <target name="package-mmt" 
+           depends="assemble-mmt"
+           description="Creates the Alfresco Module Management Tool distribution file for all platforms">
+      <mkdir dir="${dir.continuous.assemble.commands}" />
+
+      <zip destfile="${dir.continuous.assemble.commands}/${file.name.dist.mmt}.jar">
+         <zipfileset dir="${dir.continuous.assemble.mmt}" />
+      </zip>
+   </target>
+
+   <!-- ************************************ -->
+   <!-- ** Benchmark Remote targets       ** -->
+   <!-- ************************************ -->
+   
+   <target name="assemble-bm-remote" 
+           depends="continuous-init">
+
+      <!-- Create the required directory structure -->
+      <mkdir dir="${dir.continuous.dist}" />
+      <mkdir dir="${dir.continuous.assemble.bm-remote}" />
+
+      <!-- extract the one-jar file -->
+      <unjar src="${dir.project.3rdparty.lib}/one-jar/one-jar-boot-0.96-RC4.jar" 
+             dest="${dir.continuous.assemble.bm-remote}" 
+             overwrite="true" />
+      <!-- remove unwanted files -->
+      <delete >
+         <fileset dir="${dir.continuous.assemble.bm-remote}">
+            <include name="**/*.java" />
+            <include name="**/boot-manifest.mf" />
+         </fileset>
+      </delete>
+
+      <!-- copy required jars into lib folder -->
+      <copy todir="${dir.continuous.assemble.bm-remote}/lib" 
+            flatten="false">
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="org.springframework*.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/aopalliance.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/ehcache-core-2.0.0.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/slf4j-api-1.5.11.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/slf4j-log4j12-1.5.11.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/jug-asl-2.0.0.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/commons/commons-logging-1.1.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/log4j-1.2.15.jar" />
+      </copy>
+
+      <!-- get the files for the main bm-remote jar -->
+      <copy todir="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar" 
+            flatten="false">
+         <fileset dir="${dir.project.core.src.java}" 
+                  includes="log4j.properties" />
+         <fileset dir="${dir.project.core.classes}" 
+                  includes="org/alfresco/error/AlfrescoRuntimeException.class" />
+         <fileset dir="${dir.project.core.classes}" 
+                  includes="org/alfresco/error/StackTraceUtil.class" />
+         <fileset dir="${dir.project.core.classes}" 
+                  includes="org/alfresco/util/GUID.class" />
+         <fileset dir="${dir.project.datamodel.classes}" 
+                  includes="org/alfresco/model/ContentModel.class" />
+         <fileset dir="${dir.project.datamodel.classes}" 
+                  includes="org/alfresco/model/RenditionModel.class" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/repo/cache/EhCacheAdapter.class" />
+         <fileset dir="${dir.project.datamodel.classes}" 
+                  includes="org/alfresco/repo/cache/SimpleCache.class" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/repo/remote/FileFolderRemoteClient.class" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/repo/model/filefolder/**/*.class" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/service/cmr/model/*.class" />
+         <fileset dir="${dir.project.datamodel.classes}" 
+                  includes="org/alfresco/service/cmr/repository/*.class" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/service/cmr/repository/*.class" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/service/cmr/remote/*.class" />
+         <fileset dir="${dir.project.datamodel.classes}" 
+                  includes="org/alfresco/service/namespace/*.class" />
+         <fileset dir="${dir.project.repository.classes}" 
+                  includes="org/alfresco/service/namespace/*.class" />
+      </copy>
+      <!-- copy the ehcache file -->
+      <copy todir="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar" 
+            flatten="false">
+         <fileset dir="${dir.project.repository.src.java}" 
+                  includes="org/alfresco/repo/model/filefolder/**/loader-ehcache.xml" />
+      </copy>
+      <!-- copy in a manifest file -->
+      <copy tofile="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar/META-INF/MANIFEST.MF" >
+         <fileset dir="${dir.project.repository}/source/meta-inf" 
+                  includes="bm-remote-manifest.mf" />
+      </copy>
+      <!-- jar the main bm-remote classes -->
+      <mkdir dir="${dir.continuous.assemble.bm-remote}/main" />
+      <jar destfile="${dir.continuous.assemble.bm-remote}/main/main.jar" 
+           manifest="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar/META-INF/MANIFEST.MF" 
+           update="false" >
+         <fileset dir="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar">
+            <include name="**/*" />
+         </fileset>
+      </jar>
+      <!-- Remove temp files -->
+      <delete dir="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar" />
+
+   </target>
+   
+   <target name="package-bm-remote" 
+           depends="assemble-bm-remote"
+           description="Creates the Alfresco Remote Benchmark Tool distribution file for all platforms">
+      <mkdir dir="${dir.continuous.assemble.commands}" />
+
+      <zip destfile="${dir.continuous.assemble.commands}/${file.name.dist.bm-remote}.jar">
+         <zipfileset dir="${dir.continuous.assemble.bm-remote}" />
+      </zip>
+   </target>
+
+   <!-- ***************** -->
+   <!-- ** SDK targets ** -->
+   <!-- ***************** -->
+
+   <target name="distribute-sdk" 
+           description="Creates the sdk distribution file for all platforms" 
+           depends="set-build-number,assemble-sdk">
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.sdk}.zip">
+         <zipfileset dir="${dir.continuous.assemble.sdk}" />
+      </zip>
+
+   </target>
+   
+   <target name="verify-sdk" 
+           depends="assemble-sdk">
+      <mkdir dir="${dir.continuous.assemble.sdk.verify}" />
+      
+      <copy todir="${dir.continuous.assemble.sdk.verify}/lib">
+         <fileset dir="${dir.continuous.assemble.sdk}/lib" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.sdk.verify}/samples">
+         <fileset dir="${dir.continuous.assemble.sdk}/samples" />
+      </copy>
+      
+      <taskdef name="verify-classpath"
+               classname="org.alfresco.devenv.ant.VerifyEclipseClasspath">
+         <classpath refid="classpath.compile" />
+      </taskdef>
+   
+      <verify-classpath projectdir="${dir.continuous.assemble.sdk.verify}/lib/server" />
+      <verify-classpath projectdir="${dir.continuous.assemble.sdk.verify}/lib/remote" />
+      
+      <subant target="compile">
+         <fileset dir="${dir.continuous.assemble.sdk.verify}/samples" 
+                  includes="*/build.xml"/>
+      </subant>
+   </target>
+
+   <target name="assemble-sdk"
+           depends="generate-docs">
+      <mkdir dir="${dir.continuous.dist}" />
+
+      <!-- -->
+      <!-- Binaries -->
+      <!-- -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/bin" />
+      <copy todir="${dir.continuous.assemble.sdk}/bin">
+         <fileset dir="${dir.project.jlan}/jni" 
+                  includes="*.dll" />
+      </copy>
+
+      <!-- -->
+      <!-- Readme -->
+      <!-- -->
+      <copy todir="${dir.continuous.assemble.sdk}" 
+            file="${dir.project.sdk}/readme.txt" />
+
+      <!-- -->
+      <!-- Documentation -->
+      <!-- -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/doc" />
+   	
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-core-doc.zip">
+         <zipfileset dir="${dir.project.core.docs.java}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-remote-api-doc.zip">
+         <zipfileset dir="${dir.project.remoteapi.docs.java}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip">
+         <zipfileset dir="${dir.project.datamodel.docs.java}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-repository-doc.zip">
+         <zipfileset dir="${dir.project.repository.docs.java}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-web-client-doc.zip">
+         <zipfileset dir="${dir.project.webclient.docs.java}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-share-doc.zip">
+         <zipfileset dir="${dir.project.slingshot.docs.java}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-deployment-doc.zip">
+         <zipfileset dir="${dir.project.deployment.docs.java}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-web-service-client-doc.zip">
+       <zipfileset dir="${dir.project.webserviceclient.docs.java}" />
+      </zip>
+      
+      <!-- Taglib -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/doc/taglib" />
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/taglib/alfresco-taglib-doc.zip">
+         <zipfileset dir="${dir.project.webclient.docs.taglib}" />
+      </zip>
+
+      <!-- -->
+      <!-- Libraries -->
+      <!-- -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib" />
+
+      <!-- Remote API Libraries -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/remote" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/remote" 
+            file="${dir.project.webserviceclient.dist}/${file.name.jar.webserviceclient}" />
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/remote/wsdl" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/remote/wsdl">
+         <fileset dir="${dir.project.remoteapi.src.wsdl}" 
+                  includes="*.wsdl,*.xsd" />
+      </copy>
+
+      <!-- Server Libraries -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/server" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.core.dist}/${file.name.jar.core}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.repository.dist}/${file.name.jar.repository}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.remoteapi.dist}/${file.name.jar.remoteapi}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.jndi.dist}/${file.name.jar.jndi}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.jlan.dist}/${file.name.jar.jlan}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.mbeans.dist}/${file.name.jar.mbeans}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server"
+            file="${dir.project.deployment.dist}/${file.name.jar.deployment}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.webclient.dist}/${file.name.jar.webclient}" />
+
+      <!-- Deployment Libraries -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/deployment"/>
+      <copy todir="${dir.continuous.assemble.sdk}/lib/deployment"
+            file="${dir.project.core.dist}/${file.name.jar.core}"/>
+      <copy todir="${dir.continuous.assemble.sdk}/lib/deployment"
+            file="${dir.project.deployment.dist}/${file.name.jar.deployment}"/>
+
+      <!-- Share Libraries -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/share"/>
+      <copy todir="${dir.continuous.assemble.sdk}/lib/share"
+            file="${dir.project.slingshot.dist}/${file.name.jar.slingshot}"/>
+
+      <!-- Package configuration as a .jar -->
+      <!-- TODO: configuration should ideally live in each of the above .jars -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/config" />
+      <copy todir="${dir.continuous.assemble.sdk}/config"
+            includeEmptyDirs="false">
+         <fileset dir="${dir.project.repository.config}" 
+                  excludes="**/extension/*" />
+         <fileset dir="${dir.project.datamodel.config}" 
+                  excludes="**/extension/*" />
+<!--         <fileset dir="${dir.project.webclient.config}" 
+                  excludes="**/extension/*" /> -->
+         <fileset dir="${dir.project.core.src.java}" 
+                  includes="log4j.properties" />
+      </copy>
+      <delete>
+         <fileset dir="${dir.continuous.assemble.sdk}/config/alfresco/messages">
+            <include name="*_en_US.properties" />
+         </fileset>
+      </delete>
+      <copy todir="${dir.continuous.assemble.sdk}/config/alfresco/messages">
+         <fileset dir="${dir.continuous.assemble.sdk}/config/alfresco/messages"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).properties$" 
+                 to="\1_en_US.properties"/>
+      </copy>
+
+      <!-- fix for ETHREEOH-3996 add exploded config directory to SDK -->
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server/config">
+         <fileset dir="${dir.continuous.assemble.sdk}/config"/>
+      </copy>
+
+      <delete dir="${dir.continuous.assemble.sdk}/config" />
+
+      <!-- Dependencies -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/server/dependencies" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server/dependencies">
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="**/*.jar" excludes="${dir.name.devenv}/**, jboss/**, virtual-tomcat/**"/>
+      </copy>
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server/dependencies">
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="${dir.name.devenv}/${file.name.jar.mysql.connector}"/>
+      </copy>
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/server/source/alfresco/desktop" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server/source/alfresco/desktop">
+         <fileset dir="${dir.project.repository.config}/alfresco/desktop" />
+      </copy>
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/server/source/alfresco" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server/source/alfresco">
+         <fileset dir="${dir.project.repository.config}/alfresco" 
+                  includes="alfresco-jmxrmi.*" />
+      </copy>
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/server/build" />
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/remote/dependencies" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/remote/dependencies" 
+            flatten="true">
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="${includes.sdk.remote.jars}" />
+      </copy>
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/remote/source" />
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/remote/build" />
+
+      <!-- -->
+      <!-- Source -->
+      <!-- -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/src" />
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-core-src.zip">
+         <zipfileset dir="${dir.project.core.src}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-remote-api-src.zip">
+         <zipfileset dir="${dir.project.remoteapi.src}" />
+         <zipfileset dir="${dir.project.remoteapi.src.generated}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-datamodel-src.zip">
+         <zipfileset dir="${dir.project.datamodel.src}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-repository-src.zip">
+         <zipfileset dir="${dir.project.repository.src}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-web-service-client-src.zip">
+         <zipfileset dir="${dir.project.webserviceclient.src.java}" />
+         <zipfileset dir="${dir.project.webserviceclient.src.generated}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-web-client-src.zip">
+         <zipfileset dir="${dir.project.webclient.src}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-share-src.zip">
+         <zipfileset dir="${dir.project.slingshot.src}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-deployment-src.zip">
+         <zipfileset dir="${dir.project.deployment.src}" />
+      </zip>
+
+      <!-- -->
+      <!-- License -->
+      <!-- -->
+      <copy todir="${dir.continuous.assemble.sdk}/licenses">
+         <fileset dir="${dir.installer.bitrock}/licenses" />
+      </copy>
+
+      <!-- -->
+      <!-- Samples -->
+      <!-- -->
+
+      <!-- Library Eclipse Projects -->
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.sdk.projects.server}/.project" />
+<!--
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.sdk.projects.server}/.classpath" />
+-->
+      <copy todir="${dir.continuous.assemble.sdk}/lib/remote" 
+            file="${dir.project.sdk.projects.remote}/.project" />
+<!--
+      <copy todir="${dir.continuous.assemble.sdk}/lib/remote"
+            file="${dir.project.sdk.projects.remote}/.classpath" />
+-->
+      <!-- Resolve the server lib path prefix using appropriate file separators -->
+      <property name="dir.continuous.assemble.sdk.lib.server" location="${dir.continuous.assemble.sdk}/lib/server" />
+      <generate-classpath classprop="serverlibs" libdir="${dir.continuous.assemble.sdk.lib.server}${file.separator}" 
+            classfile="${dir.continuous.assemble.sdk}/lib/server/.classpath" optionalDirs="config">
+      </generate-classpath>
+
+      <property name="dir.continuous.assemble.sdk.lib.remote" location="${dir.continuous.assemble.sdk}/lib/remote" />
+      <generate-classpath classprop="remotelibs" libdir="${dir.continuous.assemble.sdk.lib.remote}${file.separator}" 
+            classfile="${dir.continuous.assemble.sdk}/lib/remote/.classpath">
+      </generate-classpath>
+
+      <!-- Sample Projects -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/samples" />
+      <copy todir="${dir.continuous.assemble.sdk}/samples">
+         <fileset dir="${dir.project.sdk.samples}" 
+                  excludes="**/build/**" />
+      </copy>
+   </target>
+
+<target name="classpaths" depends="continuous-init">
+      <generate-classpath classprop="serverlibs" libdir="${dir.continuous.assemble.sdk}/lib/server/" 
+            classfile="${dir.continuous.assemble.sdk}/lib/server/.classpath">
+      </generate-classpath>
+      <generate-classpath classprop="remotelibs" libdir="${dir.continuous.assemble.sdk}/lib/remote/" 
+            classfile="${dir.continuous.assemble.sdk}/lib/remote/.classpath">
+      </generate-classpath>
+</target>
+   
+   <!-- *************************** -->
+   <!-- ** Documentation targets ** -->
+   <!-- *************************** -->
+
+   <target name="distribute-docs" 
+           description="Assembles the documentation from all projects"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble.docs.java}" />
+      <mkdir dir="${dir.continuous.assemble.docs.taglib}" />
+      
+      <!-- java docs -->
+      <copy todir="${dir.continuous.assemble.docs.java}/catalina-virtual">
+         <fileset dir="${dir.project.catalinavirtual.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/core">
+         <fileset dir="${dir.project.core.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/deployment">
+         <fileset dir="${dir.project.deployment.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/jndi-client">
+         <fileset dir="${dir.project.jndi.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/mbeans">
+         <fileset dir="${dir.project.mbeans.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/remote-api">
+         <fileset dir="${dir.project.remoteapi.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/datamodel">
+         <fileset dir="${dir.project.datamodel.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/repository">
+         <fileset dir="${dir.project.repository.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/web-client">
+         <fileset dir="${dir.project.webclient.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/web-service-client">
+         <fileset dir="${dir.project.webserviceclient.docs.java}" />
+      </copy>
+      
+      <!-- taglib docs -->
+      <copy todir="${dir.continuous.assemble.docs.taglib}/web-client">
+         <fileset dir="${dir.project.webclient.docs.taglib}" />
+      </copy>
+   </target>
+   
+   <!-- *********************** -->
+   <!-- ** Webeditor targets ** -->
+   <!-- *********************** -->
+   
+   <target name="distribute-webeditor" depends="set-build-number, continuous-init, package-all-webeditor"
+           description="Distributes the Web Editor files">
+      <mkdir dir="${dir.continuous.dist}" />
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.webeditor}.zip">
+         <zipfileset dir="${dir.project.webeditor.dist}" 
+                     includes="${file.name.jar.webeditor.taglib}, ${file.name.war.webeditor}" />
+         <zipfileset dir="${dir.project.webeditorplugin.dist}" 
+                     includes="${file.name.jar.webeditor.plugin}" />
+         <zipfileset dir="${dir.project.webframeworkcommons.dist}"
+                     includes="${file.name.jar.formsclient}" />
+         <zipfileset dir="${dir.project.webeditorsamples.customersite.dist}"
+                     includes="${file.name.war.webeditor.sample.customersite}" />
+         <zipfileset dir="${dir.project.3rdparty.lib}/spring-surf"
+                     includes="spring-webeditor-*.jar" />
+         <zipfileset file="${file.jar.webeditor.yui}" />
+      </zip>
+      <copy todir="${dir.continuous.assemble}" file="${dir.project.webeditor.dist}/${file.name.war.webeditor}" />
+   </target>
+   
+   <!-- ***************** -->
+   <!-- ** FDK targets ** -->
+   <!-- ***************** -->
+   
+   <target name="distribute-fdk" depends="set-build-number, continuous-init, incremental-fdk"
+           description="Distributes the Forms Development Kit (FDK) files">
+      <mkdir dir="${dir.continuous.dist}" />
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.fdk}.zip">
+         <fileset dir="${dir.project.fdk.client.dist}" includes="${file.name.jar.fdk}" />
+         <fileset dir="${dir.project.fdk.repo.dist}" includes="${file.name.amp.fdk}" />
+         <fileset file="${dir.project.fdk}/README_fdk.txt" />
+      </zip>
+   </target>
+
+</project>

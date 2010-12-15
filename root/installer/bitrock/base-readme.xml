@@ -1,0 +1,33 @@
+<component>
+    <name>readme</name>
+    <description>README Folder Component</description>
+    <canBeEdited>1</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+    <parameterList>
+        <directoryParameter>
+            <ask>0</ask>
+            <default>${installdir}</default>
+            <description>README destination</description>
+            <name>base_readme_installation_directory</name>
+        </directoryParameter>
+    </parameterList>
+    <folderList>
+        <folder>
+            <description>README File</description>
+            <destination>${base_readme_installation_directory}</destination>
+            <name>readmelogfile</name>
+            <distributionFileList>
+                <distributionFile origin="README.txt"/>
+            </distributionFileList>
+        </folder>
+    </folderList>
+    <postInstallationActionList>
+        <dos2unix files="${base_readme_installation_directory}/README.txt">
+            <ruleList>
+                <platformTest type="windows"/>
+            </ruleList>
+        </dos2unix>
+    </postInstallationActionList>
+</component>
+

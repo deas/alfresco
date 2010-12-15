@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>RM Console Title</shortname>
+  <description>Title component used in the Records Management Console page</description>
+  <url>/components/title/rm-console</url>
+</webscript>

@@ -1,0 +1,461 @@
+v0.61 to v0.62c Changes Implemented by Alfresco:
+
+1) ADDED: latestChangeToken to service document
+
+2) ADDED: <cmis:capabilityACL> to service document
+
+3) CHANGED: <cmis:repositoryInfo> child elements order in service document
+
+4) ADDED: <cmis:capabilityChanges> to service document
+
+5) ADDED: <cmis:capabilityChangesOnType> to service document
+
+NOTE: raised CMIS-342
+
+6) ADDED: <cmis:capabilityContentStreamUpdates> to service document
+
+NOTE: raised CMIS-342
+
+7) ADDED: <cmis:capabilityDescendantNavigation> to service document
+
+NOTE: raised CMIS-342
+
+8) ADDED: <cmis:renditions> to service document
+
+NOTE: raised CMIS-342
+
+9) REMOVED: <cmis:repositorySpecificInformation> from service document
+
+10) CHANGED: service document namespaces
+
+Was: cmis
+Now: cmis + cmisra
+Was: cmis:CollectionType
+Now: cmisra:CollectionType
+Was: cmis:repositoryInfo
+Now: cmisra:repositoryInfo
+
+11) REMOVED: cmis:repositoryRelationship from service document workspace
+
+12) CHANGED: service document root children collection
+
+Was: collectionType="rootchildren"
+Now: collectionType="root"
+
+13) REMOVED: service document root descendants collection
+
+14) CHANGED: service document root types collection
+
+Was: collectionType="typeschildren"
+Now: collectionType="types"
+
+14a) REMOVED: service document type descendants collection
+
+15) CHANGED: cmis:propertyXXX name
+
+Was: cmis:propertyXXX cmis:name=""
+Now: cmis:propertyXXX cmis:id=""
+
+16) REMOVED: <cmis:hasMore> from all feeds
+
+17) CHANGED: position of feed extensions
+
+Was: at bottom of feed after entries
+Now: at top of feed before entries
+
+18) CHANGED: position of entry extensions
+
+Was: at bottom of entry after cmis:object
+Now: at top of entry before cmis:object
+
+19) REMOVED: <cmis:terminator>  hooray
+
+====== checkin point =======
+
+20) CHANGED: canGetParents allowable action
+
+Was: canGetParents
+Now: canGetObjectParents
+
+21) ADDED: canGetRenditions allowable action
+
+22) CHANGED: canViewContent allowable action
+
+Was: canViewContent
+Now: canGetContentStream
+
+23) CHANGED: canMove allowable action
+
+Was: canMove
+Now: canMoveObject
+
+24) CHANGED: canDelete allowable action
+
+Was: canDelete
+Now: canDeleteObject
+
+ISSUE: CMIS-346 - CMIS-Core.xsd still lists as canDelete
+
+25) CHANGED: canSetContent allowable action
+
+Was: canSetContent
+Now: canSetContentStream
+
+26) CHANGED: canDeleteContent allowable action
+
+Was: canDeleteContent
+Now: canDeleteContentStream
+
+27) CHANGED: canAddToFolder allowable action
+
+Was: canAddToFolder
+Now: canAddObjectToFolder
+
+28) CHANGED: canRemoveFromFolder allowable action
+
+Was: canRemoveFromFolder
+Now: canRemoveObjectFromFolder
+
+29) CHANGED: canCheckin allowable action
+
+Was: canCheckin
+Now: canCheckIn
+
+30) CHANGED: canCheckout allowable action
+
+Was: canCheckout
+Now: canCheckOut
+
+31) CHANGED: canCancelCheckout allowable action
+
+Was: canCancelCheckout
+Now: canCancelCheckOut
+
+32) CHANGED: canAddPolicy allowable action
+
+Was: canAddPolicy
+Now: canApplyPolicy
+
+ISSUE: CMIS-346 - canAddPolicy in Part I redundant
+
+33) REMOVED: canDeleteVersion allowable action
+
+34) REMOVED: canDeleteTree allowable action
+
+ISSUE: CMIS-346 - canDeleteTree in CMIS-Core.xsd but not in Part I
+
+====== checkin point =======
+
+35) CHANGED: base type ids
+
+Was: document, folder, relationship, policy
+Now: cmis:Document, cmis:Folder, cmis:Relationship, cmis:Policy
+
+36) CHANGED: cmis defined property ids
+
+Was: no prefix
+Now: all cmis: prefixed
+
+37) REMOVED: uri property
+
+38) ADDED: cmis:BaseTypeId property to all Types
+
+39) REMOVED: contentStreamAllowed property from Document
+
+40) CHANGED: contentStreamFilename property on Document
+
+Was: contentStreamFilename
+Now: contentStreamFileName
+
+ISSUE CMIS-359 - contentStreamFileName (Part I), but contentStreamFilename in CMIS-Core.xsd
+
+41) REMOVED: contentStreamUri property from Document
+
+42) ADDED: cmis:ContentStreamId property to Document
+
+43) ADDED: cmis:PathName property to Folder
+
+44) REMOVED: cmis:PolicyName from Policy
+
+45) CHANGED: type id (atompub)
+
+Was: <cmis:typeId>
+Now: <cmis:id>
+
+46) ADDED: type localName
+
+47) ADDED: type localNamespace
+
+48) CHANGED: type baseType
+
+Was: baseType
+Now: baseTypeId
+
+49) REMOVED: type baseTypeQueryName
+
+50) ADDED: type fullTextIndexed
+
+51) CHANGED: type controllable
+
+Was: controllable
+Now: controllablePolicy
+
+52) ADDED: type controllableACL
+
+53) REMOVED: property type name
+
+54) ADDED: property type local name
+
+55) ADDED: property type local namespace
+
+56) REMOVED: property type package
+
+57) ADDED: property type queryName
+
+====== checkin point =======
+
+58) ADDED: link rel=".../rootdescendants" to service document
+
+59) ADDED: link rel=".../typesdescendants" to service document
+
+60) ADDED: link rel=".../foldertree" to service document
+
+61) ADDED: entryById uri template to service document
+
+62) CHANGED: type descendants resource
+
+Was: flat feed
+Now: hierarchical nested feeds
+
+63) ADDED: folder tree resource
+
+64) CHANGED: allowableactions resource url
+
+Was: /permissions
+Now: /allowableactions
+
+65) CHANGED: link rel="repository"
+
+Was: repository
+Now: service
+
+66) CHANGED: link rel="allowableactions"
+
+Was: allowableactions
+Now: http://docs.oasis-open.org/ns/cmis/link/200901/allowableactions
+
+67) CHANGED: link rel="relationships"
+
+Was: relationships
+Now: http://docs.oasis-open.org/ns/cmis/link/200901/relationships
+
+68) CHANGED: link rel="parent"
+
+Was: parent
+Now: up
+
+69) CHANGED: link rel="parents"
+
+Was: parents
+Now: up
+
+70) CHANGED: link rel="children"
+
+Was: children
+Now: down
+
+71) CHANGED: link rel="descendants"
+
+Was: descendants
+Now: down  (type = cmistree media type)
+
+72) ADDED: link rel="http://docs.oasis-open.org/ns/cmis/link/200901/foldertree"
+
+73) CHANGED: link rel="allversions"
+
+Was: allversions
+Now: all-versions   // 0.63 -> version-history
+
+74) CHANGED: link rel="source"
+
+Was: source
+Now: http://docs.oasis-open.org/ns/cmis/link/200901/source
+
+75) CHANGED: link rel="target"
+
+Was: target
+Now: http://docs.oasis-open.org/ns/cmis/link/200901/target
+
+76) CHANGED: folder parent resource
+
+Was: supported returnToRoot (returned feed)
+Now: returns single entry (no returnToRoot support)
+
+77) CHANGED: folder descendants resource
+
+Was: flat feed
+Now: hierarchical nested feeds
+
+====== checkin point =======
+
+78) REMOVED: POST (create) on descendants resource
+
+79) REMOVED: link rel="stream"
+
+
+CMIS Abdera Modifications...
+
+1) CHANGED: static COLLECTION_ROOT_CHILDREN
+
+Was: COLLECTION_ROOT_CHILDREN
+Now: COLLECTION_ROOT
+
+2) REMOVED: static COLLECTION_ROOT_DESCENDANTS
+
+3) CHANGED: static COLLECTION_TYPES_CHILDREN
+
+Was: COLLECTION_TYPES_CHILDREN
+Now: COLLECTION_TYPES
+
+4) ADDED: CMISRA_NS namespace
+
+CMISRA_NS = "http://docs.oasis-open.org/ns/cmis/restatom/200901";
+
+5) CHANGED: COLLECTION_TYPE
+
+Was: CMIS_NS
+Now: CMISRA_NS
+
+6) CHANGED: REPOSITORY_INFO
+
+Was: CMIS_NS
+Now: CMISRA_NS
+
+====== checkin point =======
+
+7) REMOVED: CMISConstants.PROPERTY_NAME
+
+8) ADDED: CMISConstants.PROPERTY_ID
+
+9) CHANGED: CMISConstants.PROPERTY_XXX
+
+Was: CMISConstants.PROPERTY_XXX
+Now: CMISConstants.PROPERTY_XXX_TYPE
+
+10) REMOVED: CMISProperty.getName()
+
+11) ADDED: CMISProperty.getId()
+
+12) ADDED: CMISProperty.getDisplayName()
+
+13) CHANGED: CMISProperties.getNames()
+
+Was: CMISProperties.getNames()
+Now: CMISProperties.getIds()
+
+14) CHANGED: CMISConstants.PROP_XXX_ID values
+
+Was: no prefix
+Now: cmis: prefixed
+
+15) CHANGED: CMISConstants.PROP_BASETYPE
+
+Was: CMISConstants.PROP_BASETYPE
+Now: CMISConstants.PROP_BASE_TYPE_ID
+
+16) ADDED: CMISConstants.PROP_CONTENT_STREAM_ID
+
+17) REMOVED: CMISConstants.PROP_CONTENT_STREAM_URL
+
+18) ADDED: CMISConstants.PROP_PATH_NAME
+
+19) ADDED: CMISConstants.TYPE_XXX
+
+Note: TYPE_DOCUMENT, TYPE_FOLDER, TYPE_RELATIONSHIP, TYPE_POLICY
+
+20) REMOVED: CMISObject.getContentStreamUri()
+
+21) ADDED: CMISObject.getContentStreamId()
+
+22) CHANGED: CMISObject.getBaseType()
+
+Was: CMISObject.getBaseType()
+Now: CMISObject.getBaseTypeId()
+
+23) REMOVED: CMISConstants.NESTED_ENTRY
+
+24) ADDED: CMISConstants.CHILDREN
+
+25) ADDED: CMISChildren element wrapper
+
+26) REMOVED: CMISRepositoryInfo.getSpecificInfo()
+
+====== checkin point =======
+
+27) ADDED: CMISConstants.REL_ROOT_DESCENDANTS
+
+28) ADDED: CMISConstants.REL_TYPES_DESCENDANTS
+
+29) ADDED: CMISConstants.REL_FOLDER_TREE
+
+====== checkin point =======
+
+30) ADDED: CMISConstants.MIMETYPE_CMISATOM;
+
+31) ADDED: CMISConstants.MIMETYPE_CMISTREE;
+
+32) REMOVED: CMISConstants.REL_CHILDREN
+
+33) REMOVED: CMISConstants.REL_DESCENDANTS
+
+34) ADDED: CMISConstants.REL_UP
+
+35) REMOVED: CMISConstants.REL_DOWN
+
+36) ADDED: CMISConstants.MIMETYPE_ENTRY = "application/atom+xml;type=entry"
+
+37) ADDED: CMISConstants.MIMETYPE_FEED = "application/atom+xml;type=feed"
+
+38) REMOVED: CMISConstants.REL_TYPE
+
+39) ADDED: CMISConstants.REL_DESCRIBED_BY
+
+40) REMOVED: CMISConstants.REL_STREAM
+
+41) ADDED: CMISConstants.REL_VERSION_HISTORY
+
+42) ADDED: CMISConstants.REL_CURRENT_VERSION
+
+43) ADDED: CMISConstants.REL_WORKING_COPY
+
+44) REMOVED: CMISAllowableActions.getParentId()
+
+45) REMOVED: CMISAllowableActions.getParentUrl()
+
+
+
+Internal Implementation Modifications...
+
+a) TODO: Version supported is now 0.62
+
+
+TODO:
+x service document: folder tree atom link
+- service document: uri templates
+- service document: changes collection
+- properties: id vs name vs queryname vs displayname
+- acls
+- renditions
+- query parser to use query name on property definition
+- type definition - allowedSource and target types
+- add all properties to CMISConstants and CMISObject getters
+- Abdera extension - fill out CMISCapabilities
+- think about renaming cmisxxx root objects to cmisrepoxxx
+x folder tree resource
+- folder by path resource
+- query GET
+- folder by path , query uri templates
+- add content-location support to web scripts
+- introduce cmistree media type (for descendants/tree responses)
+- tests: getBaseTypes, getTypeDescendants, getTypeChildren etc
+- delete on folder tree resource (copy of descendants.delete)

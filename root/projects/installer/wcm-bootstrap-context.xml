@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<!-- This file enables Alfresco WCM.  It should be placed in shared/classes/extension -->
+
+<beans>
+
+    <!--  
+        Patch in the WCM folders for the Authoring Environment 
+        Adds WCM Forms and WCM Projects
+    -->
+    <bean id="patch.wcmFolders" class="org.alfresco.repo.admin.patch.impl.WCMFoldersPatch" parent="basePatch" >
+        <property name="id"><value>patch.wcmFolders</value></property>
+        <property name="description"><value>patch.wcmFolders.description</value></property>
+        <property name="fixesFromSchema"><value>0</value></property>
+        <property name="fixesToSchema"><value>${version.schema}</value></property>
+        <property name="targetSchema"><value>10000</value></property>
+        <!-- helper beans for execution -->
+        <property name="messageSource">
+            <ref bean="bootstrapSpacesMessageSource" />
+        </property>
+        <property name="importerBootstrap">
+            <ref bean="spacesBootstrap" />
+        </property>
+    </bean>
+
+    <!--  Bootstrap the WCM Deployment Receiver Subsystem -->
+    <bean id="wcm_deployment_receiver"
+        class="org.alfresco.repo.management.subsystems.ChildApplicationContextFactory"
+        parent="abstractPropertyBackedBean">
+		<property name="autoStart">
+		    <value>true</value>
+        </property>
+    </bean>
+    
+    <!--  Patch bean to add the "WCM Deployed" space to the company home folder -->
+    <bean id="patch.wcmDeployed" class="org.alfresco.repo.admin.patch.impl.GenericBootstrapPatch" parent="basePatch" >
+        <property name="id"><value>patch.wcmDeployed</value></property>
+        <property name="description"><value>patch.wcmDeployed.description</value></property>
+        <property name="fixesFromSchema"><value>0</value></property>
+        <property name="fixesToSchema"><value>${version.schema}</value></property>
+        <property name="targetSchema"><value>10000</value></property>
+        <!-- bootstrap view -->
+        <property name="importerBootstrap">
+            <ref bean="spacesBootstrap" />
+        </property>
+        <property name="checkPath">
+            <value>/${spaces.company_home.childname}/${spaces.wcm_deployed.childname}</value>
+        </property>
+        <property name="bootstrapView">
+            <props>
+                <prop key="path">/${spaces.company_home.childname}</prop>
+                <prop key="location">alfresco/bootstrap/deployedSpace.xml</prop>
+                <prop key="messages">alfresco/messages/bootstrap-spaces</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

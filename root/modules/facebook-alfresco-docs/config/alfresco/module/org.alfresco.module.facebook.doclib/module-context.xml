@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+	
+	<!-- Bootstrap Groups -->
+	<bean id="facebook.doclib.bootstrap" class="org.alfresco.repo.module.ImporterModuleComponent" parent="module.baseComponent">
+        <property name="moduleId" value="org.alfresco.module.facebook.doclib" />
+        <property name="name" value="org.alfresco.module.facebook.doclib.bootstrap" />
+        <property name="description" value="Document Libraries Home" />
+        <property name="sinceVersion" value="1.0" />
+        <property name="appliesFromVersion" value="1.0" />
+        <!-- Data properties -->
+        <property name="importer" ref="spacesBootstrap"/>
+        <property name="bootstrapViews">
+            <list>
+                <props>
+                    <prop key="path">/${spaces.company_home.childname}</prop>
+                    <prop key="location">alfresco/module/org.alfresco.module.facebook.doclib/bootstrap/doclib.xml</prop>
+                </props>
+            </list>
+        </property>
+    </bean>
+    
+</beans>

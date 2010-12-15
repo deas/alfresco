@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Profile</title>
+   <title-id>page.profile.title</title-id>
+   <description>Profile page</description>
+   <description-id>page.profile.description</description-id>
+   <template-instance>profile</template-instance>
+   <authentication>user</authentication>
+</page>

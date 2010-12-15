@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="source/java"/>
+	<classpathentry kind="src" path="source/generated"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="src" path="source/web"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SDK AlfrescoEmbedded"/>
+	<classpathentry kind="lib" path="lib/jettison-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jetty-6.1.14.jar"/>
+	<classpathentry kind="lib" path="lib/jetty-util-6.1.14.jar"/>
+	<classpathentry kind="lib" path="lib/jsr311-api-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-dep-1.4.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/abdera/axiom-api-1.2.5.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/abdera/axiom-impl-1.2.5.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

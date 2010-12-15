@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           targetNamespace="http://www.alfresco.com/xsd/form-config/3.3" xmlns="http://www.alfresco.com/xsd/form-config/3.3">
+
+   <xs:annotation>
+      <xs:documentation>Schema to define form configuration (V3.3).</xs:documentation>
+   </xs:annotation>
+   
+   <!-- Enumerated values -->
+   <xs:simpleType name="ModeEnum">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="view" />
+         <xs:enumeration value="edit" />
+         <xs:enumeration value="create" />
+      </xs:restriction>
+   </xs:simpleType>
+   
+   <xs:simpleType name="AppearanceEnum">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="" />
+         <xs:enumeration value="fieldset" />
+         <xs:enumeration value="panel" />
+         <xs:enumeration value="bordered-panel" />
+         <xs:enumeration value="title" />
+         <xs:enumeration value="whitespace" />
+      </xs:restriction>
+   </xs:simpleType>
+   
+   <!-- Root element  -->
+   <xs:element name="alfresco-config" type="AlfrescoConfigType" />
+
+   <!-- Types -->
+   <xs:complexType name="AlfrescoConfigType">
+      <xs:sequence>
+         <xs:element name="config" type="ConfigType"></xs:element>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="ConfigType">
+      <xs:sequence>
+         <xs:element name="forms" type="FormsType" />
+      </xs:sequence>
+      <xs:attribute name="evaluator" type="xs:string" use="optional" />
+      <xs:attribute name="condition" type="xs:string" use="optional" />
+   </xs:complexType>
+   
+   <xs:complexType name="FormsType">
+      <xs:sequence>
+         <xs:element name="default-controls" type="DefaultControlsType" minOccurs="0" />
+         <xs:element name="constraint-handlers" type="ConstraintHandlersType" minOccurs="0" />
+         <xs:element name="dependencies" type="DependenciesType" minOccurs="0" />
+         <xs:element name="form" type="FormType" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="DefaultControlsType">
+      <xs:sequence>
+         <xs:element name="type" type="typeType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="typeType">
+      <xs:sequence>
+         <xs:element name="control-param" type="ControlParamType" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required" />
+      <xs:attribute name="template" type="xs:string" use="required" />
+   </xs:complexType>
+
+   <xs:complexType name="ControlParamType">
+      <xs:simpleContent>
+         <xs:extension base="xs:string">
+            <xs:attribute name="name" />
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   <xs:complexType name="ConstraintHandlersType">
+      <xs:sequence>
+         <xs:element name="constraint" type="constraintType" />
+      </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="constraintType">
+      <xs:attribute name="type" type="xs:string" use="required" />
+      <xs:attribute name="validation-handler" type="xs:string" use="optional" />
+      <xs:attribute name="message-id" type="xs:string" use="optional" />
+      <xs:attribute name="message" type="xs:string" use="optional" />
+      <xs:attribute name="event" type="xs:string" use="optional" />
+   </xs:complexType>
+   
+   <xs:complexType name="DependenciesType">
+      <xs:choice maxOccurs="unbounded">
+         <xs:element name="js" type="jsType" />
+         <xs:element name="css" type="cssType" />
+      </xs:choice>
+   </xs:complexType>
+   
+   <xs:complexType name="jsType">
+      <xs:attribute name="src" type="xs:string" use="required" />
+   </xs:complexType>
+   
+   <xs:complexType name="cssType">
+      <xs:attribute name="src" type="xs:string" use="required" />
+   </xs:complexType>
+   
+   <xs:complexType name="FormType">
+      <xs:sequence>
+         <xs:element name="view-form" type="ViewFormType" minOccurs="0" />
+         <xs:element name="edit-form" type="EditFormType" minOccurs="0" />
+         <xs:element name="create-form" type="CreateFormType" minOccurs="0" />
+         <xs:element name="field-visibility" type="FieldVisibilityType" minOccurs="0" />
+         <xs:element name="appearance" type="AppearanceType" minOccurs="0" />
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="optional" />
+      <xs:attribute name="submission-url" type="xs:string" use="optional" />
+   </xs:complexType>
+   
+   <xs:complexType name="ViewFormType">
+      <xs:attribute name="template" type="xs:string" use="required" />
+   </xs:complexType>
+   
+   <xs:complexType name="EditFormType">
+      <xs:attribute name="template" type="xs:string" use="required" />
+   </xs:complexType>
+   
+   <xs:complexType name="CreateFormType">
+      <xs:attribute name="template" type="xs:string" use="required" />
+   </xs:complexType>
+   
+   <xs:complexType name="FieldVisibilityType">
+      <xs:choice maxOccurs="unbounded">
+         <xs:element name="show" type="ShowType" />
+         <xs:element name="hide" type="HideType" />
+      </xs:choice>
+   </xs:complexType>
+   
+   <xs:complexType name="HideType">
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="for-mode" type="ModeEnum" use="optional" />
+   </xs:complexType>
+   
+   <xs:complexType name="ShowType">
+      <xs:complexContent>
+         <xs:extension base="HideType">
+            <xs:attribute name="force" type="xs:boolean" use="optional" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   
+   <xs:complexType name="AppearanceType">
+      <xs:choice maxOccurs="unbounded">
+         <xs:element name="set" type="SetType" />
+         <xs:element name="field" type="FieldType" />
+      </xs:choice>
+   </xs:complexType>
+   
+   <xs:complexType name="SetType">
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="appearance" type="AppearanceEnum" use="optional" />
+      <xs:attribute name="parent" type="xs:string" use="optional" />
+      <xs:attribute name="label" type="xs:string" use="optional" />
+      <xs:attribute name="label-id" type="xs:string" use="optional" />
+      <xs:attribute name="template" type="xs:string" use="optional" />
+   </xs:complexType>
+   
+   <xs:complexType name="FieldType">
+      <xs:sequence>
+         <xs:element name="control" type="ControlType" minOccurs="0" />
+         <xs:element name="constraint-handlers" type="ConstraintHandlersType" minOccurs="0" />
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="label-id" type="xs:string" use="optional" />
+      <xs:attribute name="label" type="xs:string" use="optional" />
+      <xs:attribute name="description-id" type="xs:string" use="optional" />
+      <xs:attribute name="description" type="xs:string" use="optional" />
+      <xs:attribute name="help-id" type="xs:string" use="optional" />
+      <xs:attribute name="help" type="xs:string" use="optional" />
+      <xs:attribute name="read-only" type="xs:boolean" use="optional" />
+      <xs:attribute name="mandatory" type="xs:boolean" use="optional" />
+      <xs:attribute name="set" type="xs:string" use="optional" />
+   </xs:complexType>
+   
+   <xs:complexType name="ControlType">
+      <xs:sequence>
+         <xs:element name="control-param" type="ControlParamType" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="template" type="xs:string" use="optional" />
+   </xs:complexType>
+   
+</xs:schema>

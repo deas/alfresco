@@ -1,0 +1,201 @@
+#wef 
+{
+   text-align: left;
+}
+
+#wef div.login-logo
+{
+   background: url(./images/login-logo.png) no-repeat 0 0;
+   margin: 0.5em;
+   width: 210px;
+   height: 61px;
+}
+
+/*#wef #wef-login-panel .yui-panel_container,*/
+#wef #wef-login-panel .yui-panel,
+/*#wef #wef-panel .yui-panel-container,*/
+#wef #wef-panel .yui-panel
+{
+   background-color: white;
+}
+
+/*
+   reset the 3px padding introduced by base.css
+*/
+#wef .yui-button,
+#wef .yui-panel 
+{
+   padding: 0;
+}
+
+#wef .form-fields,
+#wef .form-buttons
+{
+   padding: 1em;
+}
+
+#wef div.ft,
+#wef div.form-buttons
+{
+   text-align: right;
+}
+
+#wef div.ft
+{
+   border-width: 1px 0 0 0;
+}
+
+#wef div#prompt div.ft
+{
+   border-width: 0 1px;
+}
+
+/*
+span.alfresco-content-marker
+{
+    margin: 0 0 5px 0;
+}
+*/
+a.alfresco-content-new,
+a.alfresco-content-edit,
+a.alfresco-content-delete
+{
+    margin: 0 5px 0 0
+}
+
+/*
+span.alfresco-content-marker hide
+{
+    display: hidden;
+}
+*/
+
+#awe--show-hide-edit-markers,
+#awe--show-hide-edit-markers span.first-child,
+#awe--quickedit,
+#awe--quickedit span.first-child,
+#awe--quickcreate,
+#awe--quickcreate span.first-child,
+#awe--quickdelete,
+#awe--quickdelete span.first-child
+{
+   background: none;
+   border: 0;
+}
+
+/*
+#awe--quickedit .disabled,
+#awe--quickcreate .disabled,
+#awe--quickdelete .disabled
+{
+   opacity: 0.4;
+}
+*/
+.js-disabled-form h2
+{
+   font-size: 146.5%;
+   margin-top: 1em;
+   color: #262d35;
+}
+
+.js-disabled-form .form-container label
+{
+   margin-bottom: 0.2em;
+   color: #262d35;
+}
+
+.js-disabled-form .form-container .caption
+{
+   margin: 5px 0px 5px 595px;
+}
+
+.js-disabled-form .form-container .form-fields
+{
+   background-color: #f5f9fd;
+   padding: 2em !important;
+   border: 1px solid #c2c2c2 !important;
+   width: 655px;
+}
+
+.js-disabled-form .form-container .form-buttons
+{
+   margin-top: 0.5em;
+}
+
+.js-disabled-form .form-field input
+{
+   width: 50em;
+}
+
+.js-disabled-form .form-field textarea
+{
+   width: 50em;
+}
+
+.js-disabled-form .form-buttons input
+{
+   width: auto;
+   border: 1px solid #146997;
+   color: #146997;
+   padding: 4px;
+   cursor: pointer;
+   font-weight: bold;
+}
+
+.js-disabled-form .cancel-link
+{
+   margin: -20px 0px 0px 665px;
+   color: #146997;
+}
+
+.js-disabled-form .cancel-link a
+{
+   color: #146997;
+   text-decoration: none;
+}
+
+.js-disabled-form .cancel-link a:visited
+{
+   color: #146997;
+   text-decoration: none;
+}
+#awe--loginToggle,
+#awe--loginToggle span.first-child 
+{
+   background:none;
+   border:0;
+}
+
+#wef-ribbon-container.wef-ribbon-orientation-top #wef-ribbon, 
+#wef-ribbon-container.wef-ribbon-orientation-top #wef-ribbon_c {
+   height:87px;
+}
+
+#wef-ribbon #awe--loginToggle button
+{
+   font-weight:bold;
+   font-size:85%;
+   color:#333;
+}
+
+#wef-ribbon #awe--loginToggle.yui-button-disabled button
+{
+   color:#999;
+}
+
+#wef-ribbon #awe--loginToggle button
+{
+   background: transparent url(./images/logout.png) no-repeat 11px 50%;
+}
+
+#wef-panel .form-container textarea,
+#wef-panel .form-container input
+{
+   width:100%;
+}
+
+#wef-login-panel-form div.form-field label
+{
+   margin-top:1em;
+   display:block;
+}

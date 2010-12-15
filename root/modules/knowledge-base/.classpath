@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="config"/>
+	
+	<classpathentry kind="src" path="source/java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Web-Client"/>
+	
+	<!--
+	<classpathentry exported="true" kind="lib" path="lib/extension-sample.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-client-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-common-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ws-commons-util-1.0.1.jar"/>
+	-->
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

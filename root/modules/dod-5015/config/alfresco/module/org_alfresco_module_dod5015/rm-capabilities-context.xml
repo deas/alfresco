@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<!-- The beans that implement RM capabilities -->
+
+<beans>
+    <bean id="rmBaseCapability" abstract="true">
+        <property name="voter" ref="rmEntryVoter"/>
+    </bean>
+    
+    <bean id="rmAccessAuditCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AccessAuditCapability"/>
+    <bean id="rmAddModifyEventDatesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AddModifyEventDatesCapability"/>
+    <bean id="rmApproveRecordsScheduledForCutoffCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ApproveRecordsScheduledForCutoffCapability"/>
+    <bean id="rmAttachRulesToMetadataPropertiesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AttachRulesToMetadataPropertiesCapability"/>
+    <bean id="rmAuthorizeAllTransfersCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AuthorizeAllTransfersCapability"/>
+    <bean id="rmAuthorizeNominatedTransfersCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AuthorizeNominatedTransfersCapability"/>
+    <bean id="rmChangeOrDeleteReferencesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ChangeOrDeleteReferencesCapability"/>
+    <bean id="rmCloseFoldersCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CloseFoldersCapability"/>
+    <bean id="rmCreateAndAssociateSelectionListsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateAndAssociateSelectionListsCapability"/>
+    <bean id="rmCreateModifyDestroyClassificationGuidesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyClassificationGuidesCapability"/>
+    <bean id="rmCreateModifyDestroyEventsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyEventsCapability"/>
+    <bean id="rmCreateModifyDestroyFileplanMetadataCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyFileplanMetadataCapability"/>
+    <bean id="rmCreateModifyDestroyFileplanTypesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyFileplanTypesCapability"/>
+    <bean id="rmCreateModifyDestroyFoldersCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyFoldersCapability"/>
+    <bean id="rmCreateModifyDestroyRecordTypesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyRecordTypesCapability"/>
+    <bean id="rmCreateModifyDestroyReferenceTypesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyReferenceTypesCapability"/>
+    <bean id="rmCreateModifyDestroyRolesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyRolesCapability"/>
+    <bean id="rmCreateModifyDestroyTimeframesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyTimeframesCapability"/>
+    <bean id="rmCreateModifyDestroyUsersAndGroupsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyDestroyUsersAndGroupsCapability"/>
+    <bean id="rmCreateModifyRecordsInCuttoffFoldersCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CreateModifyRecordsInCuttoffFoldersCapability"/>
+    <bean id="rmCycleVitalRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.CycleVitalRecordsCapability"/>
+    <bean id="rmDeclareAuditAsRecordCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DeclareAuditAsRecordCapability"/>
+    <bean id="rmDeclareRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DeclareRecordsCapability"/>
+    <bean id="rmDeclareRecordsInClosedFoldersCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DeclareRecordsInClosedFoldersCapability"/>
+    <bean id="rmDeleteAuditCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DeleteAuditCapability"/>
+    <bean id="rmDeleteLinksCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DeleteLinksCapability"/>
+    <bean id="rmDeleteRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DeleteRecordsCapability"/>
+    <bean id="rmDestroyRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DestroyRecordsCapability"/>
+    <bean id="rmDestroyRecordsScheduledForDestructionCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DestroyRecordsScheduledForDestructionCapability"/>
+    <bean id="rmDisplayRightsReportCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.DisplayRightsReportCapability"/>
+    <bean id="rmEditDeclaredRecordMetadataCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.EditDeclaredRecordMetadataCapability"/>
+    <bean id="rmEditNonRecordMetadataCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.EditNonRecordMetadataCapability"/>
+    <bean id="rmEditRecordMetadataCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.EditRecordMetadataCapability"/>
+    <bean id="rmEditSelectionListsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.EditSelectionListsCapability"/>
+    <bean id="rmEnableDisableAuditByTypesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.EnableDisableAuditByTypesCapability"/>
+    <bean id="rmExportAuditCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ExportAuditCapability"/>
+    <bean id="rmExtendRetentionPeriodOrFreezeCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ExtendRetentionPeriodOrFreezeCapability"/>
+    <bean id="rmFileRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.FileRecordsCapability"/>
+    <bean id="rmMakeOptionalPropertiesMandatoryCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.MakeOptionalPropertiesMandatoryCapability"/>
+    <bean id="rmManageAccessControlsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ManageAccessControlsCapability"/>
+    <bean id="rmManageAccessRightsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ManageAccessRightsCapability"/>
+    <bean id="rmManuallyChangeDispositionDatesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ManuallyChangeDispositionDatesCapability"/>
+    <bean id="rmMapClassificationGuideMetadataCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.MapClassificationGuideMetadataCapability"/>
+    <bean id="rmMapEmailMetadataCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.MapEmailMetadataCapability"/>
+    <bean id="rmMoveRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.MoveRecordsCapability"/>
+    <bean id="rmPasswordControlCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.PasswordControlCapability"/>
+    <bean id="rmPlanningReviewCyclesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.PlanningReviewCyclesCapability"/>
+    <bean id="rmReOpenFoldersCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ReOpenFoldersCapability"/>
+    <bean id="rmSelectAuditMetadataCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.SelectAuditMetadataCapability"/>
+    <bean id="rmTriggerAnEventCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.TriggerAnEventCapability"/>
+    <bean id="rmUndeclareRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UndeclareRecordsCapability"/>
+    <bean id="rmUnfreezeCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UnfreezeCapability"/>
+    <bean id="rmUpdateClassificationDatesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UpdateClassificationDatesCapability"/>
+    <bean id="rmUpdateExemptionCategoriesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UpdateExemptionCategoriesCapability"/>
+    <bean id="rmUpdateTriggerDatesCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UpdateTriggerDatesCapability"/>
+    <bean id="rmUpdateVitalRecordCycleInformationCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UpdateVitalRecordCycleInformationCapability"/>
+    <bean id="rmUpgradeDowngradeAndDeclassifyRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UpgradeDowngradeAndDeclassifyRecordsCapability"/>
+    <bean id="rmViewRecordsCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ViewRecordsCapability"/>
+    <bean id="rmViewUpdateReasonsForFreezeCapability" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ViewUpdateReasonsForFreezeCapability"/>
+
+    <!-- public service "roles" -->
+    
+    <bean id="rmCreate" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.group.CreateCapability" />
+    <bean id="rmDelete" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.group.DeleteCapability" />
+    <bean id="rmUpdate" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.group.UpdateCapability" />
+    <bean id="rmUpdateProperties" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.group.UpdatePropertiesCapability" />
+    <bean id="rmDeclare" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.group.DeclareCapability" />
+    <bean id="rmWriteContent" parent="rmBaseCapability" class="org.alfresco.module.org_alfresco_module_dod5015.capability.group.WriteContentCapability" />
+   
+
+</beans>

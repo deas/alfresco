@@ -1,0 +1,43 @@
+.addCommentForm
+{
+   background-color: #fafafa;
+   border-top: 1px solid #b1b1b1;
+   padding: 20px;
+}
+
+.commentFormTitle
+{
+   font-size: 116%;
+   margin-bottom: 15px;
+}
+
+.commentFormAction
+{
+   margin-top: 15px;
+}
+
+/* YUI WYSIWYG editor styles */
+.yuieditor strong
+{
+   font-weight: bold;
+}
+
+.yuieditor em
+{
+   font-style: italic;
+}
+
+.yuieditor ul, .yuieditor ol
+{
+   padding-left: 40px;
+}
+
+.yuieditor ul li
+{
+   list-style-type: disc;
+}
+
+.yuieditor ol li
+{
+   list-style-type: decimal;
+}

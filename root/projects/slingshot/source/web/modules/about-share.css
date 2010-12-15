@@ -1,0 +1,36 @@
+.about-share .hd
+{
+   display: none;
+}
+
+.about-share .logo
+{
+   width: 501px;
+   height: 247px;
+   background: url('images/about-bg.png') no-repeat scroll 0 0;
+}
+
+.about-share .about
+{
+   color: #666;
+   padding-left: 12px;
+   padding-top: 48px;
+}
+
+.about-share .header
+{
+   font-size: 131%;
+   padding-top: 8px;
+}
+
+.about-share .copy
+{
+   color: #000;
+   padding-left: 40px;
+   font-size: 77%;
+}
+
+.about-share .padtop
+{
+   padding-top: 66px;
+}

@@ -1,0 +1,8 @@
+<webscript>
+   <shortname>Event Listing</shortname>
+   <description>List of all upcoming events for a site</description>
+   <url>/calendar/eventList</url>
+   <format default="json">argument</format>
+   <authentication>guest</authentication>
+   <transaction>required</transaction>
+</webscript>

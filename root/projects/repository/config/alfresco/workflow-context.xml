@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+   <!--                                 -->
+   <!-- Workflow Service Implementation -->
+   <!--                                 -->
+
+   <bean id="workflowDeployer" class="org.alfresco.repo.workflow.WorkflowDeployer" abstract="true">
+      <property name="transactionService" ref="transactionService"/>
+      <property name="authenticationContext" ref="authenticationContext" />
+      <property name="workflowService" ref="WorkflowService" />
+      <property name="dictionaryDAO" ref="dictionaryDAO"/>
+      <property name="allowWrite">
+      	<value>${server.transaction.allow-writes}</value>
+      </property>
+      <property name="nodeService" ref="NodeService"/>
+      <property name="searchService" ref="SearchService"/>
+      <property name="namespaceService" ref="NamespaceService"/>
+      <property name="tenantService" ref="tenantService"/>
+      <property name="tenantAdminService" ref="tenantAdminService"/>
+   </bean>
+   
+   <bean id="workflowServiceImpl" class="org.alfresco.repo.workflow.WorkflowServiceImpl">
+      <property name="authorityService" ref="authorityService"/>
+      <property name="BPMEngineRegistry" ref="bpm_engineRegistry"/>
+      <property name="workflowPackageComponent" ref="workflowPackageImpl"/>
+      <property name="nodeService" ref="nodeService"/>
+      <property name="contentService" ref="contentService"/>
+	  <property name="avmSyncService" ref="AVMSyncService"/>
+	  <property name="dictionaryService" ref="dictionaryService"/>
+	  <property name="protectedNodeService" ref="NodeService"/>
+   </bean>
+
+   <bean id="workflowPackageImpl" class="org.alfresco.repo.workflow.WorkflowPackageImpl">
+      <property name="importerBootstrap" ref="spacesBootstrap"/>
+      <property name="searchService" ref="searchService"/>
+      <property name="nodeService" ref="nodeService"/>
+      <property name="permissionService" ref="permissionService"/>
+      <property name="namespaceService" ref="namespaceService"/>
+      <property name="tenantService" ref="tenantService"/>
+   </bean>
+
+   <bean id="workflowInterpreter" class="org.alfresco.repo.workflow.WorkflowInterpreter" parent="interpreterBase">
+      <property name="workflowService" ref="WorkflowService"/>
+      <property name="AVMService" ref="AVMService"/>
+      <property name="AVMSyncService" ref="AVMSyncService"/>
+      <property name="nodeService" ref="NodeService"/>
+      <property name="namespaceService" ref="namespaceService"/>
+      <property name="personService" ref="PersonService"/>
+      <property name="authorityDAO" ref="authorityDAO"/>
+      <property name="fileFolderService" ref="FileFolderService"/>
+      <property name="tenantService" ref="tenantService"/>
+   </bean>
+
+   <bean id="workflowInterpreterHelp" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">
+        <property name="resourceBundles">
+            <list>
+                <value>alfresco.messages.workflow-interpreter-help</value>
+            </list>
+        </property>
+   </bean>
+
+   <!--                 -->
+   <!-- Workflow Action -->
+   <!--                 -->
+
+   <bean id="start-workflow" class="org.alfresco.repo.workflow.StartWorkflowActionExecuter" parent="action-executer">
+      <property name="publicAction"><value>false</value></property>
+      <property name="namespaceService" ref="NamespaceService"/>
+      <property name="nodeService" ref="NodeService"/>
+      <property name="workflowService" ref="WorkflowService"/>
+   </bean>
+
+   <!--                       -->
+   <!-- Alfresco BPM Registry -->
+   <!--                       -->
+
+   <bean id="bpm_engineRegistry" class="org.alfresco.repo.workflow.BPMEngineRegistry">
+   </bean>
+
+   <bean id="bpm_engine" class="org.alfresco.repo.workflow.BPMEngine" abstract="true">
+      <property name="BPMEngineRegistry" ref="bpm_engineRegistry"/>
+   </bean>
+
+   <!--                     -->
+   <!-- jBPM Implementation -->
+   <!--                     -->
+
+   <bean id="jbpm_configuration" class="org.alfresco.repo.workflow.jbpm.AlfrescoJbpmConfigurationFactoryBean">
+      <property name="sessionFactory" ref="sessionFactory"/>
+      <property name="configuration" value="classpath:org/alfresco/repo/workflow/jbpm/jbpm.cfg.xml"/>
+   </bean>
+
+   <bean id="jbpm_template" class="org.alfresco.repo.workflow.jbpm.JBPMTransactionTemplate">
+      <constructor-arg index="0" ref="jbpm_configuration"/>
+   </bean>
+
+   <bean id="jbpm_engine" class="org.alfresco.repo.workflow.jbpm.JBPMEngine" parent="bpm_engine">
+      <property name="engineId" value="jbpm"/>
+      <property name="JBPMTemplate" ref="jbpm_template"/>
+      <property name="dictionaryService" ref="DictionaryService"/>
+      <property name="namespaceService" ref="namespaceService"/>
+      <property name="nodeService" ref="nodeService"/>
+      <property name="tenantService" ref="tenantService"/>
+      <property name="messageService" ref="messageService"/>
+      <property name="personService" ref="personService"/>
+      <property name="authorityDAO" ref="authorityDAO"/>
+      <!-- Creates JBPMNodes (ScriptNodes) which require the ServiceRegsitry -->
+      <property name="serviceRegistry" ref="ServiceRegistry"/>
+      <property name="companyHomeStore"><value>${spaces.store}</value></property>
+      <property name="companyHomePath"><value>/${spaces.company_home.childname}</value></property>
+	  <property name="unprotectedSearchService" ref="searchService"/>
+   </bean>
+
+   <!-- Workflow Patch Deployer -->
+   <bean id="workflowPatchDeployer" parent="workflowDeployer" singleton="false"/>
+   
+   <!-- Deploy any additional workflows definitions from repo -->
+   <!-- note: needs to match bootstrap-context.xml locations (customWorkflowDefsSpace.xml) -->
+   <bean id="customWorkflowDefsRepositoryLocation" class="org.alfresco.repo.dictionary.RepositoryLocation">
+        <!-- other properties will be defaulted, but can be overriden here -->
+        <property name="path">
+            <value>/app:company_home/app:dictionary/app:workflow_defs</value>
+        </property>
+   </bean>
+   
+   <!--  Workflow Definition Type (bpm:workflowDefinition) -->
+   <bean id="workflowDefinitionType" class="org.alfresco.repo.workflow.WorkflowDefinitionType" init-method="init">
+      <property name="policyComponent" ref="policyComponent"/>
+      <property name="workflowDeployer" ref="workflowBootstrap"/>
+   </bean>
+   
+</beans>

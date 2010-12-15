@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<!--  DEPLOYMENT SERVER CONFIGURATION - Extra Sample Beans -->
+
+<beans>
+
+	<!-- This is an example of a compression transformer   -->
+	
+	<!-- 
+    <bean id="deploymentCompressor" class="org.alfresco.deployment.transformers.CompressionTransformer">
+    </bean>
+    --> 
+    
+    <!-- 
+    <bean id = "sampleRunnable" class="org.alfresco.deployment.SampleRunnable"/>
+     -->
+     
+     <!--  An example of a "program runnable" to execute a operating system command. -->
+     <!--  The arguments are appended after the command -->
+     <!--  The program runs in the "directory" -->
+     <!-- 
+    <bean id="sampleProgramRunnable" class="org.alfresco.deployment.ProgramRunnable">
+         <property name="program"><value>/bin/cp</value></property>
+         
+         <property name="arguments">
+             <list>
+                 <value>/Users/britt/dump.txt</value>
+             </list>
+         </property>
+
+         <property name="directory"><value>/</value></property>
+     </bean>
+     -->
+    
+</beans>

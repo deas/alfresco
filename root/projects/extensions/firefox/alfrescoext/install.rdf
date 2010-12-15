@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>0.8</em:minVersion>
+        <em:maxVersion>3.5+</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    
+    <em:id>{FA9D1131-4AF2-4b83-9440-30DAFB770371}</em:id>
+    <em:version>0.92</em:version>
+    <em:name>Alfresco Extension</em:name>
+    <em:description>Adds Alfresco functions.</em:description>
+    <em:creator>Team Alfresco</em:creator>
+    <em:homepageURL>http://www.alfresco.org</em:homepageURL>
+    <em:optionsURL>chrome://alfrescoext/content/alfrescoextOptions.xul</em:optionsURL>  
+    <em:iconURL>chrome://alfrescoext/content/alf.png</em:iconURL>
+
+    <em:file>
+      <Description about="urn:mozilla:extension:file:alfrescoext.jar">
+        <em:package>content/</em:package>
+      </Description>
+    </em:file>
+    
+  </Description>      
+</RDF>

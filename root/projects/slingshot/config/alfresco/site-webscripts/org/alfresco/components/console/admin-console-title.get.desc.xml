@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Admin Console Title</shortname>
+  <description>Title component used in the Admin Console page</description>
+  <url>/components/title/admin-console</url>
+</webscript>

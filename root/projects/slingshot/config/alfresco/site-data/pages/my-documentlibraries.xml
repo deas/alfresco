@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>My Document Libraries</title>
+   <title-id>page.myDocumentLibraries.title</title-id>
+   <description>My Document libraries launch page</description>
+   <description-id>page.myDocumentLibraries.description</description-id>
+   <template-instance>my-documentlibraries</template-instance>
+   <authentication>user</authentication>
+</page>

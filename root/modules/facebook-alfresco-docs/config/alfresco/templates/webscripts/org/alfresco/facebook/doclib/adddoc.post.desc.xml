@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Facebook ADL Add Document</shortname>
+  <description>Facebook Alfresco Document Library - Add Document</description>
+  <url>/facebook/alfrescodoclib/adddoc/{lib}</url>
+  <format default="fbml"/>
+  <authentication>user</authentication>
+</webscript>

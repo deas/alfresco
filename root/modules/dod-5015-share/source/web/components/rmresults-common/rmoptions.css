@@ -1,0 +1,62 @@
+.rmoptions
+{
+   width: 70em;
+}
+
+.rmoptions .metadata
+{
+   border: 1px solid #AAAAAA;
+   background-color: #FFFFFF;
+   line-height: 1.5em;
+   padding: 6px 6px 4px 8px;
+   height: 12.5em;
+   min-width: 20em;
+   overflow-y: auto;
+   overflow-x: hidden;
+}
+
+.rmoptions .metadata-header
+{
+   border-bottom: 1px solid lightgrey;
+   font-weight: bold;
+   margin-bottom: 4px;
+}
+
+.rmoptions label
+{
+   padding-left: 4px;
+   vertical-align: 5%;
+}
+
+.rmoptions .sortlabel
+{
+   vertical-align: 15%;
+}
+
+.rmoptions .separator
+{
+   background: transparent url(../rmresults-common/images/collapsed.png) no-repeat 4px 8px;
+   cursor: pointer;
+}
+
+.rmoptions .options
+{
+   margin-left: 20px;
+   margin-right: 8px;
+   display: block;
+}
+
+.rmoptions .options-hidden
+{
+   display: none;
+}
+
+.rmoptions .components
+{
+   line-height: 1.75em;
+}
+
+.rmoptions .indented
+{
+   margin-left: 20px;
+}

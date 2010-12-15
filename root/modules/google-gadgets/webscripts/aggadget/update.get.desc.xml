@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>File Update Form GG</shortname>
+  <description>Form for updating file content in the repository for iGoogle Gadgets</description>
+  <url>/aggadget/update</url>
+  <authentication>user</authentication>
+</webscript>

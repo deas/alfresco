@@ -1,0 +1,112 @@
+<view:view xmlns:view="http://www.alfresco.org/view/repository/1.0" 
+           xmlns:sys="http://www.alfresco.org/model/system/1.0" 
+           xmlns:cm="http://www.alfresco.org/model/content/1.0">
+    <cm:category>
+        <cm:name>Alfresco Knowledge Base</cm:name>
+        <sys:node-uuid>kb:kb-root</sys:node-uuid>
+        <cm:subcategories>
+		
+		   <cm:category>
+		       <cm:name>Alfresco Versions</cm:name>
+		       <sys:node-uuid>kb:versions-root</sys:node-uuid>
+		       <cm:subcategories>
+		           <cm:category>
+		               <cm:name>1.3</cm:name>
+		               <sys:node-uuid>kb:version-1-3</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>1.2</cm:name>
+		               <sys:node-uuid>kb:version-1-2</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>1.4</cm:name>
+		               <sys:node-uuid>kb:version-1-4</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>1.4.3</cm:name>
+		               <sys:node-uuid>kb:version1.4.3</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>2.0</cm:name>
+		               <sys:node-uuid>kb:version2-0</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>2.0.1</cm:name>
+		               <sys:node-uuid>kb:version-2-0-1</sys:node-uuid>
+		           </cm:category>
+		       </cm:subcategories>
+		   </cm:category>
+		    
+		   <cm:category>
+		       <cm:name>Article Status</cm:name>
+		       <sys:node-uuid>kb:article-status-root</sys:node-uuid>
+		       <cm:subcategories>
+		           <cm:category>
+		               <cm:name>Draft</cm:name>
+		               <sys:node-uuid>kb:status-draft</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>Pending Approval</cm:name>
+		               <sys:node-uuid>kb:status-pending</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>Published</cm:name>
+		               <sys:node-uuid>kb:status-published</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>Archived</cm:name>
+		               <sys:node-uuid>kb:status-archived</sys:node-uuid>
+		           </cm:category>
+		       </cm:subcategories>
+		   </cm:category>
+		   
+		   <cm:category>
+		       <cm:name>Article Type</cm:name>
+		       <sys:node-uuid>kb:article-type-root</sys:node-uuid>
+		       <cm:subcategories>
+		           <cm:category>
+		               <cm:name>Any</cm:name>
+		               <sys:node-uuid>kb:type-any</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>Article</cm:name>
+		               <sys:node-uuid>kb:type-article</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>FAQ</cm:name>
+		               <sys:node-uuid>kb:type-faq</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>White Paper</cm:name>
+		               <sys:node-uuid>kb:type-white-paper</sys:node-uuid>
+		           </cm:category>
+		       </cm:subcategories>
+		   </cm:category>
+		   
+		   <cm:category>
+		       <cm:name>Article Visibility</cm:name>
+		       <sys:node-uuid>kb:article-visibility-root</sys:node-uuid>
+		       <cm:subcategories>
+		           <cm:category>
+		               <cm:name>Internal</cm:name>
+		               <sys:node-uuid>kb:visibility-internal</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>Partners</cm:name>
+		               <sys:node-uuid>kb:visibility-partners</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>Customers</cm:name>
+		               <sys:node-uuid>kb:visibility-customers</sys:node-uuid>
+		           </cm:category>
+		           <cm:category>
+		               <cm:name>Community</cm:name>
+		               <sys:node-uuid>kb:visibility-community</sys:node-uuid>
+		           </cm:category>
+
+		       </cm:subcategories>
+		   </cm:category>
+				   
+		</cm:subcategories>	   
+	</cm:category>
+</view:view>

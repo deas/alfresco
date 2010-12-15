@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view:view xmlns:view="http://www.alfresco.org/view/repository/1.0">
+  <view:metadata>
+    <view:exportBy>admin</view:exportBy>
+    <view:exportDate>2006-12-11T11:59:26.945Z</view:exportDate>
+    <view:exporterVersion>1.4.1 (dev @build-number@)</view:exporterVersion>
+    <view:exportOf>/app:company_home/app:dictionary/app:scripts</view:exportOf>
+  </view:metadata>
+  <cm:folder xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:alf="http://www.alfresco.org" xmlns:d="http://www.alfresco.org/model/dictionary/1.0" xmlns:view="http://www.alfresco.org/view/repository/1.0" xmlns:act="http://www.alfresco.org/model/action/1.0" xmlns:rma="http://www.alfresco.org/model/record/1.0" xmlns:wf="http://www.alfresco.org/model/workflow/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0" xmlns:usr="http://www.alfresco.org/model/user/1.0" xmlns:ver="http://www.alfresco.org/model/versionstore/1.0" xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sys="http://www.alfresco.org/model/system/1.0" xmlns:rule="http://www.alfresco.org/model/rule/1.0" xmlns:fm="http://www.alfresco.org/model/forum/1.0" xmlns:bpm="http://www.alfresco.org/model/bpm/1.0" xmlns:custom="custom.model" xmlns="" view:childName="cm:Records Management">
+    <view:aspects>
+      <app:uifacets></app:uifacets>
+      <sys:referenceable></sys:referenceable>
+    </view:aspects>
+    <view:properties>
+      <sys:store-protocol>workspace</sys:store-protocol>
+      <sys:store-identifier>SpacesStore</sys:store-identifier>
+      <sys:node-uuid>rm_script_folder</sys:node-uuid>
+      <app:icon>space-icon-default</app:icon>
+      <cm:title>Records Managment Scripts</cm:title>
+      <cm:name>Records Management</cm:name>
+    </view:properties>
+    <view:associations>
+      <cm:contains>
+        
+        <!-- Behaviour -->
+        
+        <!-- Actions -->
+        
+        <!-- Scheduled Scripts -->
+        
+        <!-- UI Actions -->
+        
+        <cm:content view:childName="cm:uiAction_addRemoveAspect.js">
+          <view:aspects>
+             <cm:titled></cm:titled>
+             <app:inlineeditable></app:inlineeditable>
+          </view:aspects>
+          <view:properties>
+            <sys:store-protocol>workspace</sys:store-protocol>
+            <sys:store-identifier>SpacesStore</sys:store-identifier>
+            <sys:node-uuid>uiAction_addRemoveAspect</sys:node-uuid>
+            <cm:content>contentUrl=classpath:alfresco/module/org.alfresco.module.RecordsManagement/script/ui/uiAction_addRemoveAspect.js|mimetype=application/x-javascript|size=1138|encoding=UTF-8</cm:content>
+            <cm:title>uiAction_addRemoveAspect.js</cm:title>
+            <cm:name>uiAction_addRemoveAspect.js</cm:name>
+          </view:properties>
+          <view:associations></view:associations>
+        </cm:content>
+        
+      </cm:contains>
+    </view:associations>
+  </cm:folder>
+</view:view>

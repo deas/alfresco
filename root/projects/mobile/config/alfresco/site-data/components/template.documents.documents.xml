@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<component>
+   <scope>template</scope>
+   <region-id>documents</region-id>
+   <source-id>documents</source-id>
+   <url>/components/documents/documents</url>
+</component>

@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Breadcrumb</shortname>
+  <description>Displays a horizontal breadcrumb trail</description>
+  <family>component</family>
+  <url>/component/common/breadcrumb</url>
+</webscript>

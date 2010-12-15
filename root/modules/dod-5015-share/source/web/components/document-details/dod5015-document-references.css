@@ -1,0 +1,40 @@
+.document-references
+{
+   background-color: #FAFAFA;
+   border-left: 1px solid #CCCCCC;
+   border-top: 1px dashed #CCCCCC;
+   margin-right: -10px;
+   padding: 1.5em 1em 2em 2em;
+}
+
+.document-references .heading
+{
+   color: #333333;
+   font-size: 131%;
+   float: left;
+}
+
+.document-references .manageRefs
+{
+   float: right;
+}
+
+.document-references p.no-ref-messages,
+.document-references ul
+{
+   clear: both;
+}
+.document-references p.no-ref-messages
+{
+   margin-bottom: 1em;
+}
+.document-references div.reflist
+{
+   margin: 3em 0 1em 0;
+}
+.document-references li
+{
+   margin: 1em 0;
+   padding: 1em 3em;
+   background: transparent url(../documentlibrary/images/record-32.png) no-repeat scroll 0 10px;  
+}

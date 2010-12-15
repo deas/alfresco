@@ -1,0 +1,129 @@
+/* History Manager */
+#yui-history-iframe
+{
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 1px;
+   height: 1px;
+   visibility: hidden;
+}
+
+.events
+{
+   color: #000000;
+   margin: 16px 10px 10px;
+}
+
+.events .hidden
+{
+   display: none;
+}
+
+.events .buttons,
+.events .title
+{
+   margin-top: 0.5em;
+   line-height: 2em;
+}
+
+.events .title
+{
+   color: #515D6B;
+   font-size: 123.1%;
+   font-weight: bold;
+   padding-bottom: 0.5em;
+}
+
+.events .buttons,
+.events .caption   
+{
+   text-align: right;
+}
+
+.events .events-list
+{
+   border: 1px solid #D7D7D7;
+}
+
+.events .yui-dt table
+{
+   border: medium none;
+   width: 100%;
+}
+
+.events .yui-dt table thead
+{
+   display: none;
+}
+
+.events tr.yui-dt-odd 
+{
+   background-color:#FFFFFF;
+}
+
+.events .yui-dt table .yui-dt-col-actions
+{
+   width: 17em;
+   text-align: right;
+}
+
+.events .yui-dt table td
+{
+   border: medium none;
+   border-bottom: 1px dashed #D7D7D7;
+}
+
+.events .yui-dt table .yui-dt-last td
+{
+   border-bottom: medium none;
+}
+
+.events .event-type-label
+{
+   color: #515D6B;
+   padding-right: 0.5em;
+}
+
+.events .edit-main
+{
+   border: 1px solid #D7D7D7;
+   margin-bottom: 1.5em;
+   padding-bottom: 1em;
+}
+
+.events .mandatory-indicator
+{
+   color: green;
+   margin-left: 0.4em;
+   margin-right: 0.4em;
+}
+
+.events .header-bar
+{
+   background-color: #E3EAEC;
+   border-bottom: 2px solid #F0F3F4;
+   font-size: 116%;
+   font-weight: bold;
+   height: 1.1em;
+   margin: 1em;
+   padding: 0.3em;   
+}
+
+.events .field-row
+{
+   padding: 0.333em;
+   margin-left: 1em;
+}
+
+.events .crud-label
+{
+   line-height: 1.5em;
+   margin-left: 1.5em;
+}
+
+.events .crud-input
+{
+   margin-left: 1.5em;
+   margin-bottom: 0.5em;
+}

@@ -1,0 +1,17 @@
+<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="OnLoad" loadImage="LoadImage">
+  <ribbon>
+    <tabs>
+      <tab idMso="TabAddIns">
+        <group id="Alfresco" label="Alfresco Add-In">
+          <toggleButton id="toggleAlfresco" 
+                        size="large"
+                        label="Show/Hide Alfresco"
+                        image="Alfresco"
+                        screentip="Toggles the visibility of the Alfresco window"
+                        onAction="OnToggleAlfresco" 
+                        getPressed="OnGetPressed" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Records Search</title>
+   <title-id>page.rmSearch.title</title-id>
+   <description>Records Management Search page</description>
+   <description-id>page.rmSearch.description</description-id>
+   <template-instance>rmsearch</template-instance>
+   <authentication>user</authentication>
+</page>

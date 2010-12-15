@@ -1,0 +1,29 @@
+<alfresco-config>
+
+   <config evaluator="string-compare" condition="DocumentLibrary">
+   
+      <types>
+         <type name="cm:content">
+            <subtype name="ws:article"/>
+         </type>
+
+         <type name="cm:folder">
+            <subtype name="ws:website"/>
+            <subtype name="ws:webroot"/>
+         </type>
+      </types>
+
+      <workflows>
+         <workflow definition="wswf:reviewPublish" />
+         <workflow definition="wswf:publishTree" />
+      </workflows>
+
+   </config>
+
+   <config evaluator="string-compare" condition="Workflow">
+      <hidden-workflows>
+         <workflow name="jbpm$wswf:readContactProcess"/>
+      </hidden-workflows>
+   </config>
+
+</alfresco-config>

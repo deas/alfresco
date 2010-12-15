@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	verticalGap="0"
+	horizontalGap="0">
+
+	<mx:Style source="home.css"/>
+
+	<mx:Spacer width="28"/>
+	<mx:Image source="@Embed(source='panel_shad_left.png')"/>
+	<mx:Image source="@Embed(source='panel_shad_middle.png')" styleName="homePanelShadow" maintainAspectRatio="false" width="100%"/>
+	<mx:Image source="@Embed(source='panel_shad_right.png')"/>		
+	<mx:Spacer width="28"/>
+	
+</mx:HBox>

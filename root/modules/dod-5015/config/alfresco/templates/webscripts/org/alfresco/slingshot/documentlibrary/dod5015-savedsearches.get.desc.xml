@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>doclist</shortname>
+  <description>Document List Component - dod5015 saved searches data webscript</description>
+  <url>/slingshot/doclib/dod5015/savedsearches/site/{site}?p={public?}</url>
+  <format default="json">argument</format>
+  <authentication>user</authentication>
+  <transaction allow="readonly">required</transaction>
+</webscript>

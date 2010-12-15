@@ -1,0 +1,714 @@
+/* Sticky Footer */
+
+*
+{
+   margin: 0;
+}
+
+html, body
+{
+   height: 100%;
+}
+
+#bd
+{
+   padding-bottom: 2em;
+}
+
+.sticky-wrapper
+{
+   height: auto !important;
+   height: 100%;
+   margin: 0 auto -50px;
+   min-height: 100%;
+}
+
+.sticky-footer, .sticky-push
+{
+   height: 50px;
+}
+
+.login-panel .login-portlet
+{
+   padding: 132px 56px 64px 0px;
+   text-align: center;
+}
+
+/* Site-wide Styles */
+
+#alfresco-yuiloader
+{
+   display: none;
+   height: 0;
+   line-height: 0;
+}
+
+.caret-fix
+{
+   overflow-x: auto;
+}
+
+.clear
+{
+   clear: both;
+   display: block;
+   height: 1px;
+   overflow: hidden;
+   margin: 0;
+   padding: 0;
+}
+
+.hidden
+{
+   display: none !important;
+}
+
+p
+{
+   padding-top: 10px;
+   padding-bottom: 3px;
+}
+
+hr
+{
+   height: 1px;
+   margin-top: 5px;
+   margin-bottom: 8px;
+   border: 0;
+   width: 100%;
+   clear: both;
+}
+
+.yui-button button
+{
+   background-image: none;
+}
+
+.yui-button.inline-button span button
+{
+   min-height: 1.8em;
+}
+
+/* Enables a link to be vertically-aligned to a YUI button */
+.yui-button-align
+{
+   border-color: transparent;
+   border-style: solid;
+   border-width: 1px 0;
+   display: inline-block;
+   vertical-align: text-bottom;
+}
+.yui-button-align .first-child
+{
+   border-color: transparent;
+   border-style: solid;
+   border-width: 0 1px;
+}
+.yui-button-align button,
+.yui-button-align a
+{
+   font-size: 93%;
+   line-height: 2;
+   min-height: 2em;
+}
+
+.yui-t1
+{
+   width: auto;
+}
+.yui-t1 #yui-main
+{
+   margin-left: -50em;
+}
+
+h1.sub-title
+{
+   padding-top: 1em;
+}
+
+/* Page title and navigation styles */
+
+.page-title
+{
+   clear: left;
+   margin: 0px -10px;
+   min-height: 2em;
+   padding: 6px 10px;
+}
+
+.page-title div.title
+{
+   float: left;
+}
+
+.page-title div.links
+{
+   float: right;
+   min-width: 36em;
+   text-align: right;
+}
+
+.page-title h1
+{
+   display: inline;
+   position: relative;
+   top: 2px;
+}
+
+.site-navigation
+{
+   clear: left;
+   margin: 0 -10px;
+   min-height: 1em;
+   padding: 5px 0 7px;
+}
+
+span.navigation-separator,
+span.navigation-item,
+span.navigation-item-alt
+{
+   vertical-align: middle;
+   margin: 0px;
+}
+
+span.navigation-item,
+span.navigation-item-alt
+{
+   padding: 0 0 0 6px;
+}
+
+span.navigation-item a,
+span.navigation-item a:visited
+{
+   padding: 3px 4px;
+}
+
+span.navigation-item a.active-page,
+span.navigation-item a.active-page:visited,
+span.navigation-item a:hover
+{
+   text-decoration: none;
+}
+
+span.navigation-separator
+{
+   margin-right: 6px;
+   padding-left: 8px;
+   text-align: center;
+}
+
+span.navigation-separator-alt
+{
+   padding: 0px 0px 0px 10px;
+   text-align: center;
+}
+
+/* Standard toolbar that goes across the whole page */
+
+.share-toolbar
+{
+   clear: both;
+   margin: 0 -10px;
+   height: 34px;
+   padding: 0;
+}
+
+.share-toolbar .navigation-bar,
+.share-toolbar .navigation-bar div,
+.share-toolbar .action-bar,
+.share-toolbar .action-bar div
+{
+   float: left;
+}
+
+.share-toolbar .action-bar,
+.share-toolbar .rss-feed
+{
+   padding: 4px 0.5em;
+}
+
+.share-toolbar .navigation-bar
+{
+   padding: 2px 1em;
+   line-height: 30px;
+   height: 30px;
+   border-right: 2px solid #F0F3F4;
+}
+
+.share-toolbar .navigation-bar div,
+.share-toolbar .rss-feed div
+{
+   vertical-align: middle;
+}
+
+.share-toolbar .backLink a:hover,
+.share-toolbar .forwardLink a:hover
+{
+   text-decoration: underline;
+}
+
+.share-toolbar .separator
+{
+   margin: 4px 10px 0 0;
+   padding: 2px 0 0 4px;
+}
+
+.toolbar .separator
+{
+   margin: 4px 10px 0 0;
+   padding: 2px 0 0 4px;
+}
+
+/* Standard Share forms using the forms component */
+
+.share-form .form-manager
+{
+   padding: 1.5em 0 0 0;
+   width: 827px;
+}
+
+.share-form .form-manager h1
+{
+   padding-left: 0.5em;
+   margin-bottom: 0.75em;
+}
+
+.share-form .form-container
+{
+   padding: 0;
+   margin-top: 0;
+}
+
+.share-form .form-container form
+{
+   /*margin-left: 1.5em;*/
+   margin-top: 0.5em;
+}
+
+.share-form .form-container .caption
+{
+   text-align:right;
+   width:820px;
+}
+
+.share-form .form-container .form-fields
+{
+   padding: 1em 1em 0 !important;
+   width: 800px;
+}
+
+.share-form .form-container .form-buttons
+{
+   margin-top: 0.5em;
+   padding-left: 1em;
+}
+
+/* Fixed Form-Based Pages */
+
+.page-form-header
+{
+   margin: 4px;
+   padding: 4px;
+}
+
+.page-form-body .yui-gd
+{
+   padding: 0.3em 0.3em 0.7em 0;
+}
+
+.page-form-body .yui-gd .yui-u
+{
+   width: 90% !important;
+}
+
+.page-form-body .yui-gd .first
+{
+   text-align: right;
+   width: 5% !important;
+}
+
+/**
+ * Replace default styles for HTML content
+ */
+.dashlet .rich-content
+{
+   padding-top: 8px;
+}
+
+.rich-content sub
+{
+   vertical-align: sub;
+}
+
+.rich-content sup
+{
+   vertical-align: super;
+}
+
+.rich-content ul,
+.rich-content ol
+{
+   padding: 1em;
+}
+
+.rich-content ul > li
+{
+   list-style-type: disc;
+   list-style-position: inside;
+}
+
+.rich-content ol > li
+{
+   list-style-type: decimal;
+   list-style-position: inside;
+}
+
+.rich-content th,
+.rich-content td
+{
+   padding: 0.2em;
+}
+
+.dnd-draggable
+{
+   cursor: move;
+}
+
+.dnd-drag
+{
+   cursor: move;
+}
+
+.dnd-dropInvalid
+{
+   cursor: no-drop;
+}
+
+.dnd-dropValid
+{
+   cursor: pointer;
+}
+
+.dnd-shadow
+{
+   visibility: hidden;
+}
+
+select,
+input[type="text"],
+input[type="password"],
+textarea
+{
+   padding: 2px;
+   width: 15em;
+}
+
+select.wide,
+input[type="text"].wide,
+input[type="password"].wide,
+textarea.wide
+{
+   width: 30em;
+}
+
+/* Richtext Editor Plug-ins */
+
+.yui-toolbar-container .yui-toolbar-alfresco-imagelib span.yui-toolbar-icon
+{
+   left: 6px;
+}
+
+/* Dashlets */
+
+.dashlet
+{
+   background-color: white;
+   margin: 20px 0;
+   padding: 0;
+}
+
+.dashlet.resizable
+{
+   padding-bottom: 6px !important;
+}
+
+.dashlet .title
+{
+   padding: 5px 9px 5px 9px;
+   overflow-x: hidden;
+}
+
+.dashlet .feed
+{
+   float: right;
+   height: 16px;
+   left: -8px;
+   position: relative;
+   top: -22px;
+   width: 16px;
+}
+
+.dashlet .feed a,
+.dashlet .feed a:active,
+.dashlet .feed a:hover
+{
+   display: block;
+   height: 16px;
+   text-decoration: none;
+   width: 16px;
+}
+
+.dashlet .toolbar
+{
+   padding: 5px 9px 5px 9px;
+}
+
+.dashlet .body
+{
+   overflow-x: hidden;
+}
+
+.dashlet .body a,
+.dashlet .body a:visited,
+.dashlet .body a:hover
+{
+   outline: none;
+   text-decoration: none;
+}
+
+.dashlet .body a:hover
+{
+   text-decoration: underline;
+}
+
+.dashlet .scrollableList
+{
+   height: 208px;
+   padding: 8px 0px;
+   overflow: auto;
+}
+
+.dashlet .scrollablePanel
+{
+   height: 208px;
+   overflow: auto;
+   margin-right: 1px;
+}
+
+.dashlet .scrollablePanel div.resize-mask
+{
+   display: none;
+}
+.yui-resize-resizing .scrollablePanel div.resize-mask
+{
+   display: block;
+   padding: 0;
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   opacity: 0;
+}
+
+.dashlet .body>div
+{
+   padding-left: 8px;
+   padding-right: 8px;
+}
+
+.dashlet .msg
+{
+   padding-bottom: 8px;
+   padding-top: 8px;
+}
+
+.dashlet .text-list-item
+{
+   padding-bottom: 6px;
+}
+
+.dashlet .detail-list-item
+{
+   clear: both;
+   padding: 7px 9px;
+}
+
+div.dashlet div.detail-list-item.first-item
+{
+   float: none;
+   padding-top: 0;
+}
+
+div.dashlet div.hdr
+{
+   margin-bottom: 5px;
+   padding-top: 3px;
+}
+
+.dashlet .detail-list-item.last-item
+{
+   border-bottom: none;
+}
+
+.dashlet .detail-list-item .icon,
+.dashlet .detail-list-item .avatar
+{
+   float: left;
+}
+
+.dashlet .detail-list-item .avatar img
+{
+   width: 48px;
+}
+
+.dashlet .detail-list-item .details
+{
+   padding-left: 40px;
+}
+
+.dashlet .detail-list-item .person
+{
+   padding-left: 54px;
+}
+
+.dashlet .detail-list-item .details2
+{
+   padding-left: 20px;
+}
+
+.dashlet .detail-list-item .user-status
+{
+   background-position: 0 1px;
+   background-repeat: no-repeat;
+   padding-left: 20px;
+}
+
+.yui-g.grid,
+.yui-gb.grid,
+.yui-gc.grid,
+.yui-gd.grid
+{
+   margin: 0 10px;
+}
+
+/* 3 column layout */
+
+.yui-gb.grid .column1,
+.yui-gb.grid .column3
+{
+   width: 24%;
+}
+
+.yui-gb.grid .column2
+{
+   width: 48%;
+}
+
+/* 4 column layout */
+
+.yui-g.grid .yui-g .yui-u
+{
+   width: 48%;
+}
+
+/* Twisters */
+
+.alfresco-twister
+{
+   cursor: pointer;
+   padding-left: 1em;
+}
+
+/* Filters */
+
+.tag
+{
+   white-space: nowrap;
+}
+
+.filter h2
+{
+   margin-top: 1em;
+}
+
+.filter ul
+{
+   padding: 0.5em 0 1em;
+}
+
+.filter li
+{
+   overflow-x: hidden;
+   padding: 4px 0px 3px 20px;
+}
+
+/* Calendar Template */
+
+#divCalendarContent
+{
+   border-left: 2px solid #EAEAEA;   
+   margin-left: 16em;
+}
+
+#divCalendarFilters
+{
+   width: 16em;
+}
+
+/* Document & Folder Details Pages */
+.document-details-comments,
+.folder-details-comments
+{
+   border-right: 1px solid #ccc;
+   padding-bottom: 20px;
+}
+
+/* Invite Task Form */
+.invite-task-title
+{
+   font-size: 108%;
+   margin-bottom: 1em;
+}
+
+.invite-task-title img
+{
+   vertical-align: -8px;
+   margin-right: 4px;
+}
+
+.invite-task-subtitle
+{
+   margin-left: 34px;
+}
+
+.invite-task-role
+{
+   margin-top: 1em;
+   margin-bottom: 1em;
+   margin-left: 34px;
+}
+
+.invite-task-priority
+{
+   text-align: right;
+}
+
+.invite-task-controls
+{
+   margin-top: 1em;
+}
+
+/* User Status */
+div.user-status
+{
+   background-image: url(../components/images/status-16.png);
+   background-position: 0 1px;
+   background-repeat: no-repeat;
+   padding-left: 20px;
+}
+
+div.user-status span
+{
+   color: #808080;
+}

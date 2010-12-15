@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template-instance>
+   <template-type>org/alfresco/fileplanreport</template-type>
+   <properties>
+      <pageFamily>documentlibrary</pageFamily>
+   </properties>
+   <components>
+      <component>
+         <region-id>fileplanreport</region-id>
+         <url>/components/fileplan/report</url>
+      </component>
+   </components>
+</template-instance>

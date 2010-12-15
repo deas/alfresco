@@ -1,0 +1,64 @@
+v0.5 to v0.6 Changes Implemented by Alfresco:
+
+1) CHANGE: CMIS Namespace
+
+Was: http://www.cmis.org/2008/05
+Now: http://docs.oasis-open.org/ns/cmis/core/200901
+
+2) CHANGE: Query Capability Enum
+
+Was: none, metadataonly, fulltextonly, both
+Now: none, metadataonly, fulltextonly, bothseparate, bothcombined
+
+3) REMOVED: FullText Capability
+
+4) ADDED: Changes and changesIncomplete Capability
+
+NOTE: Not defined in spec yet, waiting on Unified Search proposal
+
+5) CHANGED: Versions Supported
+
+Was: cmis:cmisVersionsSupported
+Now: cmis:cmisVersionSupported
+
+6) CHANGED: Service Document collection types
+
+Was: root-children, root-descendants, types-children, types-descendants
+Now: rootchildren, rootdescendants, typeschildren, typesdescendants
+
+7) ADDED: Package to Property Definition
+
+NOTE: Not defined in part 1 of spec.
+
+8) CHANGED: Base Type names
+
+Was: Document, Folder, Relationship, Policy
+Now: document, folder, relationship, policy
+
+9) CHANGED: Atom Link Types
+
+Was: cmis-parents, cmis-repository, cmis-children, cmis-descendants, cmis-allowableactions, cmis-allversions,
+     cmis-latestversion, cmis-relationships, cmis-type, cmis-source, cmis-target, cmis-stream, cmis-policies
+Now: parents, repository, children, descendants, allowableactions, allversions,
+     latestversion, relationships, type, source, target, stream, policies
+
+10) REMOVED: 'cmis-folderparent' Atom Link Type
+
+11) REMOVED: RESTful AtomPub bindings no longer accept Headers as arguments
+
+12) CHANGED: Property multi-value serialization
+
+Was: multiple property entries (indexed)
+Now: multiple value entries within property
+
+Note: Abdera CMIS Extension modified to take into account schema changes.
+      - CMISValue class added which supports several getters
+      - CMISProperty.getValue() now returns CMISValue instead of String
+      - CMISProperty.getNativeValue() returns appropriate Java object for property type
+      - CMISProperty.getValues() added which returns List<CMISValue>
+      - CMISProperty.getNativeValues() returns appropriate List of Java objects for property type
+      
+Internal Implementation Modifications...
+
+a) Version supported is now 0.6
+b) Rename getters from getRootType to getBaseType

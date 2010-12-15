@@ -1,0 +1,128 @@
+.search
+{
+   color: #000;
+   visibility: hidden;
+}
+
+.search .hidden
+{
+   display: none;
+}
+
+.search .title
+{
+   margin: 16px 10px 4px;
+   font-size: 146.5%;
+   font-weight: bold;
+   color: #515D6B;
+   padding-bottom: 0.5em;
+}
+
+.search .topmargin
+{
+   margin-top: 12px;
+}
+
+.search .alignright
+{
+   text-align: right;
+}
+
+.search .right-button
+{
+   float: right;
+}
+
+.search .yui-nav
+{
+   border-color: #AAAAAA !important;
+}
+
+.search .yui-navset .yui-content
+{
+   border-color: #808080;
+   margin: 0 -10px;
+   background-color: #DDDDDD;
+   padding: 10px 20px 14px;
+   line-height: 2em;
+}
+
+.search .yui-navset .yui-nav .selected a,
+.search .yui-navset .yui-nav .selected a em,
+.search .yui-navset .yui-nav .selected a:hover,
+.search .yui-navset .yui-nav .selected a:visited
+{
+   background: transparent;
+   border-color: #808080 !important;
+   background-color: #AAAAAA !important;
+}
+
+.yui-skin-default .yui-dt th,
+.yui-skin-default .yui-dt td
+{
+   border-style: none !important;
+}
+
+.yui-skin-default .yui-dt-liner
+{
+   padding: 2px 6px !important;
+}
+
+.search textarea
+{
+   width: 60em;
+   height: 4em;
+   border: 1px solid #AAAAAA;
+}
+
+.search .query
+{
+   height: 5em;
+}
+
+.search .header
+{
+   font-weight: bold;
+   font-size: 108%;
+}
+
+.search .terms
+{
+}
+
+.search .insertLabel
+{
+   vertical-align: 15%;
+}
+
+.search .insertDate
+{
+   vertical-align: 15%;
+   padding-left: 2em;
+}
+
+.search .execute-search
+{
+   border-top: 1px solid #AAAAAA;
+   margin-top: 8px;
+   padding-top: 12px;
+}
+
+.search .datepicker
+{
+   display: none; 
+   position: absolute; 
+   z-index: 1;
+   margin: -5em 0 0 20em;
+}
+
+.search .datepicker-icon
+{
+   cursor: pointer;
+}
+
+.search .yuimenubaritemlabel, 
+.search .yuimenuitemlabel
+{
+   color: #000 !important;
+}

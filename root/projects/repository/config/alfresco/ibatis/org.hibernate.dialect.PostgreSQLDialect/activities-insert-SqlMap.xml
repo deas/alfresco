@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alfresco.activities">
+
+   <insert id="insert_activity_feedcontrol" parameterClass="FeedControl">
+      
+      <selectKey keyProperty="id" resultClass="long">
+         select nextVal('alf_activity_feed_control_seq')
+      </selectKey>
+      
+      <include refid="alfresco.activities.insert_ActivityFeedControl_Sequence"/>
+      
+   </insert>
+   
+   <insert id="insert_activity_feed" parameterClass="ActivityFeed">
+      
+      <selectKey keyProperty="id" resultClass="long">
+         select nextVal('alf_activity_feed_seq')
+      </selectKey>
+      
+      <include refid="alfresco.activities.insert_ActivityFeed_Sequence"/>
+      
+   </insert>
+   
+   <insert id="insert_activity_post" parameterClass="ActivityPost">
+      
+      <selectKey keyProperty="id" resultClass="long">
+         select nextVal('alf_activity_post_seq')
+      </selectKey>
+      
+      <include refid="alfresco.activities.insert_ActivityPost_Sequence"/>
+      
+   </insert>
+   
+</sqlMap>

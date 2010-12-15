@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Records File upload</shortname>
+  <description>Records Management File upload component that decides if flash or html upload should be used</description>
+  <url>/components/upload/dod5015/file-upload</url>
+</webscript>

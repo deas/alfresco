@@ -1,0 +1,12 @@
+﻿<assembly xmlns="urn:schemas-microsoft-com:asm.v1" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" manifestVersion="1.0">
+  <assemblyIdentity name="Alfresco2007.dll" version="1.0.0.0" />
+  <asmv2:entryPoint name="Startup" dependencyName="dependency0">
+    <asmv2:clrClassInvocation class="Alfresco2007.ThisAddIn" />
+  </asmv2:entryPoint>
+  <asmv2:dependency asmv2:name="dependency0">
+    <asmv2:dependentAssembly>
+      <assemblyIdentity name="Alfresco2007" version="1.0.0.0" />
+    </asmv2:dependentAssembly>
+    <asmv2:installFrom codebase="Alfresco2007.dll" />
+  </asmv2:dependency>
+</assembly>

@@ -1,0 +1,41 @@
+<webscript>
+  <shortname>CMIS AtomPub TCK</shortname>
+  <description>
+  <![CDATA[
+  Execute TCK Tests
+  ]]>
+  </description>
+  
+  <url>/cmis/test?url={serviceUrl}&amp;user={user?}&amp;validate={validate?}&amp;trace={trace?}&amp;tests={tests?}</url>
+
+  <format default="text"/>
+  <args>
+    <arg>
+        <shortname>url</shortname>
+        <description>url of the AtomPub service document of the repository to test</description>
+    </arg>
+    <arg>
+        <shortname>user</shortname>
+        <description>username/password for authentication (HTTP BASIC Authentication)</description>
+    </arg>
+    <arg>
+        <shortname>validate</shortname>
+        <description>if true, validate repository responses against CMIS XSDs</description>
+        <default>false</default>
+    </arg>
+    <arg>
+        <shortname>trace</shortname>
+        <description>if true, trace request and response bodies</description>
+        <default>false</default>
+    </arg>
+    <arg>
+        <shortname>tests</shortname>
+        <description>names of tests to excecute (use * in test name for wildcard)</description>
+        <default>*</default>
+    </arg>
+  </args>
+  
+  <authentication>none</authentication>
+  <family>CMIS</family>
+  <lifecycle>public_api</lifecycle>
+</webscript>

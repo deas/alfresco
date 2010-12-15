@@ -1,0 +1,328 @@
+/* FormUI Component */
+
+.form-container fieldset
+{
+   border: 1px solid #aaaaaa;
+   padding: 1.2em 0 0.5em 1.5em;
+   margin-bottom: 1em;
+}
+
+.form-container legend
+{
+   font-size: 116%;
+   color: #333333;
+   padding: 0 0.4em;
+}
+
+.form-container label
+{
+   clear: both;
+   display: block;
+}
+
+.form-container label.checkbox
+{
+   clear: both;
+   display: inline;
+   margin-left: 0.2em;
+   vertical-align: top;
+}
+
+.form-container input
+{
+   clear: both;
+   width: 30em;
+}
+
+.form-container input[type="checkbox"] 
+{
+   width: auto;
+}
+
+.form-container input[type="button"]
+{
+   width: auto;
+}
+
+.form-container input[type="submit"]
+{
+   width: auto;
+}
+
+.form-container textarea
+{
+   width: 30em;
+}
+
+.form-container select
+{
+   width: auto;
+}
+
+.form-container .number
+{
+   width: 8em;
+}
+
+.form-container .form-field
+{
+   margin: 0 0 1em 0;
+}
+
+.form-container .debug
+{
+   border: 1px solid #ccc;
+   background-color: #efefef;
+   padding: 0.5em;
+   margin-bottom: 0.5em;
+}
+
+.form-container .missing-options
+{
+   font-style: italic;
+   margin: 0.6em 0 1em 0;
+}
+
+.form-container .form-fields
+{
+   padding-bottom: 1em;
+   border-bottom: 1px dashed #c2c2c2;
+}
+
+.form-container .form-fields .suggested-actions .yui-button .first-child
+{
+   background: url(images/suggested-action-16.png) no-repeat scroll 12px 4px transparent;
+   padding-left: 22px;
+}
+
+.form-container .form-buttons
+{
+   padding-top: 1em;
+}
+
+.form-container .mandatory-indicator
+{
+   color: green;
+   margin-left: 0.4em;
+   margin-right: 0.4em;
+}
+
+.form-container .incomplete-warning
+{
+   margin-left: -26px;
+}
+
+.form-container .incomplete-warning img
+{
+   margin-right: 6px;
+   vertical-align: -2px;
+}
+
+.form-container .help-icon
+{
+   margin-left: 0.4em;
+   position: absolute;
+}
+
+.form-container .help-icon img
+{
+   vertical-align: -6px;
+}
+
+.form-container .help-text
+{
+   margin-top: 0.4em;
+   padding: 0.6em;
+   width: 37.5em;
+   background-color: #ffffcc;
+   border: 1px solid #cacaca;
+   display: none;
+   font-size: 77%;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+}
+   
+.form-container .viewmode-field
+{
+   margin-bottom: 0.7em;
+}
+
+.form-container .viewmode-label
+{
+   color: #606060;
+   margin-right: 0.4em;
+}
+
+.form-container .viewmode-value
+{
+   color: #333333;
+}
+
+.form-container .invalid
+{
+   background-color: #ff6666;
+}
+
+.form-container .error
+{
+   color: #ff6666;
+}
+
+.form-container .viewmode-field .current-values div
+{
+   padding: 0.5em;
+   display: inline;
+}
+
+.form-container .viewmode-field .current-values img
+{
+   position: relative;
+   top: 3px;
+}
+
+/* Object finder related classes */
+
+.form-container .object-finder
+{
+   margin-bottom: 1.3em;
+}
+
+/* Date picker related classes */
+
+.form-container .datepicker
+{ 
+   display: none; 
+   position: absolute; 
+   z-index: 1;
+   margin-left: 1.5em;
+} 
+
+.form-container .datepicker-icon
+{
+   vertical-align: -0.3em;
+   margin: 0 0.4em;
+}
+
+.form-container .date-entry
+{
+   width: 6em;
+   margin-bottom: 0.1em;
+}
+
+.form-container .time-entry
+{
+   width: 3em;
+   margin-bottom: 0.1em;
+}
+
+.form-container .format-info
+{
+   margin-bottom: 0;
+}
+
+.form-container .date-format
+{
+   font-size: 0.7em;
+   color: #aaa;
+   margin-left: 0.2em;
+}
+
+.form-container .time-format
+{
+   font-size: 0.7em;
+   color: #aaa;
+   margin-left: 6.2em;
+}
+
+.form-container .time-format-disabled
+{
+   font-size: 0.7em;
+   color: #aaa;
+   margin-left: 3em;
+}
+
+.yui-calcontainer .title
+{
+   position: relative;
+}
+
+/* Period control related classes */
+
+.form-container .period
+{
+   margin-top: 0.6em;
+}
+
+.form-container .period select
+{
+   width: auto;
+   margin-left: 0.3em;
+   margin-right: 0.5em;
+}
+
+.form-container .period input
+{
+   width: 60px;
+   margin-left: 0.3em;
+}
+
+/* Set appearance classes */
+
+.set
+{
+   padding-bottom: 0.5em;
+}
+
+.set-panel
+{
+   margin-bottom: 0.6em;
+}
+
+.set-panel-heading
+{
+   background-color: #eeeeee;
+   color: #515d6b;
+   padding: 0.3em 0.2em;
+}
+
+.set-panel-body
+{
+   margin-top: 0.8em;
+   padding-left: 0.2em;
+}
+
+.set-bordered-panel
+{
+   margin-bottom: 0.8em;
+}
+
+.set-bordered-panel-heading
+{
+   background-color: #eeeeee;
+   color: #515d6b;
+   padding: 0.3em 0.6em;
+}
+
+.set-bordered-panel-body
+{
+   padding: 1em 0.2em 0 0.6em;
+   border: 1px solid #eeeeee;
+}
+
+.set-title
+{
+   font-size: 116%;
+   border-bottom: 1px solid #eeeeee;
+   padding-bottom: 0.1em;
+   margin-bottom: 0.6em;
+   margin-top: 0.2em;
+}
+
+.set-whitespace
+{
+   padding: 0.4em;
+}
+
+.yui-calendar div.calheader a.calnav:hover {
+   color:#000000;
+}

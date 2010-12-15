@@ -1,0 +1,113 @@
+.disposition
+{
+   padding: 1.5em 0 1.5em;
+   border-bottom: 1px dashed #CCCCCC;   
+}
+
+.disposition .heading
+{
+   color:#333333;
+   font-size:131%;
+   padding-bottom:1em;
+}
+
+.disposition .header
+{
+   height:2.5em;
+   line-height:2.5em;   
+}
+
+.disposition .header .title
+{
+   color:#333333;
+   float:left;
+   font-size:112%;
+}
+
+.disposition .header .buttons
+{
+   float: right;
+   padding-top:0.2em;
+}
+
+.disposition .actions,
+.disposition .properties
+{
+   clear: both;
+}
+
+.disposition .field
+{
+   margin-bottom:1em;   
+}
+
+.disposition .field .label
+{
+   color:#606060;
+   margin-right:0.4em;
+   font-weight:normal;
+}
+
+.disposition .field .value
+{
+   color:#333333;
+}
+
+.disposition .actions
+{
+}
+
+.disposition .actions .action
+{
+   clear: both;
+   margin-bottom: 0.3em;
+   min-height: 2.5em;
+}
+
+.disposition .actions .action .no,
+.disposition .actions .action .name,
+.disposition .actions .action .more
+{
+   line-height: 2.5em;
+   height: 2.5em;
+}
+
+.disposition .actions .action .no
+{
+   position: absolute;
+   margin-left: 0.5em;
+   text-align: center;
+   width: 2em;
+   color:#FFFFFF;
+   background-image:url(../images/green-step-circle.png);
+   background-position:center center;
+   background-repeat:no-repeat;
+}
+
+.disposition .actions .action .name
+{
+   position: absolute;
+   padding-left: 2.75em;
+   color:#008000;
+}
+
+.disposition .actions .action .more
+{
+   float: right;
+   margin-right:0.75em;
+}
+
+.disposition .actions .action .more.collapsed
+{
+
+}
+
+
+.disposition .actions .action .description
+{
+   background-color: #FFFFFF;
+   min-height: 2em;
+   padding-left:2.75em;
+   padding-top:0.75em;
+   clear: both;
+}

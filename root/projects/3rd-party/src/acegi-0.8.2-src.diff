@@ -1,0 +1,21 @@
+--- net/sf/acegisecurity/intercept/AbstractSecurityInterceptor.java	Wed Apr 20 15:04:28 2005
++++ net/sf/acegisecurity/intercept/AbstractSecurityInterceptor.java	Fri Jun 16 16:28:32 2006
+@@ -333,14 +333,14 @@
+ 
+         return returnedObject;
+     }
+ 
+     protected InterceptorStatusToken beforeInvocation(Object object) {
+-        Assert.notNull(object, "Object was null");
+-        Assert.isTrue(getSecureObjectClass().isAssignableFrom(object.getClass()), "Security invocation attempted for object " + object
+-                    + " but AbstractSecurityInterceptor only configured to support secure objects of type: "
+-                    + getSecureObjectClass());
++        //Assert.notNull(object, "Object was null");
++        //Assert.isTrue(getSecureObjectClass().isAssignableFrom(object.getClass()), "Security invocation attempted for object " + object
++        //            + " but AbstractSecurityInterceptor only configured to support secure objects of type: "
++        //            + getSecureObjectClass());
+ 
+         ConfigAttributeDefinition attr = this.obtainObjectDefinitionSource()
+                 .getAttributes(object);
+ 
+         if (attr != null) {

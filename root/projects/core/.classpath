@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="source/java"/>
+	<classpathentry exported="true" kind="lib" path="source/test-resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-logging-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/quartz-1.8.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/dom4j-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/guessencoding-1.0.jar" sourcepath="/3rd Party/src/guessencoding-1.0-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jta.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jug-asl-2.0.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/ibatis-2.3.4.726-patched.jar" sourcepath="/3rd Party/src/ibatis-2.3.4.726-patched-src.zip"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/j2ee/servlet.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/jboss/jboss-vfs-2.1.0.GA.jar" sourcepath="/3rd Party/lib/jboss/jboss-vfs-2.1.0.GA-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/hibernate-3.2.6-patched.jar" sourcepath="/3rd Party/src/hibernate-3.2.6-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jaxb-xjc-2.1.7.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/abdera/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/jaxb-impl-2.1.7.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-core-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.beans-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.orm-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.transaction-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.0.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

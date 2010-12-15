@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="11" height="28"
+	styleName="mainArea">
+	
+	<mx:Style source="tabControl.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			/** Indicates whether the divider should be shown or not */
+			[Inspectable]
+			private var _showDivider:Boolean = true;
+			
+			/**
+			 * Setter for showDivider property
+			 */
+			public function set showDivider(value:Boolean):void
+			{
+				this._showDivider = value;
+			}
+			
+			/**
+			 * Getter for showDivider property
+			 */
+			public function get showDivider():Boolean
+			{
+				return this._showDivider;
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:states>
+	
+		<mx:State name="highlightedLeft">
+			<mx:SetProperty target="{this}" name="styleName" value="highlightedLeft"/>
+			<mx:SetProperty target="{divider}" name="visible" value="false"/>
+		</mx:State>
+		
+		<mx:State name="highlightedRight">
+			<mx:SetProperty target="{this}" name="styleName" value="highlightedRight"/>
+			<mx:SetProperty target="{divider}" name="visible" value="false"/>			
+		</mx:State>
+		
+	</mx:states>
+	
+	<mx:VBox id="divider" verticalAlign="middle" horizontalAlign="center" width="100%">
+		<mx:Spacer height="6"/>
+		<mx:VRule height="16" styleName="tabSeparator" visible="{_showDivider}"/>
+		<mx:Spacer height="6"/>
+	</mx:VBox>
+	
+</mx:Canvas>

@@ -1,0 +1,7 @@
+<webscript>
+   <shortname>Create RM Site</shortname>
+   <description>
+      Will create a new RM site in the repo and create the RM preset in the web-tier.
+   </description>
+   <url>/utils/create-rmsite?shortname={shortname}</url>
+</webscript>

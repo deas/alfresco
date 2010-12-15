@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CMIS-TCK-Tests" default="jar" basedir=".">
+	<property file="build.properties" />
+
+	<property name="source.path" value="${basedir}/source" />
+	<property name="source.wsdl" value="${source.path}/wsdl" />
+	<property name="source.generated" value="${source.path}/generated" />
+
+	<property name="build.path" value="${basedir}/build" />
+	<property name="classes.path" value="${build.path}/classes" />
+	<property name="lib.path" value="${basedir}/lib" />
+	<property name="config.path" value="${basedir}/config" />
+	<property name="build.config.path" value="${build.path}/config" />
+	<property name="destination.path" value="${build.path}/dist" />
+
+	<path id="source.path.ref">
+		<dirset dir="${source.path}">
+			<include name="java/**/*.*" />
+			<include name="generated/**/*.*" />
+		</dirset>
+	</path>
+
+	<path id="classpath.ref">
+		<fileset dir="${lib.path}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="build" depends="clear">
+		<mkdir dir="${build.path}" />
+		<mkdir dir="${classes.path}" />
+		<mkdir dir="${build.config.path}" />
+		<copy todir="${build.config.path}">
+			<fileset dir="${config.path}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+
+		<javac destdir="${classes.path}" classpathref="classpath.ref" srcdir="${source.path}">
+			<src refid="source.path.ref" />
+		</javac>
+
+		<copy todir="${classes.path}" file="${source.path}/java/log4j.properties" />
+	</target>
+
+	<target name="clear">
+		<delete failonerror="false" includeemptydirs="true" dir="${classes.path}">
+			<include name="**/*.*" />
+		</delete>
+		<delete failonerror="false" includeemptydirs="true" dir="${destination.path}">
+			<include name="**/*.*" />
+		</delete>
+	</target>
+
+	<!-- ================================================================================================ -->
+	<!-- ======================================= Help target ============================================ -->
+
+	<target name="help">
+		<echo>
+			Targets:
+			help - prints current help;
+			clear - clears test classes;
+			build - builds test application;
+		    jar - packs all classes, configs, libraries etc resources to single self executable jar.
+
+			runTests - runs automatic conformance analyzing;
+
+			runCmisRepositoryServiceClient, runCmisDiscoveryServiceClient,
+			runCmisMultifilingServiceClient, runCmisNavigationServiceClient, runCmisObjectServiceClient,
+			runCmisVersioningServiceClient - CMIS services test clients run targets;
+		</echo>
+	</target>
+
+	<!-- ================================================================================================ -->
+	<!-- ================================= Tests run target ===================================== -->
+
+	<target name="runTests">
+		<java classname="org.alfresco.cmis.test.ws.CmisWebServiceTestSuite">
+			<classpath>
+				<path location="${classes.path}" />
+				<path location="${build.config.path}" />
+				<path refid="classpath.ref" />
+			</classpath>
+		</java>
+	</target>
+
+	<!-- ================================================================================================ -->
+	<!-- ================================= CMIS services run targets ==================================== -->
+
+	<target name="runCmisRepositoryServiceClient">
+		<java classname="org.alfresco.cmis.test.ws.CmisRepositoryServiceClient">
+			<classpath>
+				<path location="${classes.path}" />
+				<path location="${build.config.path}" />
+				<path refid="classpath.ref" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="runCmisDiscoveryServiceClient">
+		<java classname="org.alfresco.cmis.test.ws.CmisDiscoveryServiceClient">
+			<classpath>
+				<path location="${classes.path}" />
+				<path location="${build.config.path}" />
+				<path refid="classpath.ref" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="runCmisMultifilingServiceClient">
+		<java classname="org.alfresco.cmis.test.ws.CmisMultifilingServiceClient">
+			<classpath>
+				<path location="${classes.path}" />
+				<path location="${build.config.path}" />
+				<path refid="classpath.ref" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="runCmisNavigationServiceClient">
+		<java classname="org.alfresco.cmis.test.ws.CmisNavigationServiceClient">
+			<classpath>
+				<path location="${classes.path}" />
+				<path location="${build.config.path}" />
+				<path refid="classpath.ref" />
+			</classpath>
+		</java>
+	</target>
+	
+	<target name="runCmisObjectServiceClient">
+		<java classname="org.alfresco.cmis.test.ws.CmisObjectServiceClient">
+			<classpath>
+				<path location="${classes.path}" />
+				<path location="${build.config.path}" />
+				<path refid="classpath.ref" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="runCmisVersioningServiceClient">
+		<java classname="org.alfresco.cmis.test.ws.CmisVersioningServiceClient">
+			<classpath>
+				<path location="${classes.path}" />
+				<path location="${build.config.path}" />
+				<path refid="classpath.ref" />
+			</classpath>
+		</java>
+	</target>
+
+	<taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" onerror="report">
+		<classpath refid="classpath.ref" />
+	</taskdef>
+
+	<target name="jar" depends="build">
+		<mkdir dir="${destination.path}" />
+
+		<jar jarfile="${destination.path}/CMIS-Tests.jar" compress="true">
+			<fileset dir="${classes.path}">
+				<include name="**/*.*" />
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="org.alfresco.cmis.test.ws.CmisWebServiceTestSuite" />
+			</manifest>
+		</jar>
+
+		<one-jar destfile="${destination.path}/CMIS-TCK-Tests.jar">
+			<main jar="${destination.path}/CMIS-Tests.jar" />
+			<lib>
+				<fileset dir="${lib.path}" includes="*.jar" />
+			</lib>
+			<fileset dir="${build.config.path}">
+				<include name="**/*.*" />
+			</fileset>
+			<fileset dir="${classes.path}">
+				<include name="log4j.properties" />
+			</fileset>
+		</one-jar>
+
+		<delete file="${destination.path}/CMIS-Tests.jar" failonerror="false" />
+	</target>
+
+	<taskdef name="wsdl2java" classname="org.apache.axis.tools.ant.wsdl.Wsdl2javaAntTask">
+		<classpath refid="classpath.ref" />
+	</taskdef>
+
+	<target name="generate-stubs">
+		<wsdl2java url="${source.wsdl}/CMISWS-Service.wsdl" output="${source.generated}" nowrapped="true">
+			<mapping namespace="http://docs.oasis-open.org/ns/cmis/ws/200908/" package="org.alfresco.repo.cmis.ws" />
+			<mapping namespace="http://docs.oasis-open.org/ns/cmis/messaging/200908/" package="org.alfresco.repo.cmis.ws" />
+			<mapping namespace="http://docs.oasis-open.org/ns/cmis/core/200908/" package="org.alfresco.repo.cmis.ws" />
+		</wsdl2java>
+	</target>
+
+</project>

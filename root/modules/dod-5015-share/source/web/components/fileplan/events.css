@@ -1,0 +1,129 @@
+.events
+{
+   padding: 1.5em 0 1.5em;
+   border-right: 1px solid #CCCCCC;
+}
+
+.events .hidden
+{
+   display: none;
+}
+
+.events .heading
+{
+   color: #333333;
+   font-size: 131%;
+   padding-bottom: 1em;
+}
+
+.events .header
+{
+   height: 2.5em;
+   line-height: 2.5em;
+   color: #333333;
+   font-size: 112%;
+}
+
+.events .event
+{
+   clear: both;
+   margin-bottom: 0.3em;
+   min-height: 7.5em;
+}
+
+.events .event .icons,
+.events .event .info,
+.events .event .buttons
+{
+   line-height: 2.5em;
+   height: 2.5em;
+}
+
+.events .event .icons
+{
+   position: absolute;
+   text-align: center;
+   width: 2em;
+   background-position: center center;
+   background-repeat: no-repeat;
+}
+
+.events .event.completed .icons
+{
+   background-image: url(../images/complete-16.png);
+}
+
+.events .event .info
+{
+   position: absolute;
+   padding-left: 2.5em;
+}
+
+.events .event .info .field
+{
+   margin-bottom: 0.5em;
+   line-height: 1em;
+}
+
+.events .event .info .field.name
+{
+   line-height: 2.5em;
+   margin-bottom: 0;
+}
+
+.events .event .info .field .label
+{
+   color: #606060;
+   margin-right: 0.4em;
+   font-weight: normal;
+}
+
+.events .event .info .field .value
+{
+   color: #333333;
+}
+
+.events .event .buttons
+{
+   float: right;
+   margin-right: 0.75em;
+   padding-top: 0.2em;
+}
+
+.events.complete-event-panel
+{
+   width: 38em;
+   padding: 0;
+}
+
+.events.complete-event-panel .section
+{
+   padding-bottom:0.5em;
+   padding-left:1em;
+   padding-top:0.5em;
+}
+
+#complete-event-panel .bd div.section.yui-g div.yui-u.first
+{
+   text-align: left;
+}
+
+#complete-event-panel .bd div.section.yui-g div.yui-u
+{
+   padding: 0;
+}
+
+#complete-event-panel input[type="text"].completedAtTime
+{
+   width: 5em;
+}
+
+#complete-event-panel .completedAtPicker
+{
+   background-image:url(../calendar/images/calendar-16-2.png);
+   background-position:center center;
+   background-repeat:no-repeat;
+   margin-left:0.5em;
+   padding:0 0.5em;
+   cursor: pointer;
+}

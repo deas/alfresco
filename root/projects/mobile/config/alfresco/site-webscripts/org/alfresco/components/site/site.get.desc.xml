@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>site</shortname>
+  <description>Site: View Component</description>
+  <url>/components/site/site</url>
+</webscript>

@@ -1,0 +1,151 @@
+/* Style YUI components */
+
+/* Add padding and make sure left: float doesn't place them in a row */
+.customise-pages .currentPages,
+.customise-pages .pages,
+{
+   padding-top: 1em;
+   padding-bottom: 1em;
+   clear: both;
+}
+
+/* Make sure left: float doesn't place them in a row */
+.customise-pages hr
+{
+   clear: both;
+}
+
+/* Center the contents in the section */
+.customise-pages .currentPages div,
+.customise-pages .pages div
+{
+   /*text-align: center;*/
+}
+
+/* Marginise and align text and buttons */
+.customise-pages .text,
+.customise-pages .buttons
+{
+   width: 52em;
+   margin-left: auto;
+   margin-right: auto;
+   padding-top: 1em;
+   clear: both;
+}
+
+/* Left align text */
+.customise-pages .text
+{
+   text-align: left;
+}
+
+.customise-pages a.closeLink
+{
+   float:right;
+   margin-right:1em;
+   margin-top:1em;
+}
+
+/* Center buttons */
+.customise-pages .buttons
+{
+   padding-bottom: 1em;
+   text-align: center;
+}
+
+/* Style the lists containing dashlets */
+.customise-pages ul
+{
+   list-style: none;
+   padding: 1em 8em;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+/* Set width and height of the pages list */
+.customise-pages .pages ul
+{
+   height: 20em;
+   overflow-y: auto;
+   overflow-x: hidden;
+   position:relative; /* IE will take the YIU buttons out of the flow otherwise */
+   margin-bottom: 2em;
+}
+
+/* Set the Page width and let them flow in the list */
+.customise-pages .currentPages ul li
+{
+   background-color: #F2F8F0;
+   min-width: 8.5em;
+   float: left;
+   text-align: center;
+   margin: 0.5em;
+   padding-bottom:0.5em;
+}
+
+.customise-pages .currentPages ul li .pageTitle,
+.customise-pages .currentPages ul li .pageIcon,
+.customise-pages .currentPages ul li .pageActions
+{
+   padding-top: 0.4em;
+}
+
+.customise-pages .currentPages ul li .pageTitle
+{
+   margin-left: 0.5em;
+   margin-right: 0.5em;
+}
+
+.customise-pages .pages ul li
+{
+   clear: both;
+   min-height: 5em;
+   text-align: left;
+   border: 1px dashed #C3C3C3;
+   background-color: #F7F7F7;
+   margin: 0.5em;
+}
+
+.customise-pages .currentPages ul li.empty,
+.customise-pages .pages ul li.empty
+{
+   border: 1px dashed #C3C3C3;
+   text-align: center;
+   background-color: #FFFFFF;
+   padding: 1em;
+   line-height: 5em;
+}
+
+.customise-pages .currentPages ul li.empty
+{
+   min-width: 8.5em;
+}
+
+.customise-pages .currentPages .pageIcon img
+{
+   vertical-align:middle;
+}
+
+.customise-pages .pages .pageIcon
+{
+   float: left;
+   margin: 0.6em;
+}
+
+.customise-pages .pages .pageBox
+{
+   margin-top:1em;
+   padding-left:2em;
+   width: 35em;
+}
+
+.customise-pages .pages ul li .pageBox div
+{
+   text-align: left;    
+}
+
+.customise-pages .pages ul li .pageActions
+{
+   float: right;
+   margin: 1.5em;
+}

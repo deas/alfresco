@@ -1,0 +1,40 @@
+div.preferences
+{
+   margin: 0 1em;
+   padding: 1em 0;
+   width: 50%;
+}
+
+div.preferences form fieldset
+{
+   border: 1px solid;
+   border-radius: 1em;
+   -moz-border-radius: 1em;
+   padding: 1em;
+}
+
+div.preferences form fieldset legend
+{
+   padding: 0.5em;
+}
+
+div.banner
+{
+   border: 1px solid;
+   border-radius: 1em;
+   -moz-border-radius: 1em;
+   margin: 2em;
+   padding: 4em;
+   text-align: center;
+}
+
+div.small-banner
+{
+   border: 1px solid;
+   border-radius: 1em;
+   -moz-border-radius: 1em;
+   margin: 2em 1em 1em;
+   padding: 2em 0;
+   text-align: center;
+   width: 50%;
+}

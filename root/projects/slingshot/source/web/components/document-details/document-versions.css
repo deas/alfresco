@@ -1,0 +1,104 @@
+.document-versions
+{
+	padding: 0em 1em 0em 0em;
+}
+
+.document-versions .heading
+{
+   color: #333333;
+   font-size: 131%;
+   padding-top: 1em;
+}
+
+.document-versions .info
+{
+   line-height: 1.5em;
+   display: block;
+}
+
+.document-versions .info.more
+{
+   cursor: pointer;
+   background-repeat:no-repeat;
+   background-position:left 0.4em;
+   padding-left: 1.2em;
+}
+
+.document-versions .info.more.expanded
+{
+   background-image:url(../images/expanded.png);
+}
+
+.document-versions .info.more.collapsed
+{
+   background-image:url(../images/collapsed.png);
+}
+
+.document-versions .moreInfo
+{
+   padding-left: 1.2em;
+}
+
+.document-versions .info-section
+{
+   border-bottom: 1px solid #c2c2c2;
+   padding: 0px 0.5em 1.5em 0.5em;
+}
+
+.document-versions .info-sub-section
+{
+   padding-bottom: 1.2em;
+   padding-top: 1.2em;
+}
+
+.document-versions .meta-heading
+{
+   font-weight:bold;
+   color: #333333;
+}
+
+.document-versions .meta-section-label,
+.document-versions .meta-label
+{
+   font-size: 100%;
+   padding-right: 0.3em;
+}
+
+.document-versions .meta-section-label
+{
+}
+
+.document-versions .meta-value
+{
+   font-size: 100%;
+   color: #333333;
+}
+
+.document-versions .actions
+{
+   line-height:16px;
+   /* padding:0.3em 0 1em 0; */
+   padding: 0.6em 0.3em 1.2em;
+}
+
+.document-versions .actions span
+{
+   padding: 1em;      
+}
+
+.document-versions .actions span a
+{
+   background-repeat: no-repeat;
+   background-position: left;
+   padding-left: 24px;
+}
+
+.document-versions .actions span a.download
+{
+   background-image: url(../documentlibrary/images/download-16.png);
+}
+
+.document-versions .actions span a.revert
+{
+   background-image: url(../images/revert-16.png);
+}

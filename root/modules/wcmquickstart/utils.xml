@@ -1,0 +1,59 @@
+<project name="utils">
+
+    <macrodef name="clean" description="Cleans the given project">
+      <attribute name="projectdir" />
+      <sequential>
+         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.dist}" />
+         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.lib}" />
+         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.assemble}" />
+         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
+         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.docs}" />
+      </sequential>
+    </macrodef>
+
+    <macrodef name="compile-java" description="Compiles Java source files in the given project">
+      <attribute name="projectdir" />
+      <attribute name="compileExcludes" default="" />
+      <sequential>
+         <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+         <javac destdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" fork="true"
+                memoryMaximumSize="${mem.size.max}" deprecation="${javac.deprecation}" 
+                debug="${javac.debug}"  target="${javac.target}" source="${javac.source}" encoding="${javac.encoding}"
+                excludes="@{compileExcludes}" >
+            <src path="@{projectdir}/${dir.name.source}/${dir.name.java}" />
+            
+			<classpath>
+				<path refid="classpath.compile"/>
+			</classpath>
+			
+            <!-- To run javac with Xlint:unchecked, uncomment the line below  -->
+            <!-- <compilerarg value="-Xlint:unchecked"/> -->
+
+         </javac>
+         
+         <copy todir="@{projectdir}/${dir.name.build}/${dir.name.classes}">
+            <fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
+               <patternset>
+                  <exclude name="**/*.java" />
+                  <exclude name="log4j.properties" />
+               </patternset>
+            </fileset>
+         </copy>
+      </sequential>
+   </macrodef>
+   
+   <macrodef name="install-amp" description="Installs an AMP file into the given WAR file">
+      <attribute name="ampfile" />
+      <attribute name="warfile" />
+      <sequential>
+         <java dir="." fork="true" jar="alfresco/lib/alfresco-mmt.jar">
+            <classpath>
+				<pathelement location="alfresco/lib/alfresco-mmt.jar"/>
+			</classpath>
+            <arg line="install @{ampfile} @{warfile} -force -verbose -nobackup"/>
+         </java>
+      </sequential>
+   </macrodef>
+   
+</project>

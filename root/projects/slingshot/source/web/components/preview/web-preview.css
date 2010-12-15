@@ -1,0 +1,57 @@
+div.web-preview.shadow
+{
+   margin-left: -10px;
+   border-right: 1px solid #CCCCCC;
+   border-bottom: 1px solid #CCCCCC;
+}
+
+div.web-preview.shadow span,
+div.web-preview.shadow div
+{
+   color: #000000;
+}
+
+div.web-preview.shadow .hd
+{
+   background-color: #FAFAFA;       
+   line-height: 40px;
+}                                     
+
+div.web-preview.shadow img,
+div.web-preview.shadow span,
+div.web-preview.shadow input
+{
+   vertical-align: middle;
+}
+
+div.web-preview.shadow .bd
+{
+   text-align: center;
+}
+
+div.web-preview.shadow .bd .preview-swf
+{
+   background-color:#FAFAFA;
+   width: 100%;
+   height: 100px;
+}
+
+div.web-preview.shadow .bd .preview-swf div
+{
+   padding-top: 30px;
+}
+
+div.web-preview.shadow .bd .preview-swf.has-content
+{
+   height: 670px;
+}
+
+div.web-preview.shadow .bd .preview-swf.no-preview div
+{
+   padding-top: 200px;
+}
+
+div.web-preview.real.no-content
+{
+   visibility: hidden;
+}

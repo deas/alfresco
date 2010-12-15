@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE faces-config PUBLIC "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+                              "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+<faces-config>
+
+	<!-- Blog selection generator -->
+	<managed-bean>
+    
+    	<description>Bean that generates a blog selection list</description>
+      	<managed-bean-name>BlogSelectorGenerator</managed-bean-name>
+      	<managed-bean-class>org.alfresco.module.blogIntegration.ui.BlogSelectorGenerator</managed-bean-class>
+      	<managed-bean-scope>request</managed-bean-scope>
+      
+      	<managed-property>
+         	<property-name>blogIntegrationService</property-name>
+         	<value>#{BlogIntegrationService}</value>
+      	</managed-property>
+  	
+  	</managed-bean>
+
+</faces-config>

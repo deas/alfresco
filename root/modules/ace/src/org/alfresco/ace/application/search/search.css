@@ -1,0 +1,22 @@
+/* CSS file for Search form */
+
+.search
+{
+   border-style:solid;
+   border-thickness:1;
+   border-color:#FFFFFF;
+   
+   border-skin: ClassReference("org.alfresco.ace.control.gradient.GlossGradientBorder");
+   fill-colors: #6B7680, #384654, #1a2c3c, #1a2c3c;   
+}
+
+.advancedSeachLink
+{
+	color:#FFFFFF;
+}
+
+.advancedSeachLinkRollOver
+{
+	color:#FFFFFF;
+	text-decoration:underline;
+}

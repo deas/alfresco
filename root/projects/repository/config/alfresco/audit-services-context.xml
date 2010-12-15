@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+    
+    <!-- Base audit service - non TX -->
+    
+    <bean id="auditService" class="org.alfresco.repo.audit.AuditServiceImpl">
+        <property name="auditComponent">
+            <ref bean="auditComponent"/>
+        </property>
+    </bean>
+    
+    <!-- Audit component -->
+    
+    <bean id="auditComponent" class="org.alfresco.repo.audit.AuditComponentImpl">
+        <property name="transactionService" ref="transactionService"/>
+        <property name="auditDAO" ref="auditDAO"/>
+        <property name="auditModelRegistry" ref="Audit"/>
+        <property name="propertyValueDAO" ref="propertyValueDAO"/>
+    </bean>
+    
+    <!-- Public service identifier -->
+    
+    <bean id="publicServiceIdentifier" class="org.alfresco.repo.audit.PublicServiceIdentifierImpl"/>
+    
+    <!--                           -->
+    <!-- Audit V3.2 implementation -->
+    <!--                           -->
+    
+    <!-- Data extractors -->
+    <bean id="auditModel.extractorRegistry" class="org.alfresco.util.registry.NamedObjectRegistry">
+        <property name="storageType" value="org.alfresco.repo.audit.extractor.DataExtractor" />
+    </bean>
+    <bean name="auditModel.extractor.simpleValue" class="org.alfresco.repo.audit.extractor.SimpleValueDataExtractor">
+        <property name="registry" ref="auditModel.extractorRegistry" />
+    </bean>
+    <bean name="auditModel.extractor.nullValue" class="org.alfresco.repo.audit.extractor.NullValueDataExtractor">
+        <property name="registry" ref="auditModel.extractorRegistry" />
+    </bean>
+    <bean name="auditModel.extractor.nodeName" class="org.alfresco.repo.audit.extractor.NodeNameDataExtractor">
+        <property name="registry" ref="auditModel.extractorRegistry" />
+        <property name="nodeService" ref="nodeService" />
+    </bean>
+    <bean name="auditModel.extractor.nodeType" class="org.alfresco.repo.audit.extractor.NodeTypeDataExtractor">
+        <property name="registry" ref="auditModel.extractorRegistry" />
+        <property name="nodeService" ref="nodeService" />
+    </bean>
+    
+    <!-- Data Generators -->
+    <bean id="auditModel.generatorRegistry" class="org.alfresco.util.registry.NamedObjectRegistry">
+        <property name="storageType" value="org.alfresco.repo.audit.generator.DataGenerator" />
+    </bean>
+    <bean name="auditModel.generator.time" class="org.alfresco.repo.audit.generator.SystemTimeDataGenerator">
+        <property name="registry" ref="auditModel.generatorRegistry" />
+    </bean>
+    <bean name="auditModel.generator.user" class="org.alfresco.repo.audit.generator.AuthenticatedUserDataGenerator">
+        <property name="registry" ref="auditModel.generatorRegistry" />
+    </bean>
+    <bean name="auditModel.generator.personFullName" class="org.alfresco.repo.audit.generator.AuthenticatedPersonDataGenerator">
+        <property name="registry" ref="auditModel.generatorRegistry" />
+        <property name="personService" ref="personService" />
+        <property name="nodeService" ref="nodeService" />
+    </bean>
+
+    <!-- Reference in the audit registry managed bean -->
+    <alias name="Audit" alias="auditModel.modelRegistry"/>
+      
+</beans>

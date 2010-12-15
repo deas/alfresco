@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template-instance>
+   <template-type>org/alfresco/create-content</template-type>
+   <properties>
+      <pageFamily>documentlibrary</pageFamily>
+      <container>documentLibrary</container>
+   </properties>
+   <components>
+      <!-- title: normal, portlet, repository & portlet+repository -->
+      <component>
+         <region-id>title</region-id>
+         <url>/components/title/collaboration-title</url>
+      </component>
+      <component>
+         <region-id>portlet-title</region-id>
+         <url>/components/title/portlet-collaboration-title</url>
+      </component>
+      <component>
+         <region-id>repo-title</region-id>
+         <url>/components/title/simple-title</url>
+         <properties>
+            <title>title.repository</title>
+            <subtitle>title.browser</subtitle>
+         </properties>
+      </component>
+      <component>
+         <region-id>portlet-repo-title</region-id>
+         <url>/components/title/simple-title</url>
+         <properties>
+            <title>title.repository</title>
+            <subtitle>title.browser</subtitle>
+         </properties>
+      </component>
+      <component>
+         <region-id>navigation</region-id>
+         <url>/components/navigation/collaboration-navigation</url>
+      </component>
+      <component>
+         <region-id>create-content-mgr</region-id>
+         <url>/components/create-content/create-content-mgr</url>
+      </component>
+      <component>
+         <region-id>create-content</region-id>
+         <url>/components/form?mimeType={mimeType}&amp;destination={destination}&amp;formId={formId}</url>
+         <properties>
+            <itemKind>type</itemKind>
+            <itemId>{itemId}</itemId>
+            <mode>create</mode>
+            <submitType>json</submitType>
+            <showCaption>true</showCaption>
+            <showCancelButton>true</showCancelButton>
+            <editInline>true</editInline>
+            <googleEditable>true</googleEditable>
+         </properties>
+      </component>
+   </components>
+</template-instance>

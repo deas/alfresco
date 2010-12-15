@@ -1,0 +1,55 @@
+<component>
+    <name>alfrescocustombuildsettings</name>
+    <show>0</show>
+    <preBuildActionList>
+        
+        <!-- ALFRESCO BUILD SYSTEM-->
+        <actionGroup>
+        <actionList>
+        <!-- AlfrescoDM build settings -->
+        <!-- NOTE: licenses directory should also include the licenses provided by BitRock -->
+
+        <setInstallerVariable name="alfresco_extensions_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/web-server/shared/classes" />
+        <setInstallerVariable name="alfresco_lib_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/web-server/lib" />
+        <setInstallerVariable name="alfresco_endorsed_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/web-server/endorsed" />
+        <setInstallerVariable name="alfresco_war_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/web-server/webapps" />
+        <setInstallerVariable name="alfresco_extras_source_directory" value="${alfresco_svn_rootdir.unix}/projects/installer" />
+        <setInstallerVariable name="alfresco_licenses_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/licenses" />
+        <setInstallerVariable name="project.readmeFile" value="${alfresco_svn_rootdir.unix}/installer/bitrock/README.txt" />
+        <setInstallerVariable name="alfresco_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock" />
+
+        <setInstallerVariable name="alfrescowcm_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble" />
+        <setInstallerVariable name="alfrescowcm_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock/alfrescowcm" />
+
+
+        <setInstallerVariable name="alfresco_mmt_source_file" value="${alfresco_svn_rootdir.unix}/build/assemble/commands/bin/alfresco-mmt.jar" />
+
+
+        <setInstallerVariable name="alfresco_commands_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/commands" />
+        <setInstallerVariable name="alfresco_amps_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/amps" />
+        <setInstallerVariable name="alfresco_sharepoint_source_file" value="${alfresco_amps_source_directory}/${alfresco_edition}-spp-${project.version}.amp" />
+        <setInstallerVariable name="alfresco_sharepoint_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock/alfrescosharepoint" />
+
+
+        <setInstallerVariable name="alfresco_quickr_source_file" value="${alfresco_amps_source_directory}/${alfresco_edition}-quickr-${project.version}.amp" />
+        <setInstallerVariable name="alfresco_quickr_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock/alfrescoquickr" />
+        <setInstallerVariable name="alfresco_rm_source_file" value="${alfresco_amps_source_directory}/${alfresco_edition}-dod5015-${project.version}.amp" />
+        <setInstallerVariable name="alfresco_rm_share_source_file" value="${alfresco_amps_source_directory}/${alfresco_edition}-dod5015-share-${project.version}.amp" />
+        <setInstallerVariable name="alfresco_wcmqs_source_file" value="${alfresco_amps_source_directory}/${alfresco_edition}-wcmqs-${project.version}.amp" />
+        <setInstallerVariable name="alfresco_wcmqs_share_source_file" value="${alfresco_amps_source_directory}/${alfresco_edition}-wcmqs-share-${project.version}.amp" />
+        <setInstallerVariable name="alfresco_wcmqs_war_source_file" value="${alfresco_svn_rootdir.unix}/build/assemble/wcmqs.war" />
+        <setInstallerVariable name="alfresco_awe_war_source_file" value="${alfresco_svn_rootdir.unix}/build/assemble/awe.war" />
+        <setInstallerVariable name="alfresco_awe_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartwebsite/config/alfresco" />
+        <setInstallerVariable name="alfresco_wcmqs_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartclientapi/config/alfresco" />
+        <!-- END ALFRESCO BUILD SYSTEM-->
+        </actionList>
+        <ruleList>
+            <stringTest text="${alfresco_svn_rootdir}" type="empty" negate="yes" />
+        </ruleList>
+        </actionGroup>
+
+
+
+    </preBuildActionList>
+
+</component>

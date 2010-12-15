@@ -1,0 +1,16 @@
+/* CSS file */
+
+.searchDetailsLink
+{
+	color:#757577;
+	font-size:14;
+	font-weight:bold;
+}
+
+.searchDetailsRollOverLink
+{
+	color:#0E9EE5;	
+	font-size:14;
+	text-decoration:underline;	
+	font-weight:bold;
+}

@@ -1,0 +1,33 @@
+.document-links
+{
+   background-color: #fafafa;
+	padding: 1.5em 1em 2em 2em;
+	border-left: 1px solid #ccc;
+	margin-right: -10px;
+}
+
+.document-links .heading
+{
+   color: #333333;
+   font-size: 131%;
+}
+
+.document-links .url-title
+{
+   color: #333333;
+   font-size: 100%;
+   padding-top: 1.5em;
+   padding-bottom: 0.4em;
+}
+
+.document-links .link-value
+{
+   width: 178px;
+   margin-bottom: 1em;
+   padding: 0.4em;
+}
+
+.document-links .copy-button
+{
+   display: none;
+}

@@ -1,0 +1,64 @@
+/* CSS file */
+
+.mainArea
+{
+	background-color: #e1e2e3;
+	color: #939496;
+}
+
+.highlightedMainArea
+{
+	border-style:none;
+   	border-thickness:1;
+   	border-color:#FFFFFF;
+   
+   	border-skin: ClassReference("org.alfresco.ace.control.gradient.SimpleGradientBorder");
+   	fill-colors: #E8E8E8, #FFFFFF;
+   	
+   	color: #0E9EE5;
+}
+
+.tabControlLabel
+{
+	font-size: 12;
+	font-weight: bold;
+	letter-spacing: 0.5;
+}
+
+.highlightedLeft
+{
+	cornerRadius: 10;
+	side: right;
+	
+	border-style:none;
+   	border-thickness:1;   	
+   	border-color:#FFFFFF;
+   
+   	border-skin: ClassReference("org.alfresco.ace.control.tabControl.CurvedBorder");
+   	fill-colors: #e1e2e3, #e1e2e3;
+
+	background-color: #FFFFFF;
+}
+ 
+.highlightedRight
+{
+	cornerRadius: 10;
+	side: left;
+	
+	border-style:none;
+   	border-thickness:1;   	
+   	border-color:#FFFFFF;
+   
+   	border-skin: ClassReference("org.alfresco.ace.control.tabControl.CurvedBorder");
+   	fill-colors: #e1e2e3, #e1e2e3;
+
+	background-color: #FFFFFF;
+}
+
+.tabSeparator
+{
+	stroke-color:#CACBCC;
+	stroke-width:2;
+	shadow-color:#EDEEEE;
+}
+	

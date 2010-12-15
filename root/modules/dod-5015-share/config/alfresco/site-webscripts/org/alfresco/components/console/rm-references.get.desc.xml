@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Admin Console Record Management References</shortname>
+  <description>Administration Console - Record Management Tool References</description>
+  <url>/components/console/rm-references</url>
+  <family>rm-console</family>
+</webscript>

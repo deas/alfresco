@@ -1,0 +1,24 @@
+bin\Debug\KfxXMLv5.dll
+bin\Debug\KfxXMLv5.pdb
+C:\KOFAX\Kofax Relase Script Suff\Kofax Stuff\Release\KfxXMLv5\bin\Debug\KfxXMLv5.tlb
+bin\Debug\Alfresco.dll
+bin\Debug\Alfresco.pdb
+bin\Debug\Interop.CapLib4.dll
+bin\Debug\Interop.CAPLinksCtl4.dll
+bin\Debug\Interop.CAPPdfLib4.dll
+bin\Debug\Interop.Scripting.dll
+bin\Debug\Interop.VBA.dll
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Interop.CapLib4.dll
+obj\Debug\Interop.CAPLinksCtl4.dll
+obj\Debug\Interop.CAPPdfLib4.dll
+obj\Debug\Interop.Scripting.dll
+obj\Debug\Interop.VBA.dll
+obj\Debug\KofaxXMLv5.csproj.ResolveComReference.cache
+obj\Debug\KofaxXMLv5.frmAlfrescoSetUp.resources
+obj\Debug\KofaxXMLv5.frmConnecting.resources
+obj\Debug\KofaxXMLv5.Properties.Resources.resources
+obj\Debug\KofaxXMLv5.csproj.GenerateResource.Cache
+obj\Debug\KfxXMLv5.dll
+obj\Debug\KfxXMLv5.pdb
+obj\Debug\KofaxXMLv5.frmTreeViewBrowse.resources

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<component source-id="welcome" region-id="content" scope="page" url="/test/configtest">
+   <scope>page</scope>
+   <region-id>content</region-id>
+   <source-id>welcome</source-id>
+   <url>/component/common/html</url>
+   <properties>
+      <html>Hello World</html>
+   </properties>
+</component>

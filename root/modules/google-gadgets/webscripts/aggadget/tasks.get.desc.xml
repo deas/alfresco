@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Alfresco GG Task list</shortname>
+  <description>iGoogle Gadget for displaying the list of user workflow tasks</description>
+  <url>/aggadget/tasks</url>
+  <format default="html">argument</format>
+  <authentication>user</authentication>
+  <transaction>required</transaction>
+</webscript>

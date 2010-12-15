@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+    
+    <!-- Bootstrap Records Management Models -->
+    
+    <bean id="org_alfresco_module_dod5015_dictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="dictionaryBootstrap">
+        <property name="models">
+            <list>
+                <value>alfresco/module/org_alfresco_module_dod5015/model/recordsModel.xml</value>
+                <value>alfresco/module/org_alfresco_module_dod5015/model/dod5015Model.xml</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="org_alfresco_module_dod5015_customModelsRepositoryLocation" class="org.alfresco.repo.dictionary.RepositoryLocation">
+        <property name="path">
+            <value>/app:company_home/app:dictionary/cm:records_management</value>
+        </property>
+        <property name="queryLanguage">
+            <value>path</value>
+        </property>
+    </bean>
+    <bean id="org_alfresco_module_dod5015_dictionaryRepositoryBootstrap" parent="dictionaryRepositoryBootstrap">
+      <property name="repositoryModelsLocations">
+         <list>
+             <ref bean="org_alfresco_module_dod5015_customModelsRepositoryLocation" />
+         </list>
+      </property>
+   </bean>
+    
+    <!--  Load audit config -->
+    
+    <bean id="org_alfresco_module_dod5015_userRolesExtractor" class="org.alfresco.module.org_alfresco_module_dod5015.audit.AuthenticatedUserRolesDataExtractor">
+        <property name="registry" ref="auditModel.extractorRegistry" />
+        <property name="nodeService" ref="nodeService" />
+        <property name="rmService" ref="recordsManagementService" />
+        <property name="rmSecurityService" ref="recordsManagementSecurityService" />
+    </bean>
+    
+    <bean id="org_alfresco_module_dod5015_namePathExtractor" class="org.alfresco.module.org_alfresco_module_dod5015.audit.FilePlanNamePathDataExtractor">
+        <property name="registry" ref="auditModel.extractorRegistry" />
+        <property name="nodeService" ref="nodeService" />
+        <property name="rmService" ref="recordsManagementService" />
+    </bean>
+    
+    <bean id="org_alfresco_module_dod5015_nodeRefPathExtractor" class="org.alfresco.module.org_alfresco_module_dod5015.audit.FilePlanNodeRefPathDataExtractor">
+        <property name="registry" ref="auditModel.extractorRegistry" />
+        <property name="nodeService" ref="nodeService" />
+        <property name="rmService" ref="recordsManagementService" />
+    </bean>
+    
+    <bean id="org_alfresco_module_dod5015_identifierExtractor" class="org.alfresco.module.org_alfresco_module_dod5015.audit.FilePlanIdentifierDataExtractor">
+        <property name="registry" ref="auditModel.extractorRegistry" />
+        <property name="nodeService" ref="nodeService" />
+    </bean>
+    
+    <!-- Bootstrap the permission model -->
+    
+    <bean id="org_alfresco_module_dod5015_permissionBootstrap" parent="permissionModelBootstrap">
+        <property name="model" value="alfresco/module/org_alfresco_module_dod5015/model/recordsPermissionModel.xml"/>
+    </bean>
+    
+    <!-- Bootstrap records management data -->
+    
+    <bean id="org_alfresco_module_dod5015_bootstrapData" class="org.alfresco.repo.module.ImporterModuleComponent" parent="module.baseComponent">
+        <property name="moduleId" value="org_alfresco_module_dod5015"/>
+        <property name="name" value="org_alfresco_module_dod5015_bootstrapData"/>
+        <property name="description" value="Bootstrap records management data"/>
+        <property name="sinceVersion" value="1.0"/>
+        <property name="appliesFromVersion" value="1.0"/>
+        <!-- Data properties -->
+        <property name="importer" ref="spacesBootstrap"/>
+        <property name="bootstrapViews">
+            <list>
+                <props>
+                    <prop key="path">/${spaces.company_home.childname}/${spaces.dictionary.childname}</prop>
+                    <prop key="location">alfresco/module/org_alfresco_module_dod5015/bootstrap/RMDataDictionaryBootstrap.xml</prop>
+                </props>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- -->
+    
+    <bean id="recordComponentIdentifierAspect" class="org.alfresco.module.org_alfresco_module_dod5015.identifier.RecordComponentIdentifierAspect" init-method="init">
+        <property name="policyComponent" ref="policyComponent"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="attributeService" ref="attributeService"/>
+    </bean>
+    
+    <!-- Import fixed permission definitions for RM -->
+    <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-public-services-security-context.xml"/>
+    
+    <!-- Import the RM service's -->
+    <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-service-context.xml"/>
+    
+    <!-- Import capabilities -->
+    <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-capabilities-context.xml"/>
+    
+    <!-- Import the RM action's -->
+    <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-action-context.xml"/>
+    
+    <!-- RM Script API -->
+    
+    <bean id="scriptRecordsManagementService" parent="baseJavaScriptExtension" class="org.alfresco.module.org_alfresco_module_dod5015.jscript.ScriptRecordsManagmentService">
+        <property name="extensionName">
+            <value>rmService</value>
+        </property>
+        <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry"/>
+        <property name="notificationRole" value="${rm.notification.role}"/>
+        <property name="notificationSubject" value="${rm.notification.subject}"/>
+    </bean>
+    
+    <!-- Event types -->
+     
+    <bean id="rmEventResourceBundles" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">
+        <property name="resourceBundles">
+            <list>
+                <value>alfresco.module.org_alfresco_module_dod5015.rm-events</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="rmEventType" init-method="init" abstract="true">
+        <property name="recordsManagementEventService" ref="recordsManagementEventService"/>
+    </bean>
+    
+    <bean id="rmEventType.simple" class="org.alfresco.module.org_alfresco_module_dod5015.event.SimpleRecordsManagementEventTypeImpl" parent="rmEventType"/>
+    
+    <bean id="rmEventType.superseded" class="org.alfresco.module.org_alfresco_module_dod5015.event.OnReferenceCreateEventType" parent="rmEventType">        
+        <property name="referenceName" value="{http://www.alfresco.org/model/rmcustom/1.0}supersedes"/>
+        <property name="recordsManagementService" ref="recordsManagementService"/>
+        <property name="recordsManagementActionService" ref="recordsManagementActionService"/>  
+        <property name="policyComponent" ref="policyComponent"/>    
+    </bean>
+    
+    <bean id="rmEventType.obsolete" class="org.alfresco.module.org_alfresco_module_dod5015.event.OnReferenceCreateEventType" parent="rmEventType">
+        <property name="referenceName" value="{http://www.alfresco.org/model/rmcustom/1.0}obsoletes"/>
+        <property name="recordsManagementService" ref="recordsManagementService"/>
+        <property name="recordsManagementActionService" ref="recordsManagementActionService"/>
+        <property name="policyComponent" ref="policyComponent"/>    
+    </bean>
+    
+    <bean id="rmEventType.crossReferencedRecordTransfered" class="org.alfresco.module.org_alfresco_module_dod5015.event.OnReferencedRecordActionedUpon" parent="rmEventType">
+        <property name="referenceName" value="{http://www.alfresco.org/model/rmcustom/1.0}crossreference"/>
+        <property name="actionName" value="transferComplete"/>
+        <property name="nodeService" ref="nodeService"/>
+        <property name="recordsManagementService" ref="recordsManagementService"/>
+        <property name="recordsManagementAdminService" ref="recordsManagementAdminService"/>
+        <property name="recordsManagementActionService" ref="recordsManagementActionService"/>
+        <property name="policyComponent" ref="policyComponent"/>    
+    </bean>
+    
+    <!--  Job context -->
+    <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-job-context.xml"/>
+    
+    <bean id="RecordsManagementBootstrap" class="org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementBootstrap">
+        <property name="transactionService" ref="transactionService"/>
+        
+        <!-- init caveatConfig behaviours  -->
+        <property name="caveatConfigService" ref="caveatConfigService"/>
+        <property name="customEmailMappingService" ref="customEmailMappingService"/>
+    </bean>
+
+    <!-- Java script interface for rm caveat config-->
+    <bean id="rmConfigServiceScript" parent="baseJavaScriptExtension" class="org.alfresco.module.org_alfresco_module_dod5015.caveat.ScriptRMCaveatConfigService">
+        <property name="extensionName">
+            <value>caveatConfig</value>
+        </property>
+        <property name="caveatConfigService" ref="caveatConfigService"/>
+        <property name="authorityService" ref="authorityService"/>
+    </bean>
+     
+    <!-- Form Processor Filters to process RM nodes and types -->
+    <bean id="rmNodeFormFilter" parent="baseFormFilter"
+          class="org.alfresco.module.org_alfresco_module_dod5015.forms.RecordsManagementNodeFormFilter">
+       <property name="filterRegistry" ref="nodeFilterRegistry" />
+       <property name="namespaceService" ref="NamespaceService"/>
+       <property name="nodeService" ref="nodeService"/>
+       <property name="dictionaryService" ref="DictionaryService" />
+       <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry" />
+       <property name="recordsManagementService" ref="recordsManagementService"/>
+       <property name="recordsManagementAdminService" ref="recordsManagementAdminService"/>
+    </bean>
+    
+    <bean id="rmTypeFormFilter" parent="baseFormFilter"
+          class="org.alfresco.module.org_alfresco_module_dod5015.forms.RecordsManagementTypeFormFilter">
+       <property name="filterRegistry" ref="typeFilterRegistry" />
+       <property name="namespaceService" ref="NamespaceService"/>
+       <property name="nodeService" ref="NodeService"/>
+       <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry" />
+       <property name="recordsManagementService" ref="recordsManagementService"/>
+       <property name="recordsManagementAdminService" ref="recordsManagementAdminService"/>
+    </bean>
+    
+    <!-- Import the RM webscript's -->
+    <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-webscript-context.xml"/>
+    
+       
+</beans>

@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Alfresco GG Browser</shortname>
+  <description>iGoogle Gadget for browsing the listing of folder contents</description>
+  <url>/aggadget/folder/{path}</url>
+  <format default="html">argument</format>
+  <authentication>user</authentication>
+  <transaction>required</transaction>
+</webscript>

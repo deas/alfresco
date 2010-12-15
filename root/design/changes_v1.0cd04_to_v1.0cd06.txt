@@ -1,0 +1,8 @@
+v1.0 (Committee Draft 04) to v1.0 (Committee Draft 06) Changes Implemented by Alfresco:
+
+1) CHANGED: cmisra:children
+
+Was: cmisra:children of type atom:feed
+Now: cmisra:children embeds an atom:feed
+
+CMIS-596

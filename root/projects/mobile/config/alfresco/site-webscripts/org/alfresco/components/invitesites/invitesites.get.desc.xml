@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>site</shortname>
+  <description>Invite Site: View Component</description>
+  <url>/components/invitesites/invitesites</url>
+</webscript>

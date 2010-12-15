@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template-instance>
+   <template-type>org/alfresco/data-lists</template-type>
+   <properties>
+      <pageFamily>data-lists</pageFamily>
+      <container>dataLists</container>
+   </properties>
+   <components>
+      <component>
+         <region-id>title</region-id>
+         <url>/components/title/collaboration-title</url>
+      </component>
+      <component>
+         <region-id>navigation</region-id>
+         <url>/components/navigation/collaboration-navigation</url>
+      </component>
+      <component>
+         <region-id>actions-common</region-id>
+         <url>/components/data-lists/actions-common</url>
+      </component>
+      <component>
+         <region-id>toolbar</region-id>
+         <url>/components/data-lists/toolbar</url>
+      </component>
+      <component>
+         <region-id>datagrid</region-id>
+         <url>/components/data-lists/datagrid</url>
+         <properties>
+            <pagination>true</pagination>
+         </properties>
+      </component>
+      <component>
+         <region-id>datalists</region-id>
+         <url>/components/data-lists/datalists</url>
+      </component>
+      <component>
+         <region-id>filter</region-id>
+         <url>/components/data-lists/filter</url>
+      </component>
+   </components>
+</template-instance>
+

@@ -1,0 +1,58 @@
+/* CSS file */
+
+.homePanelTop
+{
+   border-style:solid;
+   border-thickness:0;
+   
+   cornerRadius: 20;
+   bottomCornerRadius: 0;
+   
+   border-skin: ClassReference("org.alfresco.ace.control.gradient.GlossGradientBorder");
+   fill-colors: #6B7680, #384654, #1a2c3c, #1a2c3c;
+}
+
+.homePanelTitle
+{
+	color: #DFE1E3;
+	font-size: 14;
+}
+
+.homeMain
+{
+	background-alpha: 0.6;
+	background-color: #deeaeb;
+}
+
+.homePanelBottom
+{
+   border-style:solid;
+   border-thickness:0;
+   
+   cornerRadius: 0;
+   bottomCornerRadius: 20;
+   
+   border-skin: ClassReference("org.alfresco.ace.control.gradient.SimpleGradientBorder");
+   fill-colors: #1a2c3c, #1a2c3c;
+}	
+
+.homeSeparator
+{
+	color:#3E4D5B;
+}
+
+.homeVideo
+{
+	background-alpha:0.0;
+}
+
+.homePanelShadow
+{
+   /*
+   border-style:solid;
+   border-thickness:0;
+   
+   border-skin: ClassReference("org.alfresco.ace.control.gradient.SimpleGradientBorder");
+   fill-colors: #c4c4c4, #ffffff;
+   */
+}

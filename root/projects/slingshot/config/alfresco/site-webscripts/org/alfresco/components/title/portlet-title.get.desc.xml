@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Portlet Collaboration Title</shortname>
+  <description>Title component used in a collaboration site when in portlet mode</description>
+  <url>/components/title/portlet-collaboration-title</url>
+</webscript>

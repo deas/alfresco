@@ -1,0 +1,81 @@
+div.tabs {
+/*   width:100%;*/
+/*   min-width:200px;*/
+   text-align:center;
+/*   float:none;*/
+ }
+ div.tabs * {
+   text-align:left;
+ }
+ div.tabs ul.tablinks {
+   display:inline-block;
+   margin-bottom:0;
+   width:auto;
+   margin:0.5em 0;
+   padding:0;
+   
+ }
+ div.tabs ul.tablinks li{
+   display:inline;
+   padding:0;
+   margin:0;
+   float:left;
+ }
+ div.tabs ul.tablinks li a {
+   padding:0px 0.5em ;
+   margin:0;
+/*   -webkit-border-image: url(./images/toolButton.png) 0 5 0 5 stretch stretch;*/
+   border-width: 0px 5px;
+   margin: 0px;
+   overflow: hidden;
+   text-decoration: none;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   width: auto;
+   position:static;
+ }
+
+div.tabs ul.tablinks li:first-child a 
+{
+   -webkit-border-image: url(./images/first-btn-deselected.png) 1 5 0 5 stretch stretch;
+} 
+
+div.tabs ul.tablinks li:first-child a.active
+{
+   -webkit-border-image: url(./images/first-btn-selected.png) 1 5 0 5 stretch stretch;
+} 
+
+
+div.tabs ul.tablinks li a 
+{
+-webkit-border-image: url(./images/tab-btn-deselected.png) 1 5 0 5 stretch stretch;
+} 
+
+div.tabs ul.tablinks li a.active
+{
+-webkit-border-image: url(./images/tab-btn-selected.png) 1 5 0 5 stretch stretch;
+} 
+
+div.tabs ul.tablinks li:last-child a.active 
+{
+-webkit-border-image: url(./images/last-btn-selected.png) 1 5 0 5 stretch stretch;
+} 
+
+
+div.tabs ul.tablinks li:last-child a 
+{
+-webkit-border-image: url(./images/last-btn-deselected.png) 1 5 0 5 stretch stretch;
+} 
+
+.tabs .e2e.active,
+.tabcontent div.active,
+.tabcontent div.active .e2e,
+.tabs .active .e2e,
+.tabcontent div.details,
+.tabcontent div.details div  {
+   display:block;
+}
+
+.tabs .e2e,.tabcontent div {
+   display:none;
+}

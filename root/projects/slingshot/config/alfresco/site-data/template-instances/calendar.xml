@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template-instance>
+   <template-type>org/alfresco/calendar</template-type>
+   <properties>
+      <pageFamily>calendar</pageFamily>
+      <container>calendar</container>
+   </properties>
+   <components>
+      <component>
+         <region-id>title</region-id>
+         <url>/components/title/collaboration-title</url>
+      </component>
+      <component>
+         <region-id>navigation</region-id>
+         <url>/components/navigation/collaboration-navigation</url>
+      </component>
+      <component>
+         <region-id>toolbar</region-id>
+         <url>/components/calendar/toolbar</url>
+      </component>
+      <component>
+         <region-id>view</region-id>
+         <url>/components/calendar/view</url>
+      </component>
+      <component>
+         <region-id>calendar</region-id>
+         <url>/components/calendar/mycalendar</url>
+      </component>
+      <component>
+         <region-id>tags</region-id>
+         <url>/components/tags</url>
+      </component>
+   </components>
+</template-instance>

@@ -1,0 +1,640 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+    <bean id="vtiResourceBundles" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">
+        <property name="resourceBundles">
+            <list>
+                <value>alfresco.messages.vti-webview</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="vtiProperties" parent="common-placeholder-configurer">
+        <property name="locations">
+            <list>
+                <value>classpath:alfresco/module/org.alfresco.module.vti/context/vti.properties</value>
+                <!-- Override -->
+                <value>classpath*:alfresco/extension/custom-vti.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="vtiServer" class="org.alfresco.module.vti.VtiServer">
+        <property name="connector">
+            <ref bean="vtiServerConnector"/>
+        </property>
+        <property name="servlet">
+            <ref bean="vtiRequestDispatcher"/>
+        </property>
+        <property name="filter">
+            <ref bean="vtiFilter"/>
+        </property>
+    </bean>
+
+    <bean id="vtiServerConnector" class="org.mortbay.jetty.bio.SocketConnector">
+        <property name="port">
+             <value>${vti.server.port}</value>
+        </property>
+        <property name="headerBufferSize">
+             <value>8192</value>
+        </property>
+    </bean>
+
+    <bean id="vtiFilter" class="org.alfresco.module.vti.web.VtiFilter">
+        <property name="authenticationHandler" ref="vtiAuthenticationHandler"/>
+        <property name="vtiHandler" ref="vtiHandler"/>
+        <property name="alfrescoContext">
+            <value>${vti.alfresco.deployment.context}</value>
+        </property>
+    </bean>
+    <bean id="vtiRequestDispatcher" class="org.alfresco.module.vti.web.VtiRequestDispatcher">
+        <constructor-arg>
+            <!-- ACTIONS -->
+            <list>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="uriPattern" value="/_vti_inf.html"/>
+                    <property name="action" ref="vtiInfAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="uriPattern" value="/_vti_bin/*"/>
+                    <property name="action" ref="vtiBinAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="uriPattern" value="/_vti_history/*"/>
+                    <property name="action" ref="vtiDownloadContentAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="uriPattern" value="/resources/images*"/>
+                    <property name="action" ref="vtiResourceAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="uriPattern" value="/resources/css*"/>
+                    <property name="action" ref="vtiResourceAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="uriPattern" value="*.asmx"/>
+                    <property name="action" ref="vtiSoapAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method"><value>PROPFIND</value></entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiPropfindAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method">
+                                <value>LOCK</value>
+                            </entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiLockAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method">
+                                <value>PROPPATCH</value>
+                            </entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiPropPatchAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method">
+                                <value>UNLOCK</value>
+                            </entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiUnlockAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method"><value>(GET)|(PUT)</value></entry>
+                            <entry key="If"><value>^.+$</value></entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiIfHeaderAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method"><value>GET</value></entry>
+                            <entry key="Uri"><value>.*\.vti</value></entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiBrowserAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method"><value>GET</value></entry>
+                            <entry key="Request-attribute=VALID_SITE_URL"><value>^.+$</value></entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiBrowserAction"/>
+                </bean>
+            </list>
+        </constructor-arg>
+        <property name="sysAdminParams">
+           <ref bean="sysAdminParams" />
+        </property>
+    </bean>
+
+    <bean id="vtiInfAction" class="org.alfresco.module.vti.web.actions.VtiInfAction">
+    </bean>
+
+    <bean id="vtiBinAction" class="org.alfresco.module.vti.web.actions.VtiBinAction">
+        <property name="nameToVtiMethod">
+            <map>
+                <entry key="server_version_method"> <ref bean="server_version_method"/> </entry>
+                <entry key="open_service_method"> <ref bean="open_service_method"/> </entry>
+                <entry key="url_to_web_url_method"> <ref bean="url_to_web_url_method"/> </entry>
+                <entry key="FileOpen_dialog"> <ref bean="FileOpen_dialog"/> </entry>
+                <entry key="FileSave_dialog"> <ref bean="FileOpen_dialog"/> </entry>
+                <entry key="SaveForm_dialog"> <ref bean="SaveForm_dialog"/> </entry>
+                <entry key="list_documents_method"> <ref bean="list_documents_method"/> </entry>
+                <entry key="getDocsMetaInfo_method"> <ref bean="getDocsMetaInfo_method"/> </entry>
+                <entry key="get_document_method"> <ref bean="get_document_method"/> </entry>
+                <entry key="checkout_document_method"> <ref bean="checkout_document_method"/> </entry>
+                <entry key="uncheckout_document_method"> <ref bean="uncheckout_document_method"/> </entry>
+                <entry key="remove_documents_method"> <ref bean="remove_documents_method"/> </entry>
+                <entry key="put_document_method"> <ref bean="put_document_method"/> </entry>
+                <entry key="create_url-directories_method"> <ref bean="create_url-directories_method"/> </entry>
+                <entry key="create_url-directory_method"> <ref bean="create_url-directory_method"/> </entry>
+                <entry key="move_document_method"> <ref bean="move_document_method"/> </entry>
+                <entry key="checkin_document_method"> <ref bean="checkin_document_method"/> </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="vtiDownloadContentAction" class="org.alfresco.module.vti.web.actions.VtiDownloadContentAction">
+        <property name="fileFolderService" ref="FileFolderService" />
+        <property name="nodeService" ref="NodeService" />
+    </bean>
+
+    <bean id="vtiResourceAction" class="org.alfresco.module.vti.web.actions.VtiResourceAction">
+    </bean>
+
+    <bean id="vtiPropfindAction" class="org.alfresco.module.vti.web.actions.VtiPropfindAction" >
+        <property name="pathHelper" ref="vtiPathHelper" />
+        <property name="serviceRegistry" ref="ServiceRegistry" />
+        <property name="authenticationService" ref="AuthenticationService" />
+    </bean>
+
+    <bean id="vtiLockAction" class="org.alfresco.module.vti.web.actions.VtiLockAction">
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
+    <bean id="vtiPropPatchAction" class="org.alfresco.module.vti.web.actions.VtiPropPatchAction">
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
+    <bean id="vtiUnlockAction" class="org.alfresco.module.vti.web.actions.VtiUnlockAction">
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
+
+    <bean id="vtiIfHeaderAction" class="org.alfresco.module.vti.web.actions.VtiIfHeaderAction">
+        <property name="nodeService" ref="NodeService" />
+        <property name="fileFolderService" ref="FileFolderService" />
+        <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
+        <property name="authenticationService" ref="AuthenticationService" />
+        <property name="pathHelper" ref="vtiPathHelper"/>
+    </bean>
+
+    <bean id="vtiBrowserAction" class="org.alfresco.module.vti.web.actions.VtiBrowserAction">
+        <property name="handler" ref="dwsServiceHandler" />
+    </bean>
+
+    <bean id="vtiSoapAction" class="org.alfresco.module.vti.web.actions.VtiSoapAction">
+        <property name="endpointsMapping">
+            <map>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/WebUrlFromPageUrl">
+                    <ref bean="webUrlFromPageUrlEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/GetDwsMetaData">
+                    <ref bean="getDwsMetaDataEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/CheckOutFile">
+                    <ref bean="checkOutFile"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/CheckInFile">
+                    <ref bean="checkInFile"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/UndoCheckOut">
+                    <ref bean="undoCheckOutFile"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetVersions">
+                    <ref bean="getVersionsEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/RestoreVersion">
+                    <ref bean="restoreVersionEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteVersion">
+                    <ref bean="deleteVersionEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/GetDwsData">
+                    <ref bean="getDwsDataEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/CreateDws">
+                    <ref bean="createDwsEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteAllVersions">
+                    <ref bean="deleteAllVersionsEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/directory/GetUserLoginFromEmail">
+                    <ref bean="getUserLoginFromEmailEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/directory/AddUserCollectionToRole">
+                    <ref bean="addUserCollectionToRoleEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/CreateFolder">
+                    <ref bean="createFolderEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/DeleteFolder">
+                    <ref bean="deleteFolderEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/DeleteDws">
+                    <ref bean="deleteDwsEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/RenameDws">
+                    <ref bean="renameDwsEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/RemoveDwsUser">
+                    <ref bean="removeDwsUserEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/UpdateDwsData">
+                    <ref bean="updateDwsDataEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/GetMeetingWorkspaces">
+                    <ref bean="getMeetingWorkspacesEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/GetMeetingsInformation">
+                    <ref bean="getMeetingsInformationEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/CreateWorkspace">
+                    <ref bean="createWorkspaceEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/AddMeetingFromICal">
+                    <ref bean="addMeetingFromICalEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/UpdateMeetingFromICal">
+                    <ref bean="updateMeetingFromICalEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/RemoveMeeting">
+                    <ref bean="removeMeetingEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/DeleteWorkspace">
+                    <ref bean="deleteWorkspaceEndpoint"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!-- FrontPage extension methods -->
+
+    <bean id="abstractVtiMethod" abstract="true" class="org.alfresco.module.vti.web.fp.AbstractMethod">
+        <property name="vtiHandler">
+            <ref bean="vtiHandler"/>
+        </property>
+    </bean>
+
+    <bean id="server_version_method" class="org.alfresco.module.vti.web.fp.ServerVersionMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="open_service_method" class="org.alfresco.module.vti.web.fp.OpenServiceMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="url_to_web_url_method" class="org.alfresco.module.vti.web.fp.UrlToWebUrlMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="FileOpen_dialog" class="org.alfresco.module.vti.web.fp.FileOpenDialog" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="SaveForm_dialog" class="org.alfresco.module.vti.web.fp.SaveFormDialog" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="list_documents_method" class="org.alfresco.module.vti.web.fp.ListDocumentsMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="getDocsMetaInfo_method" class="org.alfresco.module.vti.web.fp.GetDocsMetaInfoMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="get_document_method" class="org.alfresco.module.vti.web.fp.GetDocumentMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="checkout_document_method" class="org.alfresco.module.vti.web.fp.CheckoutDocumentMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="uncheckout_document_method" class="org.alfresco.module.vti.web.fp.UncheckoutDocumentMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="remove_documents_method" class="org.alfresco.module.vti.web.fp.RemoveDocumentsMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="put_document_method" class="org.alfresco.module.vti.web.fp.PutDocumentMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="create_url-directories_method" class="org.alfresco.module.vti.web.fp.CreateUrlDirectories" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="create_url-directory_method" class="org.alfresco.module.vti.web.fp.CreateUrlDirectory" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="move_document_method" class="org.alfresco.module.vti.web.fp.MoveDocumentMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <bean id="checkin_document_method" class="org.alfresco.module.vti.web.fp.CheckinDocumentMethod" parent="abstractVtiMethod">
+    </bean>
+
+    <!-- Web service endpoints definition -->
+
+    <bean id="webUrlFromPageUrlEndpoint" class="org.alfresco.module.vti.web.ws.WebUrlFromPageUrlEndpoint">
+        <constructor-arg ref="vtiHandler" />
+        <property name="name">
+            <value>WebUrlFromPageUrl</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="checkOutFile" class="org.alfresco.module.vti.web.ws.CheckOutFileEndpoint">
+        <constructor-arg ref="checkOutCheckInServiceHandler"/>
+        <property name="name">
+            <value>CheckOutFile</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="checkInFile" class="org.alfresco.module.vti.web.ws.CheckInFileEndpoint">
+        <constructor-arg ref="checkOutCheckInServiceHandler"/>
+        <property name="name">
+            <value>CheckInFile</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="undoCheckOutFile" class="org.alfresco.module.vti.web.ws.UndoCheckOutFileEndpoint">
+        <constructor-arg ref="checkOutCheckInServiceHandler"/>
+        <property name="name">
+            <value>UndoCheckOut</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="getDwsMetaDataEndpoint" class="org.alfresco.module.vti.web.ws.GetDwsMetaDataEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>GetDwsMetaData</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="getDwsDataEndpoint" class="org.alfresco.module.vti.web.ws.GetDwsDataEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>GetDwsData</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="createDwsEndpoint" class="org.alfresco.module.vti.web.ws.CreateDwsEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>CreateDws</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="getVersionsEndpoint" class="org.alfresco.module.vti.web.ws.GetVersionsEndpoint">
+        <constructor-arg ref="versionsServiceHandler" />
+        <property name="name">
+            <value>GetVersions</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="restoreVersionEndpoint" class="org.alfresco.module.vti.web.ws.RestoreVersionEndpoint">
+        <constructor-arg ref="versionsServiceHandler" />
+        <property name="name">
+            <value>RestoreVersion</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="deleteVersionEndpoint" class="org.alfresco.module.vti.web.ws.DeleteVersionEndpoint">
+        <constructor-arg ref="versionsServiceHandler" />
+        <property name="name">
+            <value>DeleteVersion</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="deleteAllVersionsEndpoint" class="org.alfresco.module.vti.web.ws.DeleteAllVersionsEndpoint">
+        <constructor-arg ref="versionsServiceHandler" />
+        <property name="name">
+            <value>DeleteAllVersions</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="getUserLoginFromEmailEndpoint" class="org.alfresco.module.vti.web.ws.GetUserLoginFromEmailEndpoint">
+        <constructor-arg ref="userGroupServiceHandler" />
+        <property name="name">
+            <value>GetUserLoginFromEmail</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/directory/</value>
+        </property>
+    </bean>
+
+    <bean id="addUserCollectionToRoleEndpoint" class="org.alfresco.module.vti.web.ws.AddUserCollectionToRoleEndpoint">
+        <constructor-arg ref="userGroupServiceHandler" />
+        <property name="name">
+            <value>AddUserCollectionToRole</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/directory/</value>
+        </property>
+    </bean>
+
+    <bean id="createFolderEndpoint" class="org.alfresco.module.vti.web.ws.CreateFolderEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>CreateFolder</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="deleteFolderEndpoint" class="org.alfresco.module.vti.web.ws.DeleteFolderEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>DeleteFolder</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="deleteDwsEndpoint" class="org.alfresco.module.vti.web.ws.DeleteDwsEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>DeleteDws</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="renameDwsEndpoint" class="org.alfresco.module.vti.web.ws.RenameDwsEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>RenameDws</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="removeDwsUserEndpoint" class="org.alfresco.module.vti.web.ws.RemoveDwsUserEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>RemoveDwsUser</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="updateDwsDataEndpoint" class="org.alfresco.module.vti.web.ws.UpdateDwsDataEndpoint">
+        <constructor-arg ref="dwsServiceHandler"/>
+        <property name="name">
+            <value>UpdateDwsData</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="getMeetingWorkspacesEndpoint" class="org.alfresco.module.vti.web.ws.GetMeetingWorkspacesEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>GetMeetingWorkspaces</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="getMeetingsInformationEndpoint" class="org.alfresco.module.vti.web.ws.GetMeetingsInformationEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>GetMeetingsInformation</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="createWorkspaceEndpoint" class="org.alfresco.module.vti.web.ws.CreateWorkspaceEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>CreateWorkspace</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="addMeetingFromICalEndpoint" class="org.alfresco.module.vti.web.ws.AddMeetingFromICalEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>AddMeetingFromICal</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="updateMeetingFromICalEndpoint" class="org.alfresco.module.vti.web.ws.UpdateMeetingFromICalEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>UpdateMeetingFromICal</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="removeMeetingEndpoint" class="org.alfresco.module.vti.web.ws.RemoveMeetingEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>RemoveMeeting</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="deleteWorkspaceEndpoint" class="org.alfresco.module.vti.web.ws.DeleteWorkspaceEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>DeleteWorkspace</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <!-- GET VTI SERVER DETAILS -->
+    <bean id="webscript.org.alfresco.vti.vti-server.get" class="org.alfresco.module.vti.web.scripts.VtiServerWebScript" parent="webscript">
+        <property name="port">
+            <value>${vti.server.external.port}</value>
+        </property>
+        <property name="host">
+            <value>${vti.server.external.host}</value>
+        </property>
+        <property name="sysAdminParams">
+            <ref bean="sysAdminParams" />
+        </property>
+    </bean>
+
+</beans>

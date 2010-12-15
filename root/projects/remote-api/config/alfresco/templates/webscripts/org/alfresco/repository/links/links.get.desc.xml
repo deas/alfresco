@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Get all links</shortname>
+  <description>Gets all links.</description>
+  <url>/api/links/site/{site}/{container}</url>
+  <format default="json">argument</format>
+  <authentication>user</authentication>
+  <transaction allow="readwrite" buffersize="0">required</transaction>
+</webscript>

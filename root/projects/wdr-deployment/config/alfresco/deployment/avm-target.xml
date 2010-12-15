@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+	<!--  DEPLOYMENT SERVER CONFIGURATION - AVM TARGET -->
+
+<beans>
+
+	<!--  Define and register the deployment target called "avm" -->
+	<bean
+		class="org.alfresco.deployment.impl.server.DeploymentTargetRegistrationBean"
+		init-method="register">
+
+		<property name="name">
+			<value>${deployment.avm.name}</value>
+		</property>
+		<property name="registry">
+			<ref bean="deploymentReceiverEngine" />
+		</property>
+
+		<property name="target">
+			<bean class="org.alfresco.deployment.impl.asr.AVMDeploymentTarget"
+				init-method="init">
+
+				<!--  how to authenticate for this particular target -->
+				<property name="authenticator">
+					<bean
+						class="org.alfresco.repo.deploy.DeploymentReceiverAuthenticatorAuthenticationService"
+						init-method="init">
+						<property name="authenticationService">
+							<ref bean="AuthenticationService" />
+						</property>
+					</bean>
+				</property>
+				
+				<!-- Where should the root of the web project be stored, by default /www/avm_webapps -->
+				<property name="rootPath">
+				    <value>${deployment.avm.rootPath}</value>
+				</property>
+				
+				<!-- storeName pattern mapping, by default "%storeName%-live" -->
+				<property name="storeNamePattern">
+                    <value>${deployment.avm.storeNamePattern}</value>
+                </property>
+
+				<!--  Alfresco services -->
+				<property name="avmService">
+					<ref bean="AVMService" />
+				</property>
+				
+				<property name="transactionService">
+					<ref bean="transactionService" />
+				</property>
+
+				<!--
+					Target Event Handlers <property name="prepare"> <list> <bean
+					class="org.alfresco.deployment.SampleRunnable"/> </list>
+					</property> <property name="postCommit"> <list> <bean
+					class="org.alfresco.deployment.SampleRunnable"/> </list>
+					</property>
+				-->
+			</bean>
+		</property>
+	</bean>
+</beans>

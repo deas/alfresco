@@ -1,0 +1,91 @@
+<component>
+    <name>alfrescowcm</name>
+    <description>Web Project Management (AVM)</description>
+    <detailedDescription>Alfresco AVM Web Project Management for managing web site content.</detailedDescription>
+    <canBeEdited>1</canBeEdited>
+    <selected>1</selected>
+    <show>1</show>
+
+    <parameterList>
+        <directoryParameter name="alfrescowcm_base_application_directory" value="${installdir}" ask="0" />
+        <directoryParameter name="alfrescowcm_virtualtomcat_location" value="${installdir}" ask="0" />
+        <directoryParameter name="alfrescowcm_virtualtomcat_commands" value="${installdir}/bin" ask="0" />
+    </parameterList>
+
+    <folderList>
+        <folder>
+            <description>Program Files</description>
+            <destination>${alfrescowcm_virtualtomcat_location}/virtual-tomcat</destination>
+            <name>virtualtomcat</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+                <distributionFile origin="${alfrescowcm_source_directory}/virtual-tomcat/*" allowWildcards="1" />
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${alfrescowcm_virtualtomcat_location}/virtual-tomcat/conf</destination>
+            <name>virtualtomcatconf</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+                <distributionFile origin="${alfrescowcm_on_install_settings_directory}/conf/*" allowWildcards="1" />
+            </distributionFileList>
+            <actionList>
+                 <alfrescoConfigure alfrescoFiles="*/alfresco-virtserver.properties" />
+            </actionList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${alfrescowcm_virtualtomcat_commands}</destination>
+            <name>virtualtomcatscript</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+                <distributionFile origin="${alfrescowcm_on_install_settings_directory}/commands/*" allowWildcards="1"/>
+            </distributionFileList>
+            <actionList>
+                <alfrescoConfigure alfrescoFiles="*.sh;*.bat" />
+                <actionGroup>
+                    <actionList>
+                        <deleteFile path="${alfrescowcm_virtualtomcat_commands}/*.sh" />
+                    </actionList>
+                    <ruleList>
+                        <platformTest type="windows" />
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <deleteFile path="${alfrescowcm_virtualtomcat_commands}/*.bat" />
+                    </actionList>
+                    <ruleList>
+                        <platformTest type="unix" />
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${alfresco_shared_directory}/alfresco/extension</destination>
+            <name>bootstrap</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+              <distributionFile origin="${alfrescowcm_on_install_settings_directory}/shared/extension/wcm-bootstrap-context.xml" />
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${alfrescowcm_base_application_directory}</destination>
+            <name>readme</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+              <distributionFile origin="${alfrescowcm_on_install_settings_directory}/README_wcm.txt" />
+            </distributionFileList>
+        </folder>
+    </folderList>
+    <preUninstallationActionList>
+        <deleteFile path="${installdir}/virtual-tomcat/logs" />
+        <deleteFile path="${installdir}/virtual-tomcat/work" />
+        <deleteFile path="${installdir}/virtual-tomcat" />
+        <deleteFile path="${installdir}/wcm" />
+        <deleteFile path="${installdir}/www" />
+    </preUninstallationActionList>
+</component>

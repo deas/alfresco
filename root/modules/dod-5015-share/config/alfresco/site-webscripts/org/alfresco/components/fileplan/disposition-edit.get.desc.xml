@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>display-edit</shortname>
+  <description>Disposition Edit Component</description>
+  <url>/components/fileplan/disposition-edit</url>
+</webscript>

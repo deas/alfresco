@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template-instance>
+  <title>Slingshot Logout Template</title>
+  <template-type>org/alfresco/global/slingshot-logout</template-type>
+</template-instance>

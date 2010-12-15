@@ -1,0 +1,37 @@
+<alfresco-config>
+
+    <!-- Adds the article aspect to the action wizard -->
+	<config evaluator="string-compare" condition="Action Wizards">
+      <aspects>
+         <aspect name="kb:article"/>
+      </aspects>
+   </config>
+   
+   <!-- UI configuration for article aspect -->
+   <config evaluator="aspect-name" condition="kb:article">
+      <property-sheet>
+         <separator name="sepkbArticle" display-label="Article Details" component-generator="HeaderSeparatorGenerator" />         
+         <show-property name="kb:kbId" show-in-edit-mode="false"/>
+         <show-property name="kb:articleType"/>
+		 <show-property name="kb:status"/>
+		 <show-property name="kb:visibility"/>
+		 <show-property name="kb:alfrescoVersion"/>
+		 <show-property name="kb:tags"/>
+		 <show-property name="kb:relatedMessages"/>
+      </property-sheet>
+   </config>
+
+	<config evaluator="string-compare" condition="Dashboards">
+      <!-- Dashboard layouts and available dashlets for the My Alfresco pages -->
+      <dashboards>
+         <layouts>
+         </layouts>
+         <dashlets>
+           	<dashlet id="search-knowledge-base" label="ASK Knowledge Base Search"
+                  description="Search Alfresco ASK Knowledge Base"
+                  jsp="/jsp/dashboards/dashlets/knowledge-base/search-knowledge-base-dashlet.jsp" allow-narrow="false" />
+            </dashlets>
+      </dashboards>
+   	</config>
+	
+</alfresco-config>

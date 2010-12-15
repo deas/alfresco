@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<component>
+   <scope>template</scope>
+   <region-id>wcmqs-web-preview</region-id>
+   <source-id>document-details</source-id>
+   <url>/components/preview/web-preview</url>
+   <properties>
+      <nodeRef>{nodeRef}</nodeRef>
+   </properties>
+</component>

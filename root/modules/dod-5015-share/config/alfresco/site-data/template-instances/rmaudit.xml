@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template-instance>
+   <template-type>org/alfresco/rmaudit</template-type>
+   <components>
+      <component>
+         <region-id>rmaudit</region-id>
+         <url>/components/rmaudit/rmaudit</url>
+      </component>
+   </components>
+</template-instance>

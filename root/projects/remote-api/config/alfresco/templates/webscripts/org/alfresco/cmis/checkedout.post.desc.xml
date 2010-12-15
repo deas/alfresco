@@ -1,0 +1,22 @@
+<webscript>
+  <shortname>Checkout Document (checkOut)</shortname>
+  <description>
+  <![CDATA[
+  Create a private working copy of the document.
+  ]]>
+  </description>
+  
+  <url>/cmis/checkedout</url>
+
+  <format default="atomentry"/>
+  <requests>
+    <request type="cmis.atomentry"/>
+  </requests>
+  <responses>
+    <response type="cmis.atomentry"/>
+  </responses>
+  
+  <authentication>user</authentication>
+  <family>CMIS</family>
+  <lifecycle>public_api</lifecycle>
+</webscript>

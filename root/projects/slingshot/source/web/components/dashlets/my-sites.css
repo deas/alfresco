@@ -1,0 +1,115 @@
+/* Data Table */
+.my-sites .yui-dt table
+{
+   border: medium none;
+   width: 100%;
+}
+
+.my-sites .yui-dt thead
+{
+   display: none;
+}
+
+.my-sites .yui-dt tbody
+{
+   outline: none;
+}
+
+.my-sites .yui-dt tr.yui-dt-even,
+.my-sites .yui-dt tr.yui-dt-odd
+{
+   background-color: #ffffff;
+}
+
+.my-sites .yui-dt td
+{
+   border-bottom: 1px dashed #d9d9d9;
+   border-right: medium none;
+   vertical-align: top;
+}
+
+.my-sites .yui-dt td .yui-dt-liner
+{
+   padding: 4px 6px;
+}
+
+.my-sites .yui-dt .yui-dt-message td
+{
+   border: medium none;
+}
+
+/**
+ * Favourite document indicator.
+ * Note: We can't use the same "enabled" class on normal and IMAP favourites because IE6 can't cope
+ *       with the selector. No, really. Nice work, Microsoft muppets.
+*/
+.my-sites a.favourite-site,
+.my-sites a.imap-favourite-site
+{
+   background-image: url(../images/star-deselected_16x16.png);
+   background-position: center;
+   background-repeat: no-repeat;
+   cursor: pointer;
+   padding: 6px 8px;
+}
+.my-sites a.imap-favourite-site
+{
+   background-image: url(../images/imap-fav-deselected-16.png);
+}
+.my-sites a.favourite-site.enabled
+{
+   background-image: url(../images/star-selected_16x16.png);
+}
+.my-sites a.imap-favourite-site.imap-enabled
+{
+   background-image: url(../images/imap-fav-selected-16.png);
+}
+.my-sites a.favourite-site:active,
+.my-sites a.favourite-site:hover,
+.my-sites a.imap-favourite-site:active,
+.my-sites a.imap-favourite-site:hover
+{
+   text-decoration: none;
+}
+
+.my-sites div.site-favourites
+{
+   
+}
+
+.my-sites div.site-title
+{
+   background-image: url(../images/site-24.png);
+   background-repeat: no-repeat;
+   background-position: 0 0;
+   min-height: 24px;
+   padding-left: 32px;
+   padding-top: 0.2em;
+}
+
+.my-sites div.site-description
+{
+   margin-left: 32px;
+   position: relative;
+   top: -4px;
+}
+
+.my-sites a.delete-site
+{
+   background-image: url(../images/remove-icon-16.png);
+   background-repeat: no-repeat;
+   background-position: center;
+   cursor: pointer;
+   padding: 1em;
+   visibility: hidden;
+}
+.my-sites a.delete-site:active,
+.my-sites a.delete-site:hover
+{
+   text-decoration: none;
+}
+
+.my-sites .yui-dt-highlighted a.delete-site
+{
+   visibility: visible;
+}

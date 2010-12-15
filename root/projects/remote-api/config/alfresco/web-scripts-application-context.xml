@@ -1,0 +1,1000 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN 2.0//EN' 'http://www.springframework.org/dtd/spring-beans-2.0.dtd'>
+
+<beans>
+
+   <!--                           -->
+   <!--  Web Script Configuration -->
+   <!--                           -->
+
+   <bean id="webscripts.configsource" class="org.springframework.extensions.config.source.UrlConfigSource">
+      <constructor-arg>
+         <list>
+            <value>classpath:alfresco/web-scripts-config.xml</value>
+            <value>classpath:alfresco/extension/web-api-config-custom.xml</value>  <!--  for backwards compatibility -->
+            <value>classpath:alfresco/extension/web-scripts-config-custom.xml</value>
+         </list>
+      </constructor-arg>
+   </bean>
+
+   <bean id="webscripts.config" class="org.springframework.extensions.config.xml.XMLConfigService" init-method="init">
+      <constructor-arg>
+         <ref bean="webscripts.configsource" />
+      </constructor-arg>
+   </bean>
+ 
+ 
+   <!--                     -->
+   <!--  Web Script Storage -->
+   <!--                     -->
+
+    <!-- Get bulk node metadata -->
+    <bean id="webscript.org.alfresco.repository.metadata.bulkmetadata.post"
+          class="org.alfresco.repo.web.scripts.metadata.BulkMetadataGet"
+          parent="webscript">
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+    </bean>
+
+   <bean id="webscripts.repostore" class="org.alfresco.repo.web.scripts.RepoStore" abstract="true" init-method="init">
+      <property name="transactionHelper" ref="retryingTransactionHelper" />
+      <property name="nodeService" ref="nodeService" />
+      <property name="namespaceService" ref="namespaceService" />
+      <property name="contentService" ref="contentService" />
+      <property name="fileFolderService" ref="fileFolderService" />
+      <property name="searchService" ref="SearchService" />
+      <property name="permissionService" ref="PermissionService" />
+      <property name="tenantAdminService" ref="tenantAdminService" />
+   </bean>
+
+   <bean name="webscripts.store.repo.extension" parent="webscripts.repostore">
+      <property name="store"><value>workspace://SpacesStore</value></property>
+      <property name="path"><value>/${spaces.company_home.childname}/${spaces.dictionary.childname}/cm:extensionwebscripts</value></property>
+   </bean>
+
+   <bean name="webscripts.store.repo" parent="webscripts.repostore">
+      <property name="mustExist"><value>true</value></property>
+      <property name="store"><value>workspace://SpacesStore</value></property>
+      <property name="path"><value>/${spaces.company_home.childname}/${spaces.dictionary.childname}/cm:webscripts</value></property>
+   </bean>
+
+   <bean id="webscripts.store.client.extension" parent="webscripts.classpathstore">
+      <property name="classPath"><value>alfresco/extension/templates/webscripts</value></property>
+   </bean>
+
+   <bean id="webscripts.store.client" parent="webscripts.classpathstore">
+      <property name="mustExist"><value>true</value></property>
+      <property name="classPath"><value>alfresco/templates/webscripts</value></property>
+   </bean>
+   
+   <bean id="webscripts.searchpath" class="org.springframework.extensions.webscripts.SearchPath">
+      <property name="searchPath">
+          <list>
+             <ref bean="webscripts.store.repo.extension" />
+             <ref bean="webscripts.store.repo" />
+             <ref bean="webscripts.store.client.extension" />
+             <ref bean="webscripts.store.client" />
+             <ref bean="webscripts.store.alfresco" />
+             <ref bean="webscripts.store" />
+          </list>
+      </property>
+   </bean>
+
+
+   <!--                                                -->
+   <!--  Web Script Repository (Server-Tier) Container -->
+   <!--                                                -->
+
+   <bean id="webscripts.repo.imageresolver" class="org.alfresco.repo.web.scripts.RepositoryImageResolver" />
+   
+   <bean id="webscripts.repo.registry.templateprocessor" class="org.springframework.extensions.webscripts.TemplateProcessorRegistry" />      
+
+   <bean id="webscripts.repo.registry.scriptprocessor" class="org.springframework.extensions.webscripts.ScriptProcessorRegistry" />
+   
+   <bean id="webscripts.repo.templateprocessor.factory" class="org.alfresco.repo.web.scripts.RepositoryTemplateProcessorFactory">
+      <property name="templateProcessor" ref="webscripts.repo.templateprocessor"/>
+   </bean>
+
+   <bean id="webscripts.repo.templateprocessor" class="org.alfresco.repo.web.scripts.RepositoryTemplateProcessor">
+      <property name="serviceRegistry" ref="ServiceRegistry" />
+      <property name="freeMarkerProcessor" ref="freeMarkerProcessor" /> 
+      <property name="searchPath" ref="webscripts.searchpath" />
+   </bean>
+   
+   <bean id="webscripts.repo.scriptprocessor.factory" class="org.alfresco.repo.web.scripts.RepositoryScriptProcessorFactory">
+      <property name="scriptProcessor" ref="webscripts.repo.scriptprocessor"/>
+   </bean>
+
+   <bean id="webscripts.repo.scriptprocessor" class="org.alfresco.repo.web.scripts.RepositoryScriptProcessor">
+      <property name="scriptService" ref="scriptService" />
+      <property name="searchPath" ref="webscripts.searchpath" />
+   </bean>
+
+   <bean class="org.springframework.extensions.webscripts.TemplateProcessorRegistrar" init-method="init">
+      <property name="registry" ref="webscripts.repo.registry.templateprocessor" />
+      <property name="factory" ref="webscripts.repo.templateprocessor.factory" />
+      <property name="name"><value>Repository Template Processor</value></property>
+      <property name="extension"><value>ftl</value></property>
+   </bean>
+
+   <bean class="org.springframework.extensions.webscripts.ScriptProcessorRegistrar" init-method="init">
+      <property name="registry" ref="webscripts.repo.registry.scriptprocessor" />
+      <property name="factory" ref="webscripts.repo.scriptprocessor.factory" />
+      <property name="name"><value>Repository Script Processor</value></property>
+      <property name="extension"><value>js</value></property>
+   </bean>
+ 
+   <bean id="webscripts.container" class="org.alfresco.repo.web.scripts.RepositoryContainer" parent="webscripts.abstractcontainer">
+      <property name="name"><value>Repository</value></property>
+      <property name="scriptObjects">
+         <map merge="true">
+           <entry key="paging">
+              <ref bean="webscripts.js.paging"/>
+           </entry>
+         </map>
+      </property>
+      <property name="templateObjects">
+         <map merge="true">
+           <entry key="cmisconstants">
+              <bean class="org.alfresco.repo.cmis.rest.CMISConstantsFactory"/>
+           </entry>
+           <entry key="cmistype">
+              <bean class="org.alfresco.repo.cmis.rest.CMISTypeDefinitionMethod">
+                 <constructor-arg><ref bean="CMISDictionaryService"/></constructor-arg>
+              </bean>
+           </entry>
+           <entry key="cmisproperty">
+              <bean class="org.alfresco.repo.cmis.rest.CMISPropertyValueMethod">
+                 <constructor-arg><ref bean="CMISService"/></constructor-arg>
+                 <constructor-arg><ref bean="webscripts.repo.templateprocessor"/></constructor-arg>
+                 <constructor-arg><ref bean="webscripts.repo.imageresolver"/></constructor-arg>
+              </bean>
+           </entry>
+           <entry key="cmisresultset">
+              <bean class="org.alfresco.repo.cmis.rest.CMISResultSetMethod">
+                 <constructor-arg><ref bean="ServiceRegistry"/></constructor-arg>
+                 <constructor-arg><ref bean="webscripts.repo.imageresolver"/></constructor-arg>
+              </bean>
+           </entry>
+           <entry key="cmischildren">
+              <bean class="org.alfresco.repo.cmis.rest.CMISChildrenMethod">
+                 <constructor-arg><ref bean="CMISService"/></constructor-arg>
+                 <constructor-arg><ref bean="ServiceRegistry"/></constructor-arg>
+                 <constructor-arg><ref bean="webscripts.repo.imageresolver"/></constructor-arg>
+              </bean>
+           </entry>
+           <entry key="cmisacl">
+              <bean class="org.alfresco.repo.cmis.rest.CMISAclMethod">
+                 <constructor-arg><ref bean="CMISAccessControlService"/></constructor-arg>
+              </bean>
+           </entry>
+           <entry key="cmisrenditions">
+              <bean class="org.alfresco.repo.cmis.rest.CMISRenditionsMethod">
+                 <constructor-arg><ref bean="CMISService"/></constructor-arg>
+                 <constructor-arg><ref bean="webscripts.repo.templateprocessor"/></constructor-arg>
+                 <constructor-arg><ref bean="webscripts.repo.imageresolver"/></constructor-arg>
+              </bean>
+           </entry>
+           <entry key="cmisassocs">
+              <bean class="org.alfresco.repo.cmis.rest.CMISAssocsMethod">
+                 <constructor-arg><ref bean="CMISService"/></constructor-arg>
+                 <constructor-arg><ref bean="webscripts.repo.templateprocessor"/></constructor-arg>
+                 <constructor-arg><ref bean="webscripts.repo.imageresolver"/></constructor-arg>
+              </bean>
+           </entry>
+           <entry key="cmisaspects">
+              <bean class="org.alfresco.repo.cmis.rest.CMISAspectsMethod">
+                 <constructor-arg><ref bean="CMISService"/></constructor-arg>
+              </bean>
+           </entry>
+         </map>
+      </property>
+      <property name="registryFactory">
+          <bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+             <property name="targetBeanName"><idref local="webscripts.registry.prototype"/></property>
+          </bean>
+      </property>
+      <!-- Use the time-limited transaction helper to keep request times to an acceptable duration -->
+      <property name="transactionHelper" ref="web.retryingTransactionHelper" />
+      <!-- The transaction helper used to generate error responses must be unlimited -->
+      <property name="fallbackTransactionHelper" ref="retryingTransactionHelper" />
+      <property name="authorityService" ref="AuthorityService" />
+      <property name="repository" ref="repositoryHelper" />
+      <property name="repositoryImageResolver" ref="webscripts.repo.imageresolver" />
+      <property name="templateProcessorRegistry" ref="webscripts.repo.registry.templateprocessor" />
+      <property name="scriptProcessorRegistry" ref="webscripts.repo.registry.scriptprocessor" />
+      <property name="descriptorService" ref="DescriptorService" />
+      <property name="tenantAdminService" ref="tenantAdminService" />
+      <property name="webScriptsRegistryCache" ref="webScriptsRegistryCache"/>
+   </bean>
+   
+   <bean id="webscripts.index.prototype" class="org.springframework.extensions.webscripts.JaxRSUriIndex" scope="prototype"/>
+   
+   <bean id="webscripts.registry.prototype" parent="webscripts.registry" scope="prototype">
+      <property name="uriIndex" ref="webscripts.index.prototype" />
+   </bean>
+
+   <bean id="webscripts.js.paging" class="org.alfresco.repo.web.util.paging.Paging" />
+
+
+   <!--                            -->
+   <!--  Web Script Authenticators -->
+   <!--                            -->
+
+   <!--  HTTP Basic Authenticator (Servlet based) -->
+   <bean id="webscripts.authenticator.basic" class="org.alfresco.repo.web.scripts.servlet.BasicHttpAuthenticatorFactory">
+      <property name="authenticationService" ref="AuthenticationService" />
+   </bean>
+
+   <!--  JSR-168 Authenticator (Portal based) -->
+   <bean id="webscripts.authenticator.jsr168" class="org.alfresco.repo.web.scripts.portlet.JSR168PortletAuthenticatorFactory" lazy-init="true">
+      <property name="unprotAuthenticationService" ref="authenticationService" />
+      <property name="transactionService" ref="TransactionService" />
+   </bean>
+
+   <!--  Facebook Authenticator -->
+   <bean id="webscripts.authenticator.facebook" class="org.alfresco.repo.web.scripts.facebook.FacebookAuthenticatorFactory" />
+
+
+   <!--                   -->
+   <!--  Facebook Runtime -->
+   <!--                   -->
+
+   <bean id="facebook.service" class="org.alfresco.repo.web.scripts.facebook.FacebookService">
+      <property name="container" ref="webscripts.container" />
+   </bean>
+
+
+   <!--          -->
+   <!-- CMIS API -->
+   <!--          -->
+
+   <!-- CMIS Abdera Extension -->
+   <bean id="webscripts.cmis.atom.extension" class="org.springframework.extensions.webscripts.atom.AbderaExtension">
+      <property name="abderaService" ref="webscripts.abdera"/>
+      <property name="QNames">
+         <props>
+            <prop key="cmisra_object">{http://docs.oasis-open.org/ns/cmis/restatom/200908/}object</prop>
+            <prop key="cmisra_content">{http://docs.oasis-open.org/ns/cmis/restatom/200908/}content</prop>
+            <prop key="cmisra_repositoryInfo">{http://docs.oasis-open.org/ns/cmis/restatom/200908/}repositoryInfo</prop>
+            <prop key="alf_setAspects">{http://www.alfresco.org}setAspects</prop>
+         </props>
+      </property>
+      <property name="extensionFactories">
+         <list>
+           <bean class="org.alfresco.repo.cmis.rest.AlfrescoCMISExtensionFactory"/>
+         </list>
+      </property>
+   </bean>
+
+   <!-- CMIS custom mimetypes -->
+   <bean id="webscripts.cmis.adaptors" parent="webscripts.adaptorset">
+      <property name="readers">
+         <list>
+           <bean class="org.alfresco.repo.cmis.rest.CMISQueryReader" />
+         </list>
+      </property>
+   </bean>
+
+   <!--  Default Formats -->
+   <bean id="webscripts.cmis.formats" parent="webscripts.formatmap">
+      <property name="formats">
+         <props>
+            <prop key="cmisquery">application/cmisquery+xml</prop>
+            <prop key="cmisallowableactions">application/cmisallowableactions+xml</prop>
+            <prop key="cmisacl">application/cmisacl+xml</prop>
+         </props>
+      </property>
+      <property name="mimetypes">
+         <props>
+            <prop key="application/cmisquery+xml">cmisquery</prop>
+            <prop key="application/cmisallowableactions+xml">application/cmisallowableactions+xml</prop>
+            <prop key="application/cmisacl+xml">cmisacl</prop>
+         </props>
+      </property>
+   </bean>
+
+   <!-- CMIS Javsascript API -->
+   <bean id="CMISReferenceFactory" class="org.alfresco.repo.cmis.reference.ReferenceFactory">
+      <property name="CMISService" ref="CMISService" />
+   </bean>
+
+   <bean id="webscripts.js.cmis" parent="baseJavaScriptExtension" class="org.alfresco.repo.cmis.rest.CMISScript">
+      <property name="extensionName"><value>cmis</value></property>
+      <property name="serviceRegistry" ref="ServiceRegistry" />
+      <property name="CMISService" ref="CMISService" />
+      <property name="CMISDictionaryService" ref="CMISDictionaryService" />
+      <property name="CMISQueryService" ref="CMISQueryService" />
+      <property name="CMISAccessControlService" ref="CMISAccessControlService" />
+      <property name="CMISChangeLogService" ref="CMISChangeLogService" />
+      <property name="CMISReferenceFactory" ref="CMISReferenceFactory" />
+      <property name="paging" ref="webscripts.js.paging" />
+   </bean>
+
+   <!-- CMIS Test Runner Web Script -->
+   <bean id="webscript.org.alfresco.cmis.test.post" class="org.alfresco.repo.cmis.rest.test.CMISTestRunnerWebScript" parent="webscript" />
+
+   <!--  Content Retrieval -->
+   <bean id="webscript.org.alfresco.cmis.content.get" class="org.alfresco.repo.web.scripts.content.ContentGet" parent="webscript">
+      <property name="referenceFactory" ref="CMISReferenceFactory" />
+      <property name="namespaceService" ref="NamespaceService" />
+      <property name="permissionService" ref="PermissionService" />
+      <property name="nodeService" ref="NodeService" />
+      <property name="contentService" ref="ContentService" />
+      <property name="dictionaryService" ref="DictionaryService" />
+      <property name="mimetypeService" ref="MimetypeService" />
+      <property name="CMISRenditionService" ref="CMISRenditionService" />
+   </bean>
+   
+   <!--  Content Write -->
+   <bean id="webscript.org.alfresco.cmis.content.put" class="org.alfresco.repo.web.scripts.content.ContentSet" parent="webscript">
+      <property name="referenceFactory" ref="CMISReferenceFactory" />
+      <property name="dictionaryService" ref="DictionaryService" />
+      <property name="namespaceService" ref="NamespaceService" />
+      <property name="cmisService" ref="CMISService" />
+      <property name="mimetypeService" ref="MimetypeService" />
+   </bean>
+
+   <!--  Content Delete -->
+   <bean id="webscript.org.alfresco.cmis.content.delete" class="org.alfresco.repo.web.scripts.content.ContentDelete" parent="webscript">
+      <property name="referenceFactory" ref="CMISReferenceFactory" />
+      <property name="namespaceService" ref="NamespaceService" />
+      <property name="nodeService" ref="NodeService" />
+   </bean>
+
+   <!--  CMIS Query -->
+   <bean id="webscript.org.alfresco.cmis.queries.post" class="org.alfresco.repo.cmis.rest.CMISQueryWebScript" parent="webscript" />
+
+   <!--  CMIS Query -->
+   <bean id="webscript.org.alfresco.cmis.query.get" class="org.alfresco.repo.cmis.rest.CMISQueryWebScript" parent="webscript" />
+
+
+   <!--            -->
+   <!--  API Beans -->
+   <!--            -->
+
+   <!--  Javascript APIs -->
+   <bean id="webscript.org.alfresco.jsdebugger.get" class="org.springframework.extensions.webscripts.bean.JavascriptDebugger" parent="webscript">
+      <property name="debugger" ref="rhinoScriptDebugger" />
+   </bean>
+   <bean id="webscript.org.alfresco.jsdebugger.post" class="org.springframework.extensions.webscripts.bean.JavascriptDebuggerPost" parent="webscript">
+      <property name="debugger" ref="rhinoScriptDebugger" />
+   </bean>
+
+   <!--  Authentication APIs -->
+   <bean id="webscript.org.alfresco.repository.login.get" class="org.alfresco.repo.web.scripts.bean.Login" parent="webscript">
+      <property name="authenticationService" ref="AuthenticationService" />
+   </bean>
+   
+   <bean id="webscript.org.alfresco.repository.login.post" class="org.alfresco.repo.web.scripts.bean.LoginPost" parent="webscript">
+      <property name="authenticationService" ref="AuthenticationService" />
+   </bean>
+   
+   <bean id="webscript.org.alfresco.repository.loginticket.get" class="org.alfresco.repo.web.scripts.bean.LoginTicket" parent="webscript">
+      <property name="ticketComponent" ref="ticketComponent" />
+   </bean>
+   <bean id="webscript.org.alfresco.repository.loginticket.delete" class="org.alfresco.repo.web.scripts.bean.LoginTicketDelete" parent="webscript">
+      <property name="authenticationService" ref="authenticationService" />
+      <property name="ticketComponent" ref="ticketComponent" />
+   </bean>
+   
+   <!--  List of registered (OpenSearch) search engines -->
+   <bean id="webscript.org.alfresco.repository.search.searchengines.get" class="org.alfresco.repo.web.scripts.bean.SearchEngines" parent="webscript">
+      <property name="configService" ref="webscripts.config" />
+      <property name="searchProxy" ref="webscript.org.alfresco.repository.search.searchproxy.get" />
+   </bean>
+
+   <!--  Alfresco Web Client Keyword Search (OpenSearch) -->
+   <bean id="webscript.org.alfresco.repository.search.keywordsearch.get" class="org.alfresco.repo.web.scripts.bean.KeywordSearch" parent="webscript">
+      <property name="searchService" ref="SearchService" />
+      <property name="serviceRegistry" ref="ServiceRegistry" />     
+      <property name="repositoryImageResolver" ref="webscripts.repo.imageresolver" />
+   </bean>
+
+   <!--  Alfresco Web Client Person Search (OpenSearch) -->
+   <bean id="webscript.org.alfresco.repository.search.personsearch.get" class="org.alfresco.repo.web.scripts.bean.KeywordSearch" parent="webscript">
+      <property name="searchService" ref="SearchService" />
+      <property name="serviceRegistry" ref="ServiceRegistry" />     
+      <property name="repositoryImageResolver" ref="webscripts.repo.imageresolver" />
+   </bean>
+
+   <!--  Alfresco (OpenSearch) Proxy -->
+   <bean id="webscript.org.alfresco.repository.search.searchproxy.get" class="org.alfresco.repo.web.scripts.bean.SearchProxy" parent="webscript">
+      <property name="configService" ref="webscripts.config" />
+      <property name="formatRegistry" ref="webscripts.formatregistry" />
+   </bean>
+
+   <!--  Abstract Content Streaming Web Script -->
+   <bean id="webscript.org.alfresco.repository.content.stream" class="org.alfresco.repo.web.scripts.content.StreamContent" parent="webscript" scope="prototype">
+      <property name="permissionService" ref="PermissionService" />
+      <property name="nodeService" ref="NodeService" />
+      <property name="contentService" ref="ContentService" />
+      <property name="mimetypeService" ref="MimetypeService" />
+   </bean>
+   
+   <!--  Content Write -->
+   <bean id="webscript.org.alfresco.repository.store.content.put" class="org.alfresco.repo.web.scripts.content.ContentSet" parent="webscript">
+      <property name="referenceFactory" ref="CMISReferenceFactory" />
+      <property name="dictionaryService" ref="DictionaryService" />
+      <property name="namespaceService" ref="NamespaceService" />
+      <property name="cmisService" ref="CMISService" />
+      <property name="mimetypeService" ref="MimetypeService" />
+   </bean>
+   
+   <!--  Remote Store service - AVM -->
+   <bean id="webscript.org.alfresco.repository.store.remoteavm.get" class="org.alfresco.repo.web.scripts.bean.AVMRemoteStore" parent="webscript">
+      <property name="mimetypeService" ref="MimetypeService" />
+      <property name="avmService" ref="AVMService" />
+      <property name="searchService" ref="SearchService" />
+   </bean>
+   <bean id="webscript.org.alfresco.repository.store.remoteavm.post" class="org.alfresco.repo.web.scripts.bean.AVMRemoteStore" parent="webscript">
+      <property name="mimetypeService" ref="MimetypeService" />
+      <property name="avmService" ref="AVMService" />
+      <property name="searchService" ref="SearchService" />
+   </bean>
+   <bean id="webscript.org.alfresco.repository.store.remoteavm.delete" class="org.alfresco.repo.web.scripts.bean.AVMRemoteStore" parent="webscript">
+      <property name="mimetypeService" ref="MimetypeService" />
+      <property name="avmService" ref="AVMService" />
+      <property name="searchService" ref="SearchService" />
+   </bean>
+   
+   <!--  Authenticated Web Framework AVM Store service -->
+   <bean id="webscript.org.alfresco.webframework.avmstore.get" class="org.alfresco.repo.web.scripts.bean.AVMRemoteStore" parent="webscript">
+      <property name="mimetypeService" ref="MimetypeService" />
+      <property name="avmService" ref="AVMService" />
+      <property name="searchService" ref="SearchService" />
+   </bean>
+   <bean id="webscript.org.alfresco.webframework.avmstore.post" class="org.alfresco.repo.web.scripts.bean.AVMRemoteStore" parent="webscript">
+      <property name="mimetypeService" ref="MimetypeService" />
+      <property name="avmService" ref="AVMService" />
+      <property name="searchService" ref="SearchService" />
+   </bean>
+   <bean id="webscript.org.alfresco.webframework.avmstore.delete" class="org.alfresco.repo.web.scripts.bean.AVMRemoteStore" parent="webscript">
+      <property name="mimetypeService" ref="MimetypeService" />
+      <property name="avmService" ref="AVMService" />
+      <property name="searchService" ref="SearchService" />
+   </bean>
+   
+   <!-- Web-tier SSO authentication touch point -->
+   <bean id="webscript.org.alfresco.repository.touch.get" class="org.alfresco.repo.web.scripts.bean.Touch" parent="webscript" />
+   
+   <!-- Authentication information service -->
+   <bean id="webscript.org.alfresco.repository.authentication.get" class="org.alfresco.repo.web.scripts.bean.Authentication" parent="webscript">
+      <property name="authenticationService" ref="authenticationService"/>
+   </bean>
+
+   <!-- Mimetype information details -->
+   <bean id="webscript.org.alfresco.repository.content.mimetypes.get" class="org.alfresco.repo.web.scripts.content.MimetypesGet" parent="webscript">
+      <property name="mimetypeService" ref="mimetypeService" />
+      <property name="metadataExtracterRegistry" ref="metadataExtracterRegistry" />
+      <property name="contentTransformerRegistry" ref="contentTransformerRegistry" />
+   </bean>
+   
+   <!-- Patch webscript for RenditionService -->
+   <bean id="webscript.org.alfresco.repository.rendition.patchthumbnailsasrenditions.get"
+         class="org.alfresco.repo.web.scripts.rendition.patch.PatchThumbnailsAsRenditionsGet" parent="webscript">
+      <property name="nodeService" ref="NodeService" />
+      <property name="renditionService" ref="RenditionService" />
+      <property name="searchService" ref="SearchService" />
+   </bean>
+   
+   
+   <!--                            -->
+   <!-- Activity Feed Web Scripts  -->
+   <!--                            -->
+
+   <!-- Activity User Feed - to get activities feed for logged in user -->
+   <bean id="webscript.org.alfresco.repository.activities.feed.userfeed.get" class="org.alfresco.repo.web.scripts.activities.feed.UserFeedRetrieverWebScript" parent="webscript">
+      <property name="activityService" ref="activityService"/>
+      <property name="authorityService" ref="AuthorityService"/>
+   </bean>
+  
+   <!-- Activity Admin Feed - to get activities feed for specified user -->
+   <bean id="webscript.org.alfresco.repository.activities.feed.userfeed-admin.get" class="org.alfresco.repo.web.scripts.activities.feed.UserFeedRetrieverWebScript" parent="webscript">
+      <property name="activityService" ref="activityService"/>
+      <property name="authorityService" ref="AuthorityService"/>
+   </bean>
+   
+   <!-- Activity Site Feed - to get activities feed for given site, if private site then need to be a member or admin -->
+   <bean id="webscript.org.alfresco.repository.activities.feed.sitefeed.get" class="org.alfresco.repo.web.scripts.activities.feed.SiteFeedRetrieverWebScript" parent="webscript">
+      <property name="activityService" ref="activityService"/>
+   </bean>
+   
+   <!--                            -->
+   <!-- Activity Templates Storage -->
+   <!--                            -->
+   
+   <bean id="webscript.org.alfresco.repository.activities.templates.get" class="org.alfresco.repo.web.scripts.activities.TemplatesWebScript" parent="webscript">
+      <property name="searchPath" ref="activity.template.searchpath"/>
+   </bean>
+   
+   <bean id="webscript.org.alfresco.repository.activities.template.get" class="org.alfresco.repo.web.scripts.activities.TemplateWebScript" parent="webscript">
+      <property name="searchPath" ref="activity.template.searchpath"/>
+   </bean>
+   
+   <bean id="templates.classpathstore" class="org.springframework.extensions.webscripts.ClassPathStore" abstract="true" />
+   
+   <bean id="activity.template.store.client.extension" parent="templates.classpathstore">
+      <property name="classPath"><value>alfresco/extension/templates/activities</value></property>
+   </bean>
+
+   <bean id="activity.template.store.client" parent="templates.classpathstore">
+      <property name="mustExist"><value>true</value></property>
+      <property name="classPath"><value>alfresco/templates/activities</value></property>
+   </bean>
+   
+   <bean id="activity.template.searchpath" class="org.springframework.extensions.webscripts.SearchPath">
+      <property name="searchPath">
+          <list>
+             <ref bean="activity.template.store.client.extension" />
+             <ref bean="activity.template.store.client" />
+          </list>
+      </property>
+   </bean>
+
+
+   <!--                         -->
+   <!-- Invite Service REST API -->
+   <!--                         -->
+   
+   <!--                                                                                                       -->
+   <!-- Invite Web Script - Invoked by a Site Manager (Inviter) to either invite another person (Invitee) to  -->
+   <!-- join a Site as a Site Collaborator, or to cancel a pending invitation that has already been sent out  -->
+   <!--                                                                                                       -->
+   <bean id="webscript.org.alfresco.repository.invite.invite.get"
+         class="org.alfresco.repo.web.scripts.invite.Invite"
+         parent="webscript">
+      <property name="workflowService" ref="WorkflowService"/>
+      <property name="invitationService" ref="InvitationService"/>
+   </bean>
+   
+   <!--                                                                                                       -->
+   <!-- Invite Accept/Reject Web Script - accepts or rejects a pending invite                                 -->
+   <!--                                                                                                       -->
+   
+   <bean id="webscript.org.alfresco.repository.invite.inviteresponse.put"
+         class="org.alfresco.repo.web.scripts.invite.InviteResponse"
+         parent="webscript">
+      <property name="tenantService" ref="tenantService"/>
+      <property name="invitationService" ref="InvitationService"/>
+   </bean>
+   
+   <!--                                                                                                       -->
+   <!-- Invites Web Script (pending invites) - returns pending invites matching the given                     -->
+   <!-- inviter user name, invitee user name, site short name, or invite ID URL request parameters            -->
+   <!-- (at least one of the above parameters must be provided)                                               -->
+   <!--                                                                                                       -->
+   
+   <bean id="webscript.org.alfresco.repository.invite.invites.get"
+         class="org.alfresco.repo.web.scripts.invite.Invites"
+         parent="webscript">
+      <property name="workflowService" ref="WorkflowService"/>
+      <property name="serviceRegistry" ref="ServiceRegistry"/>
+      <property name="siteService" ref="SiteService"/>
+      <property name="invitationService" ref="InvitationService"/>
+   </bean>
+
+   <!--                                                                                                       -->
+   <!-- Returns invite information when for a given inviteId and inviteTicket                                 -->
+   <!-- This webscript is accessible without authentication                                                   -->
+   <!--                                                                                                       -->
+   
+   <bean id="webscript.org.alfresco.repository.invite.invite-by-ticket.get"
+         class="org.alfresco.repo.web.scripts.invite.InviteByTicket"
+         parent="webscript">
+      <property name="serviceRegistry" ref="ServiceRegistry"/>
+      <property name="siteService" ref="SiteService"/>
+      <property name="invitationService" ref="InvitationService"/>
+      <property name="tenantService" ref="tenantService"/>
+   </bean>
+
+
+   <!--                         -->
+   <!-- Person Service REST API -->
+   <!--                         -->
+   
+   <!--                                                                                                       -->
+   <!-- changepassword.post Web Script - updates a user password                                              -->
+   <!--                                                                                                       -->
+   
+   <bean id="webscript.org.alfresco.repository.person.changepassword.post"
+         class="org.alfresco.repo.web.scripts.person.ChangePasswordPost"
+         parent="webscript">
+      <property name="authenticationService" ref="AuthenticationService" />
+      <property name="authorityService" ref="AuthorityService" />
+   </bean>
+
+
+   <!--  Switch on debugger by setting log4j.logger.org.alfresco.repo.web.scripts.AlfrescoRhinoScriptDebugger to DEBUG -->
+   <bean id="rhinoScriptDebugger" class="org.alfresco.repo.web.scripts.AlfrescoRhinoScriptDebugger" init-method="start"/>
+   
+   
+   <!-- JMX Admin Dump - as ZIP file content -->
+   <bean id="webscript.org.alfresco.repository.admin.jmxdump.get" class="org.alfresco.repo.web.scripts.content.StreamJMXDump" parent="webscript">
+      <property name="MBeanServer" ref="alfrescoMBeanServer" />
+   </bean>
+   
+   
+   <!--                             -->
+   <!-- DICTIONARY Service REST API -->
+   <!--                             -->
+     
+   <bean id="webscript.dictionary" abstract="true" parent="webscript" init-method="init">
+      <property name="dictionaryService" ref="DictionaryService"/>
+      <property name="namespaceService" ref="NamespaceService"/>
+   </bean>  
+     
+   <bean id="webscript.org.alfresco.repository.dictionary.classes.get" class="org.alfresco.repo.web.scripts.dictionary.ClassesGet" parent="webscript.dictionary"/>
+   <bean id="webscript.org.alfresco.repository.dictionary.class.get" class="org.alfresco.repo.web.scripts.dictionary.ClassGet" parent="webscript.dictionary"/>
+   <bean id="webscript.org.alfresco.repository.dictionary.subclasses.get" class="org.alfresco.repo.web.scripts.dictionary.SubClassesGet" parent="webscript.dictionary"/>
+   <bean id="webscript.org.alfresco.repository.dictionary.property.get" class="org.alfresco.repo.web.scripts.dictionary.PropertyGet" parent="webscript.dictionary"/>
+   <bean id="webscript.org.alfresco.repository.dictionary.properties.get" class="org.alfresco.repo.web.scripts.dictionary.PropertiesGet" parent="webscript.dictionary"/>
+   <bean id="webscript.org.alfresco.repository.dictionary.association.get" class="org.alfresco.repo.web.scripts.dictionary.AssociationGet" parent="webscript.dictionary"/>
+   <bean id="webscript.org.alfresco.repository.dictionary.associations.get" class="org.alfresco.repo.web.scripts.dictionary.AssociationsGet" parent="webscript.dictionary"/>
+    
+    <!-- GET IMAP SERVER STATUS -->
+    <bean id="webscript.org.alfresco.repository.imap.imap-enabled.get" class="org.alfresco.repo.imap.scripts.ServerStatusWebScript" parent="webscript">
+      <property name="imapServerEnabled"><value>${imap.server.enabled}</value></property>
+    </bean>
+
+    <!--  Comment API supporting bean -->
+    <bean id="commentServiceScript" parent="baseJavaScriptExtension" class="org.alfresco.repo.web.scripts.comment.ScriptCommentService">
+        <property name="extensionName">
+            <value>commentService</value>
+        </property>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+    </bean>
+    
+
+    <!--                                   -->
+    <!--      Rule Service REST API        -->
+    <!--                                   -->
+    
+    <!-- abstract rule web script -->
+    <bean id="abstractRuleWebScript" class="org.alfresco.repo.web.scripts.rule.AbstractRuleWebScript" parent="webscript" abstract="true">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="ruleService" ref="RuleService"/>      
+        <property name="actionService" ref="ActionService"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+        <property name="fileFolderService" ref="FileFolderService"/>
+        <property name="namespaceService" ref="NamespaceService" />
+    </bean>
+   
+    <!-- Basic web scripts -->
+    <bean id="webscript.org.alfresco.repository.rule.ruletypes.get" class="org.alfresco.repo.web.scripts.rule.RuleTypesGet" parent="abstractRuleWebScript">              
+    </bean>
+   
+    <bean id="webscript.org.alfresco.repository.rule.actiondefinitions.get" class="org.alfresco.repo.web.scripts.rule.ActionDefinitionsGet" parent="abstractRuleWebScript">              
+    </bean>
+    
+    <bean id="webscript.org.alfresco.repository.rule.actionconditiondefinitions.get" class="org.alfresco.repo.web.scripts.rule.ActionConditionDefinitionsGet" parent="abstractRuleWebScript">              
+    </bean>
+   
+    <!-- delete rule web script -->
+    <bean id="webscript.org.alfresco.repository.rule.rule.delete" class="org.alfresco.repo.web.scripts.rule.RuleDelete" parent="abstractRuleWebScript">              
+    </bean>
+    
+    <!-- get rule details web script -->
+    <bean id="webscript.org.alfresco.repository.rule.rule.get" class="org.alfresco.repo.web.scripts.rule.RuleGet" parent="abstractRuleWebScript">              
+    </bean>
+    
+    <!-- create rule web script -->
+    <bean id="webscript.org.alfresco.repository.rule.rule.post" class="org.alfresco.repo.web.scripts.rule.RulePost" parent="abstractRuleWebScript">              
+    </bean>
+    
+    <!-- update rule web script -->
+    <bean id="webscript.org.alfresco.repository.rule.rule.put" class="org.alfresco.repo.web.scripts.rule.RulePut" parent="abstractRuleWebScript">              
+    </bean>
+   
+    <!-- get all owned rules for node web script -->
+    <bean id="webscript.org.alfresco.repository.rule.rules.get" class="org.alfresco.repo.web.scripts.rule.RulesGet" parent="abstractRuleWebScript">              
+    </bean>
+
+    <!-- get all inherited rules for node web script -->
+    <bean id="webscript.org.alfresco.repository.rule.inheritedrules.get" class="org.alfresco.repo.web.scripts.rule.InheritedRulesGet" parent="abstractRuleWebScript">              
+    </bean>
+    
+    <!-- get ruleset for node web script -->
+    <bean id="webscript.org.alfresco.repository.rule.ruleset.get" class="org.alfresco.repo.web.scripts.rule.RulesetGet" parent="abstractRuleWebScript">              
+    </bean>
+    
+    <!-- get action constraints collection -->
+    <bean id="webscript.org.alfresco.repository.rule.actionConstraints.get" class="org.alfresco.repo.web.scripts.rule.ActionConstraintsGet" parent="abstractRuleWebScript">              
+    </bean>
+    
+    <!-- get specified action constraint -->
+    <bean id="webscript.org.alfresco.repository.rule.actionConstraint.get" class="org.alfresco.repo.web.scripts.rule.ActionConstraintGet" parent="abstractRuleWebScript">              
+    </bean>
+    
+    <!-- adds a new action to the execution queue. -->
+    <bean id="webscript.org.alfresco.repository.rule.actionQueue.post" class="org.alfresco.repo.web.scripts.rule.ActionQueuePost" parent="abstractRuleWebScript">
+    </bean>
+    
+    <!--                                   -->
+    <!--      Transfer Service REST API    -->
+    <!--                                   -->
+    
+    <bean id="webscript.org.alfresco.repository.transfer.transfer.post" class="org.alfresco.repo.web.scripts.transfer.TransferWebScript" parent="webscript" >
+        <property name="enabled"><value>${transferservice.receiver.enabled}</value></property>
+        <property name="commandProcessors">
+            <map>
+                <entry key="test">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.TestCredentialsCommandProcessor" />
+                </entry>
+                <entry key="begin">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.BeginTransferCommandProcessor">
+                        <property name="receiver" ref="transferReceiver" />
+                    </bean>
+                </entry>
+                <entry key="post-snapshot">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.PostSnapshotCommandProcessor">
+                        <property name="receiver" ref="transferReceiver" />
+                    </bean>
+                </entry>
+                <entry key="post-content">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.PostContentCommandProcessor">
+                        <property name="receiver" ref="transferReceiver" />
+                    </bean>
+                </entry>
+                <entry key="prepare">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.PrepareTransferCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+                <entry key="commit">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.CommitTransferCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+                <entry key="abort">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.AbortTransferCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+               <entry key="messages">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.MessagesTransferCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+               <entry key="status">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.StatusCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+                <entry key="report">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.ReportCommandProcessor">
+                        <property name="receiver" ref="transferReceiver" />
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!--                                     -->
+    <!--      Rating Service REST API        -->
+    <!--                                     -->
+    
+    <!-- abstract rating web script -->
+    <bean id="abstractRatingWebScript"
+          class="org.alfresco.repo.web.scripts.rating.AbstractRatingWebScript"
+          parent="webscript" abstract="true">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="ratingService" ref="RatingService"/>
+    </bean>
+   
+    <!-- Basic web scripts -->
+    <bean id="webscript.org.alfresco.repository.rating.ratings.get"
+          class="org.alfresco.repo.web.scripts.rating.RatingsGet"
+          parent="abstractRatingWebScript">
+    </bean>
+
+    <bean id="webscript.org.alfresco.repository.rating.rating.post"
+          class="org.alfresco.repo.web.scripts.rating.RatingPost"
+          parent="abstractRatingWebScript">
+    </bean>
+    
+    <bean id="webscript.org.alfresco.repository.rating.rating.delete"
+          class="org.alfresco.repo.web.scripts.rating.RatingDelete"
+          parent="abstractRatingWebScript">
+    </bean>
+    
+    <bean id="webscript.org.alfresco.repository.rating.ratingdefinitions.get"
+          class="org.alfresco.repo.web.scripts.rating.RatingDefinitionsGet"
+          parent="abstractRatingWebScript">
+    </bean>
+    
+    <!--                                   -->
+    <!--      Workflow Service REST API    -->
+    <!--                                   -->
+
+    <!-- abstract workflow web script -->
+    <bean id="abstractWorkflowWebScript"
+          class="org.alfresco.repo.web.scripts.workflow.AbstractWorkflowWebscript"
+          parent="webscript" abstract="true">
+        <property name="namespaceService" ref="NamespaceService" />
+        <property name="nodeService" ref="NodeService" />
+        <property name="personService" ref="PersonService" />
+        <property name="dictionaryService" ref="DictionaryService" />
+        <property name="authenticationService" ref="AuthenticationService" />
+        <property name="authorityService" ref="AuthorityService" />
+        <property name="workflowService" ref="WorkflowService" />
+    </bean>
+
+    <!-- Lists the task instances, filtered by task owner and state. -->
+    <bean id="webscript.org.alfresco.repository.workflow.task-instances.get"
+          class="org.alfresco.repo.web.scripts.workflow.TaskInstancesGet"
+          parent="abstractWorkflowWebScript">
+    </bean>
+
+    <!-- Gets the details of a task -->
+    <bean id="webscript.org.alfresco.repository.workflow.task-instance.get"
+          class="org.alfresco.repo.web.scripts.workflow.TaskInstanceGet"
+          parent="abstractWorkflowWebScript"></bean>
+
+    <!-- Updates the details of a task -->
+    <bean id="webscript.org.alfresco.repository.workflow.task-instance.put"
+          class="org.alfresco.repo.web.scripts.workflow.TaskInstancePut"
+          parent="abstractWorkflowWebScript"></bean>
+
+    <!-- Lists all workflow definitions -->
+    <bean id="webscript.org.alfresco.repository.workflow.workflow-definitions.get"
+          class="org.alfresco.repo.web.scripts.workflow.WorkflowDefinitionsGet"
+          parent="abstractWorkflowWebScript"></bean>
+
+    <!-- Retrieves a specific workflow instance, optionally with all the tasks. -->
+    <bean id="webscript.org.alfresco.repository.workflow.workflow-instance.get"
+          class="org.alfresco.repo.web.scripts.workflow.WorkflowInstanceGet"
+          parent="abstractWorkflowWebScript"></bean>
+
+    <!-- Retrieves all workflow instances. -->
+    <bean id="webscript.org.alfresco.repository.workflow.workflow-instances.get"
+          class="org.alfresco.repo.web.scripts.workflow.WorkflowInstancesGet"
+          parent="abstractWorkflowWebScript"></bean>
+
+    <!-- Retrieves all active workflow instances that the given node is part of. -->
+    <bean id="webscript.org.alfresco.repository.workflow.workflow-instances-for-node.get"
+          class="org.alfresco.repo.web.scripts.workflow.WorkflowInstancesForNodeGet"
+          parent="abstractWorkflowWebScript"></bean>
+          
+    <!-- Either cancels or deletes the specified workflow instance. -->
+    <bean id="webscript.org.alfresco.repository.workflow.workflow-instance.delete"
+          class="org.alfresco.repo.web.scripts.workflow.WorkflowInstanceDelete"
+          parent="abstractWorkflowWebScript"></bean>
+
+    <!--                                   -->
+    <!--      Audit Service REST API    -->
+    <!--                                   -->
+
+    <!-- abstract audit web script -->
+    <bean id="abstractAuditWebScript"
+          class="org.alfresco.repo.web.scripts.audit.AbstractAuditWebscript"
+          parent="webscript" abstract="true">
+        <property name="auditService" ref="AuditService" />
+    </bean>
+
+    <!-- Gets the current audit state (enabled/disabled) for an application and path -->
+    <bean id="webscript.org.alfresco.repository.audit.control.get"
+          class="org.alfresco.repo.web.scripts.audit.AuditControlGet"
+          parent="abstractAuditWebScript">
+    </bean>
+
+    <!-- Change audit state (enabled/disabled) for an application and path -->
+    <bean id="webscript.org.alfresco.repository.audit.control.post"
+          class="org.alfresco.repo.web.scripts.audit.AuditControlPost"
+          parent="abstractAuditWebScript">
+    </bean>
+
+    <!-- Clear audit entries for an application (between from and to times) -->
+    <bean id="webscript.org.alfresco.repository.audit.clear.post"
+          class="org.alfresco.repo.web.scripts.audit.AuditClearPost"
+          parent="abstractAuditWebScript">
+    </bean>
+
+    <!-- Query for audit entries for an application (time ranges, id ranges, user, forward/reverse, limit) -->
+    <bean id="webscript.org.alfresco.repository.audit.query.get"
+          class="org.alfresco.repo.web.scripts.audit.AuditQueryGet"
+          parent="abstractAuditWebScript">
+    </bean>
+
+    <!--                                      -->
+    <!--      Replication Service REST API    -->
+    <!--                                      -->
+
+    <!-- abstract replication web script -->
+    <bean id="abstractReplicationWebScript"
+          class="org.alfresco.repo.web.scripts.replication.AbstractReplicationWebscript"
+          parent="webscript" abstract="true">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="replicationService" ref="ReplicationService" />
+        <property name="actionTrackingService" ref="actionTrackingService" />
+    </bean>
+
+    <!-- Lists the replication definitions -->
+    <bean id="webscript.org.alfresco.repository.replication.replication-definitions.get"
+          class="org.alfresco.repo.web.scripts.replication.ReplicationDefinitionsGet"
+          parent="abstractReplicationWebScript">
+    </bean>
+
+    <!-- Creates a new replication definition -->
+    <bean id="webscript.org.alfresco.repository.replication.replication-definitions.post"
+          class="org.alfresco.repo.web.scripts.replication.ReplicationDefinitionsPost"
+          parent="abstractReplicationWebScript">
+    </bean>
+
+    <!-- Get the details of a replication definition -->
+    <bean id="webscript.org.alfresco.repository.replication.replication-definition.get"
+          class="org.alfresco.repo.web.scripts.replication.ReplicationDefinitionGet"
+          parent="abstractReplicationWebScript">
+    </bean>
+
+    <!-- Updates a replication definition -->
+    <bean id="webscript.org.alfresco.repository.replication.replication-definition.put"
+          class="org.alfresco.repo.web.scripts.replication.ReplicationDefinitionPut"
+          parent="abstractReplicationWebScript">
+    </bean>
+
+    <!-- Deletes a replication definition -->
+    <bean id="webscript.org.alfresco.repository.replication.replication-definition.delete"
+          class="org.alfresco.repo.web.scripts.replication.ReplicationDefinitionDelete"
+          parent="abstractReplicationWebScript">
+    </bean>
+
+
+    <!--                                    -->
+    <!--      Running Actions REST API      -->
+    <!--                                    -->
+
+    <!-- abstract action web script -->
+    <bean id="abstractActionWebScript"
+          class="org.alfresco.repo.web.scripts.action.AbstractActionWebscript"
+          parent="webscript" abstract="true">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="actionService" ref="ActionService"/>
+        <property name="runtimeActionService" ref="actionService"/>
+        <property name="actionTrackingService" ref="actionTrackingService" />
+    </bean>
+
+    <!-- abstract start execution action web script -->
+    <bean id="abstractExecuteActionWebScript"
+          class="org.alfresco.repo.web.scripts.action.AbstractExecuteActionWebscript"
+          parent="abstractActionWebScript" abstract="true">
+    </bean>
+
+    <!-- Gets the details of a running action -->
+    <bean id="webscript.org.alfresco.repository.action.running-action.get"
+          class="org.alfresco.repo.web.scripts.action.RunningActionGet"
+          parent="abstractActionWebScript">
+    </bean>
+
+    <!-- Cancels a running action -->
+    <bean id="webscript.org.alfresco.repository.action.running-action.delete"
+          class="org.alfresco.repo.web.scripts.action.RunningActionDelete"
+          parent="abstractActionWebScript">
+    </bean>
+
+    <!-- Lists the running actions -->
+    <bean id="webscript.org.alfresco.repository.action.running-actions.get"
+          class="org.alfresco.repo.web.scripts.action.RunningActionsGet"
+          parent="abstractActionWebScript">
+    </bean>
+
+    <!-- Lists the running replication actions -->
+    <bean id="webscript.org.alfresco.repository.action.running-replication-actions.get"
+          class="org.alfresco.repo.web.scripts.action.RunningReplicationActionsGet"
+          parent="abstractActionWebScript">
+        <property name="replicationService" ref="ReplicationService" />
+    </bean>
+
+    <!-- Starts a new action running -->
+    <bean id="webscript.org.alfresco.repository.action.running-actions.post"
+          class="org.alfresco.repo.web.scripts.action.RunningActionsPost"
+          parent="abstractExecuteActionWebScript">
+    </bean>
+
+    <!-- Starts a new replication action running -->
+    <bean id="webscript.org.alfresco.repository.action.running-replication-actions.post"
+          class="org.alfresco.repo.web.scripts.action.RunningReplicationActionsPost"
+          parent="abstractExecuteActionWebScript">
+        <property name="replicationService" ref="ReplicationService" />
+    </bean>
+
+</beans>

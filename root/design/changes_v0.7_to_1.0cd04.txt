@@ -1,0 +1,14 @@
+v0.7 to v1.0 (Committee Draft 04) Changes Implemented by Alfresco:
+
+1) CHANGED: Relationship type allowedSourceTypes, allowedTargetTypes
+
+Was: mandatory
+Now: optional
+
+CMIS-569
+
+2) ADDED: alf:cmisSpecificationTitle to Repository Info
+
+3) ADDED: getFolderTree allowable action in REST binding
+
+CMIS-568

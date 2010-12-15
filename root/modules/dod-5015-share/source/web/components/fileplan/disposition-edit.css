@@ -1,0 +1,296 @@
+.disposition-edit .caption,
+.disposition-edit .disposition-form,
+.disposition-edit .main-buttons
+{
+   width: 50em;
+}
+
+.disposition-edit .flow-buttons
+{
+   width: 52em;   
+}
+
+.disposition-edit .caption
+{
+   text-align: right;
+   padding: 0 1em 0.5em 1em;
+}
+
+.disposition-edit .disposition-form
+{
+   background-color: #F5FFF2;
+   border: 1px solid #C2C2C2 !important;
+   padding: 1em !important;
+}
+
+.disposition-edit .mandatory-indicator
+{
+   color:green;
+   margin-left:0.4em;
+   margin-right:0.4em;
+}
+
+.disposition-edit .header
+{
+   font-weight: bold;    
+}
+
+.disposition-edit .hidden
+{
+   display: none;
+}
+
+.disposition-edit textarea
+{
+   height: 5em;
+   width: 99%;
+   margin-top: 0.5em;
+}
+
+.disposition-edit input[type="text"].period-amount
+{
+   width: 2em;
+   text-align:center;
+}
+
+.disposition-edit select.period-unit
+{
+   width: 8.5em;
+}
+
+.disposition-edit select.action-type,
+.disposition-edit select.action-event-name-value
+.disposition-edit select.relation
+{
+   width: 15em;
+}
+
+.disposition-edit select.relation
+{
+   margin-left: 1.2em;      
+}
+
+.disposition-edit select.action-type
+{
+   margin-top: 0.5em;
+}
+
+.disposition-edit .action
+{
+   clear: both;
+   margin-bottom: 0.3em;
+   min-height: 2em;
+}
+
+.disposition-edit .action
+{
+   border: 1px solid #D5D5D5;   
+}
+
+.disposition-edit .action .header
+{
+   background-color: #EAEAEA;
+   height:2.5em;
+   padding:0;
+}
+
+.disposition-edit .action .header div
+{
+   height:2.5em;
+   line-height:2.5em;
+}
+
+.disposition-edit .action .header .no
+{
+   position: absolute;
+   text-align: center;
+   width: 3em;
+   color: #FFFFFF;
+   background-image:url(../images/green-step-circle.png);
+   background-position:center center;
+   background-repeat:no-repeat;
+   margin-left: 0.25em;   
+}
+
+.disposition-edit .action .header .title
+{
+   color: #008000;
+   padding-left: 3.25em;
+}
+
+
+.disposition-edit .action .header .buttons
+{
+   float: right;
+   margin-right: 1em;
+}
+
+.disposition-edit .action .details
+{
+   border-top: 1px solid #D5D5D5;
+   background-color: #FFFFFF;
+}
+
+.disposition-edit .action .relation-label
+{
+   text-align:center;
+   width:3em;
+}
+
+.disposition-edit .action .section
+{
+   padding-left: 3.25em;
+   line-height:1em;
+   clear: both;
+   padding-top: 0.5em;
+   padding-bottom: 0.5em;
+   width: 90%;
+}
+
+.disposition-edit .action .section.events .events-header
+{
+   margin-left: 4em;
+   padding-left: 0.5em;
+   width: 40.5em;
+}
+
+.disposition-edit .action .section.events .event-completion-header,
+.disposition-edit .action .section.events .event-name-header
+{
+   float: left;
+   margin-bottom: 0.2em;
+}
+
+.disposition-edit .action .section.events .event-completion-header
+{
+   width: 15em;
+}
+
+.disposition-edit .action .section.events .event-name-header
+{
+   width: 21em;
+}
+
+.disposition-edit .action .section.events .event-name-header
+{
+   padding-left: 0.6em;
+}
+
+
+.disposition-edit .action .details .buttons,
+.disposition-edit .main-buttons
+{
+   text-align: center;
+   padding-bottom: 0.5em;
+   padding-top: 0.5em;
+}
+
+.disposition-edit .main-buttons
+{
+   padding:1em;
+}
+
+.disposition-edit .action .details .buttons
+{
+   background-color: #D4D4D4;
+   border-top: 1px solid #D5D5D5;
+}
+
+
+.disposition-edit .action .header .buttons .delete,
+.disposition-edit .action .action-event-buttons .delete,
+.disposition-edit .action .header .buttons .edit
+{
+   cursor: pointer;
+   background-position: center center;
+   background-repeat: no-repeat;
+   padding: 0.5em 0.5em 0.5em 1em;
+}
+
+.disposition-edit .action .header .buttons .delete,
+.disposition-edit .action .action-event-buttons .delete   
+{
+   background-image:url(../images/delete-16.png);
+}
+
+.disposition-edit .action .header .buttons .edit
+{
+   background-image:url(../images/edit-16.png);
+}
+
+.disposition-edit .action .action-event-relation
+{
+   position: absolute;
+   width: 3em;
+   text-align: center;
+}
+
+.disposition-edit .action .or-relation,
+.disposition-edit .action .and-relation,
+.disposition-edit .action .or,
+.disposition-edit .action .and
+{
+   font-weight: bold;
+}
+
+.disposition-edit .action .events-list .first .action-event-relation,
+.disposition-edit .action.or .and,
+.disposition-edit .action.and .or,
+.disposition-edit .action.and .or-relation,
+.disposition-edit .action.or .and-relation,
+.disposition-edit .action.relation-disabled .or-relation,
+.disposition-edit .action.relation-disabled .and-relation,
+.disposition-edit .action.expanded .header .buttons
+{
+   display: none;
+}
+
+.disposition-edit .action .action-event-name
+{
+   position: absolute;
+   margin-left: 3.25em;
+   width: 22em;
+   padding-left: 0.5em
+}
+
+.disposition-edit .action .action-event-completion
+{
+   position: absolute;
+   margin-left: 25.25em;
+   width: 16em;
+}
+
+.disposition-edit .action .action-event-buttons
+{
+   position: absolute;
+   width: 2em;
+   margin-left: 41.25em;
+}
+
+
+.disposition-edit .action .events-list
+{
+   padding-bottom: 1em;
+   padding-left: 1em;
+}
+
+.disposition-edit .action .events-list li
+{
+   clear: both;
+   height: 2.5em;
+   line-height: 2.5em;
+}
+
+.disposition-edit .action .events-list li div
+{
+   height: 2.5em;
+   line-height: 2.5em;
+}
+
+.disposition-edit .action .events-list li.even .action-event-name,
+.disposition-edit .action .events-list li.even .action-event-completion,
+.disposition-edit .action .events-list li.even .action-event-buttons
+{
+   background-color: #EFEFEF;   
+}
+

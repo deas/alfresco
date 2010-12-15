@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Portlet: Edit Document Library Site</shortname>
+  <description>Edit the Site for the Share DocLib portlet</description>
+  <url>/components/portlet/edit-doclib-site</url>
+</webscript>

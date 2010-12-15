@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Transition Task GG</shortname>
+  <description>Transition Task for iGoogle Gadgets</description>
+  <url>/aggadget/transitiontask</url>
+  <authentication>user</authentication>
+</webscript>

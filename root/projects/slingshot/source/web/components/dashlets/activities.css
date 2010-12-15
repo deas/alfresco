@@ -1,0 +1,57 @@
+.activities .new-day
+{
+   float: none !important;
+   padding: 1em;
+}
+
+.activities .new-hour
+{
+   float: none !important;
+   padding-bottom: 0.5em;
+   padding-top: 1em;
+}
+
+.activities div.first-item
+{
+   padding-top: 0;
+}
+.activities div.last-item
+{
+   padding-bottom: 1em;
+}
+
+.activities .new-day span,
+.activities .new-hour span
+{
+   background-color: #f9fcfd;
+   font-size: 108%;
+   font-weight: bold;
+   padding-right: 0.5em;
+   position: relative;
+}
+
+.activities div.ruler
+{
+   background-color: #d3d3d3;
+   height: 1px;
+   position: relative;
+   top: 0.7em;
+}
+
+
+.activities .activity
+{
+   clear: both;
+   margin-left: 1em;
+   padding-bottom: 2px;
+}
+
+.activities .activity .time
+{
+   float: left;
+}
+
+.activities .activity .detail
+{
+   margin-left: 3.5em;
+}

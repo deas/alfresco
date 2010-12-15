@@ -1,0 +1,15 @@
+.members-bar
+{
+   border-bottom: 1px solid #c7ccce;
+   clear: left;
+   margin: 0 -10px 1px;
+   min-height: 1.2em;
+   padding: 10px 0px;
+}
+
+.members-bar .separator,
+.members-bar .member-link
+{
+   float: left;
+   padding-left: 10px;
+}

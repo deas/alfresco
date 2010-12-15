@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Admin Console User Rights Report</shortname>
+  <description>Administration Console - User Rights Report Tool</description>
+  <url>/components/console/rm-userrights</url>
+  <family>rm-console</family>
+</webscript>

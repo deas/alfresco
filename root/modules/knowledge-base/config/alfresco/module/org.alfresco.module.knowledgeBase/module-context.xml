@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+	
+	<!-- Knowledge base model bootstrap bean -->
+	<bean id="kb_dictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="dictionaryBootstrap">
+		<property name="models">
+		  	<list>
+		    	<value>alfresco/module/org.alfresco.module.knowledgeBase/model/kbModel.xml</value>        
+		    </list>
+		</property>
+	</bean>   
+		
+	<!-- Bootstrap Groups -->
+	<bean id="kb_bootstrapGroups" class="org.alfresco.repo.module.ImporterModuleComponent" parent="module.baseComponent">
+        <property name="moduleId" value="org.alfresco.module.knowledgeBase" />
+        <property name="name" value="org.alfresco.module.knowledgeBase.bootstrapGroups" />
+        <property name="description" value="Initial data requirements" />
+        <property name="sinceVersion" value="1.0" />
+        <property name="appliesFromVersion" value="1.0" />
+        <!-- Data properties -->
+        <property name="importer" ref="userBootstrap"/>
+        <property name="bootstrapViews">
+            <list>
+                <props>
+                    <prop key="path">/${alfresco_user_store.system_container.childname}/sys:authorities</prop>
+                    <prop key="location">alfresco/module/org.alfresco.module.knowledgeBase/bootstrap/kb_groups.xml</prop>
+                </props>
+            </list>
+        </property>
+    </bean>
+        
+	<!-- Knowledge base data bootstrap bean -->   
+	<bean id="kb_bootstrapSpaces" class="org.alfresco.repo.module.ImporterModuleComponent" parent="module.baseComponent" depends-on="kb_dictionaryBootstrap">
+	  	<property name="moduleId" value="org.alfresco.module.knowledgeBase" />
+	    <property name="name" value="bootstrapSpaces" />
+	    <property name="description" value="Initial data requirements" />
+	    <property name="sinceVersion" value="1.0" />
+	    <property name="appliesFromVersion" value="1.0" />    
+	    <property name="importer" ref="spacesBootstrap"/>
+	    <property name="bootstrapViews">
+	    	<list>
+	    		
+	    		<!-- Knowledge base categories -->
+		    	<props>
+		        	<prop key="path">/cm:categoryRoot/cm:generalclassifiable</prop>
+		            <prop key="location">alfresco/module/org.alfresco.module.knowledgeBase/bootstrap/kb_categories.xml</prop>
+		        </props>
+		            	
+		      	<!-- Knowledge space -->
+				<props>
+		      		<prop key="path">/${spaces.company_home.childname}</prop>
+		        	<prop key="location">alfresco/module/org.alfresco.module.knowledgeBase/bootstrap/kb_space.xml</prop>
+		      	</props>     
+		      	
+		     </list> 	
+	    </property>
+	</bean>
+	
+	<!-- KB Script Util Methods -->
+	<bean id="kb_scriptUtil" parent="baseJavaScriptExtension" class="org.alfresco.module.knowledgeBase.KbScriptUtil">
+        <property name="extensionName">
+            <value>kb</value>
+        </property>               
+        <property name="authorityService">
+            <ref bean="AuthorityService"/>
+        </property>
+    </bean>
+	
+	<!-- Article aspect behaviour bean -->
+	<bean id="kb_articleAspect" class="org.alfresco.module.knowledgeBase.ArticleAspect" init-method="init">
+		<property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+        <property name="contentService">
+            <ref bean="ContentService" />
+        </property>
+        <property name="actionService">
+            <ref bean="ActionService" />
+        </property>
+        <property name="dictionaryService">
+            <ref bean="DictionaryService" />
+        </property>
+        <property name="permissionService">
+            <ref bean="PermissionService" />
+        </property>
+        <property name="ownableService">
+            <ref bean="OwnableService" />
+        </property>
+        <property name="authenticationService">
+            <ref bean="AuthenticationService" />
+        </property>
+	</bean>
+	
+	<!-- Import the transform configuration -->
+	<import resource="classpath:alfresco/module/org.alfresco.module.knowledgeBase/transform/custom-transform-context.xml" /> 
+   
+    <!-- Knowledge base web client configuration bootstrap bean -->
+	<bean id="kb_configBootstrap" class="org.alfresco.web.config.WebClientConfigBootstrap" init-method="init" depends-on="kb_dictionaryBootstrap">
+       <property name="configs">
+         <list>
+            <value>classpath:alfresco/module/org.alfresco.module.knowledgeBase/ui/web-client-custom.xml</value>
+         </list>
+       </property>
+    </bean>  
+    
+</beans>
+

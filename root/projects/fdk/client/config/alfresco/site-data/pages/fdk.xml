@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Forms Development Kit</title>
+   <description>Forms Development Kit (FDK) landing page</description>
+   <template-instance>fdk</template-instance>
+   <authentication>none</authentication>
+</page>

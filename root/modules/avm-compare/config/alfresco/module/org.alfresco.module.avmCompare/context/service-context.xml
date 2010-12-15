@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+    <bean id="avmCompareNameMatcher"
+          class="org.alfresco.repo.avm.util.FileExtensionNameMatcher">
+        <property name="extensions">
+            <list>
+                <value>.swp</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The POST method is supported for ease of use                      -->
+    <!--                                                                   -->
+    <!--  Note:  the 'init-method' implementation has a once-per-process   -->
+    <!--         and a once-per-instance section because there may be      -->
+    <!--         more than one instance of the underlying class            -->
+    <!--         (i.e.: the GET and POST instances).                       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <bean id          = "webscript.org.alfresco.module.avmCompare.avm_compare.post"
+          class       = "org.alfresco.module.avmCompare.AvmCompare"
+          parent      = "webscript"
+          init-method = "init">
+
+        <property name="avmRemote">
+            <ref bean="avmRemote"/>
+        </property>
+
+        <property name="AVMSyncService">
+            <ref bean="avmSyncService"/>
+         </property>
+
+        <property name="excluderNameMatcher">
+            <ref bean="avmCompareNameMatcher"/>
+        </property>
+
+    </bean>
+
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The GET method is "better form" because this webscript            -->
+    <!-- does not modify the repository                                    -->
+    <!--                                                                   -->
+    <!--  Note:  the 'init-method' implementation has a once-per-process   -->
+    <!--         and a once-per-instance section because there may be      -->
+    <!--         more than one instance of the underlying class            -->
+    <!--         (i.e.: the GET and POST instances).                       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <bean id          = "webscript.org.alfresco.module.avmCompare.avm_compare.get"
+          class       = "org.alfresco.module.avmCompare.AvmCompare"
+          parent      = "webscript"
+          init-method = "init">
+
+        <property name="avmRemote">
+            <ref bean="avmRemote"/>
+        </property>
+
+        <property name="AVMSyncService">
+            <ref bean="avmSyncService"/>
+         </property>
+
+        <property name="excluderNameMatcher">
+            <ref bean="avmCompareNameMatcher"/>
+        </property>
+    </bean>
+
+</beans>

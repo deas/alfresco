@@ -1,0 +1,695 @@
+msgid "The integrated Alfresco FTP server was unable to bind to the default port. Please check if you have enough permissions, or choose an alternative port number."
+msgstr "統合されたAlfresco FTPサーバは、デフォルトtポートに結合できませんでした。十分な権限があるかチェックし、代わりのポート番号を選択してください。"
+
+msgid "Records Management support. This is a separately licensed component and should only be installed if licensed."
+msgstr "Records Managementサポートを含める。これは単独でライセンスを受けたコンポーネントで、ライセンスを受けた場合にのみ使用する必要があります。"
+
+msgid "Re-enter"
+msgstr "再入力"
+
+msgid "MySQL Information"
+msgstr "MySQL情報"
+
+msgid "OpenOffice Installation Directory"
+msgstr "OpenOfficeインストールディレクトリ"
+
+msgid "Admin Password:"
+msgstr "管理者パスワード"
+
+msgid "Database Installation"
+msgstr "データベースのインストール"
+
+msgid "Advanced - Configures server ports and service properties"
+msgstr "アドバンスド - サーバポートとサービスプロパティの設定"
+
+msgid "Couldn't check Tomcat Version.\nTomcat 5.5 is recommended."
+msgstr "Tomcat Versionをチェックできませんでした。\nTomcat 5.5をお勧めします。"
+
+msgid "Program Files Linux"
+msgstr "プログラムファイルLinux"
+
+msgid "Tomcat 5.5 Component"
+msgstr "Tomcat 5.5コンポーネント"
+
+msgid "Uninstall ${product_fullname} service"
+msgstr "${product_fullname}サービスのアンインストール"
+
+msgid "MySQL Server root Password"
+msgstr "MySQLサーバールートのパスワード"
+
+msgid "Web Server domain:"
+msgstr "Webサーバドメイン:"
+
+msgid "Alfresco Enterprise Content Management (ECM) system featuring Document Management, Collaboration Management and Image Management."
+msgstr "Alfrescoは、文書管理、コラボレーション管理、画像管理を特徴とするEnterprise コンテンツ管理(ECM)システムです。"
+
+msgid "Common Installation Directory"
+msgstr "共通のインストールディレクトリ"
+
+msgid "I wish to use an existing MySQL database"
+msgstr "私は既存のMySQLデータベースの使用を希望します"
+
+msgid "Service script name:"
+msgstr "サービススクリプト名："
+
+msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
+msgstr "インストーラはWindows 64ビットです。Windows 32ビットバージョンをダウンロードしてください。"
+
+msgid "Include system path in environment"
+msgstr "環境にシステムパスを含みます"
+
+msgid "Password:"
+msgstr "パスワード"
+
+msgid "Verify:"
+msgstr "再入力"
+
+msgid "Please enter your database root username"
+msgstr "データベースのルートユーザー名を入力してください"
+
+msgid "You can optionally register ${product_fullname} as a service. This way it will automatically be started every time the machine is started."
+msgstr "サービスとして${product_fullname}をオプションで登録できます。登録すると、コンピュータを起動するたびにサービスが自動的に開始されます。"
+
+msgid "Alfresco AVM Web Project Management for managing web site content."
+msgstr "Alfresco Webコンテンツ管理(Webサイトコンテンツ管理用)"
+
+msgid "Please select which database configuration you wish to use"
+msgstr "使用するデータベース設定を選択してください"
+
+msgid "Please enter the port that the Openoffice server will listen to by default."
+msgstr "OpenOfficeサーバーがデフォルトでリッスンするポートを入力してください"
+
+msgid "MySQL connection timed out. The installation has been stopped."
+msgstr "MySQL接続がタイムアウトになりました。インストールが停止しました。"
+
+msgid "README Folder Component"
+msgstr "READMEフォルダコンポーネント"
+
+msgid "Alfresco uses port 50500 to execute remote commands. It seems this port is being taken by another application. Please choose an alternative port number."
+msgstr "Alfrescoはリモートコマンドを実行するために、ポート50500を使用します。このポートは別のアプリケーションによって取得されているようです。代わりのポート番号を選択してください。"
+
+msgid "Launch ${product_fullname} Share"
+msgstr "${product_fullname}共有を今すぐ起動しますか?"
+
+msgid "OpenOffice"
+msgstr "OpenOffice"
+
+msgid "Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}."
+msgstr "インストールディレクトリパスが長すぎます。許可される最大文字数は${base_installdir_max_characters}です。"
+
+msgid "New Database"
+msgstr "新しいデータベース"
+
+msgid "Verify password"
+msgstr "パスワードの再入力"
+
+msgid "Unable to get free disk space."
+msgstr "空きディスク容量がありません"
+
+msgid "Starting servers. Please be patient"
+msgstr "サーバを開始します。お待ちください。"
+
+msgid "Due to a lack of system resources (CPU or memory), the installation is unable to the local MySQL server. Would you like to retry to connect to the MySQL server and continue with the installation?"
+msgstr "システムリソース(CPUまたはメモリ)が欠如しているため、ローカルMySQLサーバーにインストールすることはできません。MySQLサーバーへの接続を試みて、インストールを続行しますか?"
+
+msgid "Starting OpenOffice..."
+msgstr "OpenOfficeを開始しています..."
+
+msgid "Stopping MySQL..."
+msgstr "MySQLを停止しています..."
+
+msgid "Unable to bind the mysql_port to ${mysql_port}. Please select another one."
+msgstr "mysql_port を${mysql_port}に結合できません。別のポートを選択してください。"
+
+msgid "Quickr Content Services"
+msgstr "Quickrコンテンツサービス"
+
+msgid "Please enter your database password"
+msgstr "データベースのルートユーザーパスワードを入力してください"
+
+msgid "Manual - Configure servers to start services manually"
+msgstr "手動 - 起動中にサーバーがサービスを手動で起動するように設定します"
+
+msgid "MySQL Server Port"
+msgstr "MySQLサーバーポート"
+
+msgid "Tomcat AJP Port:"
+msgstr "Tomcat AJPポート:"
+
+msgid "Updating MySQL directory permissions"
+msgstr "MySQLディレクトリ権限を更新する"
+
+msgid "Set Installer Variables Tomcat"
+msgstr "インストーラーVariables Tomcatの設定"
+
+msgid "MySQL Server root password"
+msgstr "MySQLサーバールートのパスワード"
+
+msgid "OpenOffice Server Port:"
+msgstr "OpenOfficeサーバーポート"
+
+msgid "SWFTOOLS Component"
+msgstr "SWFTOOLSコンポーネント"
+
+msgid "Web Server"
+msgstr "Webサーバ"
+
+msgid "Easy - Installs servers with the default configuration"
+msgstr "簡単 - デフォルトの設定でサーバーをインストールします"
+
+msgid "Select a folder"
+msgstr "フォルダを選択する"
+
+msgid "Tomcat Directory:"
+msgstr "Tomcatディレクトリ:"
+
+msgid "IP / Hostname"
+msgstr "IP / ホスト名"
+
+msgid "README Destination"
+msgstr "README宛先"
+
+msgid "Quickr Server:"
+msgstr "Quickrサーバ"
+
+msgid "SWFTOOLS installation directory"
+msgstr "SWFTOOLSインストールディレクトリ"
+
+msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
+msgstr "このリリースはJ2SE 5.0で実行するためにパッケージされました。互換性のあるJavaバージョンをインストールし、再試行してください。"
+
+msgid "Verify"
+msgstr "再入力"
+
+msgid "Alfresco Licenses"
+msgstr "alfrescoライセンス"
+
+msgid "Quickr and Lotus Notes support for communication with Alfresco."
+msgstr "Alfrescoと通信するためにQuickrとLotus Notesを許可します"
+
+msgid "ImageMagick Installation Directory"
+msgstr "ImageMagickインストールディレクトリ"
+
+msgid "Program Files Windows"
+msgstr "プログラムファイルWindows"
+
+msgid "Database name:"
+msgstr "データベース名"
+
+msgid "Tomcat SSL Port:"
+msgstr "Tomcat SSLポート"
+
+msgid "JDBC Driver:"
+msgstr "JDBCドライバ"
+
+msgid "Licenses Files"
+msgstr "ライセンスファイル"
+
+msgid "Please use ascii alphanumeric characters only"
+msgstr "ascii英数字のみを使用してください"
+
+msgid "I wish to use the bundled MySQL database"
+msgstr "私はバンドルされたMySQLデータベースの使用を希望します"
+
+msgid "Set the database name and user name which will be created or used."
+msgstr "作成または使用されるデータベース名とユーザ名の設定"
+
+msgid "SharePoint Protocol Support."
+msgstr "SharePointプロトコルサポート"
+
+msgid "Tomcat installation:"
+msgstr "Tomcatインストール:"
+
+msgid "OpenOffice installation directory"
+msgstr "OpenOfficeインストールディレクトリ"
+
+msgid "Please enter your database root user password."
+msgstr "データベースのルートユーザーパスワードを入力してください"
+
+msgid "Please enter a valid IP address or hostname"
+msgstr "有効なIPアドレスまたはホスト名を入力してください"
+
+msgid "Please enter a valid hostname or IP address"
+msgstr "有効なホスト名またはIPアドレスを入力してください"
+
+msgid "MySQL Server port"
+msgstr "MySQLサーバーポート"
+
+msgid "Use to configure the destination of the content in commands folder"
+msgstr "コマンドフォルダのコンテンツの宛先を設定するために使用する"
+
+msgid "Common Component"
+msgstr "共通のコンポーネント"
+
+msgid "MySQL software delivers a very fast, multi-threaded, multi-user, and robust SQL database server."
+msgstr "MySQLソフトウェアは非常に高速の、マルチスレッド、マルチユーザー、堅牢なSQLデータベースサーバーを提供します。"
+
+msgid "Tomcat modifications due to java"
+msgstr "javaによるTomcat変更"
+
+msgid "New Component"
+msgstr "新しいコンポーネント"
+
+msgid "Alfresco Community Edition Stack"
+msgstr "Alfrescoコミュニティスタック"
+
+msgid "Tomcat directory:"
+msgstr "Tomcatディレクトリ:"
+
+msgid "Common installation directory"
+msgstr "共通のインストールディレクトリ"
+
+msgid "JDBC URL:"
+msgstr "JDBC URL"
+
+msgid "README destination"
+msgstr "README宛先"
+
+msgid "Installation folder cannot contain spaces."
+msgstr "インストールフォルダにスペースを含めることはできません"
+
+msgid "ImageMagick Version"
+msgstr "ImageMagickバージョン"
+
+msgid "Set Installer Variables Java"
+msgstr "インストーラーVariables Javaの設定"
+
+msgid "Alfresco"
+msgstr "Alfresco"
+
+msgid "Stop ${product_fullname} service"
+msgstr "${product_fullname}サービスの停止"
+
+msgid "Extension Files"
+msgstr "ファイルの拡張子"
+
+msgid "Unable to bind to the server port. Please make sure that Tomcat is not running."
+msgstr "サーバポートに結合できません。Tomcatが動作していないことを確認してください。"
+
+msgid "Verify password:"
+msgstr "パスワードの再入力"
+
+msgid "Couldn't check Apache Tomcat Version.\nTomcat 5.5 is recommended."
+msgstr "Tomcat Versionをチェックできませんでした。\nTomcat 5.5をお勧めします。"
+
+msgid "Please give a password to use for the Alfresco administrator account."
+msgstr "Alfresco管理者アカウントに対して使用するパスワードを提供してください。"
+
+msgid "Shortcuts Images"
+msgstr "ショートカット画像"
+
+msgid "Starting servers. Please be patient."
+msgstr "サーバを開始します。お待ちください。"
+
+msgid "Alfresco SharePoint Port"
+msgstr "Alfresco SharePointポート"
+
+msgid "The service script file exists. Please insert a different name for the service script."
+msgstr "サービススクリプトファイルが存在します。サービススクリプトに対して他の名前を挿入してください。"
+
+msgid "SharePoint Protocol support."
+msgstr "SharePointプロトコルサポート"
+
+msgid "License Folder Component"
+msgstr "ライセンスフォルダコンポーネント"
+
+msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
+msgstr "指定したポート番号に結合できません。別のTomcatシャットダウンポートを選択してください。"
+
+msgid "Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}"
+msgstr "${tomcat_unique_service_name}の名前の付いたWindowsサービスとしてTomcatをインストールする"
+
+msgid "Please give details of the Quickr server to use."
+msgstr "使用するQuickrサーバーの詳細を提供してください"
+
+msgid "MySQL"
+msgstr "MySQL"
+
+msgid "Tomcat JMX Port:"
+msgstr "Tomcat JMXポート:"
+
+msgid "Starting servers ..."
+msgstr "サーバを開始しています ..."
+
+msgid "To show database root password"
+msgstr "データベースルートパスワードを表示する"
+
+msgid "Program Files"
+msgstr "プログラムファイル"
+
+msgid "Tomcat Port Configuration"
+msgstr "Tomcatポート設定"
+
+msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
+msgstr "指定したポート番号に結合できません。SharePointプロトコルに対して別のポートを選択してください。"
+
+msgid "Alfresco FTP Port"
+msgstr "Alfresco FTPポート"
+
+msgid "DB User Password"
+msgstr "DBユーザーパスワード"
+
+msgid "Script for start/stop Services"
+msgstr "開始/停止サービス用スクリプト"
+
+msgid "Install ${product_fullname} as a service?"
+msgstr "サービスとして${product_fullname}をインストールしますか?"
+
+msgid "ImageMagick version"
+msgstr "ImageMagickバージョン"
+
+msgid "ImageMagick installation directory"
+msgstr "ImageMagickインストールディレクトリ"
+
+msgid "New Folder"
+msgstr "新しいフォルダ"
+
+msgid "Setup will try to install new databases and will overwrite any existing duplicate. Do you wish you continue?"
+msgstr "設定では新しいデータベースのインストールが試みられ、既存の複製を上書きします。続行しますか?"
+
+msgid "Tomcat Server Port:"
+msgstr "Tomcatサーバポート:"
+
+msgid "There is not enough free space on ${installdir}. You need at least ${base_needed_space} MB in order to install ${product_fullname}"
+msgstr "${installdir}に十分な空きスペースがありません。${product_fullname}をインストールをするには少なくとも${base_needed_space} MBが必要です"
+
+msgid "Licenses destination"
+msgstr "ライセンス宛先"
+
+msgid "The Alfresco data directory tends to grow in size. Please choose where do you want to store it."
+msgstr "Alfrescoデータディレクトリはサイズが大きくなる傾向があります。保存する場所を選択してください。"
+
+msgid "Alfresco Share"
+msgstr "Alfresco Share"
+
+msgid "Installing Alfresco Module Packages (AMPs)"
+msgstr "Alfrescoモジュールパッケージ(AMP)をインストールする"
+
+msgid "Stack Scripts Directory"
+msgstr "スタックスクリプトディレクトリ"
+
+msgid "The length of the password must be greater than 3 characters"
+msgstr "パスワードは3文字以上の長さにする必要があります"
+
+msgid "ImageMagick Component"
+msgstr "ImageMagickコンポーネント"
+
+msgid "Please enter your MySQL database information:"
+msgstr "MySQLデータベース情報を入力してください"
+
+msgid "You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat."
+msgstr "既存のインストールとしてTomcatが選択されています。新しいインストール済みアプリケーションを使用するには、Tomcatを再起動する必要があります。"
+
+msgid "MySQL Server Root Password:"
+msgstr "MySQLサーバールートのパスワード"
+
+msgid "Please select which database configuration you wish to use. If you select an existing database you should configure the Alfresco application before running the Alfresco server."
+msgstr "使用するデータベース設定を選択してください。既存のデータベースを選択する場合、インストールの前にAlfrescoアプリケーションを設定する必要があります。"
+
+msgid "Alfresco Explorer"
+msgstr "Alfresco Explorer"
+
+msgid "Please enter the IP address or hostname for your database"
+msgstr "データベースのIPアドレスまたはホスト名を入力してください"
+
+msgid "Please enter the Tomcat configuration parameters you wish to use."
+msgstr "使用するTomcat設定パラメータを入力してください"
+
+msgid "Please select the Tomcat configuration you wish to use"
+msgstr "使用するTomcat設定を選択してください"
+
+msgid "Database Configuration"
+msgstr "データベース設定"
+
+msgid "Tomcat Directory"
+msgstr "Tomcatディレクトリ"
+
+msgid "Stopping services"
+msgstr "サービスを停止します"
+
+msgid "War Files"
+msgstr "Warファイル"
+
+msgid "Re-enter password"
+msgstr "パスワードの再入力"
+
+msgid "The path ${mysql_binary_directory} seems to be invalid. Please check if the directory contains the required binaries."
+msgstr "パス${mysql_binary_directory}が有効でないようです。ディレクトリに要求されたバイナリが含まれているかチェックしてください。"
+
+msgid "DB User Name"
+msgstr "DBユーザー名"
+
+msgid "Alfresco Website"
+msgstr "Alfresco Webサイト"
+
+msgid "Install ${product_fullname} as service"
+msgstr "サービスとして${product_fullname}をインストールします"
+
+msgid "Install as a service"
+msgstr "サービスとしてインストールする"
+
+msgid "Start ${product_fullname} service"
+msgstr "${product_fullname}サービスの開始"
+
+msgid "JDK Installation Directory:"
+msgstr "HDKインストールディレクトリ:"
+
+msgid "Installation Type"
+msgstr "インストール種別"
+
+msgid "Uninstalling services"
+msgstr "サービスをアンインストールしています"
+
+msgid "Installation Folder"
+msgstr "インストールフォルダ"
+
+msgid "Include system ld library path in environment"
+msgstr "環境にシステムIdライブラリパスを含みます"
+
+msgid "MySQL Service"
+msgstr "MySQLサービス"
+
+msgid "Records Management"
+msgstr "Records Management"
+
+msgid "Uninstall ${product_fullname}"
+msgstr "${product_fullname}のアンインストール"
+
+msgid "Updating mysql directory permissions"
+msgstr "MySQLディレクトリ権限を更新する"
+
+msgid "Stop Virtual Server"
+msgstr "仮想サーバの停止"
+
+msgid "README File"
+msgstr "READMEファイル"
+
+msgid "Repeat Password:"
+msgstr "パスワードを繰り返す"
+
+msgid "The ${product_shortname} service script file exists. Please insert a different name for the service script."
+msgstr "${product_shortname}サービススクリプトファイルが存在します。サービススクリプトに対して他の名前を挿入してください。"
+
+msgid "It seems you do not have enough permissions to bind to the port or the port is already taken by another application. Please select another one."
+msgstr "ポートに結合するための十分な権限を持っていないか、ポートが別のアプリケーションによってすでに取得されているようです。別のポートを選択してください。"
+
+msgid "Tomcat Shutdown Port:"
+msgstr "Tomcatシャットダウンポート:"
+
+msgid "Auto - Configure servers to start automatically"
+msgstr "自動 - 起動中にサーバーが自動的に起動するように設定します"
+
+msgid "Start Virtual Server"
+msgstr "仮想サーバの開始"
+
+msgid "War files"
+msgstr "Warファイル"
+
+msgid "Unable to bind to the given port number. Please select another Tomcat Server Port."
+msgstr "指定したポート番号に結合できません。別のTomcatサーバポートを選択してください。"
+
+msgid "Web Project Management (AVM)"
+msgstr "Alfresco WCM"
+
+msgid "Start tomcat service"
+msgstr "Tomcatサービスの開始"
+
+msgid "You must provide a non-empty password"
+msgstr "空白でないパスワードを提供する必要があります"
+
+msgid "Install application as a service on Unix systems"
+msgstr "Unixシステムにサービスとしてアプリケーションをインストールする"
+
+msgid "I wish to use an existing database"
+msgstr "私は既存のデータベースの使用を希望します"
+
+msgid "Alfresco Module Packages"
+msgstr "Alfrescoモジュールパッケージ"
+
+msgid "MySQL Credentials"
+msgstr "MySQL証明書"
+
+msgid "Service Startup Configuration"
+msgstr "サービス起動設定"
+
+msgid "DB Name"
+msgstr "DB名"
+
+msgid "Quickr Connector Support"
+msgstr "Quickr接続サポート"
+
+msgid "MySQL Binary Directory"
+msgstr "MySQLバイナリディレクトリ"
+
+msgid "Unable to bind to the given port number. Please select another FTP Port."
+msgstr "指定したポート番号に結合できません。別のFTPポートを選択してください。"
+
+msgid "Unable to install MySQL as a service with name ${mysql_unique_service_name}"
+msgstr "${mysql_unique_service_name}の名前の付いたサービスとしてMySQLをインストールできません"
+
+msgid "I wish to use the bundled Tomcat"
+msgstr "私はバンドルされたTomcatの使用を希望します"
+
+msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
+msgstr "OpenOffice.orgは、マルチプラットフォームおよび多言語のオフィス用パッケージソフトおよびオープンソースプロジェクトです。"
+
+msgid "Unable to bind to the given port number. Please select another one."
+msgstr "指定したポート番号に結合できません。別のポートを選択してください。"
+
+msgid "Installation folder"
+msgstr "インストールフォルダ"
+
+msgid "Stopping servers"
+msgstr "サーバを停止します"
+
+msgid "Waiting for MySQL to Start."
+msgstr "MySQLの開始を待っています"
+
+msgid "Port:"
+msgstr "ポート:"
+
+msgid "Tomcat SSL Port"
+msgstr "Tomcat SSLポート"
+
+msgid "Initializing MySQL Database. This could take a couple of minutes."
+msgstr "MySQLデータベースを初期化します。これには、2、3分かかります。"
+
+msgid "JDK configuration"
+msgstr "JDK設定"
+
+msgid "Please enter your database root user password"
+msgstr "データベースのルートユーザーパスワードを入力してください"
+
+msgid "Alfresco Shortcuts"
+msgstr "Alfrescoショートカット"
+
+msgid "Libraries Files"
+msgstr "ライブラリファイル"
+
+msgid "Please choose a folder to install ${product_fullname}"
+msgstr "${product_fullname}をインストールするフォルダを選択してください"
+
+msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
+msgstr "お使いのシステムに適切なJDKインストールが見つかりませんでした。${product_fullname}にはJDK 1.5以降が必要です。"
+
+msgid "Unable to connect to database ${mysql_hostname}:${mysql_port}. Please check that the parameters are correct and your MySQL configuration accepts TCP/IP connections."
+msgstr "データベース${mysql_hostname}:${mysql_port}に接続できません。パラメータが正しく、MySQL設定がTCP/IP接続を受け入れていることを確認してください。"
+
+msgid "I wish to use an existing Tomcat"
+msgstr "私は既存のTomcatの使用を希望します"
+
+msgid "Installing MySQL as a Windows service with name ${mysql_unique_service_name}"
+msgstr "${mysql_unique_service_name}の名前の付いたWindowsサービスとしてMySQLをインストールする"
+
+msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
+msgstr "このリリースはJ2SE 5.0以降で実行するためにパッケージされました。互換性のあるJavaバージョンをインストールし、再試行してください。"
+
+msgid "Parameters"
+msgstr "パラメータ"
+
+msgid "Shutting down MySQL"
+msgstr "MySQLをシャットダウンする"
+
+msgid "SharePoint"
+msgstr "SharePoint"
+
+msgid "Allow to choose an already installed service name if it contains a call to installdir/ctlscript"
+msgstr "installdir/ctlscriptに対するコールが含まれている場合、すでにインストールされたサービス名を選択することができます"
+
+msgid "Alfresco data directory"
+msgstr "Alfrescoデータディレクトリ"
+
+msgid "The selected folder is not empty. Please select a different folder"
+msgstr "選択したフォルダは空でありません。別のフォルダを選択してください。"
+
+msgid "Service script name"
+msgstr "サービススクリプト名"
+
+msgid "You need to provide a non-empty password"
+msgstr "空白でないパスワードを提供する必要があります"
+
+msgid "Configuring database"
+msgstr "データベースを設定する"
+
+msgid "The directory you selected does not seem to be a valid JDK directory. Please try again."
+msgstr "選択したディレクトリは有効なJDKディレクトリでないようです。再試行してください。"
+
+msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
+msgstr "指定したポート番号に結合できません。別のTomcat AJPポートを選択してください。"
+
+msgid "For security reasons it is recomended to set a non blank password for MySQL root user. Do you want to set a password for the MySQL root user?"
+msgstr "セキュリティ上の理由で、MySQLルートユーザーの場合空白でないパスワードを設定することをお勧めします。MySQLルートユーザーに対してパスワードを設定しますか?"
+
+msgid "JDK installation directory:"
+msgstr "HDKインストールディレクトリ:"
+
+msgid "OpenOffice Server Port"
+msgstr "OpenOfficeサーバーポート"
+
+msgid "Alfresco RMI Port"
+msgstr "Alfresco RMIポート"
+
+msgid "Unable to bind to the given port number. Please select another RMI Port."
+msgstr "指定したポート番号に結合できません。別のRMIポートを選択してください。"
+
+msgid "Alfresco uses port 7070 for the SharePoint protocol It seems this port is being taken by another application. Please choose an alternative port number."
+msgstr "Alfrescoは、SharePointプロトコルに対してポート7070を使用します。このポートは別のアプリケーションによって使用されているようです。代わりのポート番号を選択してください。"
+
+msgid "Unable to find a server running at given port number. Please select another one."
+msgstr "指定されたポート番号で動作するサーバが見つかりません。別のポートを選択してください。"
+
+msgid "Please, choose a folder to install ${product_fullname}"
+msgstr "${product_fullname}をインストールするフォルダを選択してください"
+
+msgid "Web Server Domain:"
+msgstr "Webサーバドメイン:"
+
+msgid "The directory you selected does not seem to be a valid Tomcat directory. Please try again."
+msgstr "選択したディレクトリは有効なTomcatディレクトリでないようです。再試行してください。"
+
+msgid "SWFTOOLS Installation Directory"
+msgstr "SWFTOOLSインストールディレクトリ"
+
+msgid "Java"
+msgstr "Java"
+
+msgid "Username:"
+msgstr "ユーザ名"
+
+msgid "Please specify the directory where Tomcat is located."
+msgstr "Tomcatを配置するディレクトリを指定してください"
+
+msgid "Username"
+msgstr "ユーザ名"
+
+msgid "Please use alphanumeric characters only"
+msgstr "英数字のみを使用してください"
+
+msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
+msgstr "${OpenOfficeUniqueServiceName}の名前の付いたWindowsサービスとしてOpenOfficeをインストールする"
+
+msgid "Please enter the port that the Openoffice Server will listen to by default."
+msgstr "OpenOfficeサーバーがデフォルトでリッスンするポートを入力してください"
+
+msgid "Tomcat Server Port and Tomcat Shutdown Port cannot be the same port. Please select another Tomcat Shutdown Port."
+msgstr "TomcatサーバポートとTomcatシャットダウンポートを同じポートにすることはできません。別のTomcatシャットダウンポートを選択してください。"

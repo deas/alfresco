@@ -1,0 +1,29 @@
+<component>
+    <name>tomcatmanager</name>
+    <description>Tomcat Manager</description>
+    <detailedDescription>Apache Tomcat includes a Manager Web Application application that is not configured by default, select this component if you want to configure it.</detailedDescription>
+    <canBeEdited>1</canBeEdited>
+    <show>1</show>
+    <selected>0</selected>
+    <parameterList>
+        <parameterGroup>
+            <name>tomcat_manager_configuration</name>
+            <title>Tomcat Manager Configuration</title>
+            <parameterList>
+                <stringParameter name="tomcat_manager_username" >
+                    <default>manager</default>
+                    <description>Username</description>
+                </stringParameter>
+                <passwordParameter name="tomcat_manager_password">        
+                    <description>Password</description>
+                    <descriptionRetype>Re-enter password</descriptionRetype>
+                    <allowEmptyValue>1</allowEmptyValue>
+                </passwordParameter>
+            </parameterList>
+        </parameterGroup>
+    </parameterList>
+    <postInstallationActionList>
+        <tomcatUserAdd tomcatUserName="${tomcat_manager_username}" tomcatUserPassword="${tomcat_manager_password}" tomcatUserRole="manager" />
+    </postInstallationActionList>
+</component>
+

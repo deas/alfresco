@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+
+<ModulePrefs
+title="Alfresco Search"
+description="Alfresco Open Search Gadget"
+author="Alfresco Software"
+scrolling="true"
+height="300">
+</ModulePrefs>
+
+<Content
+type="url"
+href="http://localhost:8080/alfresco/wcservice/aggadget/search?dummy=1"
+/>
+
+</Module>

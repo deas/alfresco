@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+    <bean id="userBootstrap" parent="userStoreImporter">
+	    <property name="log">
+	        <value>true</value>
+	    </property>
+        <property name="bootstrapViews">
+            <list>
+                <props>
+                    <prop key="path">/</prop>
+                    <prop key="location">alfresco/bootstrap/alfrescoUserStore.xml</prop>
+                </props>
+                <props>
+                    <prop key="path">/${alfresco_user_store.system_container.childname}/${alfresco_user_store.user_container.childname}</prop>
+                    <prop key="location">alfresco/extension/sampleUsers/users.xml</prop>
+                </props>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="spacesBootstrap" parent="spacesStoreImporter">
+	    <property name="log">
+	        <value>true</value>
+	    </property>
+        <property name="bootstrapViews">
+            <list>
+                <props>
+                    <prop key="path">/</prop>
+                    <prop key="location">alfresco/bootstrap/spaces.xml</prop>
+                    <prop key="messages">alfresco/messages/bootstrap-spaces</prop>
+                </props>
+                <props>
+                    <prop key="path">/</prop>
+                    <prop key="location">alfresco/bootstrap/system.xml</prop>
+                </props>
+                <props>
+                    <prop key="path">/</prop>
+                    <prop key="location">alfresco/bootstrap/categories.xml</prop>
+                </props>
+                <props>
+                    <prop key="path">/${spaces.company_home.childname}/${spaces.guest_home.childname}</prop>
+                    <prop key="location">alfresco/bootstrap/tutorial.xml</prop>
+                    <prop key="messages">alfresco/messages/bootstrap-tutorial</prop>
+                </props>
+                <props>
+                    <prop key="path">/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.templates.childname}</prop>
+                    <prop key="location">alfresco/templates/software_engineering_project.xml</prop>
+                    <prop key="messages">alfresco/messages/bootstrap-templates</prop>
+                </props>
+                <props>
+                    <prop key="path">/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.templates.content.childname}</prop>
+                    <prop key="location">alfresco/templates/content_template_examples.xml</prop>
+                </props>
+                <props>
+                    <prop key="path">/${spaces.company_home.childname}</prop>
+                    <prop key="location">alfresco/extension/sampleUsers/homefolder.xml</prop>
+                </props>
+                <props>
+                    <prop key="path">/${system.system_container.childname}/${system.people_container.childname}</prop>
+                    <prop key="location">alfresco/extension/sampleUsers/people.xml</prop>
+                </props>
+            </list>
+        </property>
+    </bean>
+
+</beans>

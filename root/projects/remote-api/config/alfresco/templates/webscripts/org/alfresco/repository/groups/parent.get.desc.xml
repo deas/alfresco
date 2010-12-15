@@ -1,0 +1,14 @@
+<webscript>
+   <shortname>Get the list of parent authorities for a group.</shortname>
+   <description><![CDATA[
+   Gets a list of the parent authorities of a group.    
+   <BR />
+   The optional level attribute can be ALL, in which case all parents are returned.
+   ]]>
+   </description>
+   <url>/api/groups/{shortName}/parents?level={level?}</url>
+   <format default="json">argument</format>
+   <authentication>user</authentication>
+   <transaction allow="readonly">required</transaction>
+   <lifecycle>draft_public_api</lifecycle>
+</webscript>

@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Task Details GG</shortname>
+  <description>Task details and actions page for iGoogle Gadgets</description>
+  <url>/aggadget/taskdetails?id={id}</url>
+  <authentication>user</authentication>
+</webscript>

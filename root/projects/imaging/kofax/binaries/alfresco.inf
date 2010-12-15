@@ -1,0 +1,13 @@
+[Scripts]
+Alfresco Release
+[Alfresco Release]
+SetupModule=KofaxAlfrescoRelease_v1.dll
+SetupProgID=KofaxAlfrescoRelease_v1.kfxreleasesetupscript
+SetupVersion=1.0
+ReleaseModule=KofaxAlfrescoRelease_v1.dll
+ReleaseProgID=KofaxAlfrescoRelease_v1.kfxreleasescript
+ReleaseVersion=1.0
+SupportsNonImageFiles=True
+RemainLoaded=True
+SupportsKofaxPDF=True
+SupportsOriginalFileName=True

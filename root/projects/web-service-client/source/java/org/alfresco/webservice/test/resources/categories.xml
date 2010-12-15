@@ -1,0 +1,76 @@
+<view:view xmlns:view="http://www.alfresco.org/view/repository/1.0"
+           xmlns:cm="http://www.alfresco.org/model/content/1.0">
+
+   <cm:category_root view:childName="cm:categoryRoot">
+	   <cm:name>categories</cm:name>
+		<cm:categories>
+
+			<!-- Software Document Classification -->
+			<cm:category view:childName="cm:generalclassifiable">
+
+				<cm:name>Software Document Classification</cm:name>
+				<cm:subcategories>
+					<cm:category>
+						<cm:name>Software Descriptions</cm:name>
+						<cm:subcategories>
+							<cm:category>
+								<cm:name>Main Software Descriptions</cm:name>
+								<cm:subcategories>
+									<cm:category>
+										<cm:name>Short System Description</cm:name>
+									</cm:category>
+									<cm:category>
+										<cm:name>Requirement Description</cm:name>
+									</cm:category>
+								</cm:subcategories>
+							</cm:category>
+							<cm:category>
+								<cm:name>Software Description Appendices</cm:name>
+								<cm:subcategories>
+									<cm:category>
+										<cm:name>Terminology Description</cm:name>
+									</cm:category>
+									<cm:category>
+										<cm:name>Internal Message Description</cm:name>
+									</cm:category>
+								</cm:subcategories>
+							</cm:category>
+						</cm:subcategories>
+					</cm:category>
+				</cm:subcategories>
+         </cm:category>
+
+
+			    <!-- Languages -->
+          <cm:category>
+				<cm:name>Languages</cm:name>
+				<cm:subcategories>
+					<cm:category>
+						<cm:name>English</cm:name>
+						<cm:subcategories>
+							<cm:category>
+								<cm:name>British English</cm:name>
+							</cm:category>
+							<cm:category>
+								<cm:name>American English</cm:name>
+							</cm:category>
+						</cm:subcategories>
+					</cm:category>
+					<cm:category>
+						<cm:name>French</cm:name>
+						<cm:subcategories>
+							<cm:category>
+								<cm:name>French French</cm:name>
+							</cm:category>
+							<cm:category>
+								<cm:name>Canadian French</cm:name>
+							</cm:category>
+						</cm:subcategories>
+					</cm:category>
+
+				</cm:subcategories>
+          </cm:category>
+		</cm:categories>
+	</cm:category_root>
+
+</view:view>

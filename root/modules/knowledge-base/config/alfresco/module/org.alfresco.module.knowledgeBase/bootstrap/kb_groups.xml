@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view:view xmlns:view="http://www.alfresco.org/view/repository/1.0"
+           xmlns:cm="http://www.alfresco.org/model/content/1.0"
+           xmlns:sys="http://www.alfresco.org/model/system/1.0"
+           xmlns:usr="http://www.alfresco.org/model/user/1.0"
+           xmlns:app="http://www.alfresco.org/model/application/1.0">
+      
+      <usr:authorityContainer view:childName="usr:GROUP_KnowledgeBase_Internal">
+        <view:aspects>
+          <sys:referenceable></sys:referenceable>
+        </view:aspects>
+        <view:properties>
+          <sys:store-protocol>user</sys:store-protocol>
+          <cm:name>GROUP_KnowledgeBase_Internal</cm:name>
+          <sys:node-uuid>GROUP_KnowledgeBase_Internal</sys:node-uuid>
+          <usr:authorityName>GROUP_KnowledgeBase_Internal</usr:authorityName>
+          <sys:store-identifier>alfrescoUserStore</sys:store-identifier>
+        </view:properties>
+        <view:associations></view:associations>
+      </usr:authorityContainer>
+      
+      <usr:authorityContainer view:childName="usr:GROUP_KnowledgeBase_Customers">
+        <view:aspects>
+          <sys:referenceable></sys:referenceable>
+        </view:aspects>
+        <view:properties>
+          <sys:store-protocol>user</sys:store-protocol>
+          <cm:name>GROUP_KnowledgeBase_Customers</cm:name>
+          <sys:node-uuid>GROUP_KnowledgeBase_Customers</sys:node-uuid>
+          <usr:authorityName>GROUP_KnowledgeBase_Customers</usr:authorityName>
+          <sys:store-identifier>alfrescoUserStore</sys:store-identifier>
+        </view:properties>
+        <view:associations></view:associations>
+      </usr:authorityContainer>
+      
+      <usr:authorityContainer view:childName="usr:GROUP_KnowledgeBase_Partners">
+        <view:aspects>
+          <sys:referenceable></sys:referenceable>
+        </view:aspects>
+        <view:properties>
+          <sys:store-protocol>user</sys:store-protocol>
+          <cm:name>GROUP_KnowledgeBase_Partners</cm:name>
+          <sys:node-uuid>GROUP_KnowledgeBase_Partners</sys:node-uuid>
+          <usr:authorityName>GROUP_KnowledgeBase_Partners</usr:authorityName>
+          <sys:store-identifier>alfrescoUserStore</sys:store-identifier>
+        </view:properties>
+        <view:associations></view:associations>
+      </usr:authorityContainer>
+
+</view:view>

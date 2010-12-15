@@ -1,0 +1,45 @@
+<alfresco-config>
+
+   <!-- Global config section -->
+   <config>
+      <flags>
+         <!-- Developer debugging setting to turn on DEBUG mode for client scripts in the browser -->
+         <client-debug>false</client-debug>
+      </flags>
+   </config>
+
+   <!-- Add in additional Mobile elements -->
+   <config evaluator="string-compare" condition="WebFramework">
+      
+      <web-framework>
+                  
+         <!-- Overrides -->
+         <framework-defaults>
+            <user-factory>alfresco</user-factory>       
+         </framework-defaults>
+         
+         <!-- Application Defaults -->
+         <application-defaults>
+            <theme>default</theme>
+            <site-configuration>mobile.site.configuration</site-configuration>
+            <!-- mobile region chrome override -->
+            <region-chrome>mobile-region-chrome</region-chrome>
+            <!-- no chrome required for components -->
+            <component-chrome></component-chrome>
+      		<page-type>
+      			<id>login</id>
+      			<page-instance-id>login</page-instance-id>
+      		</page-type>
+         </application-defaults>
+         
+         <!-- Error Handler Pages -->
+			<error-handler>
+				<id>region-nocomponent</id>
+				<processor-id>nocomponent</processor-id>			
+			</error-handler>
+         
+      </web-framework>
+
+   </config>
+
+</alfresco-config>

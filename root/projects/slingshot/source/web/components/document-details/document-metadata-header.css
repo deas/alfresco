@@ -1,0 +1,11 @@
+.metadata-header
+{
+	padding: 1.5em 0.5em;
+}
+
+.metadata-header .heading
+{
+   color: #333333;
+   font-size: 131%;
+   padding: 0;
+}

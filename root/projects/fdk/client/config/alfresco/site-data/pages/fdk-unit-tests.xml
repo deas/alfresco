@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>FDK Unit Tests</title>
+   <description>FDK Unit Tests</description>
+   <template-instance>fdk-unit-tests</template-instance>
+   <authentication>none</authentication>
+</page>

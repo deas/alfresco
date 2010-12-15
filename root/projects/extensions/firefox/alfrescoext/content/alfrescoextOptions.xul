@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+
+<dialog xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      onload="alfrescoext.initOptions();"
+      ondialogaccept="alfrescoext.setOptions();"
+      title="Alfresco Options">
+
+<html:script language="javascript" src="chrome://alfrescoext/content/alfrescoextOverlay.js" />
+
+<!-- Save location of file explorer, e.g. c:\windows\explorer.exe -->
+<script type="application/x-javascript">
+  <![CDATA[
+    var panel = "chrome://alfrescoext/content/alfrescoextOptions.xul";
+    var _elementIDs = [ "exloc" ];
+  ]]>
+</script>
+
+<vbox>
+	<groupbox>
+		<caption label="File Explorer location" />
+
+		<description>
+			Set the full path and name of the application you wish to launch on 'file://' links.
+		</description>
+
+		<hbox align="center">
+			<label control="exloc" value="Explorer location"/>
+
+			<textbox id="exloc"
+				pref="true"
+				preftype="string"
+				prefstring="alfrescoext.exapp"
+				size="50"
+			 /> 
+		
+		</hbox>
+		<hbox align="center">
+
+			<checkbox id="exfil" control="exloc"
+			        label="Include 'file:///"
+				pref="true"
+				preftype="boolean"
+				prefstring="alfrescoext.exfil"
+			 />
+		
+		</hbox>
+	</groupbox>
+
+</vbox>           
+
+</dialog>
+
+

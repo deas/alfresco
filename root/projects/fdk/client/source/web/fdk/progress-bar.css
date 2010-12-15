@@ -1,0 +1,26 @@
+div.progress-container 
+{
+   border: 1px solid #ccc;
+   width: 160px;
+   margin: 2px 80px 2px 0;
+   padding: 1px;
+   background: white;
+   float: right;
+}
+
+.progress-container div 
+{
+   background-color: #ACE97C;
+   height: 14px
+}
+
+.progress-container span
+{
+   padding-left: 70px; 
+   font-size: 95%;
+}
+
+#slider-bg
+{ 
+   background:url(../yui/slider/assets/bg-fader.gif) 5px 0 no-repeat; 
+} 

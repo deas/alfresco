@@ -1,0 +1,8 @@
+<webscript>
+   <shortname>Truncate malformed XML files</shortname>
+   <description>Eliminates trailing content that can make XML files malformed (operates with 'path' recursively).</description>
+   <url>/admin/truncate_malformed_xml?path={path}</url>
+   <format default="text">extension</format>
+   <authentication>admin</authentication>
+   <transaction>required</transaction>
+</webscript>

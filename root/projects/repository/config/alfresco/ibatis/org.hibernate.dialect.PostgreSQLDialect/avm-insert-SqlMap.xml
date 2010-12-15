@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alfresco.avm">
+    
+    <insert id="insert_AVMStore" parameterClass="AVMStore">
+        
+        <selectKey resultClass="long" keyProperty="id">
+            select nextVal('avm_stores_seq')
+        </selectKey>
+        
+        <include refid="alfresco.avm.insert_AVMStore_Sequence"/>
+        
+    </insert>
+    
+    <insert id="insert_AVMStoreProperty" parameterMap="parameter_IdStorePropertyPatternMap">
+    
+        <selectKey resultClass="long" keyProperty="id">
+            select nextVal('avm_store_properties_seq')
+        </selectKey>
+        
+        <include refid="alfresco.avm.insert_AVMStoreProperty_Sequence"/>
+        
+    </insert>
+    
+    <insert id="insert_AVMNode" parameterClass="AVMNode">
+        
+        <selectKey resultClass="long" keyProperty="id">
+            select nextVal('avm_nodes_seq')
+        </selectKey>
+        
+        <include refid="alfresco.avm.insert_AVMNode_Sequence"/>
+        
+    </insert>
+    
+    <insert id="insert_AVMVersionRoot" parameterClass="AVMVersionRoot">
+        
+        <selectKey resultClass="long" keyProperty="id">
+            select nextVal('avm_version_roots_seq')
+        </selectKey>
+        
+        <include refid="alfresco.avm.insert_AVMVersionRoot_Sequence"/>
+        
+    </insert>
+    
+</sqlMap>

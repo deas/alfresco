@@ -1,0 +1,10 @@
+.webview .title a.title-link
+{
+   background: url("../images/new-window-16.png") no-repeat 100% 0;
+   padding-right: 20px;
+}
+
+.webview .scrollablePanel
+{
+   height: 200px;
+}

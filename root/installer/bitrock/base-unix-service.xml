@@ -1,0 +1,544 @@
+
+<!--
+Componentname: BASE UNIX SERVICE
+
+Short Description:
+This component install as a service an application which includes ctlscript.sh.
+
+Last Update: 20080422
+Copyrighted by BitRock
+
+ * component(baseunixservice).parameter(baseunixservice_script_name)
+ * component(baseunixservice).parameter(baseunixservice_priority_start)
+ * component(baseunixservice).parameter(baseunixservice_priority_stop)
+ * component(baseunixservice).parameter(baseunixservice_osx_name)
+ * component(baseunixservice).parameter(baseunixservice_script_name_test_ctlcript)
+
+Dependencies: ctlscript.xml  
+-->
+<component>
+    <name>baseunixservice</name>
+    <description>Install application as a service on Unix systems</description>
+    <selected>1</selected>
+    <show>0</show>
+    <parameterList>
+        <stringParameter>
+            <name>baseunixservice_priority_start</name>
+            <value/>
+            <default>80</default>
+            <ask>0</ask>
+        </stringParameter>
+        <stringParameter>
+            <name>baseunixservice_priority_stop</name>
+            <value/>
+            <default>30</default>
+            <ask>0</ask>
+        </stringParameter>
+        <booleanParameter name="baseunixservice_use_custom_upstart" value="0" ask="0" />
+        <booleanParameter>
+            <name>baseunixservice_install_as_service</name>
+            <title>Install as a service</title>
+            <description>Install ${product_fullname} as a service?</description>
+            <explanation>You can optionally register ${product_fullname} as a service. This way it will automatically be started every time the machine is started.</explanation>
+            <value>1</value>
+            <default>1</default>
+            <ask>1</ask>
+            <cliOptionName/>
+            <leftImage/>
+            <ruleList>
+                <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <platformTest type="unix"/>
+            </ruleList>
+        </booleanParameter>
+        <booleanParameter>
+            <name>baseunixservice_script_name_test_ctlscript</name>
+            <explanation>Allow to choose an already installed service name if it contains a call to installdir/ctlscript</explanation>
+            <value>0</value>
+            <default>0</default>
+            <ask>0</ask>
+        </booleanParameter>
+        <stringParameter>
+            <name>baseunixservice_script_name</name>
+            <title>Service script name</title>
+            <explanation>The ${product_shortname} service script file exists. Please insert a different name for the service script.</explanation>
+            <description>Service script name:</description>
+            <value/>
+            <default>${product_shortname}</default>
+            <ask>1</ask>
+            <validationActionList>
+                <throwError>
+                    <text>The service script file exists. Please insert a different name for the service script.</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <ruleGroup>
+                            <ruleList>
+                                <fileTest condition="exists" path="/etc/init.d/${baseunixservice_script_name}"/>
+                                <ruleGroup>
+                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                                    <ruleList>
+                                        <compareText text="${baseunixservice_script_name_test_ctlscript}" logic="equals" value="0"/>
+                                        <fileContentTest path="/etc/init.d/${baseunixservice_script_name}" logic="does_not_contain" text="${installdir}/${component(script).parameter(ctlscript_unix).value}"/>
+                                    </ruleList>
+                                </ruleGroup>
+                            </ruleList>
+                        </ruleGroup>
+                        <ruleGroup>
+                            <ruleList>
+                                <fileTest condition="exists" path="/Library/LaunchDaemons/${baseunixservice_script_name}.plist"/>
+                                <ruleGroup>
+                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                                    <ruleList>
+                                        <compareText text="${baseunixservice_script_name_test_ctlscript}" logic="equals" value="0"/>
+                                        <fileContentTest path="/Library/LaunchDaemons/${baseunixservice_script_name}.plist" logic="does_not_contain" text="${installdir}/${component(script).parameter(ctlscript_unix).value}"/>
+                                    </ruleList>
+                                </ruleGroup>
+                            </ruleList>
+                        </ruleGroup>
+                    </ruleList>
+                </throwError>
+            </validationActionList>
+            <ruleList>
+                <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <platformTest type="unix"/>
+                <compareText text="${baseunixservice_install_as_service}" logic="equals" value="1"/>
+                <ruleGroup>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <ruleGroup>
+                            <ruleList>
+                                <fileTest condition="exists" path="/etc/init.d/${baseunixservice_script_name}"/>
+                                <ruleGroup>
+                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                                    <ruleList>
+                                        <compareText text="${baseunixservice_script_name_test_ctlscript}" logic="equals" value="0"/>
+                                        <fileContentTest path="/etc/init.d/${baseunixservice_script_name}" logic="does_not_contain" text="${installdir}/${component(script).parameter(ctlscript_unix).value}"/>
+                                    </ruleList>
+                                </ruleGroup>
+                            </ruleList>
+                        </ruleGroup>
+                        <ruleGroup>                            
+                            <ruleList>
+                                <fileTest condition="exists" path="/Library/LaunchDaemons/${baseunixservice_script_name}.plist"/>
+                                <ruleGroup>
+                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                                    <ruleList>
+                                        <compareText text="${baseunixservice_script_name_test_ctlscript}" logic="equals" value="0"/>
+                                        <fileContentTest path="/Library/LaunchDaemons/${baseunixservice_script_name}.plist" logic="does_not_contain" text="${installdir}/${component(script).parameter(ctlscript_unix).value}"/>
+                                    </ruleList>
+                                </ruleGroup>
+                            </ruleList>
+                        </ruleGroup>
+                    </ruleList>
+                </ruleGroup>
+            </ruleList>
+        </stringParameter>
+        <stringParameter>
+            <name>baseunixservice_osx_name</name>
+            <value/>
+            <default/>
+            <ask>0</ask>
+        </stringParameter>
+    </parameterList>
+    <postInstallationActionList>
+        <actionGroup>
+            <actionList>
+<!--Install services on SysV systems -->
+<actionGroup>
+                    <actionList>
+                        <writeFile>
+                            <path>/etc/init.d/${baseunixservice_script_name}</path>
+                            <text>#!/bin/sh
+#
+# chkconfig: 2345 ${baseunixservice_priority_start} ${baseunixservice_priority_stop} 
+# description: ${project.fullName}
+#
+
+RETVAL=0
+
+start () {
+    ${installdir}/${component(script).parameter(ctlscript_unix).value} start "$2"
+    RETVAL=$?
+    if [ -d "/var/lock/subsys" ] &amp;&amp; [ `id -u` = 0 ] &amp;&amp; [ $RETVAL -eq 0 ] ; then
+        touch /var/lock/subsys/${baseunixservice_script_name}
+    fi
+
+}
+
+stop () {
+    ${installdir}/${component(script).parameter(ctlscript_unix).value} stop "$2"
+    RETVAL=$?
+}
+case "$1" in
+    start)
+        start "$@"
+        ;;
+    stop)
+        stop "$@"
+        ;;
+    restart)
+        stop "$@"
+        start "$@"
+        ;;
+    *)
+        ${installdir}/${component(script).parameter(ctlscript_unix).value} "$@"
+        RETVAL=$?
+esac
+exit $RETVAL
+</text>
+                        </writeFile>
+                        <changePermissions>
+                            <files>/etc/init.d/${baseunixservice_script_name}</files>
+                            <permissions>755</permissions>
+                        </changePermissions>
+                    </actionList>
+                    <ruleList>
+                        <fileTest path="/etc/init.d" condition="exists"/>
+                    </ruleList>
+                </actionGroup>
+
+		<actionGroup>
+		    <actionList>
+			<runProgram>
+			    <abortOnError>0</abortOnError>
+			    <showMessageOnError>0</showMessageOnError>
+			    <program>mkssys</program>
+			    <programArguments>-s ${baseunixservice_script_name} -p ${installdir}/ctlscript.sh -u root -S -n15 -f9 -a start</programArguments>
+			</runProgram>
+			<readFile>
+			    <path>/etc/inittab</path>
+			    <name>inittabFile</name>
+			    <abortOnError>0</abortOnError>
+			    <showMessageOnError>1</showMessageOnError>
+			</readFile>
+			<addTextToFile>
+			    <abortOnError>0</abortOnError>
+			    <showMessageOnError>0</showMessageOnError>
+			    <file>/etc/inittab</file>
+			    <text>${baseunixservice_script_name}:2345:once:/usr/bin/startsrc -s ${baseunixservice_script_name}
+</text>
+                            <ruleList>
+				<compareText text="${inittabFile}" logic="does_not_contain" value="${${baseunixservice_script_name}"/>
+			    </ruleList>
+			</addTextToFile>
+		    </actionList>
+                    <ruleList>
+                        <platformTest type="aix" />
+                    </ruleList>
+		</actionGroup>
+
+<!--Install services on: redhat, fedora, mandrake -->
+<actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>chkconfig</program>
+                            <programArguments>--del ${baseunixservice_script_name}</programArguments>
+                        </runProgram>
+                        <runProgram>
+                            <program>chkconfig</program>
+                            <programArguments>--add ${baseunixservice_script_name}</programArguments>
+                        </runProgram>
+                    </actionList>
+                    <ruleEvaluationLogic>and</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${linux_distribution}" logic="does_not_equal" value="debian"/>
+                        <programTest condition="is_in_path" name="chkconfig"/>
+                    </ruleList>
+                </actionGroup>
+
+                <!--Install services on: suse -->
+                <actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>chkconfig</program>
+                            <programArguments>--del ${baseunixservice_script_name}</programArguments>
+                        </runProgram>
+                        <runProgram>
+                            <program>chkconfig</program>
+                            <programArguments>${baseunixservice_script_name} 2345</programArguments>
+                        </runProgram>
+                    </actionList>
+                    <ruleEvaluationLogic>and</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${linux_distribution}" logic="equals" value="suse"/>
+                        <programTest condition="is_in_path" name="chkconfig"/>
+                    </ruleList>
+                </actionGroup>
+
+<!--Install services on: debian -->
+<actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>update-rc.d</program>
+                            <programArguments>-f ${baseunixservice_script_name} remove</programArguments>
+                        </runProgram>
+                        <runProgram>
+                            <program>update-rc.d</program>
+                            <programArguments>${baseunixservice_script_name} start ${baseunixservice_priority_start} 2 3 4 5 . stop ${baseunixservice_priority_stop} 0 1 6 .</programArguments>
+                        </runProgram>
+                    </actionList>
+                    <ruleEvaluationLogic>and</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${linux_distribution}" logic="equals" value="debian"/>
+                        <programTest condition="is_in_path" name="update-rc.d"/>
+                        <isFalse value="${baseunixservice_use_custom_upstart}" />
+                    </ruleList>
+                </actionGroup>
+
+<!-- Install services on OS X -->
+<actionGroup>
+                    <actionList>
+		        <actionGroup>
+			    <actionList>
+        		        <createDirectory path="/Library/LaunchDaemons" />
+				<changeOwnerAndGroup group="wheel" owner="root" files="/Library/LaunchDaemons" />
+				<changePermissions permissions="755" files="/Library/LaunchDaemons" />
+		            </actionList>
+	        	    <ruleList>
+			        <fileTest path="/Library/LaunchDaemons" condition="not_exists" />
+			    </ruleList>
+			</actionGroup>
+                        <writeFile>
+                            <path>/Library/LaunchDaemons/${baseunixservice_script_name}.plist</path>
+                            <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+        &lt;key&gt;Label&lt;/key&gt;
+        &lt;string&gt;${baseunixservice_script_name}&lt;/string&gt;
+        &lt;key&gt;ProgramArguments&lt;/key&gt;
+        &lt;array&gt;
+                &lt;string&gt;${installdir}/${component(script).parameter(ctlscript_unix).value}&lt;/string&gt;
+                &lt;string&gt;start&lt;/string&gt;
+                &lt;string&gt;${baseunixservice_osx_name}&lt;/string&gt;
+        &lt;/array&gt;
+	&lt;key&gt;RunAtLoad&lt;/key&gt;
+        &lt;true/&gt;
+	&lt;key&gt;UserName&lt;/key&gt;
+        &lt;string&gt;root&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</text>
+                        </writeFile>
+
+<!-- Install services on OS X: MySQL needs to be started as a daemon-->
+<writeFile>
+                            <path>/Library/LaunchDaemons/${baseunixservice_script_name}-mysql.plist</path>
+                            <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+        &lt;key&gt;Label&lt;/key&gt;
+        &lt;string&gt;${baseunixservice_script_name}-mysql&lt;/string&gt;
+        &lt;key&gt;ProgramArguments&lt;/key&gt;
+        &lt;array&gt;
+                &lt;string&gt;${database_binary_directory}/safe_mysqld&lt;/string&gt;
+                &lt;string&gt;--defaults-file=${database_root_directory}/my.cnf&lt;/string&gt;
+                &lt;string&gt;--port=${database_port}&lt;/string&gt;
+                &lt;string&gt;--socket=${database_root_directory}/tmp/mysql.sock&lt;/string&gt;                
+                &lt;string&gt;--old-passwords&lt;/string&gt;
+                &lt;string&gt;--datadir=${database_root_directory}/data&lt;/string&gt;                                
+                &lt;string&gt;--log-error=${database_root_directory}/data/mysqld.log&lt;/string&gt;
+                &lt;string&gt;--pid-file=${database_root_directory}/data/${machine_hostname}.pid&lt;/string&gt;
+                &lt;string&gt;--lower-case-table-names=1&lt;/string&gt;
+                &lt;string&gt;--default-table-type=InnoDB&lt;/string&gt;                
+        &lt;/array&gt;
+	&lt;key&gt;RunAtLoad&lt;/key&gt;
+        &lt;true/&gt;
+	&lt;key&gt;UserName&lt;/key&gt;
+        &lt;string&gt;_mysql&lt;/string&gt;
+	&lt;key&gt;GroupName&lt;/key&gt;
+        &lt;string&gt;_mysql&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</text>
+                            <ruleList>
+                                <componentTest name="mysql" logic="exists" />
+                                <compareText text="${component(mysql).selected}" logic="equals" value="1"/>
+                            </ruleList>
+                        </writeFile>
+
+<!-- Install services on OS X: PostgreSQL needs to be started as a daemon-->
+<writeFile>
+                            <path>/Library/LaunchDaemons/${baseunixservice_script_name}-postgres.plist</path>
+                            <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+        &lt;key&gt;Label&lt;/key&gt;
+        &lt;string&gt;${baseunixservice_script_name}-database&lt;/string&gt;
+        &lt;key&gt;ProgramArguments&lt;/key&gt;
+        &lt;array&gt;
+                &lt;string&gt;${database_binary_directory}/postgres&lt;/string&gt;
+                &lt;string&gt;-D${component(postgres).parameter(postgres_root_directory).value}/data&lt;/string&gt;
+                &lt;string&gt;-p${database_port}&lt;/string&gt;
+        &lt;/array&gt;
+	&lt;key&gt;RunAtLoad&lt;/key&gt;
+        &lt;true/&gt;
+	&lt;key&gt;UserName&lt;/key&gt;
+        &lt;string&gt;postgres&lt;/string&gt;
+	&lt;key&gt;GroupName&lt;/key&gt;
+        &lt;string&gt;postgres&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</text>
+                            <ruleList>
+                                <componentTest name="postgres" logic="exists" />
+                                <compareText text="${component(postgres).selected}" logic="equals" value="1"/>
+                            </ruleList>
+                        </writeFile>
+			<!-- Install services on OS X: Tomcat needs to be started as a daemon-->
+			<writeFile>
+                            <path>/Library/LaunchDaemons/${baseunixservice_script_name}-tomcat.plist</path>
+                            <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+        &lt;key&gt;Label&lt;/key&gt;
+        &lt;string&gt;${baseunixservice_script_name}-tomcat&lt;/string&gt;
+        &lt;key&gt;ProgramArguments&lt;/key&gt;
+        &lt;array&gt;
+                &lt;string&gt;${tomcat_server_directory}/scripts/ctl.sh&lt;/string&gt;
+                &lt;string&gt;daemon&lt;/string&gt;
+        &lt;/array&gt;
+	&lt;key&gt;RunAtLoad&lt;/key&gt;
+        &lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</text>
+                            <ruleList>
+                                <componentTest name="tomcat" logic="exists" />
+                                <compareText text="${component(tomcat).selected}" logic="equals" value="1"/>
+                            </ruleList>
+                        </writeFile>
+			<!-- Install services on OS X: Tomcat needs to be started as a daemon-->
+			<writeFile>
+                            <path>/Library/LaunchDaemons/${baseunixservice_script_name}-oo.plist</path>
+                            <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+        &lt;key&gt;Label&lt;/key&gt;
+        &lt;string&gt;${baseunixservice_script_name}-oo&lt;/string&gt;
+        &lt;key&gt;ProgramArguments&lt;/key&gt;
+        &lt;array&gt;
+                &lt;string&gt;${openoffice_directory}/scripts/ctl.sh&lt;/string&gt;
+                &lt;string&gt;daemon&lt;/string&gt;
+        &lt;/array&gt;
+	&lt;key&gt;RunAtLoad&lt;/key&gt;
+        &lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</text>
+                            <ruleList>
+                                <componentTest name="openofficecomponent" logic="exists" />
+                                <compareText text="${component(openofficecomponent).selected}" logic="equals" value="1"/>
+                            </ruleList>
+                        </writeFile>
+			<!-- Install services on OS X: Mongrel needs to be started as a daemon-->
+			<writeFile>
+                            <path>/Library/LaunchDaemons/${baseunixservice_script_name}-mongrel.plist</path>
+                            <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+        &lt;key&gt;Label&lt;/key&gt;
+        &lt;string&gt;${baseunixservice_script_name}-mongrel&lt;/string&gt;
+	&lt;key&gt;WorkingDirectory&lt;/key&gt;
+        &lt;string&gt;${ruby_application_root}&lt;/string&gt;
+        &lt;key&gt;EnvironmentVariables&lt;/key&gt;
+        &lt;dict&gt;
+          &lt;key&gt;RAILS_ENV&lt;/key&gt;
+          &lt;string&gt;production&lt;/string&gt;
+	&lt;/dict&gt;
+        &lt;key&gt;ProgramArguments&lt;/key&gt;
+        &lt;array&gt;
+                &lt;string&gt;${ruby_root_directory}/bin/mongrel_rails&lt;/string&gt;
+                &lt;string&gt;start&lt;/string&gt;
+        &lt;/array&gt;
+	&lt;key&gt;RunAtLoad&lt;/key&gt;
+        &lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</text>
+                            <ruleList>
+                                <componentTest name="mongrel" logic="exists" />
+                                <compareText text="${component(mongrel).selected}" logic="equals" value="1"/>
+                            </ruleList>
+                        </writeFile>
+
+                    </actionList>
+                    <ruleList>
+                        <platformTest type="osx"/>
+                        <programTest condition="is_in_path" name="launchctl"/>
+                    </ruleList>
+                </actionGroup>
+
+<!--Install services on: solaris and other Unix without service install tools-->
+<actionGroup>
+                    <actionList>
+                        <createSymLink>
+                            <target>../init.d/${baseunixservice_script_name}</target>
+                            <linkName>/etc/rc0.d/K${baseunixservice_priority_stop}${baseunixservice_script_name}</linkName>
+                            <ruleList>
+                                <fileTest path="/etc/rc0.d" condition="exists"/>
+                            </ruleList>
+                        </createSymLink>
+                        <createSymLink>
+                            <target>../init.d/${baseunixservice_script_name}</target>
+                            <linkName>/etc/rc1.d/K${baseunixservice_priority_stop}${baseunixservice_script_name}</linkName>
+                            <ruleList>
+                                <fileTest path="/etc/rc1.d" condition="exists"/>
+                            </ruleList>
+                        </createSymLink>
+                        <createSymLink>
+                            <target>../init.d/${baseunixservice_script_name}</target>
+                            <linkName>/etc/rc2.d/S${baseunixservice_priority_start}${baseunixservice_script_name}</linkName>
+                            <ruleList>
+                                <fileTest path="/etc/rc2.d" condition="exists"/>
+                            </ruleList>
+                        </createSymLink>
+                        <createSymLink>
+                            <target>../init.d/${baseunixservice_script_name}</target>
+                            <linkName>/etc/rc3.d/S${baseunixservice_priority_start}${baseunixservice_script_name}</linkName>
+                            <ruleList>
+                                <fileTest path="/etc/rc3.d" condition="exists"/>
+                            </ruleList>
+                        </createSymLink>
+                        <createSymLink>
+                            <target>../init.d/${baseunixservice_script_name}</target>
+                            <linkName>/etc/rc4.d/S${baseunixservice_priority_start}${baseunixservice_script_name}</linkName>
+                            <ruleList>
+                                <fileTest path="/etc/rc4.d" condition="exists"/>
+                            </ruleList>
+                        </createSymLink>
+                        <createSymLink>
+                            <target>../init.d/${baseunixservice_script_name}</target>
+                            <linkName>/etc/rc5.d/S${baseunixservice_priority_start}${baseunixservice_script_name}</linkName>
+                            <ruleList>
+                                <fileTest path="/etc/rc5.d" condition="exists"/>
+                            </ruleList>
+                        </createSymLink>
+                        <createSymLink>
+                            <target>../init.d/${baseunixservice_script_name}</target>
+                            <linkName>/etc/rc6.d/K${baseunixservice_priority_stop}${baseunixservice_script_name}</linkName>
+                            <ruleList>
+                                <fileTest path="/etc/rc6.d" condition="exists"/>
+                            </ruleList>
+                        </createSymLink>
+                    </actionList>
+                    <ruleList>
+                        <programTest condition="is_not_in_path" name="chkconfig"/>
+                        <programTest condition="is_not_in_path" name="update-rc.d"/>
+                        <programTest condition="is_not_in_path" name="launchctl"/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <compareText text="${baseunixservice_install_as_service}" logic="equals" value="1"/>
+                <platformTest type="unix"/>
+            </ruleList>
+        </actionGroup>
+    </postInstallationActionList>
+</component>
+

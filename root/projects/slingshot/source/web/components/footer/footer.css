@@ -1,0 +1,65 @@
+/* Footer Component */
+.footer
+{
+   background-color: #f2f2f2;
+   border-bottom: 1px solid #dfdfdf;
+   border-top: 1px solid #dfdfdf;
+   padding-top: 8px;
+   padding-bottom: 8px;
+   text-align: center;
+}
+
+.footer .links
+{
+   padding: 0 2em;
+}
+
+.footer .copyright
+{
+   font-size: 77%;
+}
+
+.footer-com,
+.footer-ent
+{
+   padding: 0;
+}
+
+.footer-com .copyright
+{
+   background-color: #fff;
+   border-left: 1px solid #dfdfdf;
+   border-right: 1px solid #dfdfdf;
+   display: inline-block;
+   line-height: 22px;
+   padding: 2px 1em;
+}
+.footer-ent .copyright
+{
+   background-color: #fff;
+   border-left: 1px solid #dfdfdf;
+   border-right: 1px solid #dfdfdf;
+   line-height: 47px;
+   padding: 17px 0.5em;
+}
+
+.footer-com .copyright img
+{
+   padding-right: 1em;
+   vertical-align: baseline;
+}
+.footer-ent .copyright img
+{
+   padding-right: 1em;
+   vertical-align: middle;
+}
+
+.footer-com .copyright span
+{
+   display: inline-block;
+}
+.footer-ent .copyright span
+{
+   position: relative;
+   top: 3px;
+}

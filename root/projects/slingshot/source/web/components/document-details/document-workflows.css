@@ -1,0 +1,60 @@
+.document-workflows
+{
+   padding: 0em 1em 0em 0em;
+}
+
+.document-workflows .heading
+{
+   color: #333333;
+   font-size: 131%;
+   padding: 1em 0em;
+}
+
+.document-workflows .info-section
+{
+   border-bottom: 1px solid #c2c2c2;
+   padding: 0px 0.5em 1.5em 0.5em;
+}
+
+.document-workflows .info
+{
+   margin-bottom: 0.5em;
+}
+
+.document-workflows .workflows
+{
+}
+
+.document-workflows .workflow
+{
+   padding: 0.5em 0.5em 1em;
+   margin-bottom: 0.5em;
+   border-bottom: 1px dashed #ddd;
+}
+
+.document-workflows .workflow-last
+{
+   border-bottom: medium none;
+   margin-bottom: 0;
+}
+
+.document-workflows .workflow .details
+{
+   margin-left: 2em;
+}
+
+.document-workflows .workflow .icon
+{
+   float: left;
+   margin-top: 0.2em;
+}
+
+.document-workflows .workflow .message
+{
+   color: #6ca5ce;
+}
+
+.document-workflows .workflow .title
+{
+   margin-top: 0.3em;
+}

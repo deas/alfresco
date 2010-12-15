@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Facebook ADL Create Library Dialog</shortname>
+  <description>Facebook Alfresco Document Library - Create Library Dialog</description>
+  <url>/facebook/alfrescodoclib/createlibdialog</url>
+  <format default="fbml"/>
+  <authentication>user</authentication>
+</webscript>
