@@ -708,9 +708,12 @@ public class DCERPCHandler {
 			int maxTxSize = dceBuf.getShort();
 			int maxRxSize = dceBuf.getShort();
 			int groupId = dceBuf.getInt();
-			int ctxElems = dceBuf.getByte(DCEBuffer.ALIGN_INT);
-			int presCtxId = dceBuf.getByte(DCEBuffer.ALIGN_SHORT);
-			int trfSyntax = dceBuf.getByte(DCEBuffer.ALIGN_SHORT);
+
+			int ctxElems = dceBuf.getByte(DCEBuffer.ALIGN_SHORT);
+			dceBuf.skipBytes(2);
+			
+			int presCtxId = dceBuf.getShort();
+			int trfSyntax = dceBuf.getShort();
 
 			UUID uuid1 = dceBuf.getUUID(true);
 			UUID uuid2 = dceBuf.getUUID(true);

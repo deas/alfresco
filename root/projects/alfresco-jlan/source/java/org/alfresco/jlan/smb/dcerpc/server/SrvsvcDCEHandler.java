@@ -150,7 +150,7 @@ public class SrvsvcDCEHandler implements DCEHandler {
 
 		try {
 			inBuf.skipPointer();
-			srvName = inBuf.getString(DCEBuffer.ALIGN_INT);
+			srvName = inBuf.getString();
 			shrInfo = new ShareInfoList(inBuf);
 		}
 		catch (DCEBufferException ex) {
