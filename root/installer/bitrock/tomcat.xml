@@ -220,7 +220,6 @@ Tomcat 5.5 is recommended.</text>
                     <default>127.0.0.1</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <ask>1</ask>
-                    <cliOptionName>Web Server</cliOptionName>
                     <leftImage/>
                     <width>40</width>
                     <validationActionList>
