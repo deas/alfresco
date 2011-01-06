@@ -449,6 +449,8 @@
         <property name="objectDefinitionSource">
             <value>
                 <![CDATA[  
+                org.alfresco.service.cmr.repository.ContentService.getStoreTotalSpace=ACL_ALLOW,RM_ALLOW
+                org.alfresco.service.cmr.repository.ContentService.getStoreFreeSpace=ACL_ALLOW,RM_ALLOW
                 org.alfresco.service.cmr.repository.ContentService.getRawReader=ACL_METHOD.ROLE_ADMINISTRATOR,RM_ABSTAIN 
                 org.alfresco.service.cmr.repository.ContentService.getReader=ACL_NODE.0.sys:base.ReadContent,RM.Read.0 
                 org.alfresco.service.cmr.repository.ContentService.getWriter=ACL_NODE.0.sys:base.WriteContent,RM.WriteContent.0
