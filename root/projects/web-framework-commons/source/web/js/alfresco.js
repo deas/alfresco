@@ -2292,6 +2292,36 @@ Alfresco.util.bind = function(fn, context)
 };
 
 /**
+ * Autocomplete key filter
+ * Whether or not key is functional or should be ignored. Note that the right
+ * arrow key is NOT an ignored key since it triggers queries for certain intl
+ * charsets.
+ * From YAHOO.widget.AutoComplete.prototype._isIgnoreKey()
+ *
+ * @method isAutocompleteIgnoreKey
+ * @param nKeycode {Number} Code of key pressed.
+ * @return {Boolean} True if key should be ignored, false otherwise.
+ */
+Alfresco.util.isAutocompleteIgnoreKey = function(nKeyCode)
+{
+   if (
+         (nKeyCode == 9) || (nKeyCode == 13) || // tab, enter
+         (nKeyCode == 16) || (nKeyCode == 17) || // shift, ctl
+         (nKeyCode >= 18 && nKeyCode <= 20) || // alt, pause/break,caps lock
+         (nKeyCode == 27) || // esc
+         (nKeyCode >= 33 && nKeyCode <= 35) || // page up,page down,end
+         (nKeyCode >= 36 && nKeyCode <= 40) || // home,left,up, right, down
+         (nKeyCode >= 44 && nKeyCode <= 45) || // print screen,insert
+         (nKeyCode == 229) // Bug 2041973: Korean XP fires 2 keyup events, the key and 229
+      )
+   { 
+      return true;
+   }
+   return false;
+};
+
+
+/**
  * Wrapper for helping components specify their YUI components.
  * @class Alfresco.util.YUILoaderHelper
  */

@@ -36,8 +36,7 @@
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML,
-      $hasEventInterest = Alfresco.util.hasEventInterest,
-      $combine = Alfresco.util.combinePaths;
+      $hasEventInterest = Alfresco.util.hasEventInterest;
    
    /**
     * ObjectFinder constructor.
@@ -532,7 +531,7 @@
          this.options.objectRenderer.onPickerShow();
          
          // only refresh the items if we're not in authority mode
-         if (this._inAuthorityMode() == false)
+         if (this._inAuthorityMode() === false)
          {
             YAHOO.Bubbling.fire("refreshItemList",
             {
@@ -866,44 +865,47 @@
                
                for (var key in items)
                {
-                  item = items[key];
+                  if (items.hasOwnProperty(key))
+                  {
+                     item = items[key];
 
-                  // Special case for tags, which we want to render differently to categories
-                  if (item.type == "cm:category" && item.displayPath.indexOf("/categories/Tags") !== -1)
-                  {
-                     item.type = "tag";
-                  }
+                     // Special case for tags, which we want to render differently to categories
+                     if (item.type == "cm:category" && item.displayPath.indexOf("/categories/Tags") !== -1)
+                     {
+                        item.type = "tag";
+                     }
 
-                  if (this.options.showLinkToTarget && this.options.targetLinkTemplate !== null)
-                  {
-                     if (this.options.displayMode == "items")
+                     if (this.options.showLinkToTarget && this.options.targetLinkTemplate !== null)
                      {
-                        link = null;
-                        if (YAHOO.lang.isFunction(this.options.targetLinkTemplate))
+                        if (this.options.displayMode == "items")
                         {
-                           link = this.options.targetLinkTemplate.call(this, item);
+                           link = null;
+                           if (YAHOO.lang.isFunction(this.options.targetLinkTemplate))
+                           {
+                              link = this.options.targetLinkTemplate.call(this, item);
+                           }
+                           else if (YAHOO.lang.isString(this.options.targetLinkTemplate))
+                           {
+                              link = YAHOO.lang.substitute(this.options.targetLinkTemplate, item);
+                           }
+                           displayValue += this.options.objectRenderer.renderItem(item, 16,
+                                 "<div>{icon} <a href='" + link + "'>{name}</a></div>");
                         }
-                        else if (YAHOO.lang.isString(this.options.targetLinkTemplate))
+                        else if (this.options.displayMode == "list")
                         {
-                           link = YAHOO.lang.substitute(this.options.targetLinkTemplate, item);
+                           this.widgets.currentValuesDataTable.addRow(item);
                         }
-                        displayValue += this.options.objectRenderer.renderItem(item, 16,
-                              "<div>{icon} <a href='" + link + "'>{name}</a></div>");
                      }
-                     else if (this.options.displayMode == "list")
+                     else
                      {
-                        this.widgets.currentValuesDataTable.addRow(item);
-                     }
-                  }
-                  else
-                  {
-                     if (this.options.displayMode == "items")
-                     {
-                        displayValue += this.options.objectRenderer.renderItem(item, 16, "<div>{icon} {name}</div>");
-                     }
-                     else if (this.options.displayMode == "list")
-                     {
-                        this.widgets.currentValuesDataTable.addRow(item);
+                        if (this.options.displayMode == "items")
+                        {
+                           displayValue += this.options.objectRenderer.renderItem(item, 16, "<div>{icon} {name}</div>");
+                        }
+                        else if (this.options.displayMode == "list")
+                        {
+                           this.widgets.currentValuesDataTable.addRow(item);
+                        }
                      }
                   }
                }
@@ -1287,7 +1289,7 @@
             // While waiting for the package item actions, only render the actions (remove) in non editable mode
             if (scope.options.disabled === false) 
             {
-               var links = "", link, listAction, actionEl;
+               var links = "", link, listAction;
                for (var i = 0, il = scope.options.listItemActions.length; i < il; i++)
                {
                   listAction = scope.options.listItemActions[i];
@@ -1359,7 +1361,7 @@
             this.selectedItems = null;
          };
 
-         if (arrItems != "")
+         if (arrItems !== "")
          {
             Alfresco.util.Ajax.jsonRequest(
             {
@@ -1750,7 +1752,7 @@
          if (this.widgets.removeAllButton)
          {
             // Enable the remove all button if there is any items
-            this.widgets.removeAllButton.set("disabled", this.widgets.currentValuesDataTable.getRecordSet().getLength() == 0);
+            this.widgets.removeAllButton.set("disabled", this.widgets.currentValuesDataTable.getRecordSet().getLength() === 0);
          }
          if (this.widgets.addButton)
          {
@@ -1823,6 +1825,7 @@
       // Initialise prototype properties
       this.addItemButtons = {};
       this.startLocationResolved = false;
+      this.createNewItemId = null;
 
       return this;
    };
@@ -2396,7 +2399,7 @@
                }
                
                // Add the special "Create new" record if required
-               if (me.options.createNewItemUri !== "")
+               if (me.options.createNewItemUri !== "" && me.createNewItemId === null)
                {
                   items = [{ type: IDENT_CREATE_NEW }].concat(items);
                }
@@ -2459,23 +2462,58 @@
          // Rendering complete event handler
          this.widgets.dataTable.subscribe("renderEvent", function()
          {
-            if (this.options.createNewItemUri !== "" && !this.widgets.enterListener)
+            if (this.options.createNewItemUri !== "")
             {
-               this.widgets.enterListener = new KeyListener(this.createNewItemId,
+               if (!this.widgets.enterListener)
                {
-                  keys: KeyListener.KEY.ENTER
-               },
-               {
-                  fn: function ObjectRenderer__createControls_fn(eventName, keyEvent, obj)
+                  this.widgets.enterListener = new KeyListener(this.createNewItemId,
                   {
-                     this.onCreateNewItem();
-                     Event.stopEvent(keyEvent[1]);
-                     return false;
+                     keys: KeyListener.KEY.ENTER
                   },
-                  scope: this,
-                  correctScope: true
-               }, YAHOO.env.ua.ie > 0 ? KeyListener.KEYDOWN : "keypress");
-               this.widgets.enterListener.enable();
+                  {
+                     fn: function ObjectRenderer__createControls_fn(eventName, keyEvent, obj)
+                     {
+                        // Clear any previous autocomplete timeout
+                        if (this.autocompleteDelayId != -1)
+                        {
+                           window.clearTimeout(this.autocompleteDelayId);
+                        }
+                        this.onCreateNewItem();
+                        Event.stopEvent(keyEvent[1]);
+                        return false;
+                     },
+                     scope: this,
+                     correctScope: true
+                  }, YAHOO.env.ua.ie > 0 ? KeyListener.KEYDOWN : "keypress");
+                  this.widgets.enterListener.enable();
+               }
+               
+               me.autocompleteDelayId = -1;
+               Event.addListener(this.createNewItemId, "keyup", function(p_event)
+               {
+                  var sQuery = this.value;
+
+                  // Filter out keys that don't trigger queries
+                  if (!Alfresco.util.isAutocompleteIgnoreKey(p_event.keyCode))
+                  {
+                     // Clear previous timeout
+                     if (me.autocompleteDelayId != -1)
+                     {
+                        window.clearTimeout(me.autocompleteDelayId);
+                     }
+                     // Set new timeout
+                     me.autocompleteDelayId = window.setTimeout(function()
+                     {
+                        YAHOO.Bubbling.fire("refreshItemList",
+                        {
+                           eventGroup: me,
+                           searchTerm: sQuery
+                        });
+                     }, 500);
+                  }
+               });
+               
+               Dom.get(this.createNewItemId).focus();
             }
          }, this, true);
          
@@ -2550,15 +2588,29 @@
        */
       _updateItems: function ObjectRenderer__updateItems(nodeRef, searchTerm)
       {
-         // Empty results table
-         this.widgets.dataTable.set("MSG_EMPTY", this.msg("form.control.object-picker.items-list.loading"));
-         this.widgets.dataTable.deleteRows(0, this.widgets.dataTable.getRecordSet().getLength());
+         // Empty results table - leave tag entry if it's been rendered
+         if (this.createNewItemId !== null)
+         {
+            this.widgets.dataTable.deleteRows(1, this.widgets.dataTable.getRecordSet().getLength() - 1);
+         }
+         else
+         {
+            this.widgets.dataTable.set("MSG_EMPTY", this.msg("form.control.object-picker.items-list.loading"));
+            this.widgets.dataTable.deleteRows(0, this.widgets.dataTable.getRecordSet().getLength());
+         }
          
          var successHandler = function ObjectRenderer__updateItems_successHandler(sRequest, oResponse, oPayload)
          {
             this.options.parentNodeRef = oResponse.meta.parent ? oResponse.meta.parent.nodeRef : nodeRef;
             this.widgets.dataTable.set("MSG_EMPTY", this.msg("form.control.object-picker.items-list.empty"));
-            this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
+            if (this.createNewItemId !== null)
+            {
+               this.widgets.dataTable.onDataReturnAppendRows.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
+            }
+            else
+            {
+               this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
+            }
          };
          
          var failureHandler = function ObjectRenderer__updateItems_failureHandler(sRequest, oResponse)
@@ -2648,7 +2700,7 @@
                }
                else if (this.options.startLocation == "{self}")
                {
-                  if (this.options.currentItem && this.options.currentItem != null)
+                  if (this.options.currentItem && this.options.currentItem !== null)
                   {
                      pathStart = this.options.currentItem;
                   }
@@ -2659,7 +2711,7 @@
                }
                else if (this.options.startLocation == "{doclib}")
                {
-                  if (this.options.currentItem && this.options.currentItem != null)
+                  if (this.options.currentItem && this.options.currentItem !== null)
                   {
                      // we need to find the document library the node being edited
                      // is located within
@@ -2673,7 +2725,7 @@
                }
                else if (this.options.startLocation == "{parent}")
                {
-                  if (this.options.currentItem && this.options.currentItem != null)
+                  if (this.options.currentItem && this.options.currentItem !== null)
                   {
                      // we want to find all the siblings of the node being edited
                      pathStart = this.options.currentItem;
