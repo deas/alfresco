@@ -19,11 +19,11 @@
 //]]></script>
 
 <div id="${el}-body" class="search">
-   <#if searchQuery?length == 0 && searchconfig.getChildValue('repository-search') != "always">
+   <#if searchQuery?length == 0 && (searchconfig.getChildValue('repository-search')!"context") != "always">
    <div class="search-sites">
       <#if siteId?length != 0><a id="${el}-site-link" href="#" <#if !searchAllSites && !searchRepo>class="bold"</#if>>${msg('message.singlesite', siteTitle)?html}</a> |</#if>
       <a id="${el}-all-sites-link" href="#" <#if searchAllSites && !searchRepo>class="bold"</#if>>${msg('message.allsites')}</a>
-      <span <#if searchconfig.getChildValue('repository-search') == "none">class="hidden"</#if>>| <a id="${el}-repo-link" href="#" <#if searchRepo>class="bold"</#if>>${msg('message.repository')}</a></span>
+      <span <#if (searchconfig.getChildValue('repository-search')!"context") == "none">class="hidden"</#if>>| <a id="${el}-repo-link" href="#" <#if searchRepo>class="bold"</#if>>${msg('message.repository')}</a></span>
    </div>
    </#if>
    <div class="search-box">
