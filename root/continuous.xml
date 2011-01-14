@@ -726,7 +726,7 @@
    <!-- Build installers in parallel -->
    <target name="distribute-installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
-      <parallel>
+      <parallel threadCount="2">
 
          <!-- Windows Installers -->
 
