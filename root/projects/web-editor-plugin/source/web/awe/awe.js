@@ -113,6 +113,11 @@
          return this;
       },
       
+      setLoggedInStatus: function AWE_setLoggedInStatus(loggedIn)
+      {
+         this.set('loggedInStatus', loggedIn);
+      },
+      
       isLoggedIn: function AWE_isLoggedIn()
       {
          return this.get('loggedInStatus');
@@ -308,6 +313,7 @@
          var config = o.config.object.config;
          var nodes = o.json.nodes;
          this.registerEditableContent(config.editables, nodes);
+         this.setLoggedInStatus(true);
       },
 
       initAttributes : function AWE_App_initAttributes(attr)
@@ -748,7 +754,7 @@
        */
       onLoggedIn: function AWE_onLoggedIn(e, args)
       {
-         this.set('loggedInStatus', true);
+         this.setLoggedInStatus(true);
       },
       
       setLoggedIn: function AWE_setLoggedIn(loggedIn)
@@ -775,7 +781,7 @@
        */
       onLoggedOut: function AWE_onLoggedOut(e, args)
       {
-         this.set('loggedInStatus', false);
+         this.setLoggedInStatus(false);
          this.set('editables', []);
          this.setLoggedIn(false);
       },
@@ -799,7 +805,7 @@
       {
          // TODO currently not used - need to hook into login dialog cancel
          // functionality (which does not appear to exist at present)
-         this.set('loggedInStatus', false);
+         this.setLoggedInStatus(false);
          this.hideControls();
          this.toggleToolbar(false);
       },
