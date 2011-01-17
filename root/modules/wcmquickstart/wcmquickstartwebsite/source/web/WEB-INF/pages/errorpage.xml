@@ -2,7 +2,7 @@
 <page> 
    <id>errorpage</id>
    <title>title.error</title>
-   <template-instance>error</template-instance>
+   <template-instance>errorpage</template-instance>
    <authentication>none</authentication>
    <components/>
 </page>

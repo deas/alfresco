@@ -95,7 +95,7 @@ public class ContactFeedbackProcessorHandler extends FeedbackProcessorHandlerBas
         String workflowUser = null;
         if (feedbackConfig != null)
         {
-            workflowUser = feedbackConfig.get(VisitorFeedbackType.CONTACT_REQUEST_TYPE);
+            workflowUser = feedbackConfig.get("feedbackAssignee." + VisitorFeedbackType.CONTACT_REQUEST_TYPE);
         }
         if (workflowUser == null)
         {
@@ -147,7 +147,7 @@ public class ContactFeedbackProcessorHandler extends FeedbackProcessorHandlerBas
             NodeRef website = siteHelper.getRelevantWebSite(relevantArticle);
             if (website != null)
             {
-                List<String> feedbackConfig = (List<String>)nodeService.getProperty(website, PROP_FEEDBACK_CONFIG);
+                List<String> feedbackConfig = (List<String>)nodeService.getProperty(website, PROP_WEBSITE_CONFIG);
                 if (feedbackConfig != null)
                 {
                     for (String configValue : feedbackConfig)

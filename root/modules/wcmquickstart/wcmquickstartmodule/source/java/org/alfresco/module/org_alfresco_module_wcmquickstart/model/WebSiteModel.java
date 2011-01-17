@@ -40,6 +40,7 @@ public interface WebSiteModel
     public static final QName PROP_WEB_APP_CONTEXT = QName.createQName(NAMESPACE, "webAppContext");
     public static final QName PROP_FEEDBACK_CONFIG = QName.createQName(NAMESPACE, "feedbackConfig");
     public static final QName PROP_SITE_LOCALES = QName.createQName(NAMESPACE, "siteLocales");
+    public static final QName PROP_WEBSITE_CONFIG = QName.createQName(NAMESPACE, "siteConfig");
     public static final QName ASSOC_PUBLISH_TARGET = QName.createQName(NAMESPACE, "publishTarget");
     public static final QName ASSOC_PUBLISHING_QUEUE = QName.createQName(NAMESPACE, "publishingQueue");
 
