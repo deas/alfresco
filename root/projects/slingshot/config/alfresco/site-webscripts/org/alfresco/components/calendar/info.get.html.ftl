@@ -33,7 +33,7 @@
    <div class="yui-g">
       <h2>${msg("label.time")}</h2>
    </div>
-<#if result.allday=='true'>
+<#if result.allday == 'true'>
    <div class="yui-gd">
       <div class="yui-u first">&nbsp;</div>
       <div class="yui-u">${msg("label.allday")}</div>
@@ -47,7 +47,7 @@
       <div class="yui-u first">${msg("label.enddate")}:</div>
       <div class="yui-u" id="${el}-enddate"><#if result.to?exists>${result.to?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if><#if result.allday!='true'> ${msg("label.at")} ${result.end!""} </#if></div>
    </div>
-<#if result.recurrence!=''>
+<#if result.recurrence != ''>
    <div class="yui-gd">
       <div class="yui-u first">${msg("label.recurrence")}:</div>
       <div class="yui-u">${result.recurrence?html}</div>

@@ -381,14 +381,14 @@
                   activeXControl = new ActiveXObject(controlProgID + ".2");
                   return activeXControl.EditDocument2(window, asset.onlineEditUrl, appProgID);
                }
-               catch(e)
+               catch(e1)
                {
                   try
                   {
                      activeXControl = new ActiveXObject(controlProgID + ".1");
                      return activeXControl.EditDocument(asset.onlineEditUrl, appProgID);
                   }
-                  catch(e)
+                  catch(e2)
                   {
                      // Do nothing
                   }
@@ -618,7 +618,7 @@
                {
                   fileCount: success,
                   path: this.currentPath,
-                  parentNodeRef : this.modules.docList.doclistMetadata.parent.nodeRef
+                  parentNodeRef: this.doclistMetadata.parent.nodeRef
                };
                this.modules.actions.postActivity(this.options.siteId, "files-updated", "documentlibrary", activityData);
             }
@@ -717,7 +717,8 @@
             path: this.currentPath,
             files: asset,
             workingMode: this.options.workingMode,
-            rootNode: this.options.rootNode
+            rootNode: this.options.rootNode,
+            parentId: this.doclistMetadata.parent.nodeRef
          }).showDialog();
       },
 
@@ -731,12 +732,13 @@
       {
          var nodeRefs = "",
             destination = null;
+
          if (YAHOO.lang.isArray(asset))
          {
             var sameParent = true;
             for (var i = 0, il = asset.length; i < il; i++)
             {
-               nodeRefs += (i == 0 ? "" : ",") + asset[i].nodeRef;
+               nodeRefs += (i === 0 ? "" : ",") + asset[i].nodeRef;
                if (sameParent && i > 0)
                {
                   sameParent = asset[i - 1].location.parent.nodeRef == asset[i].location.parent.nodeRef;
@@ -748,7 +750,7 @@
             }
             else
             {
-               destination = this.modules.docList.doclistMetadata.container;
+               destination = this.doclistMetadata.container;
             }
          }
          else
@@ -756,7 +758,10 @@
             nodeRefs = asset.nodeRef;
             destination = asset.location.parent.nodeRef;
          }
-         var postBody = { "selectedItems" : nodeRefs};
+         var postBody =
+         {
+            selectedItems: nodeRefs
+         };
          if (destination)
          {
             postBody.destination = destination;

@@ -60,6 +60,7 @@
       this.selectedFiles = [];
       this.currentFilter = {};
       this.dynamicControls = [];
+      this.doclistMetadata = {};
 
       // Decoupled event listeners
       YAHOO.Bubbling.on("filterChanged", this.onFilterChanged, this);
@@ -198,6 +199,15 @@
       dynamicControls: null,
 
       /**
+       * Metadata returned by doclist data webscript
+       *
+       * @property doclistMetadata
+       * @type object
+       * @default null
+       */
+      doclistMetadata: null,
+
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
        *
@@ -300,13 +310,13 @@
          {
             anchor.href = YAHOO.lang.substitute(anchor.href,
             {
-               nodeRef: this.modules.docList.doclistMetadata.parent.nodeRef
+               nodeRef: this.doclistMetadata.parent.nodeRef
             });
             
             // Portlet fix: parameter might be encoded
             if (anchor.href.indexOf("%7BnodeRef%7D") !== -1)
             {
-               anchor.href = anchor.href.replace("%7BnodeRef%7D", encodeURIComponent(this.modules.docList.doclistMetadata.parent.nodeRef));
+               anchor.href = anchor.href.replace("%7BnodeRef%7D", encodeURIComponent(this.doclistMetadata.parent.nodeRef));
             }
          }
       },
@@ -320,7 +330,7 @@
        */
       onNewFolder: function DLTB_onNewFolder(e, p_obj)
       {
-         var destination = this.modules.docList.doclistMetadata.parent.nodeRef;
+         var destination = this.doclistMetadata.parent.nodeRef;
 
          // Intercept before dialog show
          var doBeforeDialogShow = function DLTB_onNewFolder_doBeforeDialogShow(p_form, p_dialog)
@@ -459,7 +469,7 @@
                {
                   fileCount: success,
                   path: this.currentPath,
-                  parentNodeRef : this.modules.docList.doclistMetadata.parent.nodeRef
+                  parentNodeRef : this.doclistMetadata.parent.nodeRef
                };
                this.modules.actions.postActivity(this.options.siteId, "files-added", "documentlibrary", activityData);
             }
@@ -615,7 +625,7 @@
                      {
                         fileCount: successCount,
                         path: this.currentPath,
-                        parentNodeRef : this.modules.docList.doclistMetadata.parent.nodeRef
+                        parentNodeRef : this.doclistMetadata.parent.nodeRef
                      };
                      this.modules.actions.postActivity(this.options.siteId, "files-deleted", "documentlibrary", activityData);
                   }
@@ -671,7 +681,10 @@
        */
       onActionDeselectAll: function DLTB_onActionDeselectAll()
       {
-         this.modules.docList.selectFiles("selectNone");
+         if (this.modules.docList)
+         {
+            this.modules.docList.selectFiles("selectNone");
+         }
       },
 
       /**
@@ -1042,9 +1055,13 @@
       {
          var obj = args[1];
          this.folderDetailsUrl = null;
-         if (obj && obj.metadata && obj.metadata.parent && obj.metadata.parent.nodeRef)
+         if (obj && obj.metadata)
          {
-            this.folderDetailsUrl = $siteURL("folder-details?nodeRef=" + obj.metadata.parent.nodeRef);
+            this.doclistMetadata = Alfresco.util.deepCopy(obj.metadata);
+            if (obj.metadata.parent && obj.metadata.parent.nodeRef)
+            {
+               this.folderDetailsUrl = $siteURL("folder-details?nodeRef=" + obj.metadata.parent.nodeRef);
+            }
          }
       },
       
