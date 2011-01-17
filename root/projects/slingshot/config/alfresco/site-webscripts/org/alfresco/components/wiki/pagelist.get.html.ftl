@@ -29,11 +29,11 @@
    <div class="publishedDetails">
       <span class="attrLabel">${msg("label.creator")}</span> <span class="attrValue"><a href="${url.context}/page/user/${p.createdByUser?url}/profile" class="theme-color-1" >${p.createdBy?html}</a></span>
       <span class="spacer">&nbsp;</span>
-      <span class="attrLabel">${msg("label.createDate")}</span> <span class="attrValue">${p.createdOn?date("MMM dd yyyy, HH:mm:ss")?string(msg("date-format.defaultFTL"))}</span>
+      <span class="attrLabel">${msg("label.createDate")}</span> <span class="attrValue">${xmldate(p.createdOn)?string(msg("date-format.defaultFTL"))}</span>
       <span class="spacer">&nbsp;</span>
       <span class="attrLabel">${msg("label.modifier")}</span> <span class="attrValue"><a href="${url.context}/page/user/${p.modifiedByUser?url}/profile" class="theme-color-1">${p.modifiedBy?html}</a></span>
       <span class="spacer">&nbsp;</span>
-      <span class="attrLabel">${msg("label.modifiedDate")}</span> <span class="attrValue">${p.modifiedOn?date("MMM dd yyyy, HH:mm:ss")?string(msg("date-format.defaultFTL"))}</span>
+      <span class="attrLabel">${msg("label.modifiedDate")}</span> <span class="attrValue">${xmldate(p.modifiedOn)?string(msg("date-format.defaultFTL"))}</span>
    </div>
    <#assign pageCopy>${(p.text!"")?replace("</?[^>]+>", " ", "ir")}</#assign>
    <div class="pageCopy rich-content"><#if pageCopy?length &lt; 1000>${pageCopy}<#else>${pageCopy?substring(0, 1000)}...</#if></div>
