@@ -84,5 +84,16 @@
          </form>
       </forms>
    </config>
+   
+   <config evaluator="string-compare" condition="custom-form-templates">
+      <forms>
+         <form>
+            <field-visibility>
+               <hide id="cm:title" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+   
 </alfresco-config>
      

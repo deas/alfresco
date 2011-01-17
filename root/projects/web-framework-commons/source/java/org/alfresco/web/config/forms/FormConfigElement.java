@@ -191,14 +191,14 @@ public class FormConfigElement extends ConfigElementAdapter
     private void combineTemplates(FormConfigElement otherFormElem,
             FormConfigElement result)
     {
-        result.setFormTemplate("create-form", createTemplate);
-        result.setFormTemplate("create-form", otherFormElem.createTemplate);
+        result.setFormTemplate("create-form", 
+                    otherFormElem.createTemplate == null ? this.createTemplate : otherFormElem.createTemplate);
         
-        result.setFormTemplate("edit-form", editTemplate);
-        result.setFormTemplate("edit-form", otherFormElem.editTemplate);
+        result.setFormTemplate("edit-form", 
+                    otherFormElem.editTemplate == null ? this.editTemplate : otherFormElem.editTemplate);
         
-        result.setFormTemplate("view-form", viewTemplate);
-        result.setFormTemplate("view-form", otherFormElem.viewTemplate);
+        result.setFormTemplate("view-form", 
+                    otherFormElem.viewTemplate == null ? this.viewTemplate : otherFormElem.viewTemplate);
     }
 
     private void combineSubmissionURL(FormConfigElement otherFormElem,

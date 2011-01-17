@@ -153,5 +153,20 @@
       </forms>
    </config>
    
+   <config evaluator="string-compare" condition="custom-form-templates">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+               <show id="cm:title" />
+               <show id="cm:description" />
+            </field-visibility>
+            <view-form template="/path/to/my/template.ftl" />
+            <create-form template="/path/to/my/template.ftl" />
+            <edit-form template="/path/to/my/template.ftl" />
+         </form>
+      </forms>
+   </config>
+   
    
 </alfresco-config>

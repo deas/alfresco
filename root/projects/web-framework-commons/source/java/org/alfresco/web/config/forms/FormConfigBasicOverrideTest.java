@@ -113,4 +113,25 @@ public class FormConfigBasicOverrideTest extends FormConfigBasicTest
         FormConfigElement formWithId = testFormsConfigElement.getForm("testing");
         assertNotNull(formWithId);
     }
+    
+    public void testCustomFormTemplatesOverride() throws Exception
+    {
+        Config testConfigObj = configService.getConfig("custom-form-templates");
+        assertNotNull(testConfigObj);
+        
+        ConfigElement testFormsConfigObj = testConfigObj.getConfigElement("forms");
+        assertNotNull(testFormsConfigObj);
+        FormsConfigElement testFormsConfigElement = (FormsConfigElement) testFormsConfigObj;
+        FormConfigElement testDefaultForm = testFormsConfigElement.getDefaultForm();
+        assertNotNull(testDefaultForm);
+        
+        String viewTemplate = testDefaultForm.getViewTemplate();
+        assertEquals("/path/to/my/template.ftl", viewTemplate);
+        
+        String createTemplate = testDefaultForm.getCreateTemplate();
+        assertEquals("/path/to/my/template.ftl", createTemplate);
+        
+        String editTemplate = testDefaultForm.getEditTemplate();
+        assertEquals("/path/to/my/template.ftl", editTemplate);
+    }
 }
