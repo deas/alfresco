@@ -257,7 +257,7 @@ public class AssetFactoryWebscriptImpl implements AssetFactory
             Map<String, Serializable> header)
     {
         AssetDeserializerXmlImpl deserializer = new AssetDeserializerXmlImpl();
-        webscriptCaller.get("webasset", deserializer, params);
+        webscriptCaller.post("webasset", deserializer, params);
         LinkedList<TreeMap<String, Serializable>> assetList = deserializer.getAssets();
         if (header != null)
         {

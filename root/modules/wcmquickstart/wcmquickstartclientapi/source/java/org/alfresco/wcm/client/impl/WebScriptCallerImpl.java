@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.auth.AuthScope;
@@ -176,8 +177,39 @@ public class WebScriptCallerImpl implements WebScriptCaller
             getMethod.releaseConnection();
         }
     }
+    
+    public void post(String servicePath, WebscriptResponseHandler handler, List<WebscriptParam> params)
+    {
+        PostMethod postMethod = getPOSTMethod(servicePath, params);
+        try
+        {
+            httpClient.executeMethod(postMethod);
+            if (postMethod.getStatusCode() == 200)
+            {
+                handler.handleResponse(postMethod.getResponseBodyAsStream());
+            }
+            else
+            {
+                // Must read the response, even though we don't use it
+                discardResponse(postMethod);
+            }
+        }
+        catch (RuntimeException ex)
+        {
+            log.error("Rethrowing runtime exception.", ex);
+            throw ex;
+        }
+        catch (Exception ex)
+        {
+            log.error("Failed to make request to Alfresco web script", ex);
+        }
+        finally
+        {
+            postMethod.releaseConnection();
+        }
+    }
 
-    void discardResponse(GetMethod getMethod) throws IOException
+    void discardResponse(HttpMethod getMethod) throws IOException
     {
         if (log.isDebugEnabled())
         {

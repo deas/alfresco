@@ -19,6 +19,7 @@ package org.alfresco.wcm.client.impl;
 
 import java.util.List;
 
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.json.JSONObject;
 
 public interface WebScriptCaller
@@ -31,5 +32,7 @@ public interface WebScriptCaller
     JSONObject getJsonObject(String servicePath, WebscriptParam... params);
 
     void get(String servicePath, WebscriptResponseHandler handler, WebscriptParam... params);
+
+    public void post(String servicePath, WebscriptResponseHandler handler, List<WebscriptParam> params);
 
 }
