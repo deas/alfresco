@@ -11,12 +11,22 @@
    RequestContext context = (RequestContext)request.getAttribute(RequestContext.ATTR_REQUEST_CONTEXT);
    if (context.getObjectService().getPage("user/" + userid + "/dashboard") == null)
    {
-      // no site found! create initial dashboard for this user...
+      // no user dashboard page found! create initial dashboard for this user...
       Map<String, String> tokens = new HashMap<String, String>();
       tokens.put("userid", userid);
       FrameworkUtil.getServiceRegistry().getPresetsManager().constructPreset("user-dashboard", tokens);
    }
    
-   // forward to user specific dashboard page
-   response.sendRedirect(request.getContextPath() + "/page/user/" + URLEncoder.encode(userid) + "/dashboard");
+   // redirect to site or user dashboard as appropriate
+   String siteName = request.getParameter("site");
+   if (siteName == null || siteName.length() == 0)
+   {
+      // forward to user specific dashboard page
+      response.sendRedirect(request.getContextPath() + "/page/user/" + URLEncoder.encode(userid) + "/dashboard");
+   }
+   else
+   {
+      // forward to site specific dashboard page
+      response.sendRedirect(request.getContextPath() + "/page/site/" + URLEncoder.encode(siteName) + "/dashboard");
+   }
 %>

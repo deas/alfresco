@@ -10,11 +10,11 @@
    <p>${msg("error.acceptfailed.text")}</p>
 <#else>
 <script type="text/javascript">//<![CDATA[
-   window.location = "${page.url.context}/page/site/${siteShortName}/dashboard";
+   window.location = "${page.url.context}/page/site-index?site=${siteShortName}";
 //]]></script>
    <h1>${msg("acceptregistered.title")}</h1>
    <p>${msg("acceptregistered.text")}</p>
    <br />
-   <a href="${page.url.context}/page/site/${siteShortName}/dashboard">${page.url.context}/page/site/${siteShortName}/dashboard</a>
+   <a href="${page.url.context}/page/site-index?site=${siteShortName}">${page.url.context}/page/site-index?site=${siteShortName}</a>
 </#if>
 </div>
