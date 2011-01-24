@@ -191,16 +191,22 @@ public class AVMHost extends org.apache.catalina.core.StandardHost
         reverse_proxy_binding_ = binding;
     }
     
-    private boolean lazyDeployExperimentalOnly_ = false;
+    private boolean lazyDeploy_ = true;
     
-    public void setLazyDeployExperimentalOnly(boolean lazyDeployExperimentalOnly)
+    public void setLazyDeploy(boolean lazyDeploy)
     { 
-        lazyDeployExperimentalOnly_ = lazyDeployExperimentalOnly;
+        lazyDeploy_ = lazyDeploy;
     }
     
-    public boolean getLazyDeployExperimentalOnly()
+    @Deprecated
+    public void setLazyDeployExperimentalOnly(boolean lazyDeploy)
+    { 
+        lazyDeploy_ = lazyDeploy;
+    }
+    
+    public boolean getLazyDeploy()
     {
-        return lazyDeployExperimentalOnly_;
+        return lazyDeploy_;
     }
 
     public String getResourceBindingClassName()

@@ -392,7 +392,8 @@
             unpackWARs        ="true"
             autoDeploy        ="false"
             xmlValidation     ="false"
-            xmlNamespaceAware ="false">
+            xmlNamespaceAware ="false"
+            lazyDeploy        ="true">
       </Host>
 
     </Engine>

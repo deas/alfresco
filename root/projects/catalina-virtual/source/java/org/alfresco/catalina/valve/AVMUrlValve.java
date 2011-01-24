@@ -601,7 +601,7 @@ public class AVMUrlValve extends ValveBase implements Lifecycle
                                                          ""
                                                        );
         
-        if (avm_host.getLazyDeployExperimentalOnly())
+        if (avm_host.getLazyDeploy())
         {
             boolean isStoreDeployed = false; // note: only checks AVM store here (not webapps)
             Container children[] = avm_host.findChildren();

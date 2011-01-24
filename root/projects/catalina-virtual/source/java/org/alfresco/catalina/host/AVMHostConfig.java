@@ -858,10 +858,10 @@ public class AVMHostConfig extends HostConfig
         ArrayList< LinkedList<String>> store_hierarchy =
             new ArrayList< LinkedList<String> >(8);       // overkill, but cheap
         
-        boolean lazyDeploy = false;
+        boolean lazyDeploy = true;
         if (host instanceof AVMHost)
         {
-            lazyDeploy = ((AVMHost)host).getLazyDeployExperimentalOnly();
+            lazyDeploy = ((AVMHost)host).getLazyDeploy();
         }
         
         // It's nice to see IBM publish an article like this:
@@ -1316,7 +1316,7 @@ public class AVMHostConfig extends HostConfig
         boolean lazyDeploy = false;
         if (host instanceof AVMHost)
         {
-            lazyDeploy = ((AVMHost)host).getLazyDeployExperimentalOnly();
+            lazyDeploy = ((AVMHost)host).getLazyDeploy();
         }
         
         boolean deployDependentsRecursively = (! lazyDeploy);
