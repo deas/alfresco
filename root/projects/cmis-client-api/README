@@ -1,0 +1,147 @@
+Alfresco OpenCMIS Extension
+===========================
+
+The Alfresco OpenCMIS Extension provides easy access to Alfresco aspects and 
+aspect properties. 
+
+
+Using the Alfresco OpenCMIS Extension
+-------------------------------------
+
+The Alfresco OpenCMIS Extension requires OpenCMIS 0.2 or higher.
+Download it from here: <http://incubator.apache.org/chemistry/opencmis.html>
+
+Put the Alfresco OpenCMIS Extension Jar into your classpath. When setting up 
+an OpenCMIS session, set the object factory class to
+"org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl".
+
+Code sample:
+  
+  Map<String, String> parameter = new HashMap<String, String>();
+
+  // user credentials
+  parameter.put(SessionParameter.USER, "admin");
+  parameter.put(SessionParameter.PASSWORD, "admin");
+
+  // connection settings
+  parameter.put(SessionParameter.ATOMPUB_URL, 
+       "http://localhost:8080/alfresco/service/cmis");
+  parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
+
+  // set the object factory
+ parameter.put(SessionParameter.OBJECT_FACTORY_CLASS, 
+      "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
+
+  // create session
+  SessionFactory factory = SessionFactoryImpl.newInstance();
+  Session session = factory.getRepositories(parameter).get(0).createSession();
+
+
+Reading aspect properties
+-------------------------
+
+Aspect properties automatically appear as CMIS properties.
+
+
+Updating aspect properties
+--------------------------
+
+An aspect property can be updated as any other CMIS property. 
+
+
+Creating documents and folders with aspects
+-------------------------------------------
+  
+Aspects can be specified at creation of a document or a folder.
+
+In order to create an object, the property "cmis:objectTypeId" must be set to 
+a valid CMIS object type id. With the Alfresco OpenCMIS Extension installed, 
+the OpenCMIS library also accepts a comma-separated list of type ids. 
+The first type id in that list MUST be the object type id. All following 
+type ids MUST be aspect type ids.
+Aspect properties can be set for all aspects in that list.
+
+Code sample:
+
+  Map<String, Object> properties = new HashMap<String, Object>();
+  properties.put(PropertyIds.NAME, "doc1");
+  properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
+  properties.put("cm:description", "My document");
+
+  Document doc = session.getRootFolder().createDocument(properties, null, null);
+
+
+Adding, removing and discovering aspects
+----------------------------------------
+
+In order to add and remove aspects, cast OpenCMIS Document objects and Folder
+objects to AlfrescoDocument respectively AlfrescoFolder.
+They provide the following additional methods:
+
+  // check for applied aspects
+  boolean hasAspect(String id);
+  boolean hasAspect(ObjectType type);
+  Collection<ObjectType> getAspects();
+  
+  // find the aspect type for a property id
+  ObjectType findAspect(String propertyId);
+  
+  // add and remove aspects
+  void addAspect(String... id);
+  void addAspect(ObjectType... type);
+  void removeAspect(String... id);
+  void removeAspect(ObjectType... type);
+
+
+Code sample:
+
+  Document doc = (Document) session.getObject(...);
+  
+  AlfrescoDocument alfDoc = (AlfrescoDocument) doc;
+  alfDoc.addAspect("P:cm:taggable");
+
+  if(alfDoc.hasAspect("P:cm:titled")) {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put("cm:description", "My taggable document");
+    alfDoc.updateProperties(properties);
+  }
+
+
+If the OpenCMIS session is connected to a repository that is not an Alfresco 
+repository, hasAspect() always returns false, getAspects() returns an empty 
+collection and addAspect() and removeAspect() calls should be ignored by the 
+connected repository.
+
+
+How does it work?
+-----------------
+
+The CMIS specification defines several extension points. Alfresco uses these 
+CMIS extensions to sends and accepts aspect properties. Those extensions are 
+available to all CMIS clients but most of them ignore extensions.
+A vanilla OpenCMIS library can read and set CMIS extensions but that requires 
+some code and discipline. 
+
+The Alfresco OpenCMIS Extension replaces OpenCMIS' internal object factory with 
+one that understands Alfresco CMIS extensions. The factory creates objects that 
+are aware of Alfresco aspects and provide appropriate interfaces. 
+
+So, the Alfresco OpenCMIS Extension is only a convenience layer on top of CMIS.  
+
+
+License
+-------
+
+Copyright (C) 2005-2011 Alfresco Software Limited.
+
+The Alfresco OpenCMIS Extension is free software: you can redistribute it and/or 
+modify it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or 
+(at your option) any later version.
+
+The Alfresco OpenCMIS Extension is distributed in the hope that it will be 
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Lesser General Public License for more detail:
+<http://www.gnu.org/licenses/>
+ 

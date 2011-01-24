@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cmis-client-api" default="zip" basedir=".">
+	<property name="release" value="110124" />
+	
+	<property name="source.path" value="${basedir}/source/java" />
+	<property name="lib.path" value="${basedir}/lib" />
+	<property name="build.path" value="${basedir}/build" />
+	<property name="classes.path" value="${build.path}/classes" />
+	<property name="jar" value="alfresco-opencmis-extension-${release}.jar" />
+	<property name="zip" value="alfresco-opencmis-extension-${release}.zip" />
+
+	<path id="classpath.ref">
+		<fileset dir="${lib.path}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="build">
+		<delete dir="${classes.path}"/>
+		<mkdir dir="${classes.path}"/>
+		<javac destdir="${classes.path}" classpathref="classpath.ref" srcdir="${source.path}" />
+	</target>
+
+	<target name="jar" depends="build">
+		<jar destfile="${basedir}/${jar}" basedir="${build.path}/classes" />
+	</target>
+
+	<target name="zip" depends="jar">
+		<zip destfile="${basedir}/${zip}">
+			<zipfileset dir="${basedir}" includes="${jar}" prefix=""/>
+			<zipfileset dir="${source.path}" includes="**/*.java" prefix="source"/>
+			<zipfileset dir="${basedir}" includes="README" prefix=""/>
+		</zip>
+	</target>
+</project>
