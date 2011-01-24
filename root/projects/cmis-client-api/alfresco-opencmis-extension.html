@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Alfresco OpenCMIS Extension</title>
+  <link rel="stylesheet" href="/css-boilerplate/screen.css" type="text/css" media="screen" charset="utf-8">
+  <!--[if lte IE 6]><link rel="stylesheet" href="/css-boilerplate/lib/ie.css" type="text/css" media="screen" charset="utf-8"><![endif]-->
+</head>
+
+<body>
+
+<div id="page">
+  <div id="header">
+    <a href="http://www.alfresco.com"><img id="alflogo" src="/images/logo/AlfrescoLogo200.png"/></a><a href="http://www.oasis-open.org/committees/cmis"><img id="alflogo" height="55px" src="/images/logo/cmis_logo_100.png"/></a>
+  </div>
+
+  <div id="body" class="wrapper">
+    <div id="introduction">
+      <h3>"Alfresco OpenCMIS Extension" Preview</h3>
+      <p>
+      Aspects are an essential tool to model metadata in Alfresco. The CMIS specification does not define aspects or something similar, but it defines several extension points. 
+      Alfresco uses these extensions point to send aspect data back and forth between a CMIS client and the server.
+      </p>
+      <p>
+      CMIS extensions are XML fragments placed in different parts of a CMIS object. The Alfresco aspect fragments are documented on the 
+      <a href="http://wiki.alfresco.com/wiki/CMIS#Aspect_Support">Alfresco Wiki</a>. So, theoretically, they are available to all CMIS clients out there including OpenCMIS.
+      </p>
+      <p>
+      In reality, dealing with CMIS extensions isn't fun and can require quite a lot of code. OpenCMIS does all the XML parsing for you but, since it doesn't know anything 
+      about aspects, it can't provide pretty interfaces.
+      </p>
+      <p>
+      That's where the "Alfresco OpenCMIS Extension" steps in. It seamlessly merges aspect properties with object properties and provides interfaces to get, add and remove aspects. 
+      It does that by replacing OpenCMIS' internal object factory with an object factory that is aspect aware. It processes and adds Alfresco CMIS extensions behind the scenes.
+      </p>
+      <p>
+      <b>Download: <a href="alfresco-opencmis-extension-110124.zip">Alfresco OpenCMIS Extension</a> (2011-01-24)</b>
+      </p>
+
+      <h3>Setting it up</h3>
+      <p>
+      The "Alfresco OpenCMIS Extension' requires OpenCMIS 0.2 (or higher). Download the OpenCMIS client libraries from the <a href="http://incubator.apache.org/chemistry/opencmis.html">Apache Chemistry website</a>.
+      Also download the <a href="alfresco-opencmis-extension-110124.zip">"Alfresco OpenCMIS Extension" package</a> and put all Jars into your classpath.
+      </p>
+      <p>
+      OpenCMIS doesn't need to be altered in order to use a different object factory. Setting an additional session parameter is all you need to do.
+      <pre>
+Map<String, String> parameter = new HashMap<String, String>();
+
+// user credentials
+parameter.put(SessionParameter.USER, "admin");
+parameter.put(SessionParameter.PASSWORD, "admin");
+
+// connection settings
+parameter.put(SessionParameter.ATOMPUB_URL, "http://localhost:8080/alfresco/service/cmis");
+parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
+
+// set the object factory
+<b>parameter.put(SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");</b>
+
+// create session
+SessionFactory factory = SessionFactoryImpl.newInstance();
+Session session = factory.getRepositories(parameter).get(0).createSession();
+</pre>
+      </p>
+      <p>
+      That's it. 
+      </p>
+      <p>
+      From now on, all aspect properties can be accessed and updated through the standard OpenCMIS interfaces.
+      </p>
+
+
+      <h3>Creating a document or folder with aspects</h3>
+      <p>
+      Aspects can be specified at creation of a document or a folder.
+      </p>
+      <p>
+      In order to create an object, the property "cmis:objectTypeId" must be set to a valid CMIS object type id. With the Alfresco OpenCMIS Extension installed, the OpenCMIS library also accepts
+      a comma-separated list of type ids. The first type id in that list MUST be the object type id. All following type ids MUST be aspect type ids. Aspect properties can be set for all aspects in that list.
+      </p>
+      <p>
+      Creating a document with an aspect could look like this:
+      <pre>
+Map<String, Object> properties = new HashMap<String, Object>();
+properties.put(PropertyIds.NAME, "doc1");
+properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
+properties.put("cm:description", "My document");
+
+Document doc = session.getRootFolder().createDocument(properties, null, null);
+      </pre>
+      </p>
+      <p>
+      This creates a document without content in the root folder, with the "titled" aspect applied and the "description" property set.
+      </p>
+
+
+      <h3>Adding, removing and discovering aspects</h3>
+      <p>
+      In order to add and remove aspects, you have to cast OpenCMIS <code>Document</code> objects and <code>Folder</code> objects to <code>AlfrescoDocument</code> respectively <code>AlfrescoFolder</code>.
+      </p>
+      <p>
+      They provide the following additional methods:
+      <pre>
+// check for applied aspects
+boolean hasAspect(String id);
+boolean hasAspect(ObjectType type);
+Collection<ObjectType> getAspects();
+  
+// find the aspect type for a property id
+ObjectType findAspect(String propertyId);
+  
+// add and remove aspects
+void addAspect(String... id);
+void addAspect(ObjectType... type);
+void removeAspect(String... id);
+void removeAspect(ObjectType... type);
+      </pre>
+      </p>
+      <p>
+      So, your code could now look like this:
+      <pre>
+Document doc = (Document) session.getObject(...);
+  
+AlfrescoDocument alfDoc = (AlfrescoDocument) doc;
+alfDoc.addAspect("P:cm:taggable");
+
+if(alfDoc.hasAspect("P:cm:titled")) {
+  Map<String, Object> properties = new HashMap<String, Object>();
+  properties.put("cm:description", "My taggable document");
+  alfDoc.updateProperties(properties);
+}
+      </pre>
+      </p>
+      <p>
+      Remember that all aspect types visible through CMIS are prefixed with "P:".<br/>
+      (Document types are prefixed with "D:" and folder types are prefixed with "F:".)
+      </p>
+
+
+      <h3>Questions, comments and feedback</h3>
+      <p>
+      The "Alfresco OpenCMIS Extension" hasn't been extensively tested, yet. It's in a preview state.
+      Questions and suggestions are welcome. Please use the <a href="http://forums.alfresco.com/en/viewforum.php?f=45">CMIS forum</a>.
+      </p>
+      
+      
+  </div>
+
+   <div id="resources">
+      <h3>Alfresco CMIS</h3>
+      <ul>
+        <li><a href="http://cmis.alfresco.com">Alfresco CMIS</a></li>
+        <li><a href="http://wiki.alfresco.com/wiki/CMIS">Alfresco CMIS Wiki</a></li>
+        <li><a href="alfresco-opencmis-extension-110124.zip">Alfresco OpenCMIS Extension</a></li>
+      </ul>
+      <h3>Apache Chemistry</h3>
+      <ul>
+        <li><a href="http://incubator.apache.org/chemistry/">Home Page</a></li>
+        <li><a href="http://incubator.apache.org/chemistry/opencmis.html">Apache Chemistry OpenCMIS</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div id="footer">
+  </div>
+</div>
+
+</body>
+</html>
