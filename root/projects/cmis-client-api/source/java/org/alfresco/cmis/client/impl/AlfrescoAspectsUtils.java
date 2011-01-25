@@ -110,7 +110,8 @@ public class AlfrescoAspectsUtils
 
         for (ObjectType type : aspectTypes)
         {
-            if (type.getPropertyDefinitions().containsKey(propertyId))
+            if (type != null && type.getPropertyDefinitions() != null
+                    && type.getPropertyDefinitions().containsKey(propertyId))
             {
                 return type;
             }
