@@ -40,13 +40,13 @@
 
       <h3>Setting it up</h3>
       <p>
-      The "Alfresco OpenCMIS Extension' requires OpenCMIS 0.2 (or higher). Download the OpenCMIS client libraries from the <a href="http://incubator.apache.org/chemistry/opencmis.html">Apache Chemistry website</a>.
+      The "Alfresco OpenCMIS Extension" requires OpenCMIS 0.2 (or higher). Download the OpenCMIS client libraries from the <a href="http://incubator.apache.org/chemistry/opencmis.html">Apache Chemistry website</a>.
       Also download the <a href="alfresco-opencmis-extension-110124.zip">"Alfresco OpenCMIS Extension" package</a> and put all Jars into your classpath.
       </p>
       <p>
       OpenCMIS doesn't need to be altered in order to use a different object factory. Setting an additional session parameter is all you need to do.
       <pre>
-Map<String, String> parameter = new HashMap<String, String>();
+Map&lt;String, String&gt; parameter = new HashMap&lt;String, String&gt;();
 
 // user credentials
 parameter.put(SessionParameter.USER, "admin");
@@ -83,7 +83,7 @@ Session session = factory.getRepositories(parameter).get(0).createSession();
       <p>
       Creating a document with an aspect could look like this:
       <pre>
-Map<String, Object> properties = new HashMap<String, Object>();
+Map&lt;String, Object&gt; properties = new HashMap&lt;String, Object&gt;();
 properties.put(PropertyIds.NAME, "doc1");
 properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
 properties.put("cm:description", "My document");
@@ -106,7 +106,7 @@ Document doc = session.getRootFolder().createDocument(properties, null, null);
 // check for applied aspects
 boolean hasAspect(String id);
 boolean hasAspect(ObjectType type);
-Collection<ObjectType> getAspects();
+Collection&lt;ObjectType&gt; getAspects();
   
 // find the aspect type for a property id
 ObjectType findAspect(String propertyId);
@@ -127,7 +127,7 @@ AlfrescoDocument alfDoc = (AlfrescoDocument) doc;
 alfDoc.addAspect("P:cm:taggable");
 
 if(alfDoc.hasAspect("P:cm:titled")) {
-  Map<String, Object> properties = new HashMap<String, Object>();
+  Map&lt;String, Object&gt; properties = new HashMap&lt;String, Object&gt;();
   properties.put("cm:description", "My taggable document");
   alfDoc.updateProperties(properties);
 }
