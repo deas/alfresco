@@ -515,7 +515,7 @@
    <target name="-drop-database-unknown">
       <fail message="Unknown database type for JDBC url '${db.url}'" />
    </target>
-   <target name="-drop-database-mysql">
+   <target name="-drop-database-mysql" depends="init">
       <sql driver="${db.driver}" 
            url="jdbc:mysql:///" 
            classpathref="classpath.compile" 
@@ -526,7 +526,7 @@
          drop database if exists ${db.name}_test;
       </sql>
    </target>
-   <target name="-drop-database-postgresql">
+   <target name="-drop-database-postgresql" depends="init">
       <sql driver="${db.driver}" 
            url="jdbc:postgresql:template1"
            classpathref="classpath.compile" 
@@ -538,7 +538,7 @@
          drop database if exists ${db.name}_test;
       </sql>
    </target>
-   <target name="-drop-database-mssql">
+   <target name="-drop-database-mssql" depends="init">
       <!-- MS SQL Server lacks a "if exists" for dropping databases -->
       <!-- So, do it as two statements, ignoring errors -->
       <sql driver="${db.driver}" 
@@ -562,7 +562,7 @@
          drop database ${db.name}_test;
       </sql>
    </target>
-   <target name="-drop-database-oracle">
+   <target name="-drop-database-oracle" depends="init">
       <!-- Really user + schema, rather than oracle database -->
       <!-- Oracle lacks a "if exists" for dropping users -->
       <!-- So, do it as two statements, ignoring errors -->
@@ -587,7 +587,7 @@
          drop user ${db.username}_test cascade;
       </sql>
    </target>
-   <target name="-drop-database-db2">
+   <target name="-drop-database-db2" depends="init">
        <!-- Use db2 cmdline since no ability to drop database via JDBC (not even using procedure call to "admin_cmd") ??? -->
        <exec executable="db2cmd">
          <arg line="/c /i db2 drop database ${db.name}"/>
