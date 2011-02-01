@@ -244,7 +244,7 @@ public class AlfrescoObjectFactoryImpl extends ObjectFactoryImpl
                             {
                                 df = DatatypeFactory.newInstance();
                             }
-                            values.add(df.newXMLGregorianCalendar(propertyValues.getValue()));
+                            values.add(df.newXMLGregorianCalendar(propertyValues.getValue()).toGregorianCalendar());
                             break;
                         case DECIMAL:
                             values.add(new BigDecimal(propertyValues.getValue()));
