@@ -18,8 +18,12 @@
  */
 package org.alfresco.cmis.client.test;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
@@ -187,8 +191,82 @@ public class CMISClientTest extends TestCase
         doc3.refresh();
 
         assertNull(doc3.getProperty("cm:description"));
-        
+
         // delete
         doc2.delete(true);
+    }
+
+    public void testEXIFAspect()
+    {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(PropertyIds.NAME, "exif.test");
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
+
+        AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);
+
+        doc.addAspect("P:exif:exif");
+
+        BigDecimal xResolution = new BigDecimal("1234567890.123456789");
+        BigDecimal yResolution = new BigDecimal("0.000000000000000001");
+        GregorianCalendar dateTimeOriginal = new GregorianCalendar(2011, 01, 01, 10, 12, 30);
+        dateTimeOriginal.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        boolean flash = true;
+        int pixelXDimension = 1024;
+        int pixelYDimension = 512;
+
+        properties = new HashMap<String, Object>();
+        properties.put("exif:xResolution", xResolution);
+        properties.put("exif:yResolution", yResolution);
+        properties.put("exif:dateTimeOriginal", dateTimeOriginal);
+        properties.put("exif:flash", flash);
+        properties.put("exif:pixelXDimension", pixelXDimension);
+        properties.put("exif:pixelYDimension", pixelYDimension);
+
+        doc.updateProperties(properties);
+
+        doc.refresh();
+
+        assertEquals(dateTimeOriginal.getTimeInMillis(),
+                ((GregorianCalendar) doc.getPropertyValue("exif:dateTimeOriginal")).getTimeInMillis());
+        assertEquals(flash, doc.getPropertyValue("exif:flash"));
+        assertEquals(BigInteger.valueOf(pixelXDimension), doc.getPropertyValue("exif:pixelXDimension"));
+        assertEquals(BigInteger.valueOf(pixelYDimension), doc.getPropertyValue("exif:pixelYDimension"));
+
+        // delete
+        doc.delete(true);
+    }
+
+    public void testCheckIn()
+    {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(PropertyIds.NAME, "checkin.test");
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document, P:cm:titled");
+        properties.put("cm:description", "desc1");
+
+        AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);
+
+        ObjectId pwcId = doc.checkOut();
+        assertNotNull(pwcId);
+
+        AlfrescoDocument pwc = (AlfrescoDocument) session.getObject(pwcId);
+        assertNotNull(pwc);
+
+        assertEquals("desc1", pwc.getPropertyValue("cm:description"));
+
+        properties = new HashMap<String, Object>();
+        properties.put("cm:description", "desc2");
+
+        ObjectId newDocId = pwc.checkIn(true, properties, null, null);
+        assertNotNull(newDocId);
+
+        AlfrescoDocument newDoc = (AlfrescoDocument) session.getObject(newDocId);
+        newDoc.refresh();
+        assertNotNull(newDoc);
+
+        assertEquals("desc2", newDoc.getPropertyValue("cm:description"));
+
+        // delete
+        newDoc.delete(true);
     }
 }
