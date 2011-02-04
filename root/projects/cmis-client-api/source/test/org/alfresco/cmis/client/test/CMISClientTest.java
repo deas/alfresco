@@ -20,8 +20,10 @@ package org.alfresco.cmis.client.test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -233,6 +235,28 @@ public class CMISClientTest extends TestCase
         assertEquals(BigInteger.valueOf(pixelXDimension), doc.getPropertyValue("exif:pixelXDimension"));
         assertEquals(BigInteger.valueOf(pixelYDimension), doc.getPropertyValue("exif:pixelYDimension"));
 
+        // delete
+        doc.delete(true);
+    }
+
+    public void XtestTaggable()
+    {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(PropertyIds.NAME, "taggable.test");
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:taggable");
+
+        AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);
+
+        assertTrue(doc.hasAspect("P:cm:taggable"));
+
+        List<String> tags = new ArrayList<String>();
+        tags.add("workspace://SpacesStore/a807b10e-6dea-403f-88f1-33e2383890dd");
+        tags.add("workspace://SpacesStore/a728d30f-0bbe-48cf-9557-2d6b7cb63b45");
+        
+        properties = new HashMap<String, Object>();
+        properties.put("cm:taggable", tags);
+        doc.updateProperties(properties);
+        
         // delete
         doc.delete(true);
     }

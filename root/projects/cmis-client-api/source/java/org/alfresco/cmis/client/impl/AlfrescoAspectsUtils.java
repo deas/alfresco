@@ -174,6 +174,15 @@ public class AlfrescoAspectsUtils
         case INTEGER:
             name = "propertyInteger";
             break;
+        case ID:
+            name = "propertyId";
+            break;
+        case HTML:
+            name = "propertyHtml";
+            break;
+        case URI:
+            name = "propertyUri";
+            break;
         default:
             name = "propertyString";
         }

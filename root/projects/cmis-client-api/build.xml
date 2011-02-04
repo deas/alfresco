@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="cmis-client-api" default="zip" basedir=".">
-	<property name="release" value="110201" />
+	<property name="release" value="110204" />
 	
 	<property name="source.path" value="${basedir}/source/java" />
 	<property name="lib.path" value="${basedir}/lib" />
