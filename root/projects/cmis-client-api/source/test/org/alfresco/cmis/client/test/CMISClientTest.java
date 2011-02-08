@@ -202,7 +202,7 @@ public class CMISClientTest extends TestCase
     {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(PropertyIds.NAME, "exif.test");
-        properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "D:fm:post");
 
         AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);
 
@@ -239,6 +239,34 @@ public class CMISClientTest extends TestCase
         doc.delete(true);
     }
 
+    public void testUpdate()
+    {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(PropertyIds.NAME, "test.update");
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "D:fm:post,P:cm:titled,P:sys:incomplete");
+
+        Document doc = session.getRootFolder().createDocument(properties, null, null);
+
+        Property<String> descriptionProperty = doc.getProperty("cm:description");
+        assertNotNull(descriptionProperty);
+        assertNull(descriptionProperty.getFirstValue());
+        
+        assertTrue(doc instanceof AlfrescoDocument);
+
+        doc.refresh();
+        
+        properties = new HashMap<String, Object>();
+        properties.put("cm:description", "test description");
+        doc.updateProperties(properties);
+        
+        doc.refresh();
+        
+        assertNotNull(descriptionProperty);
+
+        // delete
+        doc.delete(true);
+    }
+
     public void XtestTaggable()
     {
         Map<String, Object> properties = new HashMap<String, Object>();
@@ -252,11 +280,11 @@ public class CMISClientTest extends TestCase
         List<String> tags = new ArrayList<String>();
         tags.add("workspace://SpacesStore/a807b10e-6dea-403f-88f1-33e2383890dd");
         tags.add("workspace://SpacesStore/a728d30f-0bbe-48cf-9557-2d6b7cb63b45");
-        
+
         properties = new HashMap<String, Object>();
         properties.put("cm:taggable", tags);
         doc.updateProperties(properties);
-        
+
         // delete
         doc.delete(true);
     }

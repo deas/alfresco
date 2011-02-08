@@ -85,7 +85,9 @@ public class AlfrescoObjectFactoryImpl extends ObjectFactoryImpl
         {
             Object propValue = ((Property<?>) typeId).getFirstValue();
             typeIdStr = (propValue == null ? null : propValue.toString());
-        } else
+        }
+
+        if (typeIdStr == null)
         {
             throw new IllegalArgumentException("Type property must be set!");
         }
@@ -135,12 +137,23 @@ public class AlfrescoObjectFactoryImpl extends ObjectFactoryImpl
 
                 for (ObjectType aspectType : aspectTypes)
                 {
+                    if (aspectType.getPropertyDefinitions() == null)
+                    {
+                        continue;
+                    }
+
                     PropertyDefinition<?> propDef = aspectType.getPropertyDefinitions().get(id);
                     if (propDef != null)
                     {
                         aspectPropertyDefinition.put(id, propDef);
                         break;
                     }
+                }
+
+                if (!aspectPropertyDefinition.containsKey(id))
+                {
+                    throw new IllegalArgumentException("Property '" + id
+                            + "' is neither an object type property nor an aspect property!");
                 }
             }
         }
