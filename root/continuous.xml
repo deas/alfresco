@@ -347,8 +347,28 @@
             fail.perform();
          } else if(dburl.startsWith("jdbc:mysql://")) {
             dbtype = "mysql";
+
+            // Master URL has no database name
+            var masterURL = "jdbc:mysql://";
+            if(dburl.indexOf(":///") == -1) {
+               // Copy the hostname over for the master URL
+               var tmp = dburl.substring(dburl.indexOf("://")+3);
+               masterURL += tmp.substring(0, tmp.indexOf("/"));
+            }
+            masterURL += "/";
+            project.setProperty("db.master.url", masterURL);
          } else if(dburl.startsWith("jdbc:postgresql:")) {
             dbtype = "postgresql";
+
+            // Master URL is to the special template1 database
+            var masterURL = "jdbc:postgresql:";
+            if(dburl.indexOf("://") != -1) {
+               // Copy the hostname over for the master URL
+               var tmp = dburl.substring(dburl.indexOf("://")+1);
+               masterURL += tmp.substring(0, tmp.indexOf("/",3)+1);
+            }
+            masterURL += "template1";
+            project.setProperty("db.master.url", masterURL);
          } else if(dburl.startsWith("jdbc:oracle:")) {
             dbtype = "oracle";
 
@@ -393,6 +413,8 @@
       ]]></script>
       <echo message="DB Type is ${db.type}"/>
       <echo message="DB Name is ${db.name}"/>
+      <echo message="DB Normal URL is ${db.url}"/>
+      <echo message="DB Master URL is ${db.master.url}"/>
    </target>
 
    <target name="-create-database" 
@@ -404,20 +426,19 @@
    </target>
    <target name="-create-database-mysql">
       <sql driver="${db.driver}" 
-           url="jdbc:mysql:///" 
+           url="${db.master.url}"
            classpathref="classpath.compile" 
            print="yes"
            userid="${db.username}" 
            password="${db.password}">
          create database if not exists ${db.name};
-         create database if not exists ${db.name}_test;
       </sql>
    </target>
    <target name="-create-database-postgresql">
-      <!-- PostGreSQL lacks a "if not exists" for creating databases -->
-      <!-- So, do it as two statements, ignoring errors -->
+      <!-- Note - PostGreSQL lacks a "if not exists" for creating databases -->
+      <!-- So, do it with ignoring of errors -->
       <sql driver="${db.driver}" 
-           url="jdbc:postgresql:template1"
+           url="${db.master.url}"
            classpathref="classpath.compile" 
            print="yes"
            autocommit="yes"
@@ -426,20 +447,10 @@
            password="${db.password}">
          create database ${db.name};
       </sql>
-      <sql driver="${db.driver}" 
-           url="jdbc:postgresql:template1"
-           classpathref="classpath.compile" 
-           print="yes"
-           autocommit="yes"
-           onerror="continue"
-           userid="${db.username}" 
-           password="${db.password}">
-         create database ${db.name}_test;
-      </sql>
    </target>
    <target name="-create-database-mssql">
       <!-- MS SQL Server lacks a "if not exists" for creating databases -->
-      <!-- So, do it as two statements, ignoring errors -->
+      <!-- So, do it with ignoring of errors -->
       <sql driver="${db.driver}" 
            url="${db.master.url}"
            classpathref="classpath.compile" 
@@ -451,17 +462,6 @@
          CREATE DATABASE ${db.name};
          ALTER DATABASE ${db.name} SET ALLOW_SNAPSHOT_ISOLATION ON;
       </sql>
-      <sql driver="${db.driver}" 
-           url="${db.master.url}"
-           classpathref="classpath.compile" 
-           print="yes"
-           autocommit="yes"
-           onerror="continue"
-           userid="${db.username}" 
-           password="${db.password}">
-         CREATE DATABASE ${db.name}_test;
-         ALTER DATABASE ${db.name}_test SET ALLOW_SNAPSHOT_ISOLATION ON;
-      </sql>
    </target>
    <target name="-create-database-oracle">
       <!-- Really user + schema, rather than oracle database -->
@@ -472,11 +472,10 @@
            userid="${db.master.username}" 
            password="${db.master.password}">
          grant connect,resource to ${db.username} identified by ${db.password};
-         grant connect,resource to ${db.username}_test identified by ${db.password};
       </sql>
    </target>
    <target name="-create-database-db2">
-       <!-- DB name must be <= 8 chars including the _test suffix !!! -->
+       <!-- DB name must be <= 8 chars -->
        <!-- Use db2 cmdline since no ability to create database via JDBC (not even using procedure call to "admin_cmd") :-( -->
        <exec executable="db2cmd">
          <arg line="/c /i db2 create database ${db.name} using codeset UTF-8 territory default pagesize 32 K"/>
@@ -484,13 +483,6 @@
        <!-- increase logfilsz for certain unit tests that run large txns (see ALF-4241) -->
        <exec executable="db2cmd">
          <arg line="/c /i db2 update database configuration for ${db.name} using logfilsiz 4096"/>
-       </exec>
-       <exec executable="db2cmd">
-         <arg line="/c /i db2 create database ${db.name}_test using codeset UTF-8 territory default pagesize 32 K"/>
-       </exec>
-       <!-- increase logfilsz for certain unit tests that run large txns (see ALF-4241) -->
-       <exec executable="db2cmd">
-         <arg line="/c /i db2 update database configuration for ${db.name}_test using logfilsiz 4096"/>
        </exec>
    </target>
 
@@ -517,30 +509,28 @@
    </target>
    <target name="-drop-database-mysql" depends="init">
       <sql driver="${db.driver}" 
-           url="jdbc:mysql:///" 
+           url="${db.master.url}"
            classpathref="classpath.compile" 
            print="yes"
            userid="${db.username}" 
            password="${db.password}">
          drop database if exists ${db.name};
-         drop database if exists ${db.name}_test;
       </sql>
    </target>
    <target name="-drop-database-postgresql" depends="init">
       <sql driver="${db.driver}" 
-           url="jdbc:postgresql:template1"
+           url="${db.master.url}"
            classpathref="classpath.compile" 
            print="yes"
            autocommit="yes"
            userid="${db.username}" 
            password="${db.password}">
          drop database if exists ${db.name};
-         drop database if exists ${db.name}_test;
       </sql>
    </target>
    <target name="-drop-database-mssql" depends="init">
       <!-- MS SQL Server lacks a "if exists" for dropping databases -->
-      <!-- So, do it as two statements, ignoring errors -->
+      <!-- So, do it with ignoring errors -->
       <sql driver="${db.driver}" 
            url="${db.master.url}"
            classpathref="classpath.compile" 
@@ -551,21 +541,11 @@
            password="${db.password}">
          drop database ${db.name};
       </sql>
-      <sql driver="${db.driver}" 
-           url="${db.master.url}"
-           classpathref="classpath.compile" 
-           print="yes"
-           autocommit="yes"
-           onerror="continue"
-           userid="${db.username}" 
-           password="${db.password}">
-         drop database ${db.name}_test;
-      </sql>
    </target>
    <target name="-drop-database-oracle" depends="init">
       <!-- Really user + schema, rather than oracle database -->
       <!-- Oracle lacks a "if exists" for dropping users -->
-      <!-- So, do it as two statements, ignoring errors -->
+      <!-- So, do it with ignoring of errors -->
       <sql driver="${db.driver}" 
            url="${db.url}"
            classpathref="classpath.compile" 
@@ -576,24 +556,11 @@
            password="${db.master.password}">
          drop user ${db.username} cascade;
       </sql>
-      <sql driver="${db.driver}" 
-           url="${db.url}"
-           classpathref="classpath.compile" 
-           print="yes"
-           autocommit="yes"
-           onerror="continue"
-           userid="${db.master.username}" 
-           password="${db.master.password}">
-         drop user ${db.username}_test cascade;
-      </sql>
    </target>
    <target name="-drop-database-db2" depends="init">
        <!-- Use db2 cmdline since no ability to drop database via JDBC (not even using procedure call to "admin_cmd") ??? -->
        <exec executable="db2cmd">
          <arg line="/c /i db2 drop database ${db.name}"/>
-       </exec>
-       <exec executable="db2cmd">
-         <arg line="/c /i db2 drop database ${db.name}_test"/>
        </exec>
    </target>
 
