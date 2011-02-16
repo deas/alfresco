@@ -13,7 +13,7 @@
                 </runProgram>
                 <runProgram>
                     <program>${database_binary_directory}/mysql</program>
-                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -S ../tmp/mysql.sock -e "CREATE DATABASE ${alfresco_database_name};"</programArguments>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -S ../tmp/mysql.sock -e "CREATE DATABASE ${alfresco_database_name} default character set utf8 collate utf8_bin;"</programArguments>
                 </runProgram>
                 <runProgram>
                     <program>${database_binary_directory}/mysql</program>
@@ -38,7 +38,7 @@
                 </runProgram>
                 <runProgram>
                     <program>${database_binary_directory}\mysql.exe</program>
-                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -e "CREATE DATABASE ${alfresco_database_name};"</programArguments>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -e "CREATE DATABASE ${alfresco_database_name} default character set utf8 collate utf8_bin;"</programArguments>
                 </runProgram>
                 <runProgram>
                     <program>${database_binary_directory}\mysql.exe</program>
