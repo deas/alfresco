@@ -53,7 +53,7 @@
 	<classpathentry kind="lib" path="lib/jstl-1.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/standard.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-fileupload-1.2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar" sourcepath="C:/Users/Nick/.m2/repository/xerces/xercesImpl/2.8.0/xercesImpl-2.8.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons/commons-pool-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jooconverter-2.1.0.jar" sourcepath="src/jooconverter-2.1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/hibernate-3.2.6-patched.jar" sourcepath="src/hibernate-3.2.6-patched-src.zip"/>
@@ -136,9 +136,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/jbpm/jbpm-identity-3.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm/jbpm-jpdl-3.3.1.jar" sourcepath="src/jbpm-jpdl-3.2.2-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/jutf7-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mockito-all-1.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mockito-all-1.8.0.jar" sourcepath="/Users/fheremans/.m2/repository/org/mockito/mockito-all/1.8.0/mockito-all-1.8.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/abdera/stax-api-1.0.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/junit-4.6.jar" sourcepath="src/junit-4.6-src.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/XmlSchema-1.4.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-regex-2.4.1.jar" sourcepath="src/lucene-2.4.1-src.zip"/>
@@ -185,5 +184,11 @@
 	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.2.1.jar" sourcepath="src/pdfbox-1.2.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/urlrewritefilter-3.1.0.jar" sourcepath="src/urlrewritefilter-3.1.0-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/activiti/mybatis-3.0.1.jar" sourcepath="/Users/fheremans/.m2/repository/org/mybatis/mybatis/3.0.1/mybatis-3.0.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/activiti/groovy-1.7.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.3.jar" sourcepath="src/activiti-engine-5.3-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.3.jar" sourcepath="src/activiti-spring-5.3-sources.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

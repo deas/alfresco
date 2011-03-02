@@ -21,6 +21,7 @@ package org.alfresco.repo.dictionary;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.repo.tenant.TenantDeployer;
@@ -250,7 +251,7 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
     /* (non-Javadoc)
      * @see org.alfresco.service.cmr.dictionary.DictionaryService#getDataType(java.lang.Class)
      */
-    public DataTypeDefinition getDataType(Class javaClass)
+    public DataTypeDefinition getDataType(Class<?> javaClass)
     {
         return dictionaryDAO.getDataType(javaClass);
     }
@@ -288,6 +289,37 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
         return dictionaryDAO.getAnonymousType(type, aspects);
     }
 
+    /**
+     * 
+    * {@inheritDoc}
+     */
+    public TypeDefinition getAnonymousType(QName name)
+    {
+        TypeDefinition typeDef = getType(name);
+        List<AspectDefinition> aspects = typeDef.getDefaultAspects(true);
+        List<QName> aspectNames = new ArrayList<QName>(aspects.size());
+        getMandatoryAspects(typeDef, aspectNames);
+        return getAnonymousType(typeDef.getName(), aspectNames);
+    }
+
+    /**
+     * Gets a flattened list of all mandatory aspects for a given class
+     * 
+     * @param classDef  the class
+     * @param aspects  a list to hold the mandatory aspects
+     */
+    private void getMandatoryAspects(ClassDefinition classDef, List<QName> aspects)
+    {
+        for (AspectDefinition aspect : classDef.getDefaultAspects())
+        {
+            QName aspectName = aspect.getName();
+            if (!aspects.contains(aspectName))
+            {
+                aspects.add(aspect.getName());
+                getMandatoryAspects(aspect, aspects);
+            }
+        }
+    }
     
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.DictionaryService#getProperty(org.alfresco.repo.ref.QName, org.alfresco.repo.ref.QName)

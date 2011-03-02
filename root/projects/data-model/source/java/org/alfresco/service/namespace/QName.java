@@ -288,6 +288,7 @@ public final class QName implements QNamePattern, Serializable, Cloneable, Compa
      * 
      * Note: The prefix is ignored during the comparison.
      */
+    @Override
     public boolean equals(Object object)
     {
         if (this == object)
@@ -318,6 +319,7 @@ public final class QName implements QNamePattern, Serializable, Cloneable, Compa
      * Calculate hashCode. Follows pattern used by String where hashCode is
      * cached (QName is immutable).
      */
+    @Override
     public int hashCode()
     {
         if (this.hashCode == 0)
@@ -336,6 +338,7 @@ public final class QName implements QNamePattern, Serializable, Cloneable, Compa
      * 
      * @return the string representation
      */
+    @Override
     public String toString()
     {
         return new StringBuilder(80).append(NAMESPACE_BEGIN)
@@ -402,14 +405,14 @@ public final class QName implements QNamePattern, Serializable, Cloneable, Compa
         {
             throw new NamespaceException("A namespace prefix is not registered for uri " + namespaceURI);
         }
-        String prefix = prefixes.iterator().next();
-        if (prefix.equals(NamespaceService.DEFAULT_PREFIX))
+        String pref = prefixes.iterator().next();
+        if (pref.equals(NamespaceService.DEFAULT_PREFIX))
         {
             return localName;
         }
         else
         {
-            return prefix + NAMESPACE_PREFIX + localName;
+            return pref + NAMESPACE_PREFIX + localName;
         }
     }
 

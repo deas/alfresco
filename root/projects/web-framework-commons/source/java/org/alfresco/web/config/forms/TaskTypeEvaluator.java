@@ -40,7 +40,7 @@ public class TaskTypeEvaluator extends ServiceBasedEvaluator
     protected static final String JSON_TYPE = "type";
     protected static final String JSON_NAME = "name";
     
-    protected static final Pattern taskIdPattern = Pattern.compile(".+\\$[0-9]+");
+    protected static final Pattern taskIdPattern = Pattern.compile(".+\\$([0-9]+|start[0-9]+)");
     
     private static Log logger = LogFactory.getLog(TaskTypeEvaluator.class);
 
@@ -89,7 +89,7 @@ public class TaskTypeEvaluator extends ServiceBasedEvaluator
                                     JSONObject typeObj = defObj.getJSONObject(JSON_TYPE);
                                     if (typeObj.has(JSON_NAME))
                                     {
-                                        type = dataObj.getString(JSON_NAME);
+                                        type = typeObj.getString(JSON_NAME);
                                         result = (condition.equals(type));
                                     }
                                 }

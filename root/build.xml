@@ -68,8 +68,6 @@
          </fileset>
          <fileset dir="${dir.modules}">
             <include name="**/${dir.name.lib}/*.jar" />
-            <exclude name="wcmquickstart/wcmquickstartwebapp/**" />
-            <exclude name="wcmquickstart/wcmquickstartwebsite/${dir.name.build}/**" />
          </fileset>
          <fileset dir="${dir.modules}">
             <include name="**/${dir.name.build}/${dir.name.dist}/*.jar" />
@@ -301,9 +299,11 @@
                     package-fb-doclib-extension,
                     package-googlegadgets,
                     package-truncatemalformedxml-extension" >
-       <copy todir="${dir.continuous.dist}">
+                    <!-- package-rm-extension, -->
+      <copy todir="${dir.continuous.dist}">
          <fileset dir="${dir.module.php.dist}"                  includes="${file.name.amp.php}" />
          <fileset dir="${dir.module.mediawiki.dist}"            includes="${file.name.amp.mediawiki}" />
+<!--         <fileset dir="${dir.module.rm.dist}"                   includes="${file.name.amp.rm}" /> -->
          <fileset dir="${dir.module.truncatemalformedxml.dist}" includes="${file.name.amp.truncatemalformedxml}" />
          <fileset dir="${dir.module.fb.doclib.dist}"            includes="${file.name.amp.fb.doclib}" />
          <fileset dir="${dir.module.gg.dist}"                   includes="${file.name.zip.gg}" />
@@ -315,24 +315,8 @@
            depends="package-spp-extension,
                     package-dod5015-extension,
                     package-dod5015-share-extension, 
-                    package-wcmquickstart-extension,
-                    package-wcmquickstart-share-extension, 
-                    build-wcmquickstartwebapp-war,
                     package-quickr-extension" >
-
-	  <!-- Copy AMPs to assembly area for installer -->
-      <copy todir="${dir.continuous.assemble}/amps">
-         <fileset dir="${dir.module.dod5015.dist}"              includes="${file.name.amp.dod5015}" />
-         <fileset dir="${dir.module.dod5015.share.dist}"        includes="${file.name.amp.dod5015.share}" />
-         <fileset dir="${dir.module.spp.dist}"           includes="${file.name.amp.spp}" />
-         <fileset dir="${dir.module.quickr.dist}"               includes="${file.name.amp.quickr}" />
-         <fileset dir="${dir.module.wcmquickstart.dist}"              includes="${file.name.amp.wcmquickstart}" />
-         <fileset dir="${dir.module.wcmquickstart-share.dist}"        includes="${file.name.amp.wcmquickstart-share}" />
-      </copy>
-      
-      <copy todir="${dir.continuous.assemble}" file="${dir.project.wcmquickstart-webapp}/target/${file.name.war.wcmquickstart-webapp}" />
-
-      <!-- Zip bundles of AMPs -->
+                    <!-- package-rm-extension, -->
       <zip destfile="${dir.continuous.dist}/${file.name.dist.dod5015}.zip">
          <fileset dir="${dir.module.dod5015.dist}"              includes="${file.name.amp.dod5015}" />
          <fileset dir="${dir.module.dod5015.share.dist}"        includes="${file.name.amp.dod5015.share}" />
@@ -346,7 +330,6 @@
          <fileset dir="${dir.module.quickr.dist}"               includes="${file.name.amp.quickr}" />
          <fileset file="${dir.module.quickr}/README_quickr.txt" />
       </zip>
-      
    </target>
 
 
@@ -496,11 +479,7 @@
                     clean-truncatemalformedxml,
                     clean-dod5015,
                     clean-dod5015-share,
-                    clean-quickr,
-                    clean-wcmquickstart,
-                    clean-wcmquickstart-share,
-                    clean-wcmquickstart-clientapi,
-                    clean-wcmquickstart-webapp" />
+                    clean-quickr" />
    
    <target name ="clean-tomcat-deployments" 
            description="Cleans all Tomcat server deployments"
@@ -666,6 +645,7 @@
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" includes="${includes.webscriptframework.libs.spring-surf}" />
          <fileset dir="${dir.project.3rdparty.lib}/jgroups" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/jbpm" includes="*.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}/activiti" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/fop" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/abdera" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/google" includes="*.jar"/>
@@ -788,9 +768,7 @@
          <fileset file="${dir.project.slingshot.src.web}/components/data-lists/actions.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/simple-dialog.js" />
       </concat>
-      
-      <touch file="${dir.deploy.tomcat.application.slingshot}/modules/about-share-min.js" />
-      
+
       <echo>Compressing Slingshot Javascript...</echo>
       <minimize-javascript sourcedir="${dir.deploy.tomcat.application.slingshot}" 
                            destdir="${dir.deploy.tomcat.application.slingshot}" />
@@ -1239,7 +1217,7 @@
             classname="org.alfresco.util.Convert" 
             dir="." >
          <classpath refid="classpath.unit.test" />
-         <arg line="--dry-run --svn-status --encoding=UTF-8 --line-ending=WINDOWS --match=(.classpath|.java|.xml|.xsd|.jsp|.properties|.txt|.sql|.sample|.css|.js)$ --ignore=(.svn|classes) ${dir}"/>
+         <arg line="--dry-run --svn-status --encoding=UTF-8 --line-ending=WINDOWS --match=(.classpath|.java|.xml|.xsd|.jsp|.properties|.txt|.sql)$ --ignore=(.svn|classes) ${dir}"/>
       </java> 
    </target> 
 
@@ -1250,7 +1228,7 @@
             classname="org.alfresco.util.Convert" 
             dir="." >
          <classpath refid="classpath.unit.test" />
-         <arg line="--no-backup --svn-status --encoding=UTF-8 --line-ending=WINDOWS --match=(.classpath|.java|.xml|.xsd|.jsp|.properties|.txt|.sql|.sample|.css|.js)$ --ignore=(.svn|classes) ${dir}"/>
+         <arg line="--no-backup --svn-status --encoding=UTF-8 --line-ending=WINDOWS --match=(.classpath|.java|.xml|.xsd|.jsp|.properties|.txt|.sql)$ --ignore=(.svn|classes) ${dir}"/>
       </java> 
    </target> 
 

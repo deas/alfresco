@@ -26,6 +26,7 @@ import org.alfresco.service.PublicService;
 import org.alfresco.service.namespace.QName;
 
 
+
 /**
  * This interface represents the Repository Data Dictionary.  The
  * dictionary provides access to content meta-data such as Type
@@ -81,7 +82,7 @@ public interface DictionaryService
      * @return  the data type definition (or null, if a mapping does not exist) 
      */
     @NotAuditable
-    DataTypeDefinition getDataType(Class javaClass);
+    DataTypeDefinition getDataType(Class<?> javaClass);
 
     /**
      * @return the names of all types that have been registered with the Repository
@@ -123,6 +124,15 @@ public interface DictionaryService
      */
     @NotAuditable
     TypeDefinition getAnonymousType(QName type, Collection<QName> aspects);
+
+    /**
+     * Creates an anonymous {@link TypeDefinition} with all the mandatory {@link Aspect Aspects} applied.
+     * This collapses all mandatory {@link Aspect Aspects} into a single {@link TypeDefinition}.
+     * 
+     * @param name  the name of the type definition.
+     * @return  the anonymous type definition
+     */
+    TypeDefinition getAnonymousType(QName name);
 
     /**
      * @return the names of all aspects that have been registered with the Repository
