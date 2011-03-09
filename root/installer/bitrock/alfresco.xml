@@ -1,0 +1,336 @@
+<component>
+    <name>alfresco</name>
+    <description>Alfresco-@@BITROCK_ALFRESCO_VERSION@@</description>
+    <detailedDescription>Alfresco is an Enterprise Content Management (ECM) system featuring Document Management, Web Content Management, Collaboration Management, Records Management and Image Management.</detailedDescription>
+    <canBeEdited>0</canBeEdited>
+    <selected>1</selected>
+    <show>1</show>
+    <parameterList>
+        <stringParameter>
+            <name>alfresco_ftp_port</name>
+            <title>Alfresco FTP Port</title>
+            <explanation>The integrated Alfresco FTP server was unable to bind to the default port. Please check if you have enough permissions, or choose an alternative port number.</explanation>
+            <default>21</default>
+            <value/>
+            <ask>1</ask>
+            <description>Port:</description>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleList>
+                <compareText text="${alfresco_show_ports}" value="yes"/>
+                <portTest condition="cannot_bind" port="${alfresco_ftp_port}"/>
+            </ruleList>
+            <validationActionList>
+                <throwError>
+                    <text>Unable to bind to the given port number. Please select another FTP Port.</text>
+                    <ruleList>
+                        <portTest port="${alfresco_ftp_port}" condition="cannot_bind"/>
+                    </ruleList>
+                </throwError>
+            </validationActionList>
+        </stringParameter>
+        <stringParameter>
+            <name>alfresco_rmi_port</name>
+            <title>Alfresco RMI Port</title>
+            <explanation>Alfresco uses port 50500 to execute remote commands. It seems this port is being taken by another application. Please choose an alternative port number.</explanation>
+            <default>50500</default>
+            <value/>
+            <ask>1</ask>
+            <description>Port:</description>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleList>
+                <compareText text="${alfresco_show_ports}" value="yes"/>
+                <portTest condition="cannot_bind" port="${alfresco_rmi_port}"/>
+            </ruleList>
+            <validationActionList>
+                <throwError>
+                    <text>Unable to bind to the given port number. Please select another RMI Port.</text>
+                    <ruleList>
+                        <portTest port="${alfresco_rmi_port}" condition="cannot_bind"/>
+                    </ruleList>
+                </throwError>
+            </validationActionList>
+        </stringParameter>
+        <directoryParameter>
+            <name>alfresco_data_directory</name>
+            <title>Alfresco data directory</title>
+            <description>Select a folder</description>
+            <explanation>Alfresco data directory tend to grow in size. Please, choose where do you want to store it.</explanation>
+            <default>${installdir}/apps/alfresco/data</default>
+            <value>${installdir}/apps/alfresco/data</value>
+            <mustBeWritable>1</mustBeWritable>
+            <mustExist>0</mustExist>
+            <allowEmptyValue>0</allowEmptyValue>
+            <cliOptionName>alf_data_location</cliOptionName>
+            <ask>0</ask>
+            <width>32</width>
+        </directoryParameter>
+        <stringParameter>
+            <name>alfresco_database_name</name>
+            <default>bitnami_alfresco</default>
+            <value/>
+            <ask>0</ask>
+        </stringParameter>
+
+<!-- Fake param to not show mixed slashes in path -->
+
+<!--directoryParameter>
+	    <name>alfresco_readme_path</name>
+	    <ask>0</ask>
+	    <value>${installdir}\apps\alfresco\README.txt</value>
+	    <default>${installdir}\apps\alfresco\README.txt</default>
+	</directoryParameter-->
+<infoParameter>
+            <insertBefore>installationFinished</insertBefore>
+            <name>alfresco_application_user</name>
+            <title>Information</title>
+            <value>The default administrator user of the Alfresco application is:
+
+LOGIN: admin
+PASSWORD: admin
+
+It's strongly recommended to change administrator password for 
+security reasons. This information is also stored in:
+${alfresco_readme_path}
+</value>
+            <preShowPageActionList>
+                <setInstallerVariable name="alfresco_readme_path" value="${installdir}\apps\alfresco\README.txt">
+                    <ruleList>
+                        <platformTest type="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="alfresco_readme_path" value="${installdir}/apps/alfresco/README.txt">
+                    <ruleList>
+                        <platformTest type="unix"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </preShowPageActionList>
+        </infoParameter>
+    </parameterList>
+    <readyToInstallActionList>
+        <setInstallerVariable name="installdiralfresco" value="${installdir}/apache-tomcat/webapps"/>
+        <setInstallerVariable name="alfresco_database_user" value="${database_user}"/>
+        <setInstallerVariable name="alfresco_database_password" value="${database_password}"/>
+        <setInstallerVariable name="alfresco_library_directory" value="${installdir}/apps/alfresco/lib"/>
+    </readyToInstallActionList>
+    <folderList>
+        <folder>
+            <name>alfrescoapp</name>
+            <description>Program Files</description>
+            <destination>${installdir}/apps</destination>
+            <platforms>all</platforms>
+            <distributionFileList>
+                <distributionDirectory origin="apps/alfresco"/>
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Libraries Files</description>
+            <destination>${alfresco_library_directory}</destination>
+            <name>libfiles</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+                <distributionFile origin="alfresco/endorsed/serializer.jar"/>
+                <distributionFile origin="alfresco/endorsed/xalan.jar"/>
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Extension Files</description>
+            <destination>${installdir}/apache-tomcat/shared/classes/alfresco/</destination>
+            <name>extensionfiles</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+                <distributionDirectory origin="alfresco/extensions/extension"/>
+                <distributionDirectory origin="alfresco/extensions/messages"/>
+            </distributionFileList>
+
+<!-- Use default settings bundled with alfresco war file -->
+<actionList>
+                <substitute>
+                    <files>*/openoffice-startup-context.xml</files>
+                    <type>exact</type>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>port=8100</pattern>
+                            <value>port=${component(openofficecomponent).parameter(openoffice_port).value}</value>
+                        </substitution>
+                    </substitutionList>
+		    <ruleList>
+		        <componentTest name="openofficecomponent" logic="exists" />
+		    </ruleList>
+                </substitute>
+
+                <deleteFile path="${installdir}/apache-tomcat/shared/classes/alfresco/extension/file-servers-custom.xml"/>
+                <renameFile>
+                    <origin>${installdir}/apache-tomcat/shared/classes/alfresco/extension/custom-repository-context.xml</origin>
+                    <destination>${installdir}/apache-tomcat/shared/classes/alfresco/extension/custom-repository-context.xml.sample</destination>
+                </renameFile>
+                <deleteFile path="${installdir}/apache-tomcat/shared/classes/alfresco/extension/custom-hibernate-dialect.properties"/>
+                <deleteFile path="${installdir}/apache-tomcat/shared/classes/alfresco/extension/custom-repository.properties"/>
+            </actionList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdiralfresco}</destination>
+            <name>programfiles</name>
+            <platforms>all</platforms>
+            <actionList>
+                <substitute>
+                    <files>*/repository.properties;*/custom-repository.properties</files>
+                    <type>regexp</type>
+                    <substitutionList>
+		        <substitution>
+                            <pattern>@@BITROCK_ALFRESCO_IMAGEMAGICK_ROOTDIR@@</pattern>
+                            <value>${imagemagick_root_directory.unix}</value>
+                            <ruleList>
+                                <platformTest type="unix"/>
+                            </ruleList>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_ALFRESCO_IMAGEMAGICK_ROOTDIR@@</pattern>
+                            <value>${imagemagick_root_directory.unix}</value>
+                            <ruleList>
+                                <platformTest type="windows"/>
+                            </ruleList>
+                        </substitution>
+		                <substitution>
+                            <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
+                            <value>${openoffice_directory.unix}</value>
+                            <ruleList>
+                                <platformTest type="unix"/>
+                            </ruleList>
+                        </substitution>
+		                <substitution>
+                            <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
+                            <value>${openoffice_directory.dos.unix}</value>
+                            <ruleList>
+                                <platformTest type="windows"/>
+                            </ruleList>
+                        </substitution>
+		                <substitution>
+                            <pattern>@@BITROCK_OPENOFFICE_PROGRAM_DIR@@</pattern>
+                            <value>${openoffice_directory.dos.unix}/App/openoffice/program/soffice.exe</value>
+                            <ruleList>
+                                <platformTest type="windows"/>
+                            </ruleList>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_OPENOFFICE_PROGRAM_DIR@@</pattern>
+                            <value>${openoffice_directory}/program/soffice.bin</value>
+                            <ruleList>
+                                <platformTest type="linux"/>
+                            </ruleList>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_OPENOFFICE_PROGRAM_DIR@@</pattern>
+                            <value>${openoffice_directory}/Contents/MacOS/soffice.bin</value>
+                            <ruleList>
+                                <platformTest type="osx"/>
+                            </ruleList>
+                        </substitution>
+			<substitution>
+                            <pattern>{img.root}/bin/convert</pattern>
+                            <value>{img.root}/convert</value>
+                            <ruleList>
+			      <platformTest type="windows"/>
+			    </ruleList>
+			</substitution>
+			<substitution>
+                            <pattern>@@BITROCK_PDF2SWF_PATH@@</pattern>
+                            <value>${installdir.dos.unix}/swftools/pdf2swf.exe</value>
+                            <ruleList>
+                                <platformTest type="windows"/>
+                            </ruleList>
+                        </substitution>
+			<substitution>
+                            <pattern>@@BITROCK_PDF2SWF_PATH@@</pattern>
+                            <value>${installdir.unix}/common/bin/pdf2swf</value>
+                            <ruleList>
+                                <platformTest type="unix"/>
+                            </ruleList>
+			</substitution>
+		        <substitution>
+                            <pattern>@@BITROCK_MYSQL_PORT@@</pattern>
+                            <value>${database_port}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_DATA_DIR@@</pattern>
+                            <value>${alfresco_data_directory.unix}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_COMMON_ROOTDIR@@</pattern>
+                            <value>${installdir}/common/</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_DB_USER@@</pattern>
+                            <value>${alfresco_database_user}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_DB_PASSWORD@@</pattern>
+                            <value>${alfresco_database_password}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_DB_NAME@@</pattern>
+                            <value>${alfresco_database_name}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+                <substitute>
+                    <files>*/file-servers-custom.xml;*/file-servers.xml</files>
+                    <type>regexp</type>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>FTP Server"&gt;</pattern>
+                            <value>FTP Server" &gt;
+	&lt;port&gt;${alfresco_ftp_port}&lt;/port&gt;</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_ALFRESCO_MACHINE@@</pattern>
+                            <value>${application_server_domain}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_TOMCAT_PORT@@</pattern>
+                            <value>${application_server_port}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+                <substitute>
+                    <files>*/clt-context.xml;*/web-client-config-wcm.xml;*/alfresco-shared.properties;*/remote-avm-test-context.xml;</files>
+                    <type>exact</type>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>50500</pattern>
+                            <value>${alfresco_rmi_port}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+            </actionList>
+            <distributionFileList>
+                <distributionDirectory origin="alfresco/alfresco"/>
+            </distributionFileList>
+        </folder>
+    </folderList>
+    <postInstallationActionList>
+        <substitute>
+            <files>${application_server_conf_directory}/catalina.properties</files>
+            <type>regexp</type>
+            <substitutionList>
+                <substitution>
+                    <pattern>common.loader=</pattern>
+                    <value>common.loader=${alfresco_library_directory}/*.jar,</value>
+                    <ruleList>
+                        <platformTest type="unix"/>
+                        <fileContentTest path="${application_server_conf_directory}/catalina.properties" logic="does_not_contain" text="${alfresco_library_directory}"/>
+                    </ruleList>
+                </substitution>
+                <substitution>
+                    <pattern>common.loader=</pattern>
+                    <value>common.loader=${alfresco_library_directory.dos.unix}/*.jar,</value>
+                    <ruleList>
+                        <platformTest type="windows"/>
+                        <fileContentTest path="${application_server_conf_directory}/catalina.properties" logic="does_not_contain" text="${alfresco_library_directory.dos.unix}"/>
+                    </ruleList>
+                </substitution>
+            </substitutionList>
+        </substitute>
+    </postInstallationActionList>
+</component>
+

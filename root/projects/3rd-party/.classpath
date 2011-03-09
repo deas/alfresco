@@ -67,7 +67,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/ant-1.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/mysql-connector-java-5.1.7-bin.jar"/>
-	<classpathentry kind="lib" path="lib/postgresql-8.4-701.jdbc3.jar"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guessencoding-1.0.jar" sourcepath="src/guessencoding-1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-lang-2.1.jar"/>
@@ -190,5 +189,6 @@
 	<classpathentry kind="lib" path="lib/activiti/groovy-1.7.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.3.jar" sourcepath="src/activiti-engine-5.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.3.jar" sourcepath="src/activiti-spring-5.3-sources.jar"/>
+	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

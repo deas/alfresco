@@ -1,0 +1,37 @@
+<component>
+    <name>postgresfunctions</name>
+    <description/>
+    <canBeEdited>0</canBeEdited>
+    <selected>1</selected>
+    <show>0</show>
+    <functionDefinitionList>
+        <actionDefinition name="postgresConfigure">
+            <parameterList>
+                <stringParameter name="postgresFiles" />
+            </parameterList>
+            <actionList>
+	        <substitute>
+		    <files>${postgresFiles}</files>
+		    <substitutionList>
+		        <substitution>
+                            <pattern>@@BITROCK_INSTALLDIR@@</pattern>
+                            <value>${installdir}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_POSTGRES_HOSTNAME@@</pattern>
+                            <value>${postgres_hostname}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_POSTGRES_PORT@@</pattern>
+                            <value>${postgres_port}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_POSTGRES_ROOT_PASSWORD@@</pattern>
+                            <value>${postgres_root_password}</value>
+                        </substitution>
+                    </substitutionList>
+		</substitute>
+            </actionList>
+        </actionDefinition>
+    </functionDefinitionList>
+</component>

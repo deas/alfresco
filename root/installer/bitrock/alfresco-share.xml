@@ -1,0 +1,32 @@
+<component>
+    <name>alfrescoshare</name>
+    <description>Alfresco Share</description>
+    <detailedDescription>Alfresco Share is built on the Alfresco enterprise-class document repository and delivers out-of-the-box collaborative content management. It simplifies capturing, sharing and retrieval of information across virtual teams.</detailedDescription>
+    <canBeEdited>1</canBeEdited>
+    <selected>1</selected>
+    <show>1</show>
+
+    <folderList>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdiralfresco}</destination>
+            <name>programfiles</name>
+            <platforms>all</platforms>
+            <actionList>
+              <substitute>
+		<files>*/WEB-INF/*.xml;*/WEB-INF/classes/alfresco/*.xml</files>
+		<type>regexp</type>
+		<substitutionList>
+		  <substitution>
+                    <pattern>8080</pattern>
+		    <value>${application_server_port}</value>
+		  </substitution>
+		</substitutionList>
+              </substitute>
+	    </actionList>
+            <distributionFileList>
+              <distributionFile origin="share/share"/>
+            </distributionFileList>
+        </folder>
+    </folderList>
+</component>

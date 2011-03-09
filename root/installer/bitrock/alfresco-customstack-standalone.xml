@@ -3,22 +3,20 @@
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <fullName>Alfresco Community Edition Stack</fullName>
     <shortName>alfresco</shortName>
-    <version>3.4.b-1</version>
-    <installerFilename>${product_shortname}-community-withpostgresql-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
+    <version>@@BITROCK_VERSION@@</version>
+    <installerFilename>${product_shortname}-community-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
     <licenseFile></licenseFile>
     <readmeFile>${alfresco_readme_file}</readmeFile>
     <wrapLicenseFileText>1</wrapLicenseFileText>
     <logoImage>images/alfresco_top_right.png</logoImage>
     <splashImage>images/splash.png</splashImage>
-    <allowLanguageSelection>1</allowLanguageSelection>
     <productDisplayIcon>${installdir}/alfresco.ico</productDisplayIcon>
     <defaultLanguage>en</defaultLanguage>
     <defaultUnixDirectoryPermissions>755</defaultUnixDirectoryPermissions>
     <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
     <allowComponentSelection>1</allowComponentSelection>
     <leftImage>images/alfresco_left.png</leftImage>
-    <allowedLanguages>en fr es it de ja</allowedLanguages>
-	
+
     <platformOptionsList>
         <platformOptions>
             <platform>osx</platform>
@@ -26,46 +24,7 @@
         </platformOptions>
     </platformOptionsList>
 
-    <customLanguageFileList>
-        <language> 
-          <code>en</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-en.po</file>
-        </language>
-
-        <language> 
-          <code>fr</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-fr.po</file>
-        </language>
-
-        <language> 
-          <code>es</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-es.po</file>
-        </language>
-
-        <language> 
-          <code>de</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-de.po</file>
-        </language>
-
-        <language> 
-          <code>it</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-it.po</file>
-        </language>
-
-        <language> 
-          <code>ja</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-ja.po</file>
-        </language>	
-    </customLanguageFileList>
-
     <componentList>
-        <include file="alfresco-componentselection-java.xml" />
         <include file="alfresco-customstack-build-settings.xml" />
         <include file="alfresco-build-settings.xml" />
         <include file="alfresco-functions.xml" />
@@ -77,30 +36,24 @@
         <include file="base-java-settings.xml"/>
 	<include file="base-tomcat-settings.xml"/>
 	<include file="base-parameter-dir.xml" />
-
+	<include file="base-parameter-admindb.xml" />
 	<include file="base-readme.xml"/>
-	<include file="alfresco-licenses.xml"/>
+	<include file="base-licenses.xml"/>
 
-
-	<include file="alfresco-postgres-question.xml" />
+        <include file="alfresco-mysql-question.xml" />
 
 	<include file="common.xml" />
-	<include file="tomcat-java.xml" />
-	<include file="postgres.xml" />
-	<include file="postgres_initdb.xml"/>
-
+	<include file="tomcat-java.xml" />	
+	<include file="mysql.xml" />
 	<include file="java.xml" />
 	<include file="tomcat.xml" />
-	<include file="openssl.xml" />
 
 	<include file="ctlscript.xml" />
-
-	<include file="postgres-service.xml" />
+	<include file="mysql-service.xml" />
 
     	<include file="alfrescodm.xml" />
         <include file="alfresco-apply-amps.xml" />
-
-	<include file="alfrescodm-postgres-database.xml" />
+    	<include file="alfrescodm-database.xml" />
         <!-- AMP extensions -->
         <include file="alfresco-sharepoint.xml" />
         <include file="alfresco-records-management.xml" />
@@ -112,7 +65,7 @@
 	<include file="openoffice.xml"/>
 	<include file="imagemagick.xml"/>
     	<include file="swftools.xml"/>
-        <include file="alfresco-customstack-postgres-settings.xml" />
+        <include file="alfresco-customstack-settings.xml" />
         <include file="alfresco-customstack-shortcuts.xml" />
 
         <!-- Tomcat cannot be started earlier, it needs to be done once alfresco is configured -->
@@ -128,16 +81,16 @@
 	<actionGroup>
 	    <actionList>
 		<runProgram>
-		    <progressText>Stopping PostgreSQL...</progressText>
+		    <progressText>Stopping MySQL...</progressText>
 		    <program>${installdir}/${ctlscript_unix}</program>
-		    <programArguments>stop postgresql</programArguments>
+		    <programArguments>stop mysql</programArguments>
 		    <ruleList>
 			<platformTest type="unix" />
                     </ruleList>
                 </runProgram>
 		<runProgram>
-		    <progressText>Stopping PostgreSQL...</progressText>
-		    <program>${postgres_root_directory.dos}\scripts\servicerun.bat</program>
+		    <progressText>Stopping MySQL...</progressText>
+		    <program>${mysql_root_directory.dos}\scripts\servicerun.bat</program>
 		    <programArguments>STOP</programArguments>
 		    <ruleList>
 			<platformTest type="windows" />
@@ -146,8 +99,7 @@
 		<waitForPort port="${database_port}" timeout="10000" state="free" />
 	    </actionList>
 	    <ruleList>
-                <!--isTrue value="${alfrescopostgresquestion_bundled}" /-->
-                <isTrue value="${component(postgres).selected}" />
+                <isTrue value="${alfrescomysqlquestion_bundled}" />
 	    </ruleList>
 	</actionGroup>
         <!--<actionGroup>
@@ -230,8 +182,7 @@
 	    <ruleList>
 		<compareText text="${application_server_installation_type}" logic="equals" value="bundled" />
 		<compareText text="${installer_ui}" logic="equals" value="gui"/>
-                <isTrue value="${component(postgres).selected}" />
-                <!--isTrue value="${alfrescopostgresquestion_bundled}" /-->
+                <isTrue value="${alfrescomysqlquestion_bundled}" />
 	    </ruleList>
 	</actionGroup>
 	<showInfo>
@@ -295,22 +246,22 @@
 	    <abortOnError>0</abortOnError>
 	    <actionList>
 		<deleteFile>
-		    <path>${installdir}/postgresql/tmp</path>
+		    <path>${installdir}/mysql/tmp</path>
 		</deleteFile>
 		<deleteFile>
-		    <path>${installdir}/postgresql/data</path>
+		    <path>${installdir}/mysql/data</path>
 		</deleteFile>
-                <deleteFile path="${installdir}/postgresql" />
+                <deleteFile path="${installdir}/mysql" />
 	    </actionList>
 	    <ruleList>
 		<compareText text="${deleteConfirm}" logic="equals" value="yes" />
-		<compareText text="${component(postgres).parameter(postgres_installation_type).value}" logic="equals" value="bundled" />
+		<compareText text="${component(mysql).parameter(mysql_installation_type).value}" logic="equals" value="bundled" />
 	    </ruleList>
 	</actionGroup>
     </preUninstallationActionList>
     <postUninstallationActionList>
         <deleteFile path="${installdir}/tomcat" />
-        <deleteFile path="${installdir}/postgresql" />
+        <deleteFile path="${installdir}/mysql" />
         <deleteFile path="${installdir}" >
             <ruleList>
                 <fileTest path="${installdir}" condition="is_empty"/>

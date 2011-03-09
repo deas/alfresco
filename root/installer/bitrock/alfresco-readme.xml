@@ -18,14 +18,14 @@
             <destination>${base_readme_installation_directory}</destination>
             <name>readmelogfile</name>
             <distributionFileList>
-                <distributionFile origin="${project.readmeFile}"/>
+                <distributionFile origin="${build_project_directory}/${project.readmeFile}"/>
             </distributionFileList>
         </folder>
     </folderList>
     <postInstallationActionList>
-        <dos2unix files="${base_readme_installation_directory}/README.txt">
+        <dos2unix files="${base_readme_installation_directory}/${project.readmeFile}">
             <ruleList>
-                <platformTest type="windows"/>
+                <platformTest type="unix"/>
             </ruleList>
         </dos2unix>
     </postInstallationActionList>

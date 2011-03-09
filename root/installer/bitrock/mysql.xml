@@ -438,14 +438,14 @@ System variables provided by this component:
                                     <mysqlDatabaseQuery connectionId="mysql" sql="show databases" /> -->
                                 <runProgram>
                                     <program>${mysql_binary_directory}/mysql</program>
-                                    <programArguments>-u root -p${mysql_root_password.password} -P${mysql_port} -h${mysql_hostname} -e "show databases;"</programArguments>
+                                    <programArguments>-u root --password=${mysql_root_password.password} -P${mysql_port} -h${mysql_hostname} -e "show databases;"</programArguments>
                                     <ruleList>
                                         <platformTest type="unix"/>
                                     </ruleList>
                                 </runProgram>
                                 <runProgram>
                                     <program>${mysql_binary_directory}/mysql.exe</program>
-                                    <programArguments>-u root -p${mysql_root_password.password} -P${mysql_port} -h${mysql_hostname} -e "show databases;"</programArguments>
+                                    <programArguments>-u root --password=${mysql_root_password.password} -P${mysql_port} -h${mysql_hostname} -e "show databases;"</programArguments>
                                     <ruleList>
                                         <platformTest type="windows"/>
                                     </ruleList>

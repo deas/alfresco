@@ -4,7 +4,7 @@
     <detailedDescription>Apache Tomcat includes a Manager Web Application application that is not configured by default, select this component if you want to configure it.</detailedDescription>
     <canBeEdited>1</canBeEdited>
     <show>1</show>
-    <selected>0</selected>
+    <selected>1</selected>
     <parameterList>
         <parameterGroup>
             <name>tomcat_manager_configuration</name>

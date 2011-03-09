@@ -1,0 +1,72 @@
+<component>
+    <name>alfrescomysqldbcreation</name>
+    <selected>1</selected>
+    <show>0</show>
+    <postInstallationActionList>
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <program>${database_binary_directory}/mysql</program>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -S ../tmp/mysql.sock -e "DROP DATABASE ${alfresco_database_name};"</programArguments>
+                </runProgram>
+                <runProgram>
+                    <program>${database_binary_directory}/mysql</program>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -S ../tmp/mysql.sock -e "CREATE DATABASE ${alfresco_database_name};"</programArguments>
+                </runProgram>
+                <runProgram>
+                    <program>${database_binary_directory}/mysql</program>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -S ../tmp/mysql.sock -e "GRANT ALL PRIVILEGES ON ${alfresco_database_name}.* TO '${alfresco_database_user}'@'${database_hostname}' IDENTIFIED BY '${alfresco_database_password}';"</programArguments>
+                </runProgram>
+                <runProgram>
+                    <program>${database_binary_directory}/mysql</program>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -S ../tmp/mysql.sock -e "FLUSH PRIVILEGES;"</programArguments>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <platformTest type="unix"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <program>${database_binary_directory}\mysql.exe</program>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -e "DROP DATABASE ${alfresco_database_name};"</programArguments>
+                </runProgram>
+                <runProgram>
+                    <program>${database_binary_directory}\mysql.exe</program>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -e "CREATE DATABASE ${alfresco_database_name};"</programArguments>
+                </runProgram>
+                <runProgram>
+                    <program>${database_binary_directory}\mysql.exe</program>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -e "GRANT ALL PRIVILEGES ON ${alfresco_database_name}.* TO '${alfresco_database_user}'@'${database_hostname}' IDENTIFIED BY '${alfresco_database_password}';"</programArguments>
+                </runProgram>
+                <runProgram>
+                    <program>${database_binary_directory}\mysql.exe</program>
+                    <programArguments>-h ${database_hostname} -P ${database_port} -u root -p${database_root_password} -e "FLUSH PRIVILEGES;"</programArguments>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <platformTest type="windows"/>
+            </ruleList>
+        </actionGroup>
+        <renameFile>
+            <origin>${application_server_directory}/shared/classes/alfresco/extension/custom-hibernate-dialect.properties.sample</origin>
+            <destination>${application_server_directory}/shared/classes/alfresco/extension/custom-hibernate-dialect.properties</destination>
+        </renameFile>
+        <substitute>
+            <files>${application_server_directory}/shared/classes/alfresco/extension/custom-hibernate-dialect.properties</files>
+            <type>exact</type>
+            <substitutionList>
+                <substitution>
+                    <pattern>#hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect</pattern>
+                    <value>hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect</value>
+                </substitution>
+            </substitutionList>
+        </substitute>
+    </postInstallationActionList>
+</component>
+

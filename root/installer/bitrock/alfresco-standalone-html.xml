@@ -1,0 +1,24 @@
+<component>
+    <name>alfrescohtml</name>
+    <description/>
+    <canBeEdited>0</canBeEdited>
+    <selected>1</selected>
+    <show>0</show>
+    <postInstallationActionList>
+        <!--substitute>
+            <files>${installdir}/apache-tomcat/webapps/ROOT/index.html</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@BITROCK_APPLICATION_LINK@@/</pattern>
+                    <value>@@BITROCK_APPLICATION_LINK@@</value>
+                </substitution>
+            </substitutionList>
+        </substitute-->
+        <bitnamiDescription>
+            <applicationDescription>Alfresco is an Enterprise Content Management (ECM) system featuring Document Management, Web Content Management, Collaboration Management, Records Management and Image Management.</applicationDescription> 
+            <applicationVendorUrl>http://www.alfresco.org</applicationVendorUrl>
+            <applicationDependencies>Apache Tomcat, MySQL and Java&lt;sup&gt;TM&lt;/sup&gt;</applicationDependencies>
+        </bitnamiDescription>
+    </postInstallationActionList>
+</component>
+

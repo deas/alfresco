@@ -650,7 +650,7 @@
 
       <!-- Copy any required common libs -->
       <copy todir="${dir.continuous.assemble.tomcat}/lib"
-            file="${dir.project.3rdparty.lib}/devenv/${file.name.jar.mysql.connector}" />
+            file="${dir.project.3rdparty.lib}/devenv/${file.name.jar.postgres.connector}" />
 
       <!-- Add config to shared location -->
       <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/extension">
@@ -1179,7 +1179,7 @@
    </target>
 
    <target name="assemble-sdk"
-           depends="generate-docs">
+           depends="continuous-init,generate-docs,incremental">
       <mkdir dir="${dir.continuous.dist}" />
 
       <!-- -->
@@ -1322,7 +1322,7 @@
       </copy>
       <copy todir="${dir.continuous.assemble.sdk}/lib/server/dependencies">
          <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="${dir.name.devenv}/${file.name.jar.mysql.connector}"/>
+                  includes="${dir.name.devenv}/${file.name.jar.postgres.connector}"/>
       </copy>
       <mkdir dir="${dir.continuous.assemble.sdk}/lib/server/source/alfresco/desktop" />
       <copy todir="${dir.continuous.assemble.sdk}/lib/server/source/alfresco/desktop">

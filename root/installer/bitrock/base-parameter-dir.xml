@@ -111,8 +111,15 @@
                     <text>There is not enough free space on ${installdir}. You need at least ${base_needed_space} MB in order to install ${product_fullname}</text>
                     <ruleList>
                         <compareValues value1="${base_needed_space}" logic="greater" value2="${freeSpace}"/>
+			<compareValues value1="${freeSpace}" logic="does_not_equal" value2="-1" />
                     </ruleList>
                 </throwError>
+		<showWarning>
+		    <text>The installer could not get the current free space on ${installdir}. Please check that there is free space enough to install ${product_fullname}</text>
+		    <ruleList>
+			<compareValues value1="${freeSpace}" logic="equals" value2="-1" />
+		    </ruleList>
+		</showWarning>
             </validationActionList>
         </directoryParameter>
     </parameterList>

@@ -18,6 +18,7 @@ INGRES_SCRIPT=$INSTALLDIR/ingres/scripts/ctl.sh
 APACHE_SCRIPT=$INSTALLDIR/apache2/scripts/ctl.sh
 HYPERSONIC_SCRIPT=$INSTALLDIR/hypersonic/scripts/ctl.sh
 TOMCAT_SCRIPT=$INSTALLDIR/tomcat/scripts/ctl.sh
+RESIN_SCRIPT=$INSTALLDIR/resin/scripts/ctl.sh
 SUBVERSION_SCRIPT=$INSTALLDIR/subversion/scripts/ctl.sh
 OPENOFFICE_SCRIPT=$INSTALLDIR/openoffice/scripts/ctl.sh
 #RUBY_APPLICATION_SCRIPT
@@ -27,8 +28,9 @@ THIRD_SCRIPT=$INSTALLDIR/third_application/scripts/ctl.sh
 POSTGRESQL_SCRIPT=$INSTALLDIR/postgresql/scripts/ctl.sh
 NAGIOS_SCRIPT=$INSTALLDIR/nagios/scripts/ctl.sh
 JETTY_SCRIPT=$INSTALLDIR/jetty/scripts/ctl.sh
-JBOSS_SCRIPT=$INSTALLDIR/jboss-eap/scripts/ctl.sh
+JBOSS_SCRIPT=$INSTALLDIR/jboss/scripts/ctl.sh
 MEMCACHED_SCRIPT=$INSTALLDIR/memcached/scripts/ctl.sh
+RABBITMQ_SCRIPT=$INSTALLDIR/rabbitmq-server/scripts/ctl.sh
 
 help() {
 	echo "usage: $0 help"
@@ -54,6 +56,9 @@ help() {
 	if test -x $TOMCAT_SCRIPT; then	
 	    echo "       $0 (start|stop|restart|status) tomcat"
 	fi
+	if test -x $RESIN_SCRIPT; then	
+	    echo "       $0 (start|stop|restart|status) resin"
+	fi
 	if test -x $SUBVERSION_SCRIPT; then	
 	    echo "       $0 (start|stop|restart|status) subversion"
 	fi
@@ -72,6 +77,9 @@ help() {
 	fi
 	if test -x $NAGIOS_SCRIPT; then	
 	    echo "       $0 (start|stop|restart|status) nagios"
+	fi
+	if test -x $RABBITMQ_SCRIPT; then	
+	    echo "       $0 (start|stop|restart|status) rabbitmq"
 	fi
 	if test -x $JETTY_SCRIPT; then	
 	    echo "       $0 (start|stop|restart|status) jetty"
@@ -130,6 +138,16 @@ elif [ "x$1" = "xstart" ]; then
             $TOMCAT_SCRIPT start  
             TOMCAT_ERROR=$?
         fi
+    elif [ "x$2" = "xjboss" ]; then
+        if test -x $JBOSS_SCRIPT; then
+            $JBOSS_SCRIPT start
+            JBOSS_ERROR=$?
+        fi
+    elif [ "x$2" = "xresin" ]; then
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT start  
+            RESIN_ERROR=$?
+        fi
     #RUBY_APPLICATION_START
     elif [ "x$2" = "xzope_application" ]; then
         if test -x $ZOPE_SCRIPT; then	
@@ -161,15 +179,15 @@ elif [ "x$1" = "xstart" ]; then
             $NAGIOS_SCRIPT start  
             NAGIOS_ERROR=$?
         fi
+    elif [ "x$2" = "xrabbitmq" ]; then
+        if test -x $RABBITMQ_SCRIPT; then	
+            $RABBITMQ_SCRIPT start  
+            RABBITMQ_ERROR=$?
+        fi
     elif [ "x$2" = "xjetty" ]; then
         if test -x $JETTY_SCRIPT; then	
             $JETTY_SCRIPT start  
             JETTY_ERROR=$?
-        fi
-    elif [ "x$2" = "xjboss" ]; then
-        if test -x $JBOSS_SCRIPT; then
-            $JBOSS_SCRIPT start
-            JBOSS_ERROR=$?
         fi
     else
         if test -x $MYSQL_SCRIPT; then
@@ -207,6 +225,16 @@ elif [ "x$1" = "xstart" ]; then
             $TOMCAT_SCRIPT start  
             TOMCAT_ERROR=$?
         fi
+
+        if test -x $JBOSS_SCRIPT; then
+            $JBOSS_SCRIPT start
+            JBOSS_ERROR=$?
+        fi
+
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT start  
+            RESIN_ERROR=$?
+        fi
         #RUBY_APPLICATION_GENERIC_START
 
         if test -x $ZOPE_SCRIPT; then	
@@ -236,13 +264,13 @@ elif [ "x$1" = "xstart" ]; then
             $NAGIOS_SCRIPT start  
             NAGIOS_ERROR=$?
         fi
+        if test -x $RABBITMQ_SCRIPT; then	
+            $RABBITMQ_SCRIPT start  
+            RABBITMQ_ERROR=$?
+        fi
         if test -x $JETTY_SCRIPT; then	
             $JETTY_SCRIPT start  
             JETTY_ERROR=$?
-        fi
-        if test -x $JBOSS_SCRIPT; then
-            $JBOSS_SCRIPT start
-            JBOSS_ERROR=$?
         fi
     
     fi
@@ -288,6 +316,11 @@ elif [ "x$1" = "xstop" ]; then
             $TOMCAT_SCRIPT stop
             TOMCAT_ERROR=$?
         fi
+    elif [ "x$2" = "xresin" ]; then
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT stop
+            RESIN_ERROR=$?
+        fi
     #RUBY_APPLICATION_STOP
     elif [ "x$2" = "xzope_application" ]; then
         if test -x $ZOPE_SCRIPT; then
@@ -319,6 +352,11 @@ elif [ "x$1" = "xstop" ]; then
             $NAGIOS_SCRIPT stop
             NAGIOS_ERROR=$?
         fi
+    elif [ "x$2" = "xrabbitmq" ]; then
+        if test -x $RABBITMQ_SCRIPT; then	
+            $RABBITMQ_SCRIPT stop
+            RABBITMQ_ERROR=$?
+        fi
     elif [ "x$2" = "xjetty" ]; then
         if test -x $JETTY_SCRIPT; then	
             $JETTY_SCRIPT stop
@@ -346,6 +384,10 @@ elif [ "x$1" = "xstop" ]; then
             $NAGIOS_SCRIPT stop
             NAGIOS_ERROR=$?
         fi
+        if test -x $RABBITMQ_SCRIPT; then
+            $RABBITMQ_SCRIPT stop
+            RABBITMQ_ERROR=$?
+        fi
         if test -x $THIRD_SCRIPT; then
             $THIRD_SCRIPT stop
             THIRD_ERROR=$?
@@ -370,6 +412,11 @@ elif [ "x$1" = "xstop" ]; then
         if test -x $TOMCAT_SCRIPT; then
             $TOMCAT_SCRIPT stop
             TOMCAT_ERROR=$?
+            sleep 3
+        fi
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT stop
+            RESIN_ERROR=$?
             sleep 3
         fi
         if test -x $MEMCACHED_SCRIPT; then
@@ -445,6 +492,13 @@ elif [ "x$1" = "xrestart" ]; then
             $TOMCAT_SCRIPT start
             TOMCAT_ERROR=$?
         fi
+    elif [ "x$2" = "xresin" ]; then
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT stop
+            sleep 5
+            $RESIN_SCRIPT start
+            RESIN_ERROR=$?
+        fi
     #RUBY_APPLICATION_RESTART
     elif [ "x$2" = "xzope_application" ]; then
         if test -x $ZOPE_SCRIPT; then	
@@ -487,6 +541,13 @@ elif [ "x$1" = "xrestart" ]; then
             sleep 2
             $NAGIOS_SCRIPT start
             NAGIOS_ERROR=$?
+        fi
+    elif [ "x$2" = "xrabbitmq" ]; then
+        if test -x $RABBITMQ_SCRIPT; then	
+            $RABBITMQ_SCRIPT stop  
+            sleep 2
+            $RABBITMQ_SCRIPT start
+            RABBITMQ_ERROR=$?
         fi
     elif [ "x$2" = "xjetty" ]; then
         if test -x $JETTY_SCRIPT; then	
@@ -544,6 +605,10 @@ elif [ "x$1" = "xrestart" ]; then
             $TOMCAT_SCRIPT stop
             TOMCAT_ERROR=$?
         fi
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT stop
+            RESIN_ERROR=$?
+        fi
         if test -x $MEMCACHED_SCRIPT; then
             $MEMCACHED_SCRIPT stop
             $MEMCACHED_SCRIPT start
@@ -581,6 +646,14 @@ elif [ "x$1" = "xrestart" ]; then
         if test -x $TOMCAT_SCRIPT; then
             $TOMCAT_SCRIPT start
             TOMCAT_ERROR=$?
+        fi
+        if test -x $JBOSS_SCRIPT; then
+            $JBOSS_SCRIPT start
+            JBOSS_ERROR=$?
+        fi
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT start
+            RESIN_ERROR=$?
         fi        
         #RUBY_APPLICATION_GENERIC_START
         if test -x $ZOPE_SCRIPT; then	
@@ -603,13 +676,13 @@ elif [ "x$1" = "xrestart" ]; then
             $NAGIOS_SCRIPT start  
             NAGIOS_ERROR=$?
         fi
+        if test -x $RABBITMQ_SCRIPT; then	
+            $RABBITMQ_SCRIPT start  
+            RABBITMQ_ERROR=$?
+        fi
         if test -x $JETTY_SCRIPT; then	
             $JETTY_SCRIPT start  
             JETTY_ERROR=$?
-        fi
-        if test -x $JBOSS_SCRIPT; then
-            $JBOSS_SCRIPT start
-            JBOSS_ERROR=$?
         fi
         if test -x $HYPERSONIC_SCRIPT; then	
             $HYPERSONIC_SCRIPT start  
@@ -649,6 +722,10 @@ elif [ "x$1" = "xstatus" ]; then
         if test -x $TOMCAT_SCRIPT; then
             $TOMCAT_SCRIPT status
         fi
+    elif [ "x$2" = "xresin" ]; then
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT status
+        fi
     #RUBY_APPLICATION_STATUS
     elif [ "x$2" = "xzope_application" ]; then
         if test -x $ZOPE_SCRIPT; then
@@ -674,6 +751,10 @@ elif [ "x$1" = "xstatus" ]; then
         if test -x $NAGIOS_SCRIPT; then	
             $NAGIOS_SCRIPT status
         fi
+    elif [ "x$2" = "xrabbitmq" ]; then
+        if test -x $RABBITMQ_SCRIPT; then	
+            $RABBITMQ_SCRIPT status
+        fi
     elif [ "x$2" = "xjetty" ]; then
         if test -x $JETTY_SCRIPT; then	
             $JETTY_SCRIPT status
@@ -698,6 +779,9 @@ elif [ "x$1" = "xstatus" ]; then
         if test -x $THIRD_SCRIPT; then
             $THIRD_SCRIPT status
         fi
+        if test -x $RABBITMQ_SCRIPT; then
+            $RABBITMQ_SCRIPT status
+        fi
         if test -x $SUBVERSION_SCRIPT; then
             $SUBVERSION_SCRIPT status
         fi
@@ -718,6 +802,10 @@ elif [ "x$1" = "xstatus" ]; then
             $TOMCAT_SCRIPT status
             sleep 3
         fi
+        if test -x $RESIN_SCRIPT; then
+            $RESIN_SCRIPT status
+            sleep 3
+        fi
         if test -x $OPENOFFICE_SCRIPT; then
             $OPENOFFICE_SCRIPT status
         fi
@@ -733,10 +821,13 @@ elif [ "x$1" = "xstatus" ]; then
         fi
 
     fi
+else
+    help
+    exit 1
 fi
 
 # Checking for errors
-for e in $APACHE_ERROR $MYSQL_ERROR $SUBVERSION_ERROR $TOMCAT_ERROR $MEMCACHED_ERROR $INGRES_ERROR $OPENOFFICE_ERROR $LUCENE_ERROR $ZOPE_ERROR $POSTGRESQL_ERROR $THIRD_ERROR $NAGIOS_ERROR $JETTY_ERROR $JBOSS_ERROR $HYPERSONIC_ERROR; do
+for e in $APACHE_ERROR $MYSQL_ERROR $SUBVERSION_ERROR $TOMCAT_ERROR $RESIN_ERROR $MEMCACHED_ERROR $INGRES_ERROR $OPENOFFICE_ERROR $LUCENE_ERROR $ZOPE_ERROR $POSTGRESQL_ERROR $THIRD_ERROR $NAGIOS_ERROR $RABBITMQ_ERROR $JETTY_ERROR $JBOSS_ERROR $HYPERSONIC_ERROR; do
     if [ $e -gt 0 ]; then
         ERROR=$e
     fi

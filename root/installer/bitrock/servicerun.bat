@@ -12,6 +12,7 @@ if exist @@BITROCK_INSTALLDIR@@\postgresql\scripts\servicerun.bat (start /MIN @@
 if exist @@BITROCK_INSTALLDIR@@\apache2\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\apache2\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\openoffice\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\openoffice\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\tomcat\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\tomcat\scripts\servicerun.bat START)
+if exist @@BITROCK_INSTALLDIR@@\jboss\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\jboss\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\jetty\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\jetty\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\subversion\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\subversion\scripts\servicerun.bat START)
 rem RUBY_APPLICATION_START
@@ -27,6 +28,7 @@ rem RUBY_APPLICATION_STOP
 if exist @@BITROCK_INSTALLDIR@@\subversion\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\subversion\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\jetty\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\jetty\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\hypersonic\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\server\hsql-sample-database\scripts\servicerun.bat STOP)
+if exist @@BITROCK_INSTALLDIR@@\jboss\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\jboss\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\tomcat\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\tomcat\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\openoffice\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\openoffice\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\apache2\scripts\servicerun.bat (start /MIN @@BITROCK_INSTALLDIR@@\apache2\scripts\servicerun.bat STOP)

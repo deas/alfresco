@@ -7,6 +7,7 @@ if exist @@BITROCK_INSTALLDIR@@\mysql\scripts\serviceinstall.bat (start /MIN @@B
 if exist @@BITROCK_INSTALLDIR@@\postgresql\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\postgresql\scripts\serviceinstall.bat INSTALL)
 if exist @@BITROCK_INSTALLDIR@@\apache2\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\apache2\scripts\serviceinstall.bat INSTALL)
 if exist @@BITROCK_INSTALLDIR@@\tomcat\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\tomcat\scripts\serviceinstall.bat INSTALL)
+if exist @@BITROCK_INSTALLDIR@@\jboss\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\jboss\scripts\serviceinstall.bat INSTALL)
 if exist @@BITROCK_INSTALLDIR@@\openoffice\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\openoffice\scripts\serviceinstall.bat INSTALL)
 if exist @@BITROCK_INSTALLDIR@@\subversion\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\subversion\scripts\serviceinstall.bat INSTALL)
 rem RUBY_APPLICATION_INSTALL
@@ -22,6 +23,7 @@ if exist @@BITROCK_INSTALLDIR@@\lucene\scripts\serviceinstall.bat (start /MIN @@
 rem RUBY_APPLICATION_REMOVE
 if exist @@BITROCK_INSTALLDIR@@\subversion\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\subversion\scripts\serviceinstall.bat)
 if exist @@BITROCK_INSTALLDIR@@\openoffice\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\openoffice\scripts\serviceinstall.bat)
+if exist @@BITROCK_INSTALLDIR@@\jboss\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\jboss\scripts\serviceinstall.bat)
 if exist @@BITROCK_INSTALLDIR@@\tomcat\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\tomcat\scripts\serviceinstall.bat)
 if exist @@BITROCK_INSTALLDIR@@\apache2\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\apache2\scripts\serviceinstall.bat)
 if exist @@BITROCK_INSTALLDIR@@\postgresql\scripts\serviceinstall.bat (start /MIN @@BITROCK_INSTALLDIR@@\postgresql\scripts\serviceinstall.bat)

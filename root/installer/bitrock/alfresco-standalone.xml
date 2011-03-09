@@ -1,0 +1,238 @@
+<project>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <fullName>BitNami Alfresco Stack</fullName>
+    <shortName>alfresco</shortName>
+    <vendor>BitNami</vendor>
+    <productUrlHelpLink>http://bitnami.org/forums</productUrlHelpLink>
+    <productUrlInfoAbout>www.bitnami.org</productUrlInfoAbout>
+    <productDisplayIcon>${installdir}/img/bitnami.ico</productDisplayIcon>
+    <version>@@BITROCK_VERSION@@</version>
+    <installerFilename>bitnami-${product_shortname}-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
+    <licenseFile></licenseFile>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
+    <logoImage>images/alfresco_top_right.png</logoImage>
+    <splashImage>images/splash.png</splashImage>
+    <defaultLanguage>en</defaultLanguage>
+    <defaultUnixDirectoryPermissions>755</defaultUnixDirectoryPermissions>
+    <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
+    <allowComponentSelection>1</allowComponentSelection>
+
+    <platformOptionsList>
+	<platformOptions>
+	    <platform>solaris-sparc</platform>
+	    <leftImage>images/alfresco_left.png</leftImage>
+	</platformOptions>
+	<platformOptions>
+	    <platform>solaris-intel</platform>
+	    <leftImage>images/alfresco_left.png</leftImage>
+	</platformOptions>
+	<platformOptions>
+	    <platform>windows</platform>
+	    <leftImage>images/alfresco_left.png</leftImage>
+	</platformOptions>
+	<platformOptions>
+	    <platform>linux</platform>
+	    <leftImage>images/alfresco_ubuntu_left.png</leftImage>
+	    <height>400</height>
+	</platformOptions>
+	<platformOptions>
+	    <platform>osx</platform>
+	    <leftImage>images/alfresco_ubuntu_left.png</leftImage>
+	    <height>393</height>
+	</platformOptions>
+    </platformOptionsList>
+
+
+    <slideShowImageList>
+        <slideShowImage path="images/alfresco_slide.png" />
+    </slideShowImageList>
+    <componentList>
+        <include file="bitnami-functions.xml" />
+                <include file="alfresco-build-settings.xml" />
+                <include file="alfresco-functions.xml" />
+		<include file="base-java-settings.xml"/>
+		<include file="base-mysql-settings.xml"/>
+		<include file="base-tomcat-settings.xml"/>
+		<include file="base-parameter-dir.xml" />
+		<include file="base-parameter-admindb.xml" />
+        <include file="base-licenses.xml" />
+    	<include file="base-readme.xml"/>
+    	<include file="base-changelog.xml"/>
+	
+		<include file="common.xml" />
+		<include file="tomcat-java.xml" />	
+
+		<include file="mysql.xml" />
+
+		<include file="java.xml" />
+		<include file="tomcat.xml" />
+
+		<include file="ctlscript.xml" />
+		<include file="mysql-service.xml" />
+
+    	<include file="bitnami-shortcuts.xml" />
+
+		<include file="openoffice.xml"/>
+		<include file="imagemagick.xml"/>
+    	<include file="swftools.xml"/>
+    	<include file="alfrescodm.xml" />
+    	<include file="alfrescodm-database.xml" />
+        <include file="alfresco-mysql-question.xml" />
+    	<include file="alfrescowcm.xml" />
+        <include file="alfresco-apply-amps.xml" />
+
+        <include file="alfresco-bitnami-settings.xml" />
+
+        <include file="tomcat-service.xml" />
+        <include file="alfresco-standalone-html.xml" />
+       
+	 
+    </componentList>
+
+    <postInstallationActionList>
+	<runProgram>
+	    <progressText>Starting Tomcat...</progressText>
+	    <program>${installdir}/ctlscript.sh</program>
+	    <programArguments>start tomcat</programArguments>
+	    <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<runProgram>
+	    <progressText>Restarting Tomcat...</progressText>
+	    <program>cmd.exe</program>
+	    <programArguments>/C start /MIN net stop ${tomcat_unique_service_name}</programArguments>
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+	</runProgram>
+	<wait>
+	    <ms>5000</ms>
+	</wait>
+	<runProgram>
+	    <program>cmd.exe</program>
+	    <programArguments>/C start /MIN net start ${tomcat_unique_service_name}</programArguments>
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+	</runProgram>
+	<waitForPort port="${application_server_port}" timeout="10000"/>
+
+	<!-- Find a solution for alfresco's imconvert.exe issue. redmine 1335 -->
+	<!--<deleteFile>
+	    <abortOnError>0</abortOnError>
+	    <path>${installdir}/imagemagick</path>
+	    <ruleList>
+		<platformTest type="windows"/>
+	    </ruleList>
+	</deleteFile>-->
+        <runProgram>
+            <program>chown</program>
+            <programArguments>-R bitnami ${alfresco_amps_directory}</programArguments>
+            <ruleList>
+                <platformTest type="unix"/>
+                <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <userTest username="bitnami" logic="exists" />
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>chown</program>
+            <programArguments>-R bitnami ${alfresco_amps_share_directory}</programArguments>
+            <ruleList>
+                <platformTest type="unix"/>
+                <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <userTest username="bitnami" logic="exists" />
+            </ruleList>
+        </runProgram>
+
+
+    </postInstallationActionList>
+    
+    <finalPageActionList>
+	<actionGroup>
+	    <progressText>Launch ${product_fullname} now?</progressText>
+	    <actionList>
+		<launchBrowser> 
+		    <url>http://${application_server_domain}:${application_server_port}/</url>
+		    <ruleList>
+			<compareText text="${installer_ui}" logic="equals" value="gui"/>
+		    </ruleList>
+		</launchBrowser>
+	    </actionList>
+	    <ruleList>
+		<compareText text="${application_server_installation_type}" logic="equals" value="bundled" />
+		<compareText text="${installer_ui}" logic="equals" value="gui"/>
+	    </ruleList>
+	</actionGroup>
+	<showInfo>
+            <text>You have chosen Apache Tomcat existing installation. To use new applications installed you have to restart Apache Tomcat.</text>
+            <ruleList>
+                <compareText text="${application_server_installation_type}" logic="equals" value="existing" />
+	    </ruleList>
+	</showInfo>
+    </finalPageActionList>
+    
+
+    <preUninstallationActionList>
+	<showQuestion variable="deleteConfirm" text="Do you wish to delete all saved datafiles too?" >
+	    <ruleList>
+		<compareText text="${component(mysql).parameter(mysql_installation_type).value}" logic="equals" value="bundled" />
+	    </ruleList>
+	</showQuestion>
+	<runProgram>
+	    <progressText>Stopping servers</progressText>
+	    <program>${installdir}/ctlscript.sh</program>
+	    <programArguments>stop &gt; /dev/null 2&gt; /dev/null</programArguments>
+	    <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<actionGroup>
+	    <actionList>
+		<runProgram>
+		    <progressText>Stopping services</progressText>
+		    <program>${installdir}/servicerun.bat</program>
+		    <programArguments>STOP</programArguments>
+		</runProgram>
+		<runProgram>
+		    <progressText>Uninstalling services</progressText>
+		    <program>${installdir}/serviceinstall.bat</program>
+		    <programArguments>REMOVE</programArguments>
+		</runProgram>
+	    </actionList>
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+	</actionGroup>	
+	<deleteFile>
+	    <abortOnError>0</abortOnError>
+	     <path>${installdir}/apps/${product_shortname}</path>
+	</deleteFile>
+	<actionGroup>
+	    <abortOnError>0</abortOnError>
+	    <actionList>
+		<deleteFile>
+		    <path>${installdir}/apache-tomcat</path>
+		</deleteFile>
+	    </actionList>
+	    <ruleList>
+		<compareText text="${component(tomcat).parameter(tomcat_installation_type).value}" logic="equals" value="bundled" />
+	    </ruleList>
+	</actionGroup>
+	<actionGroup>
+	    <abortOnError>0</abortOnError>
+	    <actionList>
+		<deleteFile>
+		    <path>${installdir}/mysql/tmp</path>
+		</deleteFile>
+		<deleteFile>
+		    <path>${installdir}/mysql/data</path>
+		</deleteFile>
+	    </actionList>
+	    <ruleList>
+		<compareText text="${deleteConfirm}" logic="equals" value="yes" />
+		<compareText text="${component(mysql).parameter(mysql_installation_type).value}" logic="equals" value="bundled" />
+	    </ruleList>
+	</actionGroup>
+    </preUninstallationActionList>
+</project>

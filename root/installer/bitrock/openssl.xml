@@ -1,0 +1,28 @@
+
+<!-- openssl 1.0
+Componentname: openssl
+
+Short Description:
+This component is able to proceed the most often used actions.
+
+Created: 200711
+Modified: 200711
+Copyrighted by BitRock
+
+
+-->
+<component>
+    <name>openssl</name>
+    <description>Open SSL Component</description>
+    <canBeEdited>0</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+    <readyToInstallActionList>
+        <setInstallerVariable name="OPENSSL_COMMON_FILE_LIST">
+            <value>				${common_root_directory}/bin/openssl
+			</value>
+        </setInstallerVariable>
+        <setInstallerVariable name="COMMON_FILE_LIST" value="${OPENSSL_COMMON_FILE_LIST};${COMMON_FILE_LIST}"/>
+    </readyToInstallActionList>
+</component>
+

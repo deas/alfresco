@@ -1,0 +1,89 @@
+<component>
+    <name>alfrescomodule</name>
+    <selected>1</selected>
+    <show>0</show>
+    <initializationActionList>
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_database_name).value" value="bitnami_alfresco" />
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_admin_password).value" value="admin" />
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_admin_password).ask" value="0" />
+	<setInstallerVariable name="tomcat_dirname" value="apache-tomcat" />
+	<setInstallerVariable name="alfrescomysqlquestion_bundled" value="true" />
+    </initializationActionList>
+
+    <readyToInstallActionList>
+	<setInstallerVariable name="tomcat_server_directory" value="${application_server_directory}" />
+	<setInstallerVariable name="alfresco_installation_directory" value="${installdir}/apps/alfresco" />
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_base_application_directory).value" value="${installdir}/apps/alfresco" />
+        <setInstallerVariable name="component(alfrescowcm).parameter(alfrescowcm_base_application_directory).value" value="${installdir}/apps/alfrescowcm" />
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_library_directory).value" value="${alfresco_base_application_directory}/lib" />
+        <!--setInstallerVariable name="component(alfresco).parameter(alfresco_shared_directory).value" value="${alfresco_base_application_directory}/shared/classes" /-->
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_data_directory).value" value="${alfresco_base_application_directory}/data" />
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_commands_directory).value" value="${installdir}/apps/alfresco" />
+        <setInstallerVariable name="component(alfrescowcm).parameter(alfrescowcm_virtualtomcat_commands).value" value="${installdir}" />
+        <setInstallerVariable name="component(alfrescoapplyamps).parameter(alfresco_amps_directory).value" value="${installdir}/apps/alfresco/amps" />
+        <setInstallerVariable name="component(alfrescoapplyamps).parameter(alfresco_amps_share_directory).value" value="${installdir}/apps/alfresco/amps_share" />
+    </readyToInstallActionList>
+    <parameterList>
+	<directoryParameter name="tomcat_server_directory" value="${installdir}/${tomcat_dirname}" ask="0" />
+    <infoParameter>
+            <insertBefore>installationFinished</insertBefore>
+            <name>alfresco_application_user</name>
+            <title>Information</title>
+            <value>The default administrator user of the Alfresco application is:
+
+LOGIN: admin
+PASSWORD: admin
+
+It's strongly recommended to change administrator password for
+security reasons. This information is also stored in:
+${alfresco_readme_path}
+</value>
+            <preShowPageActionList>
+                <setInstallerVariable name="alfresco_readme_path" value="${installdir}\apps\alfresco\README.txt">
+                    <ruleList>
+                        <platformTest type="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="alfresco_readme_path" value="${installdir}/apps/alfresco/README.txt">
+                    <ruleList>
+                        <platformTest type="unix"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </preShowPageActionList>
+        </infoParameter>
+
+    </parameterList>
+    <postInstallationActionList>
+        <addFilesToUninstaller files="${installdir}/apps" />
+        <substitute>
+            <files>${application_server_conf_directory}/catalina.properties</files>
+            <type>regexp</type>
+            <substitutionList>
+                <substitution>
+                    <pattern>common.loader=</pattern>
+                    <value>common.loader=${alfresco_library_directory}/*.jar,</value>
+                    <ruleList>
+                        <platformTest type="unix"/>
+                        <fileContentTest path="${application_server_conf_directory}/catalina.properties" logic="does_not_contain" text="${alfresco_library_directory}"/>
+                    </ruleList>
+                </substitution>
+                <substitution>
+                    <pattern>common.loader=</pattern>
+                    <value>common.loader=${alfresco_library_directory.dos.unix}/*.jar,</value>
+                    <ruleList>
+                        <platformTest type="windows"/>
+                        <fileContentTest path="${application_server_conf_directory}/catalina.properties" logic="does_not_contain" text="${alfresco_library_directory.dos.unix}"/>
+                    </ruleList>
+                </substitution>
+            </substitutionList>
+        </substitute>
+	<addTextToFile>
+	    <file>${web_server_configuration_directory}/httpd.conf</file>
+	    <text>Include "${alfresco_installation_directory.unix}/conf/alfresco.conf"                  
+	    </text>
+	    <ruleList>
+		<fileContentTest path="${web_server_configuration_directory.unix}/httpd.conf" logic="does_not_contain" text="${alfresco_installation_directory.unix}/conf/alfresco.conf"/>
+	    </ruleList>
+	</addTextToFile>
+    </postInstallationActionList>
+</component>

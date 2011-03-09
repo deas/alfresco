@@ -34,6 +34,19 @@ Dependencies: ctlscript.xml
             <default>30</default>
             <ask>0</ask>
         </stringParameter>
+        <stringParameter>
+            <name>baseunixservice_restart_function</name>
+            <value/>
+            <default/>
+            <ask>0</ask>
+        </stringParameter>
+        <stringParameter>
+            <name>baseunixservice_restart_command</name>
+            <value/>
+            <default>        stop "$@"
+        start "$@"</default>
+            <ask>0</ask>
+        </stringParameter>
         <booleanParameter name="baseunixservice_use_custom_upstart" value="0" ask="0" />
         <booleanParameter>
             <name>baseunixservice_install_as_service</name>
@@ -168,6 +181,8 @@ stop () {
     ${installdir}/${component(script).parameter(ctlscript_unix).value} stop "$2"
     RETVAL=$?
 }
+
+${baseunixservice_restart_function}
 case "$1" in
     start)
         start "$@"
@@ -176,8 +191,7 @@ case "$1" in
         stop "$@"
         ;;
     restart)
-        stop "$@"
-        start "$@"
+${baseunixservice_restart_command}
         ;;
     *)
         ${installdir}/${component(script).parameter(ctlscript_unix).value} "$@"
@@ -454,6 +468,15 @@ exit $RETVAL
         &lt;array&gt;
                 &lt;string&gt;${ruby_root_directory}/bin/mongrel_rails&lt;/string&gt;
                 &lt;string&gt;start&lt;/string&gt;
+		&lt;string&gt;-d&lt;/string&gt;
+                &lt;string&gt;-e&lt;/string&gt;
+		&lt;string&gt;production&lt;/string&gt;
+                &lt;string&gt;-p&lt;/string&gt;
+		&lt;string&gt;${mongrel_port}&lt;/string&gt;
+                &lt;string&gt;-P&lt;/string&gt;
+		&lt;string&gt;tmp/pids/mongrel.${mongrel_port}.pid&lt;/string&gt;
+                &lt;string&gt;-l&lt;/string&gt;
+		&lt;string&gt;log/mongrel.${mongrel_port}.log&lt;/string&gt;
         &lt;/array&gt;
 	&lt;key&gt;RunAtLoad&lt;/key&gt;
         &lt;true/&gt;

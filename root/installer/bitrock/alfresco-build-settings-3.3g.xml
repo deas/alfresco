@@ -8,36 +8,28 @@
         <!-- AlfrescoDM build settings -->
         <setInstallerVariable name="alfresco_extensions_source_directory" value="${build_project_directory}/alfresco/extensions" />
         <setInstallerVariable name="alfresco_endorsed_source_directory" value="${build_project_directory}/alfresco/endorsed" />
-        <setInstallerVariable name="alfresco_lib_source_directory" value="${build_project_directory}/alfresco/lib" />
         <setInstallerVariable name="alfresco_war_source_directory" value="${build_project_directory}/alfresco" />
         <setInstallerVariable name="alfresco_extras_source_directory" value="${build_project_directory}/alfresco" />
         <setInstallerVariable name="alfresco_licenses_directory" value="${build_project_directory}/alfresco/licenses" />
         <setInstallerVariable name="project.readmeFile" value="${build_project_directory}/README.txt" />
         <setInstallerVariable name="alfresco_on_install_settings_directory" value="${build_project_directory}/bitrock" />
-        <setInstallerVariable name="alfresco_commands_source_directory" value="${build_project_directory}/alfresco/bin" />
+        <setInstallerVariable name="alfresco_on_install_settings_per_platform_directory" value="${build_project_directory}/bitrock/alfresco" />
+        <setInstallerVariable name="alfresco_commands_source_directory" value="${build_project_directory}/bitrock/alfresco/commands" />
 
 
         <setInstallerVariable name="alfrescowcm_source_directory" value="${build_project_directory}/alfrescowcm" />
         <setInstallerVariable name="alfrescowcm_on_install_settings_directory" value="${build_project_directory}/bitrock/alfrescowcm" />
+        <setInstallerVariable name="alfrescowcm_on_install_settings_per_platform_directory" value="${build_project_directory}/bitrock/alfrescowcm" />
 
-        <setInstallerVariable name="alfresco_mmt_source_file" value="${build_project_directory}/alfresco/bin/*.jar" />
+        <setInstallerVariable name="alfresco_mmt_source_file" value="${build_project_directory}/bitrock/alfresco/commands/bin/*.jar" />
         <!-- SharePoint settings -->
-        <setInstallerVariable name="alfresco_sharepoint_source_file" value="${build_project_directory}/alfresco-community-spp-3.4.b.amp" />
+        <setInstallerVariable name="alfresco_sharepoint_source_file" value="${build_project_directory}/vti-module.amp" />
         <setInstallerVariable name="alfresco_sharepoint_on_install_settings_directory" value="${build_project_directory}/bitrock/alfrescosharepoint" />
         <!-- Records Management and Quickr AMPs -->
-        <setInstallerVariable name="alfresco_quickr_source_file" value="${build_project_directory}/alfresco-community-quickr-3.4.b.amp" />
+        <setInstallerVariable name="alfresco_quickr_source_file" value="${build_project_directory}/alfresco-quickr.amp" />
         <setInstallerVariable name="alfresco_quickr_on_install_settings_directory" value="${build_project_directory}/bitrock/alfrescoquickr" />
-        <setInstallerVariable name="alfresco_rm_source_file" value="${build_project_directory}/alfresco-community-dod5015-3.4.b.amp" />
-        <setInstallerVariable name="alfresco_rm_share_source_file" value="${build_project_directory}/alfresco-community-dod5015-share-3.4.b.amp" />
-
-        <setInstallerVariable name="alfresco_wcmqs_source_file" value="${build_project_directory}/wcmquickstart/alfresco-community-wcmqs-3.4.b.amp" />
-        <setInstallerVariable name="alfresco_wcmqs_share_source_file" value="${build_project_directory}/wcmquickstart/alfresco-community-wcmqs-share-3.4.b.amp" />
-        <setInstallerVariable name="alfresco_wcmqs_war_source_file" value="${build_project_directory}/wcmquickstart/wcmqs.war" />
-        <setInstallerVariable name="alfresco_awe_war_source_file" value="${build_project_directory}/wcmquickstart/awe.war" />
-        <setInstallerVariable name="alfresco_awe_config_source_file" value="${build_project_directory}/wcmquickstart" />
-        <setInstallerVariable name="alfresco_wcmqs_config_source_file" value="${build_project_directory/wcmquickstart" />
-
-
+        <setInstallerVariable name="alfresco_rm_source_file" value="${build_project_directory}/alfresco-dod5015.amp" />
+        <setInstallerVariable name="alfresco_rm_share_source_file" value="${build_project_directory}/alfresco-dod5015-share.amp" />
 
         <!-- BINARIES -->
         <setInstallerVariable name="binaries_folder" value="${build_project_directory}" />
@@ -53,14 +45,13 @@
         <!-- BINARIES -->
         <setInstallerVariable name="common_distribution_folder" value="${binaries_folder}/common" />
         <setInstallerVariable name="mysql_distribution_folder" value="${binaries_folder}/mysql" />
-        <setInstallerVariable name="postgres_distribution_folder" value="${binaries_folder}/postgresql" />
         <setInstallerVariable name="imagemagick_distribution_folder_windows" value="${binaries_folder}/imagemagick" />
         <setInstallerVariable name="imagemagick_distribution_folder_unix" value="${binaries_folder}/ImageMagick" />
-        <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java-1.6.0_22" />
+        <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java" />
         <setInstallerVariable name="xvfb_distribution_folder" value="${binaries_folder}/Xvfb" />
         <setInstallerVariable name="openoffice_distribution_folder" value="${binaries_folder}/openoffice" />
-        <setInstallerVariable name="swftools_distribution_folder" value="${binaries_folder}/swftools-0.9.1" />
-        <setInstallerVariable name="tomcat_distribution_folder" value="${binaries_folder}/apache-tomcat-6.0.29" />
+        <setInstallerVariable name="swftools_distribution_folder" value="${binaries_folder}/swftools" />
+        <setInstallerVariable name="tomcat_distribution_folder" value="${binaries_folder}/apache-tomcat" />
     </preBuildActionList>
 
 

@@ -121,6 +121,14 @@
                             <value>${database_hostname}</value>
                         </substitution>
                         <substitution>
+                            <pattern>@@BITROCK_POSTGRESQL_PORT@@</pattern>
+                            <value>${database_port}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_POSTGRESQL_HOST@@</pattern>
+                            <value>${database_hostname}</value>
+                        </substitution>
+                        <substitution>
                             <pattern>@@BITROCK_DATA_DIR@@</pattern>
                             <value>${alfresco_data_directory.dos.unix}</value>
                         </substitution>

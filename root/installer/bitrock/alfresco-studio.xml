@@ -1,0 +1,32 @@
+<component>
+    <name>alfrescostudio</name>
+    <description>Alfresco Studio</description>
+    <detailedDescription>Alfresco Web Studio is a visual, drag-and-drop designer for building web sites with the Alfresco Surf platform. Using Alfresco Web Studio, you can quickly create custom web sites while leveraging the strengths of the Alfresco Web Content Management runtime and repository. </detailedDescription>
+    <canBeEdited>1</canBeEdited>
+    <selected>1</selected>
+    <show>1</show>
+
+    <folderList>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdiralfresco}</destination>
+            <name>programfiles</name>
+            <platforms>all</platforms>
+            <actionList>
+              <substitute>
+		<files>*/WEB-INF/*.xml;*/WEB-INF/classes/alfresco/*.xml</files>
+		<type>regexp</type>
+		<substitutionList>
+		  <substitution>
+                    <pattern>localhost:8080</pattern>
+		    <value>localhost:${application_server_port}</value>
+		  </substitution>
+		</substitutionList>
+              </substitute>
+	    </actionList>
+            <distributionFileList>
+              <distributionFile origin="studio/studio"/>
+            </distributionFileList>
+        </folder>
+    </folderList>
+</component>

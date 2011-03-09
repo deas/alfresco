@@ -1,0 +1,49 @@
+<component>
+    <name>openofficewriteproperties</name>
+    <description>Openoffice Write Properties</description>
+    <canBeEdited>0</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+    <readyToInstallActionList>
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>OpenOffice</section>
+                    <key>openoffice_directory</key>
+                    <variable>openoffice_directory</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>OpenOffice</section>
+                    <key>openoffice_port</key>
+                    <variable>openoffice_port</variable>
+                </iniFileGet>
+                <throwError>
+                    <text>OpenOffice is not installed in your Stack. This module requires to have OpenOffice installed.</text>
+                    <ruleList>
+                        <compareText text="${openoffice_directory}" logic="equals" value=""/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <fileExists path="${installdir}/properties.ini"/>
+            </ruleList>
+        </actionGroup>
+    </readyToInstallActionList>
+    <postInstallationActionList>
+        <iniFileSet>
+            <file>${installdir}/properties.ini</file>
+            <section>OpenOffice</section>
+            <key>openoffice_directory</key>
+            <value>${openoffice_directory}</value>
+        </iniFileSet>
+        <iniFileSet>
+            <file>${installdir}/properties.ini</file>
+            <section>OpenOffice</section>
+            <key>openoffice_port</key>
+            <value>${openoffice_port}</value>
+        </iniFileSet>
+    </postInstallationActionList>
+</component>
+

@@ -554,7 +554,13 @@
          <fileset dir="${home.tomcat}/lib" 
                   includes="mysql-connector*" 
                   excludes="${file.name.jar.mysql.connector}" />
+         <fileset dir="${home.tomcat}/lib" 
+                  includes="postgresql-*" 
+                  excludes="${file.name.jar.postgres.connector}" />
       </delete>
+
+      <copy todir="${home.tomcat}/lib"      
+            file="${dir.project.3rdparty.lib}/${dir.name.devenv}/${file.name.jar.postgres.connector}" />
 
       <copy todir="${home.tomcat}/lib"      
             file="${dir.project.3rdparty.lib}/${dir.name.devenv}/${file.name.jar.mysql.connector}" />

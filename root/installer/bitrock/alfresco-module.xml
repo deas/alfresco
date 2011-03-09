@@ -1,0 +1,175 @@
+<project>
+    <fullName>BitNami Alfresco Module</fullName>
+    <shortName>alfresco</shortName>
+    <version>@@BITROCK_VERSION@@</version>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <installerFilename>bitnami-${product_shortname}-${product_version}-module-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
+    <allowComponentSelection>0</allowComponentSelection>
+    <startMenuGroupName></startMenuGroupName>
+    <enableRollback>0</enableRollback>
+    <logoImage>images/alfresco_top_right.png</logoImage> 
+    <splashImage>images/splash.png</splashImage> 
+    <leftImage>images/alfresco_ubuntu_left.png</leftImage>
+    <uninstallerDirectory>${alfresco_installation_directory}</uninstallerDirectory>
+    <height>380</height>
+
+    <slideShowLoop>no</slideShowLoop>
+    <slideShowImageList>
+        <slideShowImage path="images/alfresco_slide.png"/>
+    </slideShowImageList>
+
+    <componentList>
+	<include file="bitnami-functions.xml" />
+	<include file="alfresco-build-settings.xml" />
+	<include file="alfresco-functions.xml" />
+        <include file="apache-functions.xml" />
+
+        <include file="base-get-installdir.xml"/>
+        <include file="apache-properties.xml"/>
+        <include file="mysql-properties.xml"/>
+        <include file="java-properties.xml"/>
+        <include file="tomcat-properties.xml"/>
+	<include file="swftools-properties.xml"/>
+	<include file="openoffice-properties.xml"/>
+        <include file="base-adminaccount-registry.xml"/>
+	<include file="alfrescodm.xml"/>
+        <include file="alfrescodm-database.xml"/>
+	<include file="alfrescowcm.xml"/>
+	<include file="alfresco-apply-amps.xml"/>
+	<include file="alfresco-module-settings.xml"/>
+	
+        <include file="bitnami-module-shortcuts.xml"/>
+        <include file="bitnami-module-link.xml"/>
+    </componentList>
+
+    <readyToInstallActionList>
+        <setInstallerVariable name="component(bitnamimodulelink).parameter(bitnamimodulelink_url).value" value="alfresco" persist="1"/>
+	<setInstallerVariable name="component(bitnamimodulelink).parameter(bitnamimodulelink_description).value"> 
+	    <value>Alfresco Enterprise Content Management (ECM) system featuring Document Management, Collaboration Management and Image Management. &lt;a href="/share"&gt;Alfresco Share&lt;/a&gt; is built on the Alfresco enterprise-class document repository and delivers out-of-the-box collaborative content management.</value>
+	    <persist>1</persist>
+	</setInstallerVariable>
+	<runProgram>
+	    <abortOnError>0</abortOnError>
+	    <showMessageOnError>0</showMessageOnError>
+            <progressText>Stoping Tomcat...</progressText>
+            <program>${installdir}/ctlscript.sh</program>
+            <programArguments>stop tomcat</programArguments>
+            <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<wait>
+            <ms>5000</ms>
+	</wait>
+    </readyToInstallActionList>
+
+    <postInstallationActionList>
+	<runProgram>
+	    <abortOnError>0</abortOnError>
+	    <showMessageOnError>0</showMessageOnError>
+	    <program>rm</program>
+	    <programArguments>${installdir}/virtual_*.sh</programArguments>
+	    <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<runProgram>
+            <progressText>Starting Tomcat...</progressText>
+            <program>${installdir}/ctlscript.sh</program>
+            <programArguments>start tomcat</programArguments>
+            <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<wait>
+            <ms>10000</ms>
+	</wait>
+	<runProgram>
+            <progressText>Restarting Apache...</progressText>
+            <program>${installdir}/ctlscript.sh</program>
+            <programArguments>restart apache</programArguments>
+            <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<runProgram>
+            <program>chown</program>
+            <programArguments>-R bitnami ${alfresco_amps_directory}</programArguments>
+            <ruleList>
+                <platformTest type="unix"/>
+                <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <userTest username="bitnami" logic="exists" />
+	    </ruleList>
+	</runProgram>
+        <runProgram>
+            <program>chown</program>
+            <programArguments>-R bitnami ${alfresco_amps_share_directory}</programArguments>
+            <ruleList>
+                <platformTest type="unix"/>
+                <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <userTest username="bitnami" logic="exists" />
+	    </ruleList>
+	</runProgram>
+    </postInstallationActionList>
+
+    <finalPageActionList>
+        <actionGroup>
+            <progressText>Launch ${product_fullname}</progressText>
+            <actionList>
+                <launchBrowser>
+                    <url>http://${web_server_domain_name}:${web_server_port}/alfresco</url>
+                </launchBrowser>	
+            </actionList>
+        </actionGroup>
+    </finalPageActionList>
+
+    <preUninstallationActionList>
+        <showQuestion>
+            <text>Do you want to keep the alfresco database? It will be saved at ${installdir}/backups</text>
+            <variable>confirm_keep</variable>
+        </showQuestion>
+        <actionGroup>
+            <actionList>
+                <createDirectory path="${installdir}/backups">
+                    <ruleList>
+                        <fileTest path="${installdir}/backups" condition="not_exists"/>
+                    </ruleList>
+                </createDirectory>
+                <createBackupFile path="${installdir}/mysql/data/${alfresco_database_name}" destination="${installdir}/backups"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${confirm_keep}" logic="equals" value="yes"/>
+            </ruleList>
+        </actionGroup>
+        <runProgram>
+            <program>${installdir}/mysql/bin/mysql</program>
+            <programArguments>-u root -p${base_password} -e "drop database ${alfresco_database_name}"</programArguments>
+            <ruleList>
+                <platformTest type="unix"/>
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>${installdir}/mysql/bin/mysql.exe</program>
+            <programArguments>-u root -p${base_password} -e "drop database ${alfresco_database_name}"</programArguments>
+            <ruleList>
+                <platformTest type="windows"/>
+            </ruleList>
+        </runProgram>
+        <!-- TODO: Move this to alfresco.xml once InstallBuilder supports it -->
+        <readFile path="${installdir}/apache2/conf/httpd.conf" name="apache_configuration_file"/>
+        <setInstallerVariableFromRegEx>
+            <text>${apache_configuration_file}</text>
+            <name>apache_configuration_file</name>
+            <pattern>Include "${alfresco_installation_directory.unix}/conf/alfresco.conf"</pattern>
+            <substitution></substitution>
+        </setInstallerVariableFromRegEx>
+        <writeFile path="${installdir}/apache2/conf/httpd.conf" text="${apache_configuration_file}"/>
+    </preUninstallationActionList>
+
+    <postUninstallationActionList>
+        <deleteFile>
+            <abortOnError>0</abortOnError>
+            <path>${alfresco_installation_directory}</path>
+        </deleteFile>
+    </postUninstallationActionList>
+</project>

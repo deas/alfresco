@@ -24,7 +24,7 @@
         <stringParameter>
             <name>alfresco_ftp_port</name>
             <title>Alfresco FTP Port</title>
-            <explanation>Please choose a port number to use for the integrated Alfresco FTP server.</explanation>
+            <explanation>The integrated Alfresco FTP server was unable to bind to the default port. Please check if you have enough permissions, or choose an alternative port number.</explanation>
             <default>21</default>
             <value/>
             <ask>1</ask>
@@ -46,7 +46,7 @@
         <stringParameter>
             <name>alfresco_rmi_port</name>
             <title>Alfresco RMI Port</title>
-            <explanation>Please choose a port number for Alfresco to use to execute remote commands.</explanation>
+            <explanation>Alfresco uses port 50500 to execute remote commands. It seems this port is being taken by another application. Please choose an alternative port number.</explanation>
             <default>50500</default>
             <value/>
             <ask>1</ask>
@@ -82,7 +82,6 @@
         </directoryParameter>
 
         <passwordParameter name="alfresco_admin_password" description="Admin Password:" descriptionRetype="Repeat Password:" allowEmptyValue="0" >
-		    <title>Admin Password</title>
             <explanation>Please give a password to use for the Alfresco administrator account.</explanation>
             <validationActionList>
 	        <throwError>
@@ -106,10 +105,6 @@
             <description>War Files</description>
             <name>warfiles</name>
             <destination>${installdiralfresco}</destination>
-            <!-- Hack to remove old lib files before next folder -->
-            <actionList>
-                <deleteFile path="${alfresco_library_directory}/mysql-connector-java-*.jar" />
-            </actionList>
             <distributionFileList>
                 <distributionFile origin="${alfresco_war_source_directory}/*.war" allowWildcards="1" />
             </distributionFileList>
@@ -120,12 +115,12 @@
             <name>libfiles</name>
             <platforms>all</platforms>
             <distributionFileList>
-                <distributionFile origin="${alfresco_lib_source_directory}/*" allowWildcards="1"/>
+                <distributionFile origin="${alfresco_endorsed_source_directory}/*" allowWildcards="1"/>
             </distributionFileList>
         </folder>
         <folder>
             <description>Extension Files</description>
-            <destination>${alfresco_shared_directory}</destination>
+            <destination>${alfresco_shared_directory}/alfresco</destination>
             <name>extensionfiles</name>
             <platforms>all</platforms>
             <distributionFileList>
@@ -182,32 +177,14 @@
                                     <value>3306</value>
                                 </substitution>
                                 <substitution>
-                                    <pattern>@@BITROCK_POSTGRESQL_PORT@@</pattern>
-                                    <value>5432</value>
-                                </substitution>
-                                <substitution>
                                     <pattern>@@BITROCK_OO_PORT@@</pattern>
                                     <value>${openoffice_port}</value>
                                 </substitution>
                             </substitutionList>
                         </substitute>
                     </actionList>
-		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
-			<ruleGroup>
-			    <ruleEvaluationLogic>and</ruleEvaluationLogic>
-			    <ruleList>
-				<componentTest name="alfrescomysqlquestion" logic="exists" />
-				<isFalse value="${alfrescomysqlquestion_bundled}" />
-			    </ruleList>
-			</ruleGroup>
-			<ruleGroup>
-			    <ruleEvaluationLogic>and</ruleEvaluationLogic>
-			    <ruleList>
-				<componentTest name="postgres" logic="exists" />
-				<isFalse value="${component(postgres).selected}" />
-			    </ruleList>
-			</ruleGroup>
+                        <isFalse value="${alfrescomysqlquestion_bundled}" />
                     </ruleList>
                 </actionGroup>
                 <alfrescoConfigure alfrescoFiles="*/alfresco-global.properties" />
@@ -216,29 +193,6 @@
                 <distributionFile origin="${alfresco_on_install_settings_directory}/alfresco/shared/alfresco-global.properties"/>
             </distributionFileList>
         </folder>
-	<folder>
-	    <name>conf</name>
-	    <destination>${alfresco_base_application_directory}</destination>
-	    <distributionFileList>
-		<distributionDirectory origin="alfresco/conf" />
-	    </distributionFileList>
-	    <actionList>
-		<substitute>
-		    <files>${alfresco_base_application_directory}/conf/alfresco.conf</files>
-		    <type>exact</type>
-		    <substitutionList>
-			<substitution>
-			    <pattern>@@BITROCK_TOMCAT_AJP_PORT@@</pattern>
-			    <value>${application_server_ajp_port}</value>
-			</substitution>
-		    </substitutionList>
-		</substitute>		
-	    </actionList>
-            <shouldPackRuleList>
-                <fileTest path="alfresco/conf" condition="exists" />
-		<componentTest name="alfrescomodule" logic="exists" />
-            </shouldPackRuleList>
-	</folder>
         <folder>
             <name>licenses</name>
             <description>Alfresco Licenses</description>
@@ -301,7 +255,17 @@
             <substitutionList>
                 <substitution>
                     <pattern>shared.loader=</pattern>
-                    <value>shared.loader=${'${catalina.base}/shared/classes,${catalina.base}/shared/lib/*.jar'}</value>
+                    <value>shared.loader=${alfresco_shared_directory}</value>
+                    <ruleList>
+                        <platformTest type="unix"/>
+                    </ruleList>
+                </substitution>
+                <substitution>
+                    <pattern>shared.loader=</pattern>
+                    <value>shared.loader=${alfresco_shared_directory.dos.unix}</value>
+                    <ruleList>
+                        <platformTest type="windows"/>
+                    </ruleList>
                 </substitution>
             </substitutionList>
         </substitute>

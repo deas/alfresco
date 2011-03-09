@@ -2,12 +2,72 @@
     <name>alfrescoosxbuildingonwindowspatch</name>
     <show>0</show>
     <selected>1</selected>
-    <shouldPackRuleList>
-         <platformTest type="windows"/>
-         <compareText text="${platform_name}" logic="contains" value="osx"/>
-    </shouldPackRuleList>
-    <postInstallationActionList>       
-        
+    <functionDefinitionList>
+        <actionDefinition name="postgresCreateSymLinksOsxBuildingFromWindows">
+            <actionList>
+               <deleteFile path="${installdir}/postgresql/lib/libecpg.dylib" />
+                <createSymLink target="libecpg.6.2.dylib" linkName="${installdir}/postgresql/lib/libecpg.dylib" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/lib/libecpg.6.2.dylib" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/postgresql/lib/libecpg.6.dylib" />
+                <createSymLink target="libecpg.6.2.dylib" linkName="${installdir}/postgresql/lib/libecpg.6.dylib" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/lib/libecpg.6.2.dylib" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/postgresql/lib/libpgtypes.3.dylib" />
+                <createSymLink target="libpgtypes.3.1.dylib" linkName="${installdir}/postgresql/lib/libpgtypes.3.dylib" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/lib/libpgtypes.3.1.dylib" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/postgresql/lib/libpq.dylib" />
+                <createSymLink target="libpq.5.3.dylib" linkName="${installdir}/postgresql/lib/libpq.dylib" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/lib/libpq.5.3.dylib" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/postgresql/lib/libecpg_compat.dylib" />
+                <createSymLink target="libecpg_compat.3.2.dylib" linkName="${installdir}/postgresql/lib/libecpg_compat.dylib" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/lib/libecpg_compat.3.2.dylib" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/postgresql/lib/libpq.5.dylib" />
+                <createSymLink target="libpq.5.3.dylib" linkName="${installdir}/postgresql/lib/libpq.5.dylib" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/lib/libpq.5.3.dylib" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/postgresql/lib/libpgtypes.dylib" />
+                <createSymLink target="libpgtypes.3.1.dylib" linkName="${installdir}/postgresql/lib/libpgtypes.dylib" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/lib/libpgtypes.3.1.dylib" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/postgresql/lib/libecpg_compat.3.dylib" />
+                <createSymLink target="libecpg_compat.3.2.dylib" linkName="${installdir}/postgresql/lib/libecpg_compat.3.dylib" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/lib/libecpg_compat.3.2.dylib" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/postgresql/bin/postmaster" />
+                <createSymLink target="postgres" linkName="${installdir}/postgresql/bin/postmaster" >
+                     <ruleList>
+                         <fileTest path="${installdir}/postgresql/bin/postgres" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+                
                <deleteFile path="${installdir}/common/include/pngconf.h" />
                 <createSymLink target="libpng12/pngconf.h" linkName="${installdir}/common/include/pngconf.h" >
                      <ruleList>
@@ -1053,7 +1113,8 @@
                               <fileTest path="${installdir}/mysql/bin/mysql_secure_installation" condition="exists" />
                            </ruleList>
                         </changePermissions>
-                        <dos2unix files="${installdir}/mysql/bin/make_sharedlib_distribution" abortOnError="0" showMessageOnError="0" />
+                        <dos2unix files="${installdir}/postgresql/share/postgres.bki" abortOnError="0" showMessageOnError="0" />
+                        <dos2unix files="${installdir}/postgresql/scripts/ctl.sh" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/mysql/bin/make_sharedlib_distribution" >
                            <ruleList>
@@ -3464,5 +3525,14 @@
         <changePermissions permissions="0755" files="${installdir}/*.sh" />
         <changePermissions permissions="0755" files="${installdir}/*/*.sh" />
         <changePermissions permissions="0755" files="${installdir}/*/*/*.sh" />
+        </actionList>
+        </actionDefinition>
+    </functionDefinitionList>
+    <postInstallationActionList>       
+	 <postgresCreateSymLinksOsxBuildingFromWindows>
+	    <ruleList>
+              <platformTest type="osx" />
+	    </ruleList>
+	 </postgresCreateSymLinksOsxBuildingFromWindows>
     </postInstallationActionList>
 </component>

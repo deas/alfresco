@@ -377,13 +377,12 @@ Tomcat 5.5 is recommended.</text>
     <readyToInstallActionList>
 <!-- To use tomcat as alone server -->
 <setInstallerVariable name="tomcat_execute_abort_action_list" value="1"/>
-        <setInstallerVariable name="web_server_domain_name" value="${tomcat_server_domain}"/>
-        <setInstallerVariable name="web_server_port" value="${tomcat_server_port}"/>
         <setInstallerVariable name="application_server_installation_type" value="${tomcat_installation_type}" persist="1"/>
         <setInstallerVariable name="application_server_directory" value="${tomcat_server_directory}" persist="1"/>
         <setInstallerVariable name="application_server_port" value="${tomcat_server_port}" persist="1"/>
         <setInstallerVariable name="application_server_shutdown_port" value="${tomcat_server_shutdown_port}"/>
         <setInstallerVariable name="application_server_ssl_port" value="${tomcat_server_ssl_port}"/>
+        <setInstallerVariable name="application_server_ajp_port" value="${tomcat_server_ajp_port}"/>
         <setInstallerVariable name="application_server_domain" value="${tomcat_server_domain}"/>
         <setInstallerVariable name="application_server_conf_directory" value="${tomcat_server_directory}/conf"/>
  
@@ -437,7 +436,7 @@ Tomcat 5.5 is recommended.</text>
 <!-- PORT SUBSTITUTIONS -->
 <substitute>
                     <type>exact</type>
-                    <files>${application_server_directory}/conf/server.xml</files>
+                    <files>${application_server_directory}/conf/server.xml;${application_server_directory}/conf/tomcat.conf</files>
                     <substitutionList>
                         <substitution>
                             <pattern>@@BITROCK_TOMCAT_PORT@@</pattern>
@@ -540,6 +539,12 @@ export JAVA_OPTS
                     <showMessageOnError>0</showMessageOnError>
                     <program>sc</program>
                     <programArguments>stop ${tomcat_unique_service_name}</programArguments>
+                </runProgram>
+                <runProgram>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <program>sc</program>
+                    <programArguments>delete ${tomcat_unique_service_name}</programArguments>
                 </runProgram>
                 <deleteFile path="${tomcat_server_directory}">
                     <ruleList>

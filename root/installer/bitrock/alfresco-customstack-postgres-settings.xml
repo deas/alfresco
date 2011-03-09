@@ -1,0 +1,449 @@
+<component>
+    <name>alfrescocustomstacksettings</name>
+    <selected>1</selected>
+    <show>0</show>
+    <preBuildActionList>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="component(javaalfresco).selected" value="0" />
+                <setInstallerVariable name="component(javaalfresco).canBeEdited" value="0" />
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" value="osx" logic="equals" />
+            </ruleList>
+        </actionGroup>
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_database_name).default" value="alfresco" />
+        <setInstallerVariable name="component(script).parameter(ctlscript_unix).value" value="alfresco.sh" />
+
+	<setInstallerVariable name="component(postgres).canBeEdited" value="0" />
+
+	<!--setInstallerVariable name="component(alfrescopostgresquestion).parameter(alfrescopostgresquestion_bundled).cliOptionShow" value="1"/>
+        <setInstallerVariable name="component(alfrescopostgresquestion).parameter(alfrescopostgresquestion_bundled).cliOptionName" value="alfresco_installation_type_bundled"/>
+        <setInstallerVariable name="component(alfrescopostgresquestion).parameter(alfrescopostgresquestion_bundled).description" value="Use a bundled or existing database"/>
+        <setInstallerVariable name="component(alfrescopostgresquestion).parameter(alfrescopostgresquestion_bundled).default" value="1"/-->
+        <setInstallerVariable name="component(postgres).parameter(postgres_root_password).ask" value="0" />
+	<!--setInstallerVariable name="component(postgres).parameter(postgres_root_password).description" value="PostgreSQL Server Root Password:" />
+	<setInstallerVariable name="component(postgres).parameter(postgres_root_password).explanation" value="Please enter your database password." />
+	<setInstallerVariable name="component(postgres).parameter(postgres_root_password).descriptionRetype" value="Verify password:" /-->
+	<setInstallerVariable name="component(postgres).canBeEdited" value="1" />
+
+        <setInstallerVariable name="component(java).show" value="0" />
+        <setInstallerVariable name="component(java).selected" value="1" />
+        <setInstallerVariable name="component(java).canBeEdited" value="0" />
+	<setInstallerVariable name="component(java).detailedDescription" value="Java Component required to run the Alfresco server." />
+        <setInstallerVariable name="component(java).parameter(java_home_directory).description" value="JDK Installation Directory:" />
+        <setInstallerVariable name="component(java).parameter(java_required_jdk).value" value="1" />
+        <setInstallerVariable name="component(java).parameter(java_min_version).value" value="1.6.0_22" />
+        <setInstallerVariable name="component(java).parameter(java_required_or_abort).value" value="1" />
+       
+
+        <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_directory).description" value="OpenOffice Installation Directory" />
+        <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_port).description" value="OpenOffice Server Port:" />
+        <!--setInstallerVariable name="component(openofficecomponent).parameter(openoffice_xvfb_directory).description" value="Xvfb Installation Directory" /-->
+
+        <setInstallerVariable name="component(swftools).parameter(swftools_root_directory).description" value="SWFTOOLS Installation Directory" />
+        <setInstallerVariable name="component(tomcat).parameter(tomcat_dirname).value" value="tomcat" />
+        <setInstallerVariable name="component(tomcat).parameter(tomcat_server_directory).description" value="Tomcat Directory:" />
+        <setInstallerVariable name="component(tomcat).parameter(tomcat_ports).parameter(tomcat_server_domain).description" value="Web Server Domain:" />
+        <setInstallerVariable name="component(tomcat).parameter(tomcat_ports).parameter(tomcat_server_ssl_port).description" value="Tomcat SSL Port:" />
+        
+        <setInstallerVariable name="component(baseparamdir).parameter(installdir).title" value="Installation Folder" />
+        <setInstallerVariable name="component(baseparamdir).parameter(installdir).explanation" value="Please choose a folder to install ${product_fullname}." />
+        <setInstallerVariable name="component(readme).parameter(base_readme_installation_directory).description" value="README Destination" />
+        <setInstallerVariable name="component(common).parameter(common_root_directory).description" value="Common Installation Directory" />
+        <setInstallerVariable name="component(imagemagick).parameter(imagemagick_root_directory).description" value="ImageMagick Installation Directory" />
+        <setInstallerVariable name="component(imagemagick).parameter(imagemagick_version).description" value="ImageMagick Version" />
+    </preBuildActionList>
+
+    <initializationActionList>
+        <setInstallerVariable name="component(openofficecomponent).parameter(openofficeservice_notstart).value" value="1" />
+        <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_installed_as_service).value" value="0" />
+	<setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_notstart).value" value="1" />
+	<setInstallerVariable name="component(postgresinitdb).parameter(database_name).value" value="alfresco" />
+	<setInstallerVariable name="component(postgresinitdb).parameter(database_user).value" value="alfresco" />
+	<setInstallerVariable name="component(postgres).parameter(postgres_installation_type).ask" value="0" />
+	<setInstallerVariable name="component(postgres).parameter(postgres_installation_type).value" value="bundled" />
+	
+        <!--<setInstallerVariable name="component(mysql).parameter(mysql_data).parameter(mysql_database_username).value" value="alfresco"/>
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_database_name).value" value="alfresco"/>
+        <setInstallerVariable name="component(mysql).parameter(mysql_installation_type).value" value="bundled"/>
+        <setInstallerVariable name="component(mysql).parameter(mysql_installation_type).ask" value="0"/>
+        <setInstallerVariable name="component(mysql).parameter(mysql_data).ask" value="0"/>
+        <setInstallerVariable name="component(mysql).parameter(mysql_allow_empty_root_password).value" value="0"/>-->
+        <setInstallerVariable name="installdir" value="${env(SYSTEMDRIVE)}\Alfresco" >
+            <ruleList>
+                <platformTest type="windows" />
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="component(baseparamdir).parameter(base_allow_spaces).value" value="0" />
+
+	<throwError>
+	    <text>This installer is for Windows 64 bit.  Please download the Windows 32 bit version.</text>
+	    <ruleList>
+		<compareText text="${project.installerFilename}" logic="contains" value="win-x64"/>
+		<platformTest type="windows"/>
+                <platformTest type="windows-x64" negate="1"/>
+	    </ruleList>
+	</throwError>
+    </initializationActionList>
+
+    <preInstallationActionList>
+        <actionGroup>
+        <actionList>
+
+        <actionGroup>
+            <actionList>
+                <autodetectJava>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <customErrorMessage>This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <promptUser>0</promptUser>
+                    <validVersionList>
+                        <validVersion>
+                            <requireJDK>${java_required_jdk}</requireJDK>
+                            <maxVersion/>
+                            <minVersion>${java_min_version}</minVersion>
+                        </validVersion>
+                    </validVersionList>
+                    <ruleList>
+                        <isFalse value="${java_required_or_abort}" />
+                    </ruleList>
+                </autodetectJava>
+                <autodetectJava>
+                    <abortOnError>1</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <customErrorMessage>This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <promptUser>0</promptUser>
+                    <validVersionList>
+                        <validVersion>
+                            <requireJDK>${java_required_jdk}</requireJDK>
+                            <maxVersion/>
+                            <minVersion>${java_min_version}</minVersion>
+                        </validVersion>
+                    </validVersionList>
+                    <ruleList>
+                        <isTrue value="${java_required_or_abort}" />
+                    </ruleList>
+                </autodetectJava>
+
+                <autodetectJava>
+                    <customErrorMessage>This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again.</customErrorMessage>
+                    <validVersionList>
+                        <validVersion>
+                            <maxVersion/>
+                            <minVersion>${java_min_version}</minVersion>
+                        </validVersion>
+                    </validVersionList>
+                    <ruleList>
+                        <platformTest type="osx"/>
+                    </ruleList>
+                </autodetectJava>
+                <setInstallerVariableFromRegEx>
+                    <name>java_home_directory</name>
+                    <text>${java_executable}</text>
+                    <pattern>/bin/java$</pattern>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${java_executable}" value=""/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <name>java_home_directory</name>
+                    <substitution/>
+                    <text>${java_executable}</text>
+                    <pattern>/bin/java.exe$</pattern>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${java_executable}" value=""/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <name>java_home_directory</name>
+                    <text>${java_home_directory}</text>
+                    <pattern>/jre$</pattern>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${java_home_directory}" value=""/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariable>
+                    <name>java_home_directory</name>
+                    <value>/usr/local/java</value>
+                    <ruleList>
+                        <regExMatch logic="matches" text="${java_executable}" pattern="unknown"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable>
+                    <name>java_home_directory</name>
+                    <value>${platform_install_prefix}\java</value>
+                    <ruleList>
+                        <regExMatch logic="matches" text="${java_executable}" pattern="unknown"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(java).parameter(java_home_directory).ask" value="1"/>
+                    </actionList>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <regExMatch logic="matches" text="${java_executable}" pattern="unknown"/>
+                        <compareText logic="equals" text="${java_executable}" value=""/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+        </actionGroup>
+
+        <setInstallerVariable name="component(java).parameter(java_installation_type).value" value="existing" />
+        </actionList>
+        <ruleList>
+            <compareText text="${installer_ui}" logic="equals" value="unattended"/>
+            <isFalse value="${component(javaalfresco).selected}" />
+        </ruleList>
+        </actionGroup>
+
+
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(postgresservice).selected" value="0" />
+                        <setInstallerVariable name="component(postgresinitdb).selected" value="0" />
+                        <setInstallerVariable name="component(alfrescopostgresdbcreation).selected" value="0" />
+                        <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_waittostart).value" value="0" />
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${installer_ui}" logic="equals" value="unattended"/>
+                        <isFalse value="${component(postgres).selected}" />
+                    </ruleList>
+                </actionGroup>
+    </preInstallationActionList>
+
+
+    <componentSelectionValidationActionList>
+        <actionGroup>
+        <actionList>
+
+        <actionGroup>
+            <actionList>
+                <autodetectJava>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <customErrorMessage>This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <promptUser>0</promptUser>
+                    <validVersionList>
+                        <validVersion>
+                            <requireJDK>${java_required_jdk}</requireJDK>
+                            <maxVersion/>
+                            <minVersion>${java_min_version}</minVersion>
+                        </validVersion>
+                    </validVersionList>
+                    <ruleList>
+                        <isFalse value="${java_required_or_abort}" />
+                    </ruleList>
+                </autodetectJava>
+                <autodetectJava>
+                    <abortOnError>1</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <customErrorMessage>This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <promptUser>0</promptUser>
+                    <validVersionList>
+                        <validVersion>
+                            <requireJDK>${java_required_jdk}</requireJDK>
+                            <maxVersion/>
+                            <minVersion>${java_min_version}</minVersion>
+                        </validVersion>
+                    </validVersionList>
+                    <ruleList>
+                        <isTrue value="${java_required_or_abort}" />
+                    </ruleList>
+                </autodetectJava>
+
+                <autodetectJava>
+                    <customErrorMessage>This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again.</customErrorMessage>
+                    <validVersionList>
+                        <validVersion>
+                            <maxVersion/>
+                            <minVersion>${java_min_version}</minVersion>
+                        </validVersion>
+                    </validVersionList>
+                    <ruleList>
+                        <platformTest type="osx"/>
+                    </ruleList>
+                </autodetectJava>
+                <setInstallerVariableFromRegEx>
+                    <name>java_home_directory</name>
+                    <text>${java_executable}</text>
+                    <pattern>/bin/java$</pattern>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${java_executable}" value=""/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <name>java_home_directory</name>
+                    <substitution/>
+                    <text>${java_executable}</text>
+                    <pattern>/bin/java.exe$</pattern>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${java_executable}" value=""/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <name>java_home_directory</name>
+                    <text>${java_home_directory}</text>
+                    <pattern>/jre$</pattern>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${java_home_directory}" value=""/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariable>
+                    <name>java_home_directory</name>
+                    <value>/usr/local/java</value>
+                    <ruleList>
+                        <regExMatch logic="matches" text="${java_executable}" pattern="unknown"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable>
+                    <name>java_home_directory</name>
+                    <value>${platform_install_prefix}\java</value>
+                    <ruleList>
+                        <regExMatch logic="matches" text="${java_executable}" pattern="unknown"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(java).parameter(java_home_directory).ask" value="1"/>
+                    </actionList>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <regExMatch logic="matches" text="${java_executable}" pattern="unknown"/>
+                        <compareText logic="equals" text="${java_executable}" value=""/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+        </actionGroup>
+
+        <setInstallerVariable name="component(java).parameter(java_installation_type).value" value="existing" />
+        </actionList>
+        <ruleList>
+            <isFalse value="${component(javaalfresco).selected}" />
+        </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList> 
+                <setInstallerVariable name="component(java).parameter(java_installation_type).value" value="bundled" />
+            </actionList>
+            <ruleList>
+                <isTrue value="${component(javaalfresco).selected}" />
+            </ruleList>
+        </actionGroup>
+
+
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(postgresservice).selected" value="1" />
+                        <setInstallerVariable name="component(postgresinitdb).selected" value="1" />
+                        <setInstallerVariable name="component(alfrescopostgresdbcreation).selected" value="1" />
+                        <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_waittostart).value" value="1" />
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${component(postgres).selected}" />
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(postgresservice).selected" value="0" />
+                        <setInstallerVariable name="component(postgresinitdb).selected" value="0" />
+                        <setInstallerVariable name="component(alfrescopostgresdbcreation).selected" value="0" />
+                        <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_waittostart).value" value="0" />
+                    </actionList>
+                    <ruleList>
+                        <isFalse value="${component(postgres).selected}" />
+                    </ruleList>
+                </actionGroup>
+    </componentSelectionValidationActionList>
+
+    <parameterList>
+	<choiceParameter>
+	    <name>alfrescocustomstack_installation_type</name>
+	    <title>Installation Type</title>
+	    <default>easy</default>
+	    <explanation></explanation>
+            <cliOptionShow>0</cliOptionShow>
+	    <displayType>radiobuttons</displayType>
+	    <insertBefore>components</insertBefore>
+	    <optionList>
+		<option text="Easy - Installs servers with the default configuration" value="easy" />
+		<option text="Advanced - Configures server ports and service properties. Also choose optional components to install." value="advanced" />
+	    </optionList>
+	    <validationActionList>
+                <setInstallerVariable name="component(postgres).selected" value="1" />
+                <setInstallerVariable name="component(postgresinitdb).selected" value="1" />
+                <setInstallerVariable name="component(postgresservice).selected" value="1" />
+                <setInstallerVariable name="component(alfrescopostgresdbcreation).selected" value="1" />
+                <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_waittostart).value" value="1" />
+                <componentSelection select="alfrescowcm,alfrescoquickr,alfrescorm,openofficecomponent,alfrescosharepoint,alfrescowmqs"/>
+
+		<actionGroup>
+		    <actionList>
+			<setInstallerVariable name="component(tomcat).parameter(tomcat_show_ports).value" value="1" />
+			<setInstallerVariable name="component(openofficecomponent).parameter(openoffice_show_ports).value" value="1" />
+			<!--<setInstallerVariable name="component(mysql).parameter(mysql_information).parameter(mysql_server_port_show).value" value="1" />-->
+			<setInstallerVariable name="component(postgres).parameter(postgres_show_ports).value" value="1" />
+			<setInstallerVariable name="alfresco_show_ports" value="yes" />
+                        <setInstallerVariable name="project.allowComponentSelection" value="1" />
+                        <!--setInstallerVariable name="component(alfrescopostgresquestion).parameter(alfrescopostgresquestion_bundled).ask" value="1" />
+                        <setInstallerVariable name="component(alfrescopostgresquestion).parameter(alfrescopostgresquestion_bundled).value" value="1" /-->
+		    </actionList>
+		    <ruleList>
+			<compareText text="${alfrescocustomstack_installation_type}" logic="equals" value="advanced" />
+		    </ruleList>
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+                        <componentSelection deselect="alfrescowcm,alfrescoquickr,alfrescorm"/>
+			<setInstallerVariable name="component(tomcat).parameter(tomcat_show_ports).value" value="0" />
+			<setInstallerVariable name="component(openofficecomponent).parameter(openoffice_show_ports).value" value="0" />
+			<!--<setInstallerVariable name="component(mysql).parameter(mysql_information).parameter(mysql_server_port_show).value" value="0" />-->
+			<setInstallerVariable name="component(postgres).parameter(postgres_show_ports).value" value="0" />
+			<setInstallerVariable name="alfresco_show_ports" value="no" />
+                        <setInstallerVariable name="project.allowComponentSelection" value="0" />
+                        <!--setInstallerVariable name="component(alfrescopostgresquestion).parameter(alfrescopostgresquestion_bundled).ask" value="0" />
+                        <setInstallerVariable name="component(alfrescopostgresquestion).parameter(alfrescopostgresquestion_bundled).value" value="1" /-->
+		    </actionList>
+		    <ruleList>
+			<compareText text="${alfrescocustomstack_installation_type}" logic="equals" value="easy" />
+		    </ruleList>
+		</actionGroup>
+	    </validationActionList>
+	</choiceParameter>
+	<choiceParameter>
+	    <name>alfrescocustomstack_services_startup</name>
+	    <title>Service Startup Configuration</title>
+	    <default>demand</default>
+	    <explanation>Please select services startup type</explanation>
+	    <displayType>radiobuttons</displayType>
+	    <insertBefore>readytoinstall</insertBefore>
+	    <optionList>
+		<option text="Manual - Configure servers to start services manually" value="demand" />
+		<option text="Auto - Configure servers to start automatically" value="auto" />
+	    </optionList>
+	    <validationActionList>
+		<setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_startup).value" value="${alfrescocustomstack_services_startup}" />
+		<setInstallerVariable name="component(postgresservice).parameter(postgres_service_startup).value" value="${alfrescocustomstack_services_startup}" />
+		<setInstallerVariable name="component(openofficecomponent).parameter(openofficeservice_startup).value" value="${alfrescocustomstack_services_startup}" />
+	    </validationActionList>
+	    <ruleList>
+		<platformTest type="windows" />
+		<compareText text="${alfrescocustomstack_installation_type}" logic="equals" value="advanced" />
+	    </ruleList>
+	</choiceParameter>
+    </parameterList>
+    <postInstallationActionList>
+        <alfrescoConfigure alfrescoFiles="${tomcat_server_directory}/bin/service.bat;${tomcat_server_directory}/scripts/ctl.sh" />
+    </postInstallationActionList>
+</component>
+

@@ -1,0 +1,37 @@
+<component>
+    <name>swftoolswriteproperties</name>
+    <description>Swftools Write Properties</description>
+    <canBeEdited>0</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+    <readyToInstallActionList>
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>SWFTools</section>
+                    <key>swftools_root_directory</key>
+                    <variable>swftools_root_directory</variable>
+                </iniFileGet>
+                <throwError>
+                    <text>SWFTools is not installed in your Stack. This module requires to have SWFTools installed.</text>
+                    <ruleList>
+                        <compareText text="${swftools_root_directory}" logic="equals" value=""/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <fileExists path="${installdir}/properties.ini"/>
+            </ruleList>
+        </actionGroup>
+    </readyToInstallActionList>
+    <postInstallationActionList>
+        <iniFileSet>
+            <file>${installdir}/properties.ini</file>
+            <section>SWFTools</section>
+            <key>swftools_root_directory</key>
+            <value>${swftools_root_directory}</value>
+        </iniFileSet>
+    </postInstallationActionList>
+</component>
+
