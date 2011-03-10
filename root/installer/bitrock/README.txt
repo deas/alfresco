@@ -1,7 +1,5 @@
-Alfresco Enterprise Edition 3.4
-===============================
-
-*** Unsupported prerelease ****
+Alfresco Community 3.4+
+=======================
 
 For Enterprise subscribers, refer to http://network.alfresco.com for release notes and detailed information on this release.
 
