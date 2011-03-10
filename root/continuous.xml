@@ -699,12 +699,12 @@
 
          <!-- Main Installer -->
          <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win.txt" failifexecutionfails="false">
-            <arg line='build project.xml windows --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}" java_distribution_directory="${installer.build.binaries.win32.java}" tomcat_distribution_directory="${installer.build.binaries.win32.tomcat}"'/>
+            <arg line='build project.xml windows --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}"'/>
          </exec>
       
       <!-- Main 64-bit Installer -->
          <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win64.txt" failifexecutionfails="false">
-            <arg line='build project.xml windows --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win64}" binaries_folder="${installer.build.binaries.win64}" java_distribution_directory="${installer.build.binaries.win64.java}" tomcat_distribution_directory="${installer.build.binaries.win64.tomcat}"'/>
+            <arg line='build project.xml windows --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win64}" binaries_folder="${installer.build.binaries.win64}"'/>
          </exec>
       
       <!-- Deployment Installer -->
@@ -718,7 +718,7 @@
          <!-- Sequence installer then tarball -->
 	     <sequential>
             <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-osx.txt" failifexecutionfails="false">
-               <arg line='build project.xml osx --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}" java_distribution_directory="${installer.build.binaries.osx86.java}" tomcat_distribution_directory="${installer.build.binaries.osx86.tomcat}"'/>
+               <arg line='build project.xml osx --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
             </exec>
             <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx}.tar.gz"
                  longfile="gnu"
@@ -748,12 +748,12 @@
    
          <!-- Main Installer -->
          <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux.txt" failifexecutionfails="false">
-            <arg line='build project.xml linux --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux}" binaries_folder="${installer.build.binaries.lin32}" java_distribution_directory="${installer.build.binaries.lin32.java}" tomcat_distribution_directory="${installer.build.binaries.lin32.tomcat}"'/>
+            <arg line='build project.xml linux --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux}" binaries_folder="${installer.build.binaries.lin32}"'/>
          </exec>          
       
          <!-- Main 64-bit Installer -->
          <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="false">
-            <arg line='build project.xml linux-x64 --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}" java_distribution_directory="${installer.build.binaries.lin64.java}" tomcat_distribution_directory="${installer.build.binaries.lin64.tomcat}"'/>
+            <arg line='build project.xml linux-x64 --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
          </exec>          
 
          <!-- Deployment Installer -->

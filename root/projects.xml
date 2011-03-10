@@ -1,4 +1,4 @@
-<project name="projects">
+<project name="projects" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
    <!-- ************************************************************************** -->
    <!-- ** This file contains the targets used to build the individual projects ** -->
@@ -1656,7 +1656,7 @@
            depends="init">
 
       <echo>Merging selected Slingshot Javascript files...</echo>
-      <concat destfile="${dir.project.slingshot.assemble}/js/yui-common.js">
+      <concat destfile="${dir.project.slingshot.assemble}/js/yui-common.js" force="no">
          <fileset file="${dir.project.slingshot.assemble}/yui/utilities/utilities.js" />
          <fileset file="${dir.project.slingshot.assemble}/yui/button/button-min.js" />
          <fileset file="${dir.project.slingshot.assemble}/yui/container/container-min.js" />
@@ -1666,7 +1666,7 @@
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
 
-      <concat destfile="${dir.project.slingshot.assemble}/js/documentlibrary-actions.js">
+      <concat destfile="${dir.project.slingshot.assemble}/js/documentlibrary-actions.js" force="no">
          <fileset file="${dir.project.slingshot.src.web}/components/documentlibrary/actions.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/simple-dialog.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/global-folder.js" />
@@ -1676,10 +1676,12 @@
          <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/aspects.js" />
       </concat>
 
-      <concat destfile="${dir.project.slingshot.assemble}/js/datalist-actions.js">
+      <concat destfile="${dir.project.slingshot.assemble}/js/datalist-actions.js" force="no">
          <fileset file="${dir.project.slingshot.src.web}/components/data-lists/actions.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/simple-dialog.js" />
       </concat>
+      
+      <touch file="${dir.project.slingshot.assemble}/modules/about-share-min.js" />
 
       <echo>Compressing Slingshot Javascript...</echo>
       <minimize-javascript sourcedir="${dir.project.slingshot.assemble}" 
@@ -2477,6 +2479,255 @@
       <echo>Installing DOD 5015 into Share WAR...</echo>
       <install-amp ampfile="${dir.module.dod5015.share.dist}/${file.name.amp.dod5015.share}" 
                    warfile="${dir.project.slingshot.dist}/${file.name.war.slingshot}" />
+   </target>
+   
+   <!-- ******************************** -->
+   <!-- ** WCM Quick Start Project ** -->
+   <!-- ******************************** -->
+
+   <target name="incremental-wcmquickstart" 
+           depends="package-wcmquickstart" />
+
+   <target name="build-wcmquickstart" 
+           depends="clean-wcmquickstart, incremental-wcmquickstart" />
+
+   <target name="clean-wcmquickstart" 
+           depends="init">
+      <clean projectdir="${dir.module.wcmquickstart}" />
+   </target>
+
+   <target name="compile-wcmquickstart" 
+           depends="init">
+      <compile-java projectdir="${dir.module.wcmquickstart}" />
+   </target>
+
+   <target name="package-wcmquickstart"
+           depends="package-wcmquickstart-war, deploy-webclient-tomcat" />
+
+   <target name="package-wcmquickstart-jar"
+           depends="compile-wcmquickstart">
+      <mkdir dir="${dir.module.wcmquickstart.dist}" />
+      <jar jarfile="${dir.module.wcmquickstart.dist}/${file.name.jar.wcmquickstart}" 
+           basedir="${dir.module.wcmquickstart.classes}" />
+   </target>
+
+   <target name="package-wcmquickstart-war"
+           depends="package-wcmquickstart-extension">
+      <echo>Installing WCM Quick Start module into WAR...</echo>
+      <install-amp ampfile="${dir.module.wcmquickstart.dist}/${file.name.amp.wcmquickstart}" 
+                   warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
+   </target>
+
+   <target name="package-wcmquickstart-extension"
+           depends="package-wcmquickstart-jar">
+     <mkdir dir="${dir.module.wcmquickstart.dist}" />
+      <zip destfile="${dir.module.wcmquickstart.dist}/${file.name.amp.wcmquickstart}" 
+           update="true">
+         <zipfileset file="${dir.module.wcmquickstart.property}/module.properties"/>
+         <zipfileset file="${dir.module.wcmquickstart.dist}/${file.name.jar.wcmquickstart}" 
+                     prefix="lib"/>
+         <zipfileset dir="${dir.module.wcmquickstart.config}" 
+                     prefix="config">
+            <exclude name="**/module.properties"/>
+         </zipfileset>
+      </zip>
+   </target>
+   
+   <!-- ******************************** -->
+   <!-- ** WCM Quick Share Start Project ** -->
+   <!-- ******************************** -->
+
+   <target name="incremental-wcmquickstart-share" 
+           depends="package-wcmquickstart-share" />
+
+   <target name="build-wcmquickstart-share" 
+           depends="clean-wcmquickstart-share, incremental-wcmquickstart-share" />
+
+   <target name="clean-wcmquickstart-share" 
+           depends="init">
+      <clean projectdir="${dir.module.wcmquickstart-share}" />
+   </target>
+
+   <target name="assemble-wcmquickstart-share" depends="init">
+      <copy todir="${dir.module.wcmquickstart-share.assemble}">
+         <fileset dir="${dir.module.wcmquickstart-share.src.web}" />
+      </copy>
+   </target>
+   
+   <target name="minimize-wcmquickstart-share-javascript"
+           depends="init">
+     <echo>Compressing wcmquickstart Share Javascript...</echo>
+     <minimize-javascript sourcedir="${dir.module.wcmquickstart-share.assemble}" 
+                          destdir="${dir.module.wcmquickstart-share.assemble}" />
+  </target>
+   
+   <target name="package-wcmquickstart-share"
+           depends="package-wcmquickstart-share-war, deploy-slingshot-tomcat" />
+
+   <target name="package-wcmquickstart-share-war"
+           depends="package-wcmquickstart-share-extension">
+      <echo>Installing WCM Quick Start Share module into WAR...</echo>
+      <install-amp ampfile="${dir.module.wcmquickstart-share.dist}/${file.name.amp.wcmquickstart-share}" 
+                   warfile="${dir.project.slingshot.dist}/${file.name.war.slingshot}" />
+   </target>
+
+   <target name="package-wcmquickstart-share-extension"
+           depends="clean-wcmquickstart-share, assemble-wcmquickstart-share, minimize-wcmquickstart-share-javascript">
+     <mkdir dir="${dir.module.wcmquickstart-share.dist}" />   
+      <zip destfile="${dir.module.wcmquickstart-share.dist}/${file.name.amp.wcmquickstart-share}" 
+           update="true">
+         <zipfileset file="${dir.module.wcmquickstart-share.property}/module.properties"/>   
+         <zipfileset file="${dir.module.wcmquickstart-share.property}/file-mapping.properties"/>       
+         <zipfileset dir="${dir.module.wcmquickstart-share.config}" 
+                     prefix="config">
+            <exclude name="**/module.properties"/>
+            <exclude name="**/file-mapping.properties"/>
+         </zipfileset>
+       <zipfileset dir="${dir.module.wcmquickstart-share.assemble}" prefix="web"/>
+      </zip>
+   </target>
+   
+   <!-- *********************************** -->
+   <!-- ** WCM Quick Start Client API       ** -->
+   <!-- *********************************** -->
+   
+   <target name="incremental-wcmquickstart-clientapi" 
+           depends="package-wcmquickstart-clientapi" />
+      
+   <target name="build-wcmquickstart-clientapi" 
+           depends="clean-wcmquickstart-clientapi, 
+                    incremental-wcmquickstart-clientapi" />
+   
+   <target name="clean-wcmquickstart-clientapi" 
+           depends="init">
+      <clean projectdir="${dir.project.wcmquickstart-clientapi}" />
+   </target>
+
+   <target name="compile-wcmquickstart-clientapi" 
+           depends="init">
+      <compile-java projectdir="${dir.project.wcmquickstart-clientapi}" />
+   </target>
+   
+   <target name="package-wcmquickstart-clientapi"
+           depends="compile-wcmquickstart-clientapi">
+      <mkdir dir="${dir.project.wcmquickstart-clientapi.dist}" />
+      <jar jarfile="${dir.project.wcmquickstart-clientapi.dist}/${file.name.jar.wcmquickstart-clientapi}" 
+           basedir="${dir.project.wcmquickstart-clientapi.classes}"
+           excludes="alfresco/**" />
+   </target>
+   
+   <target name="test-wcmquickstart-clientapi" 
+           depends="compile-wcmquickstart-clientapi">
+      <run-tests projectdir="${dir.project.wcmquickstart-clientapi}" />
+   </target>
+   
+   <target name="generate-javadocs-wcmquickstart-clientapi" 
+           depends="init">
+      <generate-javadocs documenttitle="Alfresco WCM Quick Start Client API ${version.number}" 
+                         windowtitle="Alfresco WCM Quick Start Client API" 
+                         projectdir="${dir.project.wcmquickstart-clientapi}"/>
+   </target>
+   
+    <!-- *********************************** -->
+    <!-- ** WCM Quick Start Web App       ** -->
+    <!-- *********************************** -->
+   
+    <target name="incremental-wcmquickstart-webapp" 
+           depends="package-wcmquickstart-webapp" />
+      
+    <target name="build-wcmquickstart-webapp" 
+           depends="clean-wcmquickstart-webapp, 
+                    incremental-wcmquickstart-webapp" />
+   
+    <target name="clean-wcmquickstart-webapp" 
+           depends="init">
+      <clean projectdir="${dir.project.wcmquickstart-webapp}" />
+    </target>
+
+    <target name="compile-wcmquickstart-webapp" 
+           depends="package-webeditor-taglib-jar">
+      <compile-java projectdir="${dir.project.wcmquickstart-webapp}" />
+    </target>
+   
+    <target name="package-wcmquickstart-webapp"
+           depends="compile-wcmquickstart-webapp">
+      <mkdir dir="${dir.project.wcmquickstart-webapp.dist}" />
+      <jar jarfile="${dir.project.wcmquickstart-webapp.dist}/${file.name.jar.wcmquickstart-webapp}" 
+           basedir="${dir.project.wcmquickstart-webapp.classes}" />
+    </target>
+   
+   <target name="assemble-wcmquickstart-webapp" 
+           depends="package-wcmquickstart-clientapi, package-wcmquickstart-webapp, package-webeditor-jar, package-webeditor-taglib-jar">
+      <mkdir dir="${dir.project.wcmquickstart-webapp.assemble}" />
+      
+      <copy todir="${dir.project.wcmquickstart-webapp.assemble}">
+         <fileset dir="${dir.project.wcmquickstart-webapp.src.web}" excludes="WEB-INF/web.xml"/>
+      </copy>
+      
+      <copy todir="${dir.project.wcmquickstart-webapp.assemble}/WEB-INF/classes">
+         <fileset dir="${dir.project.wcmquickstart-webapp.config}" excludes="**/web-extension/**" />
+      </copy>
+      
+      <copy todir="${dir.project.wcmquickstart-webapp.assemble}/WEB-INF/classes">
+         <fileset dir="${dir.project.wcmquickstart-clientapi.config}" excludes="**/web-extension/**" />
+      </copy>
+      
+      <!-- add all JAR to WEB-INF/lib -->
+      <copy todir="${dir.project.wcmquickstart-webapp.assemble}/WEB-INF/lib">
+        
+         <!-- 3rd Party Libs -->
+         <fileset dir="${dir.project.3rdparty.lib}" 
+            includes="${includes.wcmquickstart-webapp.libs.3rdparty}" />
+         <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
+                includes="${includes.wcmquickstart-webapp.libs.spring-surf}" />
+         <fileset dir="${dir.project.3rdparty.lib}/commons" 
+                includes="${includes.wcmquickstart-webapp.libs.commons}" />
+         <fileset dir="${dir.project.3rdparty.lib}/optional"
+                includes="${includes.wcmquickstart-webapp.libs.optional}"/>       
+         <fileset dir="${dir.project.3rdparty.lib}/abdera"
+            includes="${includes.wcmquickstart-webapp.libs.abdera}"/>
+
+         <!-- Web Client API Libs -->
+         <fileset dir="${dir.project.wcmquickstart-clientapi.lib}" />
+         <fileset dir="${dir.project.wcmquickstart-clientapi.dist}" 
+                includes="${file.name.jar.wcmquickstart-clientapi}" />     
+              
+         <!-- Web App Libs -->
+         <fileset dir="${dir.project.wcmquickstart-webapp.lib}" />
+         <fileset dir="${dir.project.wcmquickstart-webapp.dist}" 
+                includes="${file.name.jar.wcmquickstart-webapp}" />
+            
+         <!-- AWE Libs -->
+         <fileset dir="${dir.project.webeditor.dist}"
+                includes="${file.name.jar.webeditor}"/>
+         <fileset dir="${dir.project.webeditor.dist}"
+                includes="${file.name.jar.webeditor.taglib}"/>
+         
+      </copy>
+      
+    </target>  
+   
+    <target name="package-wcmquickstart-webapp-war" 
+            depends="assemble-wcmquickstart-webapp">
+      <war warfile="${dir.project.wcmquickstart-webapp.dist}/${file.name.war.wcmquickstart-webapp}" 
+             webxml="${dir.project.wcmquickstart-webapp.src.webinf}/web.xml">
+         <fileset dir="${dir.project.wcmquickstart-webapp.assemble}" />
+        </war>
+    </target>
+      
+   <target name="build-wcmquickstartwebapp-war"
+           depends="package-wcmquickstart-webapp-war">   
+      <copy todir="${dir.project.wcmquickstart-webapp}/target" 
+              file="${dir.project.wcmquickstart-webapp.dist}/${file.name.war.wcmquickstart-webapp}" />      
+   </target>
+   
+   <target name="deploy-wcmquickstartwebapp-tomcat" depends="package-wcmquickstart-webapp-war" 
+            description="Deploys the WCM Quick Start Web App WAR to the application Tomcat server">
+      <delete file="${dir.deploy.tomcat.application}/${file.name.war.wcmquickstart-webapp}" />
+      <delete dir="${dir.deploy.tomcat.application.wcmquickstart}" 
+                includeEmptyDirs="true" quiet="yes" />
+      <copy todir="${dir.deploy.tomcat.application}" 
+              file="${dir.project.wcmquickstart-webapp.dist}/${file.name.war.wcmquickstart-webapp}" />
    </target>
     
    <!-- ******************************************************************* -->
