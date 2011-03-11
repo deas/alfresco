@@ -24,6 +24,18 @@
             <platform>osx</platform>
             <height>430</height>
         </platformOptions>
+        <platformOptions>
+            <platform>linux</platform>
+            <height>430</height>
+        </platformOptions>
+        <platformOptions>
+            <platform>linux-x64</platform>
+            <height>430</height>
+        </platformOptions>
+        <platformOptions>
+            <platform>linux-ia64</platform>
+            <height>430</height>
+        </platformOptions>        
     </platformOptionsList>
 
     <customLanguageFileList>
@@ -78,8 +90,8 @@
 	<include file="base-tomcat-settings.xml"/>
 	<include file="base-parameter-dir.xml" />
 
-	<include file="base-readme.xml"/>
-	<include file="alfresco-licenses.xml"/>
+	<include file="alfresco-readme.xml"/>
+	<include file="base-licenses.xml"/>
 
 
 	<include file="alfresco-postgres-question.xml" />

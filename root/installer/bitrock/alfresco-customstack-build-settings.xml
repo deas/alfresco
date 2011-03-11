@@ -15,7 +15,7 @@
         <setInstallerVariable name="alfresco_war_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/web-server/webapps" />
         <setInstallerVariable name="alfresco_extras_source_directory" value="${alfresco_svn_rootdir.unix}/projects/installer" />
         <setInstallerVariable name="alfresco_licenses_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/licenses" />
-        <setInstallerVariable name="project.readmeFile" value="${alfresco_svn_rootdir.unix}/installer/bitrock/README.txt" />
+        <setInstallerVariable name="project.readmeFile" value="README.txt" />
         <setInstallerVariable name="alfresco_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock" />
 
         <setInstallerVariable name="alfrescowcm_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble" />

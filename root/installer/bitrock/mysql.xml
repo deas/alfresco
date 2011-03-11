@@ -78,9 +78,51 @@ System variables provided by this component:
             </ruleList>
         </getFreePort>
     </preInstallationActionList>
+    <installationAbortedActionList>
+<!-- WINDOWS -->
+<actionGroup>
+            <actionList>
+                <runProgram>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <program>sc</program>
+                    <programArguments>stop ${mysql_unique_service_name}</programArguments>
+                </runProgram>
+                <runProgram>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <program>sc</program>
+                    <programArguments>delete ${mysql_unique_service_name}</programArguments>
+                </runProgram>
+                <deleteFile path="${installdir}/mysql/data" />
+                <deleteFile path="${installdir}/mysql" />
+            </actionList>
+            <ruleList>
+                <compareText text="${mysql_execute_abort_action_list}" value="1" logic="equals"/>
+                <platformTest type="windows"/>
+            </ruleList>
+        </actionGroup>
+
+<!-- LINUX -->
+<actionGroup>
+            <actionList>
+                <deleteFile path="${mysql_server_directory}">
+                    <ruleList>
+                        <compareText text="${mysql_installation_type}" logic="equals" value="bundled"/>
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText text="${mysql_execute_abort_action_list}" value="1" logic="equals"/>
+                <platformTest type="linux"/>
+            </ruleList>
+        </actionGroup>
+    </installationAbortedActionList>
+
     <parameterList>
 
         <booleanParameter name="mysql_abort_installation_on_initialization_error" value="0" ask="0" />
+        <booleanParameter name="mysql_execute_abort_action_list" value="0" ask="0" />
 
 
         <stringParameter>
@@ -543,6 +585,7 @@ System variables provided by this component:
         </parameterGroup>
     </parameterList>
     <readyToInstallActionList>
+        <setInstallerVariable name="mysql_execute_abort_action_list" value="1" />
         <throwError>
             <text>Please use alphanumeric characters only</text>
             <ruleList>

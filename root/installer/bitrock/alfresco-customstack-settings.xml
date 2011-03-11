@@ -8,30 +8,34 @@
         <setInstallerVariable name="component(mysql).show" value="1" />
         <setInstallerVariable name="component(mysql).selected" value="1" />
         <setInstallerVariable name="component(mysql).canBeEdited" value="0" />
-	<setInstallerVariable name="component(mysql).parameter(mysql_information).parameter(mysql_port).description" value="${tr('MySQL Server Port:')}" />
-	<setInstallerVariable name="component(mysql).parameter(mysql_credentials).parameter(mysql_root_password).description" value="${tr('MySQL Server Root Password:')}" />
-	<setInstallerVariable name="component(mysql).parameter(mysql_credentials).parameter(mysql_root_password).explanation" value="${tr('Please enter your database password.')}" />
-	<setInstallerVariable name="component(mysql).parameter(mysql_credentials).parameter(mysql_root_password).descriptionRetype" value="${tr('Verify password:')}" />
-	<setInstallerVariable name="component(mysql).parameter(mysql_data).parameter(mysql_database_password).descriptionRetype" value="${tr('Verify password:')}" />
+	<setInstallerVariable name="component(mysql).parameter(mysql_information).parameter(mysql_port).description" value="MySQL Server Port:" />
+        <setInstallerVariable name="component(alfrescomysqlquestion).parameter(alfrescomysqlquestion_bundled).cliOptionShow" value="1"/>
+        <setInstallerVariable name="component(alfrescomysqlquestion).parameter(alfrescomysqlquestion_bundled).cliOptionName" value="alfresco_installation_type_bundled"/>
+        <setInstallerVariable name="component(alfrescomysqlquestion).parameter(alfrescomysqlquestion_bundled).description" value="Use a bundled or existing database"/>
+        <setInstallerVariable name="component(alfrescomysqlquestion).parameter(alfrescomysqlquestion_bundled).default" value="1"/>
+	<setInstallerVariable name="component(mysql).parameter(mysql_credentials).parameter(mysql_root_password).description" value="MySQL Server Root Password:" />
+	<setInstallerVariable name="component(mysql).parameter(mysql_credentials).parameter(mysql_root_password).explanation" value="Please enter your database password." />
+	<setInstallerVariable name="component(mysql).parameter(mysql_credentials).parameter(mysql_root_password).descriptionRetype" value="Verify password:" />
+	<setInstallerVariable name="component(mysql).parameter(mysql_data).parameter(mysql_database_password).descriptionRetype" value="Verify password:" />
 
         <setInstallerVariable name="component(java).show" value="1" />
         <setInstallerVariable name="component(java).selected" value="1" />
         <setInstallerVariable name="component(java).canBeEdited" value="0" />
-	<setInstallerVariable name="component(java).detailedDescription" value="${tr('Java Component required to run the Alfresco server.')}" />
-        <setInstallerVariable name="component(java).parameter(java_home_directory).description" value="${tr('JDK Installation Directory:')}" />
+	<setInstallerVariable name="component(java).detailedDescription" value="Java Component required to run the Alfresco server." />
+        <setInstallerVariable name="component(java).parameter(java_home_directory).description" value="JDK Installation Directory:" />
 
-        <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_directory).description" value="${tr('OpenOffice Installation Directory')}" />
+        <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_directory).description" value="OpenOffice Installation Directory" />
         <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_port).description" value="OpenOffice Server Port:" />
         <!--setInstallerVariable name="component(openofficecomponent).parameter(openoffice_xvfb_directory).description" value="Xvfb Installation Directory" /-->
 
-        <setInstallerVariable name="component(swftools).parameter(swftools_root_directory).description" value="${tr('SWFTOOLS Installation Directory')}" />
+        <setInstallerVariable name="component(swftools).parameter(swftools_root_directory).description" value="SWFTOOLS Installation Directory" />
         <setInstallerVariable name="component(tomcat).parameter(tomcat_dirname).value" value="tomcat" />
-        <setInstallerVariable name="component(tomcat).parameter(tomcat_server_directory).description" value="${tr('Tomcat Directory:')}" />
-        <setInstallerVariable name="component(tomcat).parameter(tomcat_ports).parameter(tomcat_server_domain).description" value="${tr('Web Server Domain:')}" />
+        <setInstallerVariable name="component(tomcat).parameter(tomcat_server_directory).description" value="Tomcat Directory:" />
+        <setInstallerVariable name="component(tomcat).parameter(tomcat_ports).parameter(tomcat_server_domain).description" value="Web Server Domain:" />
         <setInstallerVariable name="component(tomcat).parameter(tomcat_ports).parameter(tomcat_server_ssl_port).description" value="Tomcat SSL Port:" />
         
         <setInstallerVariable name="component(baseparamdir).parameter(installdir).title" value="Installation Folder" />
-        <setInstallerVariable name="component(baseparamdir).parameter(installdir).explanation" value="${'${tr('Please choose a folder to install ${product_fullname}')}'}" />
+        <setInstallerVariable name="component(baseparamdir).parameter(installdir).explanation" value="Please choose a folder to install ${product_fullname}." />
         <setInstallerVariable name="component(readme).parameter(base_readme_installation_directory).description" value="README Destination" />
         <setInstallerVariable name="component(common).parameter(common_root_directory).description" value="Common Installation Directory" />
         <setInstallerVariable name="component(imagemagick).parameter(imagemagick_root_directory).description" value="ImageMagick Installation Directory" />

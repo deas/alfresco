@@ -10992,8 +10992,7 @@
                            <ruleList>
                               <fileTest path="${installdir}/postgresql/bin/pg_dumpall" condition="exists" />
                            </ruleList>
-                        </changePermissions>                        
-                        <dos2unix files="${installdir}/postgresql/share/postgres.bki" abortOnError="0" showMessageOnError="0" />
+                        </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/postgresql/bin/psql.bin" >
                            <ruleList>
                               <fileTest path="${installdir}/postgresql/bin/psql.bin" condition="exists" />

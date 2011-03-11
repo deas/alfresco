@@ -12,7 +12,7 @@
         <setInstallerVariable name="alfresco_war_source_directory" value="${build_project_directory}/alfresco" />
         <setInstallerVariable name="alfresco_extras_source_directory" value="${build_project_directory}/alfresco" />
         <setInstallerVariable name="alfresco_licenses_directory" value="${build_project_directory}/alfresco/licenses" />
-        <setInstallerVariable name="project.readmeFile" value="${build_project_directory}/README.txt" />
+        <setInstallerVariable name="project.readmeFile" value="README.txt" />
         <setInstallerVariable name="alfresco_on_install_settings_directory" value="${build_project_directory}/bitrock" />
         <setInstallerVariable name="alfresco_commands_source_directory" value="${build_project_directory}/alfresco/bin" />
 

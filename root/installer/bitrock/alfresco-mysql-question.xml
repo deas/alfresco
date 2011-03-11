@@ -48,7 +48,7 @@
 		<stringParameter>
 		    <name>jdbc_url</name>
 		    <description>JDBC URL:</description>
-		    <default>jdbc:mysql://localhost/alfresco</default>
+		    <default>jdbc:mysql://localhost/alfresco?useUnicode=yes&amp;characterEncoding=UTF-8</default>
 		</stringParameter>
 		<stringParameter>
 		    <name>jdbc_driver</name>
@@ -77,6 +77,21 @@
 	    </ruleList>
 	</parameterGroup>
     </parameterList>
+
+    <preInstallationActionList>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="component(mysql).selected" value="0" />
+                <setInstallerVariable name="component(mysqlservice).selected" value="0" />
+                <setInstallerVariable name="component(alfrescomysqldbcreation).selected" value="0" />
+            </actionList>
+            <ruleList>
+                <isFalse value="${alfrescomysqlquestion_bundled}" />
+		<compareText text="${installer_ui}" logic="equals" value="unattended"/>
+            </ruleList>
+        </actionGroup>
+    </preInstallationActionList>
+
     <readyToInstallActionList>
         <actionGroup>
             <actionList>
