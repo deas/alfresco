@@ -6,6 +6,7 @@
       <#if repositoryUrl??>repositoryUrl: "${repositoryUrl}",</#if>
       siteId: "${page.url.templateArgs.site!""}",
       containerId: "${template.properties.container!"documentLibrary"}",
+      rootNode: "${rootNode}",
       usePagination: ${(args.pagination!false)?string},
       showFolders: ${(preferences.showFolders!false)?string},
       simpleView: ${(preferences.simpleView!false)?string},
