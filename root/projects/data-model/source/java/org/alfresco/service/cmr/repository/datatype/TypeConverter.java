@@ -48,13 +48,12 @@ public class TypeConverter
      * @param value - the value to be converted
      * @return - the converted value as the correct type
      */
-    @SuppressWarnings("unchecked")
     public final Object convert(DataTypeDefinition propertyType, Object value)
     {
         ParameterCheck.mandatory("Property type definition", propertyType);
         
         // Convert property type to java class
-        Class javaClass = null;
+        Class<?> javaClass = null;
         String javaClassName = propertyType.getJavaClassName();
         try
         {
@@ -79,7 +78,6 @@ public class TypeConverter
      * @return - the converted value as the correct type
      * @throws TypeConversionException if the conversion cannot be performed
      */
-    @SuppressWarnings("unchecked")
     public final <T> T convert(Class<T> c, Object value)
     {
         if(value == null)
@@ -101,7 +99,7 @@ public class TypeConverter
         }
 
         // Find the correct conversion - if available and do the converiosn
-        Converter converter = getConverter(value, c);
+        Converter<Object, T> converter = getConverter(value, c);
         if (converter == null)
         {
             throw new TypeConversionException(
@@ -111,7 +109,7 @@ public class TypeConverter
                     "   value: " + value.toString());
         }
         
-        return (T) converter.convert(value);
+        return converter.convert(value);
     }
 
     /**
@@ -124,14 +122,13 @@ public class TypeConverter
      * @throws DictionaryException if the property type's registered java class is invalid
      * @throws TypeConversionException if the conversion cannot be performed
      */
-    @SuppressWarnings("unchecked")
-    public final Collection convert(DataTypeDefinition propertyType, Object[] values)
+    public final Collection<?> convert(DataTypeDefinition propertyType, Object[] values)
     {
        if(values == null) {
-          return convert(propertyType, (Collection)null);
+          return convert(propertyType, (Collection<?>)null);
        } else {
           // Turn the array into a Collection, then convert as that
-          ArrayList c = new ArrayList();
+          ArrayList<Object> c = new ArrayList<Object>();
           c.ensureCapacity(values.length);
           for(Object v : values) {
              c.add(v);
@@ -151,13 +148,12 @@ public class TypeConverter
      * @throws DictionaryException if the property type's registered java class is invalid
      * @throws TypeConversionException if the conversion cannot be performed
      */
-    @SuppressWarnings("unchecked")
-    public final Collection convert(DataTypeDefinition propertyType, Collection values)
+    public final Collection<?> convert(DataTypeDefinition propertyType, Collection<?> values)
     {
         ParameterCheck.mandatory("Property type definition", propertyType);
         
         // Convert property type to java class
-        Class javaClass = null;
+        Class<?> javaClass = null;
         String javaClassName = propertyType.getJavaClassName();
         try
         {
@@ -181,7 +177,7 @@ public class TypeConverter
      * @return - the converted collection
      * @throws TypeConversionException if the conversion cannot be performed
      */
-    public final <T> Collection<T> convert(Class<T> c, Collection values)
+    public final <T> Collection<T> convert(Class<T> c, Collection<?> values)
     {
         if(values == null)
         {
@@ -338,7 +334,7 @@ public class TypeConverter
     {
         if (value instanceof Collection)
         {
-            return ((Collection) value).size();
+            return ((Collection<?>) value).size();
         }
         else
         {
@@ -352,12 +348,12 @@ public class TypeConverter
      * @param value
      * @return
      */
-    private final Collection createCollection(Object value)
+    private final Collection<?> createCollection(Object value)
     {
-        Collection coll;
+        Collection<?> coll;
         if (isMultiValued(value))
         {
-            coll = (Collection) value;
+            coll = (Collection<?>) value;
         }
         else
         {
@@ -377,7 +373,7 @@ public class TypeConverter
      */
     public final <T> Collection<T> getCollection(Class<T> c, Object value)
     {
-        Collection coll = createCollection(value);
+        Collection<?> coll = createCollection(value);
         return convert(c, coll);
     }
         
@@ -392,10 +388,10 @@ public class TypeConverter
      */
     public final <F, T> void addConverter(Class<F> source, Class<T> destination, Converter<F, T> converter)
     {
-        Map<Class, Converter> map = conversions.get(source);
+        Map<Class<?>, Converter<?,?>> map = conversions.get(source);
         if (map == null)
         {
-            map = new HashMap<Class, Converter>();
+            map = new HashMap<Class<?>, Converter<?, ?>>();
             conversions.put(source, map);
         }
         map.put(destination, converter);
@@ -430,17 +426,17 @@ public class TypeConverter
      * @return
      */
     @SuppressWarnings("unchecked")
-    public final <T> Converter getConverter(Object value, Class<T> dest)
+    public final <T> Converter<Object, T> getConverter(Object value, Class<T> dest)
     {
-        Converter converter = null;    
+        Converter<Object, T> converter = null;    
         if (value == null)
         {
             return null;
         }
 
         // find via class of value
-        Class valueClass = value.getClass();
-        converter = getConverter(valueClass, dest);
+        Class<?> valueClass = value.getClass();
+        converter = (Converter<Object, T>) getConverter(valueClass, dest);
         if (converter != null)
         {
             return converter;
@@ -449,10 +445,10 @@ public class TypeConverter
         // find via supported interfaces of value
         do
         {
-            Class[] ifClasses = valueClass.getInterfaces();
-            for (Class ifClass : ifClasses)
+            Class<?>[] ifClasses = valueClass.getInterfaces();
+            for (Class<?> ifClass : ifClasses)
             {
-                converter = getConverter(ifClass, dest);
+                converter = (Converter<Object, T>) getConverter(ifClass, dest);
                 if (converter != null)
                 {
                     return converter;
@@ -474,30 +470,31 @@ public class TypeConverter
      * @param dest
      * @return
      */
-    public <F, T> Converter getConverter(Class<F> source, Class<T> dest)
+    @SuppressWarnings("unchecked")
+    public <F, T> Converter<F, T> getConverter(Class<F> source, Class<T> dest)
     {
-        Converter<?, ?> converter = null;
-        Class clazz = source;
+        Converter<F, T> converter = null;
+        Class<?> clazz = source;
         do
         {
-            Map<Class, Converter> map = conversions.get(clazz);
+            Map<Class<?>, Converter<?, ?>> map = conversions.get(clazz);
             if (map == null)
             {
                 continue;
             }
-            converter = map.get(dest);
+            converter = (Converter<F, T>) map.get(dest);
             
             if (converter == null)
             {
                 // attempt to establish converter from source to dest via Number
-                Converter<?, ?> first = map.get(Number.class);
-                Converter<?, ?> second = null;
+                Converter<F, Number> first = (Converter<F, Number>) map.get(Number.class);
+                Converter<Number, T> second = null;
                 if (first != null)
                 {
                     map = conversions.get(Number.class);
                     if (map != null)
                     {
-                        second = map.get(dest);
+                        second = (Converter<Number, T>) map.get(dest);
                     }
                 }
                 if (second != null)
@@ -514,7 +511,7 @@ public class TypeConverter
     /**
      * Map of conversion
      */
-    private Map<Class, Map<Class, Converter>> conversions = new HashMap<Class, Map<Class, Converter>>();
+    private Map<Class<?>, Map<Class<?>, Converter<?, ?>>> conversions = new HashMap<Class<?>, Map<Class<?>, Converter<?, ?>>>();
 
 
     // Support for pluggable conversions
@@ -543,20 +540,19 @@ public class TypeConverter
      */
     public static class TwoStageConverter<F, I, T> implements Converter<F, T>
     {
-        Converter first;
+        Converter<F, I> first;
 
-        Converter second;
+        Converter<I, T> second;
 
-        TwoStageConverter(Converter first, Converter second)
+        TwoStageConverter(Converter<F, I> first, Converter<I, T> second)
         {
             this.first = first;
             this.second = second;
         }
 
-        @SuppressWarnings("unchecked")
         public T convert(F source)
         {
-            return (T) second.convert((I) first.convert(source));
+            return second.convert(first.convert(source));
         }
     }
     
@@ -606,19 +602,17 @@ public class TypeConverter
             return to;
         }
         
-        @SuppressWarnings("unchecked")
         public T convert(F source)
         {
-            Converter iConverter = TypeConverter.this.getConverter(from, intermediate);
-            Converter tConverter = TypeConverter.this.getConverter(intermediate, to);
+            Converter<F, I> iConverter = TypeConverter.this.getConverter(from, intermediate);
+            Converter<I, T> tConverter = TypeConverter.this.getConverter(intermediate, to);
             if (iConverter == null || tConverter == null)
             {
                 throw new TypeConversionException("Cannot convert from " + from.getName() + " to " + to.getName());
             }
             
-            Object iValue = iConverter.convert(source);
-            Object tValue = tConverter.convert(iValue);
-            return (T)tValue;
+            I iValue = iConverter.convert(source);
+            return tConverter.convert(iValue);
         }
     }
     
