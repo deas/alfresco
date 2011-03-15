@@ -89,6 +89,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
             <default/>
             <value>${installdir}/postgresql</value>
         </directoryParameter>
+        <directoryParameter name="postgres_data_directory" value="${postgres_root_directory}/data" ask="0" />
         <booleanParameter>
             <name>postgres_check_version</name>
             <default>no</default>
@@ -458,7 +459,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 		</postgresCreateSymLinksLinuxx64BuildingFromWindows>
                 <actionGroup>
                     <actionList>
-                    <setEnvironmentVariable name="PGDATA" value="${postgres_root_directory}/data"/>
+                    <setEnvironmentVariable name="PGDATA" value="${postgres_data_directory}"/>
 <!-- Not listed */bin/postgres  */bin/postmaster-->
 
 <!-- We add environment variables to setenv.sh to make easier to start the server and to user client tools avoiding long command line options. Anyway, user can overwrite these values with command line options. -->
@@ -483,7 +484,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                                 </substitution>
                                 <substitution>
                                     <pattern>@@BITROCK_POSTGRESQL_DATADIR@@</pattern>
-                                    <value>${postgres_root_directory}/data</value>
+                                    <value>${postgres_data_directory}</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@BITROCK_POSTGRESQL_LOGFILE@@</pattern>
@@ -520,7 +521,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                                 </substitution>
                                 <substitution>
                                     <pattern>@@BITROCK_POSTGRESQL_DATADIR@@</pattern>
-                                    <value>${postgres_root_directory}/data</value>
+                                    <value>${postgres_data_directory}</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@BITROCK_POSTGRESQL_LOGFILE@@</pattern>
@@ -654,8 +655,9 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 			      <userTest username="postgres" logic="not_exists" />
 			  </ruleList>
 		      </actionGroup>
+                        <createDirectory path="${postgres_data_directory}" />
                         <changeOwnerAndGroup>
-                            <files>${postgres_root_directory};${postgres_root_directory}/*;${postgres_root_directory}/*/*</files>
+                            <files>${postgres_root_directory};${postgres_root_directory}/*;${postgres_root_directory}/*/*;${postgres_data_directory};${postgres_data_directory}/*;${postgres_root_directory}/*/*</files>
                             <owner>postgres</owner>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -705,7 +707,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                                 </throwError>
 
                                 <substitute>
-                                    <files>${postgres_root_directory}/data/postgresql.conf</files>
+                                    <files>${postgres_data_directory}/postgresql.conf</files>
                                     <substitutionList>
 <!-- listen_addresses and the related entry in pg_hba.conf allow use the database in a network. By default this will not 
                             be performed as by default parameter(postgres_hostname).ask is set to 0 -->
@@ -736,14 +738,14 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                                     </substitutionList>
                                 </substitute>
                                 <addTextToFile>
-                                    <file>${postgres_root_directory}/data/pg_hba.conf</file>
+                                    <file>${postgres_data_directory}/pg_hba.conf</file>
                                     <text>host all all ${postgres_hostname} 255.255.255.255 trust</text>
                                     <ruleList>
                                         <compareText logic="does_not_equal" text="${postgres_hostname}" value="localhost"/>
                                     </ruleList>
                                 </addTextToFile>
                                 <addTextToFile>
-                                    <file>${postgres_root_directory}/data/postgresql.conf</file>
+                                    <file>${postgres_data_directory}/postgresql.conf</file>
                                     <text>                    #---------------------------------------------------------------------------
                     #Other configuration parameters are set on ${postgres_root_directory}/bin/setenv.sh</text>
                 #---------------------------------------------------------------------------
@@ -808,7 +810,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                                     </ruleList>
                                 </runProgram>
                                 <substitute>
-                                    <files>${postgres_root_directory}/data/pg_hba.conf</files>
+                                    <files>${postgres_data_directory}/pg_hba.conf</files>
                                     <substitutionList>
                                         <substitution>
                                             <pattern>trust$</pattern>
@@ -838,17 +840,17 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 			  <programArguments>/C net accounts /domain</programArguments>
 		      </runProgram>
 		      <logMessage text="net accounts /domain: ${program_stdout} ${program_stderr}" />
-		      <logMessage text="Creating ${postgres_root_directory}/data" />
-		      <createDirectory path="${postgres_root_directory}/data" />
-		      <logMessage text="${postgres_root_directory}/data OK" >
+		      <logMessage text="Creating ${postgres_data_directory}" />
+		      <createDirectory path="${postgres_data_directory}" />
+		      <logMessage text="${postgres_data_directory} OK" >
 			  <ruleList>
-			      <fileTest path="${postgres_root_directory}/data" condition="exists" />
+			      <fileTest path="${postgres_data_directory}" condition="exists" />
 			  </ruleList>
 		      </logMessage>
 		      <logMessage text="Before running cacls" />
 		      <getWindowsACL>
 			  <username>${env(USERNAME)}</username>
-			  <file>${postgres_root_directory}/data</file>
+			  <file>${postgres_data_directory}</file>
 			  <grantedPermissions>postgres_grantedPermissions</grantedPermissions>
 			  <deniedPermissions>postgres_deniedPermissions</deniedPermissions>
 		      </getWindowsACL>
@@ -857,15 +859,15 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 		      <logMessage text="Running cacls" />
 		      <runProgram abortOnError="0" showMessageOnError="0" >
 			  <program>cacls</program>
-			  <programArguments>"${postgres_root_directory}/data" /e /c /t /p ${env(USERNAME)}:c</programArguments>
-			  <workingDirectory>${postgres_root_directory}/data</workingDirectory>
+			  <programArguments>"${postgres_data_directory}" /e /c /t /p ${env(USERNAME)}:c</programArguments>
+			  <workingDirectory>${postgres_data_directory}</workingDirectory>
 		      </runProgram>
 		      <logMessage>
-			  <text>cacls "${postgres_root_directory}/data" /e /c /t /p ${env(USERNAME)}:c"</text>
+			  <text>cacls "${postgres_data_directory}" /e /c /t /p ${env(USERNAME)}:c"</text>
 		      </logMessage>
 		      <getWindowsACL>
 			  <username>${env(USERNAME)}</username>
-			  <file>${postgres_root_directory}/data</file>
+			  <file>${postgres_data_directory}</file>
 			  <grantedPermissions>postgres_grantedPermissions</grantedPermissions>
 			  <deniedPermissions>postgres_deniedPermissions</deniedPermissions>
 		      </getWindowsACL>
@@ -873,7 +875,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 		      <logMessage text="postgres_deniedPermissions = ${postgres_deniedPermissions}" />
 		      <logMessage text="Running setWindowsACL" />
 		      <setWindowsACL>
-			  <files>${postgres_root_directory}/data</files>
+			  <files>${postgres_data_directory}</files>
 			  <users>${env(USERNAME)}</users>
 			  <recurseObjects>1</recurseObjects>
 			  <recurseContainers>1</recurseContainers>
@@ -898,7 +900,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
 			      <!-- add -d to debug this action -->
                               <runProgram>
                                   <program>initdb.exe</program>
-                                  <programArguments>-U postgres -E UTF8 -D "../data"</programArguments>
+                                  <programArguments>-U postgres -E UTF8 -D ${postgres_data_directory.dos.unix}</programArguments>
                                   <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
                               </runProgram>
                           </actionList>
@@ -907,11 +909,11 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
 		      <logMessage text="${program_stderr}" />
 		      <logMessage text="Database initialized OK" >
 			  <ruleList>
-			      <fileExists path="${postgres_root_directory}/data/base" />
+			      <fileExists path="${postgres_data_directory}/base" />
 			  </ruleList>
 		      </logMessage>
 		      <substitute>
-			  <files>${postgres_root_directory}/data/postgresql.conf</files>
+			  <files>${postgres_data_directory}/postgresql.conf</files>
 			  <substitutionList>
 <!-- listen_addresses and the related entry in pg_hba.conf allow use the database in a network. By default this will not 
                             be performed as by default parameter(postgres_hostname).ask is set to 0 -->
@@ -946,7 +948,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
                           </substitutionList>
                       </substitute>
                       <addTextToFile>
-                          <file>${postgres_root_directory}/data/pg_hba.conf</file>
+                          <file>${postgres_data_directory}/pg_hba.conf</file>
                           <text>host all all ${postgres_hostname} 255.255.255.255 trust</text>
                           <ruleList>
                               <compareText logic="does_not_equal" text="${postgres_hostname}" value="localhost"/>
@@ -976,7 +978,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
                                       <writeFile>
                                           <path>${postgres_root_directory}/bin/registerservice.bat</path>
                                           <text>@echo off
-start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_root_directory.dos.unix}/data"</text>
+start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix}"</text>
                                       </writeFile>
                                       <runProgram>
                                           <program>${postgres_root_directory}/bin/registerservice.bat</program>
@@ -1003,7 +1005,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
                          
                       <runProgram>
                           <program>pg_ctl.exe</program>
-                          <programArguments>-U postgres -w start -D ../data</programArguments>
+                          <programArguments>-U postgres -w start -D ${postgres_data_directory.dos.unix}</programArguments>
                           <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
                           <ruleList>
                               <compareText logic="equals" text="${installer_root_install}" value="0"/>
@@ -1046,7 +1048,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
                       </runProgram>
                         
                       <substitute>
-                          <files>${postgres_root_directory}/data/pg_hba.conf</files>
+                          <files>${postgres_data_directory}/pg_hba.conf</files>
                           <substitutionList>
                               <substitution>
                                   <pattern>trust$</pattern>
@@ -1074,7 +1076,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
   <preUninstallationActionList>
       <actionGroup>
           <actionList>
-              <deleteFile path="${installdir}/postgresql/data" />
+              <deleteFile path="${postgres_data_directory}" />
               <deleteFile path="${installdir}/postgresql/postgresql.log" />
           </actionList>
           <ruleList>

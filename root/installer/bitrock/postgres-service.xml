@@ -28,7 +28,7 @@
                         <writeFile>
                             <path>${postgres_root_directory}/bin/registerservice.bat</path>
                             <text>@echo off
-start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_root_directory.dos.unix}/data"</text>
+start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix}"</text>
                         </writeFile>
                         <runProgram>
                             <progressText>Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}</progressText>
@@ -62,8 +62,8 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
                                 <value>${postgres_unique_service_name}</value>
                             </substitution>
                             <substitution>
-                                <pattern>@@BITROCK_POSTGRESQL_DATA@@</pattern>
-                                <value>${postgres_root_directory.dos.unix}/data</value>
+                                <pattern>@@BITROCK_POSTGRESQL_DATADIR@@</pattern>
+                                <value>${postgres_data_directory.dos.unix}</value>
                             </substitution>
                             <substitution>
                                 <pattern>@@BITROCK_POSTGRESQL_ROOTDIR@@</pattern>

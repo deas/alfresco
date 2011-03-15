@@ -443,6 +443,12 @@
 	    </ruleList>
 	</choiceParameter>
     </parameterList>
+    
+    <readyToInstallActionList>
+        <!-- <setInstallerVariable name="postgres_data_directory" value="${alfresco_data_directory}/postgresql" /> -->
+        <setInstallerVariable name="postgres_data_directory" value="${postgres_root_directory}/data" />
+    </readyToInstallActionList>
+
     <postInstallationActionList>
         <alfrescoConfigure alfrescoFiles="${tomcat_server_directory}/bin/service.bat;${tomcat_server_directory}/scripts/ctl.sh" />
     </postInstallationActionList>
