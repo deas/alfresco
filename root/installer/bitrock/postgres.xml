@@ -897,6 +897,16 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
                                   <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
                               </runProgram>
                               <deleteFile path="${postgres_root_directory}/bin/runinitdb.bat" /-->
+			      <!-- Install vcruntime on Windows x64 -->
+			      <runProgram>
+				  <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
+				  <program>vcredist_x64.exe</program>
+				  <programArguments>/q</programArguments>
+				  <abortOnError>0</abortOnError>
+				  <ruleList>
+				      <platformTest type="windows-x64" />
+				  </ruleList>
+			      </runProgram>
 			      <!-- add -d to debug this action -->
                               <runProgram>
                                   <program>initdb.exe</program>
