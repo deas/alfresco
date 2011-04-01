@@ -74,6 +74,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
     </initializationActionList>
     <parameterList>
 <!-- hidden parameter -->
+        <booleanParameter name="postgres_execute_abort_action_list" value="0" ask="0" />
 <stringParameter>
             <name>postgres_installation_type_options</name>
             <ask>0</ask>
@@ -427,7 +428,54 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
         <setInstallerVariable name="ENV_VAR">
             <value>${POSTGRES_ENV_VAR}${ENV_VAR}</value>
         </setInstallerVariable>
+   
+        <setInstallerVariable name="postgres_execute_abort_action_list" value="1" />
     </readyToInstallActionList>
+
+    <installationAbortedActionList>
+        <!-- WINDOWS -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <program>sc</program>
+                    <programArguments>stop ${postgres_unique_service_name}</programArguments>
+                </runProgram>
+                <runProgram>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <program>sc</program>
+                    <programArguments>delete ${postgres_unique_service_name}</programArguments>
+                </runProgram>
+                <deleteFile path="${postgres_data_directory}" />
+                <deleteFile path="${postgres_root_directory}" />
+            </actionList>
+            <ruleList>
+                <compareText text="${postgres_installation_type}" logic="equals" value="bundled"/>
+                <compareText text="${postgres_execute_abort_action_list}" value="1" logic="equals"/>
+                <platformTest type="windows"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- LINUX -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${postgres_root_directory}">
+                    <ruleList>
+                        <compareText text="${postgres_installation_type}" logic="equals" value="bundled"/>
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText text="${postgres_execute_abort_action_list}" value="1" logic="equals"/>
+                <platformTest type="linux"/>
+            </ruleList>
+        </actionGroup>
+    </installationAbortedActionList>
+
+
+
     <folderList>
 <!-- Bundled PostgresSQL Subcomponent -->
 <folder>
