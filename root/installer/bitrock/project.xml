@@ -327,5 +327,13 @@
                 <fileTest path="${installdir}" condition="is_empty"/>
             </ruleList>
         </deleteFile>
+        <deleteFile path="/etc/init.d/${component(baseunixservice).parameter(baseunixservice_script_name).value}">
+            <ruleList>
+			    <compareText text="${installer_root_install}" logic="equals" value="1"/>
+                <compareText text="${component(baseunixservice).parameter(baseunixservice_install_as_service).value}" logic="equals" value="1"/>
+                <platformTest type="unix"/>
+		        <fileTest condition="exists" path="/etc/init.d/${component(baseunixservice).parameter(baseunixservice_script_name).value}"/>
+			</ruleList>        
+	    </deleteFile>
     </postUninstallationActionList>
 </project>

@@ -36,10 +36,10 @@
     <folderList>
         <folder>
             <name>swftoolsWindows</name>
-            <destination>${installdir}</destination>
+            <destination>${installdir}/swftools</destination>
             <platforms>windows</platforms>
             <distributionFileList>
-                <distributionDirectory origin="${swftools_distribution_folder}"/>
+                <distributionDirectory allowWildcards="1" origin="${swftools_distribution_folder}/*"/>
             </distributionFileList>
         </folder>
         <folder>
