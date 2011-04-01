@@ -740,12 +740,6 @@
         <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}" />
     </target>
     
-    <target name="linux-32-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} project.xml linux ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux}" binaries_folder="${installer.build.binaries.lin32}"'/>
-        </exec>
-    </target>
-    
     <target name="linux-64-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="false">
             <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
@@ -779,10 +773,6 @@
             depends="continuous-init, set-build-number, set-bitrock-builder">    
         <antcall target="osx-deployment-installer"/>
     </target>
-    <target name="build-linux-32-bit-installer"
-            depends="continuous-init, set-build-number, set-bitrock-builder">    
-        <antcall target="linux-32-bit-installer"/>
-    </target>
     <target name="build-linux-64-bit-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder">   
         <antcall target="linux-64-bit-installer"/>            
@@ -801,7 +791,6 @@
             <antcall target="windows-deployment-installer"/>
             <antcall target="osx-installer"/>
             <antcall target="osx-deployment-installer"/>
-            <antcall target="linux-32-bit-installer"/>
             <antcall target="linux-64-bit-installer"/>
             <antcall target="linux-deployment-installer"/>
         </parallel>
