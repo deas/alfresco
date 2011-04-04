@@ -1,695 +1,662 @@
-msgid "The integrated Alfresco FTP server was unable to bind to the default port. Please check if you have enough permissions, or choose an alternative port number."
-msgstr "El servidor FTP integrado de Alfresco no pudo conectarse con el puerto por defecto. Por favor, compruebe si tiene suficientes permisos, o elija un número de puerto alternativo."
+msgid "${product_fullname} OpenOffice Service"
+msgstr "${product_fullname} Servicio OpenOffice"
 
-msgid "Records Management support. This is a separately licensed component and should only be installed if licensed."
-msgstr "Incluir soporte para Records Management. Este es un componente con una licencia aparte y sólo debe utilizarse bajo licencia."
+msgid "${product_fullname} Service"
+msgstr "${product_fullname} Servicio"
 
-msgid "Re-enter"
-msgstr "Vuelva a introducir"
+msgid "${product_fullname} Virtual Server"
+msgstr "${product_fullname} Servicio virtual"
 
-msgid "MySQL Information"
-msgstr "Información de MySQL"
-
-msgid "OpenOffice Installation Directory"
-msgstr "Directorio de instalación de OpenOffice "
+msgid "Admin Password"
+msgstr "Contraseña de admin"
 
 msgid "Admin Password:"
-msgstr "Contraseña de Admin"
+msgstr "Contraseña de admin:"
 
-msgid "Database Installation"
-msgstr "Instalación de la base de datos"
-
-msgid "Advanced - Configures server ports and service properties"
-msgstr "Avanzado - Configura los puertos del servidor y las propiedades del servicio"
-
-msgid "Couldn't check Tomcat Version.\nTomcat 5.5 is recommended."
-msgstr "No se ha podido comprobar la versión de Tomcat.\ nTomcat 5.5 es la recomendada."
-
-msgid "Program Files Linux"
-msgstr "Archivos de programa Linux"
-
-msgid "Tomcat 5.5 Component"
-msgstr "Componente Tomcat 5.5"
-
-msgid "Uninstall ${product_fullname} service"
-msgstr "Desinstalar el servicio ${product_fullname}"
-
-msgid "MySQL Server root Password"
-msgstr "Contraseña raíz de servidor MySQL"
-
-msgid "Web Server domain:"
-msgstr "Dominio de Servidor Web:"
-
-msgid "Alfresco Enterprise Content Management (ECM) system featuring Document Management, Collaboration Management and Image Management."
-msgstr "Alfresco es un sistema de gestión de contenidos empresariales (ECM) con gestión documental, gestión colaborativa y gestión de imágenes."
-
-msgid "Common Installation Directory"
-msgstr "Directorio de instalación común"
-
-msgid "I wish to use an existing MySQL database"
-msgstr "Quiero utilizar una base de datos MySQL existente"
-
-msgid "Service script name:"
-msgstr "Nombre del script de servicio:"
-
-msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
-msgstr "Este programa de instalación es para Windows 64 bits.  Por favor, baje la versión de 32 bits de Windows."
-
-msgid "Include system path in environment"
-msgstr "Incluir ruta del sistema en el entorno"
-
-msgid "Password:"
-msgstr "Contraseña"
-
-msgid "Verify:"
-msgstr "Vuelva a introducir"
-
-msgid "Please enter your database root username"
-msgstr "Por favor introduzca su nombre de usuario raíz de base de datos"
-
-msgid "You can optionally register ${product_fullname} as a service. This way it will automatically be started every time the machine is started."
-msgstr "Opcionalmente puede registrar  ${product_fullname} como un servicio. De esta manera se iniciará automáticamente cada vez que se ponga en marcha la máquina."
-
-msgid "Alfresco AVM Web Project Management for managing web site content."
-msgstr "Web Content Management de Alfresco para la gestión de contenidos de sitios Web"
-
-msgid "Please select which database configuration you wish to use"
-msgstr "Por favor, seleccione la configuración de base de datos que desea utilizar"
-
-msgid "Please enter the port that the Openoffice server will listen to by default."
-msgstr "Por favor, introduzca el puerto que el servidor de OpenOffice va a escuchar  por defecto"
-
-msgid "MySQL connection timed out. The installation has been stopped."
-msgstr "La conexión MySQL ha expirado. La instalación se ha detenido."
-
-msgid "README Folder Component"
-msgstr "Componente de carpeta README"
-
-msgid "Alfresco uses port 50500 to execute remote commands. It seems this port is being taken by another application. Please choose an alternative port number."
-msgstr "Alfresco utiliza el puerto 50500 para ejecutar comandos remotos. Parece ser que este puerto está siendo utilizado por otra aplicación. Por favor, elija un número de puerto alternativo."
-
-msgid "Launch ${product_fullname} Share"
-msgstr "¿Lanzar ${product_fullname} Share ahora?"
-
-msgid "OpenOffice"
-msgstr "OpenOffice"
-
-msgid "Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}."
-msgstr "La ruta de instalación del directorio es demasiado larga. El número máximo de caracteres permitido es ${base_installdir_max_characters}."
-
-msgid "New Database"
-msgstr "Nueva base de datos"
-
-msgid "Verify password"
-msgstr "Vuelva a introducir la contraseña"
-
-msgid "Unable to get free disk space."
-msgstr "No se puede obtener espacio libre en disco"
-
-msgid "Starting servers. Please be patient"
-msgstr "Iniciando servidores. Por favor, tenga paciencia"
-
-msgid "Due to a lack of system resources (CPU or memory), the installation is unable to the local MySQL server. Would you like to retry to connect to the MySQL server and continue with the installation?"
-msgstr "Debido a una insuficiencia de recursos del sistema (CPU o memoria), la instalación no se puede conectar al servidor MySQL local. ¿Desearía volver a intentar conectarse al servidor MySQL y continuar con la instalación?"
-
-msgid "Starting OpenOffice..."
-msgstr "Iniciando OpenOffice..."
-
-msgid "Stopping MySQL..."
-msgstr "Deteniendo MySQL ..."
-
-msgid "Unable to bind the mysql_port to ${mysql_port}. Please select another one."
-msgstr "No se puede conectar mysql_port a ${mysql_port}. Por favor, seleccione otro."
-
-msgid "Quickr Content Services"
-msgstr "Servicios de contenido Quickr"
-
-msgid "Please enter your database password"
-msgstr "Por favor, introduzca la contraseña de usuario raíz de su base de datos"
-
-msgid "Manual - Configure servers to start services manually"
-msgstr "Manual - Configurar los servidores para que inicien los servicios manualmente durante el arranque"
-
-msgid "MySQL Server Port"
-msgstr "Puerto de servidor MySQL "
-
-msgid "Tomcat AJP Port:"
-msgstr "Puerto AJP de Tomcat:"
-
-msgid "Updating MySQL directory permissions"
-msgstr "Actualizando permisos de directorio MySQL"
-
-msgid "Set Installer Variables Tomcat"
-msgstr "Configurar variables del programa de instalación de Tomcat"
-
-msgid "MySQL Server root password"
-msgstr "Contraseña raíz de servidor MySQL"
-
-msgid "OpenOffice Server Port:"
-msgstr "Puerto de servidor OpenOffice"
-
-msgid "SWFTOOLS Component"
-msgstr "Componente SWFTOOLS"
-
-msgid "Web Server"
-msgstr "Servidor Web"
-
-msgid "Easy - Installs servers with the default configuration"
-msgstr "Fácil - Instala los servidores con la configuración por defecto"
-
-msgid "Select a folder"
-msgstr "Seleccionar una carpeta"
-
-msgid "Tomcat Directory:"
-msgstr "Directorio de Tomcat:"
-
-msgid "IP / Hostname"
-msgstr "IP/nombre de anfitrión"
-
-msgid "README Destination"
-msgstr "Destino de README"
-
-msgid "Quickr Server:"
-msgstr "Servidor Quickr"
-
-msgid "SWFTOOLS installation directory"
-msgstr "Directorio de instalación de SWFTOOLS"
-
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "Esta versión fue integrada para ejecutarse en J2SE 5.0. Por favor, instale una versión compatible de Java y e intente nuevamente."
-
-msgid "Verify"
-msgstr "Vuelva a introducir"
-
-msgid "Alfresco Licenses"
-msgstr "licencias alfresco"
-
-msgid "Quickr and Lotus Notes support for communication with Alfresco."
-msgstr "Permite a Quickr y Lotus Notes comunicarse con Alfresco"
-
-msgid "ImageMagick Installation Directory"
-msgstr "Directorio de instalación de ImageMagick"
-
-msgid "Program Files Windows"
-msgstr "Archivos de programa Windows"
-
-msgid "Database name:"
-msgstr "Nombre de la base de datos:"
-
-msgid "Tomcat SSL Port:"
-msgstr "Puerto SSL de Tomcat"
-
-msgid "JDBC Driver:"
-msgstr "Controlador de JDBC"
-
-msgid "Licenses Files"
-msgstr "Ficheros de licencias"
-
-msgid "Please use ascii alphanumeric characters only"
-msgstr "Por favor, utilice sólo caracteres alfanuméricos ascii"
-
-msgid "I wish to use the bundled MySQL database"
-msgstr "Quiero utilizar la base de datos MySQL incluida"
-
-msgid "Set the database name and user name which will be created or used."
-msgstr "Fijar el nombre de la base de datos y el nombre de usuario a crear o utilizar"
-
-msgid "SharePoint Protocol Support."
-msgstr "Apoyo de protocolo SharePoint"
-
-msgid "Tomcat installation:"
-msgstr "Instalación de Tomcat:"
-
-msgid "OpenOffice installation directory"
-msgstr "Directorio de instalación de OpenOffice "
-
-msgid "Please enter your database root user password."
-msgstr "Por favor, introduzca la contraseña de usuario raíz de su base de datos"
-
-msgid "Please enter a valid IP address or hostname"
-msgstr "Por favor, introduzca una dirección IP o nombre de anfitrión válidos"
-
-msgid "Please enter a valid hostname or IP address"
-msgstr "Por favor, introduzca un nombre de anfitrión o dirección IP válidos"
-
-msgid "MySQL Server port"
-msgstr "Puerto de servidor MySQL "
-
-msgid "Use to configure the destination of the content in commands folder"
-msgstr "Se utiliza para configurar el destino de los contenidos en la carpeta de comandos"
-
-msgid "Common Component"
-msgstr "Componente común"
-
-msgid "MySQL software delivers a very fast, multi-threaded, multi-user, and robust SQL database server."
-msgstr "El software MySQL proporciona un servidor de base de datos SQL muy rápido, multifilar, multiusuario y robusto."
-
-msgid "Tomcat modifications due to java"
-msgstr "Modificaciones de Tomcat debidas a Java"
-
-msgid "New Component"
-msgstr "Nuevo componente"
-
-msgid "Alfresco Community Edition Stack"
-msgstr "Stack de la comunidad Alfresco "
-
-msgid "Tomcat directory:"
-msgstr "Directorio de Tomcat:"
-
-msgid "Common installation directory"
-msgstr "Directorio de instalación común"
-
-msgid "JDBC URL:"
-msgstr "URL de JDBC"
-
-msgid "README destination"
-msgstr "Destino de README"
-
-msgid "Installation folder cannot contain spaces."
-msgstr "La carpeta de instalación no puede contener espacios"
-
-msgid "ImageMagick Version"
-msgstr "Versión de ImageMagick"
-
-msgid "Set Installer Variables Java"
-msgstr "Configurar variables del programa de instalación de Java"
+msgid "Advanced - Configures server ports and service properties. Also choose optional components to install."
+msgstr "Avanzadas: configura las propiedades de servicio y los puertos de servidor. También puede\nelegir componentes opcionales para instalar."
 
 msgid "Alfresco"
 msgstr "Alfresco"
 
-msgid "Stop ${product_fullname} service"
-msgstr "Detener el servicio ${product_fullname}"
+msgid "Alfresco AVM Web Project Management for managing web site content."
+msgstr "Web Project Management (AVM) de Alfresco para gestionar contenidos de sitios Web."
 
-msgid "Extension Files"
-msgstr "Ficheros de extensión"
+msgid "Alfresco Community Edition Stack"
+msgstr "Alfresco Community Edition Stack"
 
-msgid "Unable to bind to the server port. Please make sure that Tomcat is not running."
-msgstr "No se puede conectar al puerto de servidor. Por favor, asegúrese de que Tomcat no se está ejecutando."
-
-msgid "Verify password:"
-msgstr "Vuelva a introducir la contraseña"
-
-msgid "Couldn't check Apache Tomcat Version.\nTomcat 5.5 is recommended."
-msgstr "No se ha podido comprobar la versión de Tomcat.\ nTomcat 5.5 es la recomendada."
-
-msgid "Please give a password to use for the Alfresco administrator account."
-msgstr "Por favor, suministre una contraseña a utilizar para la cuenta de administrador de Alfresco"
-
-msgid "Shortcuts Images"
-msgstr "Imágenes de accesos directos"
-
-msgid "Starting servers. Please be patient."
-msgstr "Iniciando servidores. Por favor, tenga paciencia."
-
-msgid "Alfresco SharePoint Port"
-msgstr "Alfresco SharePoint Port"
-
-msgid "The service script file exists. Please insert a different name for the service script."
-msgstr "El fichero de script de servicio ya existe. Por favor, introduzca un nombre diferente para el script de servicio."
-
-msgid "SharePoint Protocol support."
-msgstr "Apoyo de protocolo SharePoint"
-
-msgid "License Folder Component"
-msgstr "Componente de carpeta de licencia"
-
-msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
-msgstr "No se puede conectar al número de puerto dado. Por favor, seleccione otro puerto de cierre de Tomcat."
-
-msgid "Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}"
-msgstr "Instalando Tomcat como servicio de Windows con el nombre ${tomcat_unique_service_name}"
-
-msgid "Please give details of the Quickr server to use."
-msgstr "Por favor suministre detalles del servidor Quickr a utilizar"
-
-msgid "MySQL"
-msgstr "MySQL"
-
-msgid "Tomcat JMX Port:"
-msgstr "Puerto JMX de Tomcat:"
-
-msgid "Starting servers ..."
-msgstr "Iniciando servidores..."
-
-msgid "To show database root password"
-msgstr "Para mostrar la contraseña raíz de la base de datos"
-
-msgid "Program Files"
-msgstr "Archivos de programa"
-
-msgid "Tomcat Port Configuration"
-msgstr "Configuración de puerto Tomcat"
-
-msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
-msgstr "No se puede conectar al número de puerto dado. Por favor seleccione otro puerto para el protocolo SharePoint."
-
-msgid "Alfresco FTP Port"
-msgstr "Puerto FTP de Alfresco "
-
-msgid "DB User Password"
-msgstr "Contraseña de usuario de la BD"
-
-msgid "Script for start/stop Services"
-msgstr "Script para iniciar/detener servicios"
-
-msgid "Install ${product_fullname} as a service?"
-msgstr "¿Instalar ${product_fullname} como un servicio?"
-
-msgid "ImageMagick version"
-msgstr "Versión de ImageMagick"
-
-msgid "ImageMagick installation directory"
-msgstr "Directorio de instalación de ImageMagick"
-
-msgid "New Folder"
-msgstr "Nueva carpeta"
-
-msgid "Setup will try to install new databases and will overwrite any existing duplicate. Do you wish you continue?"
-msgstr "El programa de instalación intentará instalar nuevas bases de datos y sobrescribirá todo duplicado existente. ¿Desea continuar?"
-
-msgid "Tomcat Server Port:"
-msgstr "Puerto del servidor Tomcat:"
-
-msgid "There is not enough free space on ${installdir}. You need at least ${base_needed_space} MB in order to install ${product_fullname}"
-msgstr "No hay suficiente espacio libre en ${installdir}. Necesita por lo menos ${base_needed_space} MB para instalar ${product_fullname}"
-
-msgid "Licenses destination"
-msgstr "Destino de licencias"
-
-msgid "The Alfresco data directory tends to grow in size. Please choose where do you want to store it."
-msgstr "El directorio de datos de Alfresco tiende a crecer en tamaño. Por favor, elija dónde desea guardarlo."
-
-msgid "Alfresco Share"
-msgstr "Alfresco Share"
-
-msgid "Installing Alfresco Module Packages (AMPs)"
-msgstr "Instalando paquetes de módulo Alfresco (AMPs)"
-
-msgid "Stack Scripts Directory"
-msgstr "Directorio de scripts de stack"
-
-msgid "The length of the password must be greater than 3 characters"
-msgstr "La longitud de la contraseña debe ser superior a 3 caracteres"
-
-msgid "ImageMagick Component"
-msgstr "Componente ImageMagick"
-
-msgid "Please enter your MySQL database information:"
-msgstr "Por favor, introduzca su información de base de datos MySQL"
-
-msgid "You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat."
-msgstr "Ha elegido a Tomcat como la instalación existente. Para utilizar las nuevas aplicaciones instaladas, debe reiniciar Tomcat."
-
-msgid "MySQL Server Root Password:"
-msgstr "Contraseña raíz de servidor MySQL"
-
-msgid "Please select which database configuration you wish to use. If you select an existing database you should configure the Alfresco application before running the Alfresco server."
-msgstr "Por favor, seleccione la configuración de base de datos que desea utilizar. Si selecciona una base de datos existente, debe configurar la aplicación Alfresco antes de la instalación."
+msgid "Alfresco Enterprise Content Management (ECM) system featuring Document Management, Collaboration Management and Image Management."
+msgstr "Sistema de gestión de contenidos empresariales (ECM) de Alfresco, que incluye gestión documental, gestión colaborativa y gestión de imágenes."
 
 msgid "Alfresco Explorer"
 msgstr "Alfresco Explorer"
 
-msgid "Please enter the IP address or hostname for your database"
-msgstr "Por favor, introduzca la dirección IP o el nombre de anfitrión para su base de datos"
+msgid "Alfresco FTP Port"
+msgstr "Puerto FTP de Alfresco"
 
-msgid "Please enter the Tomcat configuration parameters you wish to use."
-msgstr "Por favor, introduzca los parámetros de configuración de Tomcat que desea utilizar"
-
-msgid "Please select the Tomcat configuration you wish to use"
-msgstr "Por favor, seleccione la configuración de Tomcat que desea utilizar"
-
-msgid "Database Configuration"
-msgstr "Configuración de la base de datos"
-
-msgid "Tomcat Directory"
-msgstr "Directorio de Tomcat"
-
-msgid "Stopping services"
-msgstr "Deteniendo los servicios"
-
-msgid "War Files"
-msgstr "Ficheros WAR"
-
-msgid "Re-enter password"
-msgstr "Vuelva a introducir la contraseña"
-
-msgid "The path ${mysql_binary_directory} seems to be invalid. Please check if the directory contains the required binaries."
-msgstr "La ruta ${mysql_binary_directory} parece ser inválida. Por favor, compruebe si el directorio contiene los archivos binarios necesarios."
-
-msgid "DB User Name"
-msgstr "Nombre de usuario de la BD"
-
-msgid "Alfresco Website"
-msgstr "Sitio Web de Alfresco"
-
-msgid "Install ${product_fullname} as service"
-msgstr "Instalar ${product_fullname} como servicio"
-
-msgid "Install as a service"
-msgstr "Instalar como un servicio"
-
-msgid "Start ${product_fullname} service"
-msgstr "Iniciar el servicio ${product_fullname}"
-
-msgid "JDK Installation Directory:"
-msgstr "Directorio de instalación de JDK:"
-
-msgid "Installation Type"
-msgstr "Tipo de instalación"
-
-msgid "Uninstalling services"
-msgstr "Desinstalando servicios"
-
-msgid "Installation Folder"
-msgstr "Carpeta de instalación"
-
-msgid "Include system ld library path in environment"
-msgstr "Incluir ruta de biblioteca de Id sistema en el entorno"
-
-msgid "MySQL Service"
-msgstr "Servicio MySQL"
-
-msgid "Records Management"
-msgstr "Records Management"
-
-msgid "Uninstall ${product_fullname}"
-msgstr "Desinstalar ${product_fullname}"
-
-msgid "Updating mysql directory permissions"
-msgstr "Actualizando permisos de directorio MySQL"
-
-msgid "Stop Virtual Server"
-msgstr "Detener el servidor virtual"
-
-msgid "README File"
-msgstr "Fichero README"
-
-msgid "Repeat Password:"
-msgstr "Repita la contraseña"
-
-msgid "The ${product_shortname} service script file exists. Please insert a different name for the service script."
-msgstr "El fichero de script de servicio ${product_shortname} ya existe. Por favor, introduzca un nombre diferente para el script de servicio."
-
-msgid "It seems you do not have enough permissions to bind to the port or the port is already taken by another application. Please select another one."
-msgstr "Aparentemente carece de permisos suficientes para enlazar con el puerto o el puerto ya está tomado por otra aplicación. Por favor, seleccione otro."
-
-msgid "Tomcat Shutdown Port:"
-msgstr "Puerto de cierre de Tomcat:"
-
-msgid "Auto - Configure servers to start automatically"
-msgstr "Configurar automáticamente los servidores para que se inicien automáticamente durante el arranque"
-
-msgid "Start Virtual Server"
-msgstr "Iniciar el servidor virtual"
-
-msgid "War files"
-msgstr "Ficheros WAR"
-
-msgid "Unable to bind to the given port number. Please select another Tomcat Server Port."
-msgstr "No se puede conectar al número de puerto dado. Por favor, seleccione otro puerto del servidor de Tomcat."
-
-msgid "Web Project Management (AVM)"
-msgstr "WCM de Alfresco"
-
-msgid "Start tomcat service"
-msgstr "Iniciar el servicio de Tomcat"
-
-msgid "You must provide a non-empty password"
-msgstr "Debe proporcionar una contraseña que no esté vacía"
-
-msgid "Install application as a service on Unix systems"
-msgstr "Instalar la aplicación como un servicio en sistemas Unix"
-
-msgid "I wish to use an existing database"
-msgstr "Quiero utilizar una base de datos existente"
+msgid "Alfresco Licenses"
+msgstr "Licencias Alfresco"
 
 msgid "Alfresco Module Packages"
-msgstr "Paquetes de módulo Alfresco"
-
-msgid "MySQL Credentials"
-msgstr "Credenciales de MySQL"
-
-msgid "Service Startup Configuration"
-msgstr "Configuración de inicio de servicio"
-
-msgid "DB Name"
-msgstr "Nombre de la BD"
-
-msgid "Quickr Connector Support"
-msgstr "Apoyo de conector Quickr"
-
-msgid "MySQL Binary Directory"
-msgstr "Directorio binario de MySQL"
-
-msgid "Unable to bind to the given port number. Please select another FTP Port."
-msgstr "No se puede conectar al número de puerto dado. Por favor, seleccione otro puerto FTP."
-
-msgid "Unable to install MySQL as a service with name ${mysql_unique_service_name}"
-msgstr "No se puede instalar MySQL como servicio con el nombre ${mysql_unique_service_name}"
-
-msgid "I wish to use the bundled Tomcat"
-msgstr "Quiero utilizar el servidor Tomcat incluido"
-
-msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
-msgstr "OpenOffice.org es una suite ofimática multiplataforma y multilingüe y un proyecto de código abierto."
-
-msgid "Unable to bind to the given port number. Please select another one."
-msgstr "No se puede conectar al número de puerto dado. Por favor, seleccione otro."
-
-msgid "Installation folder"
-msgstr "Carpeta de instalación"
-
-msgid "Stopping servers"
-msgstr "Deteniendo los servidores"
-
-msgid "Waiting for MySQL to Start."
-msgstr "Esperando el inicio de MySQL"
-
-msgid "Port:"
-msgstr "Puerto:"
-
-msgid "Tomcat SSL Port"
-msgstr "Puerto SSL de Tomcat"
-
-msgid "Initializing MySQL Database. This could take a couple of minutes."
-msgstr "Inicializando la base de datos MySQL. Esto podría llevar un par de minutos."
-
-msgid "JDK configuration"
-msgstr "Configuración de JDK"
-
-msgid "Please enter your database root user password"
-msgstr "Por favor, introduzca la contraseña de usuario raíz de su base de datos"
-
-msgid "Alfresco Shortcuts"
-msgstr "Accesos directos de Alfresco"
-
-msgid "Libraries Files"
-msgstr "Ficheros de bibliotecas"
-
-msgid "Please choose a folder to install ${product_fullname}"
-msgstr "Por favor, elija una carpeta para instalar ${product_fullname}"
-
-msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
-msgstr "No hemos podido encontrar una instalación de JDK adecuada en su sistema. ${product_fullname} requiere JDK 1.5 o posterior."
-
-msgid "Unable to connect to database ${mysql_hostname}:${mysql_port}. Please check that the parameters are correct and your MySQL configuration accepts TCP/IP connections."
-msgstr "No se puede conectar a la base ${mysql_hostname}:${mysql_port}. Por favor, compruebe que los parámetros son correctos y la configuración de MySQL acepta conexiones TCP/IP."
-
-msgid "I wish to use an existing Tomcat"
-msgstr "Quiero utilizar un servidor Tomcat existente"
-
-msgid "Installing MySQL as a Windows service with name ${mysql_unique_service_name}"
-msgstr "Instalando MySQL como servicio de Windows con el nombre ${mysql_unique_service_name}"
-
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "Esta versión fue integrada para ejecutarse en J2SE 5.0 o posterior. Por favor, instale una versión compatible de Java y e inténtelo nuevamente."
-
-msgid "Parameters"
-msgstr "Parámetros"
-
-msgid "Shutting down MySQL"
-msgstr "Cerrando MySQL"
-
-msgid "SharePoint"
-msgstr "SharePoint"
-
-msgid "Allow to choose an already installed service name if it contains a call to installdir/ctlscript"
-msgstr "Permitir elegir un nombre de servicio ya instalado si contiene una llamada a installdir/ctlscript"
-
-msgid "Alfresco data directory"
-msgstr "Directorio de datos de Alfresco"
-
-msgid "The selected folder is not empty. Please select a different folder"
-msgstr "La carpeta seleccionada no está vacía. Por favor, seleccione una carpeta diferente"
-
-msgid "Service script name"
-msgstr "Nombre del script de servicio"
-
-msgid "You need to provide a non-empty password"
-msgstr "Debe proporcionar una contraseña que no esté vacía"
-
-msgid "Configuring database"
-msgstr "Configurando la base de datos"
-
-msgid "The directory you selected does not seem to be a valid JDK directory. Please try again."
-msgstr "El directorio que ha seleccionado no parece ser un directorio JDK válido. Por favor, inténtelo nuevamente."
-
-msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
-msgstr "No se puede conectar al número de puerto dado. Por favor, seleccione otro puerto AJP de Tomcat."
-
-msgid "For security reasons it is recomended to set a non blank password for MySQL root user. Do you want to set a password for the MySQL root user?"
-msgstr "Por razones de seguridad, se recomienda no dejar la contraseña en blanco para el usuario raíz de MySQL. ¿Desea fijar una contraseña para el usuario raíz de MySQL?"
-
-msgid "JDK installation directory:"
-msgstr "Directorio de instalación de JDK:"
-
-msgid "OpenOffice Server Port"
-msgstr "Puerto de servidor OpenOffice"
+msgstr "Módulo de Alfresco"
 
 msgid "Alfresco RMI Port"
 msgstr "Puerto RMI de Alfresco"
 
-msgid "Unable to bind to the given port number. Please select another RMI Port."
-msgstr "No se puede conectar al número de puerto dado. Por favor, seleccione otro puerto RMI."
+msgid "Alfresco Share"
+msgstr "Alfresco Share"
 
-msgid "Alfresco uses port 7070 for the SharePoint protocol It seems this port is being taken by another application. Please choose an alternative port number."
-msgstr "Alfresco utiliza el puerto 7070 para el protocolo SharePoint. Parece ser que este puerto está siendo utilizado por otra aplicación. Por favor, elija un número de puerto alternativo."
+msgid "Alfresco SharePoint Port"
+msgstr "Puerto de SharePoint en Alfresco"
 
-msgid "Unable to find a server running at given port number. Please select another one."
-msgstr "No se puede encontrar un servidor en ejecución en el número de puerto dado. Por favor, seleccione otro."
+msgid "Alfresco Shortcuts"
+msgstr "Accesos directos de Alfresco"
 
-msgid "Please, choose a folder to install ${product_fullname}"
-msgstr "Por favor, elija una carpeta para instalar ${product_fullname}"
+msgid "Alfresco Website"
+msgstr "Sitio Web de Alfresco"
 
-msgid "Web Server Domain:"
-msgstr "Dominio de Servidor Web:"
+msgid "Alfresco data directory"
+msgstr "Directorio de datos de Alfresco"
 
-msgid "The directory you selected does not seem to be a valid Tomcat directory. Please try again."
-msgstr "El directorio que ha seleccionado no parece ser un directorio Tomcat válido. Por favor, inténtelo nuevamente."
+msgid "Allow to choose an already installed service name if it contains a call to installdir/ctlscript"
+msgstr "Permitir elegir un nombre de servicio ya instalado si contiene una llamada a installdir/ctlscript"
 
-msgid "SWFTOOLS Installation Directory"
-msgstr "Directorio de instalación de SWFTOOLS"
+msgid "Apache Service"
+msgstr "Servicio Apache"
 
-msgid "Java"
-msgstr "Java"
+msgid "Auto - Configure servers to start automatically"
+msgstr "Auto: configura los servidores para que se inicien de forma automática"
 
-msgid "Username:"
-msgstr "Nombre de usuario"
+msgid "Common Component"
+msgstr "Componente común"
 
-msgid "Please specify the directory where Tomcat is located."
-msgstr "Por favor, especifique el directorio donde se encuentra Tomcat"
+msgid "Common installation directory"
+msgstr "Directorio de instalación común"
 
-msgid "Username"
-msgstr "Nombre de usuario"
+msgid "Config Files"
+msgstr "Archivos de configuración"
 
-msgid "Please use alphanumeric characters only"
-msgstr "Por favor, utilice sólo caracteres alfanuméricos"
+msgid "Couldn't check Apache Tomcat Version.\nTomcat 5.5 is recommended."
+msgstr "No se ha podido comprobar la versión de Apache Tomcat. Se recomienda \nTomcat 5.5."
+
+msgid "Creating user and database"
+msgstr "Creación de usuario y base de datos"
+
+msgid "Database Configuration"
+msgstr "Configuración de la base de datos"
+
+msgid "Database Installation"
+msgstr "Instalación de la base de datos"
+
+msgid "Database Server Parameters"
+msgstr "Parámetros del servidor de bases de datos"
+
+msgid "Database Server port"
+msgstr "Puerto del servidor de bases de datos"
+
+msgid "Database name"
+msgstr "Nombre de la base de datos"
+
+msgid "Database name:"
+msgstr "Nombre de la base de datos:"
+
+msgid "Do you want to install PostgreSQL as a Windows service?"
+msgstr "¿Desea instalar PostgreSQL como servicio de Windows?"
+
+msgid "Easy - Installs servers with the default configuration"
+msgstr "Fácil: instala los servidores con la configuración por defecto"
+
+msgid "Encoding"
+msgstr "Codificación"
+
+msgid "Extension Files"
+msgstr "Ficheros de extensión"
+
+msgid "I wish to use an existing PostgreSQL database"
+msgstr "Quiero utilizar una base de datos PostgreSQL existente"
+
+msgid "I wish to use an existing Tomcat"
+msgstr "Quiero utilizar un servidor Tomcat existente"
+
+msgid "I wish to use the bundled PostgreSQL database"
+msgstr "Quiero utilizar la base de datos PostgreSQL incluida"
+
+msgid "I wish to use the bundled Tomcat"
+msgstr "Quiero utilizar el servidor Tomcat incluido"
+
+msgid "IP / Hostname"
+msgstr "IP/nombre del servidor"
+
+msgid "ImageMagick Component"
+msgstr "Componente ImageMagick"
+
+msgid "ImageMagick installation directory"
+msgstr "Directorio de instalación de ImageMagick"
+
+msgid "ImageMagick version"
+msgstr "Versión de ImageMagick"
+
+msgid "Include Alfresco Web Quick Start."
+msgstr "Incluir Web Quick Start de Alfresco."
+
+msgid "Include system ld library path in environment"
+msgstr "Incluir ruta del \"ld library path\" en el entorno"
+
+msgid "Include system path in environment"
+msgstr "Incluir ruta del sistema en el entorno"
+
+msgid "Initializing database"
+msgstr "Inicializando base de datos"
+
+msgid "Install ${product_fullname} as a service?"
+msgstr "¿Instalar ${product_fullname} como servicio?"
+
+msgid "Install ${product_fullname} as service"
+msgstr "Instalar ${product_fullname} como servicio"
+
+msgid "Install PostgreSQL as service?"
+msgstr "¿Instalar PostgreSQL como servicio?"
+
+msgid "Install application as a service on Unix systems"
+msgstr "Instalar la aplicación como un servicio en sistemas Unix"
+
+msgid "Install as a service"
+msgstr "Instalar como servicio"
+
+msgid "Installation Type"
+msgstr "Tipo de instalación"
+
+msgid "Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}."
+msgstr "La ruta de instalación del directorio es demasiado larga. El número máximo de caracteres permitido es ${base_installdir_max_characters}."
+
+msgid "Installation Folder"
+msgstr "Carpeta de instalación"
+
+msgid "Installation folder cannot contain spaces."
+msgstr "La carpeta de instalación no puede contener espacios."
+
+msgid "Installing Alfresco Module Packages (AMPs)"
+msgstr "Instalando los módulos (AMPs) seleccionados en Alfresco"
 
 msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
 msgstr "Instalando OpenOffice como servicio de Windows con el nombre ${OpenOfficeUniqueServiceName}"
 
+msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
+msgstr "Instalando PostgreSQL como servicio de Windows con el nombre ${postgres_unique_service_name}"
+
+msgid "Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}"
+msgstr "Instalando Tomcat como servicio de Windows con el nombre ${tomcat_unique_service_name}"
+
+msgid "It seems you do not have enough permissions to bind to the port or the port is already taken by another application. Please select another one."
+msgstr "Aparentemente carece de permisos suficientes para utilizar el puerto o el puerto ya está siendo usado por otra aplicación. Por favor, seleccione otro."
+
+msgid "JDBC Driver:"
+msgstr "Controlador JDBC:"
+
+msgid "JDBC URL:"
+msgstr "URL de JDBC:"
+
+msgid "JDK configuration"
+msgstr "Configuración de JDK"
+
+msgid "JDK installation directory:"
+msgstr "Directorio de instalación de JDK:"
+
+msgid "Java"
+msgstr "Java"
+
+msgid "Java Component required to run the Alfresco server."
+msgstr "Componente Java requerido para ejecutar el servidor Alfresco."
+
+msgid "Launch ${product_fullname} Share"
+msgstr "Lanzar ${product_fullname Share}"
+
+msgid "Libraries Files"
+msgstr "Ficheros de bibliotecas"
+
+msgid "License Folder Component"
+msgstr "Componente de carpeta de licencia"
+
+msgid "Licenses Files"
+msgstr "Ficheros de licencias"
+
+msgid "Licenses destination"
+msgstr "Destino de licencias"
+
+msgid "Manual - Configure servers to start services manually"
+msgstr "Manual: configura los servidores para que los servicios se inicien de forma manual"
+
+msgid "New Component"
+msgstr "Nuevo componente"
+
+msgid "New Folder"
+msgstr "Nueva carpeta"
+
+msgid "Not a PostgreSQL version 8.1.4 installation. PostgreSQL 8.1.4 recommended."
+msgstr "No es una instalación PostgreSQL versión 8.1.4. PostgreSQL 8.1.4 recomendado."
+
+msgid "Open SSL Component"
+msgstr "Componente Open SSL"
+
+msgid "OpenOffice"
+msgstr "OpenOffice"
+
+msgid "OpenOffice Server Port"
+msgstr "Puerto de servidor OpenOffice"
+
+msgid "OpenOffice Server port"
+msgstr "Puerto de servidor OpenOffice"
+
+msgid "OpenOffice installation directory"
+msgstr "Directorio de instalación de OpenOffice"
+
+msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
+msgstr "OpenOffice.org es una suite de software ofimática de código abierto, multiplataforma, de tratamiento de textos, hojas de cálculo, presentaciones, gráficos y bases de datos, necesaria para transformar documentos."
+
+msgid "Parameters"
+msgstr "Parámetros"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Password:"
+msgstr "Contraseña:"
+
+msgid "Please choose a port number for Alfresco to use to execute remote commands."
+msgstr "Por favor, elija un número de puerto que utilizará Alfresco para ejecutar comandos remotos."
+
+msgid "Please choose a port number for the SharePoint protocol."
+msgstr "Por favor, elija un número de puerto para el protocolo SharePoint."
+
+msgid "Please choose a port number to use for the integrated Alfresco FTP server."
+msgstr "Por favor, elija un número de puerto para usar para el servidor FTP integrado de Alfresco."
+
+msgid "Please enter a port in the range 1-65535."
+msgstr "Por favor, introduzca un puerto en el rango 1-65535."
+
+msgid "Please enter a valid IP address or hostname"
+msgstr "Por favor, introduzca una dirección IP o nombre de servidor válidos"
+
+msgid "Please enter a valid hostname or IP address"
+msgstr "Por favor, introduzca un nombre de servidor o dirección IP válidos"
+
+msgid "Please enter the IP address or hostname for your database"
+msgstr "Por favor, introduzca la dirección IP o el nombre de servidor para su base de datos"
+
+msgid "Please enter the Tomcat configuration parameters you wish to use."
+msgstr "Por favor, introduzca los parámetros de configuración de Tomcat que desea utilizar."
+
+msgid "Please enter the port of your database."
+msgstr "Por favor, introduzca el puerto de su base de datos."
+
 msgid "Please enter the port that the Openoffice Server will listen to by default."
-msgstr "Por favor, introduzca el puerto que el servidor de OpenOffice va a escuchar  por defecto"
+msgstr "Por favor, introduzca el puerto en el que el Servidor de OpenOffice va a escuchar por defecto."
+
+msgid "Please enter your database 'postgres' user password."
+msgstr "Por favor, introduzca la contraseña del usuario \"postgres\" de su base de datos."
+
+msgid "Please give a password to use for the Alfresco administrator account."
+msgstr "Por favor, especifique una contraseña a utilizar para la cuenta de administrador de Alfresco."
+
+msgid "Please give details of the Quickr server to use."
+msgstr "Por favor, indique los detalles del servidor de Quickr que se va a utilizar."
+
+msgid "Please select services startup type"
+msgstr "Por favor, seleccione el tipo de inicio de los servicios"
+
+msgid "Please select the Tomcat configuration you wish to use"
+msgstr "Por favor, seleccione la configuración de Tomcat que desea utilizar"
+
+msgid "Please select which database configuration you wish to use"
+msgstr "Por favor, seleccione la configuración de base de datos que desea utilizar"
+
+msgid "Please specify the directory where Tomcat is located."
+msgstr "Por favor, especifique el directorio donde se encuentra Tomcat."
+
+msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
+msgstr "Por favor, especifique el directorio donde se encuentran los binarios psql, pg_restore y vacuumdb"
+
+msgid "Please choose a folder to install ${product_fullname}".
+msgstr "Por favor, elija una carpeta para instalar ${product_fullname}"
+
+msgid "Please, select the encoding type."
+msgstr "Por favor, seleccione el tipo de codificación."
+
+msgid "Port:"
+msgstr "Puerto:"
+
+msgid "PostgreSQL"
+msgstr "PostgreSQL"
+
+msgid "PostgreSQL Binary Directory"
+msgstr "Directorio binario PostgreSQL"
+
+msgid "PostgreSQL is a powerful, open source object-relational database system."
+msgstr "PostgreSQL es un eficaz sistema de bases de datos objeto-relacional de código abierto."
+
+msgid "PostgreSQL postgres user password"
+msgstr "Contraseña de usuario de PostgreSQL postgres"
+
+msgid "PostgreSQL_initdb"
+msgstr "PostgreSQL_initdb"
+
+msgid "Program Files"
+msgstr "Archivos de programa"
+
+msgid "Program Files Linux"
+msgstr "Archivos de programa Linux"
+
+msgid "Program Files Windows"
+msgstr "Archivos de programa Windows"
+
+msgid "Quickr Connector Support"
+msgstr "Soporte del conector de Quickr"
+
+msgid "Quickr Content Services"
+msgstr "Servicios del contenido de Quickr"
+
+msgid "Quickr Server:"
+msgstr "Servidor de Quickr:"
+
+msgid "Quickr and Lotus Notes support for communication with Alfresco."
+msgstr "Soporte de Quickr y Lotus Notes para la comunicación con Alfresco."
+
+msgid "README File"
+msgstr "Fichero README"
+
+msgid "README Folder Component"
+msgstr "Componente de carpeta README"
+
+msgid "README destination"
+msgstr "Destino de README"
+
+msgid "Re-enter password"
+msgstr "Vuelva a introducir la contraseña"
+
+msgid "Records Management"
+msgstr "Records Management"
+
+msgid "Records Management support. This is a separately licensed component and should only be installed if licensed."
+msgstr "Soporte de Records Management. Es un componente con licencia independiente y sólo debe instalarse si se dispone de dicha licencia."
+
+msgid "Repeat Password:"
+msgstr "Repita la contraseña:"
+
+msgid "SWFTOOLS Component"
+msgstr "Componente SWFTOOLS"
+
+msgid "SWFTOOLS installation directory"
+msgstr "Directorio de instalación de SWFTOOLS"
+
+msgid "Script for start/stop Services"
+msgstr "Script para iniciar/detener servicios"
+
+msgid "Select a folder"
+msgstr "Seleccionar una carpeta"
+
+msgid "Service Startup Configuration"
+msgstr "Configuración de inicio de servicios"
+
+msgid "Service script name"
+msgstr "Nombre del script de servicio"
+
+msgid "Service script name:"
+msgstr "Nombre del script de servicio:"
+
+msgid "Set Installer Variables Java"
+msgstr "Configurar variables del programa de instalación de Java"
+
+msgid "Set Installer Variables Tomcat"
+msgstr "Configurar variables del programa de instalación de Tomcat"
+
+msgid "Set the database name for the database that will be created."
+msgstr "Configure el nombre de base de datos que se creará."
+
+msgid "Set the password for the user that will use the database."
+msgstr "Configure la contraseña para el usuario que utilizará la base de datos."
+
+msgid "Set the user that will use the database."
+msgstr "Configure el usuario que utilizará la base de datos."
+
+msgid "Setup will try to install new databases and will overwrite any existing duplicate. Do you wish you continue?"
+msgstr "El programa de instalación intentará instalar nuevas bases de datos y sobrescribirá cualquier dato duplicado. ¿Desea continuar?"
+
+msgid "SharePoint"
+msgstr "SharePoint"
+
+msgid "SharePoint Protocol Support."
+msgstr "Soporte del protocolo SharePoint."
+
+msgid "SharePoint Protocol support."
+msgstr "Soporte del protocolo SharePoint."
+
+msgid "Shortcuts Images"
+msgstr "Imágenes de accesos directos"
+
+msgid "Sorry, we only support PostgreSQL as service."
+msgstr "Lo sentimos, sólo soportamos PostgreSQL como servicio."
+
+msgid "Sorry, you need to be administrator."
+msgstr "Lo sentimos, debe ser administrador."
+
+msgid "Stack Scripts Directory"
+msgstr "Directorio de scripts de stack"
+
+msgid "Start ${product_fullname} service"
+msgstr "Iniciar el servicio ${product_fullname}"
+
+msgid "Start Virtual Server"
+msgstr "Iniciar el servidor virtual"
+
+msgid "Start tomcat service"
+msgstr "Iniciar el servicio de Tomcat"
+
+msgid "Starting OpenOffice..."
+msgstr "Iniciando OpenOffice..."
+
+msgid "Starting servers ..."
+msgstr "Iniciando servidores..."
+
+msgid "Starting servers. Please be patient"
+msgstr "Iniciando servidores. Por favor, espere"
+
+msgid "Starting servers. Please be patient."
+msgstr "Iniciando servidores. Por favor, espere."
+
+msgid "Stop ${product_fullname} service"
+msgstr "Detener el servicio ${product_fullname}"
+
+msgid "Stop Virtual Server"
+msgstr "Detener el servidor virtual"
+
+msgid "Stopping PostgreSQL..."
+msgstr "Deteniendo PostgreSQL..."
+
+msgid "Stopping servers"
+msgstr "Deteniendo los servidores"
+
+msgid "Stopping services"
+msgstr "Deteniendo los servicios"
+
+msgid "The ${product_shortname} service script file exists. Please insert a different name for the service script."
+msgstr "El fichero del script del servicio ${product_shortname} ya existe. Por favor, introduzca un nombre diferente para el script de servicio."
+
+msgid "The Alfresco data directory tends to grow in size. Please choose where do you want to store it."
+msgstr "El directorio de datos de Alfresco tiende a crecer en tamaño. Por favor, elija dónde desea guardarlo."
+
+msgid "The directory you selected does not seem to be a valid JDK directory. Please try again."
+msgstr "El directorio que ha seleccionado no parece ser un directorio JDK válido. Por favor, inténtelo de nuevo."
+
+msgid "The directory you selected does not seem to be a valid Tomcat directory. Please try again."
+msgstr "El directorio que ha seleccionado no parece ser un directorio Tomcat válido. Por favor, inténtelo de nuevo."
+
+msgid "The installer could not get the current free space on ${installdir}. Please check that there is free space enough to install ${product_fullname}"
+msgstr "El programa de instalación no pudo obtener el espacio libre actualmente en ${installdir}. Por favor, compruebe que haya suficiente espacio libre para instalar ${product_fullname}"
+
+msgid "The length of the password must be greater than 3 characters"
+msgstr "La longitud de la contraseña debe ser superior a 3 caracteres"
+
+msgid "The path ${postgres_binary_directory} does not seem to contain a pg_restore executable."
+msgstr "La ruta ${postgres_binary_directory} no parece contener un ejecutable pg_restore."
+
+msgid "The path ${postgres_binary_directory} does not seem to contain a pg_vacuumdb executable."
+msgstr "La ruta ${postgres_binary_directory} no parece contener un ejecutable pg_vacuumdb."
+
+msgid "The path ${postgres_binary_directory} seems to be invalid. Please check if the directory contains the required binaries."
+msgstr "La ruta ${postgres_binary_directory} parece inválida. Por favor, compruebe si el directorio contiene los archivos binarios necesarios."
+
+msgid "The selected folder is not empty. Please select a different folder"
+msgstr "La carpeta seleccionada no está vacía. Por favor, seleccione una carpeta diferente"
+
+msgid "The service script file exists. Please insert a different name for the service script."
+msgstr "El fichero del script del servicio ya existe. Por favor, introduzca un nombre diferente para el script de servicio."
+
+msgid "There is not enough free space on ${installdir}. You need at least ${base_needed_space} MB in order to install ${product_fullname}"
+msgstr "No hay suficiente espacio libre en ${installdir}. Necesita por lo menos ${base_needed_space} MB para instalar ${product_fullname}"
+
+msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
+msgstr "Este programa de instalación es para Windows 64 bits.  Por favor, descargue la versión de 32 bits de Windows."
+
+msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
+msgstr "Esta versión fue integrada para ejecutarse en J2SE 5.0 o posterior. Por favor, instale una versión compatible de Java e inténtelo de nuevo."
+
+msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
+msgstr "Esta versión fue integrada para ejecutarse en J2SE 5.0. Por favor, instale una versión compatible de Java e inténtelo de nuevo."
+
+msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
+msgstr "Esta versión fue integrada para ejecutarse en J2SE 6.0 o posterior. Por favor, instale una versión compatible de Java e inténtelo de nuevo."
+
+msgid "This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again."
+msgstr "Esta versión fue integrada para ejecutarse en J2SE 6.0. Por favor, instale una versión compatible de Java e inténtelo de nuevo."
+
+msgid "Tomcat 5.5 Component"
+msgstr "Componente Tomcat 5.5"
+
+msgid "Tomcat AJP Port:"
+msgstr "Puerto AJP de Tomcat:"
+
+msgid "Tomcat Directory"
+msgstr "Directorio de Tomcat"
+
+msgid "Tomcat JMX Port:"
+msgstr "Puerto JMX de Tomcat:"
+
+msgid "Tomcat Port Configuration"
+msgstr "Configuración de puerto Tomcat"
+
+msgid "Tomcat SSL Port"
+msgstr "Puerto SSL de Tomcat"
 
 msgid "Tomcat Server Port and Tomcat Shutdown Port cannot be the same port. Please select another Tomcat Shutdown Port."
-msgstr "El puerto del servidor Tomcat y el puerto de cierre de Tomcat no pueden ser el mismo puerto. Por favor, seleccione otro puerto de cierre de Tomcat."
+msgstr "El puerto del servidor Tomcat y el puerto de parada de Tomcat no pueden ser el mismo puerto. Por favor, seleccione otro puerto de parada de Tomcat."
+
+msgid "Tomcat Server Port:"
+msgstr "Puerto del servidor Tomcat:"
+
+msgid "Tomcat Shutdown Port:"
+msgstr "Puerto de cierre de Tomcat:"
+
+msgid "Tomcat directory:"
+msgstr "Directorio de Tomcat:"
+
+msgid "Tomcat installation:"
+msgstr "Instalación de Tomcat:"
+
+msgid "Tomcat modifications due to java"
+msgstr "Modificaciones de Tomcat debidas a Java"
+
+msgid "Unable to bind to the given port number. Please select another FTP Port."
+msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto FTP."
+
+msgid "Unable to bind to the given port number. Please select another RMI Port."
+msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto RMI."
+
+msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
+msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto AJP de Tomcat."
+
+msgid "Unable to bind to the given port number. Please select another Tomcat Server Port."
+msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto del servidor de Tomcat."
+
+msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
+msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto de parada de Tomcat."
+
+msgid "Unable to bind to the given port number. Please select another one."
+msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro."
+
+msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
+msgstr "No se puede utilizar el número de puerto dado. Por favor seleccione otro puerto para el protocolo SharePoint."
+
+msgid "Unable to bind to the server port. Please make sure that Tomcat is not running."
+msgstr "No se puede utilizar el puerto de servidor. Por favor, asegúrese de que Tomcat no se está ejecutando."
+
+msgid "Unable to connect to database. Please check your configuration."
+msgstr "No se puede conectar con la base de datos. Por favor, compruebe su configuración."
+
+msgid "Unable to find a server running at given port number. Please select another one."
+msgstr "No se puede encontrar un servidor en ejecución en el número de puerto dado. Por favor, seleccione otro."
+
+msgid "Unable to find any server running at port ${postgres_port}. Please start your database server."
+msgstr "No se puede encontrar ningún servidor en ejecución en el puerto ${postgres_port}. Por favor, inicie su servidor de base de datos."
+
+msgid "Unable to get free disk space."
+msgstr "No se puede obtener espacio libre en disco."
+
+msgid "Uninstall ${product_fullname}"
+msgstr "Desinstalar ${product_fullname}"
+
+msgid "Uninstall ${product_fullname} service"
+msgstr "Desinstalar el servicio ${product_fullname}"
+
+msgid "Uninstalling services"
+msgstr "Desinstalando servicios"
+
+msgid "Use to configure the destination of the content in commands folder"
+msgstr "Se utiliza para configurar el destino de los contenidos en la carpeta de comandos"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Username:"
+msgstr "Nombre de usuario:"
+
+msgid "Verify:"
+msgstr "Verificar:"
+
+msgid "Waiting PostgreSQL to start."
+msgstr "Esperando a que se inicie PostgreSQL."
+
+msgid "Waiting for Postmaster"
+msgstr "Esperando al Postmaster"
+
+msgid "War Files"
+msgstr "Ficheros WAR"
+
+msgid "War files"
+msgstr "Ficheros WAR"
+
+msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
+msgstr "No hemos podido encontrar una instalación de JDK adecuada en su sistema. ${product_fullname} requiere JDK 1.5 o posterior."
+
+msgid "Web Project Management (AVM)"
+msgstr "Web Project Management (AVM)"
+
+msgid "Web Quick Start"
+msgstr "Web Quick Start"
+
+msgid "Web Server"
+msgstr "Servidor Web"
+
+msgid "Web Server domain:"
+msgstr "Dominio de Servidor Web:"
+
+msgid "You can optionally register ${product_fullname} as a service. This way it will automatically be started every time the machine is started."
+msgstr "Opcionalmente puede registrar ${product_fullname} como servicio. De esta manera se iniciará automáticamente cada vez que se ponga en marcha la máquina."
+
+msgid "You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat."
+msgstr "Ha elegido Tomcat como la instalación existente. Para utilizar las nuevas aplicaciones instaladas debe reiniciar Tomcat."
+
+msgid "applyamps"
+msgstr "applyamps"
+
+msgid "mmtjar"
+msgstr "mmtjar"
