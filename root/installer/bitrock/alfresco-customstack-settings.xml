@@ -35,7 +35,7 @@
         <setInstallerVariable name="component(tomcat).parameter(tomcat_ports).parameter(tomcat_server_ssl_port).description" value="Tomcat SSL Port:" />
         
         <setInstallerVariable name="component(baseparamdir).parameter(installdir).title" value="Installation Folder" />
-        <setInstallerVariable name="component(baseparamdir).parameter(installdir).explanation" value="Please choose a folder to install ${product_fullname}." />
+        <setInstallerVariable name="component(baseparamdir).parameter(installdir).explanation" value="${'${tr('Please choose a folder to install ${product_fullname}')}'}" />
         <setInstallerVariable name="component(readme).parameter(base_readme_installation_directory).description" value="README Destination" />
         <setInstallerVariable name="component(common).parameter(common_root_directory).description" value="Common Installation Directory" />
         <setInstallerVariable name="component(imagemagick).parameter(imagemagick_root_directory).description" value="ImageMagick Installation Directory" />

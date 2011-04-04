@@ -18,7 +18,7 @@
     <allowComponentSelection>1</allowComponentSelection>
     <leftImage>images/alfresco_left.png</leftImage>
     <allowedLanguages>en fr es it de ja</allowedLanguages>
-	
+
     <platformOptionsList>
         <platformOptions>
             <platform>osx</platform>
@@ -40,42 +40,37 @@
 
     <customLanguageFileList>
         <language> 
-          <code>en</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-en.po</file>
+            <code>en</code> 
+            <encoding>utf-8</encoding>
+            <file>${build_project_directory}/lang/alf-en.po</file>
         </language>
-
         <language> 
-          <code>fr</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-fr.po</file>
+            <code>fr</code> 
+            <encoding>utf-8</encoding>
+            <file>${build_project_directory}/lang/alf-fr.po</file>
         </language>
-
         <language> 
-          <code>es</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-es.po</file>
+            <code>es</code> 
+            <encoding>utf-8</encoding>
+            <file>${build_project_directory}/lang/alf-es.po</file>
         </language>
-
         <language> 
-          <code>de</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-de.po</file>
+            <code>de</code> 
+            <encoding>utf-8</encoding>
+            <file>${build_project_directory}/lang/alf-de.po</file>
         </language>
-
         <language> 
-          <code>it</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-it.po</file>
+            <code>it</code> 
+            <encoding>utf-8</encoding>
+            <file>${build_project_directory}/lang/alf-it.po</file>
         </language>
-
         <language> 
-          <code>ja</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-ja.po</file>
+            <code>ja</code> 
+            <encoding>utf-8</encoding>
+            <file>${build_project_directory}/lang/alf-ja.po</file>
         </language>	
     </customLanguageFileList>
-
+    
     <componentList>
         <include file="alfresco-componentselection-java.xml" />
         <include file="alfresco-customstack-build-settings.xml" />

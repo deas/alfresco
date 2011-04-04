@@ -57,7 +57,7 @@
             <name>installdir</name>
             <title>Installation folder</title>
             <description>Select a folder</description>
-            <explanation>Please, choose a folder to install ${product_fullname}</explanation>
+            <explanation>Please choose a folder to install ${product_fullname}</explanation>
             <default/>
             <mustBeWritable>1</mustBeWritable>
             <mustExist>0</mustExist>
