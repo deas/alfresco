@@ -78,12 +78,14 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         // getting pageUrl parameter from request
         XPath xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/pageUrl"));
         xpath.setNamespaceContext(nc);
-        String docPath = URLDecoder.decode(((Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement())).getTextTrim(), "UTF-8");
+        String docPath = URLDecoder.decode(((Element) xpath.selectSingleNode(
+                    soapRequest.getDocument().getRootElement())).getTextTrim(), "UTF-8");
         docPath = docPath.substring(host.length() + context.length());
 
         xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/comment"));
         xpath.setNamespaceContext(nc);
-        String comment = URLDecoder.decode(((Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement())).getTextTrim(), "UTF-8");
+        String comment = ((Element) xpath.selectSingleNode(
+                    soapRequest.getDocument().getRootElement())).getTextTrim();
 
         if (logger.isDebugEnabled())
         {

@@ -18,7 +18,9 @@
  */
 package org.alfresco.util.log;
 
-import java.lang.reflect.Method;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * A stand in for the org.apache.log4j.NDC class that avoids introducing runtime dependencies against the otherwise
@@ -28,23 +30,23 @@ import java.lang.reflect.Method;
  */
 public class NDC
 {
-    /** Log4J reflection to clear the NDC */
-    private static Method ndcRemoveMethod;
-
-    /** Log4J reflection to push the NDC */
-    private static Method ndcPushMethod;
+    private static Log logger = LogFactory.getLog(NDC.class);
+    
+    /** Log4J delegate for NDC */
+    private static NDCDelegate ndcDelegate;
 
     static
     {
-        try
+        if (logger.isDebugEnabled())
         {
-            Class<?> ndc = Class.forName("org.apache.log4j.NDC");
-            ndcRemoveMethod = ndc.getMethod("remove");
-            ndcPushMethod = ndc.getMethod("push", String.class);
-        }
-        catch (Throwable e)
-        {
-            // We just ignore it
+            try
+            {
+                ndcDelegate = (NDCDelegate) Class.forName("org.alfresco.util.log.log4j.Log4JNDC").newInstance();
+            }
+            catch (Throwable e)
+            {
+                // We just ignore it
+            }
         }
     }
 
@@ -56,13 +58,9 @@ public class NDC
      */
     public static void push(String message)
     {
-        try
+        if (ndcDelegate != null)
         {
-            ndcPushMethod.invoke(null, message);
-        }
-        catch (Throwable e)
-        {
-            // We just ignore it
+            ndcDelegate.push(message);
         }
     }
 
@@ -71,13 +69,9 @@ public class NDC
      */
     static public void remove()
     {
-        try
+        if (ndcDelegate != null)
         {
-            ndcRemoveMethod.invoke(null);
-        }
-        catch (Throwable e)
-        {
-            // We just ignore it
+            ndcDelegate.remove();
         }
     }
 }

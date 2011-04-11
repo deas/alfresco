@@ -43,6 +43,7 @@ tokens
         TERM;
         EXACT_TERM;
         PHRASE;
+        EXACT_PHRASE;
         SYNONYM;
         RANGE;
         PROXIMITY;
@@ -61,6 +62,7 @@ tokens
         FG_TERM;
         FG_EXACT_TERM;
         FG_PHRASE;
+        FG_EXACT_PHRASE;
         FG_SYNONYM;
         FG_PROXIMITY;
         FG_RANGE;
@@ -452,6 +454,12 @@ ftsTest
         | ftsPhrase ( (slop) => slop)?
                 ->
                         ^(PHRASE ftsPhrase slop?)
+        | ftsExactPhrase ( (slop) => slop)?
+                ->
+                        ^(EXACT_PHRASE ftsExactPhrase slop?)
+        | ftsTokenisedPhrase ( (slop) => slop)?
+                ->
+                        ^(PHRASE ftsTokenisedPhrase slop?)
         | ftsSynonym ( (fuzzy) => fuzzy)?
                 ->
                         ^(SYNONYM ftsSynonym fuzzy?)
@@ -530,6 +538,19 @@ ftsPhrase
         (fieldReference COLON)? FTSPHRASE
                 -> FTSPHRASE fieldReference?
         ;
+        
+ftsExactPhrase
+        :
+        EQUALS ftsPhrase
+                -> ftsPhrase
+        ;
+        
+ftsTokenisedPhrase
+        :
+        TILDA ftsPhrase
+                -> ftsPhrase
+        ;
+
 
 cmisPhrase
         :
@@ -627,6 +648,12 @@ ftsFieldGroupTest
         | ftsFieldGroupPhrase ( (slop) => slop)?
                 ->
                         ^(FG_PHRASE ftsFieldGroupPhrase slop?)
+        | ftsFieldGroupExactPhrase ( (slop) => slop)?
+                ->
+                        ^(FG_EXACT_PHRASE ftsFieldGroupExactPhrase slop?)
+        | ftsFieldGroupTokenisedPhrase ( (slop) => slop)?
+                ->
+                        ^(FG_PHRASE ftsFieldGroupTokenisedPhrase slop?)
         | ftsFieldGroupSynonym ( (fuzzy) => fuzzy)?
                 ->
                         ^(FG_SYNONYM ftsFieldGroupSynonym fuzzy?)
@@ -651,6 +678,18 @@ ftsFieldGroupExactTerm
 ftsFieldGroupPhrase
         :
         FTSPHRASE
+        ;
+        
+ftsFieldGroupExactPhrase
+        :
+        EQUALS ftsFieldGroupExactPhrase
+                -> ftsFieldGroupExactPhrase
+        ;
+        
+ftsFieldGroupTokenisedPhrase
+        :
+        TILDA ftsFieldGroupExactPhrase
+                -> ftsFieldGroupExactPhrase
         ;
 
 ftsFieldGroupSynonym

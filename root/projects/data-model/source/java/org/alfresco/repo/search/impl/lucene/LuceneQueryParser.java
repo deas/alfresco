@@ -4343,7 +4343,13 @@ public class LuceneQueryParser extends QueryParser
                     throw new UnsupportedOperationException("Wild cards are not supported for the datetime type");
                 }
             }
-
+            
+            if ((propertyDef != null) && (tenantService.isTenantUser()) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.NODE_REF)) && (queryText.contains(StoreRef.URI_FILLER)))
+            {
+                // ALF-6202
+                queryText = tenantService.getName(new NodeRef(queryText)).toString();
+            }
+            
             // Sort and id is only special for MLText, text, and content
             // Dates are not special in this case
             Query query = subQueryBuilder.getQuery(expandedFieldName, queryText, AnalysisMode.DEFAULT, luceneFunction);

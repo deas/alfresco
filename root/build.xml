@@ -60,8 +60,6 @@
       <path id="classpath.compile">
          <fileset dir="${dir.project.3rdparty.lib}">
             <include name="**/*.jar" />
-            <!-- Avoid compile-time dependencies against optional components, e.g. log4j -->
-            <exclude name="optional/**" />
          </fileset>
          <fileset dir="${dir.projects}">
             <include name="**/${dir.name.build}/${dir.name.dist}/*.jar" />

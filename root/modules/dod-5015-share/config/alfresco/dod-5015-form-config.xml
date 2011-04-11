@@ -28,6 +28,9 @@
             </field-visibility>
             <create-form template="dod5015-create-container.ftl" />
             <appearance>
+               <set id="name" />
+               <set id="title" />
+               <set id="description" />
                <set id="rm-custom" />
             </appearance>
          </form>
@@ -54,6 +57,10 @@
             </field-visibility>
             <create-form template="dod5015-create-container.ftl" />
             <appearance>
+               <set id="name" />
+               <set id="title" />
+               <set id="description" />
+               <set id="other" />
                <set id="rm-custom" />
                <field id="cm:description" mandatory="true" />
                <field id="rma:vitalRecordIndicator">
@@ -89,6 +96,10 @@
             </field-visibility>
             <create-form template="dod5015-create-container.ftl" />
             <appearance>
+               <set id="name" />
+               <set id="title" />
+               <set id="description" />
+               <set id="other" />
                <set id="rm-custom" />
             </appearance>
          </form>

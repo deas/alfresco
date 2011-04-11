@@ -211,6 +211,19 @@
             // Determine minimum required Flash capability
             this.hasRequiredFlashPlayer = this.options.adobeFlashEnabled && !Alfresco.util.getVar("noflash") && Alfresco.util.hasRequiredFlashPlayer(9, 0, 45);
 
+            /**
+             * Due to a Flash Player bug (https://bugs.adobe.com/jira/browse/FP-1044) only IE browsers
+             * pick up the session from the browser, therefore the flash uploader is passed the session id
+             * using javascript when instantiated so uploads can pass authenticatication details in all browsers.
+             * If the server has been configured to use "httponly" cookies it will not be possible to access the
+             * jsessionid using javascript and we must therefore fallback to the normal uploader for all non IE browsers.
+             */
+            if (this.hasRequiredFlashPlayer && YAHOO.env.ua.ie == 0)
+            {
+               this.canAccessSession = (YAHOO.util.Cookie.get("JSESSIONID") || "").length > 0;
+               this.hasRequiredFlashPlayer = this.canAccessSession;
+            }
+
             // Create the appropriate uploader component
             var uploadType = this.hasRequiredFlashPlayer ? this.options.flashUploader : this.options.htmlUploader,
                uploadInstance = Alfresco.util.ComponentManager.findFirst(uploadType);
@@ -241,7 +254,7 @@
          else
          {
             this.showConfig.uploadURL = this.showConfig.htmlUploadURL;
-            this.showConfig.adobeFlashEnabled = this.options.adobeFlashEnabled;
+            this.showConfig.adobeFlashEnabled = this.options.adobeFlashEnabled && this.canAccessSession;
          }
 
          // Let the uploader instance show itself

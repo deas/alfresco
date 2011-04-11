@@ -340,6 +340,9 @@ public class FTSQueryParser
         case FTSParser.PHRASE:
         case FTSParser.FG_PHRASE:
             return buildPhrase(fuzzy, fieldReferenceNode, testNode, factory, functionEvaluationContext, selector, columnMap);
+        case FTSParser.EXACT_PHRASE:
+        case FTSParser.FG_EXACT_PHRASE:
+            return buildExactPhrase(fuzzy, fieldReferenceNode, testNode, factory, functionEvaluationContext, selector, columnMap);
         case FTSParser.SYNONYM:
         case FTSParser.FG_SYNONYM:
             termNode = testNode.getChild(0);
@@ -477,6 +480,40 @@ public class FTSQueryParser
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
         LiteralArgument larg = factory.createLiteralArgument(FTSPhrase.ARG_PHRASE, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        functionArguments.put(larg.getName(), larg);
+        larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
+        functionArguments.put(larg.getName(), larg);
+        if (fuzzy != null)
+        {
+            larg = factory.createLiteralArgument(FTSPhrase.ARG_SLOP, DataTypeDefinition.INT, Integer.valueOf(fuzzy.intValue()));
+            functionArguments.put(larg.getName(), larg);
+        }
+        if (fieldReferenceNode != null)
+        {
+            PropertyArgument parg = buildFieldReference(FTSPhrase.ARG_PROPERTY, fieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
+            functionArguments.put(parg.getName(), parg);
+        }
+        else
+        {
+            CommonTree specifiedFieldReferenceNode = findFieldReference(testNode);
+            if (specifiedFieldReferenceNode != null)
+            {
+                PropertyArgument parg = buildFieldReference(FTSPhrase.ARG_PROPERTY, specifiedFieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
+                functionArguments.put(parg.getName(), parg);
+            }
+        }
+        return factory.createFunctionalConstraint(function, functionArguments);
+    }
+    
+    static private Constraint buildExactPhrase(Float fuzzy, CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory,
+            FunctionEvaluationContext functionEvaluationContext, Selector selector, Map<String, Column> columnMap)
+    {
+        String functionName = FTSPhrase.NAME;
+        Function function = factory.getFunction(functionName);
+        Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
+        LiteralArgument larg = factory.createLiteralArgument(FTSPhrase.ARG_PHRASE, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        functionArguments.put(larg.getName(), larg);
+        larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
         functionArguments.put(larg.getName(), larg);
         if (fuzzy != null)
         {

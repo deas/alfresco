@@ -27,7 +27,8 @@
    },
    "item":
    {
-      <@itemLib.itemJSON item=doclist.items[0] />
+      <@itemLib.itemJSON item=doclist.items[0] />,
+      "dod5015": <#noescape>${doclist.items[0].dod5015}</#noescape>
    }
 }
 </#escape>

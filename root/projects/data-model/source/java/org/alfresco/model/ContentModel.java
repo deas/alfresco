@@ -143,6 +143,7 @@ public interface ContentModel
     // tagscope aspect
     static final QName ASPECT_TAGSCOPE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "tagscope");
     static final QName PROP_TAGSCOPE_CACHE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "tagScopeCache");
+    static final QName PROP_TAGSCOPE_SUMMARY = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "tagScopeSummary");
     
     // ratings
     static final QName ASPECT_RATEABLE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "rateable");

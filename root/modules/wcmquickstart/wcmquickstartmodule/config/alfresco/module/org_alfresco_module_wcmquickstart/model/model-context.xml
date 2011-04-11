@@ -108,14 +108,6 @@
       <property name="policyComponent" ref="policyComponent" />
    </bean>
 
-   <bean id="wcmquickstartmodule_tagscopeAspect" class="org.alfresco.module.org_alfresco_module_wcmquickstart.model.TagScopeAspect"
-      init-method="init">
-      <property name="nodeService" ref="nodeService" />
-      <property name="taggingService" ref="taggingService" />
-      <property name="policyComponent" ref="policyComponent" />
-      <property name="behaviourFilter" ref="policyBehaviourFilter" />
-   </bean>
-
    <bean id="wcmquickstartmodule_taggableAspect" class="org.alfresco.module.org_alfresco_module_wcmquickstart.model.TaggableAspect"
       init-method="init">
       <property name="nodeService" ref="nodeService" />

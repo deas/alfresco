@@ -17,6 +17,7 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jaxb-xjc-2.1.7.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/abdera/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jaxb-impl-2.1.7.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/optional/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-core-1.0.0.CI-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT-sources.jar"/>

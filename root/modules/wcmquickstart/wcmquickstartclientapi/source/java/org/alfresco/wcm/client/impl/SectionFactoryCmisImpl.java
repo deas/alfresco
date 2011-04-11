@@ -18,7 +18,6 @@
 package org.alfresco.wcm.client.impl;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,17 +46,17 @@ import org.apache.commons.logging.LogFactory;
  */
 public class SectionFactoryCmisImpl implements SectionFactory
 {
-    private static final String PROPERTY_TAGS = "ws:topTags";
-    private static final String PROPERTY_TAG_COUNTS = "ws:topTagCounts";
+    private static final String PROPERTY_TAG_SUMMARY = "cm:tagScopeSummary";
 
     private static final String COLUMNS = " f.cmis:objectId, f.cmis:name, t.cm:title, t.cm:description, f.cmis:objectTypeId, "
-            + "f.cmis:parentId, f.ws:sectionConfig, f.ws:excludeFromNavigation, f.ws:topTags, f.ws:topTagCounts ";
+            + "f.cmis:parentId, f.ws:sectionConfig, f.ws:excludeFromNavigation, ts.cm:tagScopeSummary ";
 
     private final static Log log = LogFactory.getLog(SectionFactoryCmisImpl.class);
 
     private static final String QUERY_SECTION_WITH_CHILDREN = "select " + COLUMNS + ", o.ws:orderIndex as ord "
             + "from ws:section as f " + "join cm:titled as t on t.cmis:objectId = f.cmis:objectId "
             + "join ws:ordered as o on o.cmis:objectId = f.cmis:objectId "
+            + "join cm:tagscope as ts on ts.cmis:objectId = f.cmis:objectId "
             + "where (in_tree(f, {0}) or f.cmis:objectId = {1}) " + "order by ord";
     /*
      * private static final String QUERY_COLLECTION_FOLDERS =
@@ -138,9 +137,8 @@ public class SectionFactoryCmisImpl implements SectionFactory
         properties.put(Section.PROPERTY_SECTION_CONFIG, (Serializable) parseSectionConfig(configList));
 
         section.setProperties(properties);
-        List<String> tagNames = result.getPropertyMultivalueById(PROPERTY_TAGS);
-        List<BigInteger> tagCounts = result.getPropertyMultivalueById(PROPERTY_TAG_COUNTS);
-        section.setTags(createTags(tagNames, tagCounts));
+        List<String> tagSummary = result.getPropertyMultivalueById(PROPERTY_TAG_SUMMARY);
+        section.setTags(createTags(tagSummary));
         section.setAssetFactory(assetFactory);
         section.setSectionFactory(this);
         section.setDictionaryService(dictionaryService);
@@ -207,17 +205,26 @@ public class SectionFactoryCmisImpl implements SectionFactory
      *            list of tag counts
      * @return combined list of tags
      */
-    private List<Tag> createTags(List<String> tagNames, List<BigInteger> tagCounts)
+    private List<Tag> createTags(List<String> tagSummary)
     {
         List<Tag> tags = new ArrayList<Tag>();
-        if (tagNames != null)
+        if (tagSummary != null)
         {
-            for (int i = 0; i < tagNames.size(); i++)
+            for (String tag : tagSummary)
             {
-                String name = tagNames.get(i);
-                Integer count = (tagCounts != null && i < tagCounts.size() ? tagCounts.get(i).intValue() : null);
-                TagImpl tagImpl = new TagImpl(name, count);
-                tags.add(tagImpl);
+                String[] nameCountPair = tag.split("=");
+                if (nameCountPair.length != 2)
+                {
+                    continue;
+                }
+                try
+                {
+                    tags.add(new TagImpl(nameCountPair[0], Integer.parseInt(nameCountPair[1])));
+                }
+                catch(Exception ex)
+                {
+                    log.warn("Ignoring invalid tag summary data: " + tag);
+                }
             }
         }
         return tags;

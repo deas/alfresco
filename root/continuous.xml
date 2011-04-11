@@ -717,7 +717,7 @@
          <!-- Sequence installer then tarball -->
 	     <sequential>
             <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-osx.txt" failifexecutionfails="false">
-               <arg line='build project.xml osx --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}" java_distribution_folder="${installer.build.binaries.osx86.java}" tomcat_distribution_folder="${installer.build.binaries.osx86.tomcat}" swftools_distribution_folder="${installer.build.binaries.osx86.swftools}"'/>
+               <arg line='build project.xml osx --setvars ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}" java_distribution_folder="${installer.build.binaries.osx86.java}" tomcat_distribution_folder="${installer.build.binaries.osx86.tomcat}" swftools_distribution_folder="${installer.build.binaries.osx86.swftools}"'/>
             </exec>
             <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx}.tar.gz"
                  longfile="gnu"
@@ -1080,7 +1080,7 @@
                   includes="org/alfresco/util/GUID.class" />
          <fileset dir="${dir.project.datamodel.classes}" 
                   includes="org/alfresco/model/ContentModel.class" />
-         <fileset dir="${dir.project.datamodel.classes}" 
+         <fileset dir="${dir.project.repository.classes}" 
                   includes="org/alfresco/model/RenditionModel.class" />
          <fileset dir="${dir.project.repository.classes}" 
                   includes="org/alfresco/repo/cache/EhCacheAdapter.class" />

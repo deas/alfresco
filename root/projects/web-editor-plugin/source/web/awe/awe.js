@@ -582,7 +582,7 @@
             formUri: formUri,
             nodeRef: o.nodeRef,
             domContentId: o.id,
-            title: Alfresco.util.message.call(this, 'message.edit', '', o.title),
+            title: Alfresco.util.message.call(this, 'message.edit', '', Alfresco.util.encodeHTML(o.title, false)),
             nested: o.nested,
             redirectUrl: o.redirectUrl
          }).show();

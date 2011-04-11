@@ -2010,9 +2010,9 @@
             todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/extension/bootstrap"/>
 
       <!-- Fixes to lucene FSDirectory -->
-      <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/org/apache/lucene/store">
-         <fileset dir="${dir.project.repository.classes}/org/apache/lucene/store" 
-                  includes="*.class" />
+      <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/org/apache/lucene">
+         <fileset dir="${dir.project.repository.classes}/org/apache/lucene" 
+                  includes="**/*.class" />
       </copy>
 
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/lib">

@@ -42,6 +42,8 @@ public class FTSPhrase extends BaseFunction
     public final static String ARG_PROPERTY = "Property";
     
     public final static String ARG_SLOP = "Slop";
+    
+    public final static String ARG_TOKENISATION_MODE = "TokenisationMode";
 
     public static LinkedHashMap<String, ArgumentDefinition> args;
 
@@ -51,6 +53,7 @@ public class FTSPhrase extends BaseFunction
         args.put(ARG_PHRASE, new BaseArgumentDefinition(Multiplicity.SINGLE_VALUED, ARG_PHRASE, DataTypeDefinition.ANY, true));
         args.put(ARG_PROPERTY, new BaseArgumentDefinition(Multiplicity.SINGLE_VALUED, ARG_PROPERTY, DataTypeDefinition.ANY, false));
         args.put(ARG_SLOP, new BaseArgumentDefinition(Multiplicity.SINGLE_VALUED, ARG_SLOP, DataTypeDefinition.INT, false));
+        args.put(ARG_TOKENISATION_MODE, new BaseArgumentDefinition(Multiplicity.SINGLE_VALUED, ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, false));
     }
 
     /**

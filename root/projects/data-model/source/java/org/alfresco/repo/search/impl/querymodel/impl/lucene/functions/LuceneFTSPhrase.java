@@ -68,17 +68,19 @@ public class LuceneFTSPhrase extends FTSPhrase implements LuceneQueryBuilderComp
            slop = (Integer) argument.getValue(functionContext);
         }
         
+        argument = functionArgs.get(ARG_TOKENISATION_MODE);
+        AnalysisMode mode = (AnalysisMode) argument.getValue(functionContext);
+        
         PropertyArgument propArg = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
         Query query;
         if (propArg != null)
         {
             String prop = propArg.getPropertyName();
-            query = lqp.getFieldQuery(functionContext.getLuceneFieldName(prop), term, AnalysisMode.TOKENISE, slop, LuceneFunction.FIELD);
+            query = lqp.getFieldQuery(functionContext.getLuceneFieldName(prop), term, mode, slop, LuceneFunction.FIELD);
         }
         else
         {
-            query = lqp.getFieldQuery(lqp.getField(), term, AnalysisMode.TOKENISE, slop, LuceneFunction.FIELD);
-            
+            query = lqp.getFieldQuery(lqp.getField(), term, mode, slop, LuceneFunction.FIELD);
         }
         return query;
     }

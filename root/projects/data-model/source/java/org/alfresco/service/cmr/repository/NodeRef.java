@@ -18,6 +18,8 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +37,20 @@ import org.apache.commons.logging.Log;
  */
 public final class NodeRef implements EntityRef, Serializable
 {
+    // Let's force introspection of this class straight away so that we don't get contention when multiple threads try
+    // to cache BeanInfo
+    static
+    {
+        try
+        {
+            Introspector.getBeanInfo(NodeRef.class);
+        }
+        catch (IntrospectionException e)
+        {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     private static final long serialVersionUID = 3760844584074227768L;
     private static final String URI_FILLER = "/";
     private static final Pattern nodeRefPattern = Pattern.compile(".+://.+/.+");

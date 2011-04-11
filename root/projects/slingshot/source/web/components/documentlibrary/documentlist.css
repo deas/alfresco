@@ -547,7 +547,7 @@
 }
 .doclist .folder .onActionDetails a
 {
-   background-image: url(images/folder-view-details-16.png);
+   background-image: url(images/folder-details-16.png);
 }
 
 .doclist .onActionMetadata a
@@ -556,7 +556,7 @@
 }
 .doclist .folder .onActionMetadata a
 {
-   background-image: url(images/folder-edit-metadata-16.png);
+   background-image: url(images/folder-metadata-16.png);
 }
 
 .doclist .onActionDelete a
