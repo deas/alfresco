@@ -50,11 +50,11 @@
 
 .document-picker .picker-header .folder-up button
 {
-   background: transparent url(../../components/images/up-arrow-16.png) no-repeat 50% 50%;
+   background: transparent url(../../components/images/folder-up-16.png) no-repeat 50% 50%;
 }
 .document-picker .picker-header .folder-up button
 {
-   background-image: url(../../components/images/up-arrow-disabled-16.png);
+   background-image: url(../../components/images/folder-up-disabled-16.png);
 }
 
 .document-picker .picker-header .navigator button span.wait

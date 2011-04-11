@@ -25,7 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.UserTransaction;
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.CustomisableRmElement;
@@ -46,6 +49,7 @@ import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.Constraint;
@@ -64,20 +68,22 @@ import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
-import org.alfresco.service.transaction.TransactionService;
-import org.alfresco.util.BaseSpringTest;
+import org.alfresco.util.ApplicationContextHelper;
 import org.alfresco.util.Pair;
+import org.springframework.context.ApplicationContext;
 
 /**
  * This test class tests the definition and use of a custom RM elements at the Java services layer.
  * 
  * @author Neil McErlean, janv
  */
-public class RecordsManagementAdminServiceImplTest extends BaseSpringTest 
+public class RecordsManagementAdminServiceImplTest extends TestCase 
                                          implements DOD5015Model, RecordsManagementCustomModel,
                                                     BeforeCreateReference,
                                                     OnCreateReference
-{    
+{
+    private ApplicationContext applicationContext;
+    
     private NodeRef filePlan;
     
     private ContentService contentService;
@@ -88,15 +94,15 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
     private RecordsManagementActionService rmActionService;
     private RecordsManagementAdminService rmAdminService;
     private RetryingTransactionHelper transactionHelper;
-    private TransactionService transactionService;
     private PolicyComponent policyComponent;
     
     private final static long testRunID = System.currentTimeMillis();
     
-    @Override
-    protected void onSetUpInTransaction() throws Exception 
+    public RecordsManagementAdminServiceImplTest(String name)
     {
-        super.onSetUpInTransaction();
+        super(name);
+        
+        applicationContext = ApplicationContextHelper.getApplicationContext();
         
         this.dictionaryService = (DictionaryService)this.applicationContext.getBean("DictionaryService");
         this.contentService = (ContentService)this.applicationContext.getBean("ContentService");
@@ -106,47 +112,68 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
         this.rmAdminService = (RecordsManagementAdminService)this.applicationContext.getBean("RecordsManagementAdminService");
         this.searchService = (SearchService)this.applicationContext.getBean("SearchService");
         this.transactionHelper = (RetryingTransactionHelper)this.applicationContext.getBean("retryingTransactionHelper");
-        this.transactionService = (TransactionService)this.applicationContext.getBean("TransactionService");
-        this.policyComponent = (PolicyComponent)this.applicationContext.getBean("policyComponent");
-        
-        // Set the current security context as admin
-        AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
-
-        // Get the test data
-        setUpTestData();
-    }
-    
-    private void setUpTestData()
-    {
-        // Don't reload the fileplan data on each test method.
-        if (retrieveJanuaryAISVitalFolders().size() != 1)
-        {
-            filePlan = TestUtilities.loadFilePlanData(applicationContext);
-        }
+        this.policyComponent = (PolicyComponent)this.applicationContext.getBean("policyComponent");                
     }
     
     @Override
-    protected void onTearDownInTransaction() throws Exception
+    protected void setUp() throws Exception 
     {
-        try
+        // Set the current security context as admin
+        AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
+
+        // Get the file plan
+        filePlan = getFilePlan();
+    }
+    
+    private NodeRef getFilePlan()
+    {
+        RetryingTransactionCallback<NodeRef> execution = new RetryingTransactionCallback<NodeRef>()
         {
-            UserTransaction txn = transactionService.getUserTransaction(false);
-            txn.begin();
-            this.nodeService.deleteNode(filePlan);
-            txn.commit();
-        }
-        catch (Exception e)
+            public NodeRef execute() throws Throwable
+            {        
+                NodeRef nodeRef = null;
+                
+                String query = "TYPE:\"" + TYPE_FILE_PLAN + "\" AND @cm\\:name:\"testRMAdminFilePlan\"";
+                ResultSet result = searchService.query(TestUtilities.SPACES_STORE, SearchService.LANGUAGE_LUCENE, query);                
+                try
+                {
+                    if (result.length() != 0)
+                    {
+                        nodeRef = result.getNodeRefs().get(0);
+                    }
+                    else
+                    {
+                        nodeRef = TestUtilities.loadFilePlanData(applicationContext);
+                        nodeService.setProperty(nodeRef, ContentModel.PROP_NAME, "testRMAdminFilePlan");
+                    }
+                }
+                finally
+                {
+                    result.close();
+                }
+                
+                return nodeRef;
+            }
+        };
+        return transactionHelper.doInTransaction(execution);
+    }
+    
+    @Override
+    protected void tearDown() throws Exception
+    {
+        RetryingTransactionCallback<Void> execution = new RetryingTransactionCallback<Void>()
         {
-            // Nothing
-            //System.out.println("DID NOT DELETE FILE PLAN!");
-        }
+            public Void execute() throws Throwable
+            {
+                nodeService.deleteNode(filePlan);
+                return null;
+            }
+        };
+        transactionHelper.doInTransaction(execution);
     }
     
     public void testCreateAndDeleteCustomProperties() throws Exception
     {
-        setComplete();
-        endTransaction();
-        
         int propCount = rmAdminService.getCustomPropertyDefinitions().size();
         
         final List<QName> propIds = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<List<QName>>()
@@ -193,85 +220,82 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
     
     public void testCreateAndUseCustomProperty() throws Exception
     {
-        setComplete();
-        endTransaction();
-
         // Create the necessary test object in the db: a record.
         final NodeRef testRecord = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>()
-                {
-                    public NodeRef execute() throws Throwable
-                    {
-                        NodeRef recordFolder = retrievePreexistingRecordFolder();
-                        NodeRef result = createRecord(recordFolder, "testRecord" + System.currentTimeMillis());
-                        return result;
-                    }
-                });
+        {
+            public NodeRef execute() throws Throwable
+            {
+                NodeRef recordFolder = retrievePreexistingRecordFolder();
+                NodeRef result = createRecord(recordFolder, "testRecord" + System.currentTimeMillis());
+                return result;
+            }
+        });
 
         // Declare it
         transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>()
-                {
-                    public NodeRef execute() throws Throwable
-                    {
-                        declareRecord(testRecord);
-                        return null;
-                    }
-                });
+        {
+            public NodeRef execute() throws Throwable
+            {
+                declareRecord(testRecord);
+                return null;
+            }
+        });
 
         // Create a new custom property definition
         final QName generatedQName = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<QName>()
-                {
-                    public QName execute() throws Throwable
-                    {
-                        QName result = rmAdminService.addCustomPropertyDefinition(null,
-                                ASPECT_CUSTOM_RECORD_FOLDER_PROPERTIES.toPrefixString(namespaceService),
-                                "foo", DataTypeDefinition.BOOLEAN, "custom prop title", "custom prop description");
-                        return result;
-                    }
-                });
+        {
+            public QName execute() throws Throwable
+            {
+                QName result = rmAdminService.addCustomPropertyDefinition(null,
+                        ASPECT_CUSTOM_RECORD_FOLDER_PROPERTIES.toPrefixString(namespaceService),
+                        "foo", DataTypeDefinition.BOOLEAN, "custom prop title", "custom prop description");
+                return result;
+            }
+        });
         
 
         // Now we need to use the custom property.
         // So we apply the aspect containing it to our test record.
         transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
-                {
-                    public Void execute() throws Throwable
-                    {
-                        // Confirm the custom property is included in the list from rmAdminService.
-                        Map<QName, PropertyDefinition> customPropDefinitions = rmAdminService.getCustomPropertyDefinitions(CustomisableRmElement.RECORD_FOLDER);
-                        PropertyDefinition propDefn = customPropDefinitions.get(generatedQName);
-                        assertNotNull("Custom property definition from rmAdminService was null.", propDefn);
-                        assertEquals(generatedQName, propDefn.getName());
-                        assertEquals("foo", propDefn.getTitle());
+        {
+            public Void execute() throws Throwable
+            {
+                // Confirm the custom property is included in the list from rmAdminService.
+                Map<QName, PropertyDefinition> customPropDefinitions = rmAdminService.getCustomPropertyDefinitions(CustomisableRmElement.RECORD_FOLDER);
+                PropertyDefinition propDefn = customPropDefinitions.get(generatedQName);
+                assertNotNull("Custom property definition from rmAdminService was null.", propDefn);
+                assertEquals(generatedQName, propDefn.getName());
+                assertEquals("foo", propDefn.getTitle());
 
-                        assertEquals(DataTypeDefinition.BOOLEAN, propDefn.getDataType().getName());
-                        
-                        Map<QName, Serializable> customPropValue = new HashMap<QName, Serializable>();
-                        customPropValue.put(generatedQName, true);
-                        nodeService.addAspect(testRecord, ASPECT_CUSTOM_RECORD_FOLDER_PROPERTIES, customPropValue);
-                        return null;
-                    }
-                });
+                assertEquals(DataTypeDefinition.BOOLEAN, propDefn.getDataType().getName());
+                
+                Map<QName, Serializable> customPropValue = new HashMap<QName, Serializable>();
+                customPropValue.put(generatedQName, true);
+                nodeService.addAspect(testRecord, ASPECT_CUSTOM_RECORD_FOLDER_PROPERTIES, customPropValue);
+                return null;
+            }
+        });
         
         // Read back the property value to make sure it was correctly applied.
         transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
-                {
-                    public Void execute() throws Throwable
-                    {
-                        Map<QName, Serializable> nodeProps = nodeService.getProperties(testRecord);
-                        Serializable testProperty = nodeProps.get(generatedQName);
-                        assertNotNull("The testProperty was null.", testProperty);
-                        
-                        boolean testPropertyValue = (Boolean)testProperty;
-                        assertEquals("The test property was not 'true'.", true, testPropertyValue);
-                        
-                        // Check that the property has appeared in the data dictionary
-                        final AspectDefinition customPropertiesAspect = dictionaryService.getAspect(ASPECT_CUSTOM_RECORD_FOLDER_PROPERTIES);
-                        assertNotNull(customPropertiesAspect);
-                        assertNotNull("The customProperty is not returned from the dictionaryService.",
-                                customPropertiesAspect.getProperties().get(generatedQName));
-                        return null;
-                    }
-                });
+        {
+            public Void execute() throws Throwable
+            {
+                Map<QName, Serializable> nodeProps = nodeService.getProperties(testRecord);
+                Serializable testProperty = nodeProps.get(generatedQName);
+                assertNotNull("The testProperty was null.", testProperty);
+                
+                boolean testPropertyValue = (Boolean)testProperty;
+                assertEquals("The test property was not 'true'.", true, testPropertyValue);
+                
+                // Check that the property has appeared in the data dictionary
+                final AspectDefinition customPropertiesAspect = dictionaryService.getAspect(ASPECT_CUSTOM_RECORD_FOLDER_PROPERTIES);
+                assertNotNull(customPropertiesAspect);
+                assertNotNull("The customProperty is not returned from the dictionaryService.",
+                        customPropertiesAspect.getProperties().get(generatedQName));
+                return null;
+            }
+        });
         
         /* TODO
         try
@@ -301,46 +325,44 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
     }
     
     public void testCreateAndUseCustomChildReference() throws Exception
-    {
-        setComplete();
-        endTransaction();
-
+    {    
     	long now = System.currentTimeMillis();
         createAndUseCustomReference(CustomReferenceType.PARENT_CHILD, null, "superseded" + now, "superseding" + now);
     }
 
     public void testCreateAndUseCustomNonChildReference() throws Exception
     {
-        setComplete();
-        endTransaction();
-
-    	long now = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
     	createAndUseCustomReference(CustomReferenceType.BIDIRECTIONAL, "supporting" + now, null, null);
     }
     
 	private void createAndUseCustomReference(final CustomReferenceType refType, final String label, final String source, final String target) throws Exception
 	{
 		// Create the necessary test objects in the db: two records.
-        final NodeRef recordFolder = retrievePreexistingRecordFolder();
-        setComplete();
-        endTransaction();
-
+        final NodeRef recordFolder = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>()
+        {
+            public NodeRef execute() throws Throwable
+            {
+                return retrievePreexistingRecordFolder();
+            }          
+        });
+        
         final NodeRef testRecord1 = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>()
-                {
-                    public NodeRef execute() throws Throwable
-                    {
-                        NodeRef result = createRecord(recordFolder, "testRecordA" + System.currentTimeMillis());
-                        return result;
-                    }          
-                });        
+        {
+            public NodeRef execute() throws Throwable
+            {
+                NodeRef result = createRecord(recordFolder, "testRecordA" + System.currentTimeMillis());
+                return result;
+            }          
+        });        
         final NodeRef testRecord2 = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>()
-                {
-                    public NodeRef execute() throws Throwable
-                    {
-                        NodeRef result = createRecord(recordFolder, "testRecordB" + System.currentTimeMillis());
-                        return result;
-                    }          
-                });        
+        {
+            public NodeRef execute() throws Throwable
+            {
+                NodeRef result = createRecord(recordFolder, "testRecordB" + System.currentTimeMillis());
+                return result;
+            }          
+        });        
 
         final QName generatedQName = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<QName>()
                 {
@@ -451,9 +473,6 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
 	
     public void testGetAllProperties()
     {
-        setComplete();
-        endTransaction();
-
         transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
                 {
                     public Void execute() throws Throwable
@@ -477,9 +496,6 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
 	
     public void testGetAllReferences()
     {
-        setComplete();
-        endTransaction();
-
         transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
                 {
                     public Void execute() throws Throwable
@@ -498,10 +514,7 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
     }
     
     public void testGetAllConstraints()
-    {
-        setComplete();
-        endTransaction();
-
+    {   
         transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
                 {
                     public Void execute() throws Throwable
@@ -525,9 +538,6 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
 	
 	public void testCreateReference() throws Exception
 	{
-	    setComplete();
-	    endTransaction();
-
 	    inTest = true;
         try
         {
@@ -640,10 +650,7 @@ public class RecordsManagementAdminServiceImplTest extends BaseSpringTest
     
     public void testCreateCustomConstraints() throws Exception
     {
-        setComplete();
-        endTransaction();
-        
-        final int beforeCnt =
+       final int beforeCnt =
             transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Integer>()
                 {
                     public Integer execute() throws Throwable

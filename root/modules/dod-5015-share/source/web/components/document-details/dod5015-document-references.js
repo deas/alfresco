@@ -41,7 +41,9 @@
     */
    Alfresco.RecordsDocumentReferences = function(htmlId)
    {
-      return Alfresco.RecordsDocumentReferences.superclass.constructor.call(this, "Alfresco.RecordsDocumentReferences", htmlId);
+      Alfresco.RecordsDocumentReferences.superclass.constructor.call(this, "Alfresco.RecordsDocumentReferences", htmlId);
+      YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
+      return this;
    };
    
    /**
@@ -74,19 +76,6 @@
          docName: null
       },
       
-      /**
-       * Fired by YUI when parent element is available for scripting
-       * 
-       * @method onReady
-       */
-      onReady: function RecordsDocumentReferences_onReady()
-      {
-         this.widgets.manageRefs = Alfresco.util.createYUIButton(this, "manageRefs-button", this.onManageReferences,
-         {
-            disabled: true
-         });
-         YAHOO.Bubbling.on("documentDetailsAvailable", this.onDocumentDetailsAvailable, this);
-      },
 
       /**
        * Event handler for documentDetailsAvailable bubbling event
@@ -125,6 +114,14 @@
             });
 
          window.location.href = url;
+      },
+
+      doRefresh: function()
+      {
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
+         var url = 'components/document-details/dod5015/document-references?nodeRef={nodeRef}&container={containerId}';
+         url += this.options.siteId ? '&site={siteId}' :  '';
+         this.refresh(url);
       }
    });
 })();

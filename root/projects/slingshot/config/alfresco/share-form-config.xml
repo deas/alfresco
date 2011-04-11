@@ -405,5 +405,601 @@
          </form>
       </forms>
    </config>
+   
+   <!-- JMX Form Config -->
+   
+   <!-- Runtime -->
+   <config evaluator="string-compare" condition="Alfresco:Name=Runtime">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="FreeMemory" />
+               <show id="MaxMemory" />
+               <show id="TotalMemory" />
+            </field-visibility>
+            <appearance>
+               <set id="runtime" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="FreeMemory" label-id="runtime.field.FreeMemory" set="runtime" />
+               <field id="MaxMemory" label-id="runtime.field.MaxMemory" set="runtime" />
+               <field id="TotalMemory" label-id="runtime.field.TotalMemory" set="runtime" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- Repository Descriptor Current -->
+   <config evaluator="string-compare" condition="Alfresco:Name=RepositoryDescriptor,Type=Current">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="Id" />
+               <show id="Schema" />
+               <show id="Version" />
+               <show id="VersionLabel" />
+               <show id="VersionMajor" />
+               <show id="VersionMinor" />
+               <show id="VersionRevision" />
+               <show id="VersionBuild" />
+               <show id="VersionNumber" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="version" appearance="title" label-id="repository-server.set.version" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="Id" label-id="repository-server.field.Id" />
+               <field id="Schema" label-id="repository-server.field.Schema" />
+               <field id="Version" label-id="repository-server.field.Version" set="version"/>
+               <field id="VersionLabel" label-id="repository-server.field.VersionLabel" set="version" />
+               <field id="VersionMajor" label-id="repository-server.field.VersionMajor" set="version" />
+               <field id="VersionMinor" label-id="repository-server.field.VersionMinor" set="version" />
+               <field id="VersionRevision" label-id="repository-server.field.VersionRevision" set="version" />
+               <field id="VersionBuild" label-id="repository-server.field.VersionBuild" set="version" />
+               <field id="VersionNumber" label-id="repository-server.field.VersionNumber" set="version" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- Repository Descriptor Installed -->
+   <config evaluator="string-compare" condition="Alfresco:Name=RepositoryDescriptor,Type=Initially Installed">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="Id" />
+               <show id="Schema" />
+               <show id="Version" />
+               <show id="VersionLabel" />
+               <show id="VersionMajor" />
+               <show id="VersionMinor" />
+               <show id="VersionRevision" />
+               <show id="VersionBuild" />
+               <show id="VersionNumber" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="version" appearance="title" label-id="repository-installed.set.version" template="/org/alfresco/components/form/2-column-set.ftl" />
+
+               <field id="Id" label-id="repository-installed.field.Id" />
+               <field id="Schema" label-id="repository-installed.field.Schema" />
+
+               <field id="Version" label-id="repository-installed.field.Version" set="version" />
+               <field id="VersionLabel" label-id="repository-installed.field.VersionLabel" set="version" />
+               <field id="VersionMinor" label-id="repository-installed.field.VersionMinor" set="version" />
+               <field id="VersionMajor" label-id="repository-installed.field.VersionMajor" set="version" />
+               <field id="VersionRevision" label-id="repository-installed.field.VersionRevision" set="version" />
+               <field id="VersionBuild" label-id="repository-installed.field.VersionBuild" set="version" />
+               <field id="VersionNumber" label-id="repository-installed.field.VersionNumber" set="version" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- Authority -->
+   <config evaluator="string-compare" condition="Alfresco:Name=Authority">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="NumberOfGroups" />
+               <show id="NumberOfUsers" />
+            </field-visibility>
+            <appearance>
+                <set id="authorities" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+                <field id="NumberOfGroups" label-id="authority.field.NumberOfGroups" set="authorities" />
+                <field id="NumberOfUsers" label-id="authority.field.NumberOfUsers" set="authorities" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- License Descriptor -->
+   <config evaluator="string-compare" condition="Alfresco:Name=License">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="Subject" />
+               <show id="Days" />
+               <show id="Holder" />
+               <show id="ValidUntil" />
+               <show id="LicenseMode" />
+               <show id="MaxDocs" />
+               <show id="MaxUsers" />
+               <show id="RemainingDays" />
+               <show id="Issued" />
+               <show id="Issuer" />
+               <show id="HeartBeatDisabled" />
+
+               <show id="mbean_operations" for-mode="edit" />
+            </field-visibility>
+            <appearance>
+               <set id="license" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="operations" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="Subject" label-id="license.field.Subject" set="license" />
+               <field id="Days" label-id="license.field.Days" set="license" />
+               <field id="Holder" label-id="license.field.Holder" set="license" />
+               <field id="ValidUntil" label-id="license.field.ValidUntil" set="license" />
+               <field id="LicenseMode" label-id="license.field.LicenseMode" set="license" />
+               <field id="MaxDocs" label-id="license.field.MaxDocs" set="license" />
+               <field id="MaxUsers" label-id="license.field.MaxUsers" set="license" />
+               <field id="RemainingDays" label-id="license.field.RemainingDays" set="license" />
+               <field id="Issued" label-id="license.field.Issued" set="license" />
+               <field id="Issuer" label-id="license.field.Issuer" set="license" />
+               <field id="HeartBeatDisabled" label-id="license.field.HeartBeatDisabled" set="license">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="mbean_operations" set="operations" />
+            </appearance>
+
+         </form>
+      </forms>
+   </config>
+
+   <!-- OpenOffice Jodconverter (subsystem) -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=OOoJodconverter,id1=default">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="jodconverter.enabled" />
+               <show id="jodconverter.maxTasksPerProcess" />
+               <show id="jodconverter.officeHome" />
+               <show id="jodconverter.portNumbers" />
+               <show id="jodconverter.taskExecutionTimeout" />
+               <show id="jodconverter.taskQueueTimeout" />
+            </field-visibility>
+            <appearance>
+               <set id="openoffice_jod" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="jodconverter.enabled" label-id="ooojodconverter.field.jodconverter.enabled" set="openoffice_jod">
+                 <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="jodconverter.maxTasksPerProcess" label-id="ooojodconverter.field.jodconverter.maxTasksPerProcess" set="openoffice_jod" />
+               <field id="jodconverter.officeHome" label-id="ooojodconverter.field.jodconverter.officeHome" set="openoffice_jod" />
+               <field id="jodconverter.portNumbers" label-id="ooojodconverter.field.jodconverter.portNumbers" set="openoffice_jod" />
+               <field id="jodconverter.taskExecutionTimeout" label-id="ooojodconverter.field.jodconverter.taskExecutionTimeout" set="openoffice_jod" />
+               <field id="jodconverter.taskQueueTimeout" label-id="ooojodconverter.field.jodconverter.taskQueueTimeout" set="openoffice_jod" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- OpenOffice (Subsystem) -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=OOoDirect,id1=default">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="ooo.enabled" />
+               <show id="ooo.exe" />
+               <show id="ooo.port" />
+
+               <show id="mbean_operations" for-mode="edit" />
+            </field-visibility>
+            <appearance>
+               <set id="openoffice" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="operations" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="ooo.enabled" label-id="openoffice-subsystem.field.ooo.enabled" set="openoffice">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="ooo.exe" label-id="openoffice-subsystem.field.ooo.exe" set="openoffice" />
+               <field id="ooo.port" label-id="openoffice-subsystem.field.ooo.port" set="openoffice" />
+
+               <field id="mbean_operations" set="operations" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+
+   <!-- OpenOffice (non-Subsystem) -->
+   <config evaluator="string-compare" condition="Alfresco:Name=OpenOffice">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="available" />
+               <show id="ooName" />
+               <show id="ooOpenSourceContext" />
+               <show id="ooSetupExtension" />
+               <show id="ooSetupVersion" />
+               <show id="ooSetupVersionAboutBox" />
+               <show id="ooXMLFileFormatName" />
+               <show id="ooXMLFileFormatVersion" />
+            </field-visibility>
+            <appearance>
+               <set id="openoffice" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="available" appearance="title" label-id="openoffice.field.available" set="openoffice" />
+               <field id="ooName" label-id="openoffice.field.ooName" set="openoffice" />
+               <field id="ooOpenSourceContext" label-id="openoffice.field.ooOpenSourceContext" set="openoffice" />
+               <field id="ooSetupExtension" label-id="openoffice.field.ooSetupExtension" set="openoffice" />
+               <field id="ooSetupVersion" label-id="openoffice.field.ooSetupVersion" set="openoffice" />
+               <field id="ooSetupVersionAboutBox" label-id="openoffice.field.ooSetupVersionAboutBox" set="openoffice" />
+               <field id="ooXMLFileFormatName" label-id="openoffice.field.ooXMLFileFormatName" set="openoffice" />
+               <field id="ooXMLFileFormatVersion" label-id="openoffice.field.ooXMLFileFormatVersion" set="openoffice" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- pdf2swf -->
+   <config evaluator="string-compare" condition="Alfresco:Name=ContentTransformer,Type=pdf2swf">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="VersionString" />
+               <show id="Available" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- ImageMagick -->
+   <config evaluator="string-compare" condition="Alfresco:Name=ContentTransformer,Type=ImageMagick">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="VersionString" />
+               <show id="Available" />
+            </field-visibility>
+            <appearance>
+               <set id="imagemagick" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="Available" label-id="transformer-imagemagick.field.Available" read-only="true" set="imagemagick" />
+               <field id="VersionString" label-id="transformer-imagemagick.field.VersionString" read-only="true" set="imagemagick" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- Fileservers -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=fileServers,id1=default">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cifs.enabled" />
+               <show id="cifs.WINS.autoDetectEnabled" />
+               <show id="cifs.WINS.primary" />
+               <show id="cifs.WINS.secondary" />
+               <show id="cifs.bindto" />
+               <show id="cifs.broadcast" />
+               <show id="cifs.disableNIO" />
+               <show id="cifs.disableNativeCode" />
+               <show id="cifs.hostannounce" />
+               <show id="cifs.ipv6.enabled" />
+               <show id="cifs.domain" />
+               <show id="cifs.netBIOSSMB.datagramPort" />
+               <show id="cifs.netBIOSSMB.namePort" />
+               <show id="cifs.netBIOSSMB.sessionPort" />
+               <show id="cifs.serverName" />
+               <show id="cifs.sessionDebug" />
+               <show id="cifs.sessionTimeout" />
+               <show id="cifs.tcpipSMB.port" />
+               
+               <show id="filesystem.acl.global.defaultAccessLevel" />
+               <show id="filesystem.acl.global.domainAccessControls" />
+               <show id="filesystem.acl.global.protocolAccessControls" />
+               <show id="filesystem.acl.global.userAccessControls" />
+               <show id="filesystem.domainMappings" />
+               <show id="filesystem.name" />
+
+               <show id="ftp.enabled" />
+               <show id="ftp.ipv6.enabled" />
+               <show id="ftp.dataPortFrom" />
+               <show id="ftp.dataPortTo" />
+               <show id="ftp.keyStore" />
+               <show id="ftp.passphrase" />
+               <show id="ftp.port" />
+               <show id="ftp.trustStore" />
+               <show id="ftp.sessionDebug" />
+               <show id="ftp.sslEngineDebug" />
+               <show id="ftp.requireSecureSession" />
+
+               <show id="mbean_operations" for-mode="edit" />
+            </field-visibility>
+            <appearance>
+               <set id="filesystem" appearance="title" label-id="fileservers.set.filesystem" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="cifs" appearance="title" label-id="fileservers.set.cifs" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="ftp" appearance="title" label-id="fileservers.set.ftp" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="operations" appearance="" />
+
+
+               <field id="filesystem.acl.global.defaultAccessLevel" label-id="fileservers.field.filesystem.acl.global.defaultAccessLevel" set="filesystem" />
+               <field id="filesystem.acl.global.domainAccessControls" label-id="fileservers.field.filesystem.acl.global.domainAccessControls" set="filesystem" />
+               <field id="filesystem.acl.global.protocolAccessControls" label-id="fileservers.field.filesystem.acl.global.protocolAccessControls" set="filesystem" />
+               <field id="filesystem.acl.global.userAccessControls" label-id="fileservers.field.filesystem.acl.global.userAccessControls" set="filesystem" />
+               <field id="filesystem.domainMappings" label-id="fileservers.field.filesystem.domainMappings" set="filesystem" />
+
+               <field id="filesystem.name" label-id="fileservers.field.filesystem.name" description="The name used for the filesystems when accessed via CIFS/FTP/WebDAV" help="This is the name used for the filesystem when connecting via CIFS, WebDAV or FTP" set="filesystem" />
+
+               <field id="cifs.WINS.autoDetectEnabled" label-id="fileservers.field.cifs.WINS.autoDetectEnabled" set="cifs">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="cifs.WINS.primary" label-id="fileservers.field.cifs.WINS.primary" set="cifs" />
+               <field id="cifs.WINS.secondary" label-id="fileservers.field.cifs.WINS.secondary" set="cifs" />
+               <field id="cifs.bindto" label-id="fileservers.field.cifs.bindto" set="cifs" />
+               <field id="cifs.broadcast" label-id="fileservers.field.cifs.broadcast" set="cifs"  />
+               <field id="cifs.disableNIO" label-id="fileservers.field.cifs.disableNIO" set="cifs">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="cifs.disableNativeCode"  label-id="fileservers.field.cifs.disableNativeCode" set="cifs">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="cifs.domain" label-id="fileservers.field.cifs.domain" set="cifs" />
+
+               <field id="cifs.enabled" label-id="fileservers.field.cifs.enabled" set="cifs">
+                 <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+
+               <field id="cifs.hostannounce" label-id="fileservers.field.cifs.hostannounce" set="cifs">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+
+               <field id="cifs.ipv6.enabled" label-id="fileservers.field.cifs.ipv6.enabled" set="cifs">
+                 <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+
+               <field id="cifs.netBIOSSMB.datagramPort" label-id="fileservers.field.cifs.netBIOSSMB.datagramPort" set="cifs" />
+               <field id="cifs.netBIOSSMB.namePort" label-id="fileservers.field.cifs.netBIOSSMB.namePort" set="cifs" />
+               <field id="cifs.netBIOSSMB.sessionPort" label-id="fileservers.field.cifs.netBIOSSMB.sessionPort" set="cifs" />
+
+               <field id="cifs.serverName" label-id="fileservers.field.cifs.serverName" set="cifs" />
+
+               <field id="cifs.sessionDebug" label-id="fileservers.field.cifs.sessionDebug" set="cifs" />
+               <field id="cifs.sessionTimeout" label-id="fileservers.field.cifs.sessionTimeout" set="cifs" />
+               <field id="cifs.tcpipSMB.port" label-id="fileservers.field.cifs.tcpipSMB.port" set="cifs" />
+
+               <field id="ftp.dataPortFrom" label-id="fileservers.field.ftp.dataPortFrom" set="ftp" />
+               <field id="ftp.dataPortTo" label-id="fileservers.field.ftp.dataPortTo" set="ftp" />
+
+               <field id="ftp.enabled" label-id="fileservers.field.ftp.enabled" set="ftp">
+                 <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="ftp.ipv6.enabled" label-id="fileservers.field.ftp.ipv6.enabled" set="ftp">
+                 <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="ftp.keyStore" label-id="fileservers.field.ftp.keyStore" set="ftp" />
+               <field id="ftp.passphrase" label-id="fileservers.field.ftp.passphrase" set="ftp" />
+               <field id="ftp.port" label-id="fileservers.field.ftp.port" set="ftp" />
+               <field id="ftp.requireSecureSession" label-id="fileservers.field.ftp.requireSecureSession" set="ftp">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+
+               <field id="ftp.sessionDebug" label-id="fileservers.field.ftp.sessionDebug" set="ftp" />
+               <field id="ftp.sslEngineDebug" label-id="fileservers.field.ftp.sslEngineDebug" set="ftp">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="ftp.trustStore" label-id="fileservers.field.ftp.trustStore" set="ftp" />
+
+               <field id="mbean_operations" set="operations" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
+   <!-- Sysadmin -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=sysAdmin,id1=default">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="alfresco.context" />
+               <show id="alfresco.host" />
+               <show id="alfresco.port" />
+               <show id="alfresco.protocol" />
+               <show id="share.context" />
+               <show id="share.host" />
+               <show id="share.port" />
+               <show id="share.protocol" />
+               <show id="server.allowedusers" />
+               <show id="server.maxusers" />
+               <show id="server.transaction.allow-writes" />
+               <show id="mbean_operations" for-mode="edit" />
+            </field-visibility>
+            <appearance>
+               <set id="sysAdmin" appearance="title" label-id="form.set.general"
+                    template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="operations" appearance="title" label-id="form.set.operations" />
+               <field id="alfresco.context" label-id="sysadmin.field.alfresco.context" set="sysAdmin" />
+               <field id="alfresco.host" label-id="sysadmin.field.alfresco.host" set="sysAdmin" />
+               <field id="alfresco.port" label-id="sysadmin.field.alfresco.port" set="sysAdmin" />
+               <field id="alfresco.protocol" label-id="sysadmin.field.alfresco.protocol" set="sysAdmin">
+                 <control template="/org/alfresco/components/form/controls/selectone.ftl">
+                    <control-param name="options">http|http,https|https</control-param>
+                 </control>
+               </field>
+               <field id="server.allowedusers" label-id="sysadmin.field.server.allowedusers" set="sysAdmin" />
+               <field id="server.maxusers" label-id="sysadmin.field.server.maxusers" set="sysAdmin" />
+               <field id="server.transaction.allow-writes" label-id="sysadmin.field.server.transaction.allow-writes" set="sysAdmin">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="share.context" label-id="sysadmin.field.share.context" set="sysAdmin" />
+               <field id="share.host" label-id="sysadmin.field.share.host" set="sysAdmin" />
+               
+               <field id="share.port" label-id="sysadmin.field.share.port" set="sysAdmin">
+                  <constraint-handlers>
+                     <constraint type="NUMBER" validation-handler="Alfresco.forms.validation.number" event="keyup" />
+                  </constraint-handlers>
+               </field>
+               
+               <field id="share.protocol" label-id="sysadmin.field.share.protocol" set="sysAdmin">
+                 <control template="/org/alfresco/components/form/controls/selectone.ftl">
+                    <control-param name="options">http|http,https|https</control-param>
+                 </control>
+               </field>
+               
+               <field id="mbean_operations" set="operations" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- Inbound Email -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=email,id1=inbound">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="email.inbound.enabled" />
+               <show id="email.inbound.unknownUser" />
+               <show id="email.server.allowed.senders" />
+               <show id="email.server.blocked.senders" />
+               <show id="email.server.domain" />
+               <show id="email.server.enabled" />
+               <show id="email.server.port" />
+            </field-visibility>
+            <appearance>
+               <set id="inbound" appearance="title" label-id="form.set.general"
+                    template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="email.inbound.enabled" label-id="email-inbound.field.email.inbound.enabled" set="inbound">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="email.inbound.unknownUser" label-id="email-inbound.field.email.inbound.unknownUser" set="inbound" />
+               <field id="email.server.allowed.senders" label-id="email-inbound.field.email.server.allowed.senders" set="inbound" />
+               <field id="email.server.blocked.senders" label-id="email-inbound.field.email.server.blocked.senders" set="inbound" />
+               <field id="email.server.domain" label-id="email-inbound.field.email.server.domain" set="inbound" />
+               <field id="email.server.enabled" label-id="email-inbound.field.email.server.enabled" set="inbound">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="email.server.port" label-id="email-inbound.field.email.server.port" set="inbound" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
+   <!-- Outbound Email -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=email,id1=outbound">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="mail.host"/>
+               <show id="mail.port" />
+               <show id="mail.protocol" />
+               <show id="mail.encoding" />
+               <show id="mail.from.default" />
+               <show id="mail.smtp.auth" />
+               <show id="mail.username" />
+               <show id="mail.password" for-mode="edit" />
+               <show id="mail.testmessage.send" />
+               <show id="mail.testmessage.to" />
+               <show id="mail.testmessage.subject" />
+               <show id="mail.testmessage.send" />
+               <show id="mail.testmessage.text" />
+               <show id="mbean_operations" for-mode="edit" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="form.set.general"
+                    template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="auth" appearance="title" label-id="email-outbound.set.auth" />
+               <set id="testmessage" appearance="title" label-id="email-outbound.set.test-message" />
+               <set id="operations" appearance="" />
+               
+               <field id="mail.host" label-id="email-outbound.field.mail.host" />
+               <field id="mail.port" label-id="email-outbound.field.mail.port" />
+               <field id="mail.protocol" label-id="email-outbound.field.mail.protocol" />
+               <field id="mail.encoding" label-id="email-outbound.field.mail.encoding" />
+               <field id="mail.from.default" label-id="email-outbound.field.mail.from.default" />
+               <field id="mail.smtp.auth" label-id="email-outbound.field.mail.smtp.auth" set="auth">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="mail.username" label-id="email-outbound.field.mail.username" set="auth" />
+               <field id="mail.password" label-id="email-outbound.field.mail.password" set="auth">
+                  <control>
+                     <control-param name="password">true</control-param>
+                  </control>
+               </field>
+               <field id="mail.testmessage.send" label-id="email-outbound.field.mail.testmessage.send" set="testmessage">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="mail.testmessage.to" label-id="email-outbound.field.mail.testmessage.to" set="testmessage" />
+               <field id="mail.testmessage.subject" label-id="email-outbound.field.mail.testmessage.subject" set="testmessage" />
+               <field id="mail.testmessage.text" label-id="email-outbound.field.mail.testmessage.text" set="testmessage" />
+               <field id="mbean_operations" set="operations"/>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
+   <!-- IMAP (Subsystem) -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=imap,id1=default">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="imap.config.home.folderPath" />
+               <show id="imap.config.home.rootPath" />
+               <show id="imap.config.home.store" />
+               <show id="imap.config.ignore.extraction" />
+               <show id="imap.config.server.mountPoints" />
+               <show id="imap.mail.from.default" />
+               <show id="imap.server.host" />
+               <show id="imap.server.port" />
+               <show id="imap.server.enabled" />
+
+               <show id="mbean_operations" for-mode="edit" />
+            </field-visibility>
+            <appearance>
+               <set id="imap" appearance="title" label-id="imap.set.imap" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="operations" appearance=""/>
+
+               <field id="imap.config.home.folderPath" label-id="imap.field.imap.config.home.folderPath" set="imap" />
+               <field id="imap.config.home.rootPath" label-id="imap.field.imap.config.home.rootPath" set="imap" />
+               <field id="imap.config.home.store" label-id="imap.field.imap.config.home.store" set="imap" />
+               <field id="imap.config.ignore.extraction" label-id="imap.field.imap.config.ignore.extraction" set="imap" />
+               <field id="imap.config.server.mountPoints" label-id="imap.field.imap.config.server.mountPoints" set="imap" />
+               <field id="imap.mail.from.default" label-id="imap.field.imap.mail.from.default" set="imap" />
+               <field id="imap.server.enabled" label-id="imap.field.imap.server.enabled" set="imap">
+                 <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="imap.server.host" label-id="imap.field.imap.server.host" set="imap" />
+               <field id="imap.server.port" label-id="imap.field.imap.server.port" set="imap" />
+
+               <field id="mbean_operations" set="operations" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- ActivitiesFeed (Subsystem) -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=ActivitiesFeed,id1=default">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="activities.feed.notifier.enabled" />
+               <show id="activities.feed.notifier.repeatIntervalMins" />
+               <show id="activities.feed.max.ageMins" />
+               <show id="activities.feed.max.size" />
+
+               <show id="mbean_operations" for-mode="edit" />
+            </field-visibility>
+            <appearance>
+               <set id="activities" appearance="title" label-id="activities.set.activities" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="operations" appearance=""/>
+
+               <field id="activities.feed.notifier.enabled" label-id="activities.field.feed.notifier.enabled" set="activities">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="activities.feed.notifier.repeatIntervalMins" label-id="activities.field.feed.notifier.repeatIntervalMins" set="activities" />
+               <field id="activities.feed.max.ageMins" label-id="activities.field.feed.max.ageMins" set="activities" />
+               <field id="activities.feed.max.size" label-id="activities.field.feed.max.size" set="activities" />
+               
+               <field id="mbean_operations" set="operations" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
 
 </alfresco-config>

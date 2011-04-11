@@ -64,8 +64,8 @@
 {
    display: inline-block;
    vertical-align: top;
-   width: 8px;
-   margin-right: 8px;
+   width: 6px;
+   margin-right: 6px;
    height: 50px;
    margin-top: 1px;
    border-right: 1px dotted #dfdfdf;
@@ -109,7 +109,7 @@
 {
    .header .app-items span.yui-button span.first-child button
    {
-      padding: 22px 4px 4px;
+      padding: 22px 4px 5px;
    }
 }
 

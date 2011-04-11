@@ -12,12 +12,18 @@ function getTreenode()
    {
       var items = new Array(),
          hasSubfolders = true,
-         parsedArgs = ParseArgs.getParsedArgs(),
+         ignoredTypes =
+         {
+            "{http://www.alfresco.org/model/forum/1.0}forum": true,
+            "{http://www.alfresco.org/model/forum/1.0}topic": true,
+            "{http://www.alfresco.org/model/content/1.0}systemfolder": true
+         },
          skipPermissionCheck = args["perms"] == "false",
          evalChildFolders = args["children"] !== "false",
          item, rmNode, capabilities, cap;
    
       // Use helper function to get the arguments
+      var parsedArgs = ParseArgs.getParsedArgs();
       if (parsedArgs === null)
       {
          return;
@@ -28,7 +34,7 @@ function getTreenode()
       {
          for each (item in parsedArgs.pathNode.children)
          {
-            if (itemIsAllowed(item))
+            if (itemIsAllowed(item) && !(item.type in ignoredTypes))
             {
                if (evalChildFolders)
                {
@@ -47,11 +53,11 @@ function getTreenode()
       {
          for each (item in parsedArgs.pathNode.children)
          {
-            if (itemIsAllowed(item))
+            if (itemIsAllowed(item) && !(item.type in ignoredTypes))
             {
                capabilities = {};
                rmNode = rmService.getRecordsManagementNode(item);
-               for each (cap in rmNode.capabilities)
+               for each (cap in rmNode.capabilitiesSet("Create"))
                {
                   capabilities[cap.name] = true;
                }

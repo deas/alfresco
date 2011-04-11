@@ -1460,7 +1460,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
-		catch (IOException ex) {
+		catch (Throwable t) {
 		}
 
 		// Remove the file from the connections list of open files

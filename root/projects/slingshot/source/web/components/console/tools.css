@@ -1,6 +1,6 @@
 .tool ul
 {
-   padding: 0.5em 0 1em;
+   padding: 0.2em 0 0.5em;
 }
 
 .tool li
@@ -18,9 +18,15 @@
 	position: relative;
 }
 
+.tool h3
+{
+   padding-left: 0.3em;
+   padding-top: 0.5em;
+}
+
 .tool ul.toolLink .first-link
 {
-	position: relative;
+   position: relative;
 }
 
 .tools-link h2

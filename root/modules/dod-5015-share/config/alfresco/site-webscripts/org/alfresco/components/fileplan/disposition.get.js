@@ -47,6 +47,10 @@ function main()
          {
             model.dipositionScheduleNodeRef = schedule.nodeRef;            
          }
+         
+         model.publishInProgress = schedule.publishInProgress;
+         model.unpublishedUpdates = schedule.unpublishedUpdates;
+         
          model.recordLevelDisposition = schedule.recordLevelDisposition;
          var actions = schedule.actions,
                periodTypeLabel;

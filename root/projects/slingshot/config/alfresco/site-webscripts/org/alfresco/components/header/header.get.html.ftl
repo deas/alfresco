@@ -3,7 +3,7 @@
 <#assign siteActive = page.url.templateArgs.site??>
 <#assign id = args.htmlid>
 <#assign jsid = id?replace("-", "_")>
-<#assign logo=msg("header.logo")><#if logo="header.logo"><#assign logo="app-logo.png"></#if>
+<#assign defaultlogo=msg("header.logo")><#if defaultlogo="header.logo"><#assign defaultlogo="app-logo.png"></#if>
 <#if !user.isGuest>
 <script type="text/javascript">//<![CDATA[
    var ${jsid} = new Alfresco.component.Header("${id}").setOptions(
@@ -23,7 +23,7 @@
 <div class="header">
    <span class="header-left">
       <span class="logo">
-         <a href="#" onclick="${jsid}.showAboutShare(); return false;"><img src="${url.context}/res/themes/${theme}/images/${logo}" alt="Alfresco Share" /></a>
+         <a href="#" onclick="${jsid}.showAboutShare(); return false;"><img src="${url.context}<#if logo?? && logo?length!=0>/proxy/alfresco/api/node/${logo?replace('://','/')}/content<#else>/res/themes/${theme}/images/${defaultlogo}</#if>" alt="Alfresco Share" /></a>
       </span>
       <span class="logo-spacer">&nbsp;</span>
       <span id="${id}-appItems" class="app-items hidden"><@header.renderItems config.global.header.appItems id "app" /></span>
@@ -60,10 +60,24 @@
 <div class="header">
    <span class="header-left">
       <span class="logo">
-         <a href="#" onclick="${jsid}.showAboutShare(); return false;"><img src="${url.context}/res/themes/${theme}/images/${logo}" alt="Alfresco Share" /></a>
+         <a href="#" onclick="${jsid}.showAboutShare(); return false;"><img src="${url.context}/res/themes/${theme}/images/${logo!"app-logo.png"}" alt="Alfresco Share" /></a>
       </span>
       <span class="logo-spacer">&nbsp;</span>
    </span>
 </div>
 </#if>
 <div class="clear"></div>
+<#if usage??>
+<div class="license">
+   <div class="license-header">
+      <div class="warnings level${usage.level}">
+      <#list usage.warnings as w>
+         <div class="info">${w?html}</div>
+      </#list>
+      <#list usage.errors as e>
+         <div class="info">${e?html}</div>
+      </#list>
+      </div>
+   </div>
+</div>
+</#if>

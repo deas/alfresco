@@ -23,23 +23,22 @@
 
 .doclist .doclist-bar
 {
-   background-color: #f8f8f8;
-   border-bottom: 1px dashed #c0c0c0;
+   border-bottom: 1px solid #d9d9d9;
    margin: 0 -10px;
    padding: 4px 0.5em 2px;
 }
 
 .doclist .doclist-bar-bottom
 {
-   border-top: 1px dashed #d9d9d9;
-   margin-top: 2em;
+   border-top: 1px solid #d9d9d9;
    display: none;
 }
 
 .doclist span.separator
 {
-   border-right: 1px dotted #457A9C;
+   border-right: 1px dotted #c7ccce;
    border-top: medium none;
+   left: -2px;
    margin: 0 4px;
    padding: 2px 0;
    position: relative;
@@ -107,17 +106,73 @@
    background-image: url(images/select-documents-16.png);
 }
 
-/* DocList bar Simple / Detailed view */
+/* DocList bar right-hand section */
 
+.doclist .sort-direction,
+.doclist .sort-field,
 .doclist .show-folders,
 .doclist .simple-detailed
 {
    float: right;
 }
 
+.doclist .show-folders span.first-child,
+.doclist .simple-detailed span.first-child
+{
+   background-position: 50% 50%;
+   background-repeat: no-repeat;
+   min-height: 16px;
+   padding: 0 2px;
+}
+
+.doclist .show-folders span.first-child button
+{
+   padding: 0 14px;
+}
+
+.doclist .sort-direction span.yui-button
+{
+   margin-right: 0;
+}
+
+.doclist .sort-direction span.first-child
+{
+   background-image: url(images/sort-ascending-16.png);
+   background-position: 50% 50%;
+   background-repeat: no-repeat;
+   min-height: 16px;
+   padding: 0 2px;
+}
+
+.doclist .sort-direction .sort-descending span.first-child
+{
+   background-image: url(images/sort-descending-16.png);
+}
+
+.doclist .sort-field span.yui-button
+{
+   margin-left: 0;
+}
+
+.doclist .sort-field button
+{
+   padding-left: 4px;
+}
+
 .doclist .show-folders
 {
    margin-right: 4px;
+}
+
+.doclist .show-folders span.first-child,
+.doclist .show-folders-image
+{
+   background-image: url(images/folders-hide-16.png);
+}
+
+.doclist .show-folders .yui-button-checked span.first-child
+{
+   background-image: url(images/folders-show-16.png);
 }
 
 .doclist .show-folders .separator
@@ -129,14 +184,6 @@
 {
    margin-left: 0;
    margin-right: 0;
-}
-
-.doclist .simple-detailed span.first-child
-{
-   background-position: 50% 50%;
-   background-repeat: no-repeat;
-   min-height: 16px;
-   padding: 0 2px;
 }
 
 .doclist .simple-detailed .simple-view span.first-child
@@ -157,6 +204,17 @@
 .doclist .simple-detailed .detailed-view.yui-button-checked span.first-child
 {
    background-image: url(images/detailed-view-on-16.png);
+}
+
+/* Inline "Show Folders" action */
+
+.doclist .show-folders-image
+{
+   background-position: 0px 3px;
+   cursor: pointer;
+   display: inline-block;
+   height: 16px;
+   width: 16px;
 }
 
 /* Forms */
@@ -199,6 +257,11 @@
    border: none;
 }
 
+body .doclist tr.yui-dt-highlighted
+{
+   cursor: auto;
+}
+
 .doclist tr.yui-dt-odd
 {
    background-color: #ffffff;
@@ -238,9 +301,15 @@
    padding: 4px;
 }
 
+.doclist .yui-dt-col-thumbnail .yui-dt-liner
+{
+   text-align: center;
+}
+
 .doclist .documents.yui-dt tr.yui-dt-first td.yui-dt-empty
 {
    border-right: medium none;
+   cursor: default;
 }
 
 .doclist .yui-dt-error
@@ -283,6 +352,16 @@
    position: absolute;
 }
 
+.doclist .documents .folder-small span.droppable
+{
+   background: url(images/help-arrow-small.png) no-repeat;
+   display: none;
+   height: 14px;
+   position: absolute;
+   width: 34px;
+   z-index: 1;
+}
+
 .doclist .documents .thumbnail
 {
    cursor: pointer;
@@ -303,14 +382,22 @@
    position: absolute;
 }
 
+.doclist .documents .folder span.droppable
+{
+   background: url(images/help-arrow.png) no-repeat;
+   display: none;
+   height: 25px;
+   position: absolute;
+   width: 60px;
+   z-index: 1;
+}
+
 .doclist .documents h3.filename
 {
-   font-size: 123%;
+   font-size: 139%;
    font-weight: normal;
-   float: left;
    padding-bottom: 0.2em;
-   padding-top: 0.2em;
-   width: 100%;
+   padding-left: 20px;
 }
 
 .doclist .documents h3.filename span.title
@@ -318,6 +405,20 @@
    color: #606060;
    font-size: 82%;
    padding-left: 0.7em;
+}
+
+.doclist .documents h3.filename span.document-version
+{
+   margin-left: 0.8em;
+   padding: 1px;
+   position: relative;
+   top: -2px;
+   visibility: hidden;
+}
+
+.doclist .documents .yui-dt-highlighted h3.filename span.document-version
+{
+   visibility: visible;
 }
 
 .doclist .documents
@@ -329,39 +430,13 @@
 .doclist .documents a
 {
    color: #2B6EB5;
+   cursor: pointer;
 }
 
 .doclist .documents a:active,
 .doclist .documents a:hover
 {
    text-decoration: underline;
-}
-
-/* Favourite document / folder indicator */
-
-.doclist .documents h3 a.favourite-document,
-.doclist .documents h3 a.favourite-folder
-{
-   background-image: url(../images/star-deselected_16x16.png);
-   background-position: center;
-   background-repeat: no-repeat;
-   cursor: pointer;
-   margin-right: 8px;
-   padding: 6px;
-}
-
-.doclist .documents h3 a.favourite-document.enabled,
-.doclist .documents h3 a.favourite-folder.enabled
-{
-   background-image: url(../images/star-selected_16x16.png);
-}
-
-.doclist .documents h3 a.favourite-document:active,
-.doclist .documents h3 a.favourite-document:hover,
-.doclist .documents h3 a.favourite-folder:active,
-.doclist .documents h3 a.favourite-folder:hover
-{
-   text-decoration: none;
 }
 
 .doclist .documents .rename-file
@@ -378,22 +453,33 @@
 .doclist .documents .detail
 {
    clear: left;
-   float: left;
-   line-height: 1.8em;
-   padding-left: 24px;
+   line-height: 1.5em;
+   min-height: 1.5em;
+   padding-bottom: 0.2em;
+   padding-left: 20px;
 }
 
-.doclist .documents .detail em
+.doclist .documents .detail-social
 {
-   color: #606060;
-   font-style: normal;
-   font-weight: normal;
+   padding-bottom: 0;
+   padding-top: 0.4em;
+}
+
+.doclist .documents .detail .faded
+{
+   color: #aaa;
 }
 
 .doclist .documents .detail span.item
 {
    float: left;
-   padding-right: 2em;
+   margin-right: 1.6em;
+}
+
+.doclist .documents .detail-social span.item
+{
+   line-height: 1.2em;
+   margin-right: 0.8em;
 }
 
 .doclist .documents .detail span.item-simple
@@ -401,9 +487,17 @@
    padding-right: 0.5em;
 }
 
-.doclist .documents .detail-last
+.doclist .documents .detail span.tag
 {
-   padding-bottom: 0.2em;
+   float: left;
+   margin: 1px 0;
+}
+
+/* Social tagging customisations */
+
+.doclist .documents .detail-social a.comment
+{
+   background-image: url(../images/comment-16.png);
 }
 
 /* Document Info Banner */
@@ -414,6 +508,7 @@
    background-image: url(images/warning-16.png);
    background-position: 6px 4px;
    background-repeat: no-repeat;
+   border: 1px solid #ffca7a;
    clear: left;
    color: #888;
    font-weight: bold;
@@ -423,13 +518,14 @@
 
 /* Tags */
 
-.doclist .documents .detail span.tag-item
+.doclist .documents .detail a.tag-link
 {
-   background-image: url(images/tag-16.png);
-   background-position: 0px 0px;
-   background-repeat: no-repeat;
-   padding-bottom: 2px;
-   padding-left: 20px;
+   border-radius: 8px;
+   font-size: 93%;
+   margin-right: 0.5em;
+   padding: 2px 8px;
+   -moz-border-radius: 8px;
+   -webkit-border-radius: 8px;
 }
 
 /* Actions Rollover */
@@ -545,6 +641,7 @@
 {
    background-image: url(images/details-16.png);
 }
+
 .doclist .folder .onActionDetails a
 {
    background-image: url(images/folder-details-16.png);
@@ -554,6 +651,7 @@
 {
    background-image: url(images/metadata-16.png);
 }
+
 .doclist .folder .onActionMetadata a
 {
    background-image: url(images/folder-metadata-16.png);
@@ -563,6 +661,7 @@
 {
    background-image: url(images/remove-16.png);
 }
+
 .doclist .folder .onActionDelete a
 {
    background-image: url(images/folder-delete-16.png);
@@ -597,6 +696,7 @@
 {
    background-image: url(images/copy-to-16.png);
 }
+
 .doclist .folder .onActionCopyTo a
 {
    background-image: url(images/folder-copy-to-16.png);
@@ -606,6 +706,7 @@
 {
    background-image: url(images/move-to-16.png);
 }
+
 .doclist .folder .onActionMoveTo a
 {
    background-image: url(images/folder-move-to-16.png);
@@ -635,6 +736,7 @@
 {
    background-image: url(images/permissions-16.png);
 }
+
 .doclist .folder .onActionManagePermissions a
 {
    background-image: url(images/folder-manage-permissions-16.png);
@@ -691,14 +793,17 @@
 }
 
 /* Google Docs Actions */
+
 .doclist .onActionCheckinFromGoogleDocs a
 {
    background-image: url(images/google-docs-checkin-16.png);
 }
+
 .doclist .onActionCheckoutToGoogleDocs a
 {
    background-image: url(images/google-docs-checkout-16.png);
 }
+
 .doclist .onActionViewGoogleDoc a
 {
    background-image: url(images/view-in-browser-16.png);
@@ -709,38 +814,112 @@
    background-image: url(images/view-transferred-original-16.png);
 }
 
+/* Drag and Drop */
 
-/* History Manager */
-
-#yui-history-iframe
+.dndFolderHighlight span.droppable
 {
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 1px;
-   height: 1px;
-   visibility: hidden;
+   display: block !important;
 }
 
-/* Preview Tooltip */
-
-.yui-tt .bd
+.dndFolderHighlight img
 {
-   background-color: #f4faff !important;
-   border: 1px solid #333 !important;
-   padding: 4px 4px 1px !important;
+   background-color: #dceaf4;
+   outline: 2px solid #4F94C9;
+   padding: 2px;
+   position: relative;
+   top: -2px;
 }
 
-/* Show Folders inline link */
+.dndDocListHighlight
+{
+   outline: 2px solid #4F94C9;
+   outline-offset: -2px;
+}
 
-.doclist .show-folders-link
+.docListInstructions
+{
+   background-color: white;
+   color: #515D6B;
+   padding: 10px;
+}
+
+.docListInstructionsWithDND
+{
+   background-color: white;
+   border: 1px dashed #73B4DA;
+   color: #515D6B;
+   padding: 10px;
+}
+
+.docListInstructionColumn
+{
+   float: left;
+   width: 45%;
+}
+
+.docListInstructionColumnRightBorder
+{
+   border-right: 1px solid #D9D9D9;
+   padding-right: 30px;
+   margin-right: 10px;
+}
+
+.docListInstructions > div
+{
+   clear: both;
+}
+
+.docListInstructionImage
+{
+   float: left;
+   padding: 0 10px;
+   vertical-align: middle;
+}
+
+.docListLinkedInstruction
 {
    cursor: pointer;
 }
 
-/* Customize Dialog */
-
-.doclist .customize
+.docListInstructionTitle
 {
-   display: none;
+   display: block;
+   font-size: 167%;
+   margin-top: 10px;
+   margin-bottom: 10px;
+   padding-left: 10px;
+}
+
+.docListInstructionText
+{
+   font-size: 123%;
+   margin-top: 10px;
+   display: block;
+}
+
+.docListInstructionTextSmall
+{
+   margin-top: 15px;
+   display: block;
+}
+
+.docListOtherOptions
+{
+   display: block;
+   font-size: 146.5%;
+   margin-top: 10px;
+   padding-left: 10px;
+   padding-top: 30px;
+}
+
+.docListOtherOptionsImage
+{
+   padding: 10px 6px 0 10px;
+   vertical-align: middle;
+}
+
+.docListOtherOptionsText
+{
+   font-size: 108%;
+   margin-top: 10px;
 }

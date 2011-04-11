@@ -26,15 +26,15 @@
         </platformOptions>
         <platformOptions>
             <platform>linux</platform>
-            <height>380</height>
+            <height>430</height>
         </platformOptions>
         <platformOptions>
             <platform>linux-x64</platform>
-            <height>380</height>
+            <height>430</height>
         </platformOptions>
         <platformOptions>
             <platform>linux-ia64</platform>
-            <height>380</height>
+            <height>430</height>
         </platformOptions>        
     </platformOptionsList>
 
@@ -44,33 +44,37 @@
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-en.po</file>
         </language>
+
         <language> 
             <code>fr</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-fr.po</file>
         </language>
+
         <language> 
             <code>es</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-es.po</file>
         </language>
+
         <language> 
             <code>de</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-de.po</file>
         </language>
+
         <language> 
             <code>it</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-it.po</file>
         </language>
+
         <language> 
             <code>ja</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-ja.po</file>
         </language>	
     </customLanguageFileList>
-    
     <componentList>
         <include file="alfresco-componentselection-java.xml" />
         <include file="alfresco-customstack-build-settings.xml" />

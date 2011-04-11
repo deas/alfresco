@@ -20,6 +20,7 @@ package org.alfresco.web.site;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,7 @@ import org.springframework.extensions.webscripts.connector.Connector;
 import org.springframework.extensions.webscripts.connector.ConnectorContext;
 import org.springframework.extensions.webscripts.connector.HttpMethod;
 import org.springframework.extensions.webscripts.connector.Response;
+import org.springframework.extensions.webscripts.connector.User;
 import org.springframework.extensions.webscripts.json.JSONWriter;
 
 /**
@@ -50,6 +52,8 @@ import org.springframework.extensions.webscripts.json.JSONWriter;
  */
 public class SlingshotUserFactory extends AlfrescoUserFactory
 {
+    public static final String ALF_USER_LOADED = "alfUserLoaded";
+    
     // Alfresco 3.4 user status properties
     public static final String CM_USERSTATUS = "{http://www.alfresco.org/model/content/1.0}userStatus";
     public static final String CM_USERSTATUSTIME = "{http://www.alfresco.org/model/content/1.0}userStatusTime";
@@ -79,6 +83,17 @@ public class SlingshotUserFactory extends AlfrescoUserFactory
         AlfrescoUser user = new SlingshotUser(properties.getString(CM_USERNAME), capabilities, immutability);
         user.setProperty(PROP_USERSTATUS, properties.has(CM_USERSTATUS) ? properties.getString(CM_USERSTATUS) : null);
         user.setProperty(PROP_USERSTATUSTIME, properties.has(CM_USERSTATUSTIME) ? properties.getString(CM_USERSTATUSTIME) : null);
+        return user;
+    }
+    
+    @Override
+    public User loadUser(RequestContext context, String userId, String endpointId) throws UserFactoryException
+    {
+        User user = super.loadUser(context, userId, endpointId);
+        
+        // set a value indicating time the user was constructed
+        user.setProperty(ALF_USER_LOADED, new Date().getTime());
+        
         return user;
     }
 

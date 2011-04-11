@@ -84,6 +84,10 @@
 .alfresco-share #userInput .bd
 {
    padding: 1em;
+}
+
+.alfresco-share #prompt .bd
+{
    text-align: center;
 }
 
@@ -96,7 +100,6 @@
 .alfresco-share #userInput .bd label
 {
    padding-right: 0.5em;
-   position: relative;
    top: 0.2em;
    vertical-align: top;
 }
@@ -104,8 +107,12 @@
 .alfresco-share #userInput .bd textarea
 {
    height: 4em;
-   position: relative;
    width: 40em;
+}
+
+.alfresco-share #userInput .bd input[type="text"]
+{
+   width: 30em;
 }
 
 .alfresco-share #prompt .ft .button-group,

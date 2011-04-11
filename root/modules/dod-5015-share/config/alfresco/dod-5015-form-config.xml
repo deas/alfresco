@@ -25,6 +25,7 @@
                <hide id="cm:contains" />
                <hide id="rma:identifier" />
                <hide id="rma:dbUniquenessId" />
+               <hide id="rma:rootNodeRef" />
             </field-visibility>
             <create-form template="dod5015-create-container.ftl" />
             <appearance>
@@ -54,6 +55,7 @@
                <hide id="rma:identifier" />
                <hide id="rma:dbUniquenessId" />
                <hide id="rma:dispositionSchedule" />
+               <hide id="rma:rootNodeRef" />       
             </field-visibility>
             <create-form template="dod5015-create-container.ftl" />
             <appearance>
@@ -93,6 +95,7 @@
                <hide id="rma:identifier" />
                <hide id="rma:dbUniquenessId" />
                <hide id="rma:isClosed" />
+               <hide id="rma:rootNodeRef" />
             </field-visibility>
             <create-form template="dod5015-create-container.ftl" />
             <appearance>
@@ -161,6 +164,7 @@
                <hide id="cm:accessed" />
                <hide id="cm:contains" />
                <hide id="rma:dbUniquenessId" />
+               <hide id="rma:rootNodeRef" />
             </field-visibility>
             <appearance>
                <set id="rm" />
@@ -193,6 +197,7 @@
                <hide id="cm:contains" />
                <hide id="rma:dispositionSchedule" />
                <hide id="rma:dbUniquenessId" />
+               <hide id="rma:rootNodeRef" />
             </field-visibility>
             <appearance>
                <set id="rm" />
@@ -250,6 +255,7 @@
                <hide id="rma:cutOffDate" for-mode="edit" />
                <hide id="rma:frozenBy" />
                <hide id="rma:frozenAt" />
+               <hide id="rma:rootNodeRef" />
             </field-visibility>
             <appearance>
                <set id="rm" />
@@ -292,6 +298,7 @@
                <hide id="rma:cutOffDate" for-mode="edit" />
                <hide id="rma:frozenBy" />
                <hide id="rma:frozenAt" />
+               <hide id="rma:rootNodeRef" />
             </field-visibility>
             
             <appearance>
@@ -342,6 +349,7 @@
                <hide id="rma:cutOffDate" for-mode="edit" />
                <hide id="rma:frozenBy" />
                <hide id="rma:frozenAt" />
+               <hide id="rma:rootNodeRef" />
             </field-visibility>
             
             <appearance>

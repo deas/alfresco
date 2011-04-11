@@ -1,9 +1,7 @@
 /**
- * Controls how many items are displayed at any one time in the RSS dashlet.
- * Defaults to a large number, the theory being is that you aren't going to get 9999 items
- * in any RSS feed.
+ * Controls max items on display at any one time in the RSS dashlet.
  */
-const DISPLAY_ITEMS = 999;
+const DISPLAY_ITEMS = 100;
 
 /**
  * Function to return a URI with a valid http protocol prefix if it does not already have one
@@ -51,6 +49,12 @@ function getRSSFeed(uri, limit)
          else if(rss.name().localName.toLowerCase() == "feed")
          {
              return parseAtomFeed(rss, rssXml, limit);
+         }
+         else
+         {
+            return {
+               error: "unsupported"
+            };
          }
       }
       catch (e)

@@ -45,20 +45,33 @@
     */
    Alfresco.FolderLinks = function(htmlId)
    {
-      Alfresco.FolderLinks.superclass.constructor.call(this, htmlId);
-
-      // Re-register with our own name
-      this.name = "Alfresco.FolderLinks";
-      Alfresco.util.ComponentManager.reregister(this);
-
+      Alfresco.FolderLinks.superclass.constructor.call(this, "Alfresco.FolderLinks", htmlId, []);
+      
       /* Decoupled event listeners */
       YAHOO.Bubbling.on("folderDetailsAvailable", this.onFolderDetailsAvailable, this);
       
       return this;
    };
    
-   YAHOO.extend(Alfresco.FolderLinks, Alfresco.DocumentLinks,
+   YAHOO.extend(Alfresco.FolderLinks, Alfresco.component.Base,
    {
+      /**
+       * Object container for initialization options
+       *
+       * @property options
+       * @type object
+       */
+      options:
+      {
+         /**
+          * Repository Url if configured
+          *
+          * @property repositoryUrl
+          * @type string
+          */
+         repositoryUrl: null
+      },
+
       /**
        * Event handler called when the "folderDetailsAvailable" event is received
        */
@@ -82,6 +95,72 @@
             name: "page",
             url: window.location.href
          });
+      },
+
+
+      /**
+       * Populate a link UI element
+       *
+       * @method _populateLinkUI
+       * @param link {object} Object literal containing link details
+       */
+      populateLinkUI: function DocumentLinks_populateLinkUI(link)
+      {
+         var nameId = this.id + "-" + link.name,
+            urlId = nameId + "-url",
+            copyButtonName = link.name + "-button";
+
+         if (Dom.get(nameId))
+         {
+            Dom.removeClass(nameId, "hidden");
+            Dom.get(urlId).value = link.url;
+            if (this.hasClipboard)
+            {
+               Alfresco.util.createYUIButton(this, copyButtonName, null,
+               {
+                  onclick:
+                  {
+                     fn: this._handleCopyClick,
+                     obj: urlId,
+                     scope: this
+                  }
+               });
+            }
+
+            // Add focus event handler
+            Event.addListener(urlId, "focus", this._handleFocus, urlId, this);
+         }
+      },
+
+      /**
+       * Event handler to copy URLs to the system clipboard
+       *
+       * @method _handleCopyClick
+       * @param event {object} The event
+       * @param urlId {string} The Dom Id of the element holding the URL to copy
+       */
+      _handleCopyClick: function DocumentLinks__handleCopyClick(event, urlId)
+      {
+         clipboardData.setData("Text", Dom.get(urlId).value);
+      },
+
+      /**
+       * Event handler used to select text in the field when focus is received
+       *
+       * @method _handleFocus
+       * @param event The event
+       * @field The Dom Id of the field to select
+       */
+      _handleFocus: function DocumentLinks__handleFocus(e, fieldId)
+      {
+         YAHOO.util.Event.stopEvent(e);
+
+         var fieldObj = Dom.get(fieldId);
+         if (fieldObj && typeof fieldObj.select == "function")
+         {
+            fieldObj.select();
+         }
       }
+
    });
 })();

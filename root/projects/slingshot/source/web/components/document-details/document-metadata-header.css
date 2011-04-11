@@ -1,11 +1,4 @@
-.metadata-header
+.document-metadata-header h2 .edit
 {
-	padding: 1.5em 0.5em;
-}
-
-.metadata-header .heading
-{
-   color: #333333;
-   font-size: 131%;
-   padding: 0;
+   background-image: url(../images/edit-16.png);
 }

@@ -553,7 +553,7 @@
             // get the current search term
             var searchTermInput = Dom.get(this.pickerId + "-searchText");
             var searchTerm = searchTermInput.value;
-            if (searchTerm.length >= this.options.minSearchTermLength)
+            if (searchTerm.length >= this.options.minSearchTermLength && searchTerm.length > 0)
             {
                // refresh the previous search
                YAHOO.Bubbling.fire("refreshItemList",
@@ -910,7 +910,14 @@
                      {
                         if (this.options.displayMode == "items")
                         {
-                           displayValue += this.options.objectRenderer.renderItem(item, 16, "<div>{icon} {name}</div>");
+                           if (item.type === "tag")
+                           {
+                              displayValue += this.options.objectRenderer.renderItem(item, null, "<div class='itemtype-tag'>{name}</div>");
+                           }
+                           else
+                           {
+                              displayValue += this.options.objectRenderer.renderItem(item, 16, "<div class='itemtype-" + $html(item.type) + "'>{icon} {name}</div>");
+                           }
                         }
                         else if (this.options.displayMode == "list")
                         {

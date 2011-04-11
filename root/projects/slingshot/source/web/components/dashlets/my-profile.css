@@ -35,11 +35,11 @@
    float: left;
    font-weight: bold;
    text-align: right;
-   width: 4em;
+   width: 6em;
 }
 
 .profile .fieldvalue
 {
-   margin-left: 4.5em;
+   margin-left: 6.5em;
    min-height: 1.2em;
 }

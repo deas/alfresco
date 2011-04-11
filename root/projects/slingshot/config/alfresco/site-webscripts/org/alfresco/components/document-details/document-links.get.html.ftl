@@ -1,50 +1,35 @@
-<#assign el=args.htmlid?html>
-<script type="text/javascript">//<![CDATA[
-   new Alfresco.DocumentLinks("${el}").setOptions(
-   {
-      <#if repositoryUrl??>repositoryUrl: "${repositoryUrl}"</#if>
-   }).setMessages(${messages});
-//]]></script>
+<#if document??>
+   <#if document.custom?? && (document.custom.isWorkingCopy?? || document.custom.hasWorkingCopy??) >
+      <!-- Don't display links since this nodeRef points to a working copy -->
+   <#else>
 
-<div id="${el}-body" class="document-links hidden">
-   
-   <div class="heading">${msg("document-links.heading")}</div>
-   
-   <!-- download link -->
-   <div id="${el}-download" class="hidden">
-      <div class="url-title"><label for="${el}-download-url">${msg("document-links.download")}</label></div>
-      <input id="${el}-download-url" class="link-value" />
-      <input id="${el}-download-button" type="button" class="copy-button" value="${msg("document-links.copy")}" />
-   </div>
-   
-   <!-- document/view link -->
-   <div id="${el}-view" class="hidden">
-      <div class="url-title"><label for="${el}-view-url">${msg("document-links.view")}</label></div>
-      <input id="${el}-view-url" class="link-value" />
-      <input id="${el}-view-button" type="button" class="copy-button" value="${msg("document-links.copy")}" />
-   </div>
+      <#assign el=args.htmlid?html>
+      <script type="text/javascript">//<![CDATA[
+      new Alfresco.DocumentLinks("${el}").setOptions(
+      {
+         nodeRef: "${nodeRef?js_string}",
+         siteId: <#if site??>"${site?js_string}"<#else>null</#if>
+      }).setMessages(${messages});
+      //]]></script>
+      <div id="${el}-body" class="document-links document-details-panel">
 
-<#if repositoryUrl??>
-   <!-- webdav link -->
-   <div id="${el}-webdav" class="hidden">
-      <div class="url-title"><label for="${el}-webdav-url">${msg("document-links.webdav")}</label></div>
-      <input id="${el}-webdav-url" class="link-value" />
-      <input id="${el}-webdav-button" type="button" class="copy-button" value="${msg("document-links.copy")}" />
-   </div>
+         <h2 id="${el}-heading" class="thin dark">${msg("header")}</h2>
+
+         <div class="panel-body">
+
+            <!-- Current page url - (javascript will prefix with the current browser location) -->
+            <h3 class="thin dark">${msg("page.header")}</h3>
+            <div class="link-info">
+               <input id="${el}-page" value=""/>
+               <a href="#" name=".onCopyLinkClick" class="${el} hidden">${msg("page.copy")}</a>
+            </div>
+
+         </div>
+
+         <script type="text/javascript">//<![CDATA[
+         Alfresco.util.createTwister("${el}-heading", "DocumentLinks");
+         //]]></script>
+
+      </div>
+   </#if>
 </#if>
-
-   <#-- cifs link (N/A)
-   <div id="${el}-cifs" class="hidden">
-      <div class="url-title"><label for="${el}-cifs-url">${msg("document-links.cifs")}</label></div>
-      <input id="${el}-cifs-url" class="link-value" />
-      <input id="${el}-cifs-button" type="button" class="copy-button" value="${msg("document-links.copy")}" />
-   </div> -->
-
-   <!-- page link -->
-   <div id="${el}-page">
-      <div class="url-title"><label for="${el}-page-url">${msg("document-links.page")}</label></div>
-      <input id="${el}-page-url" class="link-value" />
-      <input id="${el}-page-button" type="button" class="copy-button" value="${msg("document-links.copy")}" />
-   </div>
-
-</div>

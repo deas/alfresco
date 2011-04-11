@@ -38,7 +38,7 @@ public class ChangeOrDeleteReferencesCapability extends AbstractCapability
         // Best guess based on current nodeRef
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozen(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozen(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.CHANGE_OR_DELETE_REFERENCES) == AccessStatus.ALLOWED)
                 {
@@ -62,9 +62,9 @@ public class ChangeOrDeleteReferencesCapability extends AbstractCapability
             {
                 if (isRm(target))
                 {
-                    if (checkFilingUnfrozen(source) == AccessDecisionVoter.ACCESS_GRANTED)
+                    if (checkFilingUnfrozen(source, false) == AccessDecisionVoter.ACCESS_GRANTED)
                     {
-                        if (checkFilingUnfrozen(target) == AccessDecisionVoter.ACCESS_GRANTED)
+                        if (checkFilingUnfrozen(target, false) == AccessDecisionVoter.ACCESS_GRANTED)
                         {
                             if ((voter.getPermissionService().hasPermission(getFilePlan(source), RMPermissionModel.CHANGE_OR_DELETE_REFERENCES) == AccessStatus.ALLOWED)
                                     && (voter.getPermissionService().hasPermission(getFilePlan(target), RMPermissionModel.CHANGE_OR_DELETE_REFERENCES) == AccessStatus.ALLOWED))
@@ -77,7 +77,7 @@ public class ChangeOrDeleteReferencesCapability extends AbstractCapability
             }
             else
             {
-                if (checkFilingUnfrozen(source) == AccessDecisionVoter.ACCESS_GRANTED)
+                if (checkFilingUnfrozen(source, false) == AccessDecisionVoter.ACCESS_GRANTED)
                 {
                     if ((voter.getPermissionService().hasPermission(getFilePlan(source), RMPermissionModel.CHANGE_OR_DELETE_REFERENCES) == AccessStatus.ALLOWED)
                             && (voter.getPermissionService().hasPermission(getFilePlan(target), RMPermissionModel.CHANGE_OR_DELETE_REFERENCES) == AccessStatus.ALLOWED))

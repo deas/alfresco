@@ -33,6 +33,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/htmlparser-1.6.jar" sourcepath="src/htmlparser-1.6-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-beanutils-1.7.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-collections-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-csv-20110211.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-digester-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-discovery-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-el.jar"/>
@@ -88,7 +89,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/json.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.11.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jgroups/jgroups-2.8.0-b2.jar" sourcepath="src/jgroups-2.8.0-b2.src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/jgroups/jgroups-2.11.1.Final.jar" sourcepath="src/jgroups-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jsr107cache-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-core-0.4.0-incubating.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-extensions-json-0.4.0-incubating.jar"/>
@@ -127,11 +128,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.8-beta1-20101123.jar" sourcepath="src/poi-3.8-beta1-20101123.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4.jar" sourcepath="src/commons-dbcp-1.4-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-dbcp-1.4-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-2.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-core-2.4.1.jar" sourcepath="src/lucene-2.4.1-src.zip"/>
@@ -200,7 +196,8 @@
 	<classpathentry kind="lib" path="lib/activiti/groovy-1.7.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.3.jar" sourcepath="src/activiti-engine-5.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.3.jar" sourcepath="src/activiti-spring-5.3-sources.jar"/>
-	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
+	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

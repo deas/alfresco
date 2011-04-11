@@ -42,7 +42,7 @@ public class EditRecordMetadataCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozenUncutoffOpenUndeclared(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozenUncutoffOpenUndeclared(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (isRecord(nodeRef))
                 {

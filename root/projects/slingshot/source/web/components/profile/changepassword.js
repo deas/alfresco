@@ -40,19 +40,11 @@
     */
    Alfresco.ChangePassword = function(htmlId)
    {
-      this.name = "Alfresco.ChangePassword";
-      this.id = htmlId;
-      
-      /* Register this component */
-      Alfresco.util.ComponentManager.register(this);
-      
-      /* Load YUI Components */
-      Alfresco.util.YUILoaderHelper.require(["button"], this.onComponentsLoaded, this);
-      
+      Alfresco.ChangePassword.superclass.constructor.call(this, "Alfresco.ChangePassword", htmlId, ["button"]);
       return this;
    }
    
-   Alfresco.ChangePassword.prototype =
+   YAHOO.extend(Alfresco.ChangePassword, Alfresco.component.Base,
    {
       /**
        * Object container for initialization options
@@ -70,51 +62,6 @@
           * @default 3
           */
          minPasswordLength: 3
-      },
-      
-      /**
-       * Object container for storing YUI widget instances.
-       * 
-       * @property widgets
-       * @type object
-       */
-      widgets: {},
-      
-      /**
-       * Set multiple initialization options at once.
-       *
-       * @method setOptions
-       * @param obj {object} Object literal specifying a set of options
-       * @return {Alfresco.UserProfile} returns 'this' for method chaining
-       */
-      setOptions: function DLTB_setOptions(obj)
-      {
-         this.options = YAHOO.lang.merge(this.options, obj);
-         return this;
-      },
-      
-      /**
-       * Set messages for this component.
-       *
-       * @method setMessages
-       * @param obj {object} Object literal specifying a set of messages
-       * @return {Alfresco.UserProfile} returns 'this' for method chaining
-       */
-      setMessages: function UP_setMessages(obj)
-      {
-         Alfresco.util.addMessages(obj, this.name);
-         return this;
-      },
-      
-      /**
-       * Fired by YUILoaderHelper when required component script files have
-       * been loaded into the browser.
-       *
-       * @method onComponentsLoaded
-       */
-      onComponentsLoaded: function UP_onComponentsLoaded()
-      {
-         Event.onContentReady(this.id, this.onReady, this, true);
       },
    
       /**
@@ -189,7 +136,7 @@
             if (response.json.success)
             {
                // succesfully updated details - refresh back to the user profile main page
-               Alfresco.util.PopupManager.displayPrompt(
+               Alfresco.util.PopupManager.displayMessage(
                {
                   text: Alfresco.util.message("message.success", this.name)
                });
@@ -234,5 +181,5 @@
          var pageIndex = document.location.href.lastIndexOf('/');
          document.location.href = document.location.href.substring(0, pageIndex + 1) + "profile";
       }
-   };
+   });
 })();

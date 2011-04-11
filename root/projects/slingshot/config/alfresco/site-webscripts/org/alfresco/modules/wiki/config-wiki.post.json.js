@@ -8,7 +8,7 @@ if (!json.isNull("wikipage"))
 }
 else
 {
-   model.pagecontent = msg.get("message.nopage");
+   model.pagecontent = "<h3>" + msg.get("message.nopage") + "</h3>";
    model.title = "";
 }
 

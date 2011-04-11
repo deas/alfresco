@@ -30,7 +30,6 @@ import java.util.TreeMap;
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetFactory;
 import org.alfresco.wcm.client.CollectionFactory;
-import org.alfresco.wcm.client.DictionaryService;
 import org.alfresco.wcm.client.Query;
 import org.alfresco.wcm.client.Rendition;
 import org.alfresco.wcm.client.SearchResult;
@@ -38,7 +37,6 @@ import org.alfresco.wcm.client.SearchResults;
 import org.alfresco.wcm.client.SectionFactory;
 import org.alfresco.wcm.client.WebSite;
 import org.alfresco.wcm.client.WebSiteService;
-import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 public class AssetFactoryWebscriptImpl implements AssetFactory
 {
@@ -283,7 +281,6 @@ public class AssetFactoryWebscriptImpl implements AssetFactory
     private Asset buildAsset(TreeMap<String, Serializable> props)
     {
         AssetImpl asset = new AssetImpl();
-        mimicCmisProperties(props);
         asset.setProperties(props);
         asset.setParentSectionIds((Collection<String>) props.get("ws:parentSections"));
         asset.setSectionFactory(sectionFactory);
@@ -304,29 +301,4 @@ public class AssetFactoryWebscriptImpl implements AssetFactory
         return result;
     }
 
-    private void mimicCmisProperties(TreeMap<String, Serializable> props)
-    {
-        props.put(PropertyIds.OBJECT_ID, props.get("id"));
-        
-        //Translate the root types to their CMIS equivalent...
-        String typeName = (String)props.get("type");
-        if ("cm:content".equals(typeName))
-        {
-            typeName = DictionaryService.TYPE_CMIS_DOCUMENT;
-        }
-        else if ("cm:folder".equals(typeName))
-        {
-            typeName = DictionaryService.TYPE_CMIS_FOLDER;
-        }
-        props.put(PropertyIds.OBJECT_TYPE_ID, typeName);
-
-        props.put(PropertyIds.NAME, props.get("cm:name"));
-        props.put(PropertyIds.LAST_MODIFICATION_DATE, props.get("cm:modified"));
-        ContentInfo contentInfo = (ContentInfo) props.get("cm:content");
-        if (contentInfo != null)
-        {
-            props.put(PropertyIds.CONTENT_STREAM_LENGTH, contentInfo.getSize());
-            props.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, contentInfo.getMimeType());
-        }
-    }
 }

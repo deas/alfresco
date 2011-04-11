@@ -1,6 +1,0 @@
-<webscript>
-   <shortname>CMIS Feed</shortname>
-   <description>Display the contents of the CMIS intoduction text and Blog feed</description>
-   <family>user-dashlet</family>
-   <url>/components/dashlets/cmisfeed</url>
-</webscript>

@@ -20,12 +20,7 @@ package org.alfresco.module.org_alfresco_module_dod5015.capability.group;
 
 import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
-import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AbstractCapability;
-import org.alfresco.repo.search.impl.NodeSearcher;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.namespace.QName;
-import org.alfresco.service.namespace.RegexQNamePattern;
 
 /**
  * @author andyh

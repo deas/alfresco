@@ -21,9 +21,7 @@ package org.alfresco.module.org_alfresco_module_dod5015.capability.group;
 import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.capability.RMEntryVoter;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
-import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AbstractCapability;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.namespace.QName;
@@ -46,7 +44,8 @@ public class CreateCapability extends AbstractGroupCapability
     {
         if (linkee != null)
         {
-            if (checkRead(linkee, true) != AccessDecisionVoter.ACCESS_GRANTED)
+            int state = checkRead(linkee, true);            
+            if (state != AccessDecisionVoter.ACCESS_GRANTED)
             {
                 return AccessDecisionVoter.ACCESS_DENIED;
             }

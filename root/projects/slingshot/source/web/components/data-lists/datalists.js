@@ -174,6 +174,11 @@
                      scrollTo: true
                   });
                }
+               
+               if (this.dataListsLength === 0 || window.location.hash === "#new")
+               {
+                  this.widgets.newList.fireEvent("click");
+               }
             },
             scope: this
          });
@@ -334,8 +339,7 @@
 
             if (this.dataListsLength === 0)
             {
-               listsContainer.innerHTML = this.msg("message.no-lists");
-               this.widgets.newList.fireEvent("click");
+               listsContainer.innerHTML = '<div class="no-lists">' + this.msg("message.no-lists") + '</div>';
             }
             else
             {
@@ -709,7 +713,8 @@
 
          var fnActionDeleteConfirm = function DataLists_onDeleteList_confirm(p_datalist)
          {
-            var nodeRef = new Alfresco.util.NodeRef(p_datalist.nodeRef);
+            var nodeRef = new Alfresco.util.NodeRef(p_datalist.nodeRef),
+               listTypeTitle = this.getListTypeTitle(p_datalist.itemType);
             
             Alfresco.util.Ajax.request(
             {
@@ -720,7 +725,7 @@
                   fn: function DataLists_onDeleteList_confirm_success(response, p_obj)
                   {
                      // Activity post
-                     Alfresco.Share.postActivity(this.options.siteId, "org.alfresco.datalists.list-deleted", datalist.title, "data-lists",
+                     Alfresco.Share.postActivity(this.options.siteId, "org.alfresco.datalists.list-deleted", datalist.title + " (" + listTypeTitle + ")", "data-lists",
                      {
                         appTool: "datalists",
                         nodeRef: nodeRef.toString()

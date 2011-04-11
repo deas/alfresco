@@ -18,9 +18,14 @@
      <condition><not><antversion atleast="1.7" /></not></condition>
    </fail>
 
-   <target name="continuous-init" 
-           depends="init">
-      <property file="continuous.properties"/>
+   <target name="continuous-init" depends="init">
+      <property file="continuous.properties" />
+      <property name="classpath.unit.test.full" value="${toString:classpath.unit.test.extension}" />
+      <path id="classpath.unit.test.extension">
+         <pathelement location="${dir.name.binaries}/build-classpath/${version.major}.${version.minor}" />
+         <pathelement path="${classpath.unit.test.full}" />
+      </path>
+      <echo>classpath.unit.test.extension = ${toString:classpath.unit.test.extension}</echo>
    </target>
 	
    <target name="bootstrap-wcm-test" depends="continuous-init" >
@@ -107,25 +112,13 @@
 
    <target name="distribute-non-core" 
            description="Creates the distribution files for all platforms"
-           depends="distribute-core-amps,
-                    distribute-sdk, 
-                    distribute-installers,
-                    distribute-extras,
-                    distribute-fdk,
-                    distribute-docs" />
+           depends="distribute-installers" />
 
    <target name="distribute-core" 
            description="Creates the patch distribution files for all platforms"
            depends="assemble-commands,
                     distribute-core-amps,
-                    assemble-tomcat,
-                    distribute-war,
-                    distribute-wcm,
-                    distribute-webserviceclient,
-                    distribute-extensions-office2003,
-                    distribute-deployment,
-                    distribute-webeditor,
-                    distribute-wcmqs-extension" />
+                    assemble-tomcat" />
 
    <target name="set-build-number"
            depends="continuous-init, set-build-devbox-number, set-revision-number">
@@ -476,13 +469,11 @@
    </target>
    <target name="-create-database-db2">
        <!-- DB name must be <= 8 chars -->
-       <!-- Use db2 cmdline since no ability to create database via JDBC (not even using procedure call to "admin_cmd") :-( -->
-       <exec executable="db2cmd">
-         <arg line="/c /i db2 create database ${db.name} using codeset UTF-8 territory default pagesize 32 K"/>
-       </exec>
+       <!-- Windows Only solution: Use db2 cmdline since no ability to create database via JDBC (not even using procedure call to "admin_cmd") :-( -->
        <!-- increase logfilsz for certain unit tests that run large txns (see ALF-4241) -->
        <exec executable="db2cmd">
-         <arg line="/c /i db2 update database configuration for ${db.name} using logfilsiz 4096"/>
+         <arg value="/w"/>
+         <arg value="db2 create database ${db.name} using codeset UTF-8 territory default pagesize 32 K&amp;&amp;db2 update database configuration for ${db.name} using logfilsiz 8192&amp;&amp;exit"/>
        </exec>
    </target>
 
@@ -494,14 +485,7 @@
          <fileset dir="${basedir}" 
                   includes="**/alfresco.log" />
       </delete>
-      <delete dir="${dir.test.alfdata}" 
-              quiet="yes" 
-              includeEmptyDirs="true" />
-      <delete dir="${dir.project.repository}/alf_data" 
-              quiet="yes" 
-              includeEmptyDirs="true"  />
-      <delete dir="${dir.project.remoteapi}/alf_data" 
-              quiet="yes" 
+      <delete dir="${dir.root}" 
               includeEmptyDirs="true" />
    </target>
    <target name="-drop-database-unknown">
@@ -560,7 +544,8 @@
    <target name="-drop-database-db2" depends="init">
        <!-- Use db2 cmdline since no ability to drop database via JDBC (not even using procedure call to "admin_cmd") ??? -->
        <exec executable="db2cmd">
-         <arg line="/c /i db2 drop database ${db.name}"/>
+         <arg value="/c"/>
+         <arg value="db2 drop database ${db.name}"/>
        </exec>
    </target>
 
@@ -689,78 +674,71 @@
 
    </target>
    
+    <!-- BitRock installer targets:
+         PLEASE NOTE: It is not possible to use these targets as an argument to ant as they will fail due to missing
+                      properties. They must be called via the "distribute-installers" target to ensure dependencies are
+                      configured. This is a limitation caused by allowing the targets to be called in parallel avoiding
+                      multiple dependency invocation (see ant docs for more information). Instead use the targets with
+                      the same name but prefixed by "build-"
+    -->
+    <target name="windows-32-bit-installer">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-team-win.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project-team.xml windows ${installer.package.type} --setvars ${installer.build.args} "project.fullName=Alfresco Team" project.installerFilename="${file.name.dist.team.win}" binaries_folder="${installer.build.binaries.win32}"'/>
+        </exec>
+    </target>
+    
+    <target name="windows-64-bit-installer">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-team-win64.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project-team.xml windows ${installer.package.type} --setvars ${installer.build.args} "project.fullName=Alfresco Team" project.installerFilename="${file.name.dist.team.win64}" binaries_folder="${installer.build.binaries.win64}"'/>
+        </exec>
+    </target>
+    
+    <target name="osx-installer">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-team-osx.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project-team.xml osx ${installer.package.type} --setvars ${installer.build.args} "project.fullName=Alfresco Team (Evaluation Use Only)" project.installerFilename="${file.name.dist.team.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
+        </exec>
+        <tar destfile="${dir.continuous.dist}/${file.name.dist.team.osx}.tar.gz"
+             longfile="gnu"
+             compression="gzip">
+            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.team.osx}"
+                        prefix="${file.name.dist.team.osx}" mode="755"/>
+        </tar>
+        <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.team.osx}" />
+    </target>
+
+    <target name="linux-64-bit-installer">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-team-linux64.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project-team.xml linux-x64 ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.team.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
+        </exec>      
+    </target>
+    
+    <!-- Targets for building BitRock installer for specific platforms -->
+    <target name="build-windows-32-bit-installer"
+            depends="continuous-init, set-build-number, set-bitrock-builder">   
+        <antcall target="windows-32-bit-installer"/>            
+    </target>
+    <target name="build-windows-64-bit-installer"
+            depends="continuous-init, set-build-number, set-bitrock-builder">  
+        <antcall target="windows-64-bit-installer"/>            
+    </target>
+    <target name="build-osx-installer"
+            depends="continuous-init, set-build-number, set-bitrock-builder"> 
+        <antcall target="osx-installer"/>            
+    </target>
+    <target name="build-linux-64-bit-installer"
+            depends="continuous-init, set-build-number, set-bitrock-builder">   
+        <antcall target="linux-64-bit-installer"/>            
+    </target>
+            
    <!-- Build installers in parallel -->
    <target name="distribute-installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
-      <parallel>
-
-         <!-- Windows Installers -->
-
-         <!-- Main Installer -->
-         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win.txt" failifexecutionfails="false">
-            <arg line='build project.xml windows --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}" java_distribution_folder="${installer.build.binaries.win32.java}" tomcat_distribution_folder="${installer.build.binaries.win32.tomcat}" swftools_distribution_folder="${installer.build.binaries.win32.swftools}"'/>
-         </exec>
-      
-      <!-- Main 64-bit Installer -->
-         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win64.txt" failifexecutionfails="false">
-            <arg line='build project.xml windows --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win64}" binaries_folder="${installer.build.binaries.win64}" java_distribution_folder="${installer.build.binaries.win64.java}" tomcat_distribution_folder="${installer.build.binaries.win64.tomcat}" swftools_distribution_folder="${installer.build.binaries.win64.swftools}"'/>
-         </exec>
-      
-      <!-- Deployment Installer -->
-         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-win.txt" failifexecutionfails="false">
-            <arg line='build deployment.xml windows --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.win}"'/>
-         </exec>
-
-         <!-- OS X Installers -->
-
-         <!-- Main Installer -->
-         <!-- Sequence installer then tarball -->
-	     <sequential>
-            <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-osx.txt" failifexecutionfails="false">
-               <arg line='build project.xml osx --setvars ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}" java_distribution_folder="${installer.build.binaries.osx86.java}" tomcat_distribution_folder="${installer.build.binaries.osx86.tomcat}" swftools_distribution_folder="${installer.build.binaries.osx86.swftools}"'/>
-            </exec>
-            <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx}.tar.gz"
-                 longfile="gnu"
-                 compression="gzip">
-               <tarfileset dir="${dir.continuous.dist}/${file.name.dist.installer.osx}"
-                           prefix="${file.name.dist.installer.osx}" mode="755"/>
-            </tar>
-            <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.installer.osx}" />
-         </sequential>
-
-         <!-- Deployment Installer -->
-         <!-- Sequence installer then tarball -->
-         <sequential>
-            <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-osx.txt" failifexecutionfails="false">
-               <arg line='build deployment.xml osx --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.osx}"'/>
-            </exec>
-            <tar destfile="${dir.continuous.dist}/${file.name.dist.deployment.osx}.tar.gz"
-                 longfile="gnu"
-                 compression="gzip">
-               <tarfileset dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}"
-                           prefix="${file.name.dist.deployment.osx}" mode="755"/>
-            </tar>
-            <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}" />
-         </sequential>
-
-         <!-- Linux Installers -->
-   
-         <!-- Main Installer -->
-         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux.txt" failifexecutionfails="false">
-            <arg line='build project.xml linux --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux}" binaries_folder="${installer.build.binaries.lin32}" java_distribution_folder="${installer.build.binaries.lin32.java}" tomcat_distribution_folder="${installer.build.binaries.lin32.tomcat}" swftools_distribution_folder="${installer.build.binaries.lin32.swftools}"'/>
-         </exec>          
-      
-         <!-- Main 64-bit Installer -->
-         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="false">
-            <arg line='build project.xml linux-x64 --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}" java_distribution_folder="${installer.build.binaries.lin64.java}" tomcat_distribution_folder="${installer.build.binaries.lin64.tomcat}" swftools_distribution_folder="${installer.build.binaries.lin64.swftools}"'/>
-         </exec>          
-
-         <!-- Deployment Installer -->
-         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-linux.txt" failifexecutionfails="false">
-            <arg line='build deployment.xml linux --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
-         </exec>
-
-      </parallel>
+        <parallel threadCount="2">
+            <antcall target="windows-32-bit-installer"/>
+            <antcall target="windows-64-bit-installer"/>
+            <antcall target="osx-installer"/>
+            <antcall target="linux-64-bit-installer"/>
+        </parallel>
    </target>
 
    <!-- ***************** -->

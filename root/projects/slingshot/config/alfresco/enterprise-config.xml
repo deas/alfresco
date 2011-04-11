@@ -1,0 +1,22 @@
+<alfresco-config>
+
+   <config evaluator="string-compare" condition="Edition" replace="true">
+      <footer>
+         <logo>alfresco-share-logo-enterprise.png</logo>
+         <alt-text>Alfresco Enterprise</alt-text>
+         <css-class>footer-ent</css-class>
+         <label>label.copyright.enterprise</label>
+      </footer>
+      <about>
+         <css-class>logo-ent</css-class>>
+      </about>
+   </config>
+   
+   <config evaluator="string-compare" condition="HelpPages">
+      <help-pages>
+         <share-help>http://www.alfresco.com/help/35/enterprise/sharehelp/</share-help>
+         <share-tutorial>http://www.alfresco.com/help/35/enterprise/sharetutorial/</share-tutorial>
+      </help-pages>
+   </config>
+
+</alfresco-config>

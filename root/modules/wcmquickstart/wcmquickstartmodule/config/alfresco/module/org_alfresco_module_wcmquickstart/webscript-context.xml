@@ -8,6 +8,7 @@
           parent="webscript">
        <property name="nodeService" ref="NodeService"/>       
        <property name="fileFolderService" ref="FileFolderService"/>
+       <property name="assetSerializerFactory" ref="wqsmodule_assetSerializerFactory" />
     </bean>
               
     <bean id="webscript.org.alfresco.module.wcmquickstart.asset.get" 

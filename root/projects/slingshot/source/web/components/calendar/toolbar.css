@@ -1,8 +1,8 @@
 .toolbar
 {
-   margin: 0;
+   margin: 0 0 0 -10px;
    min-height: 2em;
-/*   padding: 0.5em;*/
+   position:relative;
 }
 
 .toolbar .inline
@@ -10,11 +10,16 @@
    display: inline;
 }
 
+.toolbar .addEventContainer {
+   float:left;
+   width:auto;
+}
+
 .toolbar .addEvent button
 {
-   background: transparent url(images/add-event-16-2.png) no-repeat 17px 7px;
-   padding-left: 32px;
-   *background-position:17px 5px;
+   background: transparent url(images/add-event-16-2.png) no-repeat 7px 5px;
+   *background-position:7px 5px;
+   padding-left:22px;
 }
 
 .toolbar div.first
@@ -22,11 +27,6 @@
    width: auto;
 }
 
-/*.toolbar .first div 
-{
-   float: left;
-}
-*/
 .toolbar .yui-buttongroup .yui-button
 {
    margin: auto 0;
@@ -43,6 +43,9 @@ div.separator
 {
    background: transparent url(images/publish.png) no-repeat 12px 4px;
    padding-left: 32px;
+   position:absolute;
+   top:10px;
+   right:5px;
 }
 
 .yui-skin-default .yui-navset .yui-nav,
@@ -61,13 +64,10 @@ div.separator
     float:left;
 }
 .toolbar div.flat-button {
-    float:left;
-    width:24%;
-    padding:0.5em;
+    padding:0.5em 0;
 }
 .calendar-bar .yui-u.first {
-  padding:0.5em;
-  border-right:1px solid #9eb0b7;
+  padding:0.5em 0 0.5em 0.5em;
 }
 .toolbar .yui-button {
   background: url(images/toolbar-unchecked-gradient.gif) 0 0;
@@ -81,4 +81,11 @@ div.separator
 
 .toolbar .yui-radio-button-checked button, .toolbar .yui-checkbox-button-checked button{
   color:#fff;
+}
+
+.toolbar .separator {
+   border-style: none solid none none;
+   position:relative;
+   top:-3px;
+   display:none;
 }

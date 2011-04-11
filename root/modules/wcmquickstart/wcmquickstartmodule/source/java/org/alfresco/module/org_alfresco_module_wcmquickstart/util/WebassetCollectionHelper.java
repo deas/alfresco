@@ -17,6 +17,7 @@
  */
 package org.alfresco.module.org_alfresco_module_wcmquickstart.util;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -110,6 +111,7 @@ public class WebassetCollectionHelper implements WebSiteModel
         {
             nodeService.removeAssociation(collection, assoc.getTargetRef(), ASSOC_WEBASSETS);
         }
+        nodeService.removeProperty(collection, PROP_CONTAINED_ASSETS);
     }
 
     /**
@@ -185,6 +187,7 @@ public class WebassetCollectionHelper implements WebSiteModel
 
                 // Iterate over the results of the query
                 int resultCount = 0;
+                ArrayList<NodeRef> idList = new ArrayList<NodeRef>(maxQuerySize);
                 for (NodeRef result : resultSet.getNodeRefs())
                 {
                     if (maxQuerySize < 1 || resultCount < maxQuerySize)
@@ -194,6 +197,7 @@ public class WebassetCollectionHelper implements WebSiteModel
                         {
                             nodeService.createAssociation(collection, result, ASSOC_WEBASSETS);
                         }
+                        idList.add(result);
                         resultCount++;
                     }
                     else
@@ -201,6 +205,7 @@ public class WebassetCollectionHelper implements WebSiteModel
                         break;
                     }
                 }
+                nodeService.setProperty(collection, PROP_CONTAINED_ASSETS, idList);
 
                 // Set the refreshAt property
                 Calendar now = Calendar.getInstance();
@@ -211,7 +216,7 @@ public class WebassetCollectionHelper implements WebSiteModel
             catch (AlfrescoRuntimeException e)
             {
                 // Rethrow
-                throw new AlfrescoRuntimeException("Invalid collection query.  Please check query for syntax errors.",
+                throw new AlfrescoRuntimeException("Invalid collection query.  Please check query for syntax errors: " + query,
                         e);
             }
         }

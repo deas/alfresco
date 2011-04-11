@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<component>
+   <region-id>dod5015-document-header</region-id>
+   <url>/components/document-details/document-header</url>
+   <properties>
+      <nodeRef>{nodeRef}</nodeRef>
+      <rootPage>documentlibrary</rootPage>
+      <rootLabelId>path.fileplan</rootLabelId>
+      <showFavourite>false</showFavourite>
+      <showLikes>false</showLikes>
+      <showComments>false</showComments>
+   </properties>
+</component>

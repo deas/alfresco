@@ -1,14 +1,3 @@
-/* History Manager */
-#yui-history-iframe
-{
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 1px;
-   height: 1px;
-   visibility: hidden;
-}
-
 .listofvalues
 {
    color:#000000;
@@ -121,7 +110,7 @@
 
 .listofvalues tr.yui-dt-selected td
 {
-   background-color:#D2E5F2;
+   background-color:#dceaf4;
    color: #000000;
 }
 

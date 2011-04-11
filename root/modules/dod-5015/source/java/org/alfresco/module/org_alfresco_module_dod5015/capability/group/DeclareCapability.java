@@ -20,9 +20,7 @@ package org.alfresco.module.org_alfresco_module_dod5015.capability.group;
 
 import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
-import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AbstractCapability;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.namespace.QName;
 
 /**
  * @author andyh

@@ -1,32 +1,70 @@
+<#assign id = args.htmlid>
+<#assign jsid = args.htmlid?js_string>
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.dashlet.Activities("${args.htmlid}").setOptions(
+(function()
+{
+   var activities = new Alfresco.dashlet.Activities("${jsid}").setOptions(
    {
       siteId: "${page.url.templateArgs.site!""}",
       mode: "site"
-   }).setMessages(
-      ${messages}
-   );
-   new Alfresco.widget.DashletResizer("${args.htmlid}", "${instance.object.id}");
+   }).setMessages(${messages});
+   new Alfresco.widget.DashletResizer("${jsid}", "${instance.object.id}");
+
+   var activitiesFeedDashletEvent = new YAHOO.util.CustomEvent("openFeedClick");
+   activitiesFeedDashletEvent.subscribe(activities.openFeedLink, activities, true);
+
+   new Alfresco.widget.DashletTitleBarActions("${jsid}").setOptions(
+   {
+      actions:
+      [
+         {
+            cssClass: "rss",
+            eventOnClick: activitiesFeedDashletEvent,
+            tooltip: "${msg("dashlet.rss.tooltip")?js_string}"
+         },
+         {
+            cssClass: "help",
+            bubbleOnClick:
+            {
+               message: "${msg("dashlet.help")?js_string}"
+            },
+            tooltip: "${msg("dashlet.help.tooltip")?js_string}"
+         }
+      ]
+   });
+})();
 //]]></script>
 
 <div class="dashlet activities">
    <div class="title">${msg("header")}</div>
-   <div class="feed"><a id="${args.htmlid}-feedLink" href="#" target="_blank">&nbsp;</a></div>
    <div class="toolbar flat-button">
-      <input id="${args.htmlid}-range" type="button" name="range" value="${msg("filter.today")}" />
-      <select id="${args.htmlid}-range-menu">
-         <option value="today">${msg("filter.today")}</option>
-         <option value="7">${msg("filter.7days")}</option>
-         <option value="14">${msg("filter.14days")}</option>                
-         <option value="28">${msg("filter.28days")}</option>
-      </select>
-      <input id="${args.htmlid}-user" type="button" name="user" value="${msg("filter.others")}" />
-      <select id="${args.htmlid}-user-menu">
-         <option value="mine">${msg("filter.mine")}</option>
-         <option value="others">${msg("filter.others")}</option>                
-         <option value="all">${msg("filter.all")}</option>
-      </select>
+      <div class="hidden">
+         <span class="align-left yui-button yui-menu-button" id="${id}-user">
+            <span class="first-child">
+               <button type="button" tabindex="0"></button>
+            </span>
+         </span>
+         <select id="${id}-user-menu">
+         <#list filterTypes as filter>
+            <option value="${filter.type?html}">${msg("filter." + filter.label)}</option>
+         </#list>
+         </select>
+         <span class="align-left yui-button yui-menu-button" id="${id}-range">
+            <span class="first-child">
+               <button type="button" tabindex="0"></button>
+            </span>
+         </span>
+         <select id="${id}-range-menu">
+         <#list filterRanges as filter>
+            <option value="${filter.type?html}">${msg("filter." + filter.label)}</option>
+         </#list>
+         </select>
+      </div>
    </div>
-   <div id="${args.htmlid}-activityList" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
-   </div>
+   <div id="${id}-activityList" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>></div>
+</div>
+
+<#-- Empty results list template -->
+<div id="${id}-empty" style="display: none">
+   <div class="empty"><h3>${msg("empty.title")}</h3><span>${msg("empty.description")}</span></div>
 </div>

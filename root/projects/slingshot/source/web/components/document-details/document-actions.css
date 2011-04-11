@@ -1,22 +1,11 @@
-.document-actions
-{
-   background-color: #fafafa;
-	padding: 1.5em 1em 1.5em 1.5em;
-	border-bottom: 1px solid #cccccc;
-	border-left: 1px solid #cccccc;
-	margin-right: -10px;
-}
-
-.document-actions .heading
-{
-   color: #333333;
-   font-size: 131%;
-   padding-bottom: 1.0em;
-}
-
 .document-actions .doclist
 {
    visibility: visible;
+}
+
+.document-actions .doclist .action-set
+{
+   margin-top: 1em; 
 }
 
 .document-actions .doclist .action-set a,

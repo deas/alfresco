@@ -4,7 +4,8 @@
       <#if repositoryUrl??>repositoryUrl: "${repositoryUrl}",</#if>
       siteId: "${page.url.templateArgs.site!""}",
       containerId: "${template.properties.container!"documentLibrary"}",
-      replicationUrlMapping: ${replicationUrlMappingJSON!"{}"}
+      replicationUrlMapping: ${replicationUrlMappingJSON!"{}"},
+      repositoryBrowsing: ${(rootNode??)?string}
    }).setMessages(
       ${messages}
    );

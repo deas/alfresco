@@ -8,3 +8,8 @@
 {
    height: 200px;
 }
+
+.webview .configureInstructions
+{
+   padding: 10px;
+}

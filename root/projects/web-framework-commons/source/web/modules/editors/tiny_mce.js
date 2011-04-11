@@ -55,6 +55,11 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
       {
          editor.show();
       },
+      
+      focus: function RichEditorManager_tinyMCE_focus()
+      {
+         editor.focus();
+      },
 
       getContent: function RichEditorManager_tinyMCE_getContent() 
       { 

@@ -473,7 +473,7 @@
                site: this.options.siteId,
                filterId: "tag",
                filterOwner: "Alfresco.TagFilter",
-               filterData: obj.tagName
+               filterData: encodeURIComponent(obj.tagName)
             });
 
             window.location = url;

@@ -137,20 +137,35 @@ public class RenditionBootstrap implements ApplicationContextAware, ApplicationL
     {
         if (definitions != null)
         {
-            for (BootstrapRenditionDefinition definition : definitions)
+            for (final BootstrapRenditionDefinition definition : definitions)
             {
-                // Clear any existing defintions with the same name
-                RenditionDefinition existingRenDef = renditionService.loadRenditionDefinition(definition.getQName());
-                if (existingRenDef != null)
-                {
-                    nodeService.deleteNode(existingRenDef.getNodeRef());
-                }
-
-                // Get the rendition definition
-                RenditionDefinition renDef = getRenditionDefinition(definition);
-
-                // Save the rendition
-                renditionService.saveRenditionDefinition(renDef);
+                
+                
+                
+                // Rendition Definitions are persisted underneath the Data Dictionary for which Group ALL
+                // has Consumer access by default. However, we cannot assume that that access level applies for all deployments. See ALF-7334.
+                AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Void>()
+                    {
+                        @Override
+                        public Void doWork() throws Exception
+                        {
+                            // Clear any existing defintions with the same name
+                            RenditionDefinition existingRenDef = renditionService.loadRenditionDefinition(definition.getQName());
+                            
+                            if (existingRenDef != null)
+                            {
+                                nodeService.deleteNode(existingRenDef.getNodeRef());
+                            }
+                            
+                            // Get the rendition definition
+                            RenditionDefinition renDef = getRenditionDefinition(definition);
+                            
+                            // Save the rendition
+                            renditionService.saveRenditionDefinition(renDef);
+                            
+                            return null;
+                        }
+                    }, AuthenticationUtil.getSystemUserName());
             }
         }
     }

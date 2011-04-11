@@ -1,28 +1,16 @@
-.document-workflows
+.document-workflows h2 .edit
 {
-   padding: 0em 1em 0em 0em;
+   background-image: url(../documentlibrary/images/workflow-16.png);
 }
 
-.document-workflows .heading
+.document-workflows .workflow img
 {
-   color: #333333;
-   font-size: 131%;
-   padding: 1em 0em;
-}
-
-.document-workflows .info-section
-{
-   border-bottom: 1px solid #c2c2c2;
-   padding: 0px 0.5em 1.5em 0.5em;
-}
-
-.document-workflows .info
-{
-   margin-bottom: 0.5em;
-}
-
-.document-workflows .workflows
-{
+   float: left;
+   margin-top: 0.2em;
+   min-height: 3em;
+   padding-right: 1em;
+   line-height: 3em;
+   text-align: center;
 }
 
 .document-workflows .workflow
@@ -41,17 +29,6 @@
 .document-workflows .workflow .details
 {
    margin-left: 2em;
-}
-
-.document-workflows .workflow .icon
-{
-   float: left;
-   margin-top: 0.2em;
-}
-
-.document-workflows .workflow .message
-{
-   color: #6ca5ce;
 }
 
 .document-workflows .workflow .title

@@ -129,10 +129,11 @@
 
                      // Save url for new config dialog openings
                      this.options.feedURL = (rss && rss.feedURL) ? rss.feedURL : this.options.feedURL;
+                     this.options.limit = rss.limit;
 
                      // Update title and items are with new rss 
                      Dom.get(this.id + "-title").innerHTML = rss ? rss.title : "";
-                     Dom.get(this.id + "-scrollableList").innerHTML = rss ? rss.content : "";
+                     Dom.get(this.id + "-scrollableList").innerHTML = (rss && rss.content !== "") ? rss.content : ('<h3>' + this.msg("label.noItems") + '</h3>');
                   },
                   scope: this
                },

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -30,6 +30,9 @@ public interface ContentModel
     //
     // System Model Definitions
     //
+    
+    // type for deleted nodes
+    static final QName TYPE_DELETED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "deleted");
     
     // base type constants
     static final QName TYPE_BASE = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "base");
@@ -87,6 +90,7 @@ public interface ContentModel
     static final QName PROP_SYS_VERSION_SCHEMA = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "versionSchema");
     static final QName PROP_SYS_VERSION_EDITION = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "versionEdition"); 
     static final QName PROP_SYS_VERSION_PROPERTIES = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "versionProperties"); 
+    static final QName PROP_SYS_LICENSE_MODE = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "licenseMode");
     
     //
     // Content Model Definitions
@@ -201,8 +205,13 @@ public interface ContentModel
     static final QName PROP_GOOGLEUSERNAME = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "googleusername");
     static final QName PROP_INSTANTMSG = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "instantmsg");
     
-    static final QName PROP_SIZE_CURRENT = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "sizeCurrent");
+    static final QName PROP_SIZE_CURRENT = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "sizeCurrent"); // system-maintained
     static final QName PROP_SIZE_QUOTA = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "sizeQuota");
+    
+    static final QName PROP_EMAIL_FEED_ID = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "emailFeedId"); // system-maintained
+    static final QName PROP_EMAIL_FEED_DISABLED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "emailFeedDisabled");
+    
+    static final QName ASPECT_PERSON_DISABLED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "personDisabled");
     
     static final QName ASSOC_AVATAR = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "avatar");
     
@@ -286,6 +295,16 @@ public interface ContentModel
     static final QName PROP_CONTENT_PROPERTY_NAME = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "contentPropertyName");
     static final QName PROP_AUTOMATIC_UPDATE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "automaticUpdate");
     
+    // The below content entities can be used to manage 'failed' thumbnails. These are thumbnails that execute and fail with an
+    // exception that likely means a reattempt will fail. The failedThumbnailSource aspect can be used to mark a node as
+    // having tried and failed to use a particular thumbnail definition. This can then be checked and reattempts at that thumbnail
+    // can be prevented or throttled.
+    static final QName ASPECT_FAILED_THUMBNAIL_SOURCE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "failedThumbnailSource");
+    static final QName ASSOC_FAILED_THUMBNAIL= QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "failedThumbnail");
+    static final QName TYPE_FAILED_THUMBNAIL = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "failedThumbnail");
+    static final QName PROP_FAILED_THUMBNAIL_TIME = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "failedThumbnailTime");
+    static final QName PROP_FAILURE_COUNT = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "failureCount");
+
     // Thumbnailed Aspect
     /**
      * This aspect type has been deprecated.

@@ -1,5 +1,14 @@
 <#include "include/alfresco-template.ftl" />
-<@templateHeader />
+<@templateHeader>
+   <script type="text/javascript">//<![CDATA[
+      new Alfresco.widget.Resizer("Calendar").setOptions(
+      {
+         divLeft: "divCalendarFilters",
+         divRight: "divCalendarContent",
+         initialWidth: 215
+      });
+   //]]></script>
+</@>
 
 <@templateBody>
    <div id="alf-hd">
@@ -11,8 +20,8 @@
       <div class="yui-t1" id="alfresco-calendar">
          <div id="yui-main">
             <div id="divCalendarContent">
-               <@region id="toolbar" scope="template" protected=true />               
-               <@region id="view" scope="template" protected=true />
+               <@region id="toolbar" scope="template" protected=true class="toolbar" />               
+               <@region id="view" scope="template" protected=true class="view" />
             </div>
          </div>
          <div id="divCalendarFilters">

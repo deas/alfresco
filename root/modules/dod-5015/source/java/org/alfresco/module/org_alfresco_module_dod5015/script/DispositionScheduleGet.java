@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition;
 import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -69,12 +71,24 @@ public class DispositionScheduleGet extends DispositionAbstractBase
             scheduleModel.put("instructions", schedule.getDispositionInstructions());
         }
         
+        boolean unpublishedUpdates = false;
+        boolean publishInProgress = false;                
+        
         List<Map<String, Object>> actions = new ArrayList<Map<String, Object>>();
         for (DispositionActionDefinition actionDef : schedule.getDispositionActionDefinitions())
         {
+            NodeRef actionDefNodeRef = actionDef.getNodeRef();
+            if (nodeService.hasAspect(actionDefNodeRef, RecordsManagementModel.ASPECT_UNPUBLISHED_UPDATE) == true)
+            {
+                unpublishedUpdates = true;
+                publishInProgress = ((Boolean)nodeService.getProperty(actionDefNodeRef, RecordsManagementModel.PROP_PUBLISH_IN_PROGRESS)).booleanValue();
+            }
+            
             actions.add(createActionDefModel(actionDef, actionsUrl + "/" + actionDef.getId()));
         }
-        scheduleModel.put("actions", actions);
+        scheduleModel.put("actions", actions);                
+        scheduleModel.put("unpublishedUpdates", unpublishedUpdates);
+        scheduleModel.put("publishInProgress", publishInProgress);
         
         // create model object with just the schedule data
         Map<String, Object> model = new HashMap<String, Object>(1);

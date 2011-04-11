@@ -125,8 +125,16 @@
             form.init();
          }
          
-         // Finally show the main component body here to prevent UI artifacts on YUI button decoration
-         Dom.removeClass(this.id + "-readview", "hidden");
+         // If the profile is editable and the link includes a request to edit it, then reveal the edit form...
+         if (this.options.profile.isEditable && window.location.hash == "#edit")
+         {
+            this.onEditProfile();
+         }
+         else
+         {
+            // Finally show the main component body here to prevent UI artifacts on YUI button decoration
+            Dom.removeClass(this.id + "-readview", "hidden");
+         }
       },
       
       /**
@@ -252,7 +260,17 @@
          if (response)
          {
             // succesfully updated details - refresh the page with the new user details
-            location.reload(true);
+            if (window.location.hash == "#edit")
+            {
+               // If the location has the #edit hash then we need to remove it so that we
+               // return to the read view...
+               window.location = window.location.href.replace( /#.*/, "");
+            }
+            else
+            {
+               location.reload(true);
+            }
+            
          }
          else
          {

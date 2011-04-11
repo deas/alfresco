@@ -376,8 +376,9 @@
          }
 
          // Delete rule
-         Alfresco.util.Ajax.jsonDelete(
+         Alfresco.util.Ajax.request( 
          {
+            method: Alfresco.util.Ajax.DELETE,
             url: Alfresco.constants.PROXY_URI_RELATIVE + "api/node/" + this.options.nodeRef.uri + "/ruleset/rules/" + this.ruleDetails.id,
             successCallback:
             {

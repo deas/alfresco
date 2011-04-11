@@ -263,11 +263,11 @@ var Evaluator =
       
       return currentRecordType;
    },
-
+   
    /**
     * Asset Evaluator - main entrypoint
     */
-   run: function Evaluator_run(asset, isParent)
+   run: function Evaluator_run(asset, capabilitySet)
    {
       var assetType = Evaluator.getAssetType(asset),
          rmNode = rmService.getRecordsManagementNode(asset),
@@ -284,8 +284,17 @@ var Evaluator =
       /**
        * Capabilities and Actions
        */
-      var cap, act;
-      for each (cap in rmNode.capabilities)
+      var caps, cap, act;      
+      if (capabilitySet == "all")
+      {
+    	  caps = rmNode.capabilities;
+      }
+      else
+      {
+    	  caps = rmNode.capabilitiesSet(capabilitySet);
+      }
+      
+      for each (cap in caps)
       {
          capabilities[cap.name] = true;
          for each (act in cap.actions)

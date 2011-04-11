@@ -37,6 +37,7 @@
             <type name="association:packageItems" template="/org/alfresco/components/form/controls/workflow/packageitems.ftl" />
             <type name="transitions" template="/org/alfresco/components/form/controls/workflow/transitions.ftl" />
             <type name="taskOwner" template="/org/alfresco/components/form/controls/workflow/taskowner.ftl" />
+            <type name="mbean_operations" template="/org/alfresco/components/form/controls/jmx/operations.ftl" />
             <!-- Data types that should always be rendered read-only -->
             <type name="qname" template="/org/alfresco/components/form/controls/readonly.ftl" />
             <type name="noderef" template="/org/alfresco/components/form/controls/readonly.ftl" />

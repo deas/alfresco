@@ -12,6 +12,9 @@
          <input type="hidden" name="page" value="calendar" />
          <input type="hidden" id="${el}-from" name="from" value="${event.from!""}" />
          <input type="hidden" id="${el}-to" name="to" value="${event.to!""}" />
+         <#if !enableDocFolder??>
+            <input type="hidden" name="docfolder" value="${event.docfolder}" />
+         </#if>
          <div class="yui-g">
             <h2>${msg("section.details")}</h2>
          </div>
@@ -40,11 +43,11 @@
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="fd">${msg("label.startdate")}:</label></div>
-            <div class="yui-u overflow"><span id="${el}-startdate"><input id="fd" type="text" name="fromdate" readonly="readonly"  value="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" disabled /></span><span id="${el}-starttime" class="eventTime">&nbsp;<label for="${el}-start">${msg("label.at")}&nbsp;</label><input id="${el}-start" name="start" value="${event.start!"12:00"}" type="text" size="10" tabindex="0" /></span></div>
+            <div class="yui-u overflow"><span id="${el}-startdate"><input id="fd" type="text" name="fromdate" readonly="readonly"  value="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" title="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if>" /></span><span id="${el}-starttime" class="eventTime">&nbsp;<label for="${el}-start">${msg("label.at")}&nbsp;</label><input id="${el}-start" name="start" value="${event.start!"12:00"}" type="text" size="10" tabindex="0" /></span></div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="td">${msg("label.enddate")}:</label></div>
-            <div class="yui-u overflow"><span id="${el}-enddate"><input id="td" type="text" name="todate" readonly="readonly"  value="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" disabled /></span><span id="${el}-endtime" class="eventTime"><label for="${el}-end">${msg("label.at")}&nbsp;</label><input id="${el}-end" name="end" value="${event.end!"13:00"}" type="text" size="10" tabindex="0" /></span></div>
+            <div class="yui-u overflow"><span id="${el}-enddate"><input id="td" type="text" name="todate" readonly="readonly"  value="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" title="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if>" /></span><span id="${el}-endtime" class="eventTime">&nbsp;<label for="${el}-end">${msg("label.at")}&nbsp;</label><input id="${el}-end" name="end" value="${event.end!"13:00"}" type="text" size="10" tabindex="0" /></span></div>
          </div>
          <!-- tags -->
          <div class="yui-gd">
@@ -74,16 +77,18 @@
                <!-- end tags -->                    
             </div>
          </div>
-         <div class="yui-g">
-            <h2>${msg("section.documents")}</h2>
-         </div>
-         <div class="yui-gd">
-            <div class="yui-u first"><label for="${el}-docfolder">${msg("label.docfolder")}:</label></div>
-            <div class="yui-u" >
-               <input type="text" id="${el}-docfolder" name="docfolder" value="${event.docfolder?html}" class="docfolder-input" readonly="true" />
-               <input type="button" id="${el}-browse-button" value="${msg("label.browse")}" />
+         <#if enableDocFolder??>
+            <div class="yui-g">
+               <h2>${msg("section.documents")}</h2>
             </div>
-         </div>	 
+            <div class="yui-gd">
+               <div class="yui-u first"><label for="${el}-docfolder">${msg("label.docfolder")}:</label></div>
+               <div class="yui-u" >
+                  <input type="text" id="${el}-docfolder" name="docfolder" value="${event.docfolder?html}" class="docfolder-input" readonly="true" />
+                  <input type="button" id="${el}-browse-button" value="${msg("label.browse")}" />
+               </div>
+            </div>
+         </#if>	 
          <div class="bdft">
             <input type="submit" id="${el}-ok" value="${msg("button.ok")}" tabindex="0" />
             <input type="submit" id="${el}-cancel" value="${msg("button.cancel")}" tabindex="0" />

@@ -115,6 +115,11 @@ label,
    font-weight: normal;
 }
 
+.faded
+{
+   color: #aaa;
+}
+
 /* DASHLETS */
 
 .dashlet
@@ -128,7 +133,6 @@ label,
    background-color: #92c15f;
    background-image: url(images/dashlet-title-bg.png);
    background-repeat: repeat-x;
-   border-bottom: 1px dashed #bababa;
    color: #fff;
 }
 
@@ -511,6 +515,24 @@ span.mce_alfresco-imagelibrary
    background: #5FAC34 none;
 }
 
+/* Override checked styles for doclist */
+
+.yui-skin-greenTheme .no-check-bg div.flat-button span.yui-radio-button-checked,
+.yui-skin-greenTheme .no-check-bg div.flat-button span.yui-checkbox-button-checked,
+.yui-skin-greenTheme .no-check-bg div.flat-button span.yui-radio-button-checked,
+.yui-skin-greenTheme .no-check-bg div.flat-button span.yui-checkbox-button-checked
+{
+   background: none;
+}
+
+/* Ensure hover state can be activated */
+
+.yui-skin-greenTheme .no-check-bg div.flat-button span.yui-button-hover
+{
+   background: transparent url(images/sprite.png) repeat-x scroll 0 0;
+   border-color: #808080;
+}
+
 /* Override YUI Button styles for - title button style */
 
 .yui-skin-greenTheme .title-button .yui-button
@@ -707,7 +729,9 @@ body.yui-skin-greenTheme .doclist div.more-actions
 
 body.yui-skin-greenTheme .doclist .action-set a:active,
 body.yui-skin-greenTheme .doclist .action-set a:hover,
-body.yui-skin-greenTheme .doclist .action-set .highlighted
+body.yui-skin-greenTheme .doclist .action-set .highlighted,
+#divCalendarContent .yui-dt-col-actions a:active,
+#divCalendarContent .yui-dt-col-actions a:hover
 {
    border: 1px solid #5FAC34;
 }
@@ -811,7 +835,9 @@ body.yui-skin-greenTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 .yui-skin-greenTheme .node .nodeURL a,
 .yui-skin-greenTheme .nodeAttrValue a,
 .yui-skin-greenTheme .nodeFooter .tag a,
-.yui-skin-greenTheme .detail .tag a,
+.yui-skin-greenTheme .yui-dt-highlighted .detail .tag a,
+.yui-skin-greenTheme .yui-dt-highlighted .detail .category a,
+.yui-skin-greenTheme .yui-dt-highlighted .detail-social .item a,
 .yui-skin-greenTheme a.wiki-tag-link,
 .yui-skin-greenTheme .node .userLink a,
 .yui-skin-greenTheme .site-members h3 a,
@@ -820,9 +846,26 @@ body.yui-skin-greenTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 .yui-skin-greenTheme .attrValue a,
 .yui-skin-greenTheme .detail .item a,
 .yui-skin-greenTheme .info .meta-value a,
-.yui-skin-greenTheme .rules-none a
+.yui-skin-greenTheme .rules-none a,
+.yui-skin-greenTheme .agendaview a,
+.yui-skin-greenTheme a.previousEvents,
+.yui-skin-greenTheme a.nextEvents
 {
    color: #00AE42;
+}
+
+.yui-skin-greenTheme .detail .tag a,
+.yui-skin-greenTheme .detail .category a,
+.yui-skin-greenTheme .detail-social .item a,
+.yui-skin-greenTheme .document-tags .tag
+{
+   color: #333;
+}
+
+.yui-skin-greenTheme .detail .tag a,
+.yui-skin-greenTheme .document-tags .tag
+{
+   background-color: #e8e8e8;
 }
 
 .yui-skin-greenTheme .site-navigation
@@ -856,6 +899,16 @@ body.yui-skin-greenTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 
 /* End Calendar */
 
+
+/* Document */
+
+.document-version
+{
+   background-color: #aaa;
+   color: #fff;
+}
+
+
 /* Twisters */
 
 .alfresco-twister-open
@@ -866,6 +919,16 @@ body.yui-skin-greenTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 .alfresco-twister-closed
 {
    background: transparent url(images/collapsed.png) no-repeat scroll 0 50% !important;
+}
+
+/* Preview Tooltip */
+
+.yui-tt .bd
+{
+   background-color: #f4faff !important;
+   border: 1px solid #333 !important;
+   padding: 4px 4px 1px !important;
+   text-align: left;
 }
 
 /* Theme colors */
@@ -964,6 +1027,18 @@ div.theme-bg-color-7
 .theme-bg-2
 {
    background-color: #E3EAEC;
+   background-image: -webkit-gradient(
+       linear,
+       left top,
+       left bottom,
+       color-stop(0, rgb(246,246,246)),
+       color-stop(1, rgb(233,232,234))
+   );
+   background-image: -moz-linear-gradient(
+       center top,
+       rgb(246,246,246) 0%,
+       rgb(233,232,234) 100%
+    );
 }
 
 .theme-bg-selected

@@ -104,7 +104,6 @@
     </bean>
 
     <bean id="vtiPathHelper" class="org.alfresco.module.vti.handler.alfresco.VtiPathHelper">
-    
         <property name="rootPath" value="/app:company_home/st:sites" />
         <property name="storePath" value="workspace://SpacesStore" />        
         <property name="authenticationComponent" ref="AuthenticationComponent" />
@@ -114,6 +113,7 @@
         <property name="fileFolderService" ref="FileFolderService" />
         <property name="permissionService" ref="PermissionService" />
         <property name="personService" ref="PersonService" />
+        <property name="tenantService" ref="tenantService" />
         <property name="sysAdminParams">
             <ref bean="sysAdminParams" />
         </property>

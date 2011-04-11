@@ -1,6 +1,0 @@
-<webscript>
-  <shortname>Admin Console Replication Jobs Tool</shortname>
-  <description>Administration Console - Replication Jobs Tool</description>
-  <url>/components/console/replication-jobs</url>
-  <family>admin-console</family>
-</webscript>

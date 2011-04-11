@@ -1,36 +1,48 @@
-<#macro detailsUrl image label>
-   <a href="${url.context}/page/site/${page.url.templateArgs.site}/document-details?nodeRef=${image.nodeRef}" class="theme-color-1">${label}</a>
-</#macro>
+<#assign idJS=args.htmlid?js_string>
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.dashlet.ImageSummary("${args.htmlid}");
-   new Alfresco.widget.DashletResizer("${args.htmlid}", "${instance.object.id}");
+(function()
+{
+   new Alfresco.dashlet.ImageSummary("${idJS}").setOptions(
+   {
+      siteId: "${page.url.templateArgs.site!""}"
+   }).setMessages(${messages});
+   new Alfresco.widget.DashletResizer("${idJS}", "${instance.object.id}");
+   new Alfresco.widget.DashletTitleBarActions("${idJS}").setOptions(
+   {
+      actions:
+      [
+         {
+            cssClass: "help",
+            bubbleOnClick:
+            {
+               message: "${msg("dashlet.help")?js_string}"
+            },
+            tooltip: "${msg("dashlet.help.tooltip")?js_string}"
+         }
+      ]
+   });
+})();
 //]]></script>
+<#assign el=args.htmlid?html>
+<div class="hidden">
+   <#-- HTML template for an image item -->
+   <div id="${el}-item-template" class="item">
+      <div class="thumbnail">
+         <div class="action-overlay">
+            <a href="${url.context}/page/site/${page.url.templateArgs.site}/document-details?nodeRef={nodeRef}"><img title="${msg("label.viewdetails")}" src="${url.context}/res/components/documentlibrary/images/details-16.png" width="16" height="16" /></a>
+            <a href="${url.context}/proxy/alfresco/api/node/content/{nodeRefUrl}/{name}?a=true"><img title="${msg("label.download")}" src="${url.context}/res/components/documentlibrary/images/download-16.png" width="16" height="16"/></a>
+         </div>
+         <a href="${url.context}/proxy/alfresco/api/node/content/{nodeRefUrl}/{name}" onclick="showLightbox(this);return false;" title="{title} - {modifier} {modified}"><img src="${url.context}/proxy/alfresco/api/node/{nodeRefUrl}/content/thumbnails/doclib?c=force"/></a>
+      </div>
+   </div>
+</div>
 <div class="dashlet">
    <div class="title">${msg("header.title")}</div>
-   <div id="${args.htmlid}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
-<#if images.message?exists>
-      <div class="detail-list-item first-item last-item">
-         <div class="error">${images.message}</div>
+   <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+      <div class="dashlet-padding">
+         <div id="${el}-wait" class="images-wait"></div>
+         <div id="${el}-message" class="images-message hidden"></div>
+         <div id="${el}-images" class="images hidden"></div>
       </div>
-<#elseif images.items?size == 0>
-      <div class="detail-list-item first-item last-item">
-         <span>${msg("label.noitems")}</span>
-      </div>
-<#else>
-   <#assign detailsmsg = msg("label.viewdetails")>
-   <#list images.items as image>
-      <#assign nodeRefUrl=image.nodeRef?replace('://','/')>
-      <div class="images">
-         <div class="item">
-            <div class="thumbnail">
-               <a href="${url.context}/proxy/alfresco/api/node/content/${nodeRefUrl}/${image.name?url}" rel="lightbox" title="${image.title?html} - ${msg("text.modified-by", image.modifier)} ${xmldate(image.modifiedOn)?string(msg("date-format.defaultFTL"))}"><img src="${url.context}/proxy/alfresco/api/node/${nodeRefUrl}/content/thumbnails/doclib?c=force"/></a>
-            </div>
-            <div class="details">
-               <@detailsUrl image detailsmsg />
-            </div>
-         </div>
-      </div>
-   </#list>
-</#if>
    </div>
 </div>

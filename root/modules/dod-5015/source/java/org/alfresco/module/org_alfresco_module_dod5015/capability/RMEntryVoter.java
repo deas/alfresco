@@ -114,6 +114,7 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
@@ -122,9 +123,12 @@ import org.alfresco.util.EqualsHelper;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
+public class RMEntryVoter implements AccessDecisionVoter, InitializingBean, ApplicationContextAware
 {
     private static Log logger = LogFactory.getLog(RMEntryVoter.class);
 
@@ -151,6 +155,8 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
     private DictionaryService dictionaryService;
 
     private RecordsManagementService recordsManagementService;
+    
+    private SearchService searchService;
 
     private static HashMap<String, Policy> policies = new HashMap<String, Policy>();
 
@@ -336,7 +342,20 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
     {
         this.nodeService = nodeService;
     }
-
+    
+    /**
+     * Get the search service
+     * @return  search service
+     */
+    public SearchService getSearchService()
+    {
+        if (searchService == null)
+        {
+            searchService = (SearchService)applicationContext.getBean("SearchService");
+        }
+        return searchService;
+    }
+    
     /**
      * Set the name space prefix resolver
      * 
@@ -1249,7 +1268,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
     }
 
     public Map<Capability, AccessStatus> getCapabilities(NodeRef nodeRef)
-    {
+    {        
         HashMap<Capability, AccessStatus> answer = new HashMap<Capability, AccessStatus>();
         for (Capability capability : capabilities.values())
         {
@@ -1260,7 +1279,24 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
             }
         }
         return answer;
-
+    }
+    
+    public Map<Capability, AccessStatus> getCapabilities(NodeRef nodeRef, List<String> capabilities)
+    {
+        HashMap<Capability, AccessStatus> answer = new HashMap<Capability, AccessStatus>();
+        for (String capabilityName : capabilities)
+        {
+            Capability capability = getCapability(capabilityName);
+            if (capability != null)
+            {
+                AccessStatus status = capability.hasPermission(nodeRef);
+                if (answer.put(capability, status) != null)
+                {
+                    throw new IllegalStateException();
+                }
+            }
+        }
+        return answer;        
     }
 
     public Collection<Capability> getAllCapabilities()
@@ -1892,6 +1928,15 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
             }
         }
 
+    }
+
+    private ApplicationContext applicationContext;
+    
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException
+    {
+        this.applicationContext = applicationContext;
     }
     
 }

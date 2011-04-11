@@ -21,6 +21,11 @@
    padding-top: 0.5em;
 }
 
+.datalists .no-lists
+{
+   padding: 4px;
+}
+
 .datalists li
 {
    overflow-x: hidden;

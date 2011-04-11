@@ -1,39 +1,50 @@
-<#macro doclibUrl doc>
-   <a href="${url.context}/page/site/${doc.location.site}/document-details?nodeRef=${doc.nodeRef}" class="theme-color-1">${doc.displayName?html}</a>
-</#macro>
+<#assign id = args.htmlid>
+<#assign jsid = args.htmlid?js_string>
+<#assign prefSimpleView = preferences.simpleView!true>
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.widget.DashletResizer("${args.htmlid}", "${instance.object.id}");
+(function()
+{
+   new Alfresco.dashlet.DocSummary("${jsid}").setOptions(
+   {
+      simpleView: ${prefSimpleView?string?js_string},
+      maxItems: ${maxItems?c}
+   }).setMessages(${messages});
+   new Alfresco.widget.DashletResizer("${jsid}", "${instance.object.id}");
+   new Alfresco.widget.DashletTitleBarActions("${jsid}").setOptions(
+   {
+      actions:
+      [
+         {
+            cssClass: "help",
+            bubbleOnClick:
+            {
+               message: "${msg("dashlet.help")?js_string}"
+            },
+            tooltip: "${msg("dashlet.help.tooltip")?js_string}"
+         }
+      ]
+   });
+})();
 //]]></script>
-<div class="dashlet">
-   <div class="title">${msg("header.docSummary")}</div>
+
+<div class="dashlet docsummary">
+   <div class="title">${msg("header")}</div>
+   <div class="toolbar flat-button">
+      <div id="${id}-simpleDetailed" class="align-right simple-detailed yui-buttongroup inline">
+         <span class="yui-button yui-radio-button simple-view<#if prefSimpleView> yui-button-checked yui-radio-button-checked</#if>">
+            <span class="first-child">
+               <button type="button" tabindex="0" title="${msg("button.view.simple")}"></button>
+            </span>
+         </span>
+         <span class="yui-button yui-radio-button detailed-view<#if !prefSimpleView> yui-button-checked yui-radio-button-checked</#if>">
+            <span class="first-child">
+               <button type="button" tabindex="0" title="${msg("button.view.detailed")}"></button>
+            </span>
+         </span>
+      </div>
+      <div class="clear"></div>
+   </div>
    <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
-   <#if docs.message?exists>
-      <div class="detail-list-item first-item last-item">
-         <div class="error">${docs.message}</div>
-      </div>
-   <#else>
-      <#if docs.items?size == 0>
-      <div class="detail-list-item first-item last-item">
-         <span>${msg("label.noItems")}</span>
-      </div>
-      <#else>
-         <#list docs.items as doc>
-            <#assign modifiedBy><a href="${url.context}/page/user/${doc.modifiedByUser?url}/profile" class="theme-color-1">${doc.modifiedBy?html}</a></#assign>
-      <div class="detail-list-item <#if doc_index = 0>first-item<#elseif !doc_has_next>last-item</#if>">
-         <div>
-            <div class="icon">
-               <img src="${url.context}/res/components/images/generic-file-32.png" alt="${doc.displayName?html}" />
-            </div>
-            <div class="details">
-               <h4><@doclibUrl doc /></h4>
-               <div>
-                  ${msg("text.modified-by", modifiedBy)} ${msg("text.modified-on", xmldate(doc.modifiedOn)?string(msg("date-format.defaultFTL")))}
-               </div>
-            </div>
-         </div>
-      </div>
-         </#list>
-      </#if>
-   </#if>
+      <div id="${id}-documents"></div>
    </div>
 </div>

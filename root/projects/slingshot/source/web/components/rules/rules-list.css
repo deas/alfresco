@@ -62,15 +62,14 @@
    text-align: left;
 }
 
-
 .rules-list .rules-list-item:hover
 {
-   background-color: #F4FAFF;   
+   background-color: #F4FAFF;
 }
 
 .rules-list .rules-list-item.selected
 {
-   background-color: #D2E5F2;
+   background-color: #dceaf4;
 }
 
 .rules-list-item .rule-icons

@@ -30,6 +30,8 @@ import org.alfresco.repo.security.authentication.AuthenticationComponent;
 import org.alfresco.repo.security.authentication.AuthenticationException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
+import org.alfresco.repo.tenant.TenantService;
+import org.alfresco.repo.webdav.MTNodesCache;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
@@ -41,11 +43,11 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 
 /**
  * Helper for AlfrescoVtiMethodHandler. Help for path resolving and url formatting
@@ -64,11 +66,12 @@ public class VtiPathHelper extends AbstractLifecycleBean
     private NamespaceService namespaceService;
     private PersonService personService;
     private SysAdminParams sysAdminParams;
+    private TenantService tenantService;
 
     private AuthenticationComponent authenticationComponent;
 
-    private NodeRef rootNodeRef;
-
+    private MTNodesCache rootNodes;
+    
     private String rootPath;
     private String storePath;
     
@@ -172,6 +175,8 @@ public class VtiPathHelper extends AbstractLifecycleBean
     {
         initialURL = removeSlashes(initialURL);
         
+        NodeRef rootNodeRef = getRootNodeRef();
+        
         FileInfo fileInfo = null;
 
         if (initialURL.length() == 0)
@@ -251,7 +256,8 @@ public class VtiPathHelper extends AbstractLifecycleBean
      */
     public String toUrlPath(FileInfo fileInfo)
     {
-        String urlPath ;
+        String urlPath;
+        NodeRef rootNodeRef = getRootNodeRef();
         if (fileInfo.getNodeRef().equals(rootNodeRef))
         {
             urlPath = "";
@@ -447,10 +453,10 @@ public class VtiPathHelper extends AbstractLifecycleBean
      * @param document document
      * @return path
      */
-    public String getPathFromDocumentName(String document)    
+    public String getPathFromDocumentName(String document)
     {
         try
-        {            
+        {
             return new URL(document).getPath();
         }
         catch (Exception e)
@@ -458,72 +464,53 @@ public class VtiPathHelper extends AbstractLifecycleBean
             throw new VtiHandlerException(VtiHandlerException.BAD_URL);
         }
     }
-    
+
     /**
      * @see org.springframework.extensions.surf.util.AbstractLifecycleBean#onBootstrap(org.springframework.context.ApplicationEvent)
      */
-	protected void onBootstrap(ApplicationEvent event) 
-	{
-		rootNodeRef = AuthenticationUtil.runAs(new RunAsWork<NodeRef>() 
-		{
-            public NodeRef doWork() throws Exception
+    protected void onBootstrap(ApplicationEvent event)
+    {
+        AuthenticationUtil.runAs(new RunAsWork<String>()
+        {
+            public String doWork() throws Exception
             {
-                StoreRef storeRef = new StoreRef(storePath);
-                if (nodeService.exists(storeRef) == false)
-                {
-                    throw new RuntimeException("No store for path: " + storeRef);
-                }
-
-                NodeRef storeRootNodeRef = nodeService.getRootNode(storeRef);
-
-                List<NodeRef> nodeRefs = searchService.selectNodes(storeRootNodeRef, rootPath, null, namespaceService, false);
-
-                if (nodeRefs.size() > 1)
-                {
-                    throw new RuntimeException("Multiple possible roots for : \n" + "   root path: " + rootPath + "\n" + "   results: " + nodeRefs);
-                }
-                else if (nodeRefs.size() == 0)
-                {
-                    throw new RuntimeException("No root found for : \n" + "   root path: " + rootPath);
-                }
-                else
-                {
-                    return nodeRefs.get(0);
-                }
+                rootNodes = new MTNodesCache(new StoreRef(storePath), rootPath, nodeService, searchService, namespaceService, tenantService);
+                return null;
             }
-		}, authenticationComponent.getSystemUserName());
-	}
-	
-	/**
-	 * Remove slashes from string
-	 * 
-	 * @param value input string
-	 * @return String output string
-	 */
-	public static String removeSlashes(String value)
-	{	    
-	    value = value.replaceAll("//", "/");
-	    
-	    if (value.startsWith("/"))
-	        value = value.substring(1);
-	    if (value.endsWith("/"))
-	        value = value.substring(0, value.length() - 1);
-	    return value;	    
-	}
+        }, authenticationComponent.getSystemUserName());
+    }
 
-	/**
+    /**
+     * Remove slashes from string
+     * 
+     * @param value input string
+     * @return String output string
+     */
+    public static String removeSlashes(String value)
+    {
+        value = value.replaceAll("//", "/");
+
+        if (value.startsWith("/"))
+            value = value.substring(1);
+        if (value.endsWith("/"))
+            value = value.substring(0, value.length() - 1);
+        return value;
+    }
+
+    /**
      * @see org.springframework.extensions.surf.util.AbstractLifecycleBean#onShutdown(org.springframework.context.ApplicationEvent)
      */
-	protected void onShutdown(ApplicationEvent event) {
-		// do nothing
-	}
+    protected void onShutdown(ApplicationEvent event)
+    {
+        // do nothing
+    }
 
-	/**
-	 * @return
-	 */
+    /**
+     * @return Root NodeRef
+     */
     public NodeRef getRootNodeRef()
     {
-        return rootNodeRef;
+        return rootNodes.getNodeForCurrentTenant();
     }
 
     public String getRootPath()
@@ -550,5 +537,10 @@ public class VtiPathHelper extends AbstractLifecycleBean
     {
         return fileFolderService;
     }
-       
+
+    public void setTenantService(TenantService tenantService)
+    {
+        this.tenantService = tenantService;
+    }
+
 }

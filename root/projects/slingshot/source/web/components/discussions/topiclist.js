@@ -1025,7 +1025,7 @@
          }
          else if (filterOwner == "Alfresco.TagFilter")
          {
-            params.tag = filterData;
+            params.tag = encodeURIComponent(filterData);
          }
          
          // build the url extension

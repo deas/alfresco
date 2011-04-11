@@ -177,6 +177,10 @@ public class WebSiteServiceImpl extends WebSiteService
             {
                 context = "";
             }
+            if (context.startsWith("/"))
+            {
+                context = context.substring(1);
+            }
             String key = hostName + ":" + hostPort.toString() + "/" + context;
 
             String title = result.getPropertyValueById(Asset.PROPERTY_TITLE);

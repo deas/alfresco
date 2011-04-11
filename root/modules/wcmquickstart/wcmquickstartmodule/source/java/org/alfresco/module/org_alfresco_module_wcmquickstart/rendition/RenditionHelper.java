@@ -25,6 +25,7 @@ import java.util.TreeMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.contextparser.ContextParserService;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.rendition.RenditionDefinition;
@@ -296,7 +297,19 @@ public class RenditionHelper implements WebSiteModel
 				if (renditionService.getRenditionByName(node, renditionQName) == null)
 				{
 					// Defaults to content model namespace if none provided
-					RenditionDefinition def = renditionService.loadRenditionDefinition(renditionQName);
+
+                    // Rendition Definitions are persisted underneath the Data Dictionary for which Group ALL
+                    // has Consumer access by default. However, we cannot assume that that access level applies for all deployments. See ALF-7334.
+                    final QName finalRenditionQName = renditionQName;
+                    RenditionDefinition def = AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<RenditionDefinition>()
+                        {
+                            @Override
+                            public RenditionDefinition doWork() throws Exception
+                            {
+                                return renditionService.loadRenditionDefinition(finalRenditionQName);
+                            }
+                        }, AuthenticationUtil.getSystemUserName());
+					
 					if (def != null)
 					{
 						// Parse the path template in the context of the current node

@@ -24,7 +24,7 @@
       ${messages}
    );
 //]]></script>
-<div id="${args.htmlid}-body" class="doclist">
+<div id="${args.htmlid}-body" class="doclist no-check-bg">
    <div id="${args.htmlid}-doclistBar" class="yui-gc doclist-bar flat-button">
       <div class="yui-u first">
          <div class="file-select">

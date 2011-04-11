@@ -43,7 +43,7 @@ public class ViewUpdateReasonsForFreezeCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (isFrozen(nodeRef) || voter.getNodeService().getType(nodeRef).equals(RecordsManagementModel.TYPE_HOLD))
+            if (isFrozen(nodeRef, false) || voter.getNodeService().getType(nodeRef).equals(RecordsManagementModel.TYPE_HOLD))
             {
                 if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.VIEW_UPDATE_REASONS_FOR_FREEZE) == AccessStatus.ALLOWED)
                 {

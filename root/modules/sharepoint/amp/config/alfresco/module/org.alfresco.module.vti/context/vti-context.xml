@@ -31,6 +31,15 @@
         <property name="filter">
             <ref bean="vtiFilter"/>
         </property>
+		<property name="hashSessionIdManager">
+			<ref bean="hashSessionIdManager"/>
+		</property>
+    </bean>
+
+    <bean id="hashSessionIdManager" class="org.mortbay.jetty.servlet.HashSessionIdManager">
+    	<property name="workerName">
+             <value>${vti.server.sessionIdManager.workerName}</value>
+        </property>
     </bean>
 
     <bean id="vtiServerConnector" class="org.mortbay.jetty.bio.SocketConnector">

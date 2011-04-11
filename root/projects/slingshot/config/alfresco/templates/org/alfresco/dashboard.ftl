@@ -8,6 +8,9 @@
       <@region id="title" scope="page" protected=true />
       <@region id="navigation" scope="page" protected=true />
    </div>
+   <div id="alf-full-width">
+      <@region id="full-width-dashlet" scope="page" protected=true/>
+   </div>
    <div id="bd">
       <@layout.grid gridColumns gridClass "component" />
    </div>

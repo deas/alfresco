@@ -259,14 +259,6 @@
       showConfig: null,
 
       /**
-       * Contains the upload gui
-       *
-       * @property panel
-       * @type YAHOO.widget.Panel
-       */
-      panel: null,
-
-      /**
        * YUI class that controls the .swf to open the browser dialog window
        * and transfers the files.
        *
@@ -282,15 +274,6 @@
        * @type boolean
        */
       uploaderReady: false,
-
-      /**
-       * Used to display the user selceted files and keep track of what files
-       * that are selected and should be STATE_FINISHED.
-       *
-       * @property uploader
-       * @type YAHOO.widget.DataTable
-       */
-      dataTable: null,
 
       /**
        * HTMLElement of type span that displays the dialog title.
@@ -378,10 +361,10 @@
          Dom.removeClass(this.id + "-dialog", "hidden");
 
          // Create the panel
-         this.panel = Alfresco.util.createYUIPanel(this.id + "-dialog");
+         this.widgets.panel = Alfresco.util.createYUIPanel(this.id + "-dialog");
 
          // Hook close button
-         this.panel.hideEvent.subscribe(this.onCancelOkButtonClick, null, this);
+         this.widgets.panel.hideEvent.subscribe(this.onCancelOkButtonClick, null, this);
 
          /**
           * Mac Gecko bugfix for javascript losing connection to the flash uploader movie.
@@ -392,14 +375,14 @@
           *
           * (https://bugzilla.mozilla.org/show_bug.cgi?id=187435)
           */
-         if (this.panel.platform == "mac" && YAHOO.env.ua.gecko)
+         if (this.widgets.panel.platform == "mac" && YAHOO.env.ua.gecko)
          {
             /**
              * Remove the already added event listeners that toggles
              * the "overflow" style property for the dialog wrapper.
              */
             var Config = YAHOO.util.Config,
-                  p = this.panel;
+                  p = this.widgets.panel;
 
             if (Config.alreadySubscribed(p.showEvent, p.showMacGeckoScrollbars, p))
             {
@@ -556,10 +539,10 @@
                el.parentNode.removeChild(el);
             }
          }
-         this.panel.setFirstLastFocusable();
+         this.widgets.panel.setFirstLastFocusable();
 
          // Show the upload panel
-         this.panel.show();
+         this.widgets.panel.show();
 
          // Need to resize FF in Ubuntu so the button appears
          if (navigator.userAgent && navigator.userAgent.indexOf("Ubuntu") != -1 &&
@@ -569,6 +552,16 @@
          }
       },
 
+      /**
+       * Hides the panel
+       * 
+       * @method hide
+       */
+      hide: function FlashUpload_hide()
+      {
+         this.onCancelOkButtonClick();
+      },
+      
       /**
        * Reset GUI to start state
        *
@@ -599,15 +592,15 @@
       onPostRenderEvent: function FlashUpload_onPostRenderEvent()
       {
          // Display the upload button since all files are rendered
-         if (this.dataTable.getRecordSet().getLength() > 0)
+         if (this.widgets.dataTable.getRecordSet().getLength() > 0)
          {
             this.widgets.uploadButton.set("disabled", false);
-            this.panel.setFirstLastFocusable();
-            this.panel.focusFirst();
+            this.widgets.panel.setFirstLastFocusable();
+            this.widgets.panel.focusFirst();
          }
-         if (this.showConfig.mode === this.MODE_SINGLE_UPDATE && this.panel.cfg.getProperty("visible"))
+         if (this.showConfig.mode === this.MODE_SINGLE_UPDATE && this.widgets.panel.cfg.getProperty("visible"))
          {
-            if (this.dataTable.getRecordSet().getLength() === 0)
+            if (this.widgets.dataTable.getRecordSet().getLength() === 0)
             {
                this.uploader.enable();
             }
@@ -629,8 +622,8 @@
       onRowDeleteEvent: function FlashUpload_onRowDeleteEvent(event)
       {
          // Update tabbing and focus
-         this.panel.setFirstLastFocusable();
-         this.panel.focusFirst();         
+         this.widgets.panel.setFirstLastFocusable();
+         this.widgets.panel.focusFirst();         
       },
 
       /**
@@ -676,7 +669,7 @@
             }
          }
          // Add all files to table
-         this.dataTable.addRows(newFiles, 0);
+         this.widgets.dataTable.addRows(newFiles, 0);
       },
 
       /**
@@ -765,6 +758,7 @@
          {
             fileInfo.nodeRef = json.nodeRef;
             fileInfo.fileName = json.fileName;
+            fileInfo.rawJson = json;  // Added for CSV upload
          }
 
          // Add the label "Successful" after the filename, updating the fileName from the response
@@ -856,15 +850,15 @@
           * The file button has been clicked to remove a file.
           * Remove the file from the datatable and all references to it.
           */
-         var r = this.dataTable.getRecordSet().getRecord(recordId);
+         var r = this.widgets.dataTable.getRecordSet().getRecord(recordId);
          this.addedFiles[this._getUniqueFileToken(r.getData())] = null;
          this.fileStore[flashId] = null;
-         this.dataTable.deleteRow(r);
+         this.widgets.dataTable.deleteRow(r);
          if (this.state === this.STATE_BROWSING)
          {
             // Remove the file from the flash movies memory
             this.uploader.removeFile(flashId);
-            if (this.dataTable.getRecordSet().getLength() === 0)
+            if (this.widgets.dataTable.getRecordSet().getLength() === 0)
             {
                // If it was the last file, disable the gui since no files exist.
                this.widgets.uploadButton.set("disabled", true);
@@ -974,7 +968,7 @@
          this._clear();
 
          // Hide the panel
-         this.panel.hide();
+         this.widgets.panel.hide();
 
          // Hide the Flash movie
          Dom.addClass(this.id + "-flashuploader-div", "hidden");
@@ -1004,7 +998,7 @@
          if (this.state === this.STATE_BROWSING)
          {
             // Change the stat to uploading state and adjust the gui
-            var length = this.dataTable.getRecordSet().getLength();
+            var length = this.widgets.dataTable.getRecordSet().getLength();
             if (length > 0)
             {
                this.state = this.STATE_UPLOADING;
@@ -1074,7 +1068,7 @@
             Dom.addClass(this.singleUpdateTip, "hidden");
 
             // Make the file list long
-            this.dataTable.set("height", "204px", true);
+            this.widgets.dataTable.set("height", "204px", true);
          }
          else
          {
@@ -1097,7 +1091,7 @@
             }
 
             // Make the file list short
-            this.dataTable.set("height", "40px");
+            this.widgets.dataTable.set("height", "40px");
          }
 
          // Check if flash player existed or if the no flash message is displayed
@@ -1152,7 +1146,7 @@
                         fn: function _applyUploaderConfig_onOk(e, p_obj)
                         {
                            this.destroy();
-                           p_obj.panel.destroy();
+                           p_obj.widgets.panel.destroy();
                            var fileUpload = p_obj._disableFlashUploader();
                            if (fileUpload)
                            {
@@ -1356,7 +1350,7 @@
           */
          YAHOO.widget.DataTable._bStylesheetFallback = !!YAHOO.env.ua.ie;
          var dataTableDiv = Dom.get(this.id + "-filelist-table");
-         this.dataTable = new YAHOO.widget.DataTable(dataTableDiv, myColumnDefs, myDataSource,
+         this.widgets.dataTable = new YAHOO.widget.DataTable(dataTableDiv, myColumnDefs, myDataSource,
          {
             scrollable: true,            
             height: "100px", // must be set to something so it can be changed afterwards, when the showconfig options decides if its a sinlge or multi upload
@@ -1364,8 +1358,8 @@
             renderLoopSize: 1,
             MSG_EMPTY: this.msg("label.noFiles")
          });
-         this.dataTable.subscribe("postRenderEvent", this.onPostRenderEvent, this, true);
-         this.dataTable.subscribe("rowDeleteEvent", this.onRowDeleteEvent, this, true);
+         this.widgets.dataTable.subscribe("postRenderEvent", this.onPostRenderEvent, this, true);
+         this.widgets.dataTable.subscribe("rowDeleteEvent", this.onRowDeleteEvent, this, true);
       },
 
       /**
@@ -1392,7 +1386,7 @@
          this.statusText.innerHTML = YAHOO.lang.substitute(this.msg("label.uploadStatus"),
          {
             "0" : this.noOfSuccessfulUploads,
-            "1" : this.dataTable.getRecordSet().getLength(),
+            "1" : this.widgets.dataTable.getRecordSet().getLength(),
             "2" : this.noOfFailedUploads
          });
       },
@@ -1425,7 +1419,8 @@
                   objComplete.successful.push(
                   {
                      fileName: file.fileName,
-                     nodeRef: file.nodeRef
+                     nodeRef: file.nodeRef,
+                     response: file.rawJson
                   });
                }
                else if (file.state == this.STATE_FAILURE)
@@ -1483,12 +1478,12 @@
          
          // Find files to upload
          var startedUploads = 0,
-            length = this.dataTable.getRecordSet().getLength(),
+            length = this.widgets.dataTable.getRecordSet().getLength(),
             record, flashId, fileInfo, attributes;
          
          for (var i = 0; i < length && startedUploads < noOfUploadsToStart; i++)
          {
-            record = this.dataTable.getRecordSet().getRecord(i);
+            record = this.widgets.dataTable.getRecordSet().getRecord(i);
             flashId = record.getData("id");
             fileInfo = this.fileStore[flashId];
             if (fileInfo.state === this.STATE_BROWSING)
@@ -1556,10 +1551,10 @@
       _cancelAllUploads: function FlashUpload__cancelAllUploads()
       {
          // Cancel all uploads inside the flash movie
-         var length = this.dataTable.getRecordSet().getLength();
+         var length = this.widgets.dataTable.getRecordSet().getLength();
          for (var i = 0; i < length; i++)
          {
-            var record = this.dataTable.getRecordSet().getRecord(i);
+            var record = this.widgets.dataTable.getRecordSet().getRecord(i);
             var flashId = record.getData("id");
             this.uploader.cancel(flashId);
          }
@@ -1578,10 +1573,10 @@
           * Remove all references to files inside the data table, flash movie
           * and this class's references.
           */
-         var length = this.dataTable.getRecordSet().getLength();
+         var length = this.widgets.dataTable.getRecordSet().getLength();
          this.addedFiles = {};
          this.fileStore = {};
-         this.dataTable.deleteRows(0, length);
+         this.widgets.dataTable.deleteRows(0, length);
          this.uploader.clearFileList();
       }
    });

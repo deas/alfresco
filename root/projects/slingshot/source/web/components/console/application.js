@@ -80,6 +80,8 @@
             {
                type: "submit"
             });
+            parent.widgets.upload = Alfresco.util.createYUIButton(parent, "upload-button", this.onUpload);
+            parent.widgets.reset = Alfresco.util.createYUIButton(parent, "reset-button", this.onReset);
             
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-options-form");
@@ -126,6 +128,53 @@
                   text: Alfresco.util.message("message.failure")
                });
             }
+         },
+         
+         /**
+          * Upload button click handler
+          *
+          * @method onUpload
+          * @param e {object} DomEvent
+          * @param p_obj {object} Object passed back from addListener method
+          */
+         onUpload: function OptionsPanel_onUpload(e, p_obj)
+         {
+            if (!this.fileUpload)
+            {
+               this.fileUpload = Alfresco.getFileUploadInstance();
+            }
+            
+            // Show uploader for single file select - override the upload URL to use appropriate upload service
+            var uploadConfig =
+            {
+               flashUploadURL: "slingshot/application/uploadlogo",
+               htmlUploadURL: "slingshot/application/uploadlogo.html",
+               mode: this.fileUpload.MODE_SINGLE_UPLOAD,
+               onFileUploadComplete:
+               {
+                  fn: this.onFileUploadComplete,
+                  scope: this
+               }
+            };
+            this.fileUpload.show(uploadConfig);
+            Event.preventDefault(e);
+         },
+         
+         /**
+          * Reset button click handler
+          *
+          * @method onReset
+          * @param e {object} DomEvent
+          * @param p_obj {object} Object passed back from addListener method
+          */
+         onReset: function OptionsPanel_onReset(e, p_obj)
+         {
+            // replace logo image URL with the default one
+            var logoImg = Dom.get(this.id + "-logoimg");
+            logoImg.src = parent.options.defaultlogo;
+            
+            // set 'reset' value in hidden field ready for options form submit
+            Dom.get("console-options-logo").value = "reset";
          }
       });
       new OptionsPanelHandler();
@@ -136,44 +185,25 @@
    YAHOO.extend(Alfresco.ConsoleApplication, Alfresco.ConsoleTool,
    {
       /**
-       * Fired by YUILoaderHelper when required component script files have
-       * been loaded into the browser.
+       * File Upload complete event handler
        *
-       * @method onComponentsLoaded
+       * @method onFileUploadComplete
+       * @param complete {object} Object literal containing details of successful and failed uploads
        */
-      onComponentsLoaded: function ConsoleApplication_onComponentsLoaded()
+      onFileUploadComplete: function onFileUploadComplete(complete)
       {
-         Event.onContentReady(this.id, this.onReady, this, true);
-      },
-      
-      /**
-       * Fired by YUI when parent element is available for scripting.
-       * Component initialisation, including instantiation of YUI widgets and event listener binding.
-       *
-       * @method onReady
-       */
-      onReady: function ConsoleApplication_onReady()
-      {
-         // Call super-class onReady() method
-         Alfresco.ConsoleApplication.superclass.onReady.call(this);
-      },
-      
-      /**
-       * YUI WIDGET EVENT HANDLERS
-       * Handlers for standard events fired from YUI widgets, e.g. "click"
-       */
-      
-      /**
-       * Gets a custom message
-       *
-       * @method _msg
-       * @param messageId {string} The messageId to retrieve
-       * @return {string} The custom message
-       * @private
-       */
-      _msg: function ConsoleApplication__msg(messageId)
-      {
-         return Alfresco.util.message.call(this, messageId, "Alfresco.ConsoleApplication", Array.prototype.slice.call(arguments).slice(1));
+         var success = complete.successful.length;
+         if (success != 0)
+         {
+            var noderef = complete.successful[0].nodeRef;
+            
+            // replace image URL with the updated one
+            var logoImg = Dom.get(this.id + "-logoimg");
+            logoImg.src = Alfresco.constants.PROXY_URI + "api/node/" + noderef.replace("://", "/") + "/content";
+            
+            // set noderef value in hidden field ready for options form submit
+            Dom.get("console-options-logo").value = noderef;
+         }
       }
    });
 })();

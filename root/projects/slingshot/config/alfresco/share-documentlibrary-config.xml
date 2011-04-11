@@ -1,0 +1,199 @@
+<alfresco-config>
+
+   <config evaluator="string-compare" condition="DocumentDetails">
+      <document-details>
+         <!-- display web previewer on document details page -->
+         <display-web-preview>true</display-web-preview>
+      </document-details>
+   </config>
+   
+   <!-- Document Library config section -->
+   <config evaluator="string-compare" condition="DocumentLibrary">
+      <tree>
+         <!--
+            Whether the folder Tree component should enumerate child folders or not.
+            This is a relatively expensive operation, so should be set to "false" for Repositories with broad folder structures.
+         -->
+         <evaluate-child-folders>true</evaluate-child-folders>
+         
+         <!--
+            Optionally limit the number of folders shown in treeview throughout Share.
+         -->
+         <maximum-folder-count>-1</maximum-folder-count>
+      </tree>
+
+      <!--
+         Used by the "Manage Aspects" action and Rules pages
+
+         For custom aspects, remember to also add the relevant i18n string(s)
+            aspect.cm_myaspect=My Aspect
+      -->
+      <aspects>
+
+         <!--
+            Aspects that a user can see in UI.
+            Used by Rules, aspects are the listed aspects for rule's "has-aspect" action condition.
+         -->
+         <visible>
+            <aspect name="cm:generalclassifiable" />
+            <aspect name="cm:complianceable" />
+            <aspect name="cm:dublincore" />
+            <aspect name="cm:effectivity" />
+            <aspect name="cm:summarizable" />
+            <aspect name="cm:versionable" />
+            <aspect name="cm:templatable" />
+            <aspect name="cm:emailed" />
+            <aspect name="emailserver:aliasable" />
+            <aspect name="cm:taggable" />
+            <aspect name="app:inlineeditable" />
+            <aspect name="gd:googleEditable" />
+            <aspect name="cm:geographic" />
+            <aspect name="exif:exif" />
+         </visible>
+
+         <!--
+            Aspects that a user can add in UI.
+            Used by Rules, aspects are the listed aspects for rule's "add-features" action.
+            Same as "visible" if left empty.
+         -->
+         <addable>
+         </addable>
+
+         <!--
+            Aspects that a user can remove in UI.
+            Used by Rules, aspects are the listed aspects for rule's "remove-features" action.
+            Same as "visible" if left empty
+         -->
+         <removeable>
+         </removeable>
+      </aspects>
+
+      <!--
+         Used by the "Change Type" action.
+         Used by Rules:
+          - parent types are the listed types for rule's "is-subtype" action condition
+          - sub types are the listed types for rule's "specialise-type" action
+
+         Define valid subtypes using the following example:
+            <type name="cm:content">
+               <subtype name="cm:mysubtype" />
+            </type>
+
+         Remember to also add the relevant i18n string(s):
+            type.cm_mysubtype=My SubType
+      -->
+      <types>
+         <type name="cm:content">
+         </type>
+
+         <type name="cm:folder">
+         </type>
+      </types>
+
+      <!--
+         If set, will present a WebDAV link for the current item on the Document and Folder details pages.
+         Also used to generate the "View in Alfresco Explorer" action for folders.
+      -->
+      <!--
+      <repository-url>http://localhost:8080/alfresco</repository-url>
+      -->
+      
+      <!--
+         Google Docs™ integration
+      -->
+      <google-docs>
+         <!--
+            Enable/disable the Google Docs UI integration (Extra types on Create Content menu, Google Docs actions).
+         -->
+         <enabled>false</enabled>
+         
+         <!--
+            The mimetypes of documents Google Docs allows you to create via the Share interface.
+            The I18N label is created from the "type" attribute, e.g. google-docs.doc=Google Docs&trade; Document
+         -->
+         <creatable-types>
+            <creatable type="doc">application/msword</creatable>
+            <creatable type="xls">application/vnd.ms-excel</creatable>
+            <creatable type="ppt">application/vnd.ms-powerpoint</creatable>
+         </creatable-types>
+      </google-docs>
+      
+      <!--
+         File upload configuration
+      -->
+      <file-upload>
+         <!--
+            Adobe Flash™
+            In certain environments, an HTTP request originating from Flash cannot be authenticated using an existing session.
+            See: http://bugs.adobe.com/jira/browse/FP-4830
+            For these cases, it is useful to disable the Flash-based uploader for Share Document Libraries.
+         -->
+         <adobe-flash-enabled>true</adobe-flash-enabled>
+         
+         <!--
+            In order to support drag-and-drop file upload a browser must be able to support the HTML5 drag-and-drop events, however
+            if the browser does not support the FormData type (that allows streamed multipart file uploads) then all files need to be
+            loaded into the browser's memory before being uploaded to the server. In order to prevent potential memory related errors,
+            a limit is set for the sum of all file sizes being uploaded in a single operation (specified in bytes).
+            As of April 2011, the only known browser that requires this restriction is Firefox 3.6.
+          -->
+         <in-memory-limit>262144000</in-memory-limit>
+      </file-upload>
+
+      <!--
+         Sorting Options
+
+         The 'sort' config element contains the name of the content model field to sort against and can be of the form:
+         - short QName string e.g. "cm:name"
+         - any other valid sortable fts-alfresco special field e.g. "TYPE"
+         
+         The field can be optionally followed by |true or |false to indicate sort direction,
+         where true = ascending, false = descending
+      -->
+      <sorting>
+         <sort label="label.name">cm:name|true</sort>
+         <sort label="label.popularity">cm:likesRatingSchemeCount|false</sort>
+         <sort label="label.title">cm:title</sort>
+         <sort label="label.description">cm:description</sort>
+         <sort label="label.created">cm:created</sort>
+         <sort label="label.creator">cm:creator</sort>
+         <sort label="label.modified">cm:modified</sort>
+         <sort label="label.modifier">cm:modifier</sort>
+         <sort label="label.size">cm:content.size</sort>
+         <sort label="label.mimetype">cm:content.mimetype</sort>
+         <sort label="label.type">TYPE</sort>
+      </sorting>
+      
+      <!--
+         Filter configurations
+      -->
+      <filters>
+         <!--
+            The maximum number of tags to display in the Tags filter, can be set to -1 for all tags
+         -->
+         <maximum-tag-count>100</maximum-tag-count>
+      </filters>
+   </config>
+
+   <!-- Repository Library config section -->
+   <config evaluator="string-compare" condition="RepositoryLibrary">
+      <!--
+         Root nodeRef for top-level folder.
+      -->
+      <root-node>alfresco://company/home</root-node>
+
+      <tree>
+         <!--
+            Whether the folder Tree component should enumerate child folders or not.
+            This is a relatively expensive operation, so should be set to "false" for Repositories with broad folder structures.
+         -->
+         <evaluate-child-folders>false</evaluate-child-folders>
+
+         <!--
+            Optionally limit the number of folders shown in treeview throughout Share.
+         -->
+         <maximum-folder-count>500</maximum-folder-count>
+      </tree>
+   </config>
+
+</alfresco-config>

@@ -33,7 +33,11 @@
    float: right;
 }
 
-.toolbar .customize,
+.toolbar .right .separator
+{
+   float: left;
+}
+
 .toolbar .hide-navbar,
 .toolbar .rss-feed
 {
@@ -97,20 +101,19 @@
    background-image: url(images/select-none-16.png);
 }
 
-
 /* Navigation Bar */
 
 .toolbar .nav-bar
 {
-   border-top: 2px solid #f0f3f4;
+   border-top: 1px solid #d9d9d9;
    overflow-y: hidden;
-   padding-bottom: 8px;
+   padding-bottom: 4px;
 }
 
 .toolbar .nav-bar .breadcrumb
 {
    float: none !important;
-   margin-left: 7em;
+   margin-left: 2em;
    padding: 0.3em 0.5em 0;
 }
 
@@ -179,7 +182,6 @@
    padding: 0.1em 0 0.3em 0.3em;
 }
 
-
 .toolbar .description
 {
    padding: 5px 0.5em;
@@ -197,18 +199,50 @@
    margin-left: 0.3em;
 }
 
-
 /* Header- and Navigation-Bar Buttons */
+
+.toolbar .create-content span.first-child,
+.toolbar .new-folder span.first-child,
+.toolbar .file-upload span.first-child
+{
+   background-color: transparent;
+   background-position: 6px 4px;
+   background-repeat: no-repeat;
+   padding-left: 16px;
+}
+
+.toolbar .hide-navbar span.first-child,
+.toolbar .rss-feed span.first-child,
+.toolbar .folder-up span.first-child
+{
+   background-position: 50% 50%;
+   background-repeat: no-repeat;
+   min-height: 16px;
+   padding: 0 2px;
+}
+
+.toolbar .rss-feed span.first-child a
+{
+   padding: 0px 14px;
+}
+
+.toolbar .hide-navbar span.first-child button,
+.toolbar .folder-up span.first-child button
+{
+   padding: 0px 14px;
+   width: 16px;
+}
 
 .toolbar .create-content ul
 {
    min-width: 12em;
 }
+
 .toolbar .create-content span.first-child
 {
-   background: transparent url(images/create-content-16.png) no-repeat 12px 4px;
-   padding-left: 22px; 
+   background-image: url(images/create-content-16.png);
 }
+
 .toolbar .create-content .yui-button-disabled span.first-child
 {
    background-image: url(images/create-content-disabled-16.png);
@@ -218,22 +252,27 @@
 {
    background-image: url(../images/filetypes/html-file-16.png);
 }
+
 .toolbar .create-content .plain-text-file
 {
    background-image: url(../images/filetypes/text-file-16.png);
 }
+
 .toolbar .create-content .xml-file
 {
    background-image: url(../images/filetypes/xml-file-16.png);
 }
+
 .toolbar .create-content .doc-file
 {
    background-image: url(../images/filetypes/doc-file-16.png);
 }
+
 .toolbar .create-content .xls-file
 {
    background-image: url(../images/filetypes/xls-file-16.png);
 }
+
 .toolbar .create-content .ppt-file
 {
    background-image: url(../images/filetypes/ppt-file-16.png);
@@ -241,9 +280,9 @@
 
 .toolbar .new-folder span.first-child
 {
-   background: transparent url(images/folder-new-16.png) no-repeat 12px 4px;
-   padding-left: 22px; 
+   background-image: url(images/folder-new-16.png);
 }
+
 .toolbar .new-folder .yui-button-disabled span.first-child
 {
    background-image: url(images/folder-new-disabled-16.png);
@@ -251,29 +290,29 @@
 
 .toolbar .file-upload span.first-child
 {
-   background: transparent url(images/upload-16.png) no-repeat 12px 4px;
-   padding-left: 22px; 
+   background-image: url(images/upload-16.png);
 }
+
 .toolbar .file-upload .yui-button-disabled span.first-child
 {
    background-image: url(images/upload-disabled-16.png);
 }
 
-.toolbar .customize span.first-child
+.toolbar .hide-navbar span.first-child
 {
-   background: transparent url(images/customize-16.png) no-repeat 12px 4px;
-   padding-left: 22px;
+   background-image: url(images/navbar-show-16.png);
 }
-.toolbar .customize .yui-button-disabled span.first-child
+
+.toolbar .hide-navbar .yui-button-checked span.first-child
 {
-   background-image: url(images/customize-disabled-16.png);
+   background-image: url(images/navbar-hide-16.png);
 }
 
 .toolbar .rss-feed span.first-child
 {
-   background: transparent url(images/feed-icon-16.png) no-repeat 12px 4px;
-   padding-left: 22px;
+   background-image: url(images/feed-icon-16.png);
 }
+
 .toolbar .rss-feed .yui-button-disabled span.first-child
 {
    background-image: url(images/feed-icon-disabled-16.png);
@@ -281,16 +320,16 @@
 
 .toolbar .folder-up span.first-child
 {
-   background: transparent url(images/up-arrow-16.png) no-repeat 12px 4px;
-   padding-left: 22px; 
+   background-image: url(images/folder-up-16.png);
 }
+
 .toolbar .folder-up .yui-button-disabled span.first-child
 {
-   background-image: url(images/up-arrow-disabled-16.png);
+   background-image: url(images/folder-up-disabled-16.png);
 }
 
-
 /* Messages */
+
 .toolbar-file-list
 {
    max-height: 15em;

@@ -55,10 +55,23 @@ public class ScriptRecordsManagmentNode extends ScriptNode
 
     public ScriptCapability[] getCapabilities()
     {
-        // Get the map of capabilities
+        return capabilitiesSet(null);
+    }
+    
+    public ScriptCapability[] capabilitiesSet(String capabilitiesSet)
+    {
         RecordsManagementSecurityService rmSecurity = rmServices.getRecordsManagementSecurityService();
-        Map<Capability, AccessStatus> cMap = rmSecurity.getCapabilities(this.nodeRef);
-        
+        Map<Capability, AccessStatus> cMap = null;
+        if (capabilitiesSet == null)
+        {
+            // Get all capabilities            
+            cMap = rmSecurity.getCapabilities(this.nodeRef);
+        }
+        else
+        {
+            cMap = rmSecurity.getCapabilities(this.nodeRef, capabilitiesSet);
+        }
+            
         List<ScriptCapability> list = new ArrayList<ScriptCapability>(cMap.size());
         for (Map.Entry<Capability, AccessStatus> entry : cMap.entrySet())
         {
@@ -71,7 +84,7 @@ public class ScriptRecordsManagmentNode extends ScriptNode
                 list.add(scriptCap);
             }
         }
-        
-        return (ScriptCapability[])list.toArray(new ScriptCapability[list.size()]);        
+                                
+        return (ScriptCapability[])list.toArray(new ScriptCapability[list.size()]);
     }
 }

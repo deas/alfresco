@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Admin Console Authority Tool</shortname>
+  <description>Administration Console - Authority Tool</description>
+  <url>/components/console/authority</url>
+  <family>admin-console</family>
+  <family>edition:ENTERPRISE</family>
+</webscript>

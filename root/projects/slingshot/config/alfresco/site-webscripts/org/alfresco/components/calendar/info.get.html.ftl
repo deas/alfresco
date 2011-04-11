@@ -9,7 +9,7 @@
       <h2>${msg("label.details")}</h2>
    </div>
    <div class="yui-gd">
-      <div class="yui-u first">${msg("label.what")}: *</div>
+      <div class="yui-u first">${msg("label.what")}:</div>
       <div class="yui-u">${result.what?html?html}</div>
    </div>
    <div class="yui-gd">
@@ -53,13 +53,6 @@
       <div class="yui-u">${result.recurrence?html}</div>
    </div>
 </#if>
-   <div class="yui-g">
-      <h2>${msg("label.documents")}</h2>
-   </div>
-   <div class="yui-gd">
-      <div class="yui-u first">${msg("label.docfolder")}:</div>
-      <div class="yui-u docfolder-label" id="${el}-docfolder">${result.docfolder?html}</div>
-   </div>
    <br />
    <div class="bdft">
       <input type="submit" id="${el}-edit-button" value="${msg("button.edit")}" />

@@ -17,16 +17,18 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- *** Alfresco.EventInfo
-*/
+/**
+ * Alfresco.EventInfo
+ */
 (function()
 {
    /**
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-       Selector = YAHOO.util.Selector;
+       Selector = YAHOO.util.Selector,
+       Event = YAHOO.util.Event,
+       KeyListener = YAHOO.util.KeyListener;
 
    Alfresco.EventInfo = function(containerId)
    {
@@ -53,7 +55,6 @@
       
       /**
        * A reference to the current event. 
-       * !!CHANGE ME!!
        *
        * @property event
        * @type object
@@ -86,7 +87,6 @@
          eventUri: null,
          displayDate: null
       },      
-      
       
        /**
         * Set multiple initialization options at once.
@@ -126,11 +126,13 @@
          Alfresco.util.Ajax.request(
          {
             url: Alfresco.constants.URL_SERVICECONTEXT + "components/calendar/info",
+            // TODO: The uri may need a leading slash for Day, Week and Month views until the event model is standardised.
             dataObj:
             { 
                "htmlid": this.id,
-               "uri": "/" + event.uri
+               "uri": event.uri 
             },
+            
             successCallback:
             {
                fn: this.templateLoaded,
@@ -163,6 +165,19 @@
          this.widgets.deleteButton = Alfresco.util.createYUIButton(this, "delete-button", this.onDeleteClick);
          this.widgets.editButton = Alfresco.util.createYUIButton(this, "edit-button", this.onEditClick);
          this.widgets.cancelButton = Alfresco.util.createYUIButton(this, "cancel-button", this.onCancelClick);
+         this.widgets.escapeListener = new KeyListener(document,
+         {
+            keys: KeyListener.KEY.ESCAPE
+         },
+         {
+            fn: function(id, keyEvent)
+            {
+               this.onCancelClick();
+            },
+            scope: this,
+            correctScope: true
+         });
+         this.widgets.escapeListener.enable();
          if (this.options.permitToEditEvents!=='true')
          {
            this.widgets.deleteButton.set("disabled", true);
@@ -217,10 +232,14 @@
        */
       onEditClick: function(e)
       {
-          this._hide();
+         if (this.isShowing) 
+         {
+            this._hide();         
+         }
           this.eventDialog = Alfresco.util.DialogManager.registerDialog('CalendarView.editEvent');
           this.eventDialog.id = this.id+ "-editEvent";
           this.eventDialog.siteId = this.options.siteId;
+          this.eventDialog.event = this.event;
 
           // add the tags that are already set on the post
           if (this.eventDialog.tagLibrary == undefined)
@@ -295,59 +314,71 @@
                 scope : this.eventDialog
             },
             doBeforeDialogShow : {
-                fn : function()
-                       {
-                          var editEvent = Alfresco.util.ComponentManager.findFirst("Alfresco.CalendarView").editEvent;
-                          var Dom = YAHOO.util.Dom;
-                          
-                          var dts  = Alfresco.util.fromISO8601(editEvent.getData('dtstart'));
-                          var dte  = Alfresco.util.fromISO8601(editEvent.getData('dtend'));
-
-                          // Pretty formatting
-                          var dateStr = Alfresco.util.formatDate(dts, Alfresco.util.message("calendar.dateFormat.full"));
-                          Dom.get("fd").value = dateStr;
-                          var dateStr = Alfresco.util.formatDate(dte, Alfresco.util.message("calendar.dateFormat.full"));
-                          Dom.get("td").value = dateStr;
-                          Dom.get(this.id+"-from").value =  Alfresco.util.formatDate(dts,'yyyy/mm/dd');
-                          Dom.get(this.id+"-to").value = Alfresco.util.formatDate(dte,'yyyy/mm/dd');
-                          var a = ['what','where','desc'];
-                          for (var i=0;i<a.length;i++)
-                          {
-                            var el = document.getElementsByName(a[i])[0];
-                            el.value = Alfresco.util.decodeHTML(el.value);
-                          }
-                          
-                          //init taglib
-                          Dom.get(this.id + "-tag-input-field").disabled=false;
-                          Dom.get(this.id + "-tag-input-field").tabIndex = 8;
-                          Dom.get(this.id + "-add-tag-button").tabIndex = 9;
-                          var tags = YAHOO.util.Dom.get(this.id + "-tag-input-field").value;
-                          YAHOO.util.Dom.get(this.id + "-tag-input-field").value = '';
-                          this.tagLibrary.setTags(tags.split(' '));
-                          this.form.errorContainer=null;
-                          document.getElementsByName('start')[0].disabled = document.getElementsByName('end')[0].disabled = document.getElementsByName('allday')[0].checked;                          
-                          
-                          if (Dom.get(this.id+"-edit-available") == null)
-                          {
-                            Dom.get(this.id+'-title').disabled = true;
-                            Dom.get(this.id+'-location').disabled = true;
-                            Dom.get(this.id+'-start').disabled = true;
-                            Dom.get(this.id+'-end').disabled = true;
-                          }
-                          else
-                          {
-                            Dom.get(this.id+"-form").removeChild(Dom.get(this.id+"-edit-available"));
-                          }
-                                                    
-                          //hide mini-cal
-                          this.dialog.hideEvent.subscribe(function() {
-                             var oCal = Alfresco.util.ComponentManager.findFirst('Alfresco.CalendarView');
-                             if (oCal && oCal.oCalendar)
-                             {
-                                oCal.oCalendar.hide();                    
-                             }
-                          },this,true);                              
-                       },
+               fn : function()
+                  {
+                     var editEvent = this.event;
+                     var Dom = YAHOO.util.Dom;
+                     
+                     var dts  = Alfresco.util.fromISO8601(editEvent.from);
+                     var dte  = Alfresco.util.fromISO8601(editEvent.to);
+                     
+                     // Pretty formatting
+                     var dateStr = Alfresco.util.formatDate(dts, Alfresco.util.message("calendar.dateFormat.full"));
+                     Dom.get("fd").value = dateStr;
+                     var dateStr = Alfresco.util.formatDate(dte, Alfresco.util.message("calendar.dateFormat.full"));
+                     Dom.get("td").value = dateStr;
+                     Dom.get(this.id+"-from").value =  Alfresco.util.formatDate(dts,'yyyy/mm/dd');
+                     Dom.get(this.id+"-to").value = Alfresco.util.formatDate(dte,'yyyy/mm/dd');
+                     var a = ['what','where','desc'];
+                     for (var i=0;i<a.length;i++)
+                     {
+                      var el = document.getElementsByName(a[i])[0];
+                      el.value = Alfresco.util.decodeHTML(el.value);
+                     }
+                     
+                     //init taglib
+                     Dom.get(this.id + "-tag-input-field").disabled=false;
+                     Dom.get(this.id + "-tag-input-field").tabIndex = 8;
+                     Dom.get(this.id + "-add-tag-button").tabIndex = 9;
+                     var tags = YAHOO.util.Dom.get(this.id + "-tag-input-field").value;
+                     YAHOO.util.Dom.get(this.id + "-tag-input-field").value = '';
+                     this.tagLibrary.setTags(tags.split(' '));
+                     this.form.errorContainer=null;
+                     if (document.getElementsByName('allday')[0].checked===true) 
+                     {
+                        // hide time boxes if they're not relevent.
+                        YAHOO.util.Dom.addClass(document.getElementsByName('start')[0].parentNode, "hidden")
+                        YAHOO.util.Dom.addClass(document.getElementsByName('end')[0].parentNode, "hidden")
+                     } else 
+                     {
+                        // show them if they are.
+                        YAHOO.util.Dom.removeClass(document.getElementsByName('start')[0].parentNode, "hidden")
+                        YAHOO.util.Dom.removeClass(document.getElementsByName('end')[0].parentNode, "hidden")
+                     }                         
+                     
+                     if (Dom.get(this.id+"-edit-available") == null)
+                     {
+                        Dom.get(this.id+'-title').disabled = true;
+                        Dom.get(this.id+'-location').disabled = true;
+                        Dom.get(this.id+'-allday').disabled = true;
+                        Dom.get(this.id+'-start').disabled = true;
+                        Dom.get(this.id+'-end').disabled = true;
+                     }
+                     else
+                     {
+                        Dom.get(this.id+"-form").removeChild(Dom.get(this.id+"-edit-available"));
+                     }
+                                        
+                     //hide mini-cal
+                     this.dialog.hideEvent.subscribe(function() 
+                     {
+                        var oCal = Alfresco.util.ComponentManager.findFirst('Alfresco.CalendarView');
+                        if (oCal && oCal.oCalendar)
+                        {
+                           oCal.oCalendar.hide();                    
+                        }
+                     },this,true);                              
+                  },
                scope : this.eventDialog
             },
             doSetupFormsValidation:
@@ -374,7 +405,7 @@
                    var timeElements = [this.id + "-start", this.id + "-end"];
                    for (var i=0; i < timeElements.length; i++)
                    {
-                      form.addValidation(timeElements[i],Alfresco.forms.validation.regexMatch, validateTimeRegExp, "blur",cal.msg('message.invalid-time'));
+                      form.addValidation(timeElements[i],Alfresco.forms.validation.regexMatch, validateTimeRegExp, "blur");
                    }
 
                    form.addValidation(this.id + "-tag-input-field", Alfresco.module.event.validation.tags, null, "keyup");
@@ -391,8 +422,8 @@
                    form.addValidation("td", this.options._onDateValidation, { "obj": this }, "focus");
                    form.addValidation("fd", this.options._onDateValidation, { "obj": this }, "focus");
 
-                   form.setShowSubmitStateDynamically(true, true);
-                   form.setSubmitElements(this.okButton);
+                   form.setShowSubmitStateDynamically(true, false);
+                   form.setSubmitElements(this.widgets.okButton);
                    
                    /**
                     * keyboard handler for popup calendar button. Requried as YUI button's click
@@ -527,8 +558,8 @@
                      * Button declarations that, when clicked, display
                      * the calendar date picker widget.
                      */
-                    if (Dom.get(this.id+"-edit-available") != null)
-                    {
+                  if (Dom.get(this.id+"-edit-available") != null)
+                  {
                     if (!this.startButton)
                     {
                        this.startButton = new YAHOO.widget.Button(
@@ -542,6 +573,7 @@
                        });
                     
                        this.startButton.on("click", this.options.onDateSelectButton);
+                        Event.on(Dom.get("fd") , "click" , this.options.onDateSelectButton , {} , this)
                        this.startButton.on("keypress", buttonKeypressHandler);                       
                     }
                     if (!this.endButton)
@@ -557,14 +589,25 @@
                        });
                     
                        this.endButton.on("click", this.options.onDateSelectButton);
+                        Event.on(Dom.get("td") , "click" , this.options.onDateSelectButton , {} , this)
                        this.endButton.on("keypress", buttonKeypressHandler);                       
                     }
-                    }
-                    /* disable time fields if all day is selected */
-                   YAHOO.util.Event.addListener(document.getElementsByName('allday')[0], 'click', function(e)
-                   {
-                      document.getElementsByName('start')[0].disabled = document.getElementsByName('end')[0].disabled = (YAHOO.util.Event.getTarget(e).checked===true);
-                   });
+                  }
+                  /* disable time fields if all day is selected */
+                  YAHOO.util.Event.addListener(document.getElementsByName('allday')[0], 'click', function(e)
+                  {
+                     if (YAHOO.util.Event.getTarget(e).checked===true) 
+                     {
+                        // hide time boxes if they're not relevent.
+                        YAHOO.util.Dom.addClass(document.getElementsByName('start')[0].parentNode, "hidden")
+                        YAHOO.util.Dom.addClass(document.getElementsByName('end')[0].parentNode, "hidden")
+                     } else 
+                     {
+                        // show them if they are.
+                        YAHOO.util.Dom.removeClass(document.getElementsByName('start')[0].parentNode, "hidden")
+                        YAHOO.util.Dom.removeClass(document.getElementsByName('end')[0].parentNode, "hidden")
+                     }
+                  });
                },
                scope: this.eventDialog
             },
@@ -584,42 +627,50 @@
            }
           };
           this.eventDialog.setOptions(options);
+          DEBUG_edit = options;
           this.eventDialog.show();
       },
 
       /**
        * Called when an event is successfully edited.
        *
-       * @method onDeleted
+       * @method onEdited
        * @param e {object} DomEvent
        */
       onEdited: function(o)
       {
-         this.panel.hide();
          YAHOO.Bubbling.fire('eventEdited',
          {
             id: this.options.event, // so we know which event we are dealing with
             data : o.json.data
          });
-         this.panel.destroy();
+         if (this.panel) 
+         {
+            this.panel.hide();
+            this.panel.destroy();
+         }
          this.eventDialog.dialog.destroy();
       },
       
-       
       /**
        * Fired when the delete is clicked. Kicks off a DELETE request
        * to the Alfresco repo to remove an event.
+       * 
+       * Also triggered by the delete action link in the Agenda DataTable.
        *
        * @method onDeleteClick
        * @param e {object} DomEvent
        */
       onDeleteClick: function EventInfo_onDeleteClick(e)
       {
-         var me = this;
+         var me = this,
+            displayDate = Alfresco.thirdparty.dateFormat(Alfresco.util.fromISO8601(this.event.from), this._msg("date-format.mediumDate"));
+            
          Alfresco.util.PopupManager.displayPrompt(
          {
+            noEscape: true,
             title: this._msg("message.confirm.delete.title"),
-            text: this._msg("message.confirm.delete", this.event.name),
+            text: this._msg("message.confirm.delete", this.event.name, displayDate),
             buttons: [
             {
                text: this._msg("button.delete"),
@@ -679,7 +730,10 @@
           {
               id: this.options.event // so we know which event we are dealing with
           });
-          this.panel.destroy();        
+          if (this.panel) 
+          {
+             this.panel.destroy();
+          }        
        },
 
 
@@ -700,26 +754,32 @@
           return Alfresco.util.message.call(this, messageId, "Alfresco.EventInfo", Array.prototype.slice.call(arguments).slice(1));
        },
 
-       /**
-        * Hides the panel and calls onClose callback if present
-        *
-        * @method _hide
-        * @param e {object} DomEvent
-        * @private
-        */
-       _hide: function EventInfo__hide()
-       {
-          this.panel.hide();
-          var callback = this.options.onClose;
-          if (callback && typeof callback.fn == "function")
-          {
-             // Call the onClose callback in the correct scope
-             callback.fn.call((typeof callback.scope == "object" ? callback.scope : this), callback.obj);
-          }
-       }
+      /**
+       * Hides the panel and calls onClose callback if present
+       *
+       * @method _hide
+       * @param e {object} DomEvent
+       * @private
+       */
+      _hide: function EventInfo__hide()
+      {
+         if (this.widgets && this.widgets.escapeListener)
+         {
+            this.widgets.escapeListener.disable();
+         }
+         if (this.panel) 
+         {
+            this.panel.hide();
+         }
+         var callback = this.options.onClose;
+         if (callback && typeof callback.fn == "function")
+         {
+            // Call the onClose callback in the correct scope
+            callback.fn.call((typeof callback.scope == "object" ? callback.scope : this), callback.obj);
+         }
+      }
    };
 })();
-
 
 
 /**

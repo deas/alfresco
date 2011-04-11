@@ -1,13 +1,18 @@
-// Get the Documents Modified data for this site
-var url = args.dod5015 ? "/slingshot/doclib/dod5015/doclist/documents/site/" : "/slingshot/doclib/doclist/documents/site/";
-var json = remote.call(url + page.url.templateArgs.site + "/documentLibrary?filter=recentlyModified&max=10");
-var obj = eval('(' + json + ')');
-if (json.status == 200)
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
+
+/* Max Items */
+function getMaxItems()
 {
-   // Create the model
-   model.docs = obj;
+   var myConfig = new XML(config.script),
+      maxItems = myConfig["max-items"];
+
+   if (maxItems)
+   {
+      maxItems = myConfig["max-items"].toString();
+   }
+   return parseInt(maxItems && maxItems.length > 0 ? maxItems : 50, 10);
 }
-else
-{
-   model.docs = {message: obj.message};
-}
+
+model.preferences = AlfrescoUtil.getPreferences("org.alfresco.share.docsummary.dashlet");
+model.maxItems = getMaxItems();
+model.dod5015 = args.dod5015;

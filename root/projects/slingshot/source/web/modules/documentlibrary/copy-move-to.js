@@ -33,6 +33,17 @@
       this.name = "Alfresco.module.DoclibCopyMoveTo";
       Alfresco.util.ComponentManager.reregister(this);
 
+      this.options = YAHOO.lang.merge(this.options,
+      {
+         allowedViewModes:
+         [
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE,
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY,
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME
+         ],
+         extendedTemplateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/documentlibrary/copy-move-to"
+      });
+
       return this;
    };
 
@@ -48,16 +59,7 @@
        */
       setOptions: function DLCMT_setOptions(obj)
       {
-         var myOptions =
-         {
-            allowedViewModes:
-            [
-               Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE,
-               Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY,
-               Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME
-            ],
-            extendedTemplateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/documentlibrary/copy-move-to"
-         };
+         var myOptions = {};
 
          if (typeof obj.mode !== "undefined")
          {

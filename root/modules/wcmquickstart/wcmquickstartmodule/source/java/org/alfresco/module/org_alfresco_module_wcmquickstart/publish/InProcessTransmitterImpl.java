@@ -37,6 +37,7 @@ import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferProgress;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.alfresco.service.cmr.transfer.TransferTarget;
+import org.alfresco.service.cmr.transfer.TransferVersion;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,7 +67,7 @@ public class InProcessTransmitterImpl implements TransferTransmitter
         this.transactionService = transactionService;
     }
 
-    public Transfer begin(final TransferTarget target, final String fromRepositoryId) throws TransferException
+    public Transfer begin(final TransferTarget target, final String fromRepositoryId, final TransferVersion fromVersion) throws TransferException
     {
         return transactionService.getRetryingTransactionHelper().doInTransaction(
                 new RetryingTransactionHelper.RetryingTransactionCallback<Transfer>()
@@ -74,7 +75,8 @@ public class InProcessTransmitterImpl implements TransferTransmitter
                     public Transfer execute() throws Throwable
                     {
                         Transfer transfer = new Transfer();
-                        String transferId = receiver.start(fromRepositoryId, true);
+                        String transferId = receiver.start(fromRepositoryId, true, fromVersion);
+                        transfer.setToVersion(receiver.getVersion());
                         transfer.setTransferId(transferId);
                         transfer.setTransferTarget(target);
                         return transfer;

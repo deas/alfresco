@@ -1,29 +1,52 @@
+<#assign id = args.htmlid>
+<#assign jsid = args.htmlid?js_string>
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.dashlet.MySites("${args.htmlid}").setOptions(
+(function()
+{
+   new Alfresco.dashlet.MySites("${jsid}").setOptions(
    {
       imapEnabled: ${imapServerEnabled?string}
    }).setMessages(${messages});
-   new Alfresco.widget.DashletResizer("${args.htmlid}", "${instance.object.id}");
+   new Alfresco.widget.DashletResizer("${jsid}", "${instance.object.id}");
+   new Alfresco.widget.DashletTitleBarActions("${jsid}").setOptions(
+   {
+      actions:
+      [
+         {
+            cssClass: "help",
+            bubbleOnClick:
+            {
+               message: "${msg("dashlet.help")?js_string}"
+            },
+            tooltip: "${msg("dashlet.help.tooltip")?js_string}"
+         }
+      ]
+   });
+})();
 //]]></script>
 
 <div class="dashlet my-sites">
-   <div class="title">${msg("header.mySites")}</div>
+   <div class="title">${msg("header")}</div>
    <div class="toolbar flat-button">
       <div class="hidden">
-         <span class="yui-button-align">
+         <span class="align-left yui-button yui-menu-button" id="${id}-type">
             <span class="first-child">
-               <a href="#" id="${args.htmlid}-createSite-button" class="theme-color-1">${msg("link.createSite")}</a>
+               <button type="button" tabindex="0">${msg("filter.all")}</button>
             </span>
          </span>
-         <input id="${args.htmlid}-type" type="button" name="type" value="${msg("filter.all")}" />
-         <select id="${args.htmlid}-type-menu">
+         <select id="${id}-type-menu">
             <option value="all">${msg("filter.all")}</option>
-            <option value="sites">${msg("filter.sites")}</option>
             <option value="favSites">${msg("filter.favSites")}</option>
-            <option value="docWorkspaces">${msg("filter.docWorkspaces")}</option>
-            <option value="meetWorkspaces">${msg("filter.meetWorkspaces")}</option>
          </select>
-      </div>         
+         <span class="align-right yui-button-align">
+            <span class="first-child">
+               <a href="#" id="${id}-createSite-button" class="theme-color-1">
+                  <img src="${url.context}/res/components/images/site-16.png" style="vertical-align: text-bottom" />
+                  ${msg("link.createSite")}</a>
+            </span>
+         </span>
+         <div class="clear"></div>
+      </div>
    </div>
-   <div id="${args.htmlid}-sites" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>></div>
+   <div id="${id}-sites" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>></div>
 </div>

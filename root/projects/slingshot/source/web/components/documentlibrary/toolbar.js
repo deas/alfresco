@@ -69,6 +69,7 @@
       YAHOO.Bubbling.on("selectedFilesChanged", this.onSelectedFilesChanged, this);
       YAHOO.Bubbling.on("userAccess", this.onUserAccess, this);
       YAHOO.Bubbling.on("doclistMetadata", this.onDoclistMetadata, this);
+      YAHOO.Bubbling.on("showFileUploadDialog", this.onFileUpload, this);
 
       return this;
    };
@@ -252,14 +253,19 @@
          });
          this.dynamicControls.push(this.widgets.selectedItems);
 
-         // Customize button
-         this.widgets.customize = Alfresco.util.createYUIButton(this, "customize-button", this.onCustomize);
-
          // Hide/Show NavBar button
-         this.widgets.hideNavBar = Alfresco.util.createYUIButton(this, "hideNavBar-button", this.onHideNavBar);
-         this.widgets.hideNavBar.set("label", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
-         Dom.setStyle(this.id + "-navBar", "display", this.options.hideNavBar ? "none" : "block");
-         
+         this.widgets.hideNavBar = Alfresco.util.createYUIButton(this, "hideNavBar-button", this.onHideNavBar,
+         {
+            type: "checkbox",
+            checked: this.options.hideNavBar
+         });
+         if (this.widgets.hideNavBar !== null)
+         {
+            this.widgets.hideNavBar.set("title", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
+            Dom.setStyle(this.id + "-navBar", "display", this.options.hideNavBar ? "none" : "block");
+            this.dynamicControls.push(this.widgets.hideNavBar);
+         }
+
          // RSS Feed link button
          this.widgets.rssFeed = Alfresco.util.createYUIButton(this, "rssFeed-button", null, 
          {
@@ -270,7 +276,8 @@
          // Folder Up Navigation button
          this.widgets.folderUp =  Alfresco.util.createYUIButton(this, "folderUp-button", this.onFolderUp,
          {
-            disabled: true
+            disabled: true,
+            title: this.msg("button.up")
          });
          this.dynamicControls.push(this.widgets.folderUp);
 
@@ -404,19 +411,19 @@
             }
          }).show();
       },
-
+      
       /**
        * File Upload button click handler
        *
        * @method onFileUpload
        * @param e {object} DomEvent
-       * @param p_obj {object} Object passed back from addListener method
+       * @param p_obj {object|array} Object passed back from addListener method or args from Bubbling event
        */
       onFileUpload: function DLTB_onFileUpload(e, p_obj)
       {
          if (this.fileUpload === null)
          {
-            this.fileUpload = Alfresco.getFileUploadInstance(); 
+            this.fileUpload = Alfresco.getFileUploadInstance();
          }
          
          // Show uploader for multiple files
@@ -435,6 +442,35 @@
             }
          };
          this.fileUpload.show(multiUploadConfig);
+
+         if (YAHOO.lang.isArray(p_obj) && p_obj[1].tooltip)
+         {
+            var balloon = Alfresco.util.createBalloon(this.fileUpload.uploader.id + "-dialog",
+            {
+               html: p_obj[1].tooltip,
+               width: "30em"
+            });
+            balloon.show();
+
+            this.fileUpload.uploader.widgets.panel.hideEvent.subscribe(function()
+            {
+               balloon.hide()
+            });
+         }
+      },
+      
+      /**
+       * Calls the file Upload button click handler but creates an additional tooltip
+       * with information on Drag-and-Drop as an alternative method for uploading content
+       *
+       * @method onFileUploadWithTooltip
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onFileUploadWithTooltip: function DLTB_onFileUploadWithTooltip(e, p_obj)
+      {
+         this.onFileUpload(e, p_obj);
+         
       },
       
       /**
@@ -448,7 +484,7 @@
          var success = complete.successful.length, activityData, file;
          if (success > 0)
          {
-            if (success < this.options.groupActivitiesAt)
+            if (success < (this.options.groupActivitiesAt || 5))
             {
                // Below cutoff for grouping Activities into one
                for (var i = 0; i < success; i++)
@@ -688,18 +724,6 @@
       },
 
       /**
-       * Customize button click handler
-       *
-       * @method onCustomize
-       * @param e {object} DomEvent
-       * @param p_obj {object} Object passed back from addListener method
-       */
-      onCustomize: function DLTB_onCustomize(e, p_obj)
-      {
-         Alfresco.logger.warn("DLTB_onCustomize: Not implemented");
-      },
-
-      /**
        * Show/Hide navigation bar button click handler
        *
        * @method onHideNavBar
@@ -708,13 +732,14 @@
        */
       onHideNavBar: function DLTB_onHideNavBar(e, p_obj)
       {
-         this.options.hideNavBar = !this.options.hideNavBar;
-         p_obj.set("label", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
-
-         this.services.preferences.set(PREF_HIDE_NAVBAR, this.options.hideNavBar);
-
+         this.options.hideNavBar = this.widgets.hideNavBar.get("checked");
+         this.widgets.hideNavBar.set("title", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
          Dom.setStyle(this.id + "-navBar", "display", this.options.hideNavBar ? "none" : "block");
-         Event.preventDefault(e);
+         this.services.preferences.set(PREF_HIDE_NAVBAR, this.options.hideNavBar);
+         if (e)
+         {
+            Event.preventDefault(e);
+         }
       },
 
       /**

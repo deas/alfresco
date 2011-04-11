@@ -1,14 +1,3 @@
-/* History Manager */
-#yui-history-iframe
-{
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 1px;
-   height: 1px;
-   visibility: hidden;
-}
-
 .repository
 {
    margin: 16px 10px 10px;

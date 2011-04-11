@@ -49,6 +49,14 @@ public interface RecordsManagementSecurityService
     Map<Capability, AccessStatus> getCapabilities(NodeRef nodeRef);
     
     /**
+     * 
+     * @param nodeRef
+     * @param capabilitySet
+     * @return
+     */
+    Map<Capability, AccessStatus> getCapabilities(NodeRef nodeRef, String capabilitySet);
+    
+    /**
      * Get a capability by name
      * @param name
      * @return

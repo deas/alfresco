@@ -85,6 +85,7 @@
          var noPerms = this.msg("folder-info.role.None"),
             managerPerms = noPerms,
             collaboratorPerms = noPerms,
+            contributorPerms = noPerms,
             consumerPerms = noPerms,
             everyonePerms = noPerms;
          
@@ -101,6 +102,10 @@
             {
                collaboratorPerms = this.msg("folder-info.role." + permParts[2]);
             }
+            else if (group.indexOf("_SiteContributor") != -1)
+            {
+               contributorPerms = this.msg("folder-info.role." + permParts[2]);
+            }
             else if (group.indexOf("_SiteConsumer") != -1)
             {
                consumerPerms = this.msg("folder-info.role." + permParts[2]);
@@ -113,6 +118,7 @@
          
          Dom.get(this.id + "-perms-managers").innerHTML = $html(managerPerms);
          Dom.get(this.id + "-perms-collaborators").innerHTML = $html(collaboratorPerms);
+         Dom.get(this.id + "-perms-contributors").innerHTML = $html(contributorPerms);
          Dom.get(this.id + "-perms-consumers").innerHTML = $html(consumerPerms);
          Dom.get(this.id + "-perms-everyone").innerHTML = $html(everyonePerms);
       }

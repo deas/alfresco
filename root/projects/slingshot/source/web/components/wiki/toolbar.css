@@ -47,7 +47,11 @@
    background-image: url(../images/feed-icon-disabled-16.png);
 }
 
+.rename-panel .yui-ge div.yui-u {
+	width:28%;
+}
+
 .rename-panel .yui-ge div.first
 {
-   width: 70%;
+   width: 68%;
 }

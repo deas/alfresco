@@ -1,15 +1,99 @@
 <#macro documentlistTemplate>
 <!--[if IE]>
-   <iframe id="yui-history-iframe" src="${url.context}/res/yui/history/assets/blank.html"></iframe> 
+   <iframe id="yui-history-iframe" src="${url.context}/res/yui/history/assets/blank.html"></iframe>
 <![endif]-->
 <input id="yui-history-field" type="hidden" />
 <#nested>
-<div id="${args.htmlid}-body" class="doclist">
-   <div id="${args.htmlid}-doclistBar" class="yui-gc doclist-bar flat-button">
+<#assign id = args.htmlid?html>
+<div id="${id}-body" class="doclist no-check-bg">
+
+   <#-- TEMPLATES -->
+   <div id="${id}-main-template" class="hidden">
+      <div>
+      </div>
+   </div>
+
+   <#-- No items message -->
+   <div id="${id}-no-items-template" class="hidden">
+      <div class="docListInstructionTitle">${msg("no.items.title")}</div>
+   </div>
+
+   <#-- Hidden sub-folders message -->
+   <div id="${id}-hidden-subfolders-template" class="hidden">
+      <div class="docListInstructionTitle">${msg("no.items.title")}</div>
+      <div id="${id}-show-folders-template" class="docListInstructionColumn">
+         <img class="docListInstructionImage docListLinkedInstruction" src="${url.context}/res/components/documentlibrary/images/help-folder-48.png">
+         <a class="docListInstructionTextSmall docListLinkedInstruction"><#-- We don't know the number of hidden subfolders at this point so this needs to be inserted --></a>
+      </div>
+   </div>
+
+   <#-- HTML 5 drag and drop instructions -->
+   <div id="${id}-dnd-instructions-template" class="hidden">
+      <div id="${id}-dnd-instructions">
+         <span class="docListInstructionTitle">${msg("dnd.drop.title")}</span>
+         <div>
+            <div class="docListInstructionColumn docListInstructionColumnRightBorder">
+               <img class="docListInstructionImage" src="${url.context}/res/components/documentlibrary/images/help-drop-list-target-96.png">
+               <span class="docListInstructionText">${msg("dnd.drop.doclist.description")}</span>
+            </div>
+            <div class="docListInstructionColumn">
+               <img class="docListInstructionImage" src="${url.context}/res/components/documentlibrary/images/help-drop-folder-target-96.png">
+               <span class="docListInstructionText">${msg("dnd.drop.folder.description")}</span>
+            </div>
+            <div style="clear:both"></div>
+         </div>
+      </div>
+   </div>
+
+   <#-- Standard upload instructions -->
+   <div id="${id}-upload-instructions-template" class="hidden">
+      <div class="docListInstructionTitle">${msg("standard.upload.title")}</div>
+      <div id="${id}-standard-upload-link-template" class="docListInstructionColumn">
+         <img class="docListInstructionImage docListLinkedInstruction" src="${url.context}/res/components/documentlibrary/images/help-upload-96.png">
+         <span class="docListInstructionText"><a class="docListLinkedInstruction">${msg("standard.upload.description")}</a></span>
+      </div>
+   </div>
+
+   <#-- Other options? -->
+   <div id="${id}-other-options-template" class="hidden">
+      <div class="docListOtherOptions">${msg("other.options")}</div>
+   </div>
+
+   <#-- The following DOM structures should be editing with respect to documentlist.js function
+        fired by the Doclists "tableMsgShowEvent" as it uses this structure to associate the
+        image and anchor with the appropriate actions. NOTE: This is only a template that will
+        be cloned, during the cloning the id will be appended with "-instance" to ensure uniqueness
+        within the page, this allows us to locate each DOM node individually. -->
+
+   <#-- Standard upload (when user has create access) -->
+   <div id="${id}-standard-upload-template" class="hidden">
+     <div id="${id}-standard-upload-link-template">
+        <img class="docListOtherOptionsImage docListLinkedInstruction" src="${url.context}/res/components/documentlibrary/images/help-upload-48.png">
+        <span class="docListOtherOptionsText"><a class="docListLinkedInstruction">${msg("dnd.upload.description")}</a></span>
+     </div>
+   </div>
+   
+   <#-- New Folder (when user has create access) -->
+   <div id="${id}-new-folder-template" class="hidden">
+     <div id="${id}-new-folder-link-template">
+        <img class="docListOtherOptionsImage docListLinkedInstruction" src="${url.context}/res/components/documentlibrary/images/help-new-folder-48.png">
+        <span class="docListOtherOptionsText"><a class="docListLinkedInstruction">${msg("dnd.newfolder.description")}</a></span>
+     </div>
+   </div>
+
+   <#-- Hidden sub-folders message -->
+   <div id="${id}-show-folders-template" class="hidden">
+      <img class="docListOtherOptionsImage docListLinkedInstruction" src="${url.context}/res/components/documentlibrary/images/help-folder-48.png">
+      <span class="docListOtherOptionsText"><a class="docListLinkedInstruction"><#-- We don't know the number of hidden subfolders at this point so this needs to be inserted --></a></span>
+   </div>
+
+   <#-- END OF TEMPLATES -->
+
+   <div id="${id}-doclistBar" class="yui-gc doclist-bar flat-button no-check-bg">
       <div class="yui-u first">
          <div class="file-select">
-            <button id="${args.htmlid}-fileSelect-button" name="doclist-fileSelect-button">${msg("menu.select")}</button>
-            <div id="${args.htmlid}-fileSelect-menu" class="yuimenu">
+            <button id="${id}-fileSelect-button" name="doclist-fileSelect-button">${msg("menu.select")}</button>
+            <div id="${id}-fileSelect-menu" class="yuimenu">
                <div class="bd">
                   <ul>
                      <li><a href="#"><span class="selectDocuments">${msg("menu.select.documents")}</span></a></li>
@@ -21,33 +105,57 @@
                </div>
             </div>
          </div>
-         <div id="${args.htmlid}-paginator" class="paginator"></div>
+         <div id="${id}-paginator" class="paginator"></div>
       </div>
       <div class="yui-u align-right">
-         <div id="${args.htmlid}-simpleDetailed" class="simple-detailed yui-buttongroup inline">
+         <div id="${id}-simpleDetailed" class="simple-detailed yui-buttongroup inline">
             <#-- Don't insert linefeeds between these <input> tags -->
-            <input id="${args.htmlid}-simpleView" type="radio" name="simpleDetailed" title="${msg("button.view.simple")}" value="" /><input id="${args.htmlid}-detailedView" type="radio" name="simpleDetailed" title="${msg("button.view.detailed")}" value="" />
+            <input id="${id}-simpleView" type="radio" name="simpleDetailed" title="${msg("button.view.simple")}" value="" /><input id="${id}-detailedView" type="radio" name="simpleDetailed" title="${msg("button.view.detailed")}" value="" />
          </div>
          <div class="show-folders">
-            <button id="${args.htmlid}-showFolders-button" name="doclist-showFolders-button">${msg("button.folders.show")}</button>
+            <span id="${id}-showFolders-button" class="yui-button yui-checkbox-button">
+               <span class="first-child">
+                  <button name="doclist-showFolders-button"></button>
+               </span>
+            </span>
             <span class="separator">&nbsp;</span>
+         </div>
+         <div class="sort-field">
+            <span id="${id}-sortField-button" class="yui-button yui-push-button">
+               <span class="first-child">
+                  <button name="doclist-sortField-button"></button>
+               </span>
+            </span>
+            <span class="separator">&nbsp;</span>
+            <select id="${id}-sortField-menu">
+            <#list sortOptions as sort>
+               <option value="${(sort.value!"")?html}" <#if sort.direction??>title="${sort.direction?string}"</#if>>${msg(sort.label)}</option>
+            </#list>
+            </select>
+         </div>
+         <div class="sort-direction">
+            <span id="${id}-sortAscending-button" class="yui-button yui-push-button">
+               <span class="first-child">
+                  <button name="doclist-sortAscending-button"></button>
+               </span>
+            </span>
          </div>
       </div>
    </div>
 
-   <div id="${args.htmlid}-documents" class="documents"></div>
+   <div id="${id}-documents" class="documents"></div>
 
-   <div id="${args.htmlid}-doclistBarBottom" class="yui-gc doclist-bar doclist-bar-bottom flat-button">
+   <div id="${id}-doclistBarBottom" class="yui-gc doclist-bar doclist-bar-bottom flat-button">
       <div class="yui-u first">
          <div class="file-select">&nbsp;</div>
-         <div id="${args.htmlid}-paginatorBottom" class="paginator"></div>
+         <div id="${id}-paginatorBottom" class="paginator"></div>
       </div>
    </div>
 
    <!-- Action Sets -->
    <div style="display:none">
       <!-- Action Set "More..." container -->
-      <div id="${args.htmlid}-moreActions">
+      <div id="${id}-moreActions">
          <div class="onActionShowMore"><a href="#" class="show-more" title="${msg("actions.more")}"><span>${msg("actions.more")}</span></a></div>
          <div class="more-actions hidden"></div>
       </div>
@@ -55,27 +163,12 @@
       <!-- Action Set Templates -->
 <#list actionSets?keys as key>
    <#assign actionSet = actionSets[key]>
-      <div id="${args.htmlid}-actionSet-${key}" class="action-set">
+      <div id="${id}-actionSet-${key}" class="action-set">
    <#list actionSet as action>
          <div class="${action.id}"><a rel="${action.permission!""}" href="${action.href}" class="${action.type}" title="${msg(action.label)}"><span>${msg(action.label)}</span></a></div>
    </#list>
       </div>
 </#list>
-   </div>
-
-   <div id="${args.htmlid}-customize" class="customize">
-      <div class="hd">${msg("customize.title")}</div>
-      <div class="bd">
-         <form id="${args.htmlid}-customize-form" action="#" method="post">
-            <div class="yui-g">
-               <h2>${msg("customize.header.actions")}</h2>
-            </div>
-            <div class="bdft">
-               <input type="button" id="${args.htmlid}-customize-ok" value="${msg("button.ok")}" tabindex="0" />
-               <input type="button" id="${args.htmlid}-customize-cancel" value="${msg("button.cancel")}" tabindex="0" />
-            </div>
-         </form>
-      </div>
    </div>
 
 </div>

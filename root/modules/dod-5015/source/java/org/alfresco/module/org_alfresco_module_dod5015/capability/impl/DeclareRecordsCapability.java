@@ -43,7 +43,7 @@ public class DeclareRecordsCapability extends AbstractCapability
         //TODO: check mandatory properties (action does this)
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozenUncutoffOpen(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozenUncutoffOpen(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (isRecord(nodeRef))
                 {

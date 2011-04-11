@@ -42,7 +42,7 @@ public class AuthorizeAllTransfersCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (!isFrozen(nodeRef))
+            if (!isFrozen(nodeRef, true))
             {
                 if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.AUTHORIZE_ALL_TRANSFERS) == AccessStatus.ALLOWED)
                 {

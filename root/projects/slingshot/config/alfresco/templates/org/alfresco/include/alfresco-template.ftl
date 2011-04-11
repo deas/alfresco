@@ -9,12 +9,16 @@
 <#assign PORTLET=(context.attributes.portletHost!false)>
 
 <#-- Look up page title from message bundles where possible -->
-<#assign pageTitle = page.title />
-<#if page.titleId??>
-   <#assign pageTitle = (msg(page.titleId))!page.title>
-</#if>
-<#if context.properties["page-titleId"]??>
-   <#assign pageTitle = msg(context.properties["page-titleId"])>
+<#if metaPage??>
+   <#assign pageTitle>${metaPage.sitePageTitle!metaPage.title}</#assign>
+<#else>
+   <#assign pageTitle>${page.title}</#assign>
+   <#if page.titleId??>
+      <#assign pageTitle = (msg(page.titleId))!page.title>
+   </#if>
+   <#if context.properties["page-titleId"]??>
+      <#assign pageTitle = msg(context.properties["page-titleId"])>
+   </#if>
 </#if>
 
 <#--
@@ -51,7 +55,7 @@
    </#if>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-   <title>${msg("page.title", pageTitle)}</title>
+   <title>${msg("page.title", pageTitle?html)}</title>
    <meta http-equiv="X-UA-Compatible" content="Edge" />
 </#if>
 
@@ -133,11 +137,6 @@
    //]]></script>
    <@script type="text/javascript" src="${url.context}/res/js/alfresco.js"></@script>
    <@script type="text/javascript" src="${url.context}/res/js/forms-runtime.js"></@script>
-   <@script type="text/javascript" src="${url.context}/res/js/share.js"></@script>
-   <@common.uriTemplates />
-   <@common.helpPages />
-   <@common.htmlEditor htmlEditor="tinyMCE"/>
-   
    <!-- Share Preference keys -->
    <script type="text/javascript">//<![CDATA[
       Alfresco.service.Preferences.FAVOURITE_DOCUMENTS = "org.alfresco.share.documents.favourites";
@@ -147,6 +146,10 @@
       Alfresco.service.Preferences.COLLAPSED_TWISTERS = "org.alfresco.share.twisters.collapsed";
       Alfresco.service.Preferences.RULE_PROPERTY_SETTINGS = "org.alfresco.share.rule.properties";
    //]]></script>
+   <@script type="text/javascript" src="${url.context}/res/js/share.js"></@script>
+   <@common.uriTemplates />
+   <@common.helpPages />
+   <@common.htmlEditor htmlEditor="tinyMCE"/>
 
 <!-- Template Assets -->
 <#nested>

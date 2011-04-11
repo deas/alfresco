@@ -3,7 +3,7 @@
    If the current page is within a Site context, that context is used for the generated link.
    The function understands that &amp; needs to be unescaped when in portlet mode.
 -->
-<#function siteURL relativeURL=page.url.uri?substring(page.url.context?length) siteId=page.url.templateArgs.site!"">
+<#function siteURL relativeURL="" siteId=((page.url.templateArgs.site)!(args.site)!"")>
    <#assign portlet = context.attributes.portletHost!false>
    <#assign portlet_url = (context.attributes.portletUrl!"")>
    <#assign site_url = relativeURL>
@@ -40,4 +40,76 @@
       <#return msg(msgId, msgTokens) />
    </#if>
    <#return msg(msgId) />
+</#function>
+
+<#function uriTemplate id>
+   <#local uriConfig = config.scoped["UriTemplate"]["uri-templates"]>
+   <#list uriConfig.childrenMap["uri-template"] as c>
+      <#if c.attributes["id"] == id><#return c.value?string></#if>
+   </#list>
+   <#return null>
+</#function>
+
+<#function userProfileLink userName fullName="" linkAttr="" disableLink=false>
+   <#local displayLabel><#if fullName?length == 0>${userName?html}<#else>${fullName?html}</#if></#local>
+
+   <#assign userprofilepage = uriTemplate("userprofilepage")>
+   <#if disableLink || (userprofilepage!"")?length == 0 || context.attributes.portletHost!false>
+      <#local span><span>${displayLabel}</span></#local>
+      <#return span>
+   </#if>
+
+   <#local userid=user.name>
+   <#local userprofilepage = userprofilepage?replace("{", "$" + "{")?interpret/>
+   <#local userprofilepage><@userprofilepage/></#local>
+   <#local link><a href="${url.context + "/page" + userprofilepage}" ${linkAttr}>${displayLabel}</a></#local>
+   <#return link>
+</#function>
+
+<#--
+   Given a filename, returns either a filetype icon or generic icon file stem
+      fileName {string} File to find icon for
+      iconSize {int} Icon size: 32
+      Return {string} The icon name, e.g. doc-file-32.png
+-->
+<#function fileIcon fileName iconSize=32>
+   <#local exts = {
+      "doc": "doc",
+      "docx": "doc",
+      "ppt": "ppt",
+      "pptx": "ppt",
+      "xls": "xls",
+      "xlsx": "xls",
+      "pdf": "pdf",
+      "bmp": "img",
+      "gif": "img",
+      "jpg": "img",
+      "jpeg": "img",
+      "png": "img",
+      "psd": "psd",
+      "txt": "text",
+      "htm": "html",
+      "html": "html",
+      "keynote": "keynote",
+      "pages": "pages",
+      "numbers": "numbers",
+      "odt": "odt",
+      "ods": "ods",
+      "odp": "odp",
+      "odg": "odg",
+      "mp3": "mp3",
+      "xml": "xml",
+      "zip": "zip",
+      "avi": "video",
+      "ogg": "video",
+      "ogv": "video",
+      "wmv": "video",
+      "xvid": "video",
+      "divx": "video",
+      "mp4": "video",
+      "mkv": "video"
+      }>
+   <#local extn=fileName?substring(fileName?last_index_of(".") + 1)?lower_case>
+   <#local prefix=exts[extn]!"generic">
+   <#return prefix + "-file-" + iconSize + ".png">
 </#function>

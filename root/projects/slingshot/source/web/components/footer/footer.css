@@ -20,7 +20,8 @@
 }
 
 .footer-com,
-.footer-ent
+.footer-ent,
+.footer-team
 {
    padding: 0;
 }
@@ -32,8 +33,9 @@
    border-right: 1px solid #dfdfdf;
    display: inline-block;
    line-height: 22px;
-   padding: 2px 1em;
+   padding: 2px;
 }
+
 .footer-ent .copyright
 {
    background-color: #fff;
@@ -43,14 +45,29 @@
    padding: 17px 0.5em;
 }
 
+.footer-team .copyright
+{
+   background-color: #fff;
+   border-left: 1px solid #dfdfdf;
+   border-right: 1px solid #dfdfdf;
+   line-height: 47px;
+   padding: 17px 25px 17px 0.5em;
+}
+
 .footer-com .copyright img
 {
    padding-right: 1em;
    vertical-align: baseline;
 }
+
 .footer-ent .copyright img
 {
    padding-right: 1em;
+   vertical-align: middle;
+}
+
+.footer-team .copyright img
+{
    vertical-align: middle;
 }
 
@@ -58,8 +75,9 @@
 {
    display: inline-block;
 }
-.footer-ent .copyright span
+
+.footer-ent .copyright span,
+.footer-team .copyright span
 {
    position: relative;
-   top: 3px;
 }

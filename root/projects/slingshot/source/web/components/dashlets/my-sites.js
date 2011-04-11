@@ -35,19 +35,22 @@
    /**
     * Alfresco Slingshot aliases
     */
-   var $html = Alfresco.util.encodeHTML;
+   var $html = Alfresco.util.encodeHTML,
+      $links = Alfresco.util.activateLinks;
 
    /**
     * Use the getDomId function to get some unique names for global event handling
     */
-   var favEventClass = Alfresco.util.generateDomId(null, "fav-site"),
-      imapEventClass = Alfresco.util.generateDomId(null, "imap-site"),
-      deleteEventClass = Alfresco.util.generateDomId(null, "del-site");
+   var FAV_EVENTCLASS = Alfresco.util.generateDomId(null, "fav-site"),
+      IMAP_EVENTCLASS = Alfresco.util.generateDomId(null, "imap-site"),
+      LIKE_EVENTCLASS = Alfresco.util.generateDomId(null, "like-site"),
+      DELETE_EVENTCLASS = Alfresco.util.generateDomId(null, "del-site");
 
    /**
     * Preferences
     */
-   var PREFERENCES_SITES_DASHLET_FILTER = "org.alfresco.share.sites.dashlet.filter";       
+   var PREFERENCES_SITES = "org.alfresco.share.sites",
+      PREFERENCES_SITES_DASHLET_FILTER = PREFERENCES_SITES + ".dashlet.filter";
 
    /**
     * Dashboard MySites constructor.
@@ -58,12 +61,15 @@
     */
    Alfresco.dashlet.MySites = function MySites_constructor(htmlId)
    {
-      Alfresco.dashlet.MySites.superclass.constructor.call(this, "Alfresco.dashlet.MySites", htmlId, ["button", "container", "datasource", "datatable", "animation"]);
+      Alfresco.dashlet.MySites.superclass.constructor.call(this, "Alfresco.dashlet.MySites", htmlId, ["datasource", "datatable", "animation"]);
 
       // Initialise prototype properties
-      this.preferencesService = new Alfresco.service.Preferences();
       this.sites = [];
       this.createSite = null;
+
+      // Services
+      this.services.preferences = new Alfresco.service.Preferences();
+      this.services.likes = new Alfresco.service.Ratings(Alfresco.service.Ratings.LIKES);
 
       // Listen for events from other components
       YAHOO.Bubbling.on("siteDeleted", this.onSiteDeleted, this);
@@ -74,22 +80,12 @@
    YAHOO.extend(Alfresco.dashlet.MySites, Alfresco.component.Base,
    {
       /**
-       * Preferences service to get and set the dashlet's site filter
-       *
-       * @property preferencesService
-       * @type Alfresco.service.Preferences
-       * @private
-       */
-      preferencesService: [],
-
-      /**
        * Site data
        *
        * @property sites
        * @type array
-       * @private
        */
-      sites: [],
+      sites: null,
 
       /**
        * CreateSite module instance.
@@ -108,6 +104,18 @@
       options:
       {
          /**
+          * List of valid filters
+          *
+          * @property validFilters
+          * @type object
+          */
+         validFilters:
+         {
+            "all": true,
+            "favSites": true
+         },
+          
+         /**
           * Flag if IMAP server is enabled
           *
           * @property imapEnabled
@@ -115,192 +123,6 @@
           * @default false
           */
          imapEnabled: false
-      },
-
-      /**
-       * Date drop-down changed event handler
-       * 
-       * @method onTypeFilterChanged
-       * @param p_sType {string} The event
-       * @param p_aArgs {array}
-       */
-      onTypeFilterChanged: function MySites_onTypeFilterChanged(p_sType, p_aArgs)
-      {
-         var menuItem = p_aArgs[1];
-         if (menuItem)
-         {
-            this.widgets.type.set("label", menuItem.cfg.getProperty("text"));
-         }
-         this.widgets.type.value = menuItem.value;
-         this.onTypeFilterClicked();
-      },
-
-      /**
-       * Type button clicked event handler
-       *
-       * @method onTypeFilterClicked
-       * @param p_oEvent {object} Dom event
-       */
-      onTypeFilterClicked: function MySites_onTypeFilterClicked(p_oEvent)
-      {
-         // Save preferences and load sites afterwards
-         this.preferencesService.set(PREFERENCES_SITES_DASHLET_FILTER, this.widgets.type.value, { successCallback:
-         {
-            fn: this.loadSites,
-            scope: this
-         }});
-      },
-
-      loadSites: function()
-      {
-         // Load sites
-         Alfresco.util.Ajax.request(
-         {
-            url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites",
-            successCallback:
-            {
-               fn: this.onSitesLoaded,
-               scope: this
-            }
-         });
-      },
-
-      /**
-       * Retrieve user preferences
-       *
-       * @method getPrefs
-       * @param p_response {object} Response from "api/people/{userId}/sites" query
-       */
-      onSitesLoaded: function MySites_getPrefs(p_response)
-      {
-         // Save sites form response
-         var items = p_response.json;
-
-         // Load preferences (after which the appropriate sites will be displayed) 
-         Alfresco.util.Ajax.request(
-         {
-            url: Alfresco.constants.PROXY_URI + "api/people/"+ encodeURIComponent(Alfresco.constants.USERNAME) + "/preferences?pf=org.alfresco.share.sites",
-            successCallback:
-            {
-               fn: this.onPreferencesLoaded,
-               scope: this,
-               obj: items
-            }
-         });
-      },
-
-      /**
-       * Process response from sites and preferences queries
-       *
-       * @method onSitesUpdate
-       * @param p_response {object} Response from "api/people/{userId}/preferences" query
-       * @param p_items {object} Response from "api/people/{userId}/sites" query
-       */
-      onPreferencesLoaded: function MySites_onSitesUpdate(p_response, p_items)
-      {
-         var favSites = {},
-            imapfavSites = {},
-            siteManagers, i, j, k, l,
-            ii = 0;
-
-         // Save preferences
-         if (p_response.json.org)
-         {
-            favSites = p_response.json.org.alfresco.share.sites.favourites;
-            imapfavSites = p_response.json.org.alfresco.share.sites.imapFavourites;
-         }
-
-         // Select the preferred filter in the ui
-         var filter = Alfresco.util.findValueByDotNotation(p_response.json, PREFERENCES_SITES_DASHLET_FILTER, "all");
-         if (filter)
-         {
-            this.widgets.type.set("label", this.msg("filter." + filter));
-            this.widgets.type.value = filter;
-         }
-
-         // Display the toolbar now that we have selected the filter
-         Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
-
-         for (i = 0, j = p_items.length; i < j; i++)
-         {
-            p_items[i].isSiteManager = false;
-            siteManagers = p_items[i].siteManagers;
-            for (k = 0, l = siteManagers.length; siteManagers && k < l; k++)
-            {
-               if (siteManagers[k] == Alfresco.constants.USERNAME)
-               {
-                  p_items[i].isSiteManager = true;
-                  break;
-               }
-            }
-
-            p_items[i].isFavourite = typeof(favSites[p_items[i].shortName]) == "undefined" ? false : favSites[p_items[i].shortName];
-            if (imapfavSites)
-            {
-               p_items[i].isIMAPFavourite = typeof(imapfavSites[p_items[i].shortName]) == "undefined" ? false : imapfavSites[p_items[i].shortName];
-            }
-         }
-
-         this.sites = [];
-         for (i = 0, j = p_items.length; i < j; i++)
-         {
-            var site =
-            {
-               shortName: p_items[i].shortName,
-               title: p_items[i].title,
-               description: p_items[i].description,
-               isFavourite: p_items[i].isFavourite,
-               isIMAPFavourite: p_items[i].isIMAPFavourite,
-               sitePreset: p_items[i].sitePreset,
-               isSiteManager: p_items[i].isSiteManager
-            };
-
-            if (this.filterAccept(site))
-            {
-               this.sites[ii] = site;
-               ii++;
-            }
-         }
-
-         var successHandler = function MD__oFC_success(sRequest, oResponse, oPayload)
-         {
-            oResponse.results=this.sites;
-            this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
-         };
-
-         this.widgets.dataSource.sendRequest(this.sites,
-         {
-            success: successHandler,
-            scope: this
-         });
-      },
-
-      /**
-       * Determine whether a given site should be displayed or not depending on the current filter selection
-       * @method filterAccept
-       * @param site {object} Site object literal
-       * @return {boolean}
-       */
-      filterAccept: function MySites_filterAccept(site)
-      {
-         switch (this.widgets.type.value)
-         {
-            case "all":
-               return true;
-
-            case "sites":
-               return (site.sitePreset !== "document-workspace" && site.sitePreset !== "meeting-workspace");
-
-            case "favSites":
-               return (site.isFavourite || (this.options.imapEnabled && site.isIMAPFavourite));
-
-            case "docWorkspaces":
-               return (site.sitePreset === "document-workspace");
-
-            case "meetWorkspaces":
-               return (site.sitePreset === "meeting-workspace");
-         }
-         return false;
       },
 
       /**
@@ -312,16 +134,15 @@
          var me = this;
 
          // Create Dropdown filter
-         this.widgets.type = new YAHOO.widget.Button(this.id + "-type",
+         this.widgets.type = Alfresco.util.createYUIButton(this, "type", this.onTypeFilterChanged,
          {
-            type: "split",
-            menu: this.id + "-type-menu"
+            type: "menu",
+            menu: "type-menu",
+            lazyloadmenu: false
          });
-         this.widgets.type.on("click", this.onTypeFilterClicked, this, true);
-         this.widgets.type.getMenu().subscribe("click", this.onTypeFilterChanged, this, true);
 
          // Listen on clicks for the create site link
-         Event.addListener(this.id + "-createSite-button", "click", this.onCreateSiteLinkClick, this, true);
+         Event.addListener(this.id + "-createSite-button", "click", this.onCreateSite, this, true);
 
          // DataSource definition
          this.widgets.dataSource = new YAHOO.util.DataSource(this.sites,
@@ -332,19 +153,34 @@
          // DataTable column defintions
          var columnDefinitions =
          [
-            { key: "siteId", label: "Favourite", sortable: false, formatter: this.bind(this.renderCellFavourite), width: this.options.imapEnabled ? 40 : 20 },
-            { key: "title", label: "Description", sortable: false, formatter: this.bind(this.renderCellName) },
-            { key: "description", label: "Actions", sortable: false, formatter: this.bind(this.renderCellActions), width: 32 }
+            { key: "icon", label: "Icon", sortable: false, formatter: this.bind(this.renderCellIcon), width: 52 },
+            { key: "detail", label: "Description", sortable: false, formatter: this.bind(this.renderCellDetail) },
+            { key: "actions", label: "Actions", sortable: false, formatter: this.bind(this.renderCellActions), width: 24 }
          ];
 
          // DataTable definition
          this.widgets.dataTable = new YAHOO.widget.DataTable(this.id + "-sites", columnDefinitions, this.widgets.dataSource,
          {
-            MSG_EMPTY: this.msg("label.noSites")
+            MSG_EMPTY: this.msg("message.datatable.loading")
          });
 
+         // Override abstract function within DataTable to set custom empty message
+         this.widgets.dataTable.doBeforeLoadData = function MySites_doBeforeLoadData(sRequest, oResponse, oPayload)
+         {
+            if ((oResponse.results.length === 0) || (oResponse.results.length === 1 && oResponse.results[0].shortName === "swsdp"))
+            {
+               oResponse.results.unshift(
+               {
+                  isInfo: true,
+                  title: me.msg("empty.title"),
+                  description: me.msg("empty.description") + (oResponse.results.length === 1 ? "<p>" + me.msg("empty.description.sample-site") + "</p>" : "")
+               });
+            }
+            return true;
+         };
+
          // Add animation to row delete
-         this.widgets.dataTable._deleteTrEl = function(row)
+         this.widgets.dataTable._deleteTrEl = function MySites__deleteTrEl(row)
          {
             var scope = this,
                trEl = this.getTrEl(row);
@@ -366,9 +202,9 @@
          /**
           * Hook favourite site events
           */
-         var registerEventHandler = function(cssClass, fnHandler)
+         var registerEventHandler = function MySites_onReady_registerEventHandler(cssClass, fnHandler)
          {
-            var fnEventHandler = function MS_oR_fnEventHandler(layer, args)
+            var fnEventHandler = function MySites_onReady_fnEventHandler(layer, args)
             {
                var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
                if (owner !== null)
@@ -381,9 +217,10 @@
             YAHOO.Bubbling.addDefaultAction(cssClass, fnEventHandler);
          };
 
-         registerEventHandler(favEventClass, this.onFavouriteSite);
-         registerEventHandler(imapEventClass, this.onImapFavouriteSite);
-         registerEventHandler(deleteEventClass, this.onDeleteSite);
+         registerEventHandler(FAV_EVENTCLASS, this.onFavouriteSite);
+         registerEventHandler(IMAP_EVENTCLASS, this.onImapFavouriteSite);
+         registerEventHandler(LIKE_EVENTCLASS, this.onLikes);
+         registerEventHandler(DELETE_EVENTCLASS, this.onDeleteSite);
 
          // Enable row highlighting
          this.widgets.dataTable.subscribe("rowMouseoverEvent", this.widgets.dataTable.onEventHighlightRow);
@@ -394,55 +231,333 @@
       },
 
       /**
-       * Favourites custom datacell formatter
+       * Date drop-down changed event handler
+       *
+       * @method onTypeFilterChanged
+       * @param p_sType {string} The event
+       * @param p_aArgs {array}
        */
-      renderCellFavourite: function MySites_renderCellFavourite(elCell, oRecord, oColumn, oData)
+      onTypeFilterChanged: function MySites_onTypeFilterChanged(p_sType, p_aArgs)
+      {
+         var menuItem = p_aArgs[1];
+         if (menuItem)
+         {
+            this.widgets.type.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.type.value = menuItem.value;
+
+            // Save preferences and load sites afterwards
+            this.services.preferences.set(PREFERENCES_SITES_DASHLET_FILTER, menuItem.value,
+            {
+               successCallback:
+               {
+                  fn: this.loadSites,
+                  scope: this
+               }
+            });
+         }
+      },
+
+      /**
+       * Load sites list
+       *
+       * @method loadSites
+       */
+      loadSites: function MySites_loadSites()
+      {
+         // Load sites
+         Alfresco.util.Ajax.request(
+         {
+            url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites",
+            successCallback:
+            {
+               fn: this.onSitesLoaded,
+               scope: this
+            }
+         });
+      },
+
+      /**
+       * Retrieve user preferences after sites data has loaded
+       *
+       * @method onSitesLoaded
+       * @param p_response {object} Response from "api/people/{userId}/sites" query
+       */
+      onSitesLoaded: function MySites_onSitesLoaded(p_response)
+      {
+         // Load preferences (after which the appropriate sites will be displayed)
+         this.services.preferences.request(PREFERENCES_SITES,
+         {
+            successCallback:
+            {
+               fn: this.onPreferencesLoaded,
+               scope: this,
+               obj: p_response.json
+            }
+         });
+      },
+
+      /**
+       * Process response from sites and preferences queries
+       *
+       * @method onPreferencesLoaded
+       * @param p_response {object} Response from "api/people/{userId}/preferences" query
+       * @param p_items {object} Response from "api/people/{userId}/sites" query
+       */
+      onPreferencesLoaded: function MySites_onPreferencesLoaded(p_response, p_items)
+      {
+         var favSites = {},
+            imapfavSites = {},
+            siteManagers, i, j, k, l,
+            ii = 0;
+
+         // Save preferences
+         if (p_response.json.org)
+         {
+            favSites = p_response.json.org.alfresco.share.sites.favourites;
+            imapfavSites = p_response.json.org.alfresco.share.sites.imapFavourites;
+         }
+
+         // Select the preferred filter in the ui
+         var filter = Alfresco.util.findValueByDotNotation(p_response.json, PREFERENCES_SITES_DASHLET_FILTER, "all");
+         filter = this.options.validFilters.hasOwnProperty(filter) ? filter : "all";
+         this.widgets.type.set("label", this.msg("filter." + filter));
+         this.widgets.type.value = filter;
+
+         // Display the toolbar now that we have selected the filter
+         Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
+
+         for (i = 0, j = p_items.length; i < j; i++)
+         {
+            p_items[i].isSiteManager = false;
+            siteManagers = p_items[i].siteManagers;
+            for (k = 0, l = siteManagers.length; siteManagers && k < l; k++)
+            {
+               if (siteManagers[k] === Alfresco.constants.USERNAME)
+               {
+                  p_items[i].isSiteManager = true;
+                  break;
+               }
+            }
+
+            p_items[i].isFavourite = typeof(favSites[p_items[i].shortName]) === "undefined" ? false : favSites[p_items[i].shortName];
+            if (imapfavSites)
+            {
+               p_items[i].isIMAPFavourite = typeof(imapfavSites[p_items[i].shortName]) === "undefined" ? false : imapfavSites[p_items[i].shortName];
+            }
+         }
+
+         this.sites = [];
+         for (i = 0, j = p_items.length; i < j; i++)
+         {
+            var site = YAHOO.lang.merge({}, p_items[i]);
+
+            if (this.filterAccept(this.widgets.type.value, site))
+            {
+               this.sites[ii] = site;
+               ii++;
+            }
+         }
+
+         var successHandler = function MySites_onSitesUpdate_success(sRequest, oResponse, oPayload)
+         {
+            oResponse.results=this.sites;
+            this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
+         };
+
+         this.widgets.dataSource.sendRequest(this.sites,
+         {
+            success: successHandler,
+            scope: this
+         });
+      },
+
+      /**
+       * Determine whether a given site should be displayed or not depending on the current filter selection
+       * @method filterAccept
+       * @param filter {string} Filter to set
+       * @param site {object} Site object literal
+       * @return {boolean}
+       */
+      filterAccept: function MySites_filterAccept(filter, site)
+      {
+         switch (filter)
+         {
+            case "all":
+               return true;
+
+            case "favSites":
+               return (site.isFavourite || (this.options.imapEnabled && site.isIMAPFavourite));
+         }
+         return false;
+      },
+
+      /**
+       * Generate "Favourite" UI
+       *
+       * @method generateFavourite
+       * @param record {object} DataTable record
+       * @return {string} HTML mark-up for Favourite UI
+       */
+      generateFavourite: function MySites_generateFavourite(record)
+      {
+         var html = "";
+
+         if (record.getData("isFavourite"))
+         {
+            html = '<a class="favourite-action ' + FAV_EVENTCLASS + ' enabled" title="' + this.msg("favourite.site.remove.tip") + '" tabindex="0"></a>';
+         }
+         else
+         {
+            html = '<a class="favourite-action ' + FAV_EVENTCLASS + '" title="' + this.msg("favourite.site.add.tip") + '" tabindex="0">' + this.msg("favourite.site.add.label") + '</a>';
+         }
+
+         return html;
+      },
+
+      /**
+       * Generate "IMAP Favourite" UI
+       *
+       * @method generateIMAPFavourite
+       * @param record {object} DataTable record
+       * @return {string} HTML mark-up for Favourite UI
+       */
+      generateIMAPFavourite: function MySites_generateIMAPFavourite(record)
+      {
+         var html = "";
+
+         if (record.getData("isIMAPFavourite"))
+         {
+            html = '<a class="favourite-action favourite-imap ' + IMAP_EVENTCLASS + ' enabled" title="' + this.msg("favourite.imap-site.remove.tip") + '" tabindex="0"></a>';
+         }
+         else
+         {
+            html = '<a class="favourite-imap ' + IMAP_EVENTCLASS + '" title="' + this.msg("favourite.imap-site.add.tip") + '" tabindex="0">' + this.msg("favourite.imap-site.add.label") + '</a>';
+         }
+
+         return html;
+      },
+
+      /**
+       * Generate "Likes" UI
+       *
+       * @method generateLikes
+       * @param record {object} DataTable record
+       * @return {string} HTML mark-up for Likes UI
+       */
+      generateLikes: function MySites_generateLikes(record)
+      {
+         var likes = record.getData("likes"),
+            html = "";
+
+         // TODO: Remove when Site Service supports "Likes"
+         likes = YAHOO.lang.merge(
+         {
+            isLiked: false,
+            totalLikes: 0
+         }, likes || {});
+         
+         if (likes.isLiked)
+         {
+            html = '<a class="like-action ' + LIKE_EVENTCLASS + ' enabled" title="' + this.msg("like.site.remove.tip") + '" tabindex="0"></a>';
+         }
+         else
+         {
+            html = '<a class="like-action ' + LIKE_EVENTCLASS + '" title="' + this.msg("like.site.add.tip") + '" tabindex="0">' + this.msg("like.site.add.label") + '</a>';
+         }
+
+         html += '<span class="likes-count">' + $html(likes.totalLikes) + '</span>';
+
+         return html;
+      },
+
+      /**
+       * Icon custom datacell formatter
+       *
+       * @method renderCellIcon
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellIcon: function MySites_renderCellIcon(elCell, oRecord, oColumn, oData)
       {
          Dom.setStyle(elCell, "width", oColumn.width + "px");
          Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+         
+         var site = oRecord.getData(),
+            img = site.isInfo ? "help-site-bw-32.png" : "filetypes/generic-site-32.png";
 
-         var isFavourite = oRecord.getData("isFavourite"),
-               isIMAPFavourite = oRecord.getData("isIMAPFavourite");
-
-         var desc = '<div class="site-favourites">';
-         desc += '<a class="favourite-site ' + favEventClass + (isFavourite ? ' enabled' : '') + '" title="' + this.msg("link.favouriteSite") + '">&nbsp;</a>';
-         if (this.options.imapEnabled)
-         {
-            desc += '<a class="imap-favourite-site ' + imapEventClass + (isIMAPFavourite ? ' imap-enabled' : '') + '" title="' + this.msg("link.imap_favouriteSite") + '">&nbsp;</a>';
-         }
-         desc += '</div>';
-         elCell.innerHTML = desc;
+         elCell.innerHTML = '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/' + img + '" />';
       },
 
       /**
        * Name & description custom datacell formatter
+       *
+       * @method renderCellDetail
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
        */
-      renderCellName: function MySites_renderCellName(elCell, oRecord, oColumn, oData)
+      renderCellDetail: function MySites_renderCellDetail(elCell, oRecord, oColumn, oData)
       {
-         var siteId = oRecord.getData("shortName"),
-               siteTitle = oRecord.getData("title"),
-               siteDescription = oRecord.getData("description");
+         var site = oRecord.getData(),
+            description = '<span class="faded">' + this.msg("details.description.none") + '</span>',
+            desc = "";
 
-         var desc = '<div class="site-title"><a href="' + Alfresco.constants.URL_PAGECONTEXT + 'site/' + siteId + '/dashboard" class="theme-color-1">' + $html(siteTitle) + '</a></div>';
-         desc += '<div class="site-description">' + $html(siteDescription) + '</div>';
+         if (site.isInfo)
+         {
+            desc += '<div class="empty"><h3>' + site.title + '</h3>';
+            desc += '<span>' + site.description + '</span></div>';
+         }
+         else
+         {
+            // Description non-blank?
+            if (site.description && site.description !== "")
+            {
+               description = $links($html(site.description));
+            }
+
+            desc += '<h3 class="site-title"><a href="' + Alfresco.constants.URL_PAGECONTEXT + 'site/' + site.shortName + '/dashboard" class="theme-color-1">' + $html(site.title) + '</a></h3>';
+            desc += '<div class="detail"><span>' + description + '</span></div>';
+
+            /* Favourite / IMAP / (Likes) */
+            desc += '<div class="detail detail-social">';
+            desc +=    '<span class="item item-social">' + this.generateFavourite(oRecord) + '</span>';
+            if (this.options.imapEnabled)
+            {
+               desc +=    '<span class="item item-social item-separator">' + this.generateIMAPFavourite(oRecord) + '</span>';
+            }
+            /**
+             * Not in Alfresco Team
+             *
+            desc +=    '<span class="item item-social">' + this.generateLikes(oRecord) + '</span>';
+            */
+            desc += '</div>';
+         }
 
          elCell.innerHTML = desc;
       },
 
       /**
        * Actions custom datacell formatter
+       *
+       * @method renderCellActions
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
        */
       renderCellActions: function MySites_renderCellActions(elCell, oRecord, oColumn, oData)
       {
          Dom.setStyle(elCell, "width", oColumn.width + "px");
          Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
 
-         var isSiteManager = oRecord.getData("isSiteManager"),
-               desc = "";
+         var desc = "";
 
-         if (isSiteManager)
+         if (oRecord.getData("isSiteManager"))
          {
-            desc = '<a class="delete-site ' + deleteEventClass + '" title="' + this.msg("link.deleteSite") + '">&nbsp;</a>';
+            desc += '<a class="delete-site ' + DELETE_EVENTCLASS + '" title="' + this.msg("link.deleteSite") + '">&nbsp;</a>';
          }
          elCell.innerHTML = desc;
       },
@@ -451,7 +566,7 @@
        * Adds an event handler for bringing up the delete site dialog for the specific site
        *
        * @method onDeleteSite
-       * @param row {object} DataTable row representing file to be actioned
+       * @param row {object} DataTable row representing site to be actioned
        */
       onDeleteSite: function MySites_onDeleteSite(row)
       {
@@ -488,7 +603,7 @@
        * Adds an event handler that adds or removes the site as favourite site
        *
        * @method onFavouriteSite
-       * @param row {object} DataTable row representing file to be actioned
+       * @param row {object} DataTable row representing site to be actioned
        */
       onFavouriteSite: function MySites_onFavouriteSite(row)
       {
@@ -505,7 +620,7 @@
          {
             failureCallback:
             {
-               fn: function MS_oFS_failure(event, obj)
+               fn: function MySites_onFavouriteSite_failure(event, obj)
                {
                   // Reset the flag to it's previous state
                   var record = obj.record,
@@ -515,7 +630,7 @@
                   this.widgets.dataTable.updateRow(record, site);
                   Alfresco.util.PopupManager.displayPrompt(
                   {
-                     text: this.msg("message.siteFavourite.failure", site.title)
+                     text: this.msg("message.save.failure")
                   });
                },
                scope: this,
@@ -526,7 +641,7 @@
             },
             successCallback:
             {
-               fn: function MS_oFS_success(event, obj)
+               fn: function MySites_onFavouriteSite_success(event, obj)
                {
                   var record = obj.record,
                      site = record.getData();
@@ -541,14 +656,14 @@
             }
          };
 
-         this.preferencesService.set(Alfresco.service.Preferences.FAVOURITE_SITES + "." + siteId, site.isFavourite, responseConfig);
+         this.services.preferences.set(Alfresco.service.Preferences.FAVOURITE_SITES + "." + siteId, site.isFavourite, responseConfig);
       },
 
       /**
        * Adds an event handler that adds or removes the site as favourite site
        *
-       * @method _addImapFavouriteHandling
-       * @param row {object} DataTable row representing file to be actioned
+       * @method onImapFavouriteSite
+       * @param row {object} DataTable row representing site to be actioned
        */
       onImapFavouriteSite: function MySites_onImapFavouriteSite(row)
       {
@@ -565,7 +680,7 @@
          {
             failureCallback:
             {
-               fn: function MS_oIFS_failure(event, obj)
+               fn: function MySites_onImapFavouriteSite_failure(event, obj)
                {
                   // Reset the flag to it's previous state
                   var record = obj.record,
@@ -575,7 +690,7 @@
                   this.widgets.dataTable.updateRow(record, site);
                   Alfresco.util.PopupManager.displayPrompt(
                   {
-                     text: this.msg("message.siteFavourite.failure", site.title)
+                     text: this.msg("message.save.failure")
                   });
                },
                scope: this,
@@ -586,15 +701,85 @@
             }
          };
 
-         this.preferencesService.set(Alfresco.service.Preferences.IMAP_FAVOURITE_SITES + "." + siteId, site.isIMAPFavourite, responseConfig);
+         this.services.preferences.set(Alfresco.service.Preferences.IMAP_FAVOURITE_SITES + "." + siteId, site.isIMAPFavourite, responseConfig);
+      },
+
+      /**
+       * Like/Unlike event handler
+       *
+       * @method onLikes
+       * @param row {HTMLElement} DOM reference to a TR element (or child thereof)
+       */
+      onLikes: function MySites_onLikes(row)
+      {
+         var record = this.widgets.dataTable.getRecord(row),
+            site = record.getData(),
+            nodeRef = new Alfresco.util.NodeRef(site.nodeRef),
+            likes = site.likes;
+
+         likes.isLiked = !likes.isLiked;
+         likes.totalLikes += (likes.isLiked ? 1 : -1);
+
+         var responseConfig =
+         {
+            successCallback:
+            {
+               fn: function MySites_onLikes_success(event, p_nodeRef)
+               {
+                  var data = event.json.data;
+                  if (data)
+                  {
+                     // Update the record with the server's value
+                     var record = this._findRecordByParameter(p_nodeRef, "nodeRef"),
+                        site = record.getData(),
+                        likes = site.likes;
+
+                     likes.totalLikes = data.ratingsCount;
+                     this.widgets.dataTable.updateRow(record, site);
+                  }
+               },
+               scope: this,
+               obj: nodeRef.toString()
+            },
+            failureCallback:
+            {
+               fn: function MySites_onLikes_failure(event, p_nodeRef)
+               {
+                  // Reset the flag to it's previous state
+                  var record = this._findRecordByParameter(p_nodeRef, "nodeRef"),
+                     site = record.getData(),
+                     likes = site.likes;
+
+                  likes.isLiked = !likes.isLiked;
+                  likes.totalLikes += (likes.isLiked ? 1 : -1);
+                  this.widgets.dataTable.updateRow(record, site);
+                  Alfresco.util.PopupManager.displayPrompt(
+                  {
+                     text: this.msg("message.save.failure", site.title)
+                  });
+               },
+               scope: this,
+               obj: nodeRef.toString()
+            }
+         };
+
+         if (likes.isLiked)
+         {
+            this.services.likes.set(nodeRef, 1, responseConfig);
+         }
+         else
+         {
+            this.services.likes.remove(nodeRef, responseConfig);
+         }
+         this.widgets.dataTable.updateRow(record, site);
       },
 
       /**
        * Fired by YUI Link when the "Create site" label is clicked
-       * @method onCreateSiteLinkClick
+       * @method onCreateSite
        * @param event {domEvent} DOM event
        */
-      onCreateSiteLinkClick: function MySites_onCreateSiteLinkClick(event)
+      onCreateSite: function MySites_onCreateSite(event)
       {
          Alfresco.module.getCreateSiteInstance().show();
          Event.preventDefault(event);
@@ -612,7 +797,7 @@
         var recordSet = this.widgets.dataTable.getRecordSet();
         for (var i = 0, j = recordSet.getLength(); i < j; i++)
         {
-           if (recordSet.getRecord(i).getData(p_parameter) == p_value)
+           if (recordSet.getRecord(i).getData(p_parameter) === p_value)
            {
               return recordSet.getRecord(i);
            }

@@ -21,7 +21,6 @@ package org.alfresco.module.org_alfresco_module_dod5015.capability.group;
 import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
-import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AbstractCapability;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AccessStatus;
 
@@ -54,7 +53,7 @@ public class WriteContentCapability extends AbstractGroupCapability
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozenUncutoffOpenUndeclared(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozenUncutoffOpenUndeclared(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (isRecord(nodeRef))
                 {

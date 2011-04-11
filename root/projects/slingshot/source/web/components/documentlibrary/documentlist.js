@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * DocumentList component.
- * 
+ *
  * @namespace Alfresco
  * @class Alfresco.DocumentList
  */
@@ -39,18 +39,21 @@
       $combine = Alfresco.util.combinePaths,
       $userProfile = Alfresco.util.userProfileLink,
       $siteURL = Alfresco.util.siteURL,
-      $date = function $date(date, format) { return Alfresco.util.formatDate(Alfresco.util.fromISO8601(date), format); };
+      $date = function $date(date, format) { return Alfresco.util.formatDate(Alfresco.util.fromISO8601(date), format); },
+      $relTime = Alfresco.util.relativeTime;
 
    /**
     * Preferences
     */
    var PREFERENCES_DOCLIST = "org.alfresco.share.documentList",
+      PREF_SORT_ASCENDING = PREFERENCES_DOCLIST + ".sortAscending",
+      PREF_SORT_FIELD = PREFERENCES_DOCLIST + ".sortField",
       PREF_SHOW_FOLDERS = PREFERENCES_DOCLIST + ".showFolders",
       PREF_SIMPLE_VIEW = PREFERENCES_DOCLIST + ".simpleView";
 
    /**
     * DocumentList constructor.
-    * 
+    *
     * @param htmlId {String} The HTML id of the parent element
     * @return {Alfresco.DocumentList} The new DocumentList instance
     * @constructor
@@ -78,8 +81,12 @@
       this.afterDocListUpdate = [];
       this.doclistMetadata = {};
       this.previewTooltips = [];
+      this.insituEditors = [];
       this.dynamicControls = [];
-      
+      this.dragAndDropAllowed = true;
+      this.dragAndDropEnabled = false;
+      this.dragEventRefCount = 0;
+
       /**
        * Decoupled event listeners
        */
@@ -147,9 +154,9 @@
       var filterObj = Alfresco.util.cleanBubblingObject(filter),
          markup = YAHOO.lang.substitute("{filterOwner}|{filterId}|{filterData}|{filterDisplay}", filterObj, function(p_key, p_value, p_meta)
          {
-            return typeof p_value == "undefined" ? "" : window.escape(p_value);
+            return typeof p_value === "undefined" ? "" : window.escape(p_value);
          });
-      
+
       return markup;
    };
 
@@ -168,7 +175,23 @@
          filterData: $combine(locn.path, locn.file)
       });
    };
-   
+
+   /**
+    * Generate "changeFilter" event mark-up specifically for category changes
+    *
+    * @method generateCategoryMarkup
+    * @param category {Array} category[0] is name, category[1] is qnamePath
+    * @return {string} Mark-up for use in node attribute
+    */
+   Alfresco.DocumentList.generateCategoryMarkup = function DL_generateCategoryMarkup(category)
+   {
+      return Alfresco.DocumentList.generateFilterMarkup(
+      {
+         filterId: "category",
+         filterData: $combine(category[1], category[0])
+      });
+   };
+
    /**
     * Generate URL for a file- or folder-link that may be located within a different Site
     *
@@ -236,23 +259,76 @@
    };
 
    /**
-    * Generate favourite indicator
+    * Generate "Favourite" UI
     *
     * @method generateFavourite
     * @param scope {object} DocumentLibrary instance
     * @param record {object} DataTable record
-    * @return {string} HTML mark-up for favourite indicator
+    * @return {string} HTML mark-up for Favourite UI
     */
    Alfresco.DocumentList.generateFavourite = function DL_generateFavourite(scope, record)
    {
-      var id = scope.id + "-fav-" + record.getId(),
-         type = record.getData("isFolder") ? "folder" : "document",
-         isFavourite = record.getData("isFavourite");
+      var i18n = "favourite." + (record.getData("isFolder") ? "folder." : "document."),
+         html = "";
 
-      return '<a id="' + id + '" class="favourite-' + type + (isFavourite ? ' enabled' : '') + '" title="' + scope.msg("tip.favourite-" + type + "." + (isFavourite ? 'remove' : 'add')) + '">&nbsp;</a>';
+      if (record.getData("isFavourite"))
+      {
+         html = '<a class="favourite-action enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
+      }
+      else
+      {
+         html = '<a class="favourite-action" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
+      }
+
+      return html;
    };
 
-   
+   /**
+    * Generate "Likes" UI
+    *
+    * @method generateLikes
+    * @param scope {object} DocumentLibrary instance
+    * @param record {object} DataTable record
+    * @return {string} HTML mark-up for Likes UI
+    */
+   Alfresco.DocumentList.generateLikes = function DL_generateLikes(scope, record)
+   {
+      var likes = record.getData("likes"),
+         i18n = "like." + (record.getData("isFolder") ? "folder." : "document."),
+         html = "";
+
+      if (likes.isLiked)
+      {
+         html = '<a class="like-action enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
+      }
+      else
+      {
+         html = '<a class="like-action" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
+      }
+
+      html += '<span class="likes-count">' + $html(likes.totalLikes) + '</span>';
+
+      return html;
+   };
+
+   /**
+    * Generate "Comments" UI
+    *
+    * @method generateComments
+    * @param scope {object} DocumentLibrary instance
+    * @param record {object} DataTable record
+    * @return {string} HTML mark-up for Comments UI
+    */
+   Alfresco.DocumentList.generateComments = function DL_generateComments(scope, record)
+   {
+      var file = record.getData(),
+         actionUrls = scope.getActionUrls(file),
+         url = actionUrls[file.isFolder ? "folderDetailsUrl" : "documentDetailsUrl"] + "#comment",
+         i18n = "comment." + (file.isFolder ? "folder." : "document.");
+
+      return '<a href="' + url + '" class="comment" title="' + scope.msg(i18n + "tip") + '" tabindex="0">' + scope.msg(i18n + "label") + '</a>';
+   };
+
    /**
     * Augment prototype with main class implementation, ensuring overwrite is enabled
     */
@@ -267,8 +343,16 @@
       options:
       {
          /**
+          * Flag indicating whether sort direction is ascending (true) or descending (false)
+          *
+          * @property sortAscending
+          * @type boolean
+          */
+         sortAscending: true,
+
+         /**
           * Flag indicating whether folders are visible or not.
-          * 
+          *
           * @property showFolders
           * @type boolean
           */
@@ -276,7 +360,7 @@
 
          /**
           * Flag indicating whether the list shows a detailed view or a simple one.
-          * 
+          *
           * @property simpleView
           * @type boolean
           */
@@ -284,7 +368,7 @@
 
          /**
           * Flag indicating whether pagination is available or not.
-          * 
+          *
           * @property usePagination
           * @type boolean
           * @default false
@@ -294,7 +378,7 @@
          /**
           * Working mode: Site or Repository.
           * Affects how actions operate, e.g. actvities are not posted in Repository mode.
-          * 
+          *
           * @property workingMode
           * @type number
           * @default Alfresco.doclib.MODE_SITE
@@ -303,7 +387,7 @@
 
          /**
           * Current siteId. Not used in Repository working mode.
-          * 
+          *
           * @property siteId
           * @type string
           */
@@ -320,7 +404,7 @@
 
          /**
           * Current root node. Not used in Site working mode.
-          * 
+          *
           * @property rootNode
           * @type string
           */
@@ -328,7 +412,7 @@
 
          /**
           * Initial page to show on load (otherwise taken from URL hash).
-          * 
+          *
           * @property initialPage
           * @type int
           */
@@ -336,7 +420,7 @@
 
          /**
           * Number of items per page
-          * 
+          *
           * @property pageSize
           * @type int
           */
@@ -344,12 +428,12 @@
 
          /**
           * Initial filter to show on load.
-          * 
+          *
           * @property initialFilter
           * @type object
           */
          initialFilter: {},
-         
+
          /**
           * Delay time value for "More Actions" popup, in milliseconds
           *
@@ -357,8 +441,8 @@
           * @type int
           * @default 500
           */
-         actionsPopupTimeout: 500,
-         
+         actionsPopupTimeout: 700,
+
          /**
           * Delay before showing "loading" message for slow data requests
           *
@@ -370,20 +454,28 @@
 
          /**
           * FileName to highlight on initial DataTable render.
-          * 
+          *
           * @property highlightFile
           * @type string
           */
          highlightFile: null,
-         
+
          /**
           * Holds IDs to register preview tooltips with.
-          * 
+          *
           * @property previewTooltips
           * @type array
           */
          previewTooltips: null,
-         
+
+         /**
+          * Holds IDs to register insitu editors with.
+          *
+          * @property insituEditors
+          * @type array
+          */
+         insituEditors: null,
+
          /**
           * Number of multi-file uploads before grouping the Activity Post
           *
@@ -406,7 +498,7 @@
             "text/html": true,
             "text/xml": true
          },
-         
+
          /**
           * SharePoint (Vti) Server Details
           *
@@ -414,14 +506,46 @@
           * @type object
           */
          vtiServer: {},
-         
+
          /**
           * Replication URL Mapping details
           *
           * @property replicationUrlMapping
           * @type object
           */
-         replicationUrlMapping: {}
+         replicationUrlMapping: {},
+
+         /**
+          * Flag to indicate the list may be updated as a results of a REST API call
+          *
+          * @property listUpdated
+          * @type boolean
+          */
+         listUpdated: false,
+
+         /**
+          * Whether the Repo Browser is in use or not
+          *
+          * @property repositoryBrowsing
+          * @type boolean
+          */
+         repositoryBrowsing: true,
+
+         /**
+          * Whether the cm:title property is in use or not
+          *
+          * @property useTitle
+          * @type boolean
+          */
+         useTitle: true,
+
+         /**
+          * Whether the user viewing the document library is a manager of the site.
+          *
+          * @property userIsSiteManager
+          * @type boolean
+          */
+         userIsSiteManager: false
       },
 
       /**
@@ -441,7 +565,7 @@
 
       /**
        * Current path being browsed.
-       * 
+       *
        * @property currentPath
        * @type string
        */
@@ -449,16 +573,16 @@
 
       /**
        * Current page being browsed.
-       * 
+       *
        * @property currentPage
        * @type int
        * @default 1
        */
       currentPage: null,
-      
+
       /**
        * Total number of records (documents + folders) in the currentPath.
-       * 
+       *
        * @property totalRecords
        * @type int
        * @default 0
@@ -467,7 +591,7 @@
 
       /**
        * Current filter to filter document list.
-       * 
+       *
        * @property currentFilter
        * @type object
        */
@@ -475,7 +599,7 @@
 
       /**
        * FileUpload module instance.
-       * 
+       *
        * @property fileUpload
        * @type Alfresco.FileUpload
        */
@@ -483,7 +607,7 @@
 
       /**
        * Object container for storing action markup elements.
-       * 
+       *
        * @property actions
        * @type object
        */
@@ -491,7 +615,7 @@
 
       /**
        * Object literal of selected states for visible files (indexed by nodeRef).
-       * 
+       *
        * @property selectedFiles
        * @type object
        */
@@ -499,7 +623,7 @@
 
       /**
        * Current actions menu being shown
-       * 
+       *
        * @property currentActionsMenu
        * @type object
        * @default null
@@ -508,7 +632,7 @@
 
       /**
        * Whether "More Actions" pop-up is currently visible.
-       * 
+       *
        * @property showingMoreActions
        * @type boolean
        * @default false
@@ -517,7 +641,7 @@
 
       /**
        * Deferred actions menu element when showing "More Actions" pop-up.
-       * 
+       *
        * @property deferredActionsMenu
        * @type object
        * @default null
@@ -543,11 +667,43 @@
 
       /**
        * Dynamic controls that take part in the deactivateDynamicControls event
-       * 
+       *
        * @property dynamicControls
        * @type array
        */
       dynamicControls: null,
+
+      /**
+       * Indicates whether or not we allow the HTML5 drag and drop capability
+       *
+       * @property dragAndDropAllowed
+       * @type boolean
+       */
+      dragAndDropAllowed: null,
+
+      /**
+       * Indicates whether or not the browser supports the HTML5 drag and drop capability
+       *
+       * @property dragAndDropEnabled
+       * @type boolean
+       */
+      dragAndDropEnabled: null,
+
+      /**
+       * Drag and drop dragEnter / dragLeave event reference counter
+       *
+       * @property dragEventRefCount
+       * @type number
+       */
+      dragEventRefCount: null,
+      
+      /**
+       * Tracks currently highlighted folder when dragging files
+       *
+       * @property dragFolderHighlight
+       * @type boolean
+       */
+      dragFolderHighlight: null,
 
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -560,14 +716,61 @@
          // Reference to self used by inline functions
          var me = this;
 
+         // Detect whether or not HTML5 drag and drop is supported...
+         this.dragAndDropEnabled = this.dragAndDropAllowed && ('draggable' in document.createElement('span'));
+
          // Set-up YUI History Managers
          this._setupHistoryManagers();
 
+         // Sort Direction button
+         this.widgets.sortAscending = Alfresco.util.createYUIButton(this, "sortAscending-button", this.onSortAscending);
+         if (this.widgets.sortAscending !== null)
+         {
+            this.widgets.sortAscending.set("title", this.msg(this.options.sortAscending ? "button.sort.descending" : "button.sort.ascending"));
+            if (!this.options.sortAscending)
+            {
+               Dom.addClass(this.widgets.sortAscending.get("element"), "sort-descending");
+            }
+            this.dynamicControls.push(this.widgets.sortAscending);
+         }
+
+         // Sort Field menu button
+         this.widgets.sortField = Alfresco.util.createYUIButton(this, "sortField-button", this.onSortField,
+         {
+            type: "menu",
+            menu: "sortField-menu",
+            lazyloadmenu: false
+         });
+         if (this.widgets.sortField !== null)
+         {
+            this.dynamicControls.push(this.widgets.sortField);
+
+            // Set the initial menu label
+            var menuItems = this.widgets.sortField.getMenu().getItems(),
+               index;
+
+            for (index in menuItems)
+            {
+               if (menuItems.hasOwnProperty(index))
+               {
+                  if (menuItems[index].value === this.options.sortField)
+                  {
+                     this.widgets.sortField.set("label", menuItems[index].cfg.getProperty("text"));
+                     break;
+                  }
+               }
+            }
+         }
+
          // Hide/Show Folders button
-         this.widgets.showFolders = Alfresco.util.createYUIButton(this, "showFolders-button", this.onShowFolders);
+         this.widgets.showFolders = Alfresco.util.createYUIButton(this, "showFolders-button", this.onShowFolders,
+         {
+            type: "checkbox",
+            checked: this.options.showFolders
+         });
          if (this.widgets.showFolders !== null)
          {
-            this.widgets.showFolders.set("label", this.msg(this.options.showFolders ? "button.folders.hide" : "button.folders.show"));
+            this.widgets.showFolders.set("title", this.msg(this.options.showFolders ? "button.folders.hide" : "button.folders.show"));
             this.dynamicControls.push(this.widgets.showFolders);
          }
 
@@ -585,7 +788,7 @@
          // File Select menu button
          this.widgets.fileSelect = Alfresco.util.createYUIButton(this, "fileSelect-button", this.onFileSelect,
          {
-            type: "menu", 
+            type: "menu",
             menu: "fileSelect-menu"
          });
          if (this.widgets.fileSelect !== null)
@@ -593,12 +796,13 @@
             this.dynamicControls.push(this.widgets.fileSelect);
          }
 
-         // Preferences service
+         // Services
          this.services.preferences = new Alfresco.service.Preferences();
-         
+         this.services.likes = new Alfresco.service.Ratings(Alfresco.service.Ratings.LIKES);
+
          // DataSource set-up and event registration
          this._setupDataSource();
-         
+
          // DataTable set-up and event registration
          this._setupDataTable();
 
@@ -613,14 +817,14 @@
                record = me.widgets.dataTable.getRecord(context.id);
             this.cfg.setProperty("text", '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" />');
          });
-         
+
          // Hook action events
          var fnActionHandler = function DL_fnActionHandler(layer, args)
          {
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
-               if (typeof me[owner.className] == "function")
+               if (typeof me[owner.className] === "function")
                {
                   args[1].stop = true;
                   var asset = me.widgets.dataTable.getRecord(args[1].target.offsetParent).getData();
@@ -631,31 +835,31 @@
          };
          YAHOO.Bubbling.addDefaultAction("action-link", fnActionHandler);
          YAHOO.Bubbling.addDefaultAction("show-more", fnActionHandler);
-         
-         // Hook favourite document events
-         var fnFavouriteDocumentHandler = function DL_fnFavouriteDocumentHandler(layer, args)
-         {
-            var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
-            if (owner !== null)
-            {
-               me.onFavouriteDocument.call(me, args[1].target.offsetParent, owner);
-            }
-            return true;
-         };
-         YAHOO.Bubbling.addDefaultAction("favourite-document", fnFavouriteDocumentHandler);
 
-         // Hook favourite folder events
-         var fnFavouriteFolderHandler = function DL_fnFavouriteFolderHandler(layer, args)
+         // Hook like/unlike events
+         var fnLikesHandler = function DL_fnLikesHandler(layer, args)
          {
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
-               me.onFavouriteFolder.call(me, args[1].target.offsetParent, owner);
+               me.onLikes.call(me, args[1].target.offsetParent, owner);
             }
             return true;
          };
-         YAHOO.Bubbling.addDefaultAction("favourite-folder", fnFavouriteFolderHandler);
-         
+         YAHOO.Bubbling.addDefaultAction("like-action", fnLikesHandler);
+
+         // Hook favourite document/folder events
+         var fnFavouriteHandler = function DL_fnFavouriteHandler(layer, args)
+         {
+            var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
+            if (owner !== null)
+            {
+               me.onFavourite.call(me, args[1].target.offsetParent, owner);
+            }
+            return true;
+         };
+         YAHOO.Bubbling.addDefaultAction("favourite-action", fnFavouriteHandler);
+
          // Hook filter change events
          var fnChangeFilterHandler = function DL_fnChangeFilterHandler(layer, args)
          {
@@ -719,7 +923,7 @@
       fnRenderCellSelected: function DL_fnRenderCellSelected()
       {
          var scope = this;
-         
+
          /**
           * Selector custom datacell formatter
           *
@@ -733,7 +937,7 @@
          {
             Dom.setStyle(elCell, "width", oColumn.width + "px");
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-            
+
             elCell.innerHTML = '<input id="checkbox-' + oRecord.getId() + '" type="checkbox" name="fileChecked" value="'+ oData + '"' + (scope.selectedFiles[oData] ? ' checked="checked">' : '>');
          };
       },
@@ -746,7 +950,7 @@
       fnRenderCellStatus: function DL_fnRenderCellStatus()
       {
          var scope = this;
-         
+
          /**
           * Status custom datacell formatter
           *
@@ -771,9 +975,10 @@
             {
                var statuses = dataStatus.split(",").sort(),
                   s, SPACE = " ", meta,
-                  i18n, i18nMeta;
+                  i18n, i18nMeta,
+                  i, j;
 
-               for (var i = 0, j = statuses.length; i < j; i++)
+               for (i = 0, j = statuses.length; i < j; i++)
                {
                   status = statuses[i];
                   meta = "";
@@ -815,7 +1020,7 @@
       fnRenderCellThumbnail: function DL_fnRenderCellThumbnail()
       {
          var scope = this;
-         
+
          /**
           * Thumbnail custom datacell formatter
           *
@@ -829,7 +1034,6 @@
          {
             var record = oRecord.getData(),
                name = record.fileName,
-               title = record.title,
                type = record.type,
                isLink = record.isLink,
                extn = name.substring(name.lastIndexOf("."));
@@ -843,14 +1047,14 @@
                Dom.setStyle(elCell, "width", oColumn.width + "px");
                Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
 
-               if (type == "folder")
+               if (type === "folder")
                {
-                  elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
+                  elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
                }
                else
                {
                   var id = scope.id + '-preview-' + oRecord.getId();
-                  elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(title) + '" /></a></span>';
+                  elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
 
                   // Preview tooltip
                   scope.previewTooltips.push(id);
@@ -865,13 +1069,13 @@
                Dom.setStyle(elCell, "width", oColumn.width + "px");
                Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
 
-               if (type == "folder")
+               if (type === "folder")
                {
-                  elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-48.png" /></a>';
+                  elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
                }
                else
                {
-                  elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(oRecord) + '" alt="' + extn + '" title="' + $html(title) + '" /></a></span>';
+                  elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(oRecord) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
                }
             }
          };
@@ -885,7 +1089,7 @@
       fnRenderCellDescription: function DL_fnRenderCellDescription()
       {
          var scope = this;
-         
+
          /**
           * Description/detail custom datacell formatter
           *
@@ -897,13 +1101,16 @@
           */
          return function DL_renderCellDescription(elCell, oRecord, oColumn, oData)
          {
-            var desc = "", tags, tag, i, j;
+            var desc = "", tags, tag, categories, category, i, j;
             var record = oRecord.getData(),
                type = record.type,
                isLink = record.isLink,
                title = "",
-               description = record.description || scope.msg("details.description.none");
-            
+               version = "",
+               description = '<span class="faded">' + scope.msg("details.description.none") + '</span>',
+               dateLine = "",
+               canComment = record.permissions.userAccess.create;
+
             // Link handling
             if (isLink)
             {
@@ -912,51 +1119,109 @@
             }
 
             // Use title property if it's available
-            if (record.title && record.title !== record.displayName)
+            if (record.title && record.title !== record.displayName && scope.options.useTitle)
             {
                title = '<span class="title">(' + $html(record.title) + ')</span>';
             }
 
-            if (type == "folder")
+            // Description non-blank?
+            if (record.description && record.description !== "")
+            {
+               description = $links($html(record.description));
+            }
+
+            // Version display
+            if (record.version && record.version !== "")
+            {
+               version = '<span class="document-version">' + $html(record.version) + '</span>';
+            }
+
+            // Date line
+            var dateI18N = "modified", dateProperty = record.modifiedOn;
+            if (record.custom && record.custom.isWorkingCopy)
+            {
+               dateI18N = "editing-started";
+            }
+            else if (record.modifiedOn === record.createdOn)
+            {
+               dateI18N = "created";
+               dateProperty = record.createdOn;
+            }
+            dateLine = scope.msg("details." + dateI18N + "-by", $relTime(dateProperty), $userProfile(record.modifiedByUser, record.modifiedBy));
+
+            // Insitu editing
+            var filenameId = scope.id + '-filename-' + oRecord.getId(),
+               descriptionId = scope.id + '-description-' + oRecord.getId();
+
+            if (type === "folder")
             {
                /**
                 * Folders
                 */
-               desc += '<h3 class="filename">' + Alfresco.DocumentList.generateFavourite(scope, oRecord) + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord);
-               desc += $html(record.displayName) + '</a>' + title + '</h3>';
+               desc += '<h3 class="filename"><span id="' + filenameId + '">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord);
+               desc += $html(record.displayName) + '</a></span>' + title + '</h3>';
 
                if (scope.options.simpleView)
                {
                   /**
                    * Simple View
                    */
-                  desc += '<div class="detail"><span class="item-simple"><em>' + scope.msg("details.modified.on") + '</em> ' + $date(record.modifiedOn, scope.msg("date-format.longDate")) + '</span>';
-                  desc += '<span class="item-simple"><em>' + scope.msg("details.by") + '</em> ' + $userProfile(record.modifiedByUser, record.modifiedBy) + '</span></div>';
+                  desc += '<div class="detail"><span class="item-simple">' + dateLine + '</span></div>';
                }
                else
                {
                   /**
                    * Detailed View
                    */
-                  desc += '<div class="detail"><span class="item"><em>' + scope.msg("details.modified.on") + '</em> ' + $date(record.modifiedOn) + '</span>';
-                  desc += '<span class="item"><em>' + scope.msg("details.modified.by") + '</em> ' + $userProfile(record.modifiedByUser, record.modifiedBy) + '</span></div>';
-                  desc += '<div class="detail"><span class="item"><em>' + scope.msg("details.description") + '</em> ' + $links($html(description)) + '</span></div>';
+                  desc += '<div class="detail"><span class="item">' + dateLine + '</span></div>';
+                  desc += '<div class="detail"><span id="' + descriptionId + '" class="item">' + description + '</span></div>';
+
+                  /* Categories */
+                  categories = record.categories;
+                  if (YAHOO.lang.isArray(categories))
+                  {
+                     desc += '<div class="detail"><span class="item">';
+                     if (categories.length > 0)
+                     {
+                        for (i = 0, j = categories.length; i < j; i++)
+                        {
+                           category = categories[i];
+                           desc += '<span class="category"><a href="#" class="filter-change" rel="' + Alfresco.DocumentList.generateCategoryMarkup(category) + '">' + $html(category[0]) + '</a></span>' + (j - i > 1 ? ", " : "");
+                        }
+                     }
+                     else
+                     {
+                        desc += '<span class="faded">' + scope.msg("details.categories.none") + '</span>';
+                     }
+                     desc += '</span></div>';
+                  }
+
                   /* Tags */
                   tags = record.tags;
-                  desc += '<div class="detail"><span class="item tag-item"><em>' + scope.msg("details.tags") + '</em> ';
+                  desc += '<div class="detail"><span class="item">';
                   if (tags.length > 0)
                   {
                      for (i = 0, j = tags.length; i < j; i++)
                      {
                         tag = $html(tags[i]);
-                        desc += '<span class="tag"><a href="#" class="tag-link" rel="' + tag + '" title="' + tags[i] + '">' + tag + '</a></span>' + (j - i > 1 ? ", " : "");
+                        desc += '<span class="tag"><a href="#" class="tag-link" rel="' + tag + '">' + tag + '</a></span>';
                      }
                   }
                   else
                   {
-                     desc += scope.msg("details.tags.none");
+                     desc += '<span class="faded">' + scope.msg("details.tags.none") + '</span>';
                   }
                   desc += '</span></div>';
+
+                  /* Favourite / Likes / Comments */
+                  desc += '<div class="detail detail-social">';
+                  desc +=    '<span class="item item-social">' + Alfresco.DocumentList.generateFavourite(scope, oRecord) + '</span>';
+                  desc +=    '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateLikes(scope, oRecord) + '</span>';
+                  if (canComment)
+                  {
+                     desc +=    '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateComments(scope, oRecord) + '</span>';
+                  }
+                  desc += '</div>';
                }
             }
             else
@@ -994,35 +1259,34 @@
                      }
                   }
                }
-                
-               desc += '<h3 class="filename">' + Alfresco.DocumentList.generateFavourite(scope, oRecord) + '<span id="' + scope.id + '-preview-' + oRecord.getId() + '">'+ Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord);
-               desc += $html(record.displayName) + '</a></span>' + title + '</h3>';
-               
+
                if (scope.options.simpleView)
                {
                   /**
                    * Simple View
                    */
-                  desc += '<div class="detail"><span class="item-simple"><em>' + scope.msg("details.modified.on") + '</em> ' + $date(record.modifiedOn, scope.msg("date-format.longDate")) + '</span>';
-                  desc += '<span class="item-simple"><em>' + scope.msg("details.by") + '</em> ' + $userProfile(record.modifiedByUser, record.modifiedBy) + '</span></div>';
+                  desc += '<h3 class="filename"><span id="' + filenameId + '">'+ Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord);
+                  desc += $html(record.displayName) + '</a></span>' + title + '</h3>';
+                  desc += '<div class="detail"><span class="item-simple">' + dateLine + '</span></div>';
                }
                else
                {
                   /**
                    * Detailed View
                    */
+                  desc += '<h3 class="filename"><span id="' + filenameId + '">'+ Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord);
+                  desc += $html(record.displayName) + '</a></span>' + title + version + '</h3>';
+
                   if (record.custom && record.custom.isWorkingCopy)
                   {
                      /**
                       * Working Copy
                       */
                      desc += '<div class="detail">';
-                     desc += '<span class="item"><em>' + scope.msg("details.editing-started.on") + '</em> ' + $date(record.modifiedOn) + '</span>';
-                     desc += '<span class="item"><em>' + scope.msg("details.editing-started.by") + '</em> ' + $userProfile(record.modifiedByUser, record.modifiedBy) + '</span>';
-                     desc += '<span class="item"><em>' + scope.msg("details.size") + '</em> ' + Alfresco.util.formatFileSize(record.size) + '</span>';
-                     desc += '</div><div class="detail">';
-                     desc += '<span class="item"><em>' + scope.msg("details.description") + '</em> ' + $links($html(description)) + '</span>';
+                     desc +=    '<span class="item">' + dateLine + '</span>';
+                     desc +=    '<span class="item">' + Alfresco.util.formatFileSize(record.size) + '</span>';
                      desc += '</div>';
+                     desc += '<div class="detail"><span id="' + descriptionId + '" class="item">' + description + '</span></div>';
                   }
                   else
                   {
@@ -1030,33 +1294,124 @@
                       * Non-Working Copy
                       */
                      desc += '<div class="detail">';
-                     desc += '<span class="item"><em>' + scope.msg("details.modified.on") + '</em> ' + $date(record.modifiedOn) + '</span>';
-                     desc += '<span class="item"><em>' + scope.msg("details.modified.by") + '</em> ' + $userProfile(record.modifiedByUser, record.modifiedBy) + '</span>';
-                     desc += '<span class="item"><em>' + scope.msg("details.version") + '</em> ' + record.version + '</span>';
-                     desc += '<span class="item"><em>' + scope.msg("details.size") + '</em> ' + Alfresco.util.formatFileSize(record.size) + '</span>';
-                     desc += '</div><div class="detail">';
-                     desc += '<span class="item"><em>' + scope.msg("details.description") + '</em> ' + $links($html(description)) + '</span>';
+                     desc +=    '<span class="item">' + dateLine + '</span>';
+                     desc +=    '<span class="item">' + Alfresco.util.formatFileSize(record.size) + '</span>';
                      desc += '</div>';
+                     desc += '<div class="detail"><span id="' + descriptionId + '" class="item">' + description + '</span></div>';
+
+                     /* Categories */
+                     categories = record.categories;
+                     if (YAHOO.lang.isArray(categories))
+                     {
+                        desc += '<div class="detail"><span class="item">';
+                        if (categories.length > 0)
+                        {
+                           for (i = 0, j = categories.length; i < j; i++)
+                           {
+                              category = categories[i];
+                              desc += '<span class="category"><a href="#" class="filter-change" rel="' + Alfresco.DocumentList.generateCategoryMarkup(category) + '">' + $html(category[0]) + '</a></span>' + (j - i > 1 ? ", " : "");
+                           }
+                        }
+                        else
+                        {
+                           desc += '<span class="faded">' + scope.msg("details.categories.none") + '</span>';
+                        }
+                        desc += '</span></div>';
+                     }
 
                      /* Tags */
                      tags = record.tags;
-                     desc += '<div class="detail"><span class="item tag-item"><em>' + scope.msg("details.tags") + '</em> ';
+                     desc += '<div class="detail"><span class="item">';
                      if (tags.length > 0)
                      {
                         for (i = 0, j = tags.length; i < j; i++)
                         {
                            tag = $html(tags[i]);
-                           desc += '<span class="tag"><a href="#" class="tag-link" rel="' + tag + '" title="' + tags[i] + '">' + tag + '</a></span>' + (j - i > 1 ? ", " : "");
+                           desc += '<span class="tag"><a href="#" class="tag-link" rel="' + tag + '">' + tag + '</a></span>';
                         }
                      }
                      else
                      {
-                        desc += scope.msg("details.tags.none");
+                        desc += '<span class="faded">' + scope.msg("details.tags.none") + '</span>';
                      }
                      desc += '</span></div>';
+
+                     /* Favourite / Likes / Comments */
+                     desc += '<div class="detail detail-social">';
+                     desc +=    '<span class="item item-social">' + Alfresco.DocumentList.generateFavourite(scope, oRecord) + '</span>';
+                     desc +=    '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateLikes(scope, oRecord) + '</span>';
+                     if (canComment)
+                     {
+                        desc +=    '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateComments(scope, oRecord) + '</span>';
+                     }
+                     desc += '</div>';
                   }
                }
             }
+
+            var fnInsituCallback = function insitu_callback(response, asset)
+            {
+               // Reload the node's metadata
+               var nodeRef = asset.custom && asset.custom.isWorkingCopy ? asset.custom.workingCopyOriginal : asset.nodeRef;
+               Alfresco.util.Ajax.request(
+               {
+                  url: Alfresco.constants.PROXY_URI + "slingshot/doclib/node/" + new Alfresco.util.NodeRef(nodeRef).uri,
+                  successCallback:
+                  {
+                     fn: function insitu_callback_refreshSuccess(response)
+                     {
+                        YAHOO.Bubbling.fire(asset.type === "folder" ? "folderRenamed" : "fileRenamed",
+                        {
+                           file: response.json.item
+                        });
+                        // Prevent hide call which briefly shows stale data
+                        return false;
+                     },
+                     scope: this
+                  },
+                  failureCallback:
+                  {
+                     fn: function insitu_callback_refreshFailure(response)
+                     {
+                     },
+                     scope: this
+                  }
+               });
+            };
+
+            // Insitu editors
+            scope.insituEditors.push(
+            {
+               context: filenameId,
+               params:
+               {
+                  type: "textBox",
+                  nodeRef: record.nodeRef,
+                  name: "prop_cm_name",
+                  value: record.fileName,
+                  validations: [
+                  {
+                     type: Alfresco.forms.validation.nodeName,
+                     when: "keyup",
+                     message: scope.msg("validation-hint.nodeName")
+                  },
+                  {
+                     type: Alfresco.forms.validation.length,
+                     args: { min: 1, max: 255, crop: true },
+                     when: "keyup",
+                     message: scope.msg("validation-hint.length.min.max", 1, 255)
+                  }],
+                  title: scope.msg("tip.insitu-rename"),
+                  errorMessage: scope.msg("message.insitu-edit.name.failure")
+               },
+               callback:
+               {
+                  fn: fnInsituCallback,
+                  scope: scope,
+                  obj: record
+               }
+            });
+
             elCell.innerHTML = desc;
          };
       },
@@ -1069,7 +1424,7 @@
       fnRenderCellActions: function DL_fnRenderCellActions()
       {
          var scope = this;
-         
+
          /**
           * Actions custom datacell formatter
           *
@@ -1110,7 +1465,7 @@
             {
                var loc = record.location,
                   uri = scope.options.vtiServer.host + ":" + scope.options.vtiServer.port + "/" + $combine("alfresco", loc.site, loc.container, loc.path, loc.file);
-               
+
                if (!(/^(http|https):\/\//).test(uri))
                {
                   // VTI server doesn't support HTTPS directly
@@ -1136,13 +1491,13 @@
 
          try
          {
-            while (bookmarkedFilter != (bookmarkedFilter = decodeURIComponent(bookmarkedFilter))){}
+            while (bookmarkedFilter !== (bookmarkedFilter = decodeURIComponent(bookmarkedFilter))){}
          }
          catch (e)
          {
             // Catch "malformed URI sequence" exception
          }
-         
+
          var fnDecodeBookmarkedFilter = function DL_fnDecodeBookmarkedFilter(strFilter)
          {
             var filters = strFilter.split("|"),
@@ -1151,11 +1506,11 @@
                   filterId: window.unescape(filters[0] || ""),
                   filterData: window.unescape(filters[1] || "")
                };
-            
+
             filterObj.filterOwner = Alfresco.util.FilterManager.getOwner(filterObj.filterId);
             return filterObj;
          };
-         
+
          this.options.initialFilter = fnDecodeBookmarkedFilter(bookmarkedFilter);
 
          // Register History Manager filter update callback
@@ -1168,7 +1523,7 @@
                newFilter = window.unescape(newFilter);
                Alfresco.logger.debug("HistoryManager: filter (after Firefox fix):" + newFilter);
             }
-            
+
             this._updateDocList.call(this,
             {
                filter: fnDecodeBookmarkedFilter(newFilter),
@@ -1189,7 +1544,7 @@
          if (this.options.usePagination)
          {
             var bookmarkedPage = YAHOO.util.History.getBookmarkedState("page") || "1";
-            while (bookmarkedPage != (bookmarkedPage = decodeURIComponent(bookmarkedPage))){}
+            while (bookmarkedPage !== (bookmarkedPage = decodeURIComponent(bookmarkedPage))){}
             this.currentPage = parseInt(bookmarkedPage || this.options.initialPage, 10);
 
             // Register History Manager page update callback
@@ -1197,7 +1552,7 @@
             {
                Alfresco.logger.debug("HistoryManager: page changed:" + newPage);
                // Update the DocList
-               if (this.currentPage != newPage)
+               if (this.currentPage !== newPage)
                {
                   this._updateDocList.call(this,
                   {
@@ -1221,14 +1576,14 @@
                previousPageLinkLabel: this.msg("pagination.previousPageLinkLabel"),
                nextPageLinkLabel: this.msg("pagination.nextPageLinkLabel")
             });
-            
+
             this.widgets.paginator.subscribe("changeRequest", handlePagination, this);
-            
+
             // Display the bottom paginator bar
             Dom.setStyle(this.id + "-doclistBarBottom", "display", "block");
          }
       },
-      
+
       /**
        * DataSource set-up and event registration
        *
@@ -1238,7 +1593,7 @@
       _setupDataSource: function DL__setupDataSource()
       {
          var me = this;
-         
+
          // DataSource definition
          this.widgets.dataSource = new YAHOO.util.DataSource(Alfresco.constants.PROXY_URI + "slingshot/doclib/doclist/",
          {
@@ -1258,19 +1613,19 @@
          this.widgets.dataSource.doBeforeCallback = function DL_doBeforeCallback(oRequest, oFullResponse, oParsedResponse)
          {
             me.doclistMetadata = oFullResponse.metadata;
-            
+
             // Fire event with parent metadata
             YAHOO.Bubbling.fire("doclistMetadata",
             {
                metadata: me.doclistMetadata
             });
-            
+
             // Reset onlineEdit flag if correct conditions not met
-            if ((YAHOO.env.ua.ie === 0) || (me.options.vtiServer && typeof me.options.vtiServer.port != "number"))
+            if ((YAHOO.env.ua.ie === 0) || (me.options.vtiServer && typeof me.options.vtiServer.port !== "number"))
             {
                me.doclistMetadata.onlineEditing = false;
             }
-            
+
             // Container userAccess event
             var permissions = me.doclistMetadata.parent.permissions;
             if (permissions && permissions.userAccess)
@@ -1280,19 +1635,165 @@
                   userAccess: permissions.userAccess
                });
             }
-            
-            // Update "Empty" message to reflect subfolders are available but hidden?
-            var itemCounts = me.doclistMetadata.itemCounts;
-            if (itemCounts.documents === 0 && itemCounts.folders > 0 && !me.options.showFolders)
+
+            // Work out the current status of the document list (this will be used to determine what user assistance
+            // is provided if the doc list is empty, or appears as empty)...
+            var itemCounts = me.doclistMetadata.itemCounts,
+               empty = (itemCounts.documents == 0  && itemCounts.folders == 0),
+               hiddenFolders = (itemCounts.documents == 0 && !me.options.showFolders && itemCounts.folders > 0);
+
+            // Define a re-usable function for seting IDs...
+            //   Get the children of the supplied node and append "-instance" to any child nodes that have an
+            // "id" attribute in the template. This ensures that the clone has a unique ID within the
+            // page and can be accurately targeted later (i.e. to add event listeners to).
+            var updateIDs = function DL_updateIDs(node)
             {
-               var showFoldersLink = '<span class="show-folders-link theme-color-1" onclick="Alfresco.util.ComponentManager.get(\'' + me.id + '\').onShowFolders();">' + me.msg("message.empty.subfolders.link") + '</span>';
-               me.widgets.dataTable.set("MSG_EMPTY", me.msg("message.empty.subfolders", showFoldersLink, itemCounts.folders));
+               var children = Dom.getChildren(node);
+               for (var i = 0, ii = children.length; i < ii; i++)
+               {
+                  if (children[i].id !== null && children[i].id !== "")
+                  {
+                     children[i].id += "-instance";
+                  }
+               }
+            };
+
+            // In documentlist.lib.ftl there are a number of DOM structures that are not displayed, these can
+            // cloned to display the relevant information to the user based on content, display options, site
+            // ownership and access rights. All of theses DOM "snippets" need to be added to a main container
+            // which controls the overall display (of borders, etc).
+            var template = Dom.get(me.id + "-main-template"),
+               main = template.cloneNode(true),
+               container = Dom.getFirstChild(main),
+               templateInstance = null;
+
+            if (permissions)
+            {
+               var userCanUpload = me.doclistMetadata.parent.permissions.userAccess.create;
+
+               if (userCanUpload && me.dragAndDropEnabled)
+               {
+                  Dom.addClass(container, "docListInstructionsWithDND");
+               }
+               else
+               {
+                  Dom.addClass(container, "docListInstructions");
+               }
+
+               // Work out what to display based on the boolean values calculated earlier...
+               if (empty && !userCanUpload)
+               {
+                  // If folder is empty, there are no hidden folders and the user cannot upload, then show the no items info...
+                  template = Dom.get(me.id + "-no-items-template");
+                  var templateInstance = template.cloneNode(true);
+                  Dom.removeClass(templateInstance, "hidden");
+                  container.appendChild(templateInstance);
+               }
+               else if (hiddenFolders)
+               {
+                  // ...or, if there are hidden subfolders then show the option to reveal them...
+                  template = Dom.get(me.id + "-hidden-subfolders-template");
+                  var templateInstance = template.cloneNode(true);
+                  Dom.removeClass(templateInstance, "hidden");
+                  updateIDs(templateInstance);
+                  var elements = Dom.getElementsByClassName("docListLinkedInstruction", "a", templateInstance);
+                  if (elements.length == 1)
+                  {
+                     elements[0].innerHTML = me.msg("show.folders", itemCounts.folders);
+                  }
+                  container.appendChild(templateInstance);
+               }
+               else if (empty && userCanUpload && me.dragAndDropEnabled)
+               {
+                  // ...or, if the folder is empty, there are no hidden folders, the user can upload AND the browser supports
+                  // the DND process, show the HTML5 DND instructions...
+                  template = Dom.get(me.id + "-dnd-instructions-template");
+                  var templateInstance = template.cloneNode(true);
+                  Dom.removeClass(templateInstance, "hidden");
+                  container.appendChild(templateInstance);
+               }
+               else if (empty && userCanUpload && !me.dragAndDropEnabled)
+               {
+                  // ...but if the folder is empty, there are no hidden folders, the user can upload BUT the browser does
+                  // NOT support the DND process then just show the standard upload instructions...
+                  template = Dom.get(me.id + "-upload-instructions-template");
+                  var templateInstance = template.cloneNode(true);
+                  Dom.removeClass(templateInstance, "hidden");
+                  updateIDs(templateInstance);
+                  container.appendChild(templateInstance);
+               }
+
+               if (empty && userCanUpload && me.dragAndDropEnabled)
+               {
+                  // Clone the other options node...
+                  template = Dom.get(me.id + "-other-options-template");
+                  var templateInstance = template.cloneNode(true);
+                  Dom.removeClass(templateInstance, "hidden");
+                  container.appendChild(templateInstance);
+
+                  if (empty && userCanUpload)
+                  {
+                     if (me.dragAndDropEnabled)
+                     {
+                        // Show the standard upload other options node...
+                        template = Dom.get(me.id + "-standard-upload-template");
+                        var templateInstance = template.cloneNode(true);
+                        Dom.removeClass(templateInstance, "hidden");
+                        updateIDs(templateInstance);
+                        container.appendChild(templateInstance);
+                     }
+                     
+                     // Show the New Folder other options node...
+                     template = Dom.get(me.id + "-new-folder-template");
+                     var templateInstance = template.cloneNode(true);
+                     Dom.removeClass(templateInstance, "hidden");
+                     updateIDs(templateInstance);
+                     container.appendChild(templateInstance);
+                  }
+               }
             }
-            
+            else
+            {
+               Dom.addClass(container, "docListInstructions");
+
+               // Work out what to display based on the boolean values calculated earlier...
+               if (hiddenFolders)
+               {
+                  // If there are hidden subfolders then show the option to reveal them...
+                  template = Dom.get(me.id + "-hidden-subfolders-template");
+                  var templateInstance = template.cloneNode(true);
+                  Dom.removeClass(templateInstance, "hidden");
+                  updateIDs(templateInstance);
+                  var elements = Dom.getElementsByClassName("docListLinkedInstruction", "a", templateInstance);
+                  if (elements.length == 1)
+                  {
+                     elements[0].innerHTML = me.msg("show.folders", itemCounts.folders);
+                  }
+                  container.appendChild(templateInstance);
+               }
+               else
+               {
+                  // Show the no items info...
+                  template = Dom.get(me.id + "-no-items-template");
+                  var templateInstance = template.cloneNode(true);
+                  Dom.removeClass(templateInstance, "hidden");
+                  container.appendChild(templateInstance);
+               }
+            }
+
+            // Add a node in with a style of "clear" set to both to ensure that the main div is given
+            // a height to accomodate the floated content...
+            var clearingNode = document.createElement("div");
+            Dom.setStyle(clearingNode, "clear", "both");
+            container.appendChild(clearingNode);
+
+            // Finally set the innerHTML of the main node as the text string of the YUI datatable
+            me.widgets.dataTable.set("MSG_EMPTY", main.innerHTML);
+
             return oParsedResponse;
          };
       },
-      
+
       /**
        * DataTable set-up and event registration
        *
@@ -1312,7 +1813,7 @@
             { key: "fileName", label: "Description", sortable: false, formatter: this.fnRenderCellDescription() },
             { key: "actions", label: "Actions", sortable: false, formatter: this.fnRenderCellActions(), width: 200 }
          ];
-         
+
          // DataTable definition
          this.widgets.dataTable = new YAHOO.widget.DataTable(this.id + "-documents", columnDefinitions, this.widgets.dataSource,
          {
@@ -1337,8 +1838,50 @@
          {
             // NOTE: Scope needs to be DataTable
             this._elMsgTbody.parentNode.style.width = "";
+
+            // Check to see whether or not the message is the HTML5 drag and drop instructions. This
+            // will be set if there are no documents or folders in the displayed location. If the HTML5
+            // drag and drop instructions are shown then we want to attach events to the "upload" and
+            // "share" images...
+            if (oArgs.html.indexOf("docListInstructions") !== -1)
+            {
+               var toolbar = Alfresco.util.ComponentManager.findFirst("Alfresco.DocListToolbar");
+               if (toolbar !== null)
+               {
+                  // This code is reliant upon the template in documentlist.lib.ftl not being changed.
+                  // It allows us to attach events to the image and anchor, but not the remaining text.
+                  var standardUpload = Dom.get(me.id + "-standard-upload-link-template-instance");
+                  if (standardUpload !== null)
+                  {
+                     var standardUploadChildren = Dom.getChildren(standardUpload);
+                     Event.addListener(standardUploadChildren[0], "click", toolbar.onFileUpload, toolbar, true);
+                     Event.addListener(Dom.getFirstChild(standardUploadChildren[1]), "click", toolbar.onFileUpload, toolbar, true);
+                  }
+                  var newFolder = Dom.get(me.id + "-new-folder-link-template-instance");
+                  if (newFolder !== null)
+                  {
+                     var newFolderChildren = Dom.getChildren(newFolder);
+                     Event.addListener(newFolderChildren[0], "click", toolbar.onNewFolder, toolbar, true);
+                     Event.addListener(Dom.getFirstChild(newFolderChildren[1]), "click", toolbar.onNewFolder, toolbar, true);
+                  }
+               }
+
+               // See if the document list contains instructions on showing hidden sub-folders and if
+               // it does, attach the appropriate events to the relevant nodes...
+               var showFolders = Dom.get(me.id + "-show-folders-template-instance");
+               if (showFolders != null)
+               {
+                  var showFoldersFunc = function()
+                  {
+                     this.widgets.showFolders.set("checked", true);
+                  }
+                  var showFoldersChildren = Dom.getChildren(showFolders);
+                  Event.addListener(showFoldersChildren[0], "click", showFoldersFunc, me, true);
+                  Event.addListener(showFoldersChildren[1], "click", showFoldersFunc, me, true);
+               }
+            }
          });
-         
+
          // Override abstract function within DataTable to set custom error message
          this.widgets.dataTable.doBeforeLoadData = function DL_doBeforeLoadData(sRequest, oResponse, oPayload)
          {
@@ -1354,7 +1897,7 @@
                   me._setDefaultDataTableErrors(me.widgets.dataTable);
                }
             }
-            
+
             // We don't get an renderEvent for an empty recordSet, but we'd like one anyway
             if (oResponse.results.length === 0)
             {
@@ -1363,31 +1906,31 @@
                   type: "renderEvent"
                });
             }
-            
+
             // Must return true to have the "Loading..." message replaced by the error message
             return true;
          };
 
          // File checked handler
          this.widgets.dataTable.subscribe("checkboxClickEvent", function(e)
-         { 
-            var id = e.target.value; 
+         {
+            var id = e.target.value;
             this.selectedFiles[id] = e.target.checked;
             YAHOO.Bubbling.fire("selectedFilesChanged");
          }, this, true);
-         
+
          // Rendering complete event handler
          this.widgets.dataTable.subscribe("renderEvent", function()
          {
             Alfresco.logger.debug("DataTable renderEvent");
-            
+
             // IE6 fix for long filename rendering issue
             if (0 < YAHOO.env.ua.ie && YAHOO.env.ua.ie < 7)
             {
                var ie6fix = this.widgets.dataTable.getTableEl().parentNode;
                ie6fix.className = ie6fix.className;
             }
-            
+
             // Update the paginator if it's been created
             if (this.widgets.paginator)
             {
@@ -1400,7 +1943,7 @@
                });
                this.widgets.paginator.render();
             }
-            
+
             // Need to highlight a file now the data is available?
             if (this.options.highlightFile)
             {
@@ -1409,12 +1952,12 @@
                   fileName: this.options.highlightFile
                });
             }
-            else
+            else if (this.listUpdated)
             {
                // Scroll up (only) to the top of the documents
                var yPos = Dom.getY(this.id + "-documents"),
-                  yScroll = YAHOO.env.ua.ie > 0 ? ((document.compatMode && document.compatMode != "BackCompat") ? document.documentElement : document.body).scrollTop : window.scrollY;
-               
+                  yScroll = YAHOO.env.ua.ie > 0 ? ((document.compatMode && document.compatMode !== "BackCompat") ? document.documentElement : document.body).scrollTop : window.scrollY;
+
                if (yScroll > yPos)
                {
                   window.scrollTo(0, yPos);
@@ -1422,24 +1965,382 @@
             }
 
             // Deferred functions specified?
-            for (var i = 0, j = this.afterDocListUpdate.length; i < j; i++)
+            var i, j;
+            for (i = 0, j = this.afterDocListUpdate.length; i < j; i++)
             {
                this.afterDocListUpdate[i].call(this);
             }
             this.afterDocListUpdate = [];
-            
+
             // Register preview tooltips
             this.widgets.previewTooltip.cfg.setProperty("context", this.previewTooltips);
-            
+
+            // Register insitu editors
+            var iEd;
+            for (i = 0, j = this.insituEditors.length; i < j; i++)
+            {
+               iEd = this.insituEditors[i];
+               Alfresco.util.createInsituEditor(iEd.context, iEd.params, iEd.callback);
+            }
+
             this.widgets.dataTable.set("renderLoopSize", this.options.usePagination ? 16 : Alfresco.util.RENDERLOOPSIZE);
-            
          }, this, true);
-         
+
          // Enable row highlighting
          this.widgets.dataTable.subscribe("rowMouseoverEvent", this.onEventHighlightRow, this, true);
          this.widgets.dataTable.subscribe("rowMouseoutEvent", this.onEventUnhighlightRow, this, true);
+
+         // Feature detection for drag and drop support (by not attempting to attach the drag events
+         // to anything we can prevent attempted uploads happening - this is particularly important
+         // with IE8 which would otherwise render the highlights, but not process the upload).
+         if (this.dragAndDropEnabled)
+         {
+            // Disable drop for the document body (we're then going to do a specific override on the DocumentList nodes)
+            Event.addListener(document.body, "dragenter", this._swallowDragEnter, this, true);
+            Event.addListener(document.body, "dragover", this._swallowDragOver, this, true);
+            Event.addListener(document.body, "drop", this._swallowDragDrop, this, true);
+            Event.addListener(document.body, "dragstart", this._swallowDragStart, this, true);
+         }
       },
+
+      /**
+       * Removes HTML5 drag and drop listeners from the document list.
+       *
+       * @method _addDragAndDrop
+       */
+      _removeDragAndDrop: function DL__removeDragAndDrop()
+      {
+         if (this.dragAndDropEnabled)
+         {
+            // Make the entire DocumentList available for dropping files for uploading onto.
+            try
+            {
+               // Add listeners to the HTML5 drag and drop events fired from the entire doc list
+               var doclist = Dom.get(this.id + "-body");
+               Event.removeListener(doclist, "dragenter");
+               Event.removeListener(doclist, "dragover");
+               Event.removeListener(doclist, "dragleave");
+               Event.removeListener(doclist, "drop");
+            }
+            catch(exception)
+            {
+               Alfresco.logger.error("_addDragAndDrop: The following exception occurred: ", exception);
+            }
+         }
+      },
+
+      /**
+       * Adds HTML5 drag and drop listeners to the document list.
+       *
+       * @method _addDragAndDrop
+       */
+      _addDragAndDrop: function DL__addDragAndDrop()
+      {
+         if (this.dragAndDropEnabled)
+         {
+            // Make the entire DocumentList available for dropping files for uploading onto.
+            try
+            {
+               // Add listeners to the HTML5 drag and drop events fired from the entire doc list
+               var doclist = Dom.get(this.id + "-body");
+               Event.addListener(doclist, "dragenter", this.onDocumentListDragEnter, this, true);
+               Event.addListener(doclist, "dragover", this.onDocumentListDragOver, this, true);
+               Event.addListener(doclist, "dragleave", this.onDocumentListDragLeave, this, true);
+               Event.addListener(doclist, "drop", this.onDocumentListDrop, this, true);
+            }
+            catch(exception)
+            {
+               Alfresco.logger.error("_addDragAndDrop: The following exception occurred: ", exception);
+            }
+         }
+      },
+
+      /**
+       * Fired when an object starts getting dragged. The event is swallowed because we only want to 
+       * allow drag and drop events that begin outside the browser window (e.g. for files). This prevents
+       * users attempting to drag and drop the document and folder images as if they could re-arrange
+       * the document lib structure.
+       *
+       * @param e {object} HTML5 drag and drop event
+       * @method _swallowDragStart
+       */
+      _swallowDragStart: function DL__swallowDragStart(e)
+      {
+         e.stopPropagation();
+         e.preventDefault();
+      },  
       
+      /**
+       * Fired when an object is dragged onto any node in the document body (unless the node has
+       * been explicitly overridden to invoke another function). Swallows the event.
+       *
+       * @param e {object} HTML5 drag and drop event
+       * @method _swallowDragEnter
+       */
+      _swallowDragEnter: function DL__swallowDragEnter(e)
+      {
+         e.stopPropagation();
+         e.preventDefault();
+      },
+
+      /**
+       * Fired when an object is dragged over any node in the document body (unless the node has
+       * been explicitly overridden to invoke another function). Updates the drag behaviour to
+       * indicate that drops are not allowed and then swallows the event.
+       *
+       * @param e {object} HTML5 drag and drop event
+       * @method _swallowDragOver
+       */
+      _swallowDragOver: function DL__swallowDragOver(e)
+      {
+         e.dataTransfer.dropEffect = "none";
+         e.stopPropagation();
+         e.preventDefault();
+      },
+
+      /**
+       * Fired when an object is dropped onto any node in the document body (unless the node has
+       * been explicitly overridden to invoke another function). Swallows the event to prevent
+       * default browser behaviour (i.e. attempting to open the file).
+       *
+       * @param e {object} HTML5 drag and drop event
+       * @method _swallowDrop
+       */
+      _swallowDrop: function DL__swallowDrop(e)
+      {
+         e.stopPropagation();
+         e.preventDefault();
+      },
+
+      /**
+       * Fired when an object is dragged into the DocumentList DOM element and then again when dragged into a Folder
+       * icon image DOM element.
+       *
+       * @param e {object} HTML5 drag and drop event
+       * @method onDocumentListDragEnter
+       */
+      onDocumentListDragEnter: function DL_onDocumentListDragEnter(e)
+      {
+         // Providing that the drop target a <TR> (or a child node of a <TR>) in the DocumentList data table then a record
+         // will be returned from this call. If nothing is returned then we cannot proceed with the file upload operation.
+         var el = e.target,
+            record = this.widgets.dataTable.getRecord(el),
+            column = this.widgets.dataTable.getColumn(el),
+            containerEl = this.widgets.dataTable.getContainerEl();
+
+         if (record && column && (el.tagName == "IMG" || el.className == "droppable") && record.getData("isFolder") && column.getKey() == "thumbnail")
+         {
+            this.dragFolderHighlight = Dom.getAncestorByClassName(el, "folder");
+            Dom.addClass(this.dragFolderHighlight, "dndFolderHighlight");
+            Dom.removeClass(containerEl, "dndDocListHighlight");
+         }
+         else
+         {
+            // Firefox is a bit buggy with it's enter/leave event matching
+            this.dragEventRefCount = Math.min(++this.dragEventRefCount, 2);
+            Dom.addClass(containerEl, "dndDocListHighlight");
+            if (this.dragFolderHighlight)
+            {
+               Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
+               this.dragFolderHighlight = null;
+            }
+         }
+
+         e.stopPropagation();
+         e.preventDefault();
+      },
+
+      /**
+       * Fired when an object is dragged into the DocumentList DOM element and then again when dragged into a Folder
+       * icon image DOM element.
+       *
+       * @param e {object} HTML5 drag and drop event
+       * @method onDocumentListDragOver
+       */
+      onDocumentListDragOver: function DL_onDocumentListDragOver(e)
+      {
+         // Firefox 3.6 set effectAllowed = "move" for files, however the "copy" effect is more accurate for uploads
+         e.dataTransfer.dropEffect = Math.floor(YAHOO.env.ua.gecko) === 1 ? "move" : "copy";
+         e.stopPropagation();
+         e.preventDefault();
+      },
+
+      /**
+       * Fired when an object is dragged out of the DocumentList DOM element or the Folder icon image DOM element.
+       *
+       * @param e {object} HTML5 drag and drop event
+       * @method onDocumentListDragLeave
+       */
+      onDocumentListDragLeave: function DL_onDocumentListDragLeave(e)
+      {
+         // Providing that the drop target a <TR> (or a child node of a <TR>) in the DocumentList data table then a record
+         // will be returned from this call. If nothing is returned then we cannot proceed with the file upload operation.
+         var el = e.target,
+            record = this.widgets.dataTable.getRecord(el),
+            column = this.widgets.dataTable.getColumn(el);
+
+         if (record && column && (el.tagName == "IMG" || el.className == "droppable") && record.getData("isFolder") && column.getKey() == "thumbnail")
+         {
+            // Ignore the folder dragLeave event
+         }
+         else
+         {
+            if (--this.dragEventRefCount === 0)
+            {
+               Dom.removeClass(this.widgets.dataTable.getContainerEl(), "dndDocListHighlight");
+            }
+         }
+
+         e.stopPropagation();
+         e.preventDefault();
+      },
+
+      /**
+       * Fired when an object is dropped onto the DocumentList DOM element.
+       * Checks that files are present for upload, determines the target (either the current document list or
+       * a specific folder rendered in the document list and then calls on the DNDUpload singleton component
+       * to perform the upload.
+       *
+       * @param e {object} HTML5 drag and drop event
+       * @method onDocumentListDrop
+       */
+      onDocumentListDrop: function DL_onDocumentListDrop(e)
+      {
+         try
+         {
+            // Only perform a file upload if the user has *actually* dropped some files!
+            if (e.dataTransfer.files !== undefined && e.dataTransfer.files !== null && e.dataTransfer.files.length > 0)
+            {
+               // We need to get the upload progress dialog widget so that we can display it.
+               // The function called has been added to file-upload.js and ensures the dialog is a singleton.
+               var progressDialog = Alfresco.getDNDUploadProgressInstance();
+
+               var continueWithUpload = false;
+
+               // Check that at least one file with some data has been dropped...
+               var zeroByteFiles = "";
+               for (var i = 0; i < e.dataTransfer.files.length; i++)
+               {
+                  if (e.dataTransfer.files[i].size > 0)
+                  {
+                     continueWithUpload = true;
+                  }
+                  else
+                  {
+                     zeroByteFiles += '"' + e.dataTransfer.files[i].fileName + '", '
+                  }
+               }
+
+               if (!continueWithUpload)
+               {
+                  zeroByteFiles = zeroByteFiles.substring(0, zeroByteFiles.lastIndexOf(", "));
+                  Alfresco.util.PopupManager.displayMessage(
+                  {
+                     text: progressDialog.msg("message.zeroByteFiles", zeroByteFiles)
+                  });
+               }
+
+               // Perform some checks on based on the browser and selected files to ensure that we will
+               // support the upload request.
+               if (continueWithUpload && progressDialog.uploadMethod === progressDialog.INMEMORY_UPLOAD)
+               {
+                  // Add up the total size of all selected files to see if they exceed the maximum allowed.
+                  // If the user has requested to upload too large a file or too many files in one operation
+                  // then generate an error dialog and abort the upload...
+                  var totalRequestedUploadSize = 0,
+                     i, j;
+
+                  for (i = 0, j = e.dataTransfer.files.length; i < j; i++)
+                  {
+                     totalRequestedUploadSize += e.dataTransfer.files[i].size;
+                  }
+                  if (totalRequestedUploadSize > progressDialog.getInMemoryLimit())
+                  {
+                     continueWithUpload = false;
+                     Alfresco.util.PopupManager.displayPrompt(
+                     {
+                         text: progressDialog.msg("inmemory.uploadsize.exceeded", Alfresco.util.formatFileSize(progressDialog.getInMemoryLimit()))
+                     });
+                  }
+               }
+
+               // If all tests are passed...
+               if (continueWithUpload)
+               {
+                  // Initialise the target directory as the current path represented by the current rendering of the DocumentList.
+                  // If we determine that the user has actually dropped some files onto the a folder icon (which we're about to check
+                  // for) then we'll change this value to be that of the folder targeted...
+                  var directory = this.currentPath,
+                     directoryName = directory.substring(directory.lastIndexOf("/") + 1),
+                     destination = this.doclistMetadata.parent ? this.doclistMetadata.parent.nodeRef : null;
+
+                  // Providing that the drop target a <TR> (or a child node of a <TR>) in the DocumentList data table then a record
+                  // will be returned from this call. If nothing is returned then we cannot proceed with the file upload operation.
+                  var record = this.widgets.dataTable.getRecord(e.target);
+                  if (record !== null)
+                  {
+                     // Dropped onto a folder icon?
+                     var column = this.widgets.dataTable.getColumn(e.target);
+                     if (record && column && e.target.tagName == "IMG" && record.getData("isFolder") && column.getKey() == "thumbnail")
+                     {
+                        var location = record.getData("location");
+                        directoryName = location.file;
+                        // Site mode
+                        directory = $combine(location.path, location.file);
+                        // Repository mode
+                        destination = record.getData("nodeRef");
+                     }
+                     // else: The file(s) were not not dropped onto a folder icon, so we will just upload to the current path
+                  }
+                  // else: If a record is not returned, then it means that we dropped into an empty folder.
+
+                  // Remove all the highlighting
+                  Dom.removeClass(this.widgets.dataTable.getTrEl(e.target), "dndFolderHighlight");
+                  Dom.removeClass(this.widgets.dataTable.getContainerEl(), "dndDocListHighlight");
+
+                  // Show uploader for multiple files
+                  var multiUploadConfig =
+                  {
+                     files: e.dataTransfer.files,
+                     uploadDirectoryName: directoryName,
+                     filter: [],
+                     mode: progressDialog.MODE_MULTI_UPLOAD,
+                     thumbnails: "doclib",
+                     onFileUploadComplete:
+                     {
+                        fn: this.onFileUploadComplete,
+                        scope: this
+                     }
+                  };
+
+                  // Extra parameters depending on current mode
+                  if (this.options.workingMode === Alfresco.doclib.MODE_SITE)
+                  {
+                     multiUploadConfig.siteId = this.options.siteId;
+                     multiUploadConfig.containerId = this.options.containerId;
+                     multiUploadConfig.uploadDirectory = directory;
+                  }
+                  else
+                  {
+                     multiUploadConfig.destination = destination;
+                  }
+                  
+                  progressDialog.show(multiUploadConfig);
+               }
+            }
+            else
+            {
+               Alfresco.logger.debug("DL_onDocumentListDrop: A drop event was detected, but no files were present for upload: ", e.dataTransfer);
+            }
+         }
+         catch(exception)
+         {
+            Alfresco.logger.error("DL_onDocumentListDrop: The following error occurred when files were dropped onto the Document List: ", exception);
+         }
+         e.stopPropagation();
+         e.preventDefault();
+      },
+
       /**
        * Fired by YUI when History Manager is initialised and available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
@@ -1448,17 +2349,31 @@
        */
       onHistoryManagerReady: function DL_onHistoryManagerReady()
       {
+         // Check whether to show upload dialog after initial load. Suppressed if HTML5 drag-and-drop is available.
+         if (this.options.initialFilter.filterId === "path" && window.location.hash == "#upload")
+         {
+            window.location.hash = "";
+            var fnAfterUpdate = function DL_onHistoryManagerReady_afterUpdate()
+            {
+               YAHOO.Bubbling.fire("showFileUploadDialog",
+               {
+                  tooltip: this.msg("dnd.upload.tooltip")
+               });
+            };
+            this.afterDocListUpdate.push(fnAfterUpdate);
+         }
+
          // Fire changeFilter event for first-time population
          Alfresco.logger.debug("DL_onHistoryManagerReady", "changeFilter =>", this.options.initialFilter);
          YAHOO.Bubbling.fire("changeFilter", YAHOO.lang.merge(
          {
             doclistFirstTimeNav: true
          }, this.options.initialFilter));
-         
+
          // Finally show the component body here to prevent UI artifacts on YUI button decoration
          Dom.setStyle(this.id + "-body", "visibility", "visible");
       },
-      
+
       /**
        * Public functions
        *
@@ -1475,9 +2390,9 @@
       {
          var files = [],
             recordSet = this.widgets.dataTable.getRecordSet(),
-            record;
-         
-         for (var i = 0, j = recordSet.getLength(); i < j; i++)
+            record, i, j;
+
+         for (i = 0, j = recordSet.getLength(); i < j; i++)
          {
             record = recordSet.getRecord(i);
             if (this.selectedFiles[record.getData("nodeRef")])
@@ -1485,10 +2400,10 @@
                files.push(record.getData());
             }
          }
-         
+
          return files;
       },
-      
+
       /**
        * Public function to select files by specified groups
        *
@@ -1529,7 +2444,7 @@
                   return true;
                };
                break;
-            
+
             case "selectNone":
                fnCheck = function(assetType, isChecked)
                {
@@ -1553,7 +2468,7 @@
                   {
                      return typeMap[assetType];
                   }
-                  return assetType == typeMap;
+                  return assetType === typeMap;
                };
                break;
 
@@ -1569,7 +2484,7 @@
             record = recordSet.getRecord(i);
             this.selectedFiles[record.getData("nodeRef")] = checks[i].checked = fnCheck(record.getData("type"), checks[i].checked);
          }
-         
+
          YAHOO.Bubbling.fire("selectedFilesChanged");
       },
 
@@ -1580,7 +2495,69 @@
        */
 
       /**
-       * Show/Hide folders button click handler
+       * Sort direction button click handler
+       *
+       * @method onSortAscending
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onSortAscending: function DL_onSortAscending(e, p_obj)
+      {
+         this.options.sortAscending = !this.options.sortAscending;
+         this.widgets.sortAscending.set("title", this.msg(this.options.sortAscending ? "button.sort.descending" : "button.sort.ascending"));
+         if (this.options.sortAscending)
+         {
+            Dom.removeClass(this.widgets.sortAscending.get("element"), "sort-descending");
+         }
+         else
+         {
+            Dom.addClass(this.widgets.sortAscending.get("element"), "sort-descending");
+         }
+         this.services.preferences.set(PREF_SORT_ASCENDING, this.options.sortAscending);
+         YAHOO.Bubbling.fire("metadataRefresh");
+         if (e)
+         {
+            Event.preventDefault(e);
+         }
+      },
+
+      /**
+       * Sort Field select button click handler
+       *
+       * @method onSortField
+       * @param sType {string} Event type, e.g. "click"
+       * @param aArgs {array} Arguments array, [0] = DomEvent, [1] = EventTarget
+       * @param p_obj {object} Object passed back from subscribe method
+       */
+      onSortField: function DL_onSortField(sType, aArgs, p_obj)
+      {
+         var domEvent = aArgs[0],
+            eventTarget = aArgs[1];
+
+         if (eventTarget)
+         {
+            this.options.sortField = eventTarget.value;
+            this.widgets.sortField.set("label", eventTarget.cfg.getProperty("text"));
+            this.services.preferences.set(PREF_SORT_FIELD, this.options.sortField);
+
+            // Default sort order configured?
+            var title = eventTarget.srcElement.getAttribute("title");
+            if (title === "true" || title === "false")
+            {
+               this.options.sortAscending = (title === "false");
+               // onSortAscending will fire the metadatRefresh event
+               this.onSortAscending();
+            }
+            else
+            {
+               YAHOO.Bubbling.fire("metadataRefresh");
+            }
+         }
+         Event.preventDefault(domEvent);
+      },
+
+      /**
+       * Show/Hide folders button checked handler
        *
        * @method onShowFolders
        * @param e {object} DomEvent
@@ -1588,32 +2565,14 @@
        */
       onShowFolders: function DL_onShowFolders(e, p_obj)
       {
-         this.options.showFolders = !this.options.showFolders;
-         this.widgets.showFolders.set("label", this.msg(this.options.showFolders ? "button.folders.hide" : "button.folders.show"));
+         this.options.showFolders = this.widgets.showFolders.get("checked");
+         this.widgets.showFolders.set("title", this.msg(this.options.showFolders ? "button.folders.hide" : "button.folders.show"));
          this.services.preferences.set(PREF_SHOW_FOLDERS, this.options.showFolders);
          YAHOO.Bubbling.fire("metadataRefresh");
          if (e)
          {
             Event.preventDefault(e);
          }
-      },
-      
-      /**
-       * Show/Hide detailed list button click handler
-       *
-       * @method onSimpleView
-       * @param e {object} DomEvent
-       * @param p_obj {object} Object passed back from addListener method
-       */
-      onSimpleView: function DL_onSimpleView(e, p_obj)
-      {
-         this.options.simpleView = !this.options.simpleView;
-         p_obj.set("label", this.msg(this.options.simpleView ? "button.view.detailed" : "button.view.simple"));
-
-         this.services.preferences.set(PREF_SIMPLE_VIEW, this.options.simpleView);
-
-         YAHOO.Bubbling.fire("metadataRefresh");
-         Event.preventDefault(e);
       },
 
       /**
@@ -1628,10 +2587,12 @@
          this.options.simpleView = e.newValue.index === 0;
          this.services.preferences.set(PREF_SIMPLE_VIEW, this.options.simpleView);
          YAHOO.Bubbling.fire("metadataRefresh");
-
-         Event.preventDefault(e);
+         if (e)
+         {
+            Event.preventDefault(e);
+         }
       },
-      
+
       /**
        * Multi-file select button click handler
        *
@@ -1671,23 +2632,23 @@
             // Retrieve the actionSet for this asset
             var record = this.widgets.dataTable.getRecord(oArgs.target.id),
                actionSet = record.getData("actionSet");
-            
+
             // Clone the actionSet template node from the DOM
             var clone = Dom.get(this.id + "-actionSet-" + actionSet).cloneNode(true);
-            
+
             // Token replacement
             clone.innerHTML = YAHOO.lang.substitute(window.unescape(clone.innerHTML), this.getActionUrls(record.getData()));
 
             // Generate an id
             clone.id = elActions.id + "_a";
-            
+
             // Simple or detailed view
             Dom.addClass(clone, this.options.simpleView ? "simple" : "detailed");
-            
+
             // Trim the items in the clone depending on the user's access
             var userAccess = record.getData("permissions").userAccess,
                actionLabels = record.getData("actionLabels") || {};
-            
+
             // Inject special-case permissions
             if (record.getData("mimetype") in this.options.inlineEditMimetypes)
             {
@@ -1702,10 +2663,10 @@
                userAccess.repository = true;
             }
             userAccess.portlet = Alfresco.constants.PORTLET;
-            
+
             // Inject the current filterId to allow filter-scoped actions
             userAccess["filter-" + this.currentFilter.filterId] = true;
-            
+
             // Remove any actions the user doesn't have permission for
             var actions = YAHOO.util.Selector.query("div", clone),
                action, aTag, spanTag, actionPermissions, aP, i, ii, j, jj;
@@ -1718,7 +2679,7 @@
                {
                   spanTag.innerHTML = $html(actionLabels[action.className]);
                }
-               
+
                if (aTag.rel !== "")
                {
                   actionPermissions = aTag.rel.split(",");
@@ -1726,7 +2687,7 @@
                   {
                      aP = actionPermissions[j];
                      // Support "negative" permissions
-                     if ((aP.charAt(0) == "~") ? !!userAccess[aP.substring(1)] : !userAccess[aP])
+                     if ((aP.charAt(0) === "~") ? !!userAccess[aP.substring(1)] : !userAccess[aP])
                      {
                         clone.removeChild(action);
                         break;
@@ -1734,9 +2695,9 @@
                   }
                }
             }
-            
+
             // Need the "More >" container?
-            var splitAt = record.getData("type") == "folder" ? 2 : 3;
+            var splitAt = record.getData("type") === "folder" ? 2 : 3;
             actions = YAHOO.util.Selector.query("div", clone);
             if (actions.length > splitAt + (this.options.simpleView ? 0 : 1))
             {
@@ -1755,10 +2716,10 @@
                   }
                }
             }
-            
+
             elActions.appendChild(clone);
          }
-         
+
          if (this.showingMoreActions)
          {
             this.deferredActionsMenu = elActions;
@@ -1825,7 +2786,7 @@
          var elActions = Dom.get(this.id + "-actions-" + (oArgs.target.id));
 
          // Don't hide unless the More Actions drop-down is showing, or a dialog mask is present
-         if (elActions && !this.showingMoreActions || Dom.hasClass(document.body, "masked"))
+         if ((elActions && !this.showingMoreActions) || Dom.hasClass(document.body, "masked"))
          {
             // Just hide the action links, rather than removing them from the DOM
             Dom.addClass(elActions, "hidden");
@@ -1849,15 +2810,15 @@
       onActionShowMore: function DL_onActionShowMore(asset, elMore)
       {
          var me = this;
-         
+
          // Fix "More Actions" hover style
          Dom.addClass(elMore.firstChild, "highlighted");
-         
+
          // Get the pop-up div, sibling of the "More Actions" link
          var elMoreActions = Dom.getNextSibling(elMore);
          Dom.removeClass(elMoreActions, "hidden");
          me.showingMoreActions = true;
-         
+
          // Hide pop-up timer function
          var fnHidePopup = function DL_oASM_fnHidePopup()
          {
@@ -1877,13 +2838,13 @@
             }
          };
 
-         // Initial after-click hide timer - 5x the mouseOut timer delay
+         // Initial after-click hide timer - 4x the mouseOut timer delay
          if (elMoreActions.hideTimerId)
          {
             window.clearTimeout(elMoreActions.hideTimerId);
          }
-         elMoreActions.hideTimerId = window.setTimeout(fnHidePopup, me.options.actionsPopupTimeout * 5);
-         
+         elMoreActions.hideTimerId = window.setTimeout(fnHidePopup, me.options.actionsPopupTimeout * 4);
+
          // Mouse over handler
          var onMouseOver = function DLSM_onMouseOver(e, obj)
          {
@@ -1894,7 +2855,7 @@
                obj.hideTimerId = null;
             }
          };
-         
+
          // Mouse out handler
          var onMouseOut = function DLSM_onMouseOut(e, obj)
          {
@@ -1902,7 +2863,7 @@
             var related = elTarget.relatedTarget;
 
             // In some cases we should ignore this mouseout event
-            if ((related != obj) && (!Dom.isAncestor(obj, related)))
+            if ((related !== obj) && (!Dom.isAncestor(obj, related)))
             {
                if (obj.hideTimerId)
                {
@@ -1911,11 +2872,11 @@
                obj.hideTimerId = window.setTimeout(fnHidePopup, me.options.actionsPopupTimeout);
             }
          };
-         
+
          Event.on(elMoreActions, "mouseover", onMouseOver, elMoreActions);
          Event.on(elMoreActions, "mouseout", onMouseOut, elMoreActions);
       },
-      
+
       /**
        * Edit Offline.
        *
@@ -2024,7 +2985,7 @@
             });
          }
       },
-      
+
       /**
        * Checkout to Google Docs.
        *
@@ -2038,7 +2999,7 @@
             nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
             path = asset.location.path,
             fileName = asset.fileName;
-            
+
          var progressPopup = Alfresco.util.PopupManager.displayMessage(
          {
             displayTime: 0,
@@ -2064,7 +3025,7 @@
                   {
                      progressPopup.destroy();
                      this.options.highlightFile = displayName;
-                     
+
                      // The filterChanged event causes the DocList to update, so we need to run these functions afterwards
                      var fnAfterUpdate = function DL_oACTGD_success_afterUpdate()
                      {
@@ -2151,7 +3112,7 @@
                   fn: function DL_oACFGD_success(data)
                   {
                      progressPopup.destroy();
-                     
+
                      // The filterChanged event causes the DocList to update, so we need to run these functions afterwards
                      var fnAfterUpdate = function DL_oACTGD_success_afterUpdate()
                      {
@@ -2197,7 +3158,7 @@
        * BUBBLING LIBRARY EVENT HANDLERS FOR PAGE EVENTS
        * Disconnected event handlers for inter-component event notification
        */
-      
+
       /**
        * Generic file action event handler
        *
@@ -2272,14 +3233,26 @@
             // Should be a filter in the arguments
             var filter = Alfresco.util.cleanBubblingObject(obj),
                strFilter = window.escape(obj.filterId) + (typeof obj.filterData !== "undefined" ? "|" + window.escape(obj.filterData) : "");
-            
+
             Alfresco.logger.debug("DL_onChangeFilter: ", filter);
+
+            // Only allow drag and drop behaviour if the filter is changed to an actual
+            // path (if the filter is anything else such as tags then there won't be a specific
+            // location to upload to!)...
+            this._removeDragAndDrop();
+            if (obj.filterId === "path")
+            {
+               this._addDragAndDrop();
+            }
+
+            // Flag to indicate the list will likely change
+            this.listUpdated = true;
 
             var objNav =
             {
                filter: strFilter
             };
-            
+
             // Initial navigation won't fire the History event
             if (obj.doclistFirstTimeNav)
             {
@@ -2300,14 +3273,14 @@
                Alfresco.logger.debug("DL_onChangeFilter: objNav = ", objNav);
 
                // Do we think the history state will change?
-               if (this.options.highlightFile && objNav.filter == YAHOO.util.History.getCurrentState("filter"))
+               if (this.options.highlightFile && objNav.filter === YAHOO.util.History.getCurrentState("filter"))
                {
                   YAHOO.Bubbling.fire("highlightFile",
                   {
                      fileName: this.options.highlightFile
                   });
                }
-               
+
                YAHOO.util.History.multiNavigate(objNav);
             }
          }
@@ -2351,8 +3324,9 @@
             if (recordFound !== null)
             {
                // Scroll the record into view and highlight it
-               var el = this.widgets.dataTable.getTrEl(recordFound);
-               var yPos = Dom.getY(el);
+               var el = this.widgets.dataTable.getTrEl(recordFound),
+                  yPos = Dom.getY(el);
+
                if (YAHOO.env.ua.ie > 0)
                {
                   yPos = yPos - (document.body.clientHeight / 3);
@@ -2391,7 +3365,7 @@
             }
          }
       },
-      
+
       /**
        * Deactivate Dynamic Controls event handler
        * Only deactivates specifically defined controls.
@@ -2411,7 +3385,7 @@
             }
          }
       },
-      
+
       /**
        * Activate Dynamic Controls event handler
        * (Re-)Activates controls taking part in dynamic deactivation
@@ -2431,74 +3405,144 @@
             }
          }
       },
-      
-      /**
-       * Favourite document event handler
-       *
-       * @method onFavouriteDocument
-       * @param row {HTMLElement} DOM reference to a TR element (or child thereof)
-       */
-      onFavouriteDocument: function DL_onFavouriteDocument(row)
-      {
-         this._favouriteHandler(row, Alfresco.service.Preferences.FAVOURITE_DOCUMENTS);
-      },
 
       /**
-       * Favourite folder event handler
+       * Like/Unlike event handler
        *
-       * @method onFavouriteFolder
+       * @method onLikes
        * @param row {HTMLElement} DOM reference to a TR element (or child thereof)
        */
-      onFavouriteFolder: function DL_onFavouriteFolder(row)
+      onLikes: function DL_onLikes(row)
       {
-         this._favouriteHandler(row, Alfresco.service.Preferences.FAVOURITE_FOLDERS);
-      },
-      
+         var record = this.widgets.dataTable.getRecord(row),
+            file = record.getData(),
+            nodeRef = new Alfresco.util.NodeRef(file.nodeRef),
+            likes = file.likes;
 
-      /**
-       * PRIVATE FUNCTIONS
-       */
+         likes.isLiked = !likes.isLiked;
+         likes.totalLikes += (likes.isLiked ? 1 : -1);
+
+         var responseConfig =
+         {
+            successCallback:
+            {
+               fn: function DL_onLikes_success(event, p_nodeRef)
+               {
+                  var data = event.json.data;
+                  if (data)
+                  {
+                     // Update the record with the server's value
+                     var record = this._findRecordByParameter(p_nodeRef, "nodeRef"),
+                        file = record.getData(),
+                        likes = file.likes;
+
+                     likes.totalLikes = data.ratingsCount;
+                     this.widgets.dataTable.updateRow(record, file);
+
+                     // Post to the Activities Service on the "Like" action
+                     if (likes.isLiked)
+                     {
+                        var activityData =
+                        {
+                           fileName: file.fileName,
+                           nodeRef: file.nodeRef
+                        };
+                        if (file.isFolder)
+                        {
+                           this.modules.actions.postActivity(this.options.siteId, "folder-liked", "folder-details", activityData);
+                        }
+                        else
+                        {
+                           this.modules.actions.postActivity(this.options.siteId, "file-liked", "document-details", activityData);
+                        }
+                     }
+                  }
+               },
+               scope: this,
+               obj: nodeRef.toString()
+            },
+            failureCallback:
+            {
+               fn: function DL_onLikes_failure(event, p_nodeRef)
+               {
+                  // Reset the flag to it's previous state
+                  var record = this._findRecordByParameter(p_nodeRef, "nodeRef"),
+                     file = record.getData(),
+                     likes = file.likes;
+
+                  likes.isLiked = !likes.isLiked;
+                  likes.totalLikes += (likes.isLiked ? 1 : -1);
+                  this.widgets.dataTable.updateRow(record, file);
+                  Alfresco.util.PopupManager.displayPrompt(
+                  {
+                     text: this.msg("message.save.failure", file.displayName)
+                  });
+               },
+               scope: this,
+               obj: nodeRef.toString()
+            }
+         };
+
+         if (likes.isLiked)
+         {
+            this.services.likes.set(nodeRef, 1, responseConfig);
+         }
+         else
+         {
+            this.services.likes.remove(nodeRef, responseConfig);
+         }
+         this.widgets.dataTable.updateRow(record, file);
+      },
 
       /**
        * Handler to set/reset favourite for document or folder
        *
-       * @method _favouriteHandler
+       * @method onFavourite
        * @private
        * @param row {HTMLElement} DOM reference to a TR element (or child thereof)
        * @param prefKey {String} The preferences key
        */
-      _favouriteHandler: function DL__favouriteHandler(row, prefKey)
+      onFavourite: function DL_onFavourite(row)
       {
          var record = this.widgets.dataTable.getRecord(row),
             file = record.getData(),
             nodeRef = file.nodeRef;
-         
+
          file.isFavourite = !file.isFavourite;
          this.widgets.dataTable.updateRow(record, file);
-               
+
          var responseConfig =
          {
             failureCallback:
             {
-               fn: function DL_oFD_failure(event, p_oRecord)
+               fn: function DL_oFD_failure(event, p_oRow)
                {
                   // Reset the flag to it's previous state
-                  var file = p_oRecord.getData();
+                  var record = this.widgets.dataTable.getRecord(p_oRow),
+                     file = record.getData();
+
                   file.isFavourite = !file.isFavourite;
-                  this.widgets.dataTable.updateRow(p_oRecord, file);
+                  this.widgets.dataTable.updateRow(record, file);
                   Alfresco.util.PopupManager.displayPrompt(
                   {
-                     text: this.msg("message.favourite.failure", file.displayName)
+                     text: this.msg("message.save.failure", file.displayName)
                   });
                },
                scope: this,
-               obj: record
+               obj: row
             }
          };
 
-         var fnPref = file.isFavourite ? "add" : "remove";
+         var fnPref = file.isFavourite ? "add" : "remove",
+            prefKey = file.isFolder ? Alfresco.service.Preferences.FAVOURITE_FOLDERS : Alfresco.service.Preferences.FAVOURITE_DOCUMENTS;
+
          this.services.preferences[fnPref].call(this.services.preferences, prefKey, nodeRef, responseConfig);
       },
+
+
+      /**
+       * PRIVATE FUNCTIONS
+       */
 
       /**
        * Resets the YUI DataTable errors to our custom messages
@@ -2513,7 +3557,7 @@
          dataTable.set("MSG_EMPTY", msg("message.empty", "Alfresco.DocumentList"));
          dataTable.set("MSG_ERROR", msg("message.error", "Alfresco.DocumentList"));
       },
-      
+
       /**
        * Updates document list by calling data webscript with current site and path
        *
@@ -2525,7 +3569,10 @@
       {
          p_obj = p_obj || {};
          Alfresco.logger.debug("DL__updateDocList: ", p_obj.filter, p_obj.page);
-         var successFilter = YAHOO.lang.merge({}, p_obj.filter !== undefined ? p_obj.filter : this.currentFilter),
+         var successFilter = YAHOO.lang.merge(
+            {
+               doclistFirstTimeNav: false
+            }, p_obj.filter !== undefined ? p_obj.filter : this.currentFilter),
             successPage = p_obj.page !== undefined ? p_obj.page : this.currentPage,
             loadingMessage = null,
             timerShowLoadingMessage = null,
@@ -2535,8 +3582,7 @@
                filter: successFilter,
                page: successPage
             };
-         successFilter.doclistFirstTimeNav = false;
-         
+
          // Clear the current document list if the data webscript is taking too long
          var fnShowLoadingMessage = function DL_fnShowLoadingMessage()
          {
@@ -2550,7 +3596,7 @@
                   text: '<span class="wait">' + $html(this.msg("message.loading")) + '</span>',
                   noEscape: true
                });
-               
+
                if (YAHOO.env.ua.ie > 0)
                {
                   this.loadingMessageShowing = true;
@@ -2564,20 +3610,22 @@
                }
             }
          };
-         
+
          // Reset the custom error messages
          this._setDefaultDataTableErrors(this.widgets.dataTable);
-         
+
          // Reset preview tooltips array
          this.previewTooltips = [];
-         
+
+         this.insituEditors = [];
+
          // More Actions menu no longer relevant
          this.showingMoreActions = false;
-         
+
          // Slow data webscript message
          this.loadingMessageShowing = false;
          timerShowLoadingMessage = YAHOO.lang.later(this.options.loadingMessageDelay, this, fnShowLoadingMessage);
-         
+
          var destroyLoaderMessage = function DL__uDL_destroyLoaderMessage()
          {
             if (timerShowLoadingMessage)
@@ -2602,7 +3650,7 @@
                }
             }
          };
-         
+
          var successHandler = function DL__uDL_successHandler(sRequest, oResponse, oPayload)
          {
             destroyLoaderMessage();
@@ -2611,29 +3659,31 @@
             {
                YAHOO.Bubbling.fire("activateDynamicControls");
                YAHOO.Bubbling.fire("selectedFilesChanged");
+               this.listUpdated = false;
             };
             this.afterDocListUpdate.push(fnAfterUpdate);
-            
+
             Alfresco.logger.debug("currentFilter was:", this.currentFilter, "now:", successFilter);
             Alfresco.logger.debug("currentPage was [" + this.currentPage + "] now [" + successPage + "]");
             this.currentFilter = successFilter;
             this.currentPage = successPage;
-            if (successFilter.filterId == "path")
+            if (successFilter.filterId === "path")
             {
                Alfresco.logger.debug("currentPath was [" + this.currentPath + "] now [" + successFilter.filterData + "]");
                this.currentPath = successFilter.filterData;
             }
+            delete successFilter.doclistFirstTimeNav;
             YAHOO.Bubbling.fire("filterChanged", successFilter);
             this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
          };
-         
+
          var failureHandler = function DL__uDL_failureHandler(sRequest, oResponse)
          {
             destroyLoaderMessage();
             // Clear out deferred functions
             this.afterDocListUpdate = [];
 
-            if (oResponse.status == 401)
+            if (oResponse.status === 401)
             {
                // Our session has likely timed-out, so refresh to offer the login page
                window.location.reload(true);
@@ -2642,7 +3692,7 @@
             {
                try
                {
-                  if (oResponse.status == 404)
+                  if (oResponse.status === 404)
                   {
                      // Folder not found (via the HTTP "404 Not Found" response) - deactivate dynamic controls only
                      YAHOO.Bubbling.fire("deactivateDynamicControls");
@@ -2670,6 +3720,7 @@
                   this.afterDocListUpdate.push(fnAfterFailedUpdate(YAHOO.lang.JSON.parse(oResponse.responseText).message));
                   this.widgets.dataTable.initializeTable();
                   this.widgets.dataTable.render();
+                  this.listUpdated = false;
                }
                catch(e)
                {
@@ -2678,9 +3729,9 @@
                }
             }
          };
-         
+
          // Update the DataSource
-         if (params.filter && params.filter.filterId == "path")
+         if (params.filter && params.filter.filterId === "path")
          {
             params.path = params.filter.filterData;
          }
@@ -2709,7 +3760,7 @@
       _buildDocListParams: function DL__buildDocListParams(p_obj)
       {
          // Essential defaults
-         var obj = 
+         var obj =
          {
             path: this.currentPath,
             type: this.options.showFolders ? "all" : "documents",
@@ -2717,7 +3768,7 @@
             container: this.options.containerId,
             filter: this.currentFilter
          };
-         
+
          // Pagination in use?
          if (this.options.usePagination)
          {
@@ -2726,13 +3777,13 @@
          }
 
          // Passed-in overrides
-         if (typeof p_obj == "object")
+         if (typeof p_obj === "object")
          {
             obj = YAHOO.lang.merge(obj, p_obj);
          }
 
          // Build the URI stem
-         var params = YAHOO.lang.substitute("{type}/site/{site}/{container}" + (obj.filter.filterId == "path" ? "{path}" : ""),
+         var params = YAHOO.lang.substitute("{type}/site/{site}/{container}" + (obj.filter.filterId === "path" ? "{path}" : ""),
          {
             type: encodeURIComponent(obj.type),
             site: encodeURIComponent(obj.site),
@@ -2744,21 +3795,24 @@
          params += "?filter=" + encodeURIComponent(obj.filter.filterId);
          if (obj.filter.filterData && obj.filter.filterId !== "path")
          {
-            params += "&filterData=" + encodeURIComponent(obj.filter.filterData);             
+            params += "&filterData=" + encodeURIComponent(obj.filter.filterData);
          }
-         
+
          // Paging parameters
          if (this.options.usePagination)
          {
             params += "&size=" + obj.pageSize  + "&pos=" + obj.page;
          }
 
+         // Sort parameters
+         params += "&sortAsc=" + this.options.sortAscending + "&sortField=" + encodeURIComponent(this.options.sortField);
+
          // No-cache
          params += "&noCache=" + new Date().getTime();
 
          return params;
       },
-       
+
       /**
        * Searches the current recordSet for a record with the given parameter value
        *
@@ -2769,15 +3823,17 @@
        */
       _findRecordByParameter: function DL__findRecordByParameter(p_value, p_parameter)
       {
-        var recordSet = this.widgets.dataTable.getRecordSet();
-        for (var i = 0, j = recordSet.getLength(); i < j; i++)
-        {
-           if (recordSet.getRecord(i).getData(p_parameter) == p_value)
-           {
-              return recordSet.getRecord(i);
-           }
-        }
-        return null;
+         var recordSet = this.widgets.dataTable.getRecordSet(),
+            i, j;
+
+         for (i = 0, j = recordSet.getLength(); i < j; i++)
+         {
+            if (recordSet.getRecord(i).getData(p_parameter) === p_value)
+            {
+               return recordSet.getRecord(i);
+            }
+         }
+         return null;
       }
    }, true);
 })();

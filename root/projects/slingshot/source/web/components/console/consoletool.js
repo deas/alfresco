@@ -211,13 +211,25 @@
        */
       onHistoryManagerReady: function ConsoleTool_onHistoryManagerReady()
       {
-         // Fire the onLoad() panel lifecycle event for each registered panel
-         // To perform one-off setup of contained widgets and internal event handlers
-         for (var i in this.panels)
+         if (!this.historyManagerReady)
          {
-            this.panels[i].onLoad();
+            // Fire the onLoad() panel lifecycle event for each registered panel
+            // To perform one-off setup of contained widgets and internal event handlers
+            for (var i in this.panels)
+            {
+               this.panels[i].onLoad();
+            }
+            
+            // display the initial panel based on history state or default
+            var bookmarkedState = YAHOO.util.History.getBookmarkedState("state") || this.encodeHistoryState({"panel": this.panels[0].id});
+            YAHOO.Bubbling.fire("stateChanged",
+            {
+               state: bookmarkedState
+            });
+            
+            this.historyManagerReady = true;
          }
-         
+
          // display the initial panel based on history state or default
          var bookmarkedState = YAHOO.util.History.getBookmarkedState("state") || this.encodeHistoryState({"panel": this.panels[0].id});
          YAHOO.Bubbling.fire("stateChanged",

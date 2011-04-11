@@ -19,6 +19,9 @@ function main()
          selected: (t.id == theme)
       });
    }
+   
+   // logo image override
+   model.logo = context.getSiteConfiguration().getProperty("logo");
 }
 
 main();

@@ -1,6 +1,0 @@
-<webscript>
-   <shortname>Getting Started</shortname>
-   <description>Displays a welcome note to the site manager</description>
-   <family>site-dashlet</family>
-   <url>/components/dashlets/site-welcome</url>
-</webscript>

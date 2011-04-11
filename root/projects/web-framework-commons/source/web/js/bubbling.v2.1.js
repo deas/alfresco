@@ -265,7 +265,7 @@ YAHOO.namespace("plugin","behavior");
 	obj.getActionName = function (el, depot) {
 	  depot = depot || {};
 	  var b = null, r = null,
-	      f = ($D.inDocument(el)?function(b){return $D.hasClass(el, b)}:function(b){return el.hasClass(b);}); // f: check is certain object has a classname
+	      f = (typeof el.hasClass === 'undefined'?function(b){return $D.hasClass(el, b)}:function(b){return el.hasClass(b);}); // f: check is certain object has a classname
 	  if (el && ($L.isObject(el) || (el = $( el )))) {
 	  	try{
 			r = el.getAttribute("rel"); // if rel is available...
@@ -288,7 +288,7 @@ YAHOO.namespace("plugin","behavior");
 	obj.getAllActions = function (el, depot) {
 	  depot = depot || {};
 	  var b = null, r = null, actions = [],
-	      f = ($D.inDocument(el)?function(b){return $D.hasClass(el, b)}:function(b){return el.hasClass(b);}); // f: check is certain object has a classname
+	      f = (typeof el.hasClass === 'undefined'?function(b){return $D.hasClass(el, b)}:function(b){return el.hasClass(b);}); // f: check is certain object has a classname
 	  if (el && ($L.isObject(el) || (el = $( el )))) {
 	  	try{
 			r = el.getAttribute("rel"); // if rel is available...

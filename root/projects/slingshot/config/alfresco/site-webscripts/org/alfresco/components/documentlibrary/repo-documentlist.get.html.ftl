@@ -4,9 +4,11 @@
    new Alfresco.RepositoryDocumentList("${args.htmlid}").setOptions(
    {
       <#if repositoryUrl??>repositoryUrl: "${repositoryUrl}",</#if>
-      rootNode: "${rootNode}",
+      rootNode: "${rootNode!"null"}",
       usePagination: ${(args.pagination!false)?string},
-      showFolders: ${(preferences.showFolders!false)?string},
+      sortAscending: ${(preferences.sortAscending!true)?string},
+      sortField: "${(preferences.sortField!"cm:name")?js_string}",
+      showFolders: ${(preferences.showFolders!true)?string},
       simpleView: ${(preferences.simpleView!false)?string},
       highlightFile: "${(page.url.args.file!"")?js_string}",
       replicationUrlMapping: ${replicationUrlMappingJSON!"{}"}

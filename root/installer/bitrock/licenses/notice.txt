@@ -26,7 +26,6 @@ Avalon framework   http://avalon.apache.org/framework/
     cglib-*	http://cglib.sourceforge.net/ 
     Apache Chemistry	http://www.apache.org/
     Apache-mime http://james.apache.org/mime4j/index.html
-    commons-*	http://jakarta.apache.org/commons/ 
     Framework	http://cxf.apache.org/
     ehcache	http://ehcache.sourceforge.net/ 
     Fast Infoset Project	http://www.apache.org/licenses/LICENSE-2.0
@@ -49,7 +48,6 @@ Avalon framework   http://avalon.apache.org/framework/
     Neethi	http://ws.apache.org/commons/neethi/
     opensaml	http://www.opensaml.org/
     Spring Framework	http://www.springsource.com/download/community?sid=453581
-    POI	http://poi.apache.org/legal.html
     J2EE/Portlet	Redistributed by Apache foundation.
     quartz	http://www.opensymphony.com/quartz/
     resolver	http://xml.apache.org/commons/
@@ -57,7 +55,6 @@ Avalon framework   http://avalon.apache.org/framework/
     J2EE/servlet	Redistributed by Apache foundation.
     shale	http://shale.apache.org/license.html
     SpringModules	https://springmodules.dev.java.net/
-    Spring Surf	http://www.springsource.com/download/community
     standard	http://jakarta.apache.org/site/downloads/downloads_taglibs-standard.cgi
     STAX		http://www.apache.org/licenses/LICENSE-2.0
     SMTP		http://subethasmtp.tigris.org/project_license.html
@@ -195,14 +192,16 @@ The Svn Diff With Details Of Changes Can Be Found In Location Root/Projects/3Rd-
 
 
 acegi		http://acegisecurity.org/ 
+commons-*	http://jakarta.apache.org/commons/ 
 Framework	http://cxf.apache.org/
 Greenmail	http://www.icegreen.com/greenmail/readme.html
 ibatis		http://ibatis.apache.org/license.html
+POI	http://poi.apache.org/legal.html
 Apache Tika	http://lucene.apache.org/tika/license.html
 tm-extractors	http://www.textmining.org/
 TrueLicense 	https://truelicense.dev.java.net/
 wss4j		http://ws.apache.org/wss4j/
-
+Spring Surf	http://www.springsource.com/download/community
 
 ===Artistic (BSD style)===
 chiba		chiba	http://sourceforge.net/projects/chiba

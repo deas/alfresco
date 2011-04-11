@@ -117,6 +117,13 @@
          this.calendar = new YAHOO.widget.Calendar("calendar", { navigator:true });
          // Set localised properties
          Alfresco.util.calI18nParams(this.calendar);
+         var calView = Alfresco.util.ComponentManager.findFirst('Alfresco.CalendarView');
+         if (calView) 
+         {
+            var startDate = calView.options.startDate;
+            this.calendar.setMonth(startDate.getMonth());
+            this.calendar.setYear(startDate.getFullYear());
+         }
          this.calendar.render();
          this.calendar.selectEvent.subscribe(this.onDateSelected, this, true);
          
@@ -218,6 +225,7 @@
          var today = new Date();
          this.calendar.cfg.setProperty("pagedate", today.getMonth() + 1 + "/" + today.getFullYear());
          this.calendar.render();
+         Event.preventDefault(e);
       },
 
 

@@ -22,21 +22,11 @@
       </component>
       <component>
          <region-id>comments</region-id>
-         <source-id>links-view</source-id>
-         <url>/components/blog/comments</url>
+         <url>/components/comments/list</url>
          <properties>
-            <editorWidth>538</editorWidth>
-            <editorHeight>150</editorHeight>
+            <nodeRef>{nodeRef}</nodeRef>
+            <activityType>link</activityType>
          </properties>
-      </component>
-      <component>
-         <region-id>createcomment</region-id>
-         <source-id>links-view</source-id>
-         <url>/components/blog/createcomment</url>
-         <properties>
-            <editorHeight>150</editorHeight>
-            <editorWidth>538</editorWidth>
-         </properties>
-      </component>
+      </component>      
    </components>
 </template-instance>

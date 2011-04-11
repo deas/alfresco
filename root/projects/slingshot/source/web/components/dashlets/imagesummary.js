@@ -28,8 +28,14 @@
    /**
     * YUI Library aliases
     */
-   var Event = YAHOO.util.Event;
-
+   var Event = YAHOO.util.Event,
+       Dom = YAHOO.util.Dom;
+   
+   /**
+    * Alfresco Slingshot aliases
+    */
+   var $html = Alfresco.util.encodeHTML;
+   
    /**
     * Dashboard ImageSummary constructor.
     * 
@@ -46,7 +52,7 @@
       
       return this;
    };
-
+   
    YAHOO.extend(Alfresco.dashlet.ImageSummary, Alfresco.component.Base,
    {
       /**
@@ -55,7 +61,65 @@
        * @property itemsPerRow
        * @type integer
        */
-      itemsPerRow: null,
+      itemsPerRow: 0,
+      
+      onReady: function onReady()
+      {
+         // Execute the request to retrieve the list of images to display
+         Alfresco.util.Ajax.jsonRequest(
+         {
+            url: Alfresco.constants.PROXY_URI + "slingshot/doclib/images/site/" + this.options.siteId + "/documentLibrary?max=250",
+            successCallback:
+            {
+               fn: function(response)
+               {
+                  // construct each image preview markup from HTML template block
+                  var elImages = Dom.get(this.id + "-images"),
+                      elTemplate = Dom.get(this.id + "-item-template"),
+                      items = response.json.items;
+                  // clone the template and perform a substitution to generate final markup
+                  var htmlTemplate = unescape(elTemplate.innerHTML);
+                  for (var i=0, j=items.length, clone, item; i<j; i++)
+                  {
+                     item = items[i];
+                     var params = {
+                        nodeRef: item.nodeRef,
+                        nodeRefUrl: item.nodeRef.replace(":/", ""),
+                        name: encodeURIComponent(item.name),
+                        title: $html(item.title),
+                        modifier: this.msg("text.modified-by", $html(item.modifier)),
+                        modified: Alfresco.util.formatDate(Alfresco.util.fromISO8601(item.modifiedOn))
+                     };
+                     // clone the template and perform a substitution to generate final markup
+                     clone = elTemplate.cloneNode(true);
+                     clone.innerHTML = YAHOO.lang.substitute(htmlTemplate, params);
+                     elImages.appendChild(clone);
+                  }
+                  
+                  // remove the ajax wait spinner
+                  Dom.addClass(this.id + "-wait", "hidden");
+                  
+                  // show the containing element for the list of images
+                  Dom.removeClass(elImages, "hidden");
+               },
+               scope: this
+            },
+            failureCallback:
+            {
+               fn: function(response)
+               {
+                  // remove the ajax wait spinner
+                  Dom.addClass(this.id + "-wait", "hidden");
+                  
+                  // show the failure message inline
+                  var elMessage = Dom.get(this.id + "-message");
+                  elMessage.innerHTML = $html(response.json.message);
+                  Dom.removeClass(elMessage, "hidden");
+               },
+               scope: this
+            }
+         });
+      },
       
       /**
        * Fired on window resize event.

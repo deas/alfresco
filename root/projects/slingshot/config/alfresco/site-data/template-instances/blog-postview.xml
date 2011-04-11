@@ -27,18 +27,10 @@
       </component>
       <component>
          <region-id>comments</region-id>
-         <url>/components/blog/comments</url>
+         <url>/components/comments/list</url>
          <properties>
-            <editorWidth>538</editorWidth>
-            <editorHeight>150</editorHeight>
-         </properties>
-      </component>
-      <component>
-         <region-id>createcomment</region-id>
-         <url>/components/blog/createcomment</url>
-         <properties>
-            <editorHeight>150</editorHeight>
-            <editorWidth>538</editorWidth>
+            <nodeRef>{nodeRef}</nodeRef>
+            <activityType>blog</activityType>
          </properties>
       </component>
    </components>

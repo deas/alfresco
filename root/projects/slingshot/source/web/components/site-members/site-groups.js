@@ -695,10 +695,9 @@
             };
 
             // make ajax call to site service to change role
-            Alfresco.util.Ajax.jsonRequest(
+            Alfresco.util.Ajax.jsonPut(
             {
-               url: Alfresco.constants.PROXY_URI + "api/sites/" + this.options.siteId + "/memberships/" + group,
-               method: "PUT",
+               url: Alfresco.constants.PROXY_URI + "api/sites/" + this.options.siteId + "/memberships",
                dataObj:
                {
                   role: selectedRole,

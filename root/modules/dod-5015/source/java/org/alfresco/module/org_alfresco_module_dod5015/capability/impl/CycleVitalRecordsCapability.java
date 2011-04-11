@@ -42,7 +42,7 @@ public class CycleVitalRecordsCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozen(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED &&
+            if (checkFilingUnfrozen(nodeRef, true) == AccessDecisionVoter.ACCESS_GRANTED &&
                 checkUntransfered(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED &&
                 checkUndestroyed(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
             {

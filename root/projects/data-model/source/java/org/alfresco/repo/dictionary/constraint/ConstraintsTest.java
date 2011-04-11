@@ -40,7 +40,6 @@ import org.springframework.extensions.surf.util.I18NUtil;
  * 
  * @author Derek Hulley
  */
-@SuppressWarnings("unused")
 public class ConstraintsTest extends TestCase
 {
     @Override

@@ -1,11 +1,11 @@
-var connector, result, theUrl;
+var url = "/api/invitations?inviteeUserName=" + encodeURIComponent(user.name),
+   result = remote.connect("alfresco").get(url),
+   inviteData = [];
 
-theUrl = "/api/invitations?inviteeUserName=" + encodeURIComponent(user.name);
-connector = remote.connect("alfresco");
-result = connector.get(theUrl);
-if (result.status !== status.STATUS_OK)
+if (result.status == status.STATUS_OK)
 {
-   model.inviteData = [];
+   var json = eval('(' + result.response + ')');
+   inviteData = json.data;
 }
-var inviteData = eval('(' + result.response + ')');
-model.inviteData = inviteData.data;
+
+model.inviteData = inviteData;

@@ -147,19 +147,9 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         {
             public Object execute()
             {
-
-                ChildAssociationRef childAssociationRef = nodeService.createNode(finalcalendarContainer, ContentModel.ASSOC_CONTAINS, 
+                nodeService.createNode(finalcalendarContainer, ContentModel.ASSOC_CONTAINS, 
                             QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, (String) props.get(ContentModel.PROP_NAME)), 
                             TYPE_EVENT, props);
-
-                if (meeting.getReccurenceRule() != null)
-                {
-                    nodeService.setProperty(childAssociationRef.getChildRef(), PROP_RECURRENCE_RULE, meeting.getReccurenceRule());
-                    if (meeting.getLastMeetingDate() != null)
-                    {
-                        nodeService.setProperty(childAssociationRef.getChildRef(), PROP_RECURRENCE_LAST_MEETING, meeting.getLastMeetingDate());
-                    }
-                }
                 return null;
             }
         });
@@ -559,6 +549,8 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         props.put(PROP_TO_DATE_EVENT, meeting.getEndDate());
         props.put(PROP_DESCRIPTION_EVENT, "");
         props.put(PROP_OUTLOOK_UID, meeting.getId());
+        props.put(PROP_RECURRENCE_RULE, meeting.getReccurenceRule());
+        props.put(PROP_RECURRENCE_LAST_MEETING, meeting.getLastMeetingDate()); 
         return props;
     }
 

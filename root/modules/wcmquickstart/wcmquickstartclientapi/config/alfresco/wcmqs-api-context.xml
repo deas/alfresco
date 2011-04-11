@@ -49,9 +49,28 @@
       <property name="dictionaryService" ref="dictionaryService" />
       <property name="collectionFactory" ref="collectionFactory" />
    </bean>
-
+   
    <!--  Collection factory -->
-   <bean id="collectionFactory" class="org.alfresco.wcm.client.impl.CollectionFactoryWebserviceImpl">
+   <bean id="collectionFactory" class="org.alfresco.wcm.client.impl.CachingAssetCollectionFactoryImpl" lazy-init="true">
+      <property name="assetFactory" ref="assetFactory" />
+      <property name="delegate" ref="webscriptCollectionFactory" />
+      <property name="cache">
+         <bean class="org.alfresco.wcm.client.impl.cache.EhCacheAdapter">
+            <property name="cache">
+               <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+                  <property name="cacheManager">
+                     <ref bean="ehCacheManager" />
+                  </property>
+                  <property name="cacheName">
+                     <value>assetCollectionCache</value>
+                  </property>
+               </bean>
+            </property>
+         </bean>
+      </property>
+   </bean>
+
+   <bean id="webscriptCollectionFactory" class="org.alfresco.wcm.client.impl.CollectionFactoryWebserviceImpl" lazy-init="true">
       <property name="assetFactory" ref="assetFactory" />
       <property name="webscriptCaller" ref="webscriptCaller" />
    </bean>

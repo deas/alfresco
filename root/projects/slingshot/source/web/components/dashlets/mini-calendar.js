@@ -35,15 +35,17 @@
     */
    var $html = Alfresco.util.encodeHTML;
 
-   var DAY_MS = 24*60*60*1000; 
-   var days = new Object();
-   days["SU"]=0;
-   days["MO"]=1;
-   days["TU"]=2;
-   days["WE"]=3;
-   days["TH"]=4;
-   days["FR"]=5;
-   days["SA"]=6;
+   var DAY_MS = 24*60*60*1000,
+      days =
+      {
+         "SU": 0,
+         "MO": 1,
+         "TU": 2,
+         "WE": 3,
+         "TH": 4,
+         "FR": 5,
+         "SA": 6
+      };
    
    Alfresco.dashlet.MiniCalendar = function MiniCalendar_constructor(htmlId)
    {
@@ -65,16 +67,12 @@
           * loading. If for some reason the data fails to load, the calendar
           * will still display.
           */
-         var uriEvents = Alfresco.constants.PROXY_URI + "calendar/eventList?site=" + this.options.siteId;
-         
-         var callback = 
+         YAHOO.util.Connect.asyncRequest("GET", Alfresco.constants.PROXY_URI + "calendar/eventList?site=" + this.options.siteId,
          {
             success: this.onSuccess,
             failure: this.onFailure,
             scope: this
-         };
-         
-         YAHOO.util.Connect.asyncRequest('GET', uriEvents, callback);
+         });
       },
 
       /**
@@ -82,15 +80,15 @@
        * site. is loaded successfully.
        * 
        * @method onSuccess
-       * @param o
-       *            {object} Result of AJAX call
+       * @param o {object} Result of AJAX call
        */
       onSuccess: function MiniCalendar_onSuccess(o)
       {
-         var noEventHTML = '<div class="detail-list-item first-item last-item"><span>' + this.msg("label.no-items") + '</span></div>';
-         var eventHTML = '';
-         var hasEvents = false;
-         try 
+         var noEventHTML = '<div class="dashlet-padding"><h3>' + this.msg("label.no-items") + '</h3></div>',
+            eventHTML = '',
+            hasEvents = false;
+
+         try
          {
             var now = new Date();
             now.setHours(0, 0, 0, 0);
@@ -155,10 +153,8 @@
        * Render an event
        * 
        * @method renderDay
-       * @param data
-       *            {Date} Date to render
-       * @param eventData
-       *            {object} Event data
+       * @param data {Date} Date to render
+       * @param eventData {object} Event data
        */
       renderDay: function MiniCalendar_renderDay(date, eventData)
       {
@@ -205,7 +201,7 @@
             }
             html += '</div></div>';
          }
-         return html;   
+         return html;
       },
 
      getAllEvents: function(eventList)
@@ -231,8 +227,7 @@
        * data didn't load.
        * 
        * @method onFailure
-       * @param e
-       *            {object} DomEvent
+       * @param e {object} DomEvent
        */
       onFailure: function(o)
       {
@@ -242,8 +237,7 @@
        * Gets a custom message
        * 
        * @method _msg
-       * @param messageId
-       *            {string} The messageId to retrieve
+       * @param messageId {string} The messageId to retrieve
        * @return {string} The custom message
        * @private
        */
@@ -255,8 +249,7 @@
        * Set messages for this component
        * 
        * @method setMessages
-       * @param obj
-       *            {object} Object literal specifying a set of messages
+       * @param obj {object} Object literal specifying a set of messages
        */
       setMessages: function setMessages(obj)
       {
@@ -378,16 +371,11 @@
        * 
        * 
        * @method resolveStartDatesWeekly
-       * @param ev
-       *            {Object} object that represent weekly event
-       * @eventParam Map of event parameters taken from RRULE
-       * @param currentDate
-       *            {Date} first day that event may occur.
-       * @param endDate
-       *            {Date} last day that event may occur.
-       * 
-       * @return {Array} Array that contains days beetwing currentDate and
-       *         endDate on wich weekly event occurs
+       * @param ev {Object} object that represent weekly event
+       * @param eventParam {Object} Map of event parameters taken from RRULE
+       * @param currentDate {Date} first day that event may occur.
+       * @param endDate {Date} last day that event may occur.
+       * @return {Array} Array that contains days between currentDate and endDate on which weekly event occurs
        */
       resolveStartDateWeekly: function resolveStartDateWeekly (ev, eventParam, currentDate, endDate)
       {
@@ -450,18 +438,12 @@
        * Return all days between currentDate and endDate when daily event
        * occurs.
        * 
-       * 
        * @method resolveStartDaily
-       * @param ev
-       *            {Object} object that represent daily event
-       * @eventParam Map of event parameters taken from RRULE
-       * @param currentDate
-       *            {Date} first day when event may occur.
-       * @param endDate
-       *            {Date} last day when event may occur.
-       * 
-       * @return {Array} Array that contains days beetwing currentDate and
-       *         endDate on wich daily event occurs
+       * @param ev {Object} object that represent daily event
+       * @param eventParam {Object} Map of event parameters taken from RRULE
+       * @param currentDate {Date} first day when event may occur.
+       * @param endDate {Date} last day when event may occur.
+       * @return {Array} Array that contains days between currentDate and endDate on which daily event occurs
        */
       resolveStartDaily: function resolveStartDaily (ev, eventParam, currentDate, endDate)
       {  
@@ -474,7 +456,7 @@
          {
             return result;
          }
-      // --------------------
+
          var eventStart = this.cloneDate(ev.from);
       
           // Add as much full event cycles as need
@@ -494,7 +476,7 @@
             return result;
          }
          var eventDate = eventStart;
-      // -------------------
+
          while (eventDate.getTime() - lastEventDay.getTime() < DAY_MS)
          {
             var dateToAdd = new Date();
@@ -512,16 +494,11 @@
        * 
        * 
        * @method resolveStartMonthly
-       * @param ev
-       *            {Object} object that represent monthly event
-       * @eventParam Map of event parameters taken from RRULE
-       * @param currentDate
-       *            {Date} first day when event may occur
-       * @param endDate
-       *            {Date} last day when event may occur
-       * 
-       * @return {Array} Array that contains days beetwing currentDate and
-       *         endDate on wich monthly event occurs
+       * @param ev {Object} object that represent monthly event
+       * @param eventParam {Object} Map of event parameters taken from RRULE
+       * @param currentDate {Date} first day when event may occur
+       * @param endDate {Date} last day when event may occur
+       * @return {Array} Array that contains days between currentDate and endDate on which daily event occurs
        */
       resolveStartMonthly: function resolveStartMonthly (ev, eventParam, currentDate, endDate)
       {    
@@ -603,14 +580,10 @@
        * 
        * 
        * @method getLastEventDay
-       * @param ev
-       *            {Object} object that represent monthly event
-       * @param currentDate
-       *            {Date} first day when event may occur.
-       * @param endDate
-       *            {Date} last day when event may occur.
-       * 
-       * @return {Date} last day in current month whe event may occur.
+       * @param ev {Object} object that represent monthly event
+       * @param currentDate {Date} first day when event may occur.
+       * @param endDate {Date} last day when event may occur.
+       * @return {Date} last day in current month when event may occur.
        */
       getLastEventDay: function getLastEventDay (ev, currentDate, endDate)
       {

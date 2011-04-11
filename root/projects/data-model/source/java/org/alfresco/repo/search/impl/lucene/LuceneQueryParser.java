@@ -39,9 +39,12 @@ import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.MLTokenDuplicator;
+import org.alfresco.repo.search.impl.lucene.analysis.PathTokenFilter;
+import org.alfresco.repo.search.impl.lucene.query.CachingTermPositions;
 import org.alfresco.repo.search.impl.lucene.query.CaseInsensitiveFieldQuery;
 import org.alfresco.repo.search.impl.lucene.query.CaseInsensitiveFieldRangeQuery;
 import org.alfresco.repo.search.impl.lucene.query.PathQuery;
+import org.alfresco.repo.search.impl.lucene.query.StructuredFieldPosition;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
@@ -64,6 +67,7 @@ import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermPositions;
 import org.apache.lucene.queryParser.CharStream;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -497,7 +501,15 @@ public class LuceneQueryParser extends QueryParser
      */
     public Query getSpanQuery(String field, String first, String last, int slop, boolean inOrder)
     {
-        if (field.equals(FIELD_TEXT))
+        if (field.equals(FIELD_PATH))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_PATH);
+        }
+        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_PATH_WITH_REPEATS);
+        }
+        else if (field.equals(FIELD_TEXT))
         {
             Set<String> text = searchParameters.getTextAttributes();
             if ((text == null) || (text.size() == 0))
@@ -522,8 +534,29 @@ public class LuceneQueryParser extends QueryParser
                 return query;
             }
         }
+        else if (field.equals(FIELD_CLASS))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_CLASS);
+        }
+        else if (field.equals(FIELD_TYPE))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_TYPE);
+        }
+        else if (field.equals(FIELD_EXACTTYPE))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_EXACTTYPE);
+        }
+        else if (field.equals(FIELD_ASPECT))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_ASPECT);
+        }
+        else if (field.equals(FIELD_EXACTASPECT))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_EXACTASPECT);
+        }
         else if (field.startsWith(PROPERTY_FIELD_PREFIX))
         {
+            // need to build each term for the span
             SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
             SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
             return new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
@@ -554,6 +587,18 @@ public class LuceneQueryParser extends QueryParser
             }
 
         }
+        else if (field.equals(FIELD_ISUNSET))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_ISUNSET);
+        }
+        else if (field.equals(FIELD_ISNULL))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_ISNULL);
+        }
+        else if (field.equals(FIELD_ISNOTNULL))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_ISNOTNULL);
+        }
         else if (matchDataTypeDefinition(field) != null)
         {
             Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
@@ -565,8 +610,28 @@ public class LuceneQueryParser extends QueryParser
             }
             return query;
         }
+        else if (field.equals(FIELD_FTSSTATUS))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_FTSSTATUS);
+        }
         else
         {
+            // Default behaviour for the following fields
+            
+            // FIELD_ID
+            // FIELD_DBID
+            // FIELD_ISROOT
+            // FIELD_ISCONTAINER
+            // FIELD_ISNODE
+            // FIELD_TX
+            // FIELD_PARENT
+            // FIELD_PRIMARYPARENT
+            // FIELD_QNAME
+            // FIELD_PRIMARYASSOCTYPEQNAME
+            // FIELD_ASSOCTYPEQNAME
+            // 
+            // 
+            
             SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
             SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
             return new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
@@ -1176,8 +1241,18 @@ public class LuceneQueryParser extends QueryParser
         handler.setNamespacePrefixResolver(namespacePrefixResolver);
         handler.setDictionaryService(dictionaryService);
         reader.setXPathHandler(handler);
-        reader.parse("//" + queryText);
-        return handler.getQuery();
+        reader.parse(queryText);
+        PathQuery query = handler.getQuery();
+        // if it matches all docs
+        if ( (query.getPathStructuredFieldPositions().size() == 0) && (query.getQNameStructuredFieldPositions().size() == 2)) 
+        {
+            if(query.getQNameStructuredFieldPositions().get(0).getTermText().equals(PathTokenFilter.NO_NS_TOKEN_TEXT))
+            {
+                return createTermQuery(FIELD_QNAME, queryText);
+            }
+        }
+        
+        return createPathQuery("//"+queryText, false);
     }
 
     protected Query createTransactionQuery(String queryText)
@@ -1725,7 +1800,7 @@ public class LuceneQueryParser extends QueryParser
             String termText = new String(nextToken.termBuffer(), 0, nextToken.termLength());
             if (termText.contains("*") || termText.contains("?"))
             {
-                return newWildcardQuery(new Term(field, termText));
+                return newWildcardQuery(new Term(field, getLowercaseExpandedTerms()? termText.toLowerCase() : termText));
             }
             else
             {
@@ -1747,7 +1822,7 @@ public class LuceneQueryParser extends QueryParser
                         String termText = new String(nextToken.termBuffer(), 0, nextToken.termLength());
                         if (termText.contains("*") || termText.contains("?"))
                         {
-                            currentQuery = newWildcardQuery(new Term(field, termText));
+                            currentQuery = newWildcardQuery(new Term(field, getLowercaseExpandedTerms()? termText.toLowerCase() : termText));
                         }
                         else
                         {
@@ -1875,14 +1950,19 @@ public class LuceneQueryParser extends QueryParser
     {
         try
         {
-            WildcardTermEnum wcte = new WildcardTermEnum(indexReader, term);
+            Term searchTerm = term;
+            if(getLowercaseExpandedTerms())
+            {
+                searchTerm = new Term(term.field(), term.text().toLowerCase());
+            }
+            WildcardTermEnum wcte = new WildcardTermEnum(indexReader, searchTerm);
 
             while (!wcte.endEnum())
             {
                 Term current = wcte.term();
                 if ((current.text() != null) && (current.text().length() > 0) && (current.text().charAt(0) == '{'))
                 {
-                    if ((term != null) && (term.text().length() > 0) && (term.text().charAt(0) == '{'))
+                    if ((searchTerm != null) && (searchTerm.text().length() > 0) && (searchTerm.text().charAt(0) == '{'))
                     {
                         terms.add(current);
                     }
@@ -1926,7 +2006,15 @@ public class LuceneQueryParser extends QueryParser
     public Query getRangeQuery(String field, String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, LuceneFunction luceneFunction)
     throws ParseException
     {
-        if (field.equals(FIELD_TEXT))
+        if (field.equals(FIELD_PATH))
+        {
+           throw new UnsupportedOperationException("Range Queries are not support for "+FIELD_PATH);
+        }
+        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        {
+            throw new UnsupportedOperationException("Range Queries are not support for "+FIELD_PATH_WITH_REPEATS);
+         }
+        else if (field.equals(FIELD_TEXT))
         {
             Set<String> text = searchParameters.getTextAttributes();
             if ((text == null) || (text.size() == 0))
@@ -1967,7 +2055,24 @@ public class LuceneQueryParser extends QueryParser
             }
 
         }
-
+        // FIELD_ID uses the default
+        // FIELD_DBID uses the default
+        // FIELD_ISROOT uses the default
+        // FIELD_ISCONTAINER uses the default
+        // FIELD_ISNODE uses the default
+        // FIELD_TX uses the default
+        // FIELD_PARENT uses the default
+        // FIELD_PRIMARYPARENT uses the default
+        // FIELD_QNAME uses the default
+        // FIELD_PRIMARYASSOCTYPEQNAME uses the default
+        // FIELD_ASSOCTYPEQNAME uses the default
+        // FIELD_CLASS uses the default
+        // FIELD_TYPE uses the default
+        // FIELD_EXACTTYPE uses the default
+        // FIELD_ASPECT uses the default
+        // FIELD_EXACTASPECT uses the default
+        // FIELD_TYPE uses the default
+        // FIELD_TYPE uses the default
         if (field.startsWith(PROPERTY_FIELD_PREFIX))
         {
             String fieldName;
@@ -2246,6 +2351,47 @@ public class LuceneQueryParser extends QueryParser
                 return new ConstantScoreRangeQuery(fieldName, first, last, includeLower, includeUpper);
             }
         }
+        else if (field.equals(FIELD_ALL))
+        {
+            Set<String> all = searchParameters.getAllAttributes();
+            if ((all == null) || (all.size() == 0))
+            {
+                Collection<QName> contentAttributes = dictionaryService.getAllProperties(null);
+                BooleanQuery query = new BooleanQuery();
+                for (QName qname : contentAttributes)
+                {
+                    Query part = getRangeQuery(PROPERTY_FIELD_PREFIX + qname.toString(), part1, part2, includeLower, includeUpper, analysisMode, luceneFunction);
+                    query.add(part, Occur.SHOULD);
+                }
+                return query;
+            }
+            else
+            {
+                BooleanQuery query = new BooleanQuery();
+                for (String fieldName : all)
+                {
+                    Query part = getRangeQuery(fieldName, part1, part2, includeLower, includeUpper, analysisMode, luceneFunction);
+                    query.add(part, Occur.SHOULD);
+                }
+                return query;
+            }
+
+        }
+        // FIELD_ISUNSET uses the default
+        // FIELD_ISNULL uses the default
+        // FIELD_ISNOTNULL uses the default
+        else if (matchDataTypeDefinition(field) != null)
+        {
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            BooleanQuery query = new BooleanQuery();
+            for (QName qname : contentAttributes)
+            {
+                Query part = getRangeQuery(PROPERTY_FIELD_PREFIX + qname.toString(), part1, part2, includeLower, includeUpper, analysisMode, luceneFunction);
+                query.add(part, Occur.SHOULD);
+            }
+            return query;
+        }
+        // FIELD_FTSSTATUS uses the default
         else
         {
             // None property - leave alone
@@ -3602,10 +3748,14 @@ public class LuceneQueryParser extends QueryParser
     @Override
     public Query getPrefixQuery(String field, String termStr) throws ParseException
     {
-        if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        if (field.equals(FIELD_PATH))
         {
-            return attributeQueryBuilder(field, termStr, new PrefixQuery(), AnalysisMode.PREFIX, LuceneFunction.FIELD);
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_PATH);
         }
+        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        {
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_PATH_WITH_REPEATS);
+        }     
         else if (field.equals(FIELD_TEXT))
         {
             Set<String> text = searchParameters.getTextAttributes();
@@ -3646,7 +3796,9 @@ public class LuceneQueryParser extends QueryParser
                 return query;
             }
         }
-        else if (field.equals(FIELD_ID))
+        else if (field.equals(FIELD_ID) || field.equals(FIELD_DBID) || field.equals(FIELD_ISROOT) || field.equals(FIELD_ISCONTAINER) || field.equals(FIELD_ISNODE) || field.equals(FIELD_TX)
+                || field.equals(FIELD_PARENT) || field.equals(FIELD_PRIMARYPARENT) || field.equals(FIELD_QNAME) || field.equals(FIELD_PRIMARYASSOCTYPEQNAME) || field.equals(FIELD_ASSOCTYPEQNAME)
+                )
         {
             boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
             try
@@ -3659,18 +3811,109 @@ public class LuceneQueryParser extends QueryParser
                 setLowercaseExpandedTerms(lowercaseExpandedTerms);
             }
         }
-        else if (field.equals(FIELD_PARENT))
+        else if (field.equals(FIELD_CLASS))
         {
-            boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
-            try
+            return super.getPrefixQuery(field, termStr);
+            //throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_CLASS);
+        }
+        else if (field.equals(FIELD_TYPE))
+        {
+            return super.getPrefixQuery(field, termStr);
+            //throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_TYPE);
+        }
+        else if (field.equals(FIELD_EXACTTYPE))
+        {
+            return super.getPrefixQuery(field, termStr);
+            //throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_EXACTTYPE);
+        }
+        else if (field.equals(FIELD_ASPECT))
+        {
+            return super.getPrefixQuery(field, termStr);
+            //throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_ASPECT);
+        }
+        else if (field.equals(FIELD_EXACTASPECT))
+        {
+            return super.getPrefixQuery(field, termStr);
+            //throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_EXACTASPECT);
+        }
+        else   if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        {
+            return attributeQueryBuilder(field, termStr, new PrefixQuery(), AnalysisMode.PREFIX, LuceneFunction.FIELD);
+        }
+        else if (field.equals(FIELD_ALL))
+        {
+            Set<String> all = searchParameters.getAllAttributes();
+            if ((all == null) || (all.size() == 0))
             {
-                setLowercaseExpandedTerms(false);
-                return super.getPrefixQuery(field, termStr);
+                Collection<QName> contentAttributes = dictionaryService.getAllProperties(null);
+                BooleanQuery query = new BooleanQuery();
+                for (QName qname : contentAttributes)
+                {
+                    // The super implementation will create phrase queries etc if required
+                    Query part = getPrefixQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr);
+                    if (part != null)
+                    {
+                        query.add(part, Occur.SHOULD);
+                    }
+                    else
+                    {
+                        query.add(createNoMatchQuery(), Occur.SHOULD);
+                    }
+                }
+                return query;
             }
-            finally
+            else
             {
-                setLowercaseExpandedTerms(lowercaseExpandedTerms);
+                BooleanQuery query = new BooleanQuery();
+                for (String fieldName : all)
+                {
+                    Query part = getPrefixQuery(fieldName, termStr);
+                    if (part != null)
+                    {
+                        query.add(part, Occur.SHOULD);
+                    }
+                    else
+                    {
+                        query.add(createNoMatchQuery(), Occur.SHOULD);
+                    }
+                }
+                return query;
             }
+        }
+        else if (field.equals(FIELD_ISUNSET))
+        {
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_ISUNSET);
+        }
+        else if (field.equals(FIELD_ISNULL))
+        {
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_ISNULL);
+        }
+        else if (field.equals(FIELD_ISNOTNULL))
+        {
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_ISNOTNULL);
+        }
+        else if (matchDataTypeDefinition(field) != null)
+        {
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            BooleanQuery query = new BooleanQuery();
+            for (QName qname : contentAttributes)
+            {
+                // The super implementation will create phrase queries etc if required
+                Query part = getPrefixQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr);
+                if (part != null)
+                {
+                    query.add(part, Occur.SHOULD);
+                }
+                else
+                {
+                    query.add(createNoMatchQuery(), Occur.SHOULD);
+                }
+            }
+            return query;
+        }
+        else if (field.equals(FIELD_FTSSTATUS))
+        {
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_FTSSTATUS);
         }
         else
         {
@@ -3678,6 +3921,8 @@ public class LuceneQueryParser extends QueryParser
         }
     }
 
+   
+    
     @Override
     public Query getWildcardQuery(String field, String termStr) throws ParseException
     {
@@ -3686,11 +3931,14 @@ public class LuceneQueryParser extends QueryParser
 
     private Query getWildcardQuery(String field, String termStr, AnalysisMode analysisMode) throws ParseException
     {
-        if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        if (field.equals(FIELD_PATH))
         {
-            return attributeQueryBuilder(field, termStr, new WildcardQuery(), analysisMode, LuceneFunction.FIELD);
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_PATH);
         }
-
+        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        {
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_PATH_WITH_REPEATS);
+        }
         else if (field.equals(FIELD_TEXT))
         {
             Set<String> text = searchParameters.getTextAttributes();
@@ -3701,7 +3949,7 @@ public class LuceneQueryParser extends QueryParser
                 for (QName qname : contentAttributes)
                 {
                     // The super implementation will create phrase queries etc if required
-                    Query part = getWildcardQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr);
+                    Query part = getWildcardQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr, analysisMode);
                     if (part != null)
                     {
                         query.add(part, Occur.SHOULD);
@@ -3718,7 +3966,7 @@ public class LuceneQueryParser extends QueryParser
                 BooleanQuery query = new BooleanQuery();
                 for (String fieldName : text)
                 {
-                    Query part = getWildcardQuery(fieldName, termStr);
+                    Query part = getWildcardQuery(fieldName, termStr, analysisMode);
                     if (part != null)
                     {
                         query.add(part, Occur.SHOULD);
@@ -3731,7 +3979,9 @@ public class LuceneQueryParser extends QueryParser
                 return query;
             }
         }
-        else if (field.equals(FIELD_ID))
+        else if (field.equals(FIELD_ID) || field.equals(FIELD_DBID) || field.equals(FIELD_ISROOT) || field.equals(FIELD_ISCONTAINER) || field.equals(FIELD_ISNODE) || field.equals(FIELD_TX)
+                || field.equals(FIELD_PARENT) || field.equals(FIELD_PRIMARYPARENT) || field.equals(FIELD_QNAME) || field.equals(FIELD_PRIMARYASSOCTYPEQNAME) || field.equals(FIELD_ASSOCTYPEQNAME)
+                )
         {
             boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
             try
@@ -3744,18 +3994,109 @@ public class LuceneQueryParser extends QueryParser
                 setLowercaseExpandedTerms(lowercaseExpandedTerms);
             }
         }
-        else if (field.equals(FIELD_PARENT))
+        else if (field.equals(FIELD_CLASS))
         {
-            boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
-            try
+            return super.getWildcardQuery(field, termStr);
+            //throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_CLASS);
+        }
+        else if (field.equals(FIELD_TYPE))
+        {
+            return super.getWildcardQuery(field, termStr);
+            //throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_TYPE);
+        }
+        else if (field.equals(FIELD_EXACTTYPE))
+        {
+            return super.getWildcardQuery(field, termStr);
+            //throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_EXACTTYPE);
+        }
+        else if (field.equals(FIELD_ASPECT))
+        {
+            return super.getWildcardQuery(field, termStr);
+            //throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_ASPECT);
+        }
+        else if (field.equals(FIELD_EXACTASPECT))
+        {
+            return super.getWildcardQuery(field, termStr);
+            //throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_EXACTASPECT);
+        }
+        else if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        {
+            return attributeQueryBuilder(field, termStr, new WildcardQuery(), analysisMode, LuceneFunction.FIELD);
+        }
+        else if (field.equals(FIELD_ALL))
+        {
+            Set<String> all = searchParameters.getAllAttributes();
+            if ((all == null) || (all.size() == 0))
             {
-                setLowercaseExpandedTerms(false);
-                return super.getWildcardQuery(field, termStr);
+                Collection<QName> contentAttributes = dictionaryService.getAllProperties(null);
+                BooleanQuery query = new BooleanQuery();
+                for (QName qname : contentAttributes)
+                {
+                    // The super implementation will create phrase queries etc if required
+                    Query part = getWildcardQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr, analysisMode);
+                    if (part != null)
+                    {
+                        query.add(part, Occur.SHOULD);
+                    }
+                    else
+                    {
+                        query.add(createNoMatchQuery(), Occur.SHOULD);
+                    }
+                }
+                return query;
             }
-            finally
+            else
             {
-                setLowercaseExpandedTerms(lowercaseExpandedTerms);
+                BooleanQuery query = new BooleanQuery();
+                for (String fieldName : all)
+                {
+                    Query part = getWildcardQuery(fieldName, termStr, analysisMode);
+                    if (part != null)
+                    {
+                        query.add(part, Occur.SHOULD);
+                    }
+                    else
+                    {
+                        query.add(createNoMatchQuery(), Occur.SHOULD);
+                    }
+                }
+                return query;
             }
+        }
+        else if (field.equals(FIELD_ISUNSET))
+        {
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_ISUNSET);
+        }
+        else if (field.equals(FIELD_ISNULL))
+        {
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_ISNULL);
+        }
+        else if (field.equals(FIELD_ISNOTNULL))
+        {
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_ISNOTNULL);
+        }
+        else if (matchDataTypeDefinition(field) != null)
+        {
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            BooleanQuery query = new BooleanQuery();
+            for (QName qname : contentAttributes)
+            {
+                // The super implementation will create phrase queries etc if required
+                Query part = getWildcardQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr, analysisMode);
+                if (part != null)
+                {
+                    query.add(part, Occur.SHOULD);
+                }
+                else
+                {
+                    query.add(createNoMatchQuery(), Occur.SHOULD);
+                }
+            }
+            return query;
+        }
+        else if (field.equals(FIELD_FTSSTATUS))
+        {
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_FTSSTATUS);
         }
         else
         {
@@ -3766,11 +4107,14 @@ public class LuceneQueryParser extends QueryParser
     @Override
     public Query getFuzzyQuery(String field, String termStr, float minSimilarity) throws ParseException
     {
-        if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        if (field.equals(FIELD_PATH))
         {
-            return attributeQueryBuilder(field, termStr, new FuzzyQuery(minSimilarity), AnalysisMode.FUZZY, LuceneFunction.FIELD);
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_PATH);
         }
-
+        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_PATH_WITH_REPEATS);
+        }  
         else if (field.equals(FIELD_TEXT))
         {
             Set<String> text = searchParameters.getTextAttributes();
@@ -3811,7 +4155,9 @@ public class LuceneQueryParser extends QueryParser
                 return query;
             }
         }
-        else if (field.equals(FIELD_ID))
+        else if (field.equals(FIELD_ID) || field.equals(FIELD_DBID) || field.equals(FIELD_ISROOT) || field.equals(FIELD_ISCONTAINER) || field.equals(FIELD_ISNODE) || field.equals(FIELD_TX)
+                || field.equals(FIELD_PARENT) || field.equals(FIELD_PRIMARYPARENT) || field.equals(FIELD_QNAME) || field.equals(FIELD_PRIMARYASSOCTYPEQNAME) || field.equals(FIELD_ASSOCTYPEQNAME)
+                )
         {
             boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
             try
@@ -3824,19 +4170,105 @@ public class LuceneQueryParser extends QueryParser
                 setLowercaseExpandedTerms(lowercaseExpandedTerms);
             }
         }
-        else if (field.equals(FIELD_PARENT))
+        else if (field.equals(FIELD_CLASS))
         {
-            boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
-            try
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_CLASS);
+        }  
+        else if (field.equals(FIELD_TYPE))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_TYPE);
+        }
+        else if (field.equals(FIELD_EXACTTYPE))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_EXACTTYPE);
+        } 
+        else if (field.equals(FIELD_ASPECT))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_ASPECT);
+        } 
+        else if (field.equals(FIELD_EXACTASPECT))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_EXACTASPECT);
+        } 
+        else if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        {
+            return attributeQueryBuilder(field, termStr, new FuzzyQuery(minSimilarity), AnalysisMode.FUZZY, LuceneFunction.FIELD);
+        }
+        else if (field.equals(FIELD_ALL))
+        {
+            Set<String> all = searchParameters.getAllAttributes();
+            if ((all == null) || (all.size() == 0))
             {
-                setLowercaseExpandedTerms(false);
-                return super.getFuzzyQuery(field, termStr, minSimilarity);
+                Collection<QName> contentAttributes = dictionaryService.getAllProperties(null);
+                BooleanQuery query = new BooleanQuery();
+                for (QName qname : contentAttributes)
+                {
+                    // The super implementation will create phrase queries etc if required
+                    Query part = getFuzzyQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr, minSimilarity);
+                    if (part != null)
+                    {
+                        query.add(part, Occur.SHOULD);
+                    }
+                    else
+                    {
+                        query.add(createNoMatchQuery(), Occur.SHOULD);
+                    }
+                }
+                return query;
             }
-            finally
+            else
             {
-                setLowercaseExpandedTerms(lowercaseExpandedTerms);
+                BooleanQuery query = new BooleanQuery();
+                for (String fieldName : all)
+                {
+                    Query part = getFuzzyQuery(fieldName, termStr, minSimilarity);
+                    if (part != null)
+                    {
+                        query.add(part, Occur.SHOULD);
+                    }
+                    else
+                    {
+                        query.add(createNoMatchQuery(), Occur.SHOULD);
+                    }
+                }
+                return query;
             }
         }
+        else if (field.equals(FIELD_ISUNSET))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_ISUNSET);
+        } 
+        else if (field.equals(FIELD_ISNULL))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_ISNULL);
+        } 
+        else if (field.equals(FIELD_ISNOTNULL))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_ISNOTNULL);
+        } 
+        else if (matchDataTypeDefinition(field) != null)
+        {
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            BooleanQuery query = new BooleanQuery();
+            for (QName qname : contentAttributes)
+            {
+                // The super implementation will create phrase queries etc if required
+                Query part = getFuzzyQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr, minSimilarity);
+                if (part != null)
+                {
+                    query.add(part, Occur.SHOULD);
+                }
+                else
+                {
+                    query.add(createNoMatchQuery(), Occur.SHOULD);
+                }
+            }
+            return query;
+        }
+        else if (field.equals(FIELD_FTSSTATUS))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_FTSSTATUS);
+        } 
         else
         {
             return super.getFuzzyQuery(field, termStr, minSimilarity);

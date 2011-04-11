@@ -115,6 +115,10 @@ label,
    font-weight: normal;
 }
 
+.faded
+{
+}
+
 /* DASHLETS */
 
 .dashlet
@@ -128,7 +132,6 @@ label,
    background-color: #d7e0e7;
    background-image: url(images/dashlet-title-bg.png);
    background-repeat: repeat-x;
-   border-bottom: 1px solid #bababa;
    color: #ffffff;
 }
 
@@ -545,6 +548,23 @@ span.mce_alfresco-imagelibrary
    background: #000 none;
    color: #fff;
 }
+/* Override checked styles for doclist */
+
+.yui-skin-hcBlack .no-check-bg div.flat-button span.yui-radio-button-checked,
+.yui-skin-hcBlack .no-check-bg div.flat-button span.yui-checkbox-button-checked,
+.yui-skin-hcBlack .no-check-bg div.flat-button span.yui-radio-button-checked,
+.yui-skin-hcBlack .no-check-bg div.flat-button span.yui-checkbox-button-checked
+{
+   background: none;
+}
+
+/* Ensure hover state can be activated */
+
+.yui-skin-hcBlack .no-check-bg div.flat-button span.yui-button-hover
+{
+   background: transparent url(images/sprite.png) repeat-x scroll 0 0;
+   border-color: #808080;
+}
 
 /* Override YUI Button styles for - title button style */
 
@@ -725,7 +745,9 @@ body.yui-skin-hcBlack .doclist div.more-actions
 
 body.yui-skin-hcBlack .doclist .action-set a:active,
 body.yui-skin-hcBlack .doclist .action-set a:hover,
-body.yui-skin-hcBlack .doclist .action-set .highlighted
+body.yui-skin-hcBlack .doclist .action-set .highlighted,
+#divCalendarContent .yui-dt-col-actions a:active,
+#divCalendarContent .yui-dt-col-actions a:hover
 {
    border: 1px solid #000000;
 }
@@ -859,16 +881,35 @@ body.yui-skin-hcBlack .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .yui-skin-hcBlack .node .nodeURL a,
 .yui-skin-hcBlack .nodeAttrValue a,
 .yui-skin-hcBlack .nodeFooter .tag a,
-.yui-skin-hcBlack .detail .tag a,
+.yui-skin-hcBlack .yui-dt-highlighted .detail .tag a,
+.yui-skin-hcBlack .yui-dt-highlighted .detail .category a,
+.yui-skin-hcBlack .yui-dt-highlighted .detail-social .item a,
 .yui-skin-hcBlack a.wiki-tag-link,
 .yui-skin-hcBlack .node .userLink a,
 .yui-skin-hcBlack .site-members h3 a,
 .yui-skin-hcBlack .doclist .documents a,
 .yui-skin-hcBlack .attrValue a,
-.yui-skin-hcBlack .rules-none a
+.yui-skin-hcBlack .rules-none a,
+.yui-skin-hcBlack .agendaview a,
+.yui-skin-hcBlack a.previousEvents,
+.yui-skin-hcBlack a.nextEvents
 {
    color: #000000;
    text-decoration: underline;
+}
+
+.yui-skin-hcBlack .detail .tag a,
+.yui-skin-hcBlack .detail .category a,
+.yui-skin-hcBlack .detail-social .item a,
+.yui-skin-hcBlack .document-tags .tag
+{
+   color: #333;
+}
+
+.yui-skin-hcBlack .detail .tag a,
+.yui-skin-hcBlack .document-tags .tag
+{
+   background-color: #e8e8e8;
 }
 
 .yui-skin-hcBlack .yui-calendar td.calcell a,
@@ -916,6 +957,16 @@ body.yui-skin-hcBlack tr#collapseTrigger td
 
 /* end calendar */
 
+
+/* Document */
+
+.document-version
+{
+   background-color: #000;
+   color: #fff;
+}
+
+
 .groups .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a.yui-columnbrowser-item-selected
 {
    color: #fff;
@@ -931,6 +982,16 @@ body.yui-skin-hcBlack tr#collapseTrigger td
 .alfresco-twister-closed
 {
    background: transparent url(images/collapsed.png) no-repeat scroll 0 50% !important;
+}
+
+/* Preview Tooltip */
+
+.yui-tt .bd
+{
+   background-color: #f4faff !important;
+   border: 1px solid #333 !important;
+   padding: 4px 4px 1px !important;
+   text-align: left;
 }
 
 /* Theme colors */
@@ -1029,6 +1090,18 @@ div.theme-bg-color-7
 .theme-bg-2
 {
    background-color: #E3EAEC;
+   background-image: -webkit-gradient(
+       linear,
+       left top,
+       left bottom,
+       color-stop(0, rgb(246,246,246)),
+       color-stop(1, rgb(233,232,234))
+   );
+   background-image: -moz-linear-gradient(
+       center top,
+       rgb(246,246,246) 0%,
+       rgb(233,232,234) 100%
+   );
 }
 
 .theme-bg-selected

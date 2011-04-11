@@ -34,8 +34,10 @@
     */
    Alfresco.RecordsDocumentActions = function(htmlId)
    {
-      return Alfresco.RecordsDocumentActions.superclass.constructor.call(this, htmlId);
-   }
+      Alfresco.RecordsDocumentActions.superclass.constructor.call(this, htmlId);
+      YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
+      return this;
+   };
    
    /**
     * Extend from Alfresco.DocumentActions
@@ -73,6 +75,15 @@
             transfersZipUrl: Alfresco.constants.PROXY_URI + "api/node/" + filePlan + "/transfers/" + nodeRef.id,
             managePermissionsUrl: urlContextSite + "rmpermissions?nodeRef=" + nodeRef.nodeRef + "&itemName=" + encodeURIComponent(recordData.displayName) + "&nodeType=" + recordData.type
          });
+      },
+
+      doRefresh: function()
+      {
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
+         var url = 'components/document-details/dod5015/document-actions?nodeRef={nodeRef}&container={containerId}';
+         url += this.options.siteId ? '&site={siteId}' :  '';
+         this.refresh(url);
       }
+
    }, true);
 })();

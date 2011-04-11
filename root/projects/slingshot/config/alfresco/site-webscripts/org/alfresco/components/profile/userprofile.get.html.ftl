@@ -50,6 +50,7 @@
             <#if profile.jobTitle?? && profile.jobTitle?length!=0><div class="fieldlabel">${profile.jobTitle?html}</div></#if>
             <#if profile.organization?? && profile.organization?length!=0><div class="fieldlabel">${profile.organization?html}</div></#if>
             <#if profile.location?? && profile.location?length!=0><div class="fieldlabel">${profile.location?html}</div></#if>
+            <#if profile.properties.userStatus?? && profile.properties.userStatus?length!=0><div class="fieldlabel"><div class="user-status">${profile.properties.userStatus?html} <span class="time">(${userStatusRelativeTime})</span></div></div></#if>
          </div>
          <#if biohtml?? && biohtml?length!=0>
          <div class="biorow">
@@ -149,6 +150,7 @@
       
       <div class="header-bar">${msg("label.about")}</div>
       <div class="drow">
+         <div class="reqcolumn">&nbsp;</div>
          <div class="rightcolumn">
             <span class="label"><label for="${el}-input-lastName">${msg("label.lastname")}:</label></span>
             <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-lastName" value="" <@immutablefield field="lastName" /> /></span>
@@ -159,7 +161,7 @@
          </div>
       </div>
       <div class="drow">
-         <div class="reqcolumn">&nbsp;</div>         
+         <div class="reqcolumn">&nbsp;</div>
          <div class="leftcolumn">
             <span class="label"><label for="${el}-input-jobtitle">${msg("label.jobtitle")}:</label></span>
             <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-jobtitle" value="" <@immutablefield field="jobtitle" /> /></span>

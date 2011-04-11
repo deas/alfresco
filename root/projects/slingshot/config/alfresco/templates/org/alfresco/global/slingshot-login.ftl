@@ -32,7 +32,7 @@
 </#if>
       <div style="padding-top:32px">
          <span class="login-copyright">
-            &copy; 2005-2010 Alfresco Software Inc. All rights reserved.
+            &copy; 2005-2011 Alfresco Software Inc. All rights reserved.
          </span>
       </div>
    </div>
@@ -79,7 +79,7 @@
       {
          modal: false,
          draggable: false, // NOTE: Don't change to "true"
-         fixedcenter: true,
+         fixedcenter: YAHOO.env.ua.mobile === null,
          close: false,
          visible: true,
          iframe: false

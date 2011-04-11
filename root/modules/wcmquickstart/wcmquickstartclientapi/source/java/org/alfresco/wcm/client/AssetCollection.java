@@ -17,7 +17,7 @@
  */
 package org.alfresco.wcm.client;
 
-import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,32 +25,8 @@ import java.util.List;
  * 
  * @author Chris Lack
  */
-public interface AssetCollection extends Serializable 
+public interface AssetCollection extends Resource 
 {
-	/**
-	 * The id of the item
-	 * @return String item id
-	 */
-	String getId();
-	
-	/**
-	 * The name of the item
-	 * @return String item name
-	 */
-	String getName();
-	
-	/**
-	 * The title of the item
-	 * @return String item title
-	 */
-	String getTitle();	
-	
-	/**
-	 * The description
-	 * @return String description
-	 */
-	String getDescription();
-
 	/**
 	 * Get the collection of assets
 	 * 
@@ -75,5 +51,13 @@ public interface AssetCollection extends Serializable
      * Obtain the query that was executed to return these results.
      * @return
      */
-    Query getQuery();	
+    Query getQuery();
+
+    public List<String> getAssetIds();
+
+    /**
+     * The time at which this asset collection was last updated
+     * @return
+     */
+    public Date getNextRefreshTime();
 }

@@ -45,7 +45,7 @@ function main()
       if (result.status.code == 401) 
       {
          model.success = false;
-         if(result.status.message != "")
+         if (result.status.message != "")
          {
             model.errormsg = result.status.message;
          }
@@ -73,6 +73,7 @@ function main()
    else
    {
       model.success = false;
+      model.errormsg = msg.get("message.passwordchangeauthfailed");
    }
 }
 

@@ -147,8 +147,9 @@ public interface RecordsManagementModel extends RecordsManagementCustomModel
     // Custom RM data aspect
     public static QName ASPECT_CUSTOM_RM_DATA = QName.createQName(RM_URI, "customRMData");
     
-    // marker aspect on all RM objercts (except caveat root
+    // marker aspect on all RM objercts (except caveat root)
     public static QName ASPECT_FILE_PLAN_COMPONENT = QName.createQName(RM_URI, "filePlanComponent");
+    public static QName PROP_ROOT_NODEREF = QName.createQName(RM_URI, "rootNodeRef");
 	
     // Non-electronic document
 	public static QName TYPE_NON_ELECTRONIC_DOCUMENT = QName.createQName(RM_URI, "nonElectronicDocument");
@@ -177,4 +178,12 @@ public interface RecordsManagementModel extends RecordsManagementCustomModel
     
     // Versioned record aspect
     public static QName ASPECT_VERSIONED_RECORD = QName.createQName(RM_URI, "versionedRecord");
+    
+    // Unpublished update aspect
+    public static QName ASPECT_UNPUBLISHED_UPDATE = QName.createQName(RM_URI, "unpublishedUpdate");
+    public static QName PROP_UNPUBLISHED_UPDATE = QName.createQName(RM_URI, "unpublishedUpdate");
+    public static QName PROP_UPDATE_TO = QName.createQName(RM_URI, "updateTo");
+    public static QName PROP_UPDATED_PROPERTIES = QName.createQName(RM_URI, "updatedProperties");
+    public static QName PROP_PUBLISH_IN_PROGRESS = QName.createQName(RM_URI, "publishInProgress");
+    public static String UPDATE_TO_DISPOSITION_ACTION_DEFINITION = "dispositionActionDefinition"; 
 }

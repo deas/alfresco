@@ -96,7 +96,25 @@
           *       description {String} The description of the workflow
           *    }
           */
-         workflowDefinitions: []
+         workflowDefinitions: [],
+
+         /**
+          * Number of characters required for a search.
+          *
+          * @property minSearchTermLength
+          * @type int
+          * @default 1
+          */
+         minSearchTermLength: 1,
+
+         /**
+          * Maximum number of items to display in the results list
+          *
+          * @property maxSearchResults
+          * @type int
+          * @default 100
+          */
+         maxSearchResults: 100
       },
 
       /**
@@ -163,7 +181,9 @@
                   showCaption: true,
                   formUI: true,
                   showCancelButton: true,
-                  destination: this.options.destination
+                  destination: this.options.destination,
+                  minSearchTermLength: this.options.minSearchTermLength,
+                  maxSearchResults: this.options.maxSearchResults
                },
                successCallback:
                {

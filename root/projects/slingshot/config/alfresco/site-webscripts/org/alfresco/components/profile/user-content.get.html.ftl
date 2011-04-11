@@ -1,11 +1,12 @@
+<#include "../../include/alfresco-macros.lib.ftl" />
 <#macro dateFormat date>${date?string(msg("date-format.defaultFTL"))}</#macro>
 <#macro formatContent content date type index>
    <#if content.browseUrl??>
    <li<#if (index == 0)> class="first"</#if>>
-      <a href="${url.context}/page/site/${content.site.shortName}/${content.browseUrl}" class="thmb"><img src="${url.context}/res/components/images/generic-file-32.png" /></a>
+      <span class="icon32"><a href="${url.context}/page/site/${content.site.shortName}/${content.browseUrl}" class="thmb"><img src="${url.context}/res/components/images/filetypes/${fileIcon(content.name)}" alt="${content.name?html}" title="${content.name?html}" /></a></span>
       <p>
-         <a href="${url.context}/page/site/${content.site.shortName}/${content.browseUrl}" class="theme-color-1">${content.displayName?html!""}</a>
-         ${content.description?html}
+         <a href="${url.context}/page/site/${content.site.shortName}/${content.browseUrl}" class="theme-color-1">${(content.displayName!"")?html}</a>
+         ${(content.description!"")?html}
          <span>${msg("label." + type)} <@dateFormat date /></span></p>
    </li>
    </#if>

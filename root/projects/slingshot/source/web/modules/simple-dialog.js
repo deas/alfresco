@@ -557,6 +557,7 @@
             formsRuntime = args[1].runtime;
 
          this.widgets.okButton = formUI.buttons.submit;
+         this.widgets.okButton.set("label", this.msg("button.save"));
          this.widgets.cancelButton = formUI.buttons.cancel;
          this.widgets.cancelButton.set("onclick",
          {

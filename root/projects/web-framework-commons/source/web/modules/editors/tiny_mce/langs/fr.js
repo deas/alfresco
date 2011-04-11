@@ -64,7 +64,7 @@ advhr:{
 advhr_desc:"Ins\u00E9rer trait horizontal"
 },
 emotions:{
-emotions_desc:"\u00C9motions"
+emotions_desc:"Emoticons"
 },
 searchreplace:{
 search_desc:"Chercher",

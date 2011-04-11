@@ -33,6 +33,9 @@
             <!-- Share form config -->
             <value>classpath:alfresco/share-form-config.xml</value>
             
+            <!-- Share Document Library config -->
+            <value>classpath:alfresco/share-documentlibrary-config.xml</value>
+
             <!-- Share Data List form config -->
             <value>classpath:alfresco/share-datalist-form-config.xml</value>
 
@@ -63,6 +66,7 @@
       <property name="interceptors">
          <list>
             <ref bean="requestContextInterceptor"/>
+            <ref bean="editionInterceptor"/>
             <ref bean="themeInterceptor"/>
          </list>
       </property>
@@ -167,6 +171,9 @@
    
    <!-- Override Page View Resolver - to provide access to http req for MT auth support during view name resolution -->
    <bean id="pageViewResolver" class="org.alfresco.web.site.SlingshotPageViewResolver" parent="abstractWebFrameworkViewResolver" />
+   
+   <!-- Interceptors -->
+   <bean id="editionInterceptor" class="org.alfresco.web.site.EditionInterceptor" parent="abstractWebFrameworkInterceptor" />
    
    <!--                             -->
    <!--  Web Script Implementations -->

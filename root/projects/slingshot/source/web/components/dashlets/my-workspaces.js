@@ -115,6 +115,7 @@
          var favEventClass = Alfresco.util.generateDomId(null, "fav-site"),
             imapEventClass = Alfresco.util.generateDomId(null, "imap-site"),
             deleteEventClass = Alfresco.util.generateDomId(null, "del-site");
+
          /**
           * Favourites custom datacell formatter
           */
@@ -181,7 +182,7 @@
          // DataTable definition
          this.widgets.dataTable = new YAHOO.widget.DataTable(this.id + "-workspaces", columnDefinitions, this.widgets.dataSource,
          {
-            MSG_EMPTY: this.msg("label.noWorkspaces")
+            MSG_EMPTY: '<h3>' + this.msg("label.noWorkspaces") + '</h3>'
          });
 
          // Add animation to row delete

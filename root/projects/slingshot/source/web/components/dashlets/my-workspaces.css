@@ -1,8 +1,3 @@
-.my-workspaces .scrollableList
-{
-   padding-top: 2px;
-}
-
 /* Data Table */
 .my-workspaces .yui-dt table
 {
@@ -75,11 +70,6 @@
 .my-workspaces a.imap-favourite-site:hover
 {
    text-decoration: none;
-}
-
-.my-workspaces div.site-favourites
-{
-   
 }
 
 .my-workspaces div.site-title

@@ -20,6 +20,11 @@ blockquote
    padding-bottom: 2em;
 }
 
+#alf-full-width
+{
+   margin: 0px 10px;
+}
+
 .sticky-wrapper
 {
    height: auto !important;
@@ -95,6 +100,7 @@ hr
 }
 
 /* Enables a link to be vertically-aligned to a YUI button */
+
 .yui-button-align
 {
    border-color: transparent;
@@ -103,12 +109,14 @@ hr
    display: inline-block;
    vertical-align: text-bottom;
 }
+
 .yui-button-align .first-child
 {
    border-color: transparent;
    border-style: solid;
    border-width: 0 1px;
 }
+
 .yui-button-align button,
 .yui-button-align a
 {
@@ -121,6 +129,7 @@ hr
 {
    width: auto;
 }
+
 .yui-t1 #yui-main
 {
    margin-left: -50em;
@@ -129,6 +138,18 @@ hr
 h1.sub-title
 {
    padding-top: 1em;
+}
+
+/* History Manager */
+
+#yui-history-iframe
+{
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 1px;
+   height: 1px;
+   visibility: hidden;
 }
 
 /* Page title and navigation styles */
@@ -260,7 +281,7 @@ span.navigation-separator-alt
 
 .toolbar .separator
 {
-   margin: 4px 10px 0 0;
+   margin: 4px 8px 0 0;
    padding: 2px 0 0 4px;
 }
 
@@ -286,14 +307,16 @@ span.navigation-separator-alt
 
 .share-form .form-container form
 {
-   /*margin-left: 1.5em;*/
+
+
+/*margin-left: 1.5em;*/
    margin-top: 0.5em;
 }
 
 .share-form .form-container .caption
 {
-   text-align:right;
-   width:820px;
+   text-align: right;
+   width: 820px;
 }
 
 .share-form .form-container .form-fields
@@ -332,9 +355,8 @@ span.navigation-separator-alt
    width: 5% !important;
 }
 
-/**
- * Replace default styles for HTML content
- */
+/* Replace default styles for HTML content */
+
 .dashlet .rich-content
 {
    padding-top: 8px;
@@ -430,11 +452,7 @@ textarea.wide
    background-color: white;
    margin: 20px 0;
    padding: 0;
-}
-
-.dashlet.resizable
-{
-   padding-bottom: 6px !important;
+   position: relative;
 }
 
 .dashlet .title
@@ -443,29 +461,25 @@ textarea.wide
    overflow-x: hidden;
 }
 
-.dashlet .feed
-{
-   float: right;
-   height: 16px;
-   left: -8px;
-   position: relative;
-   top: -22px;
-   width: 16px;
-}
-
-.dashlet .feed a,
-.dashlet .feed a:active,
-.dashlet .feed a:hover
-{
-   display: block;
-   height: 16px;
-   text-decoration: none;
-   width: 16px;
-}
-
 .dashlet .toolbar
 {
-   padding: 5px 9px 5px 9px;
+   min-height: 28px;
+   padding: 2px 9px 1px;
+}
+
+.dashlet .toolbar .align-left
+{
+   float: left;
+}
+
+.dashlet .toolbar .align-right
+{
+   float: right;
+}
+
+.dashlet .toolbar .clear
+{
+   clear: both;
 }
 
 .dashlet .body
@@ -477,19 +491,19 @@ textarea.wide
 .dashlet .body a:visited,
 .dashlet .body a:hover
 {
-   outline: none;
    text-decoration: none;
 }
 
 .dashlet .body a:hover
 {
+   cursor: pointer;
    text-decoration: underline;
 }
 
 .dashlet .scrollableList
 {
    height: 208px;
-   padding: 8px 0px;
+   padding: 4px 0px;
    overflow: auto;
 }
 
@@ -504,6 +518,104 @@ textarea.wide
 {
    display: none;
 }
+
+.dashlet .dashlet-padding
+{
+   padding: 8px;
+}
+
+.dashlet .body h3
+{
+   font-weight: normal;
+}
+
+.dashlet .body .empty h3
+{
+   font-weight: bold;
+   padding-bottom: 0.5em;
+}
+
+.dashlet .body .empty span
+{
+   line-height: 1.5;
+}
+
+.dashlet a.site-link
+{
+   background-image: url(../components/images/site-16.png);
+   background-repeat: no-repeat;
+   padding-left: 18px;
+}
+
+/* Balloon pop-up */
+
+.balloon
+{
+   background: #000;
+   background: rgba(0, 0, 0, 0.8);
+   color: #e8e8e8;
+   left: -10px;
+   margin: 1em 10px 15px;
+   padding: 15px;
+   position: relative;
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
+   border-radius: 10px;
+   /* outline radius for mozilla/firefox only */
+   -moz-box-shadow: 0 0 10px #000;
+   -webkit-box-shadow: 0 0 10px #000;
+}
+
+/* Mac/Firefox 3.6 fix override */
+.prevent-scrollbars
+{
+   overflow: visible;
+}
+
+.balloon-arrow
+{
+   border-color: #000 transparent;
+   border-color: rgba(0, 0, 0, 0.8) transparent;
+   border-style: solid;
+   border-width: 15px 15px 0;
+   bottom: -15px;
+   left: 50px;
+   position: absolute;
+   width: 0;
+   height: 0;
+}
+
+.balloon .closeButton
+{
+   cursor: pointer;
+   color: #888;
+   float: right;
+   left: 6px;
+   position: relative;
+   top: -8px;
+}
+
+.balloon .text
+{
+   text-align: left;
+}
+
+.balloon .text ul
+{
+   padding-left: 2em;
+}
+
+.balloon .text ul li
+{
+   list-style: disc;
+}
+
+.yui-resize div.yui-resize-handle-b
+{
+   bottom: -6px;
+   margin: 0 -1px;
+}
+
 .yui-resize-resizing .scrollablePanel div.resize-mask
 {
    display: block;
@@ -516,16 +628,15 @@ textarea.wide
    opacity: 0;
 }
 
-.dashlet .body>div
-{
-   padding-left: 8px;
-   padding-right: 8px;
-}
-
 .dashlet .msg
 {
    padding-bottom: 8px;
    padding-top: 8px;
+}
+
+.dashlet .msg p
+{
+   margin-bottom: 0.3em;
 }
 
 .dashlet .text-list-item
@@ -536,6 +647,7 @@ textarea.wide
 .dashlet .detail-list-item
 {
    clear: both;
+   line-height: 1.4;
    padding: 7px 9px;
 }
 
@@ -549,6 +661,7 @@ div.dashlet div.hdr
 {
    margin-bottom: 5px;
    padding-top: 3px;
+   padding-left: 8px;
 }
 
 .dashlet .detail-list-item.last-item
@@ -589,6 +702,52 @@ div.dashlet div.hdr
    padding-left: 20px;
 }
 
+.dashlet .titleBarActions
+{
+   height: 16px;
+   position: absolute;
+   right: 4px;
+   top: 1px;
+   visibility: visible;
+   opacity: 0;
+}
+
+.dashlet .titleBarActions .titleBarActionIcon
+{
+   float: right;
+   margin: 3px;
+   height: 16px;
+   width: 16px;
+   cursor: pointer;
+   background-repeat: no-repeat;
+
+}
+
+.dashlet .titleBarActions .edit
+{
+   background-image: url(../components/images/edit-16.png);
+}
+
+.dashlet .titleBarActions .help
+{
+   background-image: url(../components/images/header/help.png);
+}
+
+.dashlet .titleBarActions .search
+{
+   background-image: url(../components/images/header/search-menu.png);
+}
+
+.dashlet .titleBarActions .info
+{
+   background-image: url(../components/images/info-16.png);
+}
+
+.dashlet .titleBarActions .rss
+{
+   background-image: url(../components/images/feed-icon-16.png);
+}
+
 .yui-g.grid,
 .yui-gb.grid,
 .yui-gc.grid,
@@ -625,6 +784,25 @@ div.dashlet div.hdr
    padding-left: 1em;
 }
 
+.alfresco-twister .alfresco-twister-actions
+{
+   position: absolute;
+   right: 1em;
+}
+
+.alfresco-twister-closed .alfresco-twister-actions
+{
+   display: none;
+}
+
+.alfresco-twister .alfresco-twister-actions a
+{
+   background-position: 0 center;
+   background-repeat: no-repeat;
+   padding: 0.5em;
+   text-decoration: none;
+}
+
 /* Filters */
 
 .tag
@@ -652,7 +830,7 @@ div.dashlet div.hdr
 
 #divCalendarContent
 {
-   border-left: 2px solid #EAEAEA;   
+   border-left: 2px solid #EAEAEA;
    margin-left: 16em;
 }
 
@@ -661,15 +839,31 @@ div.dashlet div.hdr
    width: 16em;
 }
 
+/* Documents */
+
+.document-version
+{
+   font-size: 65%;
+   padding: 2px 3px 1px 2px;
+}
+
+
 /* Document & Folder Details Pages */
-.document-details-comments,
+
+.document-versions .document-version
+{
+   font-size: 93%;
+}
+
 .folder-details-comments
 {
    border-right: 1px solid #ccc;
    padding-bottom: 20px;
+   padding-right: 1em;
 }
 
 /* Invite Task Form */
+
 .invite-task-title
 {
    font-size: 108%;
@@ -705,6 +899,7 @@ div.dashlet div.hdr
 }
 
 /* User Status */
+
 div.user-status
 {
    background-image: url(../components/images/status-16.png);
@@ -716,4 +911,286 @@ div.user-status
 div.user-status span
 {
    color: #808080;
+   font-size: 93%;
+}
+
+/* Alfresco.util.DataTable data tables */
+
+.alfresco-datatable table
+{
+   border: medium none !important;
+   width: 100%;
+}
+
+.alfresco-datatable thead
+{
+   display: none;
+}
+
+.alfresco-datatable tbody
+{
+   outline: none;
+}
+
+.alfresco-datatable tbody,
+.alfresco-datatable tr.yui-dt-highlighted,
+.alfresco-datatable tr.yui-dt-even,
+.alfresco-datatable tr.yui-dt-odd,
+.alfresco-datatable yui-dt-empty
+{
+   background-color: transparent !important;
+   cursor: default !important;
+}
+
+.alfresco-datatable td
+{
+   border-bottom: 1px dashed #d9d9d9 !important;
+   border-right: medium none !important;
+   vertical-align: top;
+}
+
+.alfresco-datatable tr.yui-dt-last td
+{
+   border-bottom: none !important;
+}
+
+.alfresco-datatable td .yui-dt-liner
+{
+   padding: 4px;
+}
+
+.alfresco-datatable table .yui-dt-message td
+{
+   border: medium none !important;
+}
+
+.alfresco-datatable table tr.yui-dt-highlighted,
+.alfresco-datatable table tr.yui-dt-highlighted td.yui-dt-asc,
+.alfresco-datatable table tr.yui-dt-highlighted td.yui-dt-desc,
+.alfresco-datatable table tr.yui-dt-even td.yui-dt-highlighted,
+.alfresco-datatable table tr.yui-dt-odd td.yui-dt-highlighted
+{
+   cursor: default;
+}
+
+.alfresco-datatable table tr td a
+{
+   cursor: pointer;
+}
+
+/* Buttons */
+
+button.alfresco-button
+{
+   display: none;
+}
+
+
+/* Insitu Edit */
+
+span.insitu-edit
+{
+   background-image: url(../components/images/edit-16.png);
+   background-repeat: no-repeat;
+   cursor: pointer;
+   display: inline-block;
+   height: 16px;
+   margin-left: -20px;
+   margin-top: 3px;
+   opacity: 0;
+   position: absolute;
+   visibility: hidden;
+   width: 16px;
+}
+
+form.insitu-edit
+{
+   display: none;
+}
+
+form.insitu-edit input
+{
+   margin-bottom: -1px;
+   margin-right: 0.5em;
+   padding: 0;
+}
+
+form.insitu-edit a
+{
+   font-size: 13px;
+   padding: 0 0.5em;
+}
+
+/* Social Tagging */
+
+.item-social a
+{
+   background-repeat: no-repeat;
+   font-size: 93%;
+   padding: 1px 0 1px 20px;
+   cursor: pointer;
+}
+
+.item-social a.like-action
+{
+   background-image: url(../components/images/like-16.png);
+   background-position: 0 0;
+}
+.item-social a.like-action.enabled
+{
+   background-image: url(../components/images/liked-16.png);
+   padding-left: 16px;
+}
+.item-social span.likes-count
+{
+   background-color: #eee;
+   font-size: 93%;
+   margin-left: 0.5em;
+   padding:1px 2px 0;
+}
+
+.item-social a.favourite-action
+{
+   background-image: url(../components/images/star-deselected_16x16.png);
+}
+.item-social a.favourite-action.enabled
+{
+   background-image: url(../components/images/star-selected_16x16.png);
+}
+.item-social a.favourite-imap
+{
+   background-image: url(../components/images/imap-fav-deselected-16.png);
+}
+.item-social a.favourite-imap.enabled
+{
+   background-image: url(../components/images/imap-fav-selected-16.png);
+}
+
+.item-social a.enabled
+{
+   height: 16px;
+   padding-left: 16px;
+}
+
+.item-social a.enabled:active,
+.item-social a.enabled:hover
+{
+   background-image: url(../components/images/delete-16.png);
+}
+
+span.item-social.item-separator,
+.detail-social span.item-separator
+{
+   border-left: 1px solid #d9d9d9;
+   padding-left: 0.8em;
+}
+
+.yui-dt-highlighted .detail-social span.item-separator
+{
+   border-left: 1px solid #C5E6E9;
+}
+
+/** Simple Document List component **/
+
+/* Thumbnail */
+
+.simple-doclist .icon32
+{
+   cursor: pointer;
+   display: block;
+   min-height: 32px;
+}
+
+.simple-doclist .yui-dt-col-thumbnail .yui-dt-liner
+{
+   padding: 4px;
+   text-align: center;
+}
+
+.simple-doclist .yui-dt-col-detail .yui-dt-liner
+{
+   padding: 4px;
+}
+
+.simple-doclist .thumbnail
+{
+   cursor: pointer;
+   display: block;
+   height: 100px;
+   overflow: hidden;
+   padding-top: 2px;
+   position: relative;
+   width: 100px;
+}
+
+/* Details */
+
+.simple-doclist h3.filename
+{
+   font-size: 139%;
+   font-weight: normal;
+   padding-bottom: 0.2em;
+}
+
+.simple-doclist h3.simple-view
+{
+   font-size: 116%;
+}
+
+.simple-doclist h3.filename span.document-version
+{
+   margin-left: 0.8em;
+   padding: 1px;
+   position: relative;
+   top: -2px;
+   visibility: hidden;
+}
+
+.simple-doclist .yui-dt-highlighted h3.filename span.document-version
+{
+   visibility: visible;
+}
+
+.simple-doclist .detail
+{
+   clear: left;
+   line-height: 1.5em;
+   min-height: 1.5em;
+   padding-bottom: 0.2em;
+}
+
+.simple-doclist .detail .faded
+{
+   color: #aaa;
+}
+
+.simple-doclist .detail span.item
+{
+   float: left;
+   margin-right: 1.6em;
+}
+
+.simple-doclist .detail span.item-simple
+{
+   padding-right: 0.5em;
+}
+
+/* Social tagging */
+
+.simple-doclist .detail-social
+{
+   padding-bottom: 0;
+   padding-top: 0.4em;
+}
+
+.simple-doclist .detail-social span.item
+{
+   line-height: 1.2em;
+   margin-right: 0.8em;
+}
+
+.item-social a.comment,
+.simple-doclist .detail-social a.comment
+{
+   background-image: url(../components/images/comment-16.png);
 }

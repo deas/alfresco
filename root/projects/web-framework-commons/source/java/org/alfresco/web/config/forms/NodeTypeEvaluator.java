@@ -65,7 +65,7 @@ public class NodeTypeEvaluator extends NodeMetadataBasedEvaluator
         {
             if (getLogger().isWarnEnabled())
             {
-                getLogger().warn("Failed to find node type in JSON response from metadata service.", e);
+                getLogger().warn("Failed to find node type in JSON response from metadata service: " + e.getMessage());
             }
         }
         return result;

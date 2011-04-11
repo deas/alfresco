@@ -92,6 +92,14 @@
          enctype: "multipart/form-data",
          
          /**
+          * List of objects representing the id of each form field
+          * 
+          * @property fields
+          * @type array[object]
+          */
+         fields: [],
+         
+         /**
           * List of objects representing the constraints to setup on the form fields
           * 
           * @property fieldConstraints

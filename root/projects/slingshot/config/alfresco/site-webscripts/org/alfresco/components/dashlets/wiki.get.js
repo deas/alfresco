@@ -21,18 +21,15 @@ if (wikipage)
 }
 
 // Call the repository to see if the user is site manager or not
-var userIsSiteManager = false;
-var obj = context.properties["memberships"];
-if (!obj)
+var userIsSiteManager = false,
+   json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
+
+if (json.status == 200)
 {
-   var json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
-   if (json.status == 200)
+   var obj = eval('(' + json + ')');
+   if (obj)
    {
-      obj = eval('(' + json + ')');
+      userIsSiteManager = (obj.role == "SiteManager");
    }
-}
-if (obj)
-{
-   userIsSiteManager = (obj.role == "SiteManager");
 }
 model.userIsSiteManager = userIsSiteManager;

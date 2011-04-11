@@ -59,7 +59,6 @@
       YAHOO.Bubbling.on("ruleSelected", this.onRuleSelected, this);
       YAHOO.Bubbling.on("folderDetailsAvailable", this.onFolderDetailsAvailable, this);     
       YAHOO.Bubbling.on("folderRulesetDetailsAvailable", this.onFolderRulesetDetailsAvailable, this);
-      YAHOO.Bubbling.on("draggableMoved", this.onRuleMoved, this);
 
       return this;
    };
@@ -218,15 +217,14 @@
       },
 
       /**
-       * Event handler called when the "onRuleMoved" event is received
-       *
-       * @method onRuleMoved
-       * @param layer
-       * @param args
+       * Called when the rules order has been changed
+       * @param action
+       * @param draggable
+       * @param container
        */
-      onRuleMoved: function RulesList_onRuleMoved(layer, args)
+      onDragAndDropAction: function(action, draggable, container)
       {
-         if ($hasEventInterest(this.widgets.dnd, args))
+         if (action == Alfresco.util.DragAndDrop.ACTION_MOVED)
          {
             // Enable button so new order can be stored or restored
             this.widgets.saveButton.set("disabled", false);
@@ -435,6 +433,10 @@
                   {
                      container: this.widgets.rulesListContainerEl,
                      groups: [Alfresco.util.DragAndDrop.GROUP_MOVE],
+                     callback: {
+                        fn: this.onDragAndDropAction,
+                        scope: this
+                     },
                      cssClass: "rules-list-item"
                   }
                ],

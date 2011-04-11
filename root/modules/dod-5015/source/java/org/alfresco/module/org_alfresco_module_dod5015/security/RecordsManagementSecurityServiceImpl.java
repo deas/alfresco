@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -83,6 +84,12 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
     
     /** Node service */
     private NodeService nodeService;
+    
+    /** 
+     * Capability sets.  Allow sub-sets of capabilities to be defined enhancing performance when 
+     * only a sub-set need be evaluated.
+     */
+    private Map<String, List<String>> capabilitySets;
     
     /** Records management role zone */
     public static final String RM_ROLE_ZONE_PREFIX = "rmRoleZone";
@@ -151,6 +158,15 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
     }
     
     /**
+     * Set the capability sets
+     * @param capabilitySets    map of capability sets (configured in Spring)
+     */
+    public void setCapabilitySets(Map<String, List<String>> capabilitySets)
+    {
+        this.capabilitySets = capabilitySets;
+    }
+    
+    /**
      * Initialisation method
      */
     public void init()
@@ -183,8 +199,8 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
     {       
         final NodeRef rmRootNode = childAssocRef.getChildRef();
         
-        StoreRef storeRef = new StoreRef(StoreRef.PROTOCOL_WORKSPACE, "SpacesStore");
-        if(!rmRootNode.getStoreRef().equals(storeRef))
+        // Do not execute behaviour if this has been created in the archive store
+        if(rmRootNode.getStoreRef().equals(StoreRef.STORE_REF_ARCHIVE_SPACESSTORE) == true)
         {
             // This is not the spaces store - probably the archive store
             return;
@@ -322,6 +338,30 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
     public Map<Capability, AccessStatus> getCapabilities(NodeRef nodeRef)
     {
         return voter.getCapabilities(nodeRef);
+    }        
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService#getCapabilities(org.alfresco.service.cmr.repository.NodeRef, java.lang.String)
+     */
+    public Map<Capability, AccessStatus> getCapabilities(NodeRef nodeRef, String capabilitySet)
+    {
+        List<String> capabilities = capabilitySets.get(capabilitySet);
+        if (capabilities == null)
+        {
+            if (getCapability(capabilitySet) != null)
+            {
+                // If the capability set is the name of a capability assume we just want that single
+                // capability
+                capabilities = new ArrayList<String>(1);
+                capabilities.add(capabilitySet);
+            }
+            else
+            {
+                throw new AlfrescoRuntimeException("Unable to find the capability set '" + capabilitySet + "'");
+            }
+        }
+        
+        return voter.getCapabilities(nodeRef, capabilities);
     }
 
     /**
@@ -490,7 +530,7 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
                 {
                     String name = getShortRoleName(authorityService.getShortName(roleAuthority), rmRootNode);
                     String displayLabel = authorityService.getAuthorityDisplayName(roleAuthority);
-                    Set<String> capabilities = getCapabilities(rmRootNode, roleAuthority);
+                    Set<String> capabilities = getCapabilitiesImpl(rmRootNode, roleAuthority);
                     
                     Role role = new Role(name, displayLabel, capabilities, roleAuthority);
                     result.add(role);            
@@ -520,7 +560,7 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
                     {                    
                         String name = getShortRoleName(authorityService.getShortName(roleAuthority), rmRootNode);
                         String displayLabel = authorityService.getAuthorityDisplayName(roleAuthority);
-                        Set<String> capabilities = getCapabilities(rmRootNode, roleAuthority);
+                        Set<String> capabilities = getCapabilitiesImpl(rmRootNode, roleAuthority);
                         
                         Role role = new Role(name, displayLabel, capabilities, roleAuthority);
                         result.add(role);  
@@ -582,7 +622,7 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
                 {
                     String name = getShortRoleName(authorityService.getShortName(roleAuthority), rmRootNode);
                     String displayLabel = authorityService.getAuthorityDisplayName(roleAuthority);                
-                    Set<String> capabilities = getCapabilities(rmRootNode, roleAuthority);
+                    Set<String> capabilities = getCapabilitiesImpl(rmRootNode, roleAuthority);
                     
                     result = new Role(name, displayLabel, capabilities, roleAuthority);
                 }
@@ -592,7 +632,7 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
         }, AuthenticationUtil.getAdminUserName());
     }
     
-    private Set<String> getCapabilities(NodeRef rmRootNode, String roleAuthority)
+    private Set<String> getCapabilitiesImpl(NodeRef rmRootNode, String roleAuthority)
     {
         Set<AccessPermission> permissions = permissionService.getAllSetPermissions(rmRootNode);
         Set<String> capabilities = new HashSet<String>(52);

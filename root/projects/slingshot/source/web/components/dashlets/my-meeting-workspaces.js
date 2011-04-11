@@ -182,7 +182,7 @@
          // DataTable definition
          this.widgets.dataTable = new YAHOO.widget.DataTable(this.id + "-meeting-workspaces", columnDefinitions, this.widgets.dataSource,
          {
-            MSG_EMPTY: this.msg("label.noMeetingWorkspaces")
+            MSG_EMPTY: '<h3>' + this.msg("label.noMeetingWorkspaces") + '</h3>'
          });
 
          // Add animation to row delete

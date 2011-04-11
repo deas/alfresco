@@ -55,7 +55,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * Records management service implementation
+ * Records management service implementation.
  * 
  * @author Roy Wetherall
  */
@@ -65,8 +65,6 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                                                      RecordsManagementPolicies.OnCreateReference,
                                                      RecordsManagementPolicies.OnRemoveReference
 {
-    private static final String CHANGED_PROPERTIES = "changedProperties";
-    
     /** Store that the RM roots are contained within */
     private StoreRef defaultStoreRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
 
@@ -93,6 +91,9 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     
     /** Disposition selection strategy */
     private DispositionSelectionStrategy dispositionSelectionStrategy;
+    
+    /** Java behaviour */
+    private JavaBehaviour onChangeToDispositionActionDefinition;
     
     /**
      * Set the service registry service
@@ -171,27 +172,8 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                 TYPE_RECORDS_MANAGEMENT_CONTAINER, 
                 ContentModel.ASSOC_CONTAINS, 
                 new JavaBehaviour(this, "onCreateRecordFolder", NotificationFrequency.TRANSACTION_COMMIT));
-        /**
-         * Prevent content nodes being added to dod series and category.
-         * Content can only be added to dod folders.
-         * 
-         * TODO still allows nodes to be created at top level since ACP import creates a temporary node 
-         * in the current folder rather than being in a temporary location.
-         */
-        /* Commented out as it prevents disposition schedule being applied to record folder */
-//        this.policyComponent.bindAssociationBehaviour(
-//                    QName.createQName(NamespaceService.ALFRESCO_URI, "onCreateChildAssociation"), 
-//                    DOD5015Model.TYPE_RECORD_SERIES, 
-//                    ContentModel.ASSOC_CONTAINS, 
-//                    new JavaBehaviour(this, "onAddContentToContainer", NotificationFrequency.EVERY_EVENT));
-//
-//        this.policyComponent.bindAssociationBehaviour(
-//                    QName.createQName(NamespaceService.ALFRESCO_URI, "onCreateChildAssociation"), 
-//                    DOD5015Model.TYPE_RECORD_CATEGORY, 
-//                    ContentModel.ASSOC_CONTAINS, 
-//                    new JavaBehaviour(this, "onAddContentToContainer", NotificationFrequency.EVERY_EVENT));
         
-      this.policyComponent.bindAssociationBehaviour(
+       this.policyComponent.bindAssociationBehaviour(
                   QName.createQName(NamespaceService.ALFRESCO_URI, "onCreateChildAssociation"), 
                   TYPE_RECORDS_MANAGEMENT_CONTAINER, 
                   ContentModel.ASSOC_CONTAINS, 
@@ -211,9 +193,10 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                 new JavaBehaviour(this, "onChangeToAnyRmProperty", NotificationFrequency.TRANSACTION_COMMIT));
         
         // Disposition behaviours
+        onChangeToDispositionActionDefinition = new JavaBehaviour(this, "onChangeToDispositionActionDefinition", NotificationFrequency.TRANSACTION_COMMIT); 
         this.policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onUpdateProperties"),
                 TYPE_DISPOSITION_ACTION_DEFINITION,
-                new JavaBehaviour(this, "onChangeToDispositionActionDefinition", NotificationFrequency.TRANSACTION_COMMIT));
+                onChangeToDispositionActionDefinition);
 
         // Reference behaviours
         policyComponent.bindClassBehaviour(RecordsManagementPolicies.ON_CREATE_REFERENCE, 
@@ -227,7 +210,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         // Identifier behaviours
         policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onUpdateProperties"),
                                            ASPECT_RECORD_COMPONENT_ID,
-                                           new JavaBehaviour(this, "onIdentifierUpdate", NotificationFrequency.TRANSACTION_COMMIT));
+                                           new JavaBehaviour(this, "onIdentifierUpdate", NotificationFrequency.TRANSACTION_COMMIT));    
     }
     
     /**
@@ -349,10 +332,42 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     {
         if (nodeService.exists(node) == true)
         {
-            Set<QName> changedProps = this.determineChangedProps(oldProps, newProps);
-            Map<String, Serializable> params = new HashMap<String, Serializable>();
-            params.put(CHANGED_PROPERTIES, (Serializable)changedProps);
-            rmActionService.executeRecordsManagementAction(node, "broadcastDispositionActionDefinitionUpdate", params);
+            onChangeToDispositionActionDefinition.disable();
+            try
+            {
+                // Determine the properties that have changed
+                Set<QName> changedProps = this.determineChangedProps(oldProps, newProps);
+                
+                if (nodeService.hasAspect(node, ASPECT_UNPUBLISHED_UPDATE) == false)
+                {                
+                    // Apply the unpublished aspect                
+                    Map<QName, Serializable> props = new HashMap<QName, Serializable>();
+                    props.put(PROP_UPDATE_TO, UPDATE_TO_DISPOSITION_ACTION_DEFINITION);
+                    props.put(PROP_UPDATED_PROPERTIES, (Serializable)changedProps);
+                    nodeService.addAspect(node, ASPECT_UNPUBLISHED_UPDATE, props);
+                }
+                else
+                {                
+                    Map<QName, Serializable> props = nodeService.getProperties(node);
+                    
+                    // Check that there isn't a update currently being published
+                    if ((Boolean)props.get(PROP_PUBLISH_IN_PROGRESS).equals(Boolean.TRUE) == true)
+                    {
+                        // Can not update the disposition schedule since there is an outstanding update being published
+                        throw new AlfrescoRuntimeException(
+                                "You can not update the disposition action defintion as a previous update is currently being published.");
+                    }
+                    
+                    // Update the update information                
+                    props.put(PROP_UPDATE_TO, UPDATE_TO_DISPOSITION_ACTION_DEFINITION);
+                    props.put(PROP_UPDATED_PROPERTIES, (Serializable)changedProps);
+                    nodeService.setProperties(node, props);
+                }
+            }
+            finally
+            {
+                onChangeToDispositionActionDefinition.enable();
+            }
         }
     }
     
@@ -501,25 +516,29 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
      */
     public NodeRef getRecordsManagementRoot(NodeRef nodeRef)
     {
-        NodeRef result = null;
-        
-        if (this.nodeService.hasAspect(nodeRef, ASPECT_FILE_PLAN_COMPONENT) == true)
-        {
-            if (this.nodeService.hasAspect(nodeRef, ASPECT_RECORDS_MANAGEMENT_ROOT) == true)
+       NodeRef result = null;
+               
+       if (nodeRef != null)
+       {
+            result = (NodeRef)nodeService.getProperty(nodeRef, PROP_ROOT_NODEREF);
+            if (result == null)
             {
-                result = nodeRef;
+                if (nodeService.hasAspect(nodeRef, ASPECT_RECORDS_MANAGEMENT_ROOT) == true)
+                {
+                    result = nodeRef;
+                }
+                else
+                {
+                    ChildAssociationRef parentAssocRef = nodeService.getPrimaryParent(nodeRef);
+                    if (parentAssocRef != null)
+                    {
+                        result = getRecordsManagementRoot(parentAssocRef.getParentRef());
+                    }
+                }
             }
-            else
-            {
-                result = getRecordsManagementRoot(this.nodeService.getPrimaryParent(nodeRef).getParentRef());
-            }
-        }
-        else
-        {
-            throw new AlfrescoRuntimeException("Can not find the records management root for a node that is not a file plan component");
-        }
+       }      
         
-        return result;
+       return result;
     }
 
     /**

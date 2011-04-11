@@ -1,5 +1,10 @@
 /* CSS Overrides for Microsoft Internet Explorer v7 */
 
+#alf-hd
+{
+   zoom: 1;
+}
+
 textarea
 {
    font-family: Arial, sans-serif;
@@ -18,18 +23,21 @@ textarea
  * Global site footer
  */
 
-.footer-ent
+.footer-ent,
+.footer-team
 {
    top: -2px;
 }
 
-.footer-ent .copyright
+.footer-ent .copyright,
+.footer-team .copyright
 {
    padding-bottom: 0;
    padding-top: 0;
 }
 
-.footer-ent .copyright img
+.footer-ent .copyright img,
+.footer-team .copyright img
 {
    padding-bottom: 10px;
    padding-top: 10px;
@@ -60,6 +68,11 @@ body .title-button .yui-button
    position: relative;
 }
 
+.dashlet .titleBarActions
+{
+   height: 22px;
+}
+
 /**
  * Dashlets / position:relative and overflow:auto bug
  * Plus: inability to do anything according to any standards, ever
@@ -70,6 +83,22 @@ body .title-button .yui-button
 {
    background-color: #fff;
    position: relative;
+}
+
+/**
+ * Customise Pages
+ */
+
+.customise-pages-page-list-item
+{
+   display: block;
+   float: left;
+}
+
+.customise-pages .page-list-wrapper
+{
+   overflow-x: hidden;
+   overflow-y: auto;
 }
 
 /* Dashlet resizing with iframes */
@@ -99,6 +128,12 @@ body .title-button .yui-button
  * Document Library
  */
 
+ .toolbar .header-bar,
+ .toolbar .nav-bar
+{
+   padding-bottom: 3px;
+}
+
 .toolbar .selected-items hr
 {
    color: #e4e4e4;
@@ -107,9 +142,19 @@ body .title-button .yui-button
    width: 10em;
 }
 
+.toolbar .nav-bar .breadcrumb
+{
+   padding-top: 0;
+}
+
 .toolbar span.crumb
 {
    background-position: left center;
+}
+
+.doclist button
+{
+   height: 1.9em;
 }
 
 .doclist .align-right
@@ -120,6 +165,19 @@ body .title-button .yui-button
 .doclist .documents .detail
 {
    width: 100%;
+}
+
+.doclist .documents h3.filename span.document-version
+{
+   visibility: visible;
+}
+
+.doclist .documents .detail a.comment,
+.doclist .documents .detail a.like-action,
+.doclist .documents .detail a.favourite-document,
+.doclist .documents .detail a.favourite-folder
+{
+   zoom: 1;
 }
 
 .doclist div.simple div.more-actions
@@ -202,4 +260,35 @@ table .yui-dt-empty
 .object-finder .picker-items table
 {
    margin-right: -20px !important;
+}
+
+.object-finder .current-values div.itemtype-tag
+{
+   float: left;
+}
+
+/* Folder Picker */
+
+.global-folder .mode button
+{
+   width: 20em;
+   height: 4em;
+   overflow: hidden;
+}
+
+.global-folder .repository-mode .treeview
+{
+   width: 38em;
+}
+
+.global-folder .treeview
+{
+   width: 22em;
+}
+
+/* Social */
+
+.item-social a.enabled
+{
+   zoom: 1;
 }

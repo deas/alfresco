@@ -33,7 +33,9 @@ h2
    font-size: 123.1%;
 }
 
-h2.thin
+h2.thin,
+h3.thin,
+h4.thin   
 {
    font-weight: normal;
 }
@@ -63,6 +65,13 @@ h4 .light,
 h4 .lighter
 {
    color: #a2a2a2;
+}
+
+h1.dark,
+h2.dark,
+h3.dark
+{
+   color: #333333;
 }
 
 hr
@@ -115,12 +124,22 @@ label,
    font-weight: normal;
 }
 
+.faded
+{
+   color: #aaa;
+}
+
 /* DASHLETS */
 
-.dashlet
+.dashlet,
+.yui-skin-default .yui-resize div.yui-resize-handle-b
 {
    border: 1px solid #bababa;
-   background-color: white;
+}
+
+.yui-skin-default .yui-resize div.yui-resize-handle-b
+{
+   border-top: medium none;
 }
 
 .dashlet .title
@@ -128,7 +147,6 @@ label,
    background-color: #d7e0e7;
    background-image: url(images/dashlet-title-bg.png);
    background-repeat: repeat-x;
-   border-bottom: 1px dashed #bababa;
    color: #262d35;
 }
 
@@ -382,7 +400,7 @@ span.navigation-separator-alt
 .toolbar .separator
 {
    border: medium none;
-   border-right: 1px dotted #457A9C;
+   border-right: 1px dotted #c7ccce;
 }
 
 .share-toolbar .backLink
@@ -512,6 +530,24 @@ span.mce_alfresco-imagelibrary
 .yui-skin-default div.flat-button span.yui-checkbox-button-checked
 {
    background: #6ca5ce none;
+}
+
+/* Override checked styles where specified */
+
+.yui-skin-default .no-check-bg div.flat-button span.yui-radio-button-checked,
+.yui-skin-default .no-check-bg div.flat-button span.yui-checkbox-button-checked,
+.yui-skin-default .no-check-bg div.flat-button span.yui-radio-button-checked,
+.yui-skin-default .no-check-bg div.flat-button span.yui-checkbox-button-checked
+{
+   background: none;
+}
+
+/* Ensure hover state can be activated */
+
+.yui-skin-default .no-check-bg div.flat-button span.yui-button-hover
+{
+   background: transparent url(images/sprite.png) repeat-x scroll 0 0;
+   border-color: #808080;
 }
 
 /* Override YUI Button styles for - title button style */
@@ -704,12 +740,13 @@ body.yui-skin-default .doclist div.more-actions
 
 body.yui-skin-default .doclist .action-set a:active,
 body.yui-skin-default .doclist .action-set a:hover,
-body.yui-skin-default .doclist .action-set .highlighted
+body.yui-skin-default .doclist .action-set .highlighted,
+#divCalendarContent .yui-dt-col-actions a:active,
+#divCalendarContent .yui-dt-col-actions a:hover
 {
    border: 1px solid #6CA5CE;
 }
 
-body.yui-skin-default .doclist tr.yui-dt-highlighted,
 body.yui-skin-default .doclist tr.yui-dt-highlighted
 {
    background-color: #f4faff;
@@ -765,14 +802,14 @@ body.yui-skin-default .categoryview .category .ygtvdepthcell
 .yui-skin-default .categoryview .selected,
 body.yui-skin-default .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a.yui-columnbrowser-item-selected
 {
-   background-color: #D2E5F2;
+   background-color: #dceaf4;
 }
 
 /* these rules need to be separate from the above for ie6 */
 .yui-skin-default .treeview .selected > table,
 .yui-skin-default .categoryview .selected > table
 {
-   background-color: #D2E5F2;
+   background-color: #dceaf4;
 }
 
 .yui-skin-default .filter a.disabled,
@@ -830,7 +867,9 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .yui-skin-default .node .nodeURL a,
 .yui-skin-default .nodeAttrValue a,
 .yui-skin-default .nodeFooter .tag a,
-.yui-skin-default .detail .tag a,
+.yui-skin-default .yui-dt-highlighted .detail .tag a,
+.yui-skin-default .yui-dt-highlighted .detail .category a,
+.yui-skin-default .yui-dt-highlighted .detail-social .item a,
 .yui-skin-default a.wiki-tag-link,
 .yui-skin-default .node .userLink a,
 .yui-skin-default .site-members h3 a,
@@ -839,9 +878,27 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .yui-skin-default .attrValue a,
 .yui-skin-default .detail .item a,
 .yui-skin-default .info .meta-value a,
-.yui-skin-default .rules-none a
+.yui-skin-default .rules-none a,
+.yui-skin-default .agendaview a,
+.yui-skin-default a.previousEvents,
+.yui-skin-default a.nextEvents
+
 {
    color: #4F94C9;
+}
+
+.yui-skin-default .detail .tag a,
+.yui-skin-default .detail .category a,
+.yui-skin-default .detail-social .item a,
+.yui-skin-default .document-tags .tag
+{
+   color: #333;
+}
+
+.yui-skin-default .detail .tag a,
+.yui-skin-default .document-tags .tag
+{
+   background-color: #e8e8e8;
 }
 
 .yui-skin-default .postview .nodeTitle a
@@ -851,7 +908,7 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 
 .yui-skin-default .site-navigation
 {
-   background-image: url(./images/navigation-bg.png);
+   background-image: url(images/navigation-bg.png);
 }
 
 .yui-skin-default .rules-list a
@@ -875,6 +932,14 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 
 /* End Calendar */
 
+/* Document */
+
+.document-version
+{
+   background-color: #aaa;
+   color: #fff;
+}
+
 .cmis .body a
 {
    color: #6CA5CE;
@@ -890,6 +955,16 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .alfresco-twister-closed
 {
    background: transparent url(images/collapsed.png) no-repeat scroll 0 50% !important;
+}
+
+/* Preview Tooltip */
+
+.yui-tt .bd
+{
+   background-color: #f4faff !important;
+   border: 1px solid #333 !important;
+   padding: 4px 4px 1px !important;
+   text-align: left;
 }
 
 /* Theme colors */
@@ -989,6 +1064,18 @@ div.theme-bg-color-7
 .theme-bg-2
 {
    background-color: #E3EAEC;
+   background-image: -webkit-gradient(
+       linear,
+       left top,
+       left bottom,
+       color-stop(0, rgb(246,246,246)),
+       color-stop(1, rgb(233,232,234))
+   );
+   background-image: -moz-linear-gradient(
+       center top,
+       rgb(246,246,246) 0%,
+       rgb(233,232,234) 100%
+   );
 }
 
 .theme-bg-selected

@@ -42,7 +42,7 @@ public class EditNonRecordMetadataCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozenUncutoff(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozenUncutoff(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (isRecordFolder(voter.getNodeService().getType(nodeRef)))
                 {

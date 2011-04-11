@@ -108,11 +108,15 @@
    margin-bottom: 6px;
 }
 
+.site-finder .user-status
+{
+   margin-top: 0.5em;
+}
+
 .site-finder .moderated,
 .site-finder .private
 {
    color: #fff;
-   float: left;
    font-size: 93%;
    padding: 0.1em 0.2em;
 }

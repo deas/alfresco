@@ -1,31 +1,28 @@
-.activities .new-day
+.activities .empty
 {
-   float: none !important;
-   padding: 1em;
+   background-image: url(../images/help-activities-bw-32.png);
+   background-position: 16px 4px;
+   background-repeat: no-repeat;
+   padding: 4px 8px 4px 64px;
 }
 
-.activities .new-hour
+.activities .empty div
 {
-   float: none !important;
-   padding-bottom: 0.5em;
+   line-height: 1.5em;
    padding-top: 1em;
 }
 
-.activities div.first-item
+.activities div.new-day
 {
-   padding-top: 0;
-}
-.activities div.last-item
-{
-   padding-bottom: 1em;
+   clear: both;
+   float: none;
+   padding: 0.5em 8px;
 }
 
-.activities .new-day span,
-.activities .new-hour span
+.activities .new-day span
 {
    background-color: #f9fcfd;
    font-size: 108%;
-   font-weight: bold;
    padding-right: 0.5em;
    position: relative;
 }
@@ -38,20 +35,90 @@
    top: 0.7em;
 }
 
-
 .activities .activity
 {
    clear: both;
    margin-left: 1em;
-   padding-bottom: 2px;
+   padding-bottom: 1em;
+}
+
+.activities .activity .avatar
+{
+   float: left;
+   text-align: center;
+   width: 32px;
+}
+
+.activities .activity .content
+{
+   line-height: 1.5;
+   margin-left: 40px;
 }
 
 .activities .activity .time
 {
-   float: left;
+   font-size: 93%;
 }
 
 .activities .activity .detail
 {
-   margin-left: 3.5em;
+}
+
+.activities .activity .detail .item-link
+{
+   background-repeat: no-repeat;
+   padding: 1px 0 1px 18px;
+}
+
+.activities .activity .detail .blog
+{
+   background-image: url(../images/blog-16.png);
+}
+.activities .activity .detail .calendar
+{
+   background-image: url(../calendar/images/calendar-16.png);
+}
+.activities .activity .detail .comment
+{
+   background-image: url(../images/comment-16.png);
+}
+.activities .activity .detail .datalist
+{
+   background-image: url(../images/list-16.png);
+}
+.activities .activity .detail .discussion
+{
+   background-image: url(../images/discussion-16.png);
+}
+.activities .activity .detail .document
+{
+   background-image: url(../images/filetypes/generic-file-16.png);
+}
+.activities .activity .detail .folder
+{
+   background-image: url(../images/filetypes/generic-folder-16.png);
+}
+.activities .activity .detail .group
+{
+   background-image: url(../images/filetypes/generic-group-16.png);
+}
+.activities .activity .detail .like
+{
+   background-image: url(../images/liked-16.png);
+}
+.activities .activity .detail .link
+{
+   background-image: url(../images/link-16.png);
+}
+.activities .activity .detail .reply
+{
+   background-image: url(../images/reply-to-discussion-16.png);
+}
+.activities .activity .detail .user
+{
+   background-image: url(../images/filetypes/generic-user-16.png);
+}
+.activities .activity .detail .wiki
+{
+   background-image: url(../images/wiki-16.png);
 }

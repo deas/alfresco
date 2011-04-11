@@ -3,6 +3,15 @@
 <#assign js = "">
 
 <#--
+   Pre-configured conditions
+-->
+<#assign conditionRepositoryRootNode = ((config.scoped["RepositoryLibrary"]["root-node"].getValue())!"") != "">
+<#assign conditionvalueEdition = (context.properties["editionInfo"].edition)!"UNKNOWN">
+<#assign conditionEditionCommunity = conditionvalueEdition == "UNKNOWN">
+<#assign conditionEditionEnterprise = conditionvalueEdition == "ENTERPRISE">
+<#assign conditionEditionTeam = conditionvalueEdition == "TEAM">
+
+<#--
    Application and User Items entrypoint
 -->
 <#macro renderItems p_root p_id p_type>
@@ -96,12 +105,7 @@
    </#if>
 <#if item.type = "user">
 <li class="user-menuitem HEADER-MARKER">
-   <#if user.properties.avatar??>
-      <#assign avatar>${url.context}/proxy/alfresco/api/node/${user.properties.avatar?replace('://','/')}/content/thumbnails/avatar?c=force</#assign>
-   <#else>
-      <#assign avatar>${url.context}/res/components/images/no-user-photo-64.png</#assign>
-   </#if>
-   <a class="avatar" ${attrHref} tabindex="0"><img src="${avatar}" alt="avatar" /></a>
+   <a class="avatar" ${attrHref} tabindex="0"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${user.name?url}" alt="avatar" /></a>
    <span class="user-status">
       <textarea id="${id}-statusText" tabindex="0">${userStatus?html}</textarea>
       <div id="${id}-statusTime" class="user-status-time" title="${userStatusTime?html}"></div>

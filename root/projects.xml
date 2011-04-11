@@ -1588,6 +1588,30 @@
    <target name="package-slingshot-war" 
            depends="assemble-slingshot-war,
                     minimize-slingshot-javascript">
+      
+      <!-- clean up previously generated properties files -->
+      <delete>
+         <fileset dir="${dir.project.slingshot.assemble}/WEB-INF/classes/alfresco/messages">
+            <include name="*_en.properties" />
+         </fileset>
+         <fileset dir="${dir.project.slingshot.assemble}/WEB-INF/classes/alfresco/site-webscripts">
+            <include name="*_en.properties" />
+         </fileset>
+      </delete>
+
+      <copy todir="${dir.project.slingshot.assemble}/WEB-INF/classes/alfresco/messages">
+         <fileset dir="${dir.project.slingshot.assemble}/WEB-INF/classes/alfresco/messages"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).properties$" 
+                 to="\1_en.properties"/>
+      </copy>
+      <copy todir="${dir.project.slingshot.assemble}/WEB-INF/classes/alfresco/site-webscripts">
+         <fileset dir="${dir.project.slingshot.assemble}/WEB-INF/classes/alfresco/site-webscripts"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).get.properties$" 
+                 to="\1.get_en.properties"/>
+      </copy>
+
       <war warfile="${dir.project.slingshot.dist}/${file.name.war.slingshot}" 
            webxml="${dir.project.slingshot.src.webinf}/web.xml">
          <fileset dir="${dir.project.slingshot.assemble}" />
@@ -1699,6 +1723,7 @@
                          windowtitle="Alfresco Share" 
                          projectdir="${dir.project.slingshot}"/>
    </target>
+   
 
    <!-- ************************ -->
    <!-- ** Web Editor Project ** -->
@@ -1935,10 +1960,28 @@
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/messages">
             <include name="*_en_US.properties" />
          </fileset>
+         <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/model">
+            <include name="*_en_US.properties" />
+         </fileset>
+         <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/workflow">
+            <include name="*_en_US.properties" />
+         </fileset>
       </delete>
 
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/messages">
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/messages"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).properties$" 
+                 to="\1_en_US.properties"/>
+      </copy>
+      <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/model">
+         <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/model"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).properties$" 
+                 to="\1_en_US.properties"/>
+      </copy>
+      <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/workflow">
+         <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/workflow"/>
          <mapper type="regexp" 
                  from="^([^_]*).properties$" 
                  to="\1_en_US.properties"/>
@@ -1960,9 +2003,6 @@
                   excludes="WEB-INF/**" />
       </copy>
       
-      <minimize-javascript-file sourcefile="${dir.project.webclient.assemble}/scripts/ajax/mootools.v1.11-src.js"
-                                destfile="${dir.project.webclient.assemble}/scripts/ajax/mootools.v1.11.js" />
-
       <java classname="CommentStripper" 
             dir="${dir.project.webclient.assemble}" 
             fork="yes">
@@ -1981,7 +2021,23 @@
                   includes="licenses/**" />
          <fileset dir="${dir.project.remoteapi.src.webinf}"/>
       </copy>
+      
+      <!-- for Share activity feed (email) notifier - overwrite dummy files -->
 
+      <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/messages" overwrite="true">
+         <!-- for activity messages based on activity type -->
+         <fileset dir="${dir.project.slingshot.config}/alfresco/site-webscripts/org/alfresco/components/dashlets"
+                  includes="activity-list.get*.properties" />
+         <!-- note: remove ".get" since it seems to confuse java.util.ResourceBundle.getBundle -->
+         <mapper type="regexp" from="^(.*).get(.*)\.properties$$" to="\1\2.properties"/>
+      </copy>
+
+      <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/messages" overwrite="true">
+         <!-- for role.* messages -->
+         <fileset dir="${dir.project.slingshot.config}/alfresco/messages"
+                  includes="slingshot*.properties" />
+      </copy>
+      
       <!-- add config files to WEB-INF/classes -->
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes">
          <fileset dir="${dir.project.core.src.java}" 
@@ -2005,10 +2061,6 @@
                   includes="**/extension/dev-context.xml"/>
       </copy>
             
-      <!-- explicitly copy the bootstrap file for remote api to get round dependency issue. -->
-      <copy file="${dir.project.remoteapi.config}/alfresco/extension/bootstrap/remote-api-context.xml"
-            todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/extension/bootstrap"/>
-
       <!-- Fixes to lucene FSDirectory -->
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/org/apache/lucene">
          <fileset dir="${dir.project.repository.classes}/org/apache/lucene" 
@@ -2422,6 +2474,7 @@
             <fileset dir="${dir.module.dod5015}/${dir.name.source}/${dir.name.java}">
                <patternset>
                   <include name="**/*Test.java" />
+                  <exclude name="**/Base*Test.java" />
                   <exclude name="**/*SystemTest.java" />
                   <exclude name="**/*RestApiTest.java" />
                   <!-- <exclude name="**/DOD5015Test.java" /> -->
@@ -2451,7 +2504,7 @@
    </target>
    
    <target name="assemble-dod5015-share" depends="init">
-      <copy todir="${dir.module.dod5015.share.assemble}">
+      <copy todir="${dir.module.dod5015.share.assemble}/web">
          <fileset dir="${dir.module.dod5015.share.src.web}" />
       </copy>
    </target>
@@ -2461,16 +2514,31 @@
      <echo>Compressing DOD5015 Share Javascript...</echo>
      <minimize-javascript sourcedir="${dir.module.dod5015.share.assemble}" 
                           destdir="${dir.module.dod5015.share.assemble}" />
-  </target>
+   </target>
    
    <target name="package-dod5015-share-extension" 
            depends="assemble-dod5015-share, minimize-dod5015-share-javascript">
       <mkdir dir="${dir.module.dod5015.share.dist}" />
+      
+      <copy todir="${dir.module.dod5015.share.assemble}/WEB-INF/classes/alfresco/messages">
+         <fileset dir="${dir.module.dod5015.share.config}/alfresco/messages"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).properties$" 
+                 to="\1_en.properties"/>
+      </copy>
+      <copy todir="${dir.module.dod5015.share.assemble}/WEB-INF/classes/alfresco/site-webscripts">
+         <fileset dir="${dir.module.dod5015.share.config}/alfresco/site-webscripts"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).get.properties$" 
+                 to="\1.get_en.properties"/>
+      </copy>
+      
       <zip destfile="${dir.module.dod5015.share.dist}/${file.name.amp.dod5015.share}" excludes="**/modules/*">
          <zipfileset file="${dir.module.dod5015.share.config}/module/module.properties"/>
          <zipfileset file="${dir.module.dod5015.share.config}/module/file-mapping.properties"/>
          <zipfileset dir="${dir.module.dod5015.share.config}" prefix="WEB-INF/classes" />
-         <zipfileset dir="${dir.module.dod5015.share.assemble}"  prefix="web"/>
+         <zipfileset dir="${dir.module.dod5015.share.assemble}/WEB-INF/classes" prefix="WEB-INF/classes"/>
+         <zipfileset dir="${dir.module.dod5015.share.assemble}/web" prefix="web"/>
       </zip>
    </target>
 
@@ -3778,6 +3846,22 @@
       <echo>Installing FDK into WAR...</echo>
       <install-amp ampfile="${dir.project.fdk.repo.dist}/${file.name.amp.fdk}"
                    warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
+   </target>
+
+   <!-- ******************************** -->
+   <!-- ** JavaScript Library Targets ** -->
+   <!-- ******************************** -->
+   
+   <target name="minimize-mootools-javascript" depends="init">
+      <minimize-javascript-file sourcefile="${dir.project.3rdparty.src}/mootools.v1.11-src.js"
+                                destfile="${dir.project.webclient.src.web}/scripts/ajax/mootools.v1.11-min.js" />
+      <concat destfile="${dir.project.webclient.src.web}/scripts/ajax/mootools.v1.11.js">
+         <header trimleading="yes">
+            /* Generated from projects/3rd-party/src/mootools.v1.11-src.js using "ant minimize-mootools-javascript". Do not modify this file directly. */
+         </header>
+         <fileset file="${dir.project.webclient.src.web}/scripts/ajax/mootools.v1.11-min.js" />
+      </concat>
+      <delete file="${dir.project.webclient.src.web}/scripts/ajax/mootools.v1.11-min.js" />
    </target>
    
 </project>

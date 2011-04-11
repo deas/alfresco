@@ -18,6 +18,20 @@
                             <value>${installdir}</value>
                         </substitution>
 		        <substitution>
+                            <pattern>@@BITROCK_ALFRESCO_LICENSE_DIR@@</pattern>
+                            <value>${installdir.unix}</value>
+                            <ruleList>
+                                <platformTest type="unix"/>
+                            </ruleList>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_ALFRESCO_LICENSE_DIR@@</pattern>
+                            <value>${installdir.dos.unix}</value>
+                            <ruleList>
+                                <platformTest type="windows"/>
+                            </ruleList>
+                        </substitution>
+		        <substitution>
                             <pattern>@@BITROCK_ALFRESCO_IMAGEMAGICK_ROOTDIR@@</pattern>
                             <value>${imagemagick_root_directory.unix}</value>
                             <ruleList>

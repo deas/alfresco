@@ -42,7 +42,7 @@ public class DeleteRecordsCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (!isFrozen(nodeRef))
+            if (!isFrozen(nodeRef, true))
             {
                 if (isRecord(nodeRef))
                 {

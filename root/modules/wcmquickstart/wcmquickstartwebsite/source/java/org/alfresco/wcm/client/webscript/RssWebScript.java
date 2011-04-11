@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.wcm.client.Asset;
+import org.alfresco.wcm.client.AssetCollection;
 import org.alfresco.wcm.client.CollectionFactory;
 import org.alfresco.wcm.client.Section;
 import org.alfresco.wcm.client.WebSite;
-import org.alfresco.wcm.client.impl.AssetCollectionImpl;
 import org.alfresco.wcm.client.util.UrlUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,7 +80,7 @@ public class RssWebScript extends AbstractWebScript
             if (collectionName == null) throw new WebScriptException("collectionName property must be supplied");
             
             // Fetch the named collection
-            AssetCollectionImpl collection = (AssetCollectionImpl)collectionFactory.getCollection(section.getId(), collectionName);
+            AssetCollection collection = (AssetCollection)collectionFactory.getCollection(section.getId(), collectionName);
             
             // Use ROME library to output the colleciton as a syndication feed
             SyndFeed feed = new SyndFeedImpl();

@@ -59,16 +59,6 @@
                     <type>d:boolean</type>
                     <default>false</default>
                 </property>
-                <property name="ws:topTags">
-                    <title>Top Tags</title>
-                    <type>d:text</type>
-                    <multiple>true</multiple>
-                </property>
-                <property name="ws:topTagCounts">
-                    <title>Top Tag Counts</title>
-                    <type>d:int</type>
-                    <multiple>true</multiple>
-                </property>
             </properties>
             <mandatory-aspects>
                 <aspect>ws:ordered</aspect>
@@ -207,6 +197,11 @@
                     <type>d:boolean</type>
                     <mandatory>true</mandatory>
                     <default>false</default>
+                </property>
+                <property name="ws:containedAssets">
+                    <title>Assets in this collection</title>
+                    <type>d:noderef</type>
+                    <multiple>true</multiple>
                 </property>
             </properties>
             <associations>

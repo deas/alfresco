@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+	
+	<!-- Bootstrap Records Management Models -->   
+    <bean id="org_alfresco_module_dod5015_dictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="dictionaryBootstrap">
+        <property name="models">
+            <list>
+                <value>alfresco/module/org_alfresco_module_dod5015/model/recordsModel.xml</value>
+                <value>alfresco/module/org_alfresco_module_dod5015/model/dod5015Model.xml</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="org_alfresco_module_dod5015_customModelsRepositoryLocation" class="org.alfresco.repo.dictionary.RepositoryLocation">
+        <property name="path">
+            <value>/app:company_home/app:dictionary/cm:records_management</value>
+        </property>
+        <property name="queryLanguage">
+            <value>path</value>
+        </property>
+    </bean>
+    <bean id="org_alfresco_module_dod5015_dictionaryRepositoryBootstrap" parent="dictionaryRepositoryBootstrap">
+      <property name="repositoryModelsLocations">
+         <list>
+             <ref bean="org_alfresco_module_dod5015_customModelsRepositoryLocation" />
+         </list>
+      </property>
+   </bean>
+   
+   <!--  File plan component aspect behaviour bean -->
+   <bean id="org_alfresco_module_dod5015_FilePlanComponentAspect" 
+   		 class="org.alfresco.module.org_alfresco_module_dod5015.model.FilePlanComponentAspect" 
+   		 init-method="init">
+      <property name="nodeService" ref="NodeService"/>
+      <property name="recordsManagementService" ref="RecordsManagementService"/>
+      <property name="policyComponent" ref="policyComponent"/>
+   </bean>
+
+</beans>

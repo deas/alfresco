@@ -81,7 +81,7 @@
                     <windowsIcon>${installdir}/alfresco.ico</windowsIcon>
                     <windowsPath>${installdir}/</windowsPath>
                     <ruleList>
-                        <componentTest logic="selected" name="alfrescowcm" />
+                        <componentTest logic="exists" name="alfrescowcm" />
                     </ruleList>
                 </startMenuShortcut>
                 <startMenuShortcut>
@@ -92,13 +92,13 @@
                     <windowsIcon>${installdir}/alfresco.ico</windowsIcon>
                     <windowsPath>${installdir}/</windowsPath>
                     <ruleList>
-                        <componentTest logic="selected" name="alfrescowcm" />
+                        <componentTest logic="exists" name="alfrescowcm" />
                     </ruleList>
                 </startMenuShortcut>
             </startMenuShortcutList>
-            <!--ruleList>
-               <componentTest logic="selected" name="alfrescowcm" />
-            </ruleList-->
+            <ruleList>
+               <componentTest logic="exists" name="alfrescowcm" />
+            </ruleList>
         </startMenuFolder>
     </startMenuShortcutList>
     <folderList>

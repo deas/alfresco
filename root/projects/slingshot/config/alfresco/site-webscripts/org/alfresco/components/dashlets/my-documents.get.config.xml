@@ -1,0 +1,8 @@
+<config>
+   <max-items>50</max-items>
+   <filters>
+      <filter type="recentlyModifiedByMe" />
+      <filter type="editingMe" />
+      <filter type="favourites" />
+   </filters>
+</config>

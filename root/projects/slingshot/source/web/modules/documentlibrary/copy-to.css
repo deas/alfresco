@@ -129,14 +129,14 @@
 .copy-to .container-picker a:active,
 .copy-to .container-picker a:hover
 {
-   background-color: #d2e5f2;
+   background-color: #dceaf4;
    text-decoration: none;
 }
 
 .copy-to .site-picker a.selected,
 .copy-to .container-picker a.selected
 {
-   background-color: #d2e5f2;
+   background-color: #dceaf4;
 }
 
 
@@ -194,5 +194,5 @@
 
 .copy-to .selected
 {
-   background-color: #d2e5f2;
+   background-color: #dceaf4;
 }

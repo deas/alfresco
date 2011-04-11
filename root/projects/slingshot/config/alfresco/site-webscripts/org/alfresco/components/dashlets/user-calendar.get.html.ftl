@@ -1,5 +1,22 @@
 <script type="text/javascript">//<![CDATA[
+(function()
+{
    new Alfresco.widget.DashletResizer("${args.htmlid?js_string}", "${instance.object.id}");
+   new Alfresco.widget.DashletTitleBarActions("${args.htmlid}").setOptions(
+   {
+      actions:
+      [
+         {
+            cssClass: "help",
+            bubbleOnClick:
+            {
+               message: "${msg("dashlet.help")?js_string}"
+            },
+            tooltip: "${msg("dashlet.help.tooltip")?js_string}"
+         }
+      ]
+   });
+})();
 //]]></script>
 <div class="dashlet">
    <div class="title">${msg("label.header")}</div>

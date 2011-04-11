@@ -1059,7 +1059,7 @@
          else if (filterOwner == "Alfresco.BlogPostListArchive" && filterId == "bymonth")
          {
             var date = new Date(filterData.year, filterData.month, 1);
-            var formattedDate = Alfresco.util.formatDate(date, "mmmm yyyy");
+            var formattedDate = Alfresco.util.formatDate(date, this._msg("date-format.monthYear"));
             title = this._msg("title.bymonth", formattedDate);
          }
          
@@ -1272,7 +1272,7 @@
          }
          else if (filterOwner == "Alfresco.TagFilter")
          {
-            params.tag = filterData;
+            params.tag = encodeURIComponent(filterData);
          }
          else if (filterOwner == "Alfresco.BlogPostListArchive" && filterId == "bymonth")
          {

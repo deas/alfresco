@@ -25,11 +25,6 @@ function isValidUserOrSite(siteManager)
          // Any 200 return from the call means the site was not Private or
          // we are a valid member of a Private site.
          var site = eval('(' + json + ')');
-         
-         // Store the site profile in the request context, it is used
-         // downstream by other components - saves making same call many times
-         context.setValue("site-profile", site);
-         
          if (site.visibility != "MODERATED")
          {
             // Do we want to test for SiteManager role status?
@@ -42,12 +37,6 @@ function isValidUserOrSite(siteManager)
             if (json.status == 200)
             {
                // Any 200 return from the call means we are a member - else 404 is returned
-               var obj = eval('(' + json + ')');
-               
-               // Store the memberships in the request context, it is used
-               // downstream by other components - saves making same call many times
-               context.setValue("memberships", obj);
-               
                valid = (!siteManager || isSiteManager(site));
             }
          }

@@ -29,6 +29,7 @@
    * YUI Library aliases
    */
    var Dom = YAHOO.util.Dom,
+      Event = YAHOO.util.Event,
       KeyListener = YAHOO.util.KeyListener,
       Selector = YAHOO.util.Selector;
 
@@ -600,6 +601,7 @@
             modeButton = modeButtons[i];
             viewMode = parseInt(modeButton.get("name"), 10);
             modeButton.set("disabled", !(viewMode in allowedViewModes));
+            modeButton.setStyle("display", viewMode in allowedViewModes ? "block" : "none");
             if (viewMode == this.options.viewMode)
             {
                if (modeButton.get("checked"))
@@ -870,14 +872,17 @@
       {
          Alfresco.logger.debug("DLGF_onNodeClicked");
 
-         var node = args.node,
+         var e = args.event,
+            node = args.node,
             userAccess = node.data.userAccess;
-         
+
          if ((userAccess && userAccess.create) || (node.data.nodeRef == "") || (node.data.nodeRef.indexOf("alfresco://") === 0))
          {
             this.onPathChanged(node.data.path);
             this._updateSelectedNode(node);
          }
+
+         Event.preventDefault(e);
          return false;
       },
 
@@ -1229,7 +1234,7 @@
          {
             site: encodeURIComponent(this.options.siteId),
             container: encodeURIComponent(this.options.containerId),
-            userHome: this.options.userHome.replace(":/", ""),
+            userHome: (this.options.userHome || "").replace(":/", ""),
             path: Alfresco.util.encodeURIPath(path)
          });
 

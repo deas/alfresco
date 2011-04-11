@@ -2,7 +2,7 @@
    <actionSets>
       <actionSet id="empty"></actionSet>
 
-      <actionSet id="document">         
+      <actionSet id="document">
          <action type="action-link" id="onPreviewWebasset" permission="" label="actions.wcmqs.preview-webasset" />
          <action type="simple-link" id="onActionDownload" href="{downloadUrl}" label="actions.document.download" />
          <action type="simple-link" id="onActionView" href="{viewUrl}" label="actions.document.view" />
@@ -23,7 +23,7 @@
          <action type="action-link" id="onActionChangeType" permission="edit" label="actions.document.change-type" />
       </actionSet>
 
-      <actionSet id="locked">      
+      <actionSet id="locked">
          <action type="action-link" id="onPreviewWebasset" permission="" label="actions.wcmqs.preview-webasset" />
          <action type="simple-link" id="onActionDownload" href="{downloadUrl}" label="actions.document.download" />
          <action type="simple-link" id="onActionView" href="{viewUrl}" label="actions.document.view" />
@@ -33,7 +33,7 @@
          <action type="action-link" id="onActionCancelEditing" permission="cancel-checkout" label="actions.document.cancel-editing" />
       </actionSet>
 
-      <actionSet id="lockOwner">      
+      <actionSet id="lockOwner">
          <action type="action-link" id="onPreviewWebasset" permission="" label="actions.wcmqs.preview-webasset" />
          <action type="simple-link" id="onActionDownload" href="{downloadUrl}" label="actions.document.download" />
          <action type="simple-link" id="onActionView" href="{viewUrl}" label="actions.document.view" />

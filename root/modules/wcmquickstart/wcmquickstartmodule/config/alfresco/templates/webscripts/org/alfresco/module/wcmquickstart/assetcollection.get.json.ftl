@@ -6,6 +6,8 @@
         "name" : "${collection.name}",
         "title" : "${collection.title}",
         "description" : "${collection.description}",
+        "lastUpdated" : "${collection.lastUpdateTime?string("yyyyMMdd-HH:mm:ss.SSSZ")}",
+        "secondsBetweenUpdates" : "${collection.secondsBetweenUpdates}",
         "assets" :
         [
         <#list collection.assetIds as assetId>

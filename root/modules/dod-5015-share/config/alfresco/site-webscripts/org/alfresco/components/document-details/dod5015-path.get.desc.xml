@@ -1,5 +1,0 @@
-<webscript>
-  <shortname>path-navigation</shortname>
-  <description>Path navigation component used in the RM document details page</description>
-  <url>/components/document-details/dod5015/path</url>
-</webscript>

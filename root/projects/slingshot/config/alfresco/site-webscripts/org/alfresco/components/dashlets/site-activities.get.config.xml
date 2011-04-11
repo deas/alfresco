@@ -1,0 +1,13 @@
+<config>
+   <filter-range>
+      <filter type="today" label="today" />
+      <filter type="7" label="7days" />
+      <filter type="14" label="14days" />
+      <filter type="28" label="28days" />
+   </filter-range>
+   <filter-type>
+      <filter type="mine" label="mine" />
+      <filter type="others" label="others" />
+      <filter type="all" label="all" />
+   </filter-type>
+</config>

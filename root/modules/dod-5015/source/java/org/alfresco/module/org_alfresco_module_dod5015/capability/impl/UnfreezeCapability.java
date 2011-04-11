@@ -45,7 +45,7 @@ public class UnfreezeCapability extends AbstractCapability
         {
             if (checkFiling(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
             {
-                if (isFrozen(nodeRef) || voter.getNodeService().getType(nodeRef).equals(RecordsManagementModel.TYPE_HOLD))
+                if (isFrozen(nodeRef, false) || voter.getNodeService().getType(nodeRef).equals(RecordsManagementModel.TYPE_HOLD))
                 {
                     if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.UNFREEZE) == AccessStatus.ALLOWED)
                     {

@@ -1,3 +1,6 @@
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
+<import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/document-details/dod5015-document-details.lib.js">
+
 var namesToGet = {
    to:[],
    from:[]
@@ -8,7 +11,7 @@ function getDocNames(nodeRefs)
    //must regexp this
    // nodeRef = nodeRef.replace(':','').replace("\\",'').replace('//','/');
    // var result = remote.call("/slingshot/doclib/dod5015/node/"+nodeRef);
-   
+
    if (nodeRefs.length>0)
    {
       var docNames = [];
@@ -37,6 +40,7 @@ function getDocNames(nodeRefs)
    // }
    // else return nodeRef;
 }
+
 /*
  * Note, "From" is customreferences from this node and *not* from other documents to this node.
  * @returns {Object}
@@ -45,26 +49,25 @@ function getDocNames(nodeRefs)
  *    fromThisNode : [] // array of references from this node
  *  }
  */
-function getDocReferences()
+function getDocReferences(nodeRef)
 {
-   var nodeRef = page.url.args.nodeRef.replace(":/", "");
    var result = remote.call("/api/node/"+nodeRef+"/customreferences");
 
    var marshallDocRefs = function marshallDocRefs(docrefs, type)
-   {      
+   {
       if (type === 'from')
       {
          labelField = 'source';
       }
-      else 
+      else
       {
          labelField = 'target';
       }
-      for (var i=0,len = docrefs.length;i<len;i++)
+      for (var i = 0, len = docrefs.length; i < len; i++)
       {
          var ref = docrefs[i];
          var refField,labelField;
-         if (ref.referenceType=='parentchild')
+         if (ref.referenceType == 'parentchild')
          {
             if (type == 'from')
             {
@@ -74,7 +77,7 @@ function getDocReferences()
             }
             else
             {
-               refField = 'parentRef';  
+               refField = 'parentRef';
                //labelField = 'target';
                labelField = 'source';
             }
@@ -94,14 +97,14 @@ function getDocReferences()
          //we have to get document names since this api call doesn't return them;
          //so we collect an array of noderefs and do later on
          namesToGet[type].push(ref[refField]);
-         if (ref.referenceType=='parentchild')
+         if (ref.referenceType == 'parentchild')
          {
             ref.label = ref[labelField];
             ref.targetRef = ref[refField];
          }
          docrefs[i]=ref;
       }
-      
+
       return docrefs;
    };
    if (result.status == 200)
@@ -113,12 +116,33 @@ function getDocReferences()
       };
       return docrefs;
    }
-   else {
-      return [];
+   else
+   {
+      return {
+         toThisNode: [],
+         fromThisNode: []
+      }
    }
 }
 
-model.references = getDocReferences();
-model.docNames = {};
-model.docNames.to = getDocNames(namesToGet.to);
-model.docNames.from = getDocNames(namesToGet.from);
+function main()
+{
+   AlfrescoUtil.param("nodeRef");
+   AlfrescoUtil.param("site");
+   AlfrescoUtil.param("container", "documentLibrary");
+
+   model.references = getDocReferences(model.nodeRef);
+   model.docNames = {};
+   model.docNames.to = getDocNames(namesToGet.to);
+   model.docNames.from = getDocNames(namesToGet.from);
+
+   var documentDetails = getDod5015DocumentDetails(model.nodeRef, model.site, null);
+   if (documentDetails)
+   {
+      model.parentNodeRef = documentDetails.metadata.filePlan;
+      model.docName = documentDetails.item.displayName;
+      model.allowManageReferences = documentDetails.item.permissions.userAccess.Create && (documentDetails.item.type !== "metadata-stub");
+   }
+}
+
+main();

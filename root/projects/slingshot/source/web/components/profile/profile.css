@@ -51,12 +51,13 @@
    float: right;
    margin-right: -0.7em;
    padding-top: 0.2em;
-   width: 1.5em;
+   width: 2em;
 }
 
 .profile .row
 {
    padding: 0.333em;
+	clear:left;
 }
 
 .profile .drow
@@ -119,6 +120,11 @@
 {
    margin-left: 96px;
    line-height: 1.5em;
+}
+
+.profile .fieldlabel .user-status
+{
+   margin-top: 4px;
 }
 
 .profile .fieldlabelright
@@ -201,7 +207,7 @@
 }
 .profile .content li a.thmb  
 {
-   padding:16px;
+   padding:0.65em;
 }
 .profile .sites li a,
 .profile .content li a.thmb 
@@ -226,7 +232,7 @@
 }
 .profile .content p
 {
-   margin:1em 0;
+   margin:0.5em 0;
 }
 .profile .sites li p span,
 .profile .content li p span

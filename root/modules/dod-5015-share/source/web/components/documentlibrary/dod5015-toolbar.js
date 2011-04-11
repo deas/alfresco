@@ -121,14 +121,18 @@
             disabled: true
          });
 
-         // Customize button
-         this.widgets.customize = Alfresco.util.createYUIButton(this, "customize-button", this.onCustomize);
-
          // Hide/Show NavBar button
-         this.widgets.hideNavBar = Alfresco.util.createYUIButton(this, "hideNavBar-button", this.onHideNavBar);
-         this.widgets.hideNavBar.set("label", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
-         Dom.setStyle(this.id + "-navBar", "display", this.options.hideNavBar ? "none" : "block");
-         
+         this.widgets.hideNavBar = Alfresco.util.createYUIButton(this, "hideNavBar-button", this.onHideNavBar,
+         {
+            type: "checkbox",
+            checked: this.options.hideNavBar
+         });
+         if (this.widgets.hideNavBar !== null)
+         {
+            this.widgets.hideNavBar.set("title", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
+            Dom.setStyle(this.id + "-navBar", "display", this.options.hideNavBar ? "none" : "block");
+         }
+
          // Folder Up Navigation button
          this.widgets.folderUp =  Alfresco.util.createYUIButton(this, "folderUp-button", this.onFolderUp,
          {

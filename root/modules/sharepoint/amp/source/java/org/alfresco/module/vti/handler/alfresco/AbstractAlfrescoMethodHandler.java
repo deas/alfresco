@@ -757,7 +757,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 {
                     logger.debug("Move document: " + oldURL + " to new location: " + newURL + " in site: " + serviceName);
                 }
-                destFileInfo = getFileFolderService().move(sourceFileInfo.getNodeRef(), sourceParentRef, destParentFolder.getNodeRef(), destName);
+                destFileInfo = getFileFolderService().moveFrom(sourceFileInfo.getNodeRef(), sourceParentRef, destParentFolder.getNodeRef(), destName);
             }
 
             tx.commit();

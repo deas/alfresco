@@ -42,7 +42,7 @@ public class CreateModifyRecordsInCuttoffFoldersCapability extends AbstractCapab
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozen(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozen(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (isRecordFolder(voter.getNodeService().getType(nodeRef)))
                 {

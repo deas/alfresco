@@ -473,10 +473,16 @@
 
 	  <!-- rma:filePlanComponent is a marker interface for all things RM -->
       <!-- Security uses it as a key to determine which implementation to use -->
-
+	 <!--  TODO ... this should not be called "filePlan" as it is DOD specific terminology -->
       <aspect name="rma:filePlanComponent">
          <title>File Plan Component</title>
          <archive>false</archive>
+         <properties>
+            <property name="rma:rootNodeRef">
+               <title>Root node reference</title>
+               <type>d:noderef</type>
+            </property>
+       	</properties>
       </aspect>
 
       <aspect name="rma:recordsManagementRoot">
@@ -965,6 +971,28 @@
 
       <aspect name="rma:versionedRecord">
          <title>Versioned Record</title>
+      </aspect>
+      
+      <aspect name="rma:unpublishedUpdate">
+      	<title>Unpublished Update</title>
+      	<properties>                      
+            <property name="rma:unpublishedUpdate">
+               <type>d:boolean</type>
+               <mandatory>true</mandatory>
+               <default>true</default>
+            </property>                        
+            <property name="rma:updateTo">
+               <type>d:text</type>
+            </property>                        
+            <property name="rma:updatedProperties">
+               <type>d:any</type>
+            </property>                      
+            <property name="rma:publishInProgress">
+               <type>d:boolean</type>
+               <mandatory>true</mandatory>
+               <default>false</default>
+            </property>
+      	</properties>
       </aspect>
 
    </aspects>

@@ -38,6 +38,11 @@ Alfresco.util.RichEditorManager.addEditor('YAHOO.widget.SimpleEditor', function(
       {
          editor._disableEditor(false);
       },
+      
+      focus: function RichEditorManager_yui_focus()
+      {
+         editor.focus();
+      },
 
       getContent: function RichEditorManager_yui_getContent()
       { 

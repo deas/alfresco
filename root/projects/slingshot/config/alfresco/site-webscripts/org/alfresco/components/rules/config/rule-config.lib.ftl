@@ -8,6 +8,7 @@
       <#if (constraints??)>constraints: ${constraints},</#if>
       <#if (constraintsFilter??)>constraintsFilter: ${constraintsFilter},</#if>      
       <#if (rootNode??)>rootNode: "${rootNode}",</#if>
+      repositoryBrowsing: ${(rootNode??)?string},
       ruleConfigType: "${ruleConfigType}",
       siteId: "${(args.site!"")?js_string}"
    }).setMessages(

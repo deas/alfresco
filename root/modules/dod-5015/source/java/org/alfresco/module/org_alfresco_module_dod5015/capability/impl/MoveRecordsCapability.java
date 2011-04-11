@@ -40,7 +40,7 @@ public class MoveRecordsCapability extends AbstractCapability
         // no way to know ...
         return AccessDecisionVoter.ACCESS_ABSTAIN;
     }
-
+    
     public int evaluate(NodeRef movee, NodeRef destination)
     {
         int state = AccessDecisionVoter.ACCESS_ABSTAIN;

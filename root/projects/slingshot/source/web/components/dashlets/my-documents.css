@@ -1,72 +1,35 @@
-.my-documents .scrollableList
-{
-   padding-top: 2px;
-}
+/* Simple/Details View */
 
-/* Data Table */
-.my-documents .yui-dt table
+.my-documents .simple-detailed span.first-child
 {
-   border: medium none;
-   width: 100%;
-}
-
-.my-documents .yui-dt thead
-{
-   display: none;
-}
-
-.my-documents .yui-dt tbody
-{
-   outline: none;
-}
-
-.my-documents .yui-dt tr.yui-dt-even,
-.my-documents .yui-dt tr.yui-dt-odd
-{
-   background-color: #ffffff;
-}
-
-.my-documents .yui-dt td
-{
-   border-bottom: 1px dashed #d9d9d9;
-   border-right: medium none;
-}
-
-.my-documents .yui-dt td .yui-dt-liner
-{
-   padding: 4px 6px;
-}
-
-.my-documents .yui-dt .yui-dt-message td
-{
-   border: medium none;
-}
-
-/* Favourite document indicator */
-.my-documents a.favourite-document
-{
-   background-image: url(../images/star-deselected_16x16.png);
-   background-position: center;
+   background-position: 50% 50%;
    background-repeat: no-repeat;
-   cursor: pointer;
-   margin-right: 0.5em;
-   padding: 0.5em;
-}
-.my-documents a.favourite-document.enabled
-{
-   background-image: url(../images/star-selected_16x16.png);
-}
-.my-documents a.favourite-document:active,
-.my-documents a.favourite-document:hover
-{
-   text-decoration: none;
+   min-height: 16px;
+   padding: 0 2px;
 }
 
-/* Preview Tooltip */
-.yui-tt .bd
+.my-documents .simple-detailed .yui-button
 {
-   background-color: #f4faff !important;
-   border: 1px solid #333 !important;
-   padding: 4px 4px 1px !important;
-   text-align: left;
+   margin-left: 0;
+   margin-right: 0;
+}
+
+.my-documents .simple-detailed .simple-view span.first-child
+{
+   background-image: url(../documentlibrary/images/simple-view-off-16.png);
+}
+
+.my-documents .simple-detailed .simple-view.yui-button-checked span.first-child
+{
+   background-image: url(../documentlibrary/images/simple-view-on-16.png);
+}
+
+.my-documents .simple-detailed .detailed-view span.first-child
+{
+   background-image: url(../documentlibrary/images/detailed-view-off-16.png);
+}
+
+.my-documents .simple-detailed .detailed-view.yui-button-checked span.first-child
+{
+   background-image: url(../documentlibrary/images/detailed-view-on-16.png);
 }

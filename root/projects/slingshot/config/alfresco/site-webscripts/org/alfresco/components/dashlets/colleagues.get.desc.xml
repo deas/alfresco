@@ -1,6 +1,6 @@
 <webscript>
-   <shortname>Site Colleagues</shortname>
-   <description>Lists colleagues in the collaboration site</description>
+   <shortname>Site Members</shortname>
+   <description>Lists members in the collaboration site</description>
    <family>site-dashlet</family>
    <url>/components/dashlets/colleagues</url>
 </webscript>

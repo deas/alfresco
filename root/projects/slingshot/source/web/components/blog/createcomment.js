@@ -159,7 +159,7 @@
             this.initializeCreateCommentForm();
          }
       },
-      
+
       /**
        * Initializes the create comment form.
        */
@@ -294,7 +294,7 @@
          };
          this.widgets.commentForm.init();
          
-         // finally show the form
+         // show the form
          Dom.removeClass(this.id + '-form-container', 'hidden');
       },
 

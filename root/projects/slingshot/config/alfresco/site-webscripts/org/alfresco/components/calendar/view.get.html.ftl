@@ -13,10 +13,13 @@
       startDate : Alfresco.util.fromISO8601('${viewArgs.view.startDate?html}'),
       endDate : Alfresco.util.fromISO8601('${viewArgs.view.endDate?html}'),
       titleDate : Alfresco.util.fromISO8601('${viewArgs.view.titleDate?html}'),
-      permitToCreateEvents : '${viewArgs.permitToCreateEvents?html}'
+      permitToCreateEvents : '${viewArgs.permitToCreateEvents?html}',
+      truncateLength: ${truncateLength!100}
    }).setMessages(
       ${messages}
    );
+   /* These need setting against EventInfo until that component is integrated into the CalendarView scripts fully */
+   Alfresco.util.addMessages(${messages}, "Alfresco.EventInfo");
 //]]></script>
 
 <#if (viewArgs.viewType=='month')>
@@ -219,10 +222,15 @@
 <#elseif (viewArgs.viewType=='agenda')>
 
 <!-- agenda -->
-<h2 id="calTitle"></h2>
+<a href="" class="previousEvents hidden agendaNav">${msg("agenda.previous")}</a>
+<h2 id="calTitle">&nbsp;</h2>
 <div id="${el}Container" class="alf-calendar agendaview">
     <div id="${el}View">
+       <div id="${el}View-noEvent" class="noEvent">
+          <p id="${el}View-defaultText" class="instructionTitle">${msg("agenda.initial-text")}</p>
+       </div>
     </div>
 </div>
+<div class="nextEventsContainer">&nbsp;<a href="" class="nextEvents hidden agendaNav">${msg("agenda.next")}</a></div>
 </#if>
 

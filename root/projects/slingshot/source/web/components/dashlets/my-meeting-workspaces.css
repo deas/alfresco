@@ -1,8 +1,3 @@
-.my-meeting-workspaces .scrollableList
-{
-   padding-top: 2px;
-}
-
 /* Data Table */
 .my-meeting-workspaces .yui-dt table
 {
@@ -75,11 +70,6 @@
 .my-meeting-workspaces a.imap-favourite-site:hover
 {
    text-decoration: none;
-}
-
-.my-meeting-workspaces div.site-favourites
-{
-   
 }
 
 .my-meeting-workspaces div.site-title

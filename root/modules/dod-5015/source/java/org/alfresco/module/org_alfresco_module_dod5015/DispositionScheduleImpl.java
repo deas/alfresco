@@ -57,7 +57,7 @@ public class DispositionScheduleImpl implements DispositionSchedule,
         this.services = services;
     }
 
-    /*
+    /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule#getNodeRef()
      */
     public NodeRef getNodeRef()
@@ -95,6 +95,12 @@ public class DispositionScheduleImpl implements DispositionSchedule,
         return result;
     }
 
+    /**
+     * Get disposition action definition
+     * 
+     * @param   id                              action definition identifier
+     * @return  DispositionActionDefinition     disposition action definition
+     */
     public DispositionActionDefinition getDispositionActionDefinition(String id)
     {
         if (this.actions == null)
@@ -110,6 +116,9 @@ public class DispositionScheduleImpl implements DispositionSchedule,
         return actionDef;
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule#getDispositionActionDefinitions()
+     */
     public List<DispositionActionDefinition> getDispositionActionDefinitions()
     {
         if (this.actions == null)
@@ -120,6 +129,9 @@ public class DispositionScheduleImpl implements DispositionSchedule,
         return this.actions;
     }
     
+    /**
+     * Get the disposition actions into the local cache
+     */
     private void getDispositionActionsImpl()
     {
         List<ChildAssociationRef> assocs = this.nodeService.getChildAssocs(
@@ -132,7 +144,7 @@ public class DispositionScheduleImpl implements DispositionSchedule,
         int index = 0;
         for (ChildAssociationRef assoc : assocs)
         {            
-            DispositionActionDefinition da = new DispositionActionDefinitionImpl(services, assoc.getChildRef(), index); 
+            DispositionActionDefinition da = new DispositionActionDefinitionImpl(services.getRecordsManagementEventService(), services.getRecordsManagementActionService(), nodeService, assoc.getChildRef(), index); 
             actions.add(da);
             actionsById.put(da.getId(), da);
             index++;
@@ -144,9 +156,5 @@ public class DispositionScheduleImpl implements DispositionSchedule,
                 actionsByName.put(actionNodeName, da);
             }
         }
-    }
-    
-    
-    
-    
+    } 
 }

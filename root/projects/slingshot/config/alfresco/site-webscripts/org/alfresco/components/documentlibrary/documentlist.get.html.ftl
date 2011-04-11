@@ -6,13 +6,18 @@
       <#if repositoryUrl??>repositoryUrl: "${repositoryUrl}",</#if>
       siteId: "${page.url.templateArgs.site!""}",
       containerId: "${template.properties.container!"documentLibrary"}",
-      rootNode: "${rootNode}",
+      rootNode: "${rootNode!"null"}",
       usePagination: ${(args.pagination!false)?string},
-      showFolders: ${(preferences.showFolders!false)?string},
+      sortAscending: ${(preferences.sortAscending!true)?string},
+      sortField: "${(preferences.sortField!"cm:name")?js_string}",
+      showFolders: ${(preferences.showFolders!true)?string},
       simpleView: ${(preferences.simpleView!false)?string},
       highlightFile: "${(page.url.args["file"]!"")?js_string}",
       vtiServer: ${vtiServer},
-      replicationUrlMapping: ${replicationUrlMappingJSON!"{}"}
+      replicationUrlMapping: ${replicationUrlMappingJSON!"{}"},
+      repositoryBrowsing: ${(rootNode??)?string},
+      useTitle: ${(useTitle!false)?string},
+      userIsSiteManager: ${(userIsSiteManager!false)?string}
    }).setMessages(
       ${messages}
    );

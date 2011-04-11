@@ -275,14 +275,16 @@
                this._getParamDef(configDef, "reject-move").isMandatory = true;
 
                // Make parameter renderer create an "Approve" button that displays an approve simple workflow dialog
-               configDef.parameterDefinitions.push({
+               configDef.parameterDefinitions.push(
+               {
                   type: "arca:simple-workflow-dialog-button",
                   _buttonLabel: this.msg("button.approve"),
                   _mode: Alfresco.module.RulesWorkflowAction.VIEW_MODE_APPROVAL_STEP
                });
 
                // Make parameter renderer create a "Reject" button that displays a reject simple workflow dialog
-               configDef.parameterDefinitions.push({
+               configDef.parameterDefinitions.push(
+               {
                   type: "arca:simple-workflow-dialog-button",
                   _buttonLabel: this.msg("button.reject"),
                   _mode: Alfresco.module.RulesWorkflowAction.VIEW_MODE_REJECTION_STEP
@@ -496,9 +498,19 @@
                         }
                      }, this);
                   }
-                  var pathNodeRef = this._getParameters(obj.configDef)["destination-folder"];
+                  var pathNodeRef = this._getParameters(obj.configDef)["destination-folder"],
+                     allowedViewModes =
+                     [
+                        Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE
+                     ];
+
+                  if (this.options.repositoryBrowsing === true)
+                  {
+                     allowedViewModes.push(Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY, Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME);
+                  }
                   this.widgets.destinationDialog.setOptions(
                   {
+                     allowedViewModes: allowedViewModes,
                      nodeRef: this.options.rootNode,
                      pathNodeRef: pathNodeRef ? new Alfresco.util.NodeRef(pathNodeRef) : null
                   });
@@ -558,10 +570,12 @@
                      }, this);
                   }
                   var viewMode = obj.paramDef._mode;
-                  this.widgets.simpleWorkflowDialog.setOptions({
+                  this.widgets.simpleWorkflowDialog.setOptions(
+                  {
                      viewMode: viewMode,
                      siteId: this.options.siteId,
-                     rootNode: this.options.rootNode
+                     rootNode: this.options.rootNode,
+                     repositoryBrowsing: this.options.repositoryBrowsing
                   });
                   var params = this._getParameters(obj.configDef),
                      RWA = Alfresco.module.RulesWorkflowAction,

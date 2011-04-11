@@ -22,6 +22,7 @@
 <@script type="text/javascript" src="${page.url.context}/res/components/form/content.js"></@script>
 <@script type="text/javascript" src="${page.url.context}/res/components/form/workflow/transitions.js"></@script>
 <@script type="text/javascript" src="${page.url.context}/res/components/form/workflow/activiti-transitions.js"></@script>
+<@script type="text/javascript" src="${page.url.context}/res/components/form/jmx/operations.js"></@script>
 
 <#if config.global.forms?exists && config.global.forms.dependencies?exists && config.global.forms.dependencies.js?exists>
 <#list config.global.forms.dependencies.js as jsFile>

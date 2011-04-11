@@ -23,6 +23,10 @@
          <span id="${el}-perms-collaborators" class="meta-value"></span>
       </div>
       <div class="info">
+         <span class="meta-label">${msg("folder-info.contributors")}:</span>
+         <span id="${el}-perms-contributors" class="meta-value"></span>
+      </div>
+      <div class="info">
          <span class="meta-label">${msg("folder-info.consumers")}:</span>
          <span id="${el}-perms-consumers" class="meta-value"></span>
       </div>

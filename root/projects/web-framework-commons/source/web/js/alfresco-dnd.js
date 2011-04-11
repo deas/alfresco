@@ -24,16 +24,19 @@
  * Supports multiple targets and sources and also provides automatic functionality for
  * the most common use cases:
  *
- * - Reordering inside a list.
+ * - Reordering inside 1 list.
  *   (see rules-list.js & Alfresco.util.DragAndDrop.GROUP_MOVE)
  *
- * - Moving an element from one list to another.
+ * - Moving an element from one vertical list to another.
  *   (see customise-dashlets.js & Alfresco.util.DragAndDrop.GROUP_MOVE)
+ *
+ * - Moving an element from one horisontal list to another.
+ *   (see customise-pages.js & Alfresco.util.DragAndDrop.GROUP_MOVE)
  *
  * - Deleting an element by dragging it to "delete" target.
  *   (see customise-dashlets.js & Alfresco.util.DragAndDrop.GROUP_DELETE)
  *
- * - Having a list that act as a factory and creates a copy of the element that is being dragged rather than moving it from the list.
+ * - Having a list that acts as a factory and creates a copy of the element when being dragged or enter-clicked (rather than moving it from the list).
  *   (see customise-dashlets.js & the "protect" attribute for draggables)
  *
  * - Having a maximum number of elements that fit inside a target.
@@ -42,10 +45,13 @@
  * Also note that as long as a <a href> element is inside the <li> element all functionality
  * is provided using only the arrow keys. When the <a href> element gets focus it can be:
  *
- * - Moved up or down inside the list using the up & down arrow keys
- * - Moved to another list using the left & right arrow keys
- * - Deleted by using the delete key
- * - Getting copied to the first target that hasn't reached its maximum number of elements (see customise-dashlets.js & the "duplicatesOnEnterKey" attribute for draggables)
+ * - Moved up/down or left/right inside the list using the up/down or left/right arrow keys depending on if vertical is true or false
+ * - Moved to another list using the left/right or up/down arrow keys depending on if vertical is true or false
+ * - Deleted by using the delete key (if protected isn't set to true or a callback that reactos to the ACTION_DELETE returns false)
+ * - Getting copied to the first non-protected target that hasn't reached its maximum number of elements
+ *   (see customise-dashlets.js & the "duplicatesOnEnterKey" attribute for draggables)
+ * - Getting moved to the first non-protected target that hasn't reached its maximum number of elements
+ *   (see customise-pages.js & the "movesOnEnterKey" attribute for draggables)
  *
  * WARNING!!
  * To avoid problems in IE6 & IE7 make sure that you do NOT use the following strategy to create your <li> elements:
@@ -77,6 +83,8 @@
     *        config.draggables[].cssClass {string}
     *        config.draggables[].protect {boolean}
     *        config.draggables[].duplicatesOnEnterKey {boolean}
+    *        config.draggables[].movesOnEnterKey {boolean} // duplicatesOnEnterKey takes precendence if both are set to true
+    *        config.draggables[].vertical: {boolean} Default: false
     *        config.targets {array}
     *        config.targets[].container {HTMLElement}
     *        config.targets[].group {string} Alfresco.util.DragAndDrop.GROUP_MOVE
@@ -95,6 +103,7 @@
       else
       {
          this.shadow = document.createElement("li");
+         Dom.setStyle(this.shadow, "display", "none");
       }
       Dom.addClass(this.shadow, "dnd-shadow");
       this.targets = {};
@@ -105,7 +114,11 @@
       var i, il, j, jl, elements, container;
       for (i = 0, il = (config.targets ? config.targets.length : 0); i <il; i++)
       {
-         // Create the targets 
+         // Create the targets
+         if (YAHOO.lang.isString(config.targets[i].container))
+         {
+            config.targets[i].container = Dom.get(config.targets[i].container);                     
+         }
          new YAHOO.util.DDTarget(config.targets[i].container, config.targets[i].group);
          config.targets[i]._index = i;
          this.targets[config.targets[i].container.getAttribute("id")] = config.targets[i];
@@ -113,6 +126,10 @@
       for (i = 0, il = (config.draggables ? config.draggables.length : 0); i <il; i++)
       {
          // Create the draggables (the li elements found in the container)
+         if (YAHOO.lang.isString(config.draggables[i].container))
+         {
+            config.draggables[i].container = Dom.get(config.draggables[i].container);
+         }
          container = config.draggables[i].container;
          elements = new Element(container).getElementsByTagName("li");
          if (!container.getAttribute("id"))
@@ -165,7 +182,7 @@
        * Constant to use when configuring groups for draggables and targets.
        * 
        * This group covers the use case when one of the dragged elements shall be deleted by being dragged on to a
-       * target that represents deletion (such as a trashcan or the source form where the element orginially came).
+       * target that represents deletion (such as a trashcan or the source form where the element originially came).
        * 
        * Using this group will make the dragged element dissapear when drop on a target with this group 
        * (unless it originated from a protected container OR was dropped on the same place where it first was dragged).
@@ -175,6 +192,53 @@
        * @public
        */
       GROUP_DELETE: "dnd-delete"
+   });
+   
+   
+   /**
+   * Drag and drop actions which will make the attached callbacks getting called
+   */
+   YAHOO.lang.augmentObject(DD,
+   {
+      /**
+       * Caused when the user clicks delete on the keyboard when a draggable is focused, called before the draggable is removed.
+       * If callback returns false the default behaviour (to remove the dom element) will NOT be executed.
+       *
+       * @property ACTION_DELETE
+       * @type {string}
+       * @public
+       */
+      ACTION_DELETE: "action-delete",
+
+      /**
+       * Caused when the user clicks enter on the keyboard when a draggable is focused, called before the
+       * draggable is either moved (if "movesOnEnterKey") OR duplicated (if "duplicatesOnEnterKey") is set to true.
+       * If callback returns false the default behaviour (to move or duplicate the dom element) will NOT be executed.
+       *
+       * @property ACTION_ENTER
+       * @type {string}
+       * @public
+       */
+      ACTION_ENTER: "action-enter",
+      
+      /**
+       * Caused when the user has moved a draggable or clicked the enter key and "movesOnEnterKey", called after the draggable was moved.
+       *
+       * @property ACTION_MOVED
+       * @type {string}
+       * @public
+       */
+      ACTION_MOVED: "action-moved",
+      
+      /**
+       * Caused when the user has clicked enter on the keyboard when a draggable is focused and is inside a container 
+       * with "duplicatesOnEnterKey" set to true, called after the draggable was duplicated.
+       *
+       * @property ACTION_DUPLICATED
+       * @type {string}
+       * @public
+       */
+      ACTION_DUPLICATED: "action-duplicated"
    });
 
    Alfresco.util.DragAndDrop.prototype =
@@ -231,18 +295,18 @@
        * @method onDraggableBlur
        * @param event {object} a "blur" event
        */
-      onDraggableBlur: function DD_onDraggableBlur(event, li)
+      onDraggableBlur: function DD_onDraggableBlur(event, obj)
       {
          // Remove the "dnd-focused" class from the draggable so it doesn't appera to be selected
          if (this.currentEl)
          {
             Dom.removeClass(this.currentEl, "dnd-focused");
          }
-         Dom.removeClass(li, "dnd-focused");
+         Dom.removeClass(obj.li, "dnd-focused");
          this.currentEl = null;
 
          // Stop listening to key events
-         var kl = this.keyListeners[li.id];
+         var kl = this.keyListeners[obj.a.id];
          if (kl !== undefined)
          {
             kl.disable();
@@ -260,14 +324,14 @@
        * @method onDraggableFocus
        * @param event {object} a "focus" event
        */
-      onDraggableFocus: function DD_onDraggableFocus(event, li)
+      onDraggableFocus: function DD_onDraggableFocus(event, obj)
       {
          // Remove the focused class from no longer selected draggables and add it to the current
          if (this.currentEl)
          {
             Dom.removeClass(this.currentEl, "dnd-focused");
          }
-         this.currentEl = li;
+         this.currentEl = obj.li;
          Dom.addClass(this.currentEl, "dnd-focused");
 
          /**
@@ -277,12 +341,14 @@
           * such as the document since several components that listens to key
           * events might live on the same page.
           */
-         var a = new Element(li).getElementsByTagName("a")[0];
-
-         var kl = this.keyListeners[li.id];
+         if (!obj.a.id || obj.a.id.length == 0)
+         {
+            Alfresco.util.generateDomId(obj.a);
+         }
+         var kl = this.keyListeners[obj.a.id];
          if (kl === undefined)
          {
-            kl = new KeyListener(a,
+            kl = new KeyListener(obj.a,
             {
                keys:
                [
@@ -300,7 +366,7 @@
                scope: this,
                correctScope: true
             });
-            this.keyListeners[li.id] = kl;
+            this.keyListeners[obj.a.id] = kl;
          }
          kl.enable();
       },
@@ -323,7 +389,9 @@
        */
       onKeyPressed: function DD_onKeyPressed(event, id)
       {
-         var currentDraggable = this.currentEl,            
+         var currentDraggable = this.currentEl,
+            metadata = this.draggables[this.getContainer(currentDraggable).getAttribute("id")],
+            vertical = this.isContainerVertical(this.getContainer(currentDraggable)),
             relativeNode,
             target;
 
@@ -332,35 +400,37 @@
             // Deselect the current draggable when escape is clicked
             this.focusDraggableAfterDomChange(currentDraggable, false);
          }
-         else if (id[1].keyCode === KeyListener.KEY.ENTER)
+         else if (id[1].keyCode === KeyListener.KEY.ENTER && this.invokeCallback(Alfresco.util.DragAndDrop.ACTION_ENTER, currentDraggable))
          {
             // Was enter hit for a draggable available to columns?
-            var metadata = this.draggables[this.getContainer(currentDraggable).getAttribute("id")];
-            if (metadata.duplicatesOnEnterKey)
+            var ds = this.config.draggables;
+            // Yes it was, find the first column with space for a new column.
+            for (var i = 0, il = (ds ? ds.length : 0); i < il; i++)
             {
-               var ds = this.config.draggables;
-               // Yes it was, find the first column with space for a new column.
-               for (var i = 0, il = (ds ? ds.length : 0); i < il; i++)
+               target = ds[i].container;
+               if (target.id != currentDraggable.parentNode.id && !ds[i].protect && !this.isTargetFull(target))
                {
-                  target = ds[i].container;
-                  if (!ds[i].protect && !this.isTargetFull(target))
+                  // We have found a visible column with free space
+                  if (metadata.duplicatesOnEnterKey)
                   {
-                     /**
-                      * We have found a visible column with free space, make a copy
-                      * of the draggable and insert it in the first position.
-                      */
+                     // make a copy of the draggable and insert it in the first position.
                      var children = Dom.getChildrenBy(target, this.isRealDraggable);
                      this.copyAndInsertDraggable(currentDraggable, target, children.length > 0 ? children[0] : null);
-                     return;
                   }
+                  else if (metadata.movesOnEnterKey)
+                  {
+                     target.appendChild(currentDraggable);
+                     this.focusDraggableAfterDomChange(currentDraggable, true);
+                     this.invokeCallback(Alfresco.util.DragAndDrop.ACTION_MOVED, currentDraggable);
+                  }
+                  return;
                }
-               // No columns with free space was found, alert the user
-               Alfresco.util.PopupManager.displayMessage(
-               {
-                  text: Alfresco.util.message("message.dnd.allColumnsAreFull", this.name)
-               });
             }
-
+            // No columns with free space was found, alert the user
+            Alfresco.util.PopupManager.displayMessage(
+            {
+               text: Alfresco.util.message("message.dnd.allColumnsAreFull", this.name)
+            });
          }
          else if (id[1].keyCode === KeyListener.KEY.DELETE)
          {
@@ -373,8 +443,8 @@
          else if (!this.isDraggableProtected(currentDraggable))
          {
             // UP, DOWN, LEFT & RIGHT key events apply only to non protected draggables.
-            var fireMovedEvent = false;
-            if (id[1].keyCode === KeyListener.KEY.UP)
+            var draggableMoved = false;
+            if ((vertical && id[1].keyCode === KeyListener.KEY.UP) || (!vertical && id[1].keyCode === KeyListener.KEY.LEFT))
             {
                relativeNode = Dom.getPreviousSiblingBy(currentDraggable, this.isRealDraggable);
                if (relativeNode)
@@ -382,10 +452,10 @@
                   // Found a draggable above, move the current one above it
                   Dom.insertBefore(currentDraggable, relativeNode);
                   this.focusDraggableAfterDomChange(currentDraggable, true);
-                  fireMovedEvent = true;
+                  draggableMoved = true;
                }
             }
-            else if (id[1].keyCode === KeyListener.KEY.DOWN)
+            else if ((vertical && id[1].keyCode === KeyListener.KEY.DOWN) || (!vertical && id[1].keyCode === KeyListener.KEY.RIGHT))
             {
                relativeNode = Dom.getNextSiblingBy(currentDraggable, this.isRealDraggable);
                if (relativeNode)
@@ -393,18 +463,18 @@
                   // Found a draggable below, move the current one beneath it
                   Dom.insertAfter(currentDraggable, relativeNode);
                   this.focusDraggableAfterDomChange(currentDraggable, true);
-                  fireMovedEvent = true;
+                  draggableMoved = true;
                }
             }
             else
             {
                // Find a column index for the column to the left or right of the current draggable
                var containerIndex = this.getTargetIndex(currentDraggable);
-               if (id[1].keyCode === KeyListener.KEY.LEFT)
+               if ((vertical && id[1].keyCode === KeyListener.KEY.LEFT) || (!vertical && id[1].keyCode === KeyListener.KEY.UP))
                {
                   containerIndex--;
                }
-               else if (id[1].keyCode === KeyListener.KEY.RIGHT)
+               else if ((vertical && id[1].keyCode === KeyListener.KEY.RIGHT) || (!vertical && id[1].keyCode === KeyListener.KEY.DOWN))
                {
                   containerIndex++;
                }
@@ -432,17 +502,12 @@
                    * element that has the current focus.
                    */
                   this.focusDraggableAfterDomChange(currentDraggable, true);
-                  fireMovedEvent = true;
+                  draggableMoved = true;
                }
             }
-            if (fireMovedEvent)
+            if (draggableMoved)
             {
-               // Fire event to inform any listening components that draggable has been moved
-               YAHOO.Bubbling.fire("draggableMoved",
-               {
-                  eventGroup: this,
-                  draggable: currentDraggable
-               });
+               this.invokeCallback(Alfresco.util.DragAndDrop.ACTION_MOVED, currentDraggable);
             }
          }
       },
@@ -468,20 +533,30 @@
          Dom.addClass(li, "dnd-draggable");
 
          // Find hidden link to add tab support
-         var links = new Element(li).getElementsByTagName("a");
-         if (links.length > 0)
+         var anchors = new Element(li).getElementsByTagName("a"),
+            a;
+         for (var i = 0, il = anchors.length; i < il; i++)
          {
-            var linkEl = new Element(links[0]);
+            a = anchors[i];
+            var linkEl = new Element(a);
 
-            linkEl.addListener("focus", this.onDraggableFocus, li, this);
-            linkEl.addListener("blur", this.onDraggableBlur, li, this);
+            linkEl.addListener("focus", this.onDraggableFocus, { li: li, a: a }, this);
+            linkEl.addListener("blur", this.onDraggableBlur, { li: li, a: a }, this);
 
-            // Add select support when using mouse
-            var liEl = new Element(li);
-            liEl.addListener("click", function(e, obj)
+            if (i == 0)
             {
-               obj.focus(); // will call selectDraggable
-            }, links[0], this);
+               // Add select support when using mouse so the first visible anchor will get called
+               var liEl = new Element(li);
+               liEl.addListener("click", function(e, li)
+               {
+                  // Get the first visible anchor
+                  var anchors = this.getVisibleAnchors(li);
+                  if (anchors.length > 0)
+                  {
+                     anchors[0].focus(); // will call onDraggableFocus
+                  }
+               }, li, this);
+            }
          }
       },
 
@@ -530,11 +605,7 @@
          this.focusDraggableAfterDomChange(copy, true);
 
          // Fire event to inform any listening components that draggable has been duplicated
-         YAHOO.Bubbling.fire("draggableDuplicated",
-         {
-            eventGroup: this,
-            draggable: srcEl
-         });
+         this.invokeCallback(Alfresco.util.DragAndDrop.ACTION_DUPLICATED, srcEl);
       },
 
       /**
@@ -547,19 +618,23 @@
        */
       focusDraggableAfterDomChange: function DD_focusDraggableAfterDomChange(li, focus)
       {
-         var doFocus = focus;
-         var a = new Element(li).getElementsByTagName("a")[0];
+         var doFocus = focus,
+         draggable = li;
 
          // Don't call it directly, give the browser 50 ms to fix the Dom first.
-         YAHOO.lang.later(50, a, function()
+         YAHOO.lang.later(50, this, function()
          {
-            if (doFocus)
+            var anchors = this.getVisibleAnchors(draggable);
+            if (anchors.length > 0)
             {
-               a.focus();
-            }
-            else
-            {
-               a.blur();
+               if (doFocus)
+               {
+                  anchors[0].focus();
+               }
+               else
+               {
+                  anchors[0].blur();
+               }
             }
          });
       },
@@ -572,19 +647,72 @@
        */
       deleteDraggable: function DD_deleteDraggable(li)
       {
-         // Remove the draggable from the Dom.
-         li.parentNode.removeChild(li);
-
+         if (this.invokeCallback(Alfresco.util.DragAndDrop.ACTION_DELETE, li))
+         {
+            // Remove the draggable from the Dom.
+            li.parentNode.removeChild(li);            
+         }
+         else
+         {
+            this.focusDraggableAfterDomChange(li, true);
+         }
+         
          // Hide the shadow object
          Dom.setStyle(this.shadow, "display", "none");
-
-         // Fire event to inform any listening components that draggable has been deleted
-         YAHOO.Bubbling.fire("draggableDeleted",
-         {
-            eventGroup: this
-         });
       },
 
+      /**
+       * Invokes the callback set for the draggables container and returns the result of the callback.
+       *
+       * @method invokeCallback
+       * @param action
+       * @param li
+       * @return True if the default behaviour after this action shall be executed (If the callback didn't return false).
+       */
+      invokeCallback: function(action, li)
+      {
+         var ul = li.parentNode,
+            ulId = ul.getAttribute("id"),
+            draggables = this.config.draggables || [],
+            executeDefaultBehaviour = true;
+         for (var i = 0, il = draggables.length; i < il; i++)
+         {
+            if (ulId == draggables[i].container.getAttribute("id"))
+            {
+               var callback = draggables[i].callback || {};
+               if (YAHOO.lang.isFunction(callback.fn))
+               {
+                  var result = callback.fn.call(callback.scope, action, li, draggables[i].container);
+                  if (YAHOO.lang.isBoolean(result) && !result) {
+                     executeDefaultBehaviour = false;
+                  }
+               }
+            }
+         }
+         return executeDefaultBehaviour;
+      },
+
+      /**
+       * Returns the anchors that are visible in the ui.
+       *
+       * @method getVisibleAnchors
+       * @param li
+       * @return the visible anchor elements in the ui
+       */
+      getVisibleAnchors: function (li)
+      {
+         var anchors = new Element(li).getElementsByTagName("a"),
+            visibleAnchors = [];
+         for (var a, i = 0, il = anchors.length; i < il; i++)
+         {
+            if (Alfresco.util.isVisible(anchors[i]))
+            {
+               visibleAnchors.push(anchors[i]);
+            }
+         }
+         return visibleAnchors;
+      },
+      
       /**
        * Helper function to get a draggable from a specific index in a column.
        *
@@ -644,7 +772,7 @@
       getTargetIndex: function DD_getTargetIndex(el)
       {
          var metadata = this.targets[this.getContainer(el).getAttribute("id")];
-         return (metadata && metadata._index) ? metadata._index : null;
+         return (metadata && YAHOO.lang.isNumber(metadata._index)) ? metadata._index : null;
       },
 
 
@@ -700,8 +828,22 @@
          }
          else
          {
-            return true;
+            return false;
          }
+      },
+
+
+      /**
+       * Helper function to determine if a column can't fit anymore draggables.
+       *
+       * @method isContainerVertical
+       * @param ul {HTMLElement} of type ul (the draggable column)
+       * @return {boolean} true if column is full
+       */
+      isContainerVertical: function DD_isContainerVertical(ul)
+      {
+         var vertical = this.draggables[ul.getAttribute("id")].vertical;
+         return YAHOO.lang.isBoolean(vertical) ? vertical : true;
       },
 
       /**
@@ -806,7 +948,9 @@
 
       // Keep track of mouse drag movements
       this.goingUp = false;
+      this.goingLeft = false;
       this.lastY = 0;
+      this.lastX = 0;
 
       // Save a local copy of the shared shadow element.
       this.srcShadow = shadow;
@@ -884,18 +1028,27 @@
             Dom.setStyle(this.srcShadow, "display", "none");
          }
          //Dom.setStyle(this.srcShadow, "visibility", "hidden");
-         var height;
+         var height, width;
          if (YAHOO.env.ua.ie)
          {
             height = srcEl.offsetHeight;
+            width = srcEl.offsetWidth;
          }
          else
          {
             height = Dom.getStyle(srcEl, "height");
+            width = Dom.getStyle(srcEl, "width");
          }
-         if (height)
+         var vertical = this.dndComponent.isContainerVertical(this.dndComponent.getContainer(srcEl));
+         if (vertical && height)
          {
             Dom.setStyle(this.srcShadow, "height", height);
+            Dom.setStyle(this.srcShadow, "width", "1px");
+         }
+         if (!vertical && width)
+         {
+            Dom.setStyle(this.srcShadow, "height", "1px");
+            Dom.setStyle(this.srcShadow, "width", width);
          }
          p.insertBefore(this.srcShadow, srcEl);
       },
@@ -941,62 +1094,20 @@
          /**
           * If we get here, the draggable was either dropped on a add target,
           * the original column or just "dropped" outside a any target.
-          * Either way animate the proxy to "fly" towards the shadow.
-          * Since we have used the shadow to make space for the draggable during
-          * the drag we can rely on that the shadow is in the position we're
-          * the draggable should be placed.
-          *
           * We will decide later if its an add or move that has been performed.
           */
 
          // Show the proxy element and animate it towards the shadow.
          Dom.setStyle(proxy, "visibility", "");
-         var xy = Dom.getXY(this.srcShadow);
-         if (xy)
-         {
-            var a = new YAHOO.util.Motion(proxy,
-            {
-               points:
-               {
-                  to: xy
-               }
-            }, 0.3, YAHOO.util.Easing.easeOut);
 
-            // Save the scope of this for the callback after the animation.
-            var myThis = this;
+         // Hide proxy
+         Dom.setStyle(proxy, "visibility", "hidden");
 
-            a.onComplete.subscribe(function()
-            {
-               var srcShadow = myThis.srcShadow;
+         // Insert and show the real draggable
+         this.insertSrcEl(srcEl);
 
-               // Hide proxy
-               Dom.setStyle(proxy, "visibility", "hidden");
-
-               // Insert and show the real draggable
-               myThis.insertSrcEl(srcEl);
-
-               // Hide shadow
-               Dom.setStyle(srcShadow, "display", "none");
-            });
-            a.animate();
-         }
-         else
-         {
-            /**
-             * Skip animations for browsers (IE7 and below) that doesn't return coordinates when proxy
-             * is "thrown" away in a "sloppy" manner towards a clear direction
-             * rather than releasing the proxy "carefully".
-             */
-
-            // Hide proxy
-            Dom.setStyle(proxy, "visibility", "hidden");
-
-            // Insert and show the real draggable
-            this.insertSrcEl(srcEl);
-
-            // Hide shadow
-            Dom.setStyle(this.srcShadow, "display", "none");
-         }
+         // Hide shadow
+         Dom.setStyle(this.srcShadow, "display", "none");
       },
 
       /**
@@ -1020,17 +1131,12 @@
          }
          else
          {
-            // It was a "none protected draggale" that was dragged, move it.
+            // It was a "none protected draggable" that was dragged, move it.
             destUl.insertBefore(srcEl, this.srcShadow);
             this.dndComponent.focusDraggableAfterDomChange(srcEl, true);
 
-            // Fire event to inform any listening components that draggable has been moved
-            YAHOO.Bubbling.fire("draggableMoved",
-            {
-               eventGroup: this.dndComponent,
-               draggable: srcEl
-            }); 
-
+            // Invoke callback to inform any listening components that draggable has been moved
+            this.dndComponent.invokeCallback(Alfresco.util.DragAndDrop.ACTION_MOVED, srcEl);
          }
          // Show the new draggable.
          Dom.setStyle(srcEl, "visibility", "");
@@ -1084,7 +1190,7 @@
             var pt = DDM.interactionInfo.point;
 
             // The region occupied by the source element at the time of the drop
-            var region = YAHOO.util.Region.getRegion(this.srcShadow);
+            var region = YAHOO.util.Region.getRegion(this.getEl());
 
             /**
              * Check to see if we are over the source element's location.
@@ -1095,9 +1201,9 @@
             {
                // Add only to the list if it isn't full
                destEl = Dom.get(id);
-               if (!this.dndComponent.isTargetFull(destEl))
+               if (!this.dndComponent.isTargetFull(destEl) && YAHOO.util.Dom.getStyle(this.srcShadow, "display") == "none")
                {
-                  // Add to the list
+                  // Add the shadow to the end of the list so the actual src will be added on its place
                   destEl.appendChild(this.srcShadow);
 
                   // Refresh the drag n drop managers cache.
@@ -1128,7 +1234,7 @@
        * Callback that gets called when the proxy is dragged out from a drop target.
        *
        * @method onDragOut
-       * @param event {HTMLelement}
+       * @param event {HTMLElement}
        * @param id {string} The id of the target element the proxy was dragged out of
        */
       onDragOut: function DD_onDragOut(event, id)
@@ -1183,6 +1289,16 @@
             this.goingUp = false;
          }
          this.lastY = y;
+         var x = Event.getPageX(event);
+         if (x < this.lastX)
+         {
+            this.goingLeft = true;
+         }
+         else if (x > this.lastX)
+         {
+            this.goingLeft = false;
+         }
+         this.lastX = x;
       },
 
       /**
@@ -1191,7 +1307,7 @@
        * draggable in the column.
        *
        * @method onDragOver
-       * @param event {HTMLelement}
+       * @param event {HTMLElement}
        * @param id {string} The id of the target element the proxy was dragged over.
        */
       onDragOver: function DD_DP_onDragOver(event, id)
@@ -1199,8 +1315,8 @@
          this.isOver = true;
 
          // Get the element the proxy was dragged over
-         var destEl = Dom.get(id);
-         var srcEl = this.getEl();
+         var destEl = Dom.get(id),
+            srcEl = this.getEl();
 
          // We are only concerned with list items, we ignore the dragover
          // notifications for the list since those are handled by onDragDrop().
@@ -1227,15 +1343,20 @@
                   {
                      Dom.setStyle(this.srcShadow, "display", "");
                   }
-                  if (this.goingUp)
+
+                  if (this.dndComponent.isRealDraggable(destEl))
                   {
-                     // Insert shadow before hovered li
-                     destEl.parentNode.insertBefore(this.srcShadow, destEl);
-                  }
-                  else
-                  {
-                     // Insert shadow after hovered li
-                     destEl.parentNode.insertBefore(this.srcShadow, destEl.nextSibling);
+                     var vertical = this.dndComponent.isContainerVertical(this.dndComponent.getContainer(destEl));
+                     if ((vertical && this.goingUp) || (!vertical && this.goingLeft))
+                     {
+                        // Insert shadow before hovered li
+                        destEl.parentNode.insertBefore(this.srcShadow, destEl);
+                     }
+                     else
+                     {
+                        // Insert shadow after hovered li
+                        destEl.parentNode.insertBefore(this.srcShadow, destEl.nextSibling);
+                     }
                   }
                }
             }
@@ -1272,6 +1393,18 @@
             this._changeCursor(Alfresco.util.Cursor.DROP_VALID);
             Dom.addClass(destEl, "target");
          }
+      },
+
+      /**
+       * Called when drop is done outside a target, will make sure the original drag source
+       * is visible if user scrolled out of screen.
+       *
+       * @method onInvalidDrop  
+       */
+      onInvalidDrop: function DD_DP_onInvalidDrop()
+      {
+         this.dndComponent.shadow.parentNode.scrollIntoView();
       }
+
    });
 })();

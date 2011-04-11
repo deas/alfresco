@@ -1,55 +1,46 @@
-<script type="text/javascript">//<![CDATA[
-new Alfresco.DocumentVersions("${args.htmlid}").setOptions(
-{
-   versions: [
-<#list versions as version>
+<#if allowNewVersionUpload??>
+   <#if workingCopyVersion??>
+      <!-- No version component is displayed since it is a working copy -->
+   <#else>
+      <#assign el=args.htmlid?js_string>
+      <script type="text/javascript">//<![CDATA[
+      new Alfresco.DocumentVersions("${el}").setOptions(
       {
-         label: "${version.label}",
-         createdDate: "${version.createdDate}"
-      }<#if (version_has_next)>,</#if>
-</#list>
-   ],
-   filename: "${filename!}",
-   nodeRef: "${nodeRef!}"
-}).setMessages(
-   ${messages}
-);
-//]]></script>
+         nodeRef: "${nodeRef?js_string}",
+         siteId: <#if site??>"${site?js_string}"<#else>null</#if>,
+         containerId: "${container?js_string}",
+         workingCopyVersion: <#if workingCopyVersion??>"${workingCopyVersion?js_string}"<#else>null</#if>
+      }).setMessages(
+         ${messages}
+      );
+      //]]></script>
 
-<div id="${args.htmlid}-body" class="document-versions hidden">
+      <div id="${el}-body" class="document-versions document-details-panel">
 
-   <div class="info-section">
+         <h2 id="${el}-heading" class="thin dark">
+            ${msg("header.versionHistory")}
+            <#if allowNewVersionUpload>
+               <span class="alfresco-twister-actions">
+                  <a href="#" name=".onUploadNewVersionClick" class="${el} edit" title="${msg("label.newVersion")}">&nbsp;</a>
+               </span>
+            </#if>
+         </h2>
 
-      <div class="heading">${msg("header.versionHistory")}</div>
+         <div class="panel-body">
 
-      <#list versions as version>
-         <#if version_index == 1>
-            <div class="info-sub-section">
-               <span class="meta-heading">${msg("section.olderVersion")}</span>
-            </div>
-         </#if>
-         <a id="${args.htmlid}-expand-a-${version_index}" class="info more <#if version_index != 0>collapsed<#else>expanded</#if>" href="#">
-            <span class="meta-section-label theme-color-1">${msg("label.label")} ${version.label}</span>
-            <span id="${args.htmlid}-createdDate-span-${version_index}" class="meta-value">&nbsp;</span>
-         </a>
-         <div id="${args.htmlid}-moreVersionInfo-div-${version_index}" class="moreInfo" <#if version_index != 0>style="display: none;"</#if>>
-            <div class="info">
-               <span class="meta-label">${msg("label.creator")}</span>
-               <span class="meta-value">${version.creator.firstName?html} ${version.creator.lastName?html}</span>
-            </div>
-            <div class="info">
-               <span class="meta-label">${msg("label.description")}</span>
-               <span class="meta-value">${version.description?html}</span>
-            </div>
-            <div class="actions">
-               <span><a href="${url.context}/proxy/alfresco${version.downloadURL}" class="download">${msg("link.download")}</a></span>
-               <#if version_index != 0>
-                  <span class="hidden"><a id="${args.htmlid}-revert-a-${version_index}" class="revert" href="#">${msg("link.revert")}</a></span>
-               </#if>
-            </div>
+            <h3 class="thin dark">${msg("section.latestVersion")}</h3>
+            <div id="${el}-latestVersion" class="current-version version-list"></div>
+            <hr />
+            <h3 class="thin dark">${msg("section.olderVersion")}</h3>
+            <div id="${el}-olderVersions" class="version-list"></div>
+
          </div>
-      </#list>
 
-   </div>
+         <script type="text/javascript">//<![CDATA[
+            Alfresco.util.createTwister("${el}-heading", "DocumentVersions");
+         //]]></script>
 
-</div>
+
+      </div>
+   </#if>
+</#if>

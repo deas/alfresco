@@ -259,6 +259,18 @@
 
          // Let the uploader instance show itself
          this.uploader.show(this.showConfig);
+      },
+      
+      hide: function FU_hide()
+      {
+         if (this.uploader === null)
+         {
+            // If the uploader doesn't exist then there's nothing to hide!
+         }
+         else
+         {
+            this.uploader.hide();
+         }
       }
    });
 })();
@@ -267,4 +279,11 @@ Alfresco.getFileUploadInstance = function()
 {
    var instanceId = "alfresco-fileupload-instance";
    return Alfresco.util.ComponentManager.get(instanceId) || new Alfresco.FileUpload(instanceId);
+};
+
+Alfresco.getDNDUploadProgressInstance = function()
+{
+  var instanceId = "Alfresco.DNDUpload";
+  var instance = Alfresco.util.ComponentManager.findFirst(instanceId);
+  return instance;
 };

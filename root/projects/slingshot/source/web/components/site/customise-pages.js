@@ -25,10 +25,11 @@
  */
 (function()
 {
-
    var Dom = YAHOO.util.Dom, 
-      Event = YAHOO.util.Event,
-      DDM = YAHOO.util.DragDropMgr;
+       Event = YAHOO.util.Event,
+       Selector = YAHOO.util.Selector;
+
+   var $html = Alfresco.util.encodeHTML;   
 
    /**
     * Alfresco.CustomisePages constructor.
@@ -39,39 +40,11 @@
     */
    Alfresco.CustomisePages = function(htmlId)
    {
-      this.name = "Alfresco.CustomisePages";
-      this.id = htmlId;
-      
-      this.widgets =
-      {
-         /**
-          * Select buttons for each page
-          *
-          * @property selectButtons
-          * @type object Contains other objects of type {pageId: YAHOO.util.Button}
-          */
-         selectButtons: {}
-      }
-
-      // Register this component
-      Alfresco.util.ComponentManager.register(this);
-
-      // Load YUI Components
-      Alfresco.util.YUILoaderHelper.require(["button", "container", "datasource"], this.onComponentsLoaded, this);
-
-      return this;
+      return Alfresco.CustomisePages.superclass.constructor.call(this, "Alfresco.CustomisePages", htmlId, ["button"]);
    };
 
-   Alfresco.CustomisePages.prototype =
+   YAHOO.extend(Alfresco.CustomisePages, Alfresco.component.Base,
    {
-      /**
-       * Object container for storing YUI widget instances.
-       *
-       * @property widgets
-       * @type object
-       */
-      widgets: null,
-
       /**
        * Object container for initialization options
        *
@@ -80,177 +53,179 @@
        */
       options:
       {
-
          /**
           * The id for the site who's pages are configured
           *
           * @property siteId
           * @type {string} The siteId
           */
-         siteId: null,
-
-         /**
-          * The avaiable layouts
-          *
-          * @property layouts
-          * @type {object} {"page.pageId":{pageId: "", title: "", description: ""}}
-          */
-         pages: {}
-      },
-
-      /**
-       * Set multiple initialization options at once.
-       *
-       * @method setOptions
-       * @param obj {object} Object literal specifying a set of options
-       * @return {Alfresco.CustomisePages} returns 'this' for method chaining
-       */
-      setOptions: function CP_setOptions(obj)
-      {
-         this.options = YAHOO.lang.merge(this.options, obj);
-         return this;
-      },
-
-      /**
-       * Set messages for this module.
-       *
-       * @method setMessages
-       * @param obj {object} Object literal specifying a set of messages
-       * @return {Alfresco.CustomisePages} returns 'this' for method chaining
-       */
-      setMessages: function CP_setMessages(obj)
-      {
-         Alfresco.util.addMessages(obj, this.name);
-         return this;
+         siteId: null
       },
 
       /**
        * Fired by YUILoaderHelper when required component script files have
        * been loaded into the browser.
        *
-       * @method onComponentsLoaded
+       * @method onReady
        */
-      onComponentsLoaded: function CP_onComponentsLoaded()
+      onReady: function CP_onReady()
       {
-         // Shortcut for dummy instance
-         if (this.id === null)
+         // Add drag n drop support
+         this.widgets.dnd = new Alfresco.util.DragAndDrop(
          {
-            return;
-         }
-
-         // Save reference to elements so we can hide and show later
-         this.widgets.addPagesDiv = Dom.get(this.id + "-addPages-div");
-         this.widgets.pagesDiv = Dom.get(this.id + "-pages-div");
-
-         // Create references to control buttons and listen to events
-         Event.addListener(this.id + "-closeAddPages-link", "click", this.onCloseAddPagesLinkClick, this, true);
-         this.widgets.addPagesButton = Alfresco.util.createYUIButton(this, "addPages-button", this.onAddPagesButtonClick);
+            draggables: [
+               {
+                  container: this.id + "-availablePages-ul",
+                  groups: [ Alfresco.util.DragAndDrop.GROUP_MOVE ],
+                  cssClass: "customise-pages-page-list-item",
+                  vertical: false,
+                  movesOnEnterKey: true,
+                  callback:
+                  {
+                     fn: this.onAvailableDragAndDropAction,
+                     scope: this
+                  }
+               },
+               {
+                  container: this.id + "-currentPages-ul",
+                  groups: [ Alfresco.util.DragAndDrop.GROUP_MOVE, Alfresco.util.DragAndDrop.GROUP_DELETE ],
+                  cssClass: "customise-pages-page-list-item",
+                  vertical: false,
+                  callback:
+                  {
+                     fn: this.onCurrentDragAndDropAction,
+                     scope: this
+                  }
+               }
+            ],
+            targets: [
+               {
+                  container: this.id + "-availablePages-ul",
+                  group: Alfresco.util.DragAndDrop.GROUP_MOVE
+               },
+               {
+                  container: this.id + "-currentPages-ul",
+                  group: Alfresco.util.DragAndDrop.GROUP_MOVE
+               }
+            ]
+         });
+         
          this.widgets.saveButton = Alfresco.util.createYUIButton(this, "save-button", this.onSaveButtonClick);
          this.widgets.cancelButton = Alfresco.util.createYUIButton(this, "cancel-button", this.onCancelButtonClick);
+      },
 
-         // Create the select buttons for all layouts
-         this.widgets.selectButtons = [];
-         for (var pageId in this.options.pages)
+      /**
+       * Called when a current page's rename anchor has been clicked
+       *
+       * @method onRenameClick
+       * @param pageId
+       * @param anchor
+       */
+      onRenameClick: function(pageId, anchor)
+      {
+         var li = Dom.get(this.id + "-page-" + pageId),
+            sitePageTitleInputEl = Selector.query("input[name=sitePageTitle]", li, true),
+            sitePageTitleH3El = Selector.query("h3.title", li, true),
+            type = Selector.query("div.type", li, true).innerHTML;
+         Alfresco.util.PopupManager.getUserInput(
          {
-            // Save a reference to each remove image button and listen for click event
-            Event.addListener(this.id + "-remove-link-" + pageId, "click", this.onRemoveButtonClick,
+            title: this.msg("popup.rename.header", $html(type)),
+            text: this.msg("popup.rename.label"),
+            input: "text",
+            value: $html(sitePageTitleInputEl.value),
+            callback:
             {
-               selectedPageId: pageId,
-               thisComponent: this
-            });
+               fn: this.onPageRenamed,
+               obj: [ sitePageTitleInputEl, sitePageTitleH3El],
+               scope: this
+            }
+         });
+      },
 
-            // Save references and listen to clicks on each select button
-            this.widgets.selectButtons[pageId] = Alfresco.util.createYUIButton(this, "select-button-" + pageId, this.onSelectButtonClick);
+      /**
+       * Called when the page's name has been changed in the dialog
+       *
+       * @method onPageRenamed
+       * @param sitePageTitle
+       * @param elements
+       */
+      onPageRenamed: function(sitePageTitle, elements)
+      {
+         elements[0].value = sitePageTitle;
+         elements[1].innerHTML = $html(sitePageTitle);
+      },
+
+      /**
+       * Called when a dnd action has occured in the current pages lists.
+       *
+       * @param action
+       * @param draggable
+       * @param container
+       */
+      onAvailableDragAndDropAction: function(action, draggable, container)
+      {
+         // Reset site specific names in the hidden input fields
+         this.resetPage(draggable);
+      },
+
+      /**
+       * Called when a dnd action has occured in the current pages lists.
+       *
+       * @param action
+       * @param draggable
+       * @param container
+       */
+      onCurrentDragAndDropAction: function(action, draggable, container)
+      {
+         if (action == Alfresco.util.DragAndDrop.ACTION_DELETE)
+         {
+            // Move page/draggable to available pages
+            this.removeCurrentPage(draggable);
+
+            /**
+             * Return false since we do NOT want the dnd container to go ahead and delete
+             * the page/draggable we just moved to the available pages.
+             */
+            return false;
          }
-
-         // Show or hide empty div labels
-         this._adjustEmptyMessages();
       },
 
       /**
-       * Fired when the user clicks one of the select buttons for a page.
-       * Adds the selected page to the current pages.
+       * Called when a current page's remove anchor has been clicked
        *
-       * @method onSelectButtonClick
-       * @param event {object} an "click" event
+       * @method onRemoveClick
+       * @param pageId
+       * @param anchor
        */
-      onSelectButtonClick: function CP_onSelectButtonClick(event, button)
+      onRemoveClick: function(pageId, anchor)
       {
-         // Find out what layout that is chosen by looking at the clicked button's id
-         var buttonId = button.get("id");
-         var selectedPageId = buttonId.substring((this.id + "-select-button-").length);
-
-         // Hide the selected page from the available pages list and add it last to the current pages list
-         Dom.setStyle(this.id + "-page-li-" + selectedPageId, "display", "none");
-         var page = Dom.get(this.id + "-currentPage-li-" + selectedPageId);
-         var container = page.parentNode;
-         container.appendChild(page);
-         Alfresco.util.Anim.fadeIn(page);
-
-         /**
-          * todo: To handle multiple instances of the same page:
-          * - In html.ftl: Don't create unused pages in the currentPages div (now they are created but hidden)
-          * - Create a hidden "used page template"-div in html.ftl
-          * - In onComponentLoaded store a reference to the template in widgets
-          * - Do a widgets.templateDiv.clone(true) and populate the template by using the selected Page's values from options.pages
-          * - Insert the page in the end of the list like before  
-          */
-
-         // Show or hide empty div labels
-         this._adjustEmptyMessages();
+         this.removeCurrentPage(Dom.get(this.id + "-page-" + pageId));
       },
 
       /**
-       * Fired when the user clicks one of the add buttons for a page.
-       * Displays the pages.
+       * Resets the site specific page info and moves the page to available pages
        *
-       * @method onAddButtonClick
-       * @param event {object} an "click" event
+       * @method removeCurrentPage
+       * @param li
        */
-      onAddPagesButtonClick: function CP_onAddPageButtonClick(event, button)
+      removeCurrentPage: function(li)
       {
-         // Hide add dashlets button and fade in available dashlets
-         Dom.setStyle(this.widgets.addPagesDiv, "display", "none");
-         Alfresco.util.Anim.fadeIn(this.widgets.pagesDiv);
+         this.resetPage(li);
+         Dom.get(this.id + "-availablePages-ul").appendChild(li);
       },
 
       /**
-       * Fired when the user clicks one of the close link.
-       * Hides the pages.
+       * moves the page to available pages
        *
-       * @method onCloseAddPagesLinkClick
-       * @param event {object} an "click" event
+       * @method resetPage
+       * @param li
        */
-      onCloseAddPagesLinkClick: function CP_onCloseAddPagesLinkClick(event)
+      resetPage: function(li)
       {
-         // Show add pages button and hide available pages
-         Dom.setStyle(this.widgets.addPagesDiv, "display", "");
-         Dom.setStyle(this.widgets.pagesDiv, "display", "none");
-         Event.stopEvent(event);
+         var type = Selector.query("div.type", li, true).innerHTML;
+         Selector.query("input[name=sitePageTitle]", li, true).value = "";
+         Selector.query("h3.title", li, true).innerHTML = type;
       },
-
-      /**
-       * Fired when the user clicks one of the remove buttons for a page.
-       * Removes the selected page from the current pages.
-       *
-       * @method onRemoveButtonClick
-       * @param event {object} an "click" event
-       */
-      onRemoveButtonClick: function CP_onRemoveButtonClick(event, obj)
-      {
-         // Remove the page from the current pages list and add it last to the available pages list
-         Dom.setStyle(obj.thisComponent.id + "-currentPage-li-" + obj.selectedPageId, "display", "none")
-         var page = Dom.get(obj.thisComponent.id + "-page-li-" + obj.selectedPageId);
-         var container = page.parentNode;
-         container.appendChild(page);
-         Alfresco.util.Anim.fadeIn(page);
-
-         // Show or hide empty div labels
-         obj.thisComponent._adjustEmptyMessages();
-         
-         Event.stopEvent(event);
-      },
-
 
       /**
        * Fired when the user clicks the Save/Done button.
@@ -265,43 +240,46 @@
          this.widgets.saveButton.set("disabled", true);
          this.widgets.cancelButton.set("disabled", true);
 
-         // Loop through the columns to get the pages to save
-         var pages = [];
-         var children = Dom.getChildrenBy(Dom.get(this.id + "-currentPages-ul"), this._isRealPage);
-         for (var i = 0; i < children.length; i++)
+         var inputEls = Selector.query(".current-pages ul li input", this.id),
+            inputEl,
+            pages = [],
+            page;
+         for (var i = 0, il = inputEls.length; i < il; i++)
          {
-            // Find the pageId by extracting part of its Dom id
-            var li = children[i];
-            var pageId = li.id.substring((this.id + "-currentPage-li-").length);
-
-            // Create a page object to send to the server
-            var page =
+            inputEl = inputEls[i];
+            if (inputEl.name == "pageId")
             {
-               pageId: pageId
-            };
-            pages[pages.length] = page;
+               page = {
+                  pageId: inputEl.value
+               };
+               pages.push(page);
+            }
+            else if (inputEl.name == "sitePageTitle" && inputEl.value.length > 0)
+            {
+               page.sitePageTitle = inputEl.value;
+            }
          }
-
-         // Prepare the root object to send to the server
-         var siteId = this.options.siteId;
-         var dataObj =
-         {
-            siteId: siteId,
-            pages: pages
-         };
-
-         // Do the request and send the user to the dashboard after wards
+         
+         // Select theme option
+         var themeId = Dom.get(this.id + "-theme-menu").value;
+         
+         // Execute the request and redirect the user to the dashboard on success
          Alfresco.util.Ajax.jsonRequest(
          {
             method: Alfresco.util.Ajax.POST,
             url: Alfresco.constants.URL_SERVICECONTEXT + "components/site/customise-pages",
-            dataObj: dataObj,
+            dataObj:
+            {
+               siteId: this.options.siteId,
+               pages: pages,
+               themeId: themeId
+            },
             successCallback:
             {
                fn: function()
                {
                   // Send the user to the newly configured dashboard
-                  document.location.href = Alfresco.constants.URL_PAGECONTEXT + "site/" + siteId + "/dashboard";
+                  document.location.href = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/dashboard";
                },
                scope: this
             },
@@ -342,64 +320,7 @@
       {
          // Take the user back to the sites dashboard
          document.location.href = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/dashboard";
-      },
-
-      /**
-       * If the current page list or the avialable page list is empty a div
-       * with a simple label should be displayed to tell the user of this.
-       * This method checks both of the list.
-       *
-       * @method _adjustEmptyMessages
-       * @private
-       */
-      _adjustEmptyMessages: function CP_adjustEmptyMessages()
-      {
-         this._adjustEmptyMessage(Dom.get(this.id + "-pages-empty-li"));
-         this._adjustEmptyMessage(Dom.get(this.id + "-currentPages-empty-li"));
-      },
-
-      /**
-       * Takes a div element with an "empty" label and looks if its parent
-       * ul node contains any li that represent pages.
-       * If it doesnt it displays li/the empty div label.
-       *
-       * @method _adjustEmptyMessage
-       * @param li an HTMLElement of type li
-       * @private
-       */
-      _adjustEmptyMessage: function CP_adjustEmptyMessage(li)
-      {
-         var parentUl = li.parentNode;
-         var children = Dom.getChildrenBy(parentUl, this._isRealPage);
-         if (children.length > 0)
-         {
-            Dom.setStyle(li, "display", "none");
-         }
-         else
-         {
-            Dom.setStyle(li, "display", "");
-         }
-      },
-
-
-      /**
-       * Tests if the li elemenet supplied represents a page.
-       *
-       * @method _isRealPage
-       * @param el an HTMLElement of type li
-       * @return true if el represents a page 
-       * @private
-       */
-      _isRealPage: function (el)
-      {
-         return el.tagName.toLowerCase() == ("li") &&
-                !Dom.hasClass(el, "empty") &&
-                Dom.getStyle(el, "display") != "none";
       }
 
-   }
-
+   });
 })();
-
-/* Dummy instance to load optional YUI components early */
-new Alfresco.CustomisePages(null);

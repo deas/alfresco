@@ -37,7 +37,7 @@ import org.springframework.scheduling.quartz.JobDetailAwareTrigger;
 public abstract class AbstractTriggerBean implements InitializingBean, JobDetailAwareTrigger, BeanNameAware, DisposableBean
 {
 
-    private static Log s_logger = LogFactory.getLog(AbstractTriggerBean.class);
+    protected static Log logger = LogFactory.getLog(AbstractTriggerBean.class);
 
     private JobDetail jobDetail;
 
@@ -46,6 +46,8 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
     private String beanName;
     
     private Trigger trigger;
+    
+    private boolean enabled = true;
 
     public AbstractTriggerBean()
     {
@@ -100,16 +102,23 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
         {
             throw new AlfrescoRuntimeException("Job detail has not been set");
         }
-        if (scheduler == null)
+        if ((scheduler == null) || (!enabled))
         {
-            s_logger.warn("Job " + getBeanName() + " is not active");
+            logger.warn("Job " + getBeanName() + " is not active/enabled");
         }
         else
         {
-            s_logger.info("Job " + getBeanName() + " is active");
             // Register the job with the scheduler
             this.trigger = getTrigger();
-            scheduler.scheduleJob(jobDetail, this.trigger);
+            if (this.trigger == null)
+            {
+                logger.error("Job " + getBeanName() + " is not active (invalid trigger)");
+            }
+            else
+            {
+                logger.info("Job " + getBeanName() + " is active");
+                scheduler.scheduleJob(jobDetail, this.trigger);
+            }
         }
 
     }
@@ -153,6 +162,17 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
     public String getBeanName()
     {
         return beanName;
+    }
+    
+    
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+    
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
     }
 
 }

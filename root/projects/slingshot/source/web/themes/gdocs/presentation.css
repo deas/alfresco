@@ -115,6 +115,11 @@ label,
    font-weight: normal;
 }
 
+.faded
+{
+   color: #aaa;
+}
+
 /* HEADER and FOOTER */
 
 .yui-skin-gdocs .header .menu-wrapper
@@ -145,7 +150,6 @@ label,
 {
    background-color: #eff3fa;
    background-repeat: repeat-x;
-   border-bottom: 1px solid #dddddd;
    color: #333;
 }
 
@@ -537,6 +541,24 @@ span.mce_alfresco-imagelibrary
    background: #6688ee none;
 }
 
+/* Override checked styles for doclist */
+
+.yui-skin-gdocs .no-check-bg div.flat-button span.yui-radio-button-checked,
+.yui-skin-gdocs .no-check-bg div.flat-button span.yui-checkbox-button-checked,
+.yui-skin-gdocs .no-check-bg div.flat-button span.yui-radio-button-checked,
+.yui-skin-gdocs .no-check-bg div.flat-button span.yui-checkbox-button-checked
+{
+   background: none;
+}
+
+/* Ensure hover state can be activated */
+
+.yui-skin-gdocs .no-check-bg div.flat-button span.yui-button-hover
+{
+   background: transparent url(images/sprite.png) repeat-x scroll 0 0;
+   border-color: #999;
+}
+
 /* Override YUI Button styles for - title button style */
 
 .yui-skin-gdocs .title-button .yui-button
@@ -740,7 +762,9 @@ body.yui-skin-gdocs .doclist div.more-actions
 
 body.yui-skin-gdocs .doclist .action-set a:active,
 body.yui-skin-gdocs .doclist .action-set a:hover,
-body.yui-skin-gdocs .doclist .action-set .highlighted
+body.yui-skin-gdocs .doclist .action-set .highlighted,
+#divCalendarContent .yui-dt-col-actions a:active,
+#divCalendarContent .yui-dt-col-actions a:hover
 {
    border: 1px solid #6688EE;
 }
@@ -914,7 +938,9 @@ body.yui-skin-gdocs .yui-columnbrowser .yui-carousel-content li.yui-columnbrowse
 .yui-skin-gdocs .node .nodeURL a,
 .yui-skin-gdocs .nodeAttrValue a,
 .yui-skin-gdocs .nodeFooter .tag a,
-.yui-skin-gdocs .detail .tag a,
+.yui-skin-gdocs .yui-dt-highlighted .detail .tag a,
+.yui-skin-gdocs .yui-dt-highlighted .detail .category a,
+.yui-skin-gdocs .yui-dt-highlighted .detail-social .item a,
 .yui-skin-gdocs a.wiki-tag-link,
 .yui-skin-gdocs .node .userLink a,
 .yui-skin-gdocs .site-members h3 a,
@@ -923,9 +949,26 @@ body.yui-skin-gdocs .yui-columnbrowser .yui-carousel-content li.yui-columnbrowse
 .yui-skin-gdocs .attrValue a,
 .yui-skin-gdocs .detail .item a,
 .yui-skin-gdocs .info .meta-value a,
-.yui-skin-gdocs .rules-none a
+.yui-skin-gdocs .rules-none a,
+.yui-skin-gdocs .agendaview a,
+.yui-skin-gdocs a.previousEvents,
+.yui-skin-gdocs a.nextEvents
 {
    color: #0600cc;
+}
+
+.yui-skin-gdocs .detail .tag a,
+.yui-skin-gdocs .detail .category a,
+.yui-skin-gdocs .detail-social .item a,
+.yui-skin-gdocs .document-tags .tag
+{
+   color: #333;
+}
+
+.yui-skin-gdocs .detail .tag a,
+.yui-skin-gdocs .document-tags .tag
+{
+   background-color: #e8e8e8;
 }
 
 .yui-skin-gdocs .site-navigation
@@ -1106,6 +1149,15 @@ border-bottom-color: #c3d9ff;
 
 /* END CALENDAR */
 
+
+/* Document */
+
+.document-version
+{
+   background-color: #aaa;
+   color: #fff;
+}
+
 /* Links */
 
 .yui-skin-gdocs .links-header .links-toolbar
@@ -1144,6 +1196,16 @@ border-bottom-color: #c3d9ff;
 .alfresco-twister-closed
 {
    background: transparent url(images/collapsed.png) no-repeat scroll 0 50% !important;
+}
+
+/* Preview Tooltip */
+
+.yui-tt .bd
+{
+   background-color: #f4faff !important;
+   border: 1px solid #333 !important;
+   padding: 4px 4px 1px !important;
+   text-align: left;
 }
 
 /* Theme colors */

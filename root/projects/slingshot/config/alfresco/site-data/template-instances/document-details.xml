@@ -39,19 +39,35 @@
       <component>
          <region-id>actions-common</region-id>
          <url>/components/documentlibrary/actions-common</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <component>
          <region-id>repo-actions-common</region-id>
          <url>/components/documentlibrary/actions-common</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <!-- path: normal & repository -->
       <component>
-         <region-id>path</region-id>
-         <url>/components/document-details/path</url>
+         <region-id>document-header</region-id>
+         <url>/components/document-details/document-header</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+            <rootPage>documentlibrary</rootPage>
+            <rootLabelId>path.documents</rootLabelId>
+         </properties>
       </component>
       <component>
-         <region-id>repo-path</region-id>
-         <url>/components/document-details/repo/path</url>
+         <region-id>repo-document-header</region-id>
+         <url>/components/document-details/document-header</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+            <rootPage>repository</rootPage>
+            <rootLabelId>path.repository</rootLabelId>
+         </properties>
       </component>
       <!-- web-preview: normal & repository -->
       <component>
@@ -70,48 +86,39 @@
             <disableI18nInputFix>false</disableI18nInputFix>
          </properties>
       </component>
-      <!-- comments: normal & repository -->
+
       <component>
          <region-id>comments</region-id>
-         <url>/components/blog/comments</url>
+         <url>/components/comments/list</url>
          <properties>
-            <editorWidth>420</editorWidth>
-            <editorHeight>100</editorHeight>
+            <nodeRef>{nodeRef}</nodeRef>
+            <activityType>document</activityType>
          </properties>
       </component>
       <component>
          <region-id>repo-comments</region-id>
-         <url>/components/blog/comments</url>
+         <url>/components/comments/list</url>
          <properties>
-            <editorWidth>420</editorWidth>
-            <editorHeight>100</editorHeight>
+            <nodeRef>{nodeRef}</nodeRef>
+            <activityType>document</activityType>
          </properties>
       </component>
-      <!-- createcomment: normal & repository -->
-      <component>
-         <region-id>createcomment</region-id>
-         <url>/components/blog/createcomment</url>
-         <properties>
-            <editorHeight>100</editorHeight>
-            <editorWidth>420</editorWidth>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-createcomment</region-id>
-         <url>/components/blog/createcomment</url>
-         <properties>
-            <editorHeight>100</editorHeight>
-            <editorWidth>420</editorWidth>
-         </properties>
-      </component>
+
+
       <!-- document-metadata-header: normal & repository -->
       <component>
          <region-id>document-metadata-header</region-id>
          <url>/components/document-details/document-metadata-header</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <component>
          <region-id>repo-document-metadata-header</region-id>
          <url>/components/document-details/document-metadata-header</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <!-- document-metadata: normal & repository -->
       <component>
@@ -132,14 +139,28 @@
             <mode>view</mode>
          </properties>
       </component>
-      <!-- document-info: normal & repository -->
+      <!-- document-tags: normal & repository -->
       <component>
-         <region-id>document-info</region-id>
-         <url>/components/document-details/document-info</url>
+         <region-id>document-tags</region-id>
+         <url>/components/document-details/document-tags</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <component>
-         <region-id>repo-document-info</region-id>
-         <url>/components/document-details/repo/document-info</url>
+         <region-id>repo-document-tags</region-id>
+         <url>/components/document-details/repo/document-tags</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+      <!-- document-permissions only normal (since site permissions isn't applicable for repository)-->
+      <component>
+         <region-id>document-permissions</region-id>
+         <url>/components/document-details/document-permissions</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <!-- document-versions: normal & repository -->
       <component>
@@ -175,19 +196,31 @@
       <component>
          <region-id>document-actions</region-id>
          <url>/components/document-details/document-actions</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <component>
          <region-id>repo-document-actions</region-id>
          <url>/components/document-details/repo/document-actions</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <!-- document-links: normal & repository -->
       <component>
          <region-id>document-links</region-id>
          <url>/components/document-details/document-links</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <component>
          <region-id>repo-document-links</region-id>
          <url>/components/document-details/document-links</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
       </component>
       <component>
          <region-id>html-upload</region-id>

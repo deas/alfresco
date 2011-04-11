@@ -55,7 +55,8 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
     /** Logger */
     private static Log logger = LogFactory.getLog(BroadcastDispositionActionDefinitionUpdateAction.class);
     
-    private static final String CHANGED_PROPERTIES = "changedProperties";
+    public static final String NAME = "broadcastDispositionActionDefinitionUpdate";
+    public static final String CHANGED_PROPERTIES = "changedProperties";
 
     /**
      * @see org.alfresco.repo.action.executer.ActionExecuterAbstractBase#executeImpl(org.alfresco.service.cmr.action.Action,
@@ -70,7 +71,7 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
             return;
         }
         
-        Set<QName> changedProps = (Set<QName>)action.getParameterValue(CHANGED_PROPERTIES);
+        List<QName> changedProps = (List<QName>)action.getParameterValue(CHANGED_PROPERTIES);
 
         // Navigate up the containment hierarchy to get the record category grandparent and schedule.
         NodeRef dispositionScheduleNode = nodeService.getPrimaryParent(actionedUponNodeRef).getParentRef();
@@ -122,8 +123,7 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
      * @param changedProps The set of properties changed on the action definition
      * @param recordOrFolder The record or folder the changes potentially need to be applied to
      */
-    private void processActionDefinitionChanges(NodeRef dispositionActionDef, Set<QName> changedProps,
-                NodeRef recordOrFolder)
+    private void processActionDefinitionChanges(NodeRef dispositionActionDef, List<QName> changedProps, NodeRef recordOrFolder)
     {
         // check that the step being edited is the current step for the folder,
         // if not, the change has no effect on the current step so ignore
@@ -151,7 +151,7 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
     }
     
     /**
-     * Determines whether the disposition action defintion (step) being
+     * Determines whether the disposition action definition (step) being
      * updated has any effect on the given next action
      *  
      * @param dispositionActionDef The disposition action definition node

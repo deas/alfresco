@@ -1,6 +1,0 @@
-<webscript>
-   <shortname>Alfresco Network</shortname>
-   <description>Notifications of the latest updates, news and add-ons from Alfresco</description>
-   <family>user-dashlet</family>
-   <url>/components/dashlets/alfresco-network</url>
-</webscript>

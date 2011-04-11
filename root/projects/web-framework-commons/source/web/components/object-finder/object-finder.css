@@ -94,6 +94,22 @@
    overflow-y: auto;
 }
 
+.object-finder .current-values
+{
+   margin-bottom: 4px;
+}
+
+.object-finder .current-values div.itemtype-tag
+{
+   background-color: #e8e8e8;
+   border-radius: 8px;
+   font-size: 93%;
+   margin: 1px 0.5em 1px 0;
+   padding: 2px 8px;
+   -moz-border-radius: 8px;
+   -webkit-border-radius: 8px;
+}
+
 .object-finder .show-picker
 {
    clear: left;
@@ -132,11 +148,11 @@
 
 .object-finder .picker-header .folder-up button
 {
-   background: transparent url(../form/images/up-arrow-16.png) no-repeat 50% 50%;
+   background: transparent url(../form/images/folder-up-16.png) no-repeat 50% 50%;
 }
 .object-finder .picker-header .folder-up .yui-button-disabled button
 {
-   background-image: url(../form/images/up-arrow-disabled-16.png);
+   background-image: url(../form/images/folder-up-disabled-16.png);
 }
 
 .object-finder .picker-header .navigator span.wait

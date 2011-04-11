@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -81,6 +82,9 @@ import org.apache.commons.logging.LogFactory;
  *    ls
  *    -lih
  * </code></pre>
+ * 
+ * Tokenization of quoted parameter values is handled by {@link ExecParameterTokenizer}, which
+ * describes the support in more detail.
  * 
  * @author Derek Hulley
  */
@@ -554,11 +558,11 @@ public class RuntimeExec
             if (adjustedValue.startsWith(DIRECTIVE_SPLIT))
             {
                 String unsplitAdjustedValue = sb.substring(DIRECTIVE_SPLIT.length());
-                StringTokenizer tokenizer = new StringTokenizer(unsplitAdjustedValue);
-                while (tokenizer.hasMoreTokens())
-                {
-                    adjustedCommandElements.add(tokenizer.nextToken());
-                }
+                
+                // There may be quoted arguments here (see ALF-7482)
+                ExecParameterTokenizer quoteAwareTokenizer = new ExecParameterTokenizer(unsplitAdjustedValue);
+                List<String> tokens = quoteAwareTokenizer.getAllTokens();
+                adjustedCommandElements.addAll(tokens);
             }
             else
             {

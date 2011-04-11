@@ -218,24 +218,12 @@ Alfresco.util.tags.registerTagActionHandler = function registerTagActionHandler(
    // Hook tag clicks
    var fnTagHandler = function fnTagHandler(layer, args)
    {
-      var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "span");
-      if (owner !== null)
+      var tag = this.rel;
+      YAHOO.Bubbling.fire("tagSelected",
       {
-         var tagId = owner.id.substring(tagId.lastIndexOf("-") + 1);
-         for (tag in scope.tagId.tags)
-         {
-            if (scope.tagId.tags[tag] == tagId)
-            {
-               YAHOO.Bubbling.fire("tagSelected",
-               {
-                  tagName: tag
-               });
-               break;
-            }
-         }
-         args[1].stop = true;
-      }
-    		 
+         tagName: tag
+      });
+      args[1].stop = true;
       return true;
    };
    YAHOO.Bubbling.addDefaultAction("tag-link", fnTagHandler);

@@ -18,7 +18,12 @@
  */
 
 /**
- * WebPreview component. 
+ * WebPreview component.
+ *
+ * Displays the node's content using various plugins depending on the node's content mime type & thumbnails available.
+ * Document, video & image previewers are shipped out of the box.
+ *
+ * Now supports plugins to be able to render custom content, by adding new <plugin-condition> elements in .get.config.xml.
  *
  * @namespace Alfresco
  * @class Alfresco.WebPreview
@@ -48,12 +53,11 @@
     */
    Alfresco.WebPreview = function(containerId)
    {
+      // Note "uploader" is required so we get the YAHOO.deconcept.SWFObject
       Alfresco.WebPreview.superclass.constructor.call(this, "Alfresco.WebPreview", containerId, ["button", "container", "uploader"]);
+      this.plugin = null;
 
       /* Decoupled event listeners are added in setOptions */
-      YAHOO.Bubbling.on("documentDetailsAvailable", this.onDocumentDetailsAvailable, this);
-      YAHOO.Bubbling.on("recalculatePreviewLayout", this.onRecalculatePreviewLayout, this);
-
       return this;
    };
 
@@ -92,16 +96,7 @@
          name: "",
 
          /**
-          * The icon displayed in the header of the component
-          *
-          * @property icon
-          * @type string
-          */
-         icon: "",
-
-         /**
-          * The mimeType of the node to display, needed to decide what preview
-          * that should be used.
+          * The mimeType of the node to display, needed to decide what plugin that should be used.
           *
           * @property mimeType
           * @type string
@@ -109,33 +104,50 @@
          mimeType: "",
 
          /**
-          * A list of previews available for this component
+          * A list of previews available for this node, needed to decide which plugin that should be used.
           *
           * @property previews
           * @type Array
           */
-         previews: [],
+         thumbnails: [],
 
          /**
-          * Decides if the Previewer shall disable the i18n input fix shall be disabled for all browsers.
-          * If it shall be disabled for certain a certain os/browser override the disableI18nInputFix() method.
+          * A json representation of the .get.config.xml file.
+          * This is evaluated on the client side since we need the plugins to make sure it is supported
+          * the user's browser and browser plugins.
           *
-          * Fix solves the Flash i18n input keyCode bug when "wmode" is set to "transparent"
-          * http://bugs.adobe.com/jira/browse/FP-479
-          * http://issues.alfresco.com/jira/browse/ALF-1351
-          *
-          * ...see "Browser Testing" on this page to see supported browser/language combinations for AS2 version
-          * http://analogcode.com/p/JSTextReader/
-          *
-          * ... We are using the AS3 version of the same fix
-          * http://blog.madebypi.co.uk/2009/04/21/transparent-flash-text-entry/
-          *
-          * @property disableI18nInputFix
-          * @type boolean
+          * @property pluginConditions
+          * @type Array
           */
-         disableI18nInputFix: false
+         pluginConditions: []
       },
 
+      /**
+       * Space for preview "plugins" to register themselves in.
+       * To provide a 3rd party plugin:
+       *
+       * 1. Create a javascript file and make it define a javascript class that defines a "plugin class" in this namespace.
+       * 2. Override this component's .get.head.ftl file and make sure your javascript file (and its resources) are included.
+       * 3. Override this component's .get.config.xml and define for which mimeTypes or thumbnails it shall be used.
+       * 4. To make sure your plugin works in the browser, define a report() method that
+       *    returns nothing if the browser is supported and otherwise a string with a message saying the reason the
+       *    plugin can't be used in the browser.
+       * 5. Define a display() method that will display the browser plugin or simply return a string of markup that shall be inserted.
+       *
+       * @property Plugins
+       * @type Object
+       */
+      Plugins: {},
+
+      /**
+       * If a plugin was found to preview the content it will be stored here, for future reference.
+       *
+       * @property plugin One of the plugins that have registered themselves in Alfresco.WebPreview.Plugin
+       * @type Object
+       * @public
+       */
+      plugin: null,
+      
       /**
        * Fired by YUILoaderHelper when required component script files have
        * been loaded into the browser.
@@ -144,26 +156,21 @@
        */
       onComponentsLoaded: function WP_onComponentsLoaded()
       {
-         /**
-          * SWFObject patch
-          * Ensures all flashvars are URI encoded
-          */
+          // SWFObject patch to help flash plugins, will ensure all flashvars are URI encoded
          YAHOO.deconcept.SWFObject.prototype.getVariablePairs = function()
          {
-             var variablePairs = [],
-                key,
-                variables = this.getVariables();
-             
-             for (key in variables)
-             {
-                if (variables.hasOwnProperty(key))
-                {
-                   variablePairs[variablePairs.length] = key + "=" + encodeURIComponent(variables[key]);
-                }
-             }
-             return variablePairs;
-          };
-         
+            var variablePairs = [],
+               key,
+               variables = this.getVariables();
+            for (key in variables)
+            {
+               if (variables.hasOwnProperty(key))
+               {
+                  variablePairs[variablePairs.length] = key + "=" + encodeURIComponent(variables[key]);
+               }
+            }
+            return variablePairs;
+         };
          Event.onContentReady(this.id, this.onReady, this, true);
       },
 
@@ -175,346 +182,166 @@
       onReady: function WP_onReady()
       {
          // Setup web preview
-         this._setupWebPreview(false);
+         this.setupPreview(false);
       },
 
       /**
-       * Called when document details has been available or changed (if the useDocumentDetailsAvailableEvent
-       * option was set to true) on the page so the web previewer can remove its old preview and
-       * display a new one if available.
+       * Will find a previewer and set it up if one existed
        *
-       * @method onDocumentDetailsAvailable
-       * @param p_layer The type of the event
-       * @param p_args Event information
-       */
-      onDocumentDetailsAvailable: function WP_onDocumentDetailsAvailable(p_layer, p_args)
-      {
-         // Get the new info about the node and decide if the previewer must be refreshed
-         var documentDetails = p_args[1].documentDetails,
-            refresh = false;
-
-         // Name
-         if (this.options.name != documentDetails.fileName)
-         {
-            this.options.name = documentDetails.fileName;
-            refresh = true;
-         }
-
-         // Mime type
-         if (this.options.mimeType != documentDetails.mimetype)
-         {
-            this.options.mimeType = documentDetails.mimetype;
-            refresh = true;
-         }
-
-         // Size
-         if (this.options.size != documentDetails.size)
-         {
-            this.options.size = documentDetails.size;
-            refresh = true;
-         }
-
-         // Setup previewer
-         if (refresh)
-         {
-            this._setupWebPreview();
-         }
-      },
-
-      /**
-       * Because the WebPreview content is absolutely positioned, components which alter DOM layout can fire
-       * this event to prompt a recalculation of the absolute coordinates.
-       *
-       * @method onRecalculatePreviewLayout
-       * @param p_layer The type of the event
-       * @param p_args Event information
-       */
-      onRecalculatePreviewLayout: function WP_onRecalculatePreviewLayout(p_layer, p_args)
-      {
-         // Only if not in maximize view
-         if (this.widgets.realSwfDivEl.getStyle("height") !== "100%")
-         {
-            this._positionOver(this.widgets.realSwfDivEl, this.widgets.shadowSfwDivEl);
-         }
-      },
-
-      /**
-       * Will setup the
-       *
-       * @method _setupWebPreview
+       * @method resolvePreviewer
        * @private
        */
-      _setupWebPreview: function WP__setupWebPreview()
+      setupPreview: function WP_setupPreview()
       {
          // Save a reference to the HTMLElement displaying texts so we can alter the texts later
-         this.widgets.swfPlayerMessage = Dom.get(this.id + "-swfPlayerMessage-div");
-         this.widgets.titleText = Dom.get(this.id + "-title-span");
-         this.widgets.titleImg = Dom.get(this.id + "-title-img");
-
-         // Set title and icon         
-         this.widgets.titleText.innerHTML = $html(this.options.name);
-         this.widgets.titleImg.src = Alfresco.constants.URL_RESCONTEXT + this.options.icon.substring(1);
+         this.widgets.previewerElement = Dom.get(this.id + "-previewer-div");
 
          // Parameter nodeRef is mandatory
          if (this.options.nodeRef === undefined)
          {
-             throw new Error("A nodeRef must be provided");
+            throw new Error("A nodeRef must be provided");
          }
-
-         /**
-          * To support full window mode an extra div (realSwfDivEl) is created with absolute positioning
-          * which will have the same position and dimensions as shadowSfwDivEl.
-          * The realSwfDivEl element is to make sure the flash move is on top of all other divs and
-          * the shadowSfwDivEl element is to make sure the previewer takes the screen real estate it needs.
-          */
-         if (!this.widgets.realSwfDivEl)
-         {
-            var realSwfDivEl = new Element(document.createElement("div"));
-            realSwfDivEl.set("id", this.id + "-real-swf-div");
-            realSwfDivEl.setStyle("position", "absolute");
-            realSwfDivEl.addClass("web-preview");
-            realSwfDivEl.addClass("real");            
-            realSwfDivEl.appendTo(document.body);
-            this.widgets.realSwfDivEl = realSwfDivEl;
-         }
-         this.widgets.shadowSfwDivEl = new Element(this.id + "-shadow-swf-div");
 
          if (this.options.size == "0")
          {
             // Shrink the web previewers real estate and tell user that node has no content
-            this.widgets.shadowSfwDivEl.removeClass("has-content");
-            this.widgets.realSwfDivEl.addClass("no-content");
-            this.widgets.swfPlayerMessage.innerHTML = this.msg("label.noContent");
-         }
-         else if (Alfresco.util.hasRequiredFlashPlayer(9, 0, 124))
-         {
-
-            // Find the url to the preview
-            var previewCtx = this._resolvePreview();
-            if (previewCtx)
-            {                  
-               // Make sure the web previewers real estate is big enough for displaying something
-               this.widgets.shadowSfwDivEl.addClass("has-content");
-               this.widgets.realSwfDivEl.removeClass("no-content");
-
-               // Create flash web preview by using swfobject
-               var swfId = "WebPreviewer_" + this.id;
-               var so = new YAHOO.deconcept.SWFObject(Alfresco.constants.URL_CONTEXT + "components/preview/WebPreviewer.swf",
-                     swfId, "100%", "100%", "9.0.45");
-               so.addVariable("fileName", this.options.name);
-               so.addVariable("paging", previewCtx.paging);
-               so.addVariable("url", previewCtx.url);
-               so.addVariable("jsCallback", "Alfresco.util.ComponentManager.get('" + this.id + "').onWebPreviewerEvent");
-               so.addVariable("jsLogger", "Alfresco.util.ComponentManager.get('" + this.id + "').onWebPreviewerLogging");
-               so.addVariable("i18n_actualSize", this.msg("preview.actualSize"));
-               so.addVariable("i18n_fitPage", this.msg("preview.fitPage"));
-               so.addVariable("i18n_fitWidth", this.msg("preview.fitWidth"));
-               so.addVariable("i18n_fitHeight", this.msg("preview.fitHeight"));
-               so.addVariable("i18n_fullscreen", this.msg("preview.fullscreen"));
-               so.addVariable("i18n_fullwindow", this.msg("preview.fullwindow"));
-               so.addVariable("i18n_fullwindow_escape", this.msg("preview.fullwindowEscape"));
-               so.addVariable("i18n_page", this.msg("preview.page"));
-               so.addVariable("i18n_pageOf", this.msg("preview.pageOf"));
-               so.addVariable("show_fullscreen_button", true);
-               so.addVariable("show_fullwindow_button", true);
-               so.addVariable("disable_i18n_input_fix", this.disableI18nInputFix());
-               so.addParam("allowScriptAccess", "sameDomain");
-               so.addParam("allowFullScreen", "true");
-               so.addParam("wmode", "transparent");
-
-               // Finally create (or recreate) the flash web preview in the new div
-               this.widgets.swfPlayerMessage.innerHTML = "";
-               so.write(this.widgets.realSwfDivEl.get("id"));
-               this.widgets.swfObject = so;
-
-               /**
-                * FF3 and SF4 hides the browser cursor if the flashmovie uses a custom cursor
-                * when the flash movie is placed/hidden under a div (which is what happens if a dialog
-                * is placed on top of the web previewer) so we must turn off custom cursor
-                * when the html environment tells us to.
-                */
-               Event.addListener(swfId, "mouseover", function(e)
-               {
-                  var swf = Dom.get(swfId);
-                  if (swf && YAHOO.lang.isFunction(swf.setMode))
-                  {
-                     Dom.get(swfId).setMode("active");
-                  }
-               });
-               Event.addListener(swfId, "mouseout", function(e)
-               {
-                  var swf = Dom.get(swfId);
-                  if (swf && YAHOO.lang.isFunction(swf.setMode))
-                  {
-                     Dom.get(swfId).setMode("inactive");
-                  }
-               });
-
-               // Page unload / unsaved changes behaviour
-               Event.addListener(window, "resize", function(e)
-               {
-                  YAHOO.Bubbling.fire("recalculatePreviewLayout");
-               });
-            }
-            else
-            {
-               // Shrink the web previewers real estate and tell user that the node has nothing to display
-               this.widgets.shadowSfwDivEl.removeClass("has-content");
-               this.widgets.realSwfDivEl.addClass("no-content");
-               var url = Alfresco.constants.PROXY_URI + "api/node/content/" + this.options.nodeRef.replace(":/", "") + "/" + encodeURIComponent(this.options.name) + "?a=true";
-               this.widgets.swfPlayerMessage.innerHTML = this.msg("label.noPreview", url);
-            }
+            this.widgets.previewerElement.innerHTML = '<div class="message">' + this.msg("label.noContent") + '</div>';
          }
          else
          {
-            // Shrink the web previewers real estate and tell user that no sufficient flash player is installed
-            this.widgets.shadowSfwDivEl.removeClass("has-content");
-            this.widgets.realSwfDivEl.addClass("no-content");
-            this.widgets.swfPlayerMessage.innerHTML = this.msg("label.noFlash");
-         }
-
-         // Place the real flash preview div on top of the shadow div
-         this._positionOver(this.widgets.realSwfDivEl, this.widgets.shadowSfwDivEl);
-      },
-
-
-      /**
-       *
-       * Overriding this method to implement a os/browser version dependent version that decides
-       * if the i18n fix described for the disableI18nInputFix option shall be disabled or not.
-       *
-       * @method disableI18nInputFix
-       * @return false
-       */
-      disableI18nInputFix: function WP__resolvePreview(event)
-      {
-         // Override this method if you want to turn off the fix for a specific client
-         return this.options.disableI18nInputFix;
-      },
-
-      /**
-       * Helper method for deciding what preview to use, if any
-       *
-       * @method _resolvePreview
-       * @return the name of the preview to use or null if none is appropriate
-       */
-      _resolvePreview: function WP__resolvePreview(event)
-      {
-         var ps = this.options.previews,
-            webpreview = "webpreview", imgpreview = "imgpreview",
-            nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
-            argsNoCache = "?c=force&noCacheToken=" + new Date().getTime(),
-            preview, url;
-         
-         if (this.options.mimeType.match(/^image\/jpeg$|^image\/png$|^image\/gif$/))         
-         {
-            /* The content matches an image mimetype that the web-previewer can handle without a preview */
-            url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRefAsLink + "/content" + argsNoCache;
-            return (
+            var condition, pluginDescriptor, plugin, messages = [];
+            for (var i = 0, il = this.options.pluginConditions.length; i <il ; i++)
             {
-               url: url,
-               paging: false
-            });
-         }
-         else if (this.options.mimeType.match(/application\/x-shockwave-flash/))
-         {
-            url = Alfresco.constants.PROXY_URI + "api/node/content/" + nodeRefAsLink + argsNoCache + "&a=false";
-            return (
-            {
-               url: url,
-               paging: false
-            });
-         }
-         else
-         {
-            preview = Alfresco.util.arrayContains(ps, webpreview) ? webpreview : (Alfresco.util.arrayContains(ps, imgpreview) ? imgpreview : null);
-            if (preview !== null)
-            {
-               url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRefAsLink + "/content/thumbnails/" + preview + argsNoCache;
-               return (
+               // Test that all conditions are valid
+               condition = this.options.pluginConditions[i];
+               if (!this.conditionsMatch(condition))
                {
-                  url: url,
-                  paging: true
-               });
+                  continue;
+               }
+
+               // Conditions are valid, now create plugins and make sure they can run in this environment
+               for (var pi = 0, pil = condition.plugins.length; pi < pil; pi++)
+               {
+                  // Create plugin
+                  pluginDescriptor = condition.plugins[pi];
+                  plugin = new Alfresco.WebPreview.prototype.Plugins[pluginDescriptor.name](this, pluginDescriptor.attributes);
+
+                  // Make sure it may run in this browser...
+                  var report = plugin.report();
+                  if (report)
+                  {
+                     // ...the plugin can't be used in this browser, save report and try another plugin
+                     messages.push(report);
+                  }
+                  else
+                  {
+                     // ...yes, the plugin can be used in this browser, lets store a reference to it.
+                     this.plugin = plugin;
+
+                     // Ask the plugin to display the node
+                     var markup;
+                     try
+                     {
+                        Dom.addClass(this.widgets.previewerElement, pluginDescriptor.name);
+                        markup = plugin.display();
+                        if (markup)
+                        {
+                           // Insert markup if plugin provided it
+                           this.widgets.previewerElement.innerHTML = markup;
+                        }
+
+                        // Finally! We found a plugin that works and didn't crash
+                        return;
+                     }
+                     catch(e)
+                     {
+                        // Oops a plugin failure, log it and try the next one instead...
+                        Alfresco.logger.error('Error, Alfresco.WebPreview.Plugins.' + pluginDescriptor.name + ' failed to display: ' + e);
+                        messages.push(this.msg("label.error", pluginDescriptor.name, e.message));                        
+                     }
+                  }
+               }
             }
-            return null;
+
+            // Tell user that the content can't be displayed
+            var message = this.msg("label.noPreview", this.getContentUrl(true));
+            for (i = 0, il = messages.length; i < il; i++)
+            {
+               message += '<br/>' + messages[i];
+            }
+            this.widgets.previewerElement.innerHTML = '<div class="message">' + message + '</div>';
          }
       },
 
       /**
-       * Called from the WebPreviewer when a log message has been logged.
+       * Checks if the conditions are fulfilled.
        *
-       * @method onWebPreviewerLogging
-       * @param msg {string} The log message
-       * @param level {string} The log level
+       * @method conditionsMatch
+       * @param condition {Object} The condition to match gainst this components options
+       * @return true of conditions are fulfilled for plugins to be used.
+       * @public
        */
-      onWebPreviewerLogging: function WP_onWebPreviewerLogging(msg, level)
+      conditionsMatch: function WP_conditionsMatch(condition)
       {
-         if (YAHOO.lang.isFunction(Alfresco.logger[level]))
+         if (condition.attributes.mimeType && condition.attributes.mimeType != this.options.mimeType)
          {
-            Alfresco.logger[level].call(Alfresco.logger, "WebPreviewer: " + msg);
+            return false;
          }
+         if (condition.attributes.thumbnail && !Alfresco.util.arrayContains(this.options.thumbnails, condition.attributes.thumbnail))
+         {
+            return false;
+         }
+         return true;
       },
 
       /**
-       * Called from the WebPreviewer when an event or error is dispatched.
+       * Helper method for plugins to create url tp the node's content.
        *
-       * @method onWebPreviewerEvent
-       * @param event {object} an WebPreview message
+       * @method getContentUrl
+       * @param {Boolean} (Optional) Default false. Set to true if the url shall be constructed so it forces the
+       *        browser to download the document, rather than displaying it inside the browser. 
+       * @return {String} The "main" element holding the actual previewer.
+       * @public
        */
-      onWebPreviewerEvent: function WP_onWebPreviewerEvent(event)
+      getContentUrl: function WP_getContentUrl(download)
       {
-         if (event.event)
-         {
-            if (event.event.type == "onFullWindowClick")
-            {
-               var clientRegion = Dom.getClientRegion();
-               this.widgets.realSwfDivEl.setStyle("left", clientRegion.left + "px");
-               this.widgets.realSwfDivEl.setStyle("top", clientRegion.top + "px");
-               this.widgets.realSwfDivEl.setStyle("width", "100%");
-               this.widgets.realSwfDivEl.setStyle("height", "100%");
-            }
-            else if (event.event.type == "onFullWindowEscape")
-            {               
-               this._positionOver(this.widgets.realSwfDivEl, this.widgets.shadowSfwDivEl);
-            }
-         }
-         else if (event.error)
-         {
-            // Inform the user about the failure
-            var message = "Error";
-            if (event.error.code)
-            {
-               message = this.msg("error." + event.error.code);
-            }
-            Alfresco.util.PopupManager.displayMessage(
-            {
-               text: message
-            });
-
-            // Tell other components that the preview failed
-            YAHOO.Bubbling.fire("webPreviewFailure",
-            {
-               error: event.error.code,
-               nodeRef: this.showConfig.nodeRef,
-               failureUrl: this.showConfig.failureUrl
-            });
-         }
+         var nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
+            noCache = "noCache=" + new Date().getTime();
+         download = download ? "a=true" : "a=false";
+         return Alfresco.constants.PROXY_URI + "api/node/content/" + nodeRefAsLink + "/" + this.options.name + "?c=force&" + noCache + "&" + download
       },
 
       /**
-       * Positions the one element over another
+       * Helper method for plugins to create a url to the thumbnail's content.
        *
-       * @method _positionOver
-       * @param event
+       * @param thumbnail {String} The thumbnail definition name
+       * @param fileSuffix {String} (Optional) I.e. ".png" if shall be inserted in the url to make certain flash
+       *        plugins understand the mimetype of the thumbnail.
+       * @return {String} The url to the thumbnail content.
+       * @public
        */
-      _positionOver: function WP__positionOver(positionedYuiEl, sourceYuiEl)
+      getThumbnailUrl: function WP_getThumbnailUrl(thumbnail, fileSuffix)
       {
-         var region = Dom.getRegion(sourceYuiEl.get("id"));
-         positionedYuiEl.setStyle("left", region.left + "px");
-         positionedYuiEl.setStyle("top", region.top + "px");
-         positionedYuiEl.setStyle("width", region.width + "px");
-         positionedYuiEl.setStyle("height", region.height + "px");
+         var nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
+               noCache = "noCache=" + new Date().getTime(),
+               force = "c=force";
+         return Alfresco.constants.PROXY_URI + "api/node/" + nodeRefAsLink + "/content/thumbnails/" + thumbnail + (fileSuffix ? "/suffix" + fileSuffix : "") + "?" + noCache + "&" + force
+      },
+
+      /**
+       * Makes it possible for plugins to get hold of the "previewer wrapper" HTMLElement.
+       *
+       * I.e. Useful for elements that use an "absolute" layout for their plugins (most likely flash), so they have
+       * an element in the Dom to position their own elements after.
+       *
+       * @method getPreviewerElement
+       * @return {HTMLElement} The "main" element holding the actual previewer.
+       * @public
+       */
+      getPreviewerElement: function()
+      {
+         return this.widgets.previewerElement;
       }
+
    });
 })();

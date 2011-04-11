@@ -350,7 +350,7 @@
                site: this.options.siteId,
                filterId: "tag",
                filterOwner: "Alfresco.BlogPostListTags",
-               filterData: obj.tagName
+               filterData: encodeURIComponent(obj.tagName)
             });
             window.location = url;
          }

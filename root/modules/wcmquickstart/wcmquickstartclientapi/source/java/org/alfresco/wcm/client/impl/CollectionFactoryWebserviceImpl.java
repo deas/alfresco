@@ -17,21 +17,20 @@
  */
 package org.alfresco.wcm.client.impl;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetCollection;
+import org.alfresco.wcm.client.AssetCollectionFactory;
 import org.alfresco.wcm.client.AssetFactory;
-import org.alfresco.wcm.client.CollectionFactory;
 import org.alfresco.wcm.client.Query;
-import org.alfresco.wcm.client.ResourceNotFoundException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Get collection using a call to a web service. This is done to avoid having to
@@ -41,50 +40,30 @@ import org.json.JSONObject;
  * object passed to the query but this is only allowed if no joins are used.
  * 
  * @author Chris Lack
+ * @author Brian Remmington
  */
-public class CollectionFactoryWebserviceImpl implements CollectionFactory
+public class CollectionFactoryWebserviceImpl implements AssetCollectionFactory
 {
     private AssetFactory assetFactory;
     private WebScriptCaller webscriptCaller;
 
-    /**
-     * Create a ResourceCollection from JSON
-     * 
-     * @param jsonObject
-     *            object representing the json response
-     * @return ResourceCollectionImpl collection object
-     * @throws JSONException
-     */
-    private AssetCollectionImpl buildCollection(JSONObject jsonObject) throws JSONException
+    private ThreadLocal<List<WebscriptParam>> localParamList = new ThreadLocal<List<WebscriptParam>>() 
     {
-        AssetCollectionImpl collection = new AssetCollectionImpl();
-        collection.setId(jsonObject.getString("id"));
-        collection.setName(jsonObject.getString("name"));
-        collection.setTitle(jsonObject.getString("title"));
-        collection.setDescription(jsonObject.getString("description"));
-        return collection;
-    }
-
-    /**
-     * Build a list of related target node ids for the collection
-     * 
-     * @param jsonObject
-     *            json object
-     * @return List<String> list of related resource ids
-     * @throws JSONException
-     */
-    private List<String> buildRelatedAssetList(JSONObject jsonObject) throws JSONException
-    {
-        List<String> relatedIds = new ArrayList<String>();
-
-        JSONArray relationships = jsonObject.getJSONArray("assets");
-        for (int i = 0; i < relationships.length(); i++)
+        @Override
+        protected List<WebscriptParam> initialValue()
         {
-            String targetId = relationships.getString(i);
-            relatedIds.add(targetId);
+            return new ArrayList<WebscriptParam>();
         }
-        return relatedIds;
-    }
+
+        @Override
+        public List<WebscriptParam> get()
+        {
+            List<WebscriptParam> list = super.get();
+            list.clear();
+            return list;
+        }
+        
+    };
 
     /**
      * @see org.alfresco.wcm.client.impl.CollectionFactoryWebserviceImpl#getCollection(String,
@@ -115,54 +94,77 @@ public class CollectionFactoryWebserviceImpl implements CollectionFactory
         try
         {
             String scriptUri = "assetcollections/" + URLEncoder.encode(collectionName, "UTF-8");
-            WebscriptParam[] params = new WebscriptParam[] { new WebscriptParam("sectionid", sectionId) };
-            JSONObject jsonObject = webscriptCaller.getJsonObject(scriptUri, Arrays.asList(params));
-            JSONObject data;
-            if (jsonObject != null)
+            WebscriptParam[] params = new WebscriptParam[] { 
+                    new WebscriptParam("sectionid", sectionId),
+            };
+            AssetDeserializerXmlImpl deserializer = new AssetDeserializerXmlImpl();
+            webscriptCaller.get(scriptUri, deserializer, params);
+            LinkedList<TreeMap<String, Serializable>> assetCollectionList = deserializer.getAssets();
+
+            AssetCollectionImpl collection = null;
+            if (!assetCollectionList.isEmpty())
             {
-                data = (JSONObject) jsonObject.get("data");
-            }
-            else
-            {
-                throw new ResourceNotFoundException("No response for " + scriptUri);
-            }
+                TreeMap<String,Serializable> assetCollectionData = assetCollectionList.get(0);
+                collection = buildCollection(sectionId, assetCollectionData);
 
-            AssetCollectionImpl collection = buildCollection(data);
+                // Get the list of ids of assets in the collection
+                List<String> assetIds = collection.getAssetIds();
 
-            // Get the list of ids of assets in the collection
-            List<String> assetIds = buildRelatedAssetList(data);
+                Query query = new Query();
+                query.setSectionId(sectionId);
+                query.setMaxResults(maxResults);
+                query.setResultsToSkip(resultsToSkip);
+                collection.setQuery(query);
 
-            Query query = new Query();
-            query.setSectionId(sectionId);
-            query.setMaxResults(maxResults);
-            query.setResultsToSkip(resultsToSkip);
-            collection.setQuery(query);
-            collection.setTotalSize(assetIds.size());
-
-            if (assetIds.size() > 0)
-            {
-                // If this is a paginated query then select the subset of ids
-                // for which the assets should be fetched.
-                if (maxResults != -1)
+                if (assetIds.size() > 0)
                 {
-                    int end = resultsToSkip + maxResults;
-                    assetIds = assetIds.subList(resultsToSkip, end > assetIds.size() ? assetIds.size() : end);
-                }
+                    // If this is a paginated query then select the subset of ids
+                    // for which the assets should be fetched.
+                    if (maxResults != -1)
+                    {
+                        int end = resultsToSkip + maxResults;
+                        assetIds = assetIds.subList(resultsToSkip, end > assetIds.size() ? assetIds.size() : end);
+                    }
 
-                // Get the actual asset objects.
-                List<Asset> assets = assetFactory.getAssetsById(assetIds);
-                collection.setAssets(assets);
+                    // Get the actual asset objects.
+                    List<Asset> assets = assetFactory.getAssetsById(assetIds);
+                    collection.setAssets(assets);
+                }
             }
             return collection;
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException("Parsing getCollection ws JSON response failed", e);
         }
         catch (UnsupportedEncodingException e)
         {
             throw new RuntimeException("Error encoding URL", e);
         }
+    }
+
+    public Date getModifiedTimeOfAssetCollection(String assetCollectionId)
+    {
+        Date result = null;
+        List<WebscriptParam> paramList = localParamList.get();
+        paramList.add(new WebscriptParam("assetcollectionid", assetCollectionId));
+        paramList.add(new WebscriptParam("modifiedTimeOnly", "true"));
+        String scriptUri = "assetcollections";
+        AssetDeserializerXmlImpl deserializer = new AssetDeserializerXmlImpl();
+        webscriptCaller.get(scriptUri, deserializer, paramList);
+
+        LinkedList<TreeMap<String, Serializable>> assetCollectionList = deserializer.getAssets();
+
+        if (!assetCollectionList.isEmpty())
+        {
+            TreeMap<String, Serializable> assetCollectionData = assetCollectionList.get(0);
+            result = (Date) assetCollectionData.get("cm:modified");
+        }
+        return result;
+    }
+
+    private AssetCollectionImpl buildCollection(String sectionId, TreeMap<String, Serializable> assetCollectionData)
+    {
+        AssetCollectionImpl collection = new AssetCollectionImpl();
+        collection.setProperties(assetCollectionData);
+        collection.setPrimarySectionId(sectionId);
+        return collection;
     }
 
     public void setAssetFactory(AssetFactory assetFactory)

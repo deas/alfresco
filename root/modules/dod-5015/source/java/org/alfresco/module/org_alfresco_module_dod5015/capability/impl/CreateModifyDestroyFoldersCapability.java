@@ -45,7 +45,7 @@ public class CreateModifyDestroyFoldersCapability extends AbstractCapability
         {
             if (type == null)
             {
-                if (checkFilingUnfrozenUncutoff(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+                if (checkFilingUnfrozenUncutoff(nodeRef, true) == AccessDecisionVoter.ACCESS_GRANTED)
                 {
                     if (isRecordFolder(voter.getNodeService().getType(nodeRef)))
                     {
@@ -66,7 +66,7 @@ public class CreateModifyDestroyFoldersCapability extends AbstractCapability
             }
             else
             {
-                if (checkFilingUnfrozenUncutoff(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+                if (checkFilingUnfrozenUncutoff(nodeRef, true) == AccessDecisionVoter.ACCESS_GRANTED)
                 {
                     if (isRecordCategory(voter.getNodeService().getType(nodeRef)))
                     {

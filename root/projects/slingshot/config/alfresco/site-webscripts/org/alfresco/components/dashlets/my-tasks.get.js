@@ -3,10 +3,12 @@ model.hiddenTaskTypes = getHiddenTaskTypes();
 
 var myConfig = new XML(config.script),
    filters = [];
+
 for each(var xmlFilter in myConfig..filter)
 {
-   filters.push({
-      label: xmlFilter.@label.toString(),
+   filters.push(
+   {
+      type: xmlFilter.@type.toString(),
       parameters: xmlFilter.@parameters.toString()
    });
 }

@@ -105,6 +105,14 @@
          rootNode: null,
 
          /**
+          * Whether the Repo Browser is in use or not
+          *
+          * @property repositoryBrowsing
+          * @type boolean
+          */
+         repositoryBrowsing: true,
+
+         /**
           * ContainerId representing root container in site view mode
           *
           * @property containerId
@@ -333,8 +341,19 @@
          if (!this.widgets.destinationDialog)
          {
             this.widgets.destinationDialog = new Alfresco.module.DoclibGlobalFolder(this.id + "-selectDestination");
+
+            var allowedViewModes =
+            [
+               Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE
+            ];
+            if (this.options.repositoryBrowsing === true)
+            {
+               allowedViewModes.push(Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY, Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME);
+            }
+
             this.widgets.destinationDialog.setOptions(
             {
+               allowedViewModes: allowedViewModes,
                siteId: this.options.siteId,
                containerId: this.options.containerId,
                title: this.msg("title.destinationDialog"),

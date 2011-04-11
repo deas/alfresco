@@ -112,9 +112,6 @@
                               file: file
                            });
 
-                           // Fire "metadataRefresh" event so list is refreshed since rules might have been triggered on update
-                           YAHOO.Bubbling.fire("metadataRefresh");
-
                            // Fire "tagRefresh" event
                            YAHOO.Bubbling.fire("tagRefresh");
 
@@ -198,7 +195,7 @@
 
          Alfresco.util.PopupManager.displayPrompt(
          {
-            title: this.msg("message.confirm.delete.title"),
+            title: this.msg("actions." + (asset.isFolder ? "folder" : "document") + ".delete"),
             text: this.msg("message.confirm.delete", asset.displayName),
             buttons: [
             {
@@ -587,17 +584,19 @@
       },
 
       /**
-       * Called from the uploader component after a the new version has been uploaded.
+       * Handles creating activity events after file upload completion
        *
-       * @method onNewVersionUploadComplete
+       * @method _uploadComplete
+       * @protected
        * @param complete {object} Object literal containing details of successful and failed uploads
+       * @param uploadType {String} Either "added" or "updated" depending on the file action
        */
-      onNewVersionUploadComplete: function dlA_onNewVersionUploadComplete(complete)
+      _uploadComplete: function dlA__uploadComplete(complete, uploadType)
       {
          var success = complete.successful.length, activityData, file;
          if (success > 0)
          {
-            if (success < this.options.groupActivitiesAt || 5)
+            if (success < (this.options.groupActivitiesAt || 5))
             {
                // Below cutoff for grouping Activities into one
                for (var i = 0; i < success; i++)
@@ -608,7 +607,7 @@
                      fileName: file.fileName,
                      nodeRef: file.nodeRef
                   };
-                  this.modules.actions.postActivity(this.options.siteId, "file-updated", "document-details", activityData);
+                  this.modules.actions.postActivity(this.options.siteId, "file-" + uploadType, "document-details", activityData);
                }
             }
             else
@@ -618,11 +617,33 @@
                {
                   fileCount: success,
                   path: this.currentPath,
-                  parentNodeRef: this.doclistMetadata.parent.nodeRef
+                  parentNodeRef : this.doclistMetadata.parent.nodeRef
                };
-               this.modules.actions.postActivity(this.options.siteId, "files-updated", "documentlibrary", activityData);
+               this.modules.actions.postActivity(this.options.siteId, "files-" + uploadType, "documentlibrary", activityData);
             }
          }
+      },
+
+      /**
+       * Called from the uploader component after one or more files have been uploaded.
+       *
+       * @method onFileUploadComplete
+       * @param complete {object} Object literal containing details of successful and failed uploads
+       */
+      onFileUploadComplete: function dlA_onFileUploadComplete(complete)
+      {
+         this._uploadComplete(complete, "added");
+      },
+
+      /**
+       * Called from the uploader component after one or more files have been updated.
+       *
+       * @method onNewVersionUploadComplete
+       * @param complete {object} Object literal containing details of successful and failed uploads
+       */
+      onNewVersionUploadComplete: function dlA_onNewVersionUploadComplete(complete)
+      {
+         this._uploadComplete(complete, "updated");
       },
 
       /**
@@ -709,8 +730,18 @@
             this.modules.copyMoveTo = new Alfresco.module.DoclibCopyMoveTo(this.id + "-copyMoveTo");
          }
 
+         var allowedViewModes =
+         [
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE
+         ];
+         if (this.options.repositoryBrowsing === true)
+         {
+            allowedViewModes.push(Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY, Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME);
+         }
+
          this.modules.copyMoveTo.setOptions(
          {
+            allowedViewModes: allowedViewModes,
             mode: mode,
             siteId: this.options.siteId,
             containerId: this.options.containerId,

@@ -1,5 +1,5 @@
 <webscript>
   <shortname>document-metadata-header</shortname>
-  <description>Document Metadata Header Component</description>
+  <description>Document Properties Header Component</description>
   <url>/components/document-details/document-metadata-header</url>
 </webscript>

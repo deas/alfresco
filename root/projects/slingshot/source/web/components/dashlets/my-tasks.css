@@ -1,53 +1,16 @@
 /* Toolbars */
 
-.my-tasks .hide
-{
-   visibility: hidden;
-}
-
-.my-tasks .toolbar
-{
-   min-height: 2em;
-}
-
-
-.my-tasks .last
-{
-   min-height: 1.2em;
-}
-
-.my-tasks .toolbar div.actions,
-.my-tasks .toolbar div.links
-{
-   float: right;
-}
-
-.my-tasks .toolbar div.actions
-{
-   min-height: 2em; line-height: 2em;
-}
-
 .my-tasks .toolbar .yui-pg-container,
 .my-tasks .toolbar .yui-pg-container .yui-pg-current
 {
+   line-height: 2;
    margin: 0 0 0 0.3em;
    padding: 0;
 }
 
 /* Body */
 
-.my-tasks .body
-{
-   clear: both;
-}
-
-.my-tasks .scrollableList 
-{
-   padding:0;
-}
-
-.my-tasks .body h4,
-.my-tasks .body div   
+.my-tasks .body h4
 {
    margin-bottom: 0.2em;
 }
@@ -61,45 +24,6 @@
 
 /* Data Table */
 
-.my-tasks .yui-dt table
-{
-   border: medium none;
-   width: 100%;
-}
-
-.my-tasks .yui-dt thead
-{
-   display: none;
-}
-
-.my-tasks .yui-dt tbody
-{
-   outline: none;
-}
-
-.my-tasks .yui-dt tr.yui-dt-even,
-.my-tasks .yui-dt tr.yui-dt-odd
-{
-   background-color: #ffffff;
-}
-
-.my-tasks .yui-dt td
-{
-   border-bottom: 1px dashed #d9d9d9;
-   border-right: medium none;
-   vertical-align: top;
-}
-
-.my-tasks .yui-dt td .yui-dt-liner
-{
-   padding: 4px 6px;
-}
-
-.my-tasks .yui-dt .yui-dt-message td
-{
-   border: medium none;
-}
-
 .my-tasks .yui-dt-col-isPooled div
 {
    text-align: center   
@@ -108,6 +32,12 @@
 .my-tasks .yui-dt-col-isPooled img
 {
    margin-bottom: 0.5em;
+}
+
+.my-tasks .yui-dt-col-title .yui-dt-liner
+{
+   line-height: 1.4;
+   padding-top: 0;
 }
 
 .my-tasks .task-delayed

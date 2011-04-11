@@ -1,0 +1,8 @@
+<config>
+   <title>tool.openoffice.label</title>
+   <form>
+      <itemKind>mbean</itemKind>
+      <itemId>Alfresco:Name=OpenOffice</itemId>
+   </form>
+   <editable>true</editable>
+</config>

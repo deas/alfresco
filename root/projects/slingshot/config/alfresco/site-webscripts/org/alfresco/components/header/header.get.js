@@ -13,7 +13,7 @@ function getTwisterPrefs()
       result,
       response;
 
-   result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences?pf=" + PREF_COLLAPSED_TWISTERS);
+   result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
    if (result.status == 200 && result != "{}")
    {
       response = eval('(' + result + ')');
@@ -50,19 +50,6 @@ function getSiteTitle()
       }
    }
    model.siteTitle = siteTitle;
-   // Save the site title for downstream components - saves remote calls for Site Profile
-   context.setValue("site-title", siteTitle);
-}
-
-/**
- * Theme Override
- */
-function getThemeOverride()
-{
-   if (page.url.args["theme"] != null)
-   {
-      model.theme = page.url.args["theme"];
-   }
 }
 
 /**
@@ -100,13 +87,51 @@ function getUserStatus()
    model.userStatusTime = userStatusTime;
 }
 
+/**
+ * Application logo override
+ */
+function getLogo()
+{
+   model.logo = context.getSiteConfiguration().getProperty("logo");
+}
+
+/**
+ * License usage warnings and errors
+ */
+function getLicenseInfo()
+{
+   // Only retrieve license usage information for the first few seconds after login
+   // this ensures the usage information is not continually queried.
+   // This could be improved by having a central usage service on the web-tier that
+   // is reponsible for retrieving the usage in a more sensible schedule.
+   if (context.properties["editionInfo"].edition != "UNKNOWN" &&
+       user.properties["alfUserLoaded"] > new Date().getTime() - 5000)
+   {
+      // retrieve license usage information
+      var result = remote.call("/api/admin/usage");
+      if (result.status.code == status.STATUS_OK)
+      {
+         usage = eval('(' + result + ')');
+         // if warnings or errors are present, display them to the admin or user
+         // admin sees messages if WARN_ADMIN, WARN_ALL, LOCKED_DOWN
+         // users see messages if WARN_ALL, LOCKED_DOWN
+         if ( (user.isAdmin && (usage.warnings.length != 0 || usage.errors.length != 0)) ||
+              (usage.level >= 2 && (usage.warnings.length != 0 || usage.errors.length != 0)) )
+         {
+            model.usage = usage;
+         }
+      }
+   }
+}
+
 function main()
 {
    getTwisterPrefs();
    getSiteTitle();
-   getThemeOverride();
    getHeader();
    getUserStatus();
+   getLogo();
+   getLicenseInfo();
 }
 
 if (!user.isGuest)

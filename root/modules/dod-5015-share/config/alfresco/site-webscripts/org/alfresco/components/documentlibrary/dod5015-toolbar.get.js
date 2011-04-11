@@ -10,7 +10,7 @@ function main()
    var result, preferences = {};
    
    // Request the current user's preferences
-   var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences?pf=" + PREFERENCES_ROOT);
+   var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
    if (result.status == 200 && result != "{}")
    {
       var prefs = eval('(' + result + ')');

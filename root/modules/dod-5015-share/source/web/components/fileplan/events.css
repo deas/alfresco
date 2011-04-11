@@ -1,19 +1,11 @@
 .events
 {
    padding: 1.5em 0 1.5em;
-   border-right: 1px solid #CCCCCC;
 }
 
 .events .hidden
 {
    display: none;
-}
-
-.events .heading
-{
-   color: #333333;
-   font-size: 131%;
-   padding-bottom: 1em;
 }
 
 .events .header

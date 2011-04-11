@@ -1,104 +1,89 @@
-.document-versions
+.document-versions .version-panel-left
 {
-	padding: 0em 1em 0em 0em;
+   float: left;
 }
 
-.document-versions .heading
+.document-versions .version-panel-right
 {
-   color: #333333;
-   font-size: 131%;
-   padding-top: 1em;
+   border-left: 1px solid #ccc;
+   margin-left: 2.5em;
+   padding-left: 0.5em;
 }
 
-.document-versions .info
+.document-versions .h4
 {
-   line-height: 1.5em;
-   display: block;
+   clear: both;
 }
 
-.document-versions .info.more
+.document-versions .version-list
 {
-   cursor: pointer;
-   background-repeat:no-repeat;
-   background-position:left 0.4em;
-   padding-left: 1.2em;
+   margin-bottom: 1.5em;
+   margin-top: 0.5em;
 }
 
-.document-versions .info.more.expanded
+.document-versions h2 .edit
 {
-   background-image:url(../images/expanded.png);
+   background-image: url(../documentlibrary/images/upload-new-version-16.png);
 }
 
-.document-versions .info.more.collapsed
+.document-versions .version-list h3
 {
-   background-image:url(../images/collapsed.png);
+   margin-bottom: 0.5em;
+   float: left;
+   width: 78%;
 }
 
-.document-versions .moreInfo
+.document-versions .version-list h3 .document-version
 {
-   padding-left: 1.2em;
-}
-
-.document-versions .info-section
-{
-   border-bottom: 1px solid #c2c2c2;
-   padding: 0px 0.5em 1.5em 0.5em;
-}
-
-.document-versions .info-sub-section
-{
-   padding-bottom: 1.2em;
-   padding-top: 1.2em;
-}
-
-.document-versions .meta-heading
-{
-   font-weight:bold;
-   color: #333333;
-}
-
-.document-versions .meta-section-label,
-.document-versions .meta-label
-{
-   font-size: 100%;
-   padding-right: 0.3em;
-}
-
-.document-versions .meta-section-label
-{
-}
-
-.document-versions .meta-value
-{
-   font-size: 100%;
-   color: #333333;
+   margin-right: 0.8em;
 }
 
 .document-versions .actions
 {
-   line-height:16px;
-   /* padding:0.3em 0 1em 0; */
-   padding: 0.6em 0.3em 1.2em;
+   float: right;
+   width: 20%;
+   text-align: right;
 }
 
-.document-versions .actions span
+.document-versions .current-version .actions
 {
-   padding: 1em;      
+   display: none;
 }
 
-.document-versions .actions span a
+.document-versions .actions a
 {
    background-repeat: no-repeat;
    background-position: left;
-   padding-left: 24px;
+   padding: 0.5em;
+   text-decoration: none;
 }
 
-.document-versions .actions span a.download
+.document-versions .actions a.download
 {
    background-image: url(../documentlibrary/images/download-16.png);
 }
 
-.document-versions .actions span a.revert
+.document-versions .actions a.revert
 {
    background-image: url(../images/revert-16.png);
+}
+
+.document-versions .version-details-left
+{
+   float: left;
+}
+
+.document-versions .version-details-right
+{
+   margin-left: 40px;
+}
+
+.document-versions  .alfresco-datatable td
+{
+   border-bottom: medium none !important;
+}
+
+.document-versions  .alfresco-datatable td .yui-dt-liner
+{
+   padding: 4px 0 10px;
 }

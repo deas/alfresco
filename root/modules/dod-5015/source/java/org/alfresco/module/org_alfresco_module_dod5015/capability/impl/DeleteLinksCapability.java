@@ -45,9 +45,9 @@ public class DeleteLinksCapability extends AbstractCapability
         {
             if (isRm(target))
             {
-                if (checkFilingUnfrozenUncutoff(source) == AccessDecisionVoter.ACCESS_GRANTED)
+                if (checkFilingUnfrozenUncutoff(source, false) == AccessDecisionVoter.ACCESS_GRANTED)
                 {
-                    if (checkFilingUnfrozenUncutoff(target) == AccessDecisionVoter.ACCESS_GRANTED)
+                    if (checkFilingUnfrozenUncutoff(target, false) == AccessDecisionVoter.ACCESS_GRANTED)
                     {
                         if ((voter.getPermissionService().hasPermission(getFilePlan(source), RMPermissionModel.DELETE_LINKS) == AccessStatus.ALLOWED)
                                 && (voter.getPermissionService().hasPermission(getFilePlan(target), RMPermissionModel.DELETE_LINKS) == AccessStatus.ALLOWED))

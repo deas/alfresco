@@ -29,12 +29,18 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-         Event = YAHOO.util.Event;
+      Event = YAHOO.util.Event,
+      Selector = YAHOO.util.Selector;
 
    /**
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML;
+
+   /**
+    * Preferences
+    */
+   var PREFERENCES_TASKS_DASHLET_FILTER = "org.alfresco.share.tasks.dashlet.filter";
 
    /**
     * Dashboard MyTasks constructor.
@@ -46,6 +52,10 @@
    Alfresco.dashlet.MyTasks = function MyTasks_constructor(htmlId)
    {
       Alfresco.dashlet.MyTasks.superclass.constructor.call(this, "Alfresco.dashlet.MyTasks", htmlId, ["button", "container", "datasource", "datatable", "paginator", "history", "animation"]);
+
+      // Services
+      this.services.preferences = new Alfresco.service.Preferences();
+
       return this;
    };
 
@@ -64,7 +74,6 @@
     */
    YAHOO.lang.augmentObject(Alfresco.dashlet.MyTasks.prototype,
    {
-
       /**
        * Object container for initialization options
        *
@@ -92,12 +101,12 @@
          maxItems: 50,
 
          /**
-          * The filters to display in the filter menu.
+          * Filter look-up: type to display value and query value
           *
           * @property filters
-          * @type Array
+          * @type Object
           */
-         filters: []
+         filters: {}
       },
 
       /**
@@ -106,6 +115,42 @@
        */
       onReady: function MyTasks_onReady()
       {
+         // Create filter menu
+         this.widgets.filterMenuButton = Alfresco.util.createYUIButton(this, "filters", this.onFilterSelected,
+         {
+            type: "menu",
+            menu: "filters-menu",
+            lazyloadmenu: false
+         });
+
+         // Load preferences (after which the appropriate tasks will be displayed)
+         this.services.preferences.request(PREFERENCES_TASKS_DASHLET_FILTER,
+         {
+            successCallback:
+            {
+               fn: this.onPreferencesLoaded,
+               scope: this
+            }
+         });
+      },
+      
+      /**
+       * Process response from preference query
+       *
+       * @method onPreferencesLoaded
+       * @param p_response {object} Response from "api/people/{userId}/preferences" query
+       */
+      onPreferencesLoaded: function MyTasks_onPreferencesLoaded(p_response)
+      {
+         // Select the preferred filter in the ui
+         var filter = Alfresco.util.findValueByDotNotation(p_response.json, PREFERENCES_TASKS_DASHLET_FILTER, "allTasks");
+         filter = this.options.filters.hasOwnProperty(filter) ? filter : "allTasks";
+         this.widgets.filterMenuButton.set("label", this.msg("filter." + filter));
+         this.widgets.filterMenuButton.value = filter;
+
+         // Display the toolbar now that we have selected the filter
+         Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
+
          // Prepare webscript url to task instances
          var webscript = YAHOO.lang.substitute("api/task-instances?authority={authority}&properties={properties}&exclude={exclude}",
          {
@@ -123,14 +168,14 @@
             dataSource:
             {
                url: Alfresco.constants.PROXY_URI + webscript,
-               initialParameters: this.options.filters.length > 0 ? this.options.filters[0].value : ""
+               initialParameters: this.substituteParameters(this.options.filters[filter]) || ""
             },
             dataTable:
             {
                container: this.id + "-tasks",
                columnDefinitions:
                [
-                  { key: "isPooled", sortable: false, formatter: this.bind(this.renderCellIcons), width: 20 },
+                  { key: "isPooled", sortable: false, formatter: this.bind(this.renderCellIcons), width: 24 },
                   { key: "title", sortable: false, formatter: this.bind(this.renderCellTaskInfo) },
                   { key: "name", sortable: false, formatter: this.bind(this.renderCellActions), width: 45 }
                ],
@@ -141,41 +186,63 @@
             },
             paginator:
             {
+               history: false,
+               hide: false,
                config:
                {
                   containers: [this.id + "-paginator"],
                   template: this.msg("pagination.template"),
                   pageReportTemplate: this.msg("pagination.template.page-report"),
                   rowsPerPage: this.options.maxItems
-               }
+               }               
             }
          });
 
-         // Create filter menu
-         this.widgets.filterMenuButton = Alfresco.util.createYUIButton(this, "filters", this.onFilterSelected,
+         // Override DataTable function to set custom empty message
+         var me = this,
+            dataTable = this.widgets.alfrescoDataTable.getDataTable(),
+            original_doBeforeLoadData = dataTable.doBeforeLoadData;
+
+         dataTable.doBeforeLoadData = function MyTasks_doBeforeLoadData(sRequest, oResponse, oPayload)
          {
-            type: "menu",
-            menu: this.options.filters,
-            lazyloadmenu: false
-         });
-         if (this.options.filters.length > 0)
-         {
-            this.widgets.filterMenuButton.set("label", this.options.filters[0].text);
-         }
-         Dom.removeClass(this.id + "-filters", "hide");
+            // Hide the paginator if there are fewer rows than would cause pagination
+            Dom.setStyle(this.configs.paginator.getContainerNodes(), "visibility", (oResponse.results.length == 0) ? "hidden" : "visible");
+
+            if (oResponse.results.length === 0)
+            {
+               oResponse.results.unshift(
+               {
+                  isInfo: true,
+                  title: me.msg("empty.title"),
+                  description: me.msg("empty.description")
+               });
+            }
+
+            return original_doBeforeLoadData.apply(this, arguments);
+         };
       },
 
       /**
        * Reloads the list with the new filter and updates the filter menu button's label
        *
-       * @param event
-       * @param args
+       * @param p_sType {string} The event
+       * @param p_aArgs {array} Event arguments
        */
-      onFilterSelected: function(event, args)
+      onFilterSelected: function MyTasks_onFilterSelected(p_sType, p_aArgs)
       {
-         this.widgets.filterMenuButton.set("label", args[1].cfg.getProperty("text"));
-         var parameters = this.substituteParameters(args[1].value, {});
-         this.widgets.alfrescoDataTable.loadDataTable(parameters);
+         var menuItem = p_aArgs[1];
+         
+         if (menuItem)
+         {
+            this.widgets.filterMenuButton.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.filterMenuButton.value = menuItem.value;
+            
+            var parameters = this.substituteParameters(this.options.filters[menuItem.value], {});
+            this.widgets.alfrescoDataTable.loadDataTable(parameters);
+
+            // Save preferences
+            this.services.preferences.set(PREFERENCES_TASKS_DASHLET_FILTER, menuItem.value);
+         }
       },
 
       /**
@@ -183,15 +250,31 @@
        */
       renderCellIcons: function MyTasks_onReady_renderCellIcons(elCell, oRecord, oColumn, oData)
       {
-         var priority = oRecord.getData("properties")["bpm_priority"],
+         var data = oRecord.getData(),
+            desc = "";
+
+         if (data.isInfo)
+         {
+            oColumn.width = 52;
+            Dom.setStyle(elCell, "width", oColumn.width + "px");
+            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+
+            desc = '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/help-task-bw-32.png" />';
+         }
+         else
+         {
+            var priority = data.properties["bpm_priority"],
                priorityMap = { "1": "high", "2": "medium", "3": "low" },
                priorityKey = priorityMap[priority + ""],
-               pooledTask = oRecord.getData("isPooled");
-         var desc = '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/priority-' + priorityKey + '-16.png" title="' + this.msg("label.priority", this.msg("priority." + priorityKey)) + '"/>';
-         if (pooledTask)
-         {
-            desc += '<br/><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/pooled-task-16.png" title="' + this.msg("label.pooledTask") + '"/>';
+               pooledTask = data.isPooled;
+
+            desc = '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/priority-' + priorityKey + '-16.png" title="' + this.msg("label.priority", this.msg("priority." + priorityKey)) + '"/>';
+            if (pooledTask)
+            {
+               desc += '<br/><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/pooled-task-16.png" title="' + this.msg("label.pooledTask") + '"/>';
+            }
          }
+
          elCell.innerHTML = desc;
       },
 
@@ -200,31 +283,45 @@
        */
       renderCellTaskInfo: function MyTasks_onReady_renderCellTaskInfo(elCell, oRecord, oColumn, oData)
       {
-         var taskId = oRecord.getData("id"),
-               message = oRecord.getData("properties")["bpm_description"],
-               dueDateStr = oRecord.getData("properties")["bpm_dueDate"],
+         var data = oRecord.getData(),
+            desc = "";
+
+         if (data.isInfo)
+         {
+            desc += '<div class="empty"><h3>' + data.title + '</h3>';
+            desc += '<span>' + data.description + '</span></div>';
+         }
+         else
+         {
+            var taskId = data.id,
+               message = data.properties["bpm_description"],
+               dueDateStr = data.properties["bpm_dueDate"],
                dueDate = dueDateStr ? Alfresco.util.fromISO8601(dueDateStr) : null,
                today = new Date(),
-               type = oRecord.getData("title"),
-               status = oRecord.getData("properties")["bpm_status"],
-               assignee = oRecord.getData("owner");
-            
-         // if message is the same as the task type show the <no message> label
-         if (message == type)
-         {
-            message = this.msg("workflow.no_message");
-         }
-               
-         var messageDesc = '<h4><a href="task-edit?taskId=' + taskId + '&referrer=tasks" class="theme-color-1" title="' + this.msg("title.editTask") + '">' + $html(message) + '</a></h4>',
+               type = data.title,
+               status = data.properties["bpm_status"],
+               assignee = data.owner;
+
+            // if message is the same as the task type show the <no message> label
+            if (message == type)
+            {
+               message = this.msg("workflow.no_message");
+            }
+
+            var messageDesc = '<h3><a href="task-edit?taskId=' + taskId + '&referrer=tasks" class="theme-color-1" title="' + this.msg("title.editTask") + '">' + $html(message) + '</a></h3>',
                dateDesc = dueDate ? '<h4><span class="' + (today > dueDate ? "task-delayed" : "") + '" title="' + 
                           this.msg("title.dueOn", Alfresco.util.formatDate(dueDate, "longDate")) + '">' + Alfresco.util.formatDate(dueDate, "longDate") + '</span></h4>' : "",
                statusDesc = '<div title="' + this.msg("title.taskSummary", type, status) + '">' + this.msg("label.taskSummary", type, status) + '</div>',
                unassignedDesc = '';
-         if (!assignee || !assignee.userName)
-         {
-            unassignedDesc = '<span class="theme-bg-color-5 theme-color-5 unassigned-task">' + this.msg("label.unassignedTask") + '</span>';
+
+            if (!assignee || !assignee.userName)
+            {
+               unassignedDesc = '<span class="theme-bg-color-5 theme-color-5 unassigned-task">' + this.msg("label.unassignedTask") + '</span>';
+            }
+            desc = messageDesc + dateDesc + statusDesc + unassignedDesc;
          }
-         elCell.innerHTML = messageDesc + dateDesc + statusDesc + unassignedDesc;
+         
+         elCell.innerHTML = desc;
       },
 
       /**
@@ -232,14 +329,25 @@
        */
       renderCellActions:function MyTasks_onReady_renderCellActions(elCell, oRecord, oColumn, oData)
       {
-         var task = oRecord.getData();
-         var actions = "";
-         if (task.isEditable)
+         var data = oRecord.getData(),
+            desc = "";
+
+         if (data.isInfo)
          {
-            actions += '<a href="task-edit?taskId=' + task.id + '&referrer=tasks" class="edit-task" title="' + this.msg("title.editTask") + '">&nbsp;</a>';
+            oColumn.width = 0;
+            Dom.setStyle(elCell, "width", oColumn.width + "px");
+            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
          }
-         actions += '<a href="task-details?taskId=' + task.id + '&referrer=tasks" class="view-task" title="' + this.msg("title.viewTask") + '">&nbsp;</a>';
-         elCell.innerHTML = actions;
+         else
+         {
+            if (data.isEditable)
+            {
+               desc += '<a href="task-edit?taskId=' + data.id + '&referrer=tasks" class="edit-task" title="' + this.msg("title.editTask") + '">&nbsp;</a>';
+            }
+            desc += '<a href="task-details?taskId=' + data.id + '&referrer=tasks" class="view-task" title="' + this.msg("title.viewTask") + '">&nbsp;</a>';
+         }
+
+         elCell.innerHTML = desc;
       }
 
    });

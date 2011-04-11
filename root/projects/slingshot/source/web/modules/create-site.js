@@ -60,14 +60,11 @@
        *
        * @method show
        */
-      show: function CS_show()
+      show: function CreateSite_show()
       {
          if (this.widgets.panel)
          {
-            /**
-             * The panel gui has been showed before and its gui has already
-             * been loaded and created
-             */
+            // Panel is already in the DOM, so just show it
             this._showPanel();
          }
          else
@@ -101,7 +98,7 @@
        * @method onTemplateLoaded
        * @param response {object} a Alfresco.util.Ajax.request response object 
        */
-      onTemplateLoaded: function CS_onTemplateLoaded(response)
+      onTemplateLoaded: function CreateSite_onTemplateLoaded(response)
       {
          // Inject the template from the XHR request into a new DIV element
          var containerDiv = document.createElement("div");
@@ -134,31 +131,83 @@
          // Configure the forms runtime
          var createSiteForm = new Alfresco.forms.Form(this.id + "-form");
 
+         // Balloon validation messages
+         this.widgets.balloons = {};
+
+         var elTitle = Dom.get(this.id + "-title"),
+            elShortName = Dom.get(this.id + "-shortName");
+
+         /**
+          * Title field
+          */
          // Title is mandatory
-         createSiteForm.addValidation(this.id + "-title", Alfresco.forms.validation.mandatory, null, "keyup");
+         createSiteForm.addValidation(elTitle, Alfresco.forms.validation.mandatory, null, "keyup", this.msg("validation-hint.mandatory"));
          // ...and has a maximum length
-         createSiteForm.addValidation(this.id + "-title", Alfresco.forms.validation.length,
+         createSiteForm.addValidation(elTitle, Alfresco.forms.validation.length,
          {
             max: 256,
             crop: true
          }, "keyup");
 
-         // Shortname is mandatory
-         createSiteForm.addValidation(this.id + "-shortName", Alfresco.forms.validation.mandatory, null, "blur");
-         // and can NOT contain whitespace characters
-         createSiteForm.addValidation(this.id + "-shortName", Alfresco.forms.validation.regexMatch,
+         // Auto-generate a short name as long as the user hasn't manually entered one first
+         Event.addListener(elTitle, "keyup", function CreateSite_title_keyUp()
          {
-            pattern: /^[ ]*[0-9a-zA-Zs]+[ ]*$/
-         }, "keyup");
-         // and should be valid file name
-         createSiteForm.addValidation(this.id + "-shortName", Alfresco.forms.validation.nodeName, null, "keyup");
+            if (!this.shortNameEdited)
+            {
+               elShortName.value = this.safeURL(elTitle.value).substring(0, 72);
+            }
+         }, this, true);
+
+         this.widgets.balloons[this.id + "-title"] = Alfresco.util.createBalloon(elTitle);
+
+         // Remove the balloon after the text box has lost focus. This prevents multiple validation balloons overlapping.
+         Event.addListener(elTitle, "blur", function CreateSite_title_blur()
+         {
+            if (this.widgets.balloons[this.id + "-title"])
+            {
+               this.widgets.balloons[this.id + "-title"].hide();
+            }
+         }, this, true);
+
+         /**
+          * Short name field
+          */
+         this.shortNameEdited = false;
+
+         // Shortname is mandatory
+         createSiteForm.addValidation(elShortName, Alfresco.forms.validation.mandatory, null, "keyup", this.msg("validation-hint.mandatory"));
+         // ...and is restricted to a limited set of characters
+         createSiteForm.addValidation(elShortName, Alfresco.forms.validation.regexMatch,
+         {
+            pattern: /^[ ]*[0-9a-zA-Z\-]+[ ]*$/
+         }, "keyup", this.msg("validation-hint.siteName"));
          // ...and has a maximum length
-         createSiteForm.addValidation(this.id + "-shortName", Alfresco.forms.validation.length,
+         createSiteForm.addValidation(elShortName, Alfresco.forms.validation.length,
          {
             max: 72,
             crop: true
          }, "keyup");
 
+         // Flag that the user has edited the short name
+         Event.addListener(elShortName, "keyup", function CreateSite_shortName_keyUp()
+         {
+            this.shortNameEdited = elShortName.value.length > 0;
+         }, this, true);
+
+         this.widgets.balloons[this.id + "-shortName"] = Alfresco.util.createBalloon(elShortName);
+
+         // Remove the balloon after the text box has lost focus. This prevents multiple validation balloons overlapping.
+         Event.addListener(elShortName, "blur", function CreateSite_shortName_blur()
+         {
+            if (this.widgets.balloons[this.id + "-shortName"])
+            {
+               this.widgets.balloons[this.id + "-shortName"].hide();
+            }
+         }, this, true);
+
+         /**
+          * Description field
+          */
          // Description kept to a reasonable length
          createSiteForm.addValidation(this.id + "-description", Alfresco.forms.validation.length,
          {
@@ -166,8 +215,23 @@
             crop: true
          }, "keyup");
 
+         // Override Forms Runtime's error handling
+         var scope = this;
+         createSiteForm.addError = function CreateSite_form_addError(msg, field)
+         {
+            if (scope.widgets.panel.cfg.getProperty("visible"))
+            {
+               var balloon = scope.widgets.balloons[field.id];
+               if (balloon)
+               {
+                  balloon.html(msg);
+                  balloon.show();
+               }
+            }
+         };
+
          // The ok button is the submit button, and it should be enabled when the form is ready
-         createSiteForm.setShowSubmitStateDynamically(true, false);
+         createSiteForm.setShowSubmitStateDynamically(true, true);
          createSiteForm.setSubmitElements(this.widgets.okButton);
          createSiteForm.doBeforeFormSubmit =
          {
@@ -230,13 +294,30 @@
       },
 
       /**
+       * Converts a user-entered string into a "readable" safe URL by stripping characters
+       *
+       * @method safeURL
+       * @param text {string} The string to convert
+       * @return {string} Safe and readable URL
+       */
+      safeURL: function CreateSite_safeURL(text)
+      {
+         // Strip unwanted characters and trim leading and trailing spaces
+         text = YAHOO.lang.trim(text.replace(/[^0-9a-zA-Z\-\s]/g, ""));
+         // Replace remaining spaces with dash & convert the whole string to lower case
+         text = text.replace(/\s+/g, "-").toLowerCase();
+
+         return text;
+      },
+
+      /**
        * Called when user clicks on the isPublic checkbox.
        *
        * @method onVisibilityChange
        * @param type
        * @param el
        */
-      onVisibilityChange: function CS_onVisibilityChange(type, el)
+      onVisibilityChange: function CreateSite_onVisibilityChange(type, el)
       {
          new Element(this.widgets.isModerated).set("disabled", el == this.widgets.isPrivate);
       },
@@ -249,8 +330,30 @@
        * @param type
        * @param args
        */
-      onCancelButtonClick: function CS_onCancelButtonClick(type, args)
+      onCancelButtonClick: function CreateSite_onCancelButtonClick(type, args)
       {
+         for (var index in this.widgets.balloons)
+         {
+            if (this.widgets.balloons.hasOwnProperty(index))
+            {
+               this.widgets.balloons[index].hide();
+            }
+         }
+
+         // Reset the form fields
+         try
+         {
+            Dom.get(this.id + "-title").value = "";
+            Dom.get(this.id + "-shortName").value = "";
+            Dom.get(this.id + "-description").value = "";
+            Dom.get(this.id + "-sitePreset").setSelectedIndex = 0;
+            Dom.get(this.id + "-isPublic").checked = "checked";
+            Dom.get(this.id + "-isModerated").checked = "";
+         }
+         catch(e)
+         {
+         }
+
          this.widgets.panel.hide();
       },
 
@@ -261,7 +364,7 @@
        * @method onCreateSiteSuccess
        * @param response
        */
-      onCreateSiteSuccess: function CS_onCreateSiteSuccess(response)
+      onCreateSiteSuccess: function CreateSite_onCreateSiteSuccess(response)
       {
          if (response.json !== undefined && response.json.success)
          {
@@ -269,8 +372,16 @@
             var preferencesService = new Alfresco.service.Preferences(),
                shortName = response.config.dataObj.shortName;
             
-            preferencesService.set(Alfresco.service.Preferences.FAVOURITE_SITES + "." + shortName, true);
-            document.location.href = Alfresco.constants.URL_PAGECONTEXT + "site/" + shortName + "/dashboard";
+            preferencesService.set(Alfresco.service.Preferences.FAVOURITE_SITES + "." + shortName, true,
+            {
+               successCallback:
+               {
+                  fn: function CreateSite_onCreateSiteSuccess_successCallback()
+                  {
+                     document.location.href = Alfresco.constants.URL_PAGECONTEXT + "site/" + shortName + "/dashboard";
+                  }
+               }
+            });
          }
          else
          {
@@ -284,7 +395,7 @@
        * @method onCreateSiteFailure
        * @param response
        */
-      onCreateSiteFailure: function CS_onCreateSiteFailure(response)
+      onCreateSiteFailure: function CreateSite_onCreateSiteFailure(response)
       {
          this._adjustGUIAfterFailure(response);
       },
@@ -295,7 +406,7 @@
        * @method _adjustGUIAfterFailure
        * @param response
        */
-      _adjustGUIAfterFailure: function CS__adjustGUIAfterFailure(response)
+      _adjustGUIAfterFailure: function CreateSite__adjustGUIAfterFailure(response)
       {
          this.widgets.feedbackMessage.destroy();
          this.widgets.okButton.set("disabled", false);
@@ -320,7 +431,7 @@
        * @method _showPanel
        * @private
        */
-      _showPanel: function CS__showPanel()
+      _showPanel: function CreateSite__showPanel()
       {
          // Show the upload panel
          this.widgets.panel.show();

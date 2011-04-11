@@ -52,9 +52,14 @@
    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../images/lightbox/overlay.png", sizingMethod="scale");
 }
 
+.images .initial
+{
+   clear: both;
+}
+
 .images .item
 {
-   padding: 0px 4px 16px 4px;
+   padding: 0 4px 8px;
    float: left;
 }
 
@@ -63,18 +68,38 @@
    width: 100px;
    height: 100px;
    padding: 1px;
-   text-align: center;
    border: 1px solid #CCCCCC;
    overflow: hidden;
+   position: relative;
 }
 
-.images .initial
+.images .thumbnail > div
 {
-   clear: both;
+   visibility: hidden;
 }
 
-.images .details
+.images .thumbnail:hover > div
 {
-   font-size: 85%;
-   padding-left: 2em;
+   visibility: visible;
+}
+
+.images .action-overlay
+{
+   position: absolute;
+   margin-top: 80px;
+   margin-left: 60px;
+}
+
+.images-wait
+{
+   padding: 2em;
+   background-image: url("../images/lightbox/loading.gif");
+   background-repeat: no-repeat;
+   background-position: 50% 50%;
+}
+
+.images-message
+{
+   padding: 0.5em;
+   text-align: center;
 }

@@ -2,4 +2,7 @@
 <component>
    <region-id>dod5015-document-links</region-id>
    <url>/components/document-details/dod5015/document-actions</url>
+   <properties>
+      <nodeRef>{nodeRef}</nodeRef>
+   </properties>   
 </component>

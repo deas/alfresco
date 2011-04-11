@@ -1,9 +1,15 @@
-// Repository Url
-var repositoryUrl = null,
-   repositoryConfig = config.scoped["DocumentLibrary"]["repository-url"];
-if (repositoryConfig !== null)
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
+
+function main()
 {
-   repositoryUrl = repositoryConfig.value;
+   AlfrescoUtil.param('nodeRef');
+   AlfrescoUtil.param('site', null);
+   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   if (documentDetails)
+   {
+      model.document = documentDetails.item;
+      model.repositoryUrl = AlfrescoUtil.getRepositoryUrl();
+   }
 }
 
-model.repositoryUrl = repositoryUrl;
+main();

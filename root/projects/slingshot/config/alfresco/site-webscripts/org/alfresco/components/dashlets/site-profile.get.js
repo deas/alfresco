@@ -7,22 +7,19 @@ function main()
    var profile =
    {
       title: "",
-      shortName: "",   
+      shortName: "", 
       description: ""
    }
    
-   var profile = context.properties["site-profile"];
-   if (!profile)
+   var profile = null;
+   var json = remote.call("/api/sites/" + page.url.templateArgs.site);
+   if (json.status == 200)
    {
-      var json = remote.call("/api/sites/" + page.url.templateArgs.site);
-      if (json.status == 200)
+      // Create javascript object from the repo response
+      var obj = eval('(' + json + ')');
+      if (obj)
       {
-         // Create javascript object from the repo response
-         var obj = eval('(' + json + ')');
-         if (obj)
-         {
-            profile = obj;
-         }
+         profile = obj;
       }
    }
    

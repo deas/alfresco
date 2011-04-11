@@ -42,7 +42,7 @@ public class DestroyRecordsScheduledForDestructionCapability extends AbstractCap
     {
         if (isRm(nodeRef))
         {
-            if (!isFrozen(nodeRef))
+            if (!isFrozen(nodeRef, true))
             {
                 if (isScheduledForDestruction(nodeRef))
                 {

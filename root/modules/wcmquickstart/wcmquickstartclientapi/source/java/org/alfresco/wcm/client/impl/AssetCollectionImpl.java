@@ -17,8 +17,11 @@
  */
 package org.alfresco.wcm.client.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetCollection;
@@ -27,24 +30,20 @@ import org.alfresco.wcm.client.Query;
 /**
  * Collection of assets with meta-data for the collection itself.
  * @author Chris Lack
+ * @author Brian Remmington
  */
-public class AssetCollectionImpl implements AssetCollection
+public class AssetCollectionImpl extends ResourceBaseImpl implements AssetCollection
 {
 
 	private static final long serialVersionUID = 1L;
-	
-	/** Id */
-	private String id;
-	
-	/** Name */
-	private String name;
-	
-	/** Title */
-	private String title;
-	
-	/** Description */
-	private String description;
 
+	private List<String> assetIds = new ArrayList<String>();
+	
+	private boolean isDynamic;
+	
+	// When is this asset collection due to be refreshed?
+	private Date refreshTime;
+	
 	/** The wrapped collection */
 	protected List<Asset> assets = new ArrayList<Asset>();
 	
@@ -52,63 +51,18 @@ public class AssetCollectionImpl implements AssetCollection
     private Query query;
     private long totalSize;	
 
-	/**
-	 *  @see org.alfresco.wcm.client.AssetCollection#getId()
-	 */
-	@Override
-	public String getId() 
-	{
-		return id;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setProperties(Map<String, Serializable> props)
+    {
+        super.setProperties(props);
+        assetIds = (List<String>)props.get("ws:containedAssets");
+        refreshTime = (Date)props.get("ws:refreshAt");
+        isDynamic = (Boolean)props.get("ws:isDynamic");
+        totalSize = assetIds == null ? 0 : assetIds.size();
+    }
 
-	public void setId(String value) 
-	{
-		this.id = value;
-	}	
-	
-	/**
-	 *  @see org.alfresco.wcm.client.AssetCollection#getName()
-	 */	
-	@Override
-	public String getName() 
-	{
-		return name;
-	}
-
-	public void setName(String value) 
-	{
-		this.name = value;
-	}
-	
-	/**
-	 *  @see org.alfresco.wcm.client.AssetCollection#getTitle()
-	 */	
-	@Override
-	public String getTitle() 
-	{
-		return title;
-	}
-
-	public void setTitle(String value) 
-	{
-		this.title = value;
-	}	
-
-	/**
-	 *  @see org.alfresco.wcm.client.AssetCollection#getDescription()
-	 */	
-	@Override
-	public String getDescription() 
-	{
-		return description;
-	}
-
-	public void setDescription(String value) 
-	{
-		this.description = value;
-	}
-	
-	/**
+    /**
 	 *  @see org.alfresco.wcm.client.AssetCollection#getAssets()
 	 */	
 	@Override
@@ -154,8 +108,22 @@ public class AssetCollectionImpl implements AssetCollection
         this.query = query;
     }
 
-    public void setTotalSize(long totalNumItems)
+    public List<String> getAssetIds()
     {
-        this.totalSize = totalNumItems;
+        return assetIds;
+    }
+
+    public void setAssetIds(List<String> assetIds)
+    {
+        this.assetIds = assetIds;
+    }
+
+    /**
+     * The time at which this asset collection was last refreshed
+     * @return
+     */
+    public Date getNextRefreshTime()
+    {
+        return refreshTime;
     }
 }

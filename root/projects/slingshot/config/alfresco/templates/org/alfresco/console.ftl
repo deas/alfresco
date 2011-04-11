@@ -1,7 +1,10 @@
 <#include "include/alfresco-template.ftl" />
 <@templateHeader>
    <script type="text/javascript">//<![CDATA[
-      new Alfresco.widget.Resizer("Console");
+      new Alfresco.widget.Resizer("Console").setOptions(
+      {
+         initialWidth: 190
+      });
    //]]></script>
 </@>
 
@@ -22,7 +25,10 @@
             <@region id="tools" scope="template" protected=true />
          </div>
       </div>
-   </div>   
+      <@region id="html-upload" scope="template" protected=true />
+      <@region id="flash-upload" scope="template" protected=true />
+      <@region id="file-upload" scope="template" protected=true />
+   </div>
 </@>
 
 <@templateFooter>

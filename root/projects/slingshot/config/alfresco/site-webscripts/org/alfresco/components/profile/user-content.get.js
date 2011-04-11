@@ -1,71 +1,76 @@
 /**
- * User Profile Component - User Content list
+ * User Profile Component - User Content list GET method
  */
 
-model.addedContent = [];
-model.modifiedContent = [];
-
-// read config - use default values if not found
-var maxItems = 3,
-    conf = new XML(config.script);
-if (conf["max-items"] != null)
+function main()
 {
-   maxItems = parseInt(conf["max-items"]);
-}
-
-var userId = page.url.templateArgs["userid"];
-if (userId == null)
-{
-   userId = user.name;
-}
-var result = remote.call("/slingshot/profile/usercontents?user=" + encodeURIComponent(userId) + "&maxResults=" + maxItems);
-if (result.status == 200)
-{
-   // Create javascript objects from the server response
-   var data = eval('(' + result + ')');
+   model.addedContent = [];
+   model.modifiedContent = [];
    
-   ['created','modified'].forEach(function(type)
+   // read config - use default values if not found
+   var maxItems = 3,
+       conf = new XML(config.script);
+   if (conf["max-items"] != null)
    {
-      var store = (type === 'created') ? model.addedContent : model.modifiedContent,
-         contents = data[type].items,
-         dateType = type + 'On',
-         item;
+      maxItems = parseInt(conf["max-items"]);
+   }
+   
+   var userId = page.url.templateArgs["userid"];
+   if (userId == null)
+   {
+      userId = user.name;
+   }
+   var result = remote.call("/slingshot/profile/usercontents?user=" + encodeURIComponent(userId) + "&maxResults=" + maxItems);
+   if (result.status == 200)
+   {
+      // Create javascript objects from the server response
+      var data = eval('(' + result + ')');
       
-      for (var i = 0, len = contents.length; i < len; i++)
+      ['created','modified'].forEach(function(type)
       {
-         item = contents[i];
-         if (store.length < maxItems)
+         var store = (type === 'created') ? model.addedContent : model.modifiedContent,
+            contents = data[type].items,
+            dateType = type + 'On',
+            item;
+         
+         for (var i = 0, len = contents.length; i < len; i++)
          {
-            // convert createdOn and modifiedOn fields to date
-            if (item[dateType])
+            item = contents[i];
+            if (store.length < maxItems)
             {
-               item[dateType] = new Date(item[dateType]);
-            }
-            if (!item.browseUrl)
-            {
-               switch (item.type)
+               // convert createdOn and modifiedOn fields to date
+               if (item[dateType])
                {
-                  case "document":
-                     item.browseUrl = "document-details?nodeRef=" + item.nodeRef;
-                     break;
-                  case "blogpost":
-                     item.browseUrl = "blog-postview?postId=" + item.name;
-                     break;
-                  case "wikipage":
-                     item.browseUrl = "wiki-page?title=" + item.name;
-                     break;
-                  case "forumpost":
-                     item.browseUrl = "discussions-topicview?topicId=" + item.name;
-                     break;
+                  item[dateType] = new Date(item[dateType]);
                }
+               if (!item.browseUrl)
+               {
+                  switch (item.type)
+                  {
+                     case "document":
+                        item.browseUrl = "document-details?nodeRef=" + item.nodeRef;
+                        break;
+                     case "blogpost":
+                        item.browseUrl = "blog-postview?postId=" + item.name;
+                        break;
+                     case "wikipage":
+                        item.browseUrl = "wiki-page?title=" + item.name;
+                        break;
+                     case "forumpost":
+                        item.browseUrl = "discussions-topicview?topicId=" + item.name;
+                        break;
+                  }
+               }
+               store.push(item);
             }
-            store.push(item);
          }
-      }
-      
-      model[type === 'created' ? "addedContent" : "modifiedContent"] = store;
-   });
+         
+         model[type === 'created' ? "addedContent" : "modifiedContent"] = store;
+      });
+   }
+   
+   model.numAddedContent = model.addedContent.length;
+   model.numModifiedContent = model.modifiedContent.length;
 }
 
-model.numAddedContent = model.addedContent.length;
-model.numModifiedContent = model.modifiedContent.length;
+main();

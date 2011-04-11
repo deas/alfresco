@@ -44,7 +44,7 @@ public class DestroyRecordsCapability extends AbstractCapability
         {
             if (isRecord(nodeRef) || isRecordFolder(voter.getNodeService().getType(nodeRef)))
             {
-                if (!isFrozen(nodeRef))
+                if (isFrozen(nodeRef, true) == false)
                 {
                     if (mayBeScheduledForDestruction(nodeRef))
                     {

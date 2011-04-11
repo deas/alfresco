@@ -374,11 +374,11 @@
             // Private / Moderated flag
             if (siteVisibility == "MODERATED")
             {
-               details += '<div class="moderated theme-bg-color-1">' + me.msg("site-finder.moderated")  + '</div>';
+               details += '<span class="moderated theme-bg-color-1">' + me.msg("site-finder.moderated")  + '</span>';
             }
             else if (siteVisibility == "PRIVATE")
             {
-               details += '<div class="private theme-bg-color-1">' + me.msg("site-finder.private")  + '</div>';
+               details += '<span class="private theme-bg-color-1">' + me.msg("site-finder.private")  + '</span>';
             }
             
             elCell.innerHTML = details;
@@ -669,10 +669,9 @@
          var user = this.options.currentUser;
          
          // make ajax call to site service to join user
-         Alfresco.util.Ajax.jsonRequest(
+         Alfresco.util.Ajax.jsonPut(
          {
-            url: Alfresco.constants.PROXY_URI + "api/sites/" + site.shortName + "/memberships/" + encodeURIComponent(user),
-            method: "PUT",
+            url: Alfresco.constants.PROXY_URI + "api/sites/" + site.shortName + "/memberships",
             dataObj:
             {
                role: "SiteConsumer",

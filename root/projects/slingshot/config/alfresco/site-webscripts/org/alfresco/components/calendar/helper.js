@@ -1,3 +1,5 @@
+<import resource="classpath:alfresco/site-webscripts/org/alfresco/components/calendar/enabledViews.js">
+
 var CalendarScriptHelper = (function()
 {
    var now = new Date();
@@ -276,11 +278,47 @@ var CalendarScriptHelper = (function()
          return now;
       },
       
+		/**
+		 * Gets the name of the requested view & checks that view is enabled
+		 * 
+		 * @return {String} view name ["day"|"week"|"month"|"agenda"]
+		 */
+		
       getView: function()
       {
-         return escape(getPageUrlParam('view', 'month').toLowerCase());
+         return context.properties.filteredView;
       },
       
+		/**
+		 * Returns the number of views supported by this calendar install
+		 * 
+		 * @return {int}
+		 */
+		
+		countViews: function()
+		{
+		   var j = 0;
+		   for (var key in model.enabledViews) {
+		      model.enabledViews[key] ? j++ : null ;
+		   }
+		   return j;
+      },
+		
+		/*
+		 * Returns a list of views supported
+		 * 
+		 * @return {array}
+		 */
+		
+		listViews: function()
+		{
+			var views = [];
+			for (var key in model.enabledViews) {
+             model.enabledViews[key] ? views.push(key) : null ;
+         }
+			return views;
+		},
+		
       /**
        * Gets the requested date for the request or the specified default date (for the current view) if not specified
        *
@@ -538,7 +576,7 @@ var CalendarScriptHelper = (function()
             selector: 'date'
          });
          viewArgs.titleDate = viewArgs.startDate;
-         viewArgs.endDate = toISOString(lastDayOfMonth, {
+         viewArgs.endDate = toISOString(new Date(d.getTime() + (DAY * 30)), {
             selector: 'date'
          });
          return viewArgs;

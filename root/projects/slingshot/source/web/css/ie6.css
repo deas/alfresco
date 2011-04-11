@@ -1,5 +1,10 @@
 /* CSS Overrides for Microsoft Internet Explorer v6 */
 
+#alf-hd
+{
+   zoom: 1;
+}
+
 textarea
 {
    font-family: Arial, sans-serif;
@@ -60,13 +65,15 @@ body .header .user-items div.search-box input
  * Global site footer
  */
 
-.footer-ent .copyright
+.footer-ent .copyright,
+.footer-team .copyright
 {
    padding-bottom: 0;
    padding-top: 0;
 }
 
-.footer-ent .copyright img
+.footer-ent .copyright img,
+.footer-team .copyright img
 {
    padding-bottom: 10px;
    padding-top: 10px;
@@ -169,6 +176,24 @@ div.dashlet .body .clear
 {
    display: none;
 }
+
+
+/**
+ * Customise Pages
+ */
+
+.customise-pages-page-list-item
+{
+   display: block;
+   float: left;
+}
+
+.customise-pages .page-list-wrapper
+{
+   overflow-x: hidden;
+   overflow-y: auto;
+}
+
 
 /**
  * Page title and navigation
@@ -496,7 +521,7 @@ div.filter
 .global-folder .path .treeview
 {
    overflow-x: scroll;
-   width: 32em;
+   width: 22em;
 }
 
 .site-folder .path .treeview
@@ -537,6 +562,13 @@ div.filter
 {
    margin: 0 -10px;
    padding-bottom: 2em;
+}
+
+.datagrid
+{
+	width: 100%;
+	overflow: scroll;
+	zoom: 1;
 }
 
 .datagrid a.action-link,
@@ -658,6 +690,11 @@ table .yui-dt-empty
    margin-right: -20px !important;
 }
 
+.object-finder .current-values div.itemtype-tag
+{
+   float: left;
+}
+
 /* Search - hover not supported */
 
 .search .thumbnail-cell > div
@@ -671,4 +708,30 @@ table .yui-dt-empty
 .workflow-list .workflows td.yui-dt-last .yui-dt-liner
 {
    visibility: visible;
+}
+
+/* Folder Picker */
+
+.global-folder .mode button
+{
+   width: 20em;
+   height: 4em;
+   overflow: hidden;
+}
+
+.global-folder .repository-mode .treeview
+{
+   width: 38em;
+}
+
+.global-folder .treeview
+{
+   width: 22em;
+}
+
+/* Social */
+
+.item-social a.enabled
+{
+   zoom: 1;
 }

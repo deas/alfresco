@@ -1,5 +1,4 @@
-main();
-
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
 /**
  * Main entrypoint
  */
@@ -22,7 +21,7 @@ function main()
          {
             summary = eval("(" + activity.activitySummary + ")");
             fullName = trim(summary.firstName + " " + summary.lastName);
-            date = fromISO8601(activity.postDate);
+            date = AlfrescoUtil.fromISO8601(activity.postDate);
 
             // Outside oldest date?
             if (date < oldestDate)
@@ -39,9 +38,10 @@ function main()
                {
                   isoDate: activity.postDate,
                   fullDate: date,
-                  hour: date.getHours()
+                  relativeTime: AlfrescoUtil.relativeTime(activity.postDate)
                },
                title: summary.title || "title.generic",
+               userName: activity.postUserId,
                fullName: fullName,
                itemPage: itemPageUrl(activity, summary),
                sitePage: sitePageUrl(activity, summary),
@@ -64,6 +64,8 @@ function main()
 
    model.activities = activities;
    model.siteTitles = siteTitles;
+   model.cssClasses = getCSSClasses();
+   getDateHelpers();
 }
 
 
@@ -92,6 +94,10 @@ function specialize(item, activity, summary)
          item.fullName = trim(summary.memberFirstName + " " + summary.memberLastName);
          item.userProfile = userProfileUrl(summary.memberUserName);
          item.custom0 = msg.get("role." + summary.role);
+         break;
+      
+      case "org.alfresco.site.liked":
+         item.suppressSite = true;
          break;
    }
    
@@ -259,44 +265,33 @@ function trim(str)
    return str;
 }
 
-/**
- * Convert from ISO8601 date to JavaScript date
- */
-
-function fromISO8601(formattedString)
+function getDateHelpers()
 {
-   var isoRegExp = /^(?:(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(.\d+)?)?((?:[+-](\d{2}):(\d{2}))|Z)?)?$/;
+   var today = new Date(),
+      yesterday = new Date(),
+      lastSunday = new Date(),
+      previousSunday = new Date();
 
-   var match = isoRegExp.exec(formattedString);
-   var result = null;
+   yesterday.setDate(today.getDate() - 1);
+   lastSunday.setDate(today.getDate() - today.getDay());
+   previousSunday.setDate(lastSunday.getDate() - 7);
 
-   if (match)
-   {
-      match.shift();
-      if (match[1]){match[1]--;} // Javascript Date months are 0-based
-      if (match[6]){match[6] *= 1000;} // Javascript Date expects fractional seconds as milliseconds
-
-      result = new Date(match[0]||1970, match[1]||0, match[2]||1, match[3]||0, match[4]||0, match[5]||0, match[6]||0);
-
-      var offset = 0;
-      var zoneSign = match[7] && match[7].charAt(0);
-      if (zoneSign != 'Z')
-      {
-         offset = ((match[8] || 0) * 60) + (Number(match[9]) || 0);
-         if (zoneSign != '-')
-         {
-            offset *= -1;
-         }
-      }
-      if (zoneSign)
-      {
-         offset -= result.getTimezoneOffset();
-      }
-      if (offset)
-      {
-         result.setTime(result.getTime() + offset * 60000);
-      }
-   }
-
-   return result; // Date or null
+   model.yesterday = yesterday;
+   model.lastSunday = lastSunday;
+   model.previousSunday = previousSunday;
 }
+
+function getCSSClasses()
+{
+   var myConfig = new XML(config.script),
+      css = {};
+
+   for each (var xmlStyle in myConfig..style)
+   {
+      css[xmlStyle.@type.toString()] = xmlStyle.@css.toString();
+   }
+   
+   return css;
+}
+
+main();

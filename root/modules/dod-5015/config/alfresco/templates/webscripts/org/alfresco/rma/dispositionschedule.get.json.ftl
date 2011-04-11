@@ -11,6 +11,8 @@
 		"nodeRef": "${schedule.nodeRef}",
 		<#if schedule.authority??>"authority": "${schedule.authority}",</#if>
 		<#if schedule.instructions??>"instructions": "${schedule.instructions}",</#if>
+		"unpublishedUpdates" : ${schedule.unpublishedUpdates?string},
+		"publishInProgress" : ${schedule.publishInProgress?string},
 		"recordLevelDisposition": ${schedule.recordLevelDisposition?string},
 		"canStepsBeRemoved": ${schedule.canStepsBeRemoved?string},
 		"actionsUrl": "${schedule.actionsUrl}",

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,13 +24,15 @@ import org.alfresco.web.site.servlet.MTAuthenticationFilter;
 import org.springframework.extensions.surf.RequestContextUtil;
 import org.springframework.extensions.surf.exception.PlatformRuntimeException;
 import org.springframework.extensions.surf.exception.RequestContextException;
+import org.springframework.extensions.surf.mvc.PageView;
 import org.springframework.extensions.surf.mvc.PageViewResolver;
 import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.surf.types.Page;
+import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 /**
  * Slingshot specific implementation of Page View resolver.
- * 
+ * <p>
  * Support for MT in a non-portlet environment is provided via a servlet filter
  * {@link MTAuthenticationFilter} this view resolver makes use of the object provided
  * by the filter to allow authenticated access to the remote store earlier in the
@@ -64,5 +66,32 @@ public class SlingshotPageViewResolver extends PageViewResolver
         }
         
         return super.lookupPage(pageId);
+    }
+    
+    /**
+     * Constructs a new <code>PageView</code> object using and sets it's URL to the current view name
+     * providing that a <code>Page</code> object is stored on the current <code>RequestContext</code>
+     * object.
+     *
+     * @param viewName The name of the view to build.
+     */
+    @Override
+    protected AbstractUrlBasedView buildView(String viewName)
+    {
+        PageView view = null;
+        Page page = ThreadLocalRequestContext.getRequestContext().getPage();
+        if (page != null)
+        {
+            view = new SlingshotPageView(getWebframeworkConfigElement(), 
+                                         getModelObjectService(), 
+                                         getWebFrameworkResourceService(), 
+                                         getWebFrameworkRenderService(),
+                                         getTemplatesContainer());
+            view.setUrl(viewName);
+            view.setPage(page);
+            view.setUriTokens(ThreadLocalRequestContext.getRequestContext().getUriTokens());
+        }
+        
+        return view;
     }
 }

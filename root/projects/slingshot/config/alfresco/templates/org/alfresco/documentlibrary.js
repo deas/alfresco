@@ -1,3 +1,5 @@
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
+
 function toRepoType(contentType)
 {
    var type = "";
@@ -84,3 +86,5 @@ if (repoConfig !== null)
 }
 
 model.rootNode = rootNode;
+model.metaPage = AlfrescoUtil.getMetaPage();
+

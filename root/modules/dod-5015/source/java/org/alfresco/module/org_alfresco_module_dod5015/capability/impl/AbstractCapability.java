@@ -34,9 +34,15 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementA
 import org.alfresco.module.org_alfresco_module_dod5015.capability.Capability;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMEntryVoter;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.transaction.AlfrescoTransactionSupport;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
+import org.alfresco.service.cmr.search.ResultSet;
+import org.alfresco.service.cmr.search.SearchParameters;
+import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.QName;
@@ -99,42 +105,60 @@ public abstract class AbstractCapability implements Capability
 
     public int checkActionConditionsIfPresent(NodeRef nodeRef)
     {
+        String prefix = "checkActionConditionsIfPresent" + getName();
+        int result = getTransactionCache(prefix, nodeRef);
+        if (result != NOSET_VALUE)
+        {
+            return result;
+        }
+        
         if (actions.size() > 0)
         {
             for (RecordsManagementAction action : actions)
             {
                 if (action.isExecutable(nodeRef, null))
                 {
-                    return AccessDecisionVoter.ACCESS_GRANTED;
+                    return setTransactionCache(prefix, nodeRef, AccessDecisionVoter.ACCESS_GRANTED);
                 }
             }
-            return AccessDecisionVoter.ACCESS_DENIED;
+            return setTransactionCache(prefix, nodeRef, AccessDecisionVoter.ACCESS_DENIED);
         }
         else
         {
-            return AccessDecisionVoter.ACCESS_GRANTED;
+            return setTransactionCache(prefix, nodeRef, AccessDecisionVoter.ACCESS_GRANTED);
         }
     }
 
     public AccessStatus hasPermission(NodeRef nodeRef)
     {
-
         return translate(hasPermissionRaw(nodeRef));
     }
-
+        
     public int hasPermissionRaw(NodeRef nodeRef)
     {
+        String prefix = "hasPermissionRaw" + getName();
+        int result = getTransactionCache(prefix, nodeRef);
+        if (result != NOSET_VALUE)
+        {
+            return result;
+        }
+        
         if (checkRmRead(nodeRef) == AccessDecisionVoter.ACCESS_DENIED)
         {
-            return AccessDecisionVoter.ACCESS_DENIED;
+            result = AccessDecisionVoter.ACCESS_DENIED;
         }
-        if (checkActionConditionsIfPresent(nodeRef) == AccessDecisionVoter.ACCESS_DENIED)
+        else if (checkActionConditionsIfPresent(nodeRef) == AccessDecisionVoter.ACCESS_DENIED)
         {
-            return AccessDecisionVoter.ACCESS_DENIED;
+            result = AccessDecisionVoter.ACCESS_DENIED;
         }
-        return hasPermissionImpl(nodeRef);
+        else
+        {
+            result = hasPermissionImpl(nodeRef);
+        }
+        
+        return setTransactionCache(prefix, nodeRef, result);
     }
-
+    
     protected abstract int hasPermissionImpl(NodeRef nodeRef);
 
     public List<String> getActionNames()
@@ -149,26 +173,14 @@ public abstract class AbstractCapability implements Capability
 
     public NodeRef getFilePlan(NodeRef nodeRef)
     {
-        if (nodeRef == null)
+        NodeRef result = null;        
+        if (nodeRef != null)
         {
-            return null;
+            result = voter.getRecordsManagementService().getRecordsManagementRoot(nodeRef);
         }
-        if (voter.getNodeService().getType(nodeRef).equals(DOD5015Model.TYPE_FILE_PLAN))
-        {
-            return nodeRef;
-        }
-        else
-        {
-            NodeRef parent = voter.getNodeService().getPrimaryParent(nodeRef).getParentRef();
-            return getFilePlan(parent);
-        }
+        return result;
     }
     
-    public int checkFilingUnfrozen(NodeRef nodeRef)
-    {
-        return checkFilingUnfrozen(nodeRef, true);
-    }
-
     public int checkFilingUnfrozen(NodeRef nodeRef, boolean checkChildren)
     {
         int status;
@@ -181,10 +193,6 @@ public abstract class AbstractCapability implements Capability
 
     }
 
-    public int checkFilingUnfrozenUncutoff(NodeRef nodeRef)
-    {
-        return checkFilingUnfrozenUncutoff(nodeRef, true);
-    }
     
     public int checkFilingUnfrozenUncutoff(NodeRef nodeRef, boolean checkChildren)
     {
@@ -195,11 +203,6 @@ public abstract class AbstractCapability implements Capability
             return status;
         }
         return checkUncutoff(nodeRef);
-    }
-
-    public int checkFilingUnfrozenUncutoffOpen(NodeRef nodeRef)
-    {
-        return checkFilingUnfrozenUncutoffOpen(nodeRef, true);
     }
     
     public int checkFilingUnfrozenUncutoffOpen(NodeRef nodeRef, boolean checkChildren)
@@ -212,11 +215,6 @@ public abstract class AbstractCapability implements Capability
         }
         return checkOpen(nodeRef);
     }
-
-    public int checkFilingUnfrozenUncutoffOpenUndeclared(NodeRef nodeRef)
-    {
-        return checkFilingUnfrozenUncutoffOpenUndeclared(nodeRef, true);
-    }
     
     public int checkFilingUnfrozenUncutoffOpenUndeclared(NodeRef nodeRef, boolean checkChildren)
     {
@@ -227,11 +225,6 @@ public abstract class AbstractCapability implements Capability
             return status;
         }
         return checkUndeclared(nodeRef);
-    }
-
-    public int checkFilingUnfrozenUncutoffUndeclared(NodeRef nodeRef)
-    {
-        return checkFilingUnfrozenUncutoffUndeclared(nodeRef, true);
     }
     
     public int checkFilingUnfrozenUncutoffUndeclared(NodeRef nodeRef, boolean checkChildren)
@@ -276,20 +269,49 @@ public abstract class AbstractCapability implements Capability
                 return AccessDecisionVoter.ACCESS_ABSTAIN;
             }
         }
-    }
-
-    public int checkRmRead(NodeRef nodeRef)
+    }    
+    
+    private int NOSET_VALUE = -100;
+    
+    private int setTransactionCache(String prefix, NodeRef nodeRef, int value)
     {
-        // admin role
-
-        if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.ROLE_ADMINISTRATOR) == AccessStatus.ALLOWED)
+        String user = AuthenticationUtil.getRunAsUser();
+        AlfrescoTransactionSupport.bindResource(prefix + nodeRef.toString() + user, Integer.valueOf(value));
+        return value;        
+    }
+    
+    private int getTransactionCache(String prefix, NodeRef nodeRef)
+    {
+        int result = NOSET_VALUE;
+        String user = AuthenticationUtil.getRunAsUser();
+        Integer value = (Integer)AlfrescoTransactionSupport.getResource(prefix + nodeRef.toString() + user);
+        if (value != null)
+        {
+            result = value.intValue();
+        }
+        return result;
+    }
+    
+    public int checkRmRead(NodeRef nodeRef)
+    {           
+        int result = getTransactionCache("checkRmRead", nodeRef);
+        if (result != NOSET_VALUE)
+        {
+            return result;
+        }
+        
+        // Get the file plan for the node
+        NodeRef filePlan = getFilePlan(nodeRef);
+        
+        // Admin role
+        if (voter.getPermissionService().hasPermission(filePlan, RMPermissionModel.ROLE_ADMINISTRATOR) == AccessStatus.ALLOWED)
         {
             if (logger.isDebugEnabled())
             {
                 logger.debug("\t\tAdmin access");
                 Thread.dumpStack();
             }
-            return AccessDecisionVoter.ACCESS_GRANTED;
+            return setTransactionCache("checkRmRead", nodeRef, AccessDecisionVoter.ACCESS_GRANTED);            
         }
 
         if (voter.getPermissionService().hasPermission(nodeRef, RMPermissionModel.READ_RECORDS) == AccessStatus.DENIED)
@@ -299,26 +321,26 @@ public abstract class AbstractCapability implements Capability
                 logger.debug("\t\tPermission is denied");
                 Thread.dumpStack();
             }
-            return AccessDecisionVoter.ACCESS_DENIED;
+            return setTransactionCache("checkRmRead", nodeRef, AccessDecisionVoter.ACCESS_DENIED); 
         }
 
-        if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.VIEW_RECORDS) == AccessStatus.DENIED)
+        if (voter.getPermissionService().hasPermission(filePlan, RMPermissionModel.VIEW_RECORDS) == AccessStatus.DENIED)
         {
             if (logger.isDebugEnabled())
             {
                 logger.debug("\t\tPermission is denied");
                 Thread.dumpStack();
             }
-            return AccessDecisionVoter.ACCESS_DENIED;
+            return setTransactionCache("checkRmRead", nodeRef, AccessDecisionVoter.ACCESS_DENIED); 
         }
 
         if (voter.getCaveatConfigComponent().hasAccess(nodeRef))
         {
-            return AccessDecisionVoter.ACCESS_GRANTED;
+            return setTransactionCache("checkRmRead", nodeRef, AccessDecisionVoter.ACCESS_GRANTED); 
         }
         else
         {
-            return AccessDecisionVoter.ACCESS_DENIED;
+            return setTransactionCache("checkRmRead", nodeRef, AccessDecisionVoter.ACCESS_DENIED); 
         }
 
     }
@@ -450,11 +472,6 @@ public abstract class AbstractCapability implements Capability
 
     }
 
-    public int checkUnfrozen(NodeRef nodeRef)
-    {
-        return checkUnfrozen(nodeRef, true);
-    }
-    
     public int checkUnfrozen(NodeRef nodeRef, boolean checkChildren)
     {
         if (isRm(nodeRef) == true)
@@ -720,11 +737,6 @@ public abstract class AbstractCapability implements Capability
     {
         return voter.getNodeService().hasAspect(nodeRef, RecordsManagementModel.ASPECT_FILE_PLAN_COMPONENT);
     }
-
-    public boolean isFrozen(NodeRef nodeRef)
-    {
-        return isFrozen(nodeRef, true);
-    }
     
     public boolean isFrozen(NodeRef nodeRef, boolean checkChildren)
     {
@@ -733,16 +745,24 @@ public abstract class AbstractCapability implements Capability
             result == false && 
             isRecordFolder(voter.getNodeService().getType(nodeRef)) == true)
         {
-            // Check that none of the child records are frozen
-            List<NodeRef> rules = voter.getRecordsManagementService().getRecords(nodeRef);
-            for (NodeRef rule : rules)
+            // Query for any children that are frozen
+            String query = "+PARENT:\"" + nodeRef.toString() + "\" +ASPECT:\"{http://www.alfresco.org/model/recordsmanagement/1.0}frozen\"";
+            SearchService searchService = voter.getSearchService();
+            
+            // Create the search parameters
+            SearchParameters searchParameters = new SearchParameters();
+            searchParameters.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+            searchParameters.setQuery(query);
+            searchParameters.setLanguage(SearchService.LANGUAGE_LUCENE);
+            
+            // Execute search
+            ResultSet resultSet = searchService.query(searchParameters);
+            
+            // If there are any results then there must be a frozen child so return true
+            if (resultSet.length() != 0)
             {
-                if (isFrozen(rule, checkChildren) == true)
-                {
-                    result = true;
-                    break;
-                }
-            }
+                result = true;
+            }            
         }
         return result;
     }
@@ -774,20 +794,22 @@ public abstract class AbstractCapability implements Capability
 
     public boolean isScheduledForDestruction(NodeRef nodeRef)
     {
+        boolean result = false;
+        
         // The record is all set up for destruction
         DispositionAction nextDispositionAction = voter.getRecordsManagementService().getNextDispositionAction(nodeRef);
         if (nextDispositionAction != null)
         {
-            DispositionActionDefinition actionDef = nextDispositionAction.getDispositionActionDefinition();
-            if (actionDef != null && actionDef.getName().equals("destroy"))
+            // Get the disposition actions name
+            String actionName = nextDispositionAction.getName();            
+            if (actionName.equals("destroy") == true &&
+                voter.getRecordsManagementService().isNextDispositionActionEligible(nodeRef) == true)
             {
-                if (voter.getRecordsManagementService().isNextDispositionActionEligible(nodeRef))
-                {
-                    return true;
-                }
+                result = true;                
             }
         }
-        return false;
+        
+        return result;
     }
 
     public boolean mayBeScheduledForDestruction(NodeRef nodeRef)
@@ -795,13 +817,16 @@ public abstract class AbstractCapability implements Capability
         DispositionSchedule dispositionSchedule = voter.getRecordsManagementService().getDispositionSchedule(nodeRef);
         if (dispositionSchedule == null)
         {
+            // There is no disposition schedule so can't be scheduled for destruction
             return false;
         }
-        if (isRecord(nodeRef) && !dispositionSchedule.isRecordLevelDisposition())
+        
+        boolean isRecordLevelDisposition = dispositionSchedule.isRecordLevelDisposition();
+        if (isRecord(nodeRef) && isRecordLevelDisposition == false)
         {
             return false;
         }
-        if (isRecordFolder(voter.getNodeService().getType(nodeRef)) && dispositionSchedule.isRecordLevelDisposition())
+        if (isRecordFolder(voter.getNodeService().getType(nodeRef)) && isRecordLevelDisposition == true)
         {
             return false;
         }

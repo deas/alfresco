@@ -335,6 +335,13 @@
             searchInput.focus();
          }
          
+         // This is a quick solution for showing all members of the site. The default search string 
+         // is empty and equates to a global search.
+         if (window.location.hash == "#showall")
+         {
+            this.onSearch();
+         }
+         
          // Finally show the component body here to prevent UI artifacts on YUI button decoration
          Dom.setStyle(this.id + "-body", "visibility", "visible");
       },
@@ -720,10 +727,9 @@
             };
 
             // make ajax call to site service to change role
-            Alfresco.util.Ajax.jsonRequest(
+            Alfresco.util.Ajax.jsonPut(
             {
-               url: Alfresco.constants.PROXY_URI + "api/sites/" + this.options.siteId + "/memberships/" + user,
-               method: "PUT",
+               url: Alfresco.constants.PROXY_URI + "api/sites/" + this.options.siteId + "/memberships",
                dataObj:
                {
                   role: selectedRole,

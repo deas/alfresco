@@ -1,25 +1,24 @@
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
+
+function getDocumentWorkflows(nodeRef)
+{
+   var result = remote.call("/api/node/" + nodeRef.replace(":/", "") + "/workflow-instances");
+   if (result.status != 200)
+   {
+      AlfrescoUtil.error(result.status, 'Could not load document workflows for ' + nodeRef);
+   }
+   return eval('(' + result + ')').data;
+}
+
 function main()
 {
-   if (args.nodeRef != null)
+   AlfrescoUtil.param('nodeRef');
+   AlfrescoUtil.param('site', null);
+   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   if (documentDetails)
    {
-      var nodeRef = args.nodeRef;
-      
-      // Call the repo to get the workflows this node is part of
-      var response = remote.call("/api/node/" + nodeRef.replace(":/", "") + "/workflow-instances");
-      
-      // Create javascript objects from the server response
-      var workflows = [];
-      
-      if (response.status == 200)
-      {
-         var result = eval('(' + response + ')');
-         
-         workflows = result.data;
-      }
-      
-      // Prepare the model for the template
-      model.nodeRef = nodeRef;
-      model.workflows = workflows;
+      model.destination = documentDetails.metadata.parent.nodeRef
+      model.workflows = getDocumentWorkflows(model.nodeRef);
    }
 }
 

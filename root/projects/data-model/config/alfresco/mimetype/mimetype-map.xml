@@ -74,8 +74,10 @@
          </mimetype>
          <mimetype mimetype="application/postscript" display="PostScript">
             <!-- extension display will be same as mimetype's unless specified otherwise -->
-            <extension>ai</extension>
             <extension default="true">ps</extension>
+         </mimetype>
+         <mimetype mimetype="application/illustrator" display="Adobe Illustrator File">
+            <extension default="true">ai</extension>
          </mimetype>
          <mimetype mimetype="audio/x-aiff" display="AIFF Audio">
             <extension>aiff</extension>
@@ -95,6 +97,24 @@
             <extension>au</extension>
             <extension>snd</extension>
          </mimetype>
+
+         <mimetype mimetype="video/ogg" display="Ogg Video">
+            <extension default="true">ogv</extension>
+            <extension>ogg</extension>
+         </mimetype>
+         <mimetype mimetype="audio/ogg" display="Ogg Audio">
+            <extension default="true">oga</extension>
+            <extension>ogg</extension>
+            <extension>spx</extension>
+         </mimetype>
+         <mimetype mimetype="application/ogg" display="Ogg Multiplex">
+            <extension default="true">ogx</extension>
+         </mimetype>
+         
+         <mimetype mimetype="video/webm" display="WebM Video">
+            <extension>webm</extension>
+         </mimetype>
+
          <mimetype mimetype="video/x-msvideo" display="MS Video">
             <extension>avi</extension>
             <extension>qvi</extension>
@@ -396,6 +416,13 @@
          </mimetype>         
          <mimetype mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.template" display="Microsoft Word Template 2007">
             <extension>dotx</extension>
+         </mimetype>
+         <mimetype mimetype="application/x-zip" display="Adobe Flex Project File">
+            <extension default="true">fxp</extension>
+         </mimetype>
+         <mimetype mimetype="application/x-indesign" display="Adobe InDesign Document">
+            <extension default="true">indd</extension>
+            <extension>ind</extension>
          </mimetype>
       </mimetypes>
    </config>

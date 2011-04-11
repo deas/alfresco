@@ -108,38 +108,21 @@
          <region-id>repo-folder-links</region-id>
          <url>/components/folder-details/folder-links</url>
       </component>
-      <!-- comments: normal & repository -->
+      <!-- comments: normal & repository -->      
       <component>
          <region-id>comments</region-id>
-         <url>/components/blog/comments</url>
+         <url>/components/comments/list</url>
          <properties>
-            <editorWidth>420</editorWidth>
-            <editorHeight>100</editorHeight>
+            <nodeRef>{nodeRef}</nodeRef>
+            <activityType>folder</activityType>
          </properties>
       </component>
       <component>
          <region-id>repo-comments</region-id>
-         <url>/components/blog/comments</url>
+         <url>/components/comments/list</url>
          <properties>
-            <editorWidth>420</editorWidth>
-            <editorHeight>100</editorHeight>
-         </properties>
-      </component>
-      <!-- createcomment: normal & repository -->
-      <component>
-         <region-id>createcomment</region-id>
-         <url>/components/blog/createcomment</url>
-         <properties>
-            <editorHeight>100</editorHeight>
-            <editorWidth>420</editorWidth>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-createcomment</region-id>
-         <url>/components/blog/createcomment</url>
-         <properties>
-            <editorHeight>100</editorHeight>
-            <editorWidth>420</editorWidth>
+            <nodeRef>{nodeRef}</nodeRef>
+            <activityType>folder</activityType>
          </properties>
       </component>
    </components>

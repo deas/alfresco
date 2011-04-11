@@ -276,6 +276,12 @@ public class SectionImpl extends ResourceBaseImpl implements Section
         return collectionFactory.getCollection(getId(), name);
     }
 
+    @Override
+    public AssetCollection getAssetCollection(String name, int resultsToSkip, int maxResults)
+    {
+        return collectionFactory.getCollection(getId(), name, resultsToSkip, maxResults);
+    }
+
     /**
      * Find template for a section by type
      * 

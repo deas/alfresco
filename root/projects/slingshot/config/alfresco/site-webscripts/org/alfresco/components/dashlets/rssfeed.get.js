@@ -3,7 +3,7 @@
 /**
  * Main entry point for the webscript
  */
-function main ()
+function main()
 {
    var uri = args.feedurl;
    if (!uri)
@@ -32,29 +32,22 @@ function main ()
    }
 
    var userIsSiteManager = true;
-   //Check whether we are within the context of a site
    if (page.url.templateArgs.site)
    {
-	   //If we are, call the repository to see if the user is site manager or not
-	   userIsSiteManager = false;
-      var obj = context.properties["memberships"];
-      if (!obj)
+      // We are in the context of a site, so call the repository to see if the user is site manager or not
+      userIsSiteManager = false;
+      var json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
+
+      if (json.status == 200)
       {
-   	   var json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
-   	   if (json.status == 200)
-   	   {
-   	      obj = eval('(' + json + ')');
-   	   }
-   	}
-   	if (obj)
-   	{
-	      userIsSiteManager = (obj.role == "SiteManager");
-   	}
+         var obj = eval('(' + json + ')');
+         if (obj)
+         {
+            userIsSiteManager = (obj.role == "SiteManager");
+         }
+      }
    }
    model.userIsSiteManager = userIsSiteManager;
 }
 
-/**
- * Start webscript
- */
 main();

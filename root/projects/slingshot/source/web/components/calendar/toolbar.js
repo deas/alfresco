@@ -15,10 +15,12 @@
     */
    var $html = Alfresco.util.encodeHTML;
    
-   Alfresco.CalendarToolbar = function(containerId)
+   Alfresco.CalendarToolbar = function(containerId, enabledViews, defaultView)
    {
       this.name = "Alfresco.CalendarToolbar";
       this.id = containerId;
+		this.enabledViews = enabledViews;
+		this.defaultView = defaultView;
 
       this.navButtonGroup = null;
       this.nextButton = null;
@@ -92,22 +94,20 @@
          this.todayButton = Alfresco.util.createYUIButton(this, "today-button", this.onTodayNav);
 
          this.navButtonGroup = new YAHOO.widget.ButtonGroup(this.id + "-navigation");
-     
-         var view = Alfresco.util.getQueryStringParameter('view') || 'month';
-         var views = [Alfresco.CalendarView.VIEWTYPE_DAY,Alfresco.CalendarView.VIEWTYPE_WEEK,Alfresco.CalendarView.VIEWTYPE_MONTH,Alfresco.CalendarView.VIEWTYPE_AGENDA];
-         for (var i=0;i<views.length;i++)
+         if (typeof(this.navButtonGroup) != "undefined" && this.navButtonGroup._buttons != null ) // Will be undefined / null if navigation is hidden serverside (e.g. only one view enabled)
          {
-             if (views[i]==view)
-             {
+            var view = Alfresco.util.getQueryStringParameter('view') || this.defaultView;
+            for (var i = 0; i < this.navButtonGroup._buttons.length; i++) 
+            { 
+               if (this.navButtonGroup._buttons[i]._button.id.match(view)) 
+               {
                   this.navButtonGroup.check(i);
                   this.disableButtons(i);
                   break;
-             }
+               }
+            }
+            this.navButtonGroup.on("checkedButtonChange", this.onNavigation, this.navButtonGroup, this);
          }
-         
-         
-         
-         this.navButtonGroup.on("checkedButtonChange", this.onNavigation, this.navButtonGroup, this);
       },
 
       onNextNav: function(e)
@@ -138,18 +138,21 @@
       {
          var selectedButton = this.navButtonGroup.getButtons()[butIndex];
          // disable buttons for agenda view only
-        if ( selectedButton.get('label') === Alfresco.util.message('label.agenda','Alfresco.CalendarView') ) 
-        {
-          this.todayButton.set('disabled',true);
-          this.nextButton.set('disabled',true);
-          this.prevButton.set('disabled',true); 
-        }
-        else 
-        {
-          this.todayButton.set('disabled',false);
-          this.nextButton.set('disabled',false);
-          this.prevButton.set('disabled',false);        
-        }          
+         if (this.todayButton != null) // Note: Today button will be null if elements are hidden serverside
+         {
+            if (selectedButton.get('label') === Alfresco.util.message('label.agenda', 'Alfresco.CalendarView')) 
+            {
+               this.todayButton.set('disabled', true);
+               this.nextButton.set('disabled', true);
+               this.prevButton.set('disabled', true);
+            }
+            else 
+            {
+               this.todayButton.set('disabled', false);
+               this.nextButton.set('disabled', false);
+               this.prevButton.set('disabled', false);
+            }
+         }
       },
       _fireEvent: function(type)
       {
@@ -170,22 +173,6 @@
        */     
       onButtonClick: function(e)
       {
-         // TODO: look at caching this
-         // var eventDialog = new Alfresco.module.AddEvent(this.id + "-addEvent");
-         //          var options =
-         //          {
-         //             "siteId": this.siteId
-         //          };
-         // 
-         //          var obj = Alfresco.util.ComponentManager.findFirst("Alfresco.CalendarView");
-         //          if (obj)
-         //          {
-         //             obj.currentDate = new Date();
-         //             options["displayDate"] = obj.currentDate;
-         //          }
-         // 
-         //          eventDialog.setOptions(options);
-         //          eventDialog.show();
          var obj = Alfresco.util.ComponentManager.findFirst("Alfresco.CalendarView");
          if (obj)
          {

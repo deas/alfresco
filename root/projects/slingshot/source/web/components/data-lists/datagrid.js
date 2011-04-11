@@ -25,7 +25,6 @@
  */
 (function()
 {
-    
    /**
    * YUI Library aliases
    */
@@ -426,7 +425,7 @@
                               break;
 
                            default:
-                              html += $html(data.displayValue);
+                              html += $links($html(data.displayValue));
                               break;
                         }
 
@@ -1172,9 +1171,12 @@
       {
          var items = [],
             recordSet = this.widgets.dataTable.getRecordSet(),
+            aPageRecords = this.widgets.paginator.getPageRecords(),
+            startRecord = aPageRecords[0],
+            endRecord = aPageRecords[1],
             record;
          
-         for (var i = 0, j = recordSet.getLength(); i < j; i++)
+         for (var i = startRecord; i <= endRecord; i++)
          {
             record = recordSet.getRecord(i);
             if (this.selectedItems[record.getData("nodeRef")])

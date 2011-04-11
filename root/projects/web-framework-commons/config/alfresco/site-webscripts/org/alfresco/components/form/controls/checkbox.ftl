@@ -1,5 +1,11 @@
 <#assign isTrue=false>
-<#if field.value?? && field.value?is_boolean><#assign isTrue=field.value></#if>
+<#if field.value??>
+ <#if field.value?is_boolean>
+    <#assign isTrue=field.value>
+ <#elseif field.value?is_string && field.value == "true">
+    <#assign isTrue=true>
+ </#if>
+</#if>
 
 <div class="form-field">
    <#if form.mode == "view">

@@ -1,5 +1,5 @@
 <webscript>
   <shortname>folder-metadata-header</shortname>
-  <description>Folder Metadata Header Component</description>
+  <description>Folder Properties Header Component</description>
   <url>/components/folder-details/folder-metadata-header</url>
 </webscript>

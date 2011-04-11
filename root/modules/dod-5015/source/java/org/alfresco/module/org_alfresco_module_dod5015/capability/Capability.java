@@ -58,4 +58,5 @@ public interface Capability
     public int hasPermissionRaw(NodeRef nodeRef);
     
     public List<RecordsManagementAction> getActions();
+        
 }

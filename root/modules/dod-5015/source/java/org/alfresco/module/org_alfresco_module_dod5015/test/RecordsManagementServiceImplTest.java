@@ -36,6 +36,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.VitalRecordDefinition;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
+import org.alfresco.module.org_alfresco_module_dod5015.action.impl.BroadcastDispositionActionDefinitionUpdateAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.FileAction;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEvent;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -229,6 +230,10 @@ public class RecordsManagementServiceImplTest extends BaseSpringTest implements 
                         NodeRef dadNode = firstDAD.getNodeRef();
                         
                         nodeService.setProperty(dadNode, PROP_DISPOSITION_PERIOD, new Period("year|1"));
+                        
+                        List<QName> updatedProps = new ArrayList<QName>(1);
+                        updatedProps.add(PROP_DISPOSITION_PERIOD);
+                        refreshDispositionActionDefinition(dadNode, updatedProps);
 
                         return asOfDate;
                     }          
@@ -319,6 +324,9 @@ public class RecordsManagementServiceImplTest extends BaseSpringTest implements 
                     }          
                 });
 
+        // Wait for asynchronous job execution to finish
+        Thread.sleep(5000);
+
         // Tidy up test nodes.
         transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
                 {
@@ -338,6 +346,19 @@ public class RecordsManagementServiceImplTest extends BaseSpringTest implements 
                         return null;
                     }          
                 });
+    }
+    
+    private void refreshDispositionActionDefinition(NodeRef nodeRef, List<QName> updatedProps)
+    {
+        if (updatedProps != null)
+        {
+            Map<String, Serializable> params = new HashMap<String, Serializable>();
+            params.put(BroadcastDispositionActionDefinitionUpdateAction.CHANGED_PROPERTIES, (Serializable)updatedProps);
+            rmActionService.executeRecordsManagementAction(nodeRef, BroadcastDispositionActionDefinitionUpdateAction.NAME, params);            
+        }
+
+        // Remove the unpublished update aspect
+        nodeService.removeAspect(nodeRef, ASPECT_UNPUBLISHED_UPDATE);
     }
     
 	public void testGetDispositionInstructions() throws Exception

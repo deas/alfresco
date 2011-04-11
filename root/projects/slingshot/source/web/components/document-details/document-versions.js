@@ -33,22 +33,26 @@
       Selector = YAHOO.util.Selector;
 
    /**
-    * Dashboard DocumentVersions constructor.
+    * Alfresco Slingshot aliases
+    */
+   var $html = Alfresco.util.encodeHTML,
+      $userProfileLink = Alfresco.util.userProfileLink,
+      $userAvatar = Alfresco.Share.userAvatar;
+
+   /**
+    * DocumentVersions constructor.
     *
     * @param {String} htmlId The HTML id of the parent element
     * @return {Alfresco.DocumentVersions} The new component instance
     * @constructor
     */
-   Alfresco.DocumentVersions = function DV_constructor(htmlId)
+   Alfresco.DocumentVersions = function DocumentVersions_constructor(htmlId)
    {
-      Alfresco.DocumentVersions.superclass.constructor.call(this, "Alfresco.DocumentVersions", htmlId, ["button", "container"]);
+      Alfresco.DocumentVersions.superclass.constructor.call(this, "Alfresco.DocumentVersions", htmlId, ["datasource", "datatable", "paginator", "history", "animation"]);
 
-      /* Decoupled event listeners */
-      YAHOO.Bubbling.on("documentDetailsAvailable", this.onDocumentDetailsAvailable, this);
-      YAHOO.Bubbling.on("metadataRefresh", this.onMetadataRefresh, this);
-
+      YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
       return this;
-   }
+   };
 
    YAHOO.extend(Alfresco.DocumentVersions, Alfresco.component.Base,
    {
@@ -61,189 +65,264 @@
       options:
       {
          /**
-          * An array with labels in the same order as they are listed in the html template
-          *
-          * @property versions
-          * @type Array an array of object literals of the following form:
-          * {
-          *    label: {string}, // the version ot revert the node to
-          *    createDate: {string}, // the date the version was creted in freemarker?datetime format
-          * }
-          */
-         versions: [],
-
-         /**
-          * The version ot revert the node to
+          * Reference to the current document
           *
           * @property nodeRef
-          * @type {string}
+          * @type string
           */
          nodeRef: null,
 
          /**
-          * The version ot revert the node to
+          * Current siteId, if any.
           *
-          * @property filename
-          * @type {string}
+          * @property siteId
+          * @type string
           */
-         filename: null         
+         siteId: "",
+
+         /**
+          * The name of container that the node lives in, will be used when uploading new versions.
+          *
+          * @property containerId
+          * @type string
+          */
+         containerId: null,
+
+         /**
+          * The version of the working copy (if it is a working copy), will be used during upload.
+          *
+          * @property workingCopyVersion
+          * @type string
+          */
+         workingCopyVersion: null
       },
+
+      /**
+       * The latest version of the document
+       *
+       * @property latestVersion
+       * @type {Object}
+       */
+      latestVersion: null,
 
       /**
        * Fired by YUI when parent element is available for scripting
+       *
        * @method onReady
        */
-      onReady: function DV_onReady()
+      onReady: function DocumentVersions_onReady()
       {
-         // Listen on clicks for revert version icons
-         var versions = this.options.versions, version, i, j, reverter;
-         
-         for (i = 0, j = versions.length; i < j; i++)
+         this.widgets.alfrescoDataTable = new Alfresco.util.DataTable(
          {
-            reverter = Dom.get(this.id + "-revert-a-" + i);
-            if (reverter)
+            dataSource:
             {
-               Event.addListener(reverter, "click", function (event, obj)
+               url: Alfresco.constants.PROXY_URI + "api/version?nodeRef=" + this.options.nodeRef,
+               doBeforeParseData: this.bind(function(oRequest, oFullResponse)
                {
-                  // Stop browser from using href attribute
-                  Event.preventDefault(event);
-
-                  // Find the index of the version link by looking at its id
-                  version = versions[obj.versionIndex];
-
-                  // Find the version through the index and display the revert dialog for the version
-                  Alfresco.module.getRevertVersionInstance().show(
+                  // Versions are returned in an array but must be placed in an object to be able to be parse by yui
+                  // Also skip the first version since that is the current version
+                  this.latestVersion = oFullResponse.splice(0, 1)[0];
+                  Dom.get(this.id + "-latestVersion").innerHTML = this.getDocumentVersionMarkup(this.latestVersion);
+                  return (
                   {
-                     filename: this.options.filename,
-                     nodeRef: this.options.nodeRef,
-                     version: version.label,
-                     onRevertVersionComplete:
-                     {
-                        fn: this.onRevertVersionComplete,
-                        scope: this
-                     }
+                     "data" : oFullResponse
                   });
-               },
+               })
+            },
+            dataTable:
+            {
+               container: this.id + "-olderVersions",
+               columnDefinitions:
+               [
+                  { key: "version", sortable: false, formatter: this.bind(this.renderCellVersion) }
+               ],
+               config:
                {
-                  versionIndex: i
-               }, this);
+                  MSG_EMPTY: this.msg("message.noVersions")
+               }
             }
-
-            // Listen on clicks on the version - date row so we can expand and collapse it
-            var expander = Dom.get(this.id + "-expand-a-" + i),
-               moreVersionInfoDiv = Dom.get(this.id + "-moreVersionInfo-div-" + i);            
-
-            if (expander)
-            {               
-               Event.addListener(expander, "click", function (event, obj)
-               {
-                  // Stop browser from using href attribute
-                  Event.preventDefault(event)
-
-                  if (obj.moreVersionInfoDiv && Dom.hasClass(obj.expandDiv, "collapsed"))
-                  {
-                     Alfresco.util.Anim.fadeIn(obj.moreVersionInfoDiv);
-                     Dom.removeClass(obj.expandDiv, "collapsed");
-                     Dom.addClass(obj.expandDiv, "expanded");
-                  }
-                  else
-                  {
-                     Dom.setStyle(obj.moreVersionInfoDiv, "display", "none");
-                     Dom.removeClass(obj.expandDiv, "expanded");
-                     Dom.addClass(obj.expandDiv, "collapsed");
-                  }
-               },
-               {
-                  expandDiv: expander,
-                  moreVersionInfoDiv: moreVersionInfoDiv
-               }, this);
-            }
-
-            // Format and display the createdDate
-            Dom.get(this.id + "-createdDate-span-" + i).innerHTML = Alfresco.util.formatDate(versions[i].createdDate);
-         }
+         });
       },
 
       /**
-       * Fired by the Revert Version component after a successfull revert.
+       * Version renderer
+       *
+       * @method renderCellVersion
+       */
+      renderCellVersion: function DocumentVersions_renderCellVersions(elCell, oRecord, oColumn, oData)
+      {
+         elCell.innerHTML = this.getDocumentVersionMarkup(oRecord.getData());
+      },
+
+      /**
+       * Builds and returns the markup for a version.
+       *
+       * @method getDocumentVersionMarkup
+       * @param doc {Object} The details for the document
+       */
+      getDocumentVersionMarkup: function DocumentVersions_getDocumentVersionMarkup(doc)
+      {
+         var downloadURL = Alfresco.constants.PROXY_URI + '/api/node/content/' + doc.nodeRef.replace(":/", "") + '/' + doc.name + '?a=true',
+            html = '';
+
+         html += '<div class="version-panel-left">'
+         html += '   <span class="document-version">' + $html(doc.label) + '</span>';
+         html += '</div>';
+         html += '<div class="version-panel-right">';
+         html += '   <h3 class="thin dark">' + $html(doc.name) +  '</h3>';
+         html += '   <span class="actions">';
+         html += '      <a href="#" name=".onRevertVersionClick" rel="' + doc.label + '" class="' + this.id + ' revert" title="' + this.msg("label.revert") + '">&nbsp;</a>';
+         html += '      <a href="' + downloadURL + '" class="download" title="' + this.msg("label.download") + '">&nbsp;</a>';
+         html += '   </span>';
+         html += '   <div class="clear"></div>';
+         html += '   <div class="version-details">';
+         html += '      <div class="version-details-left">'
+         html += $userAvatar(doc.creator.userName, 32);
+         html += '      </div>';
+         html += '      <div class="version-details-right">';
+         html += $userProfileLink(doc.creator.userName, doc.creator.firstName + ' ' + doc.creator.lastName, 'class="theme-color-1"') + ' ';
+         html += Alfresco.util.relativeTime(Alfresco.util.fromISO8601(doc.createdDateISO)) + '<br />';
+         html += ((doc.description || "").length > 0) ? $html(doc.description, true) : '<span class="faded">(' + this.msg("label.noComment") + ')</span>';
+         html += '      </div>';
+         html += '   </div>';
+         html += '</div>';
+
+         html += '<div class="clear"></div>';
+         return html;
+      },
+
+      /**
+       * Called when a "onRevertVersionClick" link has been clicked for a version.
+       * Will display the devert version dialog.
+       *
+       * @method onRevertVersionClick
+       * @param version
+       */
+      onRevertVersionClick: function DocumentVersions_onRevertVersionClick(version)
+      {
+         // Find the version through the index and display the revert dialog for the version
+         Alfresco.module.getRevertVersionInstance().show(
+         {
+            filename: this.latestVersion.name,
+            nodeRef: this.options.nodeRef,
+            version: version,
+            onRevertVersionComplete:
+            {
+               fn: this.onRevertVersionComplete,
+               scope: this
+            }
+         });
+      },
+
+      /**
+       * Fired by the Revert Version component after a successful revert.
+       * Will display a message and reload the page.
        *
        * @method onRevertVersionComplete
        */
-      onRevertVersionComplete: function DV_onRevertVersionComplete()
+      onRevertVersionComplete: function DocumentVersions_onRevertVersionComplete()
       {
          Alfresco.util.PopupManager.displayMessage(
          {
-            text: Alfresco.util.message("message.revertComplete", this.name)
+            text: this.msg("message.revertComplete")
          });
 
-         window.location.reload();
+         // Fire metadatarefresh so components may refresh themselves
+         YAHOO.Bubbling.fire("metadataRefresh", {});
       },
 
       /**
-       * Event handler called when the "documentDetailsAvailable" event is received
+       * Called when the "onUploadNewVersionClick" link has been clicked.
+       * Will display the upload dialog in new version mode.
        *
-       * @method: onDocumentDetailsAvailable
+       * @method onUploadNewVersionClick
        */
-      onDocumentDetailsAvailable: function DocumentInfo_onDocumentDetailsAvailable(layer, args)
+      onUploadNewVersionClick: function DocumentVersions_onUploadNewVersionClick()
       {
-         var workingCopyMode = args[1].workingCopyMode || false;
-
-         if (!workingCopyMode)
+         if (!this.modules.fileUpload)
          {
-            Dom.removeClass(this.id + "-body", "hidden");
-            // Check if user has revert permissions
-            var roles = args[1].documentDetails.permissions.roles;
-            for (var i = 0, il = roles.length; i < il; i++)
-            {
-               if (Alfresco.util.arrayContains(["SiteManager", "SiteCollaborator"], roles[i].split(";")[2])
-                     && roles[i].split(";")[0] == "ALLOWED")
+            this.modules.fileUpload = Alfresco.getFileUploadInstance();
+         }
+
+         var current = this.latestVersion,
+            displayName =  current.name,
+            extensions = "*";
+
+         if (displayName && new RegExp(/[^\.]+\.[^\.]+/).exec(displayName))
+         {
+            // Only add a filtering extension if filename contains a name and a suffix
+            extensions = "*" + displayName.substring(displayName.lastIndexOf("."));
+         }
+
+         this.modules.fileUpload.show(
+         {
+            siteId: this.options.siteId,
+            containerId: this.options.containerId,
+            updateNodeRef: this.options.nodeRef,
+            updateFilename: displayName,
+            updateVersion: this.options.workingCopyVersion || current.label,
+            overwrite: true,
+            filter: [
                {
-                  var revertEls = Selector.query("a.revert", this.id + "-body");
-                  for (i = 0, il = revertEls.length; i < il; i++)
+                  description: this.msg("label.filter-description", displayName),
+                  extensions: extensions
+               }],
+            mode: this.modules.fileUpload.MODE_SINGLE_UPDATE,
+            onFileUploadComplete:
+            {
+               fn: this.onNewVersionUploadComplete,
+               scope: this
+            }
+         });
+      },
+
+      /**
+       * Called when the upload new version dialog is finished uploading the new version.
+       * Will display succes or failure and repload the page if everything went ok.
+       *
+       * @method onNewVersionUploadComplete
+       */
+      onNewVersionUploadComplete: function DocumentVersions_onNewVersionUploadComplete(complete)
+      {
+         if (complete.failed.length == 0 && complete.successful.length > 0)
+         {
+            // No activities in Repository mode
+            if (this.options.siteId == null || this.options.siteId.length == 0)
+            {
+               return;
+            }
+
+            try
+            {
+               Alfresco.util.Ajax.jsonPost(
+               {
+                  url: Alfresco.constants.PROXY_URI + "slingshot/doclib/activity",
+                  dataObj:
                   {
-                     Dom.removeClass(revertEls[i].parentNode, "hidden");
+                     fileName: complete.successful[0].fileName,
+                     nodeRef: complete.successful[0].nodeRef,
+                     site: this.options.siteId,
+                     type: "file-updated",
+                     page: "document-details"
                   }
-                  break;
-               }
+               });
+            }
+            catch (e)
+            {
+               // Ignore, not important enough to bother user about
             }
          }
       },
-      
+
       /**
-       * Event handler called when the "metadataRefresh" event is received
+       * Refresh component in response to metadataRefresh event
        *
-       * @method: onMetadataRefresh
+       * @method doRefresh
        */
-      onMetadataRefresh: function DV_onMetadataRefresh(layer, args)
+      doRefresh: function DocumentVersions_doRefresh()
       {
-         Alfresco.util.Ajax.request(
-         {
-            url: Alfresco.constants.URL_SERVICECONTEXT + "components/document-details/document-versions",
-            dataObj:
-            {
-               htmlid: this.id,
-               nodeRef: this.options.nodeRef
-            },
-            successCallback:
-            {
-               fn: this.onTemplateLoaded,
-               scope: this
-            },
-            execScripts: true
-         });
-      },
-      
-      /**
-       * Event callback when this component has been reloaded via AJAX call
-       *
-       * @method onTemplateLoaded
-       * @param response {object} Server response from load template XHR request
-       */
-      onTemplateLoaded: function AmSD_onTemplateLoaded(response)
-      {
-         // Inject the template from the XHR request into a new DIV element
-         var containerDiv = Dom.get(this.id + "-body").parentNode;
-         containerDiv.innerHTML = response.serverResponse.responseText;
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
+         this.refresh('components/document-details/document-versions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' :  ''));
       }
    });
 })();

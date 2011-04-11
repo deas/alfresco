@@ -135,7 +135,8 @@
          this.widgets.sitesButton = new YAHOO.widget.Button(this.id,
          {
             type: "menu",
-            menu: this.id + "-sites-menu"
+            menu: this.id + "-sites-menu",
+            lazyloadmenu: false
          });
       },
       
@@ -233,7 +234,7 @@
          }
          
          Dom.setStyle(this.id + "-favouritesContainer", "display", sites.length > 0 ? "block" : "none");
-         Dom.setStyle(this.id + "-favouriteSites", "display", site.length > 0 ? "block" : "none");
+         Dom.setStyle(this.id + "-favouriteSites", "display", sites.length > 0 ? "block" : "none");
 
          for (i = 0, ii = sites.length; i < ii; i++)
          {
@@ -278,7 +279,7 @@
                {
                   Alfresco.util.PopupManager.displayPrompt(
                   {
-                     text: me.msg("message.siteFavourite.failure")
+                     text: me.msg("message.save.failure")
                   });
                },
                scope: this

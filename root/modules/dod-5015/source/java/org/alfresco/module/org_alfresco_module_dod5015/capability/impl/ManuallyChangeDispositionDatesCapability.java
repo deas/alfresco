@@ -42,7 +42,7 @@ public class ManuallyChangeDispositionDatesCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozen(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozen(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.MANUALLY_CHANGE_DISPOSITION_DATES) == AccessStatus.ALLOWED)
                 {

@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import org.alfresco.wcm.client.AssetFactory;
 import org.alfresco.wcm.client.CollectionFactory;
+import org.alfresco.wcm.client.DictionaryService;
 import org.alfresco.wcm.client.Resource;
 import org.alfresco.wcm.client.Section;
 import org.alfresco.wcm.client.SectionFactory;
@@ -60,6 +61,7 @@ public abstract class ResourceBaseImpl implements Resource
 	public void setProperties(Map<String,Serializable> props)
 	{
 	    properties = new TreeMap<String, Serializable>(props);
+	    mimicCmisProperties();
 	    id = (String)properties.get(PropertyIds.OBJECT_ID);
 	    typeId = (String)properties.get(PropertyIds.OBJECT_TYPE_ID);
 	    name = (String)properties.get(PropertyIds.NAME);
@@ -171,6 +173,42 @@ public abstract class ResourceBaseImpl implements Resource
     public void setPrimarySectionId(String sectionId)
     {
         this.primarySectionId = sectionId;
+    }
+
+    public String getPrimarySectionId()
+    {
+        return primarySectionId;
+    }
+
+    private void mimicCmisProperties()
+    {
+        //Quickly check that there doesn't appear to be any CMIS properties defined already
+        if (properties.get(PropertyIds.OBJECT_ID) == null)
+        {
+            //And, if not, derive the CMIS equivalents from what we have
+            properties.put(PropertyIds.OBJECT_ID, properties.get("id"));
+            
+            //Translate the root types to their CMIS equivalent...
+            String typeName = (String)properties.get("type");
+            if ("cm:content".equals(typeName))
+            {
+                typeName = DictionaryService.TYPE_CMIS_DOCUMENT;
+            }
+            else if ("cm:folder".equals(typeName))
+            {
+                typeName = DictionaryService.TYPE_CMIS_FOLDER;
+            }
+            properties.put(PropertyIds.OBJECT_TYPE_ID, typeName);
+    
+            properties.put(PropertyIds.NAME, properties.get("cm:name"));
+            properties.put(PropertyIds.LAST_MODIFICATION_DATE, properties.get("cm:modified"));
+            ContentInfo contentInfo = (ContentInfo) properties.get("cm:content");
+            if (contentInfo != null)
+            {
+                properties.put(PropertyIds.CONTENT_STREAM_LENGTH, contentInfo.getSize());
+                properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, contentInfo.getMimeType());
+            }
+        }
     }
 }
 

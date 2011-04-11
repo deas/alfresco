@@ -64,7 +64,7 @@ function main()
 
    // Load user preferences for which proeprties to show in menu as default
    var connector = remote.connect("alfresco");
-   var result = connector.get("/api/people/" + encodeURIComponent(user.name) + "/preferences?pf=org.alfresco.share.rule.properties");
+   var result = connector.get("/api/people/" + encodeURIComponent(user.name) + "/preferences");
    if (result.status == 200)
    {
       var prefs = eval('(' + result + ')'),

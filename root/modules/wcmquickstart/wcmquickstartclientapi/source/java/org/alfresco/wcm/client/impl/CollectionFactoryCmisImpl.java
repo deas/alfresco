@@ -63,10 +63,6 @@ public class CollectionFactoryCmisImpl implements CollectionFactory
 	private AssetCollectionImpl buildCollection(QueryResult result) 
 	{
 		AssetCollectionImpl collection = new AssetCollectionImpl();		
-		collection.setId((String)result.getPropertyValueById(PropertyIds.OBJECT_ID));
-        collection.setName((String)result.getPropertyValueById(PropertyIds.NAME));
-        collection.setTitle((String)result.getPropertyValueById(Section.PROPERTY_TITLE));
-        collection.setDescription((String)result.getPropertyValueById(Section.PROPERTY_DESCRIPTION));              
 		return collection;
 	}
 	

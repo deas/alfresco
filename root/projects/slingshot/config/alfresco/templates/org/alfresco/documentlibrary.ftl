@@ -35,6 +35,7 @@
       <@region id=doclibType + "html-upload" scope="template" protected=true />
       <@region id=doclibType + "flash-upload" scope="template" protected=true />
       <@region id=doclibType + "file-upload" scope="template" protected=true />
+      <@region id=doclibType + "dnd-upload" scope="template" protected=true />
    </div>
 </@>
 

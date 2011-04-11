@@ -17,61 +17,59 @@
  */
 package org.alfresco.module.org_alfresco_module_wcmquickstart.webscript;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
+import org.alfresco.module.org_alfresco_module_wcmquickstart.util.AssetSerializer;
+import org.alfresco.module.org_alfresco_module_wcmquickstart.util.AssetSerializerFactory;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
-import org.springframework.extensions.webscripts.Cache;
-import org.springframework.extensions.webscripts.DeclarativeWebScript;
+import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.WebScriptResponse;
 
 /**
  * Asset collection GET implementation
  * 
  * @author Roy Wetherall
  */
-public class AssetCollectionGet extends DeclarativeWebScript implements WebSiteModel
+public class AssetCollectionGet extends AbstractWebScript implements WebSiteModel
 {
     /** Parameter names */
+    private static final String PARAM_COLLECTION_ID = "assetcollectionid";
     private static final String PARAM_COLLECTION_NAME = "name";
     private static final String PARAM_SECTION_ID = "sectionid";
+    private static final String PARAM_MODIFIED_TIME_ONLY = "modifiedTimeOnly";
 
-    /** Node Service */
     private NodeService nodeService;
-
-    /** File Folder Service */
     private FileFolderService fileFolderService;
+    private AssetSerializerFactory assetSerializerFactory;
 
-    /**
-     * Set the node service
-     * 
-     * @param nodeService
-     *            node serice
-     */
     public void setNodeService(NodeService nodeService)
     {
         this.nodeService = nodeService;
     }
 
-    /**
-     * Set the file folder service
-     * 
-     * @param fileFolderService
-     *            file folder service
-     */
     public void setFileFolderService(FileFolderService fileFolderService)
     {
         this.fileFolderService = fileFolderService;
+    }
+
+    public void setAssetSerializerFactory(AssetSerializerFactory assetSerializerFactory)
+    {
+        this.assetSerializerFactory = assetSerializerFactory;
     }
 
     /**
@@ -80,168 +78,108 @@ public class AssetCollectionGet extends DeclarativeWebScript implements WebSiteM
      *      org.springframework.extensions.webscripts.Cache)
      */
     @Override
-    protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache)
+    public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException
     {
         // Get the collection name
-        Map<String, String> templateVars = req.getServiceMatch().getTemplateVars();
-        String collectionName = templateVars.get(PARAM_COLLECTION_NAME);
-        if (collectionName == null || collectionName.length() == 0)
-        {
-            throw new WebScriptException(Status.STATUS_NOT_FOUND, "No collection name was provided on the URL.");
-        }
+        String collectionId = req.getParameter(PARAM_COLLECTION_ID);
 
-        // Get the section id
-        String sectionId = req.getParameter(PARAM_SECTION_ID);
-        if (sectionId == null || sectionId.length() == 0)
-        {
-            throw new WebScriptException(Status.STATUS_BAD_REQUEST, "No section id parameter specified.");
-        }
-        else if (NodeRef.isNodeRef(sectionId) == false)
-        {
-            throw new WebScriptException(Status.STATUS_BAD_REQUEST,
-                    "No section id is not a valid Alfresco node reference. ( " + sectionId + ")");
-        }
-
-        // Get the section node reference
-        NodeRef sectionNodeRef = new NodeRef(sectionId);
-
-        // Get the collections node reference
-        NodeRef collectionsNodeRef = fileFolderService.searchSimple(sectionNodeRef, "collections");
-        if (collectionsNodeRef == null)
-        {
-            throw new WebScriptException(Status.STATUS_NOT_FOUND, "The collections folder for the section " + sectionId
-                    + " could not be found.");
-        }
-
-        // Look for the collection node reference
-        NodeRef collection = fileFolderService.searchSimple(collectionsNodeRef, collectionName);
-        if (collection == null)
-        {
-            throw new WebScriptException(Status.STATUS_NOT_FOUND, "Unable to find collection " + collectionName
-                    + " in section " + sectionId);
-        }
-
-        // Gather the collection data
-        Map<QName, Serializable> collectionProps = nodeService.getProperties(collection);
-        CollectionData collectionData = new CollectionData();
-        collectionData.setId(collection.toString());
-        collectionData.setName((String) collectionProps.get(ContentModel.PROP_NAME));
-
-        String title = (String) collectionProps.get(ContentModel.PROP_TITLE);
-        collectionData.setTitle(title == null ? "" : title);
+        NodeRef collection;
         
-        String description = (String) collectionProps.get(ContentModel.PROP_DESCRIPTION);
-        collectionData.setDescription(description == null ? "" : description);
-
-        // Gather information about the associated
-        List<AssociationRef> assocs = nodeService.getTargetAssocs(collection, ASSOC_WEBASSETS);
-        String[] assetIds = new String[assocs.size()];
-        int index = 0;
-        for (AssociationRef assoc : assocs)
+        if (collectionId == null)
         {
-            assetIds[index] = assoc.getTargetRef().toString();
-            index++;
+            Map<String, String> templateVars = req.getServiceMatch().getTemplateVars();
+            String collectionName = templateVars.get(PARAM_COLLECTION_NAME);
+            if (collectionName == null || collectionName.length() == 0)
+            {
+                throw new WebScriptException(Status.STATUS_NOT_FOUND, "No collection name was provided on the URL.");
+            }
+    
+            // Get the section id
+            String sectionId = req.getParameter(PARAM_SECTION_ID);
+            if (sectionId == null || sectionId.length() == 0)
+            {
+                throw new WebScriptException(Status.STATUS_BAD_REQUEST, "No section id parameter specified.");
+            }
+            else if (NodeRef.isNodeRef(sectionId) == false)
+            {
+                throw new WebScriptException(Status.STATUS_BAD_REQUEST,
+                        "No section id is not a valid Alfresco node reference. ( " + sectionId + ")");
+            }
+    
+            // Get the section node reference
+            NodeRef sectionNodeRef = new NodeRef(sectionId);
+    
+            // Get the collections node reference
+            NodeRef collectionsNodeRef = fileFolderService.searchSimple(sectionNodeRef, "collections");
+            if (collectionsNodeRef == null)
+            {
+                throw new WebScriptException(Status.STATUS_NOT_FOUND, "The collections folder for the section " + sectionId
+                        + " could not be found.");
+            }
+    
+            // Look for the collection node reference
+            collection = fileFolderService.searchSimple(collectionsNodeRef, collectionName);
+            if (collection == null)
+            {
+                throw new WebScriptException(Status.STATUS_NOT_FOUND, "Unable to find collection " + collectionName
+                        + " in section " + sectionId);
+            }
         }
-        collectionData.setAssetIds(assetIds);
-
-        // Put the collection data in the model and pass to the view
-        Map<String, Object> model = new HashMap<String, Object>(1);
-        model.put("collection", collectionData);
-        return model;
-    }
-
-    /** Class to contain collection data */
-    public class CollectionData
-    {
-        private String id;
-        private String name;
-        private String title;
-        private String description;
-        private String[] assetIds;
-
-        /**
-         * @param name
-         *            the name to set
-         */
-        public void setName(String name)
+        else
         {
-            this.name = name;
+            if (collectionId.length() == 0)
+            {
+                throw new WebScriptException(Status.STATUS_BAD_REQUEST, "No collection id parameter specified.");
+            }
+            else if (!NodeRef.isNodeRef(collectionId))
+            {
+                throw new WebScriptException(Status.STATUS_BAD_REQUEST,
+                        "The collection id is not a valid Alfresco node reference. ( " + collectionId + ")");
+            }
+            collection = new NodeRef(collectionId);
         }
-
-        /**
-         * @return the name
-         */
-        public String getName()
+        try
         {
-            return name;
+            boolean onlyModifiedTime = (req.getParameter(PARAM_MODIFIED_TIME_ONLY) != null);
+            
+            AssetSerializer assetSerializer = assetSerializerFactory.getAssetSerializer();
+            res.setContentEncoding("UTF-8");
+            res.setContentType(assetSerializer.getMimeType());
+            Writer writer = res.getWriter();
+
+            // Gather the collection data
+            Map<QName, Serializable> collectionProps;
+            if (onlyModifiedTime)
+            {
+                collectionProps = new HashMap<QName, Serializable>(3);
+                collectionProps.put(ContentModel.PROP_MODIFIED, nodeService.getProperty(collection, 
+                        ContentModel.PROP_MODIFIED));
+            }
+            else
+            {
+                collectionProps = nodeService.getProperties(collection);
+                //If this asset collection already has a containedAssets property then we can use that directly
+                //otherwise we'll spoof it from the associations...
+                if (!collectionProps.containsKey(PROP_CONTAINED_ASSETS))
+                {
+                    List<AssociationRef> assocs = nodeService.getTargetAssocs(collection, ASSOC_WEBASSETS);
+                    ArrayList<NodeRef> containedAssets = new ArrayList<NodeRef>(assocs.size()); 
+                    for (AssociationRef assoc : assocs)
+                    {
+                        containedAssets.add(assoc.getTargetRef());
+                    }
+                    collectionProps.put(PROP_CONTAINED_ASSETS, containedAssets);
+                }
+            }
+            
+            assetSerializer.start(writer);
+            QName typeName = nodeService.getType(collection);
+            assetSerializer.writeNode(collection, typeName, collectionProps);
+            assetSerializer.end();
         }
-
-        /**
-         * @param id
-         *            the id to set
-         */
-        public void setId(String id)
+        catch (Throwable e)
         {
-            this.id = id;
-        }
-
-        /**
-         * @return the id
-         */
-        public String getId()
-        {
-            return id;
-        }
-
-        /**
-         * @param title
-         *            the title to set
-         */
-        public void setTitle(String title)
-        {
-            this.title = title;
-        }
-
-        /**
-         * @return the title
-         */
-        public String getTitle()
-        {
-            return title;
-        }
-
-        /**
-         * @param assetIds
-         *            the assetIds to set
-         */
-        public void setAssetIds(String[] assetIds)
-        {
-            this.assetIds = assetIds;
-        }
-
-        /**
-         * @return the assetIds
-         */
-        public String[] getAssetIds()
-        {
-            return assetIds;
-        }
-
-        /**
-         * @param description
-         *            the description to set
-         */
-        public void setDescription(String description)
-        {
-            this.description = description;
-        }
-
-        /**
-         * @return the description
-         */
-        public String getDescription()
-        {
-            return description;
+            throw createStatusException(e, req, res);
         }
     }
 }

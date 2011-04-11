@@ -27,7 +27,7 @@
             <item type="link" id="my-dashboard">{userdashboardpage}</item>
             <item type="js" id="sites">Alfresco.module.Sites</item>
             <item type="link" id="people">/people-finder</item>
-            <item type="link" id="repository">/repository</item>
+            <item type="link" id="repository" condition="conditionRepositoryRootNode">/repository</item>
             <item type="container" id="more">
                <container-group id="my">
                   <item type="link" id="my-tasks">/my-tasks</item>
@@ -35,14 +35,15 @@
                   <item type="link" id="my-content">/user/user-content</item>
                   <item type="link" id="my-sites">/user/user-sites</item>
                   <item type="link" id="my-profile">{userprofilepage}</item>
-                  <item type="js" id="saved-searches" condition="false">Alfresco.module.SavedSearches</item>
                </container-group>
                <container-group id="tools" permission="admin">
                   <item type="link" id="application">/console/admin-console/application</item>
                   <item type="link" id="groups">/console/admin-console/groups</item>
-                  <item type="link" id="replication-jobs">/console/admin-console/replication-jobs</item>
+                  <item type="link" id="replication-jobs" condition="!conditionEditionTeam">/console/admin-console/replication-jobs</item>
                   <item type="link" id="repository">/console/admin-console/repository</item>
+                  <item type="link" id="trashcan">/console/admin-console/trashcan</item>
                   <item type="link" id="users">/console/admin-console/users</item>
+                  <item type="link" id="more">/console/admin-console/</item>
                </container-group>
             </item>
          </app-items>
@@ -56,7 +57,6 @@
                   <item type="link" id="logout" condition="!context.externalAuthentication">/dologout</item>
                </container-group>
             </item>
-            <item type="external-link" id="help" icon="">{share-help}</item>
          </user-items>
          <dependencies>
             <css src="/modules/create-site.css" />
@@ -65,6 +65,19 @@
             <js src="/modules/header/sites.js" />
          </dependencies>
       </header>
+   </config>
+
+   <config evaluator="string-compare" condition="Edition">
+      <!-- footer logo and copyright text -->
+      <footer>
+         <logo>alfresco-share-logo.png</logo>
+         <alt-text>Alfresco Share</alt-text>
+         <css-class>footer-com</css-class>
+         <label>label.copyright</label>
+      </footer>
+      <about>
+         <css-class>logo-com</css-class>>
+      </about>
    </config>
 
    <config evaluator="string-compare" condition="UriTemplate">
@@ -103,13 +116,6 @@
       </users>
    </config>
 
-   <config evaluator="string-compare" condition="DocumentDetails">
-      <document-details>
-         <!-- display web previewer on document details page -->
-         <display-web-preview>true</display-web-preview>
-      </document-details>
-   </config>
-   
    <config evaluator="string-compare" condition="Search">
       <search>
          <!-- default minimum length for search terms -->
@@ -135,7 +141,8 @@
           . Short QName string e.g. "cm:name"
           . Pseudo cm:content field starting with a "." e.g. ".size"
           . Any other valid sortable fts-alfresco special field e.g. "TYPE"
-         The field can be optionally followed by |true or |false to indicate sort direction
+         The field can be optionally followed by |true or |false to indicate sort direction,
+         where true = ascending, false = descending
          
          The element supports the following optional attributes:
             label = label text to display
@@ -191,153 +198,6 @@
       </share-urls>
    </config>
 
-   <!-- Document Library config section -->
-   <config evaluator="string-compare" condition="DocumentLibrary">
-
-      <tree>
-         <!--
-            Whether the folder Tree component should enumerate child folders or not.
-            This is a relatively expensive operation, so should be set to "false" for Repositories with broad folder structures.
-         -->
-         <evaluate-child-folders>true</evaluate-child-folders>
-         
-         <!--
-            Optionally limit the number of folders shown in treeview throughout Share.
-         -->
-         <maximum-folder-count>-1</maximum-folder-count>
-      </tree>
-
-      <!--
-         Used by the "Manage Aspects" action and Rules pages
-
-         For custom aspects, remember to also add the relevant i18n string(s)
-            aspect.cm_myaspect=My Aspect
-      -->
-      <aspects>
-
-         <!--
-            Aspects that a user can see in UI.
-            Used by Rules, aspects are the listed aspects for rule's "has-aspect" action condition.
-         -->
-         <visible>
-            <aspect name="cm:generalclassifiable" />
-            <aspect name="cm:complianceable" />
-            <aspect name="cm:dublincore" />
-            <aspect name="cm:effectivity" />
-            <aspect name="cm:summarizable" />
-            <aspect name="cm:versionable" />
-            <aspect name="cm:templatable" />
-            <aspect name="cm:emailed" />
-            <aspect name="emailserver:aliasable" />
-            <aspect name="cm:taggable" />
-            <aspect name="app:inlineeditable" />
-            <aspect name="gd:googleEditable" />
-            <aspect name="cm:geographic" />
-            <aspect name="exif:exif" />
-         </visible>
-
-         <!--
-            Aspects that a user can add in UI.
-            Used by Rules, aspects are the listed aspects for rule's "add-features" action.
-            Same as "visible" if left empty.
-         -->
-         <addable>
-         </addable>
-
-         <!--
-            Aspects that a user can remove in UI.
-            Used by Rules, aspects are the listed aspects for rule's "remove-features" action.
-            Same as "visible" if left empty
-         -->
-         <removeable>
-         </removeable>
-      </aspects>
-
-      <!--
-         Used by the "Change Type" action.
-         Used by Rules:
-          - parent types are the listed types for rule's "is-subtype" action condition
-          - sub types are the listed types for rule's "specialise-type" action
-
-         Define valid subtypes using the following example:
-            <type name="cm:content">
-               <subtype name="cm:mysubtype" />
-            </type>
-
-         Remember to also add the relevant i18n string(s):
-            type.cm_mysubtype=My SubType
-      -->
-      <types>
-         <type name="cm:content">
-         </type>
-
-         <type name="cm:folder">
-         </type>
-      </types>
-
-      <!--
-         If set, will present a WebDAV link for the current item on the Document and Folder details pages.
-         Also used to generate the "View in Alfresco Explorer" action for folders.
-      -->
-      <!--
-      <repository-url>http://localhost:8080/alfresco</repository-url>
-      -->
-      
-      <!--
-         Google Docs™ integration
-      -->
-      <google-docs>
-         <!--
-            Enable/disable the Google Docs UI integration (Extra types on Create Content menu, Google Docs actions).
-         -->
-         <enabled>false</enabled>
-         
-         <!--
-            The mimetypes of documents Google Docs allows you to create via the Share interface.
-            The I18N label is created from the "type" attribute, e.g. google-docs.doc=Google Docs&trade; Document
-         -->
-         <creatable-types>
-            <creatable type="doc">application/msword</creatable>
-            <creatable type="xls">application/vnd.ms-excel</creatable>
-            <creatable type="ppt">application/vnd.ms-powerpoint</creatable>
-         </creatable-types>
-      </google-docs>
-      
-      <!--
-         File upload configuration
-      -->
-      <file-upload>
-         <!--
-            Adobe Flash™
-            In certain environments, an HTTP request originating from Flash cannot be authenticated using an existing session.
-            See: http://bugs.adobe.com/jira/browse/FP-4830
-            For these cases, it is useful to disable the Flash-based uploader for Share Document Libraries.
-         -->
-         <adobe-flash-enabled>true</adobe-flash-enabled>
-      </file-upload>
-   </config>
-
-   <!-- Repository Library config section -->
-   <config evaluator="string-compare" condition="RepositoryLibrary">
-      <!--
-         Root nodeRef for top-level folder.
-      -->
-      <root-node>alfresco://company/home</root-node>
-
-      <tree>
-         <!--
-            Whether the folder Tree component should enumerate child folders or not.
-            This is a relatively expensive operation, so should be set to "false" for Repositories with broad folder structures.
-         -->
-         <evaluate-child-folders>false</evaluate-child-folders>
-
-         <!--
-            Optionally limit the number of folders shown in treeview throughout Share.
-         -->
-         <maximum-folder-count>500</maximum-folder-count>
-      </tree>
-   </config>
-
    <!-- Workflow config section -->
    <config evaluator="string-compare" condition="Workflow">
       <!-- A list of workflow definitions that are NOT displayed in Share -->
@@ -354,6 +214,19 @@
          <!-- Hide all WCM related tasks -->
          <task type="wcmwf:*"/>
       </hidden-tasks>
+   </config>
+   
+   <!-- Remote section - use Surf RequestCachingConnector to improve remoting performance -->
+   <config evaluator="string-compare" condition="Remote">
+      <remote>
+         <connector>
+            <id>alfresco</id>
+            <name>Alfresco Connector</name>
+            <description>Connects to an Alfresco instance using cookie-based authentication</description>
+            <class>org.springframework.extensions.webscripts.RequestCachingConnector</class>
+            <authenticator-id>alfresco-ticket</authenticator-id>
+         </connector>
+      </remote>
    </config>
 
 </alfresco-config>

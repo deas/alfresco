@@ -99,6 +99,7 @@
             // Buttons
             parent.widgets.searchButton = Alfresco.util.createYUIButton(parent, "search-button", parent.onSearchClick);
             parent.widgets.newuserButton = Alfresco.util.createYUIButton(parent, "newuser-button", parent.onNewUserClick);
+            parent.widgets.uploadUsersButton = Alfresco.util.createYUIButton(parent, "uploadusers-button", parent.onUploadUsersClick);
             
             var newuserSuccess = function(res)
             {
@@ -383,7 +384,7 @@
             var renderCellQuota = function renderCellQuota(elCell, oRecord, oColumn, oData)
             {
                var quota = oRecord.getData("quota");
-               var display = (quota > 0 ? Alfresco.util.formatFileSize(quota) : "");
+               var display = (quota !== -1 ? Alfresco.util.formatFileSize(quota) : "");
                elCell.innerHTML = display;
             };
             
@@ -589,7 +590,7 @@
                // More section fields
                fnSetter("-view-username", parent.currentUserId);
                fnSetter("-view-enabled", person.enabled ? parent._msg("label.enabled") : parent._msg("label.disabled"));
-               fnSetter("-view-quota", (person.quota > 0 ? Alfresco.util.formatFileSize(person.quota) : ""));
+               fnSetter("-view-quota", (person.quota !== -1 ? Alfresco.util.formatFileSize(person.quota) : ""));
                fnSetter("-view-usage", Alfresco.util.formatFileSize(person.sizeCurrent));
                var fnGroupToString = function()
                {
@@ -1199,6 +1200,113 @@
       });
       new UpdatePanelHandler();
       
+      CSVResultsPanelHandler = function CSVResultsPanelHandler_constructor()
+      {
+         CSVResultsPanelHandler.superclass.constructor.call(this, "csvresults");
+      };
+      
+      YAHOO.extend(CSVResultsPanelHandler, Alfresco.ConsolePanelHandler,
+      {
+         /**
+          * PANEL LIFECYCLE CALLBACKS
+          */
+         /**
+          * Called by the ConsolePanelHandler when this panel shall be loaded
+          *
+          * @method onLoad
+          */
+         onLoad: function onLoad()
+         {
+            parent.widgets.csvGobackButton = Alfresco.util.createYUIButton(parent, "csv-goback-button", parent.onGoBackClick);
+         },
+         
+         onShow: function onShow()
+         {
+            if (parent.csvResults)
+            {
+               var dataSource;
+               var successful = parent.csvResults.successful;
+               if (successful &&  successful.length > 0 && parent.csvResults.successful[0].response)
+               {
+                  successful = successful[0].response;
+                  
+                  // If the response contains the "successful" array containing an element then it does not necessarily
+                  // mean that the CSV upload succeeded. This simply means that the upload request was successfully processed
+                  // (i.e. the file was received)
+                  if (successful.data && successful.data.users)
+                  {
+                     parent.fileUpload.hide();
+                     
+                     // If the successful response contains a data object with a "users" attribute then we at least know that
+                     // some users have been processed so can construct a result table using that data...
+                     dataSource = new YAHOO.util.DataSource(successful.data.users);
+                     dataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+                     dataSource.responseSchema = { fields: [ "username", "uploadStatus" ]};
+                     
+                     // Show a pop-up with the summary data...
+                     if (successful.data.addedUsers == 0)
+                     {
+                        // No new users were added...
+                        Alfresco.util.PopupManager.displayMessage(
+                        {
+                           text: parent._msg("message.csvupload.failure")
+                        });
+                     }
+                     else if (successful.data.addedUsers == successful.data.totalUsers)
+                     {
+                        // All the users found in the CSV file were added
+                        Alfresco.util.PopupManager.displayMessage(
+                        {
+                           text: parent._msg("message.csvupload.success", successful.data.addedUsers)
+                        });
+                     }
+                     else
+                     {                     
+                        // Some of the users could not be added.
+                        var failedUsers = successful.data.totalUsers - successful.data.addedUsers;
+                        Alfresco.util.PopupManager.displayMessage(
+                        {
+                           text: parent._msg("message.csvupload.partialSuccess", successful.data.addedUsers, failedUsers)
+                        });
+                     }
+                     
+                     var columnDefs = [{key:"username", label: parent._msg("label.username"), sortable: true, resizeable: true},
+                                       {key:"uploadStatus", label: parent._msg("label.uploadStatus"), sortable: true, resizeable: true}];
+                     
+                     var resultsTable = new YAHOO.widget.DataTable(parent.id + "-csvresults-datatable",
+                                                                   columnDefs,
+                                                                   dataSource);
+                     
+                     Dom.removeClass(parent.id + "-csvresults-success", "hidden");
+                     Dom.addClass(parent.id + "-csvresults-failure", "hidden");
+                  }
+                  else
+                  {
+                     parent.fileUpload.hide();
+                     
+                     // The CSV upload failed            
+                     Alfresco.util.PopupManager.displayMessage(
+                     {
+                        text: parent._msg("message.csvupload.error")
+                     });
+                     
+                     Dom.get(parent.id + "-csvresults-error").innerHTML = successful.message;
+                     
+                     Dom.addClass(parent.id + "-csvresults-success", "hidden");
+                     Dom.removeClass(parent.id + "-csvresults-failure", "hidden");
+                  }
+                  
+                  
+               }
+               else
+               {
+                  // The upload did not work.
+               }
+            }
+         }
+      });
+      new CSVResultsPanelHandler();
+      
       return this;
    };
    
@@ -1266,15 +1374,13 @@
       searchTerm: undefined,
       
       /**
-       * Fired by YUILoaderHelper when required component script files have
-       * been loaded into the browser.
-       *
-       * @method onComponentsLoaded
+       * The result of the last CSV upload.
+       * 
+       * @property csvResults
+       * @type object
        */
-      onComponentsLoaded: function ConsoleUsers_onComponentsLoaded()
-      {
-         Event.onContentReady(this.id, this.onReady, this, true);
-      },
+      csvResults: undefined,
+      
       
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -1383,6 +1489,48 @@
          }
          
          this.refreshUIState({"search": searchTerm});
+      },
+      
+      /**
+       * Upload Users button click event handler
+       *
+       * @method onUploadUsersClick
+       * @param e {object} DomEvent
+       * @param args {array} Event parameters (depends on event type)
+       */
+      onUploadUsersClick: function ConsoleUsers_onUploadUsersClick(e, args)
+      {
+         if (!this.fileUpload)
+         {
+            this.fileUpload = Alfresco.getFileUploadInstance();
+         }
+         
+         // Show uploader for single file select - override the upload URL to use appropriate upload service
+         var uploadConfig =
+         {
+            flashUploadURL: "/api/people/upload",
+            htmlUploadURL: "/api/people/upload.html",
+            mode: this.fileUpload.MODE_SINGLE_UPLOAD,
+            onFileUploadComplete:
+            {
+               fn: this.onUsersUploadComplete,
+               scope: this
+            }
+         };
+         this.fileUpload.show(uploadConfig);
+         Event.preventDefault(e);
+      },
+      
+      /**
+       * Users Upload complete event handler
+       *
+       * @method onUsersUploadComplete
+       * @param complete {object} Object literal containing details of successful upload
+       */
+      onUsersUploadComplete: function ConsoleUsers_onUsersUploadComplete(complete)
+      {
+         this.csvResults = complete;
+         this.refreshUIState({"panel": "csvresults"});
       },
       
       /**
@@ -1925,7 +2073,7 @@
             try
             {
                quota = parseInt(quotaValue);
-               if (quota)
+               if (quota >= 0)
                {
                   var quotaType = Dom.get(idPrefix + "-quotatype").value;
                   if (quotaType === "gb")

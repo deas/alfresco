@@ -40,6 +40,11 @@
             <span class="label">${msg("label.appliedTo")}:</span>
             <span class="value"><#if (recordLevelDisposition)>${msg("label.appliedTo.record")}<#else>${msg("label.appliedTo.folder")}</#if></span>
          </div>
+         <div class="field">
+            <span class="label">${msg("label.unpublishedUpdates")}:</span>
+            <span class="value">${unpublishedUpdates?string("Yes", "No")}</span>
+         </div>	
+         
       </div>
 
       <div class="header">

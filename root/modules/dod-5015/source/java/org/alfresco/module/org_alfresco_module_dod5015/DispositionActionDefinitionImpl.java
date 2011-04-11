@@ -23,7 +23,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementAction;
+import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEvent;
+import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.Period;
@@ -36,11 +38,23 @@ import org.alfresco.service.namespace.QName;
  */
 public class DispositionActionDefinitionImpl implements DispositionActionDefinition, RecordsManagementModel
 {
-    /** Service registry */
-    private RecordsManagementServiceRegistry services;
+    /** Name */
+    private String name;
+    
+    /** Description */
+    private String description;
+    
+    /** Label */
+    private String label;
     
     /** Node service */
     private NodeService nodeService;
+
+    /** Records management action service */
+    private RecordsManagementActionService recordsManagementActionService;
+    
+    /** Records management event service */
+    private RecordsManagementEventService recordsManagementEventService;
     
     /** Disposition action node reference */
     private NodeRef dispositionActionNodeRef;
@@ -55,15 +69,17 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
      * @param nodeRef   disposition action node reference
      * @param index     index of disposition action
      */
-    public DispositionActionDefinitionImpl(RecordsManagementServiceRegistry services, NodeRef nodeRef, int index)
+    public DispositionActionDefinitionImpl(RecordsManagementEventService recordsManagementEventService, RecordsManagementActionService recordsManagementActionService, NodeService nodeService, NodeRef nodeRef, int index)
     {
-        this.services = services;
-        this.nodeService = services.getNodeService();
+        //this.services = services;
+        this.recordsManagementEventService = recordsManagementEventService;
+        this.recordsManagementActionService = recordsManagementActionService;
+        this.nodeService = nodeService;
         this.dispositionActionNodeRef = nodeRef;
         this.index = index;
     }
     
-    /*
+    /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition#getNodeRef()
      */
     public NodeRef getNodeRef()
@@ -92,7 +108,11 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
      */
     public String getDescription()
     {
-        return (String)nodeService.getProperty(this.dispositionActionNodeRef, PROP_DISPOSITION_DESCRIPTION);
+        if (description == null)
+        {
+            description = (String)nodeService.getProperty(this.dispositionActionNodeRef, PROP_DISPOSITION_DESCRIPTION);
+        }
+        return description;
     }
 
     /**
@@ -100,22 +120,29 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
      */
     public String getName()
     {
-        return (String)nodeService.getProperty(this.dispositionActionNodeRef, PROP_DISPOSITION_ACTION_NAME);
+        if (name == null)
+        {
+            name = (String)nodeService.getProperty(this.dispositionActionNodeRef, PROP_DISPOSITION_ACTION_NAME);
+        }
+        return name;
     }
     
-    /*
+    /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition#getLabel()
      */
     public String getLabel()
     {
-        String name = getName();
-        String label = name;
-        
-        // get the disposition action from the RM action service
-        RecordsManagementAction action = this.services.getRecordsManagementActionService().getDispositionAction(name);
-        if (action != null)
+        if (label == null)
         {
-            label = action.getLabel();
+            String name = getName();
+            label = name;
+            
+            // get the disposition action from the RM action service
+            RecordsManagementAction action = recordsManagementActionService.getDispositionAction(name);
+            if (action != null)
+            {
+                label = action.getLabel();
+            }
         }
         
         return label;
@@ -156,7 +183,7 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
             events = new ArrayList<RecordsManagementEvent>(eventNames.size());
             for (String eventName : eventNames)
             {
-                RecordsManagementEvent event = this.services.getRecordsManagementEventService().getEvent(eventName);
+                RecordsManagementEvent event = recordsManagementEventService.getEvent(eventName);
                 events.add(event);
             }
         }
@@ -173,7 +200,7 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
     public boolean eligibleOnFirstCompleteEvent()
     {
         boolean result = true;        
-        String value = (String)this.services.getNodeService().getProperty(this.dispositionActionNodeRef, PROP_DISPOSITION_EVENT_COMBINATION);
+        String value = (String)nodeService.getProperty(this.dispositionActionNodeRef, PROP_DISPOSITION_EVENT_COMBINATION);
         if (value != null && value.equals("and") == true)
         {
             result = false;
@@ -186,6 +213,6 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
      */
     public String getLocation()
     {
-        return (String)this.services.getNodeService().getProperty(this.dispositionActionNodeRef, PROP_DISPOSITION_LOCATION);
+        return (String)nodeService.getProperty(this.dispositionActionNodeRef, PROP_DISPOSITION_LOCATION);
     }
 }

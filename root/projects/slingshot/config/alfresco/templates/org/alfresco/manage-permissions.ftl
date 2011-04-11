@@ -20,7 +20,7 @@
    {
       nodeRef: new Alfresco.util.NodeRef("${url.args.nodeRef?js_string}"),
       siteId: "${page.url.templateArgs.site!""}",
-      rootNode: "${rootNode}"
+      rootNode: "${rootNode!"null"}"
    });
    //]]></script>
 </@>

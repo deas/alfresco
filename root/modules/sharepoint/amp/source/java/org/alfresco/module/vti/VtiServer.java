@@ -31,6 +31,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.ServletHolder;
+import org.mortbay.jetty.servlet.HashSessionIdManager;
 import org.springframework.context.ApplicationEvent;
 
 
@@ -47,6 +48,7 @@ public class VtiServer extends AbstractLifecycleBean
     private Connector connector;
     private HttpServlet servlet;
     private Filter filter;
+    private HashSessionIdManager hashSessionIdManager;
     
     /**
      * Set the HTTP connector
@@ -78,6 +80,17 @@ public class VtiServer extends AbstractLifecycleBean
 		this.filter = filter;
 	}
    
+    /**
+     * Set the HashSessionIdManager
+     *
+     * @param hashSessionIdManager
+     */
+    public void setHashSessionIdManager(HashSessionIdManager hashSessionIdManager)
+    {
+		this.hashSessionIdManager = hashSessionIdManager;
+	}
+
+
     /**
      * Method checks that all mandatory fiedls are set.
      * 
@@ -112,6 +125,7 @@ public class VtiServer extends AbstractLifecycleBean
       server = new Server();
       server.setStopAtShutdown(true);
       server.setConnectors(new Connector[] { connector });
+      server.setSessionIdManager(hashSessionIdManager);
 
       Context context = new Context(server, "/", Context.SESSIONS);
       context.addServlet(new ServletHolder(servlet), "/*");
@@ -123,6 +137,7 @@ public class VtiServer extends AbstractLifecycleBean
          
          if (logger.isInfoEnabled())
             logger.info("Vti server started successfully on port: " + this.connector.getLocalPort());
+            logger.info("Vti server SessionIdManagerWorkerName: " + this.hashSessionIdManager.getWorkerName());
       } 
       catch (Exception e) 
       {

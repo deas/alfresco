@@ -303,6 +303,10 @@ YAHOO.namespace('extension');
          this._checkLoadUrlsConsistency = checkUrlsConsistency;
 
          this._removeColumns(0);
+         if (this._loadUrls.length == 1)
+         {
+            this.fireEvent(itemSelectEvent, null);
+         }
          this._loadFromLoadUrls(null);
       },
 
@@ -1364,7 +1368,14 @@ YAHOO.namespace('extension');
          var me = this;
          this.columnBrowser.on("itemSelect", function (itemInfo)
          {            
-            me._addBreadCrumbItem(itemInfo.label, itemInfo.columnIndex, itemInfo.cssClass);
+            if (itemInfo)
+            {
+               me._addBreadCrumbItem(itemInfo.label, itemInfo.columnIndex, itemInfo.cssClass);
+            }
+            else
+            {
+               me._addBreadCrumbItem(null, 0, null);
+            }
          }, null, this);
 
          this._addBreadCrumbRoot(this.root);
@@ -1389,43 +1400,46 @@ YAHOO.namespace('extension');
          }
 
          // Create elements
-         var item = document.createElement("span");
-         Dom.addClass(item, cssClass);
-         if(customCssClass)
+         if (label)
          {
-            Dom.addClass(item, customCssClass);
+            var item = document.createElement("span");
+            Dom.addClass(item, cssClass);
+            if(customCssClass)
+            {
+               Dom.addClass(item, customCssClass);
+            }
+            var items = Dom.getElementsByClassName(cssClass, "span", this.breadcrumbsEl);
+            for(var i = 0; i < items.length; i++)
+            {
+               Dom.removeClass(items[i], "yui-columnbrowser-breadcrumb-item-last");
+   
+            }
+            Dom.addClass(item, "yui-columnbrowser-breadcrumb-item-last");
+   
+            var text = document.createElement("span");
+            text.appendChild(document.createTextNode(label));
+            YAHOO.util.Event.addListener(text, "click", this._onBreadCrumbClick, { columnIndex: columnIndex }, this);
+            Dom.addClass(text, "yui-columnbrowser-breadcrumb-item-text");
+            // Add css classes mouseover
+            YAHOO.util.Event.addListener(text, "mouseover", function()
+            {
+               Dom.addClass(this, "yui-columnbrowser-breadcrumb-item-text-active");
+            });
+            // Remove css classes on mouseout
+            YAHOO.util.Event.addListener(text, "mouseout", function()         
+            {
+               Dom.removeClass(this, "yui-columnbrowser-breadcrumb-item-text-active");
+            });
+   
+            item.appendChild(text);
+   
+            var separator = document.createElement("span");
+            separator.appendChild(document.createTextNode(this.separator));
+            Dom.addClass(separator, "yui-columnbrowser-breadcrumb-item-separator");
+            item.appendChild(separator);
+   
+            this.breadcrumbsEl.appendChild(item);
          }
-         var items = Dom.getElementsByClassName(cssClass, "span", this.breadcrumbsEl);
-         for(var i = 0; i < items.length; i++)
-         {
-            Dom.removeClass(items[i], "yui-columnbrowser-breadcrumb-item-last");
-
-         }
-         Dom.addClass(item, "yui-columnbrowser-breadcrumb-item-last");
-
-         var text = document.createElement("span");
-         text.appendChild(document.createTextNode(label));
-         YAHOO.util.Event.addListener(text, "click", this._onBreadCrumbClick, { columnIndex: columnIndex }, this);
-         Dom.addClass(text, "yui-columnbrowser-breadcrumb-item-text");
-         // Add css classes mouseover
-         YAHOO.util.Event.addListener(text, "mouseover", function()
-         {
-            Dom.addClass(this, "yui-columnbrowser-breadcrumb-item-text-active");
-         });
-         // Remove css classes on mouseout
-         YAHOO.util.Event.addListener(text, "mouseout", function()         
-         {
-            Dom.removeClass(this, "yui-columnbrowser-breadcrumb-item-text-active");
-         });
-
-         item.appendChild(text);
-
-         var separator = document.createElement("span");
-         separator.appendChild(document.createTextNode(this.separator));
-         Dom.addClass(separator, "yui-columnbrowser-breadcrumb-item-separator");
-         item.appendChild(separator);
-
-         this.breadcrumbsEl.appendChild(item);
       },
 
       _onBreadCrumbClick: function (e, itemInfo) {

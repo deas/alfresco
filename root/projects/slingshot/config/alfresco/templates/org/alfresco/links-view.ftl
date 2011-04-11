@@ -15,7 +15,6 @@
    <div id="bd">
       <@region id="linksview" scope="template" protected=true />
       <@region id="comments" scope="template" protected=true />
-      <@region id="createcomment" scope="template" protected=true />
    </div>
 </@>
 

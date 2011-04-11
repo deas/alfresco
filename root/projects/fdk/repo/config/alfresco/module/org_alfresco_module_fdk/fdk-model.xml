@@ -441,6 +441,10 @@
             <aspect>cm:generalclassifiable</aspect>
          </mandatory-aspects>
       </type>
+      
+      <type name="fdk:with_underscore">
+         <parent>cm:content</parent>
+      </type>
    </types>
    
    <!-- DEPRECATED -->

@@ -143,12 +143,22 @@
                root: parent._msg("label.breadcrumb.root")
             });
 
-            // browse button
+            // Browse button
             var browse = new YAHOO.widget.Button(parent.id + "-browse-button", {});
             browse.on("click", this.onBrowseClick, browse, this);
 
+            // Show All checkbox
+            var elShowAll = Dom.get(parent.id + "-show-all");
+            Event.addListener(elShowAll, "change", function()
+               {
+                  var state = {
+                     "showAll": elShowAll.checked
+                  };
+                  parent.refreshUIState(state);
+               }, null, this);
+
             // DataTable and DataSource setup
-            this.widgets.dataSource = new YAHOO.util.DataSource(Alfresco.constants.PROXY_URI + "api/groups?zone=APP.DEFAULT&",
+            this.widgets.dataSource = new YAHOO.util.DataSource(Alfresco.constants.PROXY_URI + "api/groups?",
             {
                responseType: YAHOO.util.DataSource.TYPE_JSON,
                responseSchema:
@@ -282,6 +292,10 @@
 
             // Set focus to the search input field
             Dom.get(parent.id + "-search-text").focus();
+            
+            // Show All checkbox state from history
+            var elShowAll = Dom.get(parent.id + "-show-all");
+            elShowAll.checked = parent.showAll;
          },
 
          /**
@@ -330,7 +344,6 @@
                   this.widgets.columnbrowser.load(paths, true);
                }
             }
-
          },
 
          /**
@@ -689,12 +702,17 @@
             for (var i = 0; i < obj.data.length; i++)
             {
                var o = obj.data[i];
+               var label = o.displayName;
+               if (o.displayName !== o.shortName)
+               {
+                  label += " (" + o.shortName + ")";
+               }
                var item = {
                   shortName: o.shortName,
                   fullName: o.fullName,
                   url: o.authorityType == 'GROUP' ? Alfresco.constants.PROXY_URI + o.url + "/children" : null,
                   hasNext: o.groupCount > 0 || o.userCount > 0,
-                  label: o.displayName,
+                  label: label,
                   next : null,
                   cssClass: o.authorityType == 'GROUP' ? "groups-item-group" : "groups-item-user",
                   buttons: o.authorityType == 'GROUP' ? groupButtons : usersButtons
@@ -1011,8 +1029,9 @@
          _doDeleteCall: function ConsoleGroups_SearchPanelHandler__deleteCall(url, displayName)
          {
             var groupDisplayName = displayName;
-            Alfresco.util.Ajax.jsonDelete(
+            Alfresco.util.Ajax.request( 
             {
+               method: Alfresco.util.Ajax.DELETE,
                url: url,
                successCallback:
                {
@@ -1047,8 +1066,9 @@
          _removeUser: function ConsoleGroups_SearchPanelHandler__removeUser(groupId, userId, userDisplayName)
          {
             var name = userDisplayName;
-            Alfresco.util.Ajax.jsonDelete(
+            Alfresco.util.Ajax.request( 
             {
+               method: Alfresco.util.Ajax.DELETE,
                url: Alfresco.constants.PROXY_URI + "api/groups/" + encodeURIComponent(groupId) + "/children/" + encodeURIComponent(userId),
                successCallback:
                {
@@ -1207,11 +1227,6 @@
                         null);
                });
                elCell.appendChild(deleteLink);
-
-               //var actions = "<a href='#' class=\"update\" onclick=\"YAHOO.Bubbling.fire('updateGroup', {group: '" + oRecord.getData("shortName") + "', groupDisplayName: '" + oRecord.getData("displayName") + "', query: '" + parent.query + "'}); return false;\">&nbsp;</a>";
-               // fire the 'deleteGroupClick' event when the group has been clicked
-               //var actions = "<a href='#' class=\"delete\" onclick=\"YAHOO.Bubbling.fire('deleteGroup', {groupShortName: '" + oRecord.getData("shortName") + "', groupDisplayName: '" + oRecord.getData("displayName") + "'}); return false;\">&nbsp;</a>";
-               //elCell.innerHTML = actions;
             };
 
             // DataTable column defintions
@@ -1259,7 +1274,9 @@
           */
          _buildSearchParams: function ConsoleGroups_SearchPanelHandler__buildSearchParams(query)
          {
-            return "shortNameFilter=*" + encodeURIComponent(query);
+            var query = "shortNameFilter=*" + encodeURIComponent(query);
+            var showAll = Dom.get(parent.id + "-show-all").checked;
+            return showAll ? query : query + "&zone=APP.DEFAULT";
          },
 
          /**
@@ -1285,7 +1302,6 @@
 
       YAHOO.extend(CreatePanelHandler, Alfresco.ConsolePanelHandler,
       {
-
          /**
           * INSTANCE VARIABLES
           */
@@ -1412,7 +1428,6 @@
 
             Dom.get(parent.id + "-create-shortname").focus();
          },
-
 
          /**
           * Called by the ConsolePanelHandler when this panel is hidden
@@ -1663,7 +1678,6 @@
 
       YAHOO.extend(UpdatePanelHandler, Alfresco.ConsolePanelHandler,
       {
-
          /**
           * INSTANCE VARIABLES
           */
@@ -1718,7 +1732,6 @@
             form.init();
             this.forms.updateForm = form;
          },
-
 
          /**
           * Called by the ConsolePanelHandler just before this panel is about to be shown
@@ -1813,7 +1826,7 @@
                   text: parent._msg("message.update-success")
                });
 
-               var state = {panel: "search", refresh: "true"};
+               var state = {"panel": "search", "refresh": "true"};
                if (parent.query)
                {
                   // If this panel was triggered from the search list, send back the query so the list will be displayed
@@ -1833,7 +1846,7 @@
           */
          onUpdateGroupCancelClick: function ConsoleGroups_UpdatePanelHandler_onUpdateGroupCancelClick(e, args)
          {
-            var state = {"panel": "search"};
+            var state = {"panel": "search", "refresh": "false"};
             if (parent.query)
             {
                // If this panel was triggered from the search list, send back the query so the list will be displayed
@@ -1973,17 +1986,6 @@
       },
 
       /**
-       * Fired by YUILoaderHelper when required component script files have
-       * been loaded into the browser.
-       *
-       * @method onComponentsLoaded
-       */
-      onComponentsLoaded: function ConsoleGroups_onComponentsLoaded()
-      {
-         Event.onContentReady(this.id, this.onReady, this, true);
-      },
-
-      /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
        *
@@ -1993,7 +1995,6 @@
       {
          Alfresco.ConsoleGroups.superclass.onReady.call(this);
       },
-
 
       /**
        * YUI WIDGET EVENT HANDLERS
@@ -2032,7 +2033,15 @@
          {
             this.groupDisplayName = state.groupDisplayName;
          }
-
+         if (state.showAll)
+         {
+            this.showAll = state.showAll == "true" ? true : false;
+            // reset group browser url
+            var rootUrl = Alfresco.constants.PROXY_URI + "api/rootgroups" +
+               (this.showAll ? "" : "?zone=APP.DEFAULT");
+            this.panelHandlers.searchPanelHandler.widgets.columnbrowser.load([rootUrl] , true);
+         }
+         
          // test if panel has actually changed?
          if (state.panel)
          {
@@ -2127,6 +2136,11 @@
          {
             state += state.length > 0 ? "&" : "";
             state += "refresh=" + encodeURIComponent(obj.refresh);
+         }
+         if (obj.showAll !== undefined)
+         {
+            state += state.length > 0 ? "&" : "";
+            state += "showAll=" + encodeURIComponent(obj.showAll);
          }
          return state;
       },

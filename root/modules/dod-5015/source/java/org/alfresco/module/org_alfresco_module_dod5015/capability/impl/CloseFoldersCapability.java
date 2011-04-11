@@ -43,10 +43,10 @@ public class CloseFoldersCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozenUncutoffOpen(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (isRecordFolder(voter.getNodeService().getType(nodeRef)) == true)
             {
-                if (isRecordFolder(voter.getNodeService().getType(nodeRef)))
-                {
+                if (checkFilingUnfrozenUncutoffOpen(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
+                {                
                     if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.CLOSE_FOLDERS) == AccessStatus.ALLOWED)
                     {
                         return AccessDecisionVoter.ACCESS_GRANTED;

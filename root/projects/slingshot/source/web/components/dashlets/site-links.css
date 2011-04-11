@@ -10,7 +10,7 @@
 
 .site-links div.detail-list-item
 {
-   height : 1em;
+   height: 1em;
 }
 
 .site-links div.actions a.details
@@ -18,8 +18,8 @@
    background-image: url(../images/link-details-16.png);
    background-repeat: no-repeat;
    background-position: center;
-   padding: 1em;
    cursor: pointer;
+   padding: 1em;
 }
 
 .site-links div.description

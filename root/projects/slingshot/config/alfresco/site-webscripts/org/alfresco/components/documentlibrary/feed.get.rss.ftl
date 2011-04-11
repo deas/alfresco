@@ -29,7 +29,7 @@
       </description>
       <link>${proxyLink + item.contentUrl}</link>
       <guid isPermaLink="false">${item.nodeRef}</guid>
-      <pubDate>${xmldate(item.modifiedOn)}</pubDate>
+      <pubDate>${xmldate(item.modifiedOn)?string("EEE, dd MMM yyyy HH:mm:ss zzz")}</pubDate>
       <#if isMP3><enclosure url="${proxyLink + item.contentUrl}" length="${item.size}" type="audio/mpeg" /></#if>
    </item>
    </#if>

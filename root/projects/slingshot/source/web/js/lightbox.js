@@ -7,27 +7,7 @@
 
 	Licensed under the Creative Commons Attribution 2.5 License - http://creativecommons.org/licenses/by/2.5/
 	(basically, do anything you want, just leave my name and link)
-	
-	Table of Contents
-	-----------------
-	Configuration
-	
-	Functions
-	- getPageScroll()
-	- getPageSize()
-	- pause()
-	- getKey()
-	- listenKey()
-	- showLightbox()
-	- hideLightbox()
-	- initLightbox()
-	- addLoadEvent()
-	
-	Function Calls
-	- addLoadEvent(initLightbox)
-
 */
-
 
 
 //
@@ -37,7 +17,6 @@
 // If you would like to use a custom loading image or close button reference them in the next two lines.
 var loadingImage = Alfresco.constants.URL_RESCONTEXT + 'components/images/lightbox/loading.gif';
 var closeButton = Alfresco.constants.URL_RESCONTEXT + 'components/images/lightbox/close.gif';
-
 
 
 //
@@ -60,7 +39,6 @@ function getPageScroll(){
 	arrayPageScroll = new Array('',yScroll) 
 	return arrayPageScroll;
 }
-
 
 
 //
@@ -242,9 +220,6 @@ function showLightbox(objLink)
 }
 
 
-
-
-
 //
 // hideLightbox()
 //
@@ -269,8 +244,6 @@ function hideLightbox()
 }
 
 
-
-
 //
 // initLightbox()
 // Function runs on window load, going through link tags looking for rel="lightbox".
@@ -280,8 +253,8 @@ function hideLightbox()
 //
 function initLightbox()
 {
-	
-	if (!document.getElementsByTagName){ return; }
+   // NOTE: ALFRESCO: images are loaded by ajax call - this code is not required
+	/*if (!document.getElementsByTagName){ return; }
 	var anchors = document.getElementsByTagName("a");
 
 	// loop through all anchor tags
@@ -291,24 +264,8 @@ function initLightbox()
 		if (anchor.getAttribute("href") && (anchor.getAttribute("rel") == "lightbox")){
 			anchor.onclick = function () {showLightbox(this); return false;}
 		}
-	}
+	}*/
 
-	// the rest of this code inserts html at the top of the page that looks like this:
-	//
-	// <div id="overlay">
-	//		<a href="#" onclick="hideLightbox(); return false;"><img id="loadingImage" /></a>
-	//	</div>
-	// <div id="lightbox">
-	//		<a href="#" onclick="hideLightbox(); return false;" title="Click anywhere to close image">
-	//			<img id="closeButton" />		
-	//			<img id="lightboxImage" />
-	//		</a>
-	//		<div id="lightboxDetails">
-	//			<div id="lightboxCaption"></div>
-	//			<div id="keyboardMsg"></div>
-	//		</div>
-	// </div>
-	
 	var objBody = document.getElementsByTagName("body").item(0);
 	
 	// create overlay div and hardcode some functional styles (aesthetic styles are in CSS file)
@@ -405,11 +362,7 @@ function initLightbox()
 	objKeyboardMsg.setAttribute('id','keyboardMsg');
 	objKeyboardMsg.innerHTML = 'press <a href="#" onclick="hideLightbox(); return false;"><kbd>x</kbd></a> to close';
 	objLightboxDetails.appendChild(objKeyboardMsg);
-
-
 }
-
-
 
 
 //
@@ -428,9 +381,6 @@ function addLoadEvent(func)
 		func();
 		}
 	}
-
 }
-
-
 
 addLoadEvent(initLightbox);	// run initLightbox onLoad

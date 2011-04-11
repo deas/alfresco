@@ -1,36 +1,11 @@
-.document-references
+.document-references h2 .edit
 {
-   background-color: #FAFAFA;
-   border-left: 1px solid #CCCCCC;
-   border-top: 1px dashed #CCCCCC;
-   margin-right: -10px;
-   padding: 1.5em 1em 2em 2em;
+   background-image: url(../../components/images/edit-16.png);
 }
-
-.document-references .heading
-{
-   color: #333333;
-   font-size: 131%;
-   float: left;
-}
-
-.document-references .manageRefs
-{
-   float: right;
-}
-
-.document-references p.no-ref-messages,
+.document-references p,
 .document-references ul
 {
-   clear: both;
-}
-.document-references p.no-ref-messages
-{
    margin-bottom: 1em;
-}
-.document-references div.reflist
-{
-   margin: 3em 0 1em 0;
 }
 .document-references li
 {

@@ -47,10 +47,7 @@
    Alfresco.DocumentActions = function(htmlId)
    {
       Alfresco.DocumentActions.superclass.constructor.call(this, "Alfresco.DocumentActions", htmlId, ["button"]);
-      
-      /* Decoupled event listeners */
-      YAHOO.Bubbling.on("documentDetailsAvailable", this.onDocumentDetailsAvailable, this);
-      
+      YAHOO.Bubbling.on("filesPermissionsUpdated", this.doRefresh, this);
       return this;
    };
 
@@ -88,7 +85,15 @@
          workingMode: Alfresco.doclib.MODE_SITE,
 
          /**
-          * Current siteId.
+          * Reference to the current document
+          *
+          * @property nodeRef
+          * @type string
+          */
+         nodeRef: null,
+
+         /**
+          * Current siteId, if any.
           * 
           * @property siteId
           * @type string
@@ -132,7 +137,23 @@
           * @property replicationUrlMapping
           * @type object
           */
-         replicationUrlMapping: {}
+         replicationUrlMapping: {},
+
+         /**
+          * JSON representation of document details
+          *
+          * @property documentDetails
+          * @type object
+          */
+         documentDetails: null,
+
+         /**
+          * Whether the Repo Browser is in use or not
+          *
+          * @property repositoryBrowsing
+          * @type boolean
+          */
+         repositoryBrowsing: true
       },
       
       /**
@@ -194,17 +215,17 @@
       },
        
       /**
-       * Event handler called when the "documentDetailsAvailable" event is received
+       * Event handler called when "onReady"
        *
-       * @method: onDocumentDetailsAvailable
+       * @method: onReady
        */
-      onDocumentDetailsAvailable: function DocumentActions_onDocumentDetailsAvailable(layer, args)
+      onReady: function DocumentActions_onReady()
       {
          var me = this;
          
-         // Asset data passed-in through event arguments
-         this.assetData = args[1].documentDetails;
-         this.doclistMetadata = args[1].metadata;
+         // Asset data 
+         this.assetData = this.options.documentDetails.item;
+         this.doclistMetadata = this.options.documentDetails.metadata;
          this.currentPath = this.assetData.location.path;
          
          // Copy template into active area
@@ -746,6 +767,17 @@
                }
             }
          });
-      }      
+      },
+
+      /**
+       * Refresh component in response to metadataRefresh event
+       *
+       * @method doRefresh
+       */
+      doRefresh: function DocumentActions_doRefresh()
+      {
+         YAHOO.Bubbling.unsubscribe("filesPermissionsUpdated", this.doRefresh);
+         this.refresh('components/document-details/document-actions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' : ''));
+      }
    }, true);
 })();

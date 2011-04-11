@@ -40,7 +40,8 @@
       $combine = Alfresco.util.combinePaths,
       $jsonDate = Alfresco.util.fromExplodedJSONDate,
       $userProfile = Alfresco.util.userProfileLink,
-      $date = function $date(date, format) { return Alfresco.util.formatDate(Alfresco.util.fromISO8601(date), format) };
+      $date = function $date(date, format) { return Alfresco.util.formatDate(Alfresco.util.fromISO8601(date), format) },
+      $relTime = Alfresco.util.relativeTime;
 
    /**
     * RecordsDocumentList constructor.
@@ -70,6 +71,20 @@
    YAHOO.lang.augmentObject(Alfresco.RecordsDocumentList.prototype,
    {
       /**
+       * Fired by YUI when parent element is available for scripting.
+       *
+       * @method onReady
+       * @override
+       */
+      onReady: function RDL_onReady()
+      {
+         // Disable drag and drop upload
+         this.dragAndDropAllowed = false;
+
+         return Alfresco.RecordsDocumentList.superclass.onReady.apply(this, arguments);
+      },
+
+      /**
        * DataTable Cell Renderers
        */
 
@@ -78,7 +93,7 @@
        *
        * @method fnRenderCellThumbnail
        */
-      fnRenderCellThumbnail: function DL_fnRenderCellThumbnail()
+      fnRenderCellThumbnail: function RDL_fnRenderCellThumbnail()
       {
          var scope = this;
          
@@ -91,7 +106,7 @@
           * @param oColumn {object}
           * @param oData {object|string}
           */
-         return function DL_renderCellThumbnail(elCell, oRecord, oColumn, oData)
+         return function RDL_renderCellThumbnail(elCell, oRecord, oColumn, oData)
          {
             var record = oRecord.getData(),
                name = record.fileName,
@@ -195,7 +210,7 @@
        *
        * @method fnRenderCellDescription
        */
-      fnRenderCellDescription: function DL_fnRenderCellDescription()
+      fnRenderCellDescription: function RDL_fnRenderCellDescription()
       {
          var scope = this;
 
@@ -208,7 +223,7 @@
           * @param oColumn {object}
           * @param oData {object|string}
           */
-         return function DL_renderCellDescription(elCell, oRecord, oColumn, oData)
+         return function RDL_renderCellDescription(elCell, oRecord, oColumn, oData)
          {
             var desc = "",
                docDetailsUrl, i, j,
@@ -233,7 +248,7 @@
             {
                record.displayName = scope.msg("details.link-to", record.displayName);
             }
-            
+
             // Identifier
             var rmaIdentifier = $html(dod5015["rma:identifier"]);
             if (rmaIdentifier === "")
@@ -586,7 +601,7 @@
        *
        * @method fnRenderCellActions
        */
-      fnRenderCellActions: function DL_fnRenderCellActions()
+      fnRenderCellActions: function RDL_fnRenderCellActions()
       {
          var scope = this;
 
@@ -599,7 +614,7 @@
           * @param oColumn {object}
           * @param oData {object|string}
           */
-         return function DL_renderCellActions(elCell, oRecord, oColumn, oData)
+         return function RDL_renderCellActions(elCell, oRecord, oColumn, oData)
          {
             if (scope.options.simpleView)
             {
@@ -629,7 +644,7 @@
        * @override
        * @method _setupDataSource
        */
-      _setupDataSource: function DL__setupDataSource()
+      _setupDataSource: function RDL__setupDataSource()
       {
          var me = this;
 
@@ -649,7 +664,7 @@
          });
 
          // Intercept data returned from data webscript to extract custom metadata
-         this.widgets.dataSource.doBeforeCallback = function DL_doBeforeCallback(oRequest, oFullResponse, oParsedResponse)
+         this.widgets.dataSource.doBeforeCallback = function RDL_doBeforeCallback(oRequest, oFullResponse, oParsedResponse)
          {
             me.doclistMetadata = oFullResponse.metadata;
 
@@ -693,7 +708,7 @@
        * selectFolders - select all folders
        * </pre>
        */
-      selectFiles: function DL_selectFiles(p_selectType)
+      selectFiles: function RDL_selectFiles(p_selectType)
       {
          var recordSet = this.widgets.dataTable.getRecordSet(),
             checks = YAHOO.util.Selector.query('input[type="checkbox"]', this.widgets.dataTable.getTbodyEl()),
@@ -780,7 +795,7 @@
        * @param recordData {object} Object literal representing the node
        * @return {object} Object literal containing URLs to be substituted in action placeholders
        */
-      getActionUrls: function DL_getActionUrls(recordData)
+      getActionUrls: function RDL_getActionUrls(recordData)
       {
          var urlContextSite = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/",
             nodeRef = recordData.nodeRef,

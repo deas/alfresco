@@ -1,151 +1,100 @@
-/* Style YUI components */
-
-/* Add padding and make sure left: float doesn't place them in a row */
-.customise-pages .currentPages,
-.customise-pages .pages,
+.customise-pages .page-list-tooltip
 {
-   padding-top: 1em;
-   padding-bottom: 1em;
-   clear: both;
+   border-bottom: none !important;
+   min-height: 2em;
+   line-height: 2em;
 }
 
-/* Make sure left: float doesn't place them in a row */
-.customise-pages hr
+.customise-pages .page-list-tooltip span
 {
-   clear: both;
+   background-image: url("../../components/images/info-16.png");
+   background-position: 0.75em center;
+   background-repeat: no-repeat;
+   padding: 1em 2.5em;
 }
 
-/* Center the contents in the section */
-.customise-pages .currentPages div,
-.customise-pages .pages div
+.customise-pages h2
 {
-   /*text-align: center;*/
+   margin-top: 1em;
+   margin-bottom: 0.5em;
 }
 
-/* Marginise and align text and buttons */
-.customise-pages .text,
-.customise-pages .buttons
-{
-   width: 52em;
-   margin-left: auto;
-   margin-right: auto;
-   padding-top: 1em;
-   clear: both;
-}
-
-/* Left align text */
-.customise-pages .text
-{
-   text-align: left;
-}
-
-.customise-pages a.closeLink
-{
-   float:right;
-   margin-right:1em;
-   margin-top:1em;
-}
-
-/* Center buttons */
-.customise-pages .buttons
-{
-   padding-bottom: 1em;
-   text-align: center;
-}
-
-/* Style the lists containing dashlets */
-.customise-pages ul
-{
-   list-style: none;
-   padding: 1em 8em;
-   margin-left: auto;
-   margin-right: auto;
-}
-
-/* Set width and height of the pages list */
-.customise-pages .pages ul
-{
-   height: 20em;
-   overflow-y: auto;
-   overflow-x: hidden;
-   position:relative; /* IE will take the YIU buttons out of the flow otherwise */
-   margin-bottom: 2em;
-}
-
-/* Set the Page width and let them flow in the list */
-.customise-pages .currentPages ul li
-{
-   background-color: #F2F8F0;
-   min-width: 8.5em;
-   float: left;
-   text-align: center;
-   margin: 0.5em;
-   padding-bottom:0.5em;
-}
-
-.customise-pages .currentPages ul li .pageTitle,
-.customise-pages .currentPages ul li .pageIcon,
-.customise-pages .currentPages ul li .pageActions
-{
-   padding-top: 0.4em;
-}
-
-.customise-pages .currentPages ul li .pageTitle
-{
-   margin-left: 0.5em;
-   margin-right: 0.5em;
-}
-
-.customise-pages .pages ul li
+.customise-pages .page-list-wrapper
 {
    clear: both;
-   min-height: 5em;
-   text-align: left;
-   border: 1px dashed #C3C3C3;
-   background-color: #F7F7F7;
-   margin: 0.5em;
+   height: 14em;
+   margin-bottom: 2em;   
+   overflow-x: auto;
+   overflow-y: hidden;
 }
 
-.customise-pages .currentPages ul li.empty,
-.customise-pages .pages ul li.empty
+.customise-pages .available-pages
 {
-   border: 1px dashed #C3C3C3;
-   text-align: center;
-   background-color: #FFFFFF;
+   height: 11em;
+}
+
+.customise-pages .page-list-wrapper .page-list
+{
    padding: 1em;
-   line-height: 5em;
+   height: 12em;
+   white-space:nowrap;
 }
 
-.customise-pages .currentPages ul li.empty
+.customise-pages .available-pages .page-list
 {
-   min-width: 8.5em;
+   height: 9em;
 }
 
-.customise-pages .currentPages .pageIcon img
+.customise-pages-page-list-item img
 {
-   vertical-align:middle;
+   padding: 0.75em;
 }
 
-.customise-pages .pages .pageIcon
+.customise-pages-page-list-item .actions
 {
-   float: left;
-   margin: 0.6em;
+   margin-top: 0.25em;
+   font-size: 80%;
 }
 
-.customise-pages .pages .pageBox
-{
-   margin-top:1em;
-   padding-left:2em;
-   width: 35em;
+.customise-pages-page-list-item
+{                                                                     
+   text-align: center;
+   width: 10em;
+   display: inline-block;
+   height: 12em;
+   overflow-y: visible;
 }
 
-.customise-pages .pages ul li .pageBox div
+.customise-pages-page-list-item h3.title,
+.customise-pages-page-list-item div.type,
+.customise-pages-page-list-item div.actions
 {
-   text-align: left;    
+   display: block;
 }
 
-.customise-pages .pages ul li .pageActions
+.customise-pages-page-list-item h3.type
 {
-   float: right;
-   margin: 1.5em;
+   display: none;
+}
+
+.customise-pages .available-pages .customise-pages-page-list-item h3.title,
+.customise-pages .available-pages .customise-pages-page-list-item div.type,
+.customise-pages .available-pages .customise-pages-page-list-item div.actions
+{
+   display: none;
+}
+
+.customise-pages .available-pages .customise-pages-page-list-item h3.type
+{
+   display: block;
+}
+
+.customise-pages .buttons
+{
+   text-align: center;
+}
+
+.customise-pages .flat-button
+{
+   padding-bottom: 1em;
 }

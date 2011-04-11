@@ -197,7 +197,7 @@ public class RecordsManagementAuditServiceImplTest extends TestCase
         assertEquals("Expected results to be limited", limit, entries.size());
     }
     
-    public void testQuery_Node()
+    public void testQuery_Node() throws InterruptedException
     {
         RetryingTransactionCallback<List<RecordsManagementAuditEntry>> allResultsCallback =
             new RetryingTransactionCallback<List<RecordsManagementAuditEntry>>()
@@ -250,35 +250,53 @@ public class RecordsManagementAuditServiceImplTest extends TestCase
         assertTrue("No results were found for node: " + chosenNodeRefFinal, entries.size() > 0);
         // We can't check the size because we need entries for the node and any children as well
         
+        Thread.sleep(5000);
+
         // Clear the log
         rmAuditService.clear();
+        
         entries = txnHelper.doInTransaction(nodeResultsCallback);
         assertTrue("Should have cleared all audit entries", entries.isEmpty());
         
         // Delete the node
-        RunAsWork<Void> deleteRunAs = new RunAsWork<Void>()
+        txnHelper.doInTransaction(new RetryingTransactionCallback<Void>()
         {
-            public Void doWork() throws Exception
+            @Override
+            public Void execute() throws Throwable
             {
-                nodeService.deleteNode(chosenNodeRefFinal);
-                return null;
+                return AuthenticationUtil.runAs(new RunAsWork<Void>()
+                {
+                    @Override
+                    public Void doWork() throws Exception
+                    {
+                        nodeService.deleteNode(chosenNodeRefFinal);
+                        return null;
+                    }
+                }, AuthenticationUtil.getSystemUserName());
             }
-        };
-        AuthenticationUtil.runAs(deleteRunAs, AuthenticationUtil.getSystemUserName());
+        });
         
+        Thread.sleep(5000);
+
         entries = txnHelper.doInTransaction(nodeResultsCallback);
         assertFalse("Should have recorded node deletion", entries.isEmpty());
     }
     
-    public void testStartStopDelete()
+    public void testStartStopDelete() throws InterruptedException
     {
         // Stop the audit
         rmAuditService.stop();
+        
+        Thread.sleep(5000);
+        
         List<RecordsManagementAuditEntry> result1 = queryAll();
         assertNotNull(result1);
 
         // Update the fileplan
         updateFilePlan();
+        
+        Thread.sleep(5000);
+        
         // There should be no new audit entries
         List<RecordsManagementAuditEntry> result2 = queryAll();
         assertNotNull(result2);
@@ -290,15 +308,20 @@ public class RecordsManagementAuditServiceImplTest extends TestCase
         rmAuditService.start();
         updateFilePlan();
         
+        Thread.sleep(5000);
+
         List<RecordsManagementAuditEntry> result3 = queryAll();
         assertNotNull(result3);
         assertTrue(
                 "Expected more results after enabling audit",
                 result3.size() > result1.size());
         
+        Thread.sleep(5000);
+
         // Stop and delete all entries
         rmAuditService.stop();
         rmAuditService.clear();
+
         // There should be no entries
         List<RecordsManagementAuditEntry> result4 = queryAll();
         assertNotNull(result4);

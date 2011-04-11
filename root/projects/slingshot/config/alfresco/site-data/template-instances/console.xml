@@ -6,5 +6,17 @@
          <region-id>tools</region-id>
          <url>/components/console/tools</url>
       </component>
+      <component>
+         <region-id>html-upload</region-id>
+         <url>/components/upload/html-upload</url>
+      </component>
+      <component>
+         <region-id>flash-upload</region-id>
+         <url>/components/upload/flash-upload</url>
+      </component>
+      <component>
+         <region-id>file-upload</region-id>
+         <url>/components/upload/file-upload</url>
+      </component>
    </components>
 </template-instance>

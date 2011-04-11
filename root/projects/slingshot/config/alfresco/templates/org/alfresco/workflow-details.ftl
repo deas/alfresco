@@ -1,9 +1,5 @@
 <#include "include/alfresco-template.ftl" />
-<@templateHeader>
-   <#if page.url.args.nodeRef??>
-   <@script type="text/javascript" src="${page.url.context}/res/templates/document-details/document-details.js"></@script>
-   </#if>
-</@templateHeader>
+<@templateHeader />
 
 <@templateBody>
    <div id="alf-hd">
@@ -27,7 +23,7 @@
    {
       nodeRef: new Alfresco.util.NodeRef("${page.url.args.nodeRef?js_string}"),
       siteId: "${page.url.templateArgs.site!""}",
-      rootNode: "${rootNode}"
+      rootNode: "${rootNode!"null"}"
    });
    //]]></script>
    </#if>

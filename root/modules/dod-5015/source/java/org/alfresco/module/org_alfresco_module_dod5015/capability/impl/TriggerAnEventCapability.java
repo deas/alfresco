@@ -44,7 +44,7 @@ public class TriggerAnEventCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozen(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozen(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (isRecordFolder(voter.getNodeService().getType(nodeRef)) || isRecord(nodeRef))
                 {

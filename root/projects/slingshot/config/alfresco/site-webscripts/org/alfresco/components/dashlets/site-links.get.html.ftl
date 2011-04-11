@@ -1,17 +1,38 @@
 <script type="text/javascript">//<![CDATA[
-	new Alfresco.dashlet.SiteLinks("${args.htmlid}").setOptions(
-   {
-      siteId: "${page.url.templateArgs.site!''}"
-   });
+(function()
+{
    new Alfresco.widget.DashletResizer("${args.htmlid}", "${instance.object.id}");
+   new Alfresco.widget.DashletTitleBarActions("${args.htmlid}").setOptions(
+   {
+      actions:
+      [
+         {
+            cssClass: "help",
+            bubbleOnClick:
+            {
+               message: "${msg("dashlet.help")?js_string}"
+            },
+            tooltip: "${msg("dashlet.help.tooltip")?js_string}"
+         }
+      ]
+   });
+})();
 //]]></script>
 
 <#assign site=page.url.templateArgs.site>
 
 <div class="dashlet site-links">
    <div class="title">${msg("header.links")}</div>
-   <div class="toolbar">
-      <a id="${args.htmlid}-createLink-button" class="theme-color-1" href="#">${msg("link.createLink")}</a>
+   <div class="toolbar flat-button">
+      <div>
+         <span class="align-right yui-button-align">
+            <span class="first-child">
+               <a href="links-linkedit" class="theme-color-1">
+                  <img src="${url.context}/res/components/images/link-16.png" style="vertical-align: text-bottom" width="16" />
+                  ${msg("link.createLink")}</a>
+            </span>
+         </span>
+      </div>
    </div>
    <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
 <#if numLinks?? && numLinks!=0>

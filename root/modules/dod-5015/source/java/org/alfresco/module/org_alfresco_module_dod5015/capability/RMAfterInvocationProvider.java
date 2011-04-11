@@ -38,7 +38,6 @@ import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
-import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ViewUpdateReasonsForFreezeCapability;
 import org.alfresco.repo.search.SimpleResultSetMetaData;
 import org.alfresco.repo.search.impl.lucene.PagingLuceneResultSet;
 import org.alfresco.repo.search.impl.querymodel.QueryEngineResults;
@@ -46,7 +45,6 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryAfterInvocationProvider;
 import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryVoterException;
 import org.alfresco.repo.security.permissions.impl.acegi.FilteringResultSet;
-import org.alfresco.repo.webservice.repository.UpdateResult;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -370,32 +368,31 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         }
 
         List<ConfigAttributeDefintion> supportedDefinitions = extractSupportedDefinitions(config);
-
         if (supportedDefinitions.size() == 0)
         {
             return returnedObject;
         }
+        
+        int parentResult = entryVoter.getViewRecordsCapability().checkRead(nodeService.getPrimaryParent(returnedObject).getParentRef());
+        int childResult = entryVoter.getViewRecordsCapability().checkRead(returnedObject);        
+        checkSupportedDefinitions(supportedDefinitions, parentResult, childResult);
 
+        return returnedObject;
+    }
+    
+    private void checkSupportedDefinitions(List<ConfigAttributeDefintion> supportedDefinitions, int parentResult, int childResult)
+    {
         for (ConfigAttributeDefintion cad : supportedDefinitions)
         {
-            NodeRef testNodeRef = null;
-
-            if (cad.parent)
+            if (cad.parent == true && parentResult == AccessDecisionVoter.ACCESS_DENIED)
             {
-                testNodeRef = nodeService.getPrimaryParent(returnedObject).getParentRef();
+                throw new AccessDeniedException("Access Denied");
             }
-            else
-            {
-                testNodeRef = returnedObject;
-            }
-
-            if (entryVoter.getViewRecordsCapability().checkRead(testNodeRef) == AccessDecisionVoter.ACCESS_DENIED)
+            else if (cad.parent == false && childResult == AccessDecisionVoter.ACCESS_DENIED)
             {
                 throw new AccessDeniedException("Access Denied");
             }
         }
-
-        return returnedObject;
     }
 
     private boolean isUnfitered(NodeRef nodeRef)
@@ -448,15 +445,17 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         {
             return returnedObject;
         }
+        
+        int parentReadCheck = entryVoter.getViewRecordsCapability().checkRead(returnedObject.getParentRef());
+        int childReadCheck = entryVoter.getViewRecordsCapability().checkRead(returnedObject.getChildRef());
 
         for (ConfigAttributeDefintion cad : supportedDefinitions)
         {
             NodeRef testNodeRef = null;
 
-            if (cad.typeString.equals(cad.parent))
+            if (cad.typeString.equals(cad.parent) == true)
             {
                 testNodeRef = returnedObject.getParentRef();
-
             }
             else
             {
@@ -469,12 +468,15 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
             {
                 continue;
             }
-
-            if (entryVoter.getViewRecordsCapability().checkRead(testNodeRef) != AccessDecisionVoter.ACCESS_GRANTED)
+            
+            if (cad.typeString.equals(cad.parent) == true && parentReadCheck != AccessDecisionVoter.ACCESS_GRANTED)
             {
                 throw new AccessDeniedException("Access Denied");
             }
-
+            else if (childReadCheck != AccessDecisionVoter.ACCESS_GRANTED)
+            {
+                throw new AccessDeniedException("Access Denied");
+            }
         }
 
         return returnedObject;
@@ -502,7 +504,6 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
             if (cad.parent)
             {
                 testNodeRef = returnedObject.getSourceRef();
-
             }
             else
             {
@@ -620,16 +621,17 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
             // All permission checks must pass
             inclusionMask.set(i, true);
 
+            int parentCheckRead = entryVoter.getViewRecordsCapability().checkRead(returnedObject.getChildAssocRef(i).getParentRef());
+            int childCheckRead = entryVoter.getViewRecordsCapability().checkRead(returnedObject.getNodeRef(i));
+            
             for (ConfigAttributeDefintion cad : supportedDefinitions)
             {
-                NodeRef testNodeRef = null;
+                NodeRef testNodeRef = returnedObject.getNodeRef(i);
+                int checkRead = childCheckRead; 
                 if (cad.parent)
                 {
                     testNodeRef = returnedObject.getChildAssocRef(i).getParentRef();
-                }
-                else
-                {
-                    testNodeRef = returnedObject.getNodeRef(i);
+                    checkRead = parentCheckRead;
                 }
 
                 if (isUnfitered(testNodeRef))
@@ -637,7 +639,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                     continue;
                 }
 
-                if (inclusionMask.get(i) && (testNodeRef != null) && (entryVoter.getViewRecordsCapability().checkRead(testNodeRef) != AccessDecisionVoter.ACCESS_GRANTED))
+                if (inclusionMask.get(i) && (testNodeRef != null) && (checkRead != AccessDecisionVoter.ACCESS_GRANTED))
                 {
                     inclusionMask.set(i, false);
                 }
@@ -680,6 +682,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         return new QueryEngineResults(answer);
     }
 
+    @SuppressWarnings("unchecked")
     private Collection decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Collection returnedObject) throws AccessDeniedException
 
     {
@@ -833,6 +836,10 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         for (int i = 0, l = returnedObject.length; i < l; i++)
         {
             Object current = returnedObject[i];
+            
+            int parentReadCheck = entryVoter.getViewRecordsCapability().checkRead(getParentReadCheckNode(current));
+            int childReadChek = entryVoter.getViewRecordsCapability().checkRead(getChildReadCheckNode(current));            
+            
             for (ConfigAttributeDefintion cad : supportedDefinitions)
             {
                 incudedSet.set(i, true);
@@ -893,8 +900,14 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                 {
                     continue;
                 }
+                
+                int readCheck = childReadChek;
+                if (cad.parent == true)
+                {
+                    readCheck = parentReadCheck;
+                }
 
-                if (incudedSet.get(i) && (testNodeRef != null) && (entryVoter.getViewRecordsCapability().checkRead(testNodeRef) != AccessDecisionVoter.ACCESS_GRANTED))
+                if (incudedSet.get(i) && (testNodeRef != null) && (readCheck != AccessDecisionVoter.ACCESS_GRANTED))
                 {
                     incudedSet.set(i, false);
                 }
@@ -915,6 +928,58 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
             }
             return answer;
         }
+    }
+    
+    private NodeRef getParentReadCheckNode(Object current)
+    {
+        NodeRef testNodeRef = null;
+        if (StoreRef.class.isAssignableFrom(current.getClass()))
+        {
+            testNodeRef = null;
+        }
+        else if (NodeRef.class.isAssignableFrom(current.getClass()))
+        {
+            testNodeRef = nodeService.getPrimaryParent((NodeRef) current).getParentRef();
+        }
+        else if (ChildAssociationRef.class.isAssignableFrom(current.getClass()))
+        {
+            testNodeRef = ((ChildAssociationRef) current).getParentRef();
+        }
+        else if (FileInfo.class.isAssignableFrom(current.getClass()))
+        {
+            testNodeRef = ((FileInfo) current).getNodeRef();
+        }
+        else
+        {
+            throw new ACLEntryVoterException("The specified array is not of NodeRef or ChildAssociationRef");
+        }
+        return testNodeRef;
+    }
+    
+    private NodeRef getChildReadCheckNode(Object current)
+    {
+        NodeRef testNodeRef = null;
+        if (StoreRef.class.isAssignableFrom(current.getClass()))
+        {
+            testNodeRef = nodeService.getRootNode((StoreRef) current);
+        }
+        else if (NodeRef.class.isAssignableFrom(current.getClass()))
+        {
+            testNodeRef = (NodeRef) current;
+        }
+        else if (ChildAssociationRef.class.isAssignableFrom(current.getClass()))
+        {
+            testNodeRef = ((ChildAssociationRef) current).getChildRef();
+        }
+        else if (FileInfo.class.isAssignableFrom(current.getClass()))
+        {
+            testNodeRef = ((FileInfo) current).getNodeRef();
+        }
+        else
+        {
+            throw new ACLEntryVoterException("The specified array is not of NodeRef or ChildAssociationRef");
+        }
+        return testNodeRef;
     }
 
     private Map decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Map returnedObject) throws AccessDeniedException

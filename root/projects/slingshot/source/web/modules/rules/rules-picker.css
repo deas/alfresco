@@ -64,12 +64,12 @@
 .global-folder .rule-picker a:active,
 .global-folder .rule-picker a:hover
 {
-   background-color: #d2e5f2;
+   background-color: #dceaf4;
    text-decoration: none;
 }
 
 .global-folder .rule-picker a.selected
 {
-   background-color: #d2e5f2;
+   background-color: #dceaf4;
 }
 */

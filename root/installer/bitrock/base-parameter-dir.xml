@@ -55,7 +55,7 @@
         <stringParameter ask="0" name="base_installdir_max_characters" value="200" />
         <directoryParameter>
             <name>installdir</name>
-            <title>Installation folder</title>
+            <title>Installation Folder</title>
             <description>Select a folder</description>
             <explanation>Please choose a folder to install ${product_fullname}</explanation>
             <default/>

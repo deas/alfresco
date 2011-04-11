@@ -1,3 +1,6 @@
+#alfresco-calendar {
+}
+
 tr.odd td
 {
    background-color: #f8f8f8;
@@ -156,17 +159,17 @@ div.boxOutline
  #calTitle{
   font:146% Helvetica;
   color:#333;
-  margin:0.5em;
+  padding:0.5em;
+  border-bottom: 1px solid #D4D4D4;
+   margin-left:-10px;
 }
 #calTitle span.tagged 
 {
  color:#808080;
  margin-left:0.5em;
+ font-size:90%;
 }
-#calTitle span.tagged span
-{
-  color:#669966;
-}
+
 /* Styles calendar dashlet */
 .yui-skin-sam .yui-calendar td.event
 {
@@ -279,6 +282,7 @@ div.calendar-currentMonth
 {
    margin-right: 15px;
    text-align: center;
+   clear:left;
 }
 
 .calendar-bar .align-right
@@ -298,19 +302,25 @@ span.eventTime  input[type="text"]
    filter:alpha(opacity=40);
 }
 
+/* The top spacing should go on the table in order to prevent a large whitespace while content is loading. */
 #calendar
 {
-   margin: 0.5em 10px 1em 0;
+   margin: 0 10px;
+   padding:5px;
 }
 
-.yui-skin-default .yui-calcontainer
+#calendar table {
+   margin: 0.5em 0 1em;
+}
+
+.alfresco-share .yui-calcontainer
 {
    background-color: #fff;
    border: none;
 }
 
-.yui-skin-default .yui-navset .yui-content,
-.yui-skin-default .yui-navset .yui-navset-top .yui-content
+.alfresco-share .yui-navset .yui-content,
+.alfresco-share .yui-navset .yui-navset-top .yui-content
 {
    border-color: #a0a0a0;
 }
@@ -802,20 +812,22 @@ div.hourSegment .vevent {
 /** agenda view */
 .agendaview {
   border-bottom:1px solid #D4D4D4;
+  margin-left:-10px;
 }
 .agendaview h1 {
-   border-bottom:1px solid #EAEAEA;
+   border-bottom:1px solid #D4D4D4;
    height:auto;
    padding:0 1em;
 }
 .agendaview h2 {
-   border-top:1px solid #D4D4D4;
-   border-bottom:1px dashed #C2C2C2;
-   background-color:#F8F8F8;
+   border-bottom:1px solid #D4D4D4;
    display:block;
-   padding:0.5em 1em;
+   padding:0.5em 1em 0.1em;
+   font-size:100%;
+   font-weight:bold;
+   margin:1em 0 0;
 }
-.agendaview h1,.agendaview h2 {
+.agendaview h1 {
    font-weight: normal;
    margin:0;
    font-size:121%;
@@ -965,30 +977,30 @@ div.agendaview ul li {
 }
 
 /*Mini calendar stylings*/
-.yui-skin-default .yui-calendar .calnavright,
-.yui-skin-default .yui-calendar .calnavleft {
+.alfresco-share .yui-calendar .calnavright,
+.alfresco-share .yui-calendar .calnavleft {
   height:auto;
   width:30px;
   top:-3px;
 }
-.yui-skin-default .yui-calendar .calnavright {
+.alfresco-share .yui-calendar .calnavright {
   background:url(images/cal-next-but.png) no-repeat;
   *height:21px;
 }
 
-.yui-skin-default .yui-calendar .calnavleft {
+.alfresco-share .yui-calendar .calnavleft {
   background:url(images/cal-prev-but.png) no-repeat;
   *height:21px;
 }
 
-.yui-skin-default div.calendar-currentMonth .yui-button {
+.alfresco-share div.calendar-currentMonth .yui-button {
   background: url(images/toolbar-unchecked-gradient.gif) 0 0;
 }
 
-.yui-skin-default div.calendar-currentMonth .yui-button-checked {
+.alfresco-share div.calendar-currentMonth .yui-button-checked {
   background: url(images/toolbar-checked-gradient.gif) 0 0;
 }
-.yui-skin-default div.calendar-currentMonth .yui-link-button a {
+.alfresco-share div.calendar-currentMonth .yui-link-button a {
   color:#464646;
 }
 
@@ -1047,3 +1059,186 @@ div.day .continuedTo
 .continuedFrom {
    font-weight:bold;
 }
+
+#divCalendarContent thead {
+   display:none;
+}
+
+/* Agenda view styles */
+#divCalendarContent {
+   border-left-width:0;
+   margin-left:223px; /* This gets overridden by Alfresco.widget.resizer, but default here prevents jumping during page load. */
+}
+
+#divCalendarContent h2.dayTitle {
+   margin-top:1em;
+}
+
+#divCalendarContent .yui-dt table {
+   border-width: 0;
+   width: 100%;
+}
+
+.yui-dt-data:focus {
+   outline:none;
+}
+
+#divCalendarContent .yui-dt td {
+   border:none;
+   vertical-align: top;
+   border-bottom:1px solid white;
+}
+
+#divCalendarContent .yui-dt-col-start{
+   width: 12%;
+}
+
+#divCalendarContent .yui-dt-col-name {
+   width: 23%;
+}
+
+#divCalendarContent .yui-dt-col-where {
+   width: 21%;
+}
+
+#divCalendarContent .yui-dt-col-desc {
+   width:30%;
+}
+
+#divCalendarContent .yui-dt-col-actions {
+   width:14%;
+}
+
+/* The default body padding prevents the side bar from joining up at the bottom, and default margin at the side. remove them */
+#bd {
+   padding-bottom: 0;
+   margin:auto -10px;
+}
+
+#divCalendarContent .yui-dt-col-start div {
+    padding-left:38px;
+    background:url("images/calendarEntry.png") no-repeat 15px 8px;      
+}
+
+.yui-dt-col-actions a {
+   display:block;
+   float:left;
+   width:20px;
+   height:16px;
+   text-indent: -999em;
+   background:transparent no-repeat 2px;
+   margin-right:5px;
+   border:1px solid transparent;
+}
+
+#divCalendarContent .yui-dt-col-where .yui-dt-liner {
+   background:url("images/location.png") no-repeat 15px 8px;
+   padding-left:36px;
+}
+
+#divCalendarContent .yui-dt-col-where .yui-dt-liner.empty {
+   background-image:none;
+}
+
+#divCalendarContent .infoAction,
+#divCalendarContent .editAction,
+#divCalendarContent .deleteAction {
+   float:right;
+   visibility:hidden;
+}
+
+#divCalendarContent .yui-dt-highlighted .infoAction,
+#divCalendarContent .yui-dt-highlighted .editAction,
+#divCalendarContent .yui-dt-highlighted .deleteAction {
+   visibility:visible;
+}
+
+#divCalendarContent .infoAction {
+   background-image:url("images/eventInfo.png");
+}
+
+#divCalendarContent .editAction {
+   background-image:url("images/editEvent.png");
+}
+
+#divCalendarContent .deleteAction {
+   background-image:url("images/deleteEvent.png");
+}
+
+.previousEvents,
+.nextEvents {
+   display:block;
+   padding:5px;
+   margin:0.5em;
+}
+
+.previousEvents,
+.nextEvents {
+   float:right;
+}
+
+.eventCount{
+   font-size:70%;
+}
+
+.alfresco-share tr.yui-dt-odd,
+.alfresco-share tr.yui-dt-even {
+    background-color: transparent;
+}
+
+.alfresco-share .yui-dt-liner {
+   padding:8px 10px;
+}
+
+a.showMore, 
+a.showLess {
+   font-size: 90%;
+}
+
+.ical-feed .yui-button {
+   float:right;
+}
+
+.instructionTitle {
+    display: block;
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 167%;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+div.noEvent {
+   margin:1.5em;
+   padding-bottom:1.5em;
+}
+
+div.noEvent span {
+   font-size:120%;
+}
+
+div.noEvent a.addEvent {
+   background: transparent url("images/addeventsketch.png") top left no-repeat;
+   padding: 18px 0 18px 56px;
+}
+
+div.filter.tags {
+   padding-left:15px;
+}
+
+#divCalendarFilters {
+   width:215px;
+}
+
+/* Turn off default border/bg on mini calendar title */
+.yui-skin-default .yui-calendar a.calnav,
+.yui-skin-default .yui-calendar a.calnav:hover {
+   background:none;
+   border:none;
+}
+
+/* Popup Cal close button */
+.yui-skin-default .yui-calcontainer .title {
+   background:none;
+   padding:0;
+}
+

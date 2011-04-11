@@ -1,15 +1,19 @@
 <#include "../../../include/alfresco-macros.lib.ftl" />
 <#macro toolbarTemplate>
 <#nested>
-<#assign el=args.htmlid?html>
-<div id="${el}-body" class="toolbar">
+<#assign id=args.htmlid?html>
+<div id="${id}-body" class="toolbar no-check-bg">
 
-   <div id="${el}-headerBar" class="header-bar flat-button theme-bg-2">
+   <div id="${id}-headerBar" class="header-bar flat-button theme-bg-2">
       <div class="left">
          <div class="hideable toolbar-hidden DocListTree">
             <div class="create-content">
-               <button id="${el}-createContent-button" name="createContent">${msg("button.create-content")}</button>
-               <div id="${el}-createContent-menu" class="yuimenu">
+               <span id="${id}-createContent-button" class="yui-button yui-push-button">
+                  <span class="first-child">
+                     <button name="createContent">${msg("button.create-content")}</button>
+                  </span>
+               </span>
+               <div id="${id}-createContent-menu" class="yuimenu">
                   <div class="bd">
                      <ul>
                      <#list createContent as content>
@@ -20,19 +24,28 @@
                   </div>
                </div>
             </div>
-            <div class="separator">&nbsp;</div>
          </div>
          <div class="hideable toolbar-hidden DocListTree">
-            <div class="new-folder"><button id="${el}-newFolder-button" name="newFolder">${msg("button.new-folder")}</button></div>
-            <div class="separator">&nbsp;</div>
+            <div class="new-folder">
+               <span id="${id}-newFolder-button" class="yui-button yui-push-button">
+                  <span class="first-child">
+                     <button name="newFolder">${msg("button.new-folder")}</button>
+                  </span>
+               </span>
+            </div>
          </div>
          <div class="hideable toolbar-hidden DocListTree">
-            <div class="file-upload"><button id="${el}-fileUpload-button" name="fileUpload">${msg("button.upload")}</button></div>
-            <div class="separator">&nbsp;</div>
+            <div class="file-upload">
+               <span id="${id}-fileUpload-button" class="yui-button yui-push-button">
+                  <span class="first-child">
+                     <button name="fileUpload">${msg("button.upload")}</button>
+                  </span>
+               </span>
+            </div>
          </div>
          <div class="selected-items hideable toolbar-hidden DocListTree DocListFilter TagFilter DocListCategories">
-            <button class="no-access-check" id="${el}-selectedItems-button" name="doclist-selectedItems-button">${msg("menu.selected-items")}</button>
-            <div id="${el}-selectedItems-menu" class="yuimenu">
+            <button class="no-access-check" id="${id}-selectedItems-button" name="doclist-selectedItems-button">${msg("menu.selected-items")}</button>
+            <div id="${id}-selectedItems-menu" class="yuimenu">
                <div class="bd">
                   <ul>
                   <#list actionSet as action>
@@ -46,19 +59,37 @@
          </div>
       </div>
       <div class="right">
-         <div class="customize" style="display: none;"><button id="${el}-customize-button" name="customize">${msg("button.customize")}</button></div>
-         <div class="hide-navbar"><button id="${el}-hideNavBar-button" name="hideNavBar">${msg("button.navbar.hide")}</button></div>
-         <div class="rss-feed"><button id="${el}-rssFeed-button" name="rssFeed">${msg("link.rss-feed")}</button></div>
+         <div class="hide-navbar">
+            <span id="${id}-hideNavBar-button" class="yui-button yui-checkbox-button">
+               <span class="first-child">
+                  <button name="hideNavBar"></button>
+               </span>
+            </span>
+         </div>
+         <div class="separator">&nbsp;</div>
+         <div class="rss-feed">
+            <span id="${id}-rssFeed-button" class="yui-button yui-link-button">
+               <span class="first-child">
+                  <a tabindex="0" href="#"></a>
+               </span>
+            </span>
+         </div>
       </div>
    </div>
 
-   <div id="${el}-navBar" class="nav-bar flat-button theme-bg-4">
+   <div id="${id}-navBar" class="nav-bar flat-button theme-bg-2">
       <div class="hideable toolbar-hidden DocListTree DocListCategories">
-         <div class="folder-up"><button class="no-access-check" id="${el}-folderUp-button" name="folderUp">${msg("button.up")}</button></div>
+         <div class="folder-up">
+            <span id="${id}-folderUp-button" class="yui-button yui-push-button">
+               <span class="first-child">
+                  <button class="no-access-check" name="folderUp"></button>
+               </span>
+            </span>
+         </div>
          <div class="separator">&nbsp;</div>
       </div>
-      <div id="${el}-breadcrumb" class="breadcrumb hideable toolbar-hidden DocListTree DocListCategories"></div>
-      <div id="${el}-description" class="description hideable toolbar-hidden DocListFilter TagFilter"></div>
+      <div id="${id}-breadcrumb" class="breadcrumb hideable toolbar-hidden DocListTree DocListCategories"></div>
+      <div id="${id}-description" class="description hideable toolbar-hidden DocListFilter TagFilter"></div>
    </div>
 
 </div>

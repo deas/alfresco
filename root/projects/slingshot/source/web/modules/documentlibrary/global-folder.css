@@ -132,14 +132,14 @@
 .global-folder .container-picker a:active,
 .global-folder .container-picker a:hover
 {
-   background-color: #d2e5f2;
+   background-color: #dceaf4;
    text-decoration: none;
 }
 
 .global-folder .site-picker a.selected,
 .global-folder .container-picker a.selected
 {
-   background-color: #d2e5f2;
+   background-color: #dceaf4;
 }
 
 
@@ -202,5 +202,5 @@
 
 .global-folder .selected
 {
-   background-color: #d2e5f2;
+   background-color: #dceaf4;
 }

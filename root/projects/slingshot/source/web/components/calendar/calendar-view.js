@@ -46,7 +46,7 @@
    Alfresco.CalendarView = function CalendarView_constructor(htmlId)
    {
       this.id = htmlId;
-      Alfresco.CalendarView.superclass.constructor.call(this, "Alfresco.CalendarView", htmlId, ["calendar", "button", "resize"]);
+      Alfresco.CalendarView.superclass.constructor.call(this, "Alfresco.CalendarView", htmlId, ["calendar", "button", "resize", "datasource", "datatable"]);
       
       /* History navigation event */
       // YAHOO.Bubbling.on("stateChanged", this.onStateChanged, this);
@@ -141,6 +141,31 @@
       },
       
       /**
+       * Retrieves events from server
+       * 
+       * @method getEvents
+       *  
+       */
+      getEvents : function CalendarView_getEvents()
+      {
+         Alfresco.util.Ajax.request(
+         {
+            url: Alfresco.constants.PROXY_URI + "calendar/events/" + this.options.siteId + "/user",
+            dataObj:
+            {
+               from: toISO8601(this.options.startDate).split('T')[0]
+            },
+            //filter out non relevant events for current view            
+            successCallback: 
+            {
+               fn: this.onEventsLoaded,
+               scope: this
+            },
+               failureMessage: Alfresco.util.message("load.fail", "Alfresco.CalendarView")
+           });
+      },
+      
+      /**
        * Renders view
        *
        * @method render
@@ -208,7 +233,7 @@
          for (var i = 0, el; el = dragTargets[i]; i++) 
          {
             new YAHOO.util.DDTarget(el, this.dragGroup);
-         }
+         };
          
          // holder for fixed hourSegments (ie border bleedthrough fix)
          this._fixedHourSegments = [];
@@ -301,6 +326,81 @@
       },
       
       /**
+       *Returns the Event Data object associated with the element passed in.
+       * 
+       * 
+       */
+      
+      getEventObj: function CalendarView_getEventObj(el) 
+      {
+         var date, elPar, elParId, div, event, rel;
+         
+         if (el.rel !== "") // New Style (Used by Agenda)
+         {
+            return this.parseRel(el);
+         }
+         else //Old Style - DOM driven (Used by Day, Week, Month) 
+         {
+            elPar = Dom.getAncestorByClassName(elTarget, 'vevent');
+            // if the event doesn't have a parent with a vevent class, it'll have one with an allday class.
+            if (elPar === null) // add support for timed events that span multiple days: 
+            {
+               elPar = Dom.getAncestorByClassName(elTarget, 'allday');
+            }
+            
+            elParId = elPar.id.split("-multiple")[0];
+            event = this.events[elParId];
+         }
+         return event
+      },
+      
+      /**
+       * builds up the relationship string to store the event reference in the DOM.
+       * 
+       * @param {Object} data
+       */
+      getRel: function CalendarView_getRel(data) 
+      {
+         //Just stores the ISO yyyy-mm-dd string and will use href from link to identify data
+         return data.from.split("T")[0];
+      },
+      
+      /**
+       * 
+       * retrieves the event object based on the data in the rel string.
+       * 
+       * @param {HTML element} element with a relationship to an event.
+       */
+      parseRel: function CalendarView_parseRel(element) 
+      {
+         var relationship,
+            data = "",
+            date = "",
+            result = false;
+         
+         // If the passed in is a datatable container, it won't have a rel, so get the first a tag in it.
+         if (YAHOO.util.Selector.test(element, 'div.yui-dt-liner')) 
+         {
+            element = Dom.getElementsByClassName("summary", "a", element.parentNode.parentNode)[0]
+         }
+         
+         // check the element has a rel tag supplied.
+         if (element.rel !== "" && element.rel !== undefined) 
+         {
+            date = element.rel;
+            data = this.widgets.Data[date].events;
+            for (var i = 0; i < data.length; i++) 
+            {
+               if (data[i].uri === "/calendar/event/" + element.href.split("/calendar/event/")[1]) // element.href needs hostname and port stripping.
+               {
+                  result = data[i];
+               } 
+            }
+         }
+         return result;
+      },
+      
+      /**
        * Shows/hides the early hours of day (midnight till 7am)
        *
        * @method toggleEarlyTableRows
@@ -322,7 +422,7 @@
       
       /**
        * Handler for event retrieval when events are loaded from the server
-       * Only needed for week and day view
+       * Used by agenda, day and week (i.e. not month view)
        *
        * @method onEventsLoaded
        */
@@ -350,6 +450,7 @@
          }
          data = siteEvents;
          // TODO: These take no account of timezone. E.g. day view of 6th June. server time = GMT+1000, event time = 06 JUN 2010 05:00GMT+1000, date returned from server is 05 JUN 2010 19:00GMT+0000. 05 JUN != 06 JUN.
+         // TODO: This would be better done on the server in the userevents webscript
          comparisonFn = function()
          {
             
@@ -376,6 +477,7 @@
                datum.desc = ev.description || '';
                datum.name = ev.title;
                datum.where = ev.where;
+               datum.description = ev.description;
                datum.isoutlook = ev.isoutlook == "true" ? "isoutlook" : "";
                datum.contEl = 'div';
                datum.from = dateFormat(date, dateFormat.masks.isoDate) + 'T' + ev.start;
@@ -465,11 +567,16 @@
        */
       getClickedDate: function CalendarView_getClickedDate(el)
       {
+         var date = this.options.titleDate; // set a default incase we can't find the element
          if (el.nodeName.toUpperCase() !== 'TD') 
          {
             el = Dom.getAncestorByTagName(el, 'td');
          }
-         return fromISO8601(el.id.replace('cal-', ''));
+         if (el) 
+         {
+            date =  fromISO8601(el.id.replace('cal-', ''));
+         }
+         return date;
       },
       
       /**
@@ -625,7 +732,7 @@
          {
             site: this.options.siteId,
             displayDate: displayDate,
-            actionUrl: Alfresco.constants.PROXY_URI + "/calendar/create",
+            actionUrl: Alfresco.constants.PROXY_URI + "calendar/create",
             templateUrl: Alfresco.constants.URL_SERVICECONTEXT + "components/calendar/add-event",
             templateRequestParams: 
             {
@@ -643,6 +750,14 @@
                   {
                      tagInputElem.disabled = true;
                   }
+                  var errorEls = YAHOO.util.Dom.getElementsByClassName('error',null,YAHOO.util.Dom.get(this.id + "-form"));
+
+                  for (var i = 0; i <errorEls.length;i++)
+                  {
+                     YAHOO.util.Dom.removeClass(errorEls[i],'error');
+                  }
+                  Dom.get(this.id+'-title').disabled = false;
+                  Dom.get(this.id+'-location').disabled = false; 
                },
                scope: this.eventDialog
             },
@@ -672,7 +787,7 @@
                      p_config.dataObj.end = '01:00';
                   }
                   
-                  return true;
+                  return true ;
                },
                scope: this.eventDialog
             },
@@ -707,49 +822,87 @@
        */
       showDialog: function(e, elTarget)
       {
-         // show create event dialog
-         if (YAHOO.util.Selector.test(elTarget, 'button#addEventButton')) 
+         var event = this.getEventObj(elTarget);
+         // Set up the dialog box
+         this.setUpDialog(e, elTarget, event);
+         
+         // if the edit window isn't already showing, show it!
+         if (!this.eventInfoPanel.isShowing) 
          {
-            this.showAddDialog(elTarget);
-         }
-         // show edit dialog
-         else if (YAHOO.util.Selector.test(elTarget, 'a.summary')) 
-         {
-            var elPar = Dom.getAncestorByClassName(elTarget, 'vevent');
-            // if the event doesn't have a parent with a vevent class, it'll have one with an allday class.
-            if (elPar === null) 
-            {
-               elPar = Dom.getAncestorByClassName(elTarget, 'allday');
-            }
-            // add support for timed events that span multiple days:
-            var elParId = elPar.id.split("-multiple")[0];
-            this.editEvent = this.events[elParId];
-            var div = document.createElement('div');
-            div.id = 'eventInfoPanel';
-            document.body.appendChild(div);
-            this.eventInfoPanel = new Alfresco.EventInfo(this.id + "");
-            
-            if (!this.eventInfoPanel.isShowing) 
-            {
-               this.eventInfoPanel.setOptions(
-               {
-                  siteId: this.options.siteId,
-                  eventUri: 'calendar/' + elTarget.href.split('/calendar/')[1],
-                  displayDate: this.currentDate,
-                  event: elParId,
-                  permitToEditEvents: this.options.permitToCreateEvents
-               });
-               
-               this.eventInfoPanel.show(
-               {
-                  uri: 'calendar/' + elTarget.href.split('/calendar/')[1],
-                  name: this.editEvent.getData('summary')
-               });
-               
-            }
+            this.eventInfoPanel.show(event);            
          }
          
          Event.preventDefault(e);
+      },
+      
+      /**
+       * Uses the EventInfo delete method to delete the event after showing a confirmation dialogue.
+       * 
+       * @method deleteDialog
+       * 
+       * @param {Object} e
+       * @param {Object} elTarget
+       */
+      deleteDialog: function(e, elTarget)
+      {
+         var event = this.getEventObj(elTarget);
+         // Set up the dialog box
+         this.setUpDialog(e, elTarget, event);
+         
+         //call delete function
+         this.eventInfoPanel.onDeleteClick();
+         
+         Event.preventDefault(e);
+      },
+      
+      /**
+       * Uses the EventInfo edit method to jump straight to the event edit screen.
+       * 
+       * @method editDialog
+       * 
+       * @param {Object} e
+       * @param {Object} elTarget
+       */
+      editDialog: function(e, elTarget)
+      {
+         var event = this.getEventObj(elTarget);
+         // Set up the dialog box
+         this.setUpDialog(e, elTarget, event);
+         
+         //call edit function
+         this.eventInfoPanel.onEditClick();
+         
+         Event.preventDefault(e);
+      },
+      
+      /**
+       * Does the grunt work of setting up the dialogue box for info, edit and delete methods.
+       * 
+       * @method setUpDialog
+       * 
+       * @param {Object} e
+       * @param {Object} elTarget
+       */
+      setUpDialog: function(e, elTarget, event) 
+      {
+         var div = document.createElement('div');
+         
+         div.id = 'eventInfoPanel';
+         document.body.appendChild(div);
+         this.eventInfoPanel = new Alfresco.EventInfo(this.id + "");
+         this.eventInfoPanel.event = event;
+         
+         if (!this.eventInfoPanel.isShowing) 
+         {
+            this.eventInfoPanel.setOptions(
+            {
+               siteId: this.options.siteId,
+               eventUri: event.uri.substring(1,event.uri.length), // strip off leading '/'
+               displayDate: this.currentDate,
+               event: event,
+               permitToEditEvents: this.options.permitToCreateEvents
+            });
+         }         
       },
       
       /**
@@ -956,10 +1109,25 @@
        * @param e {object} DomEvent
        * @param args {array} event arguments
        */
-      onInteractionEvent: function CalendarView_onInteractionEvent(e, args)
+      onInteractionEvent: function CalendarView_onInteractionEvent(o, args)
       {
-         var elTarget = Event.getTarget(e);
+         // TODO: refactor this if/else list into an event trigger with listeners.
          
+         var elTarget, e;
+         // if loop added for DataTable event trigger which passes event and target as single object in 1st param
+         if (typeof(o.event) === "object" && typeof(o.target) === "object") 
+         {
+            e = o.event;
+            elTarget = o.target;
+         }
+         else //old style (non DataTable trigger), event as first object, target not included.
+         {
+            e = o;
+            elTarget = Event.getTarget(e);
+         }
+         
+         // Check for event type.
+         // repeated if loops are now a series of else if loops to prevent all selectors being attempted. Matching of multiple selectors is not recommended.
          if (e.type === 'mouseover') 
          {
             if (YAHOO.util.Selector.test(elTarget, 'div.' + this.dragGroup)) 
@@ -981,25 +1149,50 @@
                Dom.addClass(elTarget, 'highlight');
             }
          }
-         
-         if (e.type === 'click') 
+         else if (e.type === 'click') 
          {
+            // Show or hide wee hours?
             if (YAHOO.util.Selector.test(elTarget, 'a#collapseTriggerLink')) 
             {
                this.toggleEarlyTableRows();
                Event.preventDefault(e);
             }
-            if (YAHOO.util.Selector.test(elTarget, 'button#addEventButton')) 
+            // are we adding a new event?
+            else if (YAHOO.util.Selector.test(elTarget, 'button#addEventButton') || YAHOO.util.Selector.test(elTarget, 'a.addEvent')) 
             {
                this.showAddDialog(elTarget);
+               Event.preventDefault(e);
             }
-            else if (YAHOO.util.Selector.test(elTarget, 'a.summary')) 
+            // a.summary = a click on the event title. Therefore into Event Info mode.
+            else if (YAHOO.util.Selector.test(elTarget, 'a.summary') || YAHOO.util.Selector.test(elTarget, 'div.yui-dt-liner') ) 
             {
                this.showDialog(e, elTarget);
             }
-            if (YAHOO.util.Selector.test(elTarget, 'li.moreEvents a')) 
+            // Someone clicked the 'show more events in Month View' link.
+            else if (YAHOO.util.Selector.test(elTarget, 'li.moreEvents a')) 
             {
                this.onShowMore(e, args, elTarget);
+            }
+            //Agenda View show more
+            else if (YAHOO.util.Selector.test(elTarget, 'a.showMore'))
+            {
+               this.expandDescription(elTarget);
+               Event.preventDefault(e);
+            }
+            else if (YAHOO.util.Selector.test(elTarget, 'a.showLess'))
+            {
+               this.collapseDescription(elTarget);
+               Event.preventDefault(e);
+            }
+            // Delete this event link in Agenda DataTable
+            else if (YAHOO.util.Selector.test(elTarget, "a.deleteAction"))
+            {
+               this.deleteDialog(e, elTarget);
+            }
+            // Edit event link in Agenda DataTable.
+            else if (YAHOO.util.Selector.test(elTarget, "a.editAction"))
+            {
+               this.editDialog(e, elTarget);
             }
          }
       },
@@ -1075,50 +1268,20 @@
        */
       onTagSelected: function CalendarView_onTagSelected(e, args)
       {
-         var tagName = arguments[1][1].tagname;
-         var showAllTags = false;
+         var tagName = arguments[1][1].tagname,
+            showAllTags = false;
+         
          // all tags
          if (tagName == Alfresco.util.message('label.all-tags', 'Alfresco.TagComponent')) 
          {
-            for (var event in this.events) 
-            {
-               this.events[event].show();
-            }
-            showAllTags = true;
+            this.options.tag = null;
          }
          else 
          {
-            for (var event in this.events) 
-            {
-               var event = this.events[event];
-               var eventTags = event.getData('category', true);
-               if (YAHOO.lang.isArray(eventTags)) 
-               {
-                  (Alfresco.util.arrayContains(eventTags, tagName)) ? event.show() : event.hide();
-               }
-               else 
-               {
-                  event.hide();
-               }
-            }
+            this.options.tag = tagName;
          }
-         // add tag info to title
-         var tagTitleEl = this.titleEl.getElementsByTagName('span');
-         
-         if (tagTitleEl.length > 1) 
-         {
-            this.titleEl.removeChild(tagTitleEl[0]);
-         }
-         if (!showAllTags) 
-         {
-            tagTitleEl = Alfresco.CalendarHelper.renderTemplate('taggedTitle', 
-            {
-               taggedWith: this.msg('label.tagged-with'),
-               tag: tagName
-            });
-            this.titleEl.appendChild(tagTitleEl);
-         }
-         
+         this.updateTitle();
+         this.getEvents();
       },
       
       /**
@@ -1159,6 +1322,76 @@
       refreshTags: function CalendarView_refreshTags()
       {
          YAHOO.lang.later(500, YAHOO.Bubbling, 'fire', 'tagRefresh');
+      },
+      
+      updateTitle: function CalendarView_updateTitle()
+      {
+         
+         var startDate = this.options.startDate,
+            endDate = this.options.endDate,
+            startDateString = "",
+            withYear = this.msg("date-format.longDate"),
+            noYear = this.msg("date-format.longDateNoYear"),
+            endDateString = dateFormat(endDate, withYear);
+         
+         // convert date objects to strings
+         // only show year in start date if it differs to end date.
+         if (startDate.getFullYear() === endDate.getFullYear()) 
+         {
+            startDateString = dateFormat(startDate, noYear);
+         } else 
+         {
+            startDateString = dateFormat(startDate, withYear)
+         }
+         
+         this.titleEl.innerHTML = this.msg("title.agenda", startDateString, endDateString);
+         
+         // add tag info to title,
+         tagTitleEl = Dom.getElementsByClassName('tagged', "span", this.titleEl);
+         if (tagTitleEl.length > 1) 
+         {
+            this.titleEl.removeChild(tagTitleEl[0]);
+         }
+         if (this.options.tag) 
+         {
+            tagTitleEl = Alfresco.CalendarHelper.renderTemplate('taggedTitle', 
+            {
+               taggedWith: this.msg('label.tagged-with'),
+               tag: this.options.tag
+            });
+            this.titleEl.appendChild(tagTitleEl);
+         }
+      },
+      
+      /**
+       *
+       * takes the event list and removes any items that aren't tagged with the currently selected tag.
+       * 
+       * @method tagFilter 
+       * 
+       * @param {Object} events
+       */
+      tagFilter: function CalendarView_tagFilter(events) 
+      {
+         var filteredEvents = [],
+            tagName = this.options.tag;
+         
+         // early exit if there is no selected tagName
+         if (!tagName) 
+         {
+            return events;
+         } else 
+         {
+            for (var i = 0, l = events.length; i < l; i++) 
+            {
+               var eventTags = events[i].tags.split(" "); // TODO: Tags with spaces are not supported in the Calendar Event input field.
+               if (Alfresco.util.arrayContains(eventTags, tagName)) 
+               {
+                  filteredEvents.push(events[i]); 
+               }
+            }
+            return filteredEvents;
+         }
       }
    });
    Alfresco.CalendarView.VIEWTYPE_WEEK = 'week';
@@ -1309,7 +1542,7 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
        * @return d {Date}
        */
       getDateFromField: function Alfresco_CalendarHelper_getDateFromField(field)
-      {
+      {  
          var dateString = field.title;
          var d = (dateString !== "") ? fromISO8601(dateString) : new Date();
          return d;
@@ -1469,7 +1702,7 @@ Alfresco.CalendarHelper.addTemplate('agendaDayItem', '<li class="vevent"><span>{
 '<a href="{uri}" class="summary">{name}</a></li>');
 
 Alfresco.CalendarHelper.addTemplate('createEventButton', '<button id="addEventButton"><img src="{addEventUrl}" alt="{addEvent}" /></button>');
-Alfresco.CalendarHelper.addTemplate('taggedTitle', "<span class=\"tagged\">{taggedWith} <span>'{tag}'</span></span>");
+Alfresco.CalendarHelper.addTemplate('taggedTitle', "<span class=\"tagged\">{taggedWith} <span class=\"theme-color-2\">'{tag}'</span></span>");
 
 /**
  * Alfresco.util.DialogManager. Helper object to manage dialogs.
@@ -1498,7 +1731,7 @@ Alfresco.util.DialogManager = (function()
             var date = new Date();
             // Pretty formatting
             Alfresco.CalendarHelper.writeDateToField(this.options.displayDate, Dom.get("fd"));
-            //Alfresco.CalendarHelper.writeDateToField(this.options.displayDate, Dom.get("td"));
+            Alfresco.CalendarHelper.writeDateToField(this.options.displayDate, Dom.get("td"));
             Dom.get(this.id + "-from").value = Dom.get(this.id + "-to").value = dateFormat(this.options.displayDate, 'yyyy/mm/dd');
             Dom.get(this.id + "-tag-input-field").disabled = false;
             Dom.get(this.id + "-tag-input-field").tabIndex = 8;
@@ -1729,6 +1962,7 @@ Alfresco.util.DialogManager = (function()
                });
                
                this.startButton.on("click", this.options.onDateSelectButton);
+               Event.on(Dom.get("fd") , "click" , this.options.onDateSelectButton , {} , this)
                this.startButton.on("keypress", buttonKeypressHandler);
             }
             if (!this.endButton) 
@@ -1744,13 +1978,24 @@ Alfresco.util.DialogManager = (function()
                });
                
                this.endButton.on("click", this.options.onDateSelectButton);
+               Event.on(Dom.get("td") , "click" , this.options.onDateSelectButton , {} , this)
                this.endButton.on("keypress", buttonKeypressHandler);
             }
             
             /* disable time fields if all day is selected */
             Event.addListener(document.getElementsByName('allday')[0], 'click', function(e)
             {
-               document.getElementsByName('start')[0].disabled = document.getElementsByName('end')[0].disabled = (Event.getTarget(e).checked === true);
+               if (YAHOO.util.Event.getTarget(e).checked===true) 
+               {
+                  // hide time boxes if they're not relevent.
+                  YAHOO.util.Dom.addClass(document.getElementsByName('start')[0].parentNode, "hidden")
+                  YAHOO.util.Dom.addClass(document.getElementsByName('end')[0].parentNode, "hidden")
+               } else 
+               {
+                  // show them if they are.
+                  YAHOO.util.Dom.removeClass(document.getElementsByName('start')[0].parentNode, "hidden")
+                  YAHOO.util.Dom.removeClass(document.getElementsByName('end')[0].parentNode, "hidden")
+               }
             });
             YAHOO.Bubbling.on('formValidationError', Alfresco.util.ComponentManager.findFirst('Alfresco.CalendarView').onFormValidationError, this);
          },
@@ -1767,14 +2012,16 @@ Alfresco.util.DialogManager = (function()
       onDateSelectButton: function onDateSelectButton(e)
       {
          Event.stopEvent(e);
-         var o = Alfresco.util.ComponentManager.findFirst('Alfresco.CalendarView');
+         var o = Alfresco.util.ComponentManager.findFirst('Alfresco.CalendarView'),
+            targetEl = Event.getTarget(e);
+         
          o.oCalendarMenu = new YAHOO.widget.Overlay("calendarmenu", 
          {
-            context: [Event.getTarget(e), 'tr', 'br']
+            context: [targetEl, 'tr', 'br']
          });
          o.oCalendarMenu.setBody("&#32;");
          o.oCalendarMenu.body.id = "calendarcontainer";
-         var container = this.get('container');
+         var container = (targetEl.id === "calendarendpicker-button")? this.get('container') : targetEl.parentNode.id ;
          
          if (YAHOO.env.ua.ie) 
          {
@@ -1784,13 +2031,27 @@ Alfresco.util.DialogManager = (function()
          {
             o.oCalendarMenu.render(YAHOO.util.Dom.getAncestorByClassName(Event.getTarget(e), 'yui-panel', 'div'));
          }
-         var d = Alfresco.CalendarHelper.getDateFromField((container.indexOf("enddate") > -1) ? YAHOO.util.Dom.get('td') : YAHOO.util.Dom.get('fd'));
+         var fromDate = Alfresco.CalendarHelper.getDateFromField(YAHOO.util.Dom.get('fd'));
+         var d = (container.indexOf("enddate") > -1) ? Alfresco.CalendarHelper.getDateFromField(YAHOO.util.Dom.get('td')) : fromDate ;
          
          var pagedate = Alfresco.CalendarHelper.padZeros(d.getMonth() + 1) + '/' + d.getFullYear();
-         o.oCalendar = new YAHOO.widget.Calendar("buttoncalendar", o.oCalendarMenu.body.id, 
+         
+         var startOptions = 
          {
-            pagedate: pagedate
-         });
+            pagedate: pagedate,
+            close: true
+            
+         },
+         endOptions = 
+         {
+            pagedate: pagedate,
+            close: true,
+            mindate: fromISO8601(YAHOO.util.Dom.get('fd').title)
+         };
+         
+         var options = (container.indexOf("enddate") > -1)? endOptions : startOptions;
+         
+         o.oCalendar = new YAHOO.widget.Calendar("buttoncalendar", o.oCalendarMenu.body.id, options);
          Alfresco.util.calI18nParams(o.oCalendar);
          o.oCalendar.render();
          o.oCalendar.selectEvent.subscribe(function(type, args)

@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>document-header</shortname>
+  <description>
+     Document header used on the document details page.
+     Accepts  
+  </description>
+  <url>/components/document-details/document-header</url>
+</webscript>

@@ -21,7 +21,7 @@ function main()
 
    // Call the repo for the user's favourite sites
    // TODO: Clean-up old favourites here?
-   var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences?pf=" + PREF_FAVOURITE_SITES);
+   var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
    if (result.status == 200 && result != "{}")
    {
       prefs = eval('(' + result + ')');
@@ -102,8 +102,6 @@ function main()
    model.currentSiteIsFav = currentSiteIsFav;
    model.favouriteSites = favouriteSites;
    model.siteTitle = siteTitle;
-   // Save the site title for downstream components - saves remote calls for Site Profile
-   context.setValue("site-title", siteTitle);
 }
 
 main();

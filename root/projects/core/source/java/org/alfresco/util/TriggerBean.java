@@ -80,6 +80,12 @@ public class TriggerBean extends AbstractTriggerBean
     @Override
     public Trigger getTrigger() throws Exception
     {
+        if ((repeatInterval <= 0) && (repeatCount != 0))
+        {
+           logger.error("Job "+getBeanName()+" - repeatInterval/repeatIntervalMinutes cannot be 0 (or -ve) unless repeatCount is also 0");
+           return null;
+        }
+        
         SimpleTrigger trigger = new SimpleTrigger(getBeanName(), Scheduler.DEFAULT_GROUP);
         trigger.setStartTime(new Date(System.currentTimeMillis() + this.startDelay));
         trigger.setRepeatCount(repeatCount);

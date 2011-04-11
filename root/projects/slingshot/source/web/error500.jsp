@@ -1,5 +1,5 @@
 <%--
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -16,6 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
 --%>
+<%@ page isErrorPage="true" %>
+<%@ page import="java.io.*" %>
+<%@ page import="org.springframework.extensions.webscripts.ui.common.StringUtils" %>
+<%@ page import="org.apache.commons.logging.LogFactory" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -76,7 +80,20 @@ div.panel
       <br/>
       <br/>
       <br/>
-      <a href="http://www.alfresco.com">Alfresco Software</a> Inc. &copy; 2008-2010 All rights reserved.
+      <a href="http://www.alfresco.com">Alfresco Software</a> Inc. &copy; 2005-2011 All rights reserved.
+   </div>
+   <div>
+<%
+out.println("<!--");
+StringWriter sw = new StringWriter();
+PrintWriter pw = new PrintWriter(sw);
+exception.printStackTrace(pw);
+out.print(StringUtils.encode(sw.toString()));
+sw.close();
+pw.close();
+out.println("-->");
+LogFactory.getLog("org.alfresco.web.site").error(exception, exception.getCause());
+%>
    </div>
 </div>
 </body>

@@ -172,4 +172,7 @@ public interface Section extends Resource
      * @return
      */
     AssetCollection getAssetCollection(String name);
+
+    AssetCollection getAssetCollection(String name, int resultsToSkip, int maxResults);
+
 }

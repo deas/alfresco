@@ -57,8 +57,6 @@ public interface WebSiteModel
     public static final QName PROP_INHERIT_RENDITION_CONFIG = QName.createQName(NAMESPACE, "inheritRenditionConfig");
     public static final QName PROP_RENDITION_CONFIG = QName.createQName(NAMESPACE, "renditionConfig");
     public static final QName PROP_EXCLUDE_FROM_NAV = QName.createQName(NAMESPACE, "excludeFromNavigation");
-    public static final QName PROP_TOP_TAGS = QName.createQName(NAMESPACE, "topTags");
-    public static final QName PROP_TOP_TAG_COUNTS = QName.createQName(NAMESPACE, "topTagCounts");
 
     // ws:sectionWebassetCollections type
     public static final QName TYPE_WEBASSET_COLLECTION_FOLDER = QName
@@ -72,6 +70,7 @@ public interface WebSiteModel
     public static final QName PROP_IS_DYNAMIC = QName.createQName(NAMESPACE, "isDynamic");
     public static final QName PROP_MINS_TO_QUERY_REFRESH = QName.createQName(NAMESPACE, "minsToQueryRefresh");
     public static final QName PROP_REFRESH_AT = QName.createQName(NAMESPACE, "refreshAt");
+    public static final QName PROP_CONTAINED_ASSETS = QName.createQName(NAMESPACE, "containedAssets");
     public static final QName ASSOC_WEBASSETS = QName.createQName(NAMESPACE, "webassets");
 
     // ws:indexPage type

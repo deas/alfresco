@@ -110,7 +110,15 @@
           * @property replicationUrlMapping
           * @type object
           */
-         replicationUrlMapping: {}
+         replicationUrlMapping: {},
+
+         /**
+          * Whether the Repo Browser is in use or not
+          *
+          * @property repositoryBrowsing
+          * @type boolean
+          */
+         repositoryBrowsing: true
       },
       
       /**

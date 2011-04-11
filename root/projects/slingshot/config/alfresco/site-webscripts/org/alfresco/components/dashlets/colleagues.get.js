@@ -1,3 +1,5 @@
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
+
 function sortByName(membership1, membership2)
 {
    var name1 = membership1.authority ? membership1.authority.firstName + membership1.authority.lastName : "";
@@ -6,14 +8,32 @@ function sortByName(membership1, membership2)
 }
 
 /**
+ * Get Max Items from local configuration
+ */
+function getMaxItems()
+{
+   var myConfig = new XML(config.script),
+      maxItems = myConfig["max-items"];
+
+   if (maxItems)
+   {
+      maxItems = myConfig["max-items"].toString();
+   }
+   return parseInt(maxItems && maxItems.length > 0 ? maxItems : 100, 10);
+}
+
+/**
  * Site Colleagues component GET method
  */
 function main()
 {
    // Call the repo for the site memberships
-   var json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships?size=100&authorityType=USER");
+   var maxItems = getMaxItems(),
+      size = maxItems + 1,
+      json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships?size=" + size + "&authorityType=USER");
    
-   var memberships = [];
+   var memberships = [],
+      totalResults = 0;
    
    if (json.status == 200)
    {
@@ -21,11 +41,18 @@ function main()
       var obj = eval('(' + json + ')');
       if (obj)
       {
-         memberships = obj;
-         var userObj, member;
+         totalResults = obj.length;
+         memberships = obj.slice(0, maxItems);
+
+         var member, userStatus;
          for (var i = 0, j = memberships.length; i < j; i++)
          {
             member = memberships[i];
+            userStatus = member.authority.userStatus;
+            if (typeof userStatus != "undefined" && userStatus.length > 0)
+            {
+               member.authority.userStatusRelativeTime = AlfrescoUtil.relativeTime(member.authority.userStatusTime.iso8601);
+            }
          }
          memberships.sort(sortByName);
       }
@@ -33,6 +60,9 @@ function main()
    
    // Prepare the model
    model.memberships = memberships;
+   model.totalResults = totalResults;
+   model.maxResults = maxItems;
+   model.userMembership = AlfrescoUtil.getSiteMembership(page.url.templateArgs.site);
 }
 
 main();

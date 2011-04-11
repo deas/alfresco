@@ -2,4 +2,7 @@
 <component>
    <region-id>dod5015-events</region-id>
    <url>/components/fileplan/events</url>
+   <properties>
+      <nodeRef>{nodeRef}</nodeRef>
+   </properties>
 </component>

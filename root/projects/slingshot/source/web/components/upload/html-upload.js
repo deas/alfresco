@@ -269,7 +269,17 @@
 
          this._showPanel();
       },
-
+      
+      /**
+       * Hides the panel
+       * 
+       * @method hide
+       */
+      hide: function FlashUpload_hide()
+      {
+         this.onCancelButtonClick();
+      },
+      
       /**
        * Called when a file has been successfully uploaded
        * Informs the user and reloads the doclib.
@@ -298,7 +308,8 @@
             successful: [
             {
                nodeRef: response.nodeRef,
-               fileName: fileName
+               fileName: fileName,
+               response: response  // Added for CSV upload
             }]
          };
 

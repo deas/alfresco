@@ -1,7 +1,5 @@
 <#include "include/alfresco-template.ftl" />
-<@templateHeader>
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/templates/site/customise-site.css" />
-</@>
+<@templateHeader/>
 
 <@templateBody>
    <div id="alf-hd">

@@ -3,11 +3,25 @@
    display: none;
 }
 
-.about-share .logo
+.about-share .logo-com
 {
    width: 501px;
    height: 247px;
    background: url('images/about-bg.png') no-repeat scroll 0 0;
+}
+
+.about-share .logo-team
+{
+   width: 501px;
+   height: 247px;
+   background: url('images/about-bg-team.png') no-repeat scroll 0 0;
+}
+
+.about-share .logo-ent
+{
+   width: 501px;
+   height: 247px;
+   background: url('images/about-bg-enterprise.png') no-repeat scroll 0 0;
 }
 
 .about-share .about
@@ -26,11 +40,11 @@
 .about-share .copy
 {
    color: #000;
-   padding-left: 40px;
+   padding-left: 0;
    font-size: 77%;
 }
 
 .about-share .padtop
 {
-   padding-top: 66px;
+   padding-top: 70px;
 }

@@ -24,25 +24,18 @@ function main()
    }
    
    // Call the repository to see if the user is site manager or not
-   var userIsSiteManager = false;
-   var userIsMember = false;
-   var obj = context.properties["memberships"];
-   if (!obj)
+   var userIsSiteManager = false,
+      userIsMember = false;
+
+   json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
+   if (json.status == 200)
    {
-      json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
-      if (json.status == 200)
+      var obj = eval('(' + json + ')');
+      if (obj)
       {
-         var obj = eval('(' + json + ')');
-         
-         // Store the memberships into the request context, it is used
-         // downstream by other components - saves making same call many times
-         context.setValue("memberships", obj);
+         userIsMember = true;
+         userIsSiteManager = obj.role == "SiteManager";
       }
-   }
-   if (obj)
-   {
-      userIsMember = true;
-      userIsSiteManager = obj.role == "SiteManager";
    }
    
    // Prepare the model

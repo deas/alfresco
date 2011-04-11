@@ -1,14 +1,3 @@
-/* History Manager */
-#yui-history-iframe
-{
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 1px;
-   height: 1px;
-   visibility: hidden;
-}
-
 /* Users Tool */
 .users
 {
@@ -246,7 +235,8 @@
 .users .group-item
 {
    background: transparent url(../images/remove-icon-16.png) no-repeat 0px 0px;
+   line-height: 1.7;
    margin-right: 12px;
-   padding-left: 16px;
+   padding-left: 20px;
    cursor: pointer;
 }

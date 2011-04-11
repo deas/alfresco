@@ -20,13 +20,9 @@ package org.alfresco.module.org_alfresco_module_dod5015.capability.group;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
-import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementAction;
-import org.alfresco.module.org_alfresco_module_dod5015.capability.Capability;
-import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AbstractCapability;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 

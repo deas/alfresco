@@ -972,7 +972,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
             var field = Dom.get(val.fieldId);
             if (field !== null && !field.disabled)
             {
-               if (!val.handler(field, val.args, null, this, silent))
+               if (!val.handler(field, val.args, null, this, silent, val.message))
                {
                   atLeastOneFailed = true;
                   
@@ -1228,7 +1228,7 @@ Alfresco.forms.validation.numberRange = function numberRange(field, args, event,
                             "' using args: " + YAHOO.lang.dump(args));
                             
    var valid = true;
-   var value = field.value;
+   var value = field.value.toString();
    
    if (value.length > 0)
    {
@@ -1570,4 +1570,3 @@ Alfresco.forms.validation.inList = function inList(field, args, event, form, sil
 {
    return true;
 };
-

@@ -18,7 +18,6 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.capability.group;
 
-import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AbstractCapability;
 import org.alfresco.service.cmr.repository.NodeRef;
 
 /**

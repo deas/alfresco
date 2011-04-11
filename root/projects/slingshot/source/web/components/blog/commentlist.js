@@ -136,7 +136,7 @@
        * @method onReady
        */
       onReady: function CommentList_onReady()
-      { 
+      {
          var me = this;
          // YUI Paginator definition
          var paginator = new YAHOO.widget.Paginator(

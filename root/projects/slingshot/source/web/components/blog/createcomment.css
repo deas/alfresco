@@ -1,7 +1,7 @@
 .addCommentForm
 {
-   background-color: #fafafa;
-   border-top: 1px solid #b1b1b1;
+   border-top: 1px dashed #c2c2c2;
+   border-bottom: 1px solid #c2c2c2;
    padding: 20px;
 }
 

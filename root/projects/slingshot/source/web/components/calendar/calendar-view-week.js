@@ -29,31 +29,6 @@
    
    YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, 
    {
-   
-      /**
-       * Retrieves events from server
-       *
-       * @method getEvents
-       *
-       */
-      getEvents: function CalendarView_getEvents()
-      {
-         Alfresco.util.Ajax.request(
-         {
-            url: Alfresco.constants.PROXY_URI + "calendar/events/" + this.options.siteId + "/user",
-            dataObj: 
-            {
-               from: toISO8601(this.options.startDate).split('T')[0]
-            },
-            //filter out non relevant events for current view            
-            successCallback: 
-            {
-               fn: this.onEventsLoaded,
-               scope: this
-            },
-            failureMessage: Alfresco.util.message("load.fail", "Alfresco.CalendarView")
-         });
-      },
       
       /**
        * Render events to DOM

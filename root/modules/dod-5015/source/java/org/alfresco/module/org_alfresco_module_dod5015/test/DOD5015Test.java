@@ -47,6 +47,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.VitalRecordDefinition;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionResult;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
+import org.alfresco.module.org_alfresco_module_dod5015.action.impl.BroadcastDispositionActionDefinitionUpdateAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.CompleteEventAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.EditDispositionActionAsOfDateAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.EditReviewAsOfDateAction;
@@ -254,7 +255,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         {
             public NodeRef execute() throws Throwable
             {                
-                // No need to commit the transaction here as the record is non-vital and
+            	// No need to commit the transaction here as the record is non-vital and
                 // there is no metadata to copy down.
                 
                 NodeRef vitalFolder = retrieveJanuaryAISVitalFolder();
@@ -844,7 +845,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
                 System.out.println("Adding 3 months to period for 1st step: " + actionDefs.get(0).getName());
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
                 
                 return null;
             }          
@@ -867,8 +868,11 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 
                 // make sure the as of date is a month in the future
                 Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.MONTH, 3);
-                assertEquals(asOfDate.getMonth(), calendar.get(Calendar.MONTH));
+                calendar.add(Calendar.MONTH, 3);        
+                System.out.println("Test date: " + calendar.getTime());
+                Calendar asOfCalendar = Calendar.getInstance();
+                asOfCalendar.setTime(asOfDate);
+                assertEquals(calendar.get(Calendar.MONTH), asOfCalendar.get(Calendar.MONTH));
                 
                 // Check for the search properties having been populated
                 checkSearchAspect(recordFolder);
@@ -892,7 +896,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
                 System.out.println("Adding 6 months to period for 2nd step: " + actionDefs.get(1).getName());
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(1), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(1), changes);
                 
                 return null;
             }          
@@ -947,7 +951,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertEquals(2, actionDefs.size());
                 System.out.println("Removing period and adding no_longer_needed and case_complete to 1st step: " + 
                             actionDefs.get(0).getName());
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
                 
                 return null;
             }          
@@ -1002,7 +1006,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertEquals(2, actionDefs.size());
                 System.out.println("Removing no_longer_needed event from 1st step: " + 
                             actionDefs.get(0).getName());
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
                 
                 return null;
             }          
@@ -1180,7 +1184,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
                 System.out.println("Adding 3 months to period for 1st step: " + actionDefs.get(0).getName());
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
                 
                 return null;
             }          
@@ -1228,7 +1232,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
                 System.out.println("Adding 6 months to period for 2nd step: " + actionDefs.get(1).getName());
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(1), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(1), changes);
                 
                 return null;
             }          
@@ -1283,7 +1287,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertEquals(2, actionDefs.size());
                 System.out.println("Removing period and adding no_longer_needed and case_complete to 1st step: " + 
                             actionDefs.get(0).getName());
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
                 
                 return null;
             }          
@@ -1338,7 +1342,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertEquals(2, actionDefs.size());
                 System.out.println("Removing no_longer_needed event from 1st step: " + 
                             actionDefs.get(0).getName());
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
                 
                 return null;
             }          
@@ -1387,7 +1391,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertEquals(2, actionDefs.size());
                 System.out.println("Changing action of 1st step from '" + 
                             actionDefs.get(0).getName() + "' to 'retain'");
-                rmService.updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
+                updateDispositionActionDefinition(schedule, actionDefs.get(0), changes);
                 
                 return null;
             }          
@@ -1423,6 +1427,52 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 return null;
             }          
         });
+    }
+    
+    private void updateDispositionActionDefinition(DispositionSchedule schedule, DispositionActionDefinition actionDefinition, Map<QName, Serializable> actionDefinitionParams)
+    {
+        NodeRef nodeRef = actionDefinition.getNodeRef();
+        Map<QName, Serializable> before = nodeService.getProperties(nodeRef);
+        nodeService.addProperties(nodeRef, actionDefinitionParams);
+        Map<QName, Serializable> after = nodeService.getProperties(nodeRef);
+        List<QName> updatedProps = determineChangedProps(before, after);
+        
+        refreshDispositionActionDefinition(nodeRef, updatedProps);
+    }
+    
+    private void refreshDispositionActionDefinition(NodeRef nodeRef, List<QName> updatedProps)
+    {
+        if (updatedProps != null)
+        {
+            Map<String, Serializable> params = new HashMap<String, Serializable>();
+            params.put(BroadcastDispositionActionDefinitionUpdateAction.CHANGED_PROPERTIES, (Serializable)updatedProps);
+            rmActionService.executeRecordsManagementAction(nodeRef, BroadcastDispositionActionDefinitionUpdateAction.NAME, params);            
+        }
+
+        // Remove the unpublished update aspect
+        nodeService.removeAspect(nodeRef, ASPECT_UNPUBLISHED_UPDATE);
+    }
+    
+    private List<QName> determineChangedProps(Map<QName, Serializable> oldProps, Map<QName, Serializable> newProps)
+    {
+        List<QName> result = new ArrayList<QName>();
+        for (QName qn : oldProps.keySet())
+        {
+            if (newProps.get(qn) == null ||
+                newProps.get(qn).equals(oldProps.get(qn)) == false)
+            {
+                result.add(qn);
+            }
+        }
+        for (QName qn : newProps.keySet())
+        {
+            if (oldProps.get(qn) == null)
+            {
+                result.add(qn);
+            }
+        }
+        
+        return result;
     }
     
     /**
@@ -1981,8 +2031,14 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 // add the action definitions to the schedule
                 DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
-                rmService.addDispositionActionDefinition(schedule, step1);
-                rmService.addDispositionActionDefinition(schedule, step2);
+                
+                NodeRef temp = rmService.addDispositionActionDefinition(schedule, step1).getNodeRef();
+                List<QName> updatedProps = new ArrayList<QName>(step1.keySet());
+                refreshDispositionActionDefinition(temp, updatedProps);
+                
+                temp = rmService.addDispositionActionDefinition(schedule, step2).getNodeRef();
+                updatedProps = new ArrayList<QName>(step2.keySet());
+                refreshDispositionActionDefinition(temp, updatedProps);
                 
                 return null;
             }          
@@ -3813,140 +3869,159 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         cleanCaveatConfigData();
         setupCaveatConfigData();
         
-        startNewTransaction();
-        
         // set/reset allowed values (empty list by default)
         
-        List<String> newValues = new ArrayList<String>(4);
+        final List<String> newValues = new ArrayList<String>(4);
         newValues.add(NOFORN);
         newValues.add(NOCONTRACT);
         newValues.add(FOUO);
         newValues.add(FGI);
         
-        rmAdminService.changeCustomConstraintValues(RecordsManagementCustomModel.CONSTRAINT_CUSTOM_SMLIST, newValues);
-        
-        setComplete();
-        endTransaction();
-        
-        startNewTransaction();
-        
-        // Test list of allowed values for caveats
-        
-        List<String> allowedValues = AuthenticationUtil.runAs(new RunAsWork<List<String>>()
+        transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
         {
-            public List<String> doWork()
-            {
-                // get allowed values for given caveat (for current user)
-                return caveatConfigService.getRMAllowedValues("rmc:smList");
-            }
-        }, "dfranco");
+            public Object execute() throws Throwable
+            {                
+                rmAdminService.changeCustomConstraintValues(RecordsManagementCustomModel.CONSTRAINT_CUSTOM_SMLIST, newValues);
+
+                return null;
+            }          
+        });
         
-        assertEquals(2, allowedValues.size());
-        assertTrue(allowedValues.contains(NOFORN));
-        assertTrue(allowedValues.contains(FOUO));
-        
-        
-        allowedValues = AuthenticationUtil.runAs(new RunAsWork<List<String>>()
+        final NodeRef recordFolder = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>()
         {
-            public List<String> doWork()
+            public NodeRef execute() throws Throwable
             {
-                // get allowed values for given caveat (for current user)
-                return caveatConfigService.getRMAllowedValues("rmc:smList");
-            }
-        }, "dmartinz");
-        
-        assertEquals(4, allowedValues.size());
-        assertTrue(allowedValues.contains(NOFORN));
-        assertTrue(allowedValues.contains(NOCONTRACT));
-        assertTrue(allowedValues.contains(FOUO));
-        assertTrue(allowedValues.contains(FGI));
-        
-        
-        // Create record category / record folder
-        
-        final NodeRef recordCategory = TestUtilities.getRecordCategory(searchService, "Reports", "AIS Audit Records");
-        assertNotNull(recordCategory);
-        assertEquals("AIS Audit Records", this.nodeService.getProperty(recordCategory, ContentModel.PROP_NAME));
-        
-        NodeRef recordFolder = createRecordFolder(recordCategory, "March AIS Audit Records");
-        
-        // set RM capabilities on the file plan - to view & read records
-        setPermission(filePlan, PermissionService.ALL_AUTHORITIES, RMPermissionModel.VIEW_RECORDS, true);
-        setPermission(filePlan, PermissionService.ALL_AUTHORITIES, RMPermissionModel.READ_RECORDS, true);
-        
-        // set RM capabilities on the record folder - to read records
-        setPermission(recordFolder, PermissionService.ALL_AUTHORITIES, RMPermissionModel.READ_RECORDS, true);
-        
-        setComplete();
-        endTransaction();
-        
-        startNewTransaction();
-        
-        int expectedChildCount = nodeService.getChildAssocs(recordFolder).size();
-        
+                // Test list of allowed values for caveats
+                
+                List<String> allowedValues = AuthenticationUtil.runAs(new RunAsWork<List<String>>()
+                {
+                    public List<String> doWork()
+                    {
+                        // get allowed values for given caveat (for current user)
+                        return caveatConfigService.getRMAllowedValues("rmc:smList");
+                    }
+                }, "dfranco");
+                
+                assertEquals(2, allowedValues.size());
+                assertTrue(allowedValues.contains(NOFORN));
+                assertTrue(allowedValues.contains(FOUO));
+                
+                
+                allowedValues = AuthenticationUtil.runAs(new RunAsWork<List<String>>()
+                {
+                    public List<String> doWork()
+                    {
+                        // get allowed values for given caveat (for current user)
+                        return caveatConfigService.getRMAllowedValues("rmc:smList");
+                    }
+                }, "dmartinz");
+                
+                assertEquals(4, allowedValues.size());
+                assertTrue(allowedValues.contains(NOFORN));
+                assertTrue(allowedValues.contains(NOCONTRACT));
+                assertTrue(allowedValues.contains(FOUO));
+                assertTrue(allowedValues.contains(FGI));
+                
+                
+                // Create record category / record folder
+                
+                final NodeRef recordCategory = TestUtilities.getRecordCategory(searchService, "Reports", "AIS Audit Records");
+                assertNotNull(recordCategory);
+                assertEquals("AIS Audit Records", nodeService.getProperty(recordCategory, ContentModel.PROP_NAME));
+                
+                NodeRef recordFolder = createRecordFolder(recordCategory, "March AIS Audit Records");
+                assertNotNull(recordFolder);
+                assertEquals(TYPE_RECORD_FOLDER, nodeService.getType(recordFolder));
+                
+                // set RM capabilities on the file plan - to view & read records
+                setPermission(filePlan, PermissionService.ALL_AUTHORITIES, RMPermissionModel.VIEW_RECORDS, true);
+                setPermission(filePlan, PermissionService.ALL_AUTHORITIES, RMPermissionModel.READ_RECORDS, true);
+                
+                // set RM capabilities on the record folder - to read records
+                setPermission(recordFolder, PermissionService.ALL_AUTHORITIES, RMPermissionModel.READ_RECORDS, true);
+                
+
+                return recordFolder;
+            }          
+        });
+                       
         final String RECORD_NAME = "MyRecord"+System.currentTimeMillis()+".txt";
         final String SOME_CONTENT = "There is some content in this record";
         
-        final NodeRef recordOne = createRecord(recordFolder, RECORD_NAME, SOME_CONTENT);
-        
-        assertEquals(expectedChildCount+1, nodeService.getChildAssocs(recordFolder).size());
-        
-        // force behaviours
-        setComplete();
-        endTransaction();
-        
-        startNewTransaction();
-        
-        assertTrue(this.nodeService.hasAspect(recordOne, ASPECT_RECORD));
-        
-        setComplete();
-        endTransaction();
-        
-        //
-        // Test caveats (security interceptors) BEFORE setting properties
-        //
-        
-        sanityCheckAccess("dmartinz", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, true, expectedChildCount);
-        sanityCheckAccess("gsmith", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, true, expectedChildCount);
-        sanityCheckAccess("dsandy", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, true, expectedChildCount);
-        
-        // Test setting properties (with restricted set of allowed values)
-        
-        // Set supplemental markings list (on record)
-        // TODO - set supplemental markings list (on record folder)
-        
-        AuthenticationUtil.runAs(new RunAsWork<Object>()
+        final NodeRef recordOne = transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>()
         {
-            public Object doWork()
+            public NodeRef execute() throws Throwable
+            {                        
+                int expectedChildCount = nodeService.getChildAssocs(recordFolder).size();
+                
+                NodeRef recordOne = createRecord(recordFolder, RECORD_NAME, SOME_CONTENT);
+                
+                assertEquals(expectedChildCount+1, nodeService.getChildAssocs(recordFolder).size());
+
+                return recordOne;
+            }          
+        });
+        
+        transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+        {
+            public Object execute() throws Throwable
             {
-                // set RM capabilities on the file plan - to file records and add/edit properties (ie. edit record)
-                setPermission(filePlan, "dfranco", RMPermissionModel.FILING, true);
-                setPermission(filePlan, "dfranco", RMPermissionModel.EDIT_RECORD_METADATA, true);
+                assertTrue(nodeService.hasAspect(recordOne, ASPECT_RECORD));
+                
+                int expectedChildCount = nodeService.getChildAssocs(recordFolder).size()-1;
+                
+                //
+                // Test caveats (security interceptors) BEFORE setting properties
+                //
+                
+                sanityCheckAccess("dmartinz", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, true, expectedChildCount);
+                sanityCheckAccess("gsmith", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, true, expectedChildCount);
+                sanityCheckAccess("dsandy", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, true, expectedChildCount);
+                
+                // Test setting properties (with restricted set of allowed values)
+                
+                // Set supplemental markings list (on record)
+                // TODO - set supplemental markings list (on record folder)
+                
+                AuthenticationUtil.runAs(new RunAsWork<Object>()
+                {
+                    public Object doWork()
+                    {
+                        // set RM capabilities on the file plan - to file records and add/edit properties (ie. edit record)
+                        setPermission(filePlan, "dfranco", RMPermissionModel.FILING, true);
+                        setPermission(filePlan, "dfranco", RMPermissionModel.EDIT_RECORD_METADATA, true);
+                        return null;
+                    }
+                }, "admin");
+                
+                
+                AuthenticationUtil.setFullyAuthenticatedUser("dfranco");
+                assertEquals(AccessStatus.ALLOWED, publicServiceAccessService.hasAccess("NodeService", "exists", recordFolder));
+
                 return null;
-            }
-        }, "admin");
-        
-        
-        AuthenticationUtil.setFullyAuthenticatedUser("dfranco");
-        assertEquals(AccessStatus.ALLOWED, publicServiceAccessService.hasAccess("NodeService", "exists", recordFolder));
+            }          
+        });
         
         try
         {
-            startNewTransaction();
+        	transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+	        {
+	            public Object execute() throws Throwable
+	            {
             
-            // Set smList
-            
-            Map<QName, Serializable> propValues = new HashMap<QName, Serializable>(1);
-            List<String> smList = new ArrayList<String>(3);
-            smList.add(FOUO);
-            smList.add(NOFORN);
-            smList.add(NOCONTRACT);
-            propValues.put(RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST, (Serializable)smList);
-            this.nodeService.addProperties(recordOne, propValues);
-            
-            // force integrity checking
-            setComplete();
-            endTransaction();
+		            // Set smList
+		            
+		            Map<QName, Serializable> propValues = new HashMap<QName, Serializable>(1);
+		            List<String> smList = new ArrayList<String>(3);
+		            smList.add(FOUO);
+		            smList.add(NOFORN);
+		            smList.add(NOCONTRACT);
+		            propValues.put(RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST, (Serializable)smList);
+		            nodeService.addProperties(recordOne, propValues);
+		            
+		            return null;
+	            }
+	        });
             
             fail("Should fail with integrity exception"); // user 'dfranco' not allowed 'NOCONTRACT'
         }
@@ -3957,36 +4032,41 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         
         try
         {
-            startNewTransaction();
-            
-            // Set smList
-            
-            Map<QName, Serializable> propValues = new HashMap<QName, Serializable>(1);
-            List<String> smList = new ArrayList<String>(2);
-            smList.add(FOUO);
-            smList.add(NOFORN);
-            propValues.put(RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST, (Serializable)smList);
-            this.nodeService.addProperties(recordOne, propValues);
-            
-            // force integrity checking
-            setComplete();
-            endTransaction();
+        	transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+	        {
+	            public Object execute() throws Throwable
+	            {            
+		            // Set smList
+		            
+		            Map<QName, Serializable> propValues = new HashMap<QName, Serializable>(1);
+		            List<String> smList = new ArrayList<String>(2);
+		            smList.add(FOUO);
+		            smList.add(NOFORN);
+		            propValues.put(RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST, (Serializable)smList);
+		            nodeService.addProperties(recordOne, propValues);
+		            
+		            return null;
+	            }
+	        });            
         }
         catch (IntegrityException ie)
         {
             fail(""+ie);
         }
         
-        startNewTransaction();
+        transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+        {
+            public Object execute() throws Throwable
+            {        
+		        @SuppressWarnings("unchecked")
+		        List<String> smList = (List<String>)nodeService.getProperty(recordOne, RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST);
+		        assertEquals(2, smList.size());
+		        assertTrue(smList.contains(NOFORN));
+		        assertTrue(smList.contains(FOUO));
         
-        @SuppressWarnings("unchecked")
-        List<String> smList = (List<String>)this.nodeService.getProperty(recordOne, RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST);
-        assertEquals(2, smList.size());
-        assertTrue(smList.contains(NOFORN));
-        assertTrue(smList.contains(FOUO));
-        
-        setComplete();
-        endTransaction();
+		        return null;
+            }
+        });
         
         // User-defined field (in this case, "rmc:prjList" on record)
         
@@ -4012,17 +4092,20 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
             }
         });
         
-        startNewTransaction();
-        
-        newValues = new ArrayList<String>(3);
-        newValues.add(PRJ_A);
-        newValues.add(PRJ_B);
-        newValues.add(PRJ_C);
-        
-        rmAdminService.changeCustomConstraintValues(CONSTRAINT_CUSTOM_PRJLIST, newValues);
-        
-        setComplete();
-        endTransaction();
+        transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+        {
+        	public Object execute() throws Throwable
+        	{     
+        		List<String> newerValues = new ArrayList<String>(3);
+                newerValues.add(PRJ_A);
+                newerValues.add(PRJ_B);
+                newerValues.add(PRJ_C);
+                
+        		rmAdminService.changeCustomConstraintValues(CONSTRAINT_CUSTOM_PRJLIST, newerValues);
+        		
+        		return null;
+        	}
+        });
         
         // define custom property and reference custom constraint
         
@@ -4048,21 +4131,24 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         
         try
         {
-            startNewTransaction();
-            
-            // Set prjList
-            
-            Map<QName, Serializable> propValues = new HashMap<QName, Serializable>(1);
-            List<String> prjList = new ArrayList<String>(3);
-            prjList.add(PRJ_A);
-            prjList.add(PRJ_B);
-            propValues.put(PROP_CUSTOM_PRJLIST, (Serializable)prjList);
-            this.nodeService.addProperties(recordOne, propValues);
-            
-            // force integrity checking
-            setComplete();
-            endTransaction();
-            
+        	transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+	        {
+	            public Object execute() throws Throwable
+	            {
+        
+		            // Set prjList
+		            
+		            Map<QName, Serializable> propValues = new HashMap<QName, Serializable>(1);
+		            List<String> prjList = new ArrayList<String>(3);
+		            prjList.add(PRJ_A);
+		            prjList.add(PRJ_B);
+		            propValues.put(PROP_CUSTOM_PRJLIST, (Serializable)prjList);
+		            nodeService.addProperties(recordOne, propValues);
+		            
+		            return null;
+	            }
+	        });         
+        
             fail("Should fail with integrity exception"); // user 'dfranco' not allowed 'Project B'
         }
         catch (IntegrityException ie)
@@ -4072,50 +4158,57 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         
         try
         {
-            startNewTransaction();
+        	transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+	        {
+	            public Object execute() throws Throwable
+	            {            
+		            // Set prjList		           
+		            Map<QName, Serializable> propValues = new HashMap<QName, Serializable>(1);
+		            List<String> prjList = new ArrayList<String>(3);
+		            prjList.add(PRJ_A);
+		            propValues.put(PROP_CUSTOM_PRJLIST, (Serializable)prjList);
+		            nodeService.addProperties(recordOne, propValues);
             
-            // Set prjList
-            
-            Map<QName, Serializable> propValues = new HashMap<QName, Serializable>(1);
-            List<String> prjList = new ArrayList<String>(3);
-            prjList.add(PRJ_A);
-            propValues.put(PROP_CUSTOM_PRJLIST, (Serializable)prjList);
-            this.nodeService.addProperties(recordOne, propValues);
-            
-            // force integrity checking
-            setComplete();
-            endTransaction();
+		            return null;
+	            }
+	        });
         }
         catch (IntegrityException ie)
         {
             fail(""+ie);
         }
         
-        startNewTransaction();
-        
-        @SuppressWarnings("unchecked")
-        List<String> prjList = (List<String>)this.nodeService.getProperty(recordOne, PROP_CUSTOM_PRJLIST);
-        assertEquals(1, prjList.size());
-        assertTrue(prjList.contains(PRJ_A));
-        
-        setComplete();
-        endTransaction();
+        transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+        {
+            public Object execute() throws Throwable
+            {        
+		        @SuppressWarnings("unchecked")
+		        List<String> prjList = (List<String>)nodeService.getProperty(recordOne, PROP_CUSTOM_PRJLIST);
+		        assertEquals(1, prjList.size());
+		        assertTrue(prjList.contains(PRJ_A));
+		        
+		        return null;
+            }
+        });
         
         //
         // Test caveats (security interceptors) AFTER setting properties
         //
-        
+
+        int expectedChildCount = nodeService.getChildAssocs(recordFolder).size()-1;
         sanityCheckAccess("dmartinz", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, true, expectedChildCount);
         sanityCheckAccess("gsmith", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, false, expectedChildCount); // denied by rma:prjList ("Project A")
         
-        startNewTransaction();
-        
-        AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
-        
-        addToGroup("gsmith", "Engineering");
-        
-        setComplete();
-        endTransaction();
+        transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>()
+        {
+            public Object execute() throws Throwable
+            {        
+            	AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());        
+            	addToGroup("gsmith", "Engineering");
+            	
+            	return null;
+            }
+        });
         
         sanityCheckAccess("gsmith", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, true, expectedChildCount);
         sanityCheckAccess("dsandy", recordFolder, recordOne, RECORD_NAME, SOME_CONTENT, false, expectedChildCount); // denied by rma:smList  ("NOFORN", "FOUO")

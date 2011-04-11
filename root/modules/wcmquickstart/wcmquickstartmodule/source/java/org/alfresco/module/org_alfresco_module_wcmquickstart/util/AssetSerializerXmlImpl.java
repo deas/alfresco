@@ -319,4 +319,10 @@ public class AssetSerializerXmlImpl implements AssetSerializer
         }
         return valueType;
     }
+
+    @Override
+    public String getMimeType()
+    {
+        return "text/xml";
+    }
 }
