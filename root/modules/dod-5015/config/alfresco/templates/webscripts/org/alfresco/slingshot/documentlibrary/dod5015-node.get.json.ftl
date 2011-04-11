@@ -8,16 +8,16 @@
       <#if doclist.filePlan??>"filePlan": "${doclist.filePlan.nodeRef}",</#if>
       "parent":
       {
-      <#if doclist.parentMeta??>
-         "nodeRef": "${doclist.parentMeta.nodeRef}",
-         "type": "${doclist.parentMeta.type}",
+      <#if doclist.parent??>
+         "nodeRef": "${doclist.parent.node.nodeRef}",
+         "type": "${doclist.parent.type}",
          "permissions":
          {
             "userAccess":
             {
-            <#list doclist.parentMeta.permissions?keys as perm>
-               <#if doclist.parentMeta.permissions[perm]?is_boolean>
-               "${perm?string}": ${doclist.parentMeta.permissions[perm]?string}<#if perm_has_next>,</#if>
+            <#list doclist.parent.userAccess?keys as perm>
+               <#if doclist.parent.userAccess[perm]?is_boolean>
+               "${perm?string}": ${doclist.parent.userAccess[perm]?string}<#if perm_has_next>,</#if>
                </#if>
             </#list>
             }

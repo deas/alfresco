@@ -129,6 +129,14 @@ public abstract class BaseApplicationContextHelper
     }
     
     /**
+     * Is there currently a context loaded and cached?
+     */
+    public static boolean isContextLoaded()
+    {
+        return (instance != null);
+    }
+   
+    /**
      * A wrapper around {@link ClassPathXmlApplicationContext} which
      *  allows us to enable lazy loading or prevent Subsystem 
      *  autostart as requested.

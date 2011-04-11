@@ -1,6 +1,18 @@
+<#assign p = treenode.parent>
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
    "totalResults": ${treenode.items?size?c},
+   "resultsTrimmed": ${treenode.resultsTrimmed?string},
+   "parent":
+   {
+      "nodeRef": "${p.nodeRef}",
+      "userAccess":
+      {
+         "create": ${p.hasPermission("CreateChildren")?string},
+         "edit": ${p.hasPermission("Write")?string},
+         "delete": ${p.hasPermission("Delete")?string}
+      }
+   },
    "items":
    [
    <#list treenode.items as item>

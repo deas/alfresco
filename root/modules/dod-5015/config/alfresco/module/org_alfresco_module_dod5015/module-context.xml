@@ -194,6 +194,20 @@
        <property name="recordsManagementAdminService" ref="recordsManagementAdminService"/>
     </bean>
     
+    <!--  Override email extractor implementation -->
+    
+    <bean id="extracter.RFC822"        
+          class="org.alfresco.module.org_alfresco_module_dod5015.email.RFC822MetadataExtracter"        
+          parent="baseMetadataExtracter" >
+        <property name="nodeService" ref="nodeService"/>
+        <property name="supportedDateFormats">
+         	<list>
+            	<value>EEE, d MMM yyyy HH:mm:ss Z</value>
+            	<value>EEE, d MMM yy HH:mm:ss Z</value>
+         	</list>
+      	</property>
+    </bean>
+    
     <!-- Import the RM webscript's -->
     <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-webscript-context.xml"/>
     

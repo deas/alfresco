@@ -51,6 +51,7 @@ public class PathMapper
      * Cached fine-grained path translations (derived data) 
      */
     private final Map<String, Set<String>> derivedPathMaps;
+    private final Map<String, Set<String>> derivedPathMapsPartial;
     
     /**
      * Default constructor
@@ -63,6 +64,7 @@ public class PathMapper
         
         pathMaps = new HashMap<String, Set<String>>(37);
         derivedPathMaps = new HashMap<String, Set<String>>(127);
+        derivedPathMapsPartial = new HashMap<String, Set<String>>(127);
     }
     
     /**
@@ -92,6 +94,7 @@ public class PathMapper
             }
             pathMaps.clear();
             derivedPathMaps.clear();
+            derivedPathMapsPartial.clear();
         }
         finally
         {
@@ -115,6 +118,7 @@ public class PathMapper
                 throw new IllegalStateException("The PathMapper has been locked against further changes");
             }
             derivedPathMaps.clear();
+            derivedPathMapsPartial.clear();
             Set<String> targetPaths = pathMaps.get(sourcePath);
             if (targetPaths == null)
             {
@@ -135,7 +139,8 @@ public class PathMapper
     }
     
     /**
-     * Gets the remapped paths for the given source path
+     * Gets the remapped paths for the given source path, excluding any derivative
+     * paths i.e. does exact path matching only.
      * 
      * @param sourcePath            the source path
      * @return                      Returns the target paths (never <tt>null</tt>)
@@ -160,6 +165,40 @@ public class PathMapper
         try
         {
             return updateMappedPaths(sourcePath);
+        }
+        finally
+        {
+            writeLock.unlock();
+        }
+    }
+    
+    /**
+     * Gets the remapped paths for the given source path, including any derivative
+     * paths i.e. does partial path matching.
+     * 
+     * @param sourcePath            the source path
+     * @return                      Returns the target paths (never <tt>null</tt>)
+     */
+    public Set<String> getMappedPathsWithPartialMatch(String sourcePath)
+    {
+        readLock.lock();
+        try
+        {
+            Set<String> targetPaths = derivedPathMapsPartial.get(sourcePath);
+            if (targetPaths != null)
+            {
+                return targetPaths;
+            }
+        }
+        finally
+        {
+            readLock.unlock();
+        }
+        // We didn't find anything, so update the cache
+        writeLock.lock();
+        try
+        {
+            return updateMappedPathsPartial(sourcePath);
         }
         finally
         {
@@ -228,6 +267,42 @@ public class PathMapper
         {
             logger.debug(
                     "Cached path mapping: \n" +
+                    "   Source:  " + sourcePath + "\n" +
+                    "   Targets: " + targetPaths);
+        }
+        return targetPaths;
+    }
+    
+    private Set<String> updateMappedPathsPartial(String sourcePath)
+    {
+        // Do a double-check
+        Set<String> targetPaths = derivedPathMapsPartial.get(sourcePath);
+        if (targetPaths != null)
+        {
+            return targetPaths;
+        }
+        targetPaths = new HashSet<String>(17);
+        derivedPathMapsPartial.put(sourcePath, targetPaths);
+        // Now remap it and build the target values
+        for (Map.Entry<String, Set<String>> entry : pathMaps.entrySet())
+        {
+            String mapSourcePath = entry.getKey();
+            Set<String> mapTargetPaths = entry.getValue();
+            // It is not an exact match, so check if it starts with the source
+            int index = mapSourcePath.indexOf(sourcePath);
+            if (index != 0)
+            {
+                // It doesn't match the start, so ignore it
+                continue;
+            }
+            // Record the partial matches
+            targetPaths.addAll(mapTargetPaths);
+        }
+        // Done
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(
+                    "Cached path mapping (partial): \n" +
                     "   Source:  " + sourcePath + "\n" +
                     "   Targets: " + targetPaths);
         }

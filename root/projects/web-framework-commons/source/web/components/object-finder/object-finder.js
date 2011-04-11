@@ -323,6 +323,16 @@
          allowSelectAction: true,
 
          /**
+          * Determines if a link is rendered for content that has children, if true
+          * the content's children can be navigated.
+          *
+          * @property allowNavigationToContentChildren
+          * @type boolean
+          * @default false
+          */
+         allowNavigationToContentChildren: false,
+         
+         /**
           * The action for the select button that triggers the object finder dialog
           *
           * @property selectActionLabel
@@ -1343,6 +1353,7 @@
             var items = response.json.data.items,
                item;
             this.selectedItems = {};
+            //this.singleSelectedItem = null; 
 
             for (var i = 0, il = items.length; i < il; i++)
             {
@@ -2159,7 +2170,8 @@
                return;
             }
 
-            if (oRecord.getData("hasChildren"))
+            if (oRecord.getData("isContainer") ||
+                (!oRecord.getData("isContainer") && (scope.options.allowNavigationToContentChildren || oRecord.getData("type") == "cm:category")))
             {
                template += '<h3 class="item-name"><a href="#" class="theme-color-1 parent-' + scope.eventGroup + '">{name}</a></h3>';
             }
@@ -2167,7 +2179,7 @@
             {
                template += '<h3 class="item-name">{name}</h3>';
             }
-      
+
             if (!scope.options.compactMode)
             {
                template += '<div class="description">{description}</div>';

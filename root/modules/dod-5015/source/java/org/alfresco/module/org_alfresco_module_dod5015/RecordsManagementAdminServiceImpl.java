@@ -38,6 +38,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementPolicies
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint;
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint.MatchLogic;
 import org.alfresco.repo.content.MimetypeMap;
+import org.alfresco.repo.dictionary.DictionaryRepositoryBootstrap;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Aspect;
 import org.alfresco.repo.dictionary.M2Association;
@@ -45,6 +46,7 @@ import org.alfresco.repo.dictionary.M2ChildAssociation;
 import org.alfresco.repo.dictionary.M2ClassAssociation;
 import org.alfresco.repo.dictionary.M2Constraint;
 import org.alfresco.repo.dictionary.M2Model;
+import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.dictionary.M2Property;
 import org.alfresco.repo.policy.ClassPolicyDelegate;
 import org.alfresco.repo.policy.PolicyComponent;
@@ -53,6 +55,7 @@ import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.Constraint;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
+import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.AssociationRef;
@@ -99,6 +102,8 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     private NamespaceService namespaceService;
     private NodeService nodeService;
     private ContentService contentService;
+    
+    private DictionaryRepositoryBootstrap dictonaryRepositoryBootstrap;
 
     private PolicyComponent policyComponent;
     
@@ -144,7 +149,14 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     {
         this.policyComponent = policyComponent;
     }
-	
+    
+    // bootstrap for standard (non-RMC) dynamic models
+    public void setDictionaryRepositoryBootstrap(DictionaryRepositoryBootstrap dictonaryRepositoryBootstrap)
+    {
+        this.dictonaryRepositoryBootstrap = dictonaryRepositoryBootstrap;
+    }
+    
+    
 	/**
 	 * Initialisation method
 	 */
@@ -248,7 +260,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         ParameterCheck.mandatory("label", label);
         ParameterCheck.mandatory("dataType", dataType);
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(propId.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
+        
         M2Aspect customPropsAspect = deserializedModel.getAspect(aspectName);
         
         if (customPropsAspect == null)
@@ -293,7 +307,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             newProp.addConstraintRef(lovConstraintQNameAsString);
         }
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -316,11 +330,13 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         if (newLabel == null) return propQName;
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(propQName.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
+        
         M2Property targetProperty = findProperty(propQName, deserializedModel);
 
         targetProperty.setTitle(newLabel);
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -341,7 +357,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             throw new AlfrescoRuntimeException("DictionaryService does not contain property definition " + propQName);
         }
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(propQName.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
+        
         M2Property targetProp = findProperty(propQName, deserializedModel);
         String dataType = targetProp.getType();
 
@@ -367,7 +385,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         }
         targetProp.addConstraintRef(lovConstraintQNameAsString);
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -387,7 +405,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             throw new AlfrescoRuntimeException("DictionaryService does not contain property definition " + propQName);
         }
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(propQName.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
+        
         M2Property targetProperty = findProperty(propQName, deserializedModel);
         
         // Need to count backwards to remove constraints
@@ -396,7 +416,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             targetProperty.removeConstraintRef(ref);
         }
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -427,7 +447,8 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     {
         ParameterCheck.mandatory("propQName", propQName);
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(propQName.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
         
         String propQNameAsString = propQName.toPrefixString(namespaceService);
         
@@ -469,7 +490,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             throw new AlfrescoRuntimeException("Could not find property to delete: "+propQNameAsString);
         }
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -596,14 +617,17 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         List<ChildAssociationRef> result = nodeService.getParentAssocs(node);
         return result;
     }
-
+    
+    // note: currently RMC custom assocs only
     public QName addCustomAssocDefinition(String label)
     {
         ParameterCheck.mandatoryString("label", label);
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(""); // defaults to RM_CUSTOM_URI
+        M2Model deserializedModel = readCustomContentModel(modelRef);
         
         String aspectName = RecordsManagementAdminServiceImpl.RMC_CUSTOM_ASSOCS;
+        
         M2Aspect customAssocsAspect = deserializedModel.getAspect(aspectName);
         
         if (customAssocsAspect == null)
@@ -640,7 +664,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         // TODO Could be the customAssocs aspect
         newAssoc.setTargetClassName(RecordsManagementAdminServiceImpl.RMA_RECORD);
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -649,15 +673,18 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         return generatedQName;
     }
-
+    
+    // note: currently RMC custom assocs only
     public QName addCustomChildAssocDefinition(String source, String target)
     {
         ParameterCheck.mandatoryString("source", source);
         ParameterCheck.mandatoryString("target", target);
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(""); // defaults to RM_CUSTOM_URI
+        M2Model deserializedModel = readCustomContentModel(modelRef);
         
         String aspectName = RecordsManagementAdminServiceImpl.RMC_CUSTOM_ASSOCS;
+        
         M2Aspect customAssocsAspect = deserializedModel.getAspect(aspectName);
         
         if (customAssocsAspect == null)
@@ -692,7 +719,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         // TODO Could be the custom assocs aspect
         newAssoc.setTargetClassName(RecordsManagementAdminServiceImpl.RMA_RECORD);
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -702,12 +729,14 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         return generatedQName;
     }
     
+    // note: currently RMC custom assocs only
     public QName updateCustomChildAssocDefinition(QName refQName, String newSource, String newTarget)
     {
         String compoundId = getCompoundIdFor(newSource, newTarget);
         return persistUpdatedAssocTitle(refQName, compoundId);
     }
     
+    // note: currently RMC custom assocs only
     public QName updateCustomAssocDefinition(QName refQName, String newLabel)
     {
         return persistUpdatedAssocTitle(refQName, newLabel);
@@ -717,6 +746,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
      * This method writes the specified String into the association's title property.
      * For RM custom properties and references, Title is used to store the identifier.
      */
+    // note: currently RMC custom assocs only
     private QName persistUpdatedAssocTitle(QName refQName, String newTitle)
     {
         ParameterCheck.mandatory("refQName", refQName);
@@ -727,8 +757,11 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             throw new AlfrescoRuntimeException("DictionaryService does not contain association definition " + refQName);
         }
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(""); // defaults to RM_CUSTOM_URI
+        M2Model deserializedModel = readCustomContentModel(modelRef);
+        
         M2Aspect customAssocsAspect = deserializedModel.getAspect(RMC_CUSTOM_ASSOCS);
+        
         for (M2ClassAssociation assoc : customAssocsAspect.getAssociations())
         {
             if (refQName.toPrefixString(namespaceService).equals(assoc.getName()))
@@ -739,7 +772,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
                 }
             }
         }
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -756,7 +789,8 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         ParameterCheck.mandatoryString("title", title);
         ParameterCheck.mandatory("allowedValues", allowedValues);
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(constraintName.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
         
         String constraintNameAsPrefixString = constraintName.toPrefixString(namespaceService);
         
@@ -773,7 +807,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         newCon.createParameter(PARAM_CASE_SENSITIVE, caseSensitive ? "true" : "false");
         newCon.createParameter(PARAM_MATCH_LOGIC, matchLogic.toString());
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -793,7 +827,8 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         ParameterCheck.mandatory("constraintName", constraintName);
         ParameterCheck.mandatory("newAllowedValues", newAllowedValues);
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(constraintName.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
         
         String constraintNameAsPrefixString = constraintName.toPrefixString(namespaceService);
         
@@ -812,7 +847,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         customConstraint.removeParameter(PARAM_ALLOWED_VALUES);
         customConstraint.createParameter(PARAM_ALLOWED_VALUES, newAllowedValues);
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -825,7 +860,8 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         ParameterCheck.mandatory("constraintName", constraintName);
         ParameterCheck.mandatoryString("title", title);
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(constraintName.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
         
         String constraintNameAsPrefixString = constraintName.toPrefixString(namespaceService);
         
@@ -843,7 +879,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         customConstraint.setTitle(title);
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -867,13 +903,14 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         return new ArrayList<ConstraintDefinition>(conDefs);
     }
     
-    public void removeCustomConstraintDefinition(QName constraintQName) 
+    public void removeCustomConstraintDefinition(QName constraintName) 
     {
-        ParameterCheck.mandatory("constraintQName", constraintQName);
+        ParameterCheck.mandatory("constraintName", constraintName);
         
-        M2Model deserializedModel = readCustomContentModel();
+        NodeRef modelRef = getCustomModelRef(constraintName.getNamespaceURI());
+        M2Model deserializedModel = readCustomContentModel(modelRef);
         
-        String constraintNameAsPrefixString = constraintQName.toPrefixString(namespaceService);
+        String constraintNameAsPrefixString = constraintName.toPrefixString(namespaceService);
         
         M2Constraint customConstraint = deserializedModel.getConstraint(constraintNameAsPrefixString);
         if (customConstraint == null)
@@ -883,7 +920,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         deserializedModel.removeConstraint(constraintNameAsPrefixString);
         
-        writeCustomContentModel(deserializedModel);
+        writeCustomContentModel(modelRef, deserializedModel);
         
         if (logger.isInfoEnabled())
         {
@@ -891,9 +928,45 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         }
     }
     
-    private M2Model readCustomContentModel()
+    private NodeRef getCustomModelRef(String uri)
     {
-        ContentReader reader = this.contentService.getReader(RM_CUSTOM_MODEL_NODE_REF,
+        if ((uri.equals("")) || (uri.equals(RecordsManagementModel.RM_CUSTOM_URI)))
+        {
+            // note: short-cut for "rmc" currently assumes that RM custom model does not define additional namespaces
+            return RM_CUSTOM_MODEL_NODE_REF;
+        }
+        else
+        {
+            // ALF-5875
+            List<NodeRef> modelRefs = dictonaryRepositoryBootstrap.getModelRefs();
+            
+            for (NodeRef modelRef : modelRefs)
+            {
+                try
+                {
+                    M2Model model = readCustomContentModel(modelRef);
+                    
+                    for (M2Namespace namespace : model.getNamespaces())
+                    {
+                        if (namespace.getUri().equals(uri))
+                        {
+                            return modelRef;
+                        }
+                    }
+                } 
+                catch (DictionaryException de)
+                {
+                    logger.warn("readCustomContentModel: skip model ("+modelRef+") whilst searching for uri ("+uri+"): "+de);
+                }
+            }
+            
+            throw new AlfrescoRuntimeException("Model not found for uri: "+uri);
+        }
+    }
+    
+    private M2Model readCustomContentModel(NodeRef modelNodeRef)
+    {
+        ContentReader reader = this.contentService.getReader(modelNodeRef,
                                                              ContentModel.TYPE_CONTENT);
         
         if (reader.exists() == false) {throw new AlfrescoRuntimeException("RM CustomModel has no content.");}
@@ -919,10 +992,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         return deserializedModel;
     }
     
-    private void writeCustomContentModel(M2Model deserializedModel)
+    private void writeCustomContentModel(NodeRef modelRef, M2Model deserializedModel)
     {
-        ContentWriter writer = this.contentService.getWriter(RM_CUSTOM_MODEL_NODE_REF,
-                                                             ContentModel.TYPE_CONTENT, true);
+        ContentWriter writer = this.contentService.getWriter(modelRef, ContentModel.TYPE_CONTENT, true);
         writer.setMimetype(MimetypeMap.MIMETYPE_XML);
         writer.setEncoding("UTF-8");
         

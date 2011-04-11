@@ -53,7 +53,7 @@
       this.workflowTypes = [];
 
       YAHOO.Bubbling.on("objectFinderReady", this.onObjectFinderReady, this);
-      YAHOO.Bubbling.on("formContentReady", this.onFormContentReady, this);
+      YAHOO.Bubbling.on("formContentReady", this.onStartWorkflowFormContentReady, this);
 
       return this;
    };
@@ -107,16 +107,14 @@
        */
       onReady: function StartWorkflow_onReady()
       {
-         // Listen for workflow choices
-         this.widgets.workflowDefinitionMenuButton = new YAHOO.widget.Button(this.id + "-workflow-definition-button",
+         this.widgets.workflowDefinitionMenuButton = Alfresco.util.createYUIButton(this, "workflow-definition-button",
+               this.onWorkflowSelectChange,
          {
+            label: this.msg("label.selectWorkflowDefinition"),
+            title: this.msg("title.selectWorkflowDefinition"),
             type: "menu",
-            menu: this.id + "-workflow-definition-menu"
+            menu: "workflow-definition-menu"
          });
-         this.widgets.workflowDefinitionMenuButton.set("label", this.msg("label.selectWorkflowDefinition"));
-         this.widgets.workflowDefinitionMenuButton.set("title", this.msg("title.selectWorkflowDefinition"));
-         this.widgets.workflowDefinitionMenuButton.getMenu().subscribe("click", this.onWorkflowSelectChange, null, this);
-
          return Alfresco.component.StartWorkflow.superclass.onReady.call(this);
       },
 
@@ -196,9 +194,8 @@
       /**
        * Event handler called when the "formContentReady" event is received
        */
-      onFormContentReady: function FormManager_onFormContentReady(layer, args)
+      onStartWorkflowFormContentReady: function FormManager_onStartWorkflowFormContentReady(layer, args)
       {
-         Alfresco.component.StartWorkflow.superclass.onFormContentReady.call(this, layer, args);
          var formEl = Dom.get(this.id + "-workflowFormContainer");
          Dom.removeClass(formEl, "hidden");                  
       }

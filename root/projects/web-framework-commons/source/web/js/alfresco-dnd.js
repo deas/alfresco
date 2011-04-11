@@ -884,7 +884,19 @@
             Dom.setStyle(this.srcShadow, "display", "none");
          }
          //Dom.setStyle(this.srcShadow, "visibility", "hidden");
-
+         var height;
+         if (YAHOO.env.ua.ie)
+         {
+            height = srcEl.offsetHeight;
+         }
+         else
+         {
+            height = Dom.getStyle(srcEl, "height");
+         }
+         if (height)
+         {
+            Dom.setStyle(this.srcShadow, "height", height);
+         }
          p.insertBefore(this.srcShadow, srcEl);
       },
 

@@ -5,6 +5,17 @@
    visibility: hidden;
 }
 
+.my-tasks .toolbar
+{
+   min-height: 2em;
+}
+
+
+.my-tasks .last
+{
+   min-height: 1.2em;
+}
+
 .my-tasks .toolbar div.actions,
 .my-tasks .toolbar div.links
 {

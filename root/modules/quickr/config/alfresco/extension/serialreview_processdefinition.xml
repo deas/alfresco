@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.1" name="swf:serialreview">
+
+   <swimlane name="initiator"/>
+
+   <start-state name="start">
+      <task name="swf:submitSerialReviewTask" swimlane="initiator"/>
+      <transition name="" to="startreview"/>
+   </start-state>
+
+       <decision name="startreview">
+          <event type="node-enter">
+             <script>
+                <variable name="wf_reviewerCount" access="write"/>
+                <variable name="wf_approveCount" access="write"/>
+                <expression>
+                   wf_reviewerCount = bpm_assignees.size();
+                   wf_approveCount = 0;
+                </expression>
+             </script>
+          </event>
+
+          <transition name="serial" to="submitserialreview" />
+       </decision>
+
+
+       <!--               -->
+       <!-- Serial Review -->
+       <!--               -->
+
+       <decision name="submitserialreview">
+          <transition name="endreview" to="endreview" />
+          <transition name="review" to="serialreview">
+             <condition>#{wf_approveCount &lt; wf_reviewerCount}</condition>
+          </transition>
+       </decision>
+
+       <task-node name="serialreview">
+          <task name="wf:reviewTask">
+             <assignment class="org.alfresco.repo.workflow.jbpm.AlfrescoAssignment">
+                <actor>#{bpm_assignees.get(wf_approveCount)}</actor>
+             </assignment>
+             <event type="task-assign">
+                <script>
+                   if (bpm_workflowDueDate != void) taskInstance.dueDate = bpm_workflowDueDate;
+                   if (bpm_workflowPriority != void) taskInstance.priority = bpm_workflowPriority;
+                </script>
+             </event>
+          </task>
+
+          <transition name="approve" to="submitserialreview">
+             <script>
+                <variable name="wf_approveCount" access="read, write"/>
+                <expression>
+                   wf_approveCount = wf_approveCount + 1;
+                </expression>
+             </script>
+          </transition>
+          <transition name="reject" to="endreview" />
+       </task-node>
+
+
+       <!--                -->
+       <!-- End the Review -->
+       <!--                -->
+
+       
+       <decision name="endreview">
+          <transition name="reject" to="rejected" />
+          <transition name="approve" to="approved">
+             <condition>#{wf_approveCount == wf_reviewerCount}</condition>
+          </transition>
+       </decision>
+	   
+	   
+          
+       <task-node name="rejected">
+			<task name="swf:rejectedSerialTask" swimlane="initiator" />
+			<transition to="end" />
+       </task-node>
+	   
+	<task-node name="approved">
+        <task name="swf:approvedSerialTask" swimlane="initiator" />
+        <transition to="end" />
+    </task-node>
+
+
+       <!--                 -->
+       <!-- End the Process -->
+       <!--                 -->
+
+       <end-state name="end"/>
+
+    </process-definition>

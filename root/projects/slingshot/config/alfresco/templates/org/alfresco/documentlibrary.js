@@ -32,7 +32,7 @@ function getLocationType()
 {
    // Need to know what type of node the container is
    var siteId = page.url.templateArgs.site,
-      containerId = template.properties.container,
+      containerId = template.properties.container || "documentLibrary",
       containerType = "cm:folder",
       contentType = "";
 

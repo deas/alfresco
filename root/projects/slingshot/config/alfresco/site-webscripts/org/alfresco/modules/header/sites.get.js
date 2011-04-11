@@ -41,11 +41,11 @@ function main()
    {
       shortName:
       {
-         match: "exact",
+         match: "exact-membership",
          values: []
       }
-   };
-   var currentSite = args.siteId || "",
+   },
+      currentSite = args.siteId || "",
       ignoreCurrentSite = false,
       shortName;
    

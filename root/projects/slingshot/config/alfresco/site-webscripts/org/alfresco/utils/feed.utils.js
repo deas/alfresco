@@ -6,19 +6,26 @@
 const DISPLAY_ITEMS = 999;
 
 /**
- * Takes a URL of an RSS feed and returns an rss object
- * with title and an array of items in the feed.
- *
- * @param uri {String} the uri of the RSS feed
+ * Function to return a URI with a valid http protocol prefix if it does not already have one
  */
-function getRSSFeed(uri, limit)
+function getValidRSSUri(uri)
 {
    var re = /^(http|https):\/\//;
    if (!re.test(uri))
    {
       uri = "http://" + uri;
    }
+   return uri;
+}
 
+/**
+ * Takes a URL of an RSS feed and returns an rss object
+ * with title and an array of items in the feed.
+ *
+ * @param uri {String} the uri of the RSS feed (previously passed through getValidRSSUri())
+ */
+function getRSSFeed(uri, limit)
+{
    limit = limit || DISPLAY_ITEMS;
 
    // We only handle "http" connections for the time being
@@ -62,72 +69,18 @@ function getRSSFeed(uri, limit)
 }
 
 /**
- * Removes leading and trainling whitespace from str
+ * Takes am xml string and prepares it for E4X.
  *
- * @param str {string} String that will be trimmed
- * @return {string} A trimmed string
- */
-function trim(str)
-{
-   return str ? str.replace(/^\s+|\s+$/g, "") : null;
-}
-
-/**
- * Takes am xml string and prepares it for E4X
+ * Removes all comments and instructions and trims the string
  *
  * @param xmlStr {string} An string representing an xml document
  * @return {string} An E4X compatible string
  */
 function prepareForE4X(xmlStr)
 {
-   // Trim
-   if (xmlStr)
-   {
-      xmlStr = trim(xmlStr)
-   }
-   else
-   {
-      return xmlStr;
-   }
-
-   /**
-    * Strip out:
-    * - any processing instructions in the beginning so E4X will work
-    * - any comment blocks in the end so E4X won't complain about multiple top nodes
-    */
-   var filters = [
-      {
-         start: "<!--",
-         end: "-->",
-         after: true
-      },
-      {
-         start: "<?",
-         end: "?>",
-         before: true
-      }
-   ];
-   var filter;
-   for (var i = 0, il = filters.length; i < il; i++)
-   {
-      filter = filters[i];
-      if(filter.before)
-      {
-         while (xmlStr.indexOf(filter.start) == 0)
-         {
-            xmlStr = trim(xmlStr.substring(xmlStr.indexOf(filter.end) + filter.end.length));
-         }
-      }
-      if(filter.after)
-      {
-         while (xmlStr.lastIndexOf(filter.end) == (xmlStr.length - filter.end.length))
-         {
-            xmlStr = trim(xmlStr.substring(0, xmlStr.lastIndexOf(filter.start)));
-         }
-      }
-   }
-
-   return xmlStr;
+   // NOTE: we use the Java regex features here - as the Rhino impl of regex is x100's slower!!
+   var str = new java.lang.String(xmlStr);
+   return new String(str.replaceAll("(<\\?.*?\\?>)|(<!--.*?-->)", "").replaceAll("^[^<]*", "").replaceAll("[^>]*$", ""));
 }
 
 /**
@@ -136,18 +89,17 @@ function prepareForE4X(xmlStr)
  * @param rss {XML} represents an Rss feed
  * @param rssStr {String} represents an Rss feed
  * @param limit {int} The maximum number of items to display
- * @return {object} A feed object with title and items
+ * @return {object} A feed object with title and items with malicious html code removed
  */
 function parseRssFeed(rss, rssStr, limit)
 {
-
    /**
     * We do this (dynamically) as some feeds, e.g. the BBC, leave the trailing slash
     * off the end of the Yahoo Media namespace! Technically this is wrong but what to do.
     */
    var mediaRe = /xmlns\:media="([^"]+)"/;
    var hasMediaExtension = mediaRe.test(rssStr);
-          
+   
    if (hasMediaExtension)
    {
       var result = mediaRe.exec(rssStr);
@@ -155,7 +107,7 @@ function parseRssFeed(rss, rssStr, limit)
       var media = new Namespace( result[1] );
       var fileext = /([^\/]+)$/;
    }
-
+   
    var items = [],
       item,
       obj,
@@ -166,21 +118,21 @@ function parseRssFeed(rss, rssStr, limit)
       {
          break;
       }
-    		   
+      
       obj =
       {
-         "title": item.title.toString(),
-         "description": item.description.toString(),
-         "link": item.link.toString()
+         "title": stringUtils.stripUnsafeHTML(item.title.toString()),
+         "description": stringUtils.stripUnsafeHTML(item.description.toString() || ""),
+         "link": stringUtils.stripUnsafeHTML(item.link.toString())
       };
-            
+      
       if (hasMediaExtension)
       {
          // We only look for the thumbnail as a direct child in RSS
          var thumbnail = item.media::thumbnail;
          if (thumbnail && thumbnail.@url.toString())
          {
-            obj["image"] = thumbnail.@url.toString();
+            obj["image"] = stringUtils.stripUnsafeHTML(thumbnail.@url.toString());
          }
 
          var attachment = item.media::content;
@@ -195,20 +147,20 @@ function parseRssFeed(rss, rssStr, limit)
 
                obj["attachment"] =
                {
-                  "url": contenturl,
-                  "name": filename,
-                  "type": (ext[1] ? ext[1] : "_default")
+                  "url": stringUtils.stripUnsafeHTML(contenturl),
+                  "name": stringUtils.stripUnsafeHTML(filename),
+                  "type": stringUtils.stripUnsafeHTML((ext[1] ? ext[1] : "_default"))
                };
             }
          }
       }
-    		  
+           
       items.push(obj);
       ++count;
    }
 
    return {
-      title: rss.channel.title.toString(),
+      title: stringUtils.stripUnsafeHTML(rss.channel.title.toString()),
       items: items
    };
 }
@@ -219,7 +171,7 @@ function parseRssFeed(rss, rssStr, limit)
  * @param atom {XML} represents an Atom feed
  * @param atomStr {String} represents an Atom feed
  * @param limit {int} The maximum number of items to display
- * @return {object} A feed object with title and items
+ * @return {object} A feed object with title and items with malicious html code removed
  */
 function parseAtomFeed(atom, atomStr, limit)
 {
@@ -248,10 +200,10 @@ function parseAtomFeed(atom, atomStr, limit)
       }
 
       obj = {
-   		"title": entry.title.toString(),
-   		"description": entry.summary.toString().replace(/(target=)/g, "rel="),
-         "link": entry.link[0] ? entry.link[0].@href.toString() : null
-   	};
+         "title": stringUtils.stripUnsafeHTML(entry.title.toString()),
+         "description": stringUtils.stripUnsafeHTML(entry.summary.toString().replace(/(target=)/g, "rel=")),
+         "link": entry.link[0] ? stringUtils.stripUnsafeHTML(entry.link[0].@href.toString()) : null
+      };
      
       if (hasMediaExtension)
       {
@@ -259,7 +211,7 @@ function parseAtomFeed(atom, atomStr, limit)
          var thumbnail = entry.media::thumbnail;
          if (thumbnail && thumbnail.@url.toString())
          {
-            obj["image"] = thumbnail.@url.toString();
+            obj["image"] = stringUtils.stripUnsafeHTML(thumbnail.@url.toString());
          }
          else 
          {
@@ -281,7 +233,7 @@ function parseAtomFeed(atom, atomStr, limit)
                   if (thumbnail && thumbnail.@url.toString())
                   {
                      found = true;
-                     obj["image"] = thumbnail.@url.toString();
+                     obj["image"] = stringUtils.stripUnsafeHTML(thumbnail.@url.toString());
                   }
                }
             }
@@ -294,7 +246,7 @@ function parseAtomFeed(atom, atomStr, limit)
    }
    
    return {
-      title: atom.title.toString(),
+      title: stringUtils.stripUnsafeHTML(atom.title.toString()),
       items: items
    };
 }

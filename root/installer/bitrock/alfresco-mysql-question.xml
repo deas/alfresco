@@ -55,11 +55,13 @@
 		    <description>JDBC Driver:</description>
 		    <default>org.gjt.mm.mysql.Driver</default>
 		</stringParameter>
+		<!--
 		<stringParameter>
 		    <name>jdbc_database</name>
 		    <description>Database name:</description>
 		    <default>alfresco</default>
 		</stringParameter>
+		-->
 		<stringParameter>
 		    <name>jdbc_username</name>
 		    <description>Username:</description>

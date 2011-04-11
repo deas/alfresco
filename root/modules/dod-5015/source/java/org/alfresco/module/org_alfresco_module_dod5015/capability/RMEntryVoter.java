@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -105,7 +104,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UpdateVit
 import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UpgradeDowngradeAndDeclassifyRecordsCapability;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ViewRecordsCapability;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ViewUpdateReasonsForFreezeCapability;
-import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService;
+import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigComponent;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.permissions.impl.SimplePermissionReference;
 import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryVoterException;
@@ -147,7 +146,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
     private PermissionService permissionService;
 
-    private RMCaveatConfigService caveatConfigService;
+    private RMCaveatConfigComponent caveatConfigComponent;
 
     private DictionaryService dictionaryService;
 
@@ -348,9 +347,9 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
         this.nspr = nspr;
     }
 
-    public void setCaveatConfigService(RMCaveatConfigService caveatConfigService)
+    public void setCaveatConfigComponent(RMCaveatConfigComponent caveatConfigComponent)
     {
-        this.caveatConfigService = caveatConfigService;
+        this.caveatConfigComponent = caveatConfigComponent;
     }
 
     public void setDictionaryService(DictionaryService dictionaryService)
@@ -1172,7 +1171,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
             // Ignore config that references method arguments that do not exist
             // Arguably we should deny here but that requires a full impact analysis
             // These entries effectively abstain
-            else if (((cad.parameters.get(0) != null) && (cad.parameters.get(0) >= invocation.getArguments().length))
+            else if (((cad.parameters.get(0) != null) && (cad.parameters.get(0) >= invocation.getArguments().length))            		                                      
                     || ((cad.parameters.get(1) != null) && (cad.parameters.get(1) >= invocation.getArguments().length)))
             {
                 continue;
@@ -1235,7 +1234,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
     private int checkCapability(MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
     {
-        NodeRef testNodeRef = getTestNode(getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+        NodeRef testNodeRef = getTestNode(getNodeService(), getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
         if (testNodeRef == null)
         {
             return AccessDecisionVoter.ACCESS_ABSTAIN;
@@ -1343,10 +1342,25 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
         throw new ACLEntryVoterException("Unknown type");
     }
 
-    private static NodeRef getTestNode(NodeService nodeService, MethodInvocation invocation, Class[] params, int position, boolean parent)
+    private static NodeRef getTestNode(NodeService nodeService, RecordsManagementService rmService, MethodInvocation invocation, Class[] params, int position, boolean parent)
     {
         NodeRef testNodeRef = null;
-        if (StoreRef.class.isAssignableFrom(params[position]))
+        if (position < 0)
+        {
+        	// Test against the fileplan root node
+        	List<NodeRef> rmRoots = rmService.getRecordsManagementRoots();
+        	if (rmRoots.size() != 0)
+        	{
+        		// TODO for now we can take the first one as we only support a single rm site
+        		testNodeRef = rmRoots.get(0);
+        		
+        		if (logger.isDebugEnabled())
+                {
+                    logger.debug("\tPermission test against the rm root node " + nodeService.getPath(testNodeRef));
+                }
+        	}
+        }
+        else if (StoreRef.class.isAssignableFrom(params[position]))
         {
             if (invocation.getArguments()[position] != null)
             {
@@ -1504,9 +1518,9 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
     /**
      * @return the caveatConfigService
      */
-    public RMCaveatConfigService getCaveatConfigService()
+    public RMCaveatConfigComponent getCaveatConfigComponent()
     {
-        return caveatConfigService;
+        return caveatConfigComponent;
     }
 
     /**
@@ -1670,7 +1684,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
         public int evaluate(RMEntryVoter voter, MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
         {
-            NodeRef testNodeRef = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+            NodeRef testNodeRef = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             return voter.getViewRecordsCapability().evaluate(testNodeRef);
         }
 
@@ -1682,10 +1696,10 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
         public int evaluate(RMEntryVoter voter, MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
         {
 
-            NodeRef destination = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+            NodeRef destination = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             QName type = getType(voter.getNodeService(), invocation, params, cad.parameters.get(1), cad.parent);
             // linkee is not null for creating secondary child assocs
-            NodeRef linkee = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(1), cad.parent);
+            NodeRef linkee = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(1), cad.parent);
             QName assocType = null;
             if(cad.parameters.size() > 2)
             {
@@ -1706,13 +1720,13 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
             NodeRef movee = null;
             if (cad.parameters.get(0) > -1)
             {
-                movee = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+                movee = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             }
 
             NodeRef destination = null;
             if (cad.parameters.get(1) > -1)
             {
-                destination = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(1), cad.parent);
+                destination = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(1), cad.parent);
             }
 
             if ((movee != null) && (destination != null))
@@ -1732,7 +1746,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
         public int evaluate(RMEntryVoter voter, MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
         {
-            NodeRef updatee = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+            NodeRef updatee = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             QName aspectQName = null;
             if (cad.parameters.size() > 1)
             {
@@ -1762,7 +1776,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
             NodeRef deletee = null;
             if (cad.parameters.get(0) > -1)
             {
-                deletee = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+                deletee = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             }
             if (deletee != null)
             {
@@ -1783,7 +1797,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
         public int evaluate(RMEntryVoter voter, MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
         {
-            NodeRef updatee = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+            NodeRef updatee = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             Map<QName, Serializable> properties;
             if (QName.class.isAssignableFrom(params[cad.parameters.get(1)]))
             {
@@ -1833,7 +1847,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
         public int evaluate(RMEntryVoter voter, MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
         {
-            NodeRef updatee = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+            NodeRef updatee = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             return voter.getWriteContentCapability().evaluate(updatee);
         }
 
@@ -1844,7 +1858,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
         public int evaluate(RMEntryVoter voter, MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
         {
-            NodeRef assignee = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+            NodeRef assignee = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             return voter.getManageAccessControlsCapability().evaluate(assignee);
         }
 
@@ -1855,7 +1869,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
         public int evaluate(RMEntryVoter voter, MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
         {
-            NodeRef declaree = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+            NodeRef declaree = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             return voter.getDeclareCapability().evaluate(declaree);
         }
 
@@ -1866,7 +1880,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean
 
         public int evaluate(RMEntryVoter voter, MethodInvocation invocation, Class[] params, ConfigAttributeDefintion cad)
         {
-            NodeRef nodeRef = getTestNode(voter.getNodeService(), invocation, params, cad.parameters.get(0), cad.parent);
+            NodeRef nodeRef = getTestNode(voter.getNodeService(), voter.getRecordsManagementService(), invocation, params, cad.parameters.get(0), cad.parent);
             QName propertyQName = getQName(invocation, params, cad.parameters.get(1));
             if(propertyQName.equals(RecordsManagementModel.PROP_HOLD_REASON))
             {

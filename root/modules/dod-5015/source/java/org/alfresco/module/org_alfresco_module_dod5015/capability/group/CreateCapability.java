@@ -77,7 +77,7 @@ public class CreateCapability extends AbstractGroupCapability
                 }
               
             }
-            if (checkFilingUnfrozenUncutoffOpen(destination) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozenUncutoffOpen(destination, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (isRecordFolder(voter.getNodeService().getType(destination)))
                 {
@@ -87,7 +87,7 @@ public class CreateCapability extends AbstractGroupCapability
                     }
                 }
             }
-            if ((checkFilingUnfrozenUncutoff(destination) == AccessDecisionVoter.ACCESS_GRANTED) && isClosed(destination))
+            if ((checkFilingUnfrozenUncutoff(destination, false) == AccessDecisionVoter.ACCESS_GRANTED) && isClosed(destination))
             {
                 if (isRecordFolder(voter.getNodeService().getType(destination)))
                 {
@@ -97,7 +97,7 @@ public class CreateCapability extends AbstractGroupCapability
                     }
                 }
             }
-            if ((checkFilingUnfrozen(destination) == AccessDecisionVoter.ACCESS_GRANTED) && isCutoff(destination))
+            if ((checkFilingUnfrozen(destination, false) == AccessDecisionVoter.ACCESS_GRANTED) && isCutoff(destination))
             {
                 if (isRecordFolder(voter.getNodeService().getType(destination)))
                 {

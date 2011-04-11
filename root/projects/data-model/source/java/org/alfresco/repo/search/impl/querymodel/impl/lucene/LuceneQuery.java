@@ -18,7 +18,9 @@
  */
 package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.alfresco.repo.search.impl.lucene.LuceneUtils;
@@ -33,6 +35,7 @@ import org.alfresco.repo.search.impl.querymodel.Source;
 import org.alfresco.repo.search.impl.querymodel.impl.BaseQuery;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.PropertyAccessor;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Score;
+import org.alfresco.service.cmr.search.SearchParameters;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause;
@@ -42,6 +45,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author andyh
@@ -180,7 +184,8 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
                 {
                     if (LuceneUtils.fieldHasTerm(luceneContext.getLuceneQueryParser().getIndexReader(), luceneField))
                     {
-                        fields[index++] = new SortField(luceneField, (ordering.getOrder() == Order.DESCENDING));
+                        fields[index++] = new SortField(luceneField, getLocale(luceneContext.getLuceneQueryParser().getSearchParameters()), (ordering.getOrder() == Order.DESCENDING));
+                        //fields[index++] = new SortField(luceneField, (ordering.getOrder() == Order.DESCENDING));
                     }
                     else
                     {
@@ -204,6 +209,22 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
         }
 
         return new Sort(fields);
+    }
+    private Locale getLocale(SearchParameters searchParameters)
+    {
+        List<Locale> locales = searchParameters.getLocales();
+        if (((locales == null) || (locales.size() == 0)))
+        {
+            locales = Collections.singletonList(I18NUtil.getLocale());
+        }
+
+        if (locales.size() > 1)
+        {
+            throw new UnsupportedOperationException("Order on text/mltext properties with more than one locale is not curently supported");
+        }
+
+        Locale sortLocale = locales.get(0);
+        return sortLocale;
     }
 
 }

@@ -89,7 +89,7 @@ public class RecordsManagementAuditServiceImplTest extends TestCase
 
 
         // Set the current security context as admin
-        AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
+        AuthenticationUtil.setRunAsUser(AuthenticationUtil.getSystemUserName());
         
         // Stop and clear the log
         rmAuditService.stop();
@@ -178,7 +178,7 @@ public class RecordsManagementAuditServiceImplTest extends TestCase
         updateFilePlan();
         
         final int limit = 1;
-        final String user = AuthenticationUtil.getAdminUserName();        // The user being tested
+        final String user = AuthenticationUtil.getSystemUserName();        // The user being tested
         
         RetryingTransactionCallback<List<RecordsManagementAuditEntry>> testCallback =
             new RetryingTransactionCallback<List<RecordsManagementAuditEntry>>()

@@ -966,7 +966,7 @@
       
       onHelp: function AWE_onHelp()
       {
-         window.open('http://www.alfresco.com/help/34/community/webeditor/','wefhelp');
+         window.open('http://www.alfresco.com/help/34/enterprise/webeditor/','wefhelp');
       },
 
       onQuickEditMouseOver: function AWE_onQuickEditMouseOver(e, args)

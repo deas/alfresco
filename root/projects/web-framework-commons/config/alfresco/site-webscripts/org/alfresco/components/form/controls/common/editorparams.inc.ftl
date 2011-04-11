@@ -5,7 +5,7 @@
 
    editorParameters:
    {
-<#if appearance != "none">
+   <#if appearance != "none">
       height: ${height},
       width: ${width},
       inline_styles: false,
@@ -15,6 +15,7 @@
       theme_advanced_toolbar_align: "left",
       theme_advanced_statusbar_location: "bottom",
       theme_advanced_path: false,
+      language: "${locale?substring(0, 2)?js_string}",
    <#if appearance == "full"> 
       plugins: "fullscreen,table,emotions",
       theme_advanced_resizing: true,

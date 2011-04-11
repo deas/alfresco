@@ -89,6 +89,25 @@
       <property name="basicHttpAuthChallenge"><value>true</value></property>
    </bean>
    
+   <!-- Override Logout Controller - to expire Alfresco tickets -->
+   <bean id="logoutController" class="org.alfresco.web.site.servlet.SlingshotLogoutController">
+      <property name="cacheSeconds" value="-1" />
+      <property name="useExpiresHeader"><value>true</value></property>
+      <property name="useCacheControlHeader"><value>true</value></property>
+      <property name="connectorService" ref="connector.service" />
+   </bean>
+
+   <!-- Override EndPointProxyController to enable Basic HTTP auth challenge on 401 response -->
+   <bean id="endpointController" class="org.springframework.extensions.webscripts.servlet.mvc.EndPointProxyController">
+      <property name="cacheSeconds" value="-1" />
+      <property name="useExpiresHeader"><value>true</value></property>
+      <property name="useCacheControlHeader"><value>true</value></property>
+      <property name="configService" ref="web.config" />
+      <property name="connectorService" ref="connector.service" />
+      <property name="supportedMethods"><null/></property>
+      <property name="basicHttpAuthChallenge"><value>true</value></property>
+   </bean>
+   
    <!-- Override and configure the remote store for Slingshot -->
    <!-- Point to a specific store on the Alfresco instance -->
    <bean id="webframework.store.remote.abstract" parent="webscripts.remotestore" abstract="true" init-method="init">

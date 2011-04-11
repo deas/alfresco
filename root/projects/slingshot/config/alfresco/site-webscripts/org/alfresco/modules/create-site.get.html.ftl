@@ -32,17 +32,17 @@
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-isPublic">${msg("label.access")}:</label></div>
             <div class="yui-u">
-               <input id="${el}-isPublic" type="radio" checked="checked" tabindex="0" name="-" /> ${msg("label.isPublic")}<br />
+               <input id="${el}-isPublic" type="radio" checked="checked" tabindex="0" name="-" /> <label for="${el}-isPublic">${msg("label.isPublic")}</label><br />
                <div class="moderated">
-                  <input id="${el}-isModerated" type="checkbox" tabindex="0" name="-"/> ${msg("label.isModerated")}<br />
-                  <span class="help"><label for="${el}-isModerated">${msg("label.moderatedHelp")}</label></span>
+                  <input id="${el}-isModerated" type="checkbox" tabindex="0" name="-"/> <label for="${el}-isModerated">${msg("label.isModerated")}</label><br />
+                  <span class="help">${msg("label.moderatedHelp")}</span>
                </div>
             </div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first">&nbsp;</div>
             <div class="yui-u">
-               <input id="${el}-isPrivate" type="radio" tabindex="0" name="-" /> ${msg("label.isPrivate")}
+               <input id="${el}-isPrivate" type="radio" tabindex="0" name="-" /> <label for="${el}-isPrivate">${msg("label.isPrivate")}</label>
             </div>
          </div>
          <div class="bdft">

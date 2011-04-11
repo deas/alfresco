@@ -50,7 +50,7 @@
    {
       Alfresco.RM_Audit.superclass.constructor.call(this, "Alfresco.RM_Audit", htmlId,["button", "container", "datasource", "datatable", "paginator", "json", "calendar"]);
       
-      YAHOO.Bubbling.on("PropertyMenuSelected", this.onPropertyMenuSelected, this);
+      //YAHOO.Bubbling.on("PropertyMenuSelected", this.onPropertyMenuSelected, this);
       
       this.showingFilter = false;
       //search filter person
@@ -180,17 +180,18 @@
             //initialize dates in UI
             this.widgets['status-date'] = Dom.get(this.id+'-status-date');
 
-            this.validAuditDates = (this.options.startDate!=="");
-            if (this.validAuditDates)
-            {
-               if (this.options.viewMode==Alfresco.RM_Audit.VIEW_MODE_COMPACT)
-               {
-                  Dom.get(this.id+'-from-date').innerHTML += ' ' + formatDate(fromISO8601(this.options.startDate),   Alfresco.thirdparty.dateFormat.masks.fullDatetime);
-                  Dom.get(this.id+'-to-date').innerHTML += ' ' + formatDate(fromISO8601(this.options.stopDate),   Alfresco.thirdparty.dateFormat.masks.fullDatetime);  
-               }
-            }
+//            this.validAuditDates = (this.options.startDate!=="");
+//            if (this.validAuditDates)
+//            {
+//               if (this.options.viewMode==Alfresco.RM_Audit.VIEW_MODE_COMPACT)
+//               {
+//                  Dom.get(this.id+'-from-date').innerHTML += ' ' + formatDate(fromISO8601(this.options.startDate),   Alfresco.thirdparty.dateFormat.masks.fullDatetime);
+//                  Dom.get(this.id+'-to-date').innerHTML += ' ' + formatDate(fromISO8601(this.options.stopDate),   Alfresco.thirdparty.dateFormat.masks.fullDatetime);  
+//               }
+//            }
             
             //initialise menus
+            /*
             //events menu
             this.widgets['eventMenu'] = new YAHOO.widget.Button(this.id + "-events",
             {
@@ -214,6 +215,7 @@
                   delete me.queryParams.event;
                }
             });
+            */
             
             //initialise calendar pickers
             //fromDate calendar
@@ -237,6 +239,8 @@
             this.widgets.fromCalendar.render();
             this.widgets.toCalendar.render();             
 
+            this.toggleUI();
+            
             //Sets up datatable and datasource.
             var DS = this.widgets['auditDataSource'] = new YAHOO.util.DataSource(this.dataUri,
             {
@@ -377,19 +381,19 @@
       toggleUI: function toggleUI()
       {
          //get started/stopped (status) time
-         var statusDate = (this.options.enabled) ? this.options.startDate : this.options.stopDate;
-         var statusMessage = (this.options.enabled) ? 'label.started-at' : 'label.stopped-at';
-         this.widgets['status-date'].innerHTML = this.msg(statusMessage,formatDate(fromISO8601(statusDate),   Alfresco.thirdparty.dateFormat.masks.fullDatetime));         
+         //var statusDate = (this.options.enabled) ? this.options.startDate : this.options.stopDate;
+         //var statusMessage = (this.options.enabled) ? 'label.started-at' : 'label.stopped-at';
+         //this.widgets['status-date'].innerHTML = this.msg(statusMessage,formatDate(fromISO8601(statusDate),   Alfresco.thirdparty.dateFormat.masks.fullDatetime));         
          
          //update start/stop button
          if (this.options.viewMode==Alfresco.RM_Audit.VIEW_MODE_DEFAULT)
          {   
             this.widgets['toggle'].set('disabled',false);
-            if (!YAHOO.lang.isUndefined(this.options.enabled))
-            {
+            //if (YAHOO.lang.isUndefined(this.options.enabled) == false)
+            //{
                this.widgets['toggle'].set('value',this.options.enabled);               
                this.widgets['toggle'].set('label',(this.options.enabled)? this.msg('label.button-stop') : this.msg('label.button-start'));
-            }
+            //}
          }
       },
       
@@ -524,17 +528,25 @@
       {
          var me = this;
          var dataObj = {
-            destination: args[1].nodeRef
+            destination: args[1].nodeRef,
+            user: this.queryParams.user,
+            size: this.queryParams.size,
+            event: this.queryParams.event,
+            from: this.queryParams.from,
+            to: this.queryParams.to,
+            property: this.queryParams.property
          };
 
          if (this.activePerson)
          {
             dataObj.user = this.activePerson.userName;
          }
+         
+         var theUrl = this.dataUri + this._buildQuery();
 
          Alfresco.util.Ajax.jsonPost(
          {
-            url: Alfresco.constants.PROXY_URI + "api/rma/admin/rmauditlog",
+            url: theUrl,
             dataObj : dataObj,
             successCallback:
             {
@@ -1004,12 +1016,9 @@
       {
          var response = o.response;
          this.options.enabled = response.meta.enabled;
-         this.options.startDate = response.meta.startDate;
-         this.options.stopDate = response.meta.stopDate;
-         if (this.options.viewMode==Alfresco.RM_Audit.VIEW_MODE_DEFAULT)
-         {
-            this.toggleUI();
-         }
+         //this.options.startDate = response.meta.startDate;
+         //this.options.stopDate = response.meta.stopDate;
+         this.toggleUI();
          //update caption
          this.widgets['auditDataTable']._elCaption.innerHTML = this.msg('label.pagination', response.results.length); 
       }

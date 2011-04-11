@@ -202,6 +202,7 @@
                <show id="fdk:double" />
                <show id="fdk:float" />
                <show id="fdk:boolean" />
+               <show id="fdk:with.dot" />
                <show id="cm:categories" />
             </field-visibility>
             <appearance>
@@ -214,6 +215,7 @@
                
                <field id="fdk:text" set="text" />
                <field id="fdk:mltext" set="text" />
+               <field id="fdk:with.dot" set="text" />
                
                <field id="fdk:boolean" set="toggle" />
                
@@ -648,6 +650,7 @@
                <show id="fdk:textMultiple" />
                <show id="fdk:with_underscore" />
                <show id="fdk:with-dash" />
+               <show id="fdk:with.dot" />
                <show id="prop:fdk:duplicate" />
                <show id="assoc:fdk:duplicate" />
             </field-visibility>

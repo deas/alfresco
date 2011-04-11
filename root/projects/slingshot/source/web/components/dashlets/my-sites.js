@@ -29,12 +29,25 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-      Event = YAHOO.util.Event;
+      Event = YAHOO.util.Event,
+      Selector = YAHOO.util.Selector;
 
    /**
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML;
+
+   /**
+    * Use the getDomId function to get some unique names for global event handling
+    */
+   var favEventClass = Alfresco.util.generateDomId(null, "fav-site"),
+      imapEventClass = Alfresco.util.generateDomId(null, "imap-site"),
+      deleteEventClass = Alfresco.util.generateDomId(null, "del-site");
+
+   /**
+    * Preferences
+    */
+   var PREFERENCES_SITES_DASHLET_FILTER = "org.alfresco.share.sites.dashlet.filter";       
 
    /**
     * Dashboard MySites constructor.
@@ -49,6 +62,8 @@
 
       // Initialise prototype properties
       this.preferencesService = new Alfresco.service.Preferences();
+      this.sites = [];
+      this.createSite = null;
 
       // Listen for events from other components
       YAHOO.Bubbling.on("siteDeleted", this.onSiteDeleted, this);
@@ -58,6 +73,24 @@
 
    YAHOO.extend(Alfresco.dashlet.MySites, Alfresco.component.Base,
    {
+      /**
+       * Preferences service to get and set the dashlet's site filter
+       *
+       * @property preferencesService
+       * @type Alfresco.service.Preferences
+       * @private
+       */
+      preferencesService: [],
+
+      /**
+       * Site data
+       *
+       * @property sites
+       * @type array
+       * @private
+       */
+      sites: [],
+
       /**
        * CreateSite module instance.
        *
@@ -75,14 +108,6 @@
       options:
       {
          /**
-          * Site data
-          *
-          * @property sites
-          * @type array
-          */
-         sites: [],
-
-         /**
           * Flag if IMAP server is enabled
           *
           * @property imapEnabled
@@ -94,28 +119,47 @@
 
       /**
        * Date drop-down changed event handler
+       * 
        * @method onTypeFilterChanged
-       * @param p_oMenuItem {object} Selected menu item
+       * @param p_sType {string} The event
+       * @param p_aArgs {array}
        */
-      onTypeFilterChanged: function MySites_onTypeFilterChanged(p_oMenuItem)
+      onTypeFilterChanged: function MySites_onTypeFilterChanged(p_sType, p_aArgs)
       {
-         this.widgets.type.value = p_oMenuItem.value;
+         var menuItem = p_aArgs[1];
+         if (menuItem)
+         {
+            this.widgets.type.set("label", menuItem.cfg.getProperty("text"));
+         }
+         this.widgets.type.value = menuItem.value;
          this.onTypeFilterClicked();
       },
 
       /**
        * Type button clicked event handler
+       *
        * @method onTypeFilterClicked
        * @param p_oEvent {object} Dom event
        */
       onTypeFilterClicked: function MySites_onTypeFilterClicked(p_oEvent)
       {
+         // Save preferences and load sites afterwards
+         this.preferencesService.set(PREFERENCES_SITES_DASHLET_FILTER, this.widgets.type.value, { successCallback:
+         {
+            fn: this.loadSites,
+            scope: this
+         }});
+      },
+
+      loadSites: function()
+      {
+         // Load sites
          Alfresco.util.Ajax.request(
          {
             url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites",
             successCallback:
             {
-               fn: this.getPrefs,
+               fn: this.onSitesLoaded,
                scope: this
             }
          });
@@ -123,19 +167,22 @@
 
       /**
        * Retrieve user preferences
+       *
        * @method getPrefs
        * @param p_response {object} Response from "api/people/{userId}/sites" query
        */
-      getPrefs: function MySites_getPrefs(p_response)
+      onSitesLoaded: function MySites_getPrefs(p_response)
       {
+         // Save sites form response
          var items = p_response.json;
 
+         // Load preferences (after which the appropriate sites will be displayed) 
          Alfresco.util.Ajax.request(
          {
             url: Alfresco.constants.PROXY_URI + "api/people/"+ encodeURIComponent(Alfresco.constants.USERNAME) + "/preferences?pf=org.alfresco.share.sites",
             successCallback:
             {
-               fn: this.onSitesUpdate,
+               fn: this.onPreferencesLoaded,
                scope: this,
                obj: items
             }
@@ -144,22 +191,35 @@
 
       /**
        * Process response from sites and preferences queries
+       *
        * @method onSitesUpdate
        * @param p_response {object} Response from "api/people/{userId}/preferences" query
        * @param p_items {object} Response from "api/people/{userId}/sites" query
        */
-      onSitesUpdate: function MySites_onSitesUpdate(p_response, p_items)
+      onPreferencesLoaded: function MySites_onSitesUpdate(p_response, p_items)
       {
          var favSites = {},
             imapfavSites = {},
             siteManagers, i, j, k, l,
             ii = 0;
 
+         // Save preferences
          if (p_response.json.org)
          {
             favSites = p_response.json.org.alfresco.share.sites.favourites;
             imapfavSites = p_response.json.org.alfresco.share.sites.imapFavourites;
          }
+
+         // Select the preferred filter in the ui
+         var filter = Alfresco.util.findValueByDotNotation(p_response.json, PREFERENCES_SITES_DASHLET_FILTER, "all");
+         if (filter)
+         {
+            this.widgets.type.set("label", this.msg("filter." + filter));
+            this.widgets.type.value = filter;
+         }
+
+         // Display the toolbar now that we have selected the filter
+         Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
 
          for (i = 0, j = p_items.length; i < j; i++)
          {
@@ -181,7 +241,7 @@
             }
          }
 
-         this.options.sites = [];
+         this.sites = [];
          for (i = 0, j = p_items.length; i < j; i++)
          {
             var site =
@@ -197,18 +257,18 @@
 
             if (this.filterAccept(site))
             {
-               this.options.sites[ii] = site;
+               this.sites[ii] = site;
                ii++;
             }
          }
 
          var successHandler = function MD__oFC_success(sRequest, oResponse, oPayload)
          {
-            oResponse.results=this.options.sites;
+            oResponse.results=this.sites;
             this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
          };
 
-         this.widgets.dataSource.sendRequest(this.options.sites,
+         this.widgets.dataSource.sendRequest(this.sites,
          {
             success: successHandler,
             scope: this
@@ -251,101 +311,30 @@
       {
          var me = this;
 
-         // Dropdown filter
+         // Create Dropdown filter
          this.widgets.type = new YAHOO.widget.Button(this.id + "-type",
          {
             type: "split",
             menu: this.id + "-type-menu"
          });
-
          this.widgets.type.on("click", this.onTypeFilterClicked, this, true);
-         this.widgets.type.getMenu().subscribe("click", function (p_sType, p_aArgs)
-         {
-            var menuItem = p_aArgs[1];
-            if (menuItem)
-            {
-               me.widgets.type.set("label", menuItem.cfg.getProperty("text"));
-               me.onTypeFilterChanged.call(me, p_aArgs[1]);
-            }
-         });
-         this.widgets.type.value = "all";
+         this.widgets.type.getMenu().subscribe("click", this.onTypeFilterChanged, this, true);
 
          // Listen on clicks for the create site link
          Event.addListener(this.id + "-createSite-button", "click", this.onCreateSiteLinkClick, this, true);
 
          // DataSource definition
-         this.widgets.dataSource = new YAHOO.util.DataSource(this.options.sites,
+         this.widgets.dataSource = new YAHOO.util.DataSource(this.sites,
          {
             responseType: YAHOO.util.DataSource.TYPE_JSARRAY
          });
 
-         /**
-          * Use the getDomId function to get some unique names for global event handling
-          */
-         var favEventClass = Alfresco.util.generateDomId(null, "fav-site"),
-            imapEventClass = Alfresco.util.generateDomId(null, "imap-site"),
-            deleteEventClass = Alfresco.util.generateDomId(null, "del-site");
-
-         /**
-          * Favourites custom datacell formatter
-          */
-         var renderCellFavourite = function MS_oR_renderCellFavourite(elCell, oRecord, oColumn, oData)
-         {
-            Dom.setStyle(elCell, "width", oColumn.width + "px");
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-
-            var isFavourite = oRecord.getData("isFavourite"),
-               isIMAPFavourite = oRecord.getData("isIMAPFavourite");
-
-            var desc = '<div class="site-favourites">';
-            desc += '<a class="favourite-site ' + favEventClass + (isFavourite ? ' enabled' : '') + '" title="' + me.msg("link.favouriteSite") + '">&nbsp;</a>';
-            if (me.options.imapEnabled)
-            {
-               desc += '<a class="imap-favourite-site ' + imapEventClass + (isIMAPFavourite ? ' imap-enabled' : '') + '" title="' + me.msg("link.imap_favouriteSite") + '">&nbsp;</a>';
-            }
-            desc += '</div>';
-            elCell.innerHTML = desc;
-         };
-
-         /**
-          * Name & description custom datacell formatter
-          */
-         var renderCellName = function MS_oR_renderCellName(elCell, oRecord, oColumn, oData)
-         {
-            var siteId = oRecord.getData("shortName"),
-               siteTitle = oRecord.getData("title"),
-               siteDescription = oRecord.getData("description");
-
-            var desc = '<div class="site-title"><a href="' + Alfresco.constants.URL_PAGECONTEXT + 'site/' + siteId + '/dashboard" class="theme-color-1">' + $html(siteTitle) + '</a></div>';
-            desc += '<div class="site-description">' + $html(siteDescription) + '</div>';
-
-            elCell.innerHTML = desc;
-         };
-
-         /**
-          * Actions custom datacell formatter
-          */
-         var renderCellActions = function MS_oR_renderCellActions(elCell, oRecord, oColumn, oData)
-         {
-            Dom.setStyle(elCell, "width", oColumn.width + "px");
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-
-            var isSiteManager = oRecord.getData("isSiteManager"),
-               desc = "";
-
-            if (isSiteManager)
-            {
-               desc = '<a class="delete-site ' + deleteEventClass + '" title="' + me.msg("link.deleteSite") + '">&nbsp;</a>';
-            }
-            elCell.innerHTML = desc;
-         };
-
          // DataTable column defintions
          var columnDefinitions =
          [
-            { key: "siteId", label: "Favourite", sortable: false, formatter: renderCellFavourite, width: this.options.imapEnabled ? 40 : 20 },
-            { key: "title", label: "Description", sortable: false, formatter: renderCellName },
-            { key: "description", label: "Actions", sortable: false, formatter: renderCellActions, width: 32 }
+            { key: "siteId", label: "Favourite", sortable: false, formatter: this.bind(this.renderCellFavourite), width: this.options.imapEnabled ? 40 : 20 },
+            { key: "title", label: "Description", sortable: false, formatter: this.bind(this.renderCellName) },
+            { key: "description", label: "Actions", sortable: false, formatter: this.bind(this.renderCellActions), width: 32 }
          ];
 
          // DataTable definition
@@ -399,6 +388,63 @@
          // Enable row highlighting
          this.widgets.dataTable.subscribe("rowMouseoverEvent", this.widgets.dataTable.onEventHighlightRow);
          this.widgets.dataTable.subscribe("rowMouseoutEvent", this.widgets.dataTable.onEventUnhighlightRow);
+
+         // Load sites & preferences
+         this.loadSites();
+      },
+
+      /**
+       * Favourites custom datacell formatter
+       */
+      renderCellFavourite: function MySites_renderCellFavourite(elCell, oRecord, oColumn, oData)
+      {
+         Dom.setStyle(elCell, "width", oColumn.width + "px");
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+
+         var isFavourite = oRecord.getData("isFavourite"),
+               isIMAPFavourite = oRecord.getData("isIMAPFavourite");
+
+         var desc = '<div class="site-favourites">';
+         desc += '<a class="favourite-site ' + favEventClass + (isFavourite ? ' enabled' : '') + '" title="' + this.msg("link.favouriteSite") + '">&nbsp;</a>';
+         if (this.options.imapEnabled)
+         {
+            desc += '<a class="imap-favourite-site ' + imapEventClass + (isIMAPFavourite ? ' imap-enabled' : '') + '" title="' + this.msg("link.imap_favouriteSite") + '">&nbsp;</a>';
+         }
+         desc += '</div>';
+         elCell.innerHTML = desc;
+      },
+
+      /**
+       * Name & description custom datacell formatter
+       */
+      renderCellName: function MySites_renderCellName(elCell, oRecord, oColumn, oData)
+      {
+         var siteId = oRecord.getData("shortName"),
+               siteTitle = oRecord.getData("title"),
+               siteDescription = oRecord.getData("description");
+
+         var desc = '<div class="site-title"><a href="' + Alfresco.constants.URL_PAGECONTEXT + 'site/' + siteId + '/dashboard" class="theme-color-1">' + $html(siteTitle) + '</a></div>';
+         desc += '<div class="site-description">' + $html(siteDescription) + '</div>';
+
+         elCell.innerHTML = desc;
+      },
+
+      /**
+       * Actions custom datacell formatter
+       */
+      renderCellActions: function MySites_renderCellActions(elCell, oRecord, oColumn, oData)
+      {
+         Dom.setStyle(elCell, "width", oColumn.width + "px");
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+
+         var isSiteManager = oRecord.getData("isSiteManager"),
+               desc = "";
+
+         if (isSiteManager)
+         {
+            desc = '<a class="delete-site ' + deleteEventClass + '" title="' + this.msg("link.deleteSite") + '">&nbsp;</a>';
+         }
+         elCell.innerHTML = desc;
       },
 
       /**

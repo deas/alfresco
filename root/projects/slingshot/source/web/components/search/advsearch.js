@@ -133,26 +133,24 @@
          // search YUI button and menus
          this.widgets.searchButton1 = Alfresco.util.createYUIButton(this, "search-button-1", this.onSearchClick);
          this.widgets.searchButton2 = Alfresco.util.createYUIButton(this, "search-button-2", this.onSearchClick);
-         this.widgets.formButton = new YAHOO.widget.Button(this.id + "-selected-form-button",
-         {
-            type: "menu",
-            menu: this.id + "-selected-form-list"
-         });
-         this.widgets.formButton.set("label", defaultForm.label);
-         this.widgets.formButton.set("title", defaultForm.description);
-         
-         // event handler for form menu
-         this.widgets.formButton.getMenu().subscribe("click", function(p_sType, p_aArgs)
+
+         this.widgets.formButton = Alfresco.util.createYUIButton(this, "selected-form-button", function(p_sType, p_aArgs)
          {
             // update selected item menu button label
-            var form = me.options.searchForms[p_aArgs[1].index];
-            me.widgets.formButton.set("label", form.label);
-            me.widgets.formButton.set("title", form.description);
-            
+            var form = this.options.searchForms[p_aArgs[1].index];
+            this.widgets.formButton.set("label", form.label);
+            this.widgets.formButton.set("title", form.description);
+
             // render the appropriate form template
-            me.renderFormTemplate(form);
+            this.renderFormTemplate(form);
+         },
+         {
+            label: defaultForm.label,
+            title: defaultForm.description,
+            type: "menu",
+            menu: "selected-form-list"
          });
-         
+
          // render initial form template
          this.renderFormTemplate(defaultForm, true);
          

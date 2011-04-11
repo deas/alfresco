@@ -30,7 +30,6 @@ import java.util.Collection;
  * required on interfaces.
  * 
  * @author David Caruana
- * 
  */
 public final class QName implements QNamePattern, Serializable, Cloneable, Comparable<QName>
 {
@@ -47,7 +46,6 @@ public final class QName implements QNamePattern, Serializable, Cloneable, Compa
     public static final char NAMESPACE_BEGIN = '{';
     public static final char NAMESPACE_END = '}';
     public static final int MAX_LENGTH = 100;
-
     
     /**
      * Create a QName
@@ -175,7 +173,18 @@ public final class QName implements QNamePattern, Serializable, Cloneable, Compa
         return new QName(namespaceURI, localName, null);
     }
 
-
+    /**
+     * Create a QName, optionally truncating the localname to {@link QName#MAX_LENGTH}.
+     * 
+     * @param namespaceURI  the qualifying namespace (maybe null or empty string)
+     * @param localName     the local name, which will be truncated, if necessary
+     * @return              the QName with potentially-truncated localname
+     */
+    public static QName createQNameWithValidLocalName(final String namespaceURI, String localName)
+    {
+        return new QName(namespaceURI, QName.createValidLocalName(localName), null);
+    }
+    
     /**
      * Create a valid local name from the specified name
      * 
@@ -196,7 +205,6 @@ public final class QName implements QNamePattern, Serializable, Cloneable, Compa
 
         return name;
     }
-    
     
     /**
      * Create a QName

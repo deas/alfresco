@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.alfresco.util.CachingDateFormat;
+import org.alfresco.util.Pair;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
@@ -69,9 +70,11 @@ public class DateTimeTokenFilter extends Tokenizer
         while ((candidate = baseTokeniser.next()) != null)
         {
             Date date;
+            int resolution; 
             if (candidate.termText().equalsIgnoreCase("now"))
             {
                 date = new Date();
+                resolution = Calendar.MILLISECOND;
             }
             else if (candidate.termText().equalsIgnoreCase("today"))
             {
@@ -82,13 +85,15 @@ public class DateTimeTokenFilter extends Tokenizer
                 cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
                 cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
                 cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-                
+                resolution = Calendar.DAY_OF_MONTH;
             }
             else
             {
                 try
                 {
-                    date = CachingDateFormat.lenientParse(candidate.termText());
+                    Pair<Date, Integer> parsed = CachingDateFormat.lenientParse(candidate.termText(), Calendar.YEAR);
+                    date = parsed.getFirst();
+                    resolution = parsed.getSecond();
                 }
                 catch (ParseException e)
                 {
@@ -101,86 +106,107 @@ public class DateTimeTokenFilter extends Tokenizer
 
             Token token;
 
-            // four digits
-            token = new Token("YE" + cal.get(Calendar.YEAR), candidate.startOffset(), candidate.startOffset(), candidate.type());
-            tokens.add(token);
-
-            // 2 digits
-            int month = cal.get(Calendar.MONTH);
-            if (month < 10)
+            if(resolution >= Calendar.YEAR)
             {
-                token = new Token("MO0" + month, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
-            }
-            else
-            {
-                token = new Token("MO" + month, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                // four digits
+                token = new Token("YE" + cal.get(Calendar.YEAR), candidate.startOffset(), candidate.startOffset(), candidate.type());
                 tokens.add(token);
             }
 
-            int day = cal.get(Calendar.DAY_OF_MONTH);
-            if (day < 10)
+            if(resolution >= Calendar.MONTH)
             {
-                token = new Token("DA0" + day, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
-            }
-            else
-            {
-                token = new Token("DA" + day, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
-            }
-
-            int hour = cal.get(Calendar.HOUR_OF_DAY);
-            if (hour < 10)
-            {
-                token = new Token("HO0" + hour, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
-            }
-            else
-            {
-                token = new Token("HO" + hour, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
+                // 2 digits
+                int month = cal.get(Calendar.MONTH);
+                if (month < 10)
+                {
+                    token = new Token("MO0" + month, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
+                else
+                {
+                    token = new Token("MO" + month, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
             }
 
-            int minute = cal.get(Calendar.MINUTE);
-            if (minute < 10)
+            if(resolution >= Calendar.DAY_OF_MONTH)
             {
-                token = new Token("MI0" + minute, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
-            }
-            else
-            {
-                token = new Token("MI" + minute, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
-            }
-
-            int second = cal.get(Calendar.SECOND);
-            if (second < 10)
-            {
-                token = new Token("SE0" + second, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
-            }
-            else
-            {
-                token = new Token("SE" + second, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                if (day < 10)
+                {
+                    token = new Token("DA0" + day, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
+                else
+                {
+                    token = new Token("DA" + day, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
             }
 
-            int millis = cal.get(Calendar.MILLISECOND);
-            if (millis < 10)
+            if(resolution >= Calendar.HOUR_OF_DAY)
             {
-                token = new Token("MS00" + millis, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
+                int hour = cal.get(Calendar.HOUR_OF_DAY);
+                if (hour < 10)
+                {
+                    token = new Token("HO0" + hour, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
+                else
+                {
+                    token = new Token("HO" + hour, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
             }
-            else if (millis < 100)
+
+            if(resolution >= Calendar.MINUTE)
             {
-                token = new Token("MS0" + millis, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
+                int minute = cal.get(Calendar.MINUTE);
+                if (minute < 10)
+                {
+                    token = new Token("MI0" + minute, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
+                else
+                {
+                    token = new Token("MI" + minute, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
             }
-            else
+
+            if(resolution >= Calendar.SECOND)
             {
-                token = new Token("MS" + millis, candidate.startOffset(), candidate.startOffset(), candidate.type());
-                tokens.add(token);
+                int second = cal.get(Calendar.SECOND);
+                if (second < 10)
+                {
+                    token = new Token("SE0" + second, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
+                else
+                {
+                    token = new Token("SE" + second, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
+            }
+
+            if(resolution >= Calendar.MILLISECOND)
+            {
+                int millis = cal.get(Calendar.MILLISECOND);
+                if (millis < 10)
+                {
+                    token = new Token("MS00" + millis, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
+                else if (millis < 100)
+                {
+                    token = new Token("MS0" + millis, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
+                else
+                {
+                    token = new Token("MS" + millis, candidate.startOffset(), candidate.startOffset(), candidate.type());
+                    tokens.add(token);
+                }
             }
 
             break;

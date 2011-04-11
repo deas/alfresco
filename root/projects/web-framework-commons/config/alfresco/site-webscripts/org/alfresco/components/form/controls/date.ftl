@@ -48,7 +48,7 @@
          <input id="${controlId}-date" name="-" type="text" class="date-entry" <#if field.description??>title="${field.description}"</#if> <#if disabled>disabled="true"<#else>tabindex="0"</#if> />
       
          <#if disabled == false>
-            <a id="${controlId}-icon"><img src="${url.context}/res/components/form/images/calendar.png" class="datepicker-icon"/></a>
+            <a id="${controlId}-icon"><img src="${url.context}/res/components/form/images/calendar.png" class="datepicker-icon" tabindex="0"/></a>
          </#if>
       
          <div id="${controlId}" class="datepicker"></div>

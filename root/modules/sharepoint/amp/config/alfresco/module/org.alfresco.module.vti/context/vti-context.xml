@@ -45,10 +45,11 @@
     <bean id="vtiFilter" class="org.alfresco.module.vti.web.VtiFilter">
         <property name="authenticationHandler" ref="vtiAuthenticationHandler"/>
         <property name="vtiHandler" ref="vtiHandler"/>
-        <property name="alfrescoContext">
-            <value>${vti.alfresco.deployment.context}</value>
+        <property name="sysAdminParams">
+           <ref bean="sysAdminParams" />
         </property>
     </bean>
+    
     <bean id="vtiRequestDispatcher" class="org.alfresco.module.vti.web.VtiRequestDispatcher">
         <constructor-arg>
             <!-- ACTIONS -->
@@ -214,6 +215,7 @@
         <property name="fileFolderService" ref="FileFolderService" />
         <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
         <property name="authenticationService" ref="AuthenticationService" />
+        <property name="mimetypeService" ref="MimetypeService" />
         <property name="pathHelper" ref="vtiPathHelper"/>
     </bean>
 

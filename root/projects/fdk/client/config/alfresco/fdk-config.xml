@@ -304,6 +304,7 @@
                <show id="prop:fdk:duplicate" />
                <show id="fdk:with_underscore" />
                <show id="fdk:with-dash" />
+               <show id="fdk:with.dot" />
                <show id="fdk:mandatory" />
                <show id="fdk:qname" />
                <show id="fdk:noderef" />

@@ -30,14 +30,17 @@
       <ul id="${el}-ruleTemplate" >         
          <li class="rules-list-item">
             <input type="hidden" class="id" name="id" value=""/>
-            <div class="no">&nbsp;</div>
-            <div class="active-icon">&nbsp;</div>
-            <div class="rule-icon">&nbsp;</div>
+            <div class="rule-icons">
+               <span class="no">&nbsp;</span>
+               <span class="active-icon">&nbsp;</span>
+               <span class="rule-icon">&nbsp;</span>
+            </div>
             <div class="info">
                <a class="title" href="#">Name</a><span class="inherited">&nbsp;</span><br/>
                <span class="inherited-from">&nbsp;</span><a class="inherited-folder">&nbsp;</a>
                <span class="description">Description of the rules will go here</span>
             </div>
+            <div class="clear"></div>
          </li>
       </ul>
    </div>

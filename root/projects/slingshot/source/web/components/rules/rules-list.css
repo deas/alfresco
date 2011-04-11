@@ -12,7 +12,6 @@
    margin-left: 0.25em;
    margin-right: 0.25em;
    background-repeat: no-repeat;
-   background-position: center center;
 }
 
 .rules-list .rules-list-bar
@@ -28,6 +27,7 @@
 .rules-list .rules-list-bar-icon
 {
    margin-left: 0.75em;
+   background-position: center center;
    background-image: url(../images/info-16.png);
 }
 
@@ -57,9 +57,9 @@
 {
    clear: both;
    border-bottom: 1px dotted #ECECEC;
-   height: 3em;
-   padding-top: 0.4em;
+   padding: 0.5em 0;
    background-color: #FBFBFB;
+   text-align: left;
 }
 
 
@@ -73,27 +73,39 @@
    background-color: #D2E5F2;
 }
 
-.rules-list-item .no,
-.rules-list-item .active-icon,
-.rules-list-item .rule-icon,
+.rules-list-item .rule-icons
+{
+   float: left;
+   width: 20%;
+}
 .rules-list-item .info
 {
    float: left;
+   width: 75%;
+}
+
+.rules-list-item .clear
+{
+   clear: both;
+   height: 1px;
 }
 
 .rules-list-item .active-icon
 {
-   background-image: url(../images/enabled-on-16.png)
+   background-image: url(../images/enabled-on-16.png);
+   background-position: center 0.3em;
 }
 
 .rules-list-item .active-icon.disabled
 {
    background-image: url(../images/enabled-off-16.png);
+   background-position: center 0.35em;
 }
 
 .rules-list-item .rule-icon
 {
    background-image: url(../images/rule-16.png);
+   background-position: center 0.35em;
    margin-right: 0.5em;
 }
 

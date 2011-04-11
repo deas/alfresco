@@ -42,7 +42,10 @@
       <filter-name>UrlRewriteFilter</filter-name>
       <url-pattern>/res/*</url-pattern>
    </filter-mapping>
-   
+   <filter-mapping> 
+      <filter-name>UrlRewriteFilter</filter-name> 
+      <url-pattern>/components/*</url-pattern> 
+   </filter-mapping> 
    <filter-mapping>
       <filter-name>CacheExpiresFilter</filter-name>
       <url-pattern>*.jpg</url-pattern>

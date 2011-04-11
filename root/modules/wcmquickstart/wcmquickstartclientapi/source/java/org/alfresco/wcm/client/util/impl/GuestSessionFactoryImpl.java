@@ -87,6 +87,7 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
     {
         CookieManager cm = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cm);
+
         this.repositoryPollInterval = repositoryPollInterval;
 
         // Create session factory

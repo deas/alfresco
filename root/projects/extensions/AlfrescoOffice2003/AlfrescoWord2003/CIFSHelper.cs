@@ -159,6 +159,11 @@ namespace AlfrescoWord2003
          return alfrescoPath;
       }
 
+      EAuthenticationType IServerHelper.GetAuthenticationType()
+      {
+          return EAuthenticationType.NTLM;
+      }
+
       /// <summary>
       /// Set the UNC root path to be used as the working directory
       /// </summary>
@@ -195,7 +200,7 @@ namespace AlfrescoWord2003
                if ((File.GetAttributes(uncPath) & FileAttributes.Directory) == FileAttributes.Directory)
                {
                   // Open the path for read access
-                  m_handle = CreateFile(uncPath, FILE_READ_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
+                   m_handle = CreateFile(uncPath, FILE_READ_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, 0x02000000, IntPtr.Zero);
                }
             }
             catch

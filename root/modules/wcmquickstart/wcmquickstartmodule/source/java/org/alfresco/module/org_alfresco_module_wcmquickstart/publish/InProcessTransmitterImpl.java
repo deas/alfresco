@@ -43,12 +43,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * This class delegates transfer service to the transfer receiver without using
- * any networking.
- * 
- * It is used for unit testing the transfer service without requiring two
- * instance of the repository to be running.
- * 
- * @author Mark Rogers
+ * any networking. 
  */
 public class InProcessTransmitterImpl implements TransferTransmitter
 {
@@ -71,7 +66,7 @@ public class InProcessTransmitterImpl implements TransferTransmitter
         this.transactionService = transactionService;
     }
 
-    public Transfer begin(final TransferTarget target) throws TransferException
+    public Transfer begin(final TransferTarget target, final String fromRepositoryId) throws TransferException
     {
         return transactionService.getRetryingTransactionHelper().doInTransaction(
                 new RetryingTransactionHelper.RetryingTransactionCallback<Transfer>()
@@ -79,7 +74,7 @@ public class InProcessTransmitterImpl implements TransferTransmitter
                     public Transfer execute() throws Throwable
                     {
                         Transfer transfer = new Transfer();
-                        String transferId = receiver.start();
+                        String transferId = receiver.start(fromRepositoryId, true);
                         transfer.setTransferId(transferId);
                         transfer.setTransferTarget(target);
                         return transfer;
@@ -115,45 +110,71 @@ public class InProcessTransmitterImpl implements TransferTransmitter
                 }, false, true);
     }
 
-    public void prepare(Transfer transfer) throws TransferException
+    public void prepare(final Transfer transfer) throws TransferException
     {
-        String transferId = transfer.getTransferId();
-        receiver.prepare(transferId);
+        transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
+                {
+                    public Void execute() throws Throwable
+                    {
+                         String transferId = transfer.getTransferId();
+                         receiver.prepare(transferId);
+                         return null;
+                    }
+                }, false, true);
     }
 
-    public void sendContent(Transfer transfer, Set<ContentData> data)
+    public void sendContent(final Transfer transfer, final Set<ContentData> data)
     {
-        String transferId = transfer.getTransferId();
+        transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
+                {
+                    public Void execute() throws Throwable
+                    {
+                        String transferId = transfer.getTransferId();
+                
+                        for(ContentData content : data)
+                        {
+                            String contentUrl = content.getContentUrl();
+                            String fileName = TransferCommons.URLToPartName(contentUrl);
 
-        for (ContentData content : data)
-        {
-            String contentUrl = content.getContentUrl();
-            String fileName = TransferCommons.URLToPartName(contentUrl);
-
-            InputStream contentStream = getContentService().getRawReader(contentUrl).getContentInputStream();
-            receiver.saveContent(transferId, fileName, contentStream);
-        }
+                            InputStream contentStream = getContentService().getRawReader(contentUrl).getContentInputStream();
+                            receiver.saveContent(transferId, fileName, contentStream);
+                        }
+                        return null;
+                    }
+                }, false, true);
     }
 
-    public void sendManifest(Transfer transfer, File manifest, OutputStream results) throws TransferException
+    public void sendManifest(final Transfer transfer, final File manifest,
+            final OutputStream results) throws TransferException
     {
-        try
+        transactionService
+                .getRetryingTransactionHelper()
+                .doInTransaction(
+                        new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
         {
-            String transferId = transfer.getTransferId();
-            FileInputStream fs = new FileInputStream(manifest);
-            receiver.saveSnapshot(transferId, fs);
-            receiver.generateRequsite(transferId, results);
-            results.close();
-        }
-        catch (FileNotFoundException error)
-        {
-            throw new TransferException("Failed to find snapshot file: " + manifest.getPath(), error);
-        }
-        catch (IOException e)
-        {
-            throw new TransferException("Failed to either read snapshot file or write requisite file: "
-                    + manifest.getPath(), e);
-        }
+            public Void execute() throws Throwable
+            {
+                try
+                {
+                    String transferId = transfer.getTransferId();
+                    FileInputStream fs = new FileInputStream(manifest);
+                    receiver.saveSnapshot(transferId, fs);
+                    receiver.generateRequsite(transferId, results);
+                    results.close();
+                    return null;
+                } 
+                catch (FileNotFoundException error)
+                {
+                    throw new TransferException("Failed to find snapshot file: "
+                                                    + manifest.getPath(), error);
+                } 
+                catch (IOException e)
+                {
+                    throw new TransferException("Failed to either read snapshot file or write requisite file: "
+                                                    + manifest.getPath(), e);
+                }
+            }
+        }, false, true);
     }
 
     public void verifyTarget(TransferTarget target) throws TransferException
@@ -161,10 +182,20 @@ public class InProcessTransmitterImpl implements TransferTransmitter
 
     }
 
-    public TransferProgress getStatus(Transfer transfer) throws TransferException
+    public TransferProgress getStatus(final Transfer transfer)
+            throws TransferException
     {
-        String transferId = transfer.getTransferId();
-        return receiver.getStatus(transferId);
+        return transactionService
+                .getRetryingTransactionHelper()
+                .doInTransaction(
+                        new RetryingTransactionHelper.RetryingTransactionCallback<TransferProgress>()
+                        {
+                            public TransferProgress execute() throws Throwable
+                            {
+                                String transferId = transfer.getTransferId();
+                                return receiver.getStatus(transferId);
+                            }
+                        }, false, true);
     }
 
     @Override

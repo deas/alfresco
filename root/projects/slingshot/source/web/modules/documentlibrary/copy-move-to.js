@@ -258,7 +258,8 @@
                requestContentType: Alfresco.util.Ajax.JSON,
                dataObj:
                {
-                  nodeRefs: multipleFiles
+                  nodeRefs: multipleFiles,
+		  parentId: this.options.parentId
                }
             }
          });

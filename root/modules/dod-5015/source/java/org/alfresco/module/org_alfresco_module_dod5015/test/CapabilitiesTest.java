@@ -37,11 +37,15 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.DOD5015Model;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
+import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementServiceImpl;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.CompleteEventAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.FreezeAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.TransferAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.TransferCompleteAction;
+import org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditQueryParameters;
+import org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService;
+import org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.ReportFormat;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.Capability;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMEntryVoter;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
@@ -101,6 +105,8 @@ public class CapabilitiesTest extends TestCase
     private RecordsManagementActionService recordsManagementActionService;
 
     private RecordsManagementEventService recordsManagementEventService;
+    
+    private RecordsManagementAuditService recordsmanasgementAuditService;
 
     private PermissionModel permissionModel;
 
@@ -191,14 +197,19 @@ public class CapabilitiesTest extends TestCase
         recordsManagementSecurityService = (RecordsManagementSecurityService) ctx.getBean("RecordsManagementSecurityService");
         recordsManagementActionService = (RecordsManagementActionService) ctx.getBean("RecordsManagementActionService");
         recordsManagementEventService = (RecordsManagementEventService) ctx.getBean("RecordsManagementEventService");
+        recordsmanasgementAuditService = (RecordsManagementAuditService) ctx.getBean("RecordsManagementAuditService");
         rmEntryVoter = (RMEntryVoter) ctx.getBean("rmEntryVoter");
 
         testTX = transactionService.getUserTransaction();
         testTX.begin();
         AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getSystemUserName());
 
-        StoreRef storeRef = nodeService.createStore(StoreRef.PROTOCOL_WORKSPACE, "Test_" + System.currentTimeMillis());
+        StoreRef storeRef = nodeService.createStore(StoreRef.PROTOCOL_WORKSPACE, "Test_" + System.currentTimeMillis());        
         rootNodeRef = nodeService.getRootNode(storeRef);
+        
+        // Set the default store reference
+        RecordsManagementServiceImpl rmImpl = (RecordsManagementServiceImpl)ctx.getBean("recordsManagementService");
+        rmImpl.setDefaultStoreRef(storeRef);
 
         AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
 
@@ -5688,7 +5699,7 @@ public class CapabilitiesTest extends TestCase
         checkPermission(rm_power_user, filePlan, RMPermissionModel.DECLARE_AUDIT_AS_RECORD, AccessStatus.DENIED);
         checkPermission(rm_user, filePlan, RMPermissionModel.DECLARE_AUDIT_AS_RECORD, AccessStatus.DENIED);
     }
-
+    
     public void testDeclareRecordsCapability()
     {
         // Folder
@@ -6190,11 +6201,42 @@ public class CapabilitiesTest extends TestCase
     {
         // capability is checked above - just check permission assignments
         checkPermission(AuthenticationUtil.getSystemUserName(), filePlan, RMPermissionModel.DELETE_AUDIT, AccessStatus.ALLOWED);
+        clearAuditImpl(AuthenticationUtil.getSystemUserName(), RMPermissionModel.DELETE_AUDIT, true);
+        
         checkPermission(rm_administrator, filePlan, RMPermissionModel.DELETE_AUDIT, AccessStatus.ALLOWED);
+        clearAuditImpl(rm_administrator, RMPermissionModel.DELETE_AUDIT, true);
+        
         checkPermission(rm_records_manager, filePlan, RMPermissionModel.DELETE_AUDIT, AccessStatus.ALLOWED);
+        clearAuditImpl(rm_records_manager, RMPermissionModel.DELETE_AUDIT, true);
+        
         checkPermission(rm_security_officer, filePlan, RMPermissionModel.DELETE_AUDIT, AccessStatus.DENIED);
+        clearAuditImpl(rm_security_officer, RMPermissionModel.DELETE_AUDIT, false);
+        
         checkPermission(rm_power_user, filePlan, RMPermissionModel.DELETE_AUDIT, AccessStatus.DENIED);
+        clearAuditImpl(rm_power_user, RMPermissionModel.DELETE_AUDIT, false);
+        
         checkPermission(rm_user, filePlan, RMPermissionModel.DELETE_AUDIT, AccessStatus.DENIED);
+        clearAuditImpl(rm_user, RMPermissionModel.DELETE_AUDIT, false);
+    }
+    
+    private void clearAuditImpl(String user, String capability, boolean allowed)
+    {
+    	AuthenticationUtil.setFullyAuthenticatedUser(user);
+        try
+        {
+            recordsmanasgementAuditService.clear();
+            if (allowed == false)
+            {
+            	fail("The user " + user + " does not have capability " + capability + " so shouldn't be able to execute method clearAudt.");
+            }
+        }
+        catch (AccessDeniedException ade)
+        {
+        	if (allowed == true)
+        	{
+        		fail("The user " + user + " does have capability " + capability + " so should be able to execute method clearAudt.");
+        	}
+        }    	
     }
 
     public void testDeleteLinksCapability()

@@ -6,11 +6,11 @@
 model.treenode = getTreenode();
 
 /* Create collection of folders in the given space */
-function getTreenode(siteId, path)
+function getTreenode()
 {
    try
    {
-      var items = [],
+      var items = new Array(),
          hasSubfolders = true,
          parsedArgs = ParseArgs.getParsedArgs(),
          skipPermissionCheck = args["perms"] == "false",
@@ -78,7 +78,9 @@ function getTreenode(siteId, path)
    
       return (
       {
-         "items": items
+         parent: parsedArgs.pathNode,
+         resultsTrimmed: false,
+         items: items
       });
    }
    catch(e)

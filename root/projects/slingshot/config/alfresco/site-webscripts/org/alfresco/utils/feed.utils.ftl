@@ -5,7 +5,7 @@
 </#if>
    <h4>
       <#if (item.link?exists)>
-      <a href="${item.link}" target="${target}" class="theme-color-1">${item.title?html}</a>
+      <a href="${item.link}" target="${target}" class="theme-color-1">${item.title}</a>
       <#else>
       ${item.title}
       </#if>

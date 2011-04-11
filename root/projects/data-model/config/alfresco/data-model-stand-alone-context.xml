@@ -103,6 +103,7 @@
       <property name="charactersetFinders">
          <list>
             <bean class="org.alfresco.encoding.GuessEncodingCharsetFinder" />
+            <bean class="org.alfresco.encoding.TikaCharsetFinder" />
          </list>
       </property>
     </bean>

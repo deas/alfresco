@@ -27,5 +27,13 @@ namespace AlfrescoPowerPoint2003
       string GetAlfrescoPath(string documentPath);
       string GetAuthenticationTicket();
       string GetAuthenticationTicket(string Username, string Password);
+      EAuthenticationType GetAuthenticationType();
+   }
+
+   public enum EAuthenticationType : int
+   {
+       BASIC,
+       NTLM,
+       NEGOTIATE
    }
 }

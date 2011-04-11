@@ -359,7 +359,7 @@
             theme_advanced_path : false,
             theme_advanced_resizing: true,
             siteId: this.options.siteId,
-            language:this.options.locale         
+            language: this.options.locale
          });
          this.pageEditor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.wiki"));
          this.pageEditor.render();

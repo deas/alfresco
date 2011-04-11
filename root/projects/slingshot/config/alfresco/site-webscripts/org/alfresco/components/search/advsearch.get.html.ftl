@@ -36,7 +36,7 @@
                <ul>
                   <#list searchForms as f>
                   <li>
-                     <span class="form-type-name">${f.label?html}</span>
+                     <span class="form-type-name" tabindex="0">${f.label?html}</span>
                      <span class="form-type-description">${f.description?html}</span>
                   </li>
                   </#list>

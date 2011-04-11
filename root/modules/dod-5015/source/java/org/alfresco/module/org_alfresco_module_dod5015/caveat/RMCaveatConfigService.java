@@ -20,16 +20,11 @@ package org.alfresco.module.org_alfresco_module_dod5015.caveat;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.model.ContentModel;
-import org.alfresco.repo.content.MimetypeMap;
-import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
 
 public interface RMCaveatConfigService

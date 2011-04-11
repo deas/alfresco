@@ -1,27 +1,22 @@
 /*
  * Copyright (C) 2005-2010 Alfresco Software Limited.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful,
+* This file is part of Alfresco
+*
+* Alfresco is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
-
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
- * As a special exception to the terms and conditions of version 2.0 of 
- * the GPL, you may redistribute this Program in connection with Free/Libre 
- * and Open Source Software ("FLOSS") applications as described in Alfresco's 
- * FLOSS exception.  You should have recieved a copy of the text describing 
- * the FLOSS exception, and it is also available here: 
- * http://www.alfresco.com/legal/licensing"
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.alfresco.repo.lotus.ws.impl.helper;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +44,6 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespaceService;
-//import org.alfresco.util.AbstractLifecycleBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
@@ -220,9 +214,10 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
 
     /**
      * @param nodeRef NodeRef of the document/folder.
+     * @param remLeadSlash if true then leading slash will be removed from path
      * @return Path to the document/folder.
      */
-    public String getNodePath(NodeRef nodeRef)
+    public String getNodePath(NodeRef nodeRef, boolean remLeadSlash)
     {
         String urlPath;
         if (nodeRef.equals(rootNodeRef))
@@ -236,7 +231,10 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
                     + ((String) nodeService.getProperty(rootNodeRef, ContentModel.PROP_NAME)).length() + 1);
             if (builder.length() != 0)
             {
-                builder.deleteCharAt(0);
+                if (remLeadSlash)
+                {
+                    builder.deleteCharAt(0);
+                }
                 builder.append("/");
             }
             String nodeName = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
@@ -311,7 +309,8 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
      */
     public String getShareDocumentUrl()
     {
-        return sysAdminParams.getShareProtocol() + "://"+ sysAdminParams.getShareHost() +":"+ sysAdminParams.getSharePort() +"/" + sysAdminParams.getShareContext() + shareDocumentUrl;
+        return sysAdminParams.getShareProtocol() + "://" + sysAdminParams.getShareHost() + ":" + sysAdminParams.getSharePort() + "/" + sysAdminParams.getShareContext()
+                + shareDocumentUrl;
     }
 
     /**
@@ -319,12 +318,14 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
      */
     public String getShareFolderUrl()
     {
-        return sysAdminParams.getShareProtocol() + "://"+ sysAdminParams.getShareHost() +":"+ sysAdminParams.getSharePort() +"/" + sysAdminParams.getShareContext() + shareFolderUrl;
+        return sysAdminParams.getShareProtocol() + "://" + sysAdminParams.getShareHost() + ":" + sysAdminParams.getSharePort() + "/" + sysAdminParams.getShareContext()
+                + shareFolderUrl;
     }
 
     public String getShareSiteUrl()
     {
-        return sysAdminParams.getShareProtocol() + "://"+ sysAdminParams.getShareHost() +":"+ sysAdminParams.getSharePort() +"/" + sysAdminParams.getShareContext() + shareSiteUrl;
+        return sysAdminParams.getShareProtocol() + "://" + sysAdminParams.getShareHost() + ":" + sysAdminParams.getSharePort() + "/" + sysAdminParams.getShareContext()
+                + shareSiteUrl;
     }
 
     /**
@@ -423,6 +424,28 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
     }
 
     /**
+     * Return original document for provided workink copy. If provided nodeRef is not working copy return it.
+     * 
+     * @param nodeRef
+     * @return
+     */
+    public NodeRef getOriginalDocument(NodeRef nodeRef)
+    {
+        if (isInRmSite(nodeRef))
+        {
+            return nodeRef;
+        }
+
+        if (!nodeService.hasAspect(nodeRef, ContentModel.ASPECT_WORKING_COPY))
+        {
+            return nodeRef;
+        }
+
+        return (NodeRef) nodeService.getProperty(nodeRef, ContentModel.PROP_COPY_REFERENCE);
+
+    }
+
+    /**
      * Check, if provided content lie in Records Management site.
      * 
      * @param nodeRef NodeRef
@@ -431,16 +454,94 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
     public boolean isInRmSite(NodeRef nodeRef)
     {
         NodeRef parent = nodeService.getPrimaryParent(nodeRef).getParentRef();
-        while (!nodeService.getType(parent).equals(SiteModel.TYPE_SITE))
+        while (parent != null && !nodeService.getType(parent).equals(SiteModel.TYPE_SITE))
         {
             nodeRef = parent;
             parent = nodeService.getPrimaryParent(nodeRef).getParentRef();
         }
 
-        if (nodeService.getType(nodeRef).equals(ContentModel.TYPE_FOLDER))
+        if (parent == null || nodeService.getType(nodeRef).equals(ContentModel.TYPE_FOLDER))
         {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Find the site where document is located
+     * 
+     * @param documentNodeRef the document's nodeRef
+     * @return the name of the site where document is located
+     */
+    public String getSiteNameForDocument(NodeRef documentNodeRef)
+    {
+        String siteName = null;
+
+        NodeRef siteNodeRef = documentNodeRef;
+
+        boolean founded = false;
+
+        // find site
+        while (!founded && (siteNodeRef != null && nodeService.getPrimaryParent(siteNodeRef) != null))
+        {
+            siteNodeRef = nodeService.getPrimaryParent(siteNodeRef).getParentRef();
+
+            if (siteNodeRef != null && nodeService.getType(siteNodeRef).equals(SiteModel.TYPE_SITE))
+            {
+                founded = true;
+            }
+        }
+
+        if (founded)
+        {
+            // get site short name
+            siteName = (String) nodeService.getProperty(siteNodeRef, ContentModel.PROP_NAME);
+        }
+
+        return siteName;
+
+    }
+
+    /**
+     * Check if provided "child" is real child of provided "parent".
+     * 
+     * @param child child node to chek.
+     * @param parent supposed parent.
+     * @return
+     */
+    public boolean isChild(NodeRef child, NodeRef parent)
+    {
+        boolean result = false;
+
+        while (!result && (child != null && nodeService.getPrimaryParent(child) != null))
+        {
+            child = nodeService.getPrimaryParent(child).getParentRef();
+
+            if (parent.equals(child))
+            {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Generate a unique name that can be used to create a child of the given parentNode.
+     * 
+     * @param topicFolderRef parentNode
+     * @return unique name that can be used to create a child of the given parentNode.
+     */
+    public String getUniqueName(NodeRef folderRef)
+    {
+        String name = "post-" + System.currentTimeMillis();
+        String finalName = name + "_" + (int) Math.floor(Math.random() * 1000);
+        int count = 0;
+        while (nodeService.getChildByName(folderRef, ContentModel.ASSOC_CONTAINS, finalName) != null && count < 100)
+        {
+            finalName = name + "_" + (int) Math.floor(Math.random() * 1000);
+            count++;
+        }
+        return finalName;
     }
 }

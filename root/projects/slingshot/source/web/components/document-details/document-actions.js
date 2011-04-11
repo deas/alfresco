@@ -246,8 +246,15 @@
                this.doclistMetadata.onlineEditing &&
                assetData.mimetype in this.onlineEditMimetypes)
             {
-               var loc = assetData.location;
-               assetData.onlineEditUrl = window.location.protocol.replace(/https/i, "http") + "//" + this.options.vtiServer.host + ":" + this.options.vtiServer.port + "/" + $combine("alfresco", loc.site, loc.container, loc.path, loc.file);
+               var loc = assetData.location,
+                  uri = this.options.vtiServer.host + ":" + this.options.vtiServer.port + "/" + $combine("alfresco", loc.site, loc.container, loc.path, loc.file);
+               
+               if (!(/^(http|https):\/\//).test(uri))
+               {
+                  // VTI server doesn't support HTTPS directly
+                  uri = window.location.protocol.replace(/https/i, "http") + "//" + uri;
+               }
+               assetData.onlineEditUrl = uri;
                userAccess["online-edit"] = true;
             }
             

@@ -303,6 +303,9 @@
             <property name="fdk:with-dash">
                <type>d:text</type>
             </property>
+            <property name="fdk:with.dot">
+               <type>d:text</type>
+            </property>
             <property name="fdk:mandatory">
                <type>d:text</type>
                <mandatory>true</mandatory>

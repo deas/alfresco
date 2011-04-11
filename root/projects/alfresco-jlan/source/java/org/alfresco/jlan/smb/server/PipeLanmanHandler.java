@@ -150,6 +150,19 @@ class PipeLanmanHandler {
 			break;
 		}
 
+		// Check if the transaction packet has allocated an associated packet from the pool, we need to copy the associated packet
+		// to the outer request packet so that it is released back to the pool.
+		
+		if ( tpkt.hasAssociatedPacket()) {
+
+ 				Debug.println("[SMB] PipeLanManHandler allocated associated packet, len=" + tpkt.getAssociatedPacket().getBufferLength());
+			
+			// Copy the associated packet to the outer request packet
+			
+			trans.setAssociatedPacket( tpkt.getAssociatedPacket());
+			tpkt.setAssociatedPacket( null);
+		}
+		
 		// Return the transaction processed status
 
 		return processed;

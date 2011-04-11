@@ -173,7 +173,7 @@
          var description = '';
          if (this.options.editMode)
          {
-            description = $html(this.linkData.description);
+            description = this.linkData.description;
          }
          Dom.get(this.id + '-description').value = description;
 

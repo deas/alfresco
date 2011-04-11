@@ -2,17 +2,20 @@
    <#include "./rm-console-access.ftl">
 <#else>
 <script type="text/javascript">//<![CDATA[
+   <#--
    new Alfresco.RMPropertyMenu('${htmlid}-audit-property').setOptions(
    {
       showIdentiferField: true,
       showAllField: true,
       customFields: YAHOO.lang.JSON.parse('[<#list meta as d>{"id": "${d.name}", "title": "${d.title?js_string}"}<#if d_has_next>,</#if></#list>]')
    });
+   -->
    new Alfresco.RM_Audit('${htmlid}-audit').setOptions(
    {
       siteId: "${page.url.templateArgs.site!"rm"}",
       containerId: "${template.properties.container!"documentLibrary"}",
       viewMode: Alfresco.RM_Audit.VIEW_MODE_DEFAULT,
+      enabled : ${enabled?string},
       auditEvents: ${eventsStr}
    }).setMessages(${messages});
 //]]</script>
@@ -22,19 +25,18 @@
       <div class="yui-u first">
           <div id="${htmlid}-audit-info" class="audit-info">
              <h2>${msg("label.header-title")}</h2>
-             <p id="${htmlid}-audit-status-date" class="audit-status-date">${msg('label.default-message')}</p>
           </div>
       </div>
       <div class="yui-u">
          <div id="${htmlid}-auditActions" class="auditActions">
-            <button id="${htmlid}-audit-toggle" disabled name="${htmlid}-audit-toggle"  class="audit-toggle">${msg('label.button-start')}</button>
+            <button id="${htmlid}-audit-toggle" disabled name="${htmlid}-audit-toggle" class="audit-toggle"><#if enabled>${msg('label.button-start')}<#else>${msg('label.button-stop')}</#if></button>
             <button id="${htmlid}-audit-view" name="audit-view" class="audit-view">${msg("label.button-view-log")}</button>
             <button id="${htmlid}-audit-clear" name="audit-clear" class="audit-clear">${msg("label.button-clear")}</button>
          </div>
       </div>
     </div>    
     <div class="filters">
-      <div class="yui-gb">
+      <div class="yui-g">
          <div class="yui-g first">
             <div class="yui-u first">
                <div id="${htmlid}-entriesFilter" class="filter">
@@ -66,7 +68,7 @@
                </div>
             </div>
          </div>
-      
+         <#--
          <div class="yui-g">
             <div class="yui-u first">
                <div id="${htmlid}-eventsFilter" class="filter">
@@ -95,6 +97,7 @@
                </div>
             </div>
          </div>
+         -->
          <div class="yui-g">
             <div class="yui-u first">
                <div id="${htmlid}-userFilter" class="filter">

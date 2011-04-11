@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("AlfrescoPowerPoint2003")]
 [assembly: AssemblyDescription("Alfresco Add-In for Microsoft PowerPoint 2003")]
-[assembly: AssemblyConfiguration("Community")]
+[assembly: AssemblyConfiguration("Enterprise")]
 [assembly: AssemblyCompany("Alfresco")]
 [assembly: AssemblyProduct("Alfresco PowerPoint 2003 Add-In")]
 [assembly: AssemblyCopyright("Copyright © Alfresco 2007-2010")]

@@ -56,6 +56,7 @@
          <@mimetypeOption mt="application/vnd.openxmlformats-officedocument.presentationml.presentation" />
          <@mimetypeOption mt="application/msword" />
          <@mimetypeOption mt="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+         <@mimetypeOption mt="application/vnd.ms-outlook" />
          <@mimetypeOption mt="audio/x-mpeg" />
          <@mimetypeOption mt="video/mpeg" />
          <@mimetypeOption mt="video/mpeg2" />
@@ -165,6 +166,8 @@
       <#return "Microsoft PowerPoint 2007">
    <#elseif mt=="application/vnd.openxmlformats-officedocument.wordprocessingml.document">
       <#return "Microsoft Word 2007">
+   <#elseif mt=="application/vnd.ms-outlook">
+      <#return "Microsoft Outlook Message">
    <#elseif mt=="text/richtext">
       <#return "Rich Text">
    <#elseif mt=="application/rtf">

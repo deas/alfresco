@@ -175,6 +175,9 @@
          this.widgets.scheduleCheckbox = Dom.get(this.id + "-scheduleEnabled");
          this.widgets.scheduleContainer = Dom.get(this.id + "-scheduleContainer");
          Event.addListener(this.widgets.scheduleCheckbox, "click", this.onScheduleChange, this, true);
+         
+         YAHOO.Bubbling.on("mandatoryControlValueUpdated", this.onDatePickerMandatoryControlValueUpdated, this);
+         YAHOO.Bubbling.on("registerValidationHandler", this.onRegisterValidationHandler, this);
       },
       
       /**
@@ -349,6 +352,12 @@
             return !(scope.isScheduleEnabled() && field.options[field.selectedIndex].value == "-");
          }, null, "change");
 
+         // Validator - Start Date
+         this.form.addValidation(this.widgets.scheduleStart.id + "_schedule.start.iso8601", function ReplicationJob_onFormControlsLoaded_fnValidateStartDate(field, args, event, form, silent, message)
+         {
+            return !(scope.isScheduleEnabled() && !Alfresco.forms.validation.mandatory(field, args, event, form, silent, message));
+         }, null, "blur");
+         
          this.form.setSubmitElements(this.widgets.submitButton);
          this.form.setAJAXSubmit(true,
          {
@@ -438,6 +447,48 @@
          }
          
          this.form.updateSubmitElements();
+      },
+      
+      /**
+       * Called when a date has been selected from a date picker.
+       * Will cause the forms validation to run.
+       *
+       * @method onDatePickerMandatoryControlValueUpdated
+       * @param layer
+       * @param args
+       */
+      onDatePickerMandatoryControlValueUpdated: function ReplicationJob_onDatePickerMandatoryControlValueUpdated(layer, args)
+      {
+         this.form.updateSubmitElements();
+      },
+      
+      /**
+       * Register validation handler event handler
+       *
+       * @method onRegisterValidationHandler
+       * @param layer {object} Event fired
+       * @param args {array} Event parameters (depends on event type)
+       */
+      onRegisterValidationHandler: function ReplicationJob_onRegisterValidationHandler(layer, args)
+      {
+         // The date picker control needs to register validation handlers to check the
+         // validity of manually entered dates and times, we register our own handler in
+         // this case so we can also check whether the schedule is enabled or not.
+         
+         // extract the validation arguments
+         var validation = args[1];
+         
+         // check the minimim required data is provided
+         if (validation && validation.fieldId)
+         {
+            var scope = this;
+            
+            // register our custom handler with the forms runtime instance
+            this.form.addValidation(validation.fieldId, function ReplicationJob_fnValidateDateTime(field, args, event, form, silent, message)
+            {
+               return !(scope.isScheduleEnabled() && !Alfresco.forms.validation.validDateTime(field, args, event, form, silent, message));
+            }, validation.args, validation.when, validation.message);
+         }
       },
 
       /**

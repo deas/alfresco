@@ -19,6 +19,7 @@ function main()
       model.meta = meta;
       model.events = retrieveAuditEvents(conn);
       model.eventsStr = model.events.toSource();
+      model.enabled = getAuditStatus(conn);
    }
    model.hasAccess = hasAccess;
 }
@@ -52,6 +53,19 @@ function retrieveAuditEvents(conn)
    {
       return [];
    }
+}
+
+function getAuditStatus(conn)
+{
+	var res = conn.get("/api/rma/admin/rmauditlog/status")
+	if (res.status == 200)
+    {
+       return eval('(' + res + ')').data.enabled;
+    }
+    else
+    {
+      return true;
+    }
 }
 
 main();

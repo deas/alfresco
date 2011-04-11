@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<model name="swf:serial-workflow-model" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+    <description>Serial Workflow Model</description>
+
+    <imports>
+        <import uri="http://www.alfresco.org/model/bpm/1.0" prefix="bpm"/>
+    </imports>
+
+
+   <namespaces>
+      <namespace uri="http://www.alfresco.org/model/workflow/serial/1.0" prefix="swf"/>
+   </namespaces>
+    
+ 
+ <!-- Here we define workflow types that are needed for serial workflow -->
+    <types>
+          <type name="swf:submitSerialReviewTask">
+             <parent>bpm:startTask</parent>
+             <mandatory-aspects>
+                <aspect>bpm:assignees</aspect>
+             </mandatory-aspects>
+          </type>
+          
+          
+          
+          <type name="swf:approvedSerialTask">
+             <parent>bpm:workflowTask</parent>
+             <mandatory-aspects>
+                <aspect>bpm:assignees</aspect>
+             </mandatory-aspects>
+          </type>    
+          
+          <type name="swf:rejectedSerialTask">
+             <parent>bpm:workflowTask</parent>
+             <mandatory-aspects>
+                <aspect>bpm:assignees</aspect>
+             </mandatory-aspects>
+          </type>
+    
+    </types>
+</model>

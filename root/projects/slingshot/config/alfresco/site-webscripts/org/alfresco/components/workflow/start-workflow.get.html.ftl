@@ -38,8 +38,8 @@
             <ul>
                <#list workflowDefinitions as workflowDefinition>
                <li>
-                  <span class="title">${workflowDefinition.title?html}</span>
-                  <span class="description">${workflowDefinition.description?html}</span>
+                  <span class="title" tabindex="0">${workflowDefinition.title!workflowDefinition.id?html}</span>
+                  <span class="description">${(workflowDefinition.description!"")?html}</span>
                </li>
                </#list>
             </ul>

@@ -1454,9 +1454,12 @@ public class FormUIGet extends DeclarativeWebScript
         // replace : with _ so it can be used as JSON/JavaScript key/property
         name = name.replace(":", "_");
         
-        // set name and id of field
-        field.setName(name);
+        // set the id of the field
         field.setId(name);
+        
+        // set name of the field (ALF-5146: escape any dots in the name)
+        name = name.replace(".", "#dot#");
+        field.setName(name);
     }
     
     /**

@@ -46,7 +46,7 @@ public class FileRecordsCapability extends AbstractCapability
     {
         if (isRm(nodeRef))
         {
-            if (checkFilingUnfrozenUncutoffOpenUndeclared(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED)
+            if (checkFilingUnfrozenUncutoffOpenUndeclared(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED)
             {
                 if (isRecord(nodeRef) || isFileable(nodeRef))
                 {
@@ -56,7 +56,7 @@ public class FileRecordsCapability extends AbstractCapability
                     }
                 }
             }
-            else if ((checkFilingUnfrozenUncutoff(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED) && isClosed(nodeRef) && !isDeclared(nodeRef))
+            else if ((checkFilingUnfrozenUncutoff(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED) && isClosed(nodeRef) && !isDeclared(nodeRef))
             {
                 if (isRecord(nodeRef) || isFileable(nodeRef))
                 {
@@ -66,7 +66,7 @@ public class FileRecordsCapability extends AbstractCapability
                     }
                 }
             }
-            else if ((checkFilingUnfrozen(nodeRef) == AccessDecisionVoter.ACCESS_GRANTED) && isCutoff(nodeRef))
+            else if ((checkFilingUnfrozen(nodeRef, false) == AccessDecisionVoter.ACCESS_GRANTED) && isCutoff(nodeRef))
             {
                 if (isRecord(nodeRef) || isFileable(nodeRef))
                 {

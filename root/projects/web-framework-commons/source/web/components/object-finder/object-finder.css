@@ -31,6 +31,12 @@
    width: 54px;
 }
 */
+
+.current-values.object-finder-list table td.yui-dt-empty .yui-dt-liner
+{
+   display: block;
+}
+
 .current-values.object-finder-list table td.yui-dt-col-nodeRef .yui-dt-liner div
 {
    text-align: center;

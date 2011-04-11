@@ -186,8 +186,10 @@
          <exclude name="**/Abstract*Test.java" />
          <exclude name="**/*SystemTest.java" />
          <exclude name="**/RepositoryStartupTest.java" />
-         <!-- Exclude tests that require OpenOffice.org as it is not enabled by default -->
+
+         <!-- Exclude tests that require JodConverter/OpenOffice.org as these are hanging the build server -->
          <exclude name="**/*OOoTest.java" />
+
          <!-- Action Tests -->
          <exclude name="**/org/alfresco/repo/action/**/*Test.java" />
          <include name="**/org/alfresco/repo/action/ActionTestSuite.java" />
@@ -658,6 +660,9 @@
                   excludes="WEB-INF/jboss*.xml, WEB-INF/portlet*.xml, 
                             WEB-INF/alfresco-object.xml" />
       </copy>
+      
+      <minimize-javascript-file sourcefile="${dir.deploy.tomcat.webclient}/scripts/ajax/mootools.v1.11-src.js"
+                                destfile="${dir.deploy.tomcat.webclient}/scripts/ajax/mootools.v1.11.js" />
       
       <!-- copy required 3rd party libs -->
       <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/lib" verbose="${copy.verbose}">

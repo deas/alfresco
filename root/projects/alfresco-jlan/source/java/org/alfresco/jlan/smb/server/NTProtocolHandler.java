@@ -4379,6 +4379,13 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectPathNotFound, SMBStatus.HRDDriveNotReady, SMBStatus.ErrHrd);
 		}
+		catch (AccessDeniedException ex) {
+		    
+		    // access denied
+
+		    m_sess.sendErrorResponseSMB(smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+		    return;
+		} 
 	}
 
 	/**

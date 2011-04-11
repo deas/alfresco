@@ -1108,8 +1108,15 @@
              */
             if (scope.doclistMetadata.onlineEditing && (record.mimetype in scope.onlineEditMimetypes))
             {
-               var loc = record.location;
-               oRecord.setData("onlineEditUrl", window.location.protocol.replace(/https/i, "http") + "//" + scope.options.vtiServer.host + ":" + scope.options.vtiServer.port + "/" + $combine("alfresco", loc.site, loc.container, loc.path, loc.file));
+               var loc = record.location,
+                  uri = scope.options.vtiServer.host + ":" + scope.options.vtiServer.port + "/" + $combine("alfresco", loc.site, loc.container, loc.path, loc.file);
+               
+               if (!(/^(http|https):\/\//).test(uri))
+               {
+                  // VTI server doesn't support HTTPS directly
+                  uri = window.location.protocol.replace(/https/i, "http") + "//" + uri;
+               }
+               oRecord.setData("onlineEditUrl", uri);
             }
          };
       },

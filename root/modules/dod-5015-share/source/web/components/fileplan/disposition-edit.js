@@ -477,6 +477,7 @@
                // Merge period value
                var puEl = Dom.getElementsByClassName("period-unit", "select", formEl)[0],
                   paEl = Dom.getElementsByClassName("period-amount", "input", formEl)[0];
+
                var pa = "", pu = "";
                if (!paEl.disabled)
                {
@@ -493,7 +494,7 @@
                obj.saveButton.set("disabled", true);
                obj.cancelButton.set("disabled", true);
 
-               // Display a pengding message
+               // Display a pending message
                this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
                {
                   text: this.msg("message.savingAction", this.name),
@@ -501,13 +502,28 @@
                   displayTime: 0
                });
             },
-            obj: {
+            obj:
+            {
                saveButton: saveActionButton,
                cancelButton: cancelActionButton,
                actionForm: actionForm
             },
             scope: this
          };
+         actionForm.doBeforeAjaxRequest =
+         {
+            fn: function(p_config)
+            {
+               // Inject empty events[] if all events hhave been removed
+               if (YAHOO.lang.isUndefined(p_config.dataObj.events))
+               {
+                  p_config.dataObj.events = [];
+               }
+               return true; // Continue with AjaxRequest
+            },
+            scope: this
+         };
+         
 
          // Submit as an ajax submit (not leave the page), in json format
          actionForm.setAJAXSubmit(true,
@@ -610,7 +626,7 @@
       {
          var eventsDivEl = Dom.getElementsByClassName("events", "div", actionEl)[0];
          Dom.setStyle(eventsDivEl, "display", disabled ? "none" : "block");
-         var eventEls = Dom.getElementsByClassName("action-event-name-value", "select", actionEl);
+         var eventEls = Dom.getElementsByClassName("action-event-name-value", "", actionEl);
          for (var i = 0; i < eventEls.length; i++)
          {
             eventEls[i].disabled = disabled;

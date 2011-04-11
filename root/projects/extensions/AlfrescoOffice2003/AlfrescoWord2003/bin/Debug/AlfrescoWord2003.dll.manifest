@@ -5,7 +5,7 @@
   </asmv2:entryPoint>
   <asmv2:dependency asmv2:name="dependency0">
     <asmv2:dependentAssembly>
-      <assemblyIdentity name="AlfrescoWord2003" version="3.4.3938.30139" publicKeyToken="7ac84388c1d67626" />
+      <assemblyIdentity name="AlfrescoWord2003" version="3.4.3954.30246" publicKeyToken="7ac84388c1d67626" />
     </asmv2:dependentAssembly>
     <asmv2:installFrom codebase="AlfrescoWord2003.dll" />
   </asmv2:dependency>

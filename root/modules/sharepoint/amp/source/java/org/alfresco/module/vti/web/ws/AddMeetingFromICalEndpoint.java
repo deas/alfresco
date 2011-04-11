@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.Stack;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
@@ -136,6 +137,7 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
     protected MeetingBean getMeeting(String icalText)
     {
         icalText = icalText.replaceAll("\r\n\t", "");
+        icalText = icalText.replaceAll("\r\n ", "");
         Map<String, String> icalParams = getICalParams(icalText);
         return getMeeting(icalParams);
     }
@@ -268,21 +270,36 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
         Map<String, String> result = new HashMap<String, String>();
         String[] segregatedLines = icalText.split("\r\n");
         int attendeeNum = 0;
+        Stack<String> stack = new Stack<String>();
         for (String line : segregatedLines)
         {
             String[] keyValue = line.split(":");
             if (keyValue.length >= 2)
             {
-                if (keyValue[0].contains(";"))
+                if (keyValue[0].equals("BEGIN"))
                 {
-                    keyValue[0] = keyValue[0].substring(0, keyValue[0].indexOf(";"));
+                    stack.push(keyValue[1]);
+                    continue;
                 }
-                if (keyValue[0].equals("ATTENDEE"))
+                if (keyValue[0].equals("END"))
                 {
-                    keyValue[0] = keyValue[0] + attendeeNum;
-                    attendeeNum++;
+                    stack.pop();
+                    continue;
                 }
-                result.put(keyValue[0], keyValue[keyValue.length - 1]);
+                
+                if (!stack.isEmpty() && stack.peek().equals("VEVENT"))
+                {
+                    if (keyValue[0].contains(";"))
+                    {
+                        keyValue[0] = keyValue[0].substring(0, keyValue[0].indexOf(";"));
+                    }
+                    if (keyValue[0].equals("ATTENDEE"))
+                    {
+                        keyValue[0] = keyValue[0] + attendeeNum;
+                        attendeeNum++;
+                    }
+                    result.put(keyValue[0], keyValue[keyValue.length - 1]);
+                }
             }
         }
         return result;

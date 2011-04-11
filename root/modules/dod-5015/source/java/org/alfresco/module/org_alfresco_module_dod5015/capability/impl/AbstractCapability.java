@@ -163,8 +163,13 @@ public abstract class AbstractCapability implements Capability
             return getFilePlan(parent);
         }
     }
-
+    
     public int checkFilingUnfrozen(NodeRef nodeRef)
+    {
+        return checkFilingUnfrozen(nodeRef, true);
+    }
+
+    public int checkFilingUnfrozen(NodeRef nodeRef, boolean checkChildren)
     {
         int status;
         status = checkFiling(nodeRef);
@@ -172,14 +177,19 @@ public abstract class AbstractCapability implements Capability
         {
             return status;
         }
-        return checkUnfrozen(nodeRef);
+        return checkUnfrozen(nodeRef, checkChildren);
 
     }
 
     public int checkFilingUnfrozenUncutoff(NodeRef nodeRef)
     {
+        return checkFilingUnfrozenUncutoff(nodeRef, true);
+    }
+    
+    public int checkFilingUnfrozenUncutoff(NodeRef nodeRef, boolean checkChildren)
+    {
         int status;
-        status = checkFilingUnfrozen(nodeRef);
+        status = checkFilingUnfrozen(nodeRef, checkChildren);
         if (status != AccessDecisionVoter.ACCESS_GRANTED)
         {
             return status;
@@ -189,8 +199,13 @@ public abstract class AbstractCapability implements Capability
 
     public int checkFilingUnfrozenUncutoffOpen(NodeRef nodeRef)
     {
+        return checkFilingUnfrozenUncutoffOpen(nodeRef, true);
+    }
+    
+    public int checkFilingUnfrozenUncutoffOpen(NodeRef nodeRef, boolean checkChildren)
+    {
         int status;
-        status = checkFilingUnfrozenUncutoff(nodeRef);
+        status = checkFilingUnfrozenUncutoff(nodeRef, checkChildren);
         if (status != AccessDecisionVoter.ACCESS_GRANTED)
         {
             return status;
@@ -200,8 +215,13 @@ public abstract class AbstractCapability implements Capability
 
     public int checkFilingUnfrozenUncutoffOpenUndeclared(NodeRef nodeRef)
     {
+        return checkFilingUnfrozenUncutoffOpenUndeclared(nodeRef, true);
+    }
+    
+    public int checkFilingUnfrozenUncutoffOpenUndeclared(NodeRef nodeRef, boolean checkChildren)
+    {
         int status;
-        status = checkFilingUnfrozenUncutoffOpen(nodeRef);
+        status = checkFilingUnfrozenUncutoffOpen(nodeRef, checkChildren);
         if (status != AccessDecisionVoter.ACCESS_GRANTED)
         {
             return status;
@@ -211,8 +231,13 @@ public abstract class AbstractCapability implements Capability
 
     public int checkFilingUnfrozenUncutoffUndeclared(NodeRef nodeRef)
     {
+        return checkFilingUnfrozenUncutoffUndeclared(nodeRef, true);
+    }
+    
+    public int checkFilingUnfrozenUncutoffUndeclared(NodeRef nodeRef, boolean checkChildren)
+    {
         int status;
-        status = checkFilingUnfrozenUncutoff(nodeRef);
+        status = checkFilingUnfrozenUncutoff(nodeRef, checkChildren);
         if (status != AccessDecisionVoter.ACCESS_GRANTED)
         {
             return status;
@@ -287,7 +312,7 @@ public abstract class AbstractCapability implements Capability
             return AccessDecisionVoter.ACCESS_DENIED;
         }
 
-        if (voter.getCaveatConfigService().hasAccess(nodeRef))
+        if (voter.getCaveatConfigComponent().hasAccess(nodeRef))
         {
             return AccessDecisionVoter.ACCESS_GRANTED;
         }
@@ -427,9 +452,14 @@ public abstract class AbstractCapability implements Capability
 
     public int checkUnfrozen(NodeRef nodeRef)
     {
-        if (isRm(nodeRef))
+        return checkUnfrozen(nodeRef, true);
+    }
+    
+    public int checkUnfrozen(NodeRef nodeRef, boolean checkChildren)
+    {
+        if (isRm(nodeRef) == true)
         {
-            if (isFrozen(nodeRef))
+            if (isFrozen(nodeRef, checkChildren) == true)
             {
                 return AccessDecisionVoter.ACCESS_DENIED;
             }
@@ -693,15 +723,21 @@ public abstract class AbstractCapability implements Capability
 
     public boolean isFrozen(NodeRef nodeRef)
     {
+        return isFrozen(nodeRef, true);
+    }
+    
+    public boolean isFrozen(NodeRef nodeRef, boolean checkChildren)
+    {
         boolean result = voter.getNodeService().hasAspect(nodeRef, RecordsManagementModel.ASPECT_FROZEN);
-        if (result == false && 
+        if (checkChildren == true &&
+            result == false && 
             isRecordFolder(voter.getNodeService().getType(nodeRef)) == true)
         {
             // Check that none of the child records are frozen
             List<NodeRef> rules = voter.getRecordsManagementService().getRecords(nodeRef);
             for (NodeRef rule : rules)
             {
-                if (isFrozen(rule) == true)
+                if (isFrozen(rule, checkChildren) == true)
                 {
                     result = true;
                     break;

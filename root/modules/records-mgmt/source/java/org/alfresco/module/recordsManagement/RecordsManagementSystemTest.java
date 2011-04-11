@@ -199,7 +199,7 @@ public class RecordsManagementSystemTest extends BaseSpringTest
                 ContentModel.TYPE_CONTENT,
                 props).getChildRef();       
         assertTrue(this.nodeService.hasAspect(doc1, RecordsManagementModel.ASPECT_RECORD));
-        assertFalse(this.nodeService.hasAspect(doc1, ContentModel.ASPECT_MAILED));
+        assertFalse(this.nodeService.hasAspect(doc1, ContentModel.ASPECT_EMAILED));
         
         // Now add the content
         InputStream is = getClass().getClassLoader().getResourceAsStream("test.msg");
@@ -210,7 +210,7 @@ public class RecordsManagementSystemTest extends BaseSpringTest
         writer.putContent(is);
         
         // Do a quick check to ensure that the email details have been extracted
-        assertTrue(this.nodeService.hasAspect(doc1, ContentModel.ASPECT_MAILED));
+        assertTrue(this.nodeService.hasAspect(doc1, ContentModel.ASPECT_EMAILED));
         String subjectLine = (String)this.nodeService.getProperty(doc1, ContentModel.PROP_SUBJECT);
         assertNotNull(subjectLine);
         assertEquals(subjectLine, this.nodeService.getProperty(doc1, RecordsManagementModel.PROP_SUBJECT));

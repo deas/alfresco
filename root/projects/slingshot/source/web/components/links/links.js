@@ -319,7 +319,7 @@
             
             innerHtml += '<div class="detail"><span class="item"><em style="padding-right: 2px; float: left">' + me.msg("details.url") + ':</em> ' +
                          '<a style="float: left;" class="theme-color-1"' +  (internal ? '' : ' target="_blank" class="external"') + ' href=' + (url.indexOf("://") === -1 || url[0] === '/' ? 'http://' : '') +
-                         encodeURI(url) + '>' + $html(url) + '</a></span></div>';
+                         encodeURI(url) + '>' + $html(url).replace(/'/g, "") + '</a></span></div>';
 
             if (!me.options.simpleView)
             {

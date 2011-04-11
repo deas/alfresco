@@ -510,8 +510,12 @@
             importDestination: this.modules.docList.doclistMetadata.parent.nodeRef,
             filter: [
             {
-               description: this.msg("label.filter-description.import"),
+               description: this.msg("label.filter-description.acp"),
                extensions: "*.acp"
+            },
+            {
+               description: this.msg("label.filter-description.zip"),
+               extensions: "*.zip"
             }]
          });
       },

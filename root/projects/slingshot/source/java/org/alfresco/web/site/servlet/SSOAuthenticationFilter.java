@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -484,7 +485,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                 Type1NTLMMessage type1Msg = new Type1NTLMMessage(ntlmByts);
                 
                 // Start with a fresh session
-                session.invalidate();
+                clearSession(session);
                 session = req.getSession();
                 processType1(type1Msg, req, res, session);
             }
@@ -500,6 +501,21 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                 
                 redirectToLoginPage(req, res);
             }
+        }
+    }
+    
+    /**
+     * Removes all attributes stored in session
+     * 
+     * @param session Session
+     */
+    @SuppressWarnings("unchecked")
+    private void clearSession(HttpSession session)
+    {
+        Enumeration<String> names = (Enumeration<String>) session.getAttributeNames();
+        while (names.hasMoreElements())
+        {
+            session.removeAttribute(names.nextElement());
         }
     }
 
@@ -550,8 +566,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         try
         {
             // In this mode we can only use vaulted credentials. Do not proxy any request headers.
-            Connector conn = connectorService.getConnector(this.endpoint, AuthenticationUtil.getUserId(req),
-                    session);
+            Connector conn = connectorService.getConnector(this.endpoint, AuthenticationUtil.getUserId(req), session);
             ConnectorContext ctx = new ConnectorContext();
             Response remoteRes = conn.call("/touch", ctx);
             if (Status.STATUS_UNAUTHORIZED == remoteRes.getStatus().getCode())
@@ -569,7 +584,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                 }
                 else
                 {
-                   // restart manual login
+                    // restart manual login
                     session.invalidate();
                     redirectToLoginPage(req, res);
                 }
@@ -610,13 +625,13 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
      */
     private Map<String, String> getConnectionHeaders(Connector conn)
     {
-        Map<String, String> headers = null;
+        Map<String, String> headers = new HashMap<String, String>(4);
+        headers.put("user-agent", "");
         if (conn.getConnectorSession().getCookie("JSESSIONID") == null)
         {
             // Ensure we do not proxy over the Session ID from the browser request:
             // If Alfresco and SURF app are deployed into the same app-server and user is
             // user same browser instance to access both apps then we could get wrong session ID!
-            headers = new HashMap<String, String>(1);
             headers.put("Cookie", "");
         }
         return headers;
@@ -628,7 +643,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     private void restartAuthProcess(HttpSession session, HttpServletRequest req, HttpServletResponse res, String authHdr) throws IOException
     {
         // Clear any cached logon details from the sessiom
-        session.invalidate();
+        clearSession(session);
         
         // restart the authentication process for NTLM
         res.setHeader(HEADER_WWWAUTHENTICATE, authHdr);
@@ -637,11 +652,9 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         final PrintWriter out = res.getWriter();
         out.println("<html><head>");
         out.println("<meta http-equiv=\"Refresh\" content=\"0; url=" + 
-                req.getContextPath() + "/page?pt=login" + 
-                "\">"); 
+                req.getContextPath() + "/page?pt=login" + "\">"); 
         out.println("</head><body><p>Please <a href=\"" +
-                req.getContextPath() + "/page?pt=login" + 
-                "\">log in</a>.</p>");
+                req.getContextPath() + "/page?pt=login" + "\">log in</a>.</p>");
         out.println("</body></html>");
         out.close();
         
@@ -829,8 +842,21 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                     if (authHdr.equals(AUTH_NTLM))
                     {
                         // authentication failed on repo side - being login process again
-                        res.setHeader(HEADER_WWWAUTHENTICATE, AUTH_NTLM);
-                        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        String userAgent = req.getHeader("user-agent");
+                        if (userAgent != null && userAgent.indexOf("Safari") != -1)
+                        {
+                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            final PrintWriter out = res.getWriter();
+                            out.println("<html><head></head>");
+                            out.println("<body><p>Login authentication failed. Please close and re-open Safari to try again.</p>");
+                            out.println("</body></html>");
+                            out.close();
+                        }
+                        else
+                        {
+                            res.setHeader(HEADER_WWWAUTHENTICATE, AUTH_NTLM);
+                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        }
                         res.flushBuffer();
                     }
                     else

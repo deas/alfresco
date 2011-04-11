@@ -52,12 +52,10 @@
          var multiDayTimedEvents = [];
          for (var i = 0, len = timedEvents.length; i < len; i++) 
          {
-            // set up start and finish date objects
-            var startDate = Alfresco.util.fromISO8601(Dom.getAttribute(Dom.getElementsByClassName('dtstart', 'span', timedEvents[i])[0], "title"));
-            var endDate = Alfresco.util.fromISO8601(Dom.getAttribute(Dom.getElementsByClassName('dtend', 'span', timedEvents[i])[0], "title"));
-            // get difference in days (assuming both are same month)
-            var daysSpanned = endDate.getDate() - startDate.getDate() + 1;
-            if (daysSpanned > 1) 
+            // set up start and finish dates (makes the following line more readable)
+            var startDate = Dom.getAttribute(Dom.getElementsByClassName('dtstart', 'span', timedEvents[i])[0], "title");
+            var endDate = Dom.getAttribute(Dom.getElementsByClassName('dtend', 'span', timedEvents[i])[0], "title");
+            if (!Alfresco.CalendarHelper.isSameDay(startDate, endDate)) // if they're not the same day, render accordingly.
             {
                this.renderMultipleDay(timedEvents[i])
             }

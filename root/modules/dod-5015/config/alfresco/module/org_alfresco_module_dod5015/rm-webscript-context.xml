@@ -112,6 +112,10 @@
         <property name="recordsManagementAuditService" ref="RecordsManagementAuditService"/>
     </bean>
     
+    <bean id="webscript.org.alfresco.rma.rmauditlogstatus.get" class="org.alfresco.module.org_alfresco_module_dod5015.script.AuditLogStatusGet" parent="webscript">
+    	<property name="recordsManagementAuditService" ref="RecordsManagementAuditService"/>
+    </bean>
+    
     <!-- REST impl for POST Audit Log -->
     <bean id="webscript.org.alfresco.rma.rmauditlog.post" class="org.alfresco.module.org_alfresco_module_dod5015.script.AuditLogPost" parent="webscript">
         <property name="nodeService" ref="nodeService"/>

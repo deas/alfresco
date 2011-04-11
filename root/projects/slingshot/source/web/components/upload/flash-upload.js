@@ -65,7 +65,7 @@
    {
       Alfresco.FlashUpload.superclass.constructor.call(this, "Alfresco.FlashUpload", htmlId, ["button", "container", "datatable", "datasource", "cookie", "uploader"]);
 
-      this.swf = Alfresco.constants.URL_RESCONTEXT + "yui/uploader/assets/uploader.swf?dt=" + (new Date()).getTime();
+      this.swf = Alfresco.constants.URL_CONTEXT + "yui/uploader/assets/uploader.swf?dt=" + (new Date()).getTime();
       this.hasRequiredFlashPlayer = Alfresco.util.hasRequiredFlashPlayer(9, 0, 45);
       
       this.fileStore = {};

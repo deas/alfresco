@@ -232,14 +232,25 @@
                });
                this.formsRuntime.setSubmitAsJSON(true);
             }
-            
+
+            // add field help
+            for (var f = 0; f < this.options.fields.length; f++)
+            {
+               var ff = this.options.fields[f],
+                  iconEl = Dom.get(this.parentId + "_" + ff.id + "-help-icon");
+               if (iconEl)
+               {
+                  Alfresco.util.useAsButton(iconEl, this.toggleHelpText, ff.id, this);
+               }
+            }
+
             // add any field constraints present
             for (var c = 0; c < this.options.fieldConstraints.length; c++)
             {
                var fc = this.options.fieldConstraints[c];
                this.formsRuntime.addValidation(fc.fieldId, fc.handler, fc.params, fc.event, fc.message);
             }
-            
+
             // fire event to inform any listening components that the form is about to be initialised
             YAHOO.Bubbling.fire("beforeFormRuntimeInit", 
             {
@@ -256,6 +267,18 @@
                runtime: this.formsRuntime 
             });
          }
+      },
+
+      /**
+       * Toggles help text for a field.
+       *
+       * @method toggleHelpText
+       * @param event The user event
+       * @param fieldId The id of the field to toggle help text for
+       */
+      toggleHelpText: function FormUI_toggleHelpText(event, fieldId)
+      {
+         Alfresco.util.toggleHelpText(this.parentId + "_" + fieldId + "-help");
       },
       
       /**

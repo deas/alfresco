@@ -10,8 +10,8 @@ new Alfresco.component.WorkflowForm("${el}").setOptions(
 </div>
 <div class="hidden">
 <#--
- The workflow details page form is actually a form display of the workflow's start task and data form the workflow itself.
- The approach taken to display all this information is described in the Alfresco.WorkflowForm javascript class.
+ The workflow details page form is actually a form display of the workflow's start task AND data from the workflow itself.
+ The approach taken to mix all this information is described in the Alfresco.WorkflowForm javascript class.
 -->
    <#-- Will be inserted in the top of the form after its been loaded through ajax -->
    <div id="${el}-summary-form-section">
@@ -37,10 +37,14 @@ new Alfresco.component.WorkflowForm("${el}").setOptions(
                <a id="${el}-recentTaskTitle" href=""></a>
             </div>
 
-            <div class="yui-g">
+            <div class="yui-gb">
                <div class="yui-u first">
                   <span class="viewmode-label">${msg("label.completedOn")}:</span>
                   <span class="viewmode-value" id="${el}-recentTaskCompletedOn"></span>
+               </div>
+               <div class="yui-u">
+                  <span class="viewmode-label">${msg("label.completedBy")}:</span>
+                  <span class="viewmode-value" id="${el}-recentTaskCompletedBy"></span>
                </div>
                <div class="yui-u">
                   <span class="viewmode-label">${msg("label.outcome")}:</span>

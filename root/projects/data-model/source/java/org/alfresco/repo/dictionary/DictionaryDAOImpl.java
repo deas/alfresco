@@ -1096,9 +1096,23 @@ public class DictionaryDAOImpl implements DictionaryDAO
      */
     private Map<QName,CompiledModel> getCompiledModels(String tenantDomain)
     {
-        return getDictionaryRegistry(tenantDomain).getCompiledModels();
+        if ((! AuthenticationUtil.isMtEnabled()) || (! tenantDomain.equals(TenantService.DEFAULT_DOMAIN)))
+        {
+            return getDictionaryRegistry(tenantDomain).getCompiledModels();
+        }
+        else
+        {
+            // ALF-6029
+            return AuthenticationUtil.runAs(new RunAsWork<Map<QName,CompiledModel>>()
+            {
+                public Map<QName,CompiledModel> doWork()
+                {
+                    return getDictionaryRegistry(TenantService.DEFAULT_DOMAIN).getCompiledModels();
+                }
+            }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
+        }
     }
-
+    
     /**
      * Get uriToModels from the cache (in the context of the given tenant domain)
      * 
@@ -1106,7 +1120,21 @@ public class DictionaryDAOImpl implements DictionaryDAO
      */
     private Map<String, List<CompiledModel>> getUriToModels(String tenantDomain)
     {
-        return getDictionaryRegistry(tenantDomain).getUriToModels();
+        if ((! AuthenticationUtil.isMtEnabled()) || (! tenantDomain.equals(TenantService.DEFAULT_DOMAIN)))
+        {
+            return getDictionaryRegistry(tenantDomain).getUriToModels();
+        }
+        else
+        {
+            // ALF-6029
+            return AuthenticationUtil.runAs(new RunAsWork<Map<String, List<CompiledModel>>>()
+            {
+                public Map<String, List<CompiledModel>> doWork()
+                {
+                    return getDictionaryRegistry(TenantService.DEFAULT_DOMAIN).getUriToModels();
+                }
+            }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
+        }
     }
     
     /**

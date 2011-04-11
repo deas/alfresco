@@ -62,7 +62,7 @@
     <bean id="authenticationService" 
           class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
         <property name="serviceUrl">
-            <value>rmi://${alfresco.rmi.services.host}:${alfresco.rmi.services.port}/authentication</value>
+            <value>rmi://${alfresco.rmi.services.external.host}:${alfresco.rmi.services.port}/authentication</value>
         </property>
         <property name="serviceInterface">
             <value>org.alfresco.service.cmr.security.AuthenticationService</value>
@@ -104,7 +104,7 @@
     <bean id="avmRemoteTransportRaw"
           class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
         <property name="serviceUrl">
-            <value>rmi://${alfresco.rmi.services.host}:${alfresco.rmi.services.port}/avm</value>
+            <value>rmi://${alfresco.rmi.services.external.host}:${alfresco.rmi.services.port}/avm</value>
         </property>
 
         <property name="serviceInterface">
@@ -174,7 +174,7 @@
 
         <!-- remote Alfresco server hostname -->
         <property name="alfrescoJmxRmiHost">
-            <value>${alfresco.rmi.services.host}</value>
+            <value>${alfresco.rmi.services.external.host}</value>
         </property>
 
         <!-- remote Alfresco server JMX RMI port -->

@@ -19,10 +19,6 @@
       <button id="${htmlid}-audit-file-record" name="audit-file-record" class="audit-file-record">${msg("label.button-file-record")}</button>            
    </div>
    <div class="audit-info">
-      <span class="label">${msg('label.from')}:</span>
-      <span class="value">${auditStatus.startedDate?datetime?string("EEE MMM dd yyyy HH:mm:ss 'GMT'Z")}</span>
-      <span class="label">${msg('label.to')}:</span>
-      <span class="value">${auditStatus.stoppedDate?datetime?string("EEE MMM dd yyyy HH:mm:ss 'GMT'Z")}</span>
    <#-- only for full log (not noderef) -->
    <#if (!page.url.args.nodeName??)>
       <span class="label">${msg('label.property')}:</span>

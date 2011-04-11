@@ -244,8 +244,11 @@ public final class Path implements Iterable<Path.Element>, Serializable
 
     /**
      * Return a new Path representing this path to the specified depth
+     * 
+     * For example, subPath(2, 4) would return the third and forth elements in the Path.
      *  
-     * @param depth  the path depth (0 based)
+     * @param start position  (0 based)
+     * @param end position (0 based)
      * @return  the sub-path
      */
     public Path subPath(int start, int end)

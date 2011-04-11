@@ -469,11 +469,11 @@
          Dom.getElementsByClassName("id", "input", ruleEl)[0].value = rule.id;
 
          // Display rest of values
-         Dom.getElementsByClassName("no", "div", ruleEl)[0].innerHTML = counter;
+         Dom.getElementsByClassName("no", "span", ruleEl)[0].innerHTML = counter;
          Dom.getElementsByClassName("title", "a", ruleEl)[0].innerHTML = $html(rule.title);
          Dom.getElementsByClassName("description", "span", ruleEl)[0].innerHTML = $html(rule.description);
 
-         var activeIconEl = Dom.getElementsByClassName("active-icon", "div", ruleEl)[0]
+         var activeIconEl = Dom.getElementsByClassName("active-icon", "span", ruleEl)[0]
          if (rule.disabled)
          {
             activeIconEl.setAttribute("title", this.msg("label.inactive"));

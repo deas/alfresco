@@ -137,6 +137,11 @@
    padding: 1em;
 }
 
+.datagrid .yui-dt-liner img
+{
+   vertical-align: text-bottom;
+}
+
 /* Data Types */
 
 .datagrid span.person

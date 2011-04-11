@@ -11,31 +11,43 @@
    <#assign labelSeparator="|">
 </#if>
 
+<#assign fieldValue=field.value>
+
+<#if fieldValue?string == "" && field.control.params.defaultValueContextProperty??>
+   <#if context.properties[field.control.params.defaultValueContextProperty]??>
+      <#assign fieldValue = context.properties[field.control.params.defaultValueContextProperty]>
+   <#elseif args[field.control.params.defaultValueContextProperty]??>
+      <#assign fieldValue = args[field.control.params.defaultValueContextProperty]>
+   </#if>
+</#if>
+
 <div class="form-field">
    <#if form.mode == "view">
       <div class="viewmode-field">
-         <#if field.mandatory && !(field.value?is_number) && field.value?string == "">
+         <#if field.mandatory && !(fieldValue?is_number) && fieldValue?string == "">
             <span class="incomplete-warning"><img src="${url.context}/res/components/form/images/warning-16.png" title="${msg("form.field.incomplete")}" /><span>
          </#if>
          <span class="viewmode-label">${field.label?html}:</span>
-         <#if field.value?string == "">
+         <#if fieldValue?string == "">
             <#assign valueToShow=msg("form.control.novalue")>
          <#else>
-            <#assign valueToShow=field.value>
-            <#list field.control.params.options?split(optionSeparator) as nameValue>
-               <#if nameValue?index_of(labelSeparator) == -1>
-                  <#if nameValue == field.value?string || (field.value?is_number && field.value?c == nameValue)>
-                     <#assign valueToShow=nameValue>
-                     <#break>
+            <#assign valueToShow=fieldValue>
+            <#if field.control.params.options?? && field.control.params.options != "">
+               <#list field.control.params.options?split(optionSeparator) as nameValue>
+                  <#if nameValue?index_of(labelSeparator) == -1>
+                     <#if nameValue == fieldValue?string || (fieldValue?is_number && fieldValue?c == nameValue)>
+                        <#assign valueToShow=nameValue>
+                        <#break>
+                     </#if>
+                  <#else>
+                     <#assign choice=nameValue?split(labelSeparator)>
+                     <#if choice[0] == fieldValue?string || (fieldValue?is_number && fieldValue?c == choice[0])>
+                        <#assign valueToShow=msgValue(choice[1])>
+                        <#break>
+                     </#if>
                   </#if>
-               <#else>
-                  <#assign choice=nameValue?split(labelSeparator)>
-                  <#if choice[0] == field.value?string || (field.value?is_number && field.value?c == choice[0])>
-                     <#assign valueToShow=msgValue(choice[1])>
-                     <#break>
-                  </#if>
-               </#if>
-            </#list>
+               </#list>
+            </#if>
          </#if>
          <span class="viewmode-value">${valueToShow?html}</span>
       </div>
@@ -50,10 +62,10 @@
                <#if field.disabled  && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true")>disabled="true"</#if>>
                <#list field.control.params.options?split(optionSeparator) as nameValue>
                   <#if nameValue?index_of(labelSeparator) == -1>
-                     <option value="${nameValue?html}"<#if nameValue == field.value?string || (field.value?is_number && field.value?c == nameValue)> selected="selected"</#if>>${nameValue?html}</option>
+                     <option value="${nameValue?html}"<#if nameValue == fieldValue?string || (fieldValue?is_number && fieldValue?c == nameValue)> selected="selected"</#if>>${nameValue?html}</option>
                   <#else>
                      <#assign choice=nameValue?split(labelSeparator)>
-                     <option value="${choice[0]?html}"<#if choice[0] == field.value?string || (field.value?is_number && field.value?c == choice[0])> selected="selected"</#if>>${msgValue(choice[1])?html}</option>
+                     <option value="${choice[0]?html}"<#if choice[0] == fieldValue?string || (fieldValue?is_number && fieldValue?c == choice[0])> selected="selected"</#if>>${msgValue(choice[1])?html}</option>
                   </#if>
                </#list>
          </select>

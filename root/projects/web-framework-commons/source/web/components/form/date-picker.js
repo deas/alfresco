@@ -29,7 +29,8 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-      Event = YAHOO.util.Event;
+      Event = YAHOO.util.Event,
+      KeyListener = YAHOO.util.KeyListener;
 
    /**
     * Alfresco Slingshot aliases
@@ -199,10 +200,18 @@
 
          // setup events
          this.widgets.calendar.selectEvent.subscribe(this._handlePickerChange, this, true);
+         this.widgets.calendar.hideEvent.subscribe(function()
+         {
+            // Focus icon after calendar is closed
+            Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon")[0].focus();
+         }, this, true);
          Event.addListener(this.id + "-date", "keyup", this._handleFieldChange, this, true);
          Event.addListener(this.id + "-time", "keyup", this._handleFieldChange, this, true);
          Event.addListener(this.id + "-icon", "click", this._showPicker, this, true);
-         
+
+         // setup keyboard enter events on the image instead of the link to get focus outline displayed
+         Alfresco.util.useAsButton(Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon")[0], this._showPicker, null, this);
+
          // register a validation handler for the date entry field so that the submit 
          // button disables when an invalid date is entered
          YAHOO.Bubbling.fire("registerValidationHandler", 
@@ -297,8 +306,11 @@
             Dom.addClass(this.id + "-time", "invalid");
          }
          
-         // hide the popup calendar
-         this.widgets.calendar.hide();
+         // Hide calendar if the calendar was open (Unfortunately there is no proper yui api method for this)
+         if (Dom.getStyle(this.id, "display") != "none")
+         {
+            this.widgets.calendar.hide();
+         }
       },
       
       /**
@@ -313,27 +325,31 @@
          var changedDate = Dom.get(this.id + "-date").value;
          if (changedDate.length > 0)
          {
-            // convert to format expected by YUI
-            var parsedDate = Date.parseExact(changedDate, this._msg("form.control.date-picker.entry.date.format"));
-            if (parsedDate != null)
+            // Only set for actual value changes so tab or shift events doesn't remove the "text selection" of the input field
+            if (event == undefined || (event.keyCode != KeyListener.KEY.TAB && event.keyCode != KeyListener.KEY.SHIFT))
             {
-               this.widgets.calendar.select((parsedDate.getMonth() + 1) + "/" + parsedDate.getDate() + "/" + parsedDate.getFullYear());
-               var selectedDates = this.widgets.calendar.getSelectedDates();
-               if (selectedDates.length > 0)
+               // convert to format expected by YUI
+               var parsedDate = Date.parseExact(changedDate, this._msg("form.control.date-picker.entry.date.format"));
+               if (parsedDate != null)
                {
-                  Dom.removeClass(this.id + "-date", "invalid");
-                  var firstDate = selectedDates[0];
-                  this.widgets.calendar.cfg.setProperty("pagedate", (firstDate.getMonth()+1) + "/" + firstDate.getFullYear());
-                  this.widgets.calendar.render();
+                  this.widgets.calendar.select((parsedDate.getMonth() + 1) + "/" + parsedDate.getDate() + "/" + parsedDate.getFullYear());
+                  var selectedDates = this.widgets.calendar.getSelectedDates();
+                  if (selectedDates.length > 0)
+                  {
+                     Dom.removeClass(this.id + "-date", "invalid");
+                     var firstDate = selectedDates[0];
+                     this.widgets.calendar.cfg.setProperty("pagedate", (firstDate.getMonth()+1) + "/" + firstDate.getFullYear());
+                     this.widgets.calendar.render();
                   
-                  // NOTE: we don't need to check the time value in here as the _handlePickerChange
-                  //       function gets called as well as a result of rendering the picker above,
-                  //       that's also why we don't update the hidden field in here either.
+                     // NOTE: we don't need to check the time value in here as the _handlePickerChange
+                     //       function gets called as well as a result of rendering the picker above,
+                     //       that's also why we don't update the hidden field in here either.
+                  }
                }
-            }
-            else
-            {
-               Dom.addClass(this.id + "-date", "invalid");
+               else
+               {
+                  Dom.addClass(this.id + "-date", "invalid");
+               }
             }
          }
          else

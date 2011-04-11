@@ -5,4 +5,5 @@
   <format default="json">argument</format>
   <authentication runas="admin">user</authentication>
   <transaction>required</transaction>
+  <lifecycle>internal</lifecycle>
 </webscript>

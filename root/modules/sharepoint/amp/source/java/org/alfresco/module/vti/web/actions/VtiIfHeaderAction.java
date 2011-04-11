@@ -40,6 +40,7 @@ import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentWriter;
+import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
@@ -70,6 +71,8 @@ public class VtiIfHeaderAction extends HttpServlet implements VtiAction
     private CheckOutCheckInService checkOutCheckInService;
 
     private AuthenticationService authenticationService;
+
+    private MimetypeService mimetypeService;
 
     private VtiPathHelper pathHelper;
 
@@ -117,10 +120,21 @@ public class VtiIfHeaderAction extends HttpServlet implements VtiAction
     {
         this.authenticationService = authenticationService;
     }
-    
-    
+
     /**
-     * <p>VtiPathHelper setter.</p>
+     * <p>MimetypeService setter.</p>
+     * 
+     * @param mimetypeService {@link MimetypeService}.
+     */
+    public void setMimetypeService(MimetypeService mimetypeService)
+    {
+        this.mimetypeService = mimetypeService;
+    }
+
+    /**
+     * <p>
+     * VtiPathHelper setter.
+     * </p>
      * 
      * @param pathHelper {@link VtiPathHelper}.
      */
@@ -235,10 +249,13 @@ public class VtiIfHeaderAction extends HttpServlet implements VtiAction
             writer = fileFolderService.getWriter(nodeRef);  
 
         }
-        
+
         // updates changes on the server
         try
         {
+            String documentName = nodeService.getProperty(nodeRef, ContentModel.PROP_NAME).toString();
+            String mimetype = mimetypeService.guessMimetype(documentName);
+            writer.setMimetype(mimetype);
             writer.putContent(req.getInputStream());
         }
         catch (Exception e)

@@ -174,7 +174,7 @@
 				<xsd:attribute name="name" type="xsd:string" use="optional"/>
 				<xsd:attribute name="created" type="xsd:dateTime" use="optional"/>
 				<xsd:attribute name="lastModified" type="xsd:dateTime" use="optional"/>
-				<xsd:attribute name="activeVersion" type="xsd:boolean" use="required"/>
+				<xsd:attribute name="activeVersion" type="xsd:int" use="required"/>
 			</xsd:complexType>
 		</xsd:schema>
 

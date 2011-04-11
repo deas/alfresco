@@ -1,0 +1,32 @@
+<!-- Example config to show QuickR custom props in share-->
+<!-- This file must be here "tomcat\shared\classes\alfresco\web-extension\"  -->
+<alfresco-config>
+  <config evaluator="aspect" condition="ps:supportedTypes">
+      <forms>
+         <form>
+            <!-- ps:supportedTypes aspect-->
+            <field-visibility>
+               <show id="ps:any" for-mode="view"/>
+               <show id="ps:text" for-mode="view"/>
+               <show id="ps:long" for-mode="view"/>
+               <show id="ps:double" for-mode="view"/>
+               <show id="ps:date" for-mode="view"/>
+               <show id="ps:datetime" for-mode="view"/>
+               <show id="ps:boolean" for-mode="view"/>
+            </field-visibility>
+			
+            <appearance>   
+               <set id="supportedTypes" appearance="bordered-panel" label="Property Sheet SupportedTypes" />
+               <field id="ps:any" set="supportedTypes"/>
+               <field id="ps:text" set="supportedTypes"/>
+               <field id="ps:long" set="supportedTypes"/>
+               <field id="ps:double" set="supportedTypes"/>
+               <field id="ps:date" set="supportedTypes"/>
+               <field id="ps:datetime" set="supportedTypes"/>
+               <field id="ps:boolean" set="supportedTypes"/>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
+</alfresco-config>

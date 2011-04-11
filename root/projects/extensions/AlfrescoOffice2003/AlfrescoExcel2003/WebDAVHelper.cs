@@ -28,7 +28,7 @@ namespace AlfrescoExcel2003
    internal class WebDAVHelper : IServerHelper
    {
       private string m_AlfrescoServer = "";
-      private string m_WebAuthenticationHeader = "";
+      private EAuthenticationType m_AuthType = EAuthenticationType.BASIC;
 
       /// <summary>
       /// WebDAV Constructor
@@ -60,7 +60,7 @@ namespace AlfrescoExcel2003
          xmlResponse.InnerXml = SendWebDAVRequest(m_AlfrescoServer, "", Username, Password);
 
          // Did we get an HTTP 401 error?
-         if ((xmlResponse.InnerXml.Contains("<ntlm />")) || (m_WebAuthenticationHeader == "NTLM"))
+         if (m_AuthType == EAuthenticationType.NTLM)
          {
             return "ntlm";
          }
@@ -90,7 +90,12 @@ namespace AlfrescoExcel2003
       {
          return documentPath.Remove(0, m_AlfrescoServer.Length);
       }
-   
+
+      EAuthenticationType IServerHelper.GetAuthenticationType()
+      {
+         return m_AuthType;
+      }
+
       private string SendWebDAVRequest(string url, string webdavRequest, string username, string password)
       {
          HttpWebRequest webRequest = null;
@@ -117,9 +122,17 @@ namespace AlfrescoExcel2003
             CredentialCache myCache = new CredentialCache();
             if (username.Length > 0)
             {
-               if ((m_WebAuthenticationHeader.ToLower().StartsWith("basic")) || (m_WebAuthenticationHeader == ""))
+               if (EAuthenticationType.BASIC == m_AuthType)
                {
                   myCache.Add(new Uri(url), "Basic", myCred);
+               }
+               else if (EAuthenticationType.NTLM == m_AuthType)
+               {
+                  return "<ntlm />";
+               }
+               else if (EAuthenticationType.NEGOTIATE == m_AuthType)
+               {
+                  myCache.Add(new Uri(url), "Negotiate", (NetworkCredential)CredentialCache.DefaultCredentials);
                }
                else
                {
@@ -159,7 +172,20 @@ namespace AlfrescoExcel2003
             responseStreamXml = "<error>" + e.Message + "</error>";
             if (e.Message.Contains("401"))
             {
-               m_WebAuthenticationHeader = e.Response.Headers["WWW-Authenticate"];
+               string authenticationHeader = e.Response.Headers["WWW-Authenticate"];
+               authenticationHeader = (null != authenticationHeader) ? (authenticationHeader.ToLower()) : ("");
+               if (("" == authenticationHeader) || authenticationHeader.StartsWith("basic"))
+               {
+                  m_AuthType = EAuthenticationType.BASIC;
+               }
+               else if (authenticationHeader.StartsWith("ntlm"))
+               {
+                  m_AuthType = EAuthenticationType.NTLM;
+               }
+               else if ("negotiate" == authenticationHeader)
+               {
+                  m_AuthType = EAuthenticationType.NEGOTIATE;
+               }
             }
          }
          catch (Exception e)

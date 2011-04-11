@@ -10,6 +10,11 @@ html, body
    height: 100%;
 }
 
+blockquote
+{
+   margin: 0 2em;
+}
+
 #bd
 {
    padding-bottom: 2em;
@@ -65,7 +70,7 @@ html, body
 
 p
 {
-   padding-top: 10px;
+   padding-top: 3px;
    padding-bottom: 3px;
 }
 

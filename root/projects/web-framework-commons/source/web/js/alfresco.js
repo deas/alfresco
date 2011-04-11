@@ -23,7 +23,8 @@
 */
 var YUIDom = YAHOO.util.Dom,
    YUIEvent = YAHOO.util.Event,
-   YUISelector = YAHOO.util.Selector;
+   YUISelector = YAHOO.util.Selector,
+   YUIKeyListener = YAHOO.util.KeyListener;
 
 /**
  * Alfresco root namespace.
@@ -1038,6 +1039,40 @@ Alfresco.util.setSelectedClass = function(parentEl, selectEl, selectClass)
    }
 };
 
+
+/**
+ * Helper function to listen for mouse click and keyboard enter events on an element.
+ * Also makes sure that el has a tabindex so it can get focus
+ *
+ * @method useAsButton
+ * @param el {String|HTMLElement} The element to listen to
+ * @param callbackFn {function} The method to invoke on click or enter will get called with (event, obj)
+ * @param callbackObj {Object} The object to pass into the callback
+ * @param callbackScope {Object} (Optional) The scope to execute the callback in (if not supplied el is used)
+ * @static
+ */
+Alfresco.util.useAsButton = function(el, callbackFn, callbackObj, callbackScope)
+{
+   YAHOO.util.Event.addListener(el, "click", callbackFn, callbackObj, callbackScope);
+   if (YAHOO.lang.isString(el)) {
+      el = Dom.get(el);
+   }
+   if(!el.getAttribute("tabindex")) {
+      el.setAttribute("tabindex", "0");
+   }
+   var fn = callbackFn,
+      obj = callbackObj,
+      scope = callbackScope || el;
+   var callback = function (type, arg)
+   {
+      fn.call(scope, type, obj || arg);
+   };
+   new YAHOO.util.KeyListener(el,
+   {
+      keys: [ YAHOO.util.KeyListener.KEY.ENTER ]
+   }, callback).enable();
+};
+
 /**
  * Returns a unique DOM ID for dynamically-created content. Optionally applies the new ID to an element.
  *
@@ -1175,6 +1210,18 @@ Alfresco.util.createYUIButton = function(p_scope, p_name, p_onclick, p_obj, p_oE
             if (obj.type == "menu")
             {
                button.getMenu().subscribe("click", p_onclick, p_scope, true);
+               button.getMenu().subscribe("keydown", function (p_sType, p_aArgs, p_oObj)
+               {
+                  if (p_aArgs[0].keyCode == YUIKeyListener.KEY.ENTER)
+                  {
+                     this.hide();
+                     p_oObj.fn.call(p_oObj.scope, p_sType, p_aArgs);
+                  }
+               },
+               {
+                  scope: p_scope,
+                  fn: p_onclick
+               });
             }
             else
             {
@@ -3602,7 +3649,12 @@ Alfresco.util.Ajax = function()
          var config = serverResponse.argument.config;
 
          // Our session has likely timed-out, so refresh to offer the login page
-         if (serverResponse.status == 401 && !config.noReloadOnAuthFailure)
+         var contentType = serverResponse.getResponseHeader["Content-Type"] ||
+                           serverResponse.getResponseHeader["content-type"] ||
+                           config.responseContentType;
+         
+         if ((serverResponse.status == 401 || (serverResponse.status == 302 && (/(text\/html)/).test(contentType)))
+             && !config.noReloadOnAuthFailure)
          {
             window.location.reload(true);
             return;

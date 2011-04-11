@@ -1,8 +1,9 @@
 var CalendarScriptHelper = (function()
 {
    var now = new Date();
-   /* Number of ms in a day */
-   var DAY = 24 * 60 * 60 * 1000;
+   /* Number of ms in a day & hour */
+   var HOUR = 60 * 60 * 1000;
+   var DAY = 24 * HOUR;
    /* Days in a week */
    var DAYS_IN_WEEK = 7;
    
@@ -374,6 +375,24 @@ var CalendarScriptHelper = (function()
          var num_daysInMonth = daysInMonth(d.getMonth(), d.getFullYear());
          // lastDayOfMonth is midnight on the first day of next month (i.e. immediately after the current month ends) 
          var lastDayOfMonth = new Date(((firstDayOfMonth.getTime() + (DAY * num_daysInMonth))));
+         // Added to fix ALF-5373, Summer time change confusing code.
+         var lastDayOfMonthHours = lastDayOfMonth.getHours();
+         if (lastDayOfMonthHours !== 0)
+         {
+            //too many hours added or too few?
+            if (lastDayOfMonth.getDate() === 1) 
+            {
+               //too many
+               lastDayOfMonth = new Date(lastDayOfMonth.getTime() - (HOUR * lastDayOfMonthHours));
+            } else 
+            {
+               //too few
+               lastDayOfMonth = new Date(lastDayOfMonth.getTime() + (HOUR * (24 - lastDayOfMonthHours)));
+            }
+         }
+         
+         viewArgs.lastDayOfMonth = lastDayOfMonth.toString();
+         viewArgs.time = lastDayOfMonth.getDate();
          //gets the first day of month index eg 6 = 6 cells in
          var startDay_month = firstDayOfMonth.getDay();
          
@@ -387,9 +406,9 @@ var CalendarScriptHelper = (function()
          var monthview_dates = [];
          //store  user events in array and key array by date
          viewArgs.viewEvents = [];
-			// store user events for other months in an array
-			viewArgs.spanningEvents = [];
-			
+         // store user events for other months in an array
+         viewArgs.spanningEvents = [];
+
          viewArgs.startDate = toISOString(new Date(d.getTime() - ((d.getDate() - 1) * DAY)), {
             selector: 'date'
          });
@@ -415,19 +434,19 @@ var CalendarScriptHelper = (function()
                //  - event ends during OR after the month eventEnd > monthStart
                if (eventDate.getTime() <= lastDayOfMonth.getTime() && endDate >= actualFirstDayOfMonth.getTime())
                {
-					   var icalEvent = convertToIcalFormat(ev, eventDate, endDate);
-						var eventMonth = eventDate.getMonth(); 
-					   var key = 'ev_';
-						if (eventMonth === d.getMonth()) 
-					   {
-						  	 key += eventDate.getDate();						
-						} else 
-						{
+                  var icalEvent = convertToIcalFormat(ev, eventDate, endDate);
+                  var eventMonth = eventDate.getMonth(); 
+                  var key = 'ev_';//the key is used by the FTL template to determin when the event should first be displayed 
+                  if (eventMonth === d.getMonth()) // does the event start in this month?
+                  {
+                     key += eventDate.getDate(); // if so the key is the event's start date
+                  } else // the event starts in an earlier month
+                  {
                      icalEvent.isSpannedEvent = true;
-							key = "spannedEvents"; // write events to new array, specifically for events that span multiple months
-						}
-						
-						if (viewArgs.viewEvents[key] === undefined) 
+                     key += actualFirstDayOfMonth.getDate(); // otherwise the event should be keyed to the first day of the month. 
+                  }
+                  
+                  if (viewArgs.viewEvents[key] === undefined) 
                   {
                      viewArgs.viewEvents[key] = [];
                   }

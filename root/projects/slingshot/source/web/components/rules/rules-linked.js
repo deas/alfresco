@@ -29,7 +29,8 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-      $siteURL = Alfresco.util.siteURL;
+      $siteURL = Alfresco.util.siteURL,
+      $html = Alfresco.util.encodeHTML;
 
    /**
     * RulesLinked constructor.

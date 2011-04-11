@@ -1,4 +1,15 @@
 /* Data Table */
+
+.my-sites .toolbar 
+{
+   min-height: 2em;
+}
+
+.my-sites .scrollableList
+{
+   padding: 0;
+}
+
 .my-sites .yui-dt table
 {
    border: medium none;

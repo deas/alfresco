@@ -12,6 +12,9 @@
       showLinkToTarget: ${field.control.params.showTargetLink},
       targetLinkTemplate: "${url.context}/page/site/${page.url.templateArgs.site!""}/document-details?nodeRef={nodeRef}",
    </#if>
+   <#if field.control.params.allowNavigationToContentChildren??>
+      allowNavigationToContentChildren: ${field.control.params.allowNavigationToContentChildren},
+   </#if>
       itemType: "${field.endpointType}",
       multipleSelectMode: ${field.endpointMany?string},
       parentNodeRef: "alfresco://company/home",

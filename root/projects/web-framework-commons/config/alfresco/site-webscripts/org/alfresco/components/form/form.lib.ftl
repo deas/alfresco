@@ -12,6 +12,15 @@
          }
          <#else>
          enctype: "${form.enctype}",
+         fields:
+         [
+            <#list form.fields?keys as field>
+            {
+               id : "${form.fields[field].id}"
+            }
+            <#if field_has_next>,</#if>
+            </#list>
+         ],
          fieldConstraints: 
          [
             <#list form.constraints as constraint>
@@ -128,8 +137,7 @@
 <#macro renderFieldHelp field>
    <#if field.help?? && field.help?length &gt; 0>
       <span class="help-icon">
-         <img src="${url.context}/res/components/form/images/help.png" title="${msg("form.field.help")}" 
-              onclick="javascript:Alfresco.util.toggleHelpText('${fieldHtmlId}-help');" />
+         <img id="${fieldHtmlId}-help-icon" src="${url.context}/res/components/form/images/help.png" title="${msg("form.field.help")}" tabindex="0"/>
       </span>
       <div class="help-text" id="${fieldHtmlId}-help">${field.help?html}</div>
    </#if>

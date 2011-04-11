@@ -101,18 +101,18 @@
             width: 600,
             inline_styles: false,
             convert_fonts_to_spans: false,
-            theme:'advanced',
+            theme: "advanced",
             plugins: "table,visualchars,emotions,advhr,print,directionality,fullscreen,insertdatetime",
             theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,forecolor",
             theme_advanced_buttons2: "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,alfresco-imagelibrary,image,cleanup,help,code,removeformat,|,insertdate,inserttime",
             theme_advanced_buttons3: "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,advhr,|,print,|,ltr,rtl,|,fullscreen",
-            theme_advanced_toolbar_location : "top",
-            theme_advanced_toolbar_align : "left",
-            theme_advanced_statusbar_location : "bottom",
-            theme_advanced_path : false,
-            theme_advanced_resizing : true,
+            theme_advanced_toolbar_location: "top",
+            theme_advanced_toolbar_align: "left",
+            theme_advanced_statusbar_location: "bottom",
+            theme_advanced_path: false,
+            theme_advanced_resizing: true,
             siteId: this.options.siteId,
-            language:this.options.locale         
+            language: this.options.locale
          });
          this.widgets.editor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.wiki"));
          this.widgets.editor.render();

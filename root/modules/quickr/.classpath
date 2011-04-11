@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="source/web"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SDK AlfrescoEmbedded"/>
+	<classpathentry kind="lib" path="lib/abdera-extensions-main-0.4.0-incubating.jar"/>
 	<classpathentry kind="lib" path="lib/jettison-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/jetty-6.1.14.jar"/>
 	<classpathentry kind="lib" path="lib/jetty-util-6.1.14.jar"/>

@@ -231,6 +231,22 @@
       </sequential>
    </macrodef>
 
+   <macrodef name="minimize-javascript-file">
+      <attribute name="sourcefile" />
+      <attribute name="destfile" />
+      <sequential>
+         <apply executable="java" parallel="false">
+            <fileset file="@{sourcefile}" />
+            <arg line="-jar"/>
+            <arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
+            <arg line="-p"/>
+            <arg line="-o"/>
+            <arg line="@{destfile}" />
+            <srcfile />
+         </apply>
+      </sequential>
+   </macrodef>
+
    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
        Wrapper that brings the Alfresco webapp and the virtualization

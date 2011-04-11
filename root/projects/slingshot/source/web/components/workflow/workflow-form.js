@@ -266,7 +266,9 @@
             }
 
             var taskCompletionDate = Alfresco.util.fromISO8601(recentTask.properties.bpm_completionDate);
-            Dom.get(this.id + "-recentTaskCompletedOn").innerHTML = $html(taskCompletionDate ? Alfresco.util.formatDate(taskCompletionDate) : this.msg("label.notCompleted"));
+            Dom.get(this.id + "-recentTaskCompletedOn").innerHTML = $html(taskCompletionDate ? Alfresco.util.formatDate(taskCompletionDate, "mediumDate") : this.msg("label.notCompleted"));
+
+            Dom.get(this.id + "-recentTaskCompletedBy").innerHTML = taskOwner.userName ? taskOwnerLink : this.msg("label.notCompleted");
 
             Dom.get(this.id + "-recentTaskOutcome").innerHTML = $html(recentTask.outcome || "");
 
@@ -366,7 +368,7 @@
          var historyColumnDefinitions =
          [
             { key: "name", label: this.msg("column.type"), formatter: this.bind(this.renderCellType) },
-            { key: "owner", label: this.msg("column.userGroup"), formatter: this.bind(this.renderCellOwner) },
+            { key: "owner", label: this.msg("column.completedBy"), formatter: this.bind(this.renderCellOwner) },
             { key: "id", label: this.msg("column.dateCompleted"), formatter: this.bind(this.renderCellDateCompleted) },
             { key: "state", label: this.msg("column.outcome"), formatter: this.bind(this.renderCellOutcome) },
             { key: "properties", label: this.msg("column.comment"), formatter: this.bind(this.renderCellComment) }
@@ -431,7 +433,10 @@
          if (owner != null && owner.userName)
          {
             var displayName = $html(this.msg("field.owner", owner.firstName, owner.lastName));
-            elCell.innerHTML = $userProfileLink(owner.userName, displayName, null, !owner.firstName);
+            elCell.innerHTML = $userProfileLink(owner.userName, owner.firstName && owner.lastName ? displayName : null, null, !owner.firstName);
+         }
+         else {
+            elCell.innerHTML = this.msg("label.none");
          }
       },
 

@@ -20,6 +20,7 @@ package org.alfresco.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -76,5 +77,19 @@ public class PathMapperTest extends TestCase
         {
             fail(diff);
         }
+    }
+    
+    public void testPathMatchesExact()
+    {
+        Set<String> mappedPaths = mapper.getMappedPaths("/a/b/c");
+        assertEquals("Exact matches expected", 2, mappedPaths.size());
+        mappedPaths = mapper.getMappedPaths("/a");
+        assertEquals("Exact match NOT expected", 0, mappedPaths.size());
+    }
+    
+    public void testPathMatchesPartial()
+    {
+        Set<String> mappedPaths = mapper.getMappedPathsWithPartialMatch("/a");
+        assertEquals("Partial matches expected", 4, mappedPaths.size());
     }
 }

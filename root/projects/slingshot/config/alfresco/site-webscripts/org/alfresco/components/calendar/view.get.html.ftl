@@ -19,7 +19,7 @@
    );
 //]]></script>
 
-<#if (viewArgs.viewType=='month')>    
+<#if (viewArgs.viewType=='month')>
 <h2 id="calTitle"></h2>
 <div id="${el}Container" class="calendar vcalendar monthview">
     <table id="${el}View" cellspacing="0" cellpadding="0">
@@ -78,7 +78,7 @@
                                          </#if>
 
                                          <li class="vevent ${class}">
-                                               <a href="/calendar/event/${page.url.templateArgs.site!""}/${event.name}?date=${viewArgs.view.dates[id].id}" class="summary theme-color-1">${event.summary?html}</a>
+                                               <a href="/calendar/event/${page.url.templateArgs.site!""}/${event.name}?date=${event.dtstart?split('T')[0]}" class="summary theme-color-1">${event.summary?html}</a>
                                                <p class="description">${event.description?html}</p>
                                                <p class="dates"><span class="dtstart" title="${event.dtstart}">${event.dtstartText}</span>
                                                - <span class="dtend" title="${event.dtend}">${event.dtendText}</span></p>                                

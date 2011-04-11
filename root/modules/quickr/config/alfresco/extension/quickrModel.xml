@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<model name="qr:customModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+    <description>QuickR</description>
+
+    <imports>
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+    </imports>
+
+    <namespaces>
+        <namespace uri="http://www.alfresco.org/model/quickr/1.0" prefix="qr"/>
+        <namespace uri="http://www.alfresco.org/model/quickr/psheet/1.0" prefix="ps"/>
+        <namespace uri="http://www.alfresco.org/model/quickr/draft/approve/1.0" prefix="da"/>
+    </namespaces>
+
+    <constraints>
+        <constraint name="qr:allowedValues" type="LIST">
+            <parameter name="allowedValues">                
+                <list>
+                    <value>Value 1</value>
+                    <value>Value 2</value>
+                    <value>Value 3</value>
+                    <value>Value 4</value>
+                    <value>Value 5</value>                    
+                </list>
+            </parameter>
+        </constraint>
+        <constraint name="qr:allowedLength" type="LENGTH">
+            <parameter name="minLength">                
+                <value>0</value>
+            </parameter>
+            <parameter name="maxLength">                
+                <value>6</value>
+            </parameter>
+        </constraint>
+    </constraints>
+    
+    <aspects>
+        <!-- Parent aspects-->
+        <aspect name="qr:docType">
+            <title>Default</title>
+        </aspect>
+    
+        <aspect name="qr:propSheet">
+            <title>QuickR Property Sheet</title>
+        </aspect>
+        
+        <!-- Aspects that define version behaviour -->
+        
+        <aspect name="qr:versioning">
+        </aspect>
+
+        <!-- Use this aspect if document versioning is disabled -->
+        <aspect name="qr:versionNONE">
+            <title>NONE</title>  
+            <parent>qr:versioning</parent> 
+        </aspect>
+        
+        <!-- Use this aspect if document versioning enabled -->        
+        <aspect name="qr:versionEnabled">
+            <title>EXPLICIT</title>  
+            <parent>qr:versioning</parent> 
+        </aspect>
+        
+        <!-- Use this aspect if updates are always stored as new version  -->
+        <aspect name="qr:versionAlways">
+            <title>IMPLICIT</title>  
+            <parent>qr:versioning</parent> 
+        </aspect>
+        
+        <!--  Aspects that define Draft Approval Options -->
+        <aspect name="qr:draftApprovals">
+        </aspect>
+        
+        <!-- Use this aspect if your document type use Serial Draft Approval-->
+        <aspect name="qr:draftApprovalSerial">
+            <title>Serial</title>  
+            <parent>qr:draftApprovals</parent> 
+        </aspect>
+        
+        <!-- Use this aspect if your document type use Parallel Draft Approval-->
+        <aspect name="qr:draftApprovalParallel">
+            <title>Parallel</title>  
+            <parent>qr:draftApprovals</parent> 
+        </aspect>        
+    
+        <!-- Aspects that are mapped to the QuickR document types-->
+ 
+        <aspect name="qr:alfrescoCustomType">
+            <title>AlfrescoCustomType</title>  must be the same as document type title in QuickR  
+            <parent>qr:docType</parent> 
+			 <properties>
+                <property name="da:alfrescoCustomTypeAppList">
+                    <title>List of Approvers</title>
+                    <type>d:text</type>
+                    <default>admin</default>
+                </property>
+            </properties>			
+            <mandatory-aspects>
+                <aspect>ps:supportedTypes</aspect>              
+				<aspect>qr:versionEnabled</aspect>
+				<aspect>qr:draftApprovalParallel</aspect>   
+            </mandatory-aspects>
+        </aspect> 
+
+        <!-- Aspect for initial draft -->
+        <aspect name="qr:draft">
+            <title>Initial draft element</title>  
+        </aspect>
+
+
+        <!-- Aspects that are mapped to the QuickR property sheets-->
+
+        <aspect name="ps:supportedTypes">
+            <title>SupportedTypes</title> <!-- must be the same as property sheet title in QuickR -->
+            <parent>qr:propSheet</parent>
+            <properties>
+                <property name="ps:any">
+                    <title>any</title> <!-- must be the same as property name in corresponding property sheet in QuickR-->
+                    <!--  Type of property must be compatible with type in QuickR. Here are the mapping -->
+                    <!-- QuickR type         Alfresco type -->
+                    <!--  string                     d:any -->
+                    <!--  long                      d:long -->
+                    <!--  double                  d:double -->
+                    <!--  dateTime                  d:date -->
+                    <!--  dateTime              d:datetime -->
+                    <!--  string                 d:boolean -->
+                    <!--  string                    d:text -->
+                    <type>d:any</type>
+                    <constraints>
+                        <constraint ref="qr:allowedLength" />
+                    </constraints>
+                </property>
+                <property name="ps:text">
+                    <title>text</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <default>Value 1</default>
+                    <constraints>
+                        <constraint ref="qr:allowedValues" />
+                    </constraints>                    
+                </property>
+                <property name="ps:long">
+                    <title>long</title>
+                    <type>d:long</type>
+                    <constraints>
+                        <constraint ref="qr:allowedLength" />
+                    </constraints>
+                </property>
+                <property name="ps:double">
+                    <title>double</title>
+                    <type>d:double</type>
+                </property>
+                <property name="ps:date">
+                    <title>date</title>
+                    <type>d:date</type>
+                </property>
+                <property name="ps:datetime">
+                    <title>datetime</title>
+                    <type>d:datetime</type>
+                </property>
+                <property name="ps:boolean">
+                    <title>boolean</title>
+                    <type>d:boolean</type>
+                </property>
+            </properties>
+        </aspect>
+        
+    </aspects>
+</model>

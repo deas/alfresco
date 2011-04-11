@@ -42,6 +42,8 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementA
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.CompleteEventAction;
 import org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService;
 import org.alfresco.module.org_alfresco_module_dod5015.script.CustomReferenceType;
+import org.alfresco.module.org_alfresco_module_dod5015.test.TestActionParams;
+import org.alfresco.module.org_alfresco_module_dod5015.test.TestUtilities;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -86,6 +88,7 @@ public class RmRestApiTest extends BaseWebScriptTest implements RecordsManagemen
     protected static final String TRANSFER_REPORT_URL_FORMAT = "/api/node/{0}/transfers/{1}/report";
     protected static final String REF_INSTANCES_URL_FORMAT = "/api/node/{0}/customreferences";
     protected static final String RMA_AUDITLOG_URL = "/api/rma/admin/rmauditlog";
+    protected static final String RMA_AUDITLOG_STATUS_URL = "/api/rma/admin/rmauditlog/status";
     protected static final String GET_LIST_URL = "/api/rma/admin/listofvalues";
     protected static final String RMA_ACTIONS_URL = "/api/rma/actions/ExecutionQueue";
     protected static final String APPLICATION_JSON = "application/json";
@@ -1295,7 +1298,7 @@ public class RmRestApiTest extends BaseWebScriptTest implements RecordsManagemen
         assertTrue(jsonRsp.getString("recordName").startsWith("report_"));
     }
     
-    public void testAudit() throws IOException, JSONException
+    public void testAudit() throws Exception
     {
         // call the list service to get audit events
         Response rsp = sendRequest(new GetRequest(GET_LIST_URL), 200);
@@ -1356,11 +1359,15 @@ public class RmRestApiTest extends BaseWebScriptTest implements RecordsManagemen
         assertEquals("application/json", rsp.getContentType());
         jsonRsp = new JSONObject(new JSONTokener(rsp.getContentAsString()));
         
+        checkAuditStatus(true);
+        
         // start the RM audit log
         JSONObject jsonPostData = new JSONObject();
         jsonPostData.put("enabled", true);
         String jsonPostString = jsonPostData.toString();
         rsp = sendRequest(new PutRequest(RMA_AUDITLOG_URL, jsonPostString, APPLICATION_JSON), 200);
+        
+        checkAuditStatus(true);
         
         // check the response
         //System.out.println(rsp.getContentAsString());
@@ -1377,6 +1384,8 @@ public class RmRestApiTest extends BaseWebScriptTest implements RecordsManagemen
         jsonPostString = jsonPostData.toString();
         rsp = sendRequest(new PutRequest(RMA_AUDITLOG_URL, jsonPostString, APPLICATION_JSON), 200);
         
+        checkAuditStatus(false);
+        
         // check the response
         //System.out.println(rsp.getContentAsString());
         jsonRsp = new JSONObject(new JSONTokener(rsp.getContentAsString()));
@@ -1391,6 +1400,16 @@ public class RmRestApiTest extends BaseWebScriptTest implements RecordsManagemen
         dataObj = (JSONObject)jsonRsp.get("data");
         assertNotNull("JSON 'data' object was null", dataObj);
         assertFalse(dataObj.getBoolean("enabled"));
+    }
+    
+    private void checkAuditStatus(boolean expected) throws Exception 
+    {
+        Response rsp = sendRequest(new GetRequest(RMA_AUDITLOG_STATUS_URL), 200);
+        JSONObject rspObj = new JSONObject(rsp.getContentAsString());
+        JSONObject data = rspObj.getJSONObject("data");
+        boolean enabled = data.getBoolean("enabled");
+        assertEquals("Audit log status does not match expected status.", expected, enabled);
+        
     }
     
     public void testFileAuditLogAsRecord() throws Exception

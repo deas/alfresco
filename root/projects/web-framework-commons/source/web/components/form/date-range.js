@@ -29,7 +29,8 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-      Event = YAHOO.util.Event;
+      Event = YAHOO.util.Event,
+      KeyListener = YAHOO.util.KeyListener;
 
    /**
     * Alfresco Slingshot aliases
@@ -91,14 +92,29 @@
          this.widgets.calendarFrom = new YAHOO.widget.Calendar(this.id + "-from", this.id + "-from", { title:this.msg("form.control.date-picker.choose"), close:true });
          this.widgets.calendarFrom.cfg.setProperty("pagedate", page);
          this.widgets.calendarFrom.cfg.setProperty("selected", selected);
+         this.widgets.calendarFrom.hideEvent.subscribe(function()
+         {
+            // Focus icon after calendar is closed
+            Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon-from")[0].focus();
+         }, this, true);
          Alfresco.util.calI18nParams(this.widgets.calendarFrom);
+         // setup keyboard enter events on the image instead of the link to get focus outline displayed
+         Alfresco.util.useAsButton(Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon-from")[0], this._showPickerFrom, null, this);
+
          page = (toDate.getMonth() + 1) + "/" + toDate.getFullYear();
          selected = (toDate.getMonth() + 1) + "/" + toDate.getDate() + "/" + toDate.getFullYear();   
          this.widgets.calendarTo = new YAHOO.widget.Calendar(this.id + "-to", this.id + "-to", { title:this.msg("form.control.date-picker.choose"), close:true });
          this.widgets.calendarTo.cfg.setProperty("pagedate", page);
          this.widgets.calendarTo.cfg.setProperty("selected", selected);
+         this.widgets.calendarTo.hideEvent.subscribe(function()
+         {
+            // Focus icon after calendar is closed
+            Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon-to")[0].focus();
+         }, this, true);
          Alfresco.util.calI18nParams(this.widgets.calendarTo);
-         
+         // setup keyboard enter events on the image instead of the link to get focus outline displayed
+         Alfresco.util.useAsButton(Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon-to")[0], this._showPickerTo, null, this);
+
          // setup events
          this.widgets.calendarFrom.selectEvent.subscribe(this._handlePickerChangeFrom, this, true);
          Event.addListener(this.id + "-date-from", "keyup", this._handleFieldChangeFrom, this, true);
@@ -163,8 +179,11 @@
             Dom.removeClass(this.id + "-date-from", "invalid");
          }
          
-         // hide the popup calendar
-         this.widgets.calendarFrom.hide();
+         // Hide calendar if the calendar was open (Unfortunately there is no proper yui api method for this)
+         if (Dom.getStyle(this.id + "-from", "display") != "none")
+         {
+            this.widgets.calendarFrom.hide();
+         }
       },
       
       /**
@@ -194,8 +213,11 @@
             Dom.removeClass(this.id + "-date-to", "invalid");
          }
          
-         // hide the popup calendar
-         this.widgets.calendarTo.hide();
+         // Hide calendar if the calendar was open (Unfortunately there is no proper yui api method for this)
+         if (Dom.getStyle(this.id + "-to", "display") != "none")
+         {
+            this.widgets.calendarTo.hide();
+         }
       },
       
       /**
@@ -206,7 +228,9 @@
        */
       _updateCurrentValue: function DateRange__updateCurrentValue()
       {
-         Dom.get(this.valueHtmlId).value = this.currentFromDate + "|" + this.currentToDate;
+         var value = this.currentFromDate + "|" + this.currentToDate;
+         value = value == "|" ? "" : value;         
+         Dom.get(this.valueHtmlId).value = value;
       },
       
       /**
@@ -221,30 +245,36 @@
          var changedDate = Dom.get(this.id + "-date-from").value;
          if (changedDate.length > 0)
          {
-            // convert to format expected by YUI
-            var parsedDate = Date.parseExact(changedDate, this.msg("form.control.date-picker.entry.date.format"));
-            if (parsedDate != null)
+            // Only set for actual value changes so tab or shift events doesn't remove the "text selection" of the input field
+            if (event == undefined || (event.keyCode != KeyListener.KEY.TAB && event.keyCode != KeyListener.KEY.SHIFT))
             {
-               this.widgets.calendarFrom.select((parsedDate.getMonth() + 1) + "/" + parsedDate.getDate() + "/" + parsedDate.getFullYear());
-               var selectedDates = this.widgets.calendarFrom.getSelectedDates();
-               if (selectedDates.length > 0)
+
+               // convert to format expected by YUI
+               var parsedDate = Date.parseExact(changedDate, this.msg("form.control.date-picker.entry.date.format"));
+               if (parsedDate != null)
                {
-                  Dom.removeClass(this.id + "-date-from", "invalid");
-                  var firstDate = selectedDates[0];
-                  this.widgets.calendarFrom.cfg.setProperty("pagedate", (firstDate.getMonth()+1) + "/" + firstDate.getFullYear());
-                  this.widgets.calendarFrom.render();
+                  this.widgets.calendarFrom.select((parsedDate.getMonth() + 1) + "/" + parsedDate.getDate() + "/" + parsedDate.getFullYear());
+                  var selectedDates = this.widgets.calendarFrom.getSelectedDates();
+                  if (selectedDates.length > 0)
+                  {
+                     Dom.removeClass(this.id + "-date-from", "invalid");
+                     var firstDate = selectedDates[0];
+                     this.widgets.calendarFrom.cfg.setProperty("pagedate", (firstDate.getMonth()+1) + "/" + firstDate.getFullYear());
+                     this.widgets.calendarFrom.render();
+                  }
                }
-            }
-            else
-            {
-               Dom.addClass(this.id + "-date-from", "invalid");
+               else
+               {
+                  Dom.addClass(this.id + "-date-from", "invalid");
+               }
             }
          }
          else
          {
             // when the date is completely cleared remove the hidden field and remove the invalid class
             Dom.removeClass(this.id + "-date-from", "invalid");
-            Dom.get(this.valueHtmlId + "-from").value = "";
+            this.currentFromDate = "";
+            this._updateCurrentValue();
          }
       },
       
@@ -283,7 +313,8 @@
          {
             // when the date is completely cleared remove the hidden field and remove the invalid class
             Dom.removeClass(this.id + "-date-to", "invalid");
-            Dom.get(this.valueHtmlId + "-to").value = "";
+            this.currentToDate = "";
+            this._updateCurrentValue();            
          }
       }
    });

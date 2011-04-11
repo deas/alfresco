@@ -39,7 +39,6 @@
    {
       // NOTE: This allows us to have a subclass
       var componentName = (typeof name == "undefined" || name === null) ? "Alfresco.RichTextControl" : name;
-      
       return Alfresco.RichTextControl.superclass.constructor.call(this, componentName, htmlId, ["button"]);
    };
    
@@ -133,27 +132,30 @@
       
          // render and register event handler
          this.editor.render();
+
+         // Make sure we persist the dom content from the editor in to the hidden textarea when appropriate 
          this.editor.subscribe("onKeyUp", this._handleContentChange, this, true);
+         this.editor.subscribe("onChange", this._handleContentChange, this, true);
       },
-      
+
       /**
        * Handles the content being changed in the TinyMCE control.
        * 
        * @method _handleContentChange
-       * @param type
-       * @param args
-       * @param obj
        * @private
        */
-      _handleContentChange: function RichTextControl__handleContentChange(type, args, obj)
+      _handleContentChange: function RichTextControl__handleContentChange()
       {
          // save the current contents of the editor to the underlying textarea
-         this.editor.save();
-
-         // inform the forms runtime if this field is mandatory
-         if (this.options.mandatory)
+         if (this.editor.isDirty())
          {
-            YAHOO.Bubbling.fire("mandatoryControlValueUpdated", this);
+            this.editor.save();
+
+            // inform the forms runtime if this field is mandatory
+            if (this.options.mandatory)
+            {
+               YAHOO.Bubbling.fire("mandatoryControlValueUpdated", this);
+            }
          }
       }
    });

@@ -147,7 +147,7 @@ public class CustomEmailMappingServiceImpl implements CustomEmailMappingService
          
         // Register interest in the onContentUpdate policy
         policyComponent.bindClassBehaviour(
-                ContentServicePolicies.ON_CONTENT_UPDATE,
+                ContentServicePolicies.OnContentUpdatePolicy.QNAME,
                 RecordsManagementModel.TYPE_EMAIL_CONFIG,
                 new JavaBehaviour(this, "onContentUpdate"));        
         

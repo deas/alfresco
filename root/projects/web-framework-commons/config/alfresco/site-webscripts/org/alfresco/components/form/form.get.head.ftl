@@ -16,7 +16,7 @@
 <@script type="text/javascript" src="${page.url.context}/res/components/form/period.js"></@script>
 <@script type="text/javascript" src="${page.url.context}/res/components/object-finder/object-finder.js"></@script>
 <script type="text/javascript" src="${page.url.context}/res/yui/calendar/calendar-${DEBUG?string("debug", "min")}.js"></script>
-<script type="text/javascript" src="${page.url.context}/res/modules/editors/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="${page.url.context}/res/modules/editors/tiny_mce/tiny_mce${DEBUG?string("_src", "")}.js"></script>
 <@script type="text/javascript" src="${page.url.context}/res/modules/editors/tiny_mce.js"></@script>
 <@script type="text/javascript" src="${page.url.context}/res/components/form/rich-text.js"></@script>
 <@script type="text/javascript" src="${page.url.context}/res/components/form/content.js"></@script>

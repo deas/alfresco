@@ -357,8 +357,42 @@
        */
       onActionEditReviewAsOf: function RDLA_onActionEditReviewAsOf(assets)
       {
+	if (assets.dod5015 == null) 
+	{
+		var asOfDate = new Date();
+		nodeId = Alfresco.util.NodeRef(assets.nodeRef);
+
+		url = Alfresco.constants.PROXY_URI
+			+ "slingshot/rmsearch/rm"
+			+ '?site=rm&query=(ASPECT:"rma:record" AND ASPECT:"rma:declaredRecord") AND (rma:identifier:'
+			+ nodeId.id + ') AND NOT ASPECT:"rma:versionedRecord"';
+
+		YAHOO.util.Connect.asyncRequest("GET", url, 
+		{
+			success : function(resp) 
+			{
+				item = YAHOO.lang.JSON.parse(resp.responseText);
+				if (null != item.items[0].properties.rma_reviewAsOf) 
+				{
+					asOfDate = new Date(item.items[0].properties.rma_reviewAsOf);
+					page = (asOfDate.getMonth() + 1) + "/"
+					+ asOfDate.getFullYear(),
+					selected = (asOfDate.getMonth() + 1) + "/"
+					+ asOfDate.getDate() + "/"
+					+ asOfDate.getFullYear();
+					calendar.cfg.setProperty("pagedate", page);
+					calendar.cfg.setProperty("selected", selected);
+					calendar.render();
+				}
+			}
+		}, null);
+	} else 
+	{
+		var asOfDate = Alfresco.util
+			.fromExplodedJSONDate(assets.dod5015["rma:reviewAsOf"]);
+	}
+
          var calendarId = Alfresco.util.generateDomId(),
-            asOfDate = Alfresco.util.fromExplodedJSONDate(assets.dod5015["rma:reviewAsOf"]),
             panel,
             calendar;
          

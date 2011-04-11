@@ -38,8 +38,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-logging-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-validator.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-core-0.8-SNAPSHOT.jar" sourcepath="src/tika-core-0.8-SNAPSHOT.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-0.8-SNAPSHOT.jar" sourcepath="src/tika-parsers-0.8-SNAPSHOT.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-core-0.9-SNAPSHOT.jar" sourcepath="src/tika-core-0.9-SNAPSHOT.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-0.9-SNAPSHOT.jar" sourcepath="src/tika-parsers-0.9-SNAPSHOT.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-api-1.1.5.jar" sourcepath="src/myfaces_src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-impl-1.1.5.jar" sourcepath="src/myfaces_src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-codec-1.3.jar"/>
@@ -65,9 +65,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/j2ee/jsp.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/j2ee/servlet.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant-1.7.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.0.jar" sourcepath="src/org.springframework.test-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/mysql-connector-java-5.1.7-bin.jar"/>
-	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guessencoding-1.0.jar" sourcepath="src/guessencoding-1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-lang-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/icu4j_3_6_1.jar"/>
@@ -119,9 +118,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.orm-3.0.0.jar" sourcepath="src/org.springframework.orm-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web-3.0.0.jar" sourcepath="src/org.springframework.web-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jaxws_2.1_spec-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-3.7-beta3-20100915.jar" sourcepath="src/poi-3.7-beta3-20100915.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.7-beta3-20100915.jar" sourcepath="src/poi-3.7-beta3-20100913.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.7-beta3-20100915.jar" sourcepath="src/poi-3.7-beta3-20100915.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.8-beta1-20101123.jar" sourcepath="src/poi-3.8-beta1-20101123.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.8-beta1-20101123.jar" sourcepath="src/poi-3.8-beta1-20101123.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.8-beta1-20101123.jar" sourcepath="src/poi-3.8-beta1-20101123.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.15.jar"/>
@@ -168,9 +167,12 @@
 	<classpathentry exported="true" kind="lib" path="lib/bsf-2.4.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ehcache-core-2.0.0.jar" sourcepath="src/ehcache-core-2.0.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT.jar" sourcepath="src/spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apache-mime4j-0.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/boilerpipe-1.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drew-image-metadata-extractor-2.4.0-beta-1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/netcdf-java-4.0.41.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netcdf-4.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/rome-0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/tagsoup-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wss4j-1.5.4-patched.jar" sourcepath="src/wss4j-1.5.4-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/google/gdata-client-1.0.jar"/>
@@ -180,8 +182,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/google/google-collect-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-tck-atompub-0.1-incubating-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.2.1.jar" sourcepath="src/pdfbox-1.2.1-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.3.1.jar" sourcepath="src/pdfbox-1.3.1-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.3.1.jar" sourcepath="src/pdfbox-1.3.1-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.3.1.jar" sourcepath="src/pdfbox-1.3.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/urlrewritefilter-3.1.0.jar" sourcepath="src/urlrewritefilter-3.1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>
@@ -190,5 +193,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.3.jar" sourcepath="src/activiti-engine-5.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.3.jar" sourcepath="src/activiti-spring-5.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
+	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

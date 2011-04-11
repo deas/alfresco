@@ -21,6 +21,8 @@ package org.alfresco.util;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -45,9 +47,35 @@ public class CachingDateFormat extends SimpleDateFormat
     /** <pre> yyyy-MM-dd'T'HH:mm:ss </pre> */
     public static final String FORMAT_CMIS_SQL = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
-    public static final String[] LENIENT_FORMATS = new String[] {"yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd'T'HH", "yyyy-MM-dd'T'",
-        "yyyy-MMM-dd'T'HH:mm:ss.SSS", "yyyy-MMM-dd", "yyyy-MMM-dd'T'HH:mm:ss.SSSZ", "yyyy-MMM-dd'T'HH:mm:ss", "yyyy-MMM-dd'T'HH:mm", "yyyy-MMM-dd'T'HH", "yyyy-MMM-dd'T'"
-    };
+    public static final StringAndResolution[] LENIENT_FORMATS;
+    
+    
+    static
+    {
+        ArrayList<StringAndResolution> list = new ArrayList<StringAndResolution> ();
+        list.add( new StringAndResolution("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Calendar.MILLISECOND));
+        list.add( new StringAndResolution("yyyy-MM-dd'T'HH:mm:ss.SSS",  Calendar.MILLISECOND));
+        list.add( new StringAndResolution("yyyy-MM-dd'T'HH:mm:ss", Calendar.SECOND));
+        list.add( new StringAndResolution("yyyy-MM-dd'T'HH:mm", Calendar.MINUTE));
+        list.add( new StringAndResolution("yyyy-MM-dd'T'HH",  Calendar.HOUR_OF_DAY));
+        list.add( new StringAndResolution("yyyy-MM-dd'T'",  Calendar.DAY_OF_MONTH));
+        list.add( new StringAndResolution("yyyy-MM-dd", Calendar.DAY_OF_MONTH));
+        list.add( new StringAndResolution("yyyy-MM", Calendar.MONTH));
+        // year would duplicate :-) and eat stuff
+        list.add( new StringAndResolution( "yyyy-MMM-dd'T'HH:mm:ss.SSSZ", Calendar.MILLISECOND));
+        list.add( new StringAndResolution( "yyyy-MMM-dd'T'HH:mm:ss.SSS", Calendar.MILLISECOND));
+        list.add( new StringAndResolution( "yyyy-MMM-dd'T'HH:mm:ss", Calendar.SECOND));
+        list.add( new StringAndResolution( "yyyy-MMM-dd'T'HH:mm", Calendar.MINUTE));
+        list.add( new StringAndResolution( "yyyy-MMM-dd'T'HH", Calendar.HOUR_OF_DAY));
+        list.add( new StringAndResolution( "yyyy-MMM-dd'T'",Calendar.DAY_OF_MONTH));
+        list.add( new StringAndResolution( "yyyy-MMM-dd", Calendar.DAY_OF_MONTH));
+        list.add( new StringAndResolution( "yyyy-MMM", Calendar.MONTH));
+        list.add( new StringAndResolution("yyyy", Calendar.YEAR));
+       
+
+
+        LENIENT_FORMATS = list.toArray(new StringAndResolution[]{});
+    }
     
     /** <pre> yyyy-MM-dd </pre> */
     public static final String FORMAT_DATE_GENERIC = "yyyy-MM-dd";
@@ -63,7 +91,7 @@ public class CachingDateFormat extends SimpleDateFormat
     
     private static ThreadLocal<SimpleDateFormat> s_localCmisSqlDatetime = new ThreadLocal<SimpleDateFormat>();
     
-    private static ThreadLocal<SimpleDateFormat[]> s_lenientParsers = new ThreadLocal<SimpleDateFormat[]>();
+    private static ThreadLocal<SimpleDateFormatAndResolution[]> s_lenientParsers = new ThreadLocal<SimpleDateFormatAndResolution[]>();
 
     transient private Map<String, Date> cacheDates = new WeakHashMap<String, Date>(89);
 
@@ -255,24 +283,28 @@ public class CachingDateFormat extends SimpleDateFormat
         }
     }
     
-    public static Date lenientParse(String text) throws ParseException
+    public static Pair<Date, Integer> lenientParse(String text, int minimumResolution) throws ParseException
     {
-        SimpleDateFormat[] formatters = getLenientFormatters();
-        for(SimpleDateFormat formatter : formatters)
+        SimpleDateFormatAndResolution[] formatters = getLenientFormatters();
+        for(SimpleDateFormatAndResolution formatter : formatters)
         {
-            try
+            if(formatter.resolution >= minimumResolution)
             {
-                return formatter.parse(text);
-            }
-            catch (ParseException e)
-            {
-                continue;
+                try
+                {
+                    Date parsed = formatter.simpleDateFormat.parse(text);
+                    return new Pair<Date, Integer>(parsed, formatter.resolution);
+                }
+                catch (ParseException e)
+                {
+                    continue;
+                }
             }
         }
         throw new ParseException("Unknown date format", 0);
     }
     
-    public static SimpleDateFormat[] getLenientFormatters()
+    public static SimpleDateFormatAndResolution[] getLenientFormatters()
     {
         if (s_lenientParsers.get() != null)
         {
@@ -280,13 +312,13 @@ public class CachingDateFormat extends SimpleDateFormat
         }
 
         int i = 0;
-        SimpleDateFormat[] formatters = new SimpleDateFormat[LENIENT_FORMATS.length];
-        for(String format : LENIENT_FORMATS)
+        SimpleDateFormatAndResolution[] formatters = new SimpleDateFormatAndResolution[LENIENT_FORMATS.length];
+        for(StringAndResolution format : LENIENT_FORMATS)
         {
-            CachingDateFormat formatter = new CachingDateFormat(format);
+            CachingDateFormat formatter = new CachingDateFormat(format.string);
             // it must be strict
             formatter.setLenient(false);
-            formatters[i++] = formatter;
+            formatters[i++] = new SimpleDateFormatAndResolution(formatter, format.resolution);
         }
        
         // put this into the threadlocal object
@@ -295,4 +327,60 @@ public class CachingDateFormat extends SimpleDateFormat
         return s_lenientParsers.get();
     }
     
+    public static class StringAndResolution
+    {
+        String string;
+        int resolution;
+        
+        /**
+         * @return the resolution
+         */
+        public int getResolution()
+        {
+            return resolution;
+        }
+
+        /**
+         * @param resolution the resolution to set
+         */
+        public void setResolution(int resolution)
+        {
+            this.resolution = resolution;
+        }
+
+        StringAndResolution(String string, int resolution)
+        {
+            this.string = string;
+            this.resolution = resolution;
+        }
+    }
+    
+    public static class SimpleDateFormatAndResolution
+    {
+        SimpleDateFormat simpleDateFormat;
+        int resolution;
+        
+        SimpleDateFormatAndResolution(SimpleDateFormat simpleDateFormat, int resolution)
+        {
+            this.simpleDateFormat = simpleDateFormat;
+            this.resolution = resolution;
+        }
+
+        /**
+         * @return the simpleDateFormat
+         */
+        public SimpleDateFormat getSimpleDateFormat()
+        {
+            return simpleDateFormat;
+        }
+
+        /**
+         * @return the resolution
+         */
+        public int getResolution()
+        {
+            return resolution;
+        }
+        
+    }
 }

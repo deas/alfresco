@@ -54,29 +54,31 @@ public class FileAction extends RMActionExecuterAbstractBase
         //
         // check the record is within a folder
         // check that the folder we are filing into is not closed
-        
-        // if this is a declared record already, it's a re-file.
-        final boolean isRefile = recordsManagementService.isRecord(actionedUponNodeRef); 
+            
+    	// Add the record aspect (doesn't matter if it is already present)
+    	if (nodeService.hasAspect(actionedUponNodeRef, ASPECT_RECORD) == false)
+    	{
+    		nodeService.addAspect(actionedUponNodeRef, RecordsManagementModel.ASPECT_RECORD, null);
+    	}	
+    		
+        // Get the records properties
+        Map<QName, Serializable> recordProperties = this.nodeService.getProperties(actionedUponNodeRef);
 
-        if (isRefile == false)
+        Calendar fileCalendar = Calendar.getInstance();
+        if (recordProperties.get(RecordsManagementModel.PROP_IDENTIFIER) == null)
         {
-            // Add the record and undeclared aspect
-            nodeService.addAspect(actionedUponNodeRef, RecordsManagementModel.ASPECT_RECORD, null);
-
-            // Get the records properties
-            Map<QName, Serializable> recordProperties = this.nodeService.getProperties(actionedUponNodeRef);
-
-            // Calculate the filed date and record identifier
-            Calendar fileCalendar = Calendar.getInstance();
-            String year = Integer.toString(fileCalendar.get(Calendar.YEAR));
-            QName nodeDbid = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "node-dbid");
-            String recordId = year + "-" + padString(recordProperties.get(nodeDbid).toString(), 10);
-            recordProperties.put(RecordsManagementModel.PROP_DATE_FILED, fileCalendar.getTime());
-            recordProperties.put(RecordsManagementModel.PROP_IDENTIFIER, recordId);             
-
-            // Set the record properties
-            this.nodeService.setProperties(actionedUponNodeRef, recordProperties);        
+	        // Calculate the filed date and record identifier	        
+	        String year = Integer.toString(fileCalendar.get(Calendar.YEAR));
+	        QName nodeDbid = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "node-dbid");
+	        String recordId = year + "-" + padString(recordProperties.get(nodeDbid).toString(), 10);        
+	        recordProperties.put(RecordsManagementModel.PROP_IDENTIFIER, recordId);
         }
+        
+        // Update/set the date this record was refiled/filed
+        recordProperties.put(RecordsManagementModel.PROP_DATE_FILED, fileCalendar.getTime());
+
+        // Set the record properties
+        this.nodeService.setProperties(actionedUponNodeRef, recordProperties);        
 
         // Calculate the review schedule
         VitalRecordDefinition viDef = this.recordsManagementService.getVitalRecordDefinition(actionedUponNodeRef);

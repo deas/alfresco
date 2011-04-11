@@ -1959,6 +1959,9 @@
          <fileset dir="${dir.project.webclient.src.web}" 
                   excludes="WEB-INF/**" />
       </copy>
+      
+      <minimize-javascript-file sourcefile="${dir.project.webclient.assemble}/scripts/ajax/mootools.v1.11-src.js"
+                                destfile="${dir.project.webclient.assemble}/scripts/ajax/mootools.v1.11.js" />
 
       <java classname="CommentStripper" 
             dir="${dir.project.webclient.assemble}" 

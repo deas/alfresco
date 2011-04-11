@@ -67,8 +67,8 @@
                   <div id="${id}-scheduleStartContainer"></div>
                   <div class="form-field">
                      <label for="${id}-prop_intervalCount">${msg("label.repeat")}:<span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></label>
-                     <input type="text" id="${id}-prop_intervalCount" name="schedule.intervalCount" tabindex="0" title="${msg("label.repeat-count")}" class="number" value="${((jobDetail.schedule.intervalCount)!"")?html}" />
-                     <select id="${id}-prop_intervalPeriod" name="schedule.intervalPeriod" tabindex="0" title="${msg("label.repeat-period")}">
+                     <input type="text" id="${id}-prop_intervalCount" name="schedule.intervalCount" tabindex="0" class="number" value="${((jobDetail.schedule.intervalCount)!"")?html}" />
+                     <select id="${id}-prop_intervalPeriod" name="schedule.intervalPeriod" tabindex="0">
                         <option value="-">${msg("option.none")}</option>
                      <#list intervalPeriods?keys as ip>
                         <option value="${ip?html}"<#if ip == (jobDetail.schedule.intervalPeriod)!""> selected="selected"</#if>>${(intervalPeriods[ip])?html}</option>

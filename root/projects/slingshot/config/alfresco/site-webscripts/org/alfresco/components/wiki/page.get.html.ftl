@@ -11,7 +11,7 @@
    <#assign pageList = [] />
 </#if>
 <#-- Version History -->
-<#if result.versionhistory??>
+<#if (result.versionhistory?? && result.versionhistory?size > 0)>
    <#assign currentVersion = result.versionhistory[0].version>
 <#else>
    <#assign currentVersion = "">
@@ -46,9 +46,9 @@
       locale: "${locale?substring(0, 2)}",
       permissions:
       {
-         create: ${(permissions["create"]!false)?string},
-         edit: ${(permissions["edit"]!false)?string},
-         delete: ${(permissions["delete"]!false)?string}
+         "create": ${(permissions["create"]!false)?string},
+         "edit": ${(permissions["edit"]!false)?string},
+         "delete": ${(permissions["delete"]!false)?string}
       }
    }).setMessages(
       ${messages}

@@ -63,6 +63,7 @@
              * been loaded and created
              */
             this._showPanel();
+            YAHOO.org.springframework.extensions.webeditor.module.Ribbon.resizeRibbon();
          }
          else
          {
@@ -143,7 +144,7 @@
          var panelDiv = Dom.getFirstChildBy(containerDiv, function(el) { return el.nodeName.toLowerCase() == 'div';});
          this.widgets.panel = new YAHOO.widget.Panel(panelDiv, 
          {
-            width: 0.6 * (parseInt(Dom.getClientRegion().width,10))+'px',
+            width: "auto",
             modal: true,
             constraintoviewport: true,
             draggable: true,
@@ -159,6 +160,7 @@
          var fnHideEventHandler = function AweFormPanel_fnHideEventHandler()
          {
             this.hide();
+            YAHOO.org.springframework.extensions.webeditor.module.Ribbon.resizeRibbon();
          }
          this.widgets.panel.hideEvent.subscribe(fnHideEventHandler, this, true);
 
@@ -175,6 +177,8 @@
                   // Unhook close button
                   this.widgets.panel.hideEvent.unsubscribe(fnHideEventHandler, null, this);
                   this.widgets.panel.hide();
+                  YAHOO.org.springframework.extensions.webeditor.module.Ribbon.resizeRibbon();
+                  
                   this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
                   {
                      text: Alfresco.util.message("message.saving"),
@@ -192,6 +196,7 @@
 
          // Show the panel
          this._showPanel();
+         YAHOO.org.springframework.extensions.webeditor.module.Ribbon.resizeRibbon();
       },
 
       /**
@@ -205,6 +210,7 @@
       onCancelButtonClick: function AweFormPanel_onCancelButtonClick(type, args)
       {
          this.hide();
+         YAHOO.org.springframework.extensions.webeditor.module.Ribbon.resizeRibbon();
       },
 
       onUpdateContentUI: function AweFormPanel_onUpdateContentUI(args)

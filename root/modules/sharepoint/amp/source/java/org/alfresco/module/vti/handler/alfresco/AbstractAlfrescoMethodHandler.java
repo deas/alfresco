@@ -739,12 +739,25 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                         getFileFolderService().delete(workingCopyNodeRef); // beforeDeleteNode policy unlocks original node
                     }
                 }
-
+                
+                NodeRef sourceParentRef = null;
+                if (oldURL != null)
+                {
+                    // current parent
+                    Pair<String, String> sourceParentPaths = VtiPathHelper.splitPathParentChild(serviceName + "/" + oldURL);
+                    String sourceParentPath = sourceParentPaths.getFirst();
+                    FileInfo sourceParent = getPathHelper().resolvePathFileInfo(sourceParentPath);
+                    if (sourceParent != null)
+                    {
+                        sourceParentRef = sourceParent.getNodeRef();
+                    }
+                }
+                
                 if (logger.isDebugEnabled())
                 {
                     logger.debug("Move document: " + oldURL + " to new location: " + newURL + " in site: " + serviceName);
                 }
-                destFileInfo = getFileFolderService().move(sourceFileInfo.getNodeRef(), destParentFolder.getNodeRef(), destName);
+                destFileInfo = getFileFolderService().move(sourceFileInfo.getNodeRef(), sourceParentRef, destParentFolder.getNodeRef(), destName);
             }
 
             tx.commit();

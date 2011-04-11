@@ -1,7 +1,16 @@
-var successUrl = context.properties["alfRedirectUrl"];
-if (successUrl == null)
+/**
+ * Login template controller script
+ */
+
+function main()
 {
-	successUrl = page.url.context;
+   var successUrl = context.properties["alfRedirectUrl"];
+   if (successUrl == null)
+   {
+      successUrl = page.url.context;
+   }
+   model.successUrl = successUrl;
+   model.lastUsername = context.properties["alfLastUsername"];
 }
-model.successUrl = successUrl;
-model.lastUsername = context.properties["alfLastUsername"];
+
+main();

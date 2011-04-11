@@ -299,7 +299,7 @@
 
                // Create flash web preview by using swfobject
                var swfId = "WebPreviewer_" + this.id;
-               var so = new YAHOO.deconcept.SWFObject(Alfresco.constants.URL_RESCONTEXT + "components/preview/WebPreviewer.swf",
+               var so = new YAHOO.deconcept.SWFObject(Alfresco.constants.URL_CONTEXT + "components/preview/WebPreviewer.swf",
                      swfId, "100%", "100%", "9.0.45");
                so.addVariable("fileName", this.options.name);
                so.addVariable("paging", previewCtx.paging);
@@ -418,7 +418,7 @@
          }
          else if (this.options.mimeType.match(/application\/x-shockwave-flash/))
          {
-            url = Alfresco.constants.PROXY_URI + "api/node/content/" + nodeRefAsLink + argsNoCache + "&a=true";
+            url = Alfresco.constants.PROXY_URI + "api/node/content/" + nodeRefAsLink + argsNoCache + "&a=false";
             return (
             {
                url: url,

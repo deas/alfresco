@@ -3516,546 +3516,549 @@
                <deleteFile path="${installdir}/common/man/man3/pecho_wchar.3x" />
                 <createSymLink target="curs_pad.3x" linkName="${installdir}/common/man/man3/pecho_wchar.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_pad.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/program/sbase" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/getwin.3x" />
-                <createSymLink target="curs_util.3x" linkName="${installdir}/common/man/man3/getwin.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/sbase" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_util.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/sbase" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/wattrset.3x" />
                 <createSymLink target="curs_attr.3x" linkName="${installdir}/common/man/man3/wattrset.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_attr.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/program/unoinfo" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/set_menu_items.3x" />
-                <createSymLink target="menu_items.3x" linkName="${installdir}/common/man/man3/set_menu_items.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/unoinfo" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/menu_items.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/unoinfo" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/getstr.3x" />
-                <createSymLink target="curs_getstr.3x" linkName="${installdir}/common/man/man3/getstr.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/crash_report.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_getstr.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/crash_report.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/set_menu_init.3x" />
-                <createSymLink target="menu_hook.3x" linkName="${installdir}/common/man/man3/set_menu_init.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/unopkg" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/menu_hook.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/unopkg" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/link_field.3x" />
-                <createSymLink target="form_field_new.3x" linkName="${installdir}/common/man/man3/link_field.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/soffice.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/form_field_new.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/soffice.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/mvwinstr.3x" />
                 <createSymLink target="curs_instr.3x" linkName="${installdir}/common/man/man3/mvwinstr.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_instr.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/program/crash_report" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/mvwin_wchnstr.3x" />
                 <createSymLink target="curs_in_wchstr.3x" linkName="${installdir}/common/man/man3/mvwin_wchnstr.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_in_wchstr.3x" condition="exists" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/crash_report" >
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/new_item.3x" />
                 <createSymLink target="mitem_new.3x" linkName="${installdir}/common/man/man3/new_item.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/mitem_new.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/crash_report" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/wstandend.3x" />
                 <createSymLink target="curs_attr.3x" linkName="${installdir}/common/man/man3/wstandend.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_attr.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/program/simpress" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/new_page.3x" />
-                <createSymLink target="form_new_page.3x" linkName="${installdir}/common/man/man3/new_page.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/simpress" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/form_new_page.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/simpress" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/mvhline.3x" />
-                <createSymLink target="curs_border.3x" linkName="${installdir}/common/man/man3/mvhline.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/testtool" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_border.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/testtool" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/winch.3x" />
                 <createSymLink target="curs_inch.3x" linkName="${installdir}/common/man/man3/winch.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_inch.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/program/swriter" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/vline.3x" />
-                <createSymLink target="curs_border.3x" linkName="${installdir}/common/man/man3/vline.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/swriter" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_border.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/swriter" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/scrl.3x" />
                 <createSymLink target="curs_scroll.3x" linkName="${installdir}/common/man/man3/scrl.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_scroll.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/program/smath" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/mvwprintw.3x" />
-                <createSymLink target="curs_printw.3x" linkName="${installdir}/common/man/man3/mvwprintw.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/smath" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_printw.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/smath" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/set_form_win.3x" />
                 <createSymLink target="form_win.3x" linkName="${installdir}/common/man/man3/set_form_win.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/form_win.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/program/scalc" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/inch.3x" />
-                <createSymLink target="curs_inch.3x" linkName="${installdir}/common/man/man3/inch.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/scalc" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_inch.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/scalc" condition="exists" />
                      </ruleList>
                 </createSymLink>
+                        <dos2unix files="${installdir}/openoffice/Contents/program/sdraw" abortOnError="0" showMessageOnError="0" />
             
                <deleteFile path="${installdir}/common/man/man3/new_fieldtype.3x" />
-                <createSymLink target="form_fieldtype.3x" linkName="${installdir}/common/man/man3/new_fieldtype.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/sdraw" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/form_fieldtype.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/sdraw" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/panel_hidden.3x" />
-                <createSymLink target="panel.3x" linkName="${installdir}/common/man/man3/panel_hidden.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/unopkg.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/panel.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/unopkg.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/show_panel.3x" />
-                <createSymLink target="panel.3x" linkName="${installdir}/common/man/man3/show_panel.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/program/soffice" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/panel.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/program/soffice" condition="exists" />
                      </ruleList>
                 </createSymLink>
-            
+                        <changePermissions permissions="00755" files="${installdir}/openoffice/Contents/Library/Spotlight/OOoSpotlightImporter.mdimporter/Contents/MacOS/OOoSpotlightImporter" >
                <deleteFile path="${installdir}/common/man/man3/mvin_wchnstr.3x" />
                 <createSymLink target="curs_in_wchstr.3x" linkName="${installdir}/common/man/man3/mvin_wchnstr.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_in_wchstr.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/Library/Spotlight/OOoSpotlightImporter.mdimporter/Contents/MacOS/OOoSpotlightImporter" condition="exists" />
                      </ruleList>
                 </createSymLink>
+                        <dos2unix files="${installdir}/openoffice/Contents/MacOS/sbase" abortOnError="0" showMessageOnError="0" />
             
                <deleteFile path="${installdir}/common/man/man3/nonl.3x" />
-                <createSymLink target="curs_outopts.3x" linkName="${installdir}/common/man/man3/nonl.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/sbase" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_outopts.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/sbase" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/syncok.3x" />
                 <createSymLink target="curs_window.3x" linkName="${installdir}/common/man/man3/syncok.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_window.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/MacOS/unoinfo" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/update_panels.3x" />
-                <createSymLink target="panel.3x" linkName="${installdir}/common/man/man3/update_panels.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/unoinfo" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/panel.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/unoinfo" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/win_wchnstr.3x" />
-                <createSymLink target="curs_in_wchstr.3x" linkName="${installdir}/common/man/man3/win_wchnstr.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/crash_report.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_in_wchstr.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/crash_report.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/setterm.3x" />
-                <createSymLink target="curs_terminfo.3x" linkName="${installdir}/common/man/man3/setterm.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/unopkg" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_terminfo.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/unopkg" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/echo.3x" />
-                <createSymLink target="curs_inopts.3x" linkName="${installdir}/common/man/man3/echo.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/soffice.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_inopts.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/soffice.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/menu_fore.3x" />
                 <createSymLink target="menu_attributes.3x" linkName="${installdir}/common/man/man3/menu_fore.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/menu_attributes.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/MacOS/crash_report" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/killchar.3x" />
-                <createSymLink target="curs_termattrs.3x" linkName="${installdir}/common/man/man3/killchar.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/crash_report" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_termattrs.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/crash_report" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/slk_touch.3x" />
                 <createSymLink target="curs_slk.3x" linkName="${installdir}/common/man/man3/slk_touch.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_slk.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/MacOS/simpress" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/ripoffline.3x" />
-                <createSymLink target="curs_kernel.3x" linkName="${installdir}/common/man/man3/ripoffline.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/simpress" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_kernel.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/simpress" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/hide_panel.3x" />
-                <createSymLink target="panel.3x" linkName="${installdir}/common/man/man3/hide_panel.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/testtool" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/panel.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/testtool" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/use_extended_names.3x" />
                 <createSymLink target="curs_extend.3x" linkName="${installdir}/common/man/man3/use_extended_names.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_extend.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/MacOS/swriter" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/item_term.3x" />
-                <createSymLink target="menu_hook.3x" linkName="${installdir}/common/man/man3/item_term.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/swriter" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/menu_hook.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/swriter" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/panel_window.3x" />
                 <createSymLink target="panel.3x" linkName="${installdir}/common/man/man3/panel_window.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/panel.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/MacOS/smath" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/mousemask.3x" />
-                <createSymLink target="curs_mouse.3x" linkName="${installdir}/common/man/man3/mousemask.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/smath" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_mouse.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/smath" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/mvwaddch.3x" />
                 <createSymLink target="curs_addch.3x" linkName="${installdir}/common/man/man3/mvwaddch.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_addch.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/MacOS/scalc" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/mvwgetn_wstr.3x" />
                 <createSymLink target="curs_get_wstr.3x" linkName="${installdir}/common/man/man3/mvwgetn_wstr.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_get_wstr.3x" condition="exists" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/scalc" >
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/resize_term.3x" />
                 <createSymLink target="resizeterm.3x" linkName="${installdir}/common/man/man3/resize_term.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/resizeterm.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/scalc" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/mvwaddchstr.3x" />
                 <createSymLink target="curs_addchstr.3x" linkName="${installdir}/common/man/man3/mvwaddchstr.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_addchstr.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/MacOS/sdraw" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
-               <deleteFile path="${installdir}/common/man/man3/set_current_item.3x" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/sdraw" >
                 <createSymLink target="mitem_current.3x" linkName="${installdir}/common/man/man3/set_current_item.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/mitem_current.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/sdraw" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/vwprintw.3x" />
-                <createSymLink target="curs_printw.3x" linkName="${installdir}/common/man/man3/vwprintw.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/unopkg.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_printw.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/unopkg.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/wadd_wchnstr.3x" />
                 <createSymLink target="curs_add_wchstr.3x" linkName="${installdir}/common/man/man3/wadd_wchnstr.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_add_wchstr.3x" condition="exists" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/MacOS/soffice" >
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/_tracemouse.3x" />
                 <createSymLink target="curs_trace.3x" linkName="${installdir}/common/man/man3/_tracemouse.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_trace.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/MacOS/soffice" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/prefresh.3x" />
-                <createSymLink target="curs_pad.3x" linkName="${installdir}/common/man/man3/prefresh.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/pagein" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_pad.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/pagein" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/win_wch.3x" />
                 <createSymLink target="curs_in_wch.3x" linkName="${installdir}/common/man/man3/win_wch.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_in_wch.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/program/testtoolrc" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/wredrawln.3x" />
                 <createSymLink target="curs_refresh.3x" linkName="${installdir}/common/man/man3/wredrawln.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_refresh.3x" condition="exists" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/testtoolrc" >
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/wstandout.3x" />
                 <createSymLink target="curs_attr.3x" linkName="${installdir}/common/man/man3/wstandout.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_attr.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/testtoolrc" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/box_set.3x" />
-                <createSymLink target="curs_border_set.3x" linkName="${installdir}/common/man/man3/box_set.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/testtool.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_border_set.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/testtool.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/deleteln.3x" />
                 <createSymLink target="curs_deleteln.3x" linkName="${installdir}/common/man/man3/deleteln.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_deleteln.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/program/senddoc" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/wrefresh.3x" />
-                <createSymLink target="curs_refresh.3x" linkName="${installdir}/common/man/man3/wrefresh.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/senddoc" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_refresh.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/senddoc" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/set_field_back.3x" />
-                <createSymLink target="form_field_attributes.3x" linkName="${installdir}/common/man/man3/set_field_back.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/uri-encode" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/form_field_attributes.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/uri-encode" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/item_userptr.3x" />
                 <createSymLink target="mitem_userptr.3x" linkName="${installdir}/common/man/man3/item_userptr.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/mitem_userptr.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/program/gengalrc" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/printw.3x" />
-                <createSymLink target="curs_printw.3x" linkName="${installdir}/common/man/man3/printw.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/gengalrc" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_printw.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/gengalrc" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/set_menu_sub.3x" />
-                <createSymLink target="menu_win.3x" linkName="${installdir}/common/man/man3/set_menu_sub.3x" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/gengal.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/menu_win.3x" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/gengal.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/man3/inwstr.3x" />
                 <createSymLink target="curs_inwstr.3x" linkName="${installdir}/common/man/man3/inwstr.3x" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/man3/curs_inwstr.3x" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/program/hid.lst" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/de/man1/ps2pdf13.1" />
-                <createSymLink target="ps2pdf.1" linkName="${installdir}/common/man/de/man1/ps2pdf13.1" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/hid.lst" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/de/man1/ps2pdf.1" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/hid.lst" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/de/man1/ps2pdf12.1" />
                 <createSymLink target="ps2pdf.1" linkName="${installdir}/common/man/de/man1/ps2pdf12.1" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/de/man1/ps2pdf.1" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/program/gengal" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/man/de/man1/eps2eps.1" />
-                <createSymLink target="ps2ps.1" linkName="${installdir}/common/man/de/man1/eps2eps.1" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/gengal" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/man/de/man1/ps2ps.1" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/gengal" condition="exists" />
                      </ruleList>
                 </createSymLink>
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/program/open-url" abortOnError="0" showMessageOnError="0" />
             
                <deleteFile path="${installdir}/common/lib/libwmf-0.2.7.dylib" />
                 <createSymLink target="libwmf-0.2.7.1.0.dylib" linkName="${installdir}/common/lib/libwmf-0.2.7.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libwmf-0.2.7.1.0.dylib" condition="exists" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/program/open-url" >
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libpng.3.dylib" />
                 <createSymLink target="libpng.3.24.0.dylib" linkName="${installdir}/common/lib/libpng.3.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libpng.3.24.0.dylib" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/program/open-url" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libwmflite-0.2.7.dylib" />
                 <createSymLink target="libwmflite-0.2.7.0.1.dylib" linkName="${installdir}/common/lib/libwmflite-0.2.7.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libwmflite-0.2.7.0.1.dylib" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regcomp" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libpng12.0.dylib" />
                 <createSymLink target="libpng12.0.24.0.dylib" linkName="${installdir}/common/lib/libpng12.0.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libpng12.0.24.0.dylib" condition="exists" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regcomp" >
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libz.dylib" />
                 <createSymLink target="libz.1.2.3.dylib" linkName="${installdir}/common/lib/libz.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libz.1.2.3.dylib" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regcomp" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libhistory.5.dylib" />
-                <createSymLink target="libhistory.5.2.dylib" linkName="${installdir}/common/lib/libhistory.5.dylib" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regcomp.bin" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libhistory.5.2.dylib" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regcomp.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libhistory.dylib" />
-                <createSymLink target="libhistory.5.2.dylib" linkName="${installdir}/common/lib/libhistory.dylib" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regmerge" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libhistory.5.2.dylib" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regmerge" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libpng12.dylib" />
                 <createSymLink target="libpng12.0.24.0.dylib" linkName="${installdir}/common/lib/libpng12.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libpng12.0.24.0.dylib" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/uno" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libreadline.5.dylib" />
-                <createSymLink target="libreadline.5.2.dylib" linkName="${installdir}/common/lib/libreadline.5.dylib" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/uno" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libreadline.5.2.dylib" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/ure-link/bin/uno" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libjpeg.62.0.0.dylib" />
                 <createSymLink target="libjpeg.62.dylib" linkName="${installdir}/common/lib/libjpeg.62.0.0.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libjpeg.62.dylib" condition="exists" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/uno.bin" >
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libreadline.dylib" />
                 <createSymLink target="libreadline.5.2.dylib" linkName="${installdir}/common/lib/libreadline.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libreadline.5.2.dylib" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/ure-link/bin/uno.bin" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libpng.dylib" />
                 <createSymLink target="libpng12.dylib" linkName="${installdir}/common/lib/libpng.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libpng12.dylib" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/startup.sh" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libcharset.1.dylib" />
                 <createSymLink target="libcharset.1.0.0.dylib" linkName="${installdir}/common/lib/libcharset.1.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libcharset.1.0.0.dylib" condition="exists" />
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/startup.sh" >
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libpng.a" />
                 <createSymLink target="libpng12.a" linkName="${installdir}/common/lib/libpng.a" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libpng12.a" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/ure-link/bin/startup.sh" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libfreetype.dylib" />
-                <createSymLink target="libfreetype.6.3.15.dylib" linkName="${installdir}/common/lib/libfreetype.dylib" >
+                        <changePermissions permissions="00555" files="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regview" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libfreetype.6.3.15.dylib" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/Contents/basis-link/ure-link/bin/regview" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libjpeg.dylib" />
                 <createSymLink target="libjpeg.62.dylib" linkName="${installdir}/common/lib/libjpeg.dylib" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libjpeg.62.dylib" condition="exists" />
+                        <dos2unix files="${installdir}/openoffice/scripts/ctl.sh" abortOnError="0" showMessageOnError="0" />
                      </ruleList>
                 </createSymLink>
             
                <deleteFile path="${installdir}/common/lib/libwmf.dylib" />
-                <createSymLink target="libwmf-0.2.7.1.0.dylib" linkName="${installdir}/common/lib/libwmf.dylib" >
+                        <changePermissions permissions="00755" files="${installdir}/openoffice/scripts/ctl.sh" >
                      <ruleList>
-                         <fileTest path="${installdir}/common/lib/libwmf-0.2.7.1.0.dylib" condition="exists" />
+                              <fileTest path="${installdir}/openoffice/scripts/ctl.sh" condition="exists" />
                      </ruleList>
                 </createSymLink>
             

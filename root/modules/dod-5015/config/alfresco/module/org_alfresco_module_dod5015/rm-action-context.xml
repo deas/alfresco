@@ -30,7 +30,7 @@
         <property name="ownableService" ref="ownableService"/>
     </bean>
     
-    <bean id="rmProxyAction" parent="action-executer" abstract="true">
+    <bean id="rmProxyAction" init-method="registerAction" abstract="true">
         <property name="runtimeActionService" ref="actionService"/>
         <property name="recordsManagementActionService" ref="recordsManagementActionService"/>
         <property name="proxyInterfaces">

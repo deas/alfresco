@@ -975,7 +975,7 @@
           */
          _deleteGroup: function ConsoleGroups_SearchPanelHandler__deleteGroup(shortName, displayName)
          {
-            var url = Alfresco.constants.PROXY_URI + "api/groups/" + shortName;
+            var url = Alfresco.constants.PROXY_URI + "api/groups/" + encodeURIComponent(shortName);
             this._doDeleteCall(url, displayName);
          },
 

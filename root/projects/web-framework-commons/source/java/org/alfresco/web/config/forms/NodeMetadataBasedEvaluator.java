@@ -55,32 +55,36 @@ public abstract class NodeMetadataBasedEvaluator extends ServiceBasedEvaluator
         if (obj instanceof String)
         {
             String objAsString = (String) obj;
-            Matcher m = nodeRefPattern.matcher(objAsString);
-            if (m.matches())
+            // quick test before running slow match for full NodeRef pattern
+            if (objAsString.indexOf(':') != -1)
             {
-                try
+                Matcher m = nodeRefPattern.matcher(objAsString);
+                if (m.matches())
                 {
-                    String jsonResponseString = callMetadataService(objAsString);
-                    
-                    if (jsonResponseString != null)
+                    try
                     {
-                        result = checkJsonAgainstCondition(condition, jsonResponseString);
+                        String jsonResponseString = callMetadataService(objAsString);
+                        
+                        if (jsonResponseString != null)
+                        {
+                            result = checkJsonAgainstCondition(condition, jsonResponseString);
+                        }
+                        else if (getLogger().isWarnEnabled())
+                        {
+                            getLogger().warn("Metadata service response appears to be null!");
+                        }
                     }
-                    else if (getLogger().isWarnEnabled())
+                    catch (NotAuthenticatedException ne)
                     {
-                        getLogger().warn("Metadata service response appears to be null!");
+                       // ignore the fact that the lookup failed, the form UI component
+                       // will handle this and return the appropriate status code.
                     }
-                }
-                catch (NotAuthenticatedException ne)
-                {
-                   // ignore the fact that the lookup failed, the form UI component
-                   // will handle this and return the appropriate status code.
-                }
-                catch (ConnectorServiceException e)
-                {
-                    if (getLogger().isWarnEnabled())
+                    catch (ConnectorServiceException e)
                     {
-                        getLogger().warn("Failed to connect to metadata service.", e);
+                        if (getLogger().isWarnEnabled())
+                        {
+                            getLogger().warn("Failed to connect to metadata service.", e);
+                        }
                     }
                 }
             }

@@ -96,20 +96,6 @@ public class VirtServerRegistry implements VirtServerRegistryMBean
                 if (is != null) { try { is.close(); } catch (IOException e) {} }
             }
 
-            // Given that we've got a valid password file, it's fair to assume 
-            // WCM is enabled.  Therefore, initialize the server connector.
-            //
-            // The Spring context set lazy-init="true" for this bean
-            // so that errors in loading the password file could be
-            // caught in this try/catch block, rather than having 
-            // no such file exceptions occur within the Spring framework
-            // itself (this would cause the entire webapp to fail
-
-            context_.getBean("serverConnector");
-
-            if ( log.isInfoEnabled() )
-                log.info("Created JMX serverConnector");
-
             jmxrmi_password = passwordProps.getProperty("controlRole");
             env_ = new HashMap<String,Object>();
             String[] cred = new String[] { "controlRole", jmxrmi_password };

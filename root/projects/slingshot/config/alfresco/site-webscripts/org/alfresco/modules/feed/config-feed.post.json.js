@@ -2,12 +2,7 @@
 
 var c = sitedata.getComponent(url.templateArgs.componentId);
 
-var uri = String(json.get("url"));
-var re = /^(http|https):\/\//;
-if (!re.test(uri))
-{
-   uri = "http://" + uri;
-}
+var uri = getValidRSSUri(String(json.get("url")));
 
 c.properties["feedurl"] = uri;
 model.feedurl = uri;

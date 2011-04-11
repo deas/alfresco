@@ -245,7 +245,7 @@
       _generateMonthMarkup: function BlogPostListArchive__generateTagMarkup(date)
       {
          var html = '<li id="' + this._generateIdFromMonth(date) + '"><span class="nav-label">';
-         html += '<a href="#" class="' + this.uniqueEventKey + ' filter-link">' + Alfresco.util.formatDate(date, "mmmm yyyy") + '</a>';
+         html += '<a href="#" class="' + this.uniqueEventKey + ' filter-link">' + Alfresco.util.formatDate(date, Alfresco.util.message("date-format.monthYear")) + '</a>';
          html += '</span></li>';
          return html;
       },

@@ -188,14 +188,12 @@ span.alfresco-content-marker hide
    background: transparent url(./images/logout.png) no-repeat 11px 50%;
 }
 
-#wef-panel .form-container textarea,
-#wef-panel .form-container input
-{
-   width:100%;
-}
-
 #wef-login-panel-form div.form-field label
 {
    margin-top:1em;
    display:block;
+}
+
+#wef-panel-wefPanel-form-container_c {
+   top:100px !important;
 }

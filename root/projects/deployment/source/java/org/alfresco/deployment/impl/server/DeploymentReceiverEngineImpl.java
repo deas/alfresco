@@ -26,6 +26,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -413,7 +414,15 @@ public class DeploymentReceiverEngineImpl implements
     	DeploymentTracker tracker = getDeploymentTracker(ticket);
     	try
     	{
-    		return tracker.getTarget().getListing(ticket, path);
+    	    List<FileDescriptor> list = tracker.getTarget().getListing(ticket, path);
+    		if(list == null)
+    		{
+    		    return new ArrayList<FileDescriptor>();
+    		}
+    		else
+    		{
+    		    return list;
+    		}
     	}
     
        	catch (RuntimeException e) 
@@ -542,9 +551,16 @@ public class DeploymentReceiverEngineImpl implements
             
     		OutputStream out = tracker.getTarget().send(ticket, create, path, guid, encoding, mimeType, aspects, props);
     		
+    		/**
+    		 * out should not be null, but cater for incorrect empty implementations.
+    		 */
+    		if(out == null)
+    		{
+    		    logger.warn("send to target returned null");
+    		    out = new NullOutputStream(); 
+    		}
     		String token = getNextHandle(ticket);
     		logger.debug("Open token " + token);
-    		
             // Need to kick off a reader thread to process input
     		// and drive transformation.
             readerManagement.addCopyThread(is, out, token);
@@ -734,7 +750,29 @@ public class DeploymentReceiverEngineImpl implements
 //    		throw new DeploymentException("Unable to authenticate");
 //    	} 	
 //	}
-	
+    
+    private class NullOutputStream extends OutputStream {
+        @Override
+        public void write(int b) throws IOException 
+        {
+            // Do nothing
+        }
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException 
+        {
+            // Do nothing
+        }
+        @Override
+        public void flush() throws IOException
+        {
+            // Do nothing
+        }
+        @Override
+        public void close() throws IOException
+        {
+            // Do nothing
+        }
+    }
 }
 
 

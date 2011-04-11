@@ -109,7 +109,7 @@
 	    <name>alfrescocustomstack_services_startup</name>
 	    <title>Service Startup Configuration</title>
 	    <default>demand</default>
-	    <explanation>Please select services startup type</explanation>
+	    <explanation>Please select services startup type.</explanation>
 	    <displayType>radiobuttons</displayType>
 	    <insertBefore>readytoinstall</insertBefore>
 	    <optionList>

@@ -321,6 +321,9 @@
         <property name="contentService">
             <ref bean="contentService"/>
         </property>
+        <property name="dictionaryRepositoryBootstrap">
+            <ref bean="dictionaryRepositoryBootstrap"/>
+        </property>
     </bean>
     
     <bean id="RecordsManagementAdminService" class="org.springframework.aop.framework.ProxyFactoryBean">
@@ -448,15 +451,15 @@
         <property name="objectDefinitionSource">
             <value>
                 <![CDATA[  
-                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.clear=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.clear=RM_CAP.-1.rma:filePlanComponent.DeleteAudit
                 org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getAuditTrail=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getAuditTrailFile=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getDateLastStarted=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getDateLastStopped=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.isEnabled=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.start=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.stop=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.fileAuditTrailAsRecord=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.start=RM_CAP.-1.rma:filePlanComponent.EnableDisableAuditByTypes
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.stop=RM_CAP.-1.rma:filePlanComponent.EnableDisableAuditByTypes
+                org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.fileAuditTrailAsRecord=RM_CAP.-1.rma:filePlanComponent.DeclareAuditAsRecord
                 org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.getAuditEvents=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService.*=RM_DENY
                 ]]>
@@ -600,6 +603,13 @@
     <!-- RM caveats -->
     
     <bean id="caveatConfigService" class="org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigServiceImpl">
+        <property name="caveatConfigComponent" ref="caveatConfigComponent"/>
+        <property name="dictionaryService" ref="dictionaryService"/>
+        <property name="namespaceService" ref="namespaceService"/>
+        <property name="recordsManagementAdminService" ref = "recordsManagementAdminService"/>
+    </bean>
+    
+    <bean id="caveatConfigComponent" class="org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigComponentImpl">
         <property name="policyComponent" ref="policyComponent"/>
         <property name="contentService" ref="contentService"/>
         <property name="dictionaryService" ref="dictionaryService"/>
@@ -607,18 +617,27 @@
         <property name="authorityService" ref="authorityService"/>
         <property name="personService" ref="personService"/>
         <property name="nodeService" ref="nodeService"/>
-        <property name="recordsManagementAdminService" ref = "recordsManagementAdminService"/>
-        <property name="caveatAspects">
-            <list>
-                <value>{http://www.alfresco.org/model/recordsmanagement/1.0}recordComponentIdentifier</value>
-            </list>
-        </property>
-        <property name="caveatModels">
-            <list>
-                <value>{http://www.alfresco.org/model/rmcustom/1.0}rmcustom</value>
-            </list>
-        </property>
+        
+        <property name="caveatAspects" ref="caveatAspects"/>
+        <property name="caveatModels" ref="caveatModels"/>
+        
     </bean>
+    
+    <bean id="caveatAspects" class="java.util.ArrayList" >
+      <constructor-arg>
+         <list>
+            <value>{http://www.alfresco.org/model/recordsmanagement/1.0}recordComponentIdentifier</value>
+         </list>
+      </constructor-arg>
+   </bean>
+   
+   <bean id="caveatModels" class="java.util.ArrayList" >
+      <constructor-arg>
+         <list>
+            <value>{http://www.alfresco.org/model/rmcustom/1.0}rmcustom</value>
+         </list>
+      </constructor-arg>
+   </bean>
     
     <bean id="rmListOfValuesContraintInit" class="org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint">
         <property name="caveatConfigService" ref="caveatConfigService"/>

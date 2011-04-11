@@ -23,7 +23,7 @@
             <div>
                <#-- from date -->
                <input id="${controlId}-date-from" name="-" type="text" class="date-entry" <#if field.description??>title="${field.description}"</#if> tabindex="0" />
-               <a id="${controlId}-icon-from"><img src="${url.context}/res/components/form/images/calendar.png" class="datepicker-icon"/></a>
+               <a id="${controlId}-icon-from"><img src="${url.context}/res/components/form/images/calendar.png" class="datepicker-icon" tabindex="0"/></a>
                <div id="${controlId}-from" class="datepicker"></div>
                
                <div class="format-info">
@@ -36,7 +36,7 @@
             <div>
                <#-- to date -->
                <input id="${controlId}-date-to" name="-" type="text" class="date-entry" <#if field.description??>title="${field.description}"</#if> tabindex="0" />
-               <a id="${controlId}-icon-to"><img src="${url.context}/res/components/form/images/calendar.png" class="datepicker-icon"/></a>
+               <a id="${controlId}-icon-to"><img src="${url.context}/res/components/form/images/calendar.png" class="datepicker-icon" tabindex="0"/></a>
                <div id="${controlId}-to" class="datepicker"></div>
                
                <div class="format-info">

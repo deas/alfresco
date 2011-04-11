@@ -69,7 +69,7 @@ public class DateTokenFilter extends Tokenizer
             {
                 try
                 {
-                    date = CachingDateFormat.lenientParse(candidate.termText());
+                    date = CachingDateFormat.lenientParse(candidate.termText(), Calendar.DAY_OF_MONTH).getFirst();
                 }
                 catch (ParseException e)
                 {

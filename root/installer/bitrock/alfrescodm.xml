@@ -83,7 +83,7 @@
 
         <passwordParameter name="alfresco_admin_password" description="Admin Password:" descriptionRetype="Repeat Password:" allowEmptyValue="0" >
 		    <title>Admin Password</title>
-            <explanation>Please give a password to use for the Alfresco administrator account.</explanation>
+			<explanation>Please give a password to use for the Alfresco administrator account.</explanation>
             <validationActionList>
 	        <throwError>
                     <text>The length of the password must be greater than 3 characters</text>

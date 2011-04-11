@@ -158,7 +158,6 @@ ${head}
 <!-- MSIE CSS fix overrides -->
    <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="${url.context}/res/css/ie6.css" /><![endif]-->
    <!--[if IE 7]><link rel="stylesheet" type="text/css" href="${url.context}/res/css/ie7.css" /><![endif]-->
-   <!--[if IE 8]><link rel="stylesheet" type="text/css" href="${url.context}/res/css/ie8.css" /><![endif]-->
 <#if !PORTLET>
 </head>
 </#if>
@@ -171,8 +170,7 @@ ${head}
 -->
 <#macro templateHtmlEditorAssets>
 <!-- HTML Editor Assets -->
-   <#-- NOTE: Do not attempt to load -min.js version of tiny_mce/tiny_mce.js -->
-   <script type="text/javascript" src="${page.url.context}/res/modules/editors/tiny_mce/tiny_mce.js"></script>
+   <script type="text/javascript" src="${page.url.context}/res/modules/editors/tiny_mce/tiny_mce${DEBUG?string("_src", "")}.js"></script>
    <@script type="text/javascript" src="${page.url.context}/res/modules/editors/tiny_mce.js"></@script>
    <@script type="text/javascript" src="${page.url.context}/res/modules/editors/yui_editor.js"></@script>
 </#macro>

@@ -42,15 +42,32 @@ function main()
             "/api/person/changepassword/" + encodeURIComponent(user.name),
             jsonUtils.toJSONString(params),
             "application/json");
-      var repoJSON = eval('(' + result + ')');
-      if (repoJSON.success !== undefined)
+      if (result.status.code == 401) 
       {
-         model.success = repoJSON.success;
+         model.success = false;
+         if(result.status.message != "")
+         {
+            model.errormsg = result.status.message;
+         }
+         else
+         {
+            // The proxy has eaten the message
+            // This is caused by some SSO compatibility code somewhere...
+            model.errormsg = msg.get("message.passwordchangeauthfailed");
+         }
       }
       else
       {
-         model.success = false;
-         model.errormsg = repoJSON.message;
+         var repoJSON = eval('(' + result + ')');
+         if (repoJSON.success !== undefined)
+         {
+            model.success = repoJSON.success;
+         }
+         else
+         {
+            model.success = false;
+            model.errormsg = repoJSON.message;
+         }
       }
    }
    else

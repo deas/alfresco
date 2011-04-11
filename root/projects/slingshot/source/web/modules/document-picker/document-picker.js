@@ -901,6 +901,7 @@
       _createSelectedItemsControls: function DocumentPicker__createSelectedItemsControls()
       {
          var me = this;
+
          // Setup a DataSource for the selected items list
          this.widgets.dataSource = new YAHOO.util.DataSource([],
          {
@@ -1385,7 +1386,7 @@
                 resultsList: "items"
             }
          });
-
+         
          this.widgets.dataSource.doBeforeParseData = function ObjectRenderer_doBeforeParseData(oRequest, oFullResponse)
          {
             var updatedResponse = oFullResponse;
@@ -1447,22 +1448,13 @@
           */
          var renderItemName = function OR__cC_renderItemName(elCell, oRecord, oColumn, oData)
          {
-            var template = '';
-
-            if (oRecord.getData("hasChildren"))
-            {
-               template += '<h3 class="item-name"><a href="#" class="theme-color-1 parent-' + me.eventGroup + '">{name}</a></h3>';
-            }
-            else
-            {
-               template += '<h3 class="item-name">{name}</h3>';
-            }
+            var template = '<h3 class="item-name"><a href="#" class="theme-color-1 parent-' + me.eventGroup + '">{name}</a></h3>';
             
             if (!me.options.compactMode)
             {
                template += '<div class="description">{description}</div>';
             }
-
+            
             elCell.innerHTML = me.renderItem(oRecord.getData(), 0, template);
          };
 

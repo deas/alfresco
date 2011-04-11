@@ -37,6 +37,7 @@ import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.handler.SiteMemberMappingException;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.repo.SessionUser;
+import org.alfresco.repo.admin.SysAdminParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.URLDecoder;
@@ -67,7 +68,7 @@ public class VtiFilter implements Filter
     private AuthenticationHandler authenticationHandler;
     private MethodHandler vtiHandler;
 
-    private String alfrescoContext;
+    private SysAdminParams sysAdminParams;
     private ServletContext context;
     
     private static Log logger = LogFactory.getLog(VtiFilter.class);
@@ -107,7 +108,7 @@ public class VtiFilter implements Filter
         }
 
         String httpMethod = httpRequest.getMethod();
-        if ((METHOD_OPTIONS.equals(httpMethod)) && ("/".equals(uri) || alfrescoContext.equals(uri)))
+        if ((METHOD_OPTIONS.equals(httpMethod)) && ("/".equals(uri) || getAlfrescoContext().equals(uri)))
         {
             writeResponseForMiniRedir(httpResponse);
             return;
@@ -116,7 +117,7 @@ public class VtiFilter implements Filter
         String ifHeader = httpRequest.getHeader("If");
         boolean checkResourceExistence = false;
         if ((METHOD_GET.equals(httpMethod) || METHOD_HEAD.equals(httpMethod)) && !uri.equals("/_vti_inf.html") && !uri.contains("_vti_bin") && !uri.contains("/_vti_history")
-                && !uri.startsWith(alfrescoContext + "/resources") && ifHeader == null)
+                && !uri.startsWith(getAlfrescoContext() + "/resources") && ifHeader == null)
         {
             if (validSiteUrl != null || uri.endsWith(".vti"))
             {
@@ -139,7 +140,7 @@ public class VtiFilter implements Filter
 
         try
         {
-            user = authenticationHandler.authenticateRequest(this.context, httpRequest, httpResponse, this.alfrescoContext);
+            user = authenticationHandler.authenticateRequest(this.context, httpRequest, httpResponse, getAlfrescoContext());
         }
         catch (SiteMemberMappingException e)
         {
@@ -330,12 +331,12 @@ public class VtiFilter implements Filter
 
     public String getAlfrescoContext()
     {
-        return alfrescoContext;
+        return "/" + sysAdminParams.getAlfrescoContext();
     }
 
-    public void setAlfrescoContext(String alfrescoContext)
+    public void setSysAdminParams(SysAdminParams sysAdminParams)
     {
-        this.alfrescoContext = alfrescoContext;
+        this.sysAdminParams = sysAdminParams;
     }
     
     public void setAuthenticationHandler(AuthenticationHandler authenticationHandler)

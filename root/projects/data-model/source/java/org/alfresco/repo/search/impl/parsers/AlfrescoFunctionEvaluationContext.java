@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
@@ -115,7 +116,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
     }
 
     public Query buildLuceneGreaterThanOrEquals(LuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction)
-            throws ParseException
+    throws ParseException
     {
         throw new UnsupportedOperationException();
     }
@@ -136,7 +137,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
     }
 
     public Query buildLuceneLessThanOrEquals(LuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction)
-            throws ParseException
+    throws ParseException
     {
         throw new UnsupportedOperationException();
     }
@@ -198,63 +199,27 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
                 {
                     throw new FTSQueryException("Order on content properties is not curently supported");
                 }
-                else if ((propertyDef.getDataType().getName().equals(DataTypeDefinition.MLTEXT)) || (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT)))
+                else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT))
                 {
-                    List<Locale> locales = lqp.getSearchParameters().getLocales();
-                    if (((locales == null) || (locales.size() == 0)))
+                    if(propertyDef.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
                     {
-                        locales = Collections.singletonList(I18NUtil.getLocale());
+                        return field;
                     }
 
-                    if (locales.size() > 1)
-                    {
-                        throw new FTSQueryException("Order on text/mltext properties with more than one locale is not curently supported");
-                    }
-
-                    sortLocale = locales.get(0);
-                    // find best field match
-
-                    HashSet<String> allowableLocales = new HashSet<String>();
-                    MLAnalysisMode analysisMode = lqp.getDefaultSearchMLAnalysisMode();
-                    for (Locale l : MLAnalysisMode.getLocales(analysisMode, sortLocale, false))
-                    {
-                        allowableLocales.add(l.toString());
-                    }
-
-                    String sortField = field;
-
+                    String noLocalField = field+".no_locale";
                     for (Object current : lqp.getIndexReader().getFieldNames(FieldOption.INDEXED))
                     {
                         String currentString = (String) current;
-                        if (currentString.startsWith(field) && currentString.endsWith(LuceneQueryParser.FIELD_SORT_SUFFIX))
+                        if (currentString.equals(noLocalField))
                         {
-                            String fieldLocale = currentString.substring(field.length() + 1, currentString.length() - 5);
-                            if (allowableLocales.contains(fieldLocale))
-                            {
-                                if (fieldLocale.equals(sortLocale.toString()))
-                                {
-                                    sortField = currentString;
-                                    break;
-                                }
-                                else if (sortLocale.toString().startsWith(fieldLocale))
-                                {
-                                    if (sortField.equals(field) || (currentString.length() < sortField.length()))
-                                    {
-                                        sortField = currentString;
-                                    }
-                                }
-                                else if (fieldLocale.startsWith(sortLocale.toString()))
-                                {
-                                    if (sortField.equals(field) || (currentString.length() < sortField.length()))
-                                    {
-                                        sortField = currentString;
-                                    }
-                                }
-                            }
+                            return noLocalField;
                         }
                     }
-
-                    field = sortField;
+                    field = findSortField(lqp, field);
+                }
+                else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
+                {
+                    field = findSortField(lqp, field);
 
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.DATETIME))
@@ -268,6 +233,72 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
                 }
             }
         }
+        return field;
+    }
+
+    /**
+     * @param lqp
+     * @param field
+     * @return
+     */
+    private String findSortField(LuceneQueryParser lqp, String field)
+    {
+        Locale sortLocale;
+        List<Locale> locales = lqp.getSearchParameters().getLocales();
+        if (((locales == null) || (locales.size() == 0)))
+        {
+            locales = Collections.singletonList(I18NUtil.getLocale());
+        }
+
+        if (locales.size() > 1)
+        {
+            throw new FTSQueryException("Order on text/mltext properties with more than one locale is not curently supported");
+        }
+
+        sortLocale = locales.get(0);
+        // find best field match
+
+        HashSet<String> allowableLocales = new HashSet<String>();
+        MLAnalysisMode analysisMode = lqp.getDefaultSearchMLAnalysisMode();
+        for (Locale l : MLAnalysisMode.getLocales(analysisMode, sortLocale, false))
+        {
+            allowableLocales.add(l.toString());
+        }
+
+        String sortField = field;
+
+        for (Object current : lqp.getIndexReader().getFieldNames(FieldOption.INDEXED))
+        {
+            String currentString = (String) current;
+            if (currentString.startsWith(field) && currentString.endsWith(LuceneQueryParser.FIELD_SORT_SUFFIX))
+            {
+                String fieldLocale = currentString.substring(field.length() + 1, currentString.length() - 5);
+                if (allowableLocales.contains(fieldLocale))
+                {
+                    if (fieldLocale.equals(sortLocale.toString()))
+                    {
+                        sortField = currentString;
+                        break;
+                    }
+                    else if (sortLocale.toString().startsWith(fieldLocale))
+                    {
+                        if (sortField.equals(field) || (currentString.length() < sortField.length()))
+                        {
+                            sortField = currentString;
+                        }
+                    }
+                    else if (fieldLocale.startsWith(sortLocale.toString()))
+                    {
+                        if (sortField.equals(field) || (currentString.length() < sortField.length()))
+                        {
+                            sortField = currentString;
+                        }
+                    }
+                }
+            }
+        }
+
+        field = sortField;
         return field;
     }
 
@@ -382,7 +413,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         }
 
     }
-    
+
     public QName stripSuffixes(QName qname)
     {
         String field = qname.toString();
@@ -430,7 +461,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
             return qname;
         }
     }
-    
+
     public LuceneFunction getLuceneFunction(FunctionArgument functionArgument)
     {
         throw new UnsupportedOperationException();

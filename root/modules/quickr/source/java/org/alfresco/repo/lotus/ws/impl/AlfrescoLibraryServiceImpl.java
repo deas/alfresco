@@ -1,27 +1,22 @@
 /*
  * Copyright (C) 2005-2010 Alfresco Software Limited.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful,
+* This file is part of Alfresco
+*
+* Alfresco is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
-
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
- * As a special exception to the terms and conditions of version 2.0 of 
- * the GPL, you may redistribute this Program in connection with Free/Libre 
- * and Open Source Software ("FLOSS") applications as described in Alfresco's 
- * FLOSS exception.  You should have recieved a copy of the text describing 
- * the FLOSS exception, and it is also available here: 
- * http://www.alfresco.com/legal/licensing"
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.alfresco.repo.lotus.ws.impl;
 
 import java.util.Date;
@@ -29,8 +24,6 @@ import java.util.List;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.lotus.ws.ClbCategoryType;
-import org.alfresco.repo.lotus.ws.ClbError;
-import org.alfresco.repo.lotus.ws.ClbErrorType;
 import org.alfresco.repo.lotus.ws.ClbLibrariesByPageResponse;
 import org.alfresco.repo.lotus.ws.ClbLibrariesResponse;
 import org.alfresco.repo.lotus.ws.ClbLibrary;
@@ -80,68 +73,56 @@ public class AlfrescoLibraryServiceImpl implements LibraryService
      * @param path The absolute path to the business component if no id is provided. If both id and path are provided, the path must be the relative path from the id provided.
      * @return ClbLibraryResponse
      * @throws LoginException_Exception, ServiceException_Exception
+     * @throws FileNotFoundException 
      */
-    public ClbLibraryResponse getBusinessComponent(String id, String path) throws LoginException_Exception, ServiceException_Exception
+    public ClbLibraryResponse getBusinessComponent(String id, String path) throws LoginException_Exception, ServiceException_Exception, FileNotFoundException
     {
         ClbLibraryResponse result = new ClbLibraryResponse();
 
         ClbLibrary library = new ClbLibrary();
 
         result.setLibrary(library);
-        try
-        {
-            NodeRef requestedLibraryNodeRef = pathHelper.resolveNodeRef(id, path);
+        NodeRef requestedLibraryNodeRef = pathHelper.resolveNodeRef(id, path);
 
-            library.setId(requestedLibraryNodeRef.getId());
+        library.setId(requestedLibraryNodeRef.getId());
 
-            library.setPath(pathHelper.getNodePath(requestedLibraryNodeRef));
+        library.setPath(pathHelper.getNodePath(requestedLibraryNodeRef, false));
 
-            library.setLocked(false);
+        library.setLocked(false);
 
-            library.setPermissions("");
+        library.setPermissions("");
 
-            Date systemCreateDate = (Date) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_CREATED);
-            library.setSystemCreated(pathHelper.getXmlDate(systemCreateDate));
+        Date systemCreateDate = (Date) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_CREATED);
+        library.setSystemCreated(pathHelper.getXmlDate(systemCreateDate));
+        library.setCreated(pathHelper.getXmlDate(systemCreateDate));
 
-            Date systemLastModifieDate = (Date) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_MODIFIED);
-            library.setSystemLastModified(pathHelper.getXmlDate(systemLastModifieDate));
+        Date systemLastModifieDate = (Date) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_MODIFIED);
+        library.setSystemLastModified(pathHelper.getXmlDate(systemLastModifieDate));
+        library.setLastModified(pathHelper.getXmlDate(systemLastModifieDate));
 
-            library.setHidden(false);
+        library.setHidden(false);
 
-            String description = (String) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_DESCRIPTION);
-            library.setDescription(description);
+        String description = (String) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_DESCRIPTION);
+        library.setDescription(description);
 
-            String name = (String) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_NAME);
-            library.setTitle(name);
+        String name = (String) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_NAME);
+        library.setTitle(name);
 
-            UserInfo creator = new UserInfo();
-            creator.setCommonName((String) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_CREATOR));
-            library.setCreator(creator);
+        UserInfo creator = new UserInfo();
+        creator.setCommonName((String) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_CREATOR));
+        library.setCreator(creator);
 
-            UserInfo modifier = new UserInfo();
-            modifier.setCommonName((String) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_MODIFIER));
-            library.setLastModifier(modifier);
+        UserInfo modifier = new UserInfo();
+        modifier.setCommonName((String) nodeService.getProperty(requestedLibraryNodeRef, ContentModel.PROP_MODIFIER));
+        library.setLastModifier(modifier);
 
-            library.setLockOwner(null);
-        }
-        catch (FileNotFoundException e)
-        {
-            if (logger.isErrorEnabled())
-            {
-                logger.error(e);
-            }
+        library.setLockOwner(null);
 
-            ClbError error = new ClbError();
-            error.setType(ClbErrorType.ITEM_NOT_FOUND);
-            error.setMessage("No library was found with id: " + id + " and path: " + path);
-            result.setError(error);
-            return result;
-        }
         return result;
     }
 
     public ClbLibrariesResponse getBusinessComponents(String libraryId, String libraryPath, List<ClbCategoryType> categoryTypes) throws LoginException_Exception,
-            ServiceException_Exception
+            ServiceException_Exception, FileNotFoundException
     {
         // all passed parameters are ignored as alfresco provide only
         // single library mapped to the SpacesStore workspace.
@@ -156,7 +137,7 @@ public class AlfrescoLibraryServiceImpl implements LibraryService
     }
 
     public ClbLibrariesByPageResponse getBusinessComponentsByPage(String libraryId, String libraryPath, List<ClbCategoryType> categoryTypes, PageParams pageParams)
-            throws LoginException_Exception, ServiceException_Exception
+            throws LoginException_Exception, ServiceException_Exception, FileNotFoundException
     {
         ClbLibrariesByPageResponse result = new ClbLibrariesByPageResponse();
 

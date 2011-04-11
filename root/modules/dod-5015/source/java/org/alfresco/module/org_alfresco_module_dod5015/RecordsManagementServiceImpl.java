@@ -20,6 +20,7 @@ package org.alfresco.module.org_alfresco_module_dod5015;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +36,8 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementA
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -63,6 +66,9 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                                                      RecordsManagementPolicies.OnRemoveReference
 {
     private static final String CHANGED_PROPERTIES = "changedProperties";
+    
+    /** Store that the RM roots are contained within */
+    private StoreRef defaultStoreRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
 
     /** Service registry */
     private RecordsManagementServiceRegistry serviceRegistry;
@@ -139,6 +145,15 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     {
         this.dispositionSelectionStrategy = dispositionSelectionStrategy;
     }
+    
+    /**
+     * Sets the default RM store reference
+     * @param defaultStoreRef    store reference
+     */
+    public void setDefaultStoreRef(StoreRef defaultStoreRef) 
+    {
+        this.defaultStoreRef = defaultStoreRef;
+    }
 
     /**
      * Init method.  Registered behaviours.
@@ -192,7 +207,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         
         // Register script execution behaviour on RM property update.
         this.policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onUpdateProperties"),
-        		ASPECT_FILE_PLAN_COMPONENT,
+                ASPECT_FILE_PLAN_COMPONENT,
                 new JavaBehaviour(this, "onChangeToAnyRmProperty", NotificationFrequency.TRANSACTION_COMMIT));
         
         // Disposition behaviours
@@ -256,8 +271,64 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
      */
     public void onCreateRecordFolder(ChildAssociationRef childAssocRef, boolean bNew)
     {   
+        // Get the elements of the created association
+        NodeRef parent = childAssocRef.getParentRef();
+        final NodeRef child = childAssocRef.getChildRef();
+        
+        // We need to automatically cast the created folder to RM type if it is a plain folder
+        // This occurs if the RM folder has been created via IMap, WebDav, etc
+        if (nodeService.hasAspect(child, ASPECT_FILE_PLAN_COMPONENT) == false)
+        {
+            // If the parent has the aspect "scheduled" then let us presume we are creating a record folder
+            if (nodeService.hasAspect(parent, ASPECT_SCHEDULED) == true)
+            {
+                nodeService.setType(child, TYPE_RECORD_FOLDER);
+                
+                // Generate the rm id for the new records folder
+                // TODO need to refactor into one location
+                AuthenticationUtil.runAs(new RunAsWork<Object>()
+                {
+                    public Object doWork() throws Exception 
+                    {
+                        nodeService.setProperty(child, RecordsManagementModel.PROP_IDENTIFIER, generateIdentifier(child));
+                        return null;
+                    }
+                }, AuthenticationUtil.getAdminUserName());  
+            }
+            // Otherwise for now do nothing with it as we don't have a factory to create the correct
+            // "type" of container (eg dod:recordSeries or dod:recordCategory
+        }
+        
         // Setup record folder
-        rmActionService.executeRecordsManagementAction(childAssocRef.getChildRef(), "setupRecordFolder");       
+        rmActionService.executeRecordsManagementAction(child, "setupRecordFolder");       
+    }
+    
+    private String generateIdentifier(NodeRef nodeRef)
+    {
+        Calendar fileCalendar = Calendar.getInstance();
+        String year = Integer.toString(fileCalendar.get(Calendar.YEAR));
+        Long dbId = (Long) this.nodeService.getProperty(nodeRef, ContentModel.PROP_NODE_DBID);
+        String identifier = year + "-" + padString(dbId.toString(), 10);
+        return identifier;
+    }
+    
+    /**
+     * Function to pad a string with zero '0' characters to the required length
+     * 
+     * @param s String to pad with leading zero '0' characters
+     * @param len Length to pad to
+     * @return padded string or the original if already at >=len characters
+     */
+    private String padString(String s, int len)
+    {
+        String result = s;
+
+        for (int i = 0; i < (len - s.length()); i++)
+        {
+            result = "0" + result;
+        }
+
+        return result;
     }
     
     /**
@@ -370,22 +441,22 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
      */
     private void executeReferenceScript(String policy, QName reference, NodeRef from, NodeRef to)
     {
-		String referenceId = reference.getLocalName();
-	
-	    // This is the filename pattern which is assumed.
-	    // e.g. a script file onCreate_superceded.js for the creation of a superseded reference
-	    String expectedScriptName = policy + "_" + referenceId + ".js";
-	     
-	    NodeRef scriptNodeRef = nodeService.getChildByName(scriptsFolderNodeRef, ContentModel.ASSOC_CONTAINS, expectedScriptName);
-	    if (scriptNodeRef != null)
-	    {
-		    Map<String, Object> objectModel = new HashMap<String, Object>(1);
-	        objectModel.put("node", from);
-	        objectModel.put("toNode", to);
-	        objectModel.put("policy", policy);
-	        objectModel.put("reference", referenceId);
+        String referenceId = reference.getLocalName();
+    
+        // This is the filename pattern which is assumed.
+        // e.g. a script file onCreate_superceded.js for the creation of a superseded reference
+        String expectedScriptName = policy + "_" + referenceId + ".js";
+         
+        NodeRef scriptNodeRef = nodeService.getChildByName(scriptsFolderNodeRef, ContentModel.ASSOC_CONTAINS, expectedScriptName);
+        if (scriptNodeRef != null)
+        {
+            Map<String, Object> objectModel = new HashMap<String, Object>(1);
+            objectModel.put("node", from);
+            objectModel.put("toNode", to);
+            objectModel.put("policy", policy);
+            objectModel.put("reference", referenceId);
 
-	        serviceRegistry.getScriptService().executeScript(scriptNodeRef, null, objectModel);
+            serviceRegistry.getScriptService().executeScript(scriptNodeRef, null, objectModel);
         }
     }
     
@@ -411,10 +482,9 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     public List<NodeRef> getRecordsManagementRoots()
     {
         List<NodeRef> result = null;
-        SearchService searchService = (SearchService)applicationContext.getBean("searchService");
-        StoreRef storeRef = new StoreRef(StoreRef.PROTOCOL_WORKSPACE, "SpacesStore");
+        SearchService searchService = (SearchService)applicationContext.getBean("searchService");        
         String query = "ASPECT:\"" + ASPECT_RECORDS_MANAGEMENT_ROOT + "\"";        
-        ResultSet resultSet = searchService.query(storeRef, SearchService.LANGUAGE_LUCENE, query);
+        ResultSet resultSet = searchService.query(defaultStoreRef, SearchService.LANGUAGE_LUCENE, query);
         try
         {
             result = resultSet.getNodeRefs();
@@ -1066,10 +1136,10 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
      * @see #lookupScripts(Map<QName, Serializable>, Map<QName, Serializable>)
      */
     private void lookupAndExecuteScripts(NodeRef nodeWithChangedProperties,
-    		Map<QName, Serializable> oldProps, Map<QName, Serializable> newProps)
+            Map<QName, Serializable> oldProps, Map<QName, Serializable> newProps)
     {
-	    List<NodeRef> scriptRefs = lookupScripts(oldProps, newProps);
-	    
+        List<NodeRef> scriptRefs = lookupScripts(oldProps, newProps);
+        
         Map<String, Object> objectModel = new HashMap<String, Object>(1);
         objectModel.put("node", nodeWithChangedProperties);
         objectModel.put("oldProperties", oldProps);
@@ -1112,7 +1182,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
             if (nextElement != null) result.add(nextElement);
         }
 
-    	return result;
+        return result;
     }
     
     /**
@@ -1126,15 +1196,15 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
      */
     private Set<QName> determineChangedProps(Map<QName, Serializable> oldProps, Map<QName, Serializable> newProps)
     {
-    	Set<QName> result = new HashSet<QName>();
-    	for (QName qn : oldProps.keySet())
-    	{
-    	    if (newProps.get(qn) == null ||
-    		    newProps.get(qn).equals(oldProps.get(qn)) == false)
-    		{
-    		    result.add(qn);
-    		}
-    	}
+        Set<QName> result = new HashSet<QName>();
+        for (QName qn : oldProps.keySet())
+        {
+            if (newProps.get(qn) == null ||
+                newProps.get(qn).equals(oldProps.get(qn)) == false)
+            {
+                result.add(qn);
+            }
+        }
         for (QName qn : newProps.keySet())
         {
             if (oldProps.get(qn) == null)
@@ -1142,7 +1212,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                 result.add(qn);
             }
         }
-    	
-    	return result;
+        
+        return result;
     }
 }

@@ -128,8 +128,8 @@
          this.widgets.isPrivate = Dom.get(this.id + "-isPrivate");
 
          // Make sure we disable moderated if public isn't selected
-         YAHOO.util.Event.addListener(this.widgets.isPublic, "change", this.onVisibilityChange, this, true);
-         YAHOO.util.Event.addListener(this.widgets.isPrivate, "change", this.onVisibilityChange, this, true);
+         Event.addListener(this.widgets.isPublic, "focus", this.onVisibilityChange, this.widgets.isPublic, this);
+         Event.addListener(this.widgets.isPrivate, "focus", this.onVisibilityChange, this.widgets.isPrivate, this);
 
          // Configure the forms runtime
          var createSiteForm = new Alfresco.forms.Form(this.id + "-form");
@@ -234,11 +234,11 @@
        *
        * @method onVisibilityChange
        * @param type
-       * @param args
+       * @param el
        */
-      onVisibilityChange: function CS_onVisibilityChange(type, args)
+      onVisibilityChange: function CS_onVisibilityChange(type, el)
       {
-         new Element(this.widgets.isModerated).set("disabled", !new Element(this.widgets.isPublic).get("checked"));
+         new Element(this.widgets.isModerated).set("disabled", el == this.widgets.isPrivate);
       },
       
       /**

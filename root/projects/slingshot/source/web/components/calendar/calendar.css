@@ -482,9 +482,7 @@ margin-top:1em;
     cursor:pointer;
     cursor:hand;    
 }
-.calendar.monthview td.current {
-    background-color:#FBFFF0;
-} 
+
 .calendar.monthview td .highlight button#addEventButton {
     bottom:10px;
     right:10px;

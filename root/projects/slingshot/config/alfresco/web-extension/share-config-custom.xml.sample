@@ -176,7 +176,8 @@
    </config>
    
    <!-- Kerberos settings -->
-   <config evaluator="string-compare" condition="Kerberos" replace="true">
+   <!-- To enaable kerberos rename this condition to "Kerberos" -->
+   <config evaluator="string-compare" condition="KerberosDisabled" replace="true">
       <kerberos>
          <!--
             Password for HTTP service account.
@@ -212,6 +213,8 @@
         *Optional* keystore contains SSL client certificate + trusted CAs.
         Used to authenticate share to an external SSO system such as CAS
         Remove the keystore section if not required i.e. for NTLM.
+        
+        NOTE: For Kerberos SSO rename the "KerberosDisabled" condition above to "Kerberos"
    -->
    <!--
    <config evaluator="string-compare" condition="Remote">

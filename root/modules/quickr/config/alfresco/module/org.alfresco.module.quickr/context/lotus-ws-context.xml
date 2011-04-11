@@ -33,14 +33,14 @@
         </jaxws:inInterceptors>
     </jaxws:endpoint>
     
-    <jaxws:endpoint address="/services/DocumentService" implementor="#lotusDocumentServiceImpl"
+    <jaxws:endpoint address="/services/DocumentService" implementor="#lotusDocumentServiceImpl_intercepted"
         implementorClass="org.alfresco.repo.lotus.ws.impl.AlfrescoDocumentServiceImpl">
         <jaxws:inInterceptors>
             <ref local="quickrAuthenticationInterceptor" />
         </jaxws:inInterceptors>
     </jaxws:endpoint>
     
-    <jaxws:endpoint address="/services/LibraryService" implementor="#lotusLibraryServiceImpl"
+    <jaxws:endpoint address="/services/LibraryService" implementor="#lotusLibraryServiceImpl_intercepted"
         implementorClass="org.alfresco.repo.lotus.ws.impl.AlfrescoLibraryServiceImpl">
         <jaxws:inInterceptors>
             <ref local="quickrAuthenticationInterceptor" />
@@ -61,6 +61,30 @@
         <property name="nodeService" ref="NodeService" />
     </bean>
     
+    <bean id="SOAPExceptionInerceptor" class="org.alfresco.repo.lotus.ws.impl.interceptors.SOAPExceptionInterceptor" />
+       
+    <bean id="lotusDocumentServiceImpl_intercepted" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <ref bean="lotusDocumentServiceImpl" />
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>SOAPExceptionInerceptor</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="lotusLibraryServiceImpl_intercepted" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <ref bean="lotusLibraryServiceImpl" />
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>SOAPExceptionInerceptor</value>
+            </list>
+        </property>
+    </bean>    
+    
     <bean id="lotusDocumentServiceImpl" class="org.alfresco.repo.lotus.ws.impl.AlfrescoDocumentServiceImpl">
         <property name="nodeService" ref="NodeService" />
         <property name="fileFolderService" ref="FileFolderService" />
@@ -68,12 +92,14 @@
         <property name="pathHelper" ref="quickrPathHelper" />
         <property name="transactionService" ref="transactionService" />
         <property name="documentHelper" ref="quickrDocumentHelper" />
+        <property name="workflowHelper" ref="quickrWorkflowHelper" />
         <property name="lockService" ref="LockService" />
         <property name="permissionHelper" ref="quickrPermissionHelper" />
         <property name="contentService" ref="ContentService" />
         <property name="versionService" ref="VersionService" />
-    	<property name="mimetypeService" ref="mimetypeService" />
     	<property name="personService" ref="PersonService" />
+        <property name="dictionaryService" ref="dictionaryService" />
+        <property name="workflowService" ref="WorkflowService" />
     </bean>
     
     <bean id="lotusLibraryServiceImpl" class="org.alfresco.repo.lotus.ws.impl.AlfrescoLibraryServiceImpl">      
@@ -122,17 +148,27 @@
         <property name="nodeService" ref="NodeService" />
         <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
         <property name="lockService" ref="LockService" />
+        <property name="pathHelper" ref="quickrPathHelper" />
+        <property name="dictionaryService" ref="dictionaryService" />
     </bean>
     
     <bean id="quickrPermissionHelper" class="org.alfresco.repo.lotus.ws.impl.helper.AlfrescoQuickrPermissionHelper">
         <property name="permissionService" ref="PermissionService" />
     </bean>
     
+    <bean id="quickrWorkflowHelper" class="org.alfresco.repo.lotus.ws.impl.helper.AlfrescoQuickrWorkflowHelper">
+        <property name="documentHelper" ref="quickrDocumentHelper" />
+        <property name="workflowService" ref="WorkflowService" />
+        <property name="personService" ref="PersonService" />
+        <property name="dictionaryService" ref="dictionaryService" />
+        <property name="nodeService" ref="NodeService" />
+    </bean>    
+    
     <!-- Rest Services endpoints configuration -->
     
     <jaxrs:server id="atomBasedFeedService" address="/atom">
         <jaxrs:serviceBeans>
-            <ref bean="lotusAtomBasedFeedServiceImpl" />
+            <ref bean="lotusAtomBasedFeedServiceImpl_intercepted" />
         </jaxrs:serviceBeans>
         <jaxrs:inInterceptors>
             <ref bean="quickrAuthenticationInterceptor"/>
@@ -146,25 +182,46 @@
         </jaxrs:providers>
     </jaxrs:server>
     
+    <bean id="atomExceptionInerceptor" class="org.alfresco.repo.lotus.ws.impl.interceptors.AtomExceptionInterceptor" />
+       
+    <bean id="lotusAtomBasedFeedServiceImpl_intercepted" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <ref bean="lotusAtomBasedFeedServiceImpl" />
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>atomExceptionInerceptor</value>
+            </list>
+        </property>
+    </bean>
+    
     <bean id="lotusAtomBasedFeedServiceImpl" class="org.alfresco.repo.lotus.rs.impl.AlfrescoAtomBasedFeedServiceImpl">
         <property name="nodeService" ref="NodeService" />
         <property name="personService" ref="PersonService" />
         <property name="pathHelper" ref="quickrPathHelper" />
         <property name="fileFolderService" ref="FileFolderService" />
+        <property name="dictionaryService" ref="dictionaryService" />
         <property name="transactionService" ref="transactionService" />
         <property name="contentService" ref="ContentService" />
         <property name="versionService" ref="VersionService" />
         <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
+        <property name="siteService" ref="SiteService" />
         <property name="documentHelper" ref="quickrDocumentHelper" />
+        <property name="workflowHelper" ref="quickrWorkflowHelper" />
+        <property name="permissionHelper" ref="quickrPermissionHelper" />
         <property name="generatorVersion">
             <value>${lotus.ws.generator.version}</value>
          </property>
+         <property name="generatorName">
+            <value>${lotus.ws.generator.name}</value>
+         </property>
+         
     </bean>
     
     <!-- Providers  -->
     
     <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider"></bean>
-    <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.AtomEntryProvider"></bean>
+    <bean id="atomEntryProvider" class="org.alfresco.repo.lotus.rs.impl.providers.AtomEntryProvider"></bean>
     <bean id="atomServiceProvider" class="org.alfresco.repo.lotus.rs.impl.providers.AtomServiceProvider"></bean>
     <bean id="atomErrorProvider" class="org.alfresco.repo.lotus.rs.impl.providers.AtomErrorProvider"></bean>
     
@@ -176,8 +233,54 @@
     <!-- Authentication  interceptor -->
 
     <bean id="quickrAuthenticationInterceptor" class="org.alfresco.repo.lotus.ws.impl.interceptors.AuthenticationInterceptor">
-        <property name="authenticationService" ref="AuthenticationService" />
+        <property name="authenticator" ref="QuickrAuthenticator" />
+    </bean>
+    
+    <bean id="QuickrAuthenticator" class="org.alfresco.repo.lotus.ws.impl.auth.ChainingAuthProxyFactory">       
+        <property name="interfaces">
+            <list>
+                <value>org.alfresco.repo.lotus.ws.impl.auth.Authenticator</value>
+            </list>
+        </property>
+        <property name="sourceBeanNames">
+            <list>
+                <value>quickrAuthenticator</value>
+            </list>         
+        </property>
+        <!-- Fall back to the default alfresco implementation -->
+        <property name="defaultTarget">
+            <bean class="org.alfresco.repo.lotus.ws.impl.auth.BasicAuthenticator">
+                <property name="authenticationService">
+                    <ref bean="AuthenticationService" />
+                </property>
+                <property name="transactionService">
+                    <ref bean="transactionService" />
+                </property>
+                <property name="authenticationComponent">
+                    <ref bean="authenticationComponent"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="quickrAuthenticator" class="org.alfresco.repo.lotus.ws.impl.auth.LtpaAuthenticator">
+        <property name="ltpa3DESKey">
+            <value>${lotus.ltpa.3DESKey}</value>
+        </property>
+        <property name="ltpaPassword">
+            <value>${lotus.ltpa.password}</value>
+        </property>
+        <property name="userHomesPath">
+            <value>/${spaces.company_home.childname}/${spaces.user_homes.childname}</value>
+        </property>
+        <property name="authenticationComponent" ref="authenticationComponent" />
+        <property name="mutableAuthenticationService" ref="AuthenticationService" />
         <property name="transactionService" ref="transactionService" />
+        <property name="personService" ref="PersonService" />       
+        <property name="nodeService" ref="NodeService" />
+        <property name="permissionService" ref="PermissionService" />
+        <property name="namespaceService" ref="NamespaceService" />
+        <property name="searchService" ref="SearchService" />
     </bean>
     
     <!-- Server -->

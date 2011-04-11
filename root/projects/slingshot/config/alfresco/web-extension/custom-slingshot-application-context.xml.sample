@@ -3,6 +3,19 @@
 
 <beans>
    
-
+   <!-- Web-tier cluster configuration -->
+   <!-- Enable this section if you are clustering or load balancing the share.war i.e. multiple web-tiers behind a proxy -->
+   <!-- If you have a single web-tier running against an Alfresco cluster via a reverse proxy you don't need this -->
+   <!--
+   <bean id="webframework.slingshot.persister.remote" class="org.springframework.extensions.surf.persister.PathStoreObjectPersister" parent="webframework.sitedata.persister.abstract">
+      <property name="store" ref="webframework.webapp.store.remote" />
+      <property name="pathPrefix"><value>alfresco/site-data/${objectTypeIds}</value></property>
+      <property name="noncachableObjectTypes">
+         <set>
+            <value>page</value>
+            <value>component</value>
+         </set>
+      </property>
+   </bean>-->
 
 </beans>

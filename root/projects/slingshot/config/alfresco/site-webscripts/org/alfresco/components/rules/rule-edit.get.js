@@ -7,20 +7,6 @@ function main()
       result,
       data;
 
-   // Load folder info
-   if (ruleNodeRef)
-   {
-      result = connector.post("/api/forms/picker/items", jsonUtils.toJSONString(
-      {
-         items: [ruleNodeRef]
-      }), "application/json");
-      if (result.status == 200)
-      {
-         data = eval('(' + result + ')').data;
-         model.folder = data.items[0];
-      }
-   }
-
    // Load rule to edit of given in url
    if (ruleNodeRef && ruleId)
    {

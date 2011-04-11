@@ -442,6 +442,11 @@ namespace AlfrescoExcel2003
                   {
                      strAuthTicket = myAuthTicket.GetAuthenticationTicket(this.Username, this.Password);
                   }
+                  // Check whether 'Negotiate' authentication is required and try to log-in with the Default System Credentials (to cover SSO case)
+                  else if (EAuthenticationType.NEGOTIATE == myAuthTicket.GetAuthenticationType())
+                  {
+                      strAuthTicket = myAuthTicket.GetAuthenticationTicket("negotiator", this.Password);
+                  }
                   if (strAuthTicket != "401")
                   {
                      m_AuthenticationTicket = strAuthTicket;

@@ -28,7 +28,9 @@ function getHiddenWorkflowNames()
 
 function sortByTitle(workflow1, workflow2)
 {
-   return (workflow1.title > workflow2.title) ? 1 : (workflow1.title < workflow2.title) ? -1 : 0;
+   var title1 = (workflow1.title || workflow1.name).toUpperCase(),
+      title2 = (workflow2.title || workflow2.name).toUpperCase();
+   return (title1 > title2) ? 1 : (title1 < title2) ? -1 : 0;
 }
 
 function getWorkflowDefinitions()

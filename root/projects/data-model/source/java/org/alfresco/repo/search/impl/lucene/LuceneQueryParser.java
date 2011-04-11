@@ -55,6 +55,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.CachingDateFormat;
+import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -230,7 +231,7 @@ public class LuceneQueryParser extends QueryParser
      * 
      */
     public static final String FIELD_DBID = "DBID";
-    
+
     /**
      * 
      */
@@ -289,7 +290,8 @@ public class LuceneQueryParser extends QueryParser
      *             if the parsing fails
      */
     static public Query parse(String query, String field, Analyzer analyzer, NamespacePrefixResolver namespacePrefixResolver, DictionaryService dictionaryService,
-            TenantService tenantService, Operator defaultOperator, SearchParameters searchParameters, MLAnalysisMode defaultSearchMLAnalysisMode, IndexReader indexReader) throws ParseException
+            TenantService tenantService, Operator defaultOperator, SearchParameters searchParameters, MLAnalysisMode defaultSearchMLAnalysisMode, IndexReader indexReader)
+    throws ParseException
     {
         if (s_logger.isDebugEnabled())
         {
@@ -577,32 +579,32 @@ public class LuceneQueryParser extends QueryParser
         QName search = QName.createQName(expandQName(string));
         DataTypeDefinition dataTypeDefinition = dictionaryService.getDataType(QName.createQName(expandQName(string)));
         QName match = null;
-        if(dataTypeDefinition == null)
+        if (dataTypeDefinition == null)
         {
-            for(QName definition : dictionaryService.getAllDataTypes())
+            for (QName definition : dictionaryService.getAllDataTypes())
             {
-                if(definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
+                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
                 {
-                    if(definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
+                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
                     {
-                        if(match == null)
+                        if (match == null)
                         {
                             match = definition;
                         }
                         else
                         {
-                            throw new LuceneQueryParserException("Ambiguous data datype "+string);
+                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
                         }
                     }
                 }
-                        
+
             }
         }
         else
         {
             return dataTypeDefinition;
         }
-        if(match == null)
+        if (match == null)
         {
             return null;
         }
@@ -611,38 +613,38 @@ public class LuceneQueryParser extends QueryParser
             return dictionaryService.getDataType(match);
         }
     }
-    
+
     private PropertyDefinition matchPropertyDefinition(String string)
     {
         QName search = QName.createQName(expandQName(string));
         PropertyDefinition propertyDefinition = dictionaryService.getProperty(QName.createQName(expandQName(string)));
         QName match = null;
-        if(propertyDefinition == null)
+        if (propertyDefinition == null)
         {
-            for(QName definition : dictionaryService.getAllProperties(null))
+            for (QName definition : dictionaryService.getAllProperties(null))
             {
-                if(definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
+                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
                 {
-                    if(definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
+                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
                     {
-                        if(match == null)
+                        if (match == null)
                         {
                             match = definition;
                         }
                         else
                         {
-                            throw new LuceneQueryParserException("Ambiguous data datype "+string);
+                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
                         }
                     }
                 }
-                        
+
             }
         }
         else
         {
             return propertyDefinition;
         }
-        if(match == null)
+        if (match == null)
         {
             return null;
         }
@@ -651,27 +653,27 @@ public class LuceneQueryParser extends QueryParser
             return dictionaryService.getProperty(match);
         }
     }
-    
+
     private AspectDefinition matchAspectDefinition(String string)
     {
         QName search = QName.createQName(expandQName(string));
         AspectDefinition aspectDefinition = dictionaryService.getAspect(QName.createQName(expandQName(string)));
         QName match = null;
-        if(aspectDefinition == null)
+        if (aspectDefinition == null)
         {
-            for(QName definition : dictionaryService.getAllAspects())
+            for (QName definition : dictionaryService.getAllAspects())
             {
-                if(definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
+                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
                 {
-                    if(definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
+                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
                     {
-                        if(match == null)
+                        if (match == null)
                         {
                             match = definition;
                         }
                         else
                         {
-                            throw new LuceneQueryParserException("Ambiguous data datype "+string);
+                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
                         }
                     }
                 }
@@ -681,7 +683,7 @@ public class LuceneQueryParser extends QueryParser
         {
             return aspectDefinition;
         }
-        if(match == null)
+        if (match == null)
         {
             return null;
         }
@@ -690,27 +692,27 @@ public class LuceneQueryParser extends QueryParser
             return dictionaryService.getAspect(match);
         }
     }
-    
+
     private TypeDefinition matchTypeDefinition(String string)
     {
         QName search = QName.createQName(expandQName(string));
         TypeDefinition typeDefinition = dictionaryService.getType(QName.createQName(expandQName(string)));
         QName match = null;
-        if(typeDefinition == null)
+        if (typeDefinition == null)
         {
-            for(QName definition : dictionaryService.getAllTypes())
+            for (QName definition : dictionaryService.getAllTypes())
             {
-                if(definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
+                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
                 {
-                    if(definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
+                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
                     {
-                        if(match == null)
+                        if (match == null)
                         {
                             match = definition;
                         }
                         else
                         {
-                            throw new LuceneQueryParserException("Ambiguous data datype "+string);
+                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
                         }
                     }
                 }
@@ -720,7 +722,7 @@ public class LuceneQueryParser extends QueryParser
         {
             return typeDefinition;
         }
-        if(match == null)
+        if (match == null)
         {
             return null;
         }
@@ -729,44 +731,44 @@ public class LuceneQueryParser extends QueryParser
             return dictionaryService.getType(match);
         }
     }
-    
+
     private ClassDefinition matchClassDefinition(String string)
     {
         QName search = QName.createQName(expandQName(string));
         ClassDefinition classDefinition = dictionaryService.getClass(QName.createQName(expandQName(string)));
         QName match = null;
-        if(classDefinition == null)
+        if (classDefinition == null)
         {
-            for(QName definition : dictionaryService.getAllTypes())
+            for (QName definition : dictionaryService.getAllTypes())
             {
-                if(definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
+                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
                 {
-                    if(definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
+                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
                     {
-                        if(match == null)
+                        if (match == null)
                         {
                             match = definition;
                         }
                         else
                         {
-                            throw new LuceneQueryParserException("Ambiguous data datype "+string);
+                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
                         }
                     }
                 }
             }
-            for(QName definition : dictionaryService.getAllAspects())
+            for (QName definition : dictionaryService.getAllAspects())
             {
-                if(definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
+                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
                 {
-                    if(definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
+                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
                     {
-                        if(match == null)
+                        if (match == null)
                         {
                             match = definition;
                         }
                         else
                         {
-                            throw new LuceneQueryParserException("Ambiguous data datype "+string);
+                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
                         }
                     }
                 }
@@ -776,7 +778,7 @@ public class LuceneQueryParser extends QueryParser
         {
             return classDefinition;
         }
-        if(match == null)
+        if (match == null)
         {
             return null;
         }
@@ -785,8 +787,7 @@ public class LuceneQueryParser extends QueryParser
             return dictionaryService.getClass(match);
         }
     }
-    
-   
+
     /**
      * @param field
      * @param queryText
@@ -1069,7 +1070,7 @@ public class LuceneQueryParser extends QueryParser
             throw new AlfrescoRuntimeException("Unknown aspect specified in query: " + queryText);
         }
 
-        if(exactOnly)
+        if (exactOnly)
         {
             QName targetQName = target.getName();
             TermQuery termQuery = new TermQuery(new Term(FIELD_ASPECT, targetQName.toString()));
@@ -1095,11 +1096,7 @@ public class LuceneQueryParser extends QueryParser
             }
             return booleanQuery;
         }
-        
-        
 
-
-     
     }
 
     protected Query createTypeQuery(String queryText, boolean exactOnly)
@@ -1109,7 +1106,7 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new LuceneQueryParserException("Invalid type: " + queryText);
         }
-        if(exactOnly)
+        if (exactOnly)
         {
             QName targetQName = target.getName();
             TermQuery termQuery = new TermQuery(new Term(FIELD_TYPE, targetQName.toString()));
@@ -1141,7 +1138,7 @@ public class LuceneQueryParser extends QueryParser
         // The field was also not indexed correctly.
         // We do both for backward compatability ...
         BooleanQuery booleanQuery = new BooleanQuery();
-        
+
         XPathReader reader = new XPathReader();
         LuceneXPathHandler handler = new LuceneXPathHandler();
         handler.setNamespacePrefixResolver(namespacePrefixResolver);
@@ -1151,13 +1148,13 @@ public class LuceneQueryParser extends QueryParser
         PathQuery query = handler.getQuery();
         query.setPathField(FIELD_PATH);
         query.setQnameField(FIELD_ASSOCTYPEQNAME);
-        
+
         booleanQuery.add(query, Occur.SHOULD);
         booleanQuery.add(createPrimaryAssocTypeQNameQuery(queryText), Occur.SHOULD);
-        
+
         return booleanQuery;
     }
-    
+
     protected Query createPrimaryAssocTypeQNameQuery(String queryText) throws SAXPathException
     {
         XPathReader reader = new XPathReader();
@@ -1187,18 +1184,17 @@ public class LuceneQueryParser extends QueryParser
     {
         return createTermQuery(FIELD_TX, queryText);
     }
-    
+
     protected Query createIsNodeQuery(String queryText)
     {
         return createTermQuery(FIELD_ISNODE, queryText);
     }
-    
+
     protected Query createIsContainerQuery(String queryText)
     {
         return createTermQuery(FIELD_ISCONTAINER, queryText);
     }
 
-    
     protected Query createIsRootQuery(String queryText)
     {
         return createTermQuery(FIELD_ISROOT, queryText);
@@ -1209,22 +1205,22 @@ public class LuceneQueryParser extends QueryParser
         TermQuery termQuery = new TermQuery(new Term(field, queryText));
         return termQuery;
     }
-  
+
     protected Query createPrimaryParentQuery(String queryText)
     {
-       return createNodeRefQuery(FIELD_PRIMARYPARENT, queryText);
+        return createNodeRefQuery(FIELD_PRIMARYPARENT, queryText);
     }
-    
+
     protected Query createParentQuery(String queryText)
     {
-       return createNodeRefQuery(FIELD_PARENT, queryText);
+        return createNodeRefQuery(FIELD_PARENT, queryText);
     }
-    
+
     protected Query createIdQuery(String queryText)
     {
-       return createNodeRefQuery(FIELD_ID, queryText);
+        return createNodeRefQuery(FIELD_ID, queryText);
     }
-    
+
     private Query createNodeRefQuery(String field, String queryText)
     {
         if (tenantService.isTenantUser() && (queryText.contains(StoreRef.URI_FILLER)))
@@ -1234,7 +1230,6 @@ public class LuceneQueryParser extends QueryParser
         }
         return createTermQuery(field, queryText);
     }
-
 
     protected Query createPathQuery(String queryText, boolean withRepeats) throws SAXPathException
     {
@@ -1248,7 +1243,7 @@ public class LuceneQueryParser extends QueryParser
         pathQuery.setRepeats(withRepeats);
         return pathQuery;
     }
-    
+
     protected Query createTextQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
         Set<String> text = searchParameters.getTextAttributes();
@@ -1396,8 +1391,7 @@ public class LuceneQueryParser extends QueryParser
                         if (requiresMLTokenDuplication)
                         {
                             Locale locale = I18NUtil.parseLocale(localeString);
-                            MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters
-                                    .getMlAnalaysisMode();
+                            MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
                             MLTokenDuplicator duplicator = new MLTokenDuplicator(locale, mlAnalysisMode);
                             Iterator<org.apache.lucene.analysis.Token> it = duplicator.buildIterator(newToken);
                             if (it != null)
@@ -1459,8 +1453,7 @@ public class LuceneQueryParser extends QueryParser
                         if (requiresMLTokenDuplication)
                         {
                             Locale locale = I18NUtil.parseLocale(localeString);
-                            MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters
-                                    .getMlAnalaysisMode();
+                            MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
                             MLTokenDuplicator duplicator = new MLTokenDuplicator(locale, mlAnalysisMode);
                             Iterator<org.apache.lucene.analysis.Token> it = duplicator.buildIterator(newToken);
                             if (it != null)
@@ -1489,7 +1482,7 @@ public class LuceneQueryParser extends QueryParser
         }
 
         Collections.sort(list, new Comparator<org.apache.lucene.analysis.Token>()
-        {
+                {
 
             public int compare(Token o1, Token o2)
             {
@@ -1503,7 +1496,7 @@ public class LuceneQueryParser extends QueryParser
                     return o2.getPositionIncrement() - o1.getPositionIncrement();
                 }
             }
-        });
+                });
 
         // Combined * and ? based strings - should redo the tokeniser
 
@@ -1706,7 +1699,7 @@ public class LuceneQueryParser extends QueryParser
         // reorder by start position and increment
 
         Collections.sort(fixed, new Comparator<org.apache.lucene.analysis.Token>()
-        {
+                {
 
             public int compare(Token o1, Token o2)
             {
@@ -1720,7 +1713,7 @@ public class LuceneQueryParser extends QueryParser
                     return o2.getPositionIncrement() - o1.getPositionIncrement();
                 }
             }
-        });
+                });
 
         list = fixed;
 
@@ -1931,7 +1924,7 @@ public class LuceneQueryParser extends QueryParser
      *                throw in overridden method to disallow
      */
     public Query getRangeQuery(String field, String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, LuceneFunction luceneFunction)
-            throws ParseException
+    throws ParseException
     {
         if (field.equals(FIELD_TEXT))
         {
@@ -1979,7 +1972,7 @@ public class LuceneQueryParser extends QueryParser
         {
             String fieldName;
             PropertyDefinition propertyDef = matchPropertyDefinition(field.substring(1));
-            if(propertyDef != null)
+            if (propertyDef != null)
             {
                 fieldName = PROPERTY_FIELD_PREFIX + propertyDef.getName();
             }
@@ -1987,7 +1980,7 @@ public class LuceneQueryParser extends QueryParser
             {
                 fieldName = expandAttributeFieldName(field);
             }
-            
+
             IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
             if (propertyDef != null)
             {
@@ -2005,8 +1998,7 @@ public class LuceneQueryParser extends QueryParser
                     if (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT))
                     {
                         BooleanQuery booleanQuery = new BooleanQuery();
-                        MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters
-                                .getMlAnalaysisMode();
+                        MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
                         List<Locale> locales = searchParameters.getLocales();
                         List<Locale> expandedLocales = new ArrayList<Locale>();
                         for (Locale locale : (((locales == null) || (locales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : locales))
@@ -2125,11 +2117,14 @@ public class LuceneQueryParser extends QueryParser
                     if (usesDateTimeAnalyser)
                     {
                         Calendar start = Calendar.getInstance();
+                        int startResolution;
                         Calendar end = Calendar.getInstance();
+                        int endResolution;
                         try
                         {
-                            Date date = CachingDateFormat.lenientParse(part1);
-                            start.setTime(date);
+                            Pair<Date, Integer> result = CachingDateFormat.lenientParse(part1, Calendar.YEAR);
+                            start.setTime(result.getFirst());
+                            startResolution = result.getSecond();
                         }
                         catch (java.text.ParseException e)
                         {
@@ -2139,6 +2134,7 @@ public class LuceneQueryParser extends QueryParser
                                 Date date = oldDf.parse(part1);
                                 start.setTime(date);
                                 start.set(Calendar.MILLISECOND, 0);
+                                startResolution = Calendar.SECOND;
                             }
                             catch (java.text.ParseException ee)
                             {
@@ -2150,10 +2146,12 @@ public class LuceneQueryParser extends QueryParser
                                     start.set(Calendar.MINUTE, start.getMinimum(Calendar.MINUTE));
                                     start.set(Calendar.SECOND, start.getMinimum(Calendar.SECOND));
                                     start.set(Calendar.MILLISECOND, start.getMinimum(Calendar.MILLISECOND));
+                                    startResolution = Calendar.MILLISECOND;
                                 }
                                 else if (part1.equalsIgnoreCase("now"))
                                 {
                                     start.setTime(new Date());
+                                    startResolution = Calendar.MILLISECOND;
                                 }
                                 else if (part1.equalsIgnoreCase("today"))
                                 {
@@ -2162,6 +2160,7 @@ public class LuceneQueryParser extends QueryParser
                                     start.set(Calendar.MINUTE, start.getMinimum(Calendar.MINUTE));
                                     start.set(Calendar.SECOND, start.getMinimum(Calendar.SECOND));
                                     start.set(Calendar.MILLISECOND, start.getMinimum(Calendar.MILLISECOND));
+                                    startResolution = Calendar.DAY_OF_MONTH;
 
                                 }
                                 else
@@ -2172,8 +2171,9 @@ public class LuceneQueryParser extends QueryParser
                         }
                         try
                         {
-                            Date date = CachingDateFormat.lenientParse(part2);
-                            end.setTime(date);
+                            Pair<Date, Integer> result = CachingDateFormat.lenientParse(part2, Calendar.YEAR);
+                            end.setTime(result.getFirst());
+                            endResolution = result.getSecond();
                         }
                         catch (java.text.ParseException e)
                         {
@@ -2183,6 +2183,7 @@ public class LuceneQueryParser extends QueryParser
                                 Date date = oldDf.parse(part2);
                                 end.setTime(date);
                                 end.set(Calendar.MILLISECOND, 0);
+                                endResolution = Calendar.SECOND;
                             }
                             catch (java.text.ParseException ee)
                             {
@@ -2194,10 +2195,12 @@ public class LuceneQueryParser extends QueryParser
                                     end.set(Calendar.MINUTE, end.getMaximum(Calendar.MINUTE));
                                     end.set(Calendar.SECOND, end.getMaximum(Calendar.SECOND));
                                     end.set(Calendar.MILLISECOND, end.getMaximum(Calendar.MILLISECOND));
+                                    endResolution = Calendar.MILLISECOND;
                                 }
                                 else if (part2.equalsIgnoreCase("now"))
                                 {
                                     end.setTime(new Date());
+                                    endResolution = Calendar.MILLISECOND;
                                 }
                                 else if (part1.equalsIgnoreCase("today"))
                                 {
@@ -2206,7 +2209,7 @@ public class LuceneQueryParser extends QueryParser
                                     end.set(Calendar.MINUTE, end.getMinimum(Calendar.MINUTE));
                                     end.set(Calendar.SECOND, end.getMinimum(Calendar.SECOND));
                                     end.set(Calendar.MILLISECOND, end.getMinimum(Calendar.MILLISECOND));
-
+                                    endResolution = Calendar.DAY_OF_MONTH;
                                 }
                                 else
                                 {
@@ -2216,7 +2219,7 @@ public class LuceneQueryParser extends QueryParser
                         }
 
                         // Build a composite query for all the bits
-                        Query rq = buildDateTimeRange(fieldName, start, end, includeLower, includeUpper);
+                        Query rq = buildDateTimeRange(fieldName, start, startResolution, end, endResolution, includeLower, includeUpper);
                         return rq;
                     }
                     else
@@ -2324,7 +2327,7 @@ public class LuceneQueryParser extends QueryParser
 
     private void addLocaleSpecificTokenisedTextRange(String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, String fieldName,
             BooleanQuery booleanQuery, Locale locale, String textFieldName) throws ParseException
-    {
+            {
         StringBuilder builder = new StringBuilder();
         builder.append("\u0000").append(locale.toString()).append("\u0000").append(part1);
         String first = getToken(fieldName, builder.toString(), analysisMode);
@@ -2335,7 +2338,7 @@ public class LuceneQueryParser extends QueryParser
 
         Query query = new ConstantScoreRangeQuery(textFieldName, first, last, includeLower, includeUpper);
         booleanQuery.add(query, Occur.SHOULD);
-    }
+            }
 
     private void addLocaleSpecificUntokenisedTextRange(String field, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
             MLAnalysisMode mlAnalysisMode, Locale locale, String textFieldName)
@@ -2357,52 +2360,124 @@ public class LuceneQueryParser extends QueryParser
         }
     }
 
-    private Query buildDateTimeRange(String field, Calendar start, Calendar end, boolean includeLower, boolean includeUpper) throws ParseException
+    private Query buildDateTimeRange(String field, Calendar startIn, int startResolution, Calendar endIn, int endResolution, boolean includeLower, boolean includeUpper) throws ParseException
     {
+        int minResolution = (startResolution <= endResolution) ? startResolution : endResolution;
+        
+        // fix start and end dates and treat all as inclusive ranges
+        
+        Calendar start = Calendar.getInstance();
+        start.setTime(startIn.getTime());
+        if(!includeLower)
+        {
+            start.add(startResolution, 1);
+        }
+        
+        Calendar end = Calendar.getInstance();
+        end.setTime(endIn.getTime());
+        if(!includeUpper)
+        {
+            end.add(endResolution, -1);
+        }
+        
+        
+        // Calendar comparison does not work for MAX .... joy
+        if(start.get(Calendar.YEAR) > end.get(Calendar.YEAR))
+        {
+            return createNoMatchQuery();
+        }
+        else if (start.get(Calendar.YEAR) == end.get(Calendar.YEAR))
+        {
+            if(start.get(Calendar.MONTH) > end.get(Calendar.MONTH))
+            {
+                return createNoMatchQuery();
+            }
+            else if (start.get(Calendar.MONTH) == end.get(Calendar.MONTH))
+            {
+                if(start.get(Calendar.DAY_OF_MONTH) > end.get(Calendar.DAY_OF_MONTH))
+                {
+                    return createNoMatchQuery();
+                }
+                else if (start.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH))
+                {
+                    if(start.get(Calendar.HOUR_OF_DAY) > end.get(Calendar.HOUR_OF_DAY))
+                    {
+                        return createNoMatchQuery();
+                    }
+                    else if (start.get(Calendar.HOUR_OF_DAY) == end.get(Calendar.HOUR_OF_DAY))
+                    {
+                        if(start.get(Calendar.MINUTE) > end.get(Calendar.MINUTE))
+                        {
+                            return createNoMatchQuery();
+                        }
+                        else if (start.get(Calendar.MINUTE) == end.get(Calendar.MINUTE))
+                        {
+                            if(start.get(Calendar.SECOND) > end.get(Calendar.SECOND))
+                            {
+                                return createNoMatchQuery();
+                            }
+                            else if (start.get(Calendar.SECOND) == end.get(Calendar.SECOND))
+                            {
+                                if(start.get(Calendar.MILLISECOND) > end.get(Calendar.MILLISECOND))
+                                {
+                                    return createNoMatchQuery();
+                                }
+                                else if (start.get(Calendar.MILLISECOND) == end.get(Calendar.MILLISECOND))
+                                {
+                                    // continue
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         BooleanQuery query = new BooleanQuery();
         Query part;
-        if (start.get(Calendar.YEAR) == end.get(Calendar.YEAR))
+        if((minResolution > Calendar.YEAR) && (start.get(Calendar.YEAR) == end.get(Calendar.YEAR)))
         {
             part = new TermQuery(new Term(field, "YE" + start.get(Calendar.YEAR)));
             query.add(part, Occur.MUST);
-            if (start.get(Calendar.MONTH) == end.get(Calendar.MONTH))
+            if ((minResolution > Calendar.MONTH) && (start.get(Calendar.MONTH) == end.get(Calendar.MONTH)))
             {
                 part = new TermQuery(new Term(field, build2SF("MO", start.get(Calendar.MONTH))));
                 query.add(part, Occur.MUST);
-                if (start.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH))
+                if ((minResolution > Calendar.DAY_OF_MONTH) && (start.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH)))
                 {
                     part = new TermQuery(new Term(field, build2SF("DA", start.get(Calendar.DAY_OF_MONTH))));
                     query.add(part, Occur.MUST);
-                    if (start.get(Calendar.HOUR_OF_DAY) == end.get(Calendar.HOUR_OF_DAY))
+                    if ((minResolution > Calendar.HOUR_OF_DAY) && (start.get(Calendar.HOUR_OF_DAY) == end.get(Calendar.HOUR_OF_DAY)))
                     {
                         part = new TermQuery(new Term(field, build2SF("HO", start.get(Calendar.HOUR_OF_DAY))));
                         query.add(part, Occur.MUST);
-                        if (start.get(Calendar.MINUTE) == end.get(Calendar.MINUTE))
+                        if ((minResolution > Calendar.MINUTE) && (start.get(Calendar.MINUTE) == end.get(Calendar.MINUTE)))
                         {
                             part = new TermQuery(new Term(field, build2SF("MI", start.get(Calendar.MINUTE))));
                             query.add(part, Occur.MUST);
-                            if (start.get(Calendar.SECOND) == end.get(Calendar.SECOND))
+                            if ((minResolution > Calendar.SECOND) && (start.get(Calendar.SECOND) == end.get(Calendar.SECOND)))
                             {
                                 part = new TermQuery(new Term(field, build2SF("SE", start.get(Calendar.SECOND))));
                                 query.add(part, Occur.MUST);
-                                if (start.get(Calendar.MILLISECOND) == end.get(Calendar.MILLISECOND))
+                                if (minResolution >= Calendar.MILLISECOND)
                                 {
-                                    if (includeLower && includeUpper)
+                                    if(start.get(Calendar.MILLISECOND) == end.get(Calendar.MILLISECOND))
                                     {
-                                        part = new TermQuery(new Term(field, build3SF("MS", start.get(Calendar.MILLISECOND))));
-                                        query.add(part, Occur.MUST);
+                                        
+                                            part = new TermQuery(new Term(field, build3SF("MS", start.get(Calendar.MILLISECOND))));
+                                            query.add(part, Occur.MUST);
+                                       
                                     }
                                     else
                                     {
-                                        return createNoMatchQuery();
+                                        part = new ConstantScoreRangeQuery(field, build3SF("MS", start.get(Calendar.MILLISECOND)), build3SF("MS", end.get(Calendar.MILLISECOND)),
+                                                true, true);
+                                        query.add(part, Occur.MUST);
                                     }
                                 }
                                 else
                                 {
-                                    // only ms
-                                    part = new ConstantScoreRangeQuery(field, build3SF("MS", start.get(Calendar.MILLISECOND)), build3SF("MS", end.get(Calendar.MILLISECOND)),
-                                            includeLower, includeUpper);
-                                    query.add(part, Occur.MUST);
+                                    return createNoMatchQuery();
                                 }
                             }
                             else
@@ -2412,22 +2487,55 @@ public class LuceneQueryParser extends QueryParser
                                 BooleanQuery subQuery = new BooleanQuery();
                                 Query subPart;
 
-                                subPart = buildStart(field, start, includeLower, Calendar.SECOND, Calendar.MILLISECOND);
-                                if (subPart != null)
+                                for (int i : new int[] { Calendar.MILLISECOND})
                                 {
-                                    subQuery.add(subPart, Occur.SHOULD);
+                                    subPart = buildStart(field, start, Calendar.SECOND, i, startResolution);
+                                    if (subPart != null)
+                                    {
+                                        subQuery.add(subPart, Occur.SHOULD);
+                                    }
                                 }
 
-                                if ((end.get(Calendar.SECOND) - start.get(Calendar.SECOND)) > 1)
+
+                                if(Calendar.SECOND < minResolution)
                                 {
-                                    subPart = new ConstantScoreRangeQuery(field, build2SF("SE", start.get(Calendar.SECOND)), build2SF("SE", end.get(Calendar.SECOND)), false, false);
-                                    subQuery.add(subPart, Occur.SHOULD);
+                                    if ((end.get(Calendar.SECOND) - start.get(Calendar.SECOND)) > 1)
+                                    {
+                                        subPart = new ConstantScoreRangeQuery(field, build2SF("SE", start.get(Calendar.SECOND)), build2SF("SE", end.get(Calendar.SECOND)), false, false);
+                                        subQuery.add(subPart, Occur.SHOULD);
+                                    }
+                                }
+                                if(Calendar.SECOND == minResolution)
+                                {
+                                    if(start.get(Calendar.SECOND) == end.get(Calendar.SECOND))
+                                    {
+                                        if(includeLower && includeUpper)
+                                        {
+                                            part = new TermQuery(new Term(field, build2SF("SE", start.get(Calendar.SECOND))));
+                                            query.add(part, Occur.MUST);
+                                        }
+
+                                        else
+                                        {
+                                            return createNoMatchQuery();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        subPart = new ConstantScoreRangeQuery(field, build2SF("SE", start.get(Calendar.SECOND)), build2SF("SE", end.get(Calendar.SECOND)), includeLower, includeUpper);
+                                        subQuery.add(subPart, Occur.SHOULD);
+                                    }
                                 }
 
-                                subPart = buildEnd(field, end, includeUpper, Calendar.SECOND, Calendar.MILLISECOND);
-                                if (subPart != null)
+                                for (int i : new int[] { Calendar.MILLISECOND })
                                 {
-                                    subQuery.add(subPart, Occur.SHOULD);
+                                    
+                                        subPart = buildEnd(field, end, Calendar.SECOND, i, endResolution);
+                                        if (subPart != null)
+                                        {
+                                            subQuery.add(subPart, Occur.SHOULD);
+                                        }
+                                    
                                 }
 
                                 if (subQuery.clauses().size() > 0)
@@ -2446,26 +2554,54 @@ public class LuceneQueryParser extends QueryParser
 
                             for (int i : new int[] { Calendar.MILLISECOND, Calendar.SECOND })
                             {
-                                subPart = buildStart(field, start, includeLower, Calendar.MINUTE, i);
-                                if (subPart != null)
+                                
+                                    subPart = buildStart(field, start, Calendar.MINUTE, i, startResolution);
+                                    if (subPart != null)
+                                    {
+                                        subQuery.add(subPart, Occur.SHOULD);
+                                    }
+                                
+                            }
+
+                            if(Calendar.MINUTE < minResolution)
+                            {
+                                if ((end.get(Calendar.MINUTE) - start.get(Calendar.MINUTE)) > 1)
                                 {
+                                    subPart = new ConstantScoreRangeQuery(field, build2SF("MI", start.get(Calendar.MINUTE)), build2SF("MI", end.get(Calendar.MINUTE)), false, false);
                                     subQuery.add(subPart, Occur.SHOULD);
                                 }
                             }
-
-                            if ((end.get(Calendar.MINUTE) - start.get(Calendar.MINUTE)) > 1)
+                            if(Calendar.MINUTE == minResolution)
                             {
-                                subPart = new ConstantScoreRangeQuery(field, build2SF("MI", start.get(Calendar.MINUTE)), build2SF("MI", end.get(Calendar.MINUTE)), false, false);
-                                subQuery.add(subPart, Occur.SHOULD);
+                                if(start.get(Calendar.MINUTE) == end.get(Calendar.MINUTE))
+                                {
+                                    if(includeLower && includeUpper)
+                                    {
+                                        part = new TermQuery(new Term(field, build2SF("MI", start.get(Calendar.MINUTE))));
+                                        query.add(part, Occur.MUST);
+                                    }
+
+                                    else
+                                    {
+                                        return createNoMatchQuery();
+                                    }
+                                }
+                                else
+                                {
+                                    subPart = new ConstantScoreRangeQuery(field, build2SF("MI", start.get(Calendar.MINUTE)), build2SF("MI", end.get(Calendar.MINUTE)), includeLower, includeUpper);
+                                    subQuery.add(subPart, Occur.SHOULD);
+                                }
                             }
 
                             for (int i : new int[] { Calendar.SECOND, Calendar.MILLISECOND })
                             {
-                                subPart = buildEnd(field, end, includeUpper, Calendar.MINUTE, i);
-                                if (subPart != null)
-                                {
-                                    subQuery.add(subPart, Occur.SHOULD);
-                                }
+                                
+                                    subPart = buildEnd(field, end, Calendar.MINUTE, i, endResolution);
+                                    if (subPart != null)
+                                    {
+                                        subQuery.add(subPart, Occur.SHOULD);
+                                    }
+                                
                             }
 
                             if (subQuery.clauses().size() > 0)
@@ -2483,27 +2619,54 @@ public class LuceneQueryParser extends QueryParser
 
                         for (int i : new int[] { Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE })
                         {
-                            subPart = buildStart(field, start, includeLower, Calendar.HOUR_OF_DAY, i);
-                            if (subPart != null)
+                            
+                                subPart = buildStart(field, start, Calendar.HOUR_OF_DAY, i, startResolution);
+                                if (subPart != null)
+                                {
+                                    subQuery.add(subPart, Occur.SHOULD);
+                                }
+                            
+                        }
+
+                        if(Calendar.HOUR_OF_DAY < minResolution)
+                        {
+                            if ((end.get(Calendar.HOUR_OF_DAY) - start.get(Calendar.HOUR_OF_DAY)) > 1)
                             {
+                                subPart = new ConstantScoreRangeQuery(field, build2SF("HO", start.get(Calendar.HOUR_OF_DAY)), build2SF("HO", end.get(Calendar.HOUR_OF_DAY)), false,
+                                        false);
                                 subQuery.add(subPart, Occur.SHOULD);
                             }
                         }
-
-                        if ((end.get(Calendar.HOUR_OF_DAY) - start.get(Calendar.HOUR_OF_DAY)) > 1)
+                        if(Calendar.HOUR_OF_DAY == minResolution)
                         {
-                            subPart = new ConstantScoreRangeQuery(field, build2SF("HO", start.get(Calendar.HOUR_OF_DAY)), build2SF("HO", end.get(Calendar.HOUR_OF_DAY)), false,
-                                    false);
-                            subQuery.add(subPart, Occur.SHOULD);
-                        }
+                            if(start.get(Calendar.HOUR_OF_DAY) == end.get(Calendar.HOUR_OF_DAY))
+                            {
+                                if(includeLower && includeUpper)
+                                {
+                                    part = new TermQuery(new Term(field, build2SF("HO", start.get(Calendar.HOUR_OF_DAY))));
+                                    query.add(part, Occur.MUST);
+                                }
 
+                                else
+                                {
+                                    return createNoMatchQuery();
+                                }
+                            }
+                            else
+                            {
+                                subPart = new ConstantScoreRangeQuery(field, build2SF("HO", start.get(Calendar.HOUR_OF_DAY)), build2SF("HO", end.get(Calendar.HOUR_OF_DAY)), includeLower, includeUpper);
+                                subQuery.add(subPart, Occur.SHOULD);
+                            }
+                        }
                         for (int i : new int[] { Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND })
                         {
-                            subPart = buildEnd(field, end, includeUpper, Calendar.HOUR_OF_DAY, i);
-                            if (subPart != null)
-                            {
-                                subQuery.add(subPart, Occur.SHOULD);
-                            }
+                           
+                                subPart = buildEnd(field, end, Calendar.HOUR_OF_DAY, i, endResolution);
+                                if (subPart != null)
+                                {
+                                    subQuery.add(subPart, Occur.SHOULD);
+                                }
+                            
                         }
 
                         if (subQuery.clauses().size() > 0)
@@ -2521,26 +2684,54 @@ public class LuceneQueryParser extends QueryParser
 
                     for (int i : new int[] { Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY })
                     {
-                        subPart = buildStart(field, start, includeLower, Calendar.DAY_OF_MONTH, i);
-                        if (subPart != null)
+                        
+                            subPart = buildStart(field, start, Calendar.DAY_OF_MONTH, i, startResolution);
+                            if (subPart != null)
+                            {
+                                subQuery.add(subPart, Occur.SHOULD);
+                            }
+                        
+                    }
+
+                    if(Calendar.DAY_OF_MONTH < minResolution)
+                    {
+                        if ((end.get(Calendar.DAY_OF_MONTH) - start.get(Calendar.DAY_OF_MONTH)) > 1)
                         {
+                            subPart = new ConstantScoreRangeQuery(field, build2SF("DA", start.get(Calendar.DAY_OF_MONTH)), build2SF("DA", end.get(Calendar.DAY_OF_MONTH)), false, false);
                             subQuery.add(subPart, Occur.SHOULD);
                         }
                     }
-
-                    if ((end.get(Calendar.DAY_OF_MONTH) - start.get(Calendar.DAY_OF_MONTH)) > 1)
+                    if(Calendar.DAY_OF_MONTH == minResolution)
                     {
-                        subPart = new ConstantScoreRangeQuery(field, build2SF("DA", start.get(Calendar.DAY_OF_MONTH)), build2SF("DA", end.get(Calendar.DAY_OF_MONTH)), false, false);
-                        subQuery.add(subPart, Occur.SHOULD);
+                        if(start.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH))
+                        {
+                            if(includeLower && includeUpper)
+                            {
+                                part = new TermQuery(new Term(field, build2SF("DA", start.get(Calendar.DAY_OF_MONTH))));
+                                query.add(part, Occur.MUST);
+                            }
+
+                            else
+                            {
+                                return createNoMatchQuery();
+                            }
+                        }
+                        else
+                        {
+                            subPart = new ConstantScoreRangeQuery(field, build2SF("DA", start.get(Calendar.DAY_OF_MONTH)), build2SF("DA", end.get(Calendar.DAY_OF_MONTH)), includeLower, includeUpper);
+                            subQuery.add(subPart, Occur.SHOULD);
+                        }
                     }
 
                     for (int i : new int[] { Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND })
                     {
-                        subPart = buildEnd(field, end, includeUpper, Calendar.DAY_OF_MONTH, i);
-                        if (subPart != null)
-                        {
-                            subQuery.add(subPart, Occur.SHOULD);
-                        }
+                       
+                            subPart = buildEnd(field, end, Calendar.DAY_OF_MONTH, i, endResolution);
+                            if (subPart != null)
+                            {
+                                subQuery.add(subPart, Occur.SHOULD);
+                            }
+                        
                     }
 
                     if (subQuery.clauses().size() > 0)
@@ -2559,26 +2750,54 @@ public class LuceneQueryParser extends QueryParser
 
                 for (int i : new int[] { Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY, Calendar.DAY_OF_MONTH })
                 {
-                    subPart = buildStart(field, start, includeLower, Calendar.MONTH, i);
-                    if (subPart != null)
+                   
+                        subPart = buildStart(field, start, Calendar.MONTH, i, startResolution);
+                        if (subPart != null)
+                        {
+                            subQuery.add(subPart, Occur.SHOULD);
+                        }
+                    
+                }
+
+                if(Calendar.MONTH < minResolution)
+                {
+                    if ((end.get(Calendar.MONTH) - start.get(Calendar.MONTH)) > 1)
                     {
+                        subPart = new ConstantScoreRangeQuery(field, build2SF("MO", start.get(Calendar.MONTH)), build2SF("MO", end.get(Calendar.MONTH)), false, false);
                         subQuery.add(subPart, Occur.SHOULD);
                     }
                 }
-
-                if ((end.get(Calendar.MONTH) - start.get(Calendar.MONTH)) > 1)
+                if(Calendar.MONTH == minResolution)
                 {
-                    subPart = new ConstantScoreRangeQuery(field, build2SF("MO", start.get(Calendar.MONTH)), build2SF("MO", end.get(Calendar.MONTH)), false, false);
-                    subQuery.add(subPart, Occur.SHOULD);
+                    if(start.get(Calendar.MONTH) == end.get(Calendar.MONTH))
+                    {
+                        if(includeLower && includeUpper)
+                        {
+                            part = new TermQuery(new Term(field, build2SF("MO", start.get(Calendar.MONTH))));
+                            query.add(part, Occur.MUST);
+                        }
+
+                        else
+                        {
+                            return createNoMatchQuery();
+                        }
+                    }
+                    else
+                    {
+                        subPart = new ConstantScoreRangeQuery(field, build2SF("MO", start.get(Calendar.MONTH)), build2SF("MO", end.get(Calendar.MONTH)), includeLower, includeUpper);
+                        subQuery.add(subPart, Occur.SHOULD);
+                    }
                 }
 
                 for (int i : new int[] { Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND })
                 {
-                    subPart = buildEnd(field, end, includeUpper, Calendar.MONTH, i);
-                    if (subPart != null)
-                    {
-                        subQuery.add(subPart, Occur.SHOULD);
-                    }
+                  
+                        subPart = buildEnd(field, end, Calendar.MONTH, i, endResolution);
+                        if (subPart != null)
+                        {
+                            subQuery.add(subPart, Occur.SHOULD);
+                        }
+                    
                 }
 
                 if (subQuery.clauses().size() > 0)
@@ -2596,26 +2815,54 @@ public class LuceneQueryParser extends QueryParser
 
             for (int i : new int[] { Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY, Calendar.DAY_OF_MONTH, Calendar.MONTH })
             {
-                subPart = buildStart(field, start, includeLower, Calendar.YEAR, i);
-                if (subPart != null)
+             
+                    subPart = buildStart(field, start, Calendar.YEAR, i, startResolution);
+                    if (subPart != null)
+                    {
+                        subQuery.add(subPart, Occur.SHOULD);
+                    }
+                
+            }
+
+            if(Calendar.YEAR < minResolution)
+            {
+                if ((end.get(Calendar.YEAR) - start.get(Calendar.YEAR)) > 1)
                 {
+                    subPart = new ConstantScoreRangeQuery(field, "YE" + start.get(Calendar.YEAR), "YE" + end.get(Calendar.YEAR), false, false);
                     subQuery.add(subPart, Occur.SHOULD);
                 }
             }
-
-            if ((end.get(Calendar.YEAR) - start.get(Calendar.YEAR)) > 1)
+            if(Calendar.YEAR == minResolution)
             {
-                subPart = new ConstantScoreRangeQuery(field, "YE" + start.get(Calendar.YEAR), "YE" + end.get(Calendar.YEAR), false, false);
-                subQuery.add(subPart, Occur.SHOULD);
+                if(start.get(Calendar.YEAR) == end.get(Calendar.YEAR))
+                {
+                    if(includeLower && includeUpper)
+                    {
+                        part = new TermQuery(new Term(field, "YE" + start.get(Calendar.YEAR)));
+                        query.add(part, Occur.MUST);
+                    }
+
+                    else
+                    {
+                        return createNoMatchQuery();
+                    }
+                }
+                else
+                {
+                    subPart = new ConstantScoreRangeQuery(field, "YE" + start.get(Calendar.YEAR), "YE" + end.get(Calendar.YEAR), includeLower, includeUpper);
+                    subQuery.add(subPart, Occur.SHOULD);
+                }
             }
 
             for (int i : new int[] { Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND })
             {
-                subPart = buildEnd(field, end, includeUpper, Calendar.YEAR, i);
-                if (subPart != null)
-                {
-                    subQuery.add(subPart, Occur.SHOULD);
-                }
+             
+                    subPart = buildEnd(field, end, Calendar.YEAR, i, endResolution);
+                    if (subPart != null)
+                    {
+                        subQuery.add(subPart, Occur.SHOULD);
+                    }
+                
             }
 
             if (subQuery.clauses().size() > 0)
@@ -2623,185 +2870,327 @@ public class LuceneQueryParser extends QueryParser
                 query.add(subQuery, Occur.MUST);
             }
         }
+        
         return query;
     }
 
-    private Query buildStart(String field, Calendar cal, boolean inclusive, int startField, int padField)
+    private Query buildStart(String field, Calendar cal, int startField, int padField, int resolutionField)
     {
         BooleanQuery range = new BooleanQuery();
         // only ms difference
         Query part;
-
-        int ms = cal.get(Calendar.MILLISECOND) + (inclusive ? 0 : 1);
-
+        
         switch (startField)
         {
         case Calendar.YEAR:
-            part = new TermQuery(new Term(field, "YE" + cal.get(Calendar.YEAR)));
-            range.add(part, Occur.MUST);
-        case Calendar.MONTH:
-            if ((cal.get(Calendar.MONTH) == 0)
+            if ((cal.get(Calendar.YEAR) == 1) && (cal.get(Calendar.MONTH) == 0)
                     && (cal.get(Calendar.DAY_OF_MONTH) == 1) && (cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0)
-                    && (ms == 0))
+                    && (cal.get(Calendar.MILLISECOND) == 0))
             {
-                if (padField == Calendar.DAY_OF_MONTH)
+                if (padField == Calendar.MONTH)
                 {
-                    break;
+                    if(Calendar.YEAR <= resolutionField)
+                    {
+                        part = new TermQuery(new Term(field, "YE" + cal.get(Calendar.YEAR)));
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                    
                 }
-                else
-                {
-                    return null;
-                }
+                break;
             }
-            else if (padField == Calendar.MONTH)
-            {
-                if (cal.get(Calendar.MONTH) < cal.getMaximum(Calendar.MONTH))
-                {
-                    part = new ConstantScoreRangeQuery(field, build2SF("MO", (cal.get(Calendar.MONTH) + 1)), "MO" + cal.getMaximum(Calendar.MONTH), true, true);
-                    range.add(part, Occur.MUST);
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                part = new TermQuery(new Term(field, build2SF("MO", cal.get(Calendar.MONTH))));
-                range.add(part, Occur.MUST);
-            }
-        case Calendar.DAY_OF_MONTH:
-            if ((cal.get(Calendar.DAY_OF_MONTH) == 1) && (cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (ms == 0))
-            {
-                if (padField == Calendar.HOUR_OF_DAY)
-                {
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else if (padField == Calendar.DAY_OF_MONTH)
-            {
-                if (cal.get(Calendar.DAY_OF_MONTH) < cal.getMaximum(Calendar.DAY_OF_MONTH))
-                {
-                    part = new ConstantScoreRangeQuery(field, build2SF("DA", (cal.get(Calendar.DAY_OF_MONTH) + 1)), "DA" + cal.getMaximum(Calendar.DAY_OF_MONTH), true, true);
-                    range.add(part, Occur.MUST);
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                part = new TermQuery(new Term(field, build2SF("DA", cal.get(Calendar.DAY_OF_MONTH))));
-                range.add(part, Occur.MUST);
-            }
-        case Calendar.HOUR_OF_DAY:
-            if ((cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (ms == 0))
-            {
-                if (padField == Calendar.MINUTE)
-                {
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else if (padField == Calendar.HOUR_OF_DAY)
-            {
-                if (cal.get(Calendar.HOUR_OF_DAY) < cal.getMaximum(Calendar.HOUR_OF_DAY))
-                {
-                    part = new ConstantScoreRangeQuery(field, build2SF("HO", (cal.get(Calendar.HOUR_OF_DAY) + 1)), "HO" + cal.getMaximum(Calendar.HOUR_OF_DAY), true, true);
-                    range.add(part, Occur.MUST);
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                part = new TermQuery(new Term(field, build2SF("HO", cal.get(Calendar.HOUR_OF_DAY))));
-                range.add(part, Occur.MUST);
-            }
-        case Calendar.MINUTE:
-            if ((cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (ms == 0))
-            {
-                if (padField == Calendar.SECOND)
-                {
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else if (padField == Calendar.MINUTE)
-            {
-                if (cal.get(Calendar.MINUTE) < cal.getMaximum(Calendar.MINUTE))
-                {
-                    part = new ConstantScoreRangeQuery(field, build2SF("MI", (cal.get(Calendar.MINUTE) + 1)), "MI" + cal.getMaximum(Calendar.MINUTE), true, true);
-                    range.add(part, Occur.MUST);
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                part = new TermQuery(new Term(field, build2SF("MI", cal.get(Calendar.MINUTE))));
-                range.add(part, Occur.MUST);
-            }
-        case Calendar.SECOND:
-            if ((cal.get(Calendar.SECOND) == 0) && (ms == 0))
-            {
-                if (padField == Calendar.MILLISECOND)
-                {
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else if (padField == Calendar.SECOND)
-            {
-                if (cal.get(Calendar.SECOND) < cal.getMaximum(Calendar.SECOND))
-                {
-                    part = new ConstantScoreRangeQuery(field, build2SF("SE", (cal.get(Calendar.SECOND) + 1)), "SE" + cal.getMaximum(Calendar.SECOND), true, true);
-                    range.add(part, Occur.MUST);
-                    break;
-                }
-                else
-                {
-                    return null;
-                }
-
-            }
-            else
-            {
-                part = new TermQuery(new Term(field, build2SF("SE", cal.get(Calendar.SECOND))));
-                range.add(part, Occur.MUST);
-            }
-        default:
-            if ((ms > 0) && (ms <= cal.getMaximum(Calendar.MILLISECOND)))
-            {
-                part = new ConstantScoreRangeQuery(field, build3SF("MS", ms), "MS" + cal.getMaximum(Calendar.MILLISECOND), true, true);
-                range.add(part, Occur.MUST);
-            }
-            else
+            else if (padField == Calendar.YEAR)
             {
                 return null;
             }
+            else
+            {
+                if(Calendar.YEAR <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, "YE" + cal.get(Calendar.YEAR)));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        case Calendar.MONTH:
+            if ((cal.get(Calendar.MONTH) == 0)
+                    && (cal.get(Calendar.DAY_OF_MONTH) == 1) && (cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0)
+                    && (cal.get(Calendar.MILLISECOND) == 0))
+            {
+                if (padField == Calendar.DAY_OF_MONTH)
+                {
+                    if(Calendar.MONTH <= resolutionField)
+                    {
+                        part = new TermQuery(new Term(field, build2SF("MO", cal.get(Calendar.MONTH))));
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                   
+                }
+                break;
+            }
+            else if (padField == Calendar.MONTH)
+            {
+                if(Calendar.MONTH < resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("MO", (cal.get(Calendar.MONTH) + 1)), "MO" + cal.getMaximum(Calendar.MONTH), true, true);
+                    range.add(part, Occur.MUST);                    
+                }
+                else if(Calendar.MONTH == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("MO", (cal.get(Calendar.MONTH))), "MO" + cal.getMaximum(Calendar.MONTH), true, true);
+                    range.add(part, Occur.MUST);                    
+                }
+                else
+                {
+                    return null;
+                }
+                break;
+            }
+            else
+            {
+                if(Calendar.MONTH <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("MO", cal.get(Calendar.MONTH))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
+                
+            }
+        case Calendar.DAY_OF_MONTH:
+            if ((cal.get(Calendar.DAY_OF_MONTH) == 1) && (cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (cal.get(Calendar.MILLISECOND) == 0))
+            {
+                if (padField == Calendar.HOUR_OF_DAY)
+                {
+                    if(Calendar.DAY_OF_MONTH <= resolutionField)
+                    {
+                        part = new TermQuery(new Term(field, build2SF("DA", cal.get(Calendar.DAY_OF_MONTH))));
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                    
+                   
+                }
+                break;
+            }
+            else if (padField == Calendar.DAY_OF_MONTH)
+            {
+                if(Calendar.DAY_OF_MONTH < resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("DA", (cal.get(Calendar.DAY_OF_MONTH) + 1)), "DA" + cal.getMaximum(Calendar.DAY_OF_MONTH), true, true);
+                    range.add(part, Occur.MUST);
+
+                }
+                else if(Calendar.DAY_OF_MONTH == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("DA", (cal.get(Calendar.DAY_OF_MONTH))), "DA" + cal.getMaximum(Calendar.DAY_OF_MONTH), true, true);
+                    range.add(part, Occur.MUST);
+
+                }
+                else
+                {
+                    return null;
+                }
+                break;
+            }
+            else
+            {
+                if(Calendar.DAY_OF_MONTH <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("DA", cal.get(Calendar.DAY_OF_MONTH))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
+                
+            }
+        case Calendar.HOUR_OF_DAY:
+            if ((cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (cal.get(Calendar.MILLISECOND) == 0))
+            {
+                if (padField == Calendar.MINUTE)
+                {
+                    if(Calendar.HOUR_OF_DAY <= resolutionField)
+                    {
+                        part = new TermQuery(new Term(field, build2SF("HO", cal.get(Calendar.HOUR_OF_DAY))));
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                    
+                   
+                }
+                break;
+            }
+            else if (padField == Calendar.HOUR_OF_DAY)
+            {
+                if(Calendar.HOUR_OF_DAY < resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("HO", (cal.get(Calendar.HOUR_OF_DAY) + 1)), "HO" + cal.getMaximum(Calendar.HOUR_OF_DAY), true, true);
+                    range.add(part, Occur.MUST);
+
+                }
+                else if(Calendar.HOUR_OF_DAY == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("HO", (cal.get(Calendar.HOUR_OF_DAY))), "HO" + cal.getMaximum(Calendar.HOUR_OF_DAY), true, true);
+                    range.add(part, Occur.MUST);
+
+                }
+                else
+                {
+                    return null;
+                }
+                break;
+            }
+            else
+            {
+                if(Calendar.HOUR_OF_DAY <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("HO", cal.get(Calendar.HOUR_OF_DAY))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
+                
+            }
+        case Calendar.MINUTE:
+            if ((cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (cal.get(Calendar.MILLISECOND) == 0))
+            {
+                if (padField == Calendar.SECOND)
+                {
+                    if(Calendar.MINUTE <= resolutionField)
+                    {
+                        part = new TermQuery(new Term(field, build2SF("MI", cal.get(Calendar.MINUTE))));
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                   
+                   
+                }
+                break;
+            }
+            else if (padField == Calendar.MINUTE)
+            {
+                if(Calendar.MINUTE < resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("MI", (cal.get(Calendar.MINUTE) + 1)), "MI" + cal.getMaximum(Calendar.MINUTE), true, true);
+                    range.add(part, Occur.MUST);
+
+                }
+                else if(Calendar.MINUTE == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("MI", (cal.get(Calendar.MINUTE))), "MI" + cal.getMaximum(Calendar.MINUTE), true, true);
+                    range.add(part, Occur.MUST);
+
+                }
+                else
+                {
+                    return null;
+                }
+                break;
+            }
+            else
+            {
+                if(Calendar.MINUTE <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("MI", cal.get(Calendar.MINUTE))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
+               
+            }
+        case Calendar.SECOND:
+            if ((cal.get(Calendar.SECOND) == 0) && (cal.get(Calendar.MILLISECOND) == 0))
+            {
+                if (padField == Calendar.MILLISECOND)
+                {
+                    if(Calendar.SECOND <= resolutionField)
+                    {
+                        part = new TermQuery(new Term(field, build2SF("SE", cal.get(Calendar.SECOND))));
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                   
+                    
+                }
+                break;
+            }
+            else if (padField == Calendar.SECOND)
+            {
+                if(Calendar.SECOND < resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("SE", (cal.get(Calendar.SECOND) + 1)), "SE" + cal.getMaximum(Calendar.SECOND), true, true);
+                    range.add(part, Occur.MUST);
+
+                }
+                else if(Calendar.SECOND == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("SE", (cal.get(Calendar.SECOND))), "SE" + cal.getMaximum(Calendar.SECOND), true, true);
+                    range.add(part, Occur.MUST);                      
+                }
+                else
+                {
+                    return null;
+                }
+                break;
+            }
+            else
+            {
+                if(Calendar.SECOND <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("SE", cal.get(Calendar.SECOND))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
+                
+            }
+        case Calendar.MILLISECOND:
+            if ((cal.get(Calendar.MILLISECOND) > 0) && (cal.get(Calendar.MILLISECOND) <= cal.getMaximum(Calendar.MILLISECOND)))
+            {
+                if(Calendar.MILLISECOND <= resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build3SF("MS", cal.get(Calendar.MILLISECOND)), "MS" + cal.getMaximum(Calendar.MILLISECOND), true, true);
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    break;
+                }
+               
+            }
+        default:
         }
 
         if (range.clauses().size() > 0)
@@ -2814,167 +3203,260 @@ public class LuceneQueryParser extends QueryParser
         }
     }
 
-    private Query buildEnd(String field, Calendar cal, boolean inclusive, int startField, int padField)
+    private Query buildEnd(String field, Calendar cal, int startField, int padField, int resolutionField)
     {
         BooleanQuery range = new BooleanQuery();
-        // only ms difference
         Query part;
-
-        int ms = cal.get(Calendar.MILLISECOND) - (inclusive ? 0 : 1);
 
         switch (startField)
         {
         case Calendar.YEAR:
-            part = new TermQuery(new Term(field, "YE" + cal.get(Calendar.YEAR)));
-            range.add(part, Occur.MUST);
-        case Calendar.MONTH:
-            if ((cal.get(Calendar.MONTH) == 0)
-                    && (cal.get(Calendar.DAY_OF_MONTH) == 1) && (cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0)
-                    && (ms == 0))
+            if (padField == Calendar.YEAR)
             {
-                if (padField == Calendar.MONTH)
+                if(Calendar.YEAR < resolutionField)
+                {
+                    if (cal.get(Calendar.YEAR) > cal.getMinimum(Calendar.YEAR))
+                    {
+                        part = new ConstantScoreRangeQuery(field, "YE" + cal.getMinimum(Calendar.YEAR), "YE" + (cal.get(Calendar.YEAR) - 1), true, true);
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else if(Calendar.YEAR == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, "YE" + cal.getMinimum(Calendar.YEAR), "YE" + (cal.get(Calendar.YEAR)), true, true);
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
+                break;
+            }
+            else
+            {
+                if(Calendar.YEAR <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, "YE" + cal.get(Calendar.YEAR)));
+                    range.add(part, Occur.MUST);
+                }
+                else
                 {
                     return null;
                 }
             }
-
+        case Calendar.MONTH:
             if (padField == Calendar.MONTH)
             {
-                if (cal.get(Calendar.MONTH) > cal.getMinimum(Calendar.MONTH))
+                if(Calendar.MONTH < resolutionField)
                 {
-                    part = new ConstantScoreRangeQuery(field, build2SF("MO", cal.getMinimum(Calendar.MONTH)), build2SF("MO", (cal.get(Calendar.MONTH) - 1)), true, true);
+                    if (cal.get(Calendar.MONTH) > cal.getMinimum(Calendar.MONTH))
+                    {
+                        part = new ConstantScoreRangeQuery(field, build2SF("MO", cal.getMinimum(Calendar.MONTH)), build2SF("MO", (cal.get(Calendar.MONTH) - 1)), true, true);
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else if(Calendar.MONTH == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("MO", cal.getMinimum(Calendar.MONTH)), build2SF("MO", (cal.get(Calendar.MONTH))), true, true);
                     range.add(part, Occur.MUST);
-                    break;
                 }
                 else
                 {
                     return null;
                 }
+                break;
             }
             else
             {
-                part = new TermQuery(new Term(field, build2SF("MO", cal.get(Calendar.MONTH))));
-                range.add(part, Occur.MUST);
+                if(Calendar.MONTH <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("MO", cal.get(Calendar.MONTH))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
             }
         case Calendar.DAY_OF_MONTH:
-            if ((cal.get(Calendar.DAY_OF_MONTH) == 1) && (cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (ms == 0))
-            {
-                if (padField == Calendar.DAY_OF_MONTH)
-                {
-                    return null;
-                }
-            }
-
             if (padField == Calendar.DAY_OF_MONTH)
             {
-                if (cal.get(Calendar.DAY_OF_MONTH) > cal.getMinimum(Calendar.DAY_OF_MONTH))
+                if(Calendar.DAY_OF_MONTH < resolutionField)
                 {
-                    part = new ConstantScoreRangeQuery(field, build2SF("DA", cal.getMinimum(Calendar.DAY_OF_MONTH)), build2SF("DA", (cal.get(Calendar.DAY_OF_MONTH) - 1)), true,
+                    if (cal.get(Calendar.DAY_OF_MONTH) > cal.getMinimum(Calendar.DAY_OF_MONTH))
+                    {
+                        part = new ConstantScoreRangeQuery(field, build2SF("DA", cal.getMinimum(Calendar.DAY_OF_MONTH)), build2SF("DA", (cal.get(Calendar.DAY_OF_MONTH) - 1)), true,
+                                true);
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else if(Calendar.DAY_OF_MONTH == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("DA", cal.getMinimum(Calendar.DAY_OF_MONTH)), build2SF("DA", (cal.get(Calendar.DAY_OF_MONTH))), true,
                             true);
                     range.add(part, Occur.MUST);
-                    break;
                 }
                 else
                 {
                     return null;
                 }
+                break;
             }
             else
             {
-                part = new TermQuery(new Term(field, build2SF("DA", cal.get(Calendar.DAY_OF_MONTH))));
-                range.add(part, Occur.MUST);
+                if(Calendar.DAY_OF_MONTH <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("DA", cal.get(Calendar.DAY_OF_MONTH))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }
             }
         case Calendar.HOUR_OF_DAY:
-            if ((cal.get(Calendar.HOUR_OF_DAY) == 0) && (cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (ms == 0))
-            {
-                if (padField == Calendar.HOUR_OF_DAY)
-                {
-                    return null;
-                }
-            }
-
             if (padField == Calendar.HOUR_OF_DAY)
             {
-                if (cal.get(Calendar.HOUR_OF_DAY) > cal.getMinimum(Calendar.HOUR_OF_DAY))
+                if(Calendar.HOUR_OF_DAY < resolutionField)
                 {
-                    part = new ConstantScoreRangeQuery(field, build2SF("HO", cal.getMinimum(Calendar.HOUR_OF_DAY)), build2SF("HO", (cal.get(Calendar.HOUR_OF_DAY) - 1)), true, true);
+                    if (cal.get(Calendar.HOUR_OF_DAY) > cal.getMinimum(Calendar.HOUR_OF_DAY))
+                    {
+                        part = new ConstantScoreRangeQuery(field, build2SF("HO", cal.getMinimum(Calendar.HOUR_OF_DAY)), build2SF("HO", (cal.get(Calendar.HOUR_OF_DAY) - 1)), true, true);
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+                else if(Calendar.HOUR_OF_DAY == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("HO", cal.getMinimum(Calendar.HOUR_OF_DAY)), build2SF("HO", (cal.get(Calendar.HOUR_OF_DAY) )), true, true);
                     range.add(part, Occur.MUST);
-                    break;
+
                 }
                 else
                 {
                     return null;
                 }
+                break;
             }
             else
             {
-                part = new TermQuery(new Term(field, build2SF("HO", cal.get(Calendar.HOUR_OF_DAY))));
-                range.add(part, Occur.MUST);
+                if(Calendar.HOUR_OF_DAY <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("HO", cal.get(Calendar.HOUR_OF_DAY))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                }   
             }
         case Calendar.MINUTE:
-            if ((cal.get(Calendar.MINUTE) == 0) && (cal.get(Calendar.SECOND) == 0) && (ms == 0))
-            {
-                if (padField == Calendar.MINUTE)
-                {
-                    return null;
-                }
-            }
-
             if (padField == Calendar.MINUTE)
             {
-                if (cal.get(Calendar.MINUTE) > cal.getMinimum(Calendar.MINUTE))
+                if(Calendar.MINUTE < resolutionField)
                 {
-                    part = new ConstantScoreRangeQuery(field, build2SF("MI", cal.getMinimum(Calendar.MINUTE)), build2SF("MI", (cal.get(Calendar.MINUTE) - 1)), true, true);
+                    if (cal.get(Calendar.MINUTE) > cal.getMinimum(Calendar.MINUTE))
+                    {
+                        part = new ConstantScoreRangeQuery(field, build2SF("MI", cal.getMinimum(Calendar.MINUTE)), build2SF("MI", (cal.get(Calendar.MINUTE) - 1)), true, true);
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else if(Calendar.MINUTE == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("MI", cal.getMinimum(Calendar.MINUTE)), build2SF("MI", (cal.get(Calendar.MINUTE))), true, true);
                     range.add(part, Occur.MUST);
-                    break;
                 }
                 else
                 {
                     return null;
                 }
+                break;
             }
             else
             {
-                part = new TermQuery(new Term(field, build2SF("MI", cal.get(Calendar.MINUTE))));
-                range.add(part, Occur.MUST);
+                if(Calendar.MINUTE <= resolutionField)
+                {
+                    part = new TermQuery(new Term(field, build2SF("MI", cal.get(Calendar.MINUTE))));
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    return null;
+                } 
             }
         case Calendar.SECOND:
-            if ((cal.get(Calendar.SECOND) == 0) && (ms == 0))
+            if (padField == Calendar.SECOND)
             {
-                if (padField == Calendar.SECOND)
+                if(Calendar.SECOND < resolutionField)
+                {
+                    if (cal.get(Calendar.SECOND) > cal.getMinimum(Calendar.SECOND))
+                    {
+                        part = new ConstantScoreRangeQuery(field, build2SF("SE", cal.getMinimum(Calendar.SECOND)), build2SF("SE", (cal.get(Calendar.SECOND) - 1)), true, true);
+                        range.add(part, Occur.MUST);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else if(Calendar.SECOND == resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build2SF("SE", cal.getMinimum(Calendar.SECOND)), build2SF("SE", (cal.get(Calendar.SECOND))), true, true);
+                    range.add(part, Occur.MUST);
+                }
+                else
                 {
                     return null;
                 }
+                break;
             }
 
-            if (padField == Calendar.SECOND)
+            else
             {
-                if (cal.get(Calendar.SECOND) > cal.getMinimum(Calendar.SECOND))
+                if(Calendar.SECOND <= resolutionField)
                 {
-                    part = new ConstantScoreRangeQuery(field, build2SF("SE", cal.getMinimum(Calendar.SECOND)), build2SF("SE", (cal.get(Calendar.SECOND) - 1)), true, true);
+                    part = new TermQuery(new Term(field, build2SF("SE", cal.get(Calendar.SECOND))));
                     range.add(part, Occur.MUST);
-                    break;
                 }
                 else
                 {
                     return null;
                 }
             }
-            else
+        case Calendar.MILLISECOND:
+            if ((cal.get(Calendar.MILLISECOND) >= cal.getMinimum(Calendar.MILLISECOND)) && (cal.get(Calendar.MILLISECOND) < cal.getMaximum(Calendar.MILLISECOND)))
             {
-                part = new TermQuery(new Term(field, build2SF("SE", cal.get(Calendar.SECOND))));
-                range.add(part, Occur.MUST);
+                if(Calendar.MILLISECOND <= resolutionField)
+                {
+                    part = new ConstantScoreRangeQuery(field, build3SF("MS", cal.getMinimum(Calendar.MILLISECOND)), build3SF("MS", cal.get(Calendar.MILLISECOND)), true, true);
+                    range.add(part, Occur.MUST);
+                }
+                else
+                {
+                    break;
+                }  
             }
         default:
-            if ((ms >= cal.getMinimum(Calendar.MILLISECOND)) && (ms < cal.getMaximum(Calendar.MILLISECOND)))
-            {
-                part = new ConstantScoreRangeQuery(field, build3SF("MS", cal.getMinimum(Calendar.MILLISECOND)), build3SF("MS", ms), true, true);
-                range.add(part, Occur.MUST);
-            }
-            else
-            {
-                return null;
-            }
         }
 
         if (range.clauses().size() > 0)
@@ -3017,7 +3499,7 @@ public class LuceneQueryParser extends QueryParser
 
     private String expandAttributeFieldName(String field)
     {
-        return PROPERTY_FIELD_PREFIX+expandQName(field.substring(1));
+        return PROPERTY_FIELD_PREFIX + expandQName(field.substring(1));
     }
 
     private String expandQName(String qnameString)
@@ -3036,7 +3518,7 @@ public class LuceneQueryParser extends QueryParser
             {
                 String prefix = qnameString.substring(0, colonPosition);
                 String uri = matchURI(prefix);
-                if(uri == null)
+                if (uri == null)
                 {
                     fieldName = "{" + searchParameters.getNamespace() + "}" + qnameString;
                 }
@@ -3044,37 +3526,37 @@ public class LuceneQueryParser extends QueryParser
                 {
                     fieldName = "{" + uri + "}" + qnameString.substring(colonPosition + 1);
                 }
-                
+
             }
         }
         return fieldName;
     }
-    
+
     private String matchURI(String prefix)
     {
         HashSet<String> prefixes = new HashSet<String>(namespacePrefixResolver.getPrefixes());
-        if(prefixes.contains(prefix))
+        if (prefixes.contains(prefix))
         {
             return namespacePrefixResolver.getNamespaceURI(prefix);
         }
         String match = null;
-        for(String candidate : prefixes)
+        for (String candidate : prefixes)
         {
-            if(candidate.equalsIgnoreCase(prefix))
+            if (candidate.equalsIgnoreCase(prefix))
             {
-                if(match == null)
+                if (match == null)
                 {
                     match = candidate;
                 }
                 else
                 {
-                    
-                    throw new LuceneQueryParserException("Ambiguous namespace prefix "+prefix);
-                    
+
+                    throw new LuceneQueryParserException("Ambiguous namespace prefix " + prefix);
+
                 }
             }
         }
-        if(match == null)
+        if (match == null)
         {
             return null;
         }
@@ -3532,7 +4014,7 @@ public class LuceneQueryParser extends QueryParser
         {
             propertyFieldName = field.substring(1);
         }
-        
+
         String expandedFieldName;
         QName propertyQName;
         PropertyDefinition propertyDef = matchPropertyDefinition(propertyFieldName);
@@ -3544,7 +4026,7 @@ public class LuceneQueryParser extends QueryParser
             {
                 tokenisationMode = IndexTokenisationMode.TRUE;
             }
-            expandedFieldName = PROPERTY_FIELD_PREFIX+propertyDef.getName()+ending;
+            expandedFieldName = PROPERTY_FIELD_PREFIX + propertyDef.getName() + ending;
             propertyQName = propertyDef.getName();
         }
         else
@@ -3552,7 +4034,6 @@ public class LuceneQueryParser extends QueryParser
             expandedFieldName = expandAttributeFieldName(field);
             propertyQName = QName.createQName(propertyFieldName);
         }
-        
 
         if (luceneFunction != LuceneFunction.FIELD)
         {
@@ -3879,7 +4360,7 @@ public class LuceneQueryParser extends QueryParser
 
     private void addLocaleSpecificUntokenisedMLOrTextAttribute(String sourceField, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode,
             LuceneFunction luceneFunction, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale, String actualField) throws ParseException
-    {
+            {
 
         String termText = queryText;
         if (locale.toString().length() > 0)
@@ -3893,11 +4374,11 @@ public class LuceneQueryParser extends QueryParser
         {
             booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
         }
-    }
+            }
 
     private void addLocaleSpecificTokenisedMLOrTextAttribute(String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
             BooleanQuery booleanQuery, Locale locale, String actualField) throws ParseException
-    {
+            {
         StringBuilder builder = new StringBuilder(queryText.length() + 10);
         builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
         Query subQuery = subQueryBuilder.getQuery(actualField, builder.toString(), analysisMode, luceneFunction);
@@ -3909,11 +4390,11 @@ public class LuceneQueryParser extends QueryParser
         {
             booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
         }
-    }
+            }
 
     private Query functionQueryBuilder(String expandedFieldName, QName propertyQName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, String queryText,
             LuceneFunction luceneFunction) throws ParseException
-    {
+            {
 
         // Mime type
         if (expandedFieldName.endsWith(FIELD_MIMETYPE_SUFFIX))
@@ -4009,7 +4490,7 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Lucene Function");
         }
-    }
+            }
 
     private void addLocaleSpecificUntokenisedMLOrTextFunction(String expandedFieldName, String queryText, LuceneFunction luceneFunction, BooleanQuery booleanQuery,
             MLAnalysisMode mlAnalysisMode, Locale locale, String textFieldName)
@@ -4093,9 +4574,9 @@ public class LuceneQueryParser extends QueryParser
         // start.set(Calendar.MINUTE, start.getMinimum(Calendar.MINUTE));
         // start.set(Calendar.SECOND, start.getMinimum(Calendar.SECOND));
         // start.set(Calendar.MILLISECOND, start.getMinimum(Calendar.MILLISECOND));
-        LuceneQueryParser lqp = new LuceneQueryParser(null, null);
-        query = lqp.buildDateTimeRange("TEST", start, end, false, false);
-        System.out.println("Query is " + query);
+        // LuceneQueryParser lqp = new LuceneQueryParser(null, null);
+        // query = lqp.buildDateTimeRange("TEST", start, end, false, false);
+        // System.out.println("Query is " + query);
     }
 
     @Override

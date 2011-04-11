@@ -16,7 +16,7 @@
     <!-- Permissions Model DAO -->
     <!-- ===================== -->
     
-    <bean id='permissionsModelDAO' class="org.alfresco.repo.security.permissions.impl.model.PermissionModel">
+    <bean id='permissionsModelDAO' class="org.alfresco.repo.security.permissions.impl.model.PermissionModel" init-method="init">
         <property name="model">
             <value>alfresco/model/permissionDefinitions.xml</value>
         </property>
@@ -78,7 +78,7 @@
         <property name="permissionService" ref="permissionService"/>
         <property name="namespacePrefixResolver" ref="namespaceService"/>
         <property name="nodeService" ref="nodeService"/>
-        <property name="caveatConfigService" ref="caveatConfigService"/>
+        <property name="caveatConfigComponent" ref="caveatConfigComponent"/>
         <property name="dictionaryService" ref="dictionaryService"/>
         <property name="recordsManagementService" ref="recordsManagementService"/>
         <!-- Capabilities -->

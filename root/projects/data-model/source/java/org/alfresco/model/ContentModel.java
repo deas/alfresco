@@ -251,8 +251,8 @@ public interface ContentModel
     static final QName ASPECT_ATTACHABLE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "attachable");
     static final QName ASSOC_ATTACHMENTS = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "attachments");
 
-    // email aspect
-    static final QName ASPECT_MAILED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "emailed");
+    // emailed aspect
+    static final QName ASPECT_EMAILED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "emailed");
     static final QName PROP_SENTDATE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "sentdate");
     static final QName PROP_ORIGINATOR = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "originator");
     static final QName PROP_ADDRESSEE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "addressee");
@@ -314,6 +314,9 @@ public interface ContentModel
     static final QName ASPECT_PREFERENCES = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "preferences");
     static final QName PROP_PREFERENCE_VALUES = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "preferenceValues");
     static final QName ASSOC_PREFERENCE_IMAGE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "preferenceImage");
+    
+    // Dublin code aspect
+    static final QName ASPECT_DUBLINCORE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "dublincore");
     
     //
     // User Model Definitions

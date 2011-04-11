@@ -1,5 +1,4 @@
 <#include "../component.head.inc">
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/yui/menu/assets/menu.css" />
 <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/yui/datatable/assets/datatable.css" />
 <!-- People Finder Assets -->
 <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/components/people-finder/people-finder.css" />

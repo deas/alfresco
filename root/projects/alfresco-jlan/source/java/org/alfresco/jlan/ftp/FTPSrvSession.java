@@ -64,6 +64,7 @@ import org.alfresco.jlan.server.auth.acl.AccessControlManager;
 import org.alfresco.jlan.server.core.ShareType;
 import org.alfresco.jlan.server.core.SharedDevice;
 import org.alfresco.jlan.server.core.SharedDeviceList;
+import org.alfresco.jlan.server.filesys.AccessDeniedException;
 import org.alfresco.jlan.server.filesys.AccessMode;
 import org.alfresco.jlan.server.filesys.DiskDeviceContext;
 import org.alfresco.jlan.server.filesys.DiskFullException;
@@ -179,6 +180,11 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 	protected static final String ProtLevels = "CSEP";
 	
 	protected static final String ProtLevelClear = "C";
+	
+	// Maximum size to extend the command buffer to
+	
+	protected static final int DefCommandBufSize	= 1024;
+	protected static final int MaxCommandBufSize	= 0xFFFF;	// 64K
 	
 	// Session socket
 
@@ -1292,7 +1298,7 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 
 		FTPPath ftpPath = m_cwd;
 		if ( req.hasArgument())
-			ftpPath = generatePathForRequest(req, true, WildCard.containsWildcards(req.getArgument()) ? false : true);
+			ftpPath = generatePathForRequest(req, true, false);
 
 		if ( ftpPath == null) {
 			sendFTPResponse(500, "Invalid path");
@@ -1314,6 +1320,36 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 				return;
 			}
 		}
+
+        try
+        {
+            if (ftpPath.hasSharePath() && WildCard.containsWildcards(ftpPath.getSharePath()) == false)
+            {
+                // Create a temporary tree connection
+                TreeConnection tree = getTreeConnection(ftpPath.getSharedDevice());
+    
+                // Access the virtual filesystem driver
+                DiskInterface disk = (DiskInterface) ftpPath.getSharedDevice().getInterface();
+    
+                int sts = disk.fileExists(this, tree, ftpPath.getSharePath());
+    
+                if (sts == FileStatus.NotExist)
+                {
+                    sendFTPResponse(500, "Invalid path");
+                    return;
+                }
+                
+                if (sts == FileStatus.DirectoryExists)
+                {
+                    ftpPath.setDirectory(true);
+                }
+    
+            }
+        }
+        catch (Exception ex) {
+            // Failed to send file listing
+            sendFTPResponse(451, "Error reading file list");
+    	}
 
 		// Send the intermediate response
 
@@ -2381,6 +2417,35 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			// Indicate that there was an error during writing of the file
 
 	        sendFTPResponse(451, "Disk full or Quota Exceeded");
+	    }
+		catch (AccessDeniedException ex) {
+
+			// DEBUG
+
+			if ( Debug.EnableInfo && hasDebug(DBG_ERROR))
+				debugPrintln(" Error during transfer, " + ex.toString());
+
+			// Close the data socket to the client
+
+			if ( m_dataSess != null) {
+				getFTPServer().releaseDataSession(m_dataSess);
+				m_dataSess = null;
+			}
+
+			// If the file did not exist before the upload then mark it to delete on close
+			
+			if ( sts != FileStatus.FileExists) {
+			    deleteOnClose = true;
+			    
+			    // DEBUG
+			    
+			    if ( Debug.EnableDbg && hasDebug(DBG_ERROR))
+			        debugPrintln(" Marking file for delete on close (access denied)");
+			}
+			
+			// Indicate that there was an error during writing of the file
+
+	        sendFTPResponse(451, "Access denied, file may be in use or locked by another user");
 	    }
 	    catch (Exception ex) 
 	    {
@@ -4262,6 +4327,76 @@ public class FTPSrvSession extends SrvSession implements Runnable {
     				closeSession();
     				return null;
     			}
+    			else if ( rdlen == m_inbuf.length) {
+    				
+    				// Looks like there is more data to be read for the current command, we need to extend the buffer
+    				//
+    				// Check if the command buffer has already been extended to the maximum size
+    				
+    				if ( m_inbuf.length < MaxCommandBufSize) {
+    					
+    					// Extend the command buffer
+    					
+    					int curLen = m_inbuf.length;
+    					int availLen = m_in.available();
+    					int newLen = Math.max( m_inbuf.length * 2, curLen + availLen + 50);
+    					
+    					if ( newLen > MaxCommandBufSize)
+    						newLen = MaxCommandBufSize;
+    					
+    					// Check if the new buffer size is large enough for the current command
+    					
+    					if ( newLen > (curLen + availLen)) {
+    						
+    						// Allocate a new buffer and copy the existing data over to it
+    						
+    						byte[] newbuf = new byte[newLen];
+    						System.arraycopy( m_inbuf, 0, newbuf, 0, m_inbuf.length);
+    						
+    						// Move the new command buffer into place
+    						
+    						m_inbuf = newbuf;
+    						
+        					// DEBUG
+        					
+        					if ( Debug.EnableInfo && hasDebug(DBG_RXDATA))
+        						debugPrintln("Extended command buffer to " + m_inbuf.length + " bytes");
+        					
+    						// Read the remaining data
+    						
+    						int rdlen2 = m_in.read( m_inbuf, curLen, m_inbuf.length - curLen);
+    						if ( rdlen2 == -1) {
+    		    				closeSession();
+    		    				return null;
+    		    			}
+    						else {
+    							
+    							// Calculate the total read length
+    							
+    							rdlen = rdlen + rdlen2;
+
+    							// DEBUG
+            					
+            					if ( Debug.EnableInfo && hasDebug(DBG_RXDATA))
+            						debugPrintln("Secondary read " + rdlen2 + " bytes, total bytes read " + rdlen);
+    						}
+    					}
+    				}
+    				else {
+    					
+    					// Command is too large, clear any pending data on the command socket and ignore it
+
+    					clearCommandSocket();
+    					
+    					// DEBUG
+    					
+    					if ( Debug.EnableInfo && hasDebug(DBG_RXDATA))
+    						debugPrintln("Received command too large, ignored");
+    					
+    					return null;
+    				}
+    				
+    			}
     
     			// If there is an SSL engine associated with this session then decrypt the received data
     			
@@ -4294,6 +4429,28 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 		return nextReq;
 	}
 
+	/**
+	 * Clear the command socket of pending data
+	 * 
+	 * @exception IOException
+	 */
+	protected void clearCommandSocket()
+		throws IOException {
+	
+		// Loop until all data has been cleared from the command socket or the socket is closed
+
+		int rdlen = 0;
+		
+		while ( m_in.available() > 0 && rdlen >= 0) {
+			
+			// Read a block of data from the command socket
+			
+			rdlen = m_in.read( m_inbuf);
+			if ( rdlen == -1)
+				closeSession();
+		}
+	}
+	
 	/**
 	 * Get the next command data on an SSL/TLS encrypted connection
 	 *
@@ -4695,7 +4852,7 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			m_in = m_sock.getInputStream();
 			m_out = new OutputStreamWriter(m_sock.getOutputStream());
 
-			m_inbuf = new byte[1024];
+			m_inbuf = new byte[DefCommandBufSize];
 
 			// Return the initial response
 

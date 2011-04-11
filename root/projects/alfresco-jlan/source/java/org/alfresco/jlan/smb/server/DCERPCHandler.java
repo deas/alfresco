@@ -174,6 +174,22 @@ public class DCERPCHandler {
 		dcePkt.setLongErrorCode(sts);
 
 		sess.sendResponseSMB(dcePkt);
+		
+		// Check if the transaction packet has allocated an associated packet from the pool, we need to copy the associated packet
+		// to the outer request packet so that it is released back to the pool.
+		
+		if ( dcePkt.hasAssociatedPacket()) {
+
+			// DEBUG
+			
+			if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_PKTPOOL))
+				Debug.println("[SMB] DCERPCHandler allocated associated packet, len=" + dcePkt.getAssociatedPacket().getBufferLength());
+			
+			// Copy the associated packet to the outer request packet
+			
+			smbPkt.setAssociatedPacket( dcePkt.getAssociatedPacket());
+			dcePkt.setAssociatedPacket( null);
+		}
 	}
 
 	/**
@@ -332,6 +348,22 @@ public class DCERPCHandler {
 		dcePkt.setLongErrorCode(sts);
 
 		sess.sendResponseSMB(dcePkt);
+		
+		// Check if the transaction packet has allocated an associated packet from the pool, we need to copy the associated packet
+		// to the outer request packet so that it is released back to the pool.
+		
+		if ( dcePkt.hasAssociatedPacket()) {
+
+			// DEBUG
+			
+			if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_PKTPOOL))
+				Debug.println("[SMB] DCERPCHandler allocated associated packet, len=" + dcePkt.getAssociatedPacket().getBufferLength());
+			
+			// Copy the associated packet to the outer request packet
+			
+			smbPkt.setAssociatedPacket( dcePkt.getAssociatedPacket());
+			dcePkt.setAssociatedPacket( null);
+		}
 	}
 
 	/**
