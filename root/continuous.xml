@@ -112,13 +112,25 @@
 
    <target name="distribute-non-core" 
            description="Creates the distribution files for all platforms"
-           depends="distribute-installers" />
+           depends="distribute-core-amps,
+                    distribute-sdk, 
+                    distribute-installers,
+                    distribute-extras,
+                    distribute-fdk,
+                    distribute-docs" />
 
    <target name="distribute-core" 
            description="Creates the patch distribution files for all platforms"
            depends="assemble-commands,
                     distribute-core-amps,
-                    assemble-tomcat" />
+                    assemble-tomcat,
+                    distribute-war,
+                    distribute-wcm,
+                    distribute-webserviceclient,
+                    distribute-extensions-office2003,
+                    distribute-deployment,
+                    distribute-webeditor,
+                    distribute-wcmqs-extension" />
 
    <target name="set-build-number"
            depends="continuous-init, set-build-devbox-number, set-revision-number">
@@ -682,34 +694,59 @@
                       the same name but prefixed by "build-"
     -->
     <target name="windows-32-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-team-win.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} project-team.xml windows ${installer.package.type} --setvars ${installer.build.args} "project.fullName=Alfresco Team" project.installerFilename="${file.name.dist.team.win}" binaries_folder="${installer.build.binaries.win32}"'/>
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}"'/>
         </exec>
     </target>
     
     <target name="windows-64-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-team-win64.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} project-team.xml windows ${installer.package.type} --setvars ${installer.build.args} "project.fullName=Alfresco Team" project.installerFilename="${file.name.dist.team.win64}" binaries_folder="${installer.build.binaries.win64}"'/>
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win64.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win64}" binaries_folder="${installer.build.binaries.win64}"'/>
+        </exec>
+    </target>
+    
+    <target name="windows-deployment-installer">
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-win.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} deployment.xml windows ${installer.package.type} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.win}"'/>
         </exec>
     </target>
     
     <target name="osx-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-team-osx.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} project-team.xml osx ${installer.package.type} --setvars ${installer.build.args} "project.fullName=Alfresco Team (Evaluation Use Only)" project.installerFilename="${file.name.dist.team.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-osx.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project.xml osx ${installer.package.type} --setvars ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
         </exec>
-        <tar destfile="${dir.continuous.dist}/${file.name.dist.team.osx}.tar.gz"
+        <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx}.tar.gz"
              longfile="gnu"
              compression="gzip">
-            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.team.osx}"
-                        prefix="${file.name.dist.team.osx}" mode="755"/>
+            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.installer.osx}"
+                        prefix="${file.name.dist.installer.osx}" mode="755"/>
         </tar>
-        <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.team.osx}" />
+        <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.installer.osx}" />
     </target>
-
+    
+    <target name="osx-deployment-installer">
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-osx.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} deployment.xml osx ${installer.package.type} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.osx}"'/>
+        </exec>
+        <tar destfile="${dir.continuous.dist}/${file.name.dist.deployment.osx}.tar.gz"
+             longfile="gnu"
+             compression="gzip">
+            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}"
+                        prefix="${file.name.dist.deployment.osx}" mode="755"/>
+        </tar>
+        <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}" />
+    </target>
+    
     <target name="linux-64-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-team-linux64.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} project-team.xml linux-x64 ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.team.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
         </exec>      
+    </target>
+    
+    <target name="linux-deployment-installer">
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-linux.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} deployment.xml linux ${installer.package.type} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
+        </exec>
     </target>
     
     <!-- Targets for building BitRock installer for specific platforms -->
@@ -721,13 +758,25 @@
             depends="continuous-init, set-build-number, set-bitrock-builder">  
         <antcall target="windows-64-bit-installer"/>            
     </target>
+    <target name="build-windows-deployment-installer"
+            depends="continuous-init, set-build-number, set-bitrock-builder">    
+        <antcall target="windows-deployment-installer"/>
+    </target>
     <target name="build-osx-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder"> 
         <antcall target="osx-installer"/>            
     </target>
+    <target name="build-osx-deployment-installer"
+            depends="continuous-init, set-build-number, set-bitrock-builder">    
+        <antcall target="osx-deployment-installer"/>
+    </target>
     <target name="build-linux-64-bit-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder">   
         <antcall target="linux-64-bit-installer"/>            
+    </target>
+    <target name="build-linux-deployment-installer"
+            depends="continuous-init, set-build-number, set-bitrock-builder">    
+        <antcall target="linux-deployment-installer"/>
     </target>
             
    <!-- Build installers in parallel -->
@@ -736,8 +785,11 @@
         <parallel threadCount="2">
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
+            <antcall target="windows-deployment-installer"/>
             <antcall target="osx-installer"/>
+            <antcall target="osx-deployment-installer"/>
             <antcall target="linux-64-bit-installer"/>
+            <antcall target="linux-deployment-installer"/>
         </parallel>
    </target>
 

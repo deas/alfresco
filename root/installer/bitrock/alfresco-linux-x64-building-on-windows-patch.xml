@@ -2,9 +2,11 @@
     <name>alfrescolinuxx64buildingonwindowspatch</name>
     <show>0</show>
     <selected>1</selected>
+
     <functionDefinitionList>
         <actionDefinition name="postgresCreateSymLinksLinuxx64BuildingFromWindows">
             <actionList>
+                <dos2unix files="${installdir}/postgresql/share/postgres.bki" abortOnError="0" showMessageOnError="0"/>
         
                <deleteFile path="${installdir}/java/man/ja" />
                 <createSymLink target="ja_JP.eucJP" linkName="${installdir}/java/man/ja" >
@@ -4150,6 +4152,13 @@
                      </ruleList>
                 </createSymLink>
             
+               <deleteFile path="${installdir}/common/lib/libtiffxx.so" />
+                <createSymLink target="libtiffxx.so.3.9.4" linkName="${installdir}/common/lib/libtiffxx.so" >
+                     <ruleList>
+                         <fileTest path="${installdir}/common/lib/libtiffxx.so.3.9.4" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
                <deleteFile path="${installdir}/common/lib/libreadline.so.5" />
                 <createSymLink target="libreadline.so.5.2" linkName="${installdir}/common/lib/libreadline.so.5" >
                      <ruleList>
@@ -4206,6 +4215,13 @@
                      </ruleList>
                 </createSymLink>
             
+               <deleteFile path="${installdir}/common/lib/libtiff.so" />
+                <createSymLink target="libtiff.so.3.9.4" linkName="${installdir}/common/lib/libtiff.so" >
+                     <ruleList>
+                         <fileTest path="${installdir}/common/lib/libtiff.so.3.9.4" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
                <deleteFile path="${installdir}/common/lib/terminfo" />
                 <createSymLink target="../share/terminfo" linkName="${installdir}/common/lib/terminfo" >
                      <ruleList>
@@ -4234,6 +4250,13 @@
                      </ruleList>
                 </createSymLink>
             
+               <deleteFile path="${installdir}/common/lib/libtiffxx.so.3" />
+                <createSymLink target="libtiffxx.so.3.9.4" linkName="${installdir}/common/lib/libtiffxx.so.3" >
+                     <ruleList>
+                         <fileTest path="${installdir}/common/lib/libtiffxx.so.3.9.4" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
                <deleteFile path="${installdir}/common/lib/libpng12.so.0" />
                 <createSymLink target="libpng12.so.0.24.0" linkName="${installdir}/common/lib/libpng12.so.0" >
                      <ruleList>
@@ -4245,6 +4268,13 @@
                 <createSymLink target="libstdc++.so.5.0.3" linkName="${installdir}/common/lib/libstdc++.so.5" >
                      <ruleList>
                          <fileTest path="${installdir}/common/lib/libstdc++.so.5.0.3" condition="exists" />
+                     </ruleList>
+                </createSymLink>
+            
+               <deleteFile path="${installdir}/common/lib/libtiff.so.3" />
+                <createSymLink target="libtiff.so.3.9.4" linkName="${installdir}/common/lib/libtiff.so.3" >
+                     <ruleList>
+                         <fileTest path="${installdir}/common/lib/libtiff.so.3.9.4" condition="exists" />
                      </ruleList>
                 </createSymLink>
             
@@ -10974,12 +11004,16 @@
                               <fileTest path="${installdir}/postgresql/bin/pg_ctl.bin" condition="exists" />
                            </ruleList>
                         </changePermissions>
-                        <dos2unix files="${installdir}/postgresql/share/postgres.bki" abortOnError="0" showMessageOnError="0" />
                         <dos2unix files="${installdir}/postgresql/scripts/ctl.sh" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/postgresql/scripts/ctl.sh" >
                            <ruleList>
                               <fileTest path="${installdir}/postgresql/scripts/ctl.sh" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiff2bw" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiff2bw" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <dos2unix files="${installdir}/common/bin/pdf2ps" abortOnError="0" showMessageOnError="0" />
@@ -11064,6 +11098,11 @@
                               <fileTest path="${installdir}/common/bin/tput" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/raw2tiff" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/raw2tiff" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <dos2unix files="${installdir}/common/bin/ps2epsi" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/common/bin/ps2epsi" >
@@ -11140,6 +11179,11 @@
                               <fileTest path="${installdir}/common/bin/libpng12-config" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiff2ps" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiff2ps" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/bin/gifcomb" >
                            <ruleList>
                               <fileTest path="${installdir}/common/bin/gifcomb" condition="exists" />
@@ -11157,6 +11201,11 @@
                               <fileTest path="${installdir}/common/bin/ps2pdf13" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffcmp" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffcmp" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <dos2unix files="${installdir}/common/bin/wftopfa" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/common/bin/wftopfa" >
@@ -11167,6 +11216,11 @@
                         <changePermissions permissions="00755" files="${installdir}/common/bin/wmf2fig" >
                            <ruleList>
                               <fileTest path="${installdir}/common/bin/wmf2fig" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffcp" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffcp" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <dos2unix files="${installdir}/common/bin/freetype-config" abortOnError="0" showMessageOnError="0" />
@@ -11244,6 +11298,11 @@
                               <fileTest path="${installdir}/common/bin/pfbtopfa" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/fax2ps" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/fax2ps" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <dos2unix files="${installdir}/common/bin/ps2ps2" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/common/bin/ps2ps2" >
@@ -11251,9 +11310,29 @@
                               <fileTest path="${installdir}/common/bin/ps2ps2" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffinfo" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffinfo" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/ras2tiff" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/ras2tiff" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffsplit" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffsplit" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/bin/gifclip" >
                            <ruleList>
                               <fileTest path="${installdir}/common/bin/gifclip" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffset" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffset" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <dos2unix files="${installdir}/common/bin/ps2pdf12" abortOnError="0" showMessageOnError="0" />
@@ -11280,9 +11359,29 @@
                               <fileTest path="${installdir}/common/bin/libwmf-fontmap" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/bmp2tiff" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/bmp2tiff" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/fax2tiff" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/fax2tiff" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/bin/wmf2svg" >
                            <ruleList>
                               <fileTest path="${installdir}/common/bin/wmf2svg" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/rgb2ycbcr" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/rgb2ycbcr" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/thumbnail" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/thumbnail" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <dos2unix files="${installdir}/common/bin/dvipdf" abortOnError="0" showMessageOnError="0" />
@@ -11357,9 +11456,24 @@
                               <fileTest path="${installdir}/common/bin/bdftops" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/pal2rgb" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/pal2rgb" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/ppm2tiff" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/ppm2tiff" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/bin/gifinter" >
                            <ruleList>
                               <fileTest path="${installdir}/common/bin/gifinter" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiff2pdf" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiff2pdf" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/bin/toe" >
@@ -11367,9 +11481,19 @@
                               <fileTest path="${installdir}/common/bin/toe" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffmedian" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffmedian" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/bin/gifrotat" >
                            <ruleList>
                               <fileTest path="${installdir}/common/bin/gifrotat" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiff2rgba" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiff2rgba" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <dos2unix files="${installdir}/common/bin/gsnd" abortOnError="0" showMessageOnError="0" />
@@ -11425,6 +11549,11 @@
                               <fileTest path="${installdir}/common/bin/gifasm" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffcrop" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffcrop" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/bin/jpegtran" >
                            <ruleList>
                               <fileTest path="${installdir}/common/bin/jpegtran" condition="exists" />
@@ -11442,11 +11571,26 @@
                               <fileTest path="${installdir}/common/bin/ps2pdf14" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffdump" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffdump" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <dos2unix files="${installdir}/common/bin/pdfopt" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/common/bin/pdfopt" >
                            <ruleList>
                               <fileTest path="${installdir}/common/bin/pdfopt" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/tiffdither" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/tiffdither" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/bin/gif2tiff" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/bin/gif2tiff" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/bin/raw2gif" >
@@ -11502,6 +11646,11 @@
                               <fileTest path="${installdir}/common/lib/libwmf-0.2.so.7.1.0" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/lib/libtiff.so.3.9.4" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/lib/libtiff.so.3.9.4" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <dos2unix files="${installdir}/common/lib/libjpeg.la" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/common/lib/libjpeg.la" >
@@ -11550,6 +11699,13 @@
                               <fileTest path="${installdir}/common/lib/libpng.so.3.24.0" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <dos2unix files="${installdir}/common/lib/libtiffxx.la" abortOnError="0" showMessageOnError="0" />
+                         
+                        <changePermissions permissions="00755" files="${installdir}/common/lib/libtiffxx.la" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/lib/libtiffxx.la" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <dos2unix files="${installdir}/common/lib/libgif.la" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/common/lib/libgif.la" >
@@ -11560,6 +11716,11 @@
                         <changePermissions permissions="00755" files="${installdir}/common/lib/libjpeg.so.62.0.0" >
                            <ruleList>
                               <fileTest path="${installdir}/common/lib/libjpeg.so.62.0.0" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/lib/libtiffxx.so.3.9.4" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/lib/libtiffxx.so.3.9.4" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <changePermissions permissions="00555" files="${installdir}/common/lib/libcrypto.so.0.9.8" >
@@ -11577,6 +11738,13 @@
                         <changePermissions permissions="00755" files="${installdir}/common/lib/libpng12.so.0.24.0" >
                            <ruleList>
                               <fileTest path="${installdir}/common/lib/libpng12.so.0.24.0" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <dos2unix files="${installdir}/common/lib/libtiff.la" abortOnError="0" showMessageOnError="0" />
+                         
+                        <changePermissions permissions="00755" files="${installdir}/common/lib/libtiff.la" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/lib/libtiff.la" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <changePermissions permissions="00555" files="${installdir}/common/lib/libssl.so.0.9.8" >
@@ -12518,6 +12686,11 @@
                               <fileTest path="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/png.la" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/tiff.so" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/tiff.so" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <dos2unix files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/palm.la" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/palm.la" >
@@ -12540,6 +12713,13 @@
                         <changePermissions permissions="00755" files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/tga.so" >
                            <ruleList>
                               <fileTest path="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/tga.so" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <dos2unix files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/tiff.la" abortOnError="0" showMessageOnError="0" />
+                         
+                        <changePermissions permissions="00755" files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/tiff.la" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/tiff.la" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <dos2unix files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/avs.la" abortOnError="0" showMessageOnError="0" />
@@ -12844,6 +13024,13 @@
                               <fileTest path="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/fax.so" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <dos2unix files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/ept.la" abortOnError="0" showMessageOnError="0" />
+                         
+                        <changePermissions permissions="00755" files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/ept.la" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/ept.la" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
                         <dos2unix files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/cut.la" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/cut.la" >
@@ -12856,6 +13043,11 @@
                         <changePermissions permissions="00755" files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/gradient.la" >
                            <ruleList>
                               <fileTest path="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/gradient.la" condition="exists" />
+                           </ruleList>
+                        </changePermissions>
+                        <changePermissions permissions="00755" files="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/ept.so" >
+                           <ruleList>
+                              <fileTest path="${installdir}/common/lib/ImageMagick-6.5.1/modules-Q16/coders/ept.so" condition="exists" />
                            </ruleList>
                         </changePermissions>
                         <changePermissions permissions="00755" files="${installdir}/common/lib/libMagick++.so.2.0.0" >

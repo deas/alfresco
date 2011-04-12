@@ -36,22 +36,21 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
                             <programArguments></programArguments>
                             <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
                         </runProgram>
-			<runProgram>
-			    <program>sc</program>
-			    <programArguments>config ${postgres_unique_service_name} start= ${postgres_service_startup}</programArguments>
-			    <ruleList>
-				<platformTest type="windows"/>
-				<compareText text="${postgres_service_startup}" logic="does_not_equal" value="auto" />
-			    </ruleList>
-			</runProgram>
                         <setInstallerVariable name="postgres_service_installed" value="1"/>
                         <deleteFile path="${postgres_root_directory}/bin/registerservice.bat" />
-
                     </actionList>
                     <ruleList>
                         <compareText text="${postgres_unique_service_name}" logic="equals" value="" />                                    
                     </ruleList>
-                    </actionGroup>
+		</actionGroup>
+		<runProgram>
+		    <program>sc</program>
+		    <programArguments>config ${postgres_unique_service_name} start= ${postgres_service_startup}</programArguments>
+		    <ruleList>
+			<platformTest type="windows"/>
+			<compareText text="${postgres_service_startup}" logic="does_not_equal" value="auto" />
+		    </ruleList>
+		</runProgram>
                                                        
                     <substitute>
                         <files>${postgres_root_directory}/scripts/servicerun.bat;${postgres_root_directory}/scripts/serviceinstall.bat</files>

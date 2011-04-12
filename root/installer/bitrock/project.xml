@@ -18,6 +18,7 @@
     <allowComponentSelection>1</allowComponentSelection>
     <leftImage>images/alfresco_left.png</leftImage>
     <allowedLanguages>en fr es it de ja</allowedLanguages>
+    <enableRollback>0</enableRollback>
 
     <platformOptionsList>
         <platformOptions>
@@ -44,37 +45,33 @@
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-en.po</file>
         </language>
-
         <language> 
             <code>fr</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-fr.po</file>
         </language>
-
         <language> 
             <code>es</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-es.po</file>
         </language>
-
         <language> 
             <code>de</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-de.po</file>
         </language>
-
         <language> 
             <code>it</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-it.po</file>
         </language>
-
         <language> 
             <code>ja</code> 
             <encoding>utf-8</encoding>
             <file>${build_project_directory}/lang/alf-ja.po</file>
         </language>	
     </customLanguageFileList>
+    
     <componentList>
         <include file="alfresco-componentselection-java.xml" />
         <include file="alfresco-customstack-build-settings.xml" />
@@ -319,6 +316,30 @@
 	</actionGroup>
     </preUninstallationActionList>
     <postUninstallationActionList>
+        <actionGroup>
+            <actionList>
+                <deleteFile path="/etc/init.d/${baseunixservice_script_name}">
+                    <ruleList>
+                        <platformTest type="unix" />
+                        <platformTest type="osx" negate="1" />
+                    </ruleList>
+                </deleteFile>
+                <actionGroup>
+                    <actionList>
+                        <deleteFile path="/Library/LaunchDaemons/${baseunixservice_script_name}.plist" />
+                        <deleteFile path="/Library/LaunchDaemons/${baseunixservice_script_name}-postgres.plist" />
+                    </actionList>
+                    <ruleList>
+                        <platformTest type="osx"/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <isTrue value="${installer_root_install}" />
+                <isTrue value="${baseunixservice_install_as_service}" />
+            </ruleList>
+        </actionGroup>
+
         <deleteFile path="${installdir}/tomcat" />
         <deleteFile path="${installdir}/postgresql" />
         <deleteFile path="${installdir}" >
@@ -326,13 +347,5 @@
                 <fileTest path="${installdir}" condition="is_empty"/>
             </ruleList>
         </deleteFile>
-        <deleteFile path="/etc/init.d/${component(baseunixservice).parameter(baseunixservice_script_name).value}">
-            <ruleList>
-			    <compareText text="${installer_root_install}" logic="equals" value="1"/>
-                <compareText text="${component(baseunixservice).parameter(baseunixservice_install_as_service).value}" logic="equals" value="1"/>
-                <platformTest type="unix"/>
-		        <fileTest condition="exists" path="/etc/init.d/${component(baseunixservice).parameter(baseunixservice_script_name).value}"/>
-			</ruleList>        
-	    </deleteFile>
     </postUninstallationActionList>
 </project>

@@ -18,7 +18,7 @@
             <destination>${base_readme_installation_directory}</destination>
             <name>readmelogfile</name>
             <distributionFileList>
-                <distributionFile origin="${project.readmeFile}"/>
+                <distributionFile origin="README.txt"/>
             </distributionFileList>
         </folder>
     </folderList>
