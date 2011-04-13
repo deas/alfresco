@@ -1,3 +1,6 @@
+msgid "Installer.ReadmeFile.View"
+msgstr "Die Readme anzeigen"
+
 msgid "${product_fullname} OpenOffice Service"
 msgstr "${product_fullname} OpenOffice-Dienst"
 

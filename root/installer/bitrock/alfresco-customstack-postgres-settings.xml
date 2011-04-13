@@ -53,7 +53,7 @@
         <setInstallerVariable name="component(common).parameter(common_root_directory).description" value="Common Installation Directory" />
         <setInstallerVariable name="component(imagemagick).parameter(imagemagick_root_directory).description" value="ImageMagick Installation Directory" />
         <setInstallerVariable name="component(imagemagick).parameter(imagemagick_version).description" value="ImageMagick Version" />
-        <setInstallerVariable name="project.readmeFile" value="README.txt" />
+        <!--<setInstallerVariable name="project.readmeFile" value="README.txt" />-->
     </preBuildActionList>
 
     <initializationActionList>
@@ -64,6 +64,9 @@
 	<setInstallerVariable name="component(postgresinitdb).parameter(database_user).value" value="alfresco" />
 	<setInstallerVariable name="component(postgres).parameter(postgres_installation_type).ask" value="0" />
 	<setInstallerVariable name="component(postgres).parameter(postgres_installation_type).value" value="bundled" />
+	<setInstallerVariable name="component(postgres).parameter(postgres_logminmessage_level).value" value="fatal" />
+	<setInstallerVariable name="component(postgres).parameter(postgres_logminerrorstatement_level).value" value="fatal" />
+	<setInstallerVariable name="component(postgres).parameter(postgres_enable_silentmode).value" value="1" />
 	
         <!--<setInstallerVariable name="component(mysql).parameter(mysql_data).parameter(mysql_database_username).value" value="alfresco"/>
         <setInstallerVariable name="component(alfresco).parameter(alfresco_database_name).value" value="alfresco"/>
@@ -432,21 +435,31 @@
 		<option text="Manual - Configure servers to start services manually" value="demand" />
 		<option text="Auto - Configure servers to start automatically" value="auto" />
 	    </optionList>
-	    <validationActionList>
+	    <!--validationActionList>
 		<setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_startup).value" value="${alfrescocustomstack_services_startup}" />
 		<setInstallerVariable name="component(postgresservice).parameter(postgres_service_startup).value" value="${alfrescocustomstack_services_startup}" />
 		<setInstallerVariable name="component(openofficecomponent).parameter(openofficeservice_startup).value" value="${alfrescocustomstack_services_startup}" />
-	    </validationActionList>
+	    </validationActionList-->
 	    <ruleList>
 		<platformTest type="windows" />
 		<compareText text="${alfrescocustomstack_installation_type}" logic="equals" value="advanced" />
 	    </ruleList>
 	</choiceParameter>
     </parameterList>
-    
+
     <readyToInstallActionList>
-        <!-- <setInstallerVariable name="postgres_data_directory" value="${alfresco_data_directory}/postgresql" /> -->
-        <setInstallerVariable name="postgres_data_directory" value="${postgres_root_directory}/data" />
+        <setInstallerVariable name="postgres_data_directory" value="${alfresco_data_directory}/postgresql" />
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_startup).value" value="${alfrescocustomstack_services_startup}" />
+                <setInstallerVariable name="component(postgresservice).parameter(postgres_service_startup).value" value="${alfrescocustomstack_services_startup}" />
+                <setInstallerVariable name="component(openofficecomponent).parameter(openofficeservice_startup).value" value="${alfrescocustomstack_services_startup}" />
+            </actionList>
+            <ruleList>
+                <platformTest type="windows" />
+            </ruleList>
+        </actionGroup>
+
     </readyToInstallActionList>
 
     <postInstallationActionList>

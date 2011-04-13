@@ -1,3 +1,6 @@
+msgid "Installer.ReadmeFile.View"
+msgstr "Ver el archivo Readme"
+
 msgid "${product_fullname} OpenOffice Service"
 msgstr "${product_fullname} Servicio OpenOffice"
 
@@ -209,7 +212,7 @@ msgid "Java Component required to run the Alfresco server."
 msgstr "Componente Java requerido para ejecutar el servidor Alfresco."
 
 msgid "Launch ${product_fullname} Share"
-msgstr "Lanzar ${product_fullname Share}"
+msgstr "Lanzar ${product_fullname} Share"
 
 msgid "Libraries Files"
 msgstr "Ficheros de bibliotecas"

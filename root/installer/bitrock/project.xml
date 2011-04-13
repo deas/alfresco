@@ -25,53 +25,53 @@
             <platform>osx</platform>
             <height>430</height>
         </platformOptions>
-        <platformOptions>
-            <platform>linux</platform>
-            <height>430</height>
-        </platformOptions>
-        <platformOptions>
-            <platform>linux-x64</platform>
-            <height>430</height>
-        </platformOptions>
-        <platformOptions>
-            <platform>linux-ia64</platform>
-            <height>430</height>
-        </platformOptions>        
+	<platformOptions>
+	    <platform>linux</platform>
+	    <height>430</height>
+	</platformOptions>
+	<platformOptions>
+	    <platform>linux-x64</platform>
+	    <height>430</height>
+	</platformOptions>
+	<platformOptions>
+	    <platform>linux-ia64</platform>
+	    <height>430</height>
+	</platformOptions>
     </platformOptionsList>
 
     <customLanguageFileList>
-        <language> 
-            <code>en</code> 
-            <encoding>utf-8</encoding>
-            <file>${build_project_directory}/lang/alf-en.po</file>
-        </language>
-        <language> 
-            <code>fr</code> 
-            <encoding>utf-8</encoding>
-            <file>${build_project_directory}/lang/alf-fr.po</file>
-        </language>
-        <language> 
-            <code>es</code> 
-            <encoding>utf-8</encoding>
-            <file>${build_project_directory}/lang/alf-es.po</file>
-        </language>
-        <language> 
-            <code>de</code> 
-            <encoding>utf-8</encoding>
-            <file>${build_project_directory}/lang/alf-de.po</file>
-        </language>
-        <language> 
-            <code>it</code> 
-            <encoding>utf-8</encoding>
-            <file>${build_project_directory}/lang/alf-it.po</file>
-        </language>
-        <language> 
-            <code>ja</code> 
-            <encoding>utf-8</encoding>
-            <file>${build_project_directory}/lang/alf-ja.po</file>
-        </language>	
+	<language> 
+	    <code>en</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-en.po</file>
+	</language>
+	<language> 
+	    <code>fr</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-fr.po</file>
+	</language>
+	<language> 
+	    <code>es</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-es.po</file>
+	</language>
+	<language> 
+	    <code>de</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-de.po</file>
+	</language>
+	<language> 
+	    <code>it</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-it.po</file>
+	</language>
+	<language> 
+	    <code>ja</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-ja.po</file>
+	</language>
     </customLanguageFileList>
-    
+
     <componentList>
         <include file="alfresco-componentselection-java.xml" />
         <include file="alfresco-customstack-build-settings.xml" />
@@ -134,6 +134,15 @@
     <postInstallationActionList>
 	<actionGroup>
 	    <actionList>
+		<runProgram>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <program>sc</program>
+		    <programArguments>config ${tomcat_unique_service_name} depend= "${postgres_unique_service_name}"</programArguments>
+		    <ruleList>
+			<platformTest type="windows" />
+		    </ruleList>
+		</runProgram>
 		<runProgram>
 		    <progressText>Stopping PostgreSQL...</progressText>
 		    <program>${installdir}/${ctlscript_unix}</program>
@@ -266,8 +275,17 @@
 	<actionGroup>
 	    <actionList>
 		<runProgram>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
 		    <progressText>Stopping services</progressText>
-		    <program>${installdir}/servicerun.bat</program>
+		    <program>${installdir}/tomcat/scripts/servicerun.bat</program>
+		    <programArguments>STOP</programArguments>
+		</runProgram>
+		<runProgram>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <progressText>Stopping services</progressText>
+		    <program>${installdir}/postgresql/scripts/servicerun.bat</program>
 		    <programArguments>STOP</programArguments>
 		</runProgram>
 		<runProgram>

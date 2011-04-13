@@ -1,5 +1,5 @@
 
-<!-- POSTGRESQL 1.0a
+<!-- POSTGRESQL
 Componentname: PostgreSQL
 
 Short Description:
@@ -75,6 +75,9 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
     <parameterList>
 <!-- hidden parameter -->
         <booleanParameter name="postgres_execute_abort_action_list" value="0" ask="0" />
+        <stringParameter name="postgres_logminmessage_level" ask="0" default="default" explanation="See postgresql.conf file for valid values. If leave as default we don't modify the default configuration." />
+        <stringParameter name="postgres_logminerrorstatement_level" ask="0" default="default" explanation="See postgresql.conf file for valid values. If leave as default we don't modify the default configuration." />
+        <booleanParameter name="postgres_enable_silentmode" ask="0" default="0" explanation="If enabled, the postmaster messages are redirected to the postmaster.log in the data folder.Only valid on Unix." />
 <stringParameter>
             <name>postgres_installation_type_options</name>
             <ask>0</ask>
@@ -274,19 +277,19 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                     </validationActionList>
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
+                        <compareText logic="equals" value="1" text="${postgres_show_ports}"/>
                         <compareText text="${postgres_installation_type}" logic="equals" value="existing"/>
                         <portTest condition="cannot_bind" port="${postgres_port}"/>
                         <compareText logic="equals" value="1" text="${server_port_show}"/>
-                        <compareText logic="equals" value="1" text="${postgres_show_ports}"/>
                     </ruleList>
                 </stringParameter>
             </parameterList>
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText logic="equals" value="1" text="${postgres_show_ports}"/>
                 <compareText text="${postgres_installation_type}" logic="equals" value="existing"/>
                 <portTest condition="cannot_bind" port="${postgres_port}"/>
                 <compareText logic="equals" value="1" text="${server_port_show}"/>
-                <compareText logic="equals" value="1" text="${postgres_show_ports}"/>
             </ruleList>
         </parameterGroup>
         <booleanParameter>
@@ -488,7 +491,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                     <origin>${postgres_distribution_folder}</origin>
                 </distributionDirectory>
             </distributionFileList>
-            <actionList>		
+            <actionList>
 		<postgresCreateSymLinksOsxBuildingFromWindows>
 		    <ruleList>
 			<platformTest type="osx" />
@@ -777,6 +780,27 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                         <pattern>#data_directory = 'ConfigDir'</pattern>
                         <value>data_directory = '${postgres_root_directory}/data'</value>
                     </substitution-->
+                                        <substitution>
+                                            <pattern>#log_min_messages = warning</pattern>
+                                            <value>log_min_messages = ${postgres_logminmessage_level}</value>
+                                            <ruleList>
+                                                <compareText logic="does_not_equal" text="${postgres_logminmessage_level}" value="default"/>
+                                            </ruleList>
+                                        </substitution>
+                                        <substitution>
+                                            <pattern>#log_min_error_statement = error</pattern>
+                                            <value>log_min_error_statement = ${postgres_logminerrorstatement_level}</value>
+                                            <ruleList>
+                                                <compareText logic="does_not_equal" text="${postgres_logminerrorstatement_level}" value="default"/>
+                                            </ruleList>
+                                        </substitution>
+                                        <substitution>
+                                            <pattern>#silent_mode = off</pattern>
+                                            <value>silent_mode = on</value>
+                                            <ruleList>
+                                                <isTrue value="${postgres_enable_silentmode}" />
+                                            </ruleList>
+                                        </substitution>
                                     </substitutionList>
                                 </substitute>
                                 <addTextToFile>
@@ -946,6 +970,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
 				  <programArguments>/q</programArguments>
 				  <abortOnError>0</abortOnError>
 				  <ruleList>
+                                      <fileTest condition="exists" path="${postgres_root_directory}/bin/vcredist_x64.exe"/>
 				      <platformTest type="windows-x64" />
 				  </ruleList>
 			      </runProgram>
@@ -996,6 +1021,20 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
                               <substitution>
                                   <pattern>#log_filename</pattern>
                                   <value>log_filename</value>
+                              </substitution>
+                              <substitution>
+                                  <pattern>#log_min_messages = warning</pattern>
+                                  <value>log_min_messages = ${postgres_logminmessage_level}</value>
+                                  <ruleList>
+                                      <compareText logic="does_not_equal" text="${postgres_logminmessage_level}" value="default"/>
+                                  </ruleList>
+                              </substitution>
+			      <substitution>
+			          <pattern>#log_min_error_statement = error</pattern>
+				  <value>log_min_error_statement = ${postgres_logminerrorstatement_level}</value>
+				  <ruleList>
+				      <compareText logic="does_not_equal" text="${postgres_logminerrorstatement_level}" value="default"/>
+                                  </ruleList>
                               </substitution>
                           </substitutionList>
                       </substitute>
