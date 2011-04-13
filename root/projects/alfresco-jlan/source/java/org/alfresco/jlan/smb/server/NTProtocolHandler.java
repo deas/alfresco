@@ -456,6 +456,10 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			m_sess.setState(SMBSrvSessionState.SMBSESSION);
 
+			// Find the virtual circuit allocated, this will set the per-thread ClientInfo on the session
+			
+			m_sess.findVirtualCircuit( outPkt.getUserId());
+			
 			// Notify listeners that a user has logged onto the session
 
 			m_sess.getSMBServer().sessionLoggedOn(m_sess);
