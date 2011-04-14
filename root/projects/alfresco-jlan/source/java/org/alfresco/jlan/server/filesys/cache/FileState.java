@@ -928,7 +928,7 @@ public class FileState {
     				
     				//	Get the path and file name parts, normalize the path
     				
-    				String pathPart = path.substring(0, pos).toUpperCase();
+    				String pathPart = upperCaseAToZ( path.substring(0, pos));
     				String namePart = path.substring(pos);
     				
     				//	Rebuild the path string
@@ -941,7 +941,7 @@ public class FileState {
 
 	        // Uppercase the whole path
 	        
-	        normPath = path.toUpperCase();
+	        normPath = upperCaseAToZ( path);
 	    }
 	    
 		//	Return the normalized path
@@ -981,6 +981,25 @@ public class FileState {
 	  }
 	  else
 	    out.println("++    No Attributes");
+	}
+	
+	/**
+	 * Uppercase a-z characters only, leave any multi-national characters as is
+	 * 
+	 * @param path String
+	 * @return String
+	 */
+	protected static final String upperCaseAToZ( String path) {
+		StringBuilder pathStr = new StringBuilder( path);
+		
+		for ( int i = 0; i < pathStr.length(); i++) {
+			char curChar = pathStr.charAt( i);
+			
+			if ( Character.isLowerCase( curChar))
+				pathStr.setCharAt( i, Character.toUpperCase( curChar));
+		}
+		
+		return pathStr.toString();
 	}
 	
 	/**
