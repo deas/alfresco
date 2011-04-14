@@ -595,6 +595,23 @@ public final class WildCard {
   }
   
   /**
+   * Check if a search path is a full wildcard search
+   * 
+   * @param srchPath String
+   * @return boolean
+   */
+  public static final boolean isWildcardAll( String srchPath) {
+	  boolean wildAll = false;
+	  
+	  if ( srchPath != null) {
+		  if ( srchPath.equals( "*") || srchPath.equals( "*.*") || srchPath.endsWith( "\\*") || srchPath.endsWith( "\\*.*"))
+			  wildAll = true;
+	  }
+	  
+	  return wildAll;
+  }
+  
+  /**
    * Test Code
    * 
    * @param args String[]

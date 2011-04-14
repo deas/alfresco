@@ -3416,7 +3416,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			// If this is a wildcard search then add the '.' and '..' entries
 
-			if ( wildcardSearch == true && ReturnDotFiles == true) {
+			if ( wildcardSearch == true && WildCard.isWildcardAll( srchPath) && ReturnDotFiles == true) {
 
 				// Pack the '.' file information
 
@@ -3538,7 +3538,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Check for a single file search and the file was not found, in this case return an
 			// error status
 
-			if ( wildcardSearch == false && fileCnt == 0)
+			if ( fileCnt == 0)
 				throw new FileNotFoundException(srchPath);
 
 			// Check for a search where the maximum files is set to one, close the search
