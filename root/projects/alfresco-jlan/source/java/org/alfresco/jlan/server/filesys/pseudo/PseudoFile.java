@@ -44,7 +44,7 @@ public abstract class PseudoFile {
 
   // File flags/attributes
 
-  private int m_fileFlags = FileAttribute.ReadOnly;
+  private int m_fileFlags;
 
   // File information, used for file information/folder searches
 
