@@ -315,13 +315,41 @@
 
    <target name="distribute-core-amps" 
            description="Creates the distribution AMP file for core extensions"
-           depends="package-spp-extension" >
+           depends="package-spp-extension,
+                    package-dod5015-extension,
+                    package-dod5015-share-extension, 
+                    package-wcmquickstart-extension,
+                    package-wcmquickstart-share-extension, 
+                    build-wcmquickstartwebapp-war,
+                    package-quickr-extension" >
       
       <!-- Copy AMPs to assembly area for installer -->
       <copy todir="${dir.continuous.assemble}/amps">
+         <fileset dir="${dir.module.dod5015.dist}"              includes="${file.name.amp.dod5015}" />
+         <fileset dir="${dir.module.dod5015.share.dist}"        includes="${file.name.amp.dod5015.share}" />
          <fileset dir="${dir.module.spp.dist}"           includes="${file.name.amp.spp}" />
+         <fileset dir="${dir.module.quickr.dist}"               includes="${file.name.amp.quickr}" />
+         <fileset dir="${dir.module.wcmquickstart.dist}"              includes="${file.name.amp.wcmquickstart}" />
+         <fileset dir="${dir.module.wcmquickstart-share.dist}"        includes="${file.name.amp.wcmquickstart-share}" />
       </copy>
-            
+      
+      <copy todir="${dir.continuous.assemble}" file="${dir.project.wcmquickstart-webapp}/target/${file.name.war.wcmquickstart-webapp}" />
+
+      <!-- Zip bundles of AMPs -->
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.dod5015}.zip">
+         <fileset dir="${dir.module.dod5015.dist}"              includes="${file.name.amp.dod5015}" />
+         <fileset dir="${dir.module.dod5015.share.dist}"        includes="${file.name.amp.dod5015.share}" />
+         <fileset file="${dir.module.dod5015}/README_dod5015.txt" />
+      </zip>
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.spp}.zip">
+         <fileset dir="${dir.module.spp.dist}"           includes="${file.name.amp.spp}" />
+         <fileset file="${dir.module.spp}/README_spp.txt" />
+      </zip>
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.quickr}.zip">
+         <fileset dir="${dir.module.quickr.dist}"               includes="${file.name.amp.quickr}" />
+         <fileset file="${dir.module.quickr}/README_quickr.txt" />
+      </zip>
+      
 
    </target>
 
