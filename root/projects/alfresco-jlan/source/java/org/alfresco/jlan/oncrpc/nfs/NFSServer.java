@@ -3167,9 +3167,10 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
 			}
 			else {
 
-				//	Check if the cookie verifier is valid
+				//	Check if the cookie verifier is valid, check reverse byte order
 				
-				if ( cookieVerf != 0L && cookieVerf != dinfo.getModifyDateTime())
+				if ( cookieVerf != 0L && cookieVerf != dinfo.getModifyDateTime() &&
+						Long.reverseBytes( cookieVerf) != dinfo.getModifyDateTime())
 					throw new BadCookieException();
 					
 				//	Retrieve the search from the active search cache
@@ -3499,9 +3500,10 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
 			}
 			else {
 
-				//	Check if the cookie verifier is valid
+				//	Check if the cookie verifier is valid, check reverse byte order
 				
-				if ( cookieVerf != 0L && cookieVerf != dinfo.getModifyDateTime()) {
+				if ( cookieVerf != 0L && cookieVerf != dinfo.getModifyDateTime() &&
+						Long.reverseBytes( cookieVerf) != dinfo.getModifyDateTime()) {
 					sess.debugPrintln("Bad cookie verifier, verf=0x" + Long.toHexString(cookieVerf) + ", modTime=0x" + Long.toHexString(dinfo.getModifyDateTime()));
 					throw new BadCookieException();
 				}
