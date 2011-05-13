@@ -192,12 +192,12 @@
 	<classpathentry kind="lib" path="lib/urlrewritefilter-3.1.0.jar" sourcepath="src/urlrewritefilter-3.1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/activiti/mybatis-3.0.1.jar" sourcepath="/Users/fheremans/.m2/repository/org/mybatis/mybatis/3.0.1/mybatis-3.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/groovy-1.7.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.3.jar" sourcepath="src/activiti-engine-5.3-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.3.jar" sourcepath="src/activiti-spring-5.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.5.jar" sourcepath="src/activiti-engine-5.5-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.5.jar" sourcepath="src/activiti-spring-5.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/activiti/mybatis-3.0.4.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
