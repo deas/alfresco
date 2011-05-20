@@ -160,7 +160,7 @@
                            {
                               var titleLink = Dom.get(this.id + "-title-link");
                               // update iframe and internal config
-                              titleLink.href.value = this.options.webviewURI = iframe.attributes["src"].value;
+                              titleLink.href = this.options.webviewURI = iframe.attributes["src"].value;
                               this.options.webviewTitle = iframe.attributes["name"].value;
                               titleLink.innerHTML = $html(this.options.webviewTitle);
                            }

@@ -85,6 +85,7 @@
          iframe: false
       });
       panel.render(document.body);
+      panel.center();
       
       Dom.get("success").value += window.location.hash;
       Dom.get(<#if lastUsername??>"password"<#else>"username"</#if>).focus();

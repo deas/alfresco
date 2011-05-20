@@ -14,7 +14,7 @@ function main()
    }
    var uri = "/api/blog/site/" + url.templateArgs.site +"/" + url.templateArgs.container +"/posts" + filter + "?" + params.join("&");
    var connector = remote.connect("alfresco");
-   var result = connector.get(uri);
+   var result = connector.get(encodeURI(uri));
    if (result.status.code == status.STATUS_OK)
    {
       // Strip out possible malicious code

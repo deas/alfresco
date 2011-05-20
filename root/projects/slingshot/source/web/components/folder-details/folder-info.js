@@ -90,37 +90,49 @@
             everyonePerms = noPerms;
          
          var rawPerms = folderData.permissions.roles;
-         for (i = 0, ii = rawPerms.length; i < ii; i++)
-         {
-            var permParts = rawPerms[i].split(";");
-            var group = permParts[1];
-            if (group.indexOf("_SiteManager") != -1)
-            {
-               managerPerms = this.msg("folder-info.role." + permParts[2]);
-            }
-            else if (group.indexOf("_SiteCollaborator") != -1)
-            {
-               collaboratorPerms = this.msg("folder-info.role." + permParts[2]);
-            }
-            else if (group.indexOf("_SiteContributor") != -1)
-            {
-               contributorPerms = this.msg("folder-info.role." + permParts[2]);
-            }
-            else if (group.indexOf("_SiteConsumer") != -1)
-            {
-               consumerPerms = this.msg("folder-info.role." + permParts[2]);
-            }
-            else if (group === "GROUP_EVERYONE")
-            {
-               everyonePerms = this.msg("folder-info.role." + permParts[2]);
-            }
-         }
          
-         Dom.get(this.id + "-perms-managers").innerHTML = $html(managerPerms);
-         Dom.get(this.id + "-perms-collaborators").innerHTML = $html(collaboratorPerms);
-         Dom.get(this.id + "-perms-contributors").innerHTML = $html(contributorPerms);
-         Dom.get(this.id + "-perms-consumers").innerHTML = $html(consumerPerms);
-         Dom.get(this.id + "-perms-everyone").innerHTML = $html(everyonePerms);
+         if (rawPerms.length === 0)
+         {
+            Dom.addClass(this.id + "-perms", "hidden");
+            Dom.removeClass(this.id + "-noPerms", "hidden");
+         }
+         else
+         {
+            for (i = 0, ii = rawPerms.length; i < ii; i++)
+            {
+               var permParts = rawPerms[i].split(";");
+               var group = permParts[1];
+               if (group.indexOf("_SiteManager") != -1)
+               {
+                  managerPerms = this.msg("folder-info.role." + permParts[2]);
+               }
+               else if (group.indexOf("_SiteCollaborator") != -1)
+               {
+                  collaboratorPerms = this.msg("folder-info.role." + permParts[2]);
+               }
+               else if (group.indexOf("_SiteContributor") != -1)
+               {
+                  contributorPerms = this.msg("folder-info.role." + permParts[2]);
+               }
+               else if (group.indexOf("_SiteConsumer") != -1)
+               {
+                  consumerPerms = this.msg("folder-info.role." + permParts[2]);
+               }
+               else if (group === "GROUP_EVERYONE")
+               {
+                  everyonePerms = this.msg("folder-info.role." + permParts[2]);
+               }
+            }
+
+            Dom.get(this.id + "-perms-managers").innerHTML = $html(managerPerms);
+            Dom.get(this.id + "-perms-collaborators").innerHTML = $html(collaboratorPerms);
+            Dom.get(this.id + "-perms-contributors").innerHTML = $html(contributorPerms);
+            Dom.get(this.id + "-perms-consumers").innerHTML = $html(consumerPerms);
+            Dom.get(this.id + "-perms-everyone").innerHTML = $html(everyonePerms);
+
+            Dom.addClass(this.id + "-noPerms", "hidden");
+            Dom.removeClass(this.id + "-perms", "hidden");
+         }
       }
    });
 })();

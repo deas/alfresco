@@ -31,13 +31,15 @@
 <div class="form-generic-tool license">
    <div class="share-form">
       <div class="form-container">
-         <div class="warnings level${usage.level}">
-         <#list usage.warnings as w>
-            <div class="info">${w?html}</div>
-         </#list>
-         <#list usage.errors as e>
-            <div class="info">${e?html}</div>
-         </#list>
+         <div class="warnings">
+            <div class="info">
+               <#list usage.warnings as w>
+                  <div class="level${usage.level}">${w?html}</div>
+               </#list>
+               <#list usage.errors as e>
+                  <div class="level${usage.level}">${e?html}</div>
+               </#list>
+            </div>
          </div>
       </div>
    </div>

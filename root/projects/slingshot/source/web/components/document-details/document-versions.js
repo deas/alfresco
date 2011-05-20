@@ -94,7 +94,15 @@
           * @property workingCopyVersion
           * @type string
           */
-         workingCopyVersion: null
+         workingCopyVersion: null,
+
+         /**
+          * Tells if the user may upload a new version or revert the document.
+          *
+          * @property allowNewVersionUpload
+          * @type string
+          */
+         allowNewVersionUpload: false
       },
 
       /**
@@ -171,7 +179,10 @@
          html += '<div class="version-panel-right">';
          html += '   <h3 class="thin dark">' + $html(doc.name) +  '</h3>';
          html += '   <span class="actions">';
-         html += '      <a href="#" name=".onRevertVersionClick" rel="' + doc.label + '" class="' + this.id + ' revert" title="' + this.msg("label.revert") + '">&nbsp;</a>';
+         if (this.options.allowNewVersionUpload)
+         {
+            html += '   <a href="#" name=".onRevertVersionClick" rel="' + doc.label + '" class="' + this.id + ' revert" title="' + this.msg("label.revert") + '">&nbsp;</a>';
+         }
          html += '      <a href="' + downloadURL + '" class="download" title="' + this.msg("label.download") + '">&nbsp;</a>';
          html += '   </span>';
          html += '   <div class="clear"></div>';

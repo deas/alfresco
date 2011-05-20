@@ -126,6 +126,12 @@ public interface ContentModel
     static final QName PROP_MODIFIER = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "modifier");
     static final QName PROP_ACCESSED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "accessed");
     
+    /**
+     * Aspect for nodes which are by default not deletable.
+     * @since 3.5.0
+     */
+    static final QName ASPECT_UNDELETABLE = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "undeletable");
+    
     // author aspect
     static final QName ASPECT_AUTHOR = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "author");
     static final QName PROP_AUTHOR = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "author");

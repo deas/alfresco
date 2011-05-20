@@ -14,7 +14,7 @@ function main()
       model.themes.push(
       {
          id: t.id,
-         title: t.title,
+         title: (t.titleId != null && msg.get(t.titleId) != t.titleId ? msg.get(t.titleId) : t.title),
          // current theme ID is in the default model for a script
          selected: (t.id == theme)
       });

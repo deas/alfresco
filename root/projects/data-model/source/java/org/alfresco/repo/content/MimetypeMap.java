@@ -90,6 +90,11 @@ public class MimetypeMap implements MimetypeService
     public static final String MIMETYPE_RSS = "application/rss+xml";
     public static final String MIMETYPE_RFC822 = "message/rfc822";
     public static final String MIMETYPE_OUTLOOK_MSG = "application/vnd.ms-outlook";
+    
+    // Adobe
+    public static final String MIMETYPE_APPLICATION_ILLUSTRATOR = "application/illustrator";
+    public static final String MIMETYPE_APPLICATION_PHOTOSHOP = "application/photoshop";
+    
     // Open Document
     public static final String MIMETYPE_OPENDOCUMENT_TEXT = "application/vnd.oasis.opendocument.text";
     public static final String MIMETYPE_OPENDOCUMENT_TEXT_TEMPLATE = "application/vnd.oasis.opendocument.text-template";
@@ -129,7 +134,7 @@ public class MimetypeMap implements MimetypeService
     // WordPerfect
     public static final String MIMETYPE_WORDPERFECT = "application/wordperfect";
     // Audio
-    public static final String MIMETYPE_MP3 = "audio/x-mpeg";
+    public static final String MIMETYPE_MP3 = "audio/mpeg";
     // Alfresco
     public static final String MIMETYPE_ACP = "application/acp";
     

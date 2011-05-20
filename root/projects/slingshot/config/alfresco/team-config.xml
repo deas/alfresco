@@ -14,8 +14,8 @@
    
    <config evaluator="string-compare" condition="HelpPages">
       <help-pages>
-         <share-help>http://www.alfresco.com/help/35/enterprise/teamhelp/</share-help>
-         <share-tutorial>http://www.alfresco.com/help/35/enterprise/teamtutorial/</share-tutorial>
+         <share-help>http://docs.alfresco.com/3.5/topic/com.alfresco.team.doc/topics/uh-welcome.html</share-help>
+         <share-tutorial>http://docs.alfresco.com/3.5/topic/com.alfresco.team.doc/topics/uh-tutorial.html</share-tutorial>
       </help-pages>
    </config>
    
@@ -48,6 +48,26 @@
          <sort label="label.mimetype">cm:content.mimetype</sort>
          <sort label="label.type">TYPE</sort>
       </sorting>
+
+      <!--
+         Google Docs™ integration
+      -->
+      <google-docs>
+         <!--
+            Enable/disable the Google Docs UI integration (Extra types on Create Content menu, Google Docs actions).
+         -->
+         <enabled>true</enabled>
+         
+         <!--
+            The mimetypes of documents Google Docs allows you to create via the Share interface.
+            The I18N label is created from the "type" attribute, e.g. google-docs.doc=Google Docs&trade; Document
+         -->
+         <creatable-types>
+            <creatable type="doc">application/msword</creatable>
+            <creatable type="xls">application/vnd.ms-excel</creatable>
+            <creatable type="ppt">application/vnd.ms-powerpoint</creatable>
+         </creatable-types>
+      </google-docs>
    </config>
 
    <!-- Repository Library config section -->
@@ -156,6 +176,31 @@
                <hide id="cm:title" />
             </field-visibility>
          </form>
+      </forms>
+   </config>
+
+   <!--
+      Overridden form-config.xml entries to:
+         - remove minimum search term length for people searches.
+         - ensure package items can only be chosen from Sites.
+   -->
+
+   <config>
+      <forms>
+         <default-controls>
+            <type name="association:cm:person" template="/org/alfresco/components/form/controls/authority.ftl">
+               <control-param name="minSearchTermLength">0</control-param>
+            </type>
+            <type name="association:cm:authority" template="/org/alfresco/components/form/controls/authority.ftl">
+               <control-param name="minSearchTermLength">0</control-param>
+            </type>
+            <type name="association:cm:authorityContainer" template="/org/alfresco/components/form/controls/authority.ftl">
+               <control-param name="minSearchTermLength">0</control-param>
+            </type>
+            <type name="association:packageItems" template="/org/alfresco/components/form/controls/workflow/packageitems.ftl">
+               <control-param name="rootNode">{siteshome}</control-param>
+            </type>
+         </default-controls>
       </forms>
    </config>
 

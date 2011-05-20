@@ -18,7 +18,7 @@
       <div class="yui-t1" id="alfresco-console">
          <div id="yui-main">
             <div class="yui-b" id="alf-content">
-               <@region id="tool" scope="page" protected=true />
+               <@region id="ctool" scope="page" protected=true />
             </div>
          </div>
          <div class="yui-b" id="alf-filters">

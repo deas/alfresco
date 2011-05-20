@@ -1,4 +1,4 @@
-msgid "Installer.ReadmeFile.View"
+﻿msgid "Installer.ReadmeFile.View"
 msgstr "Die Readme anzeigen"
 
 msgid "${product_fullname} OpenOffice Service"
@@ -353,7 +353,7 @@ msgid "Program Files Windows"
 msgstr "Windows-Programmdateien"
 
 msgid "Quickr Connector Support"
-msgstr "Quickr-Anschlussunterstützung"
+msgstr "Quickr Connector Support"
 
 msgid "Quickr Content Services"
 msgstr "Quickr-Inhaltsdienste"
@@ -380,7 +380,7 @@ msgid "Records Management"
 msgstr "Records Management"
 
 msgid "Records Management support. This is a separately licensed component and should only be installed if licensed."
-msgstr "Unterstützung von Records Management Diese Komponente wird separat lizenziert und darf nur installiert werden, wenn eine Lizenz dafür vorhanden ist."
+msgstr "Unterstützung von Records Management. Diese Komponente wird separat lizenziert und darf nur installiert werden, wenn eine Lizenz dafür vorhanden ist."
 
 msgid "Repeat Password:"
 msgstr "Passwort wiederholen:"

@@ -16,7 +16,7 @@
       vtiServer: ${vtiServer},
       replicationUrlMapping: ${replicationUrlMappingJSON!"{}"},
       repositoryBrowsing: ${(rootNode??)?string},
-      useTitle: ${(useTitle!false)?string},
+      useTitle: ${(useTitle!true)?string},
       userIsSiteManager: ${(userIsSiteManager!false)?string}
    }).setMessages(
       ${messages}

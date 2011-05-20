@@ -56,10 +56,10 @@ public class SearchLanguageConversion
      * <li>Escape: \</li>
      * <li>Single char search: .</li>
      * <li>Multiple char search: .*</li>
-     * <li>Reserved: \*.+?^$(){}|</li>
+     * <li>Reserved: \*.+?^$(){}[]|</li>
      * </ul>
      */
-    public static LanguageDefinition DEF_REGEX = new SimpleLanguageDef('\\', ".*", ".", "\\*.+?^$(){}|");
+    public static LanguageDefinition DEF_REGEX = new SimpleLanguageDef('\\', ".*", ".", "\\*.+?^$(){}[]|");
 
     /**
      * Lucene syntax summary: {@link QueryParser#escape(String) Lucene Query Parser}

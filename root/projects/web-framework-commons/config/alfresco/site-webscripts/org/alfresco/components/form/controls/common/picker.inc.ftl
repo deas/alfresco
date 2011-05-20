@@ -30,7 +30,7 @@
       <#if field.control.params.valueType??>valueType: "${field.control.params.valueType}",</#if>
       <#if renderPickerJSSelectedValue??>selectedValue: "${renderPickerJSSelectedValue}",</#if>
       selectActionLabel: "${field.control.params.selectActionLabel!msg("button.select")}",
-      minSearchTermLength: ${args.minSearchTermLength!'1'},
+      minSearchTermLength: ${field.control.params.minSearchTermLength!'1'},
       maxSearchResults: ${field.control.params.maxSearchResults!'100'}
    }).setMessages(
       ${messages}

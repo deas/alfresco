@@ -93,6 +93,14 @@
       busy: null,
 
       /**
+       * Tells whether the user has permissions to create, edit and/or delete a comment.
+       *
+       * @property permissions
+       * @type Object
+       */
+      permissions: {},
+
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
        *
@@ -149,7 +157,8 @@
                         totalRecords: "total"
                      }
                   }
-               }
+               },
+               doBeforeParseData: this.bind(this.handlePermissions)
             },
             dataTable:
             {
@@ -179,6 +188,19 @@
          {
             Dom.removeClass(Selector.query("hr.hidden"), "hidden");
          }, this, this);
+      },
+
+      handlePermissions: function(oRequest, oFullResponse)
+      {
+         // Here we get a chance of looking at the use's permissions
+         this.permissions = oFullResponse.nodePermissions || {};
+         if (this.permissions["create"])
+         {
+            Dom.removeClass(this.id + "-actions", "hidden");
+         }
+
+         // Return response unmodified
+         return oFullResponse;
       },
 
       /**
@@ -363,10 +385,16 @@
          html += Alfresco.util.relativeTime(Alfresco.util.fromISO8601(data.modifiedOnISO)) + '<br/>';
          html += '      </span>';
          html += '      <span class="comment-actions">';
-         html += '          <a href="#" name=".onEditCommentClick" rel="' + oRecord.getId() + '" title="' + this.msg("link.editComment") + '" class="' + this.id + ' edit-comment">&nbsp;</a>';
-         html += '          <a href="#" name=".onConfirmDeleteCommentClick" rel="' + oRecord.getId() + '" title="' + this.msg("link.deleteComment") + '" class="' + this.id + ' delete-comment">&nbsp;</a>';
+         if (this.permissions["edit"])
+         {
+            html += '       <a href="#" name=".onEditCommentClick" rel="' + oRecord.getId() + '" title="' + this.msg("link.editComment") + '" class="' + this.id + ' edit-comment">&nbsp;</a>';
+         }
+         if (this.permissions["delete"])
+         {
+            html += '       <a href="#" name=".onConfirmDeleteCommentClick" rel="' + oRecord.getId() + '" title="' + this.msg("link.deleteComment") + '" class="' + this.id + ' delete-comment">&nbsp;</a>';
+         }
          html += '      </span>';
-         html += '      <div>' + (data.content || "") + '</div>';
+         html += '      <div class="comment-content">' + (data.content || "") + '</div>';
          html += '   </div>';
          html += '   <div class="clear"></div>';
          html += '</div>';

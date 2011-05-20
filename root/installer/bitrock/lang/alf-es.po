@@ -1,4 +1,4 @@
-msgid "Installer.ReadmeFile.View"
+﻿msgid "Installer.ReadmeFile.View"
 msgstr "Ver el archivo Readme"
 
 msgid "${product_fullname} OpenOffice Service"
@@ -17,7 +17,7 @@ msgid "Admin Password:"
 msgstr "Contraseña de admin:"
 
 msgid "Advanced - Configures server ports and service properties. Also choose optional components to install."
-msgstr "Avanzadas: configura las propiedades de servicio y los puertos de servidor. También puede\nelegir componentes opcionales para instalar."
+msgstr "Avanzadas: configura las propiedades de servicio y los puertos de servidor. También puede elegir componentes opcionales para instalar."
 
 msgid "Alfresco"
 msgstr "Alfresco"
@@ -143,7 +143,7 @@ msgid "Include Alfresco Web Quick Start."
 msgstr "Incluir Web Quick Start de Alfresco."
 
 msgid "Include system ld library path in environment"
-msgstr "Incluir ruta del \"ld library path\" en el entorno"
+msgstr "Incluir ruta del "ld library path" en el entorno"
 
 msgid "Include system path in environment"
 msgstr "Incluir ruta del sistema en el entorno"
@@ -296,7 +296,7 @@ msgid "Please enter the port that the Openoffice Server will listen to by defaul
 msgstr "Por favor, introduzca el puerto en el que el Servidor de OpenOffice va a escuchar por defecto."
 
 msgid "Please enter your database 'postgres' user password."
-msgstr "Por favor, introduzca la contraseña del usuario \"postgres\" de su base de datos."
+msgstr "Por favor, introduzca la contraseña del usuario "postgres" de su base de datos."
 
 msgid "Please give a password to use for the Alfresco administrator account."
 msgstr "Por favor, especifique una contraseña a utilizar para la cuenta de administrador de Alfresco."

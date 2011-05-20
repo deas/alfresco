@@ -717,7 +717,7 @@
          var me = this;
 
          // Detect whether or not HTML5 drag and drop is supported...
-         this.dragAndDropEnabled = this.dragAndDropAllowed && ('draggable' in document.createElement('span'));
+         this.dragAndDropEnabled = this.dragAndDropAllowed && ('draggable' in document.createElement('span')) && YAHOO.env.ua.mobile === null;
 
          // Set-up YUI History Managers
          this._setupHistoryManagers();
@@ -1669,7 +1669,7 @@
 
             if (permissions)
             {
-               var userCanUpload = me.doclistMetadata.parent.permissions.userAccess.create;
+               var userCanUpload = me.doclistMetadata.parent.permissions.userAccess.create && YAHOO.env.ua.mobile === null;
 
                if (userCanUpload && me.dragAndDropEnabled)
                {

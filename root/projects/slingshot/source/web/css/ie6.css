@@ -186,6 +186,8 @@ div.dashlet .body .clear
 {
    display: block;
    float: left;
+   width: 10em;
+   overflow-y: hidden;
 }
 
 .customise-pages .page-list-wrapper

@@ -356,7 +356,19 @@
           * @property startLocation
           * @type string
           */
-         startLocation: null
+         startLocation: null,
+         
+         /**
+          * Specifies the Root Node, above which the object picker will not navigate.
+          * Values supported are:
+          *
+          * - {companyhome}
+          * - {userhome}
+          * - {siteshome}
+          * - A NodeRef
+          * - An XPath
+          */
+         rootNode: null
       },
 
       /**
@@ -2696,8 +2708,10 @@
          var pathStart = nodeRef,
              pathEnd = "children";
          
-         if (!this.startLocationResolved && this.options.startLocation)
+         if (!this.startLocationResolved && (this.options.startLocation || this.options.rootNode))
          {
+            this.options.startLocation = (this.options.startLocation || this.options.rootNode);
+
             if (Alfresco.logger.isDebugEnabled())
             {
                Alfresco.logger.debug("Resolving startLocation of '" + this.options.startLocation + "'");
@@ -2784,7 +2798,7 @@
        * @param searchTerm The search term
        * @return The generated URL
        */
-      _generatePickerChildrenUrlParams: function ObjectRenderer__generatePickerChildrenUrlPath(searchTerm)
+      _generatePickerChildrenUrlParams: function ObjectRenderer__generatePickerChildrenUrlParams(searchTerm)
       {
          var params = "?selectableType=" + this.options.itemType + "&searchTerm=" + encodeURIComponent(searchTerm) + 
                       "&size=" + this.options.maxSearchResults;
@@ -2795,6 +2809,37 @@
               this.options.startLocation.charAt(0) == "/")
          {
             params += "&xpath=" + encodeURIComponent(this.options.startLocation);
+         }
+         
+         // has a rootNode been specified?
+         if (this.options.rootNode)
+         {
+            var rootNode = null;
+
+            if (this.options.rootNode.charAt(0) == "{")
+            {
+               if (this.options.rootNode == "{companyhome}")
+               {
+                  rootNode = "alfresco://company/home";
+               }
+               else if (this.options.rootNode == "{userhome}")
+               {
+                  rootNode = "alfresco://user/home";
+               }
+               else if (this.options.rootNode == "{siteshome}")
+               {
+                  rootNode = "alfresco://sites/home";
+               }
+            }
+            else
+            {
+               // rootNode is either an xPath expression or a nodeRef
+               rootNode = this.options.rootNode;
+            }
+            if (rootNode !== null)
+            {
+               params += "&rootNode=" + encodeURIComponent(rootNode);
+            }
          }
          
          if (this.options.params)

@@ -161,6 +161,8 @@ ${head}
 <!-- MSIE CSS fix overrides -->
    <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="${url.context}/res/css/ie6.css" /><![endif]-->
    <!--[if IE 7]><link rel="stylesheet" type="text/css" href="${url.context}/res/css/ie7.css" /><![endif]-->
+<!-- iPad CSS overrides -->
+   <link media="only screen and (max-device-width: 1024px)" rel="stylesheet" type="text/css" href="${url.context}/res/css/ipad.css"/>
 <#if !PORTLET>
 </head>
 </#if>

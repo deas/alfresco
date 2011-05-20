@@ -29,9 +29,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Simple servlet filter to add an 'Expires' HTTP header to a response.
- * The expires header is set forward in time by a value configurable in
- * the 'expires' init parameters - values are in days.
+ * Simple servlet filter to add a 'Cache-Control' HTTP header to a response.
+ * The Cache-Control header is set to a max-age value by a configurable setting
+ * in the 'expires' init parameters - values are in days.
  * 
  * WebScripts or other servlets that happen to match the response type
  * configured for the filter (e.g. "*.js") should override cache settings
@@ -41,10 +41,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class StaticAssetCacheFilter implements Filter
 {
-    private static final long DAY_MS = 1000L*60L*60L*24L;   // 1 day in milliseconds
+    private static final long DAY_S = 60L*60L*24L;          // 1 day in seconds
     private static final long DEFAULT_30DAYS = 30L;         // default of 30 days if not configured
     
-    private long expire = DAY_MS * DEFAULT_30DAYS;          // initially set to default value of 30 days
+    private long expire = DAY_S * DEFAULT_30DAYS;           // initially set to default value of 30 days
     
     
     /* (non-Javadoc)
@@ -55,7 +55,7 @@ public class StaticAssetCacheFilter implements Filter
         String expireParam = config.getInitParameter("expires");
         if (expireParam != null)
         {
-            this.expire = Long.parseLong(expireParam) * DAY_MS;
+            this.expire = Long.parseLong(expireParam) * DAY_S;
         }
     }
     
@@ -65,8 +65,7 @@ public class StaticAssetCacheFilter implements Filter
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
             ServletException
     {
-        ((HttpServletResponse)res).setDateHeader("Expires", System.currentTimeMillis() + this.expire);
-        ((HttpServletResponse)res).setHeader("Cache-Control", "public");
+        ((HttpServletResponse)res).setHeader("Cache-Control", "public, must-revalidate, max-age=" + Long.toString(this.expire));
         chain.doFilter(req, res);
     }
     
@@ -75,6 +74,6 @@ public class StaticAssetCacheFilter implements Filter
      */
     public void destroy()
     {
-        this.expire = DAY_MS * DEFAULT_30DAYS;
+        this.expire = DAY_S * DEFAULT_30DAYS;
     }
 }

@@ -24,6 +24,7 @@
 
       <div class="form-container">
          <div class="form-fields">
+         <#if readPermission!false>
             <div class="viewmode-field">
                <span class="viewmode-label">${msg("document-info.managers")}:</span>
                <span class="viewmode-value">${msg("document-info.role." + managers)}</span>
@@ -44,6 +45,9 @@
                <span class="viewmode-label">${msg("document-info.everyone")}:</span>
                <span class="viewmode-value">${msg("document-info.role." + everyone)}</span>
             </div>
+         <#else>
+            <div class="viewmode-field">${msg("document-info.no-read-permission")}</div>
+         </#if>
          </div>
       </div>
 

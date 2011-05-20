@@ -54,6 +54,16 @@
 
       Alfresco.util.ComponentManager.reregister(this);
 
+      this.options = YAHOO.lang.merge(this.options,
+      {
+         allowedViewModes:
+         [
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE,
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY,
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME
+         ]
+      });
+
       return this;
    };
 
@@ -117,25 +127,27 @@
        */
       setOptions: function RP_setOptions(obj)
       {
-         var dataWebScripts = {};
-         dataWebScripts[RP.MODE_PICKER] = "";
-         dataWebScripts[RP.MODE_COPY_FROM] = "copy-from";
-         dataWebScripts[RP.MODE_LINK_TO] = "link-to";
-
-         if (typeof dataWebScripts[obj.mode] == "undefined")
-         {
-            throw new Error("Alfresco.module.RulesPicker: Invalid mode '" + obj.mode + "'");
-         }
-         
-         var allowedViewModes = [Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE, Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY];
-
-         return Alfresco.module.RulesPicker.superclass.setOptions.call(this, YAHOO.lang.merge(
+         var myOptions =
          {
             viewMode: Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE,
-            allowedViewModes: allowedViewModes,
-            extendedTemplateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/rules/rules-picker",
-            dataWebScript: dataWebScripts[obj.mode]                 
-         }, obj));
+            extendedTemplateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/rules/rules-picker"
+         };
+
+         if (typeof obj.mode !== "undefined")
+         {
+            var dataWebScripts = {};
+            dataWebScripts[RP.MODE_PICKER] = "";
+            dataWebScripts[RP.MODE_COPY_FROM] = "copy-from";
+            dataWebScripts[RP.MODE_LINK_TO] = "link-to";
+
+            if (typeof dataWebScripts[obj.mode] == "undefined")
+            {
+               throw new Error("Alfresco.module.RulesPicker: Invalid mode '" + obj.mode + "'");
+            }
+            myOptions.dataWebScript = dataWebScripts[obj.mode];
+         }
+
+         return Alfresco.module.RulesPicker.superclass.setOptions.call(this, YAHOO.lang.merge(myOptions, obj));
       },
 
       /**
@@ -183,6 +195,36 @@
 
          // Now that we have loaded this components i18n messages let the original template get rendered.
          Alfresco.module.RulesPicker.superclass.onTemplateLoaded.call(this, superClassResponse);
+      },
+
+      /**
+       * Mode change buttongroup event handler
+       *
+       * @method onViewModeChange
+       * @override
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onViewModeChange: function RP_onViewModeChange(e, p_obj)
+      {
+         this.widgets.okButton.set("disabled", true);
+         Dom.get(this.id + "-rulePicker").innerHTML = "";
+         Alfresco.module.RulesPicker.superclass.onViewModeChange.call(this, e, p_obj);
+      },
+
+      /**
+       * Site Changed event handler
+       *
+       * @method onSiteChanged
+       * @override
+       * @param layer {object} Event fired
+       * @param args {array} Event parameters (depends on event type)
+       */
+      onSiteChanged: function RP_onSiteChanged(layer, args)
+      {
+         this.widgets.okButton.set("disabled", true);
+         Dom.get(this.id + "-rulePicker").innerHTML = "";
+         Alfresco.module.RulesPicker.superclass.onSiteChanged.call(this, layer, args);
       },
 
       /**
@@ -263,7 +305,8 @@
             {
                // todo: configure url and dataObj when repo supports copy action
                eventName = "rulesCopiedFrom";
-               event = {
+               event =
+               {
                   nodeRef: file.nodeRef,
                   ruleNodeRefs: rules
                };
@@ -272,7 +315,8 @@
             {
                url = Alfresco.constants.PROXY_URI + "api/actionQueue";
                eventName = "rulesLinkedTo";
-               dataObj = {
+               dataObj =
+               {
                   actionedUponNode : file.nodeRef,
                   actionDefinitionName: "link-rules",
                   parameterValues:
@@ -281,7 +325,8 @@
                   }
                };
 
-               event = {
+               event =
+               {
                   nodeRef: file.nodeRef,
                   ruleNodeRefs: this.selectedNode.data.nodeRef
                };
@@ -291,13 +336,14 @@
             var fnSuccess = function RP__onOK_success(p_data)
             {
                this.widgets.dialog.hide();
-
-               YAHOO.Bubbling.fire(eventName, event);
+               this.widgets.feedbackMessage.destroy();
 
                Alfresco.util.PopupManager.displayMessage(
                {
                   text: this.msg("message.success")
                });
+
+               YAHOO.Bubbling.fire(eventName, event);
             };
 
             // Failure callback function

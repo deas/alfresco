@@ -4,7 +4,7 @@ function main()
    // retrieve the blog post
    var uri = "/api/blog/post/site/" + url.templateArgs.site +"/" + url.templateArgs.container +"/" + url.templateArgs.path;
    var connector = remote.connect("alfresco");
-   var result = connector.get(uri);
+   var result = connector.get(encodeURI(uri));
    if (result.status.code == status.STATUS_OK)
    {
       // Strip out possible malicious code

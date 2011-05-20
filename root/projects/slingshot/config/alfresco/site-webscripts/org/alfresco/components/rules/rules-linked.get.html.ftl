@@ -3,7 +3,8 @@
    new Alfresco.RulesLinked("${el}").setOptions(
    {
       nodeRef: new Alfresco.util.NodeRef("${(page.url.args.nodeRef!"")?js_string}"),
-      siteId: "${page.url.templateArgs.site!""}" 
+      siteId: "${page.url.templateArgs.site!""}",
+      repositoryBrowsing: ${(rootNode??)?string}
    }).setMessages(
       ${messages}
    );

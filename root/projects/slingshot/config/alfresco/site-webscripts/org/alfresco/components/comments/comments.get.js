@@ -9,7 +9,7 @@ function main()
    }
    var uri = "/api/node/" + url.templateArgs.store_type + "/" + url.templateArgs.store_id +"/" + url.templateArgs.id + "/comments?" + params.join("&");
    var connector = remote.connect("alfresco");
-   var result = connector.get(uri);
+   var result = connector.get(encodeURI(uri));
    if (result.status.code == status.STATUS_OK)
    {
       // Strip out possible malicious code

@@ -18,6 +18,9 @@
       itemType: "${field.endpointType}",
       multipleSelectMode: ${field.endpointMany?string},
       parentNodeRef: "alfresco://company/home",
+   <#if field.control.params.rootNode??>
+      rootNode: "${field.control.params.rootNode}",
+   </#if>
       itemFamily: "node",
       displayMode: "${field.control.params.displayMode!"items"}"
    });

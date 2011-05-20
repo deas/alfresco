@@ -57,7 +57,7 @@ public class SearchLanguageConversionTest extends TestCase
         assertEquals("Escaping for regex failed",
                 "\\\\ \\| ! \" £ " +
                 "\\$ % \\^ & \\* \\( " +
-                "\\) _ \\{ \\} [ ] " +
+                "\\) _ \\{ \\} \\[ \\] " +
                 "@ # ~ ' : ; " +
                 ", \\. < > \\+ \\? " +
                 "/ \\\\\\\\ \\\\\\* \\\\\\? \\\\_",
@@ -83,7 +83,7 @@ public class SearchLanguageConversionTest extends TestCase
         assertEquals("XPath like to regex failed",
                 "(?s) \\| ! \" £ " +
                 "\\$ .* \\^ & \\* \\( " +
-                "\\) . \\{ \\} [ ] " +
+                "\\) . \\{ \\} \\[ \\] " +
                 "@ # ~ ' : ; " +
                 ", \\. < > \\+ \\? " +
                 "/ \\\\ \\* \\? _",

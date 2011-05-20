@@ -61,10 +61,12 @@
          <@mimetypeOption mt="application/msword" />
          <@mimetypeOption mt="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
          <@mimetypeOption mt="application/vnd.ms-outlook" />
-         <@mimetypeOption mt="audio/x-mpeg" />
+         <@mimetypeOption mt="audio/mpeg" />
          <@mimetypeOption mt="video/mpeg" />
          <@mimetypeOption mt="video/mpeg2" />
          <@mimetypeOption mt="video/mp4" />
+         <@mimetypeOption mt="video/x-m4v" />
+         <@mimetypeOption mt="audio/ogg" />
          <@mimetypeOption mt="video/ogg" />
          <@mimetypeOption mt="video/webm" />
          <@mimetypeOption mt="video/x-ms-wma" />
@@ -176,10 +178,11 @@
       "application/x-fla", "Flash Source",
       "image/jpeg2000", "JPEG 2000",
       "text/mediawiki", "MediaWiki Markup",
-      "audio/x-mpeg", "MPEG Audio",
+      "audio/mpeg", "MPEG Audio",
       "video/mpeg", "MPEG Video",
       "video/mpeg2", "MPEG2 Video",
       "video/mp4", "MPEG4 Video",
+      "video/x-m4v", "MPEG4 Video (m4v)",
       "video/x-ms-wma", "MS Streaming Audio",
       "video/x-ms-asf", "MS Streaming Video (asf)",
       "video/x-ms-wmv", "MS Streaming Video (wmv)",
@@ -229,6 +232,7 @@
       "application/x-zip": "Adobe Flex Project File",
       "application/x-indesign": "Adobe InDesign Document",
       "application/photoshop": "Adobe Photoshop Document",
+      "audio/ogg": "OGG Audio",
       "video/ogg": "OGG Video",
       "video/ogv": "OGG Video",
       "video/webm": "WebM Video"

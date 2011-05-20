@@ -24,7 +24,7 @@
                <#if cfg.link?size == 1 || (cfg.editable!"false")?matches("true")>
                <div class="caption">
                   <#if cfg.link?size == 1>
-                     <a href="${cfg.link}" target="${cfg.link.@target}">${msg(cfg.link.@label)}</a>
+                     <a href="${cfg.link}" title="${msg(cfg.link.@label)}" target="${cfg.link.@target}">${msg(cfg.link.@label)}</a>
                   </#if>
                   <#if (cfg.editable!"false")?matches("true")>
                      <button class="alfresco-button" name=".showEditPanel">${msg("button.edit")}</button>

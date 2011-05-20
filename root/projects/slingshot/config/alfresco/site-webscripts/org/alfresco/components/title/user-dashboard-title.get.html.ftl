@@ -1,7 +1,7 @@
 <#assign activePage = page.url.templateArgs.pageid!"customise-user-dashboard">
 <#assign userName>${user.properties["firstName"]?html} <#if user.properties["lastName"]??>${user.properties["lastName"]?html}</#if></#assign>
 <script type="text/javascript">//<![CDATA[
-   Alfresco.constants.DASHLET_RESIZE = ${((page.url.templateArgs.userid!"-") = (user.name!""))?string};
+   Alfresco.constants.DASHLET_RESIZE = ${((page.url.templateArgs.userid!"-") = (user.name!""))?string} && YAHOO.env.ua.mobile === null;
 //]]></script>
 <div class="page-title theme-bg-color-1 theme-border-1"><!-- ${activePage} -->
    <div class="title">
@@ -14,6 +14,5 @@
             <a href="${url.context}/page/customise-user-dashboard" ${linkClass}>${msg("link.customiseDashboard")}</a>
          </span>
       </span>          
-
    </div>
 </div>

@@ -1073,8 +1073,10 @@ YAHOO.namespace('extension');
                   return;
                }
             }
-            if (items[0])
+            if (items[0] && Alfresco.util.isVisible(items[0]))
+            {
                items[0].focus();
+            }
          }
       },
 

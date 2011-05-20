@@ -347,7 +347,7 @@
        */
       onFormSubmitFailure: function LinkEdit_onFormSubmitFailure(response)
       {
-         response.config.failureMessage = YAHOO.lang.JSON.parse(response.serverResponse.responseText).message;
+         response.config.failureMessage = this.msg("message.savelink.failure");
          // enable the buttons
          this.widgets.okButton.set("disabled", false);
 

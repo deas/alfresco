@@ -65,8 +65,8 @@
             <li class="availableDashlet">
                <input type="hidden" name="dashleturl" value="${dashlet.url}"/>
                <a href="#"><img class="dnd-draggable" src="${url.context}/res/yui/assets/skins/default/transparent.gif" alt="" /></a>
-               <span >${dashlet.shortName}</span>
-               <div class="dnd-draggable" title="${dashlet.description}"></div>
+               <span ><#if dashlet.shortName?length < 26>${dashlet.shortName}<#else>${dashlet.shortName?substring(0, 24)}...</#if></span>
+               <div class="dnd-draggable" title="${dashlet.shortName} - ${dashlet.description}"></div>
             </li>
          </#list>
          </ul>
@@ -88,8 +88,8 @@
                   <input type="hidden" name="dashleturl" value="${dashlet.url}"/>
                   <input type="hidden" name="originalregionid" value="${dashlet.originalRegionId}"/>
                   <a href="#"><img class="dnd-draggable" src="${url.context}/res/yui/assets/skins/default/transparent.gif" alt="" /></a>
-                  <span>${dashlet.shortName}</span>
-                  <div class="dnd-draggable" title="${dashlet.description}"></div>
+                  <span><#if dashlet.shortName?length < 26>${dashlet.shortName}<#else>${dashlet.shortName?substring(0, 24)}...</#if></span>
+                  <div class="dnd-draggable" title="${dashlet.shortName} - ${dashlet.description}"></div>
                </li>
             </#list>
             </ul>                                            

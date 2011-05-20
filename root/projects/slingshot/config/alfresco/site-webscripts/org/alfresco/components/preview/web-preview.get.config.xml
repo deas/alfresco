@@ -20,6 +20,12 @@
          <plugin poster="imgpreview" posterFileSuffix=".png">Video</plugin>
       </condition>
 
+      <condition mimeType="video/m4v" thumbnail="imgpreview">
+         <plugin poster="imgpreview" posterFileSuffix=".png">StrobeMediaPlayback</plugin>
+         <plugin poster="imgpreview" posterFileSuffix=".png">FlashFox</plugin>
+         <plugin poster="imgpreview" posterFileSuffix=".png">Video</plugin>
+      </condition>
+
       <condition mimeType="video/x-flv" thumbnail="imgpreview">
          <plugin poster="imgpreview" posterFileSuffix=".png">StrobeMediaPlayback</plugin>
          <plugin poster="imgpreview" posterFileSuffix=".png">FlashFox</plugin>
@@ -45,6 +51,12 @@
          <plugin>Video</plugin>
       </condition>
 
+      <condition mimeType="video/x-m4v">
+         <plugin>StrobeMediaPlayback</plugin>
+         <plugin>FlashFox</plugin>
+         <plugin>Video</plugin>
+      </condition>
+
       <condition mimeType="video/x-flv">
          <plugin>StrobeMediaPlayback</plugin>
          <plugin>FlashFox</plugin>
@@ -60,6 +72,17 @@
 
       <condition mimeType="video/webm">
          <plugin>Video</plugin>
+      </condition>
+
+      <!-- Audio -->
+      <condition mimeType="audio/mpeg">
+         <plugin>StrobeMediaPlayback</plugin>
+         <plugin>FlashFox</plugin>
+         <plugin>Audio</plugin>
+      </condition>
+
+      <condition mimeType="audio/x-wav">
+         <plugin>Audio</plugin>
       </condition>
 
       <!-- Documents that has been converted to .swf -->

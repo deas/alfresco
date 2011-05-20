@@ -4,5 +4,5 @@
       <itemKind>mbean</itemKind>
       <itemId>Alfresco:Name=OpenOffice</itemId>
    </form>
-   <editable>true</editable>
+   <editable>false</editable>
 </config>

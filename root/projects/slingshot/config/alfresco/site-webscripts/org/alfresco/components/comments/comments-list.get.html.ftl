@@ -35,7 +35,9 @@
 
       <div class="comments-list-actions">
          <div class="left">
-            <button class="alfresco-button" name=".onAddCommentClick">${msg("button.addComment")}</button>
+            <div id="${el}-actions" class="hidden">
+               <button class="alfresco-button" name=".onAddCommentClick">${msg("button.addComment")}</button>
+            </div>
          </div>
          <div class="right">
             <div id="${el}-paginator-top"></div>

@@ -1,3 +1,6 @@
+﻿msgid "Installer.ReadmeFile.View"
+msgstr "Visualizza il file Readme"
+
 msgid "${product_fullname} OpenOffice Service"
 msgstr "Servizio OpenOffice ${product_fullname}"
 
@@ -14,7 +17,7 @@ msgid "Admin Password:"
 msgstr "Password ammin:"
 
 msgid "Advanced - Configures server ports and service properties. Also choose optional components to install."
-msgstr "Avanzate - Configura le proprietà dei servizi e delle porte server. Inoltre, consente di\nscegliere i componenti opzionali da installare."
+msgstr "Avanzato - Configura le proprietà dei servizi e delle porte server.  Inoltre, consente di scegliere i componenti opzionali da installare."
 
 msgid "Alfresco"
 msgstr "Alfresco"
@@ -35,7 +38,7 @@ msgid "Alfresco FTP Port"
 msgstr "Porta FTP Alfresco"
 
 msgid "Alfresco Licenses"
-msgstr "Licenze di Alfresco"
+msgstr "Licenze Alfresco"
 
 msgid "Alfresco Module Packages"
 msgstr "Pacchetti di moduli Alfresco"
@@ -77,7 +80,7 @@ msgid "Config Files"
 msgstr "File di configurazione"
 
 msgid "Couldn't check Apache Tomcat Version.\nTomcat 5.5 is recommended."
-msgstr "Impossibile verificare la versione di Apache Tomcat.\nSi consiglia di utilizzare Tomcat 5.5."
+msgstr "Impossibile verificare la versione di Apache Tomcat.\nSi consiglia di utilizzare Tomcat 6.0."
 
 msgid "Creating user and database"
 msgstr "Creazione dell'utente e del database"
@@ -236,7 +239,7 @@ msgid "New Folder"
 msgstr "Nuova cartella"
 
 msgid "Not a PostgreSQL version 8.1.4 installation. PostgreSQL 8.1.4 recommended."
-msgstr "Installazione diversa da PostgreSQL versione 8.1.4. Si consiglia di utilizzare PostgreSQL 8.1.4."
+msgstr "Installazione diversa da PostgreSQL versione 8.4.1.  Si consiglia di utilizzare PostgreSQL 8.4.1."
 
 msgid "Open SSL Component"
 msgstr "Componente OpenSSL"

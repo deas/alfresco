@@ -14,9 +14,7 @@
             title: "${workflowDefinition.title!""?js_string}",
             description: "${workflowDefinition.description!""?js_string}"
          }<#if workflowDefinition_has_next>,</#if>
-      </#list>],
-      minSearchTermLength: ${(args.minSearchTermLength!config.scoped['Search']['search'].getChildValue('min-search-term-length'))?js_string},
-      maxSearchResults: ${(args.maxSearchResults!config.scoped['Search']['search'].getChildValue('max-search-results'))?js_string}
+      </#list>]
    }).setMessages(
       ${messages}
    );

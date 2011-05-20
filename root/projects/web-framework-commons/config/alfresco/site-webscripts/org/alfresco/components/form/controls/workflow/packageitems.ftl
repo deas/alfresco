@@ -40,9 +40,11 @@
       {
          showLinkToTarget: true,
          targetLinkTemplate: ${documentLinkResolver},         
-         <#if form.mode == "create" && form.destination?? && form.destination?length &gt; 0>
+      <#if form.mode == "create" && form.destination?? && form.destination?length &gt; 0>
          startLocation: "${form.destination?js_string}",
-         </#if>
+      <#elseif field.control.params.startLocation??>
+         startLocation: "${field.control.params.startLocation?js_string}",
+      </#if>
          itemType: "cm:content",
          displayMode: "${field.control.params.displayMode!"list"}",
          listItemActions: [

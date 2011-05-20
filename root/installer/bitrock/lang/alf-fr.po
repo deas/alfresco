@@ -1,4 +1,4 @@
-msgid "Installer.ReadmeFile.View"
+﻿msgid "Installer.ReadmeFile.View"
 msgstr "Voir le fichier Readme"
 
 msgid "${product_fullname} OpenOffice Service"

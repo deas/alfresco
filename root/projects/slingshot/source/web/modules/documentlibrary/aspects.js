@@ -523,6 +523,9 @@
             {
                addableArr = visibleArr.slice(0);
             }
+            
+            this._googleDocsFilter(addableArr);
+            
             if (removeableArr.length === 0)
             {
                removeableArr = visibleArr.slice(0);
@@ -572,7 +575,46 @@
             this.widgets.dataTableLeft.render();
             this.widgets.dataTableRight.render();
          }
-      }
+      },
+      
+      /**
+       * Filters addable aspects based on certain application business logic
+       *
+       * @method _googleDocsFilter
+       * @protected
+       * @param addable {Array} Array of addable aspects as read from configuration
+       */
+       _googleDocsFilter: function DA__googleDocsFilter(addable)
+       {
+          var googleDocsAllowed =
+          {
+             "text/plain": true,
+             "application/msword": true,
+             "application/vnd.ms-excel": true,
+             "application/vnd.ms-powerpoint": true
+          },
+            mimetype = this.options.file.mimetype;
+          
+          if (!googleDocsAllowed.hasOwnProperty(mimetype))
+          {
+             // Array Remove - By John Resig (MIT Licensed)
+             var fnArrayRemove = function fnArrayRemove(array, from, to)
+             {
+               var rest = array.slice((to || from) + 1 || array.length);
+               array.length = from < 0 ? array.length + from : from;
+               return array.push.apply(array, rest);
+             };
+
+             for (var i = 0, ii = addable.length; i < ii; i++)
+             {
+                if (addable[i] == "gd:googleEditable")
+                {
+                   fnArrayRemove(addable, i);
+                   break;
+                }
+             }
+          }
+       }
    });
 })();
 /**

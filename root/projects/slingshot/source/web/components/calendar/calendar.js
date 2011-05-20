@@ -201,7 +201,7 @@
                var event = events[i];
                if (event)
                {
-                 var from = event.from || event.dtstart;
+                 var from = event.from || event.dtstart || event.when;
                  
                  selectedDates.push(Alfresco.util.formatDate(Alfresco.thirdparty.fromISO8601(from),"mm/dd/yyyy"));  
                }

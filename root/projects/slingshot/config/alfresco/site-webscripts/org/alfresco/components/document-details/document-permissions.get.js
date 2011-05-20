@@ -8,36 +8,42 @@ function setPermissions(documentDetails)
       permission;
 
    model.roles = rawPerms;
-   model.managers = "None";
-   model.collaborators = "None";
-   model.contributors = "None";
-   model.consumers = "None";
-   model.everyone = "None";
+   model.readPermission = false;
 
-   for (i = 0, ii = rawPerms.length; i < ii; i++)
+   if (rawPerms.length > 0)
    {
-      permParts = rawPerms[i].split(";");
-      group = permParts[1];
-      permission = permParts[2]
-      if (group.indexOf("_SiteManager") != -1)
+      model.readPermission = true;
+      model.managers = "None";
+      model.collaborators = "None";
+      model.contributors = "None";
+      model.consumers = "None";
+      model.everyone = "None";
+
+      for (i = 0, ii = rawPerms.length; i < ii; i++)
       {
-         model.managers = permission;
-      }
-      else if (group.indexOf("_SiteCollaborator") != -1)
-      {
-         model.collaborators = permission;
-      }
-      else if (group.indexOf("_SiteContributor") != -1)
-      {
-         model.contributors = permission;
-      }
-      else if (group.indexOf("_SiteConsumer") != -1)
-      {
-         model.consumers = permission;
-      }
-      else if (group.indexOf("GROUP_EVERYONE") == 0)
-      {
-         model.everyone = permission;
+         permParts = rawPerms[i].split(";");
+         group = permParts[1];
+         permission = permParts[2]
+         if (group.indexOf("_SiteManager") != -1)
+         {
+            model.managers = permission;
+         }
+         else if (group.indexOf("_SiteCollaborator") != -1)
+         {
+            model.collaborators = permission;
+         }
+         else if (group.indexOf("_SiteContributor") != -1)
+         {
+            model.contributors = permission;
+         }
+         else if (group.indexOf("_SiteConsumer") != -1)
+         {
+            model.consumers = permission;
+         }
+         else if (group.indexOf("GROUP_EVERYONE") == 0)
+         {
+            model.everyone = permission;
+         }
       }
    }
 }

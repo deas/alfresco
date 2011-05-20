@@ -2,7 +2,7 @@ var clientRequest = json.toString();
 var clientJSON = eval('(' + clientRequest + ')');
 
 // The dashboard we are modifiying
-var dashboardPage = clientJSON.dashboardUrl;
+var dashboardPage = decodeURIComponent(clientJSON.dashboardUrl);
 
 //var dashboardPage = "user/" + user.name + "/dashboard";
 var oldComponents = sitedata.findComponents("page", null, dashboardPage, null);

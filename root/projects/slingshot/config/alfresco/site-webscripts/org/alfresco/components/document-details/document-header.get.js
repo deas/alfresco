@@ -36,12 +36,13 @@ function main()
    AlfrescoUtil.param("rootLabelId", "path.documents");
    AlfrescoUtil.param("showFavourite", "true");
    AlfrescoUtil.param("showLikes", "true");
-   AlfrescoUtil.param("showComments", "true");
+   AlfrescoUtil.param("showComments", "false");
    var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
    if (documentDetails)
    {
       model.document = documentDetails.item;
       model.paths = getPaths(documentDetails, model.rootPage, model.rootLabelId);
+      model.showComments = (documentDetails.item.permissions.userAccess.create || false).toString();
    }
 }
 

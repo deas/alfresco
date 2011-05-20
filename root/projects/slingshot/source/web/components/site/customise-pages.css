@@ -43,6 +43,7 @@
 .customise-pages .available-pages .page-list
 {
    height: 9em;
+   overflow-y: hidden;
 }
 
 .customise-pages-page-list-item img
@@ -59,7 +60,9 @@
 .customise-pages-page-list-item
 {                                                                     
    text-align: center;
-   width: 10em;
+   min-width: 10em;
+   padding-left: 0.25em;
+   padding-left: 0.25em;
    display: inline-block;
    height: 12em;
    overflow-y: visible;

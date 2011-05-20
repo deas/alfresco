@@ -9,7 +9,8 @@
          nodeRef: "${nodeRef?js_string}",
          siteId: <#if site??>"${site?js_string}"<#else>null</#if>,
          containerId: "${container?js_string}",
-         workingCopyVersion: <#if workingCopyVersion??>"${workingCopyVersion?js_string}"<#else>null</#if>
+         workingCopyVersion: <#if workingCopyVersion??>"${workingCopyVersion?js_string}"<#else>null</#if>,
+         allowNewVersionUpload: ${allowNewVersionUpload?string}
       }).setMessages(
          ${messages}
       );

@@ -1,0 +1,43 @@
+/* CSS Overrides for iOS */
+
+/* fix visible right-hand margin when long filenames are present */
+.doclist .yui-dt-liner
+{
+   padding: 4px;
+   max-width: 440px;
+   overflow-x: auto;
+}
+
+/* display entire height of dashlets */
+.dashlet .scrollableList
+{
+   height: auto !important;
+}
+
+/* customise dashlets - dashlet list */
+.customise-dashlets ul.availableList
+{
+   height: auto !important;
+}
+
+/* remove default webkit inner shadow from input fields */
+input[type="text"], input[type="password"], textarea, select
+{
+   -webkit-appearance: none;
+}
+
+/* custom scrollbars to force scroll thumb display on overflow div containers */
+::-webkit-scrollbar
+{
+   width: 5px;
+}
+::-webkit-scrollbar-thumb
+{
+   background: rgba(0,0,0,0.5);
+   -webkit-border-radius: 5px;
+   -webkit-box-shadow: 0 0 1px rgba(255,255,255,1);
+}
+::-webkit-scrollbar-thumb:window-inactive
+{
+   background: rgba(0,0,0,0.2); 
+}

@@ -1,4 +1,5 @@
 <#assign el=args.htmlid?html>
+
 <div id="${el}-dialog" class="create-event">
 <#if (!edit)>
    <div class="hd">${msg("title.addEvent")}</div>
@@ -12,7 +13,7 @@
          <input type="hidden" name="page" value="calendar" />
          <input type="hidden" id="${el}-from" name="from" value="${event.from!""}" />
          <input type="hidden" id="${el}-to" name="to" value="${event.to!""}" />
-         <#if !enableDocFolder??>
+         <#if config.script.config.enableDocFolder="false">
             <input type="hidden" name="docfolder" value="${event.docfolder}" />
          </#if>
          <div class="yui-g">
@@ -20,15 +21,15 @@
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-title">${msg("label.what")}:</label></div>
-            <div class="yui-u"><input id="${el}-title" type="text" name="what" value="${event.what?html}" tabindex="0" class="wide"/> * </div>
+            <div class="yui-u"><input id="${el}-title" type="text" name="what" value="${event.what?html}" tabindex="1" class="wide"/> * </div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-location">${msg("label.where")}:</label></div>
-            <div class="yui-u"><input id="${el}-location" type="text" name="where" value="${event.location?html}" tabindex="0" class="wide"/></div>
+            <div class="yui-u"><input id="${el}-location" type="text" name="where" value="${event.location?html}" tabindex="2" class="wide"/></div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-description">${msg("label.description")}:</label></div>
-            <div class="yui-u"><textarea id="${el}-description" name="desc" rows="3" cols="20" class="wide" tabindex="0">${event.description?html}</textarea></div>
+            <div class="yui-u"><textarea id="${el}-description" name="desc" rows="3" cols="20" class="wide" tabindex="3">${event.description?html}</textarea></div>
          </div>
          <div class="yui-g">
             <h2>${msg("section.time")}</h2>
@@ -36,18 +37,18 @@
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-allday">${msg("label.allday")}:</label></div>
             <#if (edit && event.allday=='true')>
-            <div class="yui-u"><input id="${el}-allday" type="checkbox" name="allday" tabindex="0" checked="checked"/></div>
+            <div class="yui-u"><input id="${el}-allday" type="checkbox" name="allday" tabindex="4" checked="checked"/></div>
             <#else>
-            <div class="yui-u"><input id="${el}-allday" type="checkbox" name="allday" tabindex="0"/></div>
+            <div class="yui-u"><input id="${el}-allday" type="checkbox" name="allday" tabindex="5"/></div>
             </#if>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="fd">${msg("label.startdate")}:</label></div>
-            <div class="yui-u overflow"><span id="${el}-startdate"><input id="fd" type="text" name="fromdate" readonly="readonly"  value="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" title="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if>" /></span><span id="${el}-starttime" class="eventTime">&nbsp;<label for="${el}-start">${msg("label.at")}&nbsp;</label><input id="${el}-start" name="start" value="${event.start!"12:00"}" type="text" size="10" tabindex="0" /></span></div>
+            <div class="yui-u overflow"><span id="${el}-startdate"><input id="fd" type="text" name="fromdate" readonly="readonly" tabindex="6" value="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" title="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if>" /></span><span id="${el}-starttime" class="eventTime">&nbsp;<label for="${el}-start">${msg("label.at")}&nbsp;</label><input id="${el}-start" name="start" value="${event.start!"12:00"}" type="text" size="10" tabindex="7" /></span></div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="td">${msg("label.enddate")}:</label></div>
-            <div class="yui-u overflow"><span id="${el}-enddate"><input id="td" type="text" name="todate" readonly="readonly"  value="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" title="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if>" /></span><span id="${el}-endtime" class="eventTime">&nbsp;<label for="${el}-end">${msg("label.at")}&nbsp;</label><input id="${el}-end" name="end" value="${event.end!"13:00"}" type="text" size="10" tabindex="0" /></span></div>
+            <div class="yui-u overflow"><span id="${el}-enddate"><input id="td" type="text" name="todate" readonly="readonly" tabindex="8" value="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" title="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if>" /></span><span id="${el}-endtime" class="eventTime">&nbsp;<label for="${el}-end">${msg("label.at")}&nbsp;</label><input id="${el}-end" name="end" value="${event.end!"13:00"}" type="text" size="10" tabindex="9" /></span></div>
          </div>
          <!-- tags -->
          <div class="yui-gd">
@@ -66,10 +67,10 @@
                         <#if tag_has_next><#assign tags = tags + ' '></#if>
                      </#list>
                   </#if>
-                  <input type="text" size="30" class="rel_left" id="${el}-tag-input-field" value="${tags}"/>
-                  <input type="button" id="${el}-add-tag-button" value="${msg("button.add")}" />
+                  <input tabindex="10" type="text" size="30" class="rel_left" id="${el}-tag-input-field" value="${tags}"/>
+                  <input tabindex="11" type="button" id="${el}-add-tag-button" value="${msg("button.add")}" />
                   <div class="bottom_taglist tags_box">
-                     <a href="#" id="${el}-load-popular-tags-link">${msg("taglibrary.populartagslink")}</a>
+                     <a tabindex="12" href="#" id="${el}-load-popular-tags-link">${msg("taglibrary.populartagslink")}</a>
                      <ul id="${el}-popular-tags">
                      </ul>
                   </div>
@@ -77,21 +78,21 @@
                <!-- end tags -->                    
             </div>
          </div>
-         <#if enableDocFolder??>
+         <#if config.script.config.enableDocFolder="true">
             <div class="yui-g">
                <h2>${msg("section.documents")}</h2>
             </div>
             <div class="yui-gd">
                <div class="yui-u first"><label for="${el}-docfolder">${msg("label.docfolder")}:</label></div>
                <div class="yui-u" >
-                  <input type="text" id="${el}-docfolder" name="docfolder" value="${event.docfolder?html}" class="docfolder-input" readonly="true" />
-                  <input type="button" id="${el}-browse-button" value="${msg("label.browse")}" />
+                  <input tabindex="13" type="text" id="${el}-docfolder" name="docfolder" value="${event.docfolder?html}" class="docfolder-input" readonly="true" />
+                  <input tabindex="14" type="button" id="${el}-browse-button" value="${msg("label.browse")}" />
                </div>
             </div>
          </#if>	 
          <div class="bdft">
-            <input type="submit" id="${el}-ok" value="${msg("button.ok")}" tabindex="0" />
-            <input type="submit" id="${el}-cancel" value="${msg("button.cancel")}" tabindex="0" />
+            <input type="submit" id="${el}-ok" value="${msg("button.ok")}" tabindex="15" />
+            <input type="submit" id="${el}-cancel" value="${msg("button.cancel")}" tabindex="16" />
          </div>
         <#if edit && event.isoutlook == 'false'>
         <div name="edit-available" id="${el}-edit-available" />

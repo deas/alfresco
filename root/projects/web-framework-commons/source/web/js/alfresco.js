@@ -546,40 +546,68 @@ Alfresco.util.getFileIcon = function(p_fileName, p_fileType, p_iconSize)
    // Mapping from extn to icon name for cm:content
    var extns = 
    {
+      "aep": "aep",
+      "ai": "ai",
+      "aiff": "aiff",
+      "asf": "video",
+      "asnd": "asnd",
+      "asx": "video",
+      "au": "audio",
+      "avi": "video",
+      "avx": "video",
+      "bmp": "img",
+      "css": "text",
+      "divx": "video",
       "doc": "doc",
       "docx": "doc",
-      "ppt": "ppt",
-      "pptx": "ppt",
-      "xls": "xls",
-      "xlsx": "xls",
-      "pdf": "pdf",
-      "bmp": "img",
+      "eml": "eml",
+      "fla": "fla",
+      "flv": "video",
+      "fxp": "fxp",
       "gif": "img",
-      "jpg": "img",
-      "jpeg": "img",
-      "png": "img",
-      "psd": "psd",
-      "txt": "text",
       "htm": "html",
       "html": "html",
-      "keynote": "keynote",
-      "pages": "pages",
-      "numbers": "numbers",
-      "odt": "odt",
-      "ods": "ods",
-      "odp": "odp",
-      "odg": "odg",
+      "indd": "indd",
+      "jpeg": "img",
+      "jpg": "img",
+      "key": "key",
+      "mkv": "video",
+      "mov": "video",
+      "movie": "video",
       "mp3": "mp3",
-      "xml": "xml",
-      "zip": "zip",
-      "avi": "video",
+      "mp4": "video",
+      "mpeg": "video",
+      "mpeg2": "video",
+      "mpv2": "video",
+      "numbers": "numbers",
+      "odg": "odg",
+      "odp": "odp",
+      "ods": "ods",
+      "odt": "odt",
       "ogg": "video",
       "ogv": "video",
+      "pages": "pages",
+      "pdf": "pdf",
+      "png": "img",
+      "ppj": "ppj",
+      "ppt": "ppt",
+      "pptx": "ppt",
+      "psd": "psd",
+      "qt": "video",
+      "snd": "audio",
+      "spx": "audio",
+      "svg": "img",
+      "swf": "swf",
+      "tiff": "img",
+      "txt": "text",
+      "wav": "audio",
+      "webm": "video",
       "wmv": "video",
+      "xls": "xls",
+      "xlsx": "xls",
+      "xml": "xml",
       "xvid": "video",
-      "divx": "video",
-      "mp4": "video",
-      "mkv": "video"
+      "zip": "zip"
    };
 
    var prefix = "generic",
@@ -1543,7 +1571,7 @@ Alfresco.util.createYUIPanel = function(p_el, p_params, p_custom)
          modal: true,
          constraintoviewport: true,
          draggable: true,
-         fixedcenter: "contained",
+         fixedcenter: YAHOO.env.ua.mobile === null ? "contained" : false,
          close: true,
          visible: false
       },
@@ -1575,6 +1603,10 @@ Alfresco.util.createYUIPanel = function(p_el, p_params, p_custom)
    // Let other components react to when a panel is shown or hidden
    panel.subscribe("show", function (p_event, p_args)
    {
+      if (!params.fixedcenter)
+      {
+         panel.center();
+      }
       YAHOO.Bubbling.fire("showPanel",
       {
          panel: this
@@ -6149,7 +6181,7 @@ Alfresco.util.RENDERLOOPSIZE = 25;
       {
          if (this.id !== "null")
          {
-            YUIEvent.onAvailable(this.id, this.onReadyWrapper, this, true);
+            YUIEvent.onContentReady(this.id, this.onReadyWrapper, this, true);
          }
       },
 

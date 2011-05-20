@@ -68,6 +68,11 @@
    text-decoration: none;
 }
 
+.comments-list .details .comment-content
+{
+   clear: both;
+}
+
 .comments-list tr.yui-dt-highlighted .details .comment-actions a
 {
    visibility: visible;

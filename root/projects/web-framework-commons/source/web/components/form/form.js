@@ -422,8 +422,11 @@
          // extract the submit element to add
          var submitElement = args[1];
          
-         // add to the forms runtime instance
-         this.formsRuntime.addSubmitElement(submitElement);
+         // add to the forms runtime instance, if there is one
+         if (this.formsRuntime != null)
+         {
+            this.formsRuntime.addSubmitElement(submitElement);
+         }
       },
       
       /**

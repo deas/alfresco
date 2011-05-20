@@ -4,6 +4,11 @@
    margin: 16px 10px 10px;
 }
 
+.users a, .users a:visited, .users a:hover
+{
+    cursor: pointer;
+}
+
 .users .title
 {
    font-size: 123.1%;

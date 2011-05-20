@@ -1109,7 +1109,15 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
          {
             this.actionsNode = document.createElement("div");
             Dom.addClass(this.actionsNode, "titleBarActions");  // This class sets the position of the actions.
-            Dom.setStyle(this.actionsNode, "opacity", DASHLET_TITLE_BAR_ACTIONS_OPACITY);
+            if (YAHOO.env.ua.ie > 0)
+            {
+               // IE doesn't handle the fading in/out very well so we won't do it. 
+            }
+            else
+            {
+               Dom.setStyle(this.actionsNode, "opacity", DASHLET_TITLE_BAR_ACTIONS_OPACITY);
+            }
+          
 
             // Add the actions node before the dashlet body...
             this.dashlet.insertBefore(this.actionsNode, this.dashletBody);
@@ -1211,17 +1219,24 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
        */
       _fadeOut: function DashletTitleBarActions__fadeOut(e, me)
       {
-         // Only fade out if the mouse has left the dashlet entirely
-         if (!Dom.isAncestor(me.dashlet, Event.getRelatedTarget(e)))
+         if (YAHOO.env.ua.ie > 0)
          {
-            var fade = new YAHOO.util.Anim(me.actionsNode,
+            me.actionsNode.style.display = "none";
+         }
+         else
+         {
+            // Only fade out if the mouse has left the dashlet entirely
+            if (!Dom.isAncestor(me.dashlet, Event.getRelatedTarget(e)))
             {
-               opacity:
+               var fade = new YAHOO.util.Anim(me.actionsNode,
                {
-                  to: DASHLET_TITLE_BAR_ACTIONS_OPACITY
-               }
-            }, OPACITY_FADE_SPEED);
-            fade.animate();
+                  opacity:
+                  {
+                     to: DASHLET_TITLE_BAR_ACTIONS_OPACITY
+                  }
+               }, OPACITY_FADE_SPEED);
+               fade.animate();
+            }
          }
       },
 
@@ -1235,14 +1250,21 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
        */
       _fadeIn: function DashletTitleBarActions__fadeIn(e, me)
       {
-         var fade = new YAHOO.util.Anim(me.actionsNode,
+         if (YAHOO.env.ua.ie > 0)
          {
-            opacity:
+            me.actionsNode.style.display = "block";
+         }
+         else
+         {
+            var fade = new YAHOO.util.Anim(me.actionsNode,
             {
-               to: 1
-            }
-         }, OPACITY_FADE_SPEED);
-         fade.animate();         
+               opacity:
+               {
+                  to: 1
+               }
+            }, OPACITY_FADE_SPEED);
+            fade.animate();
+         }
       }
    });
 })();

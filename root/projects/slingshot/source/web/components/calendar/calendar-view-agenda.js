@@ -25,17 +25,18 @@
  */
 ( function() 
 {
-   var Dom = YAHOO.util.Dom,
-       Event = YAHOO.util.Event,
-       Selector = YAHOO.util.Selector,
-       fromISO8601 = Alfresco.util.fromISO8601,
-       toISO8601 = Alfresco.util.toISO8601,
-       dateFormat = Alfresco.thirdparty.dateFormat;
    
    /**
     * Alfresco Slingshot aliases
     */
-   var $html = Alfresco.util.encodeHTML;
+   var $html = Alfresco.util.encodeHTML,
+      Dom = YAHOO.util.Dom,
+      Event = YAHOO.util.Event,
+      Selector = YAHOO.util.Selector,
+      fromISO8601 = Alfresco.util.fromISO8601,
+      toISO8601 = Alfresco.util.toISO8601,
+      dateFormat = Alfresco.thirdparty.dateFormat,
+      DateMath = YAHOO.widget.DateMath;
    
 YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
 
@@ -54,7 +55,6 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       Event.addListener(navEls, "click", this.bind(this.onLoadEvents));
    },
 
-
    /**
     *  CELL RENDERERS
     */          
@@ -72,7 +72,9 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
    renderCellStart : function CalendarAgendaView_renderCellStart(elCell, oRecord, oColumn, oData) 
    {
       var data = oRecord.getData(),
-      html = "";
+      html = "",
+      start = data.displayStart || data.start,
+      end = data.displayEnd || data.end;
       
       // build up cell content
       if (data.isAllDay) 
@@ -80,7 +82,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
          html = this.msg("label.all-day")
       } else
       {
-         html = data.start + "-" + data.end
+         html = start + "-" + end
       }
       // write to DOM
       elCell.innerHTML = html;
@@ -245,6 +247,8 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       // check events arg was supplied (if it was, update memory), else read from memory
       if (events) 
       {
+         // if it was passed in, filter it for multiday events
+         events = this.filterMultiday(events);
          this.events = events;
       } else 
       {
@@ -263,7 +267,9 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       for (var i=0;i<numEvents;i++)
       {
          var event = events[i],
-            date = event.from.split('T')[0];
+            date = event.displayFrom || event.from;
+            
+         date = date.split('T')[0];
          sortedEvents[date] = sortedEvents[date] || {events: []};
          sortedEvents[date].events.push(event);
       }
@@ -295,8 +301,10 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
          {
             var render = false;
             
-            // check to see if data exists and if so if it's been changed
-            if (data[date]) 
+            // check to see if data exists (and whether it was rendered) and if it does (and has), only update it if it has changed.
+            // Some dates have data but aren't rendered initially (e.g. multiday events that start before the view starts), but may 
+            // need rendering this time. Rendering necessitates the dataTable object - hence the check.
+            if (data[date] && data[date].dataTable) 
             {
                // Converting Objects to JSON strings to enable comparison
                if (YAHOO.lang.JSON.stringify(data[date].events) != YAHOO.lang.JSON.stringify(sortedEvents[date].events)) 
@@ -337,8 +345,6 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
          this.eventsInitialised = true;
       }
       
-      YAHOO.Bubbling.fire("eventDataLoad",events);
-      
       // TODO: This should be triggered by the eventDataLoaded event.     
       // Has a DOM element been informing the user that data is being loaded?
       if (this.loadingLabelBuffer && this.loadingEl) 
@@ -367,8 +373,10 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
          ],
       grandParentEl = this.getCalendarContainer();
 
-      // check we have the data to work with:
-      if (!data) 
+      // Check we have the data to work with, and that the date to be rendered is valid for the view.
+      // The events have already been filtered to ensure that a portion of them is valid for the current view, 
+      // but some multiday events may extend (or begin) out side of the view parameters, so this filtering needs to occur again.
+      if (!data || !this.isValidDateForView(fromISO8601(date))) 
       {
          return false;
       }
@@ -433,8 +441,8 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       });
       
       // Note Event bindings occur automagically, so action links do not need to be bound to anything.
-
-      // TODO DWFEB2011 add row hover & effect. 
+      
+      //Add row hover effects.
       data.dataTable.subscribe("rowMouseoverEvent", data.dataTable.onEventHighlightRow); 
       data.dataTable.subscribe("rowMouseoutEvent", data.dataTable.onEventUnhighlightRow); 
    },
@@ -456,7 +464,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
     *  ACTION HANDLERS
     */
    
-   // Note: These are now handled by the Interaction handler in calendar-view.
+   // Note: These are handled by the Interaction handler in calendar-view.
    
    /**
     * Handler for eventEdited event. Updates event in DOM in response to updated event data.

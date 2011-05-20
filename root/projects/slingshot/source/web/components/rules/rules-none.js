@@ -74,7 +74,15 @@
           * @property siteId
           * @type string
           */
-         siteId: ""
+         siteId: "",
+
+         /**
+          * Whether the Repo Browser is in use or not
+          *
+          * @property repositoryBrowsing
+          * @type boolean
+          */
+         repositoryBrowsing: true
       },
 
       /**
@@ -118,10 +126,20 @@
             this.modules.rulesPicker = new Alfresco.module.RulesPicker(this.id + "-rulesPicker");
          }
 
+         var allowedViewModes =
+         [
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE
+         ];
+         if (this.options.repositoryBrowsing === true)
+         {
+            allowedViewModes.push(Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY, Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME);
+         }
+         
          this.modules.rulesPicker.setOptions(
          {
             mode: Alfresco.module.RulesPicker.MODE_LINK_TO,
             siteId: this.options.siteId,
+            allowedViewModes: allowedViewModes,
             files:
             {
                displayName: this.folderDetails,

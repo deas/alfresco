@@ -9,7 +9,7 @@
    }).setMessages(
       ${messages}
    );
-   Alfresco.constants.DASHLET_RESIZE = ${userIsSiteManager?string};
+   Alfresco.constants.DASHLET_RESIZE = ${userIsSiteManager?string} && YAHOO.env.ua.mobile === null;
 //]]></script>
 <div class="page-title theme-bg-color-1 theme-border-1">
    <div class="title">

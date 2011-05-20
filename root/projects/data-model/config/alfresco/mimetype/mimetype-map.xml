@@ -239,12 +239,15 @@
             <extension>mpeg</extension>
             <extension>mpe</extension>
          </mimetype>
-         <mimetype mimetype="audio/x-mpeg" display="MPEG Audio">
+         <mimetype mimetype="audio/mpeg" display="MPEG Audio">
             <extension default="true">mp3</extension>
             <extension>mp2</extension>
          </mimetype>
          <mimetype mimetype="video/mp4" display="MPEG4 Video">
             <extension>mp4</extension>
+         </mimetype>
+         <mimetype mimetype="video/x-m4v" display="MPEG4 Video (m4v)">
+            <extension>m4v</extension>
          </mimetype>
          <mimetype mimetype="video/mpeg2" display="MPEG2 Video">
             <extension>mpeg2</extension>

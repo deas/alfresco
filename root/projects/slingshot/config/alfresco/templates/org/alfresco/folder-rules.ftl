@@ -1,6 +1,5 @@
 <#include "include/alfresco-template.ftl" />
 <@templateHeader>
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/templates/rules/folder-rules.css" />
    <@script type="text/javascript" src="${page.url.context}/res/templates/rules/folder-rules.js"></@script>
 </@>
 

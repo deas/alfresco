@@ -920,21 +920,28 @@
                var customFormData = "--" + multipartBoundary;
 
                // Add the file parameter...
-               customFormData += rn + "Content-Disposition: form-data; name=\"filedata\"; filename=\"" + fileInfo.uploadData.filename + "\"";
+               customFormData += rn + "Content-Disposition: form-data; name=\"filedata\"; filename=\"" + unescape(encodeURIComponent(fileInfo.uploadData.filename)) + "\"";
                customFormData += rn + "Content-Type: image/png";
                customFormData += rn + rn + fileInfo.uploadData.filedata.getAsBinary() + rn + "--" + multipartBoundary;
 
                // Add the String parameters...
                customFormData += rn + "Content-Disposition: form-data; name=\"filename\"";
-               customFormData += rn + rn + fileInfo.uploadData.filename + rn + "--" + multipartBoundary;
+               customFormData += rn + rn + unescape(encodeURIComponent(fileInfo.uploadData.filename)) + rn + "--" + multipartBoundary;
                customFormData += rn + "Content-Disposition: form-data; name=\"destination\"";
-               customFormData += rn + rn + fileInfo.uploadData.destination + rn + "--" + multipartBoundary;
+               if (fileInfo.uploadData.destination !== null)
+               {
+                  customFormData += rn + rn + unescape(encodeURIComponent(fileInfo.uploadData.destination)) + rn + "--" + multipartBoundary;
+               }
+               else
+               {
+                  customFormData += rn + rn + rn + "--" + multipartBoundary;
+               }
                customFormData += rn + "Content-Disposition: form-data; name=\"siteId\"";
-               customFormData += rn + rn + fileInfo.uploadData.siteId + rn + "--" + multipartBoundary;
+               customFormData += rn + rn + unescape(encodeURIComponent(fileInfo.uploadData.siteId)) + rn + "--" + multipartBoundary;
                customFormData += rn + "Content-Disposition: form-data; name=\"containerId\"";
-               customFormData += rn + rn + fileInfo.uploadData.containerId + rn + "--" + multipartBoundary;
+               customFormData += rn + rn + unescape(encodeURIComponent(fileInfo.uploadData.containerId)) + rn + "--" + multipartBoundary;
                customFormData += rn + "Content-Disposition: form-data; name=\"uploaddirectory\"";
-               customFormData += rn + rn + fileInfo.uploadData.uploaddirectory + rn + "--" + multipartBoundary + "--";
+               customFormData += rn + rn + unescape(encodeURIComponent(fileInfo.uploadData.uploaddirectory)) + rn + "--" + multipartBoundary + "--";
 
                fileInfo.request.open("POST",  url, true);
                fileInfo.request.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + multipartBoundary);

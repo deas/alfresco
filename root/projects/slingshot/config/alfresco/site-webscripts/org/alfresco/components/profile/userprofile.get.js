@@ -18,14 +18,13 @@ function main()
       else
       {
          // fallback if unable to get user details
-         // TODO: display error?
-         model.profile = user;
+         model.profile = user.getUser(user.id);
       }
    }
    else
    {
       // if no profile specified, must be current user which will allow editing
-      model.profile = user;
+      model.profile = user.getUser(user.id);
    }
    
    // convert biography text to use <br/> line breaks

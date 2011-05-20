@@ -18,7 +18,7 @@ function main()
    if (family != null)
    {
       // find the existing current tool component binding
-      var component = sitedata.getComponent("page", "tool", family);
+      var component = sitedata.getComponent("page", "ctool", family);
       
       // collect the tools required for this console
       var tools = sitedata.findWebScripts(family);
@@ -86,13 +86,13 @@ function main()
                if (component == null)
                {
                   // first ever visit to the page - there is no component binding yet
-                  component = sitedata.newComponent("page", "tool", family);
+                  component = sitedata.newComponent("page", "ctool", family);
                }
                
                if (component.properties.url != toolUrl)
                {
                   component.properties.url = toolUrl;
-                  component.save();
+                  component.save(false);
                }
             }
          }

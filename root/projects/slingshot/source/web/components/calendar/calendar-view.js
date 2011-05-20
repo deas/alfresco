@@ -435,6 +435,10 @@
          var viewStartDate = this.options.startDate;
          var viewEndDate = this.options.endDate;		 
          var site = this.options.siteId;
+         
+         // Trigger Mini Calendar's rendering before filtering the events
+         YAHOO.Bubbling.fire("eventDataLoad",data);
+         
          for (var i = 0; i < data.length; i++) 
          {
             var ev = data[i];
@@ -543,6 +547,77 @@
       update: function CalendarView_update(id, o)
       {
          this.data.update(o);
+      },
+      
+      /**
+       * Filters the array of events for multiday events
+       * For each Multiday event, it:
+       *    - Creates an event for every day in the period.
+       *    - If not All day:
+       *       - the first day's display end time is set to: 00:00
+       *       - the middle days are marked as multiday
+       *       - the last day's start time is: 00:00
+       *    - Adds cloned tag.
+       *       
+       * TODO: Currently this is only used by the Agenda view - this needs rolling out across the other views when they get refactored.
+       * 
+       * @method filterMultiday
+       * @param {Array of event objects} events
+       */
+      filterMultiday: function CalendarView_filterMultiday(events) 
+      {
+         var DateMath = YAHOO.widget.DateMath;
+         
+         for (var i=0, numEvents=events.length;i<numEvents;i++) 
+         {
+            var event = events[i];
+            // check if event is multiday
+            if (event.isMultiDay) 
+            {
+               var from = event.from.split("T"),
+                  to = event.to.split("T"),
+                  startDay = fromISO8601(from[0]),
+                  endDay = fromISO8601(to[0]),
+                  //Pseudo code
+                  iterationDay = new Date(startDay + 86400000)
+               
+               // if not all day event, end time on first day needs to be midnight.
+               if (!event.isAllDay) 
+               {
+                  event.displayEnd = "00:00";
+               }
+               
+               for (var j=0, iterationDay=DateMath.add(startDay, DateMath.DAY, 1); iterationDay.getTime() <= endDay.getTime(); iterationDay=DateMath.add(iterationDay, DateMath.DAY, 1)) 
+               {
+                  var clonedEvent = YAHOO.lang.merge(event);
+                  
+                  // Mark as cloned and provide a marker to locate the original
+                  clonedEvent.isCloned = true;
+                  clonedEvent.clonedFromDate=event.from;
+                  
+                  // Sort out the display time.
+                  if (!event.isAllDay)   
+                  {
+                     // If event is not the last day of the repeating sequence, it lasts all day.
+                     if (!Alfresco.CalendarHelper.isSameDay(iterationDay, endDay)) 
+                     {
+                        clonedEvent.isAllDay = true;
+                     } else 
+                     {
+                        // if it is the same day, we need to set the finish time, by removing the displayEnd time.
+                        clonedEvent.displayStart="00:00";
+                        delete clonedEvent.displayEnd;
+                     }
+                     
+                     // set the DisplayDates for the cloned object to the current day of the loop:
+                     clonedEvent.displayFrom = toISO8601(iterationDay);
+                  }
+                  events.push(clonedEvent);
+               } 
+            }
+         }
+         
+         return events
       },
       
       /**
@@ -1304,6 +1379,8 @@
       {
          // Refresh the tag component
          this.refreshTags();
+         
+         // Confirm success to the user
          this.displayMessage('message.created.success', this.name);
       },
       
@@ -1642,15 +1719,16 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
          }
          return (dateOne.getDate() === dateTwo.getDate() && dateOne.getMonth() === dateTwo.getMonth() && dateOne.getFullYear() === dateTwo.getFullYear());
       },
- 
+
+      
       /**
-       * Checks to see if the two dates are the same
+       * Checks to see if dateOne is earlier than dateTwo or not
        *
        * @method isBefore
        * @param {Date|string} dateOne (either JS Date Object or ISO8601 date string)
        * @param {Date|string} dateTwo
        *
-       * @return {Boolean} flag indicating if dateOne is earlier than dateTwo or not
+       * @return {Boolean}
        */      
 		isBefore: function Alfresco_CalendarHelper_isBefore(dateOne, dateTwo) 
 		{
@@ -1728,14 +1806,21 @@ Alfresco.util.DialogManager = (function()
       {
          fn: function doBeforeDialogShow(form)
          {
+            
+            // Ensure form fields are blank / default.
+            // The eventDialog should get recreated everytime, but
+            // it doesn't always get reset if the user clicks cancel.
+            Dom.get(this.id + "-title").value = "";
+            Dom.get(this.id + "-location").value = "";
+            Dom.get(this.id + "-description").value = "";
+            
+            // Default Dates:
             var date = new Date();
             // Pretty formatting
             Alfresco.CalendarHelper.writeDateToField(this.options.displayDate, Dom.get("fd"));
             Alfresco.CalendarHelper.writeDateToField(this.options.displayDate, Dom.get("td"));
             Dom.get(this.id + "-from").value = Dom.get(this.id + "-to").value = dateFormat(this.options.displayDate, 'yyyy/mm/dd');
             Dom.get(this.id + "-tag-input-field").disabled = false;
-            Dom.get(this.id + "-tag-input-field").tabIndex = 8;
-            Dom.get(this.id + "-add-tag-button").tabIndex = 9;
             form.errorContainer = null;
             // disable time fields if all day event
             document.getElementsByName('start')[0].disabled = document.getElementsByName('end')[0].disabled = document.getElementsByName('allday')[0].checked;
@@ -1929,6 +2014,7 @@ Alfresco.util.DialogManager = (function()
                            }, tree.getRoot(), false);
                            
                            tree.render();
+                           this.browsePanel.setFirstLastFocusable();
                            this.browsePanel.show();
                         },
                         scope: this
@@ -1957,7 +2043,7 @@ Alfresco.util.DialogManager = (function()
                   id: "calendarpicker",
                   label: '',
                   href: '',
-                  tabindex: 4,
+                  tabindex: 6,
                   container: this.id + "-startdate"
                });
                
@@ -1973,7 +2059,7 @@ Alfresco.util.DialogManager = (function()
                   id: "calendarendpicker",
                   label: '',
                   href: 'test',
-                  tabindex: 6,
+                  tabindex: 8,
                   container: this.id + "-enddate"
                });
                
@@ -2021,7 +2107,7 @@ Alfresco.util.DialogManager = (function()
          });
          o.oCalendarMenu.setBody("&#32;");
          o.oCalendarMenu.body.id = "calendarcontainer";
-         var container = (targetEl.id === "calendarendpicker-button")? this.get('container') : targetEl.parentNode.id ;
+         var container = (targetEl.id === "calendarendpicker-button" || targetEl.id === "calendarpicker-button")? this.get('container') : targetEl.parentNode.id ;
          
          if (YAHOO.env.ua.ie) 
          {
@@ -2100,9 +2186,9 @@ Alfresco.util.DialogManager = (function()
          }, o, true);
          o.oCalendarMenu.body.tabIndex = -1;
          o.oCalendar.oDomContainer.tabIndex = -1;
-         o.oCalendarMenu.body.focus();
          o.oCalendarMenu.show();
          o.oCalendar.show();
+         o.oCalendarMenu.body.focus();
          return false;
       },
       

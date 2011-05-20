@@ -14,7 +14,7 @@
       endDate : Alfresco.util.fromISO8601('${viewArgs.view.endDate?html}'),
       titleDate : Alfresco.util.fromISO8601('${viewArgs.view.titleDate?html}'),
       permitToCreateEvents : '${viewArgs.permitToCreateEvents?html}',
-      truncateLength: ${truncateLength!100}
+      truncateLength: ${config.script.config.truncateLength!100}
    }).setMessages(
       ${messages}
    );

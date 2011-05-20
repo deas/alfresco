@@ -210,43 +210,6 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                {
                   form.setAttribute("onsubmit", "return false;");
                }
-               
-               var me = this;
-               
-               /**
-                * Prevent the Enter key from causing a double form submission
-                */
-               var fnStopEvent = function(id, keyEvent)
-               {
-                  var event = keyEvent[1],
-                     target = event.target ? event.target : event.srcElement;
-                  
-                  if (target.tagName == "TEXTAREA")
-                  {
-                     // Allow linefeeds in textareas
-                     return false;
-                  }
-                  else if (target.tagName == "BUTTON" || Dom.hasClass(target, "yuimenuitemlabel"))
-                  {
-                     // Eventlisteners for buttons and menus must be notified that the enter key was entered
-                  }
-                  else
-                  {
-                     var targetName = target.name;
-                     if (targetName && (targetName != "-"))
-                     {
-                        me._submitInvoked(event);
-                     }
-                     Event.stopEvent(event);
-                     return false;
-                  }
-               };
-
-               var enterListener = new KeyListener(form,
-               {
-                  keys: KeyListener.KEY.ENTER
-               }, fnStopEvent, YAHOO.env.ua.ie > 0 ? KeyListener.KEYDOWN : "keypress");
-               enterListener.enable();
             }
             
             // determine if the AJAX and JSON submission should be enabled

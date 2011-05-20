@@ -209,9 +209,12 @@
          Event.addListener(this.id + "-time", "keyup", this._handleFieldChange, this, true);
          Event.addListener(this.id + "-icon", "click", this._showPicker, this, true);
 
-         // setup keyboard enter events on the image instead of the link to get focus outline displayed
-         Alfresco.util.useAsButton(Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon")[0], this._showPicker, null, this);
-
+         if (this.options.disabled == false)
+         {
+            // setup keyboard enter events on the image instead of the link to get focus outline displayed
+            Alfresco.util.useAsButton(Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon")[0], this._showPicker, null, this);
+         }
+         
          // register a validation handler for the date entry field so that the submit 
          // button disables when an invalid date is entered
          YAHOO.Bubbling.fire("registerValidationHandler", 

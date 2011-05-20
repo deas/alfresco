@@ -14,25 +14,31 @@
    <div class="info-section">
       <div class="heading">${msg("folder-info.permissions")}</div>
       
-      <div class="info">
-         <span class="meta-label">${msg("folder-info.managers")}:</span>
-         <span id="${el}-perms-managers" class="meta-value"></span>
+      <div id="${el}-perms" class="hidden">
+         <div class="info">
+            <span class="meta-label">${msg("folder-info.managers")}:</span>
+            <span id="${el}-perms-managers" class="meta-value"></span>
+         </div>
+         <div class="info">
+            <span class="meta-label">${msg("folder-info.collaborators")}:</span>
+            <span id="${el}-perms-collaborators" class="meta-value"></span>
+         </div>
+         <div class="info">
+            <span class="meta-label">${msg("folder-info.contributors")}:</span>
+            <span id="${el}-perms-contributors" class="meta-value"></span>
+         </div>
+         <div class="info">
+            <span class="meta-label">${msg("folder-info.consumers")}:</span>
+            <span id="${el}-perms-consumers" class="meta-value"></span>
+         </div>
+         <div class="info">
+            <span class="meta-label">${msg("folder-info.everyone")}:</span>
+            <span id="${el}-perms-everyone" class="meta-value"></span>
+         </div>
       </div>
-      <div class="info">
-         <span class="meta-label">${msg("folder-info.collaborators")}:</span>
-         <span id="${el}-perms-collaborators" class="meta-value"></span>
-      </div>
-      <div class="info">
-         <span class="meta-label">${msg("folder-info.contributors")}:</span>
-         <span id="${el}-perms-contributors" class="meta-value"></span>
-      </div>
-      <div class="info">
-         <span class="meta-label">${msg("folder-info.consumers")}:</span>
-         <span id="${el}-perms-consumers" class="meta-value"></span>
-      </div>
-      <div class="info">
-         <span class="meta-label">${msg("folder-info.everyone")}:</span>
-         <span id="${el}-perms-everyone" class="meta-value"></span>
+      
+      <div id="${el}-noPerms" class="hidden">
+         <div class="info">${msg("folder-info.no-read-permission")}</div>
       </div>
    </div>
 

@@ -64,10 +64,14 @@
    <#if documents.items?size != 0>
       <#list documents.items?sort_by("modifiedOn") as doc>
          <#assign modifiedBy><a href="${url.context}/page/user/${doc.modifiedByUser?url}/profile">${doc.modifiedBy?html}</a></#assign>
+         <#assign fileExtIndex = doc.fileName?last_index_of(".")>
+         <#assign fileExt = (fileExtIndex > -1)?string(doc.fileName?substring(fileExtIndex + 1), "generic")>
       <div class="detail-list-item <#if doc_index = 0>first-item</#if>">
          <div>
             <div class="icon">
-               <img src="${url.context}/res/components/images/generic-file-32.png" alt="${doc.displayName?html}" />
+               <img src="${url.context}/components/images/filetypes/${fileExt}-file-32.png"
+                    onerror="this.src='${url.context}/res/components/images/filetypes/generic-file-32.png'"
+                    title="${(doc.displayName!doc.fileName)?html}" width="32" />
             </div>
             <div class="details">
                <h4><@doclibUrl doc /></h4>

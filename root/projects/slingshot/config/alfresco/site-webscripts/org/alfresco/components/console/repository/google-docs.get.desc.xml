@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Admin Console Google Docs Tool</shortname>
+  <description>Administration Console - Google Docs Tool</description>
+  <url>/components/console/google-docs</url>
+  <family>admin-console</family>
+   <family>edition:TEAM</family>
+   <family>edition:ENTERPRISE</family>
+</webscript>

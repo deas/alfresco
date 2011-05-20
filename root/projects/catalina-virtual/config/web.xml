@@ -482,9 +482,10 @@
 
     <mime-mapping>
         <extension>abs</extension>
-        <mime-type>audio/x-mpeg</mime-type>
+        <mime-type>audio/mpeg</mime-type>
     </mime-mapping>
     <mime-mapping>
+        <!-- TODO This may not be universally correct. Old Adobe Illustrator files were PS files, but they are now PDFs. -->
         <extension>ai</extension>
         <mime-type>application/postscript</mime-type>
     </mime-mapping>
@@ -730,19 +731,19 @@
     </mime-mapping>
     <mime-mapping>
         <extension>mp1</extension>
-        <mime-type>audio/x-mpeg</mime-type>
+        <mime-type>audio/mpeg</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mp2</extension>
-        <mime-type>audio/x-mpeg</mime-type>
+        <mime-type>audio/mpeg</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mp3</extension>
-        <mime-type>audio/x-mpeg</mime-type>
+        <mime-type>audio/mpeg</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mpa</extension>
-        <mime-type>audio/x-mpeg</mime-type>
+        <mime-type>audio/mpeg</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mpe</extension>
@@ -754,7 +755,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>mpega</extension>
-        <mime-type>audio/x-mpeg</mime-type>
+        <mime-type>audio/mpeg</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mpg</extension>

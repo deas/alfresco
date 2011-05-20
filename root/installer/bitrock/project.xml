@@ -41,34 +41,34 @@
 
     <customLanguageFileList>
 	<language> 
-	    <code>en</code> 
-	    <encoding>utf-8</encoding>
-	    <file>${build_project_directory}/lang/alf-en.po</file>
+          <code>en</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-en.po</file>
 	</language>
 	<language> 
-	    <code>fr</code> 
-	    <encoding>utf-8</encoding>
-	    <file>${build_project_directory}/lang/alf-fr.po</file>
+          <code>fr</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-fr.po</file>
 	</language>
 	<language> 
-	    <code>es</code> 
-	    <encoding>utf-8</encoding>
-	    <file>${build_project_directory}/lang/alf-es.po</file>
+          <code>es</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-es.po</file>
 	</language>
 	<language> 
-	    <code>de</code> 
-	    <encoding>utf-8</encoding>
-	    <file>${build_project_directory}/lang/alf-de.po</file>
+          <code>de</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-de.po</file>
 	</language>
 	<language> 
-	    <code>it</code> 
-	    <encoding>utf-8</encoding>
-	    <file>${build_project_directory}/lang/alf-it.po</file>
+          <code>it</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-it.po</file>
 	</language>
 	<language> 
-	    <code>ja</code> 
-	    <encoding>utf-8</encoding>
-	    <file>${build_project_directory}/lang/alf-ja.po</file>
+          <code>ja</code> 
+          <encoding>utf-8</encoding>
+	  <file>${build_project_directory}/lang/alf-ja.po</file>
 	</language>
     </customLanguageFileList>
 
@@ -259,7 +259,11 @@
     </finalPageActionList>
     
     <installationAbortedActionList>
-	<deleteFile path="${installdir}/tomcat" />
+        <deleteFile path="${installdir}/tomcat" >
+            <ruleList>
+                 <compareText text="${tomcat_execute_abort_action_list}" logic="equals" value="1" />
+            </ruleList>
+        </deleteFile>
     </installationAbortedActionList>
 
     <preUninstallationActionList>

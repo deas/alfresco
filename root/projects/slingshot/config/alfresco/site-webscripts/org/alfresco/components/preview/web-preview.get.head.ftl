@@ -20,6 +20,10 @@
 <!-- Alfresco.WebPreviewer.Plugins.Video -->
 <@script type="text/javascript" src="${page.url.context}/res/components/preview/Video.js"></@script>
 
+<!-- Alfresco.WebPreviewer.Plugins.Audio -->
+<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/components/preview/Audio.css" />
+<@script type="text/javascript" src="${page.url.context}/res/components/preview/Audio.js"></@script>
+
 <!-- Alfresco.WebPreviewer.Plugins.Flash -->
 <@script type="text/javascript" src="${page.url.context}/res/components/preview/Flash.js"></@script>
 
