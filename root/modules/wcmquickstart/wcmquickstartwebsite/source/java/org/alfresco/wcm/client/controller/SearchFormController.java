@@ -22,6 +22,7 @@ import org.alfresco.wcm.client.Query;
 import org.alfresco.wcm.client.SearchResults;
 import org.alfresco.wcm.client.Section;
 import org.alfresco.wcm.client.SectionFactory;
+import org.alfresco.wcm.client.WebSiteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,10 @@ public class SearchFormController
     @RequestMapping(method=RequestMethod.GET)
 	protected void search(Query query, Model model)
 	{
+        if (query.getSectionId() == null)
+        {
+            query.setSectionId(WebSiteService.getThreadWebSite().getRootSection().getId());
+        }
     	// Perform the search
     	SearchResults results = assetFactory.findByQuery(query);
 

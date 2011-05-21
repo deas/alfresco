@@ -135,6 +135,16 @@
       versionSection: null,
 
       /**
+       * The name of the currently selected file (not including its full path). This will be
+       * null if a file has not been selected. This value will only be available for non-Internet
+       * Explorer browsers.
+       *  
+       * @property _fileName
+       * @type String
+       */
+      _fileName: null,
+      
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Initial History Manager event registration
        *
@@ -142,6 +152,9 @@
        */
       onReady: function HtmlUpload_onReady()
       {
+         var _this = this;
+         
+         
          Dom.removeClass(this.id + "-dialog", "hidden");
 
          // Create the panel
@@ -154,6 +167,28 @@
 
          // Save references to hidden fields so we can set them later
          this.widgets.filedata = Dom.get(this.id + "-filedata-file");
+         
+         if (YAHOO.env.ua.ie > 0)
+         {
+            // Internet Explorer does not support the "files" attribute for the input type file
+            // so there is no point in adding an on change listener to capture the value.
+         }
+         else
+         {
+            // If the browser is not Internet Explorer then add a listener to capture the name of
+            // the currently selected file (without its full or mock path as set as the value of the
+            // input element
+            YAHOO.util.Event.addListener(this.id + "-filedata-file", "change", function()
+            {
+               if (this.files.length > 0)
+               {
+                  _this._fileName = this.files[0].name;
+               }
+            }); 
+         }
+         
+         
+         
          this.widgets.filedata.contentEditable = false;
          this.widgets.siteId = Dom.get(this.id + "-siteId-hidden");
          this.widgets.containerId = Dom.get(this.id + "-containerId-hidden");
@@ -186,6 +221,40 @@
 
          // Title is mandatory
          form.addValidation(this.id + "-filedata-file", Alfresco.forms.validation.mandatory, null, "change");
+         form.addValidation(this.id + "-filedata-file", function HtmlUpload_validateFileName(field, args, event, form, silent, message)
+         {
+            // Although the users operating system might be Unix based it is necessary that we only allow
+            // file names that are supported by the lowest common denominator (Windows)...
+            if (YAHOO.env.ua.ie > 0)
+            {
+               // The browser is Internet Explorer. We can reasonably assume that this will only be running on 
+               // Windows and it will not be possible to select an illegally named file
+               return true;
+            }
+            else
+            {
+               // A non-Windows OS may allow us to select files containing the illegal characters. However a
+               // full path will contain the "/" character so we will ignore this from our list and take the 
+               // risk.
+               var mockField = 
+               {
+                  id: field.id,
+                  value: _this._fileName
+               };
+               if (!Alfresco.forms.validation.nodeName(mockField, args, event, form, silent, message))
+               {
+                  Alfresco.util.PopupManager.displayMessage(
+                  {
+                     text: Alfresco.util.message("message.illegalCharacters")
+                  });
+                  return false;
+               }
+               else
+               {
+                  return true;
+               }
+            }
+         }, null, "change");
 
          // The ok button is the submit button, and it should be enabled when the form is ready
          form.setShowSubmitStateDynamically(true, false);

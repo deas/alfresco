@@ -132,8 +132,24 @@
         <property name="shareSiteUrl">
             <value>${lotus.share.site.url}</value>
         </property>
+        <property name="shareSiteContainerUrl">
+            <value>${lotus.share.site.container.url}</value>
+        </property>
+        <property name="shareUserDashboardUrl">
+            <value>${lotus.share.user.dashboard.url}</value>
+        </property>
         <property name="sysAdminParams">
             <ref bean="sysAdminParams" />
+        </property>
+        <property name="containersMapping">
+            <map>
+               <entry key="documentLibrary" value="documentlibrary" />
+               <entry key="blog" value="blog-postlist" />
+               <entry key="discussions" value="discussions-topiclist" />
+               <entry key="dataLists" value="data-lists" />
+               <entry key="links" value="links" />
+               <entry key="wiki" value="wiki-page?title=Main_Page" />
+            </map>
         </property>
         <property name="nodeService" ref="NodeService" />
         <property name="searchService" ref="SearchService" />
@@ -150,6 +166,7 @@
         <property name="lockService" ref="LockService" />
         <property name="pathHelper" ref="quickrPathHelper" />
         <property name="dictionaryService" ref="dictionaryService" />
+        <property name="mimetypeService" ref="mimetypeService" />
     </bean>
     
     <bean id="quickrPermissionHelper" class="org.alfresco.repo.lotus.ws.impl.helper.AlfrescoQuickrPermissionHelper">

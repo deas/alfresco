@@ -1363,8 +1363,10 @@
       </copy>
    </target>
 
-   <!--- Stub target get overridden in other build scripts -->
+   <!--- Stub targets get overridden in other build scripts -->
    <target name="distribute-extras" description="Build distribution targets for enterprise projects" />
+
+   <target name="assemble-command-extras" description="Assemble commands" />
 
 
 </project>

@@ -62,12 +62,23 @@ import org.alfresco.util.PropertyCheck;
 import org.alfresco.util.TempFileProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * This implements a deployment target for deployment to an AVM Store  
  */
 public class AVMDeploymentTarget implements Serializable, DeploymentTarget
-{   
+{  
+    
+    private static final String MSG_ERR_INVALID_USERNAME="wdr.err.invalid_username_or_password";
+    private static final String MSG_ERR_UNABLE_CREATE_LOGFILE="wdr.err.unable_create_logfile";
+    private static final String MSG_ERR_UNABLE_PREPARE_ALREADY_COMMIT="wdr.err.unable_prepare_already_commit";
+    private static final String MSG_ERR_UNABLE_PREPARE_MISSING_FILE="wdr.err.unable_prepare_missing_file";
+    private static final String MSG_ERR_INVALID_TICKET="wdr.err.invalid_ticket";
+    private static final String MSG_ERR_UNABLE_COMMIT="wdr.err.unable_commit";
+    
+    private static final String MSG_SNAPSHOT_DESCRIPTION="wdr.avm.snapshot_description";
+    private static final String MSG_SNAPSHOT_TAG="wdr.avm.snapshot_description";
  
 	/**
 	 * 
@@ -171,7 +182,7 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
 		if(!authenticator.logon(user, password))
 		{
 			logger.warn("Invalid user name or password");
-			throw new DeploymentException("Invalid user name or password.");
+			throw new DeploymentException(MSG_ERR_INVALID_USERNAME);
 		}
     
         String ticket = GUID.generate();
@@ -218,7 +229,7 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
         catch (IOException e)
         {
         	logger.error("Could not create logfile", e);
-            throw new DeploymentException("Could not create logfile; Deployment cannot continue", e);
+            throw new DeploymentException(MSG_ERR_UNABLE_CREATE_LOGFILE, e);
         }
         return ticket;
 	}
@@ -251,7 +262,7 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
         }
         if (deployment.getState() != DeploymentState.WORKING)
         {
-            throw new DeploymentException("Deployment cannot be prepared: already aborting, or committing.");
+            throw new DeploymentException(MSG_ERR_UNABLE_PREPARE_ALREADY_COMMIT);
         }
         try
         {
@@ -265,7 +276,8 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
             		File content = new File(file.getPreLocation());            		
             		if(!content.exists())
             		{
-            			throw new DeploymentException("Unable to prepare, missing temporary file." + content.getAbsolutePath());
+            		    Object[] params = {content.getAbsolutePath()};
+            			throw new DeploymentException(MSG_ERR_UNABLE_PREPARE_MISSING_FILE, params);
             		}
             	}
             }
@@ -418,7 +430,8 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
 	        {
 	        	String msg = "Could not commit because invalid ticket:" + ticket;
 	        	logger.error(msg);
-	            throw new DeploymentException(msg);
+	        	Object[] params = {ticket};
+	            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 	        }
 	        logger.debug("commit ticket:" + ticket);
 	        
@@ -453,11 +466,8 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
 	        	 */
 	            Object[] objs = {deployment.getAuthoringStoreName(), new Integer(deployment.getAuthoringVersion())};
 	            
-	            MessageFormat tagPattern = new MessageFormat("Deployment from store:{0}, version:{1}");
-	            MessageFormat descriptionPattern = new MessageFormat("Deployment from store: {0}, version:{1}");
-	            
     			logger.debug("finished copying, snapshot remote");
-    			fAVMService.createSnapshot(localStoreName, tagPattern.format(objs), descriptionPattern.format(objs));
+    			fAVMService.createSnapshot(localStoreName, I18NUtil.getMessage(MSG_SNAPSHOT_TAG,objs), I18NUtil.getMessage(MSG_SNAPSHOT_DESCRIPTION,objs));
     			
 	            // Mark the deployment as committed
 	            deployment.commit();
@@ -485,7 +495,7 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
 	        }
 	        catch (Exception e)
 	        {
-	        	throw new DeploymentException("Could not commit", e);
+	        	throw new DeploymentException(MSG_ERR_UNABLE_COMMIT, e);
 	        	//TODO Need to rework such that we can never get here
 	        }
 	        finally
@@ -519,8 +529,8 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
 		Deployment deployment = fDeployments.get(ticket);
 		if (deployment == null)
 		{
-			String msg = "Could not delete because invalid ticket:" + ticket;
-			throw new DeploymentException(msg);
+			Object[] params = {ticket};
+			throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 		}
 		try
 		{
@@ -594,7 +604,8 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
 		Deployment deployment = fDeployments.get(ticket);
 	    if (deployment == null)
 	    {
-	        throw new DeploymentException("getListing invalid ticket. ticket:" + ticket);
+	        Object[] params = {ticket};
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 	    }
 	    
 	    String localStoreName = getLocalStoreName(deployment.getAuthoringStoreName());
@@ -652,8 +663,9 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
 	{
 		Deployment deployment = fDeployments.get(ticket);
 		if (deployment == null)
-		{
-			throw new DeploymentException("mkdir invalid ticket. ticket:" + ticket);
+		{ 
+		    Object[] params = {ticket};
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 		}
 
 		try
@@ -748,7 +760,8 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
         final Deployment deployment = fDeployments.get(ticket);
         if (deployment == null)
         {
-            throw new DeploymentException("Deployment timed out or invalid ticket.");
+            Object[] params = {ticket};
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
         }
         
         try
@@ -895,7 +908,8 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
 		Deployment deployment = fDeployments.get(ticket);
 		if (deployment == null)
 		{
-			throw new DeploymentException("Deployment invalid ticket.");
+		    Object[] params = {ticket};
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 		}
 		try
 		{

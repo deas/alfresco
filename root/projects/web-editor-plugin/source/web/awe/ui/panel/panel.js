@@ -146,6 +146,8 @@
       {
          // Show the upload panel
          this.widgets.panel.show();
+         
+         Alfresco.util.YUILoaderHelper.loadComponents(true);
 
          // Firefox insertion caret fix
          Alfresco.util.caretFix(this.id + "-form");

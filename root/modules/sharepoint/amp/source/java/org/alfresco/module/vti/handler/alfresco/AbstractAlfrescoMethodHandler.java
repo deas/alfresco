@@ -45,6 +45,7 @@ import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.Document;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
+import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.lock.NodeLockedException;
@@ -89,6 +90,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
     private ContentService contentService;
     private TransactionService transactionService;
     private MimetypeService mimetypeService;
+    private DictionaryService dictionaryService;
 
     private VtiDocumentHepler documentHelper;
     private VtiPathHelper pathHelper;
@@ -191,6 +193,16 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
     public MimetypeService getMimetypeService()
     {
         return mimetypeService;
+    }
+
+    public DictionaryService getDictionaryService()
+    {
+        return dictionaryService;
+    }
+
+    public void setDictionaryService(DictionaryService dictionaryService)
+    {
+        this.dictionaryService = dictionaryService;
     }
 
     /**

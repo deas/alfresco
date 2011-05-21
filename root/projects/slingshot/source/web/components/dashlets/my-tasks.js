@@ -35,8 +35,8 @@
    /**
     * Alfresco Slingshot aliases
     */
-   var $html = Alfresco.util.encodeHTML;
-
+   var $html = Alfresco.util.encodeHTML,
+      $siteURL = Alfresco.util.siteURL;
    /**
     * Preferences
     */
@@ -308,7 +308,7 @@
                message = this.msg("workflow.no_message");
             }
 
-            var messageDesc = '<h3><a href="task-edit?taskId=' + taskId + '&referrer=tasks" class="theme-color-1" title="' + this.msg("title.editTask") + '">' + $html(message) + '</a></h3>',
+         var messageDesc = '<h3><a href="' + $siteURL('task-edit?taskId=' + taskId + '&referrer=tasks') + '" class="theme-color-1" title="' + this.msg("title.editTask") + '">' + $html(message) + '</a></h3>',
                dateDesc = dueDate ? '<h4><span class="' + (today > dueDate ? "task-delayed" : "") + '" title="' + 
                           this.msg("title.dueOn", Alfresco.util.formatDate(dueDate, "longDate")) + '">' + Alfresco.util.formatDate(dueDate, "longDate") + '</span></h4>' : "",
                statusDesc = '<div title="' + this.msg("title.taskSummary", type, status) + '">' + this.msg("label.taskSummary", type, status) + '</div>',
@@ -342,9 +342,9 @@
          {
             if (data.isEditable)
             {
-               desc += '<a href="task-edit?taskId=' + data.id + '&referrer=tasks" class="edit-task" title="' + this.msg("title.editTask") + '">&nbsp;</a>';
+               desc += '<a href="' + $siteURL('task-edit?taskId=' + data.id + '&referrer=tasks') + '" class="edit-task" title="' + this.msg("title.editTask") + '">&nbsp;</a>';
             }
-            desc += '<a href="task-details?taskId=' + data.id + '&referrer=tasks" class="view-task" title="' + this.msg("title.viewTask") + '">&nbsp;</a>';
+            desc += '<a href="' + $siteURL('task-details?taskId=' + data.id + '&referrer=tasks') + '" class="view-task" title="' + this.msg("title.viewTask") + '">&nbsp;</a>';
          }
 
          elCell.innerHTML = desc;

@@ -91,6 +91,7 @@
         <property name="transactionService" ref="transactionService" />
         <property name="mimetypeService" ref="MimetypeService" />
         <property name="siteService" ref="SiteService" />
+        <property name="dictionaryService" ref="DictionaryService" />
         <property name="authenticationComponent" ref="AuthenticationComponent" />
         <property name="documentHelper" ref="vtiDocumentHelper" />
         <property name="pathHelper" ref="vtiPathHelper" />
@@ -113,6 +114,7 @@
         <property name="fileFolderService" ref="FileFolderService" />
         <property name="permissionService" ref="PermissionService" />
         <property name="personService" ref="PersonService" />
+        <property name="dictionaryService" ref="DictionaryService" />
         <property name="tenantService" ref="tenantService" />
         <property name="sysAdminParams">
             <ref bean="sysAdminParams" />

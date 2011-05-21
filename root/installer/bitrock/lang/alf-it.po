@@ -187,9 +187,6 @@ msgstr "Installazione di OpenOffice come servizio Windows con il nome ${OpenOffi
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "Installazione di PostgreSQL come servizio Windows con il nome ${postgres_unique_service_name}"
 
-msgid "Installer.ReadmeFile.View"
-msgstr "Visualizza il file Readme"
-
 msgid "Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}"
 msgstr "Installazione di Tomcat come servizio Windows con il nome ${tomcat_unique_service_name}"
 

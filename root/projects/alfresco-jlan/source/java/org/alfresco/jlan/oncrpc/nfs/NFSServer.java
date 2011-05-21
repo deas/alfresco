@@ -4827,7 +4827,7 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
 
           //	Open the network file
 
-          FileOpenParams params = new FileOpenParams(path, FileAction.OpenIfExists, AccessMode.ReadWrite, 0, 0);
+          FileOpenParams params = new FileOpenParams(path, FileAction.OpenIfExists, ((readOnly) ? (AccessMode.ReadOnly) : (AccessMode.ReadWrite)), 0, 0);
           file = disk.openFile(sess, conn, params);
 
           //	Add the file to the active file cache
@@ -5281,7 +5281,12 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
   protected final RpcAuthenticator getRpcAuthenticator() {
     return m_rpcAuthenticator;
   }
-  
+
+    public ShareDetailsHash getShareDetails()
+    {
+        return m_shareDetails;
+    }
+
   /**
    * Inform session listeners that a new session has been created
    * 

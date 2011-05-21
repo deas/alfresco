@@ -16,6 +16,15 @@ if (name == null || name.length == 0)
 	failed = true;
 	errors["visitorName"] = "comments.write.null.feedback.visitorName";
 }
+else
+{
+	var txt=new RegExp("^[-a-z0-9 ]+$","ig");
+	if ( ! txt.test(name))
+	{
+		failed = true;
+		errors["visitorName"] = "comments.write.invalid.feedback.visitorName";
+	}	
+}
 
 if (email == null || email.length == 0)
 {
@@ -24,7 +33,8 @@ if (email == null || email.length == 0)
 }
 else
 {
-	var txt=new RegExp(".+@.+\\.[a-z]+","ig");
+	var txt=new RegExp("^[-a-z0-9~!$%^&*_=+}{\\'?]+(\\.[-a-z0-9~!$%^&*_=+}{\\'?]+)*@([a-z0-9_][-a-z0-9_]*(\\.[-a-z0-9_]+)*\\.([a-z][a-z]+)|([0-9]{1,3}\\." +
+			"[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,5})?$","ig");
 	if ( ! txt.test(email))
 	{
 		failed = true;

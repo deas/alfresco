@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,6 @@ import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransacti
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -64,6 +64,7 @@ import org.alfresco.util.GUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
+
 /**
  * Alfresco implementation of MeetingServiceHandler
  * 
@@ -545,6 +546,23 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         {
             props.put(PROP_WHERE_EVENT, meeting.getLocation());
         }
+        
+        Calendar from = Calendar.getInstance();
+        from.setTime(meeting.getStartDate());
+        
+        Calendar to = Calendar.getInstance();
+        to.setTime(meeting.getEndDate());
+        
+        if (from.get(Calendar.HOUR_OF_DAY) + to.get(Calendar.HOUR_OF_DAY) +
+            from.get(Calendar.MINUTE) + to.get(Calendar.MINUTE) +
+            from.get(Calendar.SECOND) + to.get(Calendar.SECOND) == 0)
+        {
+            // It is "All day" event
+            // Alfresco uses PROP_TO_DATE_EVENT as last day of an event, so change last day in meeting
+            to.roll(Calendar.DAY_OF_YEAR, false);
+            meeting.setEndDate(to.getTime());
+        }
+        
         props.put(PROP_FROM_DATE_EVENT, meeting.getStartDate());
         props.put(PROP_TO_DATE_EVENT, meeting.getEndDate());
         props.put(PROP_DESCRIPTION_EVENT, "");

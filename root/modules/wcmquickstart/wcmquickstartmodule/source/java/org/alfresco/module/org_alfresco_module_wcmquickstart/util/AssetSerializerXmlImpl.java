@@ -186,6 +186,7 @@ public class AssetSerializerXmlImpl implements AssetSerializer
         endElement("property");
     }
 
+    @SuppressWarnings("unchecked")
     private void writeValue(Object value) throws Exception
     {
         Class<?> valueClass = (value == null) ? null : value.getClass();
@@ -198,6 +199,16 @@ public class AssetSerializerXmlImpl implements AssetSerializer
                 writeValue(element);
             }
             endElement("list");
+        }
+        else if (valueClass != null && Map.class.isAssignableFrom(valueClass))
+        {
+            Map<QName,?> mapValue = (Map<QName,?>) value;
+            startElement("map", EMPTY_ATTRIBUTES);
+            for (Map.Entry<QName, ?> element : mapValue.entrySet())
+            {
+                writeProperty(element.getKey(), element.getValue());
+            }
+            endElement("map");
         }
         else
         {

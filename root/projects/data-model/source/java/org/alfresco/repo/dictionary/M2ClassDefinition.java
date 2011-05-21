@@ -589,21 +589,23 @@ import org.alfresco.util.EqualsHelper;
         
         modelDiffs.addAll(assocDiffs);
         
-        // check default/mandatory aspects (including inherited default aspects)
-        Collection<M2ModelDiff> defaultAspectsDiffs = M2ClassDefinition.diffClassLists(new ArrayList<ClassDefinition>(getDefaultAspects()), new ArrayList<ClassDefinition>(classDef.getDefaultAspects()), M2ModelDiff.TYPE_DEFAULT_ASPECT);
-       
-        for (M2ModelDiff defaultAspectDiff : defaultAspectsDiffs)
+        // check default/mandatory aspects
+        for (AspectDefinition newAspect : classDef.getDefaultAspects(false))
         {
-            // note: incremental default/mandatory aspect updates not supported yet, added for completeness
-            if (defaultAspectDiff.getDiffType().equals(M2ModelDiff.DIFF_UPDATED_INC))
+            boolean found = false;
+            for (AspectDefinition previousAspect : getDefaultAspects(false))
             {
-                isUpdatedIncrementally = true;
+                if (newAspect.getName().equals(previousAspect.getName()))
+                {
+                    found = true;
+                    break;
+                }
             }
             
-            if (defaultAspectDiff.getDiffType().equals(M2ModelDiff.DIFF_CREATED) || defaultAspectDiff.getDiffType().equals(M2ModelDiff.DIFF_UPDATED) || defaultAspectDiff.getDiffType().equals(M2ModelDiff.DIFF_DELETED))
+            if (! found)
             {
+                // mandatory aspect added (to aspect or type)
                 isUpdated = true;
-                break;
             }
         }
         

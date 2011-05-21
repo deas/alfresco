@@ -122,6 +122,7 @@ public class ContainerScorer extends Scorer
                 }
                 else
                 {
+                    doClose();
                     more = false;
                     return false;
                 }
@@ -149,6 +150,29 @@ public class ContainerScorer extends Scorer
         return findNext();
     }
 
+    private void doClose() throws IOException
+    {
+        if(root != null)
+        {
+            root.close();
+        }
+        if(containers != null)
+        {
+            containers.close();
+        }
+        if(positions !=  null)
+        {
+            for(StructuredFieldPosition position : positions)
+            {
+                CachingTermPositions ctp = position.getCachingTermPositions();
+                if(ctp != null)
+                {
+                    ctp.close();
+                }
+            }
+        }
+    }
+    
     /**
      * Are we looking for all containers?
      * If there are no positions we must have a better filter
@@ -189,6 +213,7 @@ public class ContainerScorer extends Scorer
         }
 
         // If we get here we must have no more documents
+        doClose();
         return false;
     }
 

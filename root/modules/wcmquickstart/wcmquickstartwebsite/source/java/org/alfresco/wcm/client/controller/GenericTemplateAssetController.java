@@ -69,7 +69,7 @@ public class GenericTemplateAssetController extends UrlViewController
 		if (asset == null && ! isStatic(path)) 
 		{
 			response.setStatus(HttpStatus.NOT_FOUND.value());
-			throw new PageNotFoundException();
+			throw new PageNotFoundException(path);
 		}
 		
 		return super.handleRequestInternal(request, response);

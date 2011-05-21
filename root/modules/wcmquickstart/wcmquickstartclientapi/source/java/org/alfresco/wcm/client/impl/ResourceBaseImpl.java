@@ -39,16 +39,16 @@ public abstract class ResourceBaseImpl implements Resource
 {	
     private static final long serialVersionUID = 2137271248424335766L;
     
-    protected Map<String, Serializable> properties = new TreeMap<String,Serializable>();
-    protected SectionFactory sectionFactory;
-    protected AssetFactory assetFactory;
-    protected CollectionFactory collectionFactory;
+    private Map<String, Serializable> properties = new TreeMap<String,Serializable>();
+    private SectionFactory sectionFactory;
+    private AssetFactory assetFactory;
+    private CollectionFactory collectionFactory;
 
-    protected String primarySectionId;
+    private String primarySectionId;
 
-    protected String id;
-    protected String typeId;
-    protected String name;
+    private String id;
+    private String typeId;
+    private String name;
 
 	public ResourceBaseImpl() 
 	{

@@ -659,7 +659,8 @@
             {
                min: parent.options.minUsernameLength,
                max: 100,
-               crop: true
+               crop: true,
+               includeWhitespace: false
             }, "keyup");
             form.addValidation(parent.id + "-create-password", Alfresco.forms.validation.length,
             {

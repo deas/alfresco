@@ -61,7 +61,7 @@ namespace AlfrescoPowerPoint2003.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.alfresco.com/help/{major}{minor}/{edition}/msaddin/.
+        ///   Looks up a localized string similar to http://docs.alfresco.com/{major}.{minor}/topic/com.alfresco.{edition}_{major}_{minor}_0.doc/concepts/MSAddin-using.html.
         /// </summary>
         internal static string HelpURL {
             get {

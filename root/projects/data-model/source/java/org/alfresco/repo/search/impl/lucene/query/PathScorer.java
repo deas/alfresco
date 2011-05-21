@@ -130,9 +130,6 @@ public class PathScorer extends Scorer
             rootLeafPositions = reader.termPositions(pathQuery.getQNameRootTerm());
         }
 
-
-        TermPositions tp = reader.termPositions();
-
         ContainerScorer cs = null;
 
         TermPositions level0 = null;
@@ -170,7 +167,7 @@ public class PathScorer extends Scorer
         
 
         LeafScorer ls = new LeafScorer(weight, rootLeafPositions, level0, cs, (StructuredFieldPosition[]) pathQuery.getQNameStructuredFieldPositions().toArray(new StructuredFieldPosition[] {}), nodeDocs,
-                selfIds, reader, similarity, reader.norms(pathQuery.getQnameField()), dictionarySertvice, repeat, tp);
+                selfIds, reader, similarity, reader.norms(pathQuery.getQnameField()), dictionarySertvice, repeat);
 
         return new PathScorer(similarity, ls);
     }

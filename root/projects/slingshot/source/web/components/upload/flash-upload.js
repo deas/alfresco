@@ -147,6 +147,14 @@
        */
       STATE_SUCCESS: 5,
 
+      /**
+       * The filename contains characters that are illegal (for Windows at least)
+       * 
+       * @property STATE_ILLEGAL_FILENAME
+       * @type int
+       */
+      STATE_ILLEGAL_FILENAME: 6,
+      
        /**
        * The state of which the uploader currently is, where the flow is.
        * STATE_BROWSING > STATE_UPLOADING > STATE_FINISHED
@@ -566,7 +574,7 @@
        * Reset GUI to start state
        *
        * @method _resetGUI
-       * @private       
+       * @private
        */
       _resetGUI: function FlashUpload__resetGUI()
       {
@@ -591,8 +599,45 @@
        */
       onPostRenderEvent: function FlashUpload_onPostRenderEvent()
       {
+         // Check whether or not any of the files added are invalid...
+         for (var id in this.fileStore)
+         {
+            var fileInfo = this.fileStore[id];
+            if (fileInfo != null && fileInfo.state == this.STATE_ILLEGAL_FILENAME)
+            {
+               
+               // Add the failure label to the filename & and as a title attribute
+               var msg = this.msg("label.illegalChars");
+               fileInfo.progressInfo["innerHTML"] = fileInfo.progressInfo["innerHTML"] + " " + msg;
+               fileInfo.progressInfoCell.setAttribute("title", msg);
+
+               // Change the style of the progress bar
+               Dom.removeClass(fileInfo.progress, "fileupload-progressSuccess-span");
+               Dom.addClass(fileInfo.progress, "fileupload-progressFailure-span");
+
+               // Set the progress bar to "full" progress
+               Dom.setStyle(fileInfo.progress, "left", 0 + "px");
+               
+               // Switch the state to a general failure message to ensure that we don't
+               // keep processing this same error.
+               fileInfo.state = this.STATE_FAILURE;
+               
+               // Log the failure and update the status message...
+               this.noOfFailedUploads++;
+               this._updateStatus();
+            }
+         }
+         
+         // If there are currently no failures then clear any status message that may have been
+         // previously set by adding a file with a name containing illegal characters...
+         if (this.noOfFailedUploads == 0)
+         {
+            this._clearStatus();
+         }
+         
          // Display the upload button since all files are rendered
-         if (this.widgets.dataTable.getRecordSet().getLength() > 0)
+         var numRecords = this.widgets.dataTable.getRecordSet().getLength();
+         if (numRecords > 0 && numRecords > this.noOfFailedUploads)
          {
             this.widgets.uploadButton.set("disabled", false);
             this.widgets.panel.setFirstLastFocusable();
@@ -610,7 +655,6 @@
             }
          }
       },
-
 
       /**
        * Fired by YUI:s DataTable when a row has been deleted to the data table list.
@@ -849,11 +893,21 @@
          /**
           * The file button has been clicked to remove a file.
           * Remove the file from the datatable and all references to it.
-          */
+          */         
          var r = this.widgets.dataTable.getRecordSet().getRecord(recordId);
          this.addedFiles[this._getUniqueFileToken(r.getData())] = null;
-         this.fileStore[flashId] = null;
          this.widgets.dataTable.deleteRow(r);
+         if (this.fileStore[flashId].state == this.STATE_FAILURE)
+         {
+            // It's only possible to a remove a file that is in a failure state if it was already
+            // guaranteed to fail before uploading began (i.e. if the filename contained illegal
+            // characters). Because we are removing it we can decrement the number of failures.
+            this.noOfFailedUploads--;
+            this._updateStatus();
+         }
+         
+         this.fileStore[flashId] = null;
+         
          if (this.state === this.STATE_BROWSING)
          {
             // Remove the file from the flash movies memory
@@ -1250,12 +1304,33 @@
          {
             var record = oRecord.getData(),
                flashId = record.id;
+            
             // Set the state for this file(/row) if it hasn't been set
             if (!this.fileStore[flashId])
             {
+               var defaultState = this.STATE_BROWSING;
+               
+               // ALF-6697
+               // Although the users operating system might be Unix based it is necessary that we only allow
+               // file names that are supported by the lowest common denominator (Windows)
+               var mockField = 
+               {
+                  id: flashId,
+                  value: record.name
+               };
+               if (!Alfresco.forms.validation.nodeName(mockField, {}, null, null, true, null))
+               {
+                  defaultState = this.STATE_ILLEGAL_FILENAME;
+               }
+               else
+               {
+                  // No action required. Default state already set.
+               }
+
+               // Add the item to the file store...
                this.fileStore[flashId] =
                {
-                  state: this.STATE_BROWSING,
+                  state: defaultState,
                   fileName: record.name,
                   nodeRef: null
                };
@@ -1327,7 +1402,7 @@
             }
 
             // Insert the templateInstance to the column.
-            cell.appendChild(templateInstance);
+            cell.appendChild(templateInstance);            
          };
 
          // Definition of the data table column
@@ -1389,6 +1464,18 @@
             "1" : this.widgets.dataTable.getRecordSet().getLength(),
             "2" : this.noOfFailedUploads
          });
+      },
+      
+      /**
+       * Remove the last status message
+       *
+       * @method _updateStatus
+       * @private
+       */
+      _clearStatus: function FlashUpload__clearStatus()
+      {
+         // Update the status label with the latest information about the upload progress
+         this.statusText.innerHTML = "";
       },
 
       /**

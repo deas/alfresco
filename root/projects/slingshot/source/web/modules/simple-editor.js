@@ -133,7 +133,7 @@ Alfresco.util.createImageEditor = function(id, options)
    {
       ed.addButton('alfresco-imagelibrary',
       {
-         title: 'Insert Image Library',
+         title: Alfresco.util.message("imagelib.tooltip"),
          onclick: function(ev)
          {
             gutter.toggle.call(gutter);
@@ -161,7 +161,7 @@ Alfresco.util.createImageEditor = function(id, options)
          if (target.tagName.toLowerCase() == 'img')
          {
             var longdesc = target.getAttribute("longdesc");
-            if (YAHOO.env.ua.ie > 0)
+            if (YAHOO.env.ua.ie > 0 && YAHOO.env.ua.ie < 8)
             {
                longdesc = target.longdesc;
             }

@@ -203,17 +203,19 @@
          this.widgets.calendar.hideEvent.subscribe(function()
          {
             // Focus icon after calendar is closed
-            Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon")[0].focus();
+            Dom.get(this.id + "-icon").focus();
          }, this, true);
          Event.addListener(this.id + "-date", "keyup", this._handleFieldChange, this, true);
          Event.addListener(this.id + "-time", "keyup", this._handleFieldChange, this, true);
-         Event.addListener(this.id + "-icon", "click", this._showPicker, this, true);
 
-         if (this.options.disabled == false)
+         var iconEl = Dom.get(this.id + "-icon");
+         if (iconEl)
          {
             // setup keyboard enter events on the image instead of the link to get focus outline displayed
-            Alfresco.util.useAsButton(Dom.getElementsByClassName("datepicker-icon", "img", this.id + "-icon")[0], this._showPicker, null, this);
+            Alfresco.util.useAsButton(iconEl, this._showPicker, null, this);
+            Event.addListener(this.id + "-icon", "click", this._showPicker, this, true);
          }
+
          
          // register a validation handler for the date entry field so that the submit 
          // button disables when an invalid date is entered
@@ -291,22 +293,28 @@
          // if we have a valid date, convert to ISO format and set value on hidden field
          if (selDate != null)
          {
-            Dom.removeClass(this.id + "-time", "invalid");
+            Dom.removeClass(this.id + "-date", "invalid");
+            if (this.options.showTime)
+            {
+               Dom.removeClass(this.id + "-time", "invalid");
+            }
             var isoValue = Alfresco.util.toISO8601(selDate, {"milliseconds":true});
             Dom.get(this.currentValueHtmlId).value = isoValue;
             
             if (Alfresco.logger.isDebugEnabled())
                Alfresco.logger.debug("Hidden field '" + this.currentValueHtmlId + "' updated to '" + isoValue + "'");
             
-            // inform the forms runtime that the control value has been updated (if field is mandatory)
-            if (this.options.mandatory)
-            {
-               YAHOO.Bubbling.fire("mandatoryControlValueUpdated", this);
-            }
+            // always inform the forms runtime that the control value has been updated
+            YAHOO.Bubbling.fire("mandatoryControlValueUpdated", this);
          }
          else
          {
-            Dom.addClass(this.id + "-time", "invalid");
+            Dom.addClass(this.id + "-date", "invalid");
+            
+            if (this.options.showTime)
+            {
+               Dom.addClass(this.id + "-time", "invalid");
+            }
          }
          
          // Hide calendar if the calendar was open (Unfortunately there is no proper yui api method for this)

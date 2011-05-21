@@ -124,14 +124,22 @@
             this.widgets.columnbrowser = new YAHOO.extension.ColumnBrowser(parent.id + "-columnbrowser",
             {
                numVisible: 3,
+               rootUrl: Alfresco.constants.PROXY_URI + "api/rootgroups?sortBy=displayName",
+               pagination:
+               {
+                  rowsPerPage: parent.options.maxPageSize,
+                  rowsPerPageParam: 'maxItems',
+                  recordOffsetParam: 'skipCount',
+                  firstPageLinkLabel : parent._msg('tinyPagination.firstPageLinkLabel'),
+                  lastPageLinkLabel : parent._msg('tinyPagination.lastPageLinkLabel'),
+                  previousPageLinkLabel : parent._msg('tinyPagination.previousPageLinkLabel'),
+                  nextPageLinkLabel : parent._msg('tinyPagination.nextPageLinkLabel'),
+                  pageReportTemplate : parent._msg('tinyPagination.pageReportTemplate'),
+                  template: parent._msg('tinyPagination.template')
+               },
                columnInfoBuilder:
                {
                   fn: this.onBuildColumnInfo,
-                  scope: this
-               },
-               emptyColumnInfoBuilder:
-               {
-                  fn: this.onBuildEmptyColumnInfo,
                   scope: this
                }
             });
@@ -336,7 +344,7 @@
                if (!paths || paths.length == 0)
                {
                   // Load the root groups
-                  this.widgets.columnbrowser.load([Alfresco.constants.PROXY_URI + "api/rootgroups?zone=APP.DEFAULT"], true);
+                  this.widgets.columnbrowser.load();
                }
                else if (parent.refresh)
                {
@@ -616,59 +624,79 @@
           * COLUMN BROWSER CALLBACKS
           */
 
-
-         /**
-          * Called by the column browser to let this component decide what data to display inside an empty column.
-          *
-          * @method onBuildEmptyColumnInfo
-          */
-         onBuildEmptyColumnInfo: function ConsoleGroups_onBuildEmptyColumnInfo(itemInfo)
-         {
-            if (itemInfo.cssClass == 'groups-item-group')
-            {
-               return {
-                  parent: itemInfo,
-                  header: {
-                     buttons: this._buildHeaderButtons(itemInfo)
-                  },
-                  body: {},
-                  footer: {
-                     label: parent._msg("label.nogroups")
-                  }
-               };
-            }
-            else
-            {
-               return null;
-            }
-         },
-
          /**
           * Called by the Column Browser to let this component transform the custom server reponse to a
           * columnInfo object that the Column Browser understands
           *
           * @method onBuildColumnInfo
-          * @param serverResponse Respons from the server containing column data
-          * @param itemInfo The parent item that was clicked to get the column data
+          * @param serverResponse Response from the server containing column data OR null if a leaf was clicked
+          * @param itemInfo The parent item that was clicked to get the column data OR null if it is the root column
           */
          onBuildColumnInfo: function ConsoleGroups_SearchPanelHandler_onBuildColumnInfo(serverResponse, itemInfo)
          {
-            // Get data from request
-            var obj = YAHOO.lang.JSON.parse(serverResponse.responseText);
-
             // Create columnInfo and its header
+            var headerButtons = [];
+            if (!itemInfo || itemInfo.cssClass == 'groups-item-group')
+            {
+               headerButtons.push({
+                  title: (itemInfo ? parent._msg("button.newsubgroup") : parent._msg("button.newgroup")),
+                  cssClass: "groups-newgroup-button",
+                  click: {
+                     fn: this.onNewGroupClick,
+                     scope: this
+                  }
+               });
+            }
+            if (itemInfo && itemInfo.cssClass == 'groups-item-group')
+            {
+               // Only add the following button for NON root columns 
+               headerButtons.push({
+                  title: parent._msg("button.addgroup"),
+                  cssClass: "groups-addgroup-button",
+                  click: {
+                     fn: this.onAddGroupClick,
+                     scope: this
+                  }
+               });
+               headerButtons.push({
+                  title: parent._msg("button.adduser"),
+                  cssClass: "groups-adduser-button",
+                  click: {
+                     fn: this.onAddUserClick,
+                     scope: this
+                  }
+               });
+            }
+
+            // Create column descriptor
             var column = {
                parent: itemInfo,
                header: {
-                  buttons: this._buildHeaderButtons(itemInfo)
+                  buttons: headerButtons
                },
                body: {
                   items: []
                }
             };
 
+            // Get data from request
+            var obj = {};
+            if (serverResponse)
+            {
+               // Parse response if there was one
+               obj = YAHOO.lang.JSON.parse(serverResponse.responseText);
+
+               // Translate group paging attributes to columnbrowser pagination attributes 
+               if (obj.paging)
+               {
+                  column.pagination = {
+                     totalRecords : obj.paging.totalItems,
+                     recordOffset: obj.paging.skipCount
+                  };
+               }
+            }
+
             // Create item buttons for users and groups
-            var groupCount = 0, userCount = 0;
             var groupButtons = [
                {
                   title: parent._msg("button.updategroup"),
@@ -699,7 +727,7 @@
             ];
 
             // Transform server respons to itemInfos and add them to the columnInfo's body
-            for (var i = 0; i < obj.data.length; i++)
+            for (var i = 0; obj.data && i < obj.data.length; i++)
             {
                var o = obj.data[i];
                var label = o.displayName;
@@ -710,7 +738,7 @@
                var item = {
                   shortName: o.shortName,
                   fullName: o.fullName,
-                  url: o.authorityType == 'GROUP' ? Alfresco.constants.PROXY_URI + o.url + "/children" : null,
+                  url: o.authorityType == 'GROUP' ? Alfresco.constants.PROXY_URI + o.url + "/children?sortBy=displayName" : null,
                   hasNext: o.groupCount > 0 || o.userCount > 0,
                   label: label,
                   next : null,
@@ -718,32 +746,7 @@
                   buttons: o.authorityType == 'GROUP' ? groupButtons : usersButtons
                };
                column.body.items.push(item);
-               if (o.authorityType == 'GROUP')
-               {
-                  groupCount++;
-               }
-               else
-               {
-                  userCount++;
-               }
             }
-
-            // Sort the groups & items
-            column.body.items = column.body.items.sort(function(a, b)
-            {
-               var name1 = a.label.toLowerCase(),
-                     name2 = b.label.toLowerCase();
-               return (name1 > name2) ? 1 : (name1 < name2) ? -1 : 0;
-            });
-
-            // Footer
-            var footerLabel = groupCount > 0 ? parent._msg("label.noofgroups", groupCount) : parent._msg("label.nogroups");
-            footerLabel += "  ";
-            footerLabel += userCount > 0 ? parent._msg("label.noofusers", userCount) : parent._msg("label.nousers");
-            column.footer =
-            {
-               label: (footerLabel)
-            };
 
             return column;
          },
@@ -795,9 +798,8 @@
                   {
                      try
                      {
-                        var response = YAHOO.lang.JSON.parse(oResponse.responseText);
-                        me.widgets.dataTable.set("MSG_ERROR", response.message);
-                        me.widgets.dataTable.showTableMessage(response.message, YAHOO.widget.DataTable.CLASS_ERROR);
+                        me.widgets.dataTable.set("MSG_ERROR", parent._msg("message.noresults.short"));
+                        me.widgets.dataTable.showTableMessage(parent._msg("message.noresults.short"), YAHOO.widget.DataTable.CLASS_ERROR);
                         me._setResultsMessage("message.noresults");
                      }
                      catch(e)
@@ -1121,47 +1123,6 @@
                },
                failureMessage: failureMessage
             });
-         },
-
-         /**
-          * Helper method for creating the header button depending on if the header is used for the root or a sub group
-          *
-          * @method _buildHeaderButtons
-          * @param itemInfo
-          */
-         _buildHeaderButtons: function ConsoleGroups_SearchPanelHandler__buildheaderButton(itemInfo)
-         {
-            var headerButtons = [
-               {
-                  title: (itemInfo ? parent._msg("button.newsubgroup") : parent._msg("button.newgroup")),
-                  cssClass: "groups-newgroup-button",
-                  click: {
-                     fn: this.onNewGroupClick,
-                     scope: this
-                  }
-               }
-            ];
-            if (itemInfo)
-            {
-               // Only add the following button for NON root columns
-               headerButtons.push({
-                  title: parent._msg("button.addgroup"),
-                  cssClass: "groups-addgroup-button",
-                  click: {
-                     fn: this.onAddGroupClick,
-                     scope: this
-                  }
-               });
-               headerButtons.push({
-                  title: parent._msg("button.adduser"),
-                  cssClass: "groups-adduser-button",
-                  click: {
-                     fn: this.onAddUserClick,
-                     scope: this
-                  }
-               });
-            }
-            return headerButtons;
          },
 
          /**
@@ -1982,7 +1943,16 @@
           * @type int
           * @default 100
           */
-         maxSearchResults: 100
+         maxSearchResults: 100,
+
+         /**
+          * Maximum number of groups & users to rdisplay at the same time in each column
+          *
+          * @property maxPageSize
+          * @type int
+          * @default 50
+          */
+         maxPageSize: 50
       },
 
       /**
@@ -2157,7 +2127,7 @@
       {
          Alfresco.util.Ajax.jsonGet(
          {
-            url:  Alfresco.constants.PROXY_URI + "api/groups/" + encodeURIComponent(shortName) + "/parents?level=ALL",
+            url:  Alfresco.constants.PROXY_URI + "api/groups/" + encodeURIComponent(shortName) + "/parents?level=ALL&maxSize=10",
             successCallback:
             {
                fn: function(o)

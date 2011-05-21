@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="HelpURL" xml:space="preserve">
-    <value>http://www.alfresco.com/help/{major}{minor}/{edition}/msaddin/</value>
+    <value>http://docs.alfresco.com/{major}.{minor}/topic/com.alfresco.{edition}_{major}_{minor}_0.doc/concepts/MSAddin-using.html</value>
   </data>
   <data name="MessageBoxTitle" xml:space="preserve">
     <value>Alfresco Office Add-In</value>

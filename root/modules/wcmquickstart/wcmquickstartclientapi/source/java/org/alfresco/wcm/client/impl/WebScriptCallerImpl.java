@@ -20,17 +20,22 @@ package org.alfresco.wcm.client.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -39,6 +44,9 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 public class WebScriptCallerImpl implements WebScriptCaller
 {
@@ -56,7 +64,6 @@ public class WebScriptCallerImpl implements WebScriptCaller
     private String baseUrl;
     HttpClient httpClient;
     private AuthScope authScope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM);
-    private Credentials credentials;
 
     public WebScriptCallerImpl()
     {
@@ -87,11 +94,6 @@ public class WebScriptCallerImpl implements WebScriptCaller
         setBaseUrl(new URI(serviceLocation));
     }
 
-    public void setCredentials(Credentials credentials)
-    {
-        this.credentials = credentials;
-    }
-
     public void setAuthScope(AuthScope authScope)
     {
         this.authScope = authScope;
@@ -99,99 +101,66 @@ public class WebScriptCallerImpl implements WebScriptCaller
 
     public void init()
     {
-        // Set the credentials and authentication scope on the HTTP client
-        // instance
-        this.httpClient.getState().setCredentials(authScope, credentials);
     }
 
+    public String getTicket(String user, String password)
+    {
+        TicketResponseHandler responseHandler = new TicketResponseHandler();
+        List<WebscriptParam> paramList = new ArrayList<WebscriptParam>();
+        paramList.add(new WebscriptParam("u", user));
+        paramList.add(new WebscriptParam("pw", password));
+        get("login", responseHandler, paramList);
+        Credentials credentials = new UsernamePasswordCredentials(user, password); 
+        if (responseHandler.ticket != null)
+        {
+            credentials = new UsernamePasswordCredentials("", responseHandler.ticket);
+        }
+        httpClient.getState().setCredentials(authScope, credentials);
+        httpClient.getParams().setAuthenticationPreemptive(true);
+        return responseHandler.ticket;
+    }
+    
     /* (non-Javadoc)
      * @see org.alfresco.wcm.client.impl.WebScriptCaller#getJsonObject(java.lang.String, java.util.List)
      */
     public JSONObject getJsonObject(String servicePath, List<WebscriptParam> params)
     {
-        JSONObject jsonObject = null;
-
         GetMethod getMethod = getGETMethod(servicePath, params);
-
-        String responseText = null;
-        try
-        {
-            httpClient.executeMethod(getMethod);
-            if (getMethod.getStatusCode() == 200)
-            {
-                jsonObject = new JSONObject(new JSONTokener(
-                        new InputStreamReader(getMethod.getResponseBodyAsStream(), "UTF-8")));
-            }
-            else
-            {
-                discardResponse(getMethod);
-            }
-        }
-        catch (RuntimeException ex)
-        {
-            log.error("Rethrowing runtime exception.", ex);
-            throw ex;
-        }
-        catch (JSONException ex)
-        {
-            log.error("Failed to parse response from Alfresco:\n " + responseText);
-        }
-        catch (Exception ex)
-        {
-            log.error("Failed to make request to Alfresco web script", ex);
-        }
-        finally
-        {
-            getMethod.releaseConnection();
-        }
-        return jsonObject;
+        JsonResponseHandler handler = new JsonResponseHandler();
+        executeRequest(handler, getMethod);
+        return handler.jsonObject;
     }
     
     public void get(String servicePath, WebscriptResponseHandler handler, List<WebscriptParam> params)
     {
         GetMethod getMethod = getGETMethod(servicePath, params);
-        try
-        {
-            httpClient.executeMethod(getMethod);
-            if (getMethod.getStatusCode() == 200)
-            {
-                handler.handleResponse(getMethod.getResponseBodyAsStream());
-            }
-            else
-            {
-                // Must read the response, even though we don't use it
-                discardResponse(getMethod);
-            }
-        }
-        catch (RuntimeException ex)
-        {
-            log.error("Rethrowing runtime exception.", ex);
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            log.error("Failed to make request to Alfresco web script", ex);
-        }
-        finally
-        {
-            getMethod.releaseConnection();
-        }
+        executeRequest(handler, getMethod);
     }
     
     public void post(String servicePath, WebscriptResponseHandler handler, List<WebscriptParam> params)
     {
         PostMethod postMethod = getPOSTMethod(servicePath, params);
+        executeRequest(handler, postMethod);
+    }
+
+    private void executeRequest(WebscriptResponseHandler handler, HttpMethod httpMethod)
+    {
+        long startTime = 0L;
+        if (log.isDebugEnabled())
+        {
+            startTime = System.currentTimeMillis();
+        }
         try
         {
-            httpClient.executeMethod(postMethod);
-            if (postMethod.getStatusCode() == 200)
+            httpClient.executeMethod(httpMethod);
+            if (httpMethod.getStatusCode() == 200)
             {
-                handler.handleResponse(postMethod.getResponseBodyAsStream());
+                handler.handleResponse(httpMethod.getResponseBodyAsStream());
             }
             else
             {
                 // Must read the response, even though we don't use it
-                discardResponse(postMethod);
+                discardResponse(httpMethod);
             }
         }
         catch (RuntimeException ex)
@@ -205,21 +174,27 @@ public class WebScriptCallerImpl implements WebScriptCaller
         }
         finally
         {
-            postMethod.releaseConnection();
+            if (log.isDebugEnabled())
+            {
+                log.debug(httpMethod.getName() + " request to " + httpMethod.getPath() + "?" + 
+                        httpMethod.getQueryString() + " completed in " + 
+                        (System.currentTimeMillis() - startTime) + "ms");
+            }
+            httpMethod.releaseConnection();
         }
     }
 
-    void discardResponse(HttpMethod getMethod) throws IOException
+    void discardResponse(HttpMethod httpMethod) throws IOException
     {
         if (log.isDebugEnabled())
         {
-            log.debug("Received non-OK response when invoking GET method on path " + getMethod.getPath() + 
-                    ". Response was:\n" + getMethod.getResponseBodyAsString());
+            log.debug("Received non-OK response when invoking GET method on path " + httpMethod.getPath() + 
+                    ". Response was:\n" + httpMethod.getResponseBodyAsString());
         }
         else
         {
             byte[] buf = localBuffer.get();
-            InputStream responseStream = getMethod.getResponseBodyAsStream();
+            InputStream responseStream = httpMethod.getResponseBodyAsStream();
             while (responseStream.read(buf) != -1);
         }
     }
@@ -268,4 +243,76 @@ public class WebScriptCallerImpl implements WebScriptCaller
         get(servicePath, handler, Arrays.asList(params));
     }
 
+    private static class JsonResponseHandler implements WebscriptResponseHandler
+    {
+        public JSONObject jsonObject;
+        
+        @Override
+        public void handleResponse(InputStream in)
+        {
+            try
+            {
+                jsonObject = new JSONObject(new JSONTokener(
+                        new InputStreamReader(in, "UTF-8")));
+            }
+            catch (JSONException ex)
+            {
+                log.error("Failed to parse response from Alfresco", ex);
+            }
+            catch (UnsupportedEncodingException e)
+            {
+                //UTF-8 is always supported
+            }
+        }
+        
+    }
+
+    private static class TicketResponseHandler extends DefaultHandler implements WebscriptResponseHandler
+    {
+        private String ticket = null;
+        private StringBuilder ticketChars;
+
+        @Override
+        public void handleResponse(InputStream in)
+        {
+            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+            SAXParser parser;
+            try
+            {
+                parser = saxParserFactory.newSAXParser();
+                parser.parse(in, this);
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException
+        {
+            if (ticketChars != null)
+            {
+                ticketChars.append(ch, start, length);
+            }
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException
+        {
+            if ("ticket".equals(qName) && ticketChars != null)
+            {
+                ticket = ticketChars.toString();
+                ticketChars = null;
+            }
+        }
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+        {
+            if ("ticket".equals(qName))
+            {
+                ticketChars = new StringBuilder();
+            }
+        }
+    }
 }

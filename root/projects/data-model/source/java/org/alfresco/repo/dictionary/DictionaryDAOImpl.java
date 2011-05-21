@@ -1152,7 +1152,14 @@ public class DictionaryDAOImpl implements DictionaryDAO
         QName modelName = compiledModel.getModelDefinition().getName();
         
         CompiledModel previousVersion = null;
-        try { previousVersion = getCompiledModel(modelName); } catch (DictionaryException e) {} // ignore missing model
+        try 
+        { 
+            previousVersion = getCompiledModel(modelName); 
+        } 
+        catch (DictionaryException e) 
+        {
+            logger.warn(e);
+        } // ignore missing model
 
         if (previousVersion == null)
         {

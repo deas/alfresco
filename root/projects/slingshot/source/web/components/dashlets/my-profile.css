@@ -1,8 +1,9 @@
 
 .profile .photorow
 {
-   border-bottom:1px dashed #E9E9E9;
-   padding:0.5em 0.5em 1.5em;
+   border-bottom: 1px dashed #E9E9E9;
+   padding: 0.5em 0.5em;
+   margin-bottom: 0.5em;
 }
 
 .profile .photo
@@ -17,29 +18,22 @@
    margin-left: 80px;
 }
 
-.profile .fieldlabel
-{
-   line-height: 1.5em;
-   margin-left: 80px;
-   min-height: 1.5em;
-}
-
 .profile .row
 {
-   padding: 0.3em;
+   padding: 0.25em 0.5em;
+   min-height: 1.5em;
    clear: both;
 }
 
-.profile .fieldlabelright
+.profile .fieldlabel
 {
-   float: left;
-   font-weight: bold;
-   text-align: right;
-   width: 6em;
+   float:left;
+   min-width: 32%;
+   min-height: 1.5em;
 }
-
 .profile .fieldvalue
 {
-   margin-left: 6.5em;
-   min-height: 1.2em;
+   float:left;
+   min-height: 1.5em;
+   min-width:66%;
 }

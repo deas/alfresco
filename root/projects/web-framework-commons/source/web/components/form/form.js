@@ -350,7 +350,7 @@
                
                var data =
                {
-                  htmlid: this.id,
+                  htmlid: this.parentId,
                   formUI: false,
                   mode: this.options.mode,
                   itemKind: itemKind,

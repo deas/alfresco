@@ -7,7 +7,8 @@
 <script type="text/javascript">//<![CDATA[
    new Alfresco.ConsoleGroups("${el}").setOptions({
       minSearchTermLength: ${(args.minSearchTermLength!config.scoped['Search']['search'].getChildValue('min-search-term-length'))?js_string},
-      maxSearchResults: ${(args.maxSearchResults!config.scoped['Search']['search'].getChildValue('max-search-results'))?js_string}
+      maxSearchResults: ${(args.maxSearchResults!config.scoped['Search']['search'].getChildValue('max-search-results'))?js_string},
+      maxPageSize: ${(args.maxPageSize!config.scoped['Console']['groups'].getChildValue('max-page-size'))?js_string}
    }).setMessages(
       ${messages}
    );

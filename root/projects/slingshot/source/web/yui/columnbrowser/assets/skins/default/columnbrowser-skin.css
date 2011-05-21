@@ -3,14 +3,22 @@
 .yui-columnbrowser .yui-columnbrowser-column-header,
 .yui-columnbrowser .yui-columnbrowser-column-footer
 {
+   height: 1.8em;
    line-height: 1.8em;
    background: #D8D8DA url(../../../../../yui/assets/skins/default/sprite.png) repeat-x scroll 0 0;
 }
 
-.yui-columnbrowser .yui-columnbrowser-column-header span,
-.yui-columnbrowser .yui-columnbrowser-column-footer span
+.yui-columnbrowser .yui-columnbrowser-column-header span
 {
    padding-left: 1em;
+   margin: 0;
+}
+
+.yui-columnbrowser .yui-columnbrowser-column-footer .yui-pg-container
+{
+   padding-right: 1.5em;
+   margin: 0;
+   text-align: center;
 }
 
 /* YUI Carousel 2.8.1 fails to calculate size on this element if its not set using px */

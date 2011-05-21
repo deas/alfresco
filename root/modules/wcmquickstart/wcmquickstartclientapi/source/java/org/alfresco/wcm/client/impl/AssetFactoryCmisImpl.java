@@ -31,6 +31,7 @@ import java.util.TreeMap;
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetFactory;
 import org.alfresco.wcm.client.CollectionFactory;
+import org.alfresco.wcm.client.ContentStream;
 import org.alfresco.wcm.client.Query;
 import org.alfresco.wcm.client.Resource;
 import org.alfresco.wcm.client.SearchResult;
@@ -38,11 +39,14 @@ import org.alfresco.wcm.client.SearchResults;
 import org.alfresco.wcm.client.SectionFactory;
 import org.alfresco.wcm.client.util.CmisSessionHelper;
 import org.alfresco.wcm.client.util.SqlUtils;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.QueryResult;
 import org.apache.chemistry.opencmis.client.api.Rendition;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectList;
@@ -432,5 +436,25 @@ public class AssetFactoryCmisImpl implements AssetFactory
     public void setCollectionFactory(CollectionFactory collectionFactory)
     {
         this.collectionFactory = collectionFactory;
+    }
+
+    @Override
+    public ContentStream getContentStream(String assetId)
+    {
+        // Get the request thread's session
+        Session session = CmisSessionHelper.getSession();
+
+        // Fetch the Document object for this asset
+        CmisObject object = session.getObject(new ObjectIdImpl(assetId));
+        if (!(object instanceof Document))
+        {
+            throw new IllegalArgumentException("Object referenced by the uuid is not a document");
+        }
+        Document doc = (Document) object;
+        if (doc == null)
+            return null;
+
+        // Return the content as a stream
+        return new ContentStreamCmisImpl(doc.getContentStream());
     }
 }

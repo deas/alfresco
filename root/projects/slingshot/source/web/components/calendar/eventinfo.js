@@ -234,24 +234,33 @@
       {
          if (this.isShowing) 
          {
-            this._hide();         
+          this._hide();
          }
-          this.eventDialog = Alfresco.util.DialogManager.registerDialog('CalendarView.editEvent');
-          this.eventDialog.id = this.id+ "-editEvent";
-          this.eventDialog.siteId = this.options.siteId;
+         this.eventDialog = Alfresco.util.DialogManager.registerDialog('CalendarView.editEvent');
+         this.eventDialog.id = this.id+ "-editEvent";
+         this.eventDialog.siteId = this.options.siteId;
           this.eventDialog.event = this.event;
 
-          // add the tags that are already set on the post
-          if (this.eventDialog.tagLibrary == undefined)
-          {
-             this.eventDialog.tagLibrary = new Alfresco.module.TagLibrary( this.eventDialog.id);
-             this.eventDialog.tagLibrary.setOptions({ siteId: this.options.siteId });
-          }
-          this.eventDialog.tags = [];
-             YAHOO.Bubbling.on('onTagLibraryTagsChanged',function(e,o) { 
-               this.tags=o[1].tags;
-             },
-             this.eventDialog);
+         // add the tags that are already set on the post
+         if (this.eventDialog.tagLibrary == undefined)
+         {
+            // If there is an existing TagLibrary component on the page, use that, otherwise create a new one.
+            var existingTagLibComponent = Alfresco.util.ComponentManager.find({name: "Alfresco.module.TagLibrary"});
+            if (existingTagLibComponent.length > 0) 
+            {
+               this.eventDialog.tagLibrary = existingTagLibComponent[0];
+            } 
+				else 
+            {
+               this.eventDialog.tagLibrary = new Alfresco.module.TagLibrary( this.eventDialog.id);
+               this.eventDialog.tagLibrary.setOptions({ siteId: this.options.siteId });	
+            }
+         }
+         this.eventDialog.tags = [];
+         YAHOO.Bubbling.on('onTagLibraryTagsChanged',function(e,o) { 
+            this.tags=o[1].tags;
+         },
+         this.eventDialog);
          
          var options = 
          {

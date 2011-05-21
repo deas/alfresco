@@ -183,7 +183,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
 
                     if (fileInfo != null)
                     {
-                        if (getNodeService().getType(fileInfo.getNodeRef()).equals(SiteModel.TYPE_SITE))
+                        if (getDictionaryService().isSubClass(getNodeService().getType(fileInfo.getNodeRef()), SiteModel.TYPE_SITE))
                         {
                             webUrl = alfrescoContext + "/" + tempWebUrl;
                             if (url.replaceAll(webUrl, "").startsWith("/"))
@@ -564,7 +564,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
 
         docMetaInfo.setPath(path);
 
-        if (getNodeService().getType(fileInfo.getNodeRef()).equals(SiteModel.TYPE_SITE))
+        if (getDictionaryService().isSubClass(getNodeService().getType(fileInfo.getNodeRef()), SiteModel.TYPE_SITE))
         {
             docMetaInfo.setIschildweb("true");
         }

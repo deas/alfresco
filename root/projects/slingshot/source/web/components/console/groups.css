@@ -120,7 +120,7 @@
    width: 26em;
 }
 
-.groups .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a
+.groups .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column .yui-columnbrowser-column-body a
 {
    color: black;
    font-family: 'Lucida Grande', Helvetica, sans-serif;
@@ -128,6 +128,20 @@
    text-decoration: none;
    line-height: 1.5em;
 }
+
+.groups .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column .yui-columnbrowser-column-footer .yui-pg-container a
+{
+   color: black;
+}
+
+.groups .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column .yui-columnbrowser-column-footer .yui-pg-container span.yui-pg-first,
+.groups .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column .yui-columnbrowser-column-footer .yui-pg-container span.yui-pg-previous,
+.groups .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column .yui-columnbrowser-column-footer .yui-pg-container span.yui-pg-next,
+.groups .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column .yui-columnbrowser-column-footer .yui-pg-container span.yui-pg-last
+{
+   color: #cccccc;
+}
+
 
 .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a.yui-columnbrowser-column-has-next
 {

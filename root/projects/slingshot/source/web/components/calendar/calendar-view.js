@@ -676,7 +676,7 @@
 					var end = this.events[el.id].getData("dtend");
 					var endTimes = end.split("T")[1].split(":");
 				}
-				
+
             if (start && end) // don't do anything if we can't find the event details 
             {
                var startHours = startTimes[0];
@@ -695,7 +695,7 @@
                }
                
                // if all times are 00:00 then it's an all day event
-               var isAllDay = (parseInt(startHours + startMinutes + endHours + endMinutes) == 0) ? true : false;
+               var isAllDay = (parseInt(startHours + startMinutes + endHours + endMinutes, 10) == 0) ? true : false;
                
                if (!Alfresco.CalendarHelper.isSameDay(start, displayDate) && !isAllDay) 
                {
@@ -793,14 +793,23 @@
          if (!this.eventDialog) 
          {
             this.eventDialog = Alfresco.util.DialogManager.getDialog('CalendarView.addEvent');
-            this.eventDialog.id = this.id + "-addEvent";
+            this.eventDialog.id = this.id + "-editEvent";
             if (this.eventDialog.tagLibrary == undefined) 
             {
-               this.eventDialog.tagLibrary = new Alfresco.module.TagLibrary(this.eventDialog.id);
-               this.eventDialog.tagLibrary.setOptions(
+               // If there is an existing TagLibrary component on the page, use that, otherwise create a new one.
+               var existingTagLibComponent = Alfresco.util.ComponentManager.find({name: "Alfresco.module.TagLibrary"});
+               if (existingTagLibComponent.length > 0) 
                {
-                  siteId: this.options.siteId
-               });
+                  this.eventDialog.tagLibrary = existingTagLibComponent[0];
+               }
+               else 
+               {
+                  this.eventDialog.tagLibrary = new Alfresco.module.TagLibrary(this.eventDialog.id);
+                  this.eventDialog.tagLibrary.setOptions(
+                  {
+                     siteId: this.options.siteId
+                  });
+               }
             }
          }
          var options = 

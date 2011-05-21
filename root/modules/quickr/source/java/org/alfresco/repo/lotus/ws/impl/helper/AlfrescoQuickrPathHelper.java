@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -60,6 +61,8 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     public static DatatypeFactory datatypeFactory;
 
+    private Map<String, String> containersMapping;
+
     public FileFolderService fileFolderService;
 
     public void setFileFolderService(FileFolderService fileFolderService)
@@ -83,6 +86,7 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
     }
 
     private NodeRef rootNodeRef;
+    private String rootDisplayPath;
 
     private String rootPath;
     private StoreRef libraryStoreRef;
@@ -90,6 +94,8 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
     private String shareDocumentUrl;
     private String shareFolderUrl;
     private String shareSiteUrl;
+    private String shareSiteContainerUrl;
+    private String shareUserDashboardUrl;
 
     private NodeService nodeService;
     private SearchService searchService;
@@ -132,6 +138,21 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
     public void setShareSiteUrl(String shareSiteUrl)
     {
         this.shareSiteUrl = shareSiteUrl;
+    }
+
+    public void setShareSiteContainerUrl(String shareSiteContainerUrl)
+    {
+        this.shareSiteContainerUrl = shareSiteContainerUrl;
+    }
+
+    public void setShareUserDashboardUrl(String shareUserDashboardUrl)
+    {
+        this.shareUserDashboardUrl = shareUserDashboardUrl;
+    }
+    
+    public void setContainersMapping(Map<String, String> containersMapping)
+    {
+        this.containersMapping = containersMapping;
     }
 
     public StoreRef getLibraryStoreRef()
@@ -204,6 +225,14 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
                 }
             }
         }, authenticationComponent.getSystemUserName());
+
+        rootDisplayPath = AuthenticationUtil.runAs(new RunAsWork<String>()
+        {
+            public String doWork() throws Exception
+            {
+                return nodeService.getPath(rootNodeRef).toDisplayPath(nodeService, permissionService) + "/" + nodeService.getProperty(rootNodeRef, ContentModel.PROP_NAME);
+            }
+        }, authenticationComponent.getSystemUserName());
     }
 
     @Override
@@ -214,29 +243,25 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
 
     /**
      * @param nodeRef NodeRef of the document/folder.
-     * @param remLeadSlash if true then leading slash will be removed from path
+     * @param isRelative if true then returned path will be relative
      * @return Path to the document/folder.
      */
-    public String getNodePath(NodeRef nodeRef, boolean remLeadSlash)
+    public String getNodePath(NodeRef nodeRef, boolean isRelative)
     {
         String urlPath;
         if (nodeRef.equals(rootNodeRef))
         {
-            urlPath = "";
+            urlPath = rootDisplayPath;
         }
         else
         {
             StringBuilder builder = new StringBuilder(nodeService.getPath(nodeRef).toDisplayPath(nodeService, permissionService));
-            builder.delete(0, nodeService.getPath(rootNodeRef).toDisplayPath(nodeService, permissionService).length()
-                    + ((String) nodeService.getProperty(rootNodeRef, ContentModel.PROP_NAME)).length() + 1);
-            if (builder.length() != 0)
+            builder.append("/");
+            if (isRelative)
             {
-                if (remLeadSlash)
-                {
-                    builder.deleteCharAt(0);
-                }
-                builder.append("/");
+                builder.delete(0, rootDisplayPath.length() + 1);
             }
+
             String nodeName = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
             builder.append(nodeName);
             urlPath = builder.toString();
@@ -252,12 +277,12 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
 
     private NodeRef getNodeRef(NodeRef parentNodeRef, String nodePath) throws FileNotFoundException
     {
+        nodePath = resolveNodePath(nodePath, parentNodeRef != null);
+        
         if (parentNodeRef == null)
         {
             parentNodeRef = rootNodeRef;
         }
-
-        nodePath = removeSlashes(nodePath);
 
         FileInfo fileInfo = null;
 
@@ -279,15 +304,26 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
         return fileInfo.getNodeRef();
     }
 
-    public static String removeSlashes(String value)
+    /**
+     * Return path relative to provided parentNodeRef. If parentNodeRef is null, the path relative to quickr root will be returned.
+     * 
+     * @param isRelative true if provided path is relative
+     * @param path relative node path
+     * @return
+     */
+    public String resolveNodePath(String path, boolean isRelative)
     {
-        value = value.replaceAll("//", "/");
+        if (isRelative == false)
+        {
+            path = path.replaceFirst(rootDisplayPath, "");
+        }
 
-        if (value.startsWith("/"))
-            value = value.substring(1);
-        if (value.endsWith("/"))
-            value = value.substring(0, value.length() - 1);
-        return value;
+        path = path.replaceAll("//", "/");
+        if (path.startsWith("/"))
+            path = path.substring(1);
+        if (path.endsWith("/"))
+            path = path.substring(0, path.length() - 1);
+        return path;
     }
 
     public NodeRef getRootNodeRef()
@@ -326,6 +362,18 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
     {
         return sysAdminParams.getShareProtocol() + "://" + sysAdminParams.getShareHost() + ":" + sysAdminParams.getSharePort() + "/" + sysAdminParams.getShareContext()
                 + shareSiteUrl;
+    }
+
+    public String getShareSiteContainerUrl()
+    {
+        return sysAdminParams.getShareProtocol() + "://" + sysAdminParams.getShareHost() + ":"
+                + sysAdminParams.getSharePort() + "/" + sysAdminParams.getShareContext() + shareSiteContainerUrl;
+    }
+
+    public String getShareUserDashboardUrl()
+    {
+        return sysAdminParams.getShareProtocol() + "://" + sysAdminParams.getShareHost() + ":"
+                + sysAdminParams.getSharePort() + "/" + sysAdminParams.getShareContext() + shareUserDashboardUrl;
     }
 
     /**
@@ -543,5 +591,16 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
             count++;
         }
         return finalName;
+    }
+    
+    /**
+     * Returns the url suffix for site container
+     * 
+     * @param containerName name of the site container
+     * @return url suffix
+     */
+    public String getContainerUrl(String containerName)
+    {
+        return containersMapping.get(containerName);
     }
 }

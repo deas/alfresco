@@ -22,16 +22,23 @@
       <element name="addPath" optional="yes" />
       <sequential>
          <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+         
+         <!-- Our classpath is getting too long. We'll need to specify it in a temporary file instead! -->
+         <path id="compile-java-classpath">
+            <pathelement location="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+            <addPath />
+            <path refid="classpath.compile" />
+            <path refid="classpath.compile.extension" />
+         </path>
+         <tempfile property="compile-java-classpath-file" deleteonexit="true" />
+         <echo message="-classpath${line.separator}${toString:compile-java-classpath}" file="${compile-java-classpath-file}" />
+		 
          <javac destdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" fork="true"
                 memoryMaximumSize="${mem.size.max}" deprecation="${javac.deprecation}" 
                 debug="${javac.debug}"  target="${javac.target}" source="${javac.source}" encoding="${javac.encoding}"
-                excludes="@{compileExcludes}" >
+                excludes="@{compileExcludes}" includeAntRuntime="false">
+            <compilerarg value="@${compile-java-classpath-file}"/>
             <src path="@{projectdir}/${dir.name.source}/${dir.name.java}" />
-            <classpath>
-            <addPath/>
-            <path refid="classpath.compile"/>
-            <path refid="classpath.compile.extension"/>
-         </classpath>
 
             <!-- To run javac with Xlint:unchecked, uncomment the line below  -->
             <!-- <compilerarg value="-Xlint:unchecked"/> -->

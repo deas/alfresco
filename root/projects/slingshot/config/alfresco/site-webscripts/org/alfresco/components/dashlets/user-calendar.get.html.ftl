@@ -31,15 +31,19 @@
             <div class="details2">
                <h4><a href="${url.context}/${event.url}" class="theme-color-1">${event.title?html}</a></h4>
                <div>
-                  <#if startDate != endDate>
-                     <#-- Multiday -->
+                  <#if startDate != endDate && event.allday != "true">
+                     <#-- Simple Multiday -->
                      ${startDate} ${event.start} - ${endDate} ${event.end}
                   <#else>
-                     <#-- Single day -->
                      ${startDate} 
                      <#if event.allday = "true">
+                        <#if startDate != endDate>
+                           <#-- Allday Multiday -->
+                           - ${endDate}
+                         </#if>
                         ${msg("label.allday")}
                      <#else>
+                        <#-- Single day -->
                         ${event.start}
                         <#if event.start != event.end>
                             - ${event.end}

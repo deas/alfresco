@@ -31,7 +31,14 @@ function main()
 
 function loadDisplayInfo(connector, nodeRef)
 {
-   var result = connector.get("/slingshot/doclib/node/" + nodeRef.replace("://", "/"));
+   var siteId = page.url.templateArgs.site,
+      url = "/slingshot/doclib/node/" + nodeRef.replace("://", "/");
+
+   if (siteId == null)
+   {
+      url += "?libraryRoot=" + encodeURIComponent(model.rootNode);
+   }
+   var result = connector.get(url);
    if (result.status == 200)
    {
       var location = eval('(' + result + ')').item.location;

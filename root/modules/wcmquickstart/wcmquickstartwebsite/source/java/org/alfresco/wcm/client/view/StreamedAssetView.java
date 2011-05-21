@@ -17,7 +17,6 @@
  */
 package org.alfresco.wcm.client.view;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -26,6 +25,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.alfresco.wcm.client.impl.StreamUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
@@ -39,15 +39,6 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 public class StreamedAssetView extends AbstractUrlBasedView
 {
     private static final Log log = LogFactory.getLog(StreamedAssetView.class.getName());
-    private ThreadLocal<byte[]> streamBuffer = new ThreadLocal<byte[]>() {
-
-        @Override
-        protected byte[] initialValue()
-        {
-            return new byte[10240];
-        }
-    };
-
     private InputStream stream;
 
     /**
@@ -86,15 +77,7 @@ public class StreamedAssetView extends AbstractUrlBasedView
         {
             // Write the InputStream to the servlet OutputStream
             out = response.getOutputStream();
-            BufferedOutputStream bufOut = new BufferedOutputStream(out);
-            response.setContentType(getContentType());
-            byte[] buf = streamBuffer.get();
-            int count;
-            while ((count = stream.read(buf)) != -1)
-            {
-                bufOut.write(buf, 0, count);
-            }
-            bufOut.flush();
+            StreamUtils.output(stream, out);
         }
         catch (IOException ex)
         {

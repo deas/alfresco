@@ -2023,7 +2023,7 @@
       </copy>
       
       <!-- for Share activity feed (email) notifier - overwrite dummy files -->
-
+      
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/messages" overwrite="true">
          <!-- for activity messages based on activity type -->
          <fileset dir="${dir.project.slingshot.config}/alfresco/site-webscripts/org/alfresco/components/dashlets"
@@ -2061,6 +2061,7 @@
                   includes="**/extension/dev-context.xml"/>
       </copy>
             
+
       <!-- Fixes to lucene FSDirectory -->
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/org/apache/lucene">
          <fileset dir="${dir.project.repository.classes}/org/apache/lucene" 

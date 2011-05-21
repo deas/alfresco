@@ -46,11 +46,13 @@ public class ListOfValuesConstraint extends AbstractConstraint
 
     private List<String> allowedValues;
     private List<String> allowedValuesUpper;
-    private boolean caseSensitive;
+    protected boolean caseSensitive;
+    protected boolean sorted;
     
     public ListOfValuesConstraint()
     {
         caseSensitive = true;
+        sorted = false;
     }
     
     /**
@@ -69,6 +71,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
         sb.append("ListOfValuesConstraint")
           .append("[ allowedValues=").append(allowedValues)
           .append(", caseSensitive=").append(caseSensitive)
+          .append(", sorted=").append(sorted)
           .append("]");
         return sb.toString();
     }
@@ -77,11 +80,34 @@ public class ListOfValuesConstraint extends AbstractConstraint
      * Get the allowed values.  Note that these are <tt>String</tt> instances, but may 
      * represent non-<tt>String</tt> values.  It is up to the caller to distinguish.
      * 
+     * Sorts list if appropriate.
+     * 
      * @return Returns the values allowed
      */
     public List<String> getAllowedValues()
     {
-        return allowedValues;
+    	List<String> rawValues = getRawAllowedValues(); 
+    	if (sorted == true)
+    	{
+    		List<String> values = new ArrayList<String>(rawValues);
+    		Collections.sort(values);
+    		return values;
+    	}
+    	else
+    	{
+    		return rawValues;
+    	}
+    }
+    
+    /**
+     * Get the allowed values.  Note that these are <tt>String</tt> instances, but may 
+     * represent non-<tt>String</tt> values.  It is up to the caller to distinguish.
+     * 
+     * @return Returns the values allowed
+     */
+    protected List<String> getRawAllowedValues()
+    {
+    	return allowedValues;
     }
     
     /**
@@ -128,7 +154,30 @@ public class ListOfValuesConstraint extends AbstractConstraint
     {
         this.caseSensitive = caseSensitive;
     }
+    
+    /**
+     * Indicates whether the list of values are sorted or not.
+     * 
+     * @return	<tt>true</tt> if sorted, <tt>false</tt> otherwise
+     */
+    public boolean isSorted() 
+    {
+		return sorted;
+	}
+    
+    /**
+     * Set whether the values are ordered or not.
+     * 
+     * @param sorted	<tt>true</tt> if sorted, <tt>false</tt> otherwise
+     */
+    public void setSorted(boolean sorted) 
+    {
+		this.sorted = sorted;
+	}
 
+    /**
+     * @see org.alfresco.repo.dictionary.constraint.AbstractConstraint#initialize()
+     */
     @Override
     public void initialize()
     {
@@ -136,6 +185,9 @@ public class ListOfValuesConstraint extends AbstractConstraint
         checkPropertyNotNull("allowedValues", allowedValues);
     }
     
+    /**
+     * @see org.alfresco.repo.dictionary.constraint.AbstractConstraint#getParameters()
+     */
     @Override
     public Map<String, Object> getParameters()
     {
@@ -143,10 +195,15 @@ public class ListOfValuesConstraint extends AbstractConstraint
         
         params.put("caseSensitive", this.caseSensitive);
         params.put("allowedValues", this.allowedValues);
+        params.put("sorted", this.sorted);
         
         return params;
     }
 
+    /**
+     * @see org.alfresco.repo.dictionary.constraint.AbstractConstraint#evaluateSingleValue(java.lang.Object)
+     */
+    @Override
     protected void evaluateSingleValue(Object value)
     {
         // convert the value to a String

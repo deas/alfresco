@@ -157,7 +157,6 @@
                <show id="bpm:workflowDueDate" />
                <show id="bpm:workflowPriority" />
                <show id="bpm:groupAssignee" />
-               <show id="wf:requiredApprovePercent" />
                <show id="packageItems" />
             </field-visibility>
             <appearance>

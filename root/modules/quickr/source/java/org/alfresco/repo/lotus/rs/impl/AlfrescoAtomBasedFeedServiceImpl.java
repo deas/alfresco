@@ -66,6 +66,8 @@ import org.alfresco.repo.lotus.ws.impl.helper.AlfrescoQuickrPathHelper;
 import org.alfresco.repo.lotus.ws.impl.helper.AlfrescoQuickrPermissionHelper;
 import org.alfresco.repo.lotus.ws.impl.helper.AlfrescoQuickrWorkflowHelper;
 import org.alfresco.repo.lotus.ws.impl.helper.DocumentStatus;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.Version2Model;
@@ -405,6 +407,7 @@ public class AlfrescoAtomBasedFeedServiceImpl implements AtomBasedFeedService
 
                     ContentWriter writer = contentService.getWriter(file.getNodeRef(), ContentModel.PROP_CONTENT, true);
                     InputStream contentStream = new ByteArrayInputStream(result.get(PART_TEXT).getBytes(MULTIPART_ENCODING));
+                    writer.setMimetype(documentHelper.getMimeType(file.getNodeRef()));
                     writer.putContent(contentStream);
 
                     if (isDraft == true && !pathHelper.isInRmSite(file.getNodeRef()))
@@ -439,6 +442,7 @@ public class AlfrescoAtomBasedFeedServiceImpl implements AtomBasedFeedService
                 resultFileInfo = fileFolderService.getFileInfo(pathHelper.getDocumentForWork(resultFileInfo.getNodeRef()));
 
                 ContentWriter writer = contentService.getWriter(resultFileInfo.getNodeRef(), ContentModel.PROP_CONTENT, true);
+                writer.setMimetype(documentHelper.getMimeType(resultFileInfo.getNodeRef()));
                 writer.putContent(new ByteArrayInputStream(body));
 
                 if (getHeaderValue(headres, "x-method-override") == null && submit == false && !pathHelper.isInRmSite(resultFileInfo.getNodeRef()))
@@ -561,6 +565,7 @@ public class AlfrescoAtomBasedFeedServiceImpl implements AtomBasedFeedService
         Entry entry = factory.newEntry();
         entry.setId("urn:lsid:ibm.com:td:" + libraryNodeRef.getId());
         entry.addLink(pathHelper.getLotusUrl() + "/dm/atom/library/" + libraryNodeRef.getId() + "/entry", "self");
+        entry.addLink(MessageFormat.format(pathHelper.getShareUserDashboardUrl(), AuthenticationUtil.getFullyAuthenticatedUser()), "alternate");
 
         entry.addCategory("tag:ibm.com,2006:td/type", "library", "library");
 
@@ -1027,6 +1032,20 @@ public class AlfrescoAtomBasedFeedServiceImpl implements AtomBasedFeedService
             entry.addLink("folder/" + nodeRef.getId() + "/entry", "edit");
             entry.addCategory("tag:ibm.com,2006:td/type", "folder", "folder");
             entry.setTitle(nodeName);
+
+            if (nodeService.getType(nodeRef).equals(SiteModel.TYPE_SITE))
+            {
+                entry.addLink(MessageFormat.format(pathHelper.getShareSiteUrl(), nodeName), "alternate");
+            }
+            else if (nodeService.hasAspect(nodeRef, SiteModel.ASPECT_SITE_CONTAINER))
+            {
+                entry.addLink(MessageFormat.format(pathHelper.getShareSiteContainerUrl(), pathHelper.getNodeRefSiteName(nodeRef), 
+                        pathHelper.getContainerUrl(nodeName)), "alternate");
+            }
+            else
+            {
+                entry.addLink(MessageFormat.format(pathHelper.getShareFolderUrl(), pathHelper.getNodeRefSiteName(nodeRef), nodeRef), "alternate");
+            }
         }
         else
         {
@@ -1142,6 +1161,7 @@ public class AlfrescoAtomBasedFeedServiceImpl implements AtomBasedFeedService
         String modifierName = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER);
         String modifierEmail = (String) nodeService.getProperty(personService.getPerson(modifierName), ContentModel.PROP_EMAIL);
 
+        //Modifier
         ExtensibleElement modifierElement = entry.addExtension("urn:ibm.com/td", "modifier", "td");
         Element modifierUriTag = modifierElement.addExtension("urn:ibm.com/td", "uri", "td");
         Element modifierNameTag = modifierElement.addExtension("urn:ibm.com/td", "name", "td");
@@ -1149,6 +1169,18 @@ public class AlfrescoAtomBasedFeedServiceImpl implements AtomBasedFeedService
         modifierUriTag.setText("");
         modifierNameTag.setText(modifierName);
         modifierEmailTag.setText(modifierEmail);
+
+        //Created
+        ExtensibleElement createdElement = entry.addExtension("urn:ibm.com/td", "created", "td");
+        createdElement.setText(AtomDate.valueOf((Date) nodeService.getProperty(nodeRef, ContentModel.PROP_CREATED)).getValue());
+        
+        //Modified
+        ExtensibleElement modifiedElement = entry.addExtension("urn:ibm.com/td", "modified", "td");
+        modifiedElement.setText(AtomDate.valueOf((Date) nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIED)).getValue());
+        
+        //Label
+        ExtensibleElement labelElement = entry.addExtension("urn:ibm.com/td", "label", "td");
+        labelElement.setText((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
 
         entry.setPublished((Date) nodeService.getProperty(nodeRef, ContentModel.PROP_CREATED));
         entry.setUpdated((Date) nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIED));

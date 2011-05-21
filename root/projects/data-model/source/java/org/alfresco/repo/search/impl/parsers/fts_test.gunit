@@ -7,7 +7,7 @@ gunit FTS;
 /** Parser */
 
 ftsQuery:
-"\"zebra\"" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (PHRASE \"zebra\"))))"
+"\"zebra\""  -> "(DISJUNCTION (CONJUNCTION (DEFAULT (PHRASE \"zebra\"))))"
 "one and cm:name:two and cm_name:three and {http://www.alfresco.org/model/content/1.0}name:\"four\" seven * eight \"nine * ten\"" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM one)) (DEFAULT (TERM two (FIELD_REF name (PREFIX cm)))) (DEFAULT (TERM three (FIELD_REF cm_name))) (DEFAULT (PHRASE \"four\" (FIELD_REF name (NAME_SPACE {http://www.alfresco.org/model/content/1.0})))) (DEFAULT (PROXIMITY seven PROXIMITY eight)) (DEFAULT (PHRASE \"nine * ten\"))))"
 "1..2" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (RANGE INCLUSIVE 1 2 INCLUSIVE))))"
 "test:flag:true AND %test:field" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM true (FIELD_REF flag (PREFIX test)))) (DEFAULT (TEMPLATE (FIELD_REF field (PREFIX test))))))"
@@ -401,6 +401,7 @@ FTSWORD:
 "\\uCDEF"  OK
 "\\u90ab"  OK
 "\\ucdef"  OK
+"\\u3005"  OK
 "\\u000h"  FAIL
 "\\u000H"  FAIL
 "\\u"      OK
@@ -434,11 +435,16 @@ FTSWORD:
 "z"   OK
 "{"   FAIL
 "×"   FAIL
-"Ø"   OK
+//"Ø"   OK
 "÷"   FAIL
 //"ə"   OK
 "("   FAIL
 ")"   FAIL
+" "   FAIL
+"\u3000"   OK
+"\\u3000"  OK
+" 　" FAIL
+//"㐀" OK
 
 DECIMAL_INTEGER_LITERAL:
 "0" OK

@@ -119,7 +119,7 @@ public class LeafScorer extends Scorer
     private int[] cats;
 
     private boolean matchAllLeaves;
-
+    
     /**
      * Constructor - should use an arg object ...
      * 
@@ -138,7 +138,7 @@ public class LeafScorer extends Scorer
      * @param tp
      */
     public LeafScorer(Weight weight, TermPositions root, TermPositions level0, ContainerScorer containerScorer, StructuredFieldPosition[] sfps, TermDocs allNodes,
-            HashMap<String, Counter> selfIds, IndexReader reader, Similarity similarity, byte[] norms, DictionaryService dictionaryService, boolean repeat, TermPositions tp)
+            HashMap<String, Counter> selfIds, IndexReader reader, Similarity similarity, byte[] norms, DictionaryService dictionaryService, boolean repeat)
     {
         super(similarity);
         this.root = root;
@@ -412,6 +412,7 @@ public class LeafScorer extends Scorer
 
                     }
                 }
+                tp.close();
 
             }
             int[] old = parents;
@@ -442,6 +443,7 @@ public class LeafScorer extends Scorer
                         }
                     }
                 }
+                tp.close();
 
             }
             old = self;
@@ -480,7 +482,7 @@ public class LeafScorer extends Scorer
                                         }
                                     }
                                 }
-
+                                tp.close();
                             }
                         }
                     }
@@ -521,6 +523,7 @@ public class LeafScorer extends Scorer
                 }
                 else
                 {
+                    doClose();
                     more = false;
                     return false;
                 }
@@ -547,6 +550,33 @@ public class LeafScorer extends Scorer
         return findNext();
     }
 
+    private void doClose() throws IOException
+    {
+        if(sfps != null)
+        {
+            for(StructuredFieldPosition sfp : sfps)
+            {
+                CachingTermPositions ctp = sfp.getCachingTermPositions();
+                if(ctp != null)
+                {
+                    ctp.close();
+                }
+            }
+         }
+        if(allNodes != null)
+        {
+            allNodes.close();
+        }
+        if(level0 != null)
+        {
+            level0.close();
+        }
+        if(root != null)
+        {
+            root .close();
+        }
+    }
+    
     private boolean allNodes()
     {
         if (sfps.length == 0)
@@ -576,6 +606,7 @@ public class LeafScorer extends Scorer
             }
         }
 
+        doClose();
         // If we get here we must have no more documents
         return false;
     }

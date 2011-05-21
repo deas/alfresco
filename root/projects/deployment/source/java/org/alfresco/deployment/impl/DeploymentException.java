@@ -37,4 +37,14 @@ public class DeploymentException extends AlfrescoRuntimeException
     {
         super(message, cause);
     }
+    
+    public DeploymentException(String message, Object[] params, Throwable cause)
+    {
+        super(message, params, cause);
+    }
+    
+    public DeploymentException(String message, Object[] params)
+    {
+        super(message, params);
+    }
 }

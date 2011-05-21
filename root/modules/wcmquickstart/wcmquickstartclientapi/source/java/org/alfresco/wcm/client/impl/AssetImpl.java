@@ -17,6 +17,7 @@
  */
 package org.alfresco.wcm.client.impl;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,11 +31,6 @@ import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.ContentStream;
 import org.alfresco.wcm.client.Rendition;
 import org.alfresco.wcm.client.Section;
-import org.alfresco.wcm.client.util.CmisSessionHelper;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Document;
-import org.apache.chemistry.opencmis.client.api.Session;
-import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 /**
@@ -46,11 +42,24 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 public class AssetImpl extends ResourceBaseImpl implements Asset
 {
     private static final long serialVersionUID = 1L;
+    private static final String RELATIONSHIPS_PROP_NAME = "ws:sourceRelationships";
 
     private Map<String, List<String>> relationships = null;
     private Map<String, List<Asset>> relatedAssets;
 
     private List<String> parentSectionIds = Collections.emptyList();
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setProperties(Map<String, Serializable> props)
+    {
+        super.setProperties(props);
+        Serializable relations = props.get(RELATIONSHIPS_PROP_NAME);
+        if (relations != null)
+        {
+            relationships = (Map<String, List<String>>) relations;
+        }
+    }
 
     /**
      * @see org.alfresco.wcm.client.Asset#getRelatedAssets()
@@ -165,21 +174,7 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
     @Override
     public ContentStream getContentAsInputStream()
     {
-        // Get the request thread's session
-        Session session = CmisSessionHelper.getSession();
-
-        // Fetch the Document object for this asset
-        CmisObject object = session.getObject(new ObjectIdImpl(getId()));
-        if (!(object instanceof Document))
-        {
-            throw new IllegalArgumentException("Object referenced by the uuid is not a document");
-        }
-        Document doc = (Document) object;
-        if (doc == null)
-            return null;
-
-        // Return the content as a stream
-        return new ContentStreamCmisImpl(doc.getContentStream());
+        return getAssetFactory().getContentStream(getId());
     }
 
     /**
@@ -194,7 +189,7 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
         String mimeType = getMimeType();
         if ((mimeType != null) && mimeType.startsWith("text"))
         {
-            template = (String)properties.get(PROPERTY_TEMPLATE_NAME);
+            template = (String)getProperties().get(PROPERTY_TEMPLATE_NAME);
             if ((template == null) || template.trim().length() == 0)
             {
                 Section section = getContainingSection();
@@ -216,6 +211,6 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
     @Override
     public Map<String, Rendition> getRenditions()
     {
-        return assetFactory.getRenditions(getId());
+        return getAssetFactory().getRenditions(getId());
     }
 }

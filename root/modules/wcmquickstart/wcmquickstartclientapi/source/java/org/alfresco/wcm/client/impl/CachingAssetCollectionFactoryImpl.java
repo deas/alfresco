@@ -76,6 +76,10 @@ public class CachingAssetCollectionFactoryImpl implements AssetCollectionFactory
                 {
                     log.debug("Checking whether we need to reload asset collection");
                 }
+                //Set the cache time to now - other threads requesting this asset collection won't also
+                //try to reload it
+                cacheEntry.cacheTime = now;
+
                 //We must check whether the asset collection has changed since the version that we have cached
                 Date nextRefreshTime = cachedAssetCollection.getNextRefreshTime(); 
                 //We only take any notice of the asset collection's refresh time if the minimum cache time is not zero. 

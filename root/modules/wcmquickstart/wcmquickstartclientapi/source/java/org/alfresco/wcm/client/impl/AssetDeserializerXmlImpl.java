@@ -38,7 +38,7 @@ public class AssetDeserializerXmlImpl extends DefaultHandler implements Webscrip
 {
     private static enum State
     {
-        not_started, header, assets, asset, property, list, value, content
+        not_started, header, assets, asset, property, list, map, value, content
     }
 
     private static enum ValueType
@@ -58,6 +58,8 @@ public class AssetDeserializerXmlImpl extends DefaultHandler implements Webscrip
     private TreeMap<String, Serializable> assetProperties;
     private TreeMap<String, Serializable> headerProperties;
     private Stack<State> previousStates;
+    private Stack<String> previousPropertyNames;
+    private Stack<TreeMap<String, Serializable>> previousPropertyMaps;
     private State currentState;
     private StringBuilder stringBuilder;
     private String propertyName;
@@ -76,6 +78,8 @@ public class AssetDeserializerXmlImpl extends DefaultHandler implements Webscrip
         headerProperties = new TreeMap<String, Serializable>();
         assetProperties = null;
         previousStates = new Stack<State>();
+        previousPropertyMaps = new Stack<TreeMap<String,Serializable>>();
+        previousPropertyNames = new Stack<String>();
         currentState = State.not_started;
         stringBuilder = null;
         propertyName = null;
@@ -161,6 +165,12 @@ public class AssetDeserializerXmlImpl extends DefaultHandler implements Webscrip
                 value = valueList;
                 break;
                 
+            case map:
+                propertyName = previousPropertyNames.pop();
+                value = assetProperties;
+                assetProperties = previousPropertyMaps.pop();
+                break;
+            
             case property:
                 assetProperties.put(propertyName, value);
                 break;
@@ -238,6 +248,14 @@ public class AssetDeserializerXmlImpl extends DefaultHandler implements Webscrip
                 previousStates.push(currentState);
                 currentState = State.list;
             }
+            else if ("map".equals(qName))
+            {
+                previousPropertyMaps.push(assetProperties);
+                assetProperties = new TreeMap<String, Serializable>();
+                previousPropertyNames.push(propertyName);
+                previousStates.push(currentState);
+                currentState = State.map;
+            }
             break;
 
         case value:
@@ -261,6 +279,15 @@ public class AssetDeserializerXmlImpl extends DefaultHandler implements Webscrip
                 stringBuilder = new StringBuilder();
                 previousStates.push(currentState);
                 currentState = State.value;
+            }
+            break;
+
+        case map:
+            if ("property".equals(qName))
+            {
+                propertyName = attributes.getValue("name");
+                previousStates.push(currentState);
+                currentState = State.property;
             }
             break;
 

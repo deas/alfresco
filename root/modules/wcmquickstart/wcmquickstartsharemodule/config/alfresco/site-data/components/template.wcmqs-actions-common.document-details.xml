@@ -1,7 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <component>
-   <scope>template</scope>
-   <region-id>wcmqs-actions-common</region-id>
-   <source-id>document-details</source-id>
    <url>/components/documentlibrary/actions-common</url>
 </component>

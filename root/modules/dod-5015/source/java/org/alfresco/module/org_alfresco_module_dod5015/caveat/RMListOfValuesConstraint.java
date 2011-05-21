@@ -71,10 +71,19 @@ public class RMListOfValuesConstraint extends ListOfValuesConstraint
         sb.append("RMListOfValuesConstraint")
           .append("[allowedValues=").append(getAllowedValues())
           .append(", caseSensitive=").append(isCaseSensitive())
+          .append(", sorted=").append(isCaseSensitive())
           .append(", matchLogic=").append(getMatchLogic())
           .append("]");
         return sb.toString();
     }
+    
+    public RMListOfValuesConstraint() 
+    {
+    	super();
+    	
+    	// Set RM list of value constraints to be sorted by default
+    	sorted = true;
+	}
 
     /**
      * Get the allowed values.  Note that these are <tt>String</tt> instances, but may 
@@ -83,7 +92,7 @@ public class RMListOfValuesConstraint extends ListOfValuesConstraint
      * @return Returns the values allowed
      */
     @Override
-    public List<String> getAllowedValues()
+    public List<String> getRawAllowedValues()
     {
         String runAsUser = AuthenticationUtil.getRunAsUser();
         if ((runAsUser != null) && (! runAsUser.equals(AuthenticationUtil.getSystemUserName())) && (caveatConfigService != null))
@@ -167,6 +176,8 @@ public class RMListOfValuesConstraint extends ListOfValuesConstraint
         
         params.put("caseSensitive", isCaseSensitive());
         params.put("allowedValues", getAllowedValues());
+        params.put("sorted", isSorted());
+        params.put("matchLogic", getMatchLogic());
         
         return params;
     }

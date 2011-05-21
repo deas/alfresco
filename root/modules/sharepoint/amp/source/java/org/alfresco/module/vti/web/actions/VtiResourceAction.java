@@ -18,7 +18,6 @@
  */
 package org.alfresco.module.vti.web.actions;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -31,17 +30,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.alfresco.module.vti.metadata.dialog.DialogUtils;
 import org.alfresco.module.vti.web.VtiAction;
 import org.alfresco.module.vti.web.VtiRequestDispatcher;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
 
 /**
 * <p>VtiResourceAction is used for retrieving specific resource 
 * for web-view (like images, css).</p>
 *
 */
-public class VtiResourceAction extends HttpServlet implements VtiAction
+public class VtiResourceAction extends HttpServlet implements VtiAction, ApplicationContextAware
 {
 
     private static final long serialVersionUID = 9073113240345164795L;
@@ -51,6 +55,8 @@ public class VtiResourceAction extends HttpServlet implements VtiAction
     private static final ReadWriteLock resourceMapLock = new ReentrantReadWriteLock();
 
     private final static Log logger = LogFactory.getLog(VtiResourceAction.class);
+
+    private ApplicationContext applicationContext;
 
     /**
      * @see javax.servlet.http.HttpServlet#HttpServlet()
@@ -71,8 +77,7 @@ public class VtiResourceAction extends HttpServlet implements VtiAction
         String alfrescoContext = (String) request.getAttribute(VtiRequestDispatcher.VTI_ALFRESCO_CONTEXT);
         String uri = request.getRequestURI().replaceAll(alfrescoContext + "/resources", "");
         uri = uri.replaceAll("/resources", "");
-        String resourceLocation = "../.." + uri;
-        writeResponse(resourceLocation, response, alfrescoContext);
+        writeResponse(uri, response, alfrescoContext);
 
     }
 
@@ -100,7 +105,21 @@ public class VtiResourceAction extends HttpServlet implements VtiAction
 
     private byte[] cacheResource(String resourceLocation, String alfrescoContext) throws IOException
     {
-        InputStream input = new FileInputStream(this.getClass().getClassLoader().getResource("").getPath() + resourceLocation);
+        Resource resource = applicationContext.getResource(resourceLocation);
+
+        if (!resource.exists())
+        {
+            if (resourceLocation.endsWith(DialogUtils.IMAGE_POSTFIX))
+            {
+                resource = applicationContext.getResource(DialogUtils.DEFAULT_IMAGE);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        InputStream input = resource.getInputStream();
       
         byte[] result = new byte[input.available()];
         input.read(result);
@@ -144,5 +163,11 @@ public class VtiResourceAction extends HttpServlet implements VtiAction
                 logger.debug("Action execution exception", e);
             }
         }
+    }
+    
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
+    {
+        this.applicationContext = applicationContext;
     }
 }

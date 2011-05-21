@@ -1,6 +1,9 @@
 package org.alfresco.wcm.client.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 
 import org.apache.chemistry.opencmis.client.api.Rendition;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -55,5 +58,23 @@ public class ContentStreamCmisRenditionImpl implements org.alfresco.wcm.client.R
     public long getWidth()
     {
         return cmisRendition.getWidth();
+    }
+
+    @Override
+    public void output(OutputStream output) throws IOException
+    {
+        StreamUtils.output(getContentStream().getStream(), output);
+    }
+
+    @Override
+    public void write(Writer writer) throws IOException
+    {
+        write(writer, "UTF-8");
+    }
+
+    @Override
+    public void write(Writer writer, String encoding) throws IOException
+    {
+        StreamUtils.write(getContentStream().getStream(), writer, encoding);
     }
 }

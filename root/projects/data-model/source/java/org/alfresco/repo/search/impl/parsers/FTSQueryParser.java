@@ -1076,7 +1076,16 @@ public class FTSQueryParser
             {
                 if (c == 'u')
                 {
-                    throw new UnsupportedOperationException(string);
+                    if((i+4) < string.length())
+                    {
+                        char encoded = (char)Integer.parseInt(string.substring(i+1, i+5), 16);
+                        builder.append(encoded);
+                        i += 4;
+                    }
+                    else
+                    {
+                        throw new UnsupportedOperationException(string);
+                    }
                 }
                 else
                 {

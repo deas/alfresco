@@ -105,8 +105,9 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     
     // NTLM authentication session object names
     private static final String NTLM_AUTH_DETAILS = "_alfwfNTLMDetails";
-    private static final String LOGIN_PAGE_PASSTHROUGH = "_alfwfLoginPassthrough";
     
+    private static final String MIME_HTML_TEXT = "text/html";
+
     private ConnectorService connectorService;
     private String endpoint;
     private ServletContext servletContext;
@@ -345,13 +346,6 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         
         // Login page requested directly
         if ("login".equals(req.getParameter("pt")) && req.getRequestURI().endsWith("/page"))
-        {
-            redirectToLoginPage(req, res);
-            return;
-        }
-
-        // Check if the login page is being accessed, do not intercept the login page
-        if (session.getAttribute(LOGIN_PAGE_PASSTHROUGH) != null)
         {
             if (debug) logger.debug("Login page requested, chaining ...");
             
@@ -648,6 +642,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         // restart the authentication process for NTLM
         res.setHeader(HEADER_WWWAUTHENTICATE, authHdr);
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        res.setContentType(MIME_HTML_TEXT);
         
         final PrintWriter out = res.getWriter();
         out.println("<html><head>");
@@ -854,8 +849,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                         }
                         else
                         {
-                            res.setHeader(HEADER_WWWAUTHENTICATE, AUTH_NTLM);
-                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            restartAuthProcess(session, req, res, authHdr);
                         }
                         res.flushBuffer();
                     }
@@ -923,10 +917,8 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
      */
     private void redirectToLoginPage(HttpServletRequest req, HttpServletResponse res) throws IOException
     {
-        // Redirect to the root of the website - mark the session for login passthrough
-        // as we ignore requests for login page during NTLM processing.
-        req.getSession().setAttribute(LOGIN_PAGE_PASSTHROUGH, Boolean.TRUE);
-        res.sendRedirect(req.getContextPath());
+        // Redirect to the login page
+        res.sendRedirect(req.getContextPath() + "/page?pt=login");
     }
     
     /**

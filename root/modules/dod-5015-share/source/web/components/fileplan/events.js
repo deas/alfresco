@@ -57,6 +57,7 @@
       this._lookForParentsDispositionSchedule = true;
       this._dispositionScheduleAppliedToParent = false;
       this.eventButtons = {};
+      this.eventButtonsEnabled = false;
 
       /* Decoupled event listeners */
       YAHOO.Bubbling.on("documentDetailsAvailable", this.onDocumentDetailsAvailable, this);
@@ -201,6 +202,8 @@
        */
       _enableEventButtons: function Events__enableEventButtons()
       {
+         this.eventButtonsEnabled = true;
+
          for (var index in this.eventButtons)
          {
             if (this.eventButtons.hasOwnProperty(index))
@@ -401,6 +404,11 @@
          else
          {
             Dom.removeClass(this.widgets.incompleteEl, "hidden");
+         }
+
+         if (this.eventButtonsEnabled)
+         {
+            this._enableEventButtons();
          }
       },
 

@@ -26,10 +26,18 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementA
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEvent;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
+import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventType;
+import org.alfresco.module.org_alfresco_module_dod5015.event.SimpleRecordsManagementEventTypeImpl;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
+import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.Period;
 import org.alfresco.service.namespace.QName;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Disposition action implementation
@@ -38,6 +46,9 @@ import org.alfresco.service.namespace.QName;
  */
 public class DispositionActionDefinitionImpl implements DispositionActionDefinition, RecordsManagementModel
 {
+	/** Logger */
+    private static Log logger = LogFactory.getLog(DispositionActionDefinitionImpl.class);
+	
     /** Name */
     private String name;
     
@@ -69,9 +80,13 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
      * @param nodeRef   disposition action node reference
      * @param index     index of disposition action
      */
-    public DispositionActionDefinitionImpl(RecordsManagementEventService recordsManagementEventService, RecordsManagementActionService recordsManagementActionService, NodeService nodeService, NodeRef nodeRef, int index)
+    public DispositionActionDefinitionImpl(
+    		RecordsManagementEventService recordsManagementEventService, 
+    		RecordsManagementActionService recordsManagementActionService, 
+    		NodeService nodeService, 
+    		NodeRef nodeRef, 
+    		int index)
     {
-        //this.services = services;
         this.recordsManagementEventService = recordsManagementEventService;
         this.recordsManagementActionService = recordsManagementActionService;
         this.nodeService = nodeService;
@@ -181,9 +196,17 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
         if (eventNames != null)
         {
             events = new ArrayList<RecordsManagementEvent>(eventNames.size());
-            for (String eventName : eventNames)
+            for (final String eventName : eventNames)
             {
-                RecordsManagementEvent event = recordsManagementEventService.getEvent(eventName);
+            	RecordsManagementEvent event = null;            
+            	if (recordsManagementEventService.existsEvent(eventName) == true)
+            	{
+            		event = recordsManagementEventService.getEvent(eventName);
+            	}
+            	else
+            	{	            		            		
+            		event = createEvent(eventName);           		            	
+            	}
                 events.add(event);
             }
         }
@@ -192,6 +215,36 @@ public class DispositionActionDefinitionImpl implements DispositionActionDefinit
             events = java.util.Collections.EMPTY_LIST;
         }
         return events;
+    }
+    
+    /**
+     * Create event based on event name
+     * 
+     * @param  eventName				event name
+     * @return RecordsManagementEvent	created records management event
+     */
+    private RecordsManagementEvent createEvent(final String eventName)
+    {
+			return AuthenticationUtil.runAs(new RunAsWork<RecordsManagementEvent>()
+    	    {
+				@Override
+				public RecordsManagementEvent doWork() throws Exception 
+				{
+					// Create a place holder event 
+            		// @see http://issues.alfresco.com/jira/browse/ALF-5369
+					RecordsManagementEvent event = recordsManagementEventService.addEvent(SimpleRecordsManagementEventTypeImpl.NAME, eventName, eventName);
+            		
+            		if (logger.isWarnEnabled() == true)
+            		{
+            			logger.warn("The event (id=" + eventName + ") could not be found so an instance has " +
+            					    "been created to represent it.  The Records Manager should be contacted " +
+            					    "to enter the correct details of the event in the administration console." );
+            		}
+            		
+            		return event;
+				}
+    			
+    	    }, AuthenticationUtil.getSystemUserName()); 
     }
     
     /**

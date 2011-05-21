@@ -105,13 +105,13 @@ var Evaluator =
             // Sort the results by Disposition Action Completed At date property
             return (b.properties["rma:dispositionActionCompletedAt"] > a.properties["rma:dispositionActionCompletedAt"] ? 1 : -1);
          };
-      
+
       if (history != null)
       {
          history.sort(fnSortByCompletionDateReverse);
          previous = history[0];
       }
-      
+
       return previous;
    },
 
@@ -135,7 +135,7 @@ var Evaluator =
          {
             permissions["disposition-as-of"] = true;
          }
-         
+
          // Check if action asOf date has passed
          if (actionAsOf < now)
          {
@@ -147,7 +147,7 @@ var Evaluator =
       {
          permissions[actionName] = true;
       }
-      
+
       /* Previous Disposition Action */
       if (recentHistory != null)
       {
@@ -167,7 +167,7 @@ var Evaluator =
             }
          }
       }
-      
+
       /* Transfer or Accession Pending Completion */
       // Don't show transfer or accession if either is pending completion
       var assocs = asset.parentAssocs["rma:transferred"];
@@ -195,7 +195,7 @@ var Evaluator =
          {
             var actionId = recentHistory.properties["rma:dispositionActionId"],
                actionNode = search.findNode("workspace://SpacesStore/" + actionId);
-            
+
             if (actionNode != null && actionNode.properties["rma:dispositionLocation"])
             {
                transferLocation = " " + actionNode.properties["rma:dispositionLocation"];
@@ -203,13 +203,13 @@ var Evaluator =
          }
          status["transferred" + transferLocation] = true;
       }
-      
+
       /* Accessioned status */
       if (asset.hasAspect("rma:ascended"))
       {
          status["accessioned NARA"] = true;
       }
-      
+
       /* Review As Of Date */
       if (asset.hasAspect("rma:vitalRecord"))
       {
@@ -260,17 +260,17 @@ var Evaluator =
             break;
          }
       }
-      
+
       return currentRecordType;
    },
-   
+
    /**
     * Asset Evaluator - main entrypoint
     */
    run: function Evaluator_run(asset, capabilitySet)
    {
       var assetType = Evaluator.getAssetType(asset),
-         rmNode = rmService.getRecordsManagementNode(asset),
+         rmNode,
          recordType = null,
          capabilities = {},
          actions = {},
@@ -281,19 +281,29 @@ var Evaluator =
 
       var now = new Date();
 
+      try
+      {
+         rmNode = rmService.getRecordsManagementNode(asset)
+      }
+      catch (e)
+      {
+         // Not a Records Management Node
+         return null;
+      }
+
       /**
        * Capabilities and Actions
        */
-      var caps, cap, act;      
+      var caps, cap, act;
       if (capabilitySet == "all")
       {
-    	  caps = rmNode.capabilities;
+         caps = rmNode.capabilities;
       }
       else
       {
-    	  caps = rmNode.capabilitiesSet(capabilitySet);
+         caps = rmNode.capabilitiesSet(capabilitySet);
       }
-      
+
       for each (cap in caps)
       {
          capabilities[cap.name] = true;
@@ -321,7 +331,7 @@ var Evaluator =
       {
          status["multi-parent " + parents.length] = true;
       }
-      
+
       /**
        * E-mail type
        */
@@ -373,7 +383,7 @@ var Evaluator =
                delete status["cutoff"];
                status["cutoff-folder"] = true;
             }
-            
+
             /* File new Records */
             permissions["file"] = capabilities["Create"];
 
@@ -419,14 +429,14 @@ var Evaluator =
             {
                permissions["download"] = true;
             }
-            
+
             /* Record Type evaluator */
             recordType = Evaluator.recordType(asset);
             if (recordType != null)
             {
                status[recordType] = true;
             }
-            
+
             /* Undeclare Record */
             if (asset.hasAspect("rma:cutOff") == false)
             {

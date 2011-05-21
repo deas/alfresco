@@ -22,6 +22,7 @@ package org.alfresco.jlan.ftp;
 import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -547,25 +548,17 @@ public class FTPServer extends NetworkFileServer implements Runnable, Configurat
 				m_srvSock = new ServerSocket(getPort(), LISTEN_BACKLOG, getBindAddress());
 			else {
 				
-	    		// If IPv6 is enabled we need to bind to the global IPv6 address in order to get an IPv6 socket
-	    	
-				if ( getFTPConfiguration().isIPv6Enabled())
-					m_srvSock = new ServerSocket(getPort(), LISTEN_BACKLOG, InetAddress.getByName("::"));
-				else
-					m_srvSock = new ServerSocket(getPort(), LISTEN_BACKLOG);
+			    // See http://download.oracle.com/javase/1.5.0/docs/guide/net/ipv6_guide/index.html
+			    // and Inet6AddressImpl#anyLocalAddress() for details
+			    // We are binding to any local address here.
+			    m_srvSock = new ServerSocket(getPort(), LISTEN_BACKLOG);
 			}
 				
 			//	DEBUG
 			
 			if ( Debug.EnableInfo && hasDebug()) {
-				Debug.print("[FTP] FTP Binding to local address ");
-				if ( hasBindAddress())
-					Debug.println(getBindAddress().getHostAddress());
-				else
-					Debug.println("ALL");
-				
-				if ( m_srvSock.getInetAddress() instanceof Inet6Address)
-					Debug.println("[FTP] Listening on IPv6");
+				InetAddress localSocketAddress = ((InetSocketAddress)m_srvSock.getLocalSocketAddress()).getAddress();
+				Debug.println("[FTP] Listening on " + localSocketAddress);
 			}
 
 			//	Check if the FTP server is using a limited data port range

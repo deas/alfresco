@@ -106,12 +106,22 @@ function sortByName(a, b)
 /* Filter allowed types, etc. */
 function itemIsAllowed(item)
 {
+   // Must be a subtype of cm:folder
    if (!item.isSubType("cm:folder"))
    {
       return false;
    }
    
-   if (item.typeShort == "rma:hold" || item.typeShort == "rma:transfer")
+   var typeShort = String(item.typeShort);
+   
+   // Don't show Hold and Transfer top-level containers
+   if (typeShort == "rma:hold" || typeShort == "rma:transfer")
+   {
+      return false;
+   }
+   
+   // Must be a "dod:" or "rma:" namespaced type
+   if (typeShort.indexOf("dod:") !== 0 && typeShort.indexOf("rma") !== 0)
    {
       return false;
    }

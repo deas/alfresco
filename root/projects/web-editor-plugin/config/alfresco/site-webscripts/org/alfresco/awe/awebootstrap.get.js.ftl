@@ -11,6 +11,7 @@ Alfresco.constants.PROXY_URI = window.location.protocol + "//" + window.location
 Alfresco.constants.PROXY_URI_RELATIVE = "${url.context}/proxy/alfresco/";
 Alfresco.constants.THEME = "sam";
 Alfresco.constants.URL_CONTEXT = "${url.context}/";
+Alfresco.constants.URL_RESCONTEXT = "${url.context}/res/";
 Alfresco.constants.URL_PAGECONTEXT = "${url.context}/page/";
 Alfresco.constants.URL_SERVICECONTEXT = "${url.context}/service/";
 Alfresco.constants.USERNAME = "${user.name!""}";

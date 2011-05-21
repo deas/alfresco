@@ -141,6 +141,7 @@
             text: function(configDef, ruleConfig, configEl)
             {
                // Display minor/major instead of Yes/No
+               ruleConfig.parameterValues = ruleConfig.parameterValues || {};
                if (ruleConfig.parameterValues["minorChange"])
                {
                   ruleConfig.parameterValues["minorChange"] = this.msg("label.checkin.minor");
@@ -199,8 +200,6 @@
             {
                // Hide all parameters since we are using a cusotm ui but set default values
                this._hideParameters(configDef.parameterDefinitions);
-               this._setParameter(ruleConfig, "assoc-type", "cm:contains");
-               this._setParameter(ruleConfig, "assoc-name", "cm:copy");
 
                // Make parameter renderer create a "Destination" button that displays an destination folder browser
                configDef.parameterDefinitions.push({
@@ -222,7 +221,6 @@
             edit: function(configDef, ruleConfig, configEl)
             {
                configDef = this.customisations.Copy.edit.call(this, configDef, ruleConfig, configEl);
-               this._setParameter(ruleConfig, "assoc-name", "cm:move");
                return configDef;
             }
          },

@@ -18,6 +18,9 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.event;
 
+import org.alfresco.module.org_alfresco_module_dod5015.DispositionSelectionStrategy;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.beans.factory.BeanNameAware;
 
@@ -28,8 +31,14 @@ import org.springframework.beans.factory.BeanNameAware;
  */
 public class SimpleRecordsManagementEventTypeImpl implements RecordsManagementEventType, BeanNameAware
 {
+	/** Logger */
+    private static Log logger = LogFactory.getLog(SimpleRecordsManagementEventTypeImpl.class);
+	
     /** Display label lookup prefix */
     protected static final String LOOKUP_PREFIX = "rmeventservice.";
+    
+    /** Name */
+    public static final String NAME = "rmEventType.simple";
     
     /** Records management event service */
     protected RecordsManagementEventService recordsManagementEventService;

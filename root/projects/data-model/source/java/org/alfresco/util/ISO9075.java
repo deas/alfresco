@@ -54,6 +54,123 @@ public class ISO9075
         super();
     }
 
+    private static boolean isSQLNameStart(char c)
+    {
+        if('a' <= c && c >= 'z' )
+        {
+            return true;
+        }
+        else  if('A' <= c && c >= 'Z' )
+        {
+            return true;
+        }
+        else if('_' == c)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    private static boolean isSQLName(char c)
+    {
+        if(isSQLNameStart(c))
+        {
+            return true;
+        }
+        else  if('0' <= c && c >= '9' )
+        {
+            return true;
+        }
+        else if(':' == c)
+        {
+            return true;
+        }
+        else if('$' == c)
+        {
+            return true;
+        }
+        else if('#' == c)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    /**
+     * Encodes a SQL identifier
+     * 
+     * Allowed at the start:       'a'..'z' | 'A'..'Z' | '_'
+     * Allowed after:              'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '$'| '#'
+     * 
+     * @param toEncode
+     * @return
+     */
+    public static String encodeSQL(String toEncode)
+    {
+        if ((toEncode == null) || (toEncode.length() == 0))
+        {
+            return toEncode;
+        }
+        else
+        {
+            StringBuilder builder = new StringBuilder(toEncode.length());
+            for (int i = 0; i < toEncode.length(); i++)
+            {
+                char c = toEncode.charAt(i);
+                // First requires special test
+                if (i == 0)
+                {
+                    if (isSQLNameStart(c))
+                    {
+                        // The first character may be the _ at the start of an
+                        // encoding pattern
+                        if (matchesEncodedPattern(toEncode, i))
+                        {
+                            // Encode the first _
+                            encode('_', builder);
+                        }
+                        else
+                        {
+                            // Just append
+                            builder.append(c);
+                        }
+                    }
+                    else
+                    {
+                        // Encode an invalid start character for an XML element
+                        // name.
+                        encode(c, builder);
+                    }
+                }
+                else if (!isSQLName(c))
+                {
+                    encode(c, builder);
+                }
+                else
+                {
+                    if (matchesEncodedPattern(toEncode, i))
+                    {
+                        // '_' must be encoded
+                        encode('_', builder);
+                    }
+                    else
+                    {
+                        builder.append(c);
+                    }
+                }
+            }
+            return builder.toString();
+        }
+
+    }
+    
+    
     /**
      * Encode a string according to ISO 9075
      * 

@@ -31,7 +31,7 @@
                 <distributionFile origin="${alfrescowcm_on_install_settings_directory}/conf/*" allowWildcards="1" />
             </distributionFileList>
             <actionList>
-                 <alfrescoConfigure alfrescoFiles="*/alfresco-virtserver.properties" />
+                 <alfrescoConfigure alfrescoFiles="*/*" />
             </actionList>
         </folder>
         <folder>

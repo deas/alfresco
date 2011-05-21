@@ -731,6 +731,11 @@ table .yui-dt-empty
    width: 22em;
 }
 
+.form-container .formsCheckBox 
+{
+   width: auto;
+}
+
 /* Social */
 
 .item-social a.enabled

@@ -18,11 +18,6 @@
  */
 package org.alfresco.module.vti.metadata.dialog;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.alfresco.module.vti.metadata.dic.VtiSort;
 import org.alfresco.module.vti.metadata.dic.VtiSortField;
 
@@ -34,15 +29,12 @@ import org.alfresco.module.vti.metadata.dic.VtiSortField;
  */
 public class DialogUtils
 {
-    private static final Map<String, String> fileExtensionMap = new HashMap<String, String>(89, 1.0f);
-    private static final String IMAGE_PREFIX = "images/filetypes/";
-    private static final String IMAGE_POSTFIX = ".gif";
-    private static final String DEFAULT_IMAGE = "images/filetypes/_default.gif";
-    
-    private static final ReadWriteLock fileExtensionMapLock = new ReentrantReadWriteLock();
+    public static final String IMAGE_PREFIX = "images/filetypes/";
+    public static final String IMAGE_POSTFIX = ".gif";
+    public static final String DEFAULT_IMAGE = "images/filetypes/_default.gif";
     
     /**
-     * <p>Recognize image for the given file extension, if image was not found or extension
+     * <p>Recognize image for the given file extension, if extension
      * is empty string then default image is returned.</p>  
      * 
      * @param fileName name of the file is being displayed 
@@ -50,41 +42,13 @@ public class DialogUtils
      */
     public static String getFileTypeImage(String fileName)
     {
-        String image = null;
+        String image = DEFAULT_IMAGE;
         int extIndex = fileName.lastIndexOf('.');
         if (extIndex != -1 && fileName.length() > extIndex + 1)
         {
             String ext = fileName.substring(extIndex + 1).toLowerCase();
 
-            try
-            {
-                fileExtensionMapLock.readLock().lock();
-                image = fileExtensionMap.get(ext);
-            }
-            finally
-            {
-                fileExtensionMapLock.readLock().unlock();
-            }
-            if (image == null)
-            {
-                image = IMAGE_PREFIX + ext + IMAGE_POSTFIX;                
-                if (DialogUtils.class.getClassLoader().getResourceAsStream("../../" + image) != null)
-                {
-                    try
-                    {
-                        fileExtensionMapLock.writeLock().lock();
-                        fileExtensionMap.put(ext, image);
-                    }
-                    finally
-                    {
-                        fileExtensionMapLock.writeLock().unlock();
-                    }
-                }
-                else
-                {
-                    image = DEFAULT_IMAGE;
-                }
-            }
+            image = IMAGE_PREFIX + ext + IMAGE_POSTFIX;                
         }
 
         return image;

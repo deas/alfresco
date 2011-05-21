@@ -102,14 +102,14 @@ public abstract class SrvSession {
 	 * @param sessId int
 	 * @param srv NetworkServer
 	 * @param proto String
-	 * @param remName String
+	 * @param remoteName String
 	 */
-	public SrvSession(int sessId, NetworkServer srv, String proto, String remName) {
+	public SrvSession(int sessId, NetworkServer srv, String proto, String remoteName) {
 		m_sessId = sessId;
 		m_server = srv;
 
 		setProtocolName(proto);
-		setRemoteName(remName);
+		setRemoteName(remoteName);
 		
 		// Allocate the client information thread local
 		

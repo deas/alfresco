@@ -24,4 +24,10 @@ package org.alfresco.wcm.client.exception;
 public class PageNotFoundException extends RuntimeException
 {
     private static final long serialVersionUID = 126826782878L;
+
+    public PageNotFoundException(String message)
+    {
+        super(message);
+    }
+    
 }

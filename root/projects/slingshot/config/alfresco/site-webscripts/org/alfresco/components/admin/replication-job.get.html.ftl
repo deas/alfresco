@@ -60,7 +60,7 @@
             <div class="set">
                <div class="set-title">${msg("label.set.schedule")}</div>
                <div class="form-field">
-                  <input id="${id}-scheduleEnabled" type="checkbox" tabindex="0" name="-" title="${msg("label.schedule-job")}" <#if jobDetail.schedule??>checked="checked"</#if>>
+                  <input id="${id}-scheduleEnabled" class="formsCheckBox" type="checkbox" tabindex="0" name="-" title="${msg("label.schedule-job")}" <#if jobDetail.schedule??>checked="checked"</#if>>
                   <label for="${id}-scheduleEnabled" class="checkbox">${msg("label.schedule-job")}</label>
                </div>
                <div id="${id}-scheduleContainer" class="hidden">
@@ -82,7 +82,7 @@
                <div class="set-title">${msg("label.set.other")}</div>
                <div class="form-field">
                   <input id="${id}-prop_enabled" type="hidden" name="enabled" value="${(jobDetail.enabled!false)?string}">
-                  <input id="${id}-prop_enabled-entry" type="checkbox" tabindex="0" name="-" title="${msg("label.enabled")}" <#if jobDetail.enabled!false>checked="checked"</#if> onchange="javascript:YUIDom.get('${id}-prop_enabled').value=this.checked;">
+                  <input id="${id}-prop_enabled-entry" class="formsCheckBox" type="checkbox" tabindex="0" name="-" title="${msg("label.enabled")}" <#if jobDetail.enabled!false>checked="checked"</#if> onchange="javascript:YUIDom.get('${id}-prop_enabled').value=this.checked;">
                   <label for="${id}-prop_enabled-entry" class="checkbox">${msg("label.enabled")}</label>
                </div>
             </div>

@@ -149,7 +149,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 		if ( m_listeners == null) {
 			int len = LanaListenerArraySize;
 			if ( lana > len)
-				len = (lana + 3) & 0x00FC;
+				len = (lana + 4) & 0x00FC;
 
 			m_listeners = new LanaListener[len];
 		}
@@ -157,7 +157,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 			// Extend the LANA listener array
 
-			LanaListener[] newArray = new LanaListener[(lana + 3) & 0x00FC];
+			LanaListener[] newArray = new LanaListener[(lana + 4) & 0x00FC];
 
 			// Copy the existing array to the extended array
 

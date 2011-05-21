@@ -1,8 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <component>
-   <scope>template</scope>
-   <region-id>wcmqs-document-metadata</region-id>
-   <source-id>document-details</source-id>
    <url>/components/form</url>
    <properties>
       <itemKind>node</itemKind>

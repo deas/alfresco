@@ -18,7 +18,7 @@
    </div>
    <div class="yui-gd">
       <div class="yui-u first">${msg("label.description")}:</div>
-      <div class="yui-u">${result.description?html?html}</div>
+      <div class="yui-u descriptionOverflow">${result.description?html?html}</div>
    </div>
    <div class="yui-gd">
       <div class="yui-u first">${msg("label.tags")}:</div>

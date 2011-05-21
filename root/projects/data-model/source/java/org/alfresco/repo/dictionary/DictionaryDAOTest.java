@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
+import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
 import org.alfresco.repo.dictionary.constraint.RegexConstraint;
 import org.alfresco.repo.dictionary.constraint.RegisteredConstraint;
 import org.alfresco.repo.dictionary.constraint.StringLengthConstraint;
@@ -151,7 +152,7 @@ public class DictionaryDAOTest extends TestCase
     {   
         QName model = QName.createQName(TEST_URL, "dictionarydaotest");
         Collection<ConstraintDefinition> modelConstraints = service.getConstraints(model);
-        assertEquals(15, modelConstraints.size()); // 8 + 7
+        assertEquals(20, modelConstraints.size()); // 8 + 7 + 5
         
         QName conRegExp1QName = QName.createQName(TEST_URL, "regex1");
         boolean found1 = false;
@@ -245,6 +246,44 @@ public class DictionaryDAOTest extends TestCase
         assertTrue("Constraint instance incorrect", prop1Constraints.get(0).getConstraint() instanceof StringLengthConstraint);
         assertTrue("Constraint instance incorrect", prop1Constraints.get(1).getConstraint() instanceof RegexConstraint);
         assertTrue("Constraint instance incorrect", prop1Constraints.get(2).getConstraint() instanceof RegisteredConstraint);
+    }
+    
+    public void testConstraintsOverrideInheritanceOnAspects()
+    {
+        QName aspectBaseQName = QName.createQName(TEST_URL, "aspect-base");
+        QName aspectOneQName = QName.createQName(TEST_URL, "aspect-one");
+        QName aspectTwoQName = QName.createQName(TEST_URL, "aspect-two");
+        QName propQName = QName.createQName(TEST_URL, "aspect-base-p1");
+
+        // get the base property
+        PropertyDefinition propDef = service.getProperty(aspectBaseQName, propQName);
+        assertNotNull(propDef);
+        List<ConstraintDefinition> propConstraints = propDef.getConstraints();
+        assertEquals("Incorrect number of constraints", 1, propConstraints.size());
+        assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
+        ListOfValuesConstraint constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
+        assertEquals("Expected 2 allowed values", 2, constraint.getAllowedValues().size());
+
+        // check the inherited property on first derived aspect
+        propDef = service.getProperty(aspectOneQName, propQName);
+        assertNotNull(propDef);
+        propConstraints = propDef.getConstraints();
+        assertEquals("Incorrect number of constraints", 1, propConstraints.size());
+        assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
+        constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
+        assertEquals("Expected 1 allowed values", 1, constraint.getAllowedValues().size());
+
+        // check the inherited property on second derived aspect
+        propDef = service.getProperty(aspectTwoQName, propQName);
+        assertNotNull(propDef);
+        propConstraints = propDef.getConstraints();
+        assertEquals("Incorrect number of constraints", 2, propConstraints.size());
+        assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
+        assertTrue("Constraint instance incorrect", propConstraints.get(1).getConstraint() instanceof ListOfValuesConstraint);
+        constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
+        assertEquals("Expected 1 allowed values", 2, constraint.getAllowedValues().size());
+        constraint = (ListOfValuesConstraint) propConstraints.get(1).getConstraint();
+        assertEquals("Expected 1 allowed values", 1, constraint.getAllowedValues().size());
     }
 
     public void testArchive()

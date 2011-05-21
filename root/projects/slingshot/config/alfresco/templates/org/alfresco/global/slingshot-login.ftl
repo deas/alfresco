@@ -91,7 +91,12 @@
       Dom.get(<#if lastUsername??>"password"<#else>"username"</#if>).focus();
    });
    
+   document.cookie="_alfTest=_alfTest"
+   var cookieEnabled = (document.cookie.indexOf("_alfTest") != -1);
+   
 <#if url.args["error"]??>
+   if (cookieEnabled == true)
+   {
    Alfresco.util.PopupManager.displayPrompt(
    {
       title: Alfresco.util.message("message.loginfailure"),
@@ -108,8 +113,26 @@
          isDefault: true
       }]
    });
+   }
+</#if>
 
-</#if>   
+   if (cookieEnabled == false)
+   {
+      Alfresco.util.PopupManager.displayPrompt(
+      {
+         title: Alfresco.util.message("message.cookiesfailure"),
+         text: Alfresco.util.message("message.cookieserror"),
+         buttons: [
+         {
+            text: Alfresco.util.message("button.ok"),
+            handler: function error_onOk()
+            {
+               this.destroy();
+            },
+            isDefault: false
+         }]
+      });
+   }
    //]]></script>
 </@>
 </body>

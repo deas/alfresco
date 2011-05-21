@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetCollection;
@@ -45,6 +47,8 @@ public class SectionImpl extends ResourceBaseImpl implements Section
 
     /** Sections by name */
     private Map<String, Section> sectionsByName = new TreeMap<String, Section>();
+    
+    private ConcurrentMap<String, String> assetIdByAssetName = new ConcurrentHashMap<String, String>(89);
 
     /** Top Tags */
     private List<Tag> tags = new ArrayList<Tag>();
@@ -193,7 +197,19 @@ public class SectionImpl extends ResourceBaseImpl implements Section
         }
         else
         {
-            asset = getAssetFactory().getSectionAsset(getId(), resourceName);
+            String assetId = assetIdByAssetName.get(resourceName);
+            if (assetId == null)
+            {
+                asset = getAssetFactory().getSectionAsset(getId(), resourceName);
+                if (asset != null)
+                {
+                    assetIdByAssetName.putIfAbsent(resourceName, asset.getId());
+                }
+            }
+            else
+            {
+                asset = getAssetFactory().getAssetById(assetId);
+            }
         }
         return asset;
     }
@@ -273,13 +289,13 @@ public class SectionImpl extends ResourceBaseImpl implements Section
     @Override
     public AssetCollection getAssetCollection(String name)
     {
-        return collectionFactory.getCollection(getId(), name);
+        return getCollectionFactory().getCollection(getId(), name);
     }
 
     @Override
     public AssetCollection getAssetCollection(String name, int resultsToSkip, int maxResults)
     {
-        return collectionFactory.getCollection(getId(), name, resultsToSkip, maxResults);
+        return getCollectionFactory().getCollection(getId(), name, resultsToSkip, maxResults);
     }
 
     /**

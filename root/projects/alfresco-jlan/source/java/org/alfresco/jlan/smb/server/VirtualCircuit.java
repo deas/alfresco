@@ -30,6 +30,7 @@ import org.alfresco.jlan.server.core.SharedDevice;
 import org.alfresco.jlan.server.filesys.DiskInterface;
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.SearchContext;
+import org.alfresco.jlan.server.filesys.SearchContextAdapter;
 import org.alfresco.jlan.server.filesys.TooManyConnectionsException;
 import org.alfresco.jlan.server.filesys.TreeConnection;
 
@@ -60,6 +61,11 @@ public class VirtualCircuit {
   // Invalid UID value
   
   public static final int InvalidUID        = -1;
+  
+  // Search slot marker object, indicates a search slot is in use before the actual search context
+  // is stored in the slot
+  
+  public static final SearchContextAdapter SearchSlotMarker = new SearchContextAdapter();
   
   // Virtual circuit UID value
   //
@@ -251,7 +257,7 @@ public class VirtualCircuit {
    *
    * @return int  Search slot index, or -1 if there are no more search slots available.
    */
-  public final int allocateSearchSlot() {
+  public final synchronized int allocateSearchSlot() {
 
     //  Check if the search array has been allocated
 
@@ -281,9 +287,10 @@ public class VirtualCircuit {
       m_search = newSearch;
     }
 
-    //  Return the allocated search slot index
+    //  Return the allocated search slot index, mark the slot as allocated
 
     m_searchCount++;
+    m_search[ idx] = SearchSlotMarker;
     return idx;
   }
   

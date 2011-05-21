@@ -21,15 +21,18 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.AssetSerializer;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.AssetSerializerFactory;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.SiteHelper;
+import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -37,6 +40,9 @@ import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.service.namespace.RegexQNamePattern;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -52,6 +58,8 @@ public class AssetGet extends AbstractWebScript
     private static final String PARAM_SITE_ID = "siteid";
     private static final String PARAM_SECTION_ID = "sectionid";
     private static final String PARAM_NODE_NAME = "nodename";
+
+    private static final Log log = LogFactory.getLog(AssetGet.class);
 
     private NodeService nodeService;
     private SearchService searchService;
@@ -85,16 +93,23 @@ public class AssetGet extends AbstractWebScript
         {
             List<NodeRef> foundNodes = new ArrayList<NodeRef>();
             String[] nodeRefs = req.getParameterValues(PARAM_NODEREF);
+            boolean onlyModifiedTime = (req.getParameter(PARAM_MODIFIED_TIME_ONLY) != null);
+
             if (nodeRefs == null || nodeRefs.length == 0)
             {
                 String sectionIdText = req.getParameter(PARAM_SECTION_ID);
                 String nodeName = req.getParameter(PARAM_NODE_NAME);
                 if (sectionIdText == null || sectionIdText.length() == 0 || nodeName == null || nodeName.length() == 0)
                 {
-                    throw new WebScriptException(
-                            "Either noderef or sectionid and nodename are required parameters");
+                    throw new WebScriptException("Either noderef or sectionid and nodename are required parameters");
                 }
-                
+
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Received request for named asset in section " + sectionIdText + ": " + nodeName
+                            + (onlyModifiedTime ? "   (modified time only)" : ""));
+                }
+
                 NodeRef siteId = null;
                 String siteIdText = req.getParameter(PARAM_SITE_ID);
                 if (siteIdText == null)
@@ -124,43 +139,81 @@ public class AssetGet extends AbstractWebScript
             }
             else
             {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Received request for specific node(s): " + Arrays.toString(nodeRefs)
+                            + (onlyModifiedTime ? "   (modified time only)" : ""));
+                }
                 for (String nodeRefString : nodeRefs)
                 {
                     try
                     {
                         NodeRef nodeRef = new NodeRef(nodeRefString);
-                        if (nodeService.exists(nodeRef) && (nodeService.getProperties(nodeRef) != null))
+                        if (nodeService.exists(nodeRef)
+                                && (nodeService.getProperty(nodeRef, ContentModel.PROP_NODE_UUID) != null))
                         {
                             foundNodes.add(nodeRef);
                         }
                     }
                     catch (Exception ex)
                     {
-                        //Safe to ignore
+                        // Safe to ignore
                     }
                 }
             }
 
-            boolean onlyModifiedTime = (req.getParameter(PARAM_MODIFIED_TIME_ONLY) != null);
-            
             res.setContentEncoding("UTF-8");
-            res.setContentType("text/xml");
             Writer writer = res.getWriter();
             AssetSerializer assetSerializer = assetSerializerFactory.getAssetSerializer();
+            res.setContentType(assetSerializer.getMimeType());
             assetSerializer.start(writer);
             for (NodeRef nodeRef : foundNodes)
             {
                 QName typeName = nodeService.getType(nodeRef);
-                Map<QName,Serializable> properties;
+                Map<QName, Serializable> properties;
                 if (onlyModifiedTime)
                 {
                     properties = new HashMap<QName, Serializable>(3);
-                    properties.put(ContentModel.PROP_MODIFIED, nodeService.getProperty(nodeRef, 
+                    properties.put(ContentModel.PROP_MODIFIED, nodeService.getProperty(nodeRef,
                             ContentModel.PROP_MODIFIED));
                 }
                 else
                 {
+                    // Build up map of properties including relationships and
+                    // renditions
                     properties = nodeService.getProperties(nodeRef);
+                    List<AssociationRef> associations = nodeService.getTargetAssocs(nodeRef,
+                            RegexQNamePattern.MATCH_ALL);
+                    if (!associations.isEmpty())
+                    {
+                        HashMap<QName, List<NodeRef>> sourceRelationshipMap = new HashMap<QName, List<NodeRef>>();
+                        for (AssociationRef assoc : associations)
+                        {
+                            QName assocType = assoc.getTypeQName();
+                            List<NodeRef> endpoints = sourceRelationshipMap.get(assocType);
+                            if (endpoints == null)
+                            {
+                                endpoints = new ArrayList<NodeRef>();
+                                sourceRelationshipMap.put(assocType, endpoints);
+                            }
+                            endpoints.add(assoc.getTargetRef());
+                        }
+                        properties.put(QName.createQName(WebSiteModel.NAMESPACE, "sourceRelationships"),
+                                sourceRelationshipMap);
+                    }
+
+//                    List<ChildAssociationRef> renditionAssocs = nodeService.getChildAssocs(nodeRef,
+//                            RenditionModel.ASSOC_RENDITION, RegexQNamePattern.MATCH_ALL);
+//                    if (!renditionAssocs.isEmpty())
+//                    {
+//                        HashMap<QName, NodeRef> renditionsMap = new HashMap<QName, NodeRef>();
+//                        for (ChildAssociationRef renditionAssoc : renditionAssocs)
+//                        {
+//                            QName assocName = renditionAssoc.getQName();
+//                            renditionsMap.put(assocName, renditionAssoc.getChildRef());
+//                        }
+//                        properties.put(QName.createQName(WebSiteModel.NAMESPACE, "renditions"), renditionsMap);
+//                    }
                 }
                 assetSerializer.writeNode(nodeRef, typeName, properties);
             }

@@ -60,6 +60,14 @@
          </parameter>
          <parameter name="caseSensitive"><value>true</value></parameter>
       </constraint>
+      <constraint name="test:list2" type="LIST">
+         <parameter name="allowedValues">
+             <list>
+                 <value>HIJ</value>
+             </list>
+         </parameter>
+         <parameter name="caseSensitive"><value>true</value></parameter>
+      </constraint>
    </constraints>
 
    <types>
@@ -264,6 +272,41 @@
                </constraints>
             </property>
          </properties>
+      </aspect>
+      <aspect name="test:aspect-base">
+         <title>Aspect Base</title>
+         <parent></parent>
+         <properties>
+            <property name="test:aspect-base-p1">
+               <type>d:text</type>
+               <constraints>
+                  <constraint ref="test:list1"/>
+               </constraints>
+            </property>
+         </properties>
+      </aspect>
+      <aspect name="test:aspect-one">
+         <title>Aspect One</title>
+         <parent>test:aspect-base</parent>
+         <overrides>
+            <property name="test:aspect-base-p1">
+               <constraints>
+                  <constraint ref="test:list2"/>
+               </constraints>
+            </property>
+         </overrides>
+      </aspect>
+      <aspect name="test:aspect-two">
+         <title>Aspect Two</title>
+         <parent>test:aspect-base</parent>
+         <overrides>
+            <property name="test:aspect-base-p1">
+               <constraints>
+                  <constraint ref="test:list1"/>
+                  <constraint ref="test:list2"/>
+               </constraints>
+            </property>
+         </overrides>
       </aspect>
    </aspects>
    

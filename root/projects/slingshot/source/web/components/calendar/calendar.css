@@ -355,6 +355,8 @@ cursor:pointer;
 cursor:hand;
 padding:0;
 z-index:0;
+max-width:10em;
+overflow:hidden;
 }
 .calendar.monthview div.day,.monthview div.day {
    height:100%;
@@ -1242,3 +1244,12 @@ div.filter.tags {
    padding:0;
 }
 
+/* Prevent long descriptions from breaking the layout: */
+#eventInfoPanel {
+   overflow-x: hidden;   
+}
+
+#eventInfoPanel .descriptionOverflow {
+   max-height: 10em;
+   overflow-y: auto;
+}

@@ -116,6 +116,14 @@
       </users>
    </config>
 
+   
+   <config evaluator="string-compare" condition="Console">
+      <groups>
+         <!-- maximum number of groups & users to return in the column browser for each page -->
+         <max-page-size>50</max-page-size>
+      </groups>
+   </config>
+
    <config evaluator="string-compare" condition="Search">
       <search>
          <!-- default minimum length for search terms -->

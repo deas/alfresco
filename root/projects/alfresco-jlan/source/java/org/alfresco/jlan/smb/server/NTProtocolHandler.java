@@ -4353,7 +4353,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			// Requested file does not exist
 
-			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNotFound, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+//			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNotFound, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+            m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNoSuchFile, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 			return;
 		}
 		catch (PathNotFoundException ex) {

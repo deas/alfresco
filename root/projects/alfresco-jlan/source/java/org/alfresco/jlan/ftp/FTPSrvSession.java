@@ -172,8 +172,8 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 
 	// Network address types, for EPRT and EPSV commands
 	
-	protected static final String TypeIPv4 = "1";
-	protected static final String TypeIPv6 = "2";
+	protected static final int TypeIPv4 = 1;
+	protected static final int TypeIPv6 = 2;
 	
 	// Valid protection levels for PROT command
 	
@@ -2880,7 +2880,7 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 
 		// Return the FTP path to the client
 
-		sendFTPResponse(250, ftpPath.getFTPPath());
+		sendFTPResponse(257, ftpPath.getFTPPath());
 	}
 
 	/**
@@ -3816,9 +3816,11 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 
 		// Parse the client address
 		
-		InetSocketAddress clientAddr = parseExtendedAddress( req.getArgument());
-		if ( clientAddr == null) {
-			sendFTPResponse(501, "Invalid argument");
+		InetSocketAddress clientAddr;
+		try {
+		    clientAddr = parseExtendedAddress( req.getArgument());
+		} catch (Exception ex) {
+		    sendFTPResponse(501, ex.getMessage());
 			return;
 		}
 
@@ -3894,132 +3896,102 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 	/**
 	 * Parse the extended network address string
 	 * 
+     * Comments for ALF-684
+     * RFC 2428:
+     * 
+     *   AF Number   Protocol
+     *   ---------   --------
+     *   1           Internet Protocol, Version 4 [Pos81a]
+     *   2           Internet Protocol, Version 6 [DH96]
+     *   
+     *  AF Number   Address Format      Example
+     *   ---------   --------------      -------
+     *   1           dotted decimal      132.235.1.2
+     *   2           IPv6 string         1080::8:800:200C:417A
+     *               representations
+     *               defined in [HD96]
+     *  
+     *  The following are sample EPRT commands:
+     *
+     *   EPRT |1|132.235.1.2|6275|
+     *   EPRT |2|1080::8:800:200C:417A|5282|
+     *   
+     *   So, we need to parse the InternetAddress according to AF Number.
+     *   That means we don't need to do any 'instanceof', just check the address
+     *   validity and raise the error, e.g. 501 (IP Address is not valid) if the
+     *   address is not convenient to AF Number. 
+     *
 	 * @param extAddr String
 	 * @return InetSocketAddress
 	 */
 	private final InetSocketAddress parseExtendedAddress( String extAddr) {
 	
 		// Make sure the string is valid
-		
 		if ( extAddr == null || extAddr.length() < 7)
-			return null;
-		
+                    throw new IllegalArgumentException("Invalid argument");
 		// Split the string into network type, network address and port strings
-		
 		StringTokenizer tokens = new StringTokenizer( extAddr, extAddr.substring(0, 1));
 		if ( tokens.countTokens() < 3)
-			return null;
-		
+                    throw new IllegalArgumentException("Invalid argument");
 		String netType = tokens.nextToken();
 		String netAddr = tokens.nextToken();
 		String netPort = tokens.nextToken();
 		
-		// Check if it is an IPv4 style address
-		
-		InetSocketAddress sockAddr = null;
-		
-		if ( netType.equals( TypeIPv4)) {
-			
-			// Parse the IPv4 network address
-			
-			InetAddress addr = null;
-			
-			try {
-				addr = InetAddress.getByName( netAddr);
-			}
-			catch ( UnknownHostException ex) {
-				addr = null;
-			}
+        int afNumber = 0;
+        try {
+            afNumber = Integer.parseInt( netType);
+        }
+        catch ( NumberFormatException ex) {}
+        
+        if (afNumber == TypeIPv4 || afNumber == TypeIPv6)
+        {
+        
+	        InetSocketAddress sockAddr = null;
+	        
+	        // Since Java handles IPv4/IPv6 addresses transparenly as it is saying in
+	        // http://download.oracle.com/javase/1.5.0/docs/guide/net/ipv6_guide/index.html
+	        // We don't care about AF Number and Address Format, but just checking a validity
+	        // of the IP.
+	        InetAddress addr = null;
+            
+            try {
+                addr = InetAddress.getByName( netAddr);
+            }
+            catch ( UnknownHostException ex) {}
 
-			// Make sure we got an IPv4 address
-			
-			if ( addr != null && addr instanceof Inet4Address) {
-				
-				// Parse the port
-				
-				int port = -1;
-				
-				try {
-					port = Integer.parseInt( netPort);
-				}
-				catch ( NumberFormatException ex) {
-					port = -1;
-				}
+            InetAddress remoteAddr = m_sock.getInetAddress();
+            if (!addr.equals(remoteAddr)) {
+                if ( Debug.EnableWarn && hasDebug(DBG_DATAPORT))
+                    debugPrintln("EPRT address [" + addr + "] is not equals to client address [" + remoteAddr + "]. For security purposes client address is used for data transmition.");
+                addr = remoteAddr;
+            }
+            
+            // Avoid route connection problems with addresses where an interface is specified.
+            // I.e. fe80:0:0:0:a00:27ff:fe42:94f7%eth1
+            if (addr != null && addr instanceof Inet6Address) {
+                try {
+                    addr = InetAddress.getByAddress( addr.getAddress());
+                } catch (UnknownHostException ex) {
+                    throw new IllegalArgumentException("Unknown host");
+                }
+            }
+            
+            int port = -1;
+            
+            try {
+                port = Integer.parseInt( netPort);
+            }
+            catch ( NumberFormatException ex) {}
 
-				// Create the socket address
+            if (port != -1)
+                sockAddr = new InetSocketAddress( addr, port);
+	        
+	        return sockAddr;
+        }
+        
+        throw new IllegalArgumentException("Invalid address/port argument");
+    }
 
-				if ( port != -1)
-					sockAddr = new InetSocketAddress( addr, port);
-			}
-		}
-		else if ( netType.equals( TypeIPv6)) {
-			
-			// Parse the IPv6 network address
-			
-			InetAddress addr = null;
-			
-			try {
-				addr = InetAddress.getByName( netAddr);
-			}
-			catch ( UnknownHostException ex) {
-				addr = null;
-			}
-
-			// Make sure we got an IPv6 address
-			
-			if ( addr != null && addr instanceof Inet6Address) {
-				
-				// Parse the port
-				
-				int port = -1;
-				
-				try {
-					port = Integer.parseInt( netPort);
-				}
-				catch ( NumberFormatException ex) {
-					port = -1;
-				}
-
-				// Check if the scope-id from the original client socket connection needs to be added to
-				// the provided address
-				
-				Inet6Address ip6addr = (Inet6Address) addr;
-				
-				if ( ip6addr.getScopeId() == 0 && m_sock.getInetAddress() instanceof Inet6Address) {
-					
-					// Check the client socket scope-id
-
-					Inet6Address clientAddr = (Inet6Address) m_sock.getInetAddress();
-					Inet6Address localAddr  = (Inet6Address) m_sock.getLocalAddress();
-					
-					if ( clientAddr.getScopeId() != 0) {
-				
-						// Create a client data socket address with a scope-id, to make sure the socket connection
-						// gets routed back to the client correctly
-						
-						try {
-
-							addr = Inet6Address.getByAddress( addr.getHostAddress(), addr.getAddress(), localAddr.getScopeId());
-						}
-						catch ( UnknownHostException ex) {
-							
-							// Stick with the original parsed address
-						}
-					}
-				}
-
-				// Create the socket address
-
-				if ( port != -1)
-					sockAddr = new InetSocketAddress( addr, port);
-			}
-		}
-
-		// Return the socket address, or null if an unknown type
-		
-		return sockAddr;
-	}
-	
 	/**
 	 * Build a list of file name or file information objects for the specified server path
 	 * 

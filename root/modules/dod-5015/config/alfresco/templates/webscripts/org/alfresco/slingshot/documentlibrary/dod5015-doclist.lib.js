@@ -19,6 +19,10 @@ function getDoclist(capabilitySet)
       }),
       query = filterParams.query;
 
+   // Ensure folders and folderlinks appear at the top of the list
+   var folderNodes = [],
+      documentNodes = [];
+
    // Query the nodes - passing in sort and result limit parameters
    if (query !== "")
    {
@@ -36,10 +40,6 @@ function getDoclist(capabilitySet)
       });
    }
 
-   // Ensure folders and folderlinks appear at the top of the list
-   var folderNodes = [],
-      documentNodes = [];
-   
    for each (node in allNodes)
    {
       try
@@ -83,12 +83,18 @@ function getDoclist(capabilitySet)
    nodes = nodes.slice(startIndex, pagePos * pageSize);
 
    // Common or variable parent container?
-   var parent = null,
-      defaultLocation = {};
+   var parent = null;
    
    if (!filterParams.variablePath)
    {
       var parentEval = Evaluator.run(parsedArgs.pathNode, capabilitySet);
+      
+      if (parentEval == null)
+      {
+         status.setCode(status.STATUS_BAD_REQUEST, "Not a Records Management folder: '" + parsedArgs.pathNode.nodeRef + "'");
+         return null;
+      }
+      
       // Parent node permissions (and Site role if applicable)
       parent =
       {
@@ -96,9 +102,6 @@ function getDoclist(capabilitySet)
          type: parentEval.assetType,
          userAccess: parentEval.permissions
       };
-      
-      // Store a default location to save repeated calculations
-      defaultLocation = Common.getLocation(parsedArgs.pathNode, parsedArgs.libraryRoot);
    }
 
    var isThumbnailNameRegistered = thumbnailService.isThumbnailNameRegistered(THUMBNAIL_NAME),
@@ -117,10 +120,10 @@ function getDoclist(capabilitySet)
       {
          location =
          {
-            site: defaultLocation.site,
-            siteTitle: defaultLocation.siteTitle,
-            container: defaultLocation.container,
-            path: defaultLocation.path,
+            site: parsedArgs.location.site,
+            siteTitle: parsedArgs.location.siteTitle,
+            container: parsedArgs.location.container,
+            path: parsedArgs.location.path,
             file: node.name
          };
       }
@@ -140,21 +143,24 @@ function getDoclist(capabilitySet)
       // Get evaluated properties
       nodeEvaluator = Evaluator.run(node, capabilitySet);
       
-      items.push(
+      if (nodeEvaluator != null)
       {
-         node: node,
-         isLink: false,
-         type: nodeEvaluator.assetType,
-         createdBy: nodeEvaluator.createdBy,
-         modifiedBy: nodeEvaluator.modifiedBy,
-         status: nodeEvaluator.status,
-         actionSet: nodeEvaluator.actionSet,
-         actionPermissions: nodeEvaluator.permissions,
-         suppressRoles: nodeEvaluator.suppressRoles,
-         dod5015: jsonUtils.toJSONString(nodeEvaluator.metadata),
-         tags: node.tags,
-         location: location
-      });
+         items.push(
+         {
+            node: node,
+            isLink: false,
+            type: nodeEvaluator.assetType,
+            createdBy: nodeEvaluator.createdBy,
+            modifiedBy: nodeEvaluator.modifiedBy,
+            status: nodeEvaluator.status,
+            actionSet: nodeEvaluator.actionSet,
+            actionPermissions: nodeEvaluator.permissions,
+            suppressRoles: nodeEvaluator.suppressRoles,
+            dod5015: jsonUtils.toJSONString(nodeEvaluator.metadata),
+            tags: node.tags,
+            location: location
+         });
+      }
    }
 
    return (

@@ -336,7 +336,14 @@
    background-image: url(images/select-none-rm-16.png);
 }
 
+/* File Plan List Styling */
+.doclist .documents .detail
+{
+   padding-left: 0;
+}
+
 /* File Plan Filter Styling */
+
 .fileplan-filter span.holds
 {
    background-image: url(images/freeze-record-16.png);

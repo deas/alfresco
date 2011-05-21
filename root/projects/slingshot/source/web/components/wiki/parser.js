@@ -90,10 +90,10 @@
                      // Replace " " character in page URL with "_"
                      page = matches[1].replace(/\s+/g, "_");
                      exists = Alfresco.util.arrayContains(pages, page);
-                     uri = '<a href="' + this.URL + page + '" class="' + (exists ? 'theme-color-1' : 'wiki-missing-page') + '">';
+                     uri = '<a href="' + this.URL + encodeURIComponent(Alfresco.util.decodeHTML(page)) + '" class="' + (exists ? 'theme-color-1' : 'wiki-missing-page') + '">';
                      uri += (matches[2] ? matches[2] : matches[1]);
                      uri += '</a>';
-                  
+                     
                      text += uri;
                      text += str.substring(matches[0].length);
                   }

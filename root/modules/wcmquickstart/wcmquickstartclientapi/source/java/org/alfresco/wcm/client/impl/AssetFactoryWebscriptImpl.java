@@ -30,6 +30,7 @@ import java.util.TreeMap;
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetFactory;
 import org.alfresco.wcm.client.CollectionFactory;
+import org.alfresco.wcm.client.ContentStream;
 import org.alfresco.wcm.client.Query;
 import org.alfresco.wcm.client.Rendition;
 import org.alfresco.wcm.client.SearchResult;
@@ -299,6 +300,12 @@ public class AssetFactoryWebscriptImpl implements AssetFactory
         }
         SearchResultAssetImpl result = new SearchResultAssetImpl(asset, score.intValue());
         return result;
+    }
+
+    @Override
+    public ContentStream getContentStream(String assetId)
+    {
+        return supportingAssetFactory.getContentStream(assetId);
     }
 
 }

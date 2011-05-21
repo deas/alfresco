@@ -11004,6 +11004,7 @@
                               <fileTest path="${installdir}/postgresql/bin/pg_ctl.bin" condition="exists" />
                            </ruleList>
                         </changePermissions>
+                        <dos2unix files="${installdir}/postgresql/share/postgres.bki" abortOnError="0" showMessageOnError="0" />
                         <dos2unix files="${installdir}/postgresql/scripts/ctl.sh" abortOnError="0" showMessageOnError="0" />
                          
                         <changePermissions permissions="00755" files="${installdir}/postgresql/scripts/ctl.sh" >

@@ -63,7 +63,7 @@ public class ApplicationDataInterceptor extends HandlerInterceptorAdapter
         {
             log.warn("Received request for which no configured website can be found: " + 
                     serverName + ":" + serverPort);
-            throw new PageNotFoundException();
+            throw new PageNotFoundException(serverName + ":" + serverPort);
         }
             
         WebSiteService.setThreadWebSite(webSite);

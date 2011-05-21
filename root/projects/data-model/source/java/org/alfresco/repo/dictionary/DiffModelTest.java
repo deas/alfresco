@@ -846,6 +846,65 @@ public class DiffModelTest extends TestCase
         
         "</model>";
     
+    
+    public static final String MODEL7_XML = 
+        "<model name=\"test7:model7\" xmlns=\"http://www.alfresco.org/model/dictionary/1.0\">" +
+        
+        "   <imports>" +
+        "      <import uri=\"http://www.alfresco.org/model/dictionary/1.0\" prefix=\"d\"/>" +
+        "   </imports>" +
+        
+        "   <namespaces>" +
+        "      <namespace uri=\"http://www.alfresco.org/model/test7/1.0\" prefix=\"test7\"/>" +
+        "   </namespaces>" +
+        
+        "   <aspects>" +
+        
+        "      <aspect name=\"test7:aspectA\">" +
+        "      </aspect>" +
+        
+        "      <aspect name=\"test7:aspectB\">" +
+        "         <mandatory-aspects> " +
+        "            <aspect>test7:aspectA</aspect> " +
+        "         </mandatory-aspects> " +
+        "      </aspect>" +
+        
+        "   </aspects>" +
+        
+        "</model>";
+    
+    public static final String MODEL7_EXTRA_PROPERTIES_MANDATORY_ASPECTS_XML = 
+        "<model name=\"test7:model7\" xmlns=\"http://www.alfresco.org/model/dictionary/1.0\">" +
+        
+        "   <imports>" +
+        "      <import uri=\"http://www.alfresco.org/model/dictionary/1.0\" prefix=\"d\"/>" +
+        "   </imports>" +
+        
+        "   <namespaces>" +
+        "      <namespace uri=\"http://www.alfresco.org/model/test7/1.0\" prefix=\"test7\"/>" +
+        "   </namespaces>" +
+        
+        "   <aspects>" +
+        
+        "      <aspect name=\"test7:aspectA\">" +
+        "         <properties> " +
+        "            <property name=\"test7:propA1\"> " +
+        "               <title>Prop A1</title> " +
+        "               <type>d:text</type> " +
+        "            </property> " +
+        "         </properties> " +
+        "      </aspect>" +
+        
+        "      <aspect name=\"test7:aspectB\">" +
+        "         <mandatory-aspects> " +
+        "            <aspect>test7:aspectA</aspect> " +
+        "         </mandatory-aspects> " +
+        "      </aspect>" +
+        
+        "   </aspects>" +
+        
+        "</model>";
+    
     private DictionaryDAOImpl dictionaryDAO;
 
     /**
@@ -1225,6 +1284,56 @@ public class DiffModelTest extends TestCase
         assertEquals(6, countDiffs(modelDiffs, M2ModelDiff.TYPE_PROPERTY, M2ModelDiff.DIFF_UNCHANGED));
         
         assertEquals(2, countDiffs(modelDiffs, M2ModelDiff.TYPE_ASSOCIATION, M2ModelDiff.DIFF_DELETED));
+    }
+    
+    public void testIncUpdatePropertiesAddedToMandatoryAspect()
+    {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(MODEL7_XML.getBytes());
+        M2Model model = M2Model.createModel(byteArrayInputStream);
+        QName modelName = dictionaryDAO.putModel(model);
+        CompiledModel previousVersion = dictionaryDAO.getCompiledModel(modelName);
+        
+        byteArrayInputStream = new ByteArrayInputStream(MODEL7_EXTRA_PROPERTIES_MANDATORY_ASPECTS_XML.getBytes());
+        model = M2Model.createModel(byteArrayInputStream);
+        modelName = dictionaryDAO.putModel(model);
+        CompiledModel newVersion = dictionaryDAO.getCompiledModel(modelName);
+        
+        List<M2ModelDiff> modelDiffs = dictionaryDAO.diffModel(previousVersion, newVersion);
+        
+        for (M2ModelDiff modelDiff : modelDiffs)
+        {
+            System.out.println(modelDiff.toString());
+        }   
+        
+        assertEquals(3, modelDiffs.size());
+        
+        assertEquals(2, countDiffs(modelDiffs, M2ModelDiff.TYPE_ASPECT, M2ModelDiff.DIFF_UNCHANGED));
+        assertEquals(1, countDiffs(modelDiffs, M2ModelDiff.TYPE_PROPERTY, M2ModelDiff.DIFF_CREATED));
+    }
+    
+    public void testNonIncUpdatePropertiesRemovedFromMandatoryAspect()
+    {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(MODEL7_EXTRA_PROPERTIES_MANDATORY_ASPECTS_XML.getBytes());
+        M2Model model = M2Model.createModel(byteArrayInputStream);
+        QName modelName = dictionaryDAO.putModel(model);  
+        CompiledModel previousVersion = dictionaryDAO.getCompiledModel(modelName);
+        
+        byteArrayInputStream = new ByteArrayInputStream(MODEL7_XML.getBytes());
+        model = M2Model.createModel(byteArrayInputStream);
+        modelName = dictionaryDAO.putModel(model);
+        CompiledModel newVersion = dictionaryDAO.getCompiledModel(modelName);
+        
+        List<M2ModelDiff> modelDiffs = dictionaryDAO.diffModel(previousVersion, newVersion);
+        
+        for (M2ModelDiff modelDiff : modelDiffs)
+        {
+            System.out.println(modelDiff.toString());
+        }   
+        
+        assertEquals(3, modelDiffs.size());
+        
+        assertEquals(2, countDiffs(modelDiffs, M2ModelDiff.TYPE_ASPECT, M2ModelDiff.DIFF_UNCHANGED));
+        assertEquals(1, countDiffs(modelDiffs, M2ModelDiff.TYPE_PROPERTY, M2ModelDiff.DIFF_DELETED));
     }
     
     private int countDiffs(List<M2ModelDiff> M2ModelDiffs, String elementType, String diffType)

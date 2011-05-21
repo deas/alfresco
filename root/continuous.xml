@@ -610,7 +610,9 @@
 
 
    <target name="assemble-commands"
-           depends="package-bm-remote, package-mmt">
+           depends="package-bm-remote, package-mmt, assemble-commands-init, assemble-command-extras"/>
+
+   <target name="assemble-commands-init">
            
       <mkdir dir="${dir.continuous.assemble.commands}" />
       <copy todir="${dir.continuous.assemble.commands}">
@@ -621,7 +623,7 @@
       </copy>
       
    </target>
-	  
+   
 	                    
    <target name="assemble-tomcat"
            depends="continuous-init, set-build-number">
@@ -694,19 +696,19 @@
                       the same name but prefixed by "build-"
     -->
     <target name="windows-32-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win.txt" failifexecutionfails="false">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} project.xml windows ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}"'/>
         </exec>
     </target>
     
     <target name="windows-64-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win64.txt" failifexecutionfails="false">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win64.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} project.xml windows ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win64}" binaries_folder="${installer.build.binaries.win64}"'/>
         </exec>
     </target>
     
     <target name="windows-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-win.txt" failifexecutionfails="false">
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-win.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} deployment.xml windows ${installer.package.type} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.win}"'/>
         </exec>
     </target>
@@ -738,13 +740,13 @@
     </target>
     
     <target name="linux-64-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="false">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
         </exec>      
     </target>
     
     <target name="linux-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-linux.txt" failifexecutionfails="false">
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-linux.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} deployment.xml linux ${installer.package.type} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
         </exec>
     </target>
@@ -856,6 +858,7 @@
          <tarfileset dir="${dir.module.wcmquickstart.dist}" includes="${file.name.amp.wcmquickstart}" />
          <tarfileset dir="${dir.module.wcmquickstart-share.dist}" includes="${file.name.amp.wcmquickstart-share}" />
          <tarfileset dir="${dir.module.wcmquickstart.dist}" includes="${file.name.amp.wcmquickstart}" />
+         <tarfileset dir="${dir.project.webeditor.dist}" includes="${file.name.war.webeditor}" />
          <tarfileset dir="${dir.module.wcmquickstart}" includes="README_wcmqs.txt" />
          <tarfileset dir="${dir.project.wcmquickstart-webapp.config}/alfresco/web-extension" includes="**/*" />
         <tarfileset dir="${dir.continuous.assemble}" includes="${file.name.war.webeditor}, ${file.name.war.wcmquickstart-webapp}" />

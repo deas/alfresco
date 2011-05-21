@@ -215,7 +215,7 @@ namespace AlfrescoWord2003
             StringBuilder helpUrl = new StringBuilder(Properties.Resources.HelpURL);
             Assembly asm = Assembly.GetExecutingAssembly();
             Version version = asm.GetName().Version;
-            string edition = "community";
+            string edition = "Community";
             object[] attr = asm.GetCustomAttributes(typeof(AssemblyConfigurationAttribute), false);
             if (attr.Length > 0)
             {
@@ -224,7 +224,7 @@ namespace AlfrescoWord2003
             }
             helpUrl.Replace("{major}", version.Major.ToString());
             helpUrl.Replace("{minor}", version.Minor.ToString());
-            helpUrl.Replace("{edition}", edition.ToLowerInvariant());
+            helpUrl.Replace("{edition}", edition);
 
             m_helpUrl = helpUrl.ToString();
          }

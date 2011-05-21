@@ -29,23 +29,16 @@
 .permissions .yui-gd .yui-u.first.reset-btn
 {
    padding-top: 0em !important;
-   width: 25% !important;
-}
-
-.permissions .actions
-{
-   margin-left: 5em;
 }
 
 .permissions .groups
 {
    border: 1px solid #c0c0c0;
-   margin: 0em 4em 1em 4em;
+   margin: 0em 1em 1em 1em;
    padding-bottom: 0.3em;
 }
 
 .permissions h2
 {
-   padding: 0em 0em 0.75em 0em !important;
-   margin-left: 3.33em;
+   padding: 0.5em 1em 0.75em 1em !important;
 }

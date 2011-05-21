@@ -27,9 +27,8 @@ function getUserContent(contentType)
          {
             for (var i = 0, j = content[t].items.length; i < j; i++)
             {
-               var item = content[t].items[i],
-                  encodedName = encodeURIComponent(item.name)
-
+               var item = content[t].items[i], 
+					   encodedName = encodeURIComponent(item.name)
                switch (item.type)
                {
                   case "blogpost":

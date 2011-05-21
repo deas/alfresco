@@ -33,6 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.model.QuickrModel;
+import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.lotus.ws.ClbVersioning;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
@@ -43,6 +44,7 @@ import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
@@ -65,6 +67,8 @@ public class AlfrescoQuickrDocumentHelper
     private AlfrescoQuickrPathHelper pathHelper;
 
     private DictionaryService dictionaryService;
+
+    private MimetypeService mimetypeService;
 
     public void setLockService(LockService lockService)
     {
@@ -89,6 +93,11 @@ public class AlfrescoQuickrDocumentHelper
     public void setDictionaryService(DictionaryService dictionaryService)
     {
         this.dictionaryService = dictionaryService;
+    }
+
+    public void setMimetypeService(MimetypeService mimetypeService)
+    {
+        this.mimetypeService = mimetypeService;
     }
 
     /**
@@ -413,6 +422,26 @@ public class AlfrescoQuickrDocumentHelper
         }
 
         return "";
+    }
+
+    /**
+     * Return mimetype using file name
+     * 
+     * @param fileRef nodeRef 
+     * @return mimetype 
+     */
+    public String getMimeType(NodeRef fileRef)
+    {
+        String filename = (String) nodeService.getProperty(fileRef, ContentModel.PROP_NAME);
+        String mimetype = MimetypeMap.MIMETYPE_BINARY;
+        int extIndex = filename.lastIndexOf('.');
+        if (extIndex != -1)
+        {
+           String ext = filename.substring(extIndex + 1);
+           mimetype = mimetypeService.getMimetype(ext);
+        }
+        
+        return mimetype;
     }
 
 }

@@ -881,12 +881,12 @@ public abstract class NetworkFile {
 		throws java.io.IOException;
 
 	/**
-	 * Write a block of data to the file.
+	 * Write a block of data to the specified offset within file.
 	 * 
-	 * @param buf byte[]
-	 * @param len int
-	 * @param pos int
-	 * @param fileOff long
+	 * @param buf byte[] buffer to write
+	 * @param len number of bytes to write from the buffer
+	 * @param pos offset within the buffer to write
+	 * @param fileOff long offset within the file to write.
 	 * @exception IOException
 	 */
 	public abstract void writeFile(byte[] buf, int len, int pos, long fileOff)
@@ -921,13 +921,14 @@ public abstract class NetworkFile {
 		throws IOException;
 
 	/**
-	 * Close the database file
+	 * Implementation of close
 	 */
+	// MER - should be protected not public.
 	public abstract void closeFile()
 		throws IOException;
 
 	/**
-	 * Temporary method
+	 * Close the file  
 	 */
 	public void close()
 		throws IOException {

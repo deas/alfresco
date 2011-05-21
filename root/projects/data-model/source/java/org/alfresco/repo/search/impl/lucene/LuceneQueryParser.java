@@ -58,6 +58,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.CachingDateFormat;
+import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
 import org.apache.commons.logging.Log;
@@ -255,6 +256,8 @@ public class LuceneQueryParser extends QueryParser
      * 
      */
     public static final String FIELD_PATH = "PATH";
+    
+    public static final String FIELD_TAG = "TAG";
 
     private static Log s_logger = LogFactory.getLog(LuceneQueryParser.class);
 
@@ -614,6 +617,10 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Span is not supported for "+FIELD_FTSSTATUS);
         }
+        else if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_TAG);
+        }
         else
         {
             // Default behaviour for the following fields
@@ -629,7 +636,6 @@ public class LuceneQueryParser extends QueryParser
             // FIELD_QNAME
             // FIELD_PRIMARYASSOCTYPEQNAME
             // FIELD_ASSOCTYPEQNAME
-            // 
             // 
             
             SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
@@ -975,6 +981,10 @@ public class LuceneQueryParser extends QueryParser
             {
                 return createTermQuery(field, queryText);
             }
+            else if (field.equals(FIELD_TAG))
+            {
+                return createTagQuery(queryText);
+            }
             else
             {
                 return getFieldQueryImpl(field, queryText, analysisMode, luceneFunction);
@@ -986,6 +996,16 @@ public class LuceneQueryParser extends QueryParser
             throw new ParseException("Failed to parse XPath...\n" + e.getMessage());
         }
 
+    }
+
+    /**
+     * @param tag (which will then be ISO9075 encoded)
+     * @return
+     * @throws ParseException 
+     */
+    protected Query createTagQuery(String tag) throws ParseException
+    {
+        return getFieldQuery(FIELD_PATH, "/cm:taggable/cm:" + ISO9075.encode(tag) + "/member");
     }
 
     /**
@@ -2392,6 +2412,10 @@ public class LuceneQueryParser extends QueryParser
             return query;
         }
         // FIELD_FTSSTATUS uses the default
+        if (field.equals(FIELD_TAG))
+        {
+           throw new UnsupportedOperationException("Range Queries are not support for "+FIELD_TAG);
+        }
         else
         {
             // None property - leave alone
@@ -2489,21 +2513,53 @@ public class LuceneQueryParser extends QueryParser
     private void addLocaleSpecificUntokenisedTextRange(String field, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
             MLAnalysisMode mlAnalysisMode, Locale locale, String textFieldName)
     {
-        String lower = part1;
-        String upper = part2;
+    
         if (locale.toString().length() > 0)
         {
-            lower = "{" + locale + "}" + part1;
-            upper = "{" + locale + "}" + part2;
+            String lower = "{" + locale + "}" + part1;
+            String upper = "{" + locale + "}" + part2;
+            
+
+            Query subQuery = new ConstantScoreRangeQuery(textFieldName, lower, upper, includeLower, includeUpper);
+            booleanQuery.add(subQuery, Occur.SHOULD);
+
+            if (booleanQuery.getClauses().length == 0)
+            {
+                booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
+            }
         }
-
-        Query subQuery = new ConstantScoreRangeQuery(textFieldName, lower, upper, includeLower, includeUpper);
-        booleanQuery.add(subQuery, Occur.SHOULD);
-
-        if (booleanQuery.getClauses().length == 0)
+        else
         {
-            booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
+            if((part1.compareTo("{") > 0) || (part2.compareTo("{") < 0)) 
+            {
+                Query subQuery = new ConstantScoreRangeQuery(textFieldName, part1, part2, includeLower, includeUpper);
+                booleanQuery.add(subQuery, Occur.SHOULD);
+
+                if (booleanQuery.getClauses().length == 0)
+                {
+                    booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
+                } 
+            }
+            else
+            {
+                // Split to avoid match {en} etc
+                BooleanQuery splitQuery = new BooleanQuery();
+
+                Query lowerQuery = new ConstantScoreRangeQuery(textFieldName, part1, "{", includeLower, false);
+                Query upperQuery = new ConstantScoreRangeQuery(textFieldName, "|", part2, true, includeUpper);
+
+                splitQuery.add(lowerQuery, Occur.SHOULD);
+                splitQuery.add(upperQuery, Occur.SHOULD);
+
+                booleanQuery.add(splitQuery, Occur.SHOULD);
+
+                if (booleanQuery.getClauses().length == 0)
+                {
+                    booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
+                }
+            }
         }
+        
     }
 
     private Query buildDateTimeRange(String field, Calendar startIn, int startResolution, Calendar endIn, int endResolution, boolean includeLower, boolean includeUpper) throws ParseException
@@ -3915,6 +3971,10 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_FTSSTATUS);
         }
+        else if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_TAG);
+        }
         else
         {
             return super.getPrefixQuery(field, termStr);
@@ -4098,6 +4158,10 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_FTSSTATUS);
         }
+        else if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_TAG);
+        }
         else
         {
             return super.getWildcardQuery(field, termStr);
@@ -4268,6 +4332,10 @@ public class LuceneQueryParser extends QueryParser
         else if (field.equals(FIELD_FTSSTATUS))
         {
             throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_FTSSTATUS);
+        } 
+        else if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_TAG);
         } 
         else
         {

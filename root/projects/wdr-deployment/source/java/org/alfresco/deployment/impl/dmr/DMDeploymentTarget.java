@@ -75,6 +75,13 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DMDeploymentTarget implements Serializable, DeploymentTarget
 {   
+    private static final String MSG_ERR_INVALID_USERNAME="wdr.err.invalid_username_or_password";
+    private static final String MSG_ERR_UNABLE_CREATE_LOGFILE="wdr.err.unable_create_logfile";
+    private static final String MSG_ERR_UNABLE_PREPARE_ALREADY_COMMIT="wdr.err.unable_prepare_already_commit";
+    private static final String MSG_ERR_UNABLE_PREPARE_MISSING_FILE="wdr.err.unable_prepare_missing_file";
+    private static final String MSG_ERR_INVALID_TICKET="wdr.err.invalid_ticket";
+    private static final String MSG_ERR_UNABLE_COMMIT="wdr.err.unable_commit";
+    
 	/**
 	 * version id
 	 */
@@ -167,7 +174,7 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
 		if(!authenticator.logon(user, password))
 		{
 			logger.warn("Invalid user name or password");
-			throw new DeploymentException("Invalid user name or password.");
+			throw new DeploymentException(MSG_ERR_INVALID_USERNAME);
 		}
     
         String ticket = GUID.generate();
@@ -236,7 +243,7 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
         catch (IOException e)
         {
         	logger.error("Could not create logfile", e);
-            throw new DeploymentException("Could not create logfile; Deployment cannot continue", e);
+            throw new DeploymentException(MSG_ERR_UNABLE_CREATE_LOGFILE, e);
         }
         if(logger.isDebugEnabled())
         {
@@ -258,7 +265,7 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
         }
         if (deployment.getState() != DeploymentState.WORKING)
         {
-            throw new DeploymentException("Deployment cannot be prepared: already aborting, or committing.");
+            throw new DeploymentException(MSG_ERR_UNABLE_PREPARE_ALREADY_COMMIT);
         }
         try
         {
@@ -366,7 +373,8 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
 	        {
 	        	String msg = "Could not commit because invalid ticket:" + ticket;
 	        	logger.error(msg);
-	            throw new DeploymentException(msg);
+	        	Object[] params = { ticket };
+	            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 	        }
 	        logger.debug("commit ticket:" + ticket);
 	        
@@ -458,8 +466,8 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
 		final DMDeployment deployment = fDeployments.get(ticket);
 		if (deployment == null)
 		{
-			String msg = "Could not delete because invalid ticket:" + ticket;
-			throw new DeploymentException(msg);
+		    Object[] params = { ticket };
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 		}
 		
 		final String destPath = mapPath(deployment.getAuthoringStoreName(), path);
@@ -514,7 +522,8 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
 		final DMDeployment deployment = fDeployments.get(ticket);
 	    if (deployment == null)
 	    {
-	        throw new DeploymentException("getListing invalid ticket. ticket:" + ticket);
+	        Object[] params = { ticket };
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 	    }
 	    
 	    final String destPath = mapPath(deployment.getAuthoringStoreName(), path);
@@ -582,7 +591,8 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
 		final DMDeployment deployment = fDeployments.get(ticket);
 		if (deployment == null)
 		{
-			throw new DeploymentException("mkdir invalid ticket. ticket:" + ticket);
+		    Object[] params = { ticket };
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 		}
 
 		try
@@ -683,7 +693,8 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
         final DMDeployment deployment = fDeployments.get(ticket);
         if (deployment == null)
         {
-            throw new DeploymentException("Deployment timed out or invalid ticket.");
+            Object[] params = { ticket };
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
         }
         
         final String destPath = mapPath(deployment.getAuthoringStoreName(), path);
@@ -731,13 +742,19 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
                     }
                     
                     Map<QName, Serializable>propertyMap = new HashMap<QName, Serializable>();
-                    //System.out.println("Path :" + destPath);
+                    if(logger.isDebugEnabled())
+                    {
+                        logger.debug("Path :" + destPath);
+                    }
                     
                     for (Map.Entry<String, Serializable> entry :  fprops.entrySet())
                     {
                         QName qname = QName.createQName(entry.getKey());
                         propertyMap.put(qname, entry.getValue());
-                        System.out.println(qname + " value:" + entry.getValue());
+                        if(logger.isDebugEnabled())
+                        {
+                            logger.debug(qname + " value:" + entry.getValue());
+                        }
                     }
                     
                     // Prop name must be specified otherwise this target cannot work
@@ -816,7 +833,8 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
 	    final DMDeployment deployment = fDeployments.get(ticket);
 	    if (deployment == null)
 	    {
-	        throw new DeploymentException("Deployment invalid ticket.");
+	        Object[] params = { ticket };
+            throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 	    }
 	    
 	    final String destPath = mapPath(deployment.getAuthoringStoreName(), path);

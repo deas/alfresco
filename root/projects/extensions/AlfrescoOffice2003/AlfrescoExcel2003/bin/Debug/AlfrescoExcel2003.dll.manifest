@@ -5,7 +5,7 @@
   </asmv2:entryPoint>
   <asmv2:dependency asmv2:name="dependency0">
     <asmv2:dependentAssembly>
-      <assemblyIdentity name="AlfrescoExcel2003" version="3.4.3954.30247" publicKeyToken="3864daa678ed762e" />
+      <assemblyIdentity name="AlfrescoExcel2003" version="3.4.4078.23300" publicKeyToken="3864daa678ed762e" />
     </asmv2:dependentAssembly>
     <asmv2:installFrom codebase="AlfrescoExcel2003.dll" />
   </asmv2:dependency>

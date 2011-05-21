@@ -226,7 +226,7 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
             nextActionEvents.add(eventName);
             
             // if the event has been removed delete from next action
-            if (!stepEvents.contains(event.getEventName()))
+            if (stepEvents != null && stepEvents.contains(event.getEventName()) == false)
             {
                 // remove the child association representing the event
                 nodeService.removeChild(nextAction.getNodeRef(), event.getNodeRef());
@@ -238,18 +238,21 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
         }
         
         // go through the disposition action definition step events and add any new ones
-        for (String eventName : stepEvents)
+        if (stepEvents != null)
         {
-            if (!nextActionEvents.contains(eventName))
-            {
-                createEvent(recordsManagementEventService.getEvent(eventName), nextAction.getNodeRef());
-                
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Added '" + eventName + "' to next action '" + nextAction.getName() + 
-                                "' (" + nextAction.getNodeRef() + ")");
-                }
-            }
+	        for (String eventName : stepEvents)
+	        {
+	            if (!nextActionEvents.contains(eventName))
+	            {
+	                createEvent(recordsManagementEventService.getEvent(eventName), nextAction.getNodeRef());
+	                
+	                if (logger.isDebugEnabled())
+	                {
+	                    logger.debug("Added '" + eventName + "' to next action '" + nextAction.getName() + 
+	                                "' (" + nextAction.getNodeRef() + ")");
+	                }
+	            }
+	        }
         }
         
         // finally since events may have changed re-calculate the events eligible flag

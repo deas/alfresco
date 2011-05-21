@@ -610,6 +610,10 @@ public class AlfrescoDocumentServiceImpl implements DocumentService
                 nodeService.setProperty(nodeRef, ContentModel.PROP_TITLE, document.getTitle());
                 nodeService.setProperty(nodeRef, ContentModel.PROP_DESCRIPTION, document.getDescription());
 
+                ContentData contentData = (ContentData) nodeService.getProperty(nodeRef, ContentModel.PROP_CONTENT); 
+                ContentData.setMimetype(contentData, documentHelper.getMimeType(nodeRef));
+                nodeService.setProperty(nodeRef, ContentModel.PROP_CONTENT, contentData);
+                
                 return nodeRef;
             }
         });
@@ -650,7 +654,7 @@ public class AlfrescoDocumentServiceImpl implements DocumentService
                     {
 
                         // Create missing folders
-                        String formattedPath = AlfrescoQuickrPathHelper.removeSlashes(path.substring(0, path.lastIndexOf("/")));
+                        String formattedPath = pathHelper.resolveNodePath(path.substring(0, path.lastIndexOf("/")), false);
 
                         List<String> pathElements = Arrays.asList(formattedPath.split("/"));
                         parentNodeRef = FileFolderUtil.makeFolders(fileFolderService, pathHelper.getRootNodeRef(), pathElements, ContentModel.TYPE_FOLDER).getNodeRef();
@@ -668,17 +672,9 @@ public class AlfrescoDocumentServiceImpl implements DocumentService
 
                 NodeRef nodeRef = fileFolderService.create(finalParentNodeRef, finalName, ContentModel.TYPE_CONTENT).getNodeRef();
                 ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
+                writer.setMimetype(documentHelper.getMimeType(nodeRef));
                 writer.putContent("");
-                        
-                if (draft.getDocumentType() != null)
-                {
-                    String docType = draft.getDocumentType().getId();
-                    if (docType!= null && docType.length() != 0)
-                    {
-                        setDocType(nodeRef, draft);
-                    }
-                }
-                        
+                setDocType(nodeRef, draft);
                 if (!pathHelper.isInRmSite(nodeRef))
                 {
                     nodeService.addAspect(nodeRef, QuickrModel.ASPECT_QUICKR_INITIAL_DRAFT, null);
@@ -717,7 +713,7 @@ public class AlfrescoDocumentServiceImpl implements DocumentService
                 catch (FileNotFoundException e)
                 {
                     // Create multiple folders
-                    String formattedPath = AlfrescoQuickrPathHelper.removeSlashes(path);
+                    String formattedPath = pathHelper.resolveNodePath(path, false);
 
                     List<String> pathElements = Arrays.asList(formattedPath.split("/"));
                     return FileFolderUtil.makeFolders(fileFolderService, pathHelper.getRootNodeRef(), pathElements, ContentModel.TYPE_FOLDER).getNodeRef();
@@ -1227,7 +1223,7 @@ public class AlfrescoDocumentServiceImpl implements DocumentService
             String siteName = pathHelper.getNodeRefSiteName(nodeRef);
             if (folderPath.startsWith(siteName + "/documentLibrary"))
             {
-                result.setUrl(MessageFormat.format(pathHelper.getShareFolderUrl(), siteName, folderPath.replaceAll(siteName + "/documentLibrary", "")));
+                result.setUrl(MessageFormat.format(pathHelper.getShareFolderUrl(), siteName, nodeRef));
             }
         }
 
@@ -1791,7 +1787,12 @@ public class AlfrescoDocumentServiceImpl implements DocumentService
      * @param draft draft element with document type and property sheets
      */
     private void setDocType(NodeRef documentNodeRef, ClbDraft draft)
+    {
+        if (draft.getDocumentType() == null || draft.getDocumentType().getId() == null || draft.getDocumentType().getId().length() == 0)
         {
+            //Document type was not changed.
+            return;
+        }
         QName newDocType = documentHelper.searchAspect(QuickrModel.ASPECT_QUICKR_DOC_TYPE, draft.getDocumentType().getId());
         Set<QName> aspects = nodeService.getAspects(documentNodeRef);
         for (QName aspect : aspects)

@@ -18,7 +18,6 @@
 package org.alfresco.wcm.client.controller;
 
 import java.io.InputStream;
-
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,6 @@ import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetFactory;
 import org.alfresco.wcm.client.ContentStream;
 import org.alfresco.wcm.client.Rendition;
-import org.alfresco.wcm.client.impl.ContentStreamCmisRenditionImpl;
 import org.alfresco.wcm.client.util.HeaderHelper;
 import org.alfresco.wcm.client.util.UrlUtils;
 import org.alfresco.wcm.client.view.StreamedAssetView;
@@ -92,9 +90,8 @@ public class StreamedAssetController extends AbstractController
         	Rendition rendition = renditions.get(renditionName);
         	if (rendition != null)
         	{
-        		ContentStreamCmisRenditionImpl streamRendition = (ContentStreamCmisRenditionImpl)rendition;
-        		stream = streamRendition.getStream();
-        		mimeType = streamRendition.getMimeType();
+        		stream = rendition.getStream();
+        		mimeType = rendition.getMimeType();
         	}
         }
         

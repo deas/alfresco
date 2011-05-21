@@ -3463,7 +3463,7 @@ Alfresco.util.YUILoaderHelper = function()
             type: "js",
             path: "columnbrowser/columnbrowser.js", //can use a path instead, extending base path
             varName: "ColumnBrowser",
-            requires: ['json', 'carousel'],
+            requires: ['json', 'carousel', 'paginator'],
             skinnable: true
          });
       }

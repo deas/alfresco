@@ -242,8 +242,11 @@ public class FTPPath {
 		int pos = path.indexOf(FTP_SEPERATOR, 1);
 		if ( pos != -1) {
 			m_shareName = path.substring(1,pos);
-			if ( path.length() > pos)
+			if ( path.length() > pos) {
 				m_sharePath = path.substring(pos).replace(FTP_SEPERATOR_CHAR, DIR_SEPERATOR_CHAR);
+				if ( m_sharePath.length() > 1 && m_sharePath.endsWith( DIR_SEPERATOR))
+				    m_sharePath = m_sharePath.substring( 0, m_sharePath.length() - 1);
+			}
 			else
 				m_sharePath = DIR_SEPERATOR;
 		}

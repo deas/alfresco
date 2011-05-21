@@ -21,20 +21,19 @@
    </bean>
 
    <!-- CMIS Session factory for anonymous visitors to the website -->
-   <bean id="guestSessionFactory" class="org.alfresco.wcm.client.util.impl.GuestSessionFactoryImpl">
+   <bean id="guestSessionFactory" class="org.alfresco.wcm.client.util.impl.GuestSessionFactoryImpl" init-method="init" depends-on="webscriptCaller">
       <constructor-arg value="%{wcmqs.api.alfresco.cmis}" />
-      <constructor-arg value="%{wcmqs.api.user}" />
-      <constructor-arg value="%{wcmqs.api.password}" />
+      <constructor-arg ref="httpCredentialService" />
       <constructor-arg value="%{wcmqs.api.repositoryPollMilliseconds}" /> <!-- Poll for repository -->
    </bean>
 
    <!-- Pool of anonymous CMIS sessions -->
    <bean id="guestSessionPool" class="org.apache.commons.pool.impl.GenericObjectPool">
       <constructor-arg ref="guestSessionFactory" />
-      <constructor-arg value="20" /> <!-- maxActive -->
+      <constructor-arg value="%{wcmqs.api.cmis.maxActiveSessions}" /> <!-- maxActive -->
       <constructor-arg value="0" /> <!-- whenExhausedAction -->
-      <constructor-arg value="30" /> <!-- maxWait -->
-      <constructor-arg value="20" /> <!-- maxIdle -->
+      <constructor-arg value="%{wcmqs.api.cmis.maxWaitSessions}" /> <!-- maxWait -->
+      <constructor-arg value="%{wcmqs.api.cmis.maxIdleSessions}" /> <!-- maxIdle -->
    </bean>
 
    <!-- Session pool facade which wraps the two types of session pool -->
@@ -100,6 +99,7 @@
             </property>
          </bean>
       </property>
+      <property name="cacheContent" value="true" />
    </bean>
 
    <bean id="cmisAssetFactory" class="org.alfresco.wcm.client.impl.AssetFactoryCmisImpl">
@@ -143,16 +143,17 @@
    <bean id="dictionaryService" class="org.alfresco.wcm.client.impl.DictionaryServiceImpl" />
 
    <!--  Web script caller -->
-   <bean id="webscriptCaller" class="org.alfresco.wcm.client.impl.WebScriptCallerImpl" init-method="init">
+   <bean id="webscriptCaller" class="org.alfresco.wcm.client.impl.WebScriptCallerImpl" init-method="init" >
       <property name="baseUrl" value="%{wcmqs.api.alfresco.webscript}" />
-      <property name="credentials">
-         <bean class="org.apache.commons.httpclient.UsernamePasswordCredentials">
-            <constructor-arg value="%{wcmqs.api.user}" />
-            <constructor-arg value="%{wcmqs.api.password}" />
-         </bean>
-      </property>
    </bean>
 
+   <bean id="httpCredentialService" class="org.alfresco.wcm.client.impl.AlfrescoTicketCredentialServiceImpl">
+      <property name="webscriptCaller" ref="webscriptCaller" />
+      <property name="username" value="%{wcmqs.api.user}" />
+      <property name="password" value="%{wcmqs.api.password}" />
+   </bean>
+   
+   
    <!--  EH Cache manager -->
    <bean name="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" />
 

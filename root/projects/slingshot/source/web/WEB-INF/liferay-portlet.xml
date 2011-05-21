@@ -10,6 +10,7 @@
       <portlet-name>ShareSiteDocLib</portlet-name>
       <preferences-unique-per-layout>true</preferences-unique-per-layout>
       <user-principal-strategy>screenName</user-principal-strategy>
+      <add-default-resource>true</add-default-resource>
    </portlet>
    <portlet>
       <portlet-name>ShareRepoBrowser</portlet-name>

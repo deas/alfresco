@@ -17,14 +17,13 @@
  */
 package org.alfresco.wcm.client.util.impl;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.wcm.client.exception.RepositoryUnavailableException;
+import org.alfresco.wcm.client.impl.HttpCredentialService;
+import org.alfresco.wcm.client.impl.HttpCredentialService.UsernameAndPassword;
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
@@ -53,6 +52,8 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
     private Map<String, String> parameters;
     private volatile Thread waitForRepository;
     private Exception lastException;
+    private HttpCredentialService credentialService;
+    private String repoUrl;
 
     /**
      * Create a CMIS session factory.
@@ -64,9 +65,11 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
      * @param password
      *            CMIS password
      */
-    public GuestSessionFactoryImpl(String repo, String user, String password)
+    public GuestSessionFactoryImpl(String repo, HttpCredentialService credentialService, int repositoryPollInterval)
     {
-        this(repo, user, password, -1);
+        this.repoUrl = repo;
+        this.credentialService = credentialService;
+        this.repositoryPollInterval = repositoryPollInterval;
     }
 
     /**
@@ -83,25 +86,8 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
      *            the constructor will just issue an exception if the repository
      *            is not available.
      */
-    public GuestSessionFactoryImpl(String repo, String user, String password, int repositoryPollInterval)
+    public void init()
     {
-        CookieManager cm = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
-        CookieHandler.setDefault(cm);
-
-        this.repositoryPollInterval = repositoryPollInterval;
-
-        // Create session factory
-        this.sessionFactory = SessionFactoryImpl.newInstance();
-        this.parameters = new HashMap<String, String>();
-
-        // user credentials
-        parameters.put(SessionParameter.USER, user);
-        parameters.put(SessionParameter.PASSWORD, password);
-
-        // connection settings
-        parameters.put(SessionParameter.ATOMPUB_URL, repo);
-        parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-
         if (repositoryPollInterval > 0)
         {
             // Start thread which gets repository object
@@ -116,8 +102,32 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
         }
     }
 
+    private void configureSessionFactory()
+    {
+        if (sessionFactory == null)
+        {
+            UsernameAndPassword credentials = credentialService.getHttpCredentials();
+            String user = credentials.username;
+            String password = credentials.password;
+            
+            this.parameters = new HashMap<String, String>();
+
+            // user credentials
+            parameters.put(SessionParameter.USER, user);
+            parameters.put(SessionParameter.PASSWORD, password);
+
+            // connection settings
+            parameters.put(SessionParameter.ATOMPUB_URL, repoUrl);
+            parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
+
+            // Create session factory
+            this.sessionFactory = SessionFactoryImpl.newInstance();
+        }
+    }
+    
     private void getRepository()
     {
+        configureSessionFactory();
         List<Repository> repositories = sessionFactory.getRepositories(parameters);
         this.repository = repositories.get(0);
     }

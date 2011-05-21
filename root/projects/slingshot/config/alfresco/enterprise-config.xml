@@ -14,8 +14,8 @@
    
    <config evaluator="string-compare" condition="HelpPages">
       <help-pages>
-         <share-help>http://docs.alfresco.com/3.5/topic/com.alfresco.team.doc/topics/uh-welcome.html</share-help>
-         <share-tutorial>http://docs.alfresco.com/3.5/topic/com.alfresco.team.doc/topics/uh-tutorial.html</share-tutorial>
+         <share-help>http://docs.alfresco.com/3.4/topic/com.alfresco.Enterprise_3_4_0.doc/topics/sh-uh-welcome.html</share-help>
+         <share-tutorial>http://docs.alfresco.com/3.4/topic/com.alfresco.Enterprise_3_4_0.doc/concepts/gs-intro.html</share-tutorial>
       </help-pages>
    </config>
 

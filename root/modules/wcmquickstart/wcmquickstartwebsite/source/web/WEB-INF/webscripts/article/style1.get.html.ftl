@@ -1,5 +1,5 @@
 <div class="interior-content">
-    <h2>${asset.title!asset.name}</h2>
+    <h2>${title}</h2>
     <span class="ih-date">From <a href="<@makeurl section=asset.containingSection/>">${asset.containingSection.title}</a><#if asset.properties['ws:publishedTime']??> - ${asset.properties['ws:publishedTime']?string(msg('date.format'))}</#if></span>
     
     <@markContent id=asset.id  nestedMarker="true" />    

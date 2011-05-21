@@ -185,7 +185,7 @@ public class ConstraintsTest extends TestCase
         assertEquals("ListOfValuesConstraint type should be 'LIST'", 
                     "LIST", constraint.getType());
         assertNotNull("ListOfValuesConstraint should have parameters", constraint.getParameters());
-        assertEquals("ListOfValuesConstraint should have 2 parameters", 2, constraint.getParameters().size());
+        assertEquals("ListOfValuesConstraint should have 3 parameters", 3, constraint.getParameters().size());
         assertEquals("caseSensitive should be true", Boolean.TRUE,
                     constraint.getParameters().get("caseSensitive"));
         List<String> allowedValuesParam = (List<String>)constraint.getParameters().get("allowedValues");
@@ -193,6 +193,8 @@ public class ConstraintsTest extends TestCase
         assertEquals("First allowable value should be 'abc'", "abc", allowedValuesParam.get(0));
         assertEquals("First allowable value should be 'def'", "def", allowedValuesParam.get(1));
         assertEquals("First allowable value should be 'ghi'", "ghi", allowedValuesParam.get(2));
+        Boolean sorted = (Boolean)constraint.getParameters().get("sorted");
+        assertFalse("sorting should be false", sorted.booleanValue());
         
         evaluate(constraint, "def", false);
         evaluate(constraint, "DEF", true);

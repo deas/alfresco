@@ -286,7 +286,8 @@ public class PublishUpdatesJob implements Job, RecordsManagementModel
                     try
                     {
                         // Assuming the node still has unpublished information, then unmark it in progress
-                        if (nodeService.hasAspect(nodeRef, ASPECT_UNPUBLISHED_UPDATE) == true)
+                        if (nodeService.exists(nodeRef) == true &&
+                            nodeService.hasAspect(nodeRef, ASPECT_UNPUBLISHED_UPDATE) == true)
                         {
                             if (logger.isDebugEnabled() == true)
                             {

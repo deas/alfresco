@@ -1,7 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <component>
-   <scope>template</scope>
-   <region-id>wcmqs-document-links</region-id>
-   <source-id>document-details</source-id>
    <url>/components/document-details/document-links</url>
 </component>

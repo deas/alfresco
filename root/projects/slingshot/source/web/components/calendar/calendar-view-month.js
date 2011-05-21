@@ -245,7 +245,10 @@
             {
                numDays += (~ ~ (1 * (7 * durationObj.W)));
             }
-            if (numDays > 1) 
+            
+            // Check for event type. 
+            isAllDayEvent = (eventEl.className.indexOf("allday") > -1);
+            if ((numDays > 1) || (numDays > 0 && isAllDayEvent))
             {
                var startDate = (data.from) ? Alfresco.util.fromISO8601(data.from) : data.dtstart;
                if (YAHOO.lang.isString(startDate)) 
@@ -259,8 +262,6 @@
                   endDate = Alfresco.util.fromISO8601(endDate);
                }
                
-               // Check for event type. 
-               isAllDayEvent = (eventEl.className.indexOf("allday") > -1) ? true : false;
                // Create continuation icons
                var continuedFrom = document.createElement("span");
                continuedFrom.innerHTML = "&lt;";
@@ -390,9 +391,12 @@
                      }
                   }
                }
-               // After copying all the elements for the multiple days, add a 'continued to' icon to the original 
-               var summaryEl = Dom.getElementsByClassName("summary", "a", eventEl)[0];
-               Dom.insertAfter(continuedTo, summaryEl);
+               if (!isAllDayEvent)
+               {
+                  // After copying all the elements for the multiple days, add a 'continued to' icon to the original 
+                  var summaryEl = Dom.getElementsByClassName("summary", "a", eventEl)[0];
+                  Dom.insertAfter(continuedTo, summaryEl);
+               }
             }
          }
       },

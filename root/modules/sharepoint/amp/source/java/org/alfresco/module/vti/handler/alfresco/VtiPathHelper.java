@@ -32,6 +32,7 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.repo.webdav.MTNodesCache;
+import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
@@ -67,6 +68,7 @@ public class VtiPathHelper extends AbstractLifecycleBean
     private PersonService personService;
     private SysAdminParams sysAdminParams;
     private TenantService tenantService;
+    private DictionaryService dictionaryService;
 
     private AuthenticationComponent authenticationComponent;
 
@@ -369,7 +371,7 @@ public class VtiPathHelper extends AbstractLifecycleBean
                             
                             if (fileInfo != null)
                             {
-                                if (nodeService.getType(fileInfo.getNodeRef()).equals(spaceType))
+                                if (dictionaryService.isSubClass(nodeService.getType(fileInfo.getNodeRef()), spaceType))
                                 {
                                     webUrl = alfrescoContext + "/" + tempWebUrl;
                                     if (uri.replaceAll(webUrl, "").startsWith("/"))
@@ -541,6 +543,11 @@ public class VtiPathHelper extends AbstractLifecycleBean
     public void setTenantService(TenantService tenantService)
     {
         this.tenantService = tenantService;
+    }
+
+    public void setDictionaryService(DictionaryService dictionaryService)
+    {
+        this.dictionaryService = dictionaryService;
     }
 
 }

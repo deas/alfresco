@@ -95,6 +95,8 @@ public class AssetSerializerXmlImplTest extends TestCase
         intList.add(6);
         props.put(QName.createQName("uri", "intListProperty"), intList);
         
+        props.put(QName.createQName("uri", "mapProperty"), new HashMap<QName,Serializable>(props));
+        
         testObject.writeNode(new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, GUID.generate()), 
                 QName.createQName("uri", "MyType"), props);
         testObject.end();

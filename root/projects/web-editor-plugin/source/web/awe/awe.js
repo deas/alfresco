@@ -920,7 +920,7 @@
                         {
                            fn: function logoutSuccess(e)
                            {
-                              ribbonObj.onLoggedOut.call(ribbonObj, e, [null, {loggedIn: false}]);
+                              Bubbling.fire('awe' + WEF.SEPARATOR + 'loggedout', ribbonObj);
                               this.hide();
                               this.destroy();
                            },
@@ -966,7 +966,7 @@
       
       onHelp: function AWE_onHelp()
       {
-         window.open('http://www.alfresco.com/help/34/enterprise/webeditor/','wefhelp');
+         window.open('http://docs.alfresco.com/3.4/topic/com.alfresco.Enterprise_3_4_0.doc/concepts/awe-introduction.html','wefhelp');
       },
 
       onQuickEditMouseOver: function AWE_onQuickEditMouseOver(e, args)

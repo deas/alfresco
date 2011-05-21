@@ -230,7 +230,15 @@ YAHOO.namespace('extension');
       _request: null,
 
       /**
-       * The urls that was requested from the server to display it in its current state
+       * The urls that was supplied by each selected item in each column (unpaginated)
+       *
+       * @property _urlPathUnPaginated
+       * @private
+       */
+      _urlPathUnPaginated: [],
+
+      /**
+       * The path of urls (possibly paginated) used to create the current columns based on the urls given by each item & pagination.
        *
        * @property _urlPath
        * @private
@@ -298,11 +306,19 @@ YAHOO.namespace('extension');
       {
          // If a request is happening stop it
          this._abortRequests();
-
-         this._loadUrls = urls;
-         this._checkLoadUrlsConsistency = checkUrlsConsistency;
-
          this._removeColumns(0);
+
+         this._checkLoadUrlsConsistency = checkUrlsConsistency;
+         this._loadUrls = urls;
+         if (!this._loadUrls || this._loadUrls.length == 0)
+         {
+            this._loadUrls = [ this.get("rootUrl") ];
+         }
+         if (this._loadUrls[0].indexOf(this.get("rootUrl")) != 0)
+         {
+            throw new Error("The column browsers rootUrl doesn't match the beginning of the first url");
+         }
+         this._urlPathUnPaginated.push(this.get("rootUrl"));
          if (this._loadUrls.length == 1)
          {
             this.fireEvent(itemSelectEvent, null);
@@ -378,13 +394,6 @@ YAHOO.namespace('extension');
 
          // Create the carousel that houses the columns
          columnBrowser._setupCarousel();
-
-         // Do the initial request to get the root column if ul is present
-         var url = columnBrowser.get("url");
-         if(url)
-         {
-            columnBrowser._doRequest(url, null);
-         }
       },
 
       /**
@@ -425,7 +434,7 @@ YAHOO.namespace('extension');
 
          /**
           * @attribute columnInfoBuilder
-          * @description Can be provided by the user of this component to take a custom data respons and
+          * @description Must  be provided by the user of this component to take a custom data response and
           * use that information to create a columnInfo object. 
           * @default null
           * @type Object - A callback object {fn, scope, obj}
@@ -433,6 +442,27 @@ YAHOO.namespace('extension');
          columnBrowser.setAttributeConfig("columnInfoBuilder", {
             validator : JS.isObject,
             value     : attrs.columnInfoBuilder || null
+         });
+
+         /**
+          * @attribute pagination
+          * @description Can be provided if the response shall be paginated.
+          * @default null
+          * @type Object { rowsPerPage: int, rowsPerPageParam: String, recordOffsetParam: String }
+          */
+         columnBrowser.setAttributeConfig("pagination", {
+            validator : JS.isObject,
+            value     : attrs.pagination || null
+         });
+
+         /**
+          * @attribute rootUrl
+          * @description The required (unpaginated) url used to load the root column.
+          * @type String
+          */
+         columnBrowser.setAttributeConfig("rootUrl", {
+            validator : JS.isString,
+            value     : attrs.rootUrl
          });
 
          /**
@@ -445,18 +475,6 @@ YAHOO.namespace('extension');
             validator : JS.isArray,
             readOnly  : true,
             value     : []
-         });
-
-         /**
-          * @attribute columnInfoBuilder
-          * @description Can be provided by the user of this component to describe how an empty column
-          * shall be presented when a leaf node is clicked by returning a columnInfo object.
-          * @default null
-          * @type Object - A callback object {fn, scope, obj}
-          */
-         columnBrowser.setAttributeConfig("emptyColumnInfoBuilder", {
-            validator : JS.isObject,
-            value     : attrs.emptyColumnInfoBuilder || null
          });
 
          /**
@@ -618,11 +636,26 @@ YAHOO.namespace('extension');
        * Asks the service specified by url for columnInfo objects.
        *
        * @param url Url to the service that hosts the columnInfo data
-       * @param itemInfo Object that will be psses to the event handlers
+       * @param itemInfo Object that will be passed to the event handlers
+       * @param recordOffset (Optional) If pagination is used the parameter will be used as the value for the url parameter named after pagination.recordOffsetParam
        * @protected
        */
-      _doRequest: function(url, itemInfo)
+      _doRequest: function(url, itemInfo, recordOffset)
       {
+         var configuredUrl = url,
+            pagination = this.get("pagination");
+         if (pagination)
+         {
+            var separators = configuredUrl.indexOf('?') != -1 ? ['&','&'] : ['?','&'];
+            if (configuredUrl.indexOf(pagination.rowsPerPageParam + '=') < 0)
+            {
+               configuredUrl += separators.pop() + pagination.rowsPerPageParam + '=' + pagination.rowsPerPage;
+            }
+            if (configuredUrl.indexOf(pagination.recordOffsetParam + '=') < 0)
+            {
+               configuredUrl += separators.pop() + pagination.recordOffsetParam + '=' + (recordOffset || 0);
+            }
+         }
          var callback = {
             success:  this._handleSuccess,
             failure:  this._handleFailure,
@@ -632,11 +665,11 @@ YAHOO.namespace('extension');
             {
                itemInfo: itemInfo,
                errorMessage: 'Ajax request failed',
-               url: url
+               url: configuredUrl
             }
          };
          //this._abortRequests();
-         this._request = Con.asyncRequest('GET', url, callback);
+         this._request = Con.asyncRequest('GET', configuredUrl, callback);
       },
 
       /**
@@ -691,9 +724,6 @@ YAHOO.namespace('extension');
             },
             body: {
                items: [ { label: serverResponse.argument.errorMessage || this.DEFAULT_ERROR_MSG } ]
-            },
-            footer: {
-               label: ""
             }
          };
 
@@ -808,12 +838,12 @@ YAHOO.namespace('extension');
 
          // Footer
          var footer = document.createElement('div');
-         if(columnInfo.footer)
+         Dom.addClass(footer, "yui-columnbrowser-column-footer");
+         if(columnInfo.footer && !this.get("pagination"))
          {
-            Dom.addClass(footer, "yui-columnbrowser-column-footer");
-            span = document.createElement('span');
-            span.appendChild(document.createTextNode(columnInfo.footer.label));
+            var span = document.createElement('span');
             footer.appendChild(span);
+            span.appendChild(document.createTextNode(columnInfo.footer.label));
          }
 
          // Create column, Note! The Carousel will use the innerHTML instead of the node itself
@@ -992,6 +1022,7 @@ YAHOO.namespace('extension');
 
          // Get some info about the item that was clicked
          var url = itemInfo.url;
+         this._urlPathUnPaginated.push(url);
          var next = itemInfo.next;
 
          // Highlight the item
@@ -1008,9 +1039,9 @@ YAHOO.namespace('extension');
          }
          else {
             // It is a leaf, create an empty column
-            var emptyColumnInfoBuilder = this.get("emptyColumnInfoBuilder");
-            if(emptyColumnInfoBuilder) {
-               var columnInfo = emptyColumnInfoBuilder.fn.call(emptyColumnInfoBuilder.scope ? emptyColumnInfoBuilder.scope : this, itemInfo);
+            var columnInfoBuilder = this.get("columnInfoBuilder");
+            if(columnInfoBuilder) {
+               var columnInfo = columnInfoBuilder.fn.call(columnInfoBuilder.scope ? columnInfoBuilder.scope : this, null, itemInfo);
                if(columnInfo) {
                   this._addColumn(columnInfo, null);
                }
@@ -1024,9 +1055,7 @@ YAHOO.namespace('extension');
       },
 
       /**
-       * Remove columns from the right to this index, if removeIndexed
-       * is true the column with index columnIndex is removed otherwise
-       * it is left
+       * Remove columns from the right to this index
        *
        * @param columnIndex       
        */
@@ -1037,6 +1066,7 @@ YAHOO.namespace('extension');
             this._carousel.removeItem(lastIndex);
             lastIndex = this._carousel.get("numItems") - 1;
             this._urlPath.pop();
+            this._urlPathUnPaginated.pop();
          }
          // Update the urlPath attribute
          this.set("urlPath", this._urlPath);
@@ -1202,6 +1232,44 @@ YAHOO.namespace('extension');
             }
 
          }
+
+         // Footer
+         var footer = Dom.getElementsByClassName("yui-columnbrowser-column-footer", "div", column)[0],
+            paginationConfig = this.get("pagination"),
+            columnInfoPagination = columnInfo.pagination;
+         if (paginationConfig && columnInfoPagination)
+         {
+            var span = document.createElement('span');
+            footer.appendChild(span);
+            var p = new YAHOO.widget.Paginator({
+               rowsPerPage  : paginationConfig.rowsPerPage,
+               totalRecords : columnInfoPagination.totalRecords || 0,
+               recordOffset: columnInfoPagination.recordOffset || 0,
+               containers   : span,
+               firstPageLinkLabel : paginationConfig.firstPageLinkLabel || "<<",
+               lastPageLinkLabel : paginationConfig.lastPageLinkLabel || ">>",
+               previousPageLinkLabel : paginationConfig.previousPageLinkLabel || "<",
+               nextPageLinkLabel : paginationConfig.nextPageLinkLabel || ">",
+               pageReportTemplate : paginationConfig.pageReportTemplate || "( {currentPage} of {totalPages} )",
+               template: paginationConfig.template || "{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+            });
+            var onPaginateColumn = function (newState, obj)
+            {
+
+               // Save upaginated url for this column, remove column (and url from the list), and restore the url
+               var url = this._urlPathUnPaginated[obj.columnIndex];
+               this._removeColumns(obj.columnIndex);
+               this._urlPathUnPaginated.push(url);
+
+               var columnInfo = obj.columnInfo;
+               this._doRequest(url, columnInfo.parent, newState.recordOffset);
+
+               YAHOO.util.Event.stopEvent(e);
+            };
+            p.subscribe('changeRequest', onPaginateColumn, { columnInfo: columnInfo, columnIndex: columnIndex }, this);
+            p.render();
+         }
+
          // If this column was created from a load() call make sure the rest of the urls are requested
          this._loadFromLoadUrls(columnInfo);
       },
@@ -1215,15 +1283,16 @@ YAHOO.namespace('extension');
        * @protected
        */
       _loadFromLoadUrls: function(columnInfo) {
-         var columnIndex = this._carousel.get("numItems") - 1;
-         var url = this._loadUrls ? this._loadUrls.shift() : null;
+         var columnIndex = this._carousel.get("numItems") - 1,
+            url = this._loadUrls ? this._loadUrls.shift() : null;
          if(url) {
             // Decide if children shall be loaded or not
             var loadUrl = this._checkLoadUrlsConsistency ? false : true;
             var itemInfo = null;
             var items = columnInfo && columnInfo.body && columnInfo.body.items ? columnInfo.body.items : [];
             for(var i = 0;  i < items.length; i++) {
-               if(items[i].url == url) {
+               if(url.indexOf(items[i].url) == 0) {
+                  this._urlPathUnPaginated.push(items[i].url);
                   loadUrl = true;
                   itemInfo = items[i];
 
@@ -1333,6 +1402,7 @@ YAHOO.namespace('extension');
             copy.push(val[i]);
          }
          this._urlPath = copy;
+         this._urlPathUnPaginated = []; // unpaginated url path is now stale, when load() is called it will be populated.  
          return val;
       }
 

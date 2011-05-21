@@ -132,4 +132,6 @@ public interface AssetFactory
      * are omitted.
      */
     Map<String, Date> getModifiedTimesOfAssets(Collection<String> assetIds);
+    
+    ContentStream getContentStream(String assetId);
 }

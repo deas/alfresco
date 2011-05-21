@@ -94,4 +94,9 @@ public class ShareDetailsHash {
 		 
 		return details; 
 	}
+
+    public final Hashtable<Integer, ShareDetails> getShareDetails()
+    {
+        return m_details;
+    }
 }
