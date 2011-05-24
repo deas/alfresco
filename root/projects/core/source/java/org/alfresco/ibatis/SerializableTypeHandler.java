@@ -24,20 +24,22 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.ibatis.sqlmap.client.extensions.ParameterSetter;
-import com.ibatis.sqlmap.client.extensions.ResultGetter;
-import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
 
 /**
- * TypeHandler for <tt>java.io.Serializable</tt> to <b>BLOB</b> types.
+ * MyBatis 3.x TypeHandler for <tt>java.io.Serializable</tt> to <b>BLOB</b> types.
  * 
- * @author Derek Hulley
- * @since 3.2
+ * @author Derek Hulley, janv
+ * @since 4.0
  */
-public class SerializableTypeHandlerCallback implements TypeHandlerCallback
+public class SerializableTypeHandler implements TypeHandler
 {
     public static final int DEFAULT_SERIALIZABLE_TYPE = Types.LONGVARBINARY;
     private static volatile int serializableType = DEFAULT_SERIALIZABLE_TYPE;
@@ -47,7 +49,7 @@ public class SerializableTypeHandlerCallback implements TypeHandlerCallback
      */
     public static void setSerializableType(int serializableType)
     {
-        SerializableTypeHandlerCallback.serializableType = serializableType;
+        SerializableTypeHandler.serializableType = serializableType;
     }
 
     /**
@@ -61,13 +63,13 @@ public class SerializableTypeHandlerCallback implements TypeHandlerCallback
     /**
      * @throws DeserializationException if the object could not be deserialized
      */
-    public Object getResult(ResultGetter getter) throws SQLException
+    public Object getResult(ResultSet rs, String columnName) throws SQLException
     {
         final Serializable ret;
         try
         {
-            InputStream is = getter.getResultSet().getBinaryStream(getter.getColumnName());
-            if (is == null || getter.wasNull())
+            InputStream is = rs.getBinaryStream(columnName);
+            if (is == null || rs.wasNull())
             {
                 return null;
             }
@@ -83,12 +85,12 @@ public class SerializableTypeHandlerCallback implements TypeHandlerCallback
         }
         return ret;
     }
-
-    public void setParameter(ParameterSetter setter, Object parameter) throws SQLException
+    
+    public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException
     {
         if (parameter == null)
         {
-            setter.setNull(SerializableTypeHandlerCallback.serializableType);
+            ps.setNull(i, SerializableTypeHandler.serializableType);
         }
         else
         {
@@ -99,7 +101,7 @@ public class SerializableTypeHandlerCallback implements TypeHandlerCallback
                 oos.writeObject(parameter);
                 byte[] bytes = baos.toByteArray();
                 ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-                setter.setBinaryStream(bais, bytes.length);
+                ps.setBinaryStream(i, bais, bytes.length);
             }
             catch (Throwable e)
             {
@@ -107,9 +109,14 @@ public class SerializableTypeHandlerCallback implements TypeHandlerCallback
             }
         }
     }
+    
+    public Object getResult(CallableStatement cs, int columnIndex) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Unsupported");
+    }
 
     /**
-     * @return          Retruns the value given
+     * @return          Returns the value given
      */
     public Object valueOf(String s)
     {

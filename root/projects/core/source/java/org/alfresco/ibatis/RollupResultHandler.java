@@ -23,25 +23,26 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import com.ibatis.common.beans.Probe;
-import com.ibatis.common.beans.ProbeFactory;
-import com.ibatis.sqlmap.client.event.RowHandler;
+import org.apache.ibatis.executor.result.DefaultResultContext;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.session.ResultContext;
+import org.apache.ibatis.session.ResultHandler;
 
 /**
- * A {@link RowHandler} that collapses multiple rows based on a set of properties.
+ * A {@link ResultHandler} that collapses multiple rows based on a set of properties.
  * <p/>
- * This class is used to workaround the <b>groupBy</b> and nested <b>ResultMap</b>
+ * This class is derived from earlier RollupRowHandler used to workaround the <b>groupBy</b> and nested <b>ResultMap</b>
  * behaviour in iBatis (2.3.4.726) <a href=https://issues.apache.org/jira/browse/IBATIS-503>IBATIS-503</a>.
  * <p>
  * The set of properties given act as a unique key.  When the unique key <i>changes</i>, the collection
- * values from the nested <i>ResultMap<i> are coalesced and the given {@link RowHandler} is called.  It is
+ * values from the nested <i>ResultMap<i> are coalesced and the given {@link ResultHandler} is called.  It is
  * possible to embed several instances of this handler for deeply-nested <i>ResultMap</i> declarations.
  * <p>
- * Use this instance as a regular {@link RowHandler}, but with one big exception: call {@link #processLastResults()}
+ * Use this instance as a regular {@link ResultHandler}, but with one big exception: call {@link #processLastResults()}
  * after executing the SQL statement.  Remove the <b>groupBy</b> attribute from the iBatis <b>ResultMap</b>
  * declaration.
  * <p>
- * Example iBatis:
+ * Example iBatis 2.x (TODO migrate example to MyBatis 3.x):
  * <code><pre>
     &lt;resultMap id="result_AuditQueryAllValues"
                extends="alfresco.audit.result_AuditQueryNoValues"
@@ -87,14 +88,14 @@ import com.ibatis.sqlmap.client.event.RowHandler;
  * <p>
  * This class is not thread-safe; use a new instance for each use.
  * 
- * @author Derek Hulley
- * @since 3.2
+ * @author Derek Hulley, janv
+ * @since 4.0
  */
-public class RollupRowHandler implements RowHandler
+public class RollupResultHandler implements ResultHandler
 {
     private final String[] keyProperties;
     private final String collectionProperty;
-    private final RowHandler rowHandler;
+    private final ResultHandler resultHandler;
     private final int maxResults;
     
     private Object[] lastKeyValues;
@@ -104,22 +105,22 @@ public class RollupRowHandler implements RowHandler
     /**
      * @param keyProperties         the properties that make up the unique key
      * @param collectionProperty    the property mapped using a nested <b>ResultMap</b>
-     * @param rowHandler            the row handler that will receive the rolled-up results
+     * @param resultHandler         the result handler that will receive the rolled-up results
      */
-    public RollupRowHandler(String[] keyProperties, String collectionProperty, RowHandler rowHandler)
+    public RollupResultHandler(String[] keyProperties, String collectionProperty, ResultHandler resultHandler)
     {
-        this(keyProperties, collectionProperty, rowHandler, Integer.MAX_VALUE);
+        this(keyProperties, collectionProperty, resultHandler, Integer.MAX_VALUE);
     }
 
     /**
      * @param keyProperties         the properties that make up the unique key
      * @param collectionProperty    the property mapped using a nested <b>ResultMap</b>
-     * @param rowHandler            the row handler that will receive the rolled-up results
+     * @param resultHandler         the result handler that will receive the rolled-up results
      * @param maxResults            the maximum number of results to retrieve (-1 for no limit).
      *                              Make sure that the query result limit is large enough to produce this
      *                              at least this number of results
      */
-    public RollupRowHandler(String[] keyProperties, String collectionProperty, RowHandler rowHandler, int maxResults)
+    public RollupResultHandler(String[] keyProperties, String collectionProperty, ResultHandler resultHandler, int maxResults)
     {
         if (keyProperties == null || keyProperties.length == 0)
         {
@@ -131,12 +132,12 @@ public class RollupRowHandler implements RowHandler
         }
         this.keyProperties = keyProperties;
         this.collectionProperty = collectionProperty;
-        this.rowHandler = rowHandler;
+        this.resultHandler = resultHandler;
         this.maxResults = maxResults;
         this.rawResults = new ArrayList<Object>(100);
     }
     
-    public void handleRow(Object valueObject)
+    public void handleResult(ResultContext context)
     {
         // Shortcut if we have processed enough results
         if (maxResults > 0 && resultCount >= maxResults)
@@ -144,7 +145,10 @@ public class RollupRowHandler implements RowHandler
             return;
         }
         
-        Probe probe = ProbeFactory.getProbe(valueObject);
+        Object valueObject = context.getResultObject();
+        
+        MetaObject probe = MetaObject.forObject(valueObject);
+        
         // Check if the key has changed
         if (lastKeyValues == null)
         {
@@ -159,7 +163,10 @@ public class RollupRowHandler implements RowHandler
             Object resultObject = coalesceResults(rawResults, collectionProperty);
             if (resultObject != null)
             {
-                rowHandler.handleRow(resultObject);
+                DefaultResultContext resultContext = new DefaultResultContext();
+                resultContext.nextResultObject(resultObject);
+                
+                resultHandler.handleResult(resultContext);
                 resultCount++;
             }
             rawResults.clear();
@@ -193,7 +200,10 @@ public class RollupRowHandler implements RowHandler
         Object resultObject = coalesceResults(rawResults, collectionProperty);
         if (resultObject != null)
         {
-            rowHandler.handleRow(resultObject);
+            DefaultResultContext resultContext = new DefaultResultContext();
+            resultContext.nextResultObject(resultObject);
+            
+            resultHandler.handleResult(resultContext);
             resultCount++;
             rawResults.clear();                         // Stop it from being used again
         }
@@ -204,19 +214,19 @@ public class RollupRowHandler implements RowHandler
     {
         // Take the first result as the base value
         Object resultObject = null;
-        Probe probe = null;
+        MetaObject probe = null;
         Collection<Object> collection = null;
         for (Object object : valueObjects)
         {
             if (collection == null)
             {
                 resultObject = object;
-                probe = ProbeFactory.getProbe(resultObject);
-                collection = (Collection<Object>) probe.getObject(resultObject, collectionProperty);
+                probe = MetaObject.forObject(resultObject);
+                collection = (Collection<Object>) probe.getValue(collectionProperty);
             }
             else
             {
-                Collection<?> addedValues = (Collection<Object>) probe.getObject(object, collectionProperty);
+                Collection<?> addedValues = (Collection<Object>) probe.getValue(collectionProperty);
                 collection.addAll(addedValues);
             }
         }
@@ -227,12 +237,12 @@ public class RollupRowHandler implements RowHandler
     /**
      * @return          Returns the values for the {@link RollupRowHandler#keyProperties}
      */
-    private Object[] getKeyValues(Object valueObject, Probe probe)
+    private Object[] getKeyValues(Object valueObject, MetaObject probe)
     {
         Object[] keyValues = new Object[keyProperties.length];
         for (int i = 0; i < keyProperties.length; i++)
         {
-            keyValues[i] = probe.getObject(valueObject, keyProperties[i]);
+            keyValues[i] = probe.getValue(keyProperties[i]);
         }
         return keyValues;
     }

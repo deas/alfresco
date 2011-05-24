@@ -9,7 +9,6 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jta.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jug-asl-2.0.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/xml-apis.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/ibatis-2.3.4.726-patched.jar" sourcepath="/3rd Party/src/ibatis-2.3.4.726-patched-src.zip"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/j2ee/servlet.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jboss/jboss-vfs-2.1.0.GA.jar" sourcepath="/3rd Party/lib/jboss/jboss-vfs-2.1.0.GA-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/hibernate-3.2.6-patched.jar" sourcepath="/3rd Party/src/hibernate-3.2.6-patched-src.zip"/>
