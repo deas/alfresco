@@ -30,6 +30,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.alfresco.service.cmr.repository.AssociationRef;
@@ -447,7 +448,15 @@ public class DefaultTypeConverter extends TypeConverter
                 {
                     return new BigDecimal((BigInteger) source);
                 }
-                else
+                else if(source instanceof Double) 
+                {
+                    return BigDecimal.valueOf((Double) source);
+                }
+                else if(source instanceof Float) 
+                {
+                    return BigDecimal.valueOf((Float) source);
+                }
+                else 
                 {
                     return BigDecimal.valueOf(source.longValue());
                 }
@@ -491,6 +500,16 @@ public class DefaultTypeConverter extends TypeConverter
             public Calendar convert(Date source)
             {
                 Calendar calendar = Calendar.getInstance();
+                calendar.setTime(source);
+                return calendar;
+            }
+        });
+        
+        addConverter(Date.class, GregorianCalendar.class, new TypeConverter.Converter<Date, GregorianCalendar>()
+        {
+            public GregorianCalendar convert(Date source)
+            {
+                GregorianCalendar calendar = new GregorianCalendar();
                 calendar.setTime(source);
                 return calendar;
             }

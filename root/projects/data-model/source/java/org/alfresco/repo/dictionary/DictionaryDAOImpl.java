@@ -666,7 +666,8 @@ public class DictionaryDAOImpl implements DictionaryDAO
 	    	else
 	    	{
 	    		// immediate sub aspects only
-	    		if (allAspectsAndParents.get(aspect).equals(superAspect))
+	    	    QName typesSuperAspect = allAspectsAndParents.get(aspect);
+	    		if (typesSuperAspect != null && typesSuperAspect.equals(superAspect))
 	    		{
 	    			subAspects.add(aspect);
 	    		}
