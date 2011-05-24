@@ -55,12 +55,14 @@ import com.ibatis.sqlmap.engine.transaction.TransactionManager;
  *    &lt;sqlMap resource=&quot;org/x/y/#resource.dialect#/View2.xml&quot;/&gt;
  * &lt;/sqlMapConfig&gt;
  * <p/>
- * Much of the implementation is a direct copy of the iBatis {@link SqlMapConfigParser}; some
+ * Much of the implementation is a direct copy of the iBatis 2.x {@link SqlMapConfigParser}; some
  * of the <tt>protected</tt> methods do not have access to the object's state and can therefore
  * not be overridden successfully: <a href=https://issues.apache.org/jira/browse/IBATIS-589>IBATIS-589</a>
  * 
+ * @deprecated see HierarchicalXMLConfigBuilder (for MyBatis 3.x)
+ * 
  * @author Derek Hulley
- * @since 3.2 (Mobile)
+ * @since 3.2
  */
 public class HierarchicalSqlMapConfigParser
 {

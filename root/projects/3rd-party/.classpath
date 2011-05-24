@@ -216,6 +216,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.3-complete.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.5.jar" sourcepath="src/activiti-engine-5.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.5.jar" sourcepath="src/activiti-spring-5.5-sources.jar"/>
-	<classpathentry kind="lib" path="lib/activiti/mybatis-3.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mybatis-spring-1.0.0.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

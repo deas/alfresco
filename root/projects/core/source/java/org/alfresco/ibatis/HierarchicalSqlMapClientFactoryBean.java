@@ -35,13 +35,15 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.engine.builder.xml.SqlMapParser;
 
 /**
- * Extends Spring's support for iBatis by allowing a choice of {@link ResourceLoader}. The
+ * Extends Spring's support for iBatis 2.x by allowing a choice of {@link ResourceLoader}. The
  * {@link #setResourceLoader(HierarchicalResourceLoader) ResourceLoader} will be used to load the <b>SqlMapConfig</b>
  * file, but will also be injected into a {@link HierarchicalSqlMapConfigParser} that will read the individual iBatis
  * resources.
  * 
+ * @deprecated see HierarchicalSqlSessionFactoryBeanTest (for MyBatis 3.x)
+ * 
  * @author Derek Hulley
- * @since 3.2 (Mobile)
+ * @since 3.2
  */
 public class HierarchicalSqlMapClientFactoryBean extends SqlMapClientFactoryBean
 {

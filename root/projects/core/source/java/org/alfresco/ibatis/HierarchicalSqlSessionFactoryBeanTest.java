@@ -30,31 +30,28 @@ import junit.framework.TestCase;
 import org.alfresco.util.resource.HierarchicalResourceLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapException;
-import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
-import com.ibatis.sqlmap.engine.mapping.statement.MappedStatement;
 
 /**
- * @see HierarchicalSqlMapClientFactoryBean
- * @see HierarchicalSqlMapConfigParser
+ * @see HierarchicalSqlSessionFactoryBean
+ * @see HierarchicalXMLConfigBuilder
  * @see HierarchicalResourceLoader
  * 
- * @deprecated see HierarchicalSqlSessionFactoryBeanTest (for MyBatis 3.x)
- * 
- * @author Derek Hulley
- * @since 3.2
+ * @author Derek Hulley, janv
+ * @since 4.0
  */
-public class HierarchicalSqlMapClientFactoryBeanTest extends TestCase
+public class HierarchicalSqlSessionFactoryBeanTest extends TestCase
 {
     private static final String QUERY_OBJECT = Object.class.getName();
-    private static final String QUERY_ABSTRACTCOLLECTION = AbstractCollection.class.getName();
-    private static final String QUERY_ABSTRACTLIST = AbstractList.class.getName();
-    private static final String QUERY_TREESET = TreeSet.class.getName();
+    private static final String QUERY_ABSTRACTCOLLECTION = "org.alfresco.ibatis.abstractcollection."+AbstractCollection.class.getName().replace(".", "_");
+    private static final String QUERY_ABSTRACTLIST = "org.alfresco.ibatis.abstractlist."+AbstractList.class.getName().replace(".", "_");
+    private static final String QUERY_TREESET = "org.alfresco.ibatis.treeset."+TreeSet.class.getName().replace(".", "_");
     
-    private static Log logger = LogFactory.getLog(HierarchicalSqlMapClientFactoryBeanTest.class);
+    private static Log logger = LogFactory.getLog(HierarchicalSqlSessionFactoryBeanTest.class);
     
     private ClassPathXmlApplicationContext ctx;
     private TestDAO testDao;
@@ -86,10 +83,10 @@ public class HierarchicalSqlMapClientFactoryBeanTest extends TestCase
     
     /**
      * Pushes the dialect class into the system properties, closes an current context and
-     * recreates it; the SqlMapClient is then returned.
+     * recreates it; the MyBatis Configuration is then returned.
      */
     @SuppressWarnings("unchecked")
-    private SqlMapClient getSqlMapClient(Class dialectClass) throws Exception
+    private Configuration getConfiguration(Class dialectClass) throws Exception
     {
         System.setProperty("hierarchy-test.dialect", dialectClass.getName());
         if (ctx != null)
@@ -104,8 +101,8 @@ public class HierarchicalSqlMapClientFactoryBeanTest extends TestCase
                 logger.error("Failed to neatly close application context", e);
             }
         }
-        ctx = new ClassPathXmlApplicationContext("ibatis/hierarchy-test/hierarchy-test-context.xml");
-        return (SqlMapClient) ctx.getBean("sqlMapClient");
+        ctx = new ClassPathXmlApplicationContext("ibatis/hierarchy-mybatis-test/hierarchy-test-context.xml");
+        return ((SqlSessionFactory)ctx.getBean("mybatisConfig")).getConfiguration();
     }
     
     /**
@@ -113,13 +110,13 @@ public class HierarchicalSqlMapClientFactoryBeanTest extends TestCase
      */
     public void testContextStartup() throws Exception
     {
-        getSqlMapClient(TreeSet.class);
-        getSqlMapClient(HashSet.class);
-        getSqlMapClient(ArrayList.class);
-        getSqlMapClient(AbstractCollection.class);
+        getConfiguration(TreeSet.class);
+        getConfiguration(HashSet.class);
+        getConfiguration(ArrayList.class);
+        getConfiguration(AbstractCollection.class);
         try
         {
-            getSqlMapClient(Collection.class);
+            getConfiguration(Collection.class);
             fail("Failed to detect incompatible class hierarchy");
         }
         catch (Throwable e)
@@ -130,15 +127,15 @@ public class HierarchicalSqlMapClientFactoryBeanTest extends TestCase
     
     public void testHierarchyTreeSet() throws Exception
     {
-        ExtendedSqlMapClient sqlMapClient = (ExtendedSqlMapClient) getSqlMapClient(TreeSet.class);
-        MappedStatement stmt = sqlMapClient.getMappedStatement(QUERY_TREESET);
+        Configuration mybatisConfig = getConfiguration(TreeSet.class);
+        MappedStatement stmt = mybatisConfig.getMappedStatement(QUERY_TREESET);
         assertNotNull("Query missing for " + QUERY_TREESET + " using " + TreeSet.class, stmt);
         try
         {
-            sqlMapClient.getMappedStatement(QUERY_ABSTRACTCOLLECTION);
+            mybatisConfig.getMappedStatement(QUERY_ABSTRACTCOLLECTION);
             fail("Query not missing for " + QUERY_ABSTRACTCOLLECTION + " using " + TreeSet.class);
         }
-        catch (SqlMapException e)
+        catch (IllegalArgumentException e)
         {
             // Expected
         }
@@ -146,15 +143,15 @@ public class HierarchicalSqlMapClientFactoryBeanTest extends TestCase
 
     public void testHierarchyHashSet() throws Exception
     {
-        ExtendedSqlMapClient sqlMapClient = (ExtendedSqlMapClient) getSqlMapClient(HashSet.class);
-        MappedStatement stmt = sqlMapClient.getMappedStatement(QUERY_ABSTRACTCOLLECTION);
+        Configuration mybatisConfig = getConfiguration(HashSet.class);
+        MappedStatement stmt = mybatisConfig.getMappedStatement(QUERY_ABSTRACTCOLLECTION);
         assertNotNull("Query missing for " + QUERY_ABSTRACTCOLLECTION + " using " + HashSet.class, stmt);
         try
         {
-            sqlMapClient.getMappedStatement(QUERY_OBJECT);
+            mybatisConfig.getMappedStatement(QUERY_OBJECT);
             fail("Query not missing for " + QUERY_OBJECT + " using " + HashSet.class);
         }
-        catch (SqlMapException e)
+        catch (IllegalArgumentException e)
         {
             // Expected
         }
@@ -162,15 +159,15 @@ public class HierarchicalSqlMapClientFactoryBeanTest extends TestCase
 
     public void testHierarchyArrayList() throws Exception
     {
-        ExtendedSqlMapClient sqlMapClient = (ExtendedSqlMapClient) getSqlMapClient(ArrayList.class);
-        MappedStatement stmt = sqlMapClient.getMappedStatement(QUERY_ABSTRACTLIST);
+        Configuration mybatisConfig = getConfiguration(ArrayList.class);
+        MappedStatement stmt = mybatisConfig.getMappedStatement(QUERY_ABSTRACTLIST);
         assertNotNull("Query missing for " + QUERY_ABSTRACTLIST + " using " + ArrayList.class, stmt);
         try
         {
-            sqlMapClient.getMappedStatement(QUERY_ABSTRACTCOLLECTION);
+            mybatisConfig.getMappedStatement(QUERY_ABSTRACTCOLLECTION);
             fail("Query not missing for " + QUERY_ABSTRACTCOLLECTION + " using " + ArrayList.class);
         }
-        catch (SqlMapException e)
+        catch (IllegalArgumentException e)
         {
             // Expected
         }
@@ -178,15 +175,15 @@ public class HierarchicalSqlMapClientFactoryBeanTest extends TestCase
 
     public void testHierarchyAbstractCollection() throws Exception
     {
-        ExtendedSqlMapClient sqlMapClient = (ExtendedSqlMapClient) getSqlMapClient(AbstractCollection.class);
-        MappedStatement stmt = sqlMapClient.getMappedStatement(QUERY_ABSTRACTCOLLECTION);
+        Configuration mybatisConfig = getConfiguration(AbstractCollection.class);
+        MappedStatement stmt = mybatisConfig.getMappedStatement(QUERY_ABSTRACTCOLLECTION);
         assertNotNull("Query missing for " + QUERY_ABSTRACTCOLLECTION + " using " + AbstractCollection.class, stmt);
         try
         {
-            sqlMapClient.getMappedStatement(QUERY_OBJECT);
+            mybatisConfig.getMappedStatement(QUERY_OBJECT);
             fail("Query not missing for " + QUERY_OBJECT + " using " + AbstractCollection.class);
         }
-        catch (SqlMapException e)
+        catch (IllegalArgumentException e)
         {
             // Expected
         }
