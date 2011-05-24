@@ -101,7 +101,7 @@ public class HierarchicalSqlSessionFactoryBeanTest extends TestCase
                 logger.error("Failed to neatly close application context", e);
             }
         }
-        ctx = new ClassPathXmlApplicationContext("ibatis/hierarchy-mybatis-test/hierarchy-test-context.xml");
+        ctx = new ClassPathXmlApplicationContext("ibatis/hierarchy-test/hierarchy-test-context.xml");
         return ((SqlSessionFactory)ctx.getBean("mybatisConfig")).getConfiguration();
     }
     

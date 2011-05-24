@@ -13,7 +13,7 @@
         </property>
     </bean>
     
-	<bean id="resourceLoader" class="org.alfresco.util.resource.HierarchicalResourceLoader">
+    <bean id="resourceLoader" class="org.alfresco.util.resource.HierarchicalResourceLoader">
         <property name="dialectBaseClass">
             <value>java.util.AbstractCollection</value>
         </property>
@@ -21,14 +21,28 @@
             <value>${hierarchy-test.dialect}</value>
         </property>
     </bean>
-
-   	<bean id="sqlMapClient" class="org.alfresco.ibatis.HierarchicalSqlMapClientFactoryBean" singleton="true">
+    
+    <bean id="mybatisConfig" class="org.alfresco.ibatis.HierarchicalSqlSessionFactoryBean" singleton="true">
+        <property name="dataSource" ref="dataSource"/>
         <property name="resourceLoader">
-            <ref bean="resourceLoader" />
+            <ref bean="resourceLoader"/>
         </property> 
         <property name="configLocation">
             <value>classpath:ibatis/hierarchy-test/hierarchy-test-SqlMapConfig.xml</value>
-        </property> 
+        </property>
+    </bean>
+    
+    <!--  dummy -->
+    <bean id="defaultDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     </bean> 
+    
+    <bean id="dataSource" class="org.alfresco.config.JndiObjectFactoryBean">
+        <property name="jndiName">
+            <value>java:comp/env/jdbc/dataSource</value>
+        </property>
+        <property name="defaultObject">
+            <ref bean="defaultDataSource" />
+        </property>
+    </bean>
    
 </beans>

@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE sqlMap      
-    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
-    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<sqlMap namespace="org.alfresco.ibatis">
+<mapper namespace="org.alfresco.ibatis.treeset">
 
-   <typeAlias alias="TestDAO" type="org.alfresco.ibatis.HierarchicalSqlMapClientFactoryBeanTest$TestDAO"/>
-
-   <resultMap id="TestOneResult" class="TestDAO">
+   <resultMap id="TestOneResult" type="TestDAO">
       <result property="id" column="sequence_id"/>
       <result property="propOne" column="prop_one"/>
       <result property="propTwo" column="prop_two"/>
    </resultMap>
-
-   <select id="java.util.TreeSet" parameterClass="TestDAO" resultClass="TestDAO">
+   
+   <select id="java_util_TreeSet" parameterType="TestDAO" resultType="TestDAO">
       <![CDATA[
       select 
          id as id,
@@ -23,8 +19,8 @@
       from 
          dummy_table
       where
-         id = #id# 
+         id = #{id} 
       ]]>
    </select>
-
-</sqlMap>
+   
+</mapper>

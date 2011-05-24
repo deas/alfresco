@@ -96,6 +96,9 @@ public class HierarchicalSqlSessionFactoryBean extends SqlSessionFactoryBean
         Assert.notNull(sqlSessionFactoryBuilder, "Property 'sqlSessionFactoryBuilder' is required");
         
         this.sqlSessionFactory = buildSqlSessionFactory();
+        
+        // MyBatis #179 (should be fixed for 3.0.5)
+        this.sqlSessionFactory.getConfiguration().buildAllStatements();
     }
 
         private final Log logger = LogFactory.getLog(getClass());
