@@ -1095,7 +1095,7 @@
          <fileset dir="${dir.project.3rdparty.lib}" 
                   includes="**/jug-asl-2.0.0.jar" />
          <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/commons/commons-logging-1.1.jar" />
+                  includes="**/commons/commons-logging-1.1.1.jar" />
          <fileset dir="${dir.project.3rdparty.lib}" 
                   includes="**/log4j-1.2.15.jar" />
       </copy>

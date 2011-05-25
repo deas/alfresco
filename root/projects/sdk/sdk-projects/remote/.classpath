@@ -5,7 +5,7 @@
 	<classpathentry exported="true" kind="lib" path="dependencies/axis-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/bcprov-jdk15-137.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/commons-discovery-0.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="dependencies/commons-logging-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="dependencies/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/jaxrpc.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/mail.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/opensaml-1.0.1.jar"/>
