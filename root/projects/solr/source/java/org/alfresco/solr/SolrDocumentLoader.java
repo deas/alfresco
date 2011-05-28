@@ -44,8 +44,8 @@ public class SolrDocumentLoader
     
     public static void main(String[] args) throws SolrServerException, IOException
     {
-        int FOLDERS = 10000;
-        int LEAVES = 100;
+        int FOLDERS = 1000;
+        int LEAVES = 10000;
         
         SolrServer solr = getRemoteServer();
      
@@ -55,11 +55,16 @@ public class SolrDocumentLoader
         
         int dbid = 0;
         
+        solr.add(createGlobalAclDocument());
+        
         SolrInputDocument root = createRootDocument(dbid);
         solr.add(root);
         
         SolrInputDocument rootPath = createRootPathDocument(dbid++);
         solr.add(rootPath);
+        
+        SolrInputDocument rootAcl = createRootAclDocument();
+        solr.add(rootAcl);
         
         solr.commit(true, true);
         solr.optimize(true, true);
@@ -73,15 +78,45 @@ public class SolrDocumentLoader
         
         for(int i = 0; i < FOLDERS; i++)
         {
+       
             Collection<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
             docs.add(createContainerDocument(dbid, i));
             docs.add(createContainerPathDocument(dbid++, i));
+            docs.add(createAclDocument(2+i));
+            
+//            int firstDbid = dbid;
             for(int j = 0; j < LEAVES; j++)
             {
                 docs.add(createLeafDocument(dbid, i, j));
                 docs.add(createLeafPathDocument(dbid++, i, j));
             }
             solr.add(docs);
+           
+            solr.commit(true, true);
+            
+//            dbid  = firstDbid;
+//            for(int j = 0; j < LEAVES; j++)
+//            {
+//                solr.deleteById("LEAF-"+(dbid));
+//                solr.deleteById("AUX-"+(dbid++));
+//            }
+//            
+//            solr.commit(true, true);
+//            
+//            docs.clear();
+//            dbid  = firstDbid;
+//            for(int j = 0; j < LEAVES; j++)
+//            {
+//                docs.add(createLeafDocument(dbid, i, j));
+//                docs.add(createLeafPathDocument(dbid++, i, j));
+//            }
+//            solr.add(docs);
+//
+//            solr.commit(true, true);
+            
+            //solr.optimize(true, true);
+            
+          
         }
         
         solr.commit(true, true);
@@ -97,7 +132,88 @@ public class SolrDocumentLoader
         
         assert((FOLDERS*(LEAVES+1) + 2) == response.getResults().size());
         
+        // Add ACL docs
+        
+     
+        
+//        for(int i = 0; i < FOLDERS; i++)
+//        {
+//            Collection<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
+//            docs.add(createAclDocument(2+i));
+//            solr.add(docs);
+//        }
+//        
+//        solr.commit(true, true);
+//        
+//        solr.optimize(true, true);
+        
         System.out.println("Done "+ (FOLDERS*(LEAVES+1) + 2));
+        
+        // check the final cache
+        
+        SolrInputDocument doc = new SolrInputDocument();
+        doc.addField("ID", "CHECK_CACHE");
+        solr.add(doc);
+        solr.commit(true, true);
+    }
+    
+    public static SolrInputDocument createAclDocument(int i)
+    {
+        SolrInputDocument doc = new SolrInputDocument();
+        doc.addField("ACLID", ""+i);
+        doc.addField("READER", "ID-"+i);
+        doc.addField("READER", "ROLE_OWNER");
+        doc.addField("ID", "ACL-"+i);
+        if(i == 2)
+        {
+            doc.addField("READER", "ROLE_1");
+        }
+        if(i < 12)
+        {
+            doc.addField("READER", "ROLE_10");
+        }
+        if(i < 102)
+        {
+            doc.addField("READER", "ROLE_100");
+        }
+        if(i < 1002)
+        {
+            doc.addField("READER", "ROLE_1000");
+        }
+        if(i < 10002)
+        {
+            doc.addField("READER", "ROLE_10000");
+        }
+        if(i < 100002)
+        {
+            doc.addField("READER", "ROLE_100000");
+        }
+        if(i < 1000002)
+        {
+            doc.addField("READER", "ROLE_1000000");
+        }
+        doc.addField("READER", "ROLE_ALL");
+        return doc;
+    }
+    
+    public static SolrInputDocument createGlobalAclDocument()
+    {
+        SolrInputDocument doc = new SolrInputDocument();
+        doc.addField("ACLID", "0");
+        doc.addField("READER", "ROLE_OWNER");
+        doc.addField("READER", "ROLE_ADMIN");
+        doc.addField("ID", "ACL-0");
+        return doc;
+    }
+    
+    public static SolrInputDocument createRootAclDocument()
+    {
+        SolrInputDocument doc = new SolrInputDocument();
+        doc.addField("ACLID", "1");
+        doc.addField("READER", "ROLE_ALL");
+        doc.addField("READER", "ROLE_JUST_ROOT");
+        doc.addField("ID", "ACL-1");
+        return doc;
     }
     
     public static SolrInputDocument createLeafDocument(int dbid, int i, int j)
@@ -111,7 +227,7 @@ public class SolrDocumentLoader
         doc.addField("PRIMARYASSOCTYPEQNAME","{http://www.alfresco.org/model/content/1.0}contains");
         doc.addField("ANCESTOR","ID-F-"+i);
         doc.addField("FTSSTATUS", "Clean"); 
-        doc.addField("ID", "ID-L-"+i+"-"+j); 
+        doc.addField("ID", "LEAF-"+dbid);
         doc.addField("TX", "TX-1"); 
         doc.addField("ISROOT", "F"); 
         doc.addField("ISNODE", "T"); 
@@ -120,7 +236,7 @@ public class SolrDocumentLoader
         doc.addField("ASPECT", "{http://www.alfresco.org/model/content/1.0}auditable");
         doc.addField("@{http://www.alfresco.org/model/system/1.0}locale", "en");
         doc.addField("@{http://www.alfresco.org/model/content/1.0}title", "Leaf "+i+" "+j);
-        doc.addField("@{http://www.alfresco.org/model/content/1.0}name", "Folder "+i+" "+j);
+        doc.addField("@{http://www.alfresco.org/model/content/1.0}name", "Leaf "+i+" "+j);
         doc.addField("@{http://www.alfresco.org/model/content/1.0}created", "2010-07-21T10:52:00.000Z");
         doc.addField("@{http://www.alfresco.org/model/content/1.0}creator", "Andy");
         doc.addField("@{http://www.alfresco.org/model/content/1.0}modified", "2010-07-21T10:52:00.000Z");
@@ -131,12 +247,14 @@ public class SolrDocumentLoader
     public static SolrInputDocument createLeafPathDocument(int dbid, int i, int j)
     {
         SolrInputDocument doc = new SolrInputDocument();
-        doc.addField("ID", "ID-L-"+i+"-"+j+"-Path"); 
+        doc.addField("ID", "AUX-"+dbid);
         doc.addField("TX", "TX-1"); 
         doc.addField("DBID", ""+dbid);
         QName first = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "folder_"+i);
         QName second = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "leaf_"+j);
         doc.addField("PATH", "/" + ISO9075.getXPathName(first)+"/" + ISO9075.getXPathName(second));
+        doc.addField("ACLID", ""+(i+2));
+        doc.addField("OWNER", "Andy");
         return doc;
     }
     
@@ -151,7 +269,7 @@ public class SolrDocumentLoader
         doc.addField("PRIMARYASSOCTYPEQNAME","{http://www.alfresco.org/model/system/1.0}children");
         doc.addField("ANCESTOR","Root");
         doc.addField("FTSSTATUS", "Clean"); 
-        doc.addField("ID", "ID-F-"+i); 
+        doc.addField("ID", "LEAF-"+dbid);; 
         doc.addField("TX", "TX-1"); 
         doc.addField("ISROOT", "T"); 
         doc.addField("ISNODE", "T"); 
@@ -172,11 +290,13 @@ public class SolrDocumentLoader
     {
         SolrInputDocument doc = new SolrInputDocument();
        
-        doc.addField("ID", "ID-F-"+i+"-Path"); 
+        doc.addField("ID", "AUX-"+dbid); 
         doc.addField("TX", "TX-1"); 
         doc.addField("DBID", ""+dbid);
         QName first = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "folder_"+i);
         doc.addField("PATH", "/" + ISO9075.getXPathName(first));
+        doc.addField("ACLID", ""+(i+2));
+        doc.addField("OWNER", "Bob");
         return doc;
     }
     
@@ -186,7 +306,7 @@ public class SolrDocumentLoader
         SolrInputDocument doc = new SolrInputDocument();
         doc.addField("ISCATEGORY","F");
         doc.addField("FTSSTATUS", "Clean"); 
-        doc.addField("ID", "Root"); 
+        doc.addField("ID", "LEAF-"+dbid); 
         doc.addField("TX", "TX-1"); 
         doc.addField("ISROOT", "T"); 
         doc.addField("ISNODE", "T"); 
@@ -198,9 +318,10 @@ public class SolrDocumentLoader
     {
         SolrInputDocument doc = new SolrInputDocument();
         doc.addField("PATH", "/");
-        doc.addField("ID", "Root-Path"); 
+        doc.addField("ID", "AUX-"+dbid); 
         doc.addField("TX", "TX-1"); 
         doc.addField("DBID", ""+dbid); 
+        doc.addField("ACLID", "1");
         return doc;
     }
     

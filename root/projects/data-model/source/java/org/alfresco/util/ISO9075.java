@@ -342,4 +342,21 @@ public class ISO9075
         return "{" + qName.getNamespaceURI() + "}" + ISO9075.encode(qName.getLocalName());
 
     }
+    
+    public static QName parseXPathName(String str)
+    {
+        if(!str.startsWith("{"))
+        {
+            throw new IllegalArgumentException("Invalid xpath string " + str);
+        }
+        int idx = str.indexOf("}");
+        if(idx == -1)
+        {
+            throw new IllegalArgumentException("Invalid xpath string " + str);
+        }
+        String namespaceURI = str.substring(1, idx); // skip opening brace
+        String localName = str.substring(idx+1);
+        return QName.createQName(namespaceURI, localName);
+
+    }
 }

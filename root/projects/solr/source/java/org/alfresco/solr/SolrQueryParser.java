@@ -18,11 +18,14 @@
  */
 package org.alfresco.solr;
 
+import org.alfresco.repo.search.impl.lucene.AnalysisMode;
+import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneXPathHandler;
 import org.alfresco.repo.search.impl.lucene.query.PathQuery;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.CharStream;
+import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParserTokenManager;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -99,6 +102,44 @@ public class SolrQueryParser extends LuceneQueryParser
         return booleanQuery;
     }
 
+    
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createAclIdQuery(String queryText) throws ParseException
+    {
+        return getFieldQueryImpl(FIELD_ACLID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
+    
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createOwnerQuery(String queryText) throws ParseException
+    {
+        return new SolrCachingOwnerQuery(queryText);
+    }
+    
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createReaderQuery(String queryText) throws ParseException
+    {
+        return new SolrCachingReaderQuery(queryText);
+    }
+    
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createAuthorityQuery(String queryText) throws ParseException
+    {
+       return new SolrCachingAuthorityQuery(queryText);
+    }
+
+    
     /**
      * @param arg0
      * @param arg1

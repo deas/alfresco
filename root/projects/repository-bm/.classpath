@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="source/java"/>
+	<classpathentry exported="true" kind="lib" path="source/test-resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/sardine/sardine.jar"/>
+	<classpathentry kind="lib" path="lib/sardine/httpclient-4.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/sardine/httpcore-4.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

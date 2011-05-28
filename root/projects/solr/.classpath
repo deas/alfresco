@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="source/java"/>
 	<classpathentry kind="lib" path="lib/apache-solr-core-1.4.1.jar" sourcepath="src/apache-solr-1.4.1.zip"/>
-	<classpathentry kind="lib" path="lib/apache-solr-solrj-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/apache-solr-solrj-1.4.1.jar" sourcepath="src/apache-solr-1.4.1.zip"/>
 	<classpathentry kind="lib" path="lib/lucene-analyzers-2.9.3.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-2.9.3.jar" sourcepath="src/lucene-2.9.3-src.zip"/>
 	<classpathentry kind="lib" path="lib/lucene-regex-2.9.3.jar"/>
@@ -12,5 +12,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DataModel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.5.5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

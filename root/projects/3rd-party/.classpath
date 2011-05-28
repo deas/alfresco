@@ -217,5 +217,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.5.jar" sourcepath="src/activiti-spring-5.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-spring-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.3.0-incubating-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.3.0-incubating-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.3.0-incubating-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

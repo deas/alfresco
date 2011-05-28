@@ -429,6 +429,23 @@ public final class Path implements Iterable<Path.Element>, Serializable
             this.position = position;
         }
 
+        public AttributeElement(String attribute)
+        {
+            String qNameStr = null;
+            int idx = attribute.indexOf("[");
+            if(idx != -1)
+            {
+                String positionStr = attribute.substring(idx + 1, attribute.length() - 1);
+                position = Integer.parseInt(positionStr);
+                qNameStr = attribute.substring(1, idx);
+            }
+            else
+            {
+                qNameStr = attribute.substring(1);
+            }
+            this.attribute = ISO9075.parseXPathName(qNameStr);
+        }
+        
         @Override
         public String getElementString()
         {

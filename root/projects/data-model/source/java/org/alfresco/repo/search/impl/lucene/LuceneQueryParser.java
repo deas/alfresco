@@ -40,11 +40,9 @@ import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.MLTokenDuplicator;
 import org.alfresco.repo.search.impl.lucene.analysis.PathTokenFilter;
-import org.alfresco.repo.search.impl.lucene.query.CachingTermPositions;
 import org.alfresco.repo.search.impl.lucene.query.CaseInsensitiveFieldQuery;
 import org.alfresco.repo.search.impl.lucene.query.CaseInsensitiveFieldRangeQuery;
 import org.alfresco.repo.search.impl.lucene.query.PathQuery;
-import org.alfresco.repo.search.impl.lucene.query.StructuredFieldPosition;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
@@ -68,12 +66,12 @@ import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermPositions;
 import org.apache.lucene.queryParser.CharStream;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParserTokenManager;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.ConstantScoreRangeQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -81,7 +79,6 @@ import org.apache.lucene.search.MultiPhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardTermEnum;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.regex.RegexQuery;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
@@ -258,6 +255,27 @@ public class LuceneQueryParser extends QueryParser
     public static final String FIELD_PATH = "PATH";
     
     public static final String FIELD_TAG = "TAG";
+    
+    /**
+     * 
+     */
+    public static final String FIELD_ACLID = "ACLID";
+    
+    /**
+     * 
+     */
+    public static final String FIELD_OWNER = "OWNER";
+    
+    /**
+     * 
+     */
+    public static final String FIELD_READER = "READER";
+    
+    /**
+     * 
+     */
+    public static final String FIELD_AUTHORITY = "AUTHORITY";
+
 
     private static Log s_logger = LogFactory.getLog(LuceneQueryParser.class);
 
@@ -891,6 +909,22 @@ public class LuceneQueryParser extends QueryParser
             {
                 return createDbidQuery(queryText);
             }
+            else if (field.equals(FIELD_ACLID))
+            {
+                return createAclIdQuery(queryText);
+            }
+            else if (field.equals(FIELD_OWNER))
+            {
+                return createOwnerQuery(queryText);
+            }
+            else if (field.equals(FIELD_READER))
+            {
+                return createReaderQuery(queryText);
+            }
+            else if (field.equals(FIELD_AUTHORITY))
+            {
+                return createAuthorityQuery(queryText);
+            }
             else if (field.equals(FIELD_ISROOT))
             {
                 return createIsRootQuery(queryText);
@@ -1006,6 +1040,42 @@ public class LuceneQueryParser extends QueryParser
     protected Query createTagQuery(String tag) throws ParseException
     {
         return getFieldQuery(FIELD_PATH, "/cm:taggable/cm:" + ISO9075.encode(tag) + "/member");
+    }
+
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createAclIdQuery(String queryText) throws ParseException
+    {
+        return createNoMatchQuery();
+    }
+    
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createOwnerQuery(String queryText) throws ParseException
+    {
+        return createNoMatchQuery();
+    }
+    
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createReaderQuery(String queryText) throws ParseException
+    {
+        return createNoMatchQuery();
+    }
+    
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createAuthorityQuery(String queryText) throws ParseException
+    {
+        return createNoMatchQuery();
     }
 
     /**
@@ -1380,7 +1450,7 @@ public class LuceneQueryParser extends QueryParser
         }
     }
 
-    private Query getFieldQueryImpl(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
+    protected Query getFieldQueryImpl(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
         // Use the analyzer to get all the tokens, and then build a TermQuery,
         // PhraseQuery, or noth

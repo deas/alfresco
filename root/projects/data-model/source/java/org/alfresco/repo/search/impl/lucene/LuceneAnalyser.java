@@ -115,7 +115,11 @@ public class LuceneAnalyser extends Analyzer
         {
             analyser = new VerbatimAnalyser(false);
         }
-        if (fieldName.equals("DBID"))
+        else if (fieldName.equals("DBID"))
+        {
+            analyser = new LongAnalyser();
+        }
+        else if (fieldName.equals("ACLID"))
         {
             analyser = new LongAnalyser();
         }
@@ -140,6 +144,14 @@ public class LuceneAnalyser extends Analyzer
             analyser = new VerbatimAnalyser(false);
         }
         else if (fieldName.equals("ISCONTAINER"))
+        {
+            analyser = new VerbatimAnalyser(false);
+        }
+        else if (fieldName.equals("READER"))
+        {
+            analyser = new VerbatimAnalyser(false);
+        }
+        else if (fieldName.equals("OWNER"))
         {
             analyser = new VerbatimAnalyser(false);
         }

@@ -44,21 +44,15 @@ import org.alfresco.repo.search.impl.parsers.FTSParser;
 import org.alfresco.repo.search.impl.parsers.FTSQueryParser;
 import org.alfresco.repo.search.impl.querymodel.Constraint;
 import org.alfresco.repo.search.impl.querymodel.Ordering;
-import org.alfresco.repo.search.impl.querymodel.QueryEngineResults;
 import org.alfresco.repo.search.impl.querymodel.QueryModelFactory;
-import org.alfresco.repo.search.impl.querymodel.QueryOptions;
 import org.alfresco.repo.search.impl.querymodel.QueryOptions.Connective;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilder;
-import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
-import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContextImpl;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryModelFactory;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
-import org.alfresco.service.cmr.search.LimitBy;
-import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
@@ -72,7 +66,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.function.FieldScoreQuery;
 import org.apache.solr.schema.SchemaField;
 import org.dom4j.io.XMLWriter;
 import org.xml.sax.SAXException;
@@ -118,6 +111,10 @@ public class AlfrescoSolrDataModel
         addNonDictionaryField("ASPECT", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField("FTSSTATUS", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField("DBID", Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        
+        addNonDictionaryField("ACLID", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField("READER", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField("OWNER", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
 
     }
 

@@ -124,7 +124,7 @@ public class AssociationRef implements EntityRef, Serializable
     public String toString()
     {
         StringBuilder sb = new StringBuilder(180);
-        sb.append(id).append(FILLER)
+        sb.append(id == null ? Long.valueOf(0) : id).append(FILLER)
           .append(sourceRef).append(FILLER)
           .append(targetRef).append(FILLER)
           .append(assocTypeQName);
