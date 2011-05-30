@@ -56,18 +56,24 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     public static final String KEY_ADDED_ACL = "KEY_ADDED_ACL";
 
     public static final String KEY_ADDED_AUX = "KEY_ADDED_AUX";
+    
+    public static final String KEY_ADDED_TX = "KEY_ADDED_TX";
 
     public static final String KEY_DELETED_LEAVES = "KEY_DELETED_LEAVES";
 
     public static final String KEY_DELETED_ACL = "KEY_DELETED_ACL";
 
     public static final String KEY_DELETED_AUX = "KEY_DELETED_AUX";
+    
+    public static final String KEY_DELETED_TX = "KEY_DELETED_TX";
 
     public static final String KEY_UPDATED_LEAVES = "KEY_UPDATED_LEAVES";
 
     public static final String KEY_UPDATED_ACL = "KEY_UPDATED_ALC";
 
     public static final String KEY_UPDATED_AUX = "KEY_UPDATED_AUX";
+    
+    public static final String KEY_UPDATED_TX = "KEY_UPDATED_TX";
 
     public static final String KEY_DELETE_ALL = "KEY_DELETE_ALL";
 
@@ -135,7 +141,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         {
             aclIdByDocId[i] = -1;
         }
-
+        
         OpenBitSet deleted = new OpenBitSet();
 
         HashMap<Long, CacheEntry> unmatchedByDBID = new HashMap<Long, CacheEntry>();
@@ -149,20 +155,24 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             ConcurrentHashMap<Long, Long> addedLeaves = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_ADDED_LEAVES);
             ConcurrentHashMap<Long, Long> addedAux = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_ADDED_AUX);
             ConcurrentHashMap<Long, Long> addedAcl = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_ADDED_ACL);
+            ConcurrentHashMap<Long, Long> addedTx = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_ADDED_TX);
             ConcurrentHashMap<Long, Long> updatedLeaves = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_UPDATED_LEAVES);
             ConcurrentHashMap<Long, Long> updatedAux = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_UPDATED_AUX);
             ConcurrentHashMap<Long, Long> updatedAcl = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_UPDATED_ACL);
+            ConcurrentHashMap<Long, Long> updatedTx = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_UPDATED_TX);
             ConcurrentHashMap<Long, Long> deletedLeaves = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETED_LEAVES);
             ConcurrentHashMap<Long, Long> deletedAux = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETED_AUX);
             ConcurrentHashMap<Long, Long> deletedAcl = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETED_ACL);
+            ConcurrentHashMap<Long, Long> deletedTx = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETED_TX);
             AtomicBoolean deleteAll = (AtomicBoolean) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETE_ALL);
             AtomicBoolean checkCache = (AtomicBoolean) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_CHECK_CACHE);
+            
             if(checkCache == null)
             {
                 checkCache = new AtomicBoolean(false);
             }
 
-            boolean hasNew = (addedLeaves.size() + addedAux.size() + addedAcl.size() + updatedLeaves.size() + updatedAux.size() + updatedAcl.size()) > 0;
+            boolean hasNew = (addedLeaves.size() + addedAux.size() + addedAcl.size() + addedTx.size() + updatedLeaves.size() + updatedAux.size() + updatedAcl.size() + updatedTx.size()) > 0;
 
             if (newReader.maxDoc() == 0)
             {
@@ -1171,6 +1181,32 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             this.end = end;
         }
 
+        /**
+         * @return the aclid
+         */
+        public long getAclid()
+        {
+            return aclid;
+        }
+
+        /**
+         * @return the start
+         */
+        public int getStart()
+        {
+            return start;
+        }
+
+        /**
+         * @return the end
+         */
+        public int getEnd()
+        {
+            return end;
+        }
+
+        
+        
     }
 
     public static class OwnerLookUp
@@ -1197,6 +1233,32 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             this.end = end;
         }
 
+        /**
+         * @return the owner
+         */
+        public int getOwner()
+        {
+            return owner;
+        }
+
+        /**
+         * @return the start
+         */
+        public int getStart()
+        {
+            return start;
+        }
+
+        /**
+         * @return the end
+         */
+        public int getEnd()
+        {
+            return end;
+        }
+
+        
+        
     }
 
     public interface CacheMatch

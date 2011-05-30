@@ -247,7 +247,7 @@ public class LuceneQueryParser extends QueryParser
     /**
      * 
      */
-    public static final String FIELD_PATH_WITH_REPEATS = "PATH_WITH_REPEATS";
+    public static final String FIELD_PATHWITHREPEATS = "PATHWITHREPEATS";
 
     /**
      * 
@@ -275,7 +275,16 @@ public class LuceneQueryParser extends QueryParser
      * 
      */
     public static final String FIELD_AUTHORITY = "AUTHORITY";
-
+    
+    public static final String FIELD_TXID = "TXID";
+    
+    public static final String FIELD_TXCOMMITTIME = "TXCOMMITTIME";
+    
+    public static final String FIELD_LINKASPECT = "LINKASPECT";
+    
+    public static final String FIELD_ANCESTOR = "ANCESTOR";
+    
+    public static final String FIELD_ISCATEGORY = "ISCATEGORY";
 
     private static Log s_logger = LogFactory.getLog(LuceneQueryParser.class);
 
@@ -526,9 +535,9 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Span is not supported for "+FIELD_PATH);
         }
-        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        else if (field.equals(FIELD_PATHWITHREPEATS))
         {
-            throw new UnsupportedOperationException("Span is not supported for "+FIELD_PATH_WITH_REPEATS);
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_PATHWITHREPEATS);
         }
         else if (field.equals(FIELD_TEXT))
         {
@@ -893,7 +902,7 @@ public class LuceneQueryParser extends QueryParser
             {
                 return createPathQuery(queryText, false);
             }
-            else if (field.equals(FIELD_PATH_WITH_REPEATS))
+            else if (field.equals(FIELD_PATHWITHREPEATS))
             {
                 return createPathQuery(queryText, true);
             }
@@ -1019,6 +1028,14 @@ public class LuceneQueryParser extends QueryParser
             {
                 return createTagQuery(queryText);
             }
+            else if (field.equals(FIELD_TXID))
+            {
+                return createTxIdQuery(queryText);
+            }
+            else if (field.equals(FIELD_TXCOMMITTIME))
+            {
+                return createTxCommitTimeQuery(queryText);
+            }
             else
             {
                 return getFieldQueryImpl(field, queryText, analysisMode, luceneFunction);
@@ -1082,9 +1099,19 @@ public class LuceneQueryParser extends QueryParser
      * @param queryText
      * @return
      */
-    private Query createDbidQuery(String queryText) throws ParseException
+    protected Query createDbidQuery(String queryText) throws ParseException
     {
         return getFieldQueryImpl(FIELD_DBID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
+    
+    protected Query createTxIdQuery(String queryText) throws ParseException
+    {
+        return getFieldQueryImpl(FIELD_TXID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
+    
+    protected Query createTxCommitTimeQuery(String queryText) throws ParseException
+    {
+        return getFieldQueryImpl(FIELD_TXCOMMITTIME, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
     }
 
     protected Query createDataTypeDefinitionQuery(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
@@ -2100,9 +2127,9 @@ public class LuceneQueryParser extends QueryParser
         {
            throw new UnsupportedOperationException("Range Queries are not support for "+FIELD_PATH);
         }
-        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        else if (field.equals(FIELD_PATHWITHREPEATS))
         {
-            throw new UnsupportedOperationException("Range Queries are not support for "+FIELD_PATH_WITH_REPEATS);
+            throw new UnsupportedOperationException("Range Queries are not support for "+FIELD_PATHWITHREPEATS);
          }
         else if (field.equals(FIELD_TEXT))
         {
@@ -3878,9 +3905,9 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_PATH);
         }
-        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        else if (field.equals(FIELD_PATHWITHREPEATS))
         {
-            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_PATH_WITH_REPEATS);
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_PATHWITHREPEATS);
         }     
         else if (field.equals(FIELD_TEXT))
         {
@@ -4065,9 +4092,9 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_PATH);
         }
-        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        else if (field.equals(FIELD_PATHWITHREPEATS))
         {
-            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_PATH_WITH_REPEATS);
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_PATHWITHREPEATS);
         }
         else if (field.equals(FIELD_TEXT))
         {
@@ -4245,9 +4272,9 @@ public class LuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_PATH);
         }
-        else if (field.equals(FIELD_PATH_WITH_REPEATS))
+        else if (field.equals(FIELD_PATHWITHREPEATS))
         {
-            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_PATH_WITH_REPEATS);
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_PATHWITHREPEATS);
         }  
         else if (field.equals(FIELD_TEXT))
         {

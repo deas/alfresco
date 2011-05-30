@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.solr;
+package org.alfresco.solr.query;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.alfresco.solr.AlfrescoSolrEventListener;
+import org.alfresco.solr.AlfrescoSolrEventListener.AclLookUp;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Explanation;
@@ -72,7 +74,7 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
                 AlfrescoSolrEventListener.AclLookUp value = lookups.get(Long.valueOf(acl));
                 if(value != null)
                 {
-                    for(int i = value.start; i < value.end; i++)
+                    for(int i = value.getStart(); i < value.getEnd(); i++)
                     {
                         readableDocSet.add(aclThenLeafOrderedEntries[i].getLeaf());
                     }
@@ -89,7 +91,7 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
                 AlfrescoSolrEventListener.AclLookUp value = lookups.get(Long.valueOf(acl));
                 if(value != null)
                 {
-                    for(int i = value.start; i < value.end; i++)
+                    for(int i = value.getStart(); i < value.getEnd(); i++)
                     {
                         readableDocSet.add(aclThenLeafOrderedEntries[i].getLeaf());
                     }

@@ -16,12 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.solr;
+package org.alfresco.solr.query;
 
 import java.io.IOException;
 import java.util.HashSet;
 
 import org.alfresco.service.cmr.security.PermissionService;
+import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Similarity;

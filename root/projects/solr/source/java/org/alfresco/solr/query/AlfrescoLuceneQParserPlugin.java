@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.solr;
+package org.alfresco.solr.query;
 
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -34,7 +35,7 @@ import org.apache.solr.search.QueryParsing;
 /**
  * @author Andy
  */
-public class AlfrescoFTSQParserPlugin extends QParserPlugin
+public class AlfrescoLuceneQParserPlugin extends QParserPlugin
 {
 
     /*
@@ -46,7 +47,7 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
     @Override
     public QParser createParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
     {
-        return new AlfrescoFTSQParser(qstr, localParams, params, req);
+        return new AlfrescoLuceneQParser(qstr, localParams, params, req);
 
     }
 
@@ -58,12 +59,12 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
     {
     }
 
-    public static class AlfrescoFTSQParser extends QParser
+    public static class AlfrescoLuceneQParser extends QParser
     {
 
         LuceneQueryParser lqp;
 
-        public AlfrescoFTSQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
+        public AlfrescoLuceneQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
         {
             super(qstr, localParams, params, req);
         }
@@ -104,8 +105,8 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
 
             String id =  req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
-            
-            return AlfrescoSolrDataModel.getInstance(id).getFTSQuery(defaultField, qstr, defaultOperator, indexReader);
+            LuceneQueryParser lqp = AlfrescoSolrDataModel.getInstance(id).getLuceneQueryParser(defaultField, qstr, defaultOperator, indexReader);
+            return lqp.parse(qstr);
         }
     }
 

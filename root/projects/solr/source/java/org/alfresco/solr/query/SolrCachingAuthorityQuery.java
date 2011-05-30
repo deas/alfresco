@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.solr;
+package org.alfresco.solr.query;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,12 +42,12 @@ import org.apache.solr.search.SolrIndexSearcher;
  * @author Andy
  *
  */
-public class SolrCachingReaderQuery extends Query
+public class SolrCachingAuthorityQuery extends Query
 {
 
     String authority;
 
-    public SolrCachingReaderQuery(String authority)
+    public SolrCachingAuthorityQuery(String authority)
     {
         this.authority = authority;
     }
@@ -103,7 +103,7 @@ public class SolrCachingReaderQuery extends Query
             return false;
         if (getClass() != obj.getClass())
             return false;
-        SolrCachingReaderQuery other = (SolrCachingReaderQuery) obj;
+        SolrCachingAuthorityQuery other = (SolrCachingAuthorityQuery) obj;
         if (authority == null)
         {
             if (other.authority != null)
@@ -131,7 +131,7 @@ public class SolrCachingReaderQuery extends Query
         {
             this.searcher = searcher;
             this.similarity = getSimilarity(searcher);
-            idfExp = similarity.idfExplain(new Term("READER", SolrCachingReaderQuery.this.authority), searcher);
+            idfExp = similarity.idfExplain(new Term("AUTHORITY", SolrCachingAuthorityQuery.this.authority), searcher);
             idf = idfExp.getIdf();
         }
 
@@ -148,7 +148,7 @@ public class SolrCachingReaderQuery extends Query
          */
         public Query getQuery()
         {
-            return SolrCachingReaderQuery.this;
+            return SolrCachingAuthorityQuery.this;
         }
 
         /*
@@ -192,7 +192,7 @@ public class SolrCachingReaderQuery extends Query
             {
                 throw new IllegalStateException("Must have a SolrIndexReader");
             }
-            return SolrCachingReaderScorer.createReaderScorer(searcher, getSimilarity(searcher), SolrCachingReaderQuery.this.authority, (SolrIndexReader)reader);
+            return SolrCachingAuthorityScorer.createAuthorityScorer(searcher, getSimilarity(searcher), SolrCachingAuthorityQuery.this.authority, (SolrIndexReader)reader);
         }
     }
 }

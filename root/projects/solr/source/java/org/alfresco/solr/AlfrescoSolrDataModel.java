@@ -30,6 +30,7 @@ import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.M2Model;
+import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
@@ -57,6 +58,8 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.query.LuceneQueryBuilderContextSolrImpl;
+import org.alfresco.solr.query.SolrQueryParser;
 import org.alfresco.util.ISO9075;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
@@ -93,28 +96,30 @@ public class AlfrescoSolrDataModel
     static
     {
 
-        addNonDictionaryField("ID", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField("TX", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("PARENT", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField("LINKASPECT", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField("PATH", Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField("ANCESTOR", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField("ISCONTAINER", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("ISCATEGORY", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("QNAME", Store.YES, Index.ANALYZED, TermVector.NO, true);
-        addNonDictionaryField("ISROOT", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("PRIMARYASSOCTYPEQNAME", Store.YES, Index.ANALYZED, TermVector.NO, false);
-        addNonDictionaryField("ISNODE", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("ASSOCTYPEQNAME", Store.YES, Index.ANALYZED, TermVector.NO, true);
-        addNonDictionaryField("PRIMARYPARENT", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("TYPE", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("ASPECT", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField("FTSSTATUS", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("DBID", Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ID, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_TX, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_PARENT, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_LINKASPECT, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_PATH, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ANCESTOR, Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ISCONTAINER, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ISCATEGORY, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_QNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ISROOT, Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, Store.YES, Index.ANALYZED, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ISNODE, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ASSOCTYPEQNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_PRIMARYPARENT, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_TYPE, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ASPECT, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_FTSSTATUS, Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_DBID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_TXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_TXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         
-        addNonDictionaryField("ACLID", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField("READER", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField("OWNER", Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_ACLID, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(LuceneQueryParser.FIELD_READER, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(LuceneQueryParser.FIELD_OWNER, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
 
     }
 
@@ -182,6 +187,11 @@ public class AlfrescoSolrDataModel
     public DictionaryService getDictionaryService()
     {
         return dictionaryComponent;
+    }
+    
+    public NamespaceDAO getNamespaceDAO()
+    {
+         return namespaceDAO;
     }
 
     /**

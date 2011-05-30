@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.solr.client;
 
 import java.io.BufferedReader;
@@ -28,7 +46,7 @@ public class SOLRAPIClientTest extends TestCase
         AlfrescoSolrDataModel model = AlfrescoSolrDataModel.getInstance("test");
         // dummy implementation - don't know how to hook into Alfresco namespace stuff
         NamespaceDAO namespaceDAO = new TestNamespaceDAO();
-        client = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
+        client = new SOLRAPIClient(namespaceDAO,
                 "http://localhost:8080/alfresco/service", "admin", "admin");
     }
     
@@ -83,9 +101,9 @@ public class SOLRAPIClientTest extends TestCase
         }
     }
     
-    private void outputTextContent(SOLRAPIClient.Response response) throws IOException
+    private void outputTextContent(SOLRAPIClient.GetTextContentResponse response) throws IOException
     {
-        InputStream in = response.getContentAsStream();
+        InputStream in = response.getContent();
         if(in != null)
         {
             System.out.println("Text content:");
@@ -103,8 +121,10 @@ public class SOLRAPIClientTest extends TestCase
     {
         try
         {
-            SOLRAPIClient.Response response = client.getTextContent(Long.valueOf(35617l), null, null);
+            SOLRAPIClient.GetTextContentResponse response = client.getTextContent(Long.valueOf(35617l), null, null);
             System.out.println("Status = " + response.getStatus());
+            System.out.println("Transform Status = " + response.getTransformStatus());
+            System.out.println("Transform Exception = " + response.getTransformException());
             System.out.println("Request took " + response.getRequestDuration() + " ms");
             outputTextContent(response);
 
@@ -112,20 +132,28 @@ public class SOLRAPIClientTest extends TestCase
             Long modifiedSince = System.currentTimeMillis();
             response = client.getTextContent(Long.valueOf(35617l), null, modifiedSince);
             System.out.println("Status = " + response.getStatus());
+            System.out.println("Transform Status = " + response.getTransformStatus());
+            System.out.println("Transform Exception = " + response.getTransformException());
             System.out.println("Request took " + response.getRequestDuration() + " ms");
             
             response = client.getTextContent(Long.valueOf(35618l), null, null);
             System.out.println("Status = " + response.getStatus());
+            System.out.println("Transform Status = " + response.getTransformStatus());
+            System.out.println("Transform Exception = " + response.getTransformException());
             System.out.println("Request took " + response.getRequestDuration() + " ms");
             outputTextContent(response);
             
             response = client.getTextContent(Long.valueOf(35619l), null, null);
             System.out.println("Status = " + response.getStatus());
+            System.out.println("Transform Status = " + response.getTransformStatus());
+            System.out.println("Transform Exception = " + response.getTransformException());
             System.out.println("Request took " + response.getRequestDuration() + " ms");
             outputTextContent(response);
             
             response = client.getTextContent(Long.valueOf(35620l), null, null);
             System.out.println("Status = " + response.getStatus());
+            System.out.println("Transform Status = " + response.getTransformStatus());
+            System.out.println("Transform Exception = " + response.getTransformException());
             System.out.println("Request took " + response.getRequestDuration() + " ms");
             outputTextContent(response);
         }

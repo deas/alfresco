@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.solr;
+package org.alfresco.solr.query;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,14 +42,14 @@ import org.apache.solr.search.SolrIndexSearcher;
  * @author Andy
  *
  */
-public class SolrCachingOwnerQuery extends Query
+public class SolrCachingPathQuery extends Query
 {
 
-    String authority;
+    SolrPathQuery pathQuery;
 
-    public SolrCachingOwnerQuery(String authority)
+    public SolrCachingPathQuery(SolrPathQuery pathQuery)
     {
-        this.authority = authority;
+        this.pathQuery = pathQuery;
     }
     
     /*
@@ -61,7 +61,7 @@ public class SolrCachingOwnerQuery extends Query
         {
             throw new IllegalStateException("Must have a SolrIndexSearcher");
         }
-        return new SolrCachingOwnerQueryWeight((SolrIndexSearcher)searcher);
+        return new SolrCachingPathQueryWeight((SolrIndexSearcher)searcher);
     }
 
     /*
@@ -71,7 +71,7 @@ public class SolrCachingOwnerQuery extends Query
     {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("CACHED -> :");
-        stringBuilder.append(authority.toString());
+        stringBuilder.append(pathQuery.toString());
         return stringBuilder.toString();
     }
 
@@ -90,7 +90,7 @@ public class SolrCachingOwnerQuery extends Query
     {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((authority == null) ? 0 : authority.hashCode());
+        result = prime * result + ((pathQuery == null) ? 0 : pathQuery.hashCode());
         return result;
     }
 
@@ -103,20 +103,20 @@ public class SolrCachingOwnerQuery extends Query
             return false;
         if (getClass() != obj.getClass())
             return false;
-        SolrCachingOwnerQuery other = (SolrCachingOwnerQuery) obj;
-        if (authority == null)
+        SolrCachingPathQuery other = (SolrCachingPathQuery) obj;
+        if (pathQuery == null)
         {
-            if (other.authority != null)
+            if (other.pathQuery != null)
                 return false;
         }
-        else if (!authority.equals(other.authority))
+        else if (!pathQuery.equals(other.pathQuery))
             return false;
         return true;
     }
 
 
 
-    private class SolrCachingOwnerQueryWeight extends Weight
+    private class SolrCachingPathQueryWeight extends Weight
     {
         SolrIndexSearcher searcher;
         
@@ -127,11 +127,11 @@ public class SolrCachingOwnerQuery extends Query
         private float queryWeight;
         private IDFExplanation idfExp;
 
-        public SolrCachingOwnerQueryWeight(SolrIndexSearcher searcher) throws IOException 
+        public SolrCachingPathQueryWeight(SolrIndexSearcher searcher) throws IOException 
         {
             this.searcher = searcher;
             this.similarity = getSimilarity(searcher);
-            idfExp = similarity.idfExplain(new Term("OWNER", SolrCachingOwnerQuery.this.authority), searcher);
+            idfExp = similarity.idfExplain(SolrCachingPathQuery.this.pathQuery.getTerms(), searcher);
             idf = idfExp.getIdf();
         }
 
@@ -148,7 +148,7 @@ public class SolrCachingOwnerQuery extends Query
          */
         public Query getQuery()
         {
-            return SolrCachingOwnerQuery.this;
+            return SolrCachingPathQuery.this;
         }
 
         /*
@@ -192,7 +192,7 @@ public class SolrCachingOwnerQuery extends Query
             {
                 throw new IllegalStateException("Must have a SolrIndexReader");
             }
-            return SolrCachingOwnerScorer.createOwnerScorer(searcher, getSimilarity(searcher), SolrCachingOwnerQuery.this.authority, (SolrIndexReader)reader);
+            return SolrCachingPathScorer.createPathScorer(searcher, getSimilarity(searcher), SolrCachingPathQuery.this.pathQuery, (SolrIndexReader)reader);
         }
     }
 }

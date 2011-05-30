@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.solr;
+package org.alfresco.solr.query;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.alfresco.solr.AlfrescoSolrEventListener.OwnerLookUp;
 import org.apache.lucene.search.Similarity;
@@ -87,9 +88,9 @@ public class SolrCachingOwnerScorer extends AbstractSolrCachingScorer
         {
             CacheEntry[] indexedOderedByOwnerIdThenDoc = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
                     AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF);
-            for (int i = lookUp.start; i < lookUp.end; i++)
+            for (int i = lookUp.getStart(); i < lookUp.getEnd(); i++)
             {
-                authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc[i].leaf);
+                authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc[i].getLeaf());
             }
         }
 

@@ -26,6 +26,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser;
+import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.LongAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.MLAnalayser;
 import org.alfresco.repo.search.impl.lucene.analysis.PathAnalyser;
@@ -39,6 +40,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+
+import com.google.gdata.data.DateTime;
 
 /**
  * Analyse properties according to the property definition. The default is to use the standard tokeniser. The tokeniser
@@ -111,87 +114,95 @@ public class LuceneAnalyser extends Analyzer
     private Analyzer findAnalyser(String fieldName, AnalysisMode analysisMode)
     {
         Analyzer analyser;
-        if (fieldName.equals("ID"))
+        if (fieldName.equals(LuceneQueryParser.FIELD_ID))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("DBID"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_DBID))
         {
             analyser = new LongAnalyser();
         }
-        else if (fieldName.equals("ACLID"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_TXID))
         {
             analyser = new LongAnalyser();
         }
-        else if (fieldName.equals("TX"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_TXCOMMITTIME))
+        {
+            analyser = new LongAnalyser();
+        }
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ACLID))
+        {
+            analyser = new LongAnalyser();
+        }
+        else if (fieldName.equals(LuceneQueryParser.FIELD_TX))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("PARENT"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_PARENT))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("LINKASPECT"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_LINKASPECT))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("PATH"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_PATH))
         {
             analyser = new PathAnalyser();
         }
-        else if (fieldName.equals("ANCESTOR"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ANCESTOR))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("ISCONTAINER"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ISCONTAINER))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("READER"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_READER))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("OWNER"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_OWNER))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("ISCATEGORY"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ISCATEGORY))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("QNAME"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_QNAME))
         {
             analyser = new PathAnalyser();
         }
-        else if (fieldName.equals("ISROOT"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ISROOT))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("PRIMARYASSOCTYPEQNAME"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME))
         {
             analyser = new PathAnalyser();
         }
-        else if (fieldName.equals("ISNODE"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ISNODE))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("ASSOCTYPEQNAME"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ASSOCTYPEQNAME))
         {
             analyser = new PathAnalyser();
         }
-        else if (fieldName.equals("PRIMARYPARENT"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_PRIMARYPARENT))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("TYPE"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_TYPE))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("ASPECT"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ASPECT))
         {
             analyser = new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals("FTSSTATUS"))
+        else if (fieldName.equals(LuceneQueryParser.FIELD_FTSSTATUS))
         {
             analyser = new VerbatimAnalyser(false);
         }

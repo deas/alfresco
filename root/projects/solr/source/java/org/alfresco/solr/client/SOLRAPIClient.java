@@ -1,11 +1,26 @@
+/*
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.solr.client;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,9 +32,6 @@ import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.dictionary.NamespaceDAO;
-import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
-import org.alfresco.service.cmr.dictionary.DictionaryService;
-import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.MLText;
@@ -32,16 +44,7 @@ import org.alfresco.service.cmr.repository.datatype.TypeConverter;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ISO8601DateFormat;
 import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,7 +52,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SOLRAPIClient
+// TODO error handling
+// TODO get text content transform status handling
+public class SOLRAPIClient extends AlfrescoHttpClient
 {
     private static final Log logger = LogFactory.getLog(SOLRAPIClient.class);
     private static final String GET_TRANSACTIONS_URL = "api/solr/transactions";
@@ -57,37 +62,19 @@ public class SOLRAPIClient
     private static final String GET_NODES_URL = "api/solr/nodes";
     private static final String GET_CONTENT = "api/solr/textContent";
 
-    private String alfrescoURL;
-    private String username;
-    private String password;
-
-    // Remote Server access
-    private HttpClient httpClient = null;
-
-    private DictionaryService dictionaryService;
     private SOLRDeserializer deserializer;
 
-    public SOLRAPIClient(DictionaryService dictionaryService, NamespaceDAO namespaceDAO, String alfrescoURL, String username, String password)
+    public SOLRAPIClient(NamespaceDAO namespaceDAO, String alfrescoURL, String username, String password)
     {
-        this.alfrescoURL = alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/");;
-        this.username = username;
-        this.password = password;
-        this.dictionaryService = dictionaryService;
-        deserializer = new SOLRDeserializer(dictionaryService, namespaceDAO);
-    }
-    
-    private void setupHttpClient()
-    {
-        httpClient = new HttpClient();
-        httpClient.getParams().setBooleanParameter(HttpClientParams.PREEMPTIVE_AUTHENTICATION, true);
-        httpClient.getState().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT), new UsernamePasswordCredentials(username, password));
+        super(alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/"), username, password);
+        deserializer = new SOLRDeserializer(namespaceDAO);
     }
 
     public List<Transaction> getTransactions(Long fromCommitTime, Long minTxnId, int maxResults) throws IOException, JSONException
     {
         setupHttpClient();
 
-        StringBuilder url = new StringBuilder(alfrescoURL);
+        StringBuilder url = new StringBuilder(this.url);
         url.append(GET_TRANSACTIONS_URL);
         StringBuilder args = new StringBuilder();
         if(fromCommitTime != null)
@@ -128,7 +115,7 @@ public class SOLRAPIClient
         url.append(args);
         
         GetRequest req = new GetRequest(url.toString());
-        Response response = sendRequest(req, Status.STATUS_OK, username);
+        Response response = sendRequest(req, username);
 
         if(response.getStatus() != HttpStatus.SC_OK)
         {
@@ -139,6 +126,7 @@ public class SOLRAPIClient
         {
             logger.debug(response.getContentAsString());
         }
+        
         JSONObject json = new JSONObject(response.getContentAsString());
 
         JSONArray jsonTransactions = json.getJSONArray("transactions");
@@ -153,8 +141,8 @@ public class SOLRAPIClient
             txn.setUpdates(solrTxn.getLong("updates"));
             txn.setDeletes(solrTxn.getLong("deletes"));
             transactions.add(txn);
-         }
-        
+        }
+
         return transactions;
     }
     
@@ -162,87 +150,63 @@ public class SOLRAPIClient
     {
         setupHttpClient();
 
-        StringBuilder url = new StringBuilder(alfrescoURL);
+        StringBuilder url = new StringBuilder(this.url);
         url.append(GET_NODES_URL);
 
-        StringWriter body = new StringWriter();
-        JSONWriter jsonOut = new JSONWriter(body);
+        JSONObject body = new JSONObject();
         
-        jsonOut.startObject();
+        if(parameters.getTransactionIds() != null)
         {
-            if(parameters.getTransactionIds() != null)
+            JSONArray jsonTxnIds = new JSONArray();
+            for(Long txnId : parameters.getTransactionIds())
             {
-                jsonOut.startValue("txnIds");
-                {
-                    jsonOut.startArray();
-                    {
-                        for(Long txnId : parameters.getTransactionIds())
-                        {
-                            jsonOut.writeValue(txnId);
-                        }
-
-                    }
-                    jsonOut.endArray();
-                }
-                jsonOut.endValue();
+                jsonTxnIds.put(txnId);
             }
-        
-            if(parameters.getFromNodeId() != null)
-            {
-                jsonOut.writeValue("fromNodeId", parameters.getFromNodeId());
-            }
-            if(parameters.getToNodeId() != null)
-            {
-                jsonOut.writeValue("toNodeId", parameters.getToNodeId());
-            }
-            if(parameters.getExcludeAspects() != null)
-            {
-                jsonOut.startValue("excludeAspects");
-                {
-                    jsonOut.startArray();
-                    {
-                        for(QName excludeAspect : parameters.getExcludeAspects())
-                        {
-                            jsonOut.writeValue(excludeAspect.toString());
-                        }
-                    }
-                    jsonOut.endArray();
-                }
-                jsonOut.endValue();
-            }
-            if(parameters.getIncludeAspects() != null)
-            {
-                jsonOut.startValue("includeAspects");
-                {
-                    jsonOut.startArray();
-                    {
-                        for(QName includeAspect : parameters.getIncludeAspects())
-                        {
-                            jsonOut.writeValue(includeAspect.toString());
-                        }
-                    }
-                    jsonOut.endArray();
-                }
-                jsonOut.endValue();
-            }
-
-            if(parameters.getStoreProtocol() != null)
-            {
-                jsonOut.writeValue("storeProtocol", parameters.getStoreProtocol());
-            }
-
-            if(parameters.getStoreIdentifier() != null)
-            {
-                jsonOut.writeValue("storeIdentifier", parameters.getStoreIdentifier());
-            }
-            
-            jsonOut.writeValue("maxResults", maxResults);
+            body.put("txnIds", jsonTxnIds);
         }
-        jsonOut.endObject();
+    
+        if(parameters.getFromNodeId() != null)
+        {
+            body.put("fromNodeId", parameters.getFromNodeId());
+        }
+        if(parameters.getToNodeId() != null)
+        {
+            body.put("toNodeId", parameters.getToNodeId());
+        }
+        if(parameters.getExcludeAspects() != null)
+        {
+            JSONArray jsonExcludeAspects = new JSONArray();
+            for(QName excludeAspect : parameters.getExcludeAspects())
+            {
+                jsonExcludeAspects.put(excludeAspect.toString());
+            }
+            body.put("excludeAspects", jsonExcludeAspects);
+        }
+        if(parameters.getIncludeAspects() != null)
+        {
+            JSONArray jsonIncludeAspects = new JSONArray();
+            for(QName includeAspect : parameters.getIncludeAspects())
+            {
+                jsonIncludeAspects.put(includeAspect.toString());
+            }
+            body.put("includeAspects", jsonIncludeAspects);
+        }
+
+        if(parameters.getStoreProtocol() != null)
+        {
+            body.put("storeProtocol", parameters.getStoreProtocol());
+        }
+
+        if(parameters.getStoreIdentifier() != null)
+        {
+            body.put("storeIdentifier", parameters.getStoreIdentifier());
+        }
+        
+        body.put("maxResults", maxResults);
 
         PostRequest req = new PostRequest(url.toString(), body.toString(), "application/json");
  
-        Response response = sendRequest(req, Status.STATUS_OK, username);
+        Response response = sendRequest(req, username);
 
         if(response.getStatus() != HttpStatus.SC_OK)
         {
@@ -298,42 +262,70 @@ public class SOLRAPIClient
         return nodes;
     }
     
-    // TODO
-    //  cover all parameters in params in the POST request
     public List<NodeMetaData> getNodesMetaData(NodeMetaDataParameters params, int maxResults) throws IOException, JSONException
     {
         setupHttpClient();
 
         List<Long> nodeIds = params.getNodeIds();
         
-        StringBuilder url = new StringBuilder(alfrescoURL);
+        StringBuilder url = new StringBuilder(this.url);
         url.append(GET_METADATA_URL);
 
-        StringWriter body = new StringWriter();
-        JSONWriter jsonOut = new JSONWriter(body);
-        
-        jsonOut.startObject();
+        JSONObject body = new JSONObject();
+        if(nodeIds != null && nodeIds.size() > 0)
         {
-            if(nodeIds != null && nodeIds.size() > 0)
+            JSONArray jsonNodeIds = new JSONArray();
+            for(Long nodeId : nodeIds)
             {
-                jsonOut.startValue("nodeIds");
-                {
-                    jsonOut.startArray();
-                    for(Long nodeId : nodeIds)
-                    {
-                        jsonOut.writeValue(nodeId);
-                    }
-                    jsonOut.endArray();
-                }
-                jsonOut.endValue();
+                jsonNodeIds.put(nodeId);
             }
+            body.put("nodeIds", jsonNodeIds);
 
-            jsonOut.writeValue("maxResults", maxResults);
         }
-        jsonOut.endObject();
+        if(params.getFromNodeId() != null)
+        {
+            body.put("fromNodeId", params.getFromNodeId());
+        }
+        if(params.getToNodeId() != null)
+        {
+            body.put("toNodeId", params.getToNodeId());
+        }
+        
+        // only need to set in cases where we don't want them in the response
+        // because they default to true
+        if(!params.isIncludeAclId())
+        {
+            body.put("includeAclId", params.isIncludeAclId());
+        }
+        if(!params.isIncludeAspects())
+        {
+            body.put("includeAspects", params.isIncludeAspects());
+        }
+        if(!params.isIncludeProperties())
+        {
+            body.put("includeProperties", params.isIncludeProperties());
+        }
+        if(!params.isIncludeAssociations())
+        {
+            body.put("includeAssociations", params.isIncludeAssociations());
+        }
+        if(!params.isIncludePaths())
+        {
+            body.put("includePaths", params.isIncludePaths());
+        }
+        if(!params.isIncludeOwner())
+        {
+            body.put("includeOwner", params.isIncludeOwner());
+        }
+        if(!params.isIncludeNodeRef())
+        {
+            body.put("includeNodeRef", params.isIncludeNodeRef());
+        }
+
+        body.put("maxResults", maxResults);
 
         PostRequest req = new PostRequest(url.toString(), body.toString(), "application/json");
-        Response response = sendRequest(req, Status.STATUS_OK, username);
+        Response response = sendRequest(req, username);
         
         if(response.getStatus() != HttpStatus.SC_OK)
         {
@@ -430,14 +422,15 @@ public class SOLRAPIClient
             }
             nodes.add(metaData);
         }
+
         return nodes;
     }
     
-    public Response getTextContent(Long nodeId, QName propertyName, Long modifiedSince) throws IOException
+    public GetTextContentResponse getTextContent(Long nodeId, QName propertyName, Long modifiedSince) throws IOException
     {
         setupHttpClient();
 
-        StringBuilder url = new StringBuilder(alfrescoURL);
+        StringBuilder url = new StringBuilder(this.url);
         url.append(GET_CONTENT);
         if(nodeId != null)
         {
@@ -465,395 +458,14 @@ public class SOLRAPIClient
 //        headers.put("If-None-Match",  String entityTag);
         req.setHeaders(headers);
         
-        Response response = sendRequest(req, Status.STATUS_OK, username);
+        Response response = sendRequest(req, username);
         
-        return response;
-    }
-
-    /**
-     * Send Request to Test Web Script Server (as admin)
-     * 
-     * @param req
-     * @param expectedStatus
-     * @return response
-     * @throws IOException
-     */
-    protected Response sendRequest(Request req, int expectedStatus)
-        throws IOException
-    {
-        return sendRequest(req, expectedStatus, null);
-    }
-    
-    /**
-     * Send Request
-     * 
-     * @param req
-     * @param expectedStatus
-     * @param asUser
-     * @return response
-     * @throws IOException
-     */
-    protected Response sendRequest(Request req, int expectedStatus, String asUser)
-        throws IOException
-    {
-        if (logger.isDebugEnabled())
+        if(response.getStatus() != Status.STATUS_NOT_MODIFIED && response.getStatus() != Status.STATUS_NO_CONTENT && response.getStatus() != Status.STATUS_OK)
         {
-            logger.debug("");
-            logger.debug("* Request: " + req.getMethod() + " " + req.getFullUri() + (req.getBody() == null ? "" : "\n" + new String(req.getBody(), "UTF-8")));
+            throw new AlfrescoRuntimeException("GetNodeMetaData return status is " + response.getStatus());
         }
 
-        Response res = sendRemoteRequest(req, expectedStatus);
-        
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("");
-            logger.debug("* Response: " + res.getStatus() + " " + req.getMethod() + " " + req.getFullUri() + "\n" + res.getContentAsString());
-        }
-        
-//        if (expectedStatus > 0 && expectedStatus != res.getStatus())
-//        {
-//            fail("Status code " + res.getStatus() + " returned, but expected " + expectedStatus + " for " + req.getFullUri() + " (" + req.getMethod() + ")\n" + res.getContentAsString());
-//        }
-        
-        return res;
-    }
-
-    /**
-     * Get the server for the previously-supplied {@link #setCustomContext(String) custom context}
-     */
-//    protected TestWebScriptServer getServer()
-//    {
-//        if (customContext == null)
-//        {
-//            return TestWebScriptRepoServer.getTestServer();
-//        }
-//        else
-//        {
-//            return TestWebScriptRepoServer.getTestServer(customContext);
-//        }
-//    }
-    
-    /**
-     * Send Local Request to Test Web Script Server
-     * 
-     * @param req
-     * @param expectedStatus
-     * @param asUser
-     * @return response
-     * @throws IOException
-     */
-//    protected Response sendLocalRequest(final Request req, final int expectedStatus, String asUser)
-//        throws IOException
-//    {
-//        asUser = (asUser == null) ? defaultRunAs : asUser;
-//        if (asUser == null)
-//        {
-//            return getServer().submitRequest(req.getMethod(), req.getFullUri(), req.getHeaders(), req.getBody(), req.getEncoding(), req.getType());
-//        }
-//        else
-//        {
-//            // send request in context of specified user
-//            getServer();
-//            return AuthenticationUtil.runAs(new RunAsWork<Response>()
-//            {
-//                @SuppressWarnings("synthetic-access")
-//                public Response doWork() throws Exception
-//                {
-//                    return getServer().submitRequest(req.getMethod(), req.getFullUri(), req.getHeaders(), req.getBody(), req.getEncoding(), req.getType());
-//                }
-//            }, asUser);
-//        }
-//    }
-    
-    /**
-     * Send Remote Request to stand-alone Web Script Server
-     * 
-     * @param req
-     * @param expectedStatus
-     * @param asUser
-     * @return response
-     * @throws IOException
-     */
-    protected Response sendRemoteRequest(Request req, int expectedStatus)
-        throws IOException
-    {
-        String uri = req.getFullUri();
-        if (!uri.startsWith("http"))
-        {
-            uri = alfrescoURL + uri;
-        }
-        
-        // construct method
-        HttpMethod httpMethod = null;
-        String method = req.getMethod();
-        if (method.equalsIgnoreCase("GET"))
-        {
-            GetMethod get = new GetMethod(req.getFullUri());
-            httpMethod = get;
-        }
-        else if (method.equalsIgnoreCase("POST"))
-        {
-            PostMethod post = new PostMethod(req.getFullUri());
-            post.setRequestEntity(new ByteArrayRequestEntity(req.getBody(), req.getType()));
-            httpMethod = post;
-        }
-        else
-        {
-            throw new AlfrescoRuntimeException("Http Method " + method + " not supported");
-        }
-        if (req.getHeaders() != null)
-        {
-            for (Map.Entry<String, String> header : req.getHeaders().entrySet())
-            {
-                httpMethod.setRequestHeader(header.getKey(), header.getValue());
-            }
-        }
-
-        // execute method
-        long startTime = System.currentTimeMillis();
-        httpClient.executeMethod(httpMethod);
-        long endTime = System.currentTimeMillis();
-        return new HttpMethodResponse(httpMethod, Long.valueOf(endTime - startTime));
-    }
-    
-    /**
-     * A Web Script Test Response
-     */
-    public interface Response
-    {
-        public byte[] getContentAsByteArray();
-        
-        public InputStream getContentAsStream() throws IOException;
-        
-        public String getContentAsString()
-            throws UnsupportedEncodingException;
-        
-        public String getHeader(String name);
-        
-        public String getContentType();
-        
-        public int getContentLength();
-        
-        public int getStatus();
-        
-        public Long getRequestDuration();
-    }
-    
-    public static class HttpMethodResponse implements Response
-    {
-        private HttpMethod method;
-        private Long duration;
-
-        public HttpMethodResponse(HttpMethod method, Long duration)
-        {
-            this.method = method;
-            this.duration = duration;
-        }
-
-        public InputStream getContentAsStream() throws IOException
-        {
-            return method.getResponseBodyAsStream();            
-        }
-
-        public byte[] getContentAsByteArray()
-        {
-            try
-            {
-                return method.getResponseBody();
-            }
-            catch (IOException e)
-            {
-                return null;
-            }
-        }
-
-        public String getContentAsString() throws UnsupportedEncodingException
-        {
-            try
-            {
-                return method.getResponseBodyAsString();
-            }
-            catch (IOException e)
-            {
-                return null;
-            }
-        }
-
-        public String getContentType()
-        {
-            return getHeader("Content-Type");
-        }
-
-        public int getContentLength()
-        {
-            try
-            {
-                return method.getResponseBody().length;
-            }
-            catch (IOException e)
-            {
-                return 0;
-            }
-        }
-
-        public String getHeader(String name)
-        {
-            Header header = method.getResponseHeader(name);
-            return (header != null) ? header.getValue() : null;
-        }
-
-        public int getStatus()
-        {
-            return method.getStatusCode();
-        }
-
-        public Long getRequestDuration()
-        {
-            return duration;
-        }
-
-    }
-    
-    public static class Request
-    {
-        private String method;
-        private String uri;
-        private Map<String, String> args;
-        private Map<String, String> headers;
-        private byte[] body;
-        private String encoding = "UTF-8";
-        private String contentType;
-        
-        public Request(Request req)
-        {
-            this.method = req.method;
-            this.uri= req.uri;
-            this.args = req.args;
-            this.headers = req.headers;
-            this.body = req.body;
-            this.encoding = req.encoding;
-            this.contentType = req.contentType;
-        }
-        
-        public Request(String method, String uri)
-        {
-            this.method = method;
-            this.uri = uri;
-        }
-        
-        public String getMethod()
-        {
-            return method;
-        }
-        
-        public String getUri()
-        {
-            return uri;
-        }
-        
-        public String getFullUri()
-        {
-            // calculate full uri
-            String fullUri = uri == null ? "" : uri;
-            if (args != null && args.size() > 0)
-            {
-                char prefix = (uri.indexOf('?') == -1) ? '?' : '&';
-                for (Map.Entry<String, String> arg : args.entrySet())
-                {
-                    fullUri += prefix + arg.getKey() + "=" + (arg.getValue() == null ? "" : arg.getValue());
-                    prefix = '&';
-                }
-            }
-            
-            return fullUri;
-        }
-        
-        public Request setArgs(Map<String, String> args)
-        {
-            this.args = args;
-            return this;
-        }
-        
-        public Map<String, String> getArgs()
-        {
-            return args;
-        }
-
-        public Request setHeaders(Map<String, String> headers)
-        {
-            this.headers = headers;
-            return this;
-        }
-        
-        public Map<String, String> getHeaders()
-        {
-            return headers;
-        }
-        
-        public Request setBody(byte[] body)
-        {
-            this.body = body;
-            return this;
-        }
-        
-        public byte[] getBody()
-        {
-            return body;
-        }
-        
-        public Request setEncoding(String encoding)
-        {
-            this.encoding = encoding;
-            return this;
-        }
-        
-        public String getEncoding()
-        {
-            return encoding;
-        }
-
-        public Request setType(String contentType)
-        {
-            this.contentType = contentType;
-            return this;
-        }
-        
-        public String getType()
-        {
-            return contentType;
-        }
-    }
-    
-    /**
-     * Test GET Request
-     */
-    public static class GetRequest extends Request
-    {
-        public GetRequest(String uri)
-        {
-            super("get", uri);
-        }
-    }
-
-    /**
-     * Test POST Request
-     */
-    public static class PostRequest extends Request
-    {
-        public PostRequest(String uri, String post, String contentType)
-            throws UnsupportedEncodingException 
-        {
-            super("post", uri);
-            setBody(getEncoding() == null ? post.getBytes() : post.getBytes(getEncoding()));
-            setType(contentType);
-        }
-
-        public PostRequest(String uri, byte[] post, String contentType)
-        {
-            super("post", uri);
-            setBody(post);
-            setType(contentType);
-        }
+        return new GetTextContentResponse(response);
     }
     
     /*
@@ -938,61 +550,6 @@ public class SOLRAPIClient
                 }
             });
             
-            instance.addConverter(JSONArray.class, Path.class, new TypeConverter.Converter<JSONArray, Path>()
-            {
-                public Path convert(JSONArray source)
-                {
-                    try
-                    {
-                        Path path = new Path();
-                        for(int i = 0; i < source.length(); i++)
-                        {
-                            String pathElementStr = source.getString(i);
-                            Path.Element pathElement = null;
-                            int idx = pathElementStr.indexOf("|");
-                            if(idx == -1)
-                            {
-                                throw new IllegalArgumentException("Unable to deserialize to Path Element, invalid string " + pathElementStr);
-                            }
-
-                            String prefix = pathElementStr.substring(0, idx+1);
-                            String suffix = pathElementStr.substring(idx+1);
-                            if(prefix.equals("a|"))
-                            {
-                                pathElement = instance.convert(Path.AttributeElement.class, suffix);
-                            }
-                            else if(prefix.equals("p|"))
-                            {
-                                pathElement = instance.convert(Path.ParentElement.class, suffix);
-                            }
-                            else if(prefix.equals("c|"))
-                            {
-                                pathElement = instance.convert(Path.ChildAssocElement.class, suffix);
-                            }
-                            else if(prefix.equals("s|"))
-                            {
-                                pathElement = instance.convert(Path.SelfElement.class, suffix);
-                            }
-                            else if(prefix.equals("ds|"))
-                            {
-                                pathElement = new Path.DescendentOrSelfElement();
-                            }
-                            else
-                            {
-                                throw new IllegalArgumentException("Unable to deserialize to Path, invalid path element string " + pathElementStr);
-                            }
-
-                            path.append(pathElement);
-                        }
-                        return path;
-                    }
-                    catch(JSONException e)
-                    {
-                        throw new IllegalArgumentException(e);
-                    }
-                }
-            });
-            
             // associations
             instance.addConverter(String.class, ChildAssociationRef.class, new TypeConverter.Converter<String, ChildAssociationRef>()
             {
@@ -1039,123 +596,158 @@ public class SOLRAPIClient
      */
     private class SOLRDeserializer
     {
-        private Set<QName> NUMBER_TYPES;
-
-        private DictionaryService dictionaryService;
         private SOLRTypeConverter typeConverter;
 
-        public SOLRDeserializer(DictionaryService dictionaryService, NamespaceDAO namespaceDAO)
+        public SOLRDeserializer(NamespaceDAO namespaceDAO)
         {
-            NUMBER_TYPES = new HashSet<QName>(4);
-            NUMBER_TYPES.add(DataTypeDefinition.DOUBLE);
-            NUMBER_TYPES.add(DataTypeDefinition.FLOAT);
-            NUMBER_TYPES.add(DataTypeDefinition.INT);
-            NUMBER_TYPES.add(DataTypeDefinition.LONG);
-
-            this.dictionaryService = dictionaryService;
             typeConverter = new SOLRTypeConverter(namespaceDAO);
-        }
-        
-        private Serializable deserializeValue(PropertyDefinition propertyDef, Object value)
-        {
-            QName propertyDefName = propertyDef.getDataType().getName();
-
-            boolean isContent = propertyDefName.equals(DataTypeDefinition.CONTENT);
-            String dataTypeClassName = propertyDef.getDataType().getJavaClassName();
-            
-            if(isContent || value.getClass().getName().equals(dataTypeClassName))
-            {
-                // just return what we already have. For content properties it should be a Long
-                return (Serializable)value;
-            }
-
-            try
-            {
-//                if(isContent || isNumber || isBoolean)
-//                {
-//                    // just return what we already have. For content properties it should be a Long
-//                    return (Serializable)value;
-//                }
-//                else
-//                {
-                    try
-                    {
-                        return (Serializable)typeConverter.convert(Class.forName(dataTypeClassName), value);
-                    }
-                    catch(ClassNotFoundException e)
-                    {
-                        throw new IllegalArgumentException("Can't find the class for the property data type");
-                    }
-                //}
-                
-//                if(isPath)
-//                {
-//                    return typeConverter.convert(Path.class, value);
-//                }
-//                else if(isAny)
-//                {
-//                    // TODO check the actual type of the value and use constructJSONObjects if not primitive
-//                    return typeConverter.convert(Serializable.class, value);
-//                }
-//                else if(isContent || isNumber || isBoolean)
-//                {
-//                    // just return what we already have. For content properties it should be a Long
-//                    return (Serializable)value;
-//                }
-//                else
-//                {
-//                    return typeConverter.convert(Serializable.class, value);
-//                }
-            
-            }
-            catch (TypeConversionException e)
-            {
-                // no type conversion
-                String msg = "Unexpected type conversion error for property " + propertyDef.getName();
-                logger.warn(msg, e);
-                throw new IllegalArgumentException(msg, e);
-            }
         }
         
         public <T> T deserializeValue(Class<T> targetClass, Object value) throws JSONException
         {
             return typeConverter.convert(targetClass, value);
         }
-
-        public Serializable deserialize(QName propName, Object value) throws JSONException
+    }
+    
+    private static class SOLRResponse
+    {
+        protected Response response;
+        
+        public SOLRResponse(Response response)
         {
-            if(value == null)
+            super();
+            this.response = response;
+        }
+        
+        public Response getResponse()
+        {
+            return response;
+        }
+    }
+
+    public static class GetTransactionsResponse extends SOLRResponse
+    {
+        private List<Transaction> txns;
+
+        public GetTransactionsResponse(Response response, List<Transaction> txns)
+        {
+            super(response);
+            this.txns = txns;
+        }
+
+        public List<Transaction> getTransaction()
+        {
+            return txns;
+        }
+    }
+    
+    public static class GetNodesResponse extends SOLRResponse
+    {
+        private List<Node> nodes;
+
+        public GetNodesResponse(Response response, List<Node> nodes)
+        {
+            super(response);
+            this.nodes = nodes;
+        }
+
+        public List<Node> getNodes()
+        {
+            return nodes;
+        }
+    }
+    
+    public static class GetNodesMetaDataResponse extends SOLRResponse
+    {
+        private List<NodeMetaData> nodes;
+
+        public GetNodesMetaDataResponse(Response response, List<NodeMetaData> nodes)
+        {
+            super(response);
+            this.nodes = nodes;
+        }
+
+        public List<NodeMetaData> getNodes()
+        {
+            return nodes;
+        }
+    }
+    
+    public static enum TRANSFORM_STATUS
+    {
+        OK, FAILED, NO_TRANSFORM, UNKNOWN;
+        
+        public static TRANSFORM_STATUS getStatus(String statusStr)
+        {
+            if(statusStr.equals("ok"))
             {
-                return null;
+                return OK;
             }
-
-            PropertyDefinition propertyDef = dictionaryService.getProperty(propName);
-            if(propertyDef == null)
+            else if(statusStr.equals("failed"))
             {
-                throw new IllegalArgumentException("Could not find property definition for property " + propName);
+                return FAILED;
             }
-            boolean isMulti = propertyDef.isMultiValued();
-
-            if(isMulti)
+            else if(statusStr.equals("noTransform"))
             {
-                if(!(value instanceof JSONArray))
-                {
-                    throw new IllegalArgumentException("Multi value: expected an array, got " + value.getClass().getName());
-                }
-                JSONArray jsonArray = (JSONArray)value;
-                List<Object> ret = new ArrayList<Object>(jsonArray.length());
-                for(int i = 0; i < jsonArray.length(); i++)
-                {
-                    Object o = jsonArray.get(i);
-                    ret.add(deserializeValue(propertyDef, o));
-                }
-
-                return (Serializable)ret;
+                return NO_TRANSFORM;
             }
             else
             {
-                return deserializeValue(propertyDef, value);
+                return UNKNOWN;
             }
+        }
+    }
+    
+    public static class GetTextContentResponse extends SOLRResponse
+    {
+        private InputStream content;
+        private TRANSFORM_STATUS transformStatus;
+        private String transformException;
+
+        public GetTextContentResponse(Response response) throws IOException
+        {
+            super(response);
+            this.content = response.getContentAsStream();
+            String transformStatusStr = response.getHeader("XAlfresco-transformStatus");
+            if(transformStatusStr != null)
+            {
+                this.transformStatus = TRANSFORM_STATUS.getStatus(transformStatusStr);
+            }
+            else
+            {
+                this.transformStatus = null;
+            }
+            this.transformException = response.getHeader("XAlfresco-transformException");
+        }
+
+        public InputStream getContent()
+        {
+            return content;
+        }
+
+        public TRANSFORM_STATUS getTransformStatus()
+        {
+            return transformStatus;
+        }
+
+        public String getTransformException()
+        {
+            return transformException;
+        }
+        
+        public int getContentLength()
+        {
+            return response.getContentLength();
+        }
+        
+        public int getStatus()
+        {
+            return response.getStatus();
+        }
+        
+        public Long getRequestDuration()
+        {
+            return response.getRequestDuration();
         }
     }
 }

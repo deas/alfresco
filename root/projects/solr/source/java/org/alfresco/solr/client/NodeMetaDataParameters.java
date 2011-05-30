@@ -1,9 +1,27 @@
+/*
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.solr.client;
 
 import java.util.List;
 
 /**
- * Stores node meta data query parameters for use in SOLR DAO queries
+ * Stores node meta data query parameters for use in SOLR remote api calls
  * 
  * @since 4.0
  */
@@ -20,6 +38,94 @@ public class NodeMetaDataParameters
     private Long toNodeId;
     private List<Long> nodeIds;
 
+    private boolean includeAclId = true;
+    private boolean includeAspects = true;
+    private boolean includeNodeRef = true;
+    private boolean includeOwner = true;
+    private boolean includeProperties = true;
+    private boolean includePaths = true;
+    private boolean includeType = true;
+    private boolean includeAssociations = true;
+
+    public boolean isIncludeAclId()
+    {
+        return includeAclId;
+    }
+
+    public void setIncludeAclId(boolean includeAclId)
+    {
+        this.includeAclId = includeAclId;
+    }
+
+    public boolean isIncludeAspects()
+    {
+        return includeAspects;
+    }
+
+    public void setIncludeAspects(boolean includeAspects)
+    {
+        this.includeAspects = includeAspects;
+    }
+
+    public boolean isIncludeNodeRef()
+    {
+        return includeNodeRef;
+    }
+
+    public void setIncludeNodeRef(boolean includeNodeRef)
+    {
+        this.includeNodeRef = includeNodeRef;
+    }
+
+    public boolean isIncludeOwner()
+    {
+        return includeOwner;
+    }
+
+    public void setIncludeOwner(boolean includeOwner)
+    {
+        this.includeOwner = includeOwner;
+    }
+
+    public boolean isIncludeProperties()
+    {
+        return includeProperties;
+    }
+
+    public void setIncludeProperties(boolean includeProperties)
+    {
+        this.includeProperties = includeProperties;
+    }
+
+    public boolean isIncludePaths()
+    {
+        return includePaths;
+    }
+
+    public void setIncludePaths(boolean includePaths)
+    {
+        this.includePaths = includePaths;
+    }
+
+    public boolean isIncludeType()
+    {
+        return includeType;
+    }
+
+    public void setIncludeType(boolean includeType)
+    {
+        this.includeType = includeType;
+    }
+
+    public boolean isIncludeAssociations()
+    {
+        return includeAssociations;
+    }
+
+    public void setIncludeAssociations(boolean includeAssociations)
+    {
+        this.includeAssociations = includeAssociations;
+    }
 
     public int getMaxResults()
     {
