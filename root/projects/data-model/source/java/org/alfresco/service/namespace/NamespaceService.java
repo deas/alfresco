@@ -78,7 +78,7 @@ public interface NamespaceService extends NamespacePrefixResolver
     
     /** DataList Model URI */
     static final String DATALIST_MODEL_1_0_URI = "http://www.alfresco.org/model/datalist/1.0";
-
+    
     /** DataList Model Prefix */
     static final String DATALIST_MODEL_PREFIX = "dl";
 

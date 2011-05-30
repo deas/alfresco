@@ -460,6 +460,11 @@ public class TypeConverter
         
         return null;
     }
+    
+    public Map<Class<?>, Map<Class<?>, Converter<?, ?>>> getConverters()
+    {
+        return conversions;
+    }
 
     /**
      * Find a conversion for a specific Class 

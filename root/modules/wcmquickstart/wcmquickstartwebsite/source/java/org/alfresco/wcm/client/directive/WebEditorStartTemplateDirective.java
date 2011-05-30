@@ -49,7 +49,7 @@ public class WebEditorStartTemplateDirective extends AbstractTemplateDirective
     protected static final Log logger = LogFactory.getLog(WebEditorStartTemplateDirective.class);
     private static final String ALF = "alf_";
 		
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Override
     public void execute(Environment env, 
     		            Map params, 

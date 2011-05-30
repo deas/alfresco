@@ -1,11 +1,16 @@
-package org.alfresco.util;
+package org.alfresco.repo.web.scripts.solr;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.repo.domain.node.ContentDataWithId;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
@@ -15,22 +20,17 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Path;
 import org.alfresco.service.cmr.repository.Path.AttributeElement;
 import org.alfresco.service.cmr.repository.Path.ChildAssocElement;
-import org.alfresco.service.cmr.repository.datatype.TypeConversionException;
+import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.repository.datatype.TypeConverter;
+import org.alfresco.service.cmr.repository.datatype.TypeConverter.Converter;
+import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.util.ISO8601DateFormat;
 import org.alfresco.util.PropertyCheck;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.springframework.extensions.webscripts.json.JSONWriter;
 
-/**
- * 
- * @since 4.0
- *
- */
 public class SOLRSerializer
 {
     protected static final Log logger = LogFactory.getLog(SOLRSerializer.class);
@@ -38,61 +38,45 @@ public class SOLRSerializer
     private Set<QName> NUMBER_TYPES;
 
     private DictionaryService dictionaryService;
+    private NamespaceService namespaceService;
+    
+    private SOLRTypeConverter typeConverter;
 
     public void init()
     {
         PropertyCheck.mandatory(this, "dictionaryService", dictionaryService);
+        PropertyCheck.mandatory(this, "namespaceService", namespaceService);
 
         NUMBER_TYPES = new HashSet<QName>(4);
         NUMBER_TYPES.add(DataTypeDefinition.DOUBLE);
         NUMBER_TYPES.add(DataTypeDefinition.FLOAT);
         NUMBER_TYPES.add(DataTypeDefinition.INT);
         NUMBER_TYPES.add(DataTypeDefinition.LONG);
+
+        typeConverter = new SOLRTypeConverter(namespaceService);
     }
     
     public void setDictionaryService(DictionaryService dictionaryService)
     {
         this.dictionaryService = dictionaryService;
     }
-    
-    public Object serializeValue(PropertyDefinition propertyDef, Serializable value)
-    {
-        QName propertyDefName = propertyDef.getDataType().getName();
-        boolean isAny = propertyDefName.equals(DataTypeDefinition.ANY);
-        boolean isContent = propertyDefName.equals(DataTypeDefinition.CONTENT);
-        boolean isNumber = NUMBER_TYPES.contains(propertyDefName);
-        boolean isBoolean = propertyDefName.equals(DataTypeDefinition.BOOLEAN);
-        boolean isPath = propertyDefName.equals(DataTypeDefinition.PATH);
 
-        if(isPath)
-        {
-            return SOLRTypeConverter.INSTANCE.convert(JSONArray.class, (Path)value);
-        }
-        else if(isAny)
-        {
-            // TODO check the actual type of the value and use constructJSONObjects if not primitive
-            return SOLRTypeConverter.INSTANCE.convert(JSONObject.class, value);
-        }
-        else if(isContent)
-        {
-            return SOLRTypeConverter.INSTANCE.convert(Long.class, value);
-        }
-        else if(isNumber || isBoolean)
-        {
-            return String.valueOf(value);
-        }
-        else
-        {
-            // convert to string
-            StringBuilder sb = new StringBuilder();
-            sb.append("\"");
-            sb.append(SOLRTypeConverter.INSTANCE.convert(String.class, value));
-            sb.append("\"");
-            return sb.toString();
-        }
+    public void setNamespaceService(NamespaceService namespaceService)
+    {
+        this.namespaceService = namespaceService;
+    }
+
+    public <T> T serializeValue(Class<T> targetClass, Object value) throws JSONException
+    {
+        return typeConverter.INSTANCE.convert(targetClass, value);
     }
     
-    public Object serialize(QName propName, Serializable value)
+    public String serializeToString(Serializable value)
+    {
+        return typeConverter.INSTANCE.convert(String.class, value);
+    }
+    
+    public String serialize(QName propName, Serializable value) throws IOException
     {
         if(value == null)
         {
@@ -104,11 +88,8 @@ public class SOLRSerializer
         {
             throw new IllegalArgumentException("Could not find property definition for property " + propName);
         }
-        QName propertyDefName = propertyDef.getDataType().getName();
+
         boolean isMulti = propertyDef.isMultiValued();
-
-        //Collection<Serializable> c = DefaultTypeConverter.INSTANCE.getCollection(Serializable.class, value);
-
         if(isMulti)
         {
             if(!(value instanceof Collection))
@@ -118,69 +99,69 @@ public class SOLRSerializer
 
             @SuppressWarnings("unchecked")
             Collection<Serializable> c = (Collection<Serializable>)value;
-            JSONArray ret = new JSONArray();
-            for(Serializable o : c)
-            {
-                ret.put(serializeValue(propertyDef, o));
-            }
 
-            return ret;
+            StringWriter body = new StringWriter();
+            JSONWriter jsonOut = new JSONWriter(body);
+            jsonOut.startObject();
+            {
+                jsonOut.startArray();
+                for(Serializable o : c)
+                {
+                    jsonOut.writeValue(serializeToString(o));
+                }
+                jsonOut.endArray();
+            }
+            jsonOut.endObject();
+            
+            return body.toString();
         }
         else
         {
-            return serializeValue(propertyDef, value);
+            return serializeToString(value);
         }
     }
     
-    private static class SOLRTypeConverter
+    @SuppressWarnings("rawtypes")
+    private class SOLRTypeConverter
     {
-        /**
-         * Default Type Converter
-         */
-        public static TypeConverter INSTANCE = new TypeConverter();
+        private NamespaceService namespaceService;
+        TypeConverter INSTANCE = new TypeConverter();
         
-        static
+        @SuppressWarnings("unchecked")
+        SOLRTypeConverter(NamespaceService namespaceService)
         {
-            // dates
-            INSTANCE.addConverter(Date.class, String.class, new TypeConverter.Converter<Date, String>()
+            this.namespaceService = namespaceService;
+
+            // add all default converters to this converter
+            // TODO find a better way of doing this
+            Map<Class<?>, Map<Class<?>, Converter<?, ?>>> converters = DefaultTypeConverter.INSTANCE.getConverters();
+            for(Class<?> source : converters.keySet())
             {
-                public String convert(Date source)
+                Map<Class<?>, Converter<?, ?>> converters1 = converters.get(source);
+                for(Class dest : converters1.keySet())
                 {
-                    try
-                    {
-                        return ISO8601DateFormat.format(source);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new TypeConversionException("Failed to convert date " + source + " to string", e);
-                    }
+                    Converter converter = converters1.get(dest);
+                    INSTANCE.addConverter(source, dest, converter);
+                }
+            }
+
+            // QName
+            INSTANCE.addConverter(QName.class, String.class, new TypeConverter.Converter<QName, String>()
+            {
+                public String convert(QName source)
+                {
+                    return source.toPrefixString(SOLRTypeConverter.this.namespaceService);
                 }
             });
             
-            INSTANCE.addConverter(String.class, Date.class, new TypeConverter.Converter<String, Date>()
+            // content
+            INSTANCE.addConverter(ContentDataWithId.class, String.class, new TypeConverter.Converter<ContentDataWithId, String>()
             {
-                public Date convert(String source)
+                public String convert(ContentDataWithId source)
                 {
-                    try
-                    {
-                        Date date = ISO8601DateFormat.parse(source);
-                        return date;
-                    }
-                    catch (Exception e)
-                    {
-                        throw new TypeConversionException("Failed to convert date " + source + " to string", e);
-                    }
+                    return String.valueOf(source.getId());
                 }
             });
-
-            // content
-//            INSTANCE.addConverter(ContentDataWithId.class, Long.class, new TypeConverter.Converter<ContentDataWithId, Long>()
-//            {
-//                public Long convert(ContentDataWithId source)
-//                {
-//                    return source.getId();
-//                }
-//            });
                     
             // node refs
             INSTANCE.addConverter(NodeRef.class, String.class, new TypeConverter.Converter<NodeRef, String>()
@@ -204,7 +185,7 @@ public class SOLRSerializer
             {
                 public String convert(AttributeElement source)
                 {
-                    return "a|" + source.toString();
+                    return source.toString();
                 }
             });
             
@@ -212,7 +193,7 @@ public class SOLRSerializer
             {
                 public String convert(ChildAssocElement source)
                 {
-                    return "c|" + source.getRef().toString();
+                    return source.getRef().toString();
                 }
             });
             
@@ -220,7 +201,7 @@ public class SOLRSerializer
             {
                 public String convert(Path.DescendentOrSelfElement source)
                 {
-                    return "ds|" + source.toString();
+                    return source.toString();
                 }
             });
             
@@ -228,7 +209,7 @@ public class SOLRSerializer
             {
                 public String convert(Path.ParentElement source)
                 {
-                    return "p|" + source.toString();
+                    return source.toString();
                 }
             });
             
@@ -236,17 +217,9 @@ public class SOLRSerializer
             {
                 public String convert(Path.SelfElement source)
                 {
-                    return "s|" + source.toString();
+                    return source.toString();
                 }
             });
-            
-//            INSTANCE.addConverter(JCRPath.SimpleElement.class, String.class, new TypeConverter.Converter<JCRPath.SimpleElement, String>()
-//            {
-//                public String convert(JCRPath.SimpleElement source)
-//                {
-//                    return "se|" + source.toString();
-//                }
-//            });
             
             INSTANCE.addConverter(String.class, AttributeElement.class, new TypeConverter.Converter<String, AttributeElement>()
             {
@@ -288,85 +261,87 @@ public class SOLRSerializer
                 }
             });
             
-//            INSTANCE.addConverter(String.class, SimpleElement.class, new TypeConverter.Converter<String, SimpleElement>()
-//            {
-//                public SimpleElement convert(String source)
-//                {
-//                    return new SimpleElement(null, source);
-//                }
-//            });
-            
-            INSTANCE.addConverter(Path.class, JSONArray.class, new TypeConverter.Converter<Path, JSONArray>()
+
+            INSTANCE.addConverter(Path.class, List.class, new TypeConverter.Converter<Path, List>()
             {
-                public JSONArray convert(Path source)
+                public List convert(Path source)
                 {
-                    JSONArray pathArray = new JSONArray();
+                    List<String> pathArray = new ArrayList<String>(source.size());
                     for(Path.Element element : source)
                     {
-                        pathArray.put(INSTANCE.convert(String.class, element));
+                        pathArray.add(INSTANCE.convert(String.class, element));
                     }
                     return pathArray;
                 }
             });
-
-            INSTANCE.addConverter(JSONArray.class, Path.class, new TypeConverter.Converter<JSONArray, Path>()
+            
+            INSTANCE.addConverter(Path.class, String.class, new TypeConverter.Converter<Path, String>()
             {
-                public Path convert(JSONArray source)
+                public String convert(Path source)
                 {
-                    try
-                    {
-                        Path path = new Path();
-                        for(int i = 0; i < source.length(); i++)
-                        {
-                            String pathElementStr = source.getString(i);
-                            Path.Element pathElement = null;
-                            int idx = pathElementStr.indexOf("|");
-                            if(idx == -1)
-                            {
-                                throw new IllegalArgumentException("Unable to deserialize to Path Element, invalid string " + pathElementStr);
-                            }
-
-                            String prefix = pathElementStr.substring(0, idx+1);
-                            String suffix = pathElementStr.substring(idx+1);
-                            if(prefix.equals("a|"))
-                            {
-                                pathElement = INSTANCE.convert(Path.AttributeElement.class, suffix);
-                            }
-                            else if(prefix.equals("p|"))
-                            {
-                                pathElement = INSTANCE.convert(Path.ParentElement.class, suffix);
-                            }
-                            else if(prefix.equals("c|"))
-                            {
-                                pathElement = INSTANCE.convert(Path.ChildAssocElement.class, suffix);
-                            }
-                            else if(prefix.equals("s|"))
-                            {
-                                pathElement = INSTANCE.convert(Path.SelfElement.class, suffix);
-                            }
-                            else if(prefix.equals("ds|"))
-                            {
-                                pathElement = new Path.DescendentOrSelfElement();
-                            }
-//                            else if(prefix.equals("se|"))
-//                            {
-//                                pathElement = new JCRPath.SimpleElement(QName.createQName(suffix));
-//                            }
-                            else
-                            {
-                                throw new IllegalArgumentException("Unable to deserialize to Path, invalid path element string " + pathElementStr);
-                            }
-
-                            path.append(pathElement);
-                        }
-                        return path;
-                    }
-                    catch(JSONException e)
-                    {
-                        throw new IllegalArgumentException(e);
-                    }
+                    return source.toString();
                 }
             });
+
+            // TODO should be list of Strings, need to double-check
+//            INSTANCE.addConverter(List.class, Path.class, new TypeConverter.Converter<List, Path>()
+//            {
+//                public Path convert(List source)
+//                {
+////                    try
+////                    {
+//                        Path path = new Path();
+//                        for(Object pathElementObj : source)
+//                        {
+//                            String pathElementStr = (String)pathElementObj;
+//                            Path.Element pathElement = null;
+//                            int idx = pathElementStr.indexOf("|");
+//                            if(idx == -1)
+//                            {
+//                                throw new IllegalArgumentException("Unable to deserialize to Path Element, invalid string " + pathElementStr);
+//                            }
+//
+//                            String prefix = pathElementStr.substring(0, idx+1);
+//                            String suffix = pathElementStr.substring(idx+1);
+//                            if(prefix.equals("a|"))
+//                            {
+//                                pathElement = INSTANCE.convert(Path.AttributeElement.class, suffix);
+//                            }
+//                            else if(prefix.equals("p|"))
+//                            {
+//                                pathElement = INSTANCE.convert(Path.ParentElement.class, suffix);
+//                            }
+//                            else if(prefix.equals("c|"))
+//                            {
+//                                pathElement = INSTANCE.convert(Path.ChildAssocElement.class, suffix);
+//                            }
+//                            else if(prefix.equals("s|"))
+//                            {
+//                                pathElement = INSTANCE.convert(Path.SelfElement.class, suffix);
+//                            }
+//                            else if(prefix.equals("ds|"))
+//                            {
+//                                pathElement = new Path.DescendentOrSelfElement();
+//                            }
+////                            else if(prefix.equals("se|"))
+////                            {
+////                                pathElement = new JCRPath.SimpleElement(QName.createQName(suffix));
+////                            }
+//                            else
+//                            {
+//                                throw new IllegalArgumentException("Unable to deserialize to Path, invalid path element string " + pathElementStr);
+//                            }
+//
+//                            path.append(pathElement);
+//                        }
+//                        return path;
+////                    }
+////                    catch(JSONException e)
+////                    {
+////                        throw new IllegalArgumentException(e);
+////                    }
+//                }
+//            });
             
             // associations
             INSTANCE.addConverter(ChildAssociationRef.class, String.class, new TypeConverter.Converter<ChildAssociationRef, String>()
@@ -400,6 +375,23 @@ public class SOLRSerializer
                     return new AssociationRef(source);
                 }
             });
+            
+            INSTANCE.addConverter(Number.class, String.class, new TypeConverter.Converter<Number, String>()
+            {
+                public String convert(Number source)
+                {
+                    return source.toString();
+                }
+            });
+
+            INSTANCE.addConverter(Boolean.class, String.class, new TypeConverter.Converter<Boolean, String>()
+            {
+                public String convert(Boolean source)
+                {
+                    return source.toString();
+                }
+            });
+
         }
     }
 }

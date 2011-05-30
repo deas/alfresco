@@ -1,6 +1,6 @@
 package org.alfresco.solr.client;
 
-import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,9 +14,9 @@ public class NodeMetaData
     private NodeRef nodeRef;
     private QName type;
     private long aclId;
-    private Map<QName, Serializable> properties;
+    private Map<QName, String> properties;
     private Set<QName> aspects;
-    private Path paths;
+    private List<String> paths;
     public long getId()
     {
         return id;
@@ -49,11 +49,11 @@ public class NodeMetaData
     {
         this.aclId = aclId;
     }
-    public Map<QName, Serializable> getProperties()
+    public Map<QName, String> getProperties()
     {
         return properties;
     }
-    public void setProperties(Map<QName, Serializable> properties)
+    public void setProperties(Map<QName, String> properties)
     {
         this.properties = properties;
     }
@@ -65,12 +65,20 @@ public class NodeMetaData
     {
         this.aspects = aspects;
     }
-    public Path getPaths()
+    public List<String> getPaths()
     {
         return paths;
     }
-    public void setPaths(Path paths)
+    public void setPaths(List<String> paths)
     {
         this.paths = paths;
     }
+    @Override
+    public String toString()
+    {
+        return "NodeMetaData [id=" + id + ", nodeRef=" + nodeRef + ", type=" + type + ", aclId=" + aclId
+                + ", properties=" + properties + ", aspects=" + aspects + ", paths=" + paths + "]";
+    }
+    
+    
 }

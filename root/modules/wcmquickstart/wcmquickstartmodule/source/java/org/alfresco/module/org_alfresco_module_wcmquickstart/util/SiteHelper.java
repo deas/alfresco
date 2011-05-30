@@ -56,9 +56,8 @@ public class SiteHelper implements WebSiteModel
 
     /** Template for web asset URL */
     private static final String URL_WEBASSET = "http://{0}:{1}/{2}/asset/{3}/{4}";
-    private static final String DATALIST_NAMESPACE_URI = "http://www.alfresco.org/model/datalist/1.0";
-    private static final QName TYPE_DATA_LIST = QName.createQName(DATALIST_NAMESPACE_URI, "dataList");
-    private static final QName PROP_DATA_LIST_ITEM_TYPE = QName.createQName(DATALIST_NAMESPACE_URI, "dataListItemType");
+    private static final QName TYPE_DATA_LIST = QName.createQName(NamespaceService.DATALIST_MODEL_1_0_URI, "dataList");
+    private static final QName PROP_DATA_LIST_ITEM_TYPE = QName.createQName(NamespaceService.DATALIST_MODEL_1_0_URI, "dataListItemType");
     private static final String DATA_LISTS_FOLDER_NAME = "dataLists";
     private static final String FEEDBACK_DATA_LIST_NAME_FORMAT = "Visitor Feedback ({0})";
 
