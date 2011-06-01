@@ -18,6 +18,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/j2ee/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/rome-1.0RC2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Web Editor"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/freemarker-2.3.16-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.16-patched.zip"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/freemarker-2.3.18-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.18-patched.zip"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

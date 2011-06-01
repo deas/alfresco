@@ -903,13 +903,6 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 
                 <actionGroup>
                   <actionList>
-		      <runProgram>
-			  <abortOnError>0</abortOnError>
-			  <showMessageOnError>0</showMessageOnError>
-			  <program>cmd</program>
-			  <programArguments>/C net accounts /domain</programArguments>
-		      </runProgram>
-		      <logMessage text="net accounts /domain: ${program_stdout} ${program_stderr}" />
 		      <logMessage text="Creating ${postgres_data_directory}" />
 		      <createDirectory path="${postgres_data_directory}" />
 		      <logMessage text="${postgres_data_directory} OK" >
@@ -919,6 +912,8 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 		      </logMessage>
 		      <logMessage text="Before running cacls" />
 		      <getWindowsACL>
+			  <abortOnError>0</abortOnError>
+			  <showMessageOnError>0</showMessageOnError>
 			  <username>${env(USERNAME)}</username>
 			  <file>${postgres_data_directory}</file>
 			  <grantedPermissions>postgres_grantedPermissions</grantedPermissions>
@@ -936,6 +931,8 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 			  <text>cacls "${postgres_data_directory}" /e /c /t /p ${env(USERNAME)}:c"</text>
 		      </logMessage>
 		      <getWindowsACL>
+			  <abortOnError>0</abortOnError>
+			  <showMessageOnError>0</showMessageOnError>
 			  <username>${env(USERNAME)}</username>
 			  <file>${postgres_data_directory}</file>
 			  <grantedPermissions>postgres_grantedPermissions</grantedPermissions>
@@ -945,6 +942,8 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 		      <logMessage text="postgres_deniedPermissions = ${postgres_deniedPermissions}" />
 		      <logMessage text="Running setWindowsACL" />
 		      <setWindowsACL>
+			  <abortOnError>0</abortOnError>
+			  <showMessageOnError>0</showMessageOnError>
 			  <files>${postgres_data_directory}</files>
 			  <users>${env(USERNAME)}</users>
 			  <recurseObjects>1</recurseObjects>
@@ -959,7 +958,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                               <!--writeFile progressText="Initializing database">
                                   <path>${postgres_root_directory}/bin/runinitdb.bat</path>
                                   <text>@echo off
-start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E UTF8 -D ${postgres_root_directory.dos.unix}/data"</text>
+start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E UTF8 -D ${postgres_root_directory.dos.unix}/data"</text>
                               </writeFile>
                               <runProgram>
                                   <program>${postgres_root_directory}/bin/runinitdb.bat</program>
@@ -981,8 +980,19 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
 			      <!-- add -d to debug this action -->
                               <runProgram>
                                   <program>initdb.exe</program>
+                                  <programArguments>-U SYSTEM -E UTF8 -D ${postgres_data_directory.dos.unix}</programArguments>
+                                  <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
+                                  <ruleList>
+                                      <compareText logic="equals" text="${installer_root_install}" value="1"/>
+                                  </ruleList>
+                              </runProgram>
+                              <runProgram>
+                                  <program>initdb.exe</program>
                                   <programArguments>-U postgres -E UTF8 -D ${postgres_data_directory.dos.unix}</programArguments>
                                   <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
+                                  <ruleList>
+                                      <compareText logic="does_not_equal" text="${installer_root_install}" value="1"/>
+                                  </ruleList>
                               </runProgram>
                           </actionList>
                       </showProgressDialog>
@@ -1073,7 +1083,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgres -E 
                                       <writeFile>
                                           <path>${postgres_root_directory}/bin/registerservice.bat</path>
                                           <text>@echo off
-start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix}"</text>
+start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix} -w"</text>
                                       </writeFile>
                                       <runProgram>
                                           <program>${postgres_root_directory}/bin/registerservice.bat</program>
@@ -1089,7 +1099,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
 
                               <runProgram>
                                   <program>cmd</program>
-                                  <programArguments>/C start /MIN net start ${postgres_unique_service_name}</programArguments>
+                                  <programArguments>/C start /MIN /WAIT net start ${postgres_unique_service_name}</programArguments>
                               </runProgram>
                           </actionList>
                           <ruleList>
@@ -1123,12 +1133,23 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
 
                       <runProgram>
                           <program>${postgres_root_directory}/bin/psql.exe</program>
+                          <programArguments>-U SYSTEM -d postgres -p ${postgres_port} -h ${postgres_hostname} -c "CREATE USER postgres SUPERUSER PASSWORD '${postgres_root_password.password}'"</programArguments>
+                          <ruleList>
+                              <compareText logic="equals" text="${installer_root_install}" value="1"/>
+                          </ruleList>
+                      </runProgram>
+
+                      <runProgram>
+                          <program>${postgres_root_directory}/bin/psql.exe</program>
                           <programArguments>-U postgres -p ${postgres_port} -h ${postgres_hostname} -c "ALTER USER postgres PASSWORD '${postgres_root_password.password}'"</programArguments>
+                          <ruleList>
+                              <compareText logic="does_not_equal" text="${installer_root_install}" value="1"/>
+                          </ruleList>
                       </runProgram>
 
                       <runProgram>
                           <program>cmd</program>
-                          <programArguments>/C start /MIN net stop ${postgres_unique_service_name}</programArguments>
+                          <programArguments>/C start /MIN /WAIT net stop ${postgres_unique_service_name}</programArguments>
                           <ruleList>
                               <compareText logic="equals" text="${installer_root_install}" value="1"/>
                           </ruleList>

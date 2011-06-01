@@ -137,6 +137,11 @@ public class LuceneQueryParser extends QueryParser
     /**
      * 
      */
+    public static final String FIELD_FTSREF = "FTSREF";
+
+    /**
+     * 
+     */
     public static final String FIELD_ISNOTNULL = "ISNOTNULL";
 
     /**
@@ -640,9 +645,9 @@ public class LuceneQueryParser extends QueryParser
             }
             return query;
         }
-        else if (field.equals(FIELD_FTSSTATUS))
+        else if (field.equals(FIELD_FTSSTATUS) || field.equals(FIELD_FTSREF))
         {
-            throw new UnsupportedOperationException("Span is not supported for "+FIELD_FTSSTATUS);
+            throw new UnsupportedOperationException("Span is not supported for "+field);
         }
         else if (field.equals(FIELD_TAG))
         {
@@ -1020,7 +1025,7 @@ public class LuceneQueryParser extends QueryParser
             {
                 return createDataTypeDefinitionQuery(field, queryText, analysisMode, luceneFunction);
             }
-            else if (field.equals(FIELD_FTSSTATUS))
+            else if (field.equals(FIELD_FTSSTATUS) || field.equals(FIELD_FTSREF))
             {
                 return createTermQuery(field, queryText);
             }
@@ -2508,7 +2513,7 @@ public class LuceneQueryParser extends QueryParser
             }
             return query;
         }
-        // FIELD_FTSSTATUS uses the default
+        // FIELD_FTSSTATUS or FIELD_FTSREF - uses the default
         if (field.equals(FIELD_TAG))
         {
            throw new UnsupportedOperationException("Range Queries are not support for "+FIELD_TAG);
@@ -4064,9 +4069,9 @@ public class LuceneQueryParser extends QueryParser
             }
             return query;
         }
-        else if (field.equals(FIELD_FTSSTATUS))
+        else if (field.equals(FIELD_FTSSTATUS) || field.equals(FIELD_FTSREF))
         {
-            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_FTSSTATUS);
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+field);
         }
         else if (field.equals(FIELD_TAG))
         {
@@ -4251,9 +4256,9 @@ public class LuceneQueryParser extends QueryParser
             }
             return query;
         }
-        else if (field.equals(FIELD_FTSSTATUS))
+        else if (field.equals(FIELD_FTSSTATUS) || field.equals(FIELD_FTSREF))
         {
-            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_FTSSTATUS);
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+field);
         }
         else if (field.equals(FIELD_TAG))
         {
@@ -4426,9 +4431,9 @@ public class LuceneQueryParser extends QueryParser
             }
             return query;
         }
-        else if (field.equals(FIELD_FTSSTATUS))
+        else if (field.equals(FIELD_FTSSTATUS) || field.equals(FIELD_FTSREF))
         {
-            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_FTSSTATUS);
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+field);
         } 
         else if (field.equals(FIELD_TAG))
         {

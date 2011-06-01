@@ -44,6 +44,7 @@
                     <windowsPath>${installdir}/</windowsPath>
                 </startMenuShortcut>
                 <startMenuShortcut>
+		    <runAsAdmin>1</runAsAdmin>
                     <comment>Start ${product_fullname} service</comment>
                     <name>Start ${product_fullname} service</name>
                     <windowsExec>${installdir}/servicerun.bat</windowsExec>
@@ -52,6 +53,7 @@
                     <windowsPath>${installdir}/</windowsPath>
                 </startMenuShortcut>
                 <startMenuShortcut>
+		    <runAsAdmin>1</runAsAdmin>
                     <comment>Stop ${product_fullname} service</comment>
                     <name>Stop ${product_fullname} service</name>
                     <windowsExec>${installdir}/servicerun.bat</windowsExec>

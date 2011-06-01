@@ -155,6 +155,7 @@ Dependencies: ctlscript.xml
     <postInstallationActionList>
         <actionGroup>
             <actionList>
+                <logMessage text="START: Installing ${baseunixservice_script_name} services" />
 <!--Install services on SysV systems -->
 <actionGroup>
                     <actionList>
@@ -555,6 +556,7 @@ exit $RETVAL
                         <programTest condition="is_not_in_path" name="launchctl"/>
                     </ruleList>
                 </actionGroup>
+                <logMessage text="STOP: Installing ${baseunixservice_script_name} services" />
             </actionList>
             <ruleList>
                 <compareText text="${installer_root_install}" logic="equals" value="1"/>

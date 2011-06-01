@@ -27,6 +27,8 @@
 					<#if !first>,<#else><#assign first=false></#if>"${k}":
 					<#assign prop = item.properties[k]>
 					<#if prop?is_date>"${xmldate(prop)}"
+					<#elseif item.node.isTemplateContent(prop)>"${prop.content}"
+					<#elseif item.node.isTemplateNodeRef(prop)>"${prop.nodeRef}"
 					<#elseif prop?is_boolean>${prop?string("true", "false")}
 					<#elseif prop?is_enumerable>[<#list prop as p>"${p}"<#if p_has_next>, </#if></#list>]
 					<#elseif prop?is_number>${prop?c}

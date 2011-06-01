@@ -102,6 +102,9 @@ public interface NamespaceService extends NamespacePrefixResolver
     
     /** Rendition Model URI */
     static final String RENDITION_MODEL_1_0_URI = "http://www.alfresco.org/model/rendition/1.0";
+    
+    /** Rendition Model Prefix */
+    static final String RENDITION_MODEL_PREFIX = "rn";
 
     /** Alfresco View Namespace URI */
     static final String REPOSITORY_VIEW_1_0_URI = "http://www.alfresco.org/view/repository/1.0";

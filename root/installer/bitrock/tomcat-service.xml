@@ -91,12 +91,15 @@
         </substitute>
 
         <!-- System owner service installation -->
+        <actionGroup>
+        <actionList>
+
+	<logMessage text="START: Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}" />
         <runProgram abortOnError="0" showMessageOnError="0">
             <progressText>Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}</progressText>
             <program>${application_server_directory.dos}\scripts\serviceinstall.bat</program>
             <programArguments>INSTALL</programArguments>
             <ruleList>
-                <platformTest type="windows"/>
 		<isFalse value="${tomcatservice_notstart}" />
                 <compareValues value1="${tomcatservice_username}" logic="equals" value2=""/>
             </ruleList>
@@ -107,7 +110,6 @@
             <program>${application_server_directory.dos}\scripts\serviceinstall.bat</program>
             <programArguments>INSTALL STOP</programArguments>
             <ruleList>
-                <platformTest type="windows"/>
 		<isTrue value="${tomcatservice_notstart}" />
                 <compareValues value1="${tomcatservice_username}" logic="equals" value2=""/>
             </ruleList>
@@ -119,10 +121,16 @@
             <program>${application_server_directory.dos}\scripts\serviceinstall.bat</program>
             <programArguments>INSTALL ${tomcatservice_username} ${tomcatservice_password}</programArguments>
             <ruleList>
-                <platformTest type="windows"/>
                 <compareValues value1="${tomcatservice_username}" logic="does_not_equal" value2=""/>
             </ruleList>
         </runProgram>
+	<logMessage text="END: Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}" />
+
+        </actionList>
+        <ruleList>
+            <platformTest type="windows"/>
+        </ruleList>
+        </actionGroup>
 
         <waitForPort port="${application_server_port}" timeout="30000">
             <ruleList>

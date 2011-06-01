@@ -101,7 +101,7 @@
 	<runProgram>
 	    <progressText>Restarting Tomcat...</progressText>
 	    <program>cmd.exe</program>
-	    <programArguments>/C start /MIN net stop ${tomcat_unique_service_name}</programArguments>
+	    <programArguments>/C start /MIN /WAIT net stop ${tomcat_unique_service_name}</programArguments>
 	    <ruleList>
 		<platformTest type="windows" />
 	    </ruleList>
@@ -111,7 +111,7 @@
 	</wait>
 	<runProgram>
 	    <program>cmd.exe</program>
-	    <programArguments>/C start /MIN net start ${tomcat_unique_service_name}</programArguments>
+	    <programArguments>/C start /MIN /WAIT net start ${tomcat_unique_service_name}</programArguments>
 	    <ruleList>
 		<platformTest type="windows" />
 	    </ruleList>

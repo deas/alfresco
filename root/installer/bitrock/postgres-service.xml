@@ -9,7 +9,7 @@
          <stringParameter name="postgres_service_name" value="${product_shortname}PostgreSQL" ask="0" />
          <stringParameter name="postgres_displayName" value="${product_fullname} PostgreSQL Service" ask="0" />
          <stringParameter name="postgres_unique_service_name" value="" ask="0" />
-         <booleanParameter name="postres_service_installed" value="0" ask="0" />
+         <booleanParameter name="postgres_service_installed" value="0" ask="0" />
 	 <stringParameter name="postgres_service_startup" default="auto" value="auto" ask="0" cliOptionShow="0" />
     </parameterList>
     
@@ -28,7 +28,7 @@
                         <writeFile>
                             <path>${postgres_root_directory}/bin/registerservice.bat</path>
                             <text>@echo off
-start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix}"</text>
+start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix} -w"</text>
                         </writeFile>
                         <runProgram>
                             <progressText>Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}</progressText>
@@ -36,13 +36,13 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
                             <programArguments></programArguments>
                             <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
                         </runProgram>
-                        <setInstallerVariable name="postgres_service_installed" value="1"/>
                         <deleteFile path="${postgres_root_directory}/bin/registerservice.bat" />
                     </actionList>
                     <ruleList>
                         <compareText text="${postgres_unique_service_name}" logic="equals" value="" />                                    
                     </ruleList>
 		</actionGroup>
+                <setInstallerVariable name="postgres_service_installed" value="1"/>
 		<runProgram>
 		    <program>sc</program>
 		    <programArguments>config ${postgres_unique_service_name} start= ${postgres_service_startup}</programArguments>
@@ -74,7 +74,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
                 <wait ms="7000"/>
                 <runProgram>
                     <program>cmd</program>
-                    <programArguments>/C start /MIN net start ${postgres_unique_service_name}</programArguments>
+                    <programArguments>/C start /MIN /WAIT net start ${postgres_unique_service_name}</programArguments>
                 </runProgram>
                 <waitForPort port="${postgres_port}" timeout="10000"/>
             </actionList>
@@ -100,7 +100,7 @@ start /MIN cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${p
             <programArguments>REMOVE</programArguments>
             <ruleList>
                 <platformTest type="windows"/>
-                <isTrue value="postgres_service_installed"/>
+                <isTrue value="${postgres_service_installed}"/>
             </ruleList>
         </runProgram>
     </installationAbortedActionList>

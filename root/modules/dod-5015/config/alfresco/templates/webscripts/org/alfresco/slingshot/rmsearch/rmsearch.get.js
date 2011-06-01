@@ -68,6 +68,7 @@ function getRecord(siteId, node)
 {
    var item =
    {
+      node: node,
       nodeRef: node.nodeRef.toString(),
       type: node.typeShort,
       name: node.name,

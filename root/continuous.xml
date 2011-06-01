@@ -683,8 +683,9 @@
       <condition property="platformExe" value="${file.name.bitrock.exe.linux}">
       	 <os family="unix" />
       </condition>
+      <property name="file.name.bitrock.license.xml" location="${dir.name.binaries}/build-classpath/license.xml"/>
       
-      <echo message="Using binaries_folder=${dir.name.binaries}"/>
+      <echo message="Using binaries_folder=${dir.name.binaries}, file.name.bitrock.license.xml=${file.name.bitrock.license.xml}"/>
 
    </target>
    
@@ -697,25 +698,25 @@
     -->
     <target name="windows-32-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}"'/>
+            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}"'/>
         </exec>
     </target>
     
     <target name="windows-64-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win64.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win64}" binaries_folder="${installer.build.binaries.win64}"'/>
+            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win64}" binaries_folder="${installer.build.binaries.win64}"'/>
         </exec>
     </target>
     
     <target name="windows-deployment-installer">
         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-win.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} deployment.xml windows ${installer.package.type} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.win}"'/>
+            <arg line='${installer.build.type} deployment.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.win}"'/>
         </exec>
     </target>
     
     <target name="osx-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-osx.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} project.xml osx ${installer.package.type} --setvars ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
+            <arg line='${installer.build.type} project.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
         </exec>
         <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx}.tar.gz"
              longfile="gnu"
@@ -728,7 +729,7 @@
     
     <target name="osx-deployment-installer">
         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-osx.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} deployment.xml osx ${installer.package.type} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.osx}"'/>
+            <arg line='${installer.build.type} deployment.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.osx}"'/>
         </exec>
         <tar destfile="${dir.continuous.dist}/${file.name.dist.deployment.osx}.tar.gz"
              longfile="gnu"
@@ -741,13 +742,13 @@
     
     <target name="linux-64-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
+            <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
         </exec>      
     </target>
     
     <target name="linux-deployment-installer">
         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-linux.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} deployment.xml linux ${installer.package.type} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
+            <arg line='${installer.build.type} deployment.xml linux ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
         </exec>
     </target>
     

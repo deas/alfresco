@@ -1,0 +1,24 @@
+Index: src/freemarker/ext/beans/BeansWrapper.java
+===================================================================
+--- src/freemarker/ext/beans/BeansWrapper.java	(revision 1550)
++++ src/freemarker/ext/beans/BeansWrapper.java	(working copy)
+@@ -48,6 +48,10 @@
+  * individuals on behalf of the Visigoth Software Society. For more
+  * information on the Visigoth Software Society, please see
+  * http://www.visigoths.org/
++ * 
++ * 2011 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
+  */
+ 
+ package freemarker.ext.beans;
+@@ -1153,7 +1157,7 @@
+                         pda[i], clazz, accessibleMethods,
+                         classMap);
+             }
+-            if(exposureLevel < EXPOSE_PROPERTIES_ONLY)
++            if(exposureLevel < EXPOSE_PROPERTIES_ONLY && mda != null)
+             {
+                 MethodAppearanceDecision decision = new MethodAppearanceDecision();  
+                 for(int i = mda.length - 1; i >= 0; --i)

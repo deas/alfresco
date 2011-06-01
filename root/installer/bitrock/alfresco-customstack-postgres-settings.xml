@@ -38,7 +38,7 @@
        
 
         <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_directory).description" value="OpenOffice Installation Directory" />
-        <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_port).description" value="OpenOffice Server Port:" />
+        <!--setInstallerVariable name="component(openofficecomponent).parameter(openoffice_port).description" value="OpenOffice Server Port:" /-->
         <!--setInstallerVariable name="component(openofficecomponent).parameter(openoffice_xvfb_directory).description" value="Xvfb Installation Directory" /-->
 
         <setInstallerVariable name="component(swftools).parameter(swftools_root_directory).description" value="SWFTOOLS Installation Directory" />

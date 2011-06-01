@@ -206,6 +206,10 @@ public class LuceneAnalyser extends Analyzer
         {
             analyser = new VerbatimAnalyser(false);
         }
+        else if (fieldName.equals("FTSREF"))
+        {
+            analyser = new VerbatimAnalyser(false);
+        }
         else if (fieldName.startsWith("@"))
         {
             if (fieldName.endsWith(".mimetype"))
