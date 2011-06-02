@@ -172,4 +172,10 @@
    <bean id="webscript.org.springframework.extensions.messages.get" parent="webscript" class="org.alfresco.web.scripts.MessagesWebScript" />
    <bean id="webscript.org.springframework.extensions.messages.post" parent="webscript" class="org.alfresco.web.scripts.MessagesWebScript" />
    
+   <bean id="slingshot.scriptprocessor.dictionaryQuery" parent="baseScriptExtension" class="org.alfresco.web.scripts.DictionaryQuery">
+      <property name="extensionName">
+         <value>dictionary</value>
+      </property>
+   </bean>
+   
 </beans>
