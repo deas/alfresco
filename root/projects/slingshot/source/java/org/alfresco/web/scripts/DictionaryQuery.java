@@ -19,8 +19,10 @@
 package org.alfresco.web.scripts;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -144,7 +146,7 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
      * @param ddclass   Type or aspect to test
      * @param property  Property to look for in the type or aspect definition
      * 
-     * @return true if the property is part of the type or aspect
+     * @return true if the property is defined on the type or aspect
      */
     public boolean hasProperty(final String ddclass, final String property)
     {
@@ -155,16 +157,17 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
     }
     
     /**
-     * hasPropertyResolved - return if a type or aspect has the given property definition.
+     * hasProperty - return if a type or aspect has the given property definition.
      * This method correctly reports properties inherited from base types and also
-     * checks any default aspects applied to the type for the property.
+     * optionally checks any default aspects applied to the type for the property.
      * 
      * @param ddclass   Type or aspect to test
      * @param property  Property to look for in the type or aspect definition
+     * @param includeDefaultAspects If true, check default aspects for the given property.
      * 
-     * @return true if the property is part of the type or aspect
+     * @return true if the property is defined on the type or aspect or any of its default aspects.
      */
-    public boolean hasPropertyResolved(final String ddclass, final String property)
+    public boolean hasProperty(final String ddclass, final String property, final boolean includeDefaultAspects)
     {
         ParameterCheck.mandatoryString("ddclass", ddclass);
         ParameterCheck.mandatoryString("property", property);
@@ -241,7 +244,25 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
         ParameterCheck.mandatoryString("ddclass", ddclass);
         ParameterCheck.mandatoryString("property", property);
         
-        return getDictionary().getProperty(ddclass, property);
+        return getDictionary().getProperty(ddclass, property, false);
+    }
+    
+    /**
+     * getProperty - return a single named property for the given dd class, optionally
+     * retrieve a property from the default aspects.
+     * 
+     * @param ddclass   DD class to inspect
+     * @param property  Property to look for in the type or aspect definition
+     * @param includeDefaultAspects If true, check default aspects for the given property.
+     * 
+     * @return DictionaryProperty describing the property definition or null if not found
+     */
+    public DictionaryProperty getProperty(final String ddclass, final String property, final boolean includeDefaultAspects)
+    {
+        ParameterCheck.mandatoryString("ddclass", ddclass);
+        ParameterCheck.mandatoryString("property", property);
+        
+        return getDictionary().getProperty(ddclass, property, true);
     }
     
     /**
@@ -256,7 +277,23 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
     {
         ParameterCheck.mandatoryString("ddclass", ddclass);
         
-        return getDictionary().getProperties(ddclass);
+        return getDictionary().getProperties(ddclass, false);
+    }
+    
+    /**
+     * getProperties - return all properties for the given dd class.
+     * 
+     * @param ddclass   DD class to inspect
+     * @param includeDefaultAspects If true, also retrieve properties from the default aspects.
+     * 
+     * @return Array of DictionaryProperty objects describing the property definitions for the class
+     *         and default aspects. Can be empty but never null.
+     */
+    public DictionaryProperty[] getProperties(final String ddclass, final boolean includeDefaultAspects)
+    {
+        ParameterCheck.mandatoryString("ddclass", ddclass);
+        
+        return getDictionary().getProperties(ddclass, true);
     }
     
     /**
@@ -669,7 +706,7 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
             }
         }
         
-        public DictionaryProperty getProperty(String ddclass, String property)
+        public DictionaryProperty getProperty(String ddclass, String property, boolean checkDefaultAspects)
         {
             try
             {
@@ -682,6 +719,25 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
                     {
                         ddprop = new DictionaryProperty(property, properties.getJSONObject(property));
                     }
+                    else if (checkDefaultAspects)
+                    {
+                        // test each default aspect for the property
+                        JSONObject aspects = dditem.data.getJSONObject(JSON_DEFAULT_ASPECTS);
+                        Iterator<String> keys = aspects.keys();
+                        while (ddprop == null && keys.hasNext())
+                        {
+                            // get each aspect defined on the type
+                            DictionaryItem aspect = getAspect(keys.next());
+                            if (aspect != null)
+                            {
+                                properties = aspect.data.getJSONObject(JSON_PROPERTIES);
+                                if (properties.has(property))
+                                {
+                                    ddprop = new DictionaryProperty(property, properties.getJSONObject(property));
+                                }
+                            }
+                        }
+                    }
                 }
                 return ddprop;
             }
@@ -691,7 +747,7 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
             }
         }
         
-        public DictionaryProperty[] getProperties(String ddclass)
+        public DictionaryProperty[] getProperties(String ddclass, boolean checkDefaultAspects)
         {
             try
             {
@@ -700,14 +756,35 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
                 if (dditem != null)
                 {
                     JSONObject properties = dditem.data.getJSONObject(JSON_PROPERTIES);
-                    ddprops = new DictionaryProperty[properties.length()];
-                    int count = 0;
+                    List<DictionaryProperty> propList = new ArrayList<DictionaryProperty>(properties.length());
                     Iterator<String> props = properties.keys();
                     while (props.hasNext())
                     {
                         String propName = props.next();
-                        ddprops[count++] = new DictionaryProperty(propName, properties.getJSONObject(propName));
+                        propList.add(new DictionaryProperty(propName, properties.getJSONObject(propName)));
                     }
+                    if (checkDefaultAspects)
+                    {
+                        JSONObject aspects = dditem.data.getJSONObject(JSON_DEFAULT_ASPECTS);
+                        Iterator<String> keys = aspects.keys();
+                        while (keys.hasNext())
+                        {
+                            // get each aspect defined on the type
+                            DictionaryItem aspect = getAspect(keys.next());
+                            if (aspect != null)
+                            {
+                                properties = aspect.data.getJSONObject(JSON_PROPERTIES);
+                                props = properties.keys();
+                                while (props.hasNext())
+                                {
+                                    String propName = props.next();
+                                    propList.add(new DictionaryProperty(propName, properties.getJSONObject(propName)));
+                                }
+                            }
+                        }
+                    }
+                    ddprops = new DictionaryProperty[propList.size()];
+                    propList.toArray(ddprops);
                 }
                 return ddprops != null ? ddprops : new DictionaryProperty[0];
             }
