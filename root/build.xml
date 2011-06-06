@@ -483,7 +483,7 @@
                     clean-deployment, 
                     clean-repository, 
                     clean-wdrdeployment,
-                    clean-remoteapi, 
+                    clean-remoteapi,
                     clean-jndi, 
                     clean-catalinavirtual, 
                     clean-webframeworkcommons,
