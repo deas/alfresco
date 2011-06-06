@@ -1,0 +1,142 @@
+
+diff -r src_orig/com/googlecode/sardine/Sardine.java src/com/googlecode/sardine/Sardine.java
+19a20,22
+> 	// PATCH
+> 	public List<DavResource> getResources(String url, int depth, boolean allProperties) throws SardineException;
+> 	
+24c27,30
+< 
+---
+> 	
+> 	// PATCH
+>     public void setCustomProps(String url, Map<String,String> addProps, List<String> removeProps, Map<String,String> namespaces) throws SardineException;
+> 	   
+diff -r src_orig/com/googlecode/sardine/SardineImpl.java src/com/googlecode/sardine/SardineImpl.java
+168a169,173
+> 		return getResources(url, 1, true);
+> 	}
+> 	
+> 	public List<DavResource> getResources(String url, int depth, boolean allProperties) throws SardineException
+> 	{
+170c175,176
+< 		propFind.setEntity(SardineUtil.getResourcesEntity());
+---
+> 		propFind.setDepth(depth);
+> 		propFind.setEntity(allProperties ? SardineUtil.getResourcesEntity() : SardineUtil.getResourcesDavPropertiesEntity());
+301a308,312
+>     {
+> 	    setCustomProps(url, setProps, removeProps, null);
+>     }
+> 	
+> 	public void setCustomProps(String url, Map<String,String> setProps, List<String> removeProps, Map<String,String> namespaces) throws SardineException
+304c315
+< 		propPatch.setEntity(SardineUtil.getResourcePatchEntity(setProps, removeProps));
+---
+> 		propPatch.setEntity(SardineUtil.getResourcePatchEntity(setProps, removeProps, namespaces));
+diff -r src_orig/com/googlecode/sardine/util/SardineUtil.java src/com/googlecode/sardine/util/SardineUtil.java
+15a16
+> import java.util.Map.Entry;
+36a38
+> 	private static StringEntity GET_RESOURCES_DAV_PROPERTIES = null;
+140c142,149
+< 			this.setHeader("Depth", String.valueOf(val));
+---
+> 			if(val < 0)
+> 			{
+> 				this.setHeader("Depth", "infinity");
+> 			}
+> 			else 
+> 			{
+> 			    this.setHeader("Depth", String.valueOf(val));
+> 			}
+256a266,296
+> 	
+> 	/**
+> 	 * Stupid wrapper cause it needs to be in a try/catch
+> 	 */
+> 	public static StringEntity getResourcesDavPropertiesEntity()
+> 	{
+> 		if (GET_RESOURCES_DAV_PROPERTIES == null)
+> 		{
+> 			try
+> 			{
+> 				GET_RESOURCES_DAV_PROPERTIES = new StringEntity("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
+> 													"<propfind xmlns=\"DAV:\">\n" +
+> 													"<prop>\n" +
+> 													"	<displayname/>\n" +
+> 													"	<creationdate/>\n" +										
+> 													"	<getlastmodified/>\n" +	
+> 													"	<getcontentlanguage/>\n" +	
+> 													"	<getcontentlength/>\n" +	
+> 													"	<getcontenttype/>\n" +	
+> 													"	<getetag/>\n" +	
+> 													"</prop>\n" +
+> 													"</propfind>", "UTF-8");
+> 			}
+> 			catch (UnsupportedEncodingException e)
+> 			{
+> 				// Ignored
+> 			}
+> 		}
+> 
+> 		return GET_RESOURCES_DAV_PROPERTIES;
+> 	}
+261c301
+< 	public static StringEntity getResourcePatchEntity(Map<String,String> setProps, List<String> removeProps)
+---
+> 	public static StringEntity getResourcePatchEntity(Map<String,String> setProps, List<String> removeProps, Map<String, String>namespaces)
+268c308,322
+< 			buf.append("<D:propertyupdate xmlns:D=\"DAV:\" xmlns:S=\"SAR:\">\n");
+---
+> 			buf.append("<D:propertyupdate xmlns:D=\"DAV:\" ");
+> 			
+> 			if (namespaces != null)
+> 			{
+>     			for (Entry<String, String> entry : namespaces.entrySet())
+>     			{
+>     			    buf.append("xmlns:").append(entry.getKey()).append("=\"").append(entry.getValue()).append("\" ");
+>     			}
+> 			}
+> 			else
+> 			{
+> 			    buf.append("xmlns:S=\"SAR:\">\n");
+> 			}
+> 			
+> 			buf.append(">\n");
+276c330,337
+< 					buf.append("<S:");
+---
+> 				    if (namespaces == null)
+> 				    {
+> 				        buf.append("<S:");
+> 				    }
+> 					else
+> 					{
+> 					    buf.append("<");
+> 					}
+278c339,349
+< 					buf.append(prop.getValue()).append("</S:");
+---
+> 					buf.append(prop.getValue());
+> 					
+> 					if (namespaces == null)
+>                     {
+>                         buf.append("</S:");
+>                     }
+>                     else
+>                     {
+>                         buf.append("</");
+>                     }
+> 					
+291c362,370
+< 					buf.append("<S:");
+---
+> 					if (namespaces == null)
+>                     {
+>                         buf.append("</S:");
+>                     }
+>                     else
+>                     {
+>                         buf.append("</");
+>                     }
+> 	

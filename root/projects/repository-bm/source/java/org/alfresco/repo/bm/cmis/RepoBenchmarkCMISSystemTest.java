@@ -32,8 +32,10 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +48,7 @@ import com.googlecode.sardine.util.SardineException;
  * - access Alfresco Repository remotely using Apache Chemistry OpenCMIS client
  * - tests can be run using Apache JMeter (JUnit Request Sampler)
  * 
- * @author jan
+ * @author janv
  *
  */
 public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
@@ -54,8 +56,6 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
     private static Log logger = LogFactory.getLog(RepoBenchmarkCMISSystemTest.class);
     
     private Session session;
-    
-    private CmisObject objectToDelete; // for tearDown
     
     
     public RepoBenchmarkCMISSystemTest(String csvProps) throws Exception
@@ -75,10 +75,8 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
                 testBaseUrl = "http://localhost:8080/alfresco/cmisatom";
             }
             
-            // create session (one per test thread) and warm up a bit
-            SessionFactory factory = SessionFactoryImpl.newInstance();
-            
-            Map<String, String> opencmisMap = new HashMap<String, String>();
+            // OpenCMIS parameter map
+            Map<String, String> parameters = new HashMap<String, String>();
             
             if (logger.isDebugEnabled())
             {
@@ -86,17 +84,23 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
             }
             
             // TODO - improve
-            opencmisMap.put("org.apache.chemistry.opencmis.user", "admin");
-            opencmisMap.put("org.apache.chemistry.opencmis.password", testUserPW);
-            opencmisMap.put("org.apache.chemistry.opencmis.binding.spi.type", "atompub"); // TODO make it configurable
-            opencmisMap.put("org.apache.chemistry.opencmis.binding.atompub.url", testBaseUrl);
+            parameters.put("org.apache.chemistry.opencmis.user", testUserUN);
+            parameters.put("org.apache.chemistry.opencmis.password", testUserPW);
+            parameters.put("org.apache.chemistry.opencmis.binding.spi.type", "atompub"); // TODO make it configurable
+            parameters.put("org.apache.chemistry.opencmis.binding.atompub.url", testBaseUrl);
+            
+            // set the object factory - note: required for Alfresco OpenCMIS Extension (see testItemUpdate)
+            parameters.put(SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
             
             if (logger.isDebugEnabled())
             {
-                logger.debug("CMISTest: opencmisMap = "+opencmisMap);
+                logger.debug("CMISTest: parameters = "+parameters);
             }
             
-            session = factory.getRepositories(opencmisMap).get(0).createSession();
+            // create session (one per test thread) and warm up a bit
+            SessionFactory factory = SessionFactoryImpl.newInstance();
+            
+            session = factory.getRepositories(parameters).get(0).createSession();
             
             /*
             if (properties.containsKey(SessionParameter.REPOSITORY_ID))
@@ -121,25 +125,23 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
     @Override
     public void setUp() throws Exception
     {
-        super.setUp();
-        
         if (session == null)
         {
             throw new Exception("Session not initialised !");
         }
         
-        objectToDelete = null;
+        super.setUp();
     }
     
     @Override
     public void tearDown() throws Exception
     {
         super.tearDown();
-        
-        if (objectToDelete != null)
-        {
-            objectToDelete.delete(true);
-        }
+    }
+    
+    public void testSetup() throws Exception
+    {
+        // test setup
     }
     
     /**
@@ -147,12 +149,6 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
      */
     public void testGetChildren() throws Exception
     {
-        // for local sanity check
-        if (testPath == null)
-        {
-            testPath = "/S-35d-600f-1Kb/folder-00000/folder-00000/folder-00000";
-        }
-        
         try
         {
             long start = 0;
@@ -161,7 +157,7 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
                 start = System.currentTimeMillis();
             }
             
-            String path = getPath();
+            String path = getTestPath();
             
             Folder folder = (Folder) session.getObjectByPath(path);
             
@@ -192,16 +188,10 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
     }
     
     /**
-     * ItemRead
+     * ItemRead - get properties of document or folder
      */
     public void testItemRead() throws Exception
     {
-        // for local sanity check
-        if (testPath == null)
-        {
-            testPath = "/M-35d-600f-200Kb/folder-00000/folder-00000/folder-00000/file-00010.txt";
-        }
-        
         try
         {
             long start = 0;
@@ -210,18 +200,20 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
                 start = System.currentTimeMillis();
             }
             
-            String path = getPath();
+            String path = getTestPath();
             
-            Document document = (Document) session.getObjectByPath(path);
+            Document document = (Document)getItem(path);
             
-            if (logger.isDebugEnabled())
+            if (document == null)
             {
-                logger.debug(document.getName());
+                throw new Exception("testItemRead: not found "+path);
             }
             
+            int propCnt = document.getProperties().size();
+            
             if (logger.isDebugEnabled())
             {
-                logger.debug("testItemRead: "+path+" (found in "+(System.currentTimeMillis()-start)+" ms");
+                logger.debug("testItemRead: "+path+" has "+propCnt+" props (found in "+(System.currentTimeMillis()-start)+" ms");
             }
         } 
         catch (Exception e)
@@ -232,16 +224,10 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
     }
     
     /**
-     * ContentUpdate
+     * ItemRename - rename document or folder (ie. move within same parent folder)
      */
-    public void testContentUpdate() throws Exception
+    public void testItemRename() throws Exception
     {
-        // for local sanity check
-        if (testPath == null)
-        {
-            testPath = "/S-7d-30000f-1Kb/folder-00000/folder-00000/folder-00000/file-00000.txt";
-        }
-        
         try
         {
             long start = 0;
@@ -250,18 +236,96 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
                 start = System.currentTimeMillis();
             }
             
-            String path = getPath();
+            String path = getTestPath();
+            
+            CmisObject object = session.getObjectByPath(path);
+            
+            String oldName = object.getName();
+            String newName = oldName + "-new.txt";
+            
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put(PropertyIds.NAME, newName);
+            
+            // rename
+            object.updateProperties(properties);
+            
+            String[] parts = splitBase(path);
+            String newPath = extendPath(parts[0], newName);
+            
+            testPathCurrent = newPath; // for teardown
+            
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("testItemRename: "+newPath+" (renamed in "+(System.currentTimeMillis()-start)+" ms");
+            }
+        } 
+        catch (Exception se)
+        {
+            print(se);
+            throw se;
+        }
+    }
+    
+    /**
+     * ItemUpdate - update properties of document (or folder)
+     */
+    public void testItemUpdate() throws Exception
+    {
+        try
+        {
+            long start = System.currentTimeMillis();
+            
+            String path = getTestPath();
+            
+            CmisObject object = session.getObjectByPath(path);
+            
+            // note: aspect props require Alfresco OpenCMIS Extension (pending proposed 2nd'ary type support in CMIS 1.1)
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("cm:title", "my title - "+start);
+            properties.put("cm:description", "my description - "+start);
+            
+            // update props 
+            object.updateProperties(properties);
+            
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("testItemUpdate: "+path+" (updated in "+(System.currentTimeMillis()-start)+" ms");
+            }
+        } 
+        catch (Exception se)
+        {
+            print(se);
+            throw se;
+        }
+    }
+    
+    /**
+     * ContentUpdate
+     */
+    public void testContentUpdate() throws Exception
+    {
+        try
+        {
+            long start = 0;
+            if (logger.isDebugEnabled())
+            {
+                start = System.currentTimeMillis();
+            }
+            
+            String path = getTestPath();
             
             Document doc = (Document)session.getObjectByPath(path);
             
-            if (testLen <= 0)
+            long len = testLen;
+            
+            if (len <= 0)
             {
-                testLen = doc.getContentStreamLength();
+                len = doc.getContentStreamLength();
             }
             
-            if (testLen > 0)
+            if (len > 0)
             {
-                ContentStream content = new ContentStreamImpl(doc.getName(), BigInteger.valueOf(testLen), "plain/text", getPhantomStream(testLen));
+                ContentStream content = new ContentStreamImpl(doc.getName(), BigInteger.valueOf(len), "plain/text", getPhantomStream(len));
                 doc.setContentStream(content, true);
             }
             else
@@ -281,130 +345,43 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
         }
     }
     
-    /**
-     * DocumentCreate
-     */
-    public void testDocumentCreate() throws Exception
+    
+    @Override
+    protected void deleteItem(String path) throws SardineException
     {
-        // for local sanity check
-        if (testPath == null)
+        CmisObject cmisObj = getItem(path);
+        if (cmisObj != null)
         {
-            testPath = "/S-35d-600f-1Kb/folder-00000/folder-00000/folder-00000";
-        }
-        
-        if (testLen <= 0)
-        {
-            testLen = 1024;
-        }
-        
-        try
-        {
-            long start = 0;
-            if (logger.isDebugEnabled())
-            {
-                start = System.currentTimeMillis();
-            }
-            
-            String type = "cmis:document";
-            
-            String path = getPath();
-            
-            Folder folder = (Folder)session.getObjectByPath(path);
-            
-            String name = "document-" + System.currentTimeMillis() + "-" + this.hashCode();
-            
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put(PropertyIds.NAME, name);
-            properties.put(PropertyIds.OBJECT_TYPE_ID, type);
-            
-            ContentStream content = new ContentStreamImpl(name, BigInteger.valueOf(testLen), "plain/text", getPhantomStream(testLen));
-            
-            CmisObject object = folder.createDocument(properties, content, null);
-            objectToDelete = object;
-            
-            if (logger.isDebugEnabled())
-            {
-                logger.debug("testDocumentCreate: "+path+" (created in "+(System.currentTimeMillis()-start)+" ms");
-            }
-        } 
-        catch (Exception e)
-        {
-            print(e);
-            throw e;
+            cmisObj.delete(true);
         }
     }
     
-    /**
-     * ContentRead
-     */
-    public void testContentRead() throws Exception
+    private CmisObject getItem(String path) throws CmisObjectNotFoundException
     {
-        // for local sanity check
-        if (testPath == null)
-        {
-            testPath = "/S-7d-30000f-1Kb/folder-00000/folder-00000/folder-00000/file-00000.txt";
-        }
-        
-        if (testLen <= 0)
-        {
-            testLen = 1024;
-        }
-        
+        return session.getObjectByPath(path);
+    }
+    
+    
+    @Override
+    protected boolean existsItem(String path)
+    {
         try
         {
-            long start = 0;
-            if (logger.isDebugEnabled())
-            {
-                start = System.currentTimeMillis();
-            }
-            
-            String path = getPath();
-            
-            Document doc = (Document)session.getObjectByPath(path);
-            
-            InputStream is = doc.getContentStream().getStream();
-            
-            byte[] buffer = new byte[1024];
-            while (true)
-            {
-                int count = is.read(buffer);
-                if (count < 0)
-                {
-                    break;
-                }
-            }
-            
-            is.close();
-            
-            if (logger.isDebugEnabled())
-            {
-                logger.debug("testContentRead: "+path+" (read in "+(System.currentTimeMillis()-start)+" ms");
-            }
-        } 
-        catch (SardineException se)
-        {
-            print(se);
-            throw se;
+            getItem(path);
+            return true;
         }
+        catch (CmisObjectNotFoundException e)
+        {
+            // ignore - does not exist
+        }
+        return false;
     }
     
     @Override
-    protected String getPath()
+    protected InputStream getContent(String documentPath) throws Exception
     {
-        StringBuilder sb = new StringBuilder();
-        
-        // TODO remove hardcoded "/testdata"
-        
-        sb.append("/testdata").
-           append((testThreadFolder.startsWith("/") ? "" : "/")).append(testThreadFolder).
-           append(testPath.startsWith("/") ? "" : "/").append(testPath);
-        
-        if (logger.isTraceEnabled())
-        {
-            logger.trace("getPath: "+sb.toString());
-        }
-        
-        return sb.toString();
+        Document doc = (Document)session.getObjectByPath(documentPath);
+        return doc.getContentStream().getStream();
     }
     
     @Override
@@ -416,5 +393,50 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
         {
             System.err.println(((CmisBaseException) e).getErrorContent());
         }
+    }
+    
+    @Override
+    protected String createDocument(String parentFolderPath, String name, InputStream is, long len)
+    {
+        String type = "cmis:document";
+        String mimeType = "plain/text";
+        
+        Folder folder = (Folder)session.getObjectByPath(parentFolderPath);
+        
+        if (name == null)
+        {
+            name = "document-" + System.currentTimeMillis() + "-" + random.nextInt(1000);
+        }
+        
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(PropertyIds.NAME, name);
+        properties.put(PropertyIds.OBJECT_TYPE_ID, type);
+        
+        ContentStream content = new ContentStreamImpl(name, BigInteger.valueOf(len), mimeType, is);
+        
+        folder.createDocument(properties, content, null); // ignore result
+        
+        return extendPath(parentFolderPath, name);
+    }
+    
+    @Override
+    protected String createFolder(String parentFolderPath, String name)
+    {
+        if (name == null)
+        {
+            name = "folder-" + System.currentTimeMillis() + "-" + random.nextInt(1000);
+        }
+        
+        String type = "cmis:folder";
+        
+        Folder folder = (Folder)session.getObjectByPath(parentFolderPath);
+        
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(PropertyIds.NAME, name);
+        properties.put(PropertyIds.OBJECT_TYPE_ID, type);
+        
+        folder.createFolder(properties); // ignore result
+        
+        return extendPath(parentFolderPath, name);
     }
 }

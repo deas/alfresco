@@ -1,25 +1,42 @@
 README - Draft Notes
 
+Disclaimer
+- this preliminary "dev" tool is intended for internal testing
+- any results are subject to validation of appropriate environment, tests and procedures
+
 Pre-requisites
 
 - Apache JMeter 2.4
 - Alfresco 3.4 or 4.0
 - Apache Ant 1.7.1
-- JDK 1.6.0_22
+- JDK 1.6.0_22 (or higher)
 
 Setup
 
-- edit "build.properties" and change "jmeter.install.dir"
-- run "ant deploy" to build and deploy "repository-bm.jar" (and dependent libs) to JMeter lib/junit
-- as Alfresco admin, import "testdata_mini.zip" into "/Company Home" (eg. using Alfresco Explorer) 
-- from JMeter - open and review "User Defined Variables" for each test plan (see source/test-resourcesi/*.jmx)
+- note: to avoid OutOfMemory error when generating result report (xslt target) set ANT_OPTS=-Xmx1G (or higher) 
 
-  eg. 
-  
-  BASEURL  = http://localhost:8080/alfresco/webdav/testdata (for WebDAV)
-  BASEURL  = http://localhost:8080/alfresco/service/cmis    (for CMIS AtomPub - using existing CMIS server impl)
-  BASEURL  = http://localhost:8080/alfresco/cmisatom        (for CMIS AtomPub - using OpenCMIS server impl, since Alfresco 4.0)
-  
+- edit "build.properties" and change settings such as:
+
+  - edit "jmeter.install.dir" and change to install director for JMeter 2.4
+
+  - edit "baseurl.webdav" and change hostname
+
+    eg. http://myhost:8080/alfresco/webdav
+
+  - edit "baseurl.cmis" and change hostname and, optionally, service context
+
+    http://myhost:8080/alfresco/service/cmis    (for CMIS AtomPub - using CMIS server impl, since Alfresco 3.3)
+    http://myhost:8080/alfresco/cmisatom     (for CMIS AtomPub - using OpenCMIS server impl, since Alfresco 4.0)
+
+  - optionally change number of "threads"
+  - optionally change "duration" of each thread grouop (in secs)
+
+- run "ant deploy" to build and deploy "repository-bm.jar" (and dependent libs) to JMeter lib/junit
+
+- the test data will be loaded on the first test run (by auto-importing "testdata_mini.zip" into "/Company Home")
+  alternatively it can be pre-loaded manually as Alfresco admin (eg. using Alfresco Explorer or FTP or WebDAV or …)
+
+
 Run test(s)
 
 - either from the JMeter UI - open and run individual JMeter test plans (see source/test-resourcesi/*.jmx)

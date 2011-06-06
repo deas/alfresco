@@ -946,12 +946,12 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     
     public void testPropertySetGet() throws Exception
     {
-        // Load a custom model using the cm:dictionaryModel type
+        // Load a dynamic custom model using the cm:dictionaryModel type
         CMLCreate create = new CMLCreate();
         create.setId("id1");
         create.setType(Constants.createQNameString(Constants.NAMESPACE_CONTENT_MODEL, "dictionaryModel"));
 
-        ParentReference parentReference = new ParentReference(new Store(Constants.WORKSPACE_STORE, "SpacesStore"), null, "/app:company_home", Constants.ASSOC_CONTAINS, Constants.ASSOC_CONTAINS);                    
+        ParentReference parentReference = new ParentReference(new Store(Constants.WORKSPACE_STORE, "SpacesStore"), null, "/app:company_home/app:dictionary/app:models", Constants.ASSOC_CONTAINS, Constants.ASSOC_CONTAINS);                    
         
         create.setParent(parentReference);
         create.setProperty(new NamedValue[] {

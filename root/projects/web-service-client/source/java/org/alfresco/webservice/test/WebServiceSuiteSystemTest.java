@@ -39,6 +39,8 @@ public class WebServiceSuiteSystemTest extends TestSuite
         suite.addTestSuite(ActionServiceSystemTest.class);
         suite.addTestSuite(AdministrationServiceSystemTest.class);
         suite.addTestSuite(AccessControlServiceSystemTest.class);
+        suite.addTestSuite(DictionaryServiceSystemTest.class);
+        suite.addTestSuite(TimeoutSystemTest.class);
         return suite;
     }
 }

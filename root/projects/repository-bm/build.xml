@@ -1,4 +1,4 @@
-<project name="repository-bm" default="run-jmeter" basedir=".">
+<project name="repository-bm" default="deploy" basedir=".">
   
   <!-- Produce a build id. If using a continuous build process inherit the build id from that ... -->
   <tstamp>
@@ -27,13 +27,13 @@
   <property name="format" value="2.1"/>
   
   <condition property="funcMode">
-		<equals arg1="${show-data}" arg2="y"/>
+    <equals arg1="${show-data}" arg2="y"/>
   </condition>
   
   <condition property="funcMode" value="false">
-	  <not>
-		<equals arg1="${show-data}" arg2="y"/>
-	  </not>
+    <not>
+      <equals arg1="${show-data}" arg2="y"/>
+    </not>
   </condition>
   
   <property name="jmeter.lib.dir" value="${jmeter.install.dir}/lib"/>
@@ -52,8 +52,11 @@
   
   <!-- Use xalan copy from JMeter lib directory to ensure consistent processing with Java 1.4+ -->
   <path id="xslt.classpath">
-        <fileset dir="${jmeter.lib.dir}" includes="xalan*.jar"/>
-        <fileset dir="${jmeter.lib.dir}" includes="serializer*.jar"/>
+    <!--
+    <fileset dir="${jmeter.lib.dir}" includes="xalan*.jar"/>
+    <fileset dir="${jmeter.lib.dir}" includes="serializer*.jar"/>
+    -->
+    <fileset dir="${lib.path}/saxon" includes="saxon*.jar"/>
   </path>
   
   <!--
@@ -64,22 +67,28 @@
   
   <!-- Check that the xalan libraries are present -->
   <condition property="xalan.present">
-	  	<and>
-	  		<!-- No need to check all jars; just check a few -->
-	        <available classpathref="xslt.classpath" classname="org.apache.xalan.processor.TransformerFactoryImpl"/>
-	        <available classpathref="xslt.classpath" classname="org.apache.xml.serializer.ExtendedContentHandler"/>
-	  	</and>
+    <and>
+      <!-- No need to check all jars; just check a few -->
+      <available classpathref="xslt.classpath" classname="org.apache.xalan.processor.TransformerFactoryImpl"/>
+      <available classpathref="xslt.classpath" classname="org.apache.xml.serializer.ExtendedContentHandler"/>
+    </and>
   </condition>
-  
+
+  <!--
   <target name="_message_xalan" unless="xalan.present">
     <echo>Cannot find all xalan and/or serialiser jars</echo>
-	<echo>The XSLT formatting may not work correctly.</echo>
-	<echo>Check you have xalan and serializer jars in ${lib.dir}</echo>
+    <echo>The XSLT formatting may not work correctly.</echo>
+    <echo>Check you have xalan and serializer jars in ${lib.dir}</echo>
   </target>
-  
+  -->
+
+  <!--
   <target name="run-jmeter"
-          depends="_message_xalan,deploy"> 
-  
+          depends="_message_xalan,deploy">
+  -->
+  <target name="run-jmeter"
+          depends="deploy">
+    
     <!--
     <fail unless="testname" 
             message="You must supply a testname (.jmx suffix will be added) to run using -Dtestname=[testname]"/>
@@ -87,51 +96,77 @@
     <fail unless="testdir" 
             message="You must supply a testdir to run using -Dtestdir=[testdir]"/>
     -->
-           
+    
     <taskdef name="jmeter"
          classpath="${jmeter.install.dir}/extras/ant-jmeter-1.0.9.jar"
          classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask"/>
-
+    
     <echo>funcMode = ${funcMode}</echo>
     
-    <jmeter   
+    <jmeter
          jmeterhome="${jmeter.install.dir}"
          testplan="${testdir}/${testname}.jmx"
          resultlog="${jmeter.result.dir}/${testname}-result-${build.id}.xml"
          failureproperty="jmeter.test.failure">
-		    
-            <!-- Force suitable defaults -->
-			<property name="jmeter.save.saveservice.output_format" value="xml"/>
-			<property name="jmeter.save.saveservice.assertion_results" value="all"/>
-			<property name="jmeter.save.saveservice.bytes" value="true"/>
-			<property name="file_format.testlog" value="${format}"/>
-			<property name="jmeter.save.saveservice.response_data.on_error" value="${funcMode}"/>
 
-             
+      <jvmarg value="-Xmx2G"/>
+      
+      <!-- Force suitable defaults -->
+      <property name="jmeter.save.saveservice.output_format" value="xml"/>
+      <property name="jmeter.save.saveservice.assertion_results" value="all"/>
+      <property name="jmeter.save.saveservice.bytes" value="true"/>
+      <property name="file_format.testlog" value="${format}"/>
+      <property name="jmeter.save.saveservice.response_data.on_error" value="${funcMode}"/>
+    
+      <!-- note: can edit certain properties in build.properties such as threads, host etc -->
+      <property name="threads" value="${threads}"/>
+      <property name="baseurl" value="${baseurl}"/>
+      <property name="basefolderpath" value="${basefolderpath}"/>
+      <property name="duration" value="${duration}"/>
+      
     </jmeter>
     
-    <fail message="jmeter test failed" if="jmeter.test.failure" />
+    <!-- <fail message="jmeter test failed" if="jmeter.test.failure" /> -->
     
-    <!-- results report -->
+
+    <antcall target="timestamp2">
+      <param name="message" value="start" />
+    </antcall>
+
+    <!-- results report (updated to also show overall TPS) -->
     <xslt 
       classpathref="xslt.classpath"
-	  force="true"
+      force="true"
       in="${jmeter.result.dir}/${testname}-result-${build.id}.xml"
       out="${jmeter.result.dir}/${testname}-results-${build.id}.html"
-      style="${jmeter.install.dir}/extras/jmeter-results-report_21.xsl">
+      style="${basedir}/source/test-resources/jmeter-results-report_21.xsl">
         <param name="showData" expression="${show-data}"/>
-	</xslt>
-	
-	<!-- results detailed report -->   
+    </xslt>
+    
+    <!-- results detailed report (incuding expand/collapse icons -->
+    
+    <!--
     <xslt
       classpathref="xslt.classpath"
-	  force="true"
+      force="true"
       in="${jmeter.result.dir}/${testname}-result-${build.id}.xml"
       out="${jmeter.result.dir}/${testname}-results-detail-${build.id}.html"
       style="${jmeter.install.dir}/extras/jmeter-results-detail-report_21.xsl">
         <param name="showData" expression="${show-data}"/>
-	</xslt>
-	  
+    </xslt>
+    
+    <copy todir="${jmeter.result.dir}" flatten="true" includeEmptyDirs="false">
+       <fileset dir="${jmeter.install.dir}/extras">
+	   <include name="expand.jpg" />
+	   <include name="collapse.jpg" />
+       </fileset>
+    </copy>
+    -->
+    
+    <antcall target="timestamp2">
+      <param name="message" value="finish" />
+    </antcall>
+    
   </target>
   
   
@@ -139,6 +174,7 @@
       <antcall target="run-jmeter">
          <param name="testname" value="WebDAV-seq" />
          <param name="testdir" value="${basedir}/source/test-resources" />
+         <param name="baseurl" value="${baseurl.webdav}"/>
       </antcall>
   </target> 
   
@@ -146,6 +182,7 @@
       <antcall target="run-jmeter">
          <param name="testname" value="WebDAV-mixed" />
          <param name="testdir" value="${basedir}/source/test-resources" />
+         <param name="baseurl" value="${baseurl.webdav}"/>
       </antcall>
   </target> 
   
@@ -153,6 +190,7 @@
       <antcall target="run-jmeter">
          <param name="testname" value="CMIS-seq" />
          <param name="testdir" value="${basedir}/source/test-resources" />
+         <param name="baseurl" value="${baseurl.cmis}"/>
       </antcall>
   </target>
   
@@ -160,6 +198,7 @@
       <antcall target="run-jmeter">
          <param name="testname" value="CMIS-mixed" />
          <param name="testdir" value="${basedir}/source/test-resources" />
+         <param name="baseurl" value="${baseurl.cmis}"/>
       </antcall>
   </target>
   
@@ -169,18 +208,23 @@
       <antcall target="run-jmeter-webdav-mixed"/>
       <antcall target="run-jmeter-cmis-mixed"/>
   </target> 
+
+  <target name="run-jmeter-all-seq" description="Execute all sequential JMeter test plans">
+      <antcall target="run-jmeter-webdav-seq"/>
+      <antcall target="run-jmeter-cmis-seq"/>
+  </target>
   
   
   <target name="jar" depends="build" description="Compile and JAR ...">
         <mkdir dir="${dist.path}" />
     
-		<jar destfile="${dist.path}/${jar}" basedir="${classes.path}">
-		    <!--
-			<manifest>
-				<attribute name="Class-Path" value="${classpath.manifest}" />
-		    </manifest>
-		    -->
-		</jar>
+    <jar destfile="${dist.path}/${jar}" basedir="${classes.path}">
+      <!--
+      <manifest>
+        <attribute name="Class-Path" value="${classpath.manifest}" />
+      </manifest>
+      -->
+    </jar>
   </target>
   
   
@@ -224,6 +268,28 @@
        </fileset>
     </copy>
   </target>
+
+  <target name="timestamp2">
+    <tstamp>
+      <format property="current.time" pattern="MM/dd/yyyy hh:mm:ss aa" />
+    </tstamp>
+
+    <echo message="${message} ${current.time}" />      
+  </target>
+
+  <target name="zip" depends="jar" description="Build ZIP">
+    <zip destfile="${basedir}/${zip}">
+      <fileset dir="${basedir}" includes="${jar}">
+        <include name="build/dist/${jar}"/>
+        <include name="lib/*/*.jar"/>
+        <include name="source/**"/>
+        <include name="build.xml"/>
+        <include name="build.properties"/>
+        <include name="readme.txt"/>
+      </fileset>
+    </zip>
+  </target>
+
+
   
  </project>
-

@@ -44,12 +44,12 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.repository.datatype.TypeConverter;
 import org.alfresco.service.namespace.QName;
-import org.springframework.extensions.surf.util.URLDecoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.springframework.extensions.surf.util.URLDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -320,7 +320,6 @@ public class PropfindMethod extends WebDAVMethod
      */
     protected void generateResponseForNode(XMLWriter xml, FileInfo nodeInfo, String path) throws Exception
     {
-        NodeRef nodeRef = nodeInfo.getNodeRef();
         boolean isFolder = nodeInfo.isFolder();
 
         // Output the response block for the current node
@@ -351,7 +350,7 @@ public class PropfindMethod extends WebDAVMethod
         xml.write(URLDecoder.decode(strHRef));
         xml.endElement(WebDAV.DAV_NS, WebDAV.XML_HREF, WebDAV.XML_NS_HREF);
 
-        generateAllPropertiesResponse(xml, nodeRef, isFolder);
+        generateAllPropertiesResponse(xml, nodeInfo, isFolder);
 
         // Close off the response element
         xml.endElement(WebDAV.DAV_NS, WebDAV.XML_RESPONSE, WebDAV.XML_NS_RESPONSE);
@@ -366,9 +365,11 @@ public class PropfindMethod extends WebDAVMethod
      * @param node NodeRef
      * @param isDir boolean
      */
-    protected void generateAllPropertiesResponse(XMLWriter xml, NodeRef node, boolean isDir) throws Exception
+    protected void generateAllPropertiesResponse(XMLWriter xml, FileInfo nodeInfo, boolean isDir) throws Exception
     {
         // Get the properties for the node
+        
+        NodeRef node = nodeInfo.getNodeRef();
 
         Map<QName, Serializable> props = getNodeService().getProperties(node);
         TypeConverter typeConv = DefaultTypeConverter.INSTANCE;
@@ -414,7 +415,7 @@ public class PropfindMethod extends WebDAVMethod
 
         // Generate a lock status report, if locked
 
-        generateLockDiscoveryResponse(xml, node, isDir);
+        generateLockDiscoveryResponse(xml, nodeInfo, isDir);
 
         // Output the supported lock types
 
@@ -552,18 +553,18 @@ public class PropfindMethod extends WebDAVMethod
      * @param node NodeRef
      * @param isDir boolean
      */
-    protected void generateLockDiscoveryResponse(XMLWriter xml, NodeRef node, boolean isDir) throws Exception
+    protected void generateLockDiscoveryResponse(XMLWriter xml, FileInfo nodeInfo, boolean isDir) throws Exception
     {
         // Get the lock status for the node
 
-        LockInfo lockInfo = getNodeLockInfo(node);
+        LockInfo lockInfo = getNodeLockInfo(nodeInfo);
 
         // Output the lock status response
 
 
         if (lockInfo.isLocked())
         {
-            generateLockDiscoveryXML(xml, node, lockInfo);
+            generateLockDiscoveryXML(xml, nodeInfo, lockInfo);
         }
         else
         {

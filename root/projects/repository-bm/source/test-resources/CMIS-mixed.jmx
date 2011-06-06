@@ -126,7 +126,7 @@
           </elementProp>
           <elementProp name="THREADS" elementType="Argument">
             <stringProp name="Argument.name">THREADS</stringProp>
-            <stringProp name="Argument.value">${__property(threads,THREADS,5)}</stringProp>
+            <stringProp name="Argument.value">${__property(threads,THREADS,3)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LOOPCOUNT" elementType="Argument">
@@ -209,10 +209,20 @@
             <stringProp name="Argument.value">/S-35d-600f-1Kb/folder-00000/folder-00000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="BASEFOLDERPATH" elementType="Argument">
+            <stringProp name="Argument.name">BASEFOLDERPATH</stringProp>
+            <stringProp name="Argument.value">${__property(basefolderpath,BASEFOLDERPATH,/testdata)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FOLDER3" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FOLDER3</stringProp>
+            <stringProp name="Argument.value">/S-31d-60f-1Kb/folder-00000/folder-00000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="getchildren - Thread Group" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="mixed - Thread Group" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -227,22 +237,24 @@
         <stringProp name="ThreadGroup.delay">0</stringProp>
       </ThreadGroup>
       <hashTree>
-        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="60% - Throughput Controller" enabled="true">
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="50% - getChildren - Throughput Controller" enabled="true">
           <intProp name="ThroughputController.style">1</intProp>
           <boolProp name="ThroughputController.perThread">false</boolProp>
           <intProp name="ThroughputController.maxThroughput">1</intProp>
           <FloatProperty>
             <name>ThroughputController.percentThroughput</name>
-            <value>60.0</value>
+            <value>50.0</value>
             <savedValue>0.0</savedValue>
           </FloatProperty>
         </ThroughputController>
         <hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="getchildren_small" enabled="true"/>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
           <hashTree>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="getchildren_small - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FOLDER1}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER1}</stringProp>
               <stringProp name="junitsampler.method">testGetChildren</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -258,23 +270,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="itemread - Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${THREADS}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1295599656000</longProp>
-        <longProp name="ThreadGroup.end_time">1295544280000</longProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
-        <stringProp name="ThreadGroup.delay">0</stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="20% - Throughput Controller" enabled="true">
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="20% - itemRead - Throughput Controller" enabled="true">
           <intProp name="ThroughputController.style">1</intProp>
           <boolProp name="ThroughputController.perThread">false</boolProp>
           <intProp name="ThroughputController.maxThroughput">1</intProp>
@@ -285,11 +281,13 @@
           </FloatProperty>
         </ThroughputController>
         <hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="itemread" enabled="true"/>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
           <hashTree>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="itemread_path1 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M1}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M1}</stringProp>
               <stringProp name="junitsampler.method">testItemRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -305,7 +303,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="itemread_path2 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M2}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M2}</stringProp>
               <stringProp name="junitsampler.method">testItemRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -321,7 +319,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="itemread_path3 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M3}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M3}</stringProp>
               <stringProp name="junitsampler.method">testItemRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -337,23 +335,56 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="contentupdate_small - Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">5</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1295599656000</longProp>
-        <longProp name="ThreadGroup.end_time">1295544280000</longProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
-        <stringProp name="ThreadGroup.delay">0</stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="1% - Throughput Controller" enabled="true">
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="5% - itemUpdate - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>5.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="itemupdate_path1 - doc" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M1}</stringProp>
+              <stringProp name="junitsampler.method">testItemUpdate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="itemupdate_path2 - folder" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER2}</stringProp>
+              <stringProp name="junitsampler.method">testItemUpdate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="1% - contentUpdate_small - Throughput Controller" enabled="true">
           <intProp name="ThroughputController.style">1</intProp>
           <boolProp name="ThroughputController.perThread">false</boolProp>
           <intProp name="ThroughputController.maxThroughput">1</intProp>
@@ -364,11 +395,13 @@
           </FloatProperty>
         </ThroughputController>
         <hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="contentupdate_small" enabled="true"/>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
           <hashTree>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_small_path1 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_S1}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S1}</stringProp>
               <stringProp name="junitsampler.method">testContentUpdate</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -384,7 +417,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_small_path2 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_S2}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S2}</stringProp>
               <stringProp name="junitsampler.method">testContentUpdate</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -400,7 +433,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_small_path3 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_S3}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S3}</stringProp>
               <stringProp name="junitsampler.method">testContentUpdate</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -416,23 +449,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="contentupdate_medium - Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">5</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1295599656000</longProp>
-        <longProp name="ThreadGroup.end_time">1295544280000</longProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
-        <stringProp name="ThreadGroup.delay">0</stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="3% - Throughput Controller" enabled="true">
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="3% - contentUpdate_medium - Throughput Controller" enabled="true">
           <intProp name="ThroughputController.style">1</intProp>
           <boolProp name="ThroughputController.perThread">false</boolProp>
           <intProp name="ThroughputController.maxThroughput">1</intProp>
@@ -443,11 +460,13 @@
           </FloatProperty>
         </ThroughputController>
         <hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="contentupdate_medium" enabled="true"/>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
           <hashTree>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_medium_path1 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M4}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M4}</stringProp>
               <stringProp name="junitsampler.method">testContentUpdate</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -463,7 +482,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_medium_path2 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M5}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M5}</stringProp>
               <stringProp name="junitsampler.method">testContentUpdate</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -479,7 +498,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_medium_path3 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M6}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M6}</stringProp>
               <stringProp name="junitsampler.method">testContentUpdate</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -495,23 +514,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="contentread_small - Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${THREADS}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1295599656000</longProp>
-        <longProp name="ThreadGroup.end_time">1295544280000</longProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
-        <stringProp name="ThreadGroup.delay">0</stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="4% - Throughput Controller" enabled="true">
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="4% - contentRead - Throughput Controller" enabled="true">
           <intProp name="ThroughputController.style">1</intProp>
           <boolProp name="ThroughputController.perThread">false</boolProp>
           <intProp name="ThroughputController.maxThroughput">1</intProp>
@@ -522,11 +525,13 @@
           </FloatProperty>
         </ThroughputController>
         <hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="contentread_small" enabled="true"/>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
           <hashTree>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_small_path1 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_S4}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S4}</stringProp>
               <stringProp name="junitsampler.method">testContentRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -542,7 +547,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_small_path2 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_S5}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S5}</stringProp>
               <stringProp name="junitsampler.method">testContentRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -558,7 +563,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_small_path3 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_S6}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S6}</stringProp>
               <stringProp name="junitsampler.method">testContentRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -574,23 +579,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="contentread_medium - Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${THREADS}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1295599656000</longProp>
-        <longProp name="ThreadGroup.end_time">1295544280000</longProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
-        <stringProp name="ThreadGroup.delay">0</stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="8% - Throughput Controller" enabled="true">
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="8% - contentRead_medium - Throughput Controller" enabled="true">
           <intProp name="ThroughputController.style">1</intProp>
           <boolProp name="ThroughputController.perThread">false</boolProp>
           <intProp name="ThroughputController.maxThroughput">1</intProp>
@@ -601,11 +590,13 @@
           </FloatProperty>
         </ThroughputController>
         <hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="contentread_medium" enabled="true"/>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
           <hashTree>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_medium_path1 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M1}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M1}</stringProp>
               <stringProp name="junitsampler.method">testContentRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -621,7 +612,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_medium_path2 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M2}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M2}</stringProp>
               <stringProp name="junitsampler.method">testContentRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -637,7 +628,7 @@
             <hashTree/>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_medium_path3 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},path=${PATH_FILE_M3}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M3}</stringProp>
               <stringProp name="junitsampler.method">testContentRead</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -653,23 +644,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="documentcreate_small - Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${THREADS}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1295599656000</longProp>
-        <longProp name="ThreadGroup.end_time">1295544280000</longProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
-        <stringProp name="ThreadGroup.delay">0</stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="1% - Throughput Controller" enabled="true">
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="1% - documentCreate_small - Throughput Controller" enabled="true">
           <intProp name="ThroughputController.style">1</intProp>
           <boolProp name="ThroughputController.perThread">false</boolProp>
           <intProp name="ThroughputController.maxThroughput">1</intProp>
@@ -680,11 +655,13 @@
           </FloatProperty>
         </ThroughputController>
         <hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="documentcreate_small" enabled="true"/>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
           <hashTree>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="documentcreate_small_path1 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},len=1024,path=${PATH_FOLDER2}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},len=1024,path=${PATH_FOLDER2}</stringProp>
               <stringProp name="junitsampler.method">testDocumentCreate</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
@@ -700,23 +677,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="documentcreate_medium - Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${THREADS}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1295599656000</longProp>
-        <longProp name="ThreadGroup.end_time">1295544280000</longProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
-        <stringProp name="ThreadGroup.delay">0</stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="3% - Throughput Controller" enabled="true">
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="3% - documentCreate_medium - Throughput Controller" enabled="true">
           <intProp name="ThroughputController.style">1</intProp>
           <boolProp name="ThroughputController.perThread">false</boolProp>
           <intProp name="ThroughputController.maxThroughput">1</intProp>
@@ -727,12 +688,96 @@
           </FloatProperty>
         </ThroughputController>
         <hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="documentcreate_medium" enabled="true"/>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
           <hashTree>
             <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="documentcreate_medium_path1 - JUnit Request" enabled="true">
               <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
-              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},threadnum=${__threadNum},len=204800,path=${PATH_FOLDER2}</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},len=204800,path=${PATH_FOLDER2}</stringProp>
               <stringProp name="junitsampler.method">testDocumentCreate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="4% - folderCreate - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>4.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="foldercreate_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER3}</stringProp>
+              <stringProp name="junitsampler.method">testFolderCreate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="1% - itemRename - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>1.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="itemrename_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER3}/{NEW_DOCUMENT_MKR}</stringProp>
+              <stringProp name="junitsampler.method">testItemRename</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="itemrename_path2 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.cmis.RepoBenchmarkCMISSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},baseurl=${BASEURL},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER3}/{NEW_FOLDER_MKR}</stringProp>
+              <stringProp name="junitsampler.method">testItemRename</stringProp>
               <stringProp name="junitsampler.pkg.filter"></stringProp>
               <stringProp name="junitsampler.success">Test successful</stringProp>
               <stringProp name="junitsampler.success.code">1000</stringProp>

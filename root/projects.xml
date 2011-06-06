@@ -394,6 +394,166 @@
          </fileset>
       </jar>
    </target>
+   
+   <!-- ********************************** -->
+   <!-- ** Repository BenchMark Project ** -->
+   <!-- ********************************** -->
+   
+   <target name="incremental-repository-bm" 
+           depends="package-repository-bm" />
+      
+   <target name="build-repository-bm" 
+           depends="clean-repository-bm, 
+                    incremental-repository-bm" />
+   
+   <target name="clean-repository-bm" 
+           depends="init">
+      <clean projectdir="${dir.project.repository-bm}" />
+   </target>
+   
+   <target name="compile-repository-bm" 
+           depends="init">
+      <compile-java projectdir="${dir.project.repository-bm}" >
+	  <addPath>
+            <path refid="classpath.compile.repository-bm" />
+         </addPath>
+		 </compile-java>
+   </target>
+   
+   <target name="package-repository-bm"
+           depends="compile-repository-bm">
+      <mkdir dir="${dir.project.repository-bm.dist}" />
+      <jar jarfile="${dir.project.repository-bm.dist}/${file.name.jar.repository-bm}" 
+            basedir="${dir.project.repository-bm.classes}" />
+   </target>
+   
+   
+   <!-- *************************************************** -->
+   <!-- ** Run System Build Tests (using embedded Jetty) ** -->
+   <!-- *************************************************** -->
+   
+   <target name="incremental-system-build-test" 
+           depends="package-system-build-test" />
+      
+   <target name="build-system-build-test" 
+           depends="clean-system-build-test, 
+                    incremental-system-build-test" />
+   
+   <target name="clean-system-build-test" 
+           depends="init">
+      <clean projectdir="${dir.project.system-build-test}" />
+   </target>
+   
+   <target name="compile-system-build-test" 
+	           depends="init, compile-repository-bm">
+      <compile-java projectdir="${dir.project.system-build-test}" >
+	  <addPath>
+            <path refid="classpath.compile.system-build-test" />
+         </addPath>
+		 </compile-java>
+   </target>
+   
+   <target name="package-system-build-test"
+           depends="compile-system-build-test">
+      <mkdir dir="${dir.project.system-build-test.dist}" />
+      <jar jarfile="${dir.project.system-build-test.dist}/${file.name.jar.system-build-test}" 
+            basedir="${dir.project.system-build-test.classes}" />
+   </target>
+   
+   <target name="test-system-build-test" 
+           depends="incremental-webclient-depends, incremental-webclient, package-repository-bm, package-webserviceclient, package-system-build-test">
+		   
+      <!-- TEMP - use Spring 3.0.5 (instead of Spring 3.0.0) - remove once Spring 3.0.5 moves into 3rd-party -->
+      
+      <path id="temp.classpath.unit.test">
+         <pathelement location="${user.home}" /> 
+         <fileset dir="${dir.project.system-build-test.lib}">
+            <include name="**/*.jar" />
+         </fileset>
+      </path>
+      <!-- Add on all the 3rd party libs (except Spring 3.0.0) based on the eclipse project -->
+      <!-- Includes libs that are both exported and non-exported -->
+      <script language="javascript" classpath="${classpath.bsf_javascript}"> <![CDATA[
+         importClass(java.util.regex.Matcher);
+         importClass(java.util.regex.Pattern);
+         importClass(java.io.File);
+         importClass(java.io.FileInputStream);
+         importClass(java.io.InputStreamReader);
+         importClass(java.io.BufferedReader);
+
+         var path = project.getReference("temp.classpath.unit.test");
+         var projPath = project.getProperty("dir.project.3rdparty") + "/";
+
+         var is_entry = Pattern.compile("[ \t]*\<classpathentry.*?");
+         //is_exported = Pattern.compile("[ \t]*\<classpathentry.*? exported=[\"\']true[\"\'][ \/].*");
+         var is_lib = Pattern.compile(".*? kind=[\"\']lib[\"\'][ \/].*?");
+         var get_path = Pattern.compile(".*? path=[\"\'](.*?)[\"\'][ \/].*?");
+
+         var f = new BufferedReader(new InputStreamReader(
+                 new FileInputStream(new File(projPath + ".classpath"))
+         ));
+         var line;
+         while( (line = f.readLine()) != null ) {
+            if( is_entry.matcher(line).matches() &&
+                     is_lib.matcher(line).matches()) {
+               var m = get_path.matcher(line);
+               if(m.matches()) {
+                  var this_path = m.group(1);
+                  if ((! this_path.startsWith("lib/ant-1.")) &&
+                      (! this_path.startsWith("lib/org.springframework")) &&
+                      (! this_path.startsWith("lib/slf4j"))
+                     ) {
+                     var pe = path.createPathElement();
+                     pe.setLocation(new File(projPath+this_path));
+                  }
+               }
+            }
+         }
+      ]]></script>
+      
+      <path id="temp.classpath.unit.test.extension">
+	  <fileset dir="${dir.project.system-build-test.dist}">
+            <include name="**/*.jar" />
+          </fileset>
+          <fileset dir="${dir.project.repository-bm.lib}">
+            <include name="**/*.jar" />
+          </fileset>
+          <fileset dir="${dir.project.repository-bm.dist}">
+            <include name="**/*.jar" />
+          </fileset>
+          <fileset dir="${dir.project.remoteapi.dist}">
+            <include name="**/*.jar" />
+          </fileset>
+          <fileset dir="${dir.project.webserviceclient.dist}">
+            <include name="**/*.jar" />
+          </fileset>
+          <pathelement location="${dir.project.webclient.dist}" />
+      </path>
+      <sequential>
+         <mkdir dir="${dir.project.system-build-test}/${dir.name.build}/${dir.name.test.results}" />
+         <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="${dir.project.system-build-test}" jvm="${env.JAVA_HOME}/bin/java">
+            <jvmarg value="-server"/>
+            <jvmarg value="-XX:MaxPermSize=256M"/>
+            <jvmarg value="-Dcom.sun.management.jmxremote"/>
+            <classpath>
+               <path refid="temp.classpath.unit.test"/>
+               <path refid="temp.classpath.unit.test.extension"/>
+            </classpath>
+            <formatter type="xml" />
+            <batchtest todir="${dir.project.system-build-test}/${dir.name.build}/${dir.name.test.results}">
+               <fileset dir="${dir.project.system-build-test}/${dir.name.source}/${dir.name.java}">
+                  <patternset refid="files.tests" />
+               </fileset>
+            </batchtest>
+         </junit>
+      </sequential>
+      
+      <!--
+      <run-tests-startup projectdir="${dir.project.system-build-test}" />
+      <run-tests projectdir="${dir.project.system-build-test}" />
+      -->
+      
+   </target>
 
 
    <!-- ***************************** -->

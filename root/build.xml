@@ -81,7 +81,17 @@
             <include name="**/*.jar" />
          </fileset>
       </path>
-
+      <path id="classpath.compile.repository-bm">
+         <fileset dir="${dir.project.repository-bm.lib}">
+            <include name="**/*.jar" />
+         </fileset>
+      </path>
+      <path id="classpath.compile.system-build-test">
+         <fileset dir="${dir.project.system-build-test.lib}">
+            <include name="**/*.jar" />
+         </fileset>
+         <pathelement location="${dir.project.repository-bm.classes}" />
+      </path>
       <path id="classpath.unit.test">
          <!--
          <dirset dir="${dir.projects}">
@@ -111,6 +121,7 @@
          <pathelement location="${dir.project.deployment.classes}" />
          <pathelement location="${dir.project.remoteapi.classes}" />
          <pathelement location="${dir.project.repository.classes}" />
+         <pathelement location="${dir.project.system-build-test.classes}" />
          <pathelement location="${dir.project.wdrdeployment.classes}" />
          <pathelement location="${dir.project.webframeworkcommons.classes}" />
          <pathelement location="${dir.project.webclient.classes}" />
@@ -237,6 +248,12 @@
          <!-- Usage Tests -->
          <exclude name="**/org/alfresco/repo/usage/**/*Test.java" />
          <include name="**/org/alfresco/repo/usage/UsageTestSuite.java" />
+         <!-- System Build Tests (runs using embedded Jetty) -->
+         <exclude name="**/org/alfresco/repo/RepoJetty*Test.java" />
+         <!-- embeds: RepoBenchmark*SystemTest -->
+         <include name="**/org/alfresco/repo/bm/RepoBenchmarkSystemTestSuite.java" />
+         <!-- embeds: SiteActivitySystemTest,WebServiceSuiteSystemTest, ... -->
+         <include name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
          <!-- All other tests -->
          <include name="**/*Test.java" />
       </patternset>
@@ -470,7 +487,9 @@
                     clean-jndi, 
                     clean-catalinavirtual, 
                     clean-webframeworkcommons,
-                    clean-webclient" />
+                    clean-webclient,
+                    clean-repository-bm,
+                    clean-system-build-test" />
                     
    <target name="clean-slingshot-projects" 
            description="Cleans all projects related to the slingshot project" 
@@ -1134,7 +1153,8 @@
                     test-webframeworkcommons, 
                     test-webclient, 
                     test-webserviceclient,
-                    test-dod5015" />
+                    test-dod5015,
+                    test-system-build-test" />
 
    <target name="run-junit-test" 
            description="Runs a single JUnit test. Usage run-test -Dtestcase=[test] -Dprojectdir=[dir] [-Dstoponerror=[yes|no]]"
