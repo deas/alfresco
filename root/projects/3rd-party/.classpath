@@ -207,8 +207,6 @@
 	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.3-complete.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.5.jar" sourcepath="src/activiti-engine-5.5-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.5.jar" sourcepath="src/activiti-spring-5.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-spring-1.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.4.0-SNAPSHOT.jar"/>
@@ -220,5 +218,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.4.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.0.0.CI-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7-SNAPSHOT.jar" sourcepath="src/activiti-engine-5.7-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.7-SNAPSHOT.jar" sourcepath="src/activiti-spring-5.7-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
