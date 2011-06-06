@@ -6,6 +6,11 @@
    <#assign disabled=false>
 </#if>
 
+<#assign multiValued=false>
+<#if field.value != "" && field.value?index_of(",") != -1>
+   <#assign multiValued=true>
+</#if>
+
 <#if form.capabilities?? && form.capabilities.javascript?? && form.capabilities.javascript == false><#assign jsDisabled=true><#else><#assign jsDisabled=false></#if>
 
 <div class="form-field">
@@ -15,9 +20,19 @@
             <span class="incomplete-warning"><img src="${url.context}/res/components/form/images/warning-16.png" title="${msg("form.field.incomplete")}" /><span>
          </#if>
          <span class="viewmode-label">${field.label?html}:</span>
-         <span class="viewmode-value"><#if field.value == "">${msg("form.control.novalue")}<#else>${xmldate(field.value)?string(viewFormat)}</#if></span>
+         <span class="viewmode-value">
+         <#if field.value == "">
+            ${msg("form.control.novalue")}
+         <#elseif !multiValued>
+            ${xmldate(field.value)?string(viewFormat)}
+         <#else>
+            <#list field.value?split(",") as dateEl>
+               ${xmldate(dateEl)?string(viewFormat)}<#if dateEl_has_next>,</#if>
+            </#list>
+         </#if>
+         </span>
       </div>
-   <#else>
+   <#elseif !multiValued>
       <#if jsDisabled>
          <label for="${fieldHtmlId}">${field.label?html}:<#if field.mandatory><span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></#if></label>
          <input id="${fieldHtmlId}" name="${field.name}" type="text" class="date-entry" value="${field.value?html}" <#if field.description??>title="${field.description}"</#if> <#if disabled>disabled="true"<#else>tabindex="0"</#if> />

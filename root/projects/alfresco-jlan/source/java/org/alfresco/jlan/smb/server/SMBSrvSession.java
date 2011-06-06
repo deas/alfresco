@@ -340,7 +340,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 	                // Close the virtual circuit
 
-	                VirtualCircuit vc = m_vcircuits.findCircuit(uid);
+				VirtualCircuit vc = findVirtualCircuit(uid);
 	                if ( vc != null) {
 
 	                    // DEBUG

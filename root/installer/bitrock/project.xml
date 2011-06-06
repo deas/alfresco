@@ -292,6 +292,12 @@
 		    <program>${installdir}/postgresql/scripts/servicerun.bat</program>
 		    <programArguments>STOP</programArguments>
 		</runProgram>
+		<kill>
+            <name>soffice.bin</name>
+            <path>${openoffice_directory.dos.unix}\App\openoffice\program\</path>
+			<abortOnError>0</abortOnError>
+			<showMessageOnError>0</showMessageOnError>
+        </kill>
 		<runProgram>
 		    <progressText>Uninstalling services</progressText>
 		    <program>${installdir}/serviceinstall.bat</program>
