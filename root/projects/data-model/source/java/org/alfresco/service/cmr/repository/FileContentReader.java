@@ -16,29 +16,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.repo.content.transform;
+package org.alfresco.service.cmr.repository;
 
-import org.alfresco.repo.content.MimetypeMap;
-import org.apache.tika.parser.Parser;
-import org.apache.tika.parser.microsoft.OfficeParser;
+import java.io.File;
 
 /**
- * This badly named transformer turns Microsoft Word documents
- *  (Word 6, 95, 97, 2000, 2003) into plain text, using Apache Tika.
+ * Extension to {@link ContentReader} for Readers which are able to
+ *  make the backing file available to you.
  * 
- * @author Nick Burch
+ * @see org.alfresco.service.cmr.repository.ContentReader
+ * 
+ * @author Derek Hulley
  */
-public class TextMiningContentTransformer extends TikaPoweredContentTransformer
+public interface FileContentReader extends ContentReader
 {
-    public TextMiningContentTransformer()
-    {       
-        super(new String[] {
-            MimetypeMap.MIMETYPE_WORD
-        });
-    }
+    /**
+     * Provides access to the underlying File that this
+     *  Reader accesses.
+     *  
+     * @return Returns the file that this reader accesses
+     */
+    public File getFile();
 
-    @Override
-    protected Parser getParser() {
-        return new OfficeParser();
-    }
+    /**
+     * @return Whether the file exists or not
+     */
+    public boolean exists();
 }

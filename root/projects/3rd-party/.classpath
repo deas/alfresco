@@ -203,6 +203,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-lang-2.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-codec-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-logging-1.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-net-2.2.jar" sourcepath="src/commons-net-2.2-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/json-simple-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>

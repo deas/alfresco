@@ -159,4 +159,28 @@ public interface ContentWriter extends ContentAccessor
      * @see String#getBytes(java.lang.String)
      */
     public void putContent(String content) throws ContentIOException;
+    
+    /**
+     * Attempts to guess the mimetype of the Content based on
+     *  the contents and the filename.
+     * <p>
+     * If the content has already been written, then the mimetype
+     *  guessing will occur immediately. If the content has yet
+     *  to be written, then the guessing will occur once the
+     *  content write has completed.
+     *  
+     * @param The filename of the content (if known)
+     */
+    public void guessMimetype(String filename);
+    
+    /**
+     * Attempts to guess the encoding of the Content based on
+     *  the contents.
+     * <p>
+     * If the content has already been written, then the encoding
+     *  guessing will occur immediately. If the content has yet
+     *  to be written, then the guessing will occur once the
+     *  content write has completed.
+     */
+    public void guessEncoding();
 }

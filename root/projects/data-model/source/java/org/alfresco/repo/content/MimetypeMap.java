@@ -18,6 +18,8 @@
  */
 package org.alfresco.repo.content;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,15 +27,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.content.encoding.ContentCharsetFinder;
 import org.alfresco.service.cmr.repository.ContentReader;
+import org.alfresco.service.cmr.repository.FileContentReader;
 import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.util.PropertyCheck;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tika.config.TikaConfig;
+import org.apache.tika.detect.ContainerAwareDetector;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.springframework.extensions.config.Config;
@@ -200,6 +206,16 @@ public class MimetypeMap implements MimetypeService
     {
         this.contentCharsetFinder = contentCharsetFinder;
     }
+    
+    /**
+     * Injects the TikaConfig to use
+     * 
+     * @param tikaConfig The Tika Config to use 
+     */
+    public void setTikaConfig(TikaConfig tikaConfig)
+    {
+        this.tikaConfig = tikaConfig;
+    }
 
     /**
      * Initialises the map using the configuration service provided
@@ -208,6 +224,13 @@ public class MimetypeMap implements MimetypeService
     {
         PropertyCheck.mandatory(this, "configService", configService);
         PropertyCheck.mandatory(this, "contentCharsetFinder", contentCharsetFinder);
+        
+        // TikaConfig should be given, but work around it if not
+        if(tikaConfig == null)
+        {
+            logger.warn("TikaConfig spring parameter not supplied, using default config");
+            tikaConfig = TikaConfig.getDefaultConfig();
+        }
         
         this.mimetypes = new ArrayList<String>(40);
         this.extensionsByMimetype = new HashMap<String, String>(59);
@@ -370,6 +393,51 @@ public class MimetypeMap implements MimetypeService
     }
     
     /**
+     * Use Apache Tika to try to guess the type of the file.
+     * @return The mimetype, or null if we can't tell.
+     */
+    private MediaType detectType(String filename, ContentReader reader)
+    {
+       Metadata metadata = new Metadata();
+       if(filename != null)
+       {
+           metadata.add(Metadata.RESOURCE_NAME_KEY, filename);
+       }
+       
+       InputStream inp = null;
+       if(reader != null)
+       {
+           if(reader instanceof FileContentReader)
+           {
+               try
+               {
+                   inp = TikaInputStream.get( ((FileContentReader)reader).getFile() );
+               }
+               catch(FileNotFoundException e)
+               {
+                   logger.warn("No backing file found for ContentReader " + e);
+                   return null;
+               }
+           }
+           else
+           {
+               inp = TikaInputStream.get( reader.getContentInputStream() );
+           }
+       }
+       
+       MediaType type;
+       try {
+          ContainerAwareDetector detector = new ContainerAwareDetector(tikaConfig.getMimeRepository());
+          type = detector.detect( inp, metadata );
+          logger.debug(reader + " detected by Tika as being " + type.toString());
+       } catch(Exception e) {
+          logger.warn("Error identifying content type of problem document", e);
+          return null;
+       }
+       return type;
+    }
+       
+    /**
      * Use Apache Tika to check if the mime type of the document really matches
      *  what it claims to be.
      * This is typically used when a transformation or metadata extractions fails, 
@@ -379,28 +447,13 @@ public class MimetypeMap implements MimetypeService
      */
     public String getMimetypeIfNotMatches(ContentReader reader)
     {
-       if(tikaConfig == null)
+       MediaType type = detectType(null, reader);
+       if(type == null)
        {
-          try {
-             tikaConfig = TikaConfig.getDefaultConfig();
-          } catch(Exception e) {
-             logger.warn("Error creating Tika detector", e);
-             return null;
-          }
+           // Tika doesn't know so we can't help, sorry...
+           return null;
        }
-       
-       Metadata metadata = new Metadata();
-       MediaType type;
-       try {
-          type = tikaConfig.getMimeRepository().detect(
-                reader.getContentInputStream(), metadata
-          );
-          logger.debug(reader + " detected by Tika as being " + type.toString());
-       } catch(Exception e) {
-          logger.warn("Error identifying content type of problem document", e);
-          return null;
-       }
-       
+
        // Is it a good match?
        if(type.toString().equals(reader.getMimetype())) 
        {
@@ -420,13 +473,9 @@ public class MimetypeMap implements MimetypeService
        return type.toString();
     }
 
-/* // Coming soon! See  ALF-5082
-    public String guessMimetype(ContentReader)
-    {  
-    }
-*/
-    
     /**
+     * Takes a guess at the mimetype based exclusively on the file
+     *  extension, which can (and often is) wrong...
      * @see #MIMETYPE_BINARY
      */
     public String guessMimetype(String filename)
@@ -443,5 +492,50 @@ public class MimetypeMap implements MimetypeService
             }
         }
         return mimetype;
+    }
+    
+    /**
+     * Uses Tika to try to identify the mimetype of the file, 
+     *  falling back on {@link #guessMimetype(String)} for an
+     *  extension based one if Tika can't help.
+     */
+    public String guessMimetype(String filename, ContentReader reader)
+    {
+        MediaType type = detectType(filename, reader);
+        String filenameGuess = guessMimetype(filename);
+        
+        // If Tika doesn't know, go with the filename one
+        if(type == null || MediaType.OCTET_STREAM.equals(type))
+        {
+            return filenameGuess;
+        }
+
+        // Not all the mimetypes we use are the Tika Canonical one.
+        // So, detect when this happens and use ours in preference
+        String tikaType = type.toString();
+        if(mimetypes.contains(tikaType))
+        {
+            // Alfresco and Tika agree!
+            return tikaType;
+        }
+
+        // Check the aliases
+        SortedSet<MediaType> aliases =
+            tikaConfig.getMediaTypeRegistry().getAliases(type);
+        for(MediaType alias : aliases)
+        {
+            String aliasType = alias.toString();
+            if(mimetypes.contains(aliasType))
+            {
+                return aliasType;
+            }
+        }
+        
+        // If we get here, then Tika has identified something that
+        //  Alfresco doesn't really know about. Just trust Tika on it
+        logger.info("Tika detected a type of " + tikaType + " for file " +
+                filename + " which Alfresco doesn't know about. Consider " +
+                " adding that type to your configuration");
+        return tikaType;
     }
 }

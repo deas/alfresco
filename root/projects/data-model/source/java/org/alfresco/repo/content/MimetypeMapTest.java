@@ -22,12 +22,14 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.util.DataModelTestApplicationContextHelper;
 import org.springframework.context.ApplicationContext;
 
 /**
  * @see org.alfresco.repo.content.MimetypeMap
+ * @see org.alfresco.repo.content.MimetypeMapContentTest
  * 
  * @author Derek Hulley
  */
@@ -92,12 +94,24 @@ public class MimetypeMapTest extends TestCase
         assertEquals(MimetypeMap.MIMETYPE_BINARY, mimetypeService.getMimetype(null));
         assertEquals(MimetypeMap.MIMETYPE_BINARY, mimetypeService.getMimetype("unknownext"));
     }
-    
+ 
+    /**
+     * Tests guessing the mimetype from a filename.
+     * 
+     * Note - The test for checking by filename + content are in the repo project
+     * @see org.alfresco.repo.content.MimetypeMapContentTest
+     */
     public void testGuessMimetypeForFilename() throws Exception
     {
         assertEquals("application/msword", mimetypeService.guessMimetype("something.doc"));
         assertEquals("application/msword", mimetypeService.guessMimetype("SOMETHING.DOC"));
         assertEquals(MimetypeMap.MIMETYPE_BINARY, mimetypeService.guessMimetype("noextension"));
         assertEquals(MimetypeMap.MIMETYPE_BINARY, mimetypeService.guessMimetype("file.unknownext"));
+        
+        // Without a content reader, the behaviour is the same
+        assertEquals("application/msword", mimetypeService.guessMimetype("something.doc", (ContentReader)null));
+        assertEquals("application/msword", mimetypeService.guessMimetype("SOMETHING.DOC", (ContentReader)null));
+        assertEquals(MimetypeMap.MIMETYPE_BINARY, mimetypeService.guessMimetype("noextension", (ContentReader)null));
+        assertEquals(MimetypeMap.MIMETYPE_BINARY, mimetypeService.guessMimetype("file.unknownext", (ContentReader)null));
     }
 }

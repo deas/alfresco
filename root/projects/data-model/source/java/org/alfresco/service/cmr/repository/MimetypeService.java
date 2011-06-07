@@ -103,7 +103,9 @@ public interface MimetypeService
 
     /**
      * Provides a non-null best guess of the appropriate mimetype given a
-     * filename.
+     * filename, based entirely on the file extension. Because file
+     * extensions can be wrong, you are strongly advised to use
+     * {@link #guessMimetype(String, ContentReader)} instead.
      * 
      * @param filename the name of the file with an optional file extension
      * @return Returns the best guess mimetype or the mimetype for
@@ -111,6 +113,20 @@ public interface MimetypeService
      */
     @NotAuditable
     public String guessMimetype(String filename);
+    
+    /**
+     * Provides a non-null best guess of the appropriate mimetype for a
+     * given file. Uses a mixture of file name and file content
+     * logic to identify the mimetype for the file, and will usually
+     * manage to identify files with incorrect extensions. 
+     * 
+     * @param filename the name of the file with an optional file extension
+     * @param reader a reader for the content of the file 
+     * @return Returns the best guess mimetype or the mimetype for
+     *      straight binary files if no extension could be found.
+     */
+    @NotAuditable
+    public String guessMimetype(String filename, ContentReader reader);
     
     /**
      * Use detection heuristics to check if the mime type of the document really 

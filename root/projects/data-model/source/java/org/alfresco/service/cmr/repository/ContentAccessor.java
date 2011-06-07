@@ -20,8 +20,6 @@ package org.alfresco.service.cmr.repository;
 
 import java.util.Locale;
 
-import org.omg.IOP.TransactionService;
-
 /**
  * Interface for instances that provide read and write access to content.
  * 
@@ -89,7 +87,11 @@ public interface ContentAccessor
     public String getMimetype();
     
     /**
-     * Set the mimetype that must be used for accessing the content
+     * Set the mimetype that must be used for accessing the content.
+     * <p> 
+     * When dealing with a {@link ContentWriter}, you may wish
+     *  to use {@link ContentWriter#guessMimetype(String)} to have
+     *  this set for you based on the filename and contents.
      * 
      * @param mimetype the content mimetype
      */
@@ -104,6 +106,10 @@ public interface ContentAccessor
     
     /**
      * Set the <code>String</code> encoding for this accessor
+     * <p> 
+     * When dealing with a {@link ContentWriter}, you may wish
+     *  to use {@link ContentWriter#guessMimetype(String)} to have
+     *  this set for you based on the contents.
      * 
      * @param encoding a java-recognised encoding format
      */
