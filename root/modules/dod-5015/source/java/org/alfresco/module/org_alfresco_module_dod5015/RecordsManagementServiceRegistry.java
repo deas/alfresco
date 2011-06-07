@@ -20,6 +20,7 @@ package org.alfresco.module.org_alfresco_module_dod5015;
 
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
 import org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService;
 import org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService;
@@ -37,6 +38,7 @@ public interface RecordsManagementServiceRegistry extends ServiceRegistry
 {
     /** Service QName constants */
     static final QName RECORDS_MANAGEMENT_SERVICE = QName.createQName(NamespaceService.ALFRESCO_URI, "RecordsManagementService");
+    static final QName DISPOSITION_SERVICE = QName.createQName(NamespaceService.ALFRESCO_URI, "DispositionService");
     static final QName RECORDS_MANAGEMENT_ADMIN_SERVICE = QName.createQName(NamespaceService.ALFRESCO_URI, "RecordsManagementAdminService");
     static final QName RECORDS_MANAGEMENT_ACTION_SERVICE = QName.createQName(NamespaceService.ALFRESCO_URI, "RecordsManagementActionService");
     static final QName RECORDS_MANAGEMENT_EVENT_SERVICE = QName.createQName(NamespaceService.ALFRESCO_URI, "RecordsManagementEventService");
@@ -49,6 +51,12 @@ public interface RecordsManagementServiceRegistry extends ServiceRegistry
      */
     @NotAuditable
     RecordsManagementService getRecordsManagementService();
+    
+    /**
+     * @return disposition service
+     */
+    @NotAuditable
+    DispositionService getDispositionService();
     
     /**
      * @return  records management admin service

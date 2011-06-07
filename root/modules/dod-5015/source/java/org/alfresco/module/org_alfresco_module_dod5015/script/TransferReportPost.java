@@ -31,10 +31,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -43,18 +44,18 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
-import org.springframework.extensions.surf.util.ParameterCheck;
 import org.alfresco.util.TempFileProvider;
-import org.springframework.extensions.webscripts.Cache;
-import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.springframework.extensions.surf.util.ParameterCheck;
+import org.springframework.extensions.webscripts.Cache;
+import org.springframework.extensions.webscripts.Status;
+import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.WebScriptResponse;
 
 /**
  * Files a transfer report as a record.
@@ -77,6 +78,7 @@ public class TransferReportPost extends BaseTransferWebScript
     protected DictionaryService ddService;
     protected RecordsManagementActionService rmActionService;
     protected RecordsManagementService rmService;
+    protected DispositionService dispositionService;
     
     /**
      * Sets the DictionaryService instance
@@ -96,6 +98,16 @@ public class TransferReportPost extends BaseTransferWebScript
     public void setRecordsManagementService(RecordsManagementService rmService)
     {
         this.rmService = rmService;
+    }
+    
+    /**
+     * Sets the disposition service
+     * 
+     * @param dispositionService    disposition service
+     */
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
     }
     
     /**
@@ -227,8 +239,7 @@ public class TransferReportPost extends BaseTransferWebScript
             if (itemsToTransfer.length > 0)
             {
                 // use the first transfer item to get to disposition schedule
-                DispositionSchedule ds = this.rmService.getDispositionSchedule(
-                            itemsToTransfer[0]);
+                DispositionSchedule ds = dispositionService.getDispositionSchedule(itemsToTransfer[0]);
                 if (ds != null)
                 {
                     dispositionAuthority = ds.getDispositionAuthority();

@@ -8,7 +8,6 @@
         <property name="models">
             <list>
                 <value>alfresco/module/org_alfresco_module_dod5015/model/recordsModel.xml</value>
-                <value>alfresco/module/org_alfresco_module_dod5015/model/dod5015Model.xml</value>
             </list>
         </property>
     </bean>
@@ -28,13 +27,64 @@
       </property>
    </bean>
    
+   <bean id="org_alfresco_module_dod5015_BaseBehaviour" abstract="true" init-method="init">
+      <property name="nodeService" ref="NodeService"/>
+      <property name="policyComponent" ref="policyComponent"/>   
+   </bean>
+   
    <!--  File plan component aspect behaviour bean -->
    <bean id="org_alfresco_module_dod5015_FilePlanComponentAspect" 
    		 class="org.alfresco.module.org_alfresco_module_dod5015.model.FilePlanComponentAspect" 
-   		 init-method="init">
-      <property name="nodeService" ref="NodeService"/>
-      <property name="recordsManagementService" ref="RecordsManagementService"/>
-      <property name="policyComponent" ref="policyComponent"/>
+   		 parent="org_alfresco_module_dod5015_BaseBehaviour">
+      <property name="recordsManagementService" ref="recordsManagementService"/>
    </bean>
+   
+   <bean id="org_alfresco_module_dod5015_ScheduledAspect" 
+   		 class="org.alfresco.module.org_alfresco_module_dod5015.model.ScheduledAspect" 
+   		 parent="org_alfresco_module_dod5015_BaseBehaviour">
+      <property name="dispositionService" ref="dispositionService"/>
+   </bean>
+   
+   <!--  RM container type behaviour bean -->
+   <bean id="org_alfresco_module_dod5015_RecordContainerType" 
+   		 class="org.alfresco.module.org_alfresco_module_dod5015.model.RecordContainerType" 
+   		 parent="org_alfresco_module_dod5015_BaseBehaviour">
+   	  <property name="dictionaryService" ref="DictionaryService"/>
+      <property name="recordsManagementActionService" ref="RecordsManagementActionService"/>
+      <property name="recordsManagementIdentifierService" ref="recordsManagementIdentifierService"/>
+   </bean>
+   
+   <!--  Record Component Identifier aspect behaviour bean -->
+   <bean id="recordComponentIdentifierAspect" 
+   	     class="org.alfresco.module.org_alfresco_module_dod5015.model.RecordComponentIdentifierAspect" 
+   	     parent="org_alfresco_module_dod5015_BaseBehaviour">
+        <property name="attributeService" ref="attributeService"/>
+    </bean>
+    
+    <!-- Copy policy management for records -->
+    <bean id="recordCopyBehaviours" 
+          class="org.alfresco.module.org_alfresco_module_dod5015.model.RecordCopyBehaviours" 
+          init-method="init">
+        <property name="policyComponent" ref="policyComponent"/>
+        <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry"/>        
+    </bean>
+        
+    <!-- Search Behaviour -->    
+    <bean id="recordsManagementSearchBehaviour" 
+          class="org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementSearchBehaviour" 
+          parent="org_alfresco_module_dod5015_BaseBehaviour">        
+        <property name="recordsManagementService" ref="recordsManagementService"/>
+        <property name="dispositionService" ref="dispositionService"/>
+        <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry"/>
+    </bean>
+    
+    <!--  Base bean definition for customisable types bootstrap -->
+    <bean id="customisableTypesBootstrap" 
+    	  abstract="true" 
+    	  class="org.alfresco.module.org_alfresco_module_dod5015.model.CustomisableTypesBootstrap"
+    	  init-method="init">    	
+        <property name="recordsManagementAdminService" ref="recordsManagementAdminService"/>	        
+        <property name="namespaceService" ref="NamespaceService"/>  
+    </bean>
 
 </beans>

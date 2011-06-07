@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
 import org.alfresco.module.org_alfresco_module_dod5015.EventCompletionDetails;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -58,7 +58,7 @@ public class CompleteEventAction extends RMActionExecuterAbstractBase
         if (this.nodeService.hasAspect(actionedUponNodeRef, ASPECT_DISPOSITION_LIFECYCLE) == true)
         {
             // Get the next disposition action
-            DispositionAction da = this.recordsManagementService.getNextDispositionAction(actionedUponNodeRef);
+            DispositionAction da = this.dispositionService.getNextDispositionAction(actionedUponNodeRef);
             if (da != null)
             {
                 // Get the disposition event
@@ -150,7 +150,7 @@ public class CompleteEventAction extends RMActionExecuterAbstractBase
         if (this.nodeService.hasAspect(filePlanComponent, ASPECT_DISPOSITION_LIFECYCLE))
         {
             // Get the next disposition action
-            DispositionAction da = this.recordsManagementService.getNextDispositionAction(filePlanComponent);
+            DispositionAction da = this.dispositionService.getNextDispositionAction(filePlanComponent);
             if (da != null)
             {
                 // Get the disposition event

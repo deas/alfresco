@@ -26,8 +26,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DOD5015Model;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.web.scripts.content.StreamACP;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;

@@ -20,6 +20,7 @@ package org.alfresco.module.org_alfresco_module_dod5015;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint.MatchLogic;
@@ -39,6 +40,48 @@ import org.alfresco.service.namespace.QName;
  */
 public interface RecordsManagementAdminService
 {
+	/**
+	 * Initialise the custom model
+	 */
+	public void initialiseCustomModel();
+	
+	/**
+	 * Get a list of all registered customisable types and aspects.
+	 * 
+	 * @return	{@link List}<{@link QName}> QName's of customisable types and aspects
+	 */
+	public Set<QName> getCustomisable();
+	
+	/**
+	 * Indicates whether a type (or aspect) is customisable.
+	 * 
+	 * @param type	customisable type {@link QName}
+	 * @return boolean	true if type customisable, false otherwise
+	 */
+	public boolean isCustomisable(QName type);
+	
+	/**
+	 * Makes a type customisable.
+	 * 
+	 * @param type	type {@link QName} to make customisable
+	 */
+	public void makeCustomisable(QName type);
+	
+	/**
+	 * Assuming the custom properties are not in use, makes a type no longer customisable.
+	 * 
+	 * @param type	type {@link QName} to make customisable
+	 */
+	public void unmakeCustomisable(QName type);
+	
+	/**
+	 * Indicates whether the custom property exists.
+	 * 
+	 * @param property	properties {@link QName}
+	 * @return boolean	true if property exists, false otherwise
+	 */
+	public boolean existsCustomProperty(QName property);
+	
     /**
      * This method returns the custom properties that have been defined for the specified
      * customisable RM element.
@@ -52,7 +95,7 @@ public interface RecordsManagementAdminService
      * @return
      * @see CustomisableRmElement
      */
-    public Map<QName, PropertyDefinition> getCustomPropertyDefinitions(CustomisableRmElement customisedElement);
+	public Map<QName, PropertyDefinition> getCustomPropertyDefinitions(QName customisableType);
     
     /**
      * This method returns the custom properties that have been defined for all of
@@ -86,7 +129,7 @@ public interface RecordsManagementAdminService
      * @return the propId, whether supplied as a parameter or generated.
      * @see CustomisableRmElement#getCorrespondingAspect()
      */
-    public QName addCustomPropertyDefinition(QName propId, String aspectName, String label, QName dataType, String title, String description);
+    public QName addCustomPropertyDefinition(QName propId, QName typeName, String label, QName dataType, String title, String description);
     
     /**
      * Add custom property definition with one optional constraint reference
@@ -110,7 +153,11 @@ public interface RecordsManagementAdminService
      * @return the propId, whether supplied as a parameter or generated.
      * @see CustomisableRmElement#getCorrespondingAspect()
      */
-    public QName addCustomPropertyDefinition(QName propId, String aspectName, String label, QName dataType, String title, String description, String defaultValue, boolean multiValued, boolean mandatory, boolean isProtected, QName lovConstraintQName);
+    
+    // TODO propId string (not QName) ?
+    // TODO remove title (since it is ignored) (or remove label to title)
+    
+    public QName addCustomPropertyDefinition(QName propId, QName typeName, String label, QName dataType, String title, String description, String defaultValue, boolean multiValued, boolean mandatory, boolean isProtected, QName lovConstraintQName);
     
     /**
      * Update the custom property definition's label (title).

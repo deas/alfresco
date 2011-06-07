@@ -23,8 +23,8 @@ import java.io.IOException;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.model.RenditionModel;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementSearchBehaviour;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementSearchBehaviour;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.view.ExporterCrawlerParameters;
 import org.alfresco.service.cmr.view.Location;

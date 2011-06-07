@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
@@ -80,7 +80,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
         DispositionSchedule di = checkDispositionActionExecutionValidity(actionedUponNodeRef, nextDispositionActionNodeRef, true);
 
         // Check the eligibility of the action
-        if (checkEligibility == false || this.recordsManagementService.isNextDispositionActionEligible(actionedUponNodeRef) == true)
+        if (checkEligibility == false || this.dispositionService.isNextDispositionActionEligible(actionedUponNodeRef) == true)
         {
             if (di.isRecordLevelDisposition() == true)
             {
@@ -193,7 +193,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
     protected DispositionSchedule checkDispositionActionExecutionValidity(NodeRef nodeRef, NodeRef nextDispositionActionNodeRef, boolean throwError)
     {
         // Check the node has associated disposition instructions
-        DispositionSchedule di = this.recordsManagementService.getDispositionSchedule(nodeRef);
+        DispositionSchedule di = this.dispositionService.getDispositionSchedule(nodeRef);
         if (di == null)
         {
             if (throwError)
@@ -305,7 +305,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
         }
         
         // Check the eligibility of the action
-        if (checkEligibility == false || this.recordsManagementService.isNextDispositionActionEligible(filePlanComponent) == true)
+        if (checkEligibility == false || this.dispositionService.isNextDispositionActionEligible(filePlanComponent) == true)
         {
             if (di.isRecordLevelDisposition() == true)
             {

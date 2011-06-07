@@ -25,6 +25,7 @@
         <property name="recordsManagementAdminService" ref="recordsManagementAdminService"/>
         <property name="recordsManagementActionService" ref="recordsManagementActionService"/>
         <property name="recordsManagementService" ref="recordsManagementService"/>
+        <property name="dispositionService" ref="dispositionService"/>
         <property name="recordsManagementEventService" ref="recordsManagementEventService"/>
         <property name="publicAction" value="false"/>
         <property name="ownableService" ref="ownableService"/>

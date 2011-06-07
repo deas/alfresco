@@ -36,7 +36,6 @@ import net.sf.acegisecurity.ConfigAttribute;
 import net.sf.acegisecurity.ConfigAttributeDefinition;
 import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementAction;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.group.CreateCapability;
@@ -105,6 +104,8 @@ import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.UpgradeDo
 import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ViewRecordsCapability;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.ViewUpdateReasonsForFreezeCapability;
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigComponent;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.permissions.impl.SimplePermissionReference;
 import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryVoterException;
@@ -155,6 +156,8 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean, Appl
     private DictionaryService dictionaryService;
 
     private RecordsManagementService recordsManagementService;
+    
+    private DispositionService dispositionService;
     
     private SearchService searchService;
 
@@ -1574,6 +1577,16 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean, Appl
     public RecordsManagementService getRecordsManagementService()
     {
         return recordsManagementService;
+    }
+    
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
+    }
+    
+    public DispositionService getDispositionService()
+    {
+        return dispositionService;
     }
 
     /**

@@ -9,20 +9,9 @@
     
     <!-- Disposition selection strategy -->
     <bean id="org_alfresco_module_dod5015_dispositionSelectionStrategy"
-          class="org.alfresco.module.org_alfresco_module_dod5015.DispositionSelectionStrategy" >        
-        <property name="recordsManagementService" ref="recordsManagementService"/>
-        <property name="nodeService" ref="nodeService"/>
-    </bean>
-
-    <!-- Copy policy management for records -->
-    <bean id="recordCopyBehaviours" class="org.alfresco.module.org_alfresco_module_dod5015.RecordCopyBehaviours" init-method="init">
-        <property name="policyComponent">
-            <ref bean="policyComponent"/>
-        </property>
-        <property name="recordsManagementServiceRegistry">
-            <ref bean="RecordsManagementServiceRegistry"/>
-        </property>
-    </bean>
+          class="org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSelectionStrategy" >        
+        <property name="dispositionService" ref="dispositionService"/>
+    </bean>    
 
     <!-- Records Management Service -->
     
@@ -32,9 +21,6 @@
         <property name="rmActionService" ref="recordsManagementActionService"/>
         <property name="nodeService" ref="nodeService"/>
         <property name="policyComponent" ref="policyComponent"/>
-        <property name="dispositionSelectionStrategy">
-           <ref local="org_alfresco_module_dod5015_dispositionSelectionStrategy" />
-        </property>
     </bean>
     
     <bean id="RecordsManagementService" class="org.springframework.aop.framework.ProxyFactoryBean">
@@ -77,29 +63,95 @@
         <property name="objectDefinitionSource">
             <value>
                 <![CDATA[
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordsManagementRoots=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordsManagementRoot=RM.Read.0,AFTER_RM.FilterNode
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getNodeRefPath=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecord=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordDeclared=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordFolderDeclared=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordFolder=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordsManagmentComponent=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordsManagementRoot=RM.Read.0
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordsManagementContainer=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordFolders=RM.Read.0,AFTER_RM.FilterNode
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecords=RM.Read.0,AFTER_RM.FilterNode
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getDispositionSchedule=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getDispositionPeriodProperties=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.addDispositionActionDefinition=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.canDispositionActionDefinitionsBeRemoved=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.removeDispositionActionDefinition=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.updateDispositionActionDefinition=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isNextDispositionActionEligible=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getNextDispositionAction=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getCompletedDispositionActions=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getLastCompletedDispostionAction=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordFolder=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecord=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getNodeRefPath=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordsManagementRoot=RM.Read.0,AFTER_RM.FilterNode
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordsManagementRoots=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.createRecordsManagementRoot=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.createRecordsManagementContainer=RM.Write.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordFolderDeclared=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.createRecordFolder=RM.Write.0                
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecords=RM.Read.0,AFTER_RM.FilterNode                
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordFolders=RM.Read.0,AFTER_RM.FilterNode                
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordDeclared=RM.Read.0
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getVitalRecordDefinition=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getNextRecordIdentifier=RM.Read.0
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.*=RM_DENY
+                ]]>
+            </value>
+        </property>
+    </bean>
+    
+    <!--  Disposition Service -->
+    
+    <bean id="dispositionService" class="org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionServiceImpl">        
+        <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+        <property name="behaviourFilter" ref="policyBehaviourFilter" /> 	
+        <property name="dispositionSelectionStrategy">
+           <ref local="org_alfresco_module_dod5015_dispositionSelectionStrategy" />
+        </property>
+    </bean>
+    
+    <bean id="DispositionService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService</value>
+        </property>
+        <property name="target">
+            <ref bean="dispositionService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="DispositionService_transaction"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="DispositionService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="DispositionService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="DispositionService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager">
+            <ref bean="authenticationManager"/>
+        </property>
+        <property name="accessDecisionManager">
+            <ref bean="accessDecisionManager"/>
+        </property>
+        <property name="afterInvocationManager">
+            <ref bean="afterInvocationManager"/>
+        </property>
+        <property name="objectDefinitionSource">
+            <value>
+                <![CDATA[
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getDispositionSchedule=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getAssociatedDispositionSchedule=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getAssociatedRecordsManagementContainer=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.hasDisposableItems=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getDisposableItems=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.createDispositionSchedule=RM_ALLOW               
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.addDispositionActionDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.removeDispositionActionDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.updateDispositionActionDefinition=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.isNextDispositionActionEligible=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getNextDispositionAction=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getCompletedDispositionActions=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getLastCompletedDispostionAction=RM.Read.0                 
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getDispositionPeriodProperties=RM.Read.0               
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.*=RM_DENY
                 ]]>
             </value>
         </property>
@@ -335,23 +387,17 @@
     <!-- Records Management Admin Service -->
     
     <bean id="recordsManagementAdminService" class="org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminServiceImpl" init-method="init">
-        <property name="dictionaryService">
-            <ref bean="DictionaryService"/>
-        </property>
-        <property name="namespaceService">
-            <ref bean="NamespaceService"/>
-        </property>
-        <property name="nodeService">
-            <ref bean="NodeService"/>
-        </property>
-        <property name="policyComponent">
-            <ref bean="policyComponent"/>
-        </property>
-        <property name="contentService">
-            <ref bean="contentService"/>
-        </property>
-        <property name="dictionaryRepositoryBootstrap">
-            <ref bean="dictionaryRepositoryBootstrap"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+        <property name="namespaceService" ref="NamespaceService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="policyComponent" ref="policyComponent"/>
+        <property name="contentService" ref="contentService"/>
+        <property name="dictionaryRepositoryBootstrap" ref="dictionaryRepositoryBootstrap"/>
+        <property name="customisableTypes">
+        	<list>
+        		<value>rma:recordFolder</value>
+        		<value>rma:record</value>
+        	</list>
         </property>
     </bean>
     
@@ -396,6 +442,12 @@
         <property name="objectDefinitionSource">
             <value>
                 <![CDATA[  
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.initialiseCustomModel=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomisable=RM_ALLOW
+				org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.isCustomisable=RM_ALLOW
+				org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.makeCustomisable=RM_ALLOW
+				org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.unmakeCustomisable=RM_ALLOW
+				org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.existsCustomProperty=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.getCustomPropertyDefinitions=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.addCustomPropertyDefinition=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService.setCustomPropertyDefinitionLabel=RM_ALLOW
@@ -735,18 +787,9 @@
         </property>
     </bean>
     
-    <!-- Search Behaviour -->
-    
-    <bean id="recordsManagementSearchBehaviour" class="org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementSearchBehaviour" init-method="init">        
-        <property name="nodeService" ref="nodeService"/>
-        <property name="recordsManagementService" ref="recordsManagementService"/>
-        <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry"/>
-        <property name="policyComponent" ref="policyComponent"/>
-    </bean>
-    
     <!-- Period Properties -->
     
-    <bean id="DispositionPeriodProperties" class="org.alfresco.module.org_alfresco_module_dod5015.DispositionPeriodProperties">
+    <bean id="DispositionPeriodProperties" class="org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionPeriodProperties">
         <property name="propertyList">
             <list>
                 <value>{http://www.alfresco.org/model/recordsmanagement/1.0}cutOffDate</value>

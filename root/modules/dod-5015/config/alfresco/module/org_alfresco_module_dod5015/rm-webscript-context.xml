@@ -13,6 +13,7 @@
         <property name="nodeService" ref="NodeService"/>
         <property name="namespaceService" ref="NamespaceService"/>
         <property name="recordsManagementService" ref="RecordsManagementService"/>
+        <property name="dispositionService" ref="DispositionService"/>
     </bean>
 
     <!-- REST impl for GET DOD Custom Types -->
@@ -99,6 +100,14 @@
         <property name="recordsManagementActionService" ref="RecordsManagementActionService"/>
         <property name="recordsManagementAuditService" ref="RecordsManagementAuditService"/>
         <property name="recordsManagementEventService" ref="RecordsManagementEventService"/>
+        <property name="dispositionService" ref="DispositionService"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+        <property name="namespaceService" ref="NamespaceService"/>
+    </bean>
+    
+    <!--  REST impl for GET Records MetaData aspects -->
+    <bean id="webscript.org.alfresco.rma.recordmetadataaspects.get" class="org.alfresco.module.org_alfresco_module_dod5015.script.RecordMetaDataAspectsGet" parent="webscript">
+        <property name="recordsManagementService" ref="RecordsManagementService"/>
         <property name="dictionaryService" ref="DictionaryService"/>
         <property name="namespaceService" ref="NamespaceService"/>
     </bean>
@@ -170,6 +179,7 @@
     <bean id="webscript.org.alfresco.rma.transferreport.get" class="org.alfresco.module.org_alfresco_module_dod5015.script.TransferReportGet" parent="rmBaseTransferWebscript">
        <property name="dictionaryService" ref="DictionaryService"/>
        <property name="recordsManagementService" ref="RecordsManagementService"/>
+       <property name="dispositionService" ref="DispositionService"/>
     </bean>
     
     <!-- REST impl for POST transfer report -->
@@ -177,6 +187,7 @@
        <property name="dictionaryService" ref="DictionaryService"/>
        <property name="recordsManagementService" ref="RecordsManagementService"/>
        <property name="recordsManagementActionService" ref="RecordsManagementActionService"/>
+       <property name="dispositionService" ref="DispositionService"/>
     </bean>
     
     <!-- RM Role API-->
@@ -273,6 +284,7 @@
         <property name="authorityService" ref="AuthorityService"/>
         <property name="recordsManagementSecurityService" ref="RecordsManagementSecurityService"/>
         <property name="recordsManagementSearchBehaviour" ref="recordsManagementSearchBehaviour"/>
+        <property name="dispositionService" ref="dispositionService"/>
     </bean>
     
     <!-- REST impl for GET applydodcertmodelfixes -->

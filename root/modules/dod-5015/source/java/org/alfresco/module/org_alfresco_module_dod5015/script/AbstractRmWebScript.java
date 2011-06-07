@@ -24,15 +24,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.NamespaceService;
+import org.json.JSONObject;
 import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.json.JSONObject;
 
 /**
  * 
@@ -42,6 +43,7 @@ public abstract class AbstractRmWebScript extends DeclarativeWebScript
 {
     protected NodeService nodeService;
     protected RecordsManagementService rmService;
+    protected DispositionService dispositionService;
     protected NamespaceService namespaceService;
 
     /**
@@ -84,6 +86,14 @@ public abstract class AbstractRmWebScript extends DeclarativeWebScript
         this.rmService = rmService;
     }
 
+    /**
+     * @param dispositionService    the disposition serviceS
+     */
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
+    }
+    
     /**
      * Sets the NodeService instance
      * 

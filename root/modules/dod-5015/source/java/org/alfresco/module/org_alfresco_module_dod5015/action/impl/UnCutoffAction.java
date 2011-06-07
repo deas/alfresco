@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.repository.NodeRef;
 
@@ -45,7 +45,7 @@ public class UnCutoffAction extends RMActionExecuterAbstractBase
             nodeService.hasAspect(actionedUponNodeRef, ASPECT_CUT_OFF) == true)
         {
             // Get the last disposition action
-            DispositionAction da = recordsManagementService.getLastCompletedDispostionAction(actionedUponNodeRef);
+            DispositionAction da = dispositionService.getLastCompletedDispostionAction(actionedUponNodeRef);
             
             // Check that the last disposition action was a cutoff
             if (da == null || da.getName().equals("cutoff") == false)
@@ -55,7 +55,7 @@ public class UnCutoffAction extends RMActionExecuterAbstractBase
             }
             
             // Delete the current disposition action
-            DispositionAction currentDa = recordsManagementService.getNextDispositionAction(actionedUponNodeRef);
+            DispositionAction currentDa = dispositionService.getNextDispositionAction(actionedUponNodeRef);
             if (currentDa != null)
             {
                 nodeService.deleteNode(currentDa.getNodeRef());
@@ -95,7 +95,7 @@ public class UnCutoffAction extends RMActionExecuterAbstractBase
             nodeService.hasAspect(filePlanComponent, ASPECT_CUT_OFF) == true)
         {
             // Get the last disposition action
-            DispositionAction da = recordsManagementService.getLastCompletedDispostionAction(filePlanComponent);
+            DispositionAction da = dispositionService.getLastCompletedDispostionAction(filePlanComponent);
             
             // Check that the last disposition action was a cutoff
             if (da == null || da.getName().equals("cutoff") == false)

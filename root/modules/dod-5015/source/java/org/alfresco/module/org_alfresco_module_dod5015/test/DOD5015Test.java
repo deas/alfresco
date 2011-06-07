@@ -33,16 +33,8 @@ import javax.transaction.UserTransaction;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.CustomisableRmElement;
-import org.alfresco.module.org_alfresco_module_dod5015.DOD5015Model;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
 import org.alfresco.module.org_alfresco_module_dod5015.EventCompletionDetails;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementCustomModel;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementSearchBehaviour;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.VitalRecordDefinition;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionResult;
@@ -55,6 +47,15 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.impl.FreezeAction;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService;
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint.MatchLogic;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionActionDefinition;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementCustomModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementSearchBehaviour;
+import org.alfresco.module.org_alfresco_module_dod5015.test.util.TestUtilities;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.node.integrity.IntegrityException;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
@@ -117,6 +118,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
 	private TransactionService transactionService;
 	private RecordsManagementAdminService rmAdminService;
 	private RMCaveatConfigService caveatConfigService;
+	private DispositionService dispositionService;
 	
 	private MutableAuthenticationService authenticationService;
 	private PersonService personService;
@@ -163,6 +165,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
 		this.caveatConfigService = (RMCaveatConfigService)this.applicationContext.getBean("caveatConfigService");
 		this.publicServiceAccessService = (PublicServiceAccessService)this.applicationContext.getBean("PublicServiceAccessService");
 		this.transactionHelper = (RetryingTransactionHelper)this.applicationContext.getBean("retryingTransactionHelper");
+		this.dispositionService = (DispositionService)this.applicationContext.getBean("DispositionService");
 		
 		// Set the current security context as admin
 		AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
@@ -613,7 +616,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertEquals(declaredDate.getYear(), dateNow.getYear());
                 
                 // Check that the history is empty
-                List<DispositionAction> history = rmService.getCompletedDispositionActions(recordFolder);
+                List<DispositionAction> history = dispositionService.getCompletedDispositionActions(recordFolder);
                 assertNotNull(history);
                 assertEquals(0, history.size());
                 
@@ -757,7 +760,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
             {
                 assertNotNull(recordCategory);
                 
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_INSTRUCTIONS, "Cutoff after 1 month then destroy after 1 month");
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_AUTHORITY, "Alfresco");
@@ -775,8 +778,8 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 step2.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD_PROPERTY, PROP_CUT_OFF_DATE);
                 
                 // add the action definitions to the schedule
-                rmService.addDispositionActionDefinition(schedule, step1);
-                rmService.addDispositionActionDefinition(schedule, step2);
+                dispositionService.addDispositionActionDefinition(schedule, step1);
+                dispositionService.addDispositionActionDefinition(schedule, step2);
                 
                 return null;
             }          
@@ -840,7 +843,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD, "month|3");
                 
                 // update the second dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -891,7 +894,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD, "month|6");
                 
                 // update the first dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -945,7 +948,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_EVENT, (Serializable)events);
                 
                 // update the first dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -1000,7 +1003,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_EVENT, (Serializable)events);
                 
                 // update the first dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -1069,7 +1072,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertNotNull(recordCategory);
                 
                 // get the disposition schedule and turn on record level disposition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_INSTRUCTIONS, "Cutoff after 1 month then destroy after 1 month");
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_AUTHORITY, "Alfresco");
@@ -1088,8 +1091,8 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 step2.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD_PROPERTY, PROP_CUT_OFF_DATE);
                 
                 // add the action definitions to the schedule
-                rmService.addDispositionActionDefinition(schedule, step1);
-                rmService.addDispositionActionDefinition(schedule, step2);
+                dispositionService.addDispositionActionDefinition(schedule, step1);
+                dispositionService.addDispositionActionDefinition(schedule, step2);
                 
                 return null;
             }          
@@ -1179,7 +1182,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD, "month|3");
                 
                 // update the second dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -1227,7 +1230,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD, "month|6");
                 
                 // update the first dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -1281,7 +1284,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_EVENT, (Serializable)events);
                 
                 // update the first dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -1336,7 +1339,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_EVENT, (Serializable)events);
                 
                 // update the first dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -1385,7 +1388,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 changes.put(RecordsManagementModel.PROP_DISPOSITION_ACTION_NAME, "retain");
                 
                 // update the first dispostion action definition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
@@ -1523,11 +1526,11 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 step3.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD_PROPERTY, PROP_DISPOSITION_AS_OF);
                 
                 // add the action definitions to the schedule
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
-                rmService.addDispositionActionDefinition(schedule, step1);
-                rmService.addDispositionActionDefinition(schedule, step2);
-                rmService.addDispositionActionDefinition(schedule, step3);
+                dispositionService.addDispositionActionDefinition(schedule, step1);
+                dispositionService.addDispositionActionDefinition(schedule, step2);
+                dispositionService.addDispositionActionDefinition(schedule, step3);
                 
                 return null;
             }          
@@ -1604,7 +1607,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertEquals("transfer", (String)nodeService.getProperty(folder2NextAction, PROP_DISPOSITION_ACTION));
                 
                 // check there are 3 steps to the schedule
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(3, actionDefs.size());
@@ -1612,7 +1615,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 // attempt to remove step 1 from the schedule
                 try
                 {
-                    rmService.removeDispositionActionDefinition(schedule, actionDefs.get(0));
+                    dispositionService.removeDispositionActionDefinition(schedule, actionDefs.get(0));
                     fail("Expecting the step deletion to be unsuccessful as record folders are present");
                 }
                 catch (AlfrescoRuntimeException are)
@@ -1642,16 +1645,16 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
             public Object execute() throws Throwable
             {
                 // make sure there are 3 steps
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(3, actionDefs.size());
                 
                 // remove last step, should be successful this time
-                rmService.removeDispositionActionDefinition(schedule, actionDefs.get(2));
+                dispositionService.removeDispositionActionDefinition(schedule, actionDefs.get(2));
                 
                 // make sure there are now 2 steps
-                schedule = rmService.getDispositionSchedule(recordCategory);
+                schedule = dispositionService.getDispositionSchedule(recordCategory);
                 actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
                 
@@ -1829,7 +1832,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertNotNull(recordCategory);
                 
                 // get the disposition schedule and turn on record level disposition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 nodeService.setProperty(schedule.getNodeRef(), PROP_RECORD_LEVEL_DISPOSITION, true);
                 
@@ -1852,9 +1855,9 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 step3.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD_PROPERTY, PROP_DISPOSITION_AS_OF);
                 
                 // add the action definitions to the schedule
-                rmService.addDispositionActionDefinition(schedule, step1);
-                rmService.addDispositionActionDefinition(schedule, step2);
-                rmService.addDispositionActionDefinition(schedule, step3);
+                dispositionService.addDispositionActionDefinition(schedule, step1);
+                dispositionService.addDispositionActionDefinition(schedule, step2);
+                dispositionService.addDispositionActionDefinition(schedule, step3);
                 
                 return null;
             }          
@@ -1923,7 +1926,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
             public Object execute() throws Throwable
             {
                 // check there are 3 steps to the schedule
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(3, actionDefs.size());
@@ -1931,7 +1934,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 // attempt to remove step 1 from the schedule
                 try
                 {
-                    rmService.removeDispositionActionDefinition(schedule, actionDefs.get(0));
+                    dispositionService.removeDispositionActionDefinition(schedule, actionDefs.get(0));
                     fail("Expecting the step deletion to be unsuccessful as records are present");
                 }
                 catch (AlfrescoRuntimeException are)
@@ -1960,16 +1963,16 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
             public Object execute() throws Throwable
             {
                 // make sure there are 3 steps
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 List<DispositionActionDefinition> actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(3, actionDefs.size());
                 
                 // remove last step, should be successful this time
-                rmService.removeDispositionActionDefinition(schedule, actionDefs.get(2));
+                dispositionService.removeDispositionActionDefinition(schedule, actionDefs.get(2));
                 
                 // make sure there are now 2 steps
-                schedule = rmService.getDispositionSchedule(recordCategory);
+                schedule = dispositionService.getDispositionSchedule(recordCategory);
                 actionDefs = schedule.getDispositionActionDefinitions();
                 assertEquals(2, actionDefs.size());
                 
@@ -2029,14 +2032,14 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 step2.put(RecordsManagementModel.PROP_DISPOSITION_PERIOD_PROPERTY, PROP_CUT_OFF_DATE);
                 
                 // add the action definitions to the schedule
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 
-                NodeRef temp = rmService.addDispositionActionDefinition(schedule, step1).getNodeRef();
+                NodeRef temp = dispositionService.addDispositionActionDefinition(schedule, step1).getNodeRef();
                 List<QName> updatedProps = new ArrayList<QName>(step1.keySet());
                 refreshDispositionActionDefinition(temp, updatedProps);
                 
-                temp = rmService.addDispositionActionDefinition(schedule, step2).getNodeRef();
+                temp = dispositionService.addDispositionActionDefinition(schedule, step2).getNodeRef();
                 updatedProps = new ArrayList<QName>(step2.keySet());
                 refreshDispositionActionDefinition(temp, updatedProps);
                 
@@ -2052,7 +2055,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
             {
                 assertNotNull(recordFolder);
                 
-                DispositionAction da = rmService.getNextDispositionAction(recordFolder);
+                DispositionAction da = dispositionService.getNextDispositionAction(recordFolder);
                 assertNotNull(da);
                 
                 assertNotNull(da.getDispositionActionDefinition());
@@ -2107,7 +2110,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertNotNull(recordCategory);
                 
                 // get the disposition schedule and turn on record level disposition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_INSTRUCTIONS, "Cutoff after 1 month then destroy after 1 month");
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_AUTHORITY, "Alfresco");
@@ -2135,7 +2138,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 checkSearchAspect(recordFolder, false);
                 
                 // update the disposition schedule
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_INSTRUCTIONS, "Cutoff immediately when case is closed then destroy after 1 year");
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_AUTHORITY, "DoD");
@@ -2186,7 +2189,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertNotNull(recordCategory);
                 
                 // get the disposition schedule and turn on record level disposition
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_INSTRUCTIONS, "Cutoff after 1 month then destroy after 1 month");
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_AUTHORITY, "Alfresco");
@@ -2240,7 +2243,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 checkSearchAspect(record, false);
                 
                 // update the disposition schedule
-                DispositionSchedule schedule = rmService.getDispositionSchedule(recordCategory);
+                DispositionSchedule schedule = dispositionService.getDispositionSchedule(recordCategory);
                 assertNotNull(schedule);
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_INSTRUCTIONS, "Cutoff immediately when case is closed then destroy after 1 year");
                 nodeService.setProperty(schedule.getNodeRef(), PROP_DISPOSITION_AUTHORITY, "DoD");
@@ -2318,7 +2321,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 {
                     assertTrue(nodeService.hasAspect(record, ASPECT_CUT_OFF));
                 }
-                DispositionAction da = rmService.getNextDispositionAction(recordFolder);
+                DispositionAction da = dispositionService.getNextDispositionAction(recordFolder);
                 assertNotNull(da);
                 assertFalse("cutoff".equals(da.getName()));
                 checkLastDispositionAction(recordFolder, "cutoff", 1);
@@ -2333,14 +2336,14 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 {
                     assertFalse(nodeService.hasAspect(record, ASPECT_CUT_OFF));
                 }
-                da = rmService.getNextDispositionAction(recordFolder);
+                da = dispositionService.getNextDispositionAction(recordFolder);
                 assertNotNull(da);
                 assertTrue("cutoff".equals(da.getName()));
                 assertNull(da.getStartedAt());
                 assertNull(da.getStartedBy());
                 assertNull(da.getCompletedAt());
                 assertNull(da.getCompletedBy());
-                List<DispositionAction> history = rmService.getCompletedDispositionActions(recordFolder);
+                List<DispositionAction> history = dispositionService.getCompletedDispositionActions(recordFolder);
                 assertNotNull(history);
                 assertEquals(0, history.size());
                 
@@ -2353,7 +2356,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
     private void checkLastDispositionAction(NodeRef nodeRef, String daName, int expectedCount)
     {
         // Check the previous action details
-        List<DispositionAction> history = rmService.getCompletedDispositionActions(nodeRef);
+        List<DispositionAction> history = dispositionService.getCompletedDispositionActions(nodeRef);
         assertNotNull(history);
         assertEquals(expectedCount, history.size());
         DispositionAction lastDA = history.get(history.size()-1);
@@ -2363,7 +2366,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         assertNotNull(lastDA.getCompletedAt());
         assertNotNull(lastDA.getCompletedBy());
         // Check the "get last" method
-        lastDA = rmService.getLastCompletedDispostionAction(nodeRef);
+        lastDA = dispositionService.getLastCompletedDispostionAction(nodeRef);
         assertEquals(daName, lastDA.getName());        
     }
     
@@ -2730,7 +2733,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
             public NodeRef execute() throws Throwable
             {
                 
-                DispositionAction da = rmService.getNextDispositionAction(recordTwo);
+                DispositionAction da = dispositionService.getNextDispositionAction(recordTwo);
                 assertNotNull(da);
                 assertEquals("cutoff", da.getName());
                 assertFalse(da.isEventsEligible());
@@ -2753,7 +2756,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         {
             public NodeRef execute() throws Throwable
             {
-                DispositionAction da = rmService.getNextDispositionAction(recordTwo);
+                DispositionAction da = dispositionService.getNextDispositionAction(recordTwo);
                 assertNotNull(da);
                 assertEquals("cutoff", da.getName());
                 assertTrue(da.isEventsEligible());
@@ -2920,7 +2923,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 
                 checkLastDispositionAction(recordFolder, "cutoff", 1);
                 
-                DispositionAction da = rmService.getNextDispositionAction(recordFolder);
+                DispositionAction da = dispositionService.getNextDispositionAction(recordFolder);
                 assertNotNull(da);
                 assertEquals("transfer", da.getName());
                 
@@ -2962,7 +2965,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertFalse(nodeService.hasAspect(recordThree, ASPECT_TRANSFERRED));
                 
                 // Check that the next disposition action is still in the correct state
-                DispositionAction da = rmService.getNextDispositionAction(recordFolder);
+                DispositionAction da = dispositionService.getNextDispositionAction(recordFolder);
                 assertNotNull(da);
                 assertEquals("transfer", da.getName());
                 assertNotNull(da.getStartedAt());
@@ -3003,14 +3006,14 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 assertEquals(0, assocs.size());
                 
                 // Check the disposition action has been moved on        
-                da = rmService.getNextDispositionAction(recordFolder);
+                da = dispositionService.getNextDispositionAction(recordFolder);
                 assertNotNull(da);
                 assertEquals("transfer", da.getName());
                 assertNull(da.getStartedAt());
                 assertNull(da.getStartedBy());
                 assertNull(da.getCompletedAt());
                 assertNull(da.getCompletedBy());    
-                assertFalse(rmService.isNextDispositionActionEligible(recordFolder));
+                assertFalse(dispositionService.isNextDispositionActionEligible(recordFolder));
                 
                 checkLastDispositionAction(recordFolder, "transfer", 2);
                 
@@ -3026,7 +3029,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
     
 	private void checkSearchAspect(NodeRef record, boolean isPeriodSet)
 	{
-	    DispositionAction da = rmService.getNextDispositionAction(record);
+	    DispositionAction da = dispositionService.getNextDispositionAction(record);
 	    if (da != null)
 	    {
 	        assertTrue(nodeService.hasAspect(record, RecordsManagementSearchBehaviour.ASPECT_RM_SEARCH));
@@ -3065,7 +3068,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
             }
 	    }
 	    
-	    DispositionSchedule ds = rmService.getDispositionSchedule(record);
+	    DispositionSchedule ds = dispositionService.getDispositionSchedule(record);
 	    Boolean value = (Boolean)nodeService.getProperty(record, RecordsManagementSearchBehaviour.PROP_RS_HAS_DISPOITION_SCHEDULE);
 	    String dsInstructions = (String)nodeService.getProperty(record, RecordsManagementSearchBehaviour.PROP_RS_DISPOITION_INSTRUCTIONS);
 	    String dsAuthority = (String)nodeService.getProperty(record, RecordsManagementSearchBehaviour.PROP_RS_DISPOITION_AUTHORITY);
@@ -3123,7 +3126,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         assertFalse(this.nodeService.hasAspect(recordFolder, ASPECT_DISPOSITION_LIFECYCLE));
         
         // Check the dispostion action
-        DispositionAction da = rmService.getNextDispositionAction(recordOne);
+        DispositionAction da = dispositionService.getNextDispositionAction(recordOne);
         assertNotNull(da);
         assertEquals("cutoff", da.getDispositionActionDefinition().getName());
         assertNull(da.getAsOfDate());
@@ -3155,7 +3158,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         txn.begin();
         
         // Check events are gone
-        da = rmService.getNextDispositionAction(recordOne);
+        da = dispositionService.getNextDispositionAction(recordOne);
         
         assertNotNull(da);
         assertEquals("destroy", da.getDispositionActionDefinition().getName());
@@ -3225,7 +3228,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         assertTrue(this.nodeService.hasAspect(recordFolder, ASPECT_DISPOSITION_LIFECYCLE));
         
         // Check the dispostion action
-        DispositionAction da = rmService.getNextDispositionAction(recordFolder);
+        DispositionAction da = dispositionService.getNextDispositionAction(recordFolder);
         assertNotNull(da);
         assertEquals("cutoff", da.getDispositionActionDefinition().getName());
         assertNull(da.getAsOfDate());
@@ -3340,7 +3343,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         txn.begin();
         
         // Check events are gone
-        da = rmService.getNextDispositionAction(recordFolder);
+        da = dispositionService.getNextDispositionAction(recordFolder);
         
         assertNotNull(da);
         assertEquals("destroy", da.getDispositionActionDefinition().getName());
@@ -4116,9 +4119,17 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                 try
                 {
                     // Define a custom "project list" property (for records) - note: multi-valued
-                    rmAdminService.addCustomPropertyDefinition(PROP_CUSTOM_PRJLIST, CustomisableRmElement.RECORD.getCorrespondingAspect(),
-                            PROP_CUSTOM_PRJLIST.getLocalName(), DataTypeDefinition.TEXT, "Projects",
-                            null, null, true, false, false, CONSTRAINT_CUSTOM_PRJLIST);
+                    rmAdminService.addCustomPropertyDefinition(
+                    		PROP_CUSTOM_PRJLIST, 
+                    		ASPECT_RECORD,
+                            PROP_CUSTOM_PRJLIST.getLocalName(), 
+                            DataTypeDefinition.TEXT, "Projects",
+                            null, 
+                            null, 
+                            true, 
+                            false, 
+                            false, 
+                            CONSTRAINT_CUSTOM_PRJLIST);
                 } 
                 catch (AlfrescoRuntimeException e)
                 {

@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.VitalRecordDefinition;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -82,26 +82,29 @@ public class FileAction extends RMActionExecuterAbstractBase
 
         // Calculate the review schedule
         VitalRecordDefinition viDef = this.recordsManagementService.getVitalRecordDefinition(actionedUponNodeRef);
-        Date reviewAsOf = viDef.getNextReviewDate();
-        if (reviewAsOf != null)
+        if (viDef != null)
         {
-            Map<QName, Serializable> reviewProps = new HashMap<QName, Serializable>(1);
-            reviewProps.put(RecordsManagementModel.PROP_REVIEW_AS_OF, reviewAsOf);
-            
-            if (!nodeService.hasAspect(actionedUponNodeRef, ASPECT_VITAL_RECORD))
-            {
-                this.nodeService.addAspect(actionedUponNodeRef, RecordsManagementModel.ASPECT_VITAL_RECORD, reviewProps);
-            }
-            else
-            {
-                Map<QName, Serializable> props = nodeService.getProperties(actionedUponNodeRef);
-                props.putAll(reviewProps);
-                nodeService.setProperties(actionedUponNodeRef, props);
-            }
+	        Date reviewAsOf = viDef.getNextReviewDate();
+	        if (reviewAsOf != null)
+	        {
+	            Map<QName, Serializable> reviewProps = new HashMap<QName, Serializable>(1);
+	            reviewProps.put(RecordsManagementModel.PROP_REVIEW_AS_OF, reviewAsOf);
+	            
+	            if (!nodeService.hasAspect(actionedUponNodeRef, ASPECT_VITAL_RECORD))
+	            {
+	                this.nodeService.addAspect(actionedUponNodeRef, RecordsManagementModel.ASPECT_VITAL_RECORD, reviewProps);
+	            }
+	            else
+	            {
+	                Map<QName, Serializable> props = nodeService.getProperties(actionedUponNodeRef);
+	                props.putAll(reviewProps);
+	                nodeService.setProperties(actionedUponNodeRef, props);
+	            }
+	        }
         }
 
         // Get the disposition instructions for the actioned upon record
-        DispositionSchedule di = this.recordsManagementService.getDispositionSchedule(actionedUponNodeRef);
+        DispositionSchedule di = this.dispositionService.getDispositionSchedule(actionedUponNodeRef);
         
         // Set up the disposition schedule if the dispositions are being managed at the record level
         if (di != null && di.isRecordLevelDisposition() == true)

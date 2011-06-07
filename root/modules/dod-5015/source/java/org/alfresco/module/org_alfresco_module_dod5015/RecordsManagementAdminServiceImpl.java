@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +38,9 @@ import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementPolicies
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementPolicies.OnRemoveReference;
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint;
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint.MatchLogic;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementCustomModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.dictionary.DictionaryRepositoryBootstrap;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
@@ -48,8 +52,11 @@ import org.alfresco.repo.dictionary.M2Constraint;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.dictionary.M2Property;
+import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.ClassPolicyDelegate;
+import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
+import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.Constraint;
@@ -58,6 +65,7 @@ import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentReader;
@@ -65,6 +73,7 @@ import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
@@ -78,33 +87,41 @@ import org.springframework.extensions.surf.util.ParameterCheck;
  * 
  * @author Neil McErlean, janv
  */
-public class RecordsManagementAdminServiceImpl implements RecordsManagementAdminService, RecordsManagementCustomModel
+public class RecordsManagementAdminServiceImpl implements RecordsManagementAdminService, 
+														  RecordsManagementCustomModel,
+														  NodeServicePolicies.OnAddAspectPolicy,
+														  NodeServicePolicies.OnRemoveAspectPolicy,
+														  NodeServicePolicies.OnCreateNodePolicy
 {
     /** Logger */
     private static Log logger = LogFactory.getLog(RecordsManagementAdminServiceImpl.class);
     
-    public static final String RMC_CUSTOM_ASSOCS = RecordsManagementCustomModel.RM_CUSTOM_PREFIX + ":customAssocs";
-    
-    private static final String CUSTOM_CONSTRAINT_TYPE = org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint.class.getName();
-    
-    private static final NodeRef RM_CUSTOM_MODEL_NODE_REF = new NodeRef("workspace://SpacesStore/records_management_custom_model");
-    
+    /** Constants */
+    public static final String RMC_CUSTOM_ASSOCS = RecordsManagementCustomModel.RM_CUSTOM_PREFIX + ":customAssocs";    
+    private static final String CUSTOM_CONSTRAINT_TYPE = org.alfresco.module.org_alfresco_module_dod5015.caveat.RMListOfValuesConstraint.class.getName();    
+    private static final NodeRef RM_CUSTOM_MODEL_NODE_REF = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, "records_management_custom_model");    
     private static final String PARAM_ALLOWED_VALUES = "allowedValues";
     private static final String PARAM_CASE_SENSITIVE = "caseSensitive";
-    private static final String PARAM_MATCH_LOGIC = "matchLogic";
-    
-    public static final String RMA_RECORD = "rma:record";
-    
+    private static final String PARAM_MATCH_LOGIC = "matchLogic";    
+    public static final String RMA_RECORD = "rma:record";    
     private static final String SOURCE_TARGET_ID_SEPARATOR = "__";
     
-    /** Services */
+    /** Dictionary service */
     private DictionaryService dictionaryService;
-    private NamespaceService namespaceService;
-    private NodeService nodeService;
-    private ContentService contentService;
     
+    /** Namespace service */ 
+    private NamespaceService namespaceService;
+    
+    /** Node service */
+    private NodeService nodeService;
+    
+    /** Content service */
+    private ContentService contentService;
+
+    /** Dictionary repository bootstrap */
     private DictionaryRepositoryBootstrap dictonaryRepositoryBootstrap;
 
+    /** Policy component */
     private PolicyComponent policyComponent;
     
     /** Policy delegates */
@@ -112,6 +129,10 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     private ClassPolicyDelegate<OnCreateReference> onCreateReferenceDelegate;    
     private ClassPolicyDelegate<BeforeRemoveReference> beforeRemoveReferenceDelegate;
     private ClassPolicyDelegate<OnRemoveReference> onRemoveReferenceDelegate;
+    
+    /** List of types that can be customisable */
+    private List<QName> pendingCustomisableTypes;
+    private Map<QName, QName> customisableTypes;
     
     /**
      * @param dictionaryService     the dictionary service
@@ -137,6 +158,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
 		this.nodeService = nodeService;
 	}
 	
+	/**
+	 * @param contentService	the content service
+	 */
 	public void setContentService(ContentService contentService)
 	{
 	    this.contentService = contentService;
@@ -150,12 +174,15 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         this.policyComponent = policyComponent;
     }
     
-    // bootstrap for standard (non-RMC) dynamic models
-    public void setDictionaryRepositoryBootstrap(DictionaryRepositoryBootstrap dictonaryRepositoryBootstrap)
+    /**
+     * Bootstrap for standard (non-RMC) dynamic models
+     * 
+     * @param dictonaryRepositoryBootstrap	dictionary repository bootstrap
+     */
+	public void setDictionaryRepositoryBootstrap(DictionaryRepositoryBootstrap dictonaryRepositoryBootstrap)
     {
         this.dictonaryRepositoryBootstrap = dictonaryRepositoryBootstrap;
-    }
-    
+    }    
     
 	/**
 	 * Initialisation method
@@ -205,16 +232,278 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         policy.onRemoveReference(fromNodeRef, toNodeRef, reference);
     }
 
-	/**
-	 * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#getCustomReferenceDefinitions()
-	 */
-    public Map<QName, AssociationDefinition> getCustomReferenceDefinitions()
+    @Override
+    public void onAddAspect(NodeRef nodeRef, QName aspectTypeQName)
     {
-		QName relevantAspectQName = QName.createQName(RMC_CUSTOM_ASSOCS, namespaceService);
-        AspectDefinition aspectDefn = dictionaryService.getAspect(relevantAspectQName);
-        Map<QName, AssociationDefinition> assocDefns = aspectDefn.getAssociations();
+        if (nodeService.exists(nodeRef) == true &&
+            isCustomisable(aspectTypeQName) == true)
+        {
+            QName customPropertyAspect = getCustomAspect(aspectTypeQName);
+            nodeService.addAspect(nodeRef, customPropertyAspect, null);
+        }
+    }
+
+    @Override
+    public void onRemoveAspect(NodeRef nodeRef, QName aspectTypeQName)
+    {
+        if (nodeService.exists(nodeRef) == true &&
+            isCustomisable(aspectTypeQName) == true)
+        {
+            QName customPropertyAspect = getCustomAspect(aspectTypeQName);
+            nodeService.removeAspect(nodeRef, customPropertyAspect);  
+        }
+    }
+
+    @Override
+    public void onCreateNode(ChildAssociationRef childAssocRef)
+    {
+        NodeRef nodeRef = childAssocRef.getChildRef();
+        QName type = nodeService.getType(nodeRef);
+        while (type != null && ContentModel.TYPE_CMOBJECT.equals(type) == false)
+        {
+            if (isCustomisable(type) == true)
+            {
+                QName customPropertyAspect = getCustomAspect(type);
+                nodeService.addAspect(nodeRef, customPropertyAspect, null);  
+            }
+            
+            TypeDefinition def = dictionaryService.getType(type);
+            if (def != null)
+            {
+                type = def.getParentName();
+            }
+            else
+            {
+                type = null;
+            }
+        }        
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#initialiseCustomModel()
+     */
+    public void initialiseCustomModel()
+    {        
+        // Bind class behaviours
+        policyComponent.bindClassBehaviour(
+                NodeServicePolicies.OnAddAspectPolicy.QNAME, 
+                this, 
+                new JavaBehaviour(this, "onAddAspect", NotificationFrequency.FIRST_EVENT));
+        policyComponent.bindClassBehaviour(
+                NodeServicePolicies.OnRemoveAspectPolicy.QNAME, 
+                this, 
+                new JavaBehaviour(this, "onRemoveAspect", NotificationFrequency.FIRST_EVENT));
+        policyComponent.bindClassBehaviour(
+                NodeServicePolicies.OnCreateNodePolicy.QNAME, 
+                this, 
+                new JavaBehaviour(this, "onCreateNode", NotificationFrequency.FIRST_EVENT));
         
-        return assocDefns;
+    	// Make sure each customisable type has a corresponding aspect 
+    	for (QName customisableType : pendingCustomisableTypes) 
+    	{
+    		QName customAspect = getCustomAspect(customisableType);
+    		if (dictionaryService.getAspect(customAspect) == null)
+    		{
+	    		NodeRef modelRef = getCustomModelRef(customAspect.getNamespaceURI());
+		        M2Model model = readCustomContentModel(modelRef);
+		        try
+		        {
+		        	// Create the new aspect to hold the custom properties
+		        	M2Aspect aspect = model.createAspect(customAspect.toPrefixString(namespaceService));
+		        	aspect.setDescription(customisableType.toPrefixString(namespaceService));
+		        }
+		        finally
+		        {
+		        	writeCustomContentModel(modelRef, model);
+		        }
+    		}
+		}
+    }
+    
+    /**
+     * @param customisableTypes		list of string representations of the type qnames that are customisable
+     */
+    public void setCustomisableTypes(List<String> customisableTypes)
+    {
+    	pendingCustomisableTypes = new ArrayList<QName>();
+    	for (String customisableType : customisableTypes) 
+    	{
+    		pendingCustomisableTypes.add(QName.createQName(customisableType, namespaceService));
+		}
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#getCustomisable()
+     */
+    public Set<QName> getCustomisable()
+    {
+    	return getCustomisableMap().keySet();    	
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    private Map<QName, QName> getCustomisableMap()
+    {
+    	if (customisableTypes == null)
+    	{
+    		customisableTypes = new HashMap<QName, QName>(7);
+	    	Collection<QName> aspects = dictionaryService.getAspects(RM_CUSTOM_MODEL);
+	    	for (QName aspect : aspects) 
+	    	{
+	    		AspectDefinition aspectDef = dictionaryService.getAspect(aspect);
+	    		String name = aspectDef.getName().getLocalName();
+	    		if (name.endsWith("Properties") == true)
+	    		{
+	    			QName type = null;
+	    			String prefixString = aspectDef.getDescription();
+	    			if (prefixString == null)
+	    			{
+	    				// Backward compatibility from previous RM custom models
+	    				if ("customRecordProperties".equals(name) == true)
+	    				{
+	    					type = RecordsManagementModel.ASPECT_RECORD;
+	    				}
+	    				else if ("customRecordFolderProperties".equals(name) == true)
+	    				{
+	    					type = RecordsManagementModel.TYPE_RECORD_FOLDER;
+	    				}
+	    				else if ("customRecordSeriesProperties".equals(name) == true)
+	    				{
+	    					type = DOD5015Model.TYPE_RECORD_SERIES;
+	    				}
+	    				else if ("customRecordCategoryProperties".equals(name) == true)
+	    				{
+	    					type = DOD5015Model.TYPE_RECORD_CATEGORY;
+	    				}
+	    			}
+	    			else
+	    			{
+	    				type = QName.createQName(prefixString, namespaceService);
+	    			}
+	    			customisableTypes.put(type, aspect);
+	    		}
+			}
+    	}
+    	return customisableTypes;    	
+    }
+    
+
+
+    /**
+     * Gets the QName of the custom aspect given the customisable type QName
+     * 
+     * @param customisableType	
+     * @return
+     */
+    private QName getCustomAspect(QName customisableType)
+    {
+    	Map<QName, QName> map = getCustomisableMap();
+    	QName result = map.get(customisableType);
+    	if (result == null)
+    	{
+    		String localName = customisableType.toPrefixString(namespaceService).replace(":", "");
+    		localName = MessageFormat.format("{0}CustomProperties", localName);
+    	    result = QName.createQName(RM_CUSTOM_URI, localName);
+    	}
+    	return result;
+    }
+    
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#isCustomisable(org.alfresco.service.namespace.QName)
+     */
+    @Override
+    public boolean isCustomisable(QName type) 
+    {
+    	ParameterCheck.mandatory("type", type);    	
+    	return getCustomisable().contains(type);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#makeCustomisable(org.alfresco.service.namespace.QName)
+     */
+    @Override
+    public void makeCustomisable(QName type) 
+    {
+    	ParameterCheck.mandatory("type", type);
+    	
+    	if (customisableTypes == null)
+    	{
+    		// Add the type to the pending list
+    		pendingCustomisableTypes.add(type);
+    	}
+    	else
+    	{    	
+	    	QName customAspect = getCustomAspect(type);
+			if (dictionaryService.getAspect(customAspect) == null)
+			{
+		    	NodeRef modelRef = getCustomModelRef(customAspect.getNamespaceURI());
+		        M2Model model = readCustomContentModel(modelRef);
+		        try
+		        {
+		        	// Create the new aspect to hold the custom properties
+		        	M2Aspect aspect = model.createAspect(customAspect.toPrefixString(namespaceService));
+		        	aspect.setDescription(type.toPrefixString(namespaceService));
+		        }
+		        finally
+		        {
+		        	writeCustomContentModel(modelRef, model);
+		        }
+		        customisableTypes.put(type, customAspect);
+			}
+    	}
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#unmakeCustomisable(org.alfresco.service.namespace.QName)
+     */
+    @Override
+    public void unmakeCustomisable(QName type) 
+    {
+    	ParameterCheck.mandatory("type", type);
+    	
+    	if (customisableTypes == null)
+    	{
+    		throw new AlfrescoRuntimeException("Service not initialised.");
+    	}
+    	
+    	QName customAspect = getCustomAspect(type);
+		if (dictionaryService.getAspect(customAspect) != null)
+		{
+			// TODO need to confirm that the custom properties are not being used!
+			
+	    	NodeRef modelRef = getCustomModelRef(customAspect.getNamespaceURI());
+	        M2Model model = readCustomContentModel(modelRef);
+	        try
+	        {
+	        	// Create the new aspect to hold the custom properties
+	        	model.removeAspect(customAspect.toPrefixString(namespaceService));
+	        }
+	        finally
+	        {
+	        	writeCustomContentModel(modelRef, model);
+	        }
+	        customisableTypes.remove(type);
+		}
+    }
+
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#existsCustomProperty(org.alfresco.service.namespace.QName)
+     */
+    @Override
+    public boolean existsCustomProperty(QName propertyName) 
+    {
+    	ParameterCheck.mandatory("propertyName", propertyName);
+    	
+    	boolean result = false;
+    	if (RM_CUSTOM_URI.equals(propertyName.getNamespaceURI()) == true &&
+    	    dictionaryService.getProperty(propertyName) != null)
+    	{
+    		result = true;
+    	}
+    	return result;
     }
 
     /**
@@ -223,32 +512,43 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     public Map<QName, PropertyDefinition> getCustomPropertyDefinitions()
     {
     	Map<QName, PropertyDefinition> result = new HashMap<QName, PropertyDefinition>();
-    	for (CustomisableRmElement elem : CustomisableRmElement.values())
+    	for (QName customisableType : getCustomisable()) 
     	{
-    		result.putAll(getCustomPropertyDefinitions(elem));
-    	}
+    		result.putAll(getCustomPropertyDefinitions(customisableType));
+		}
         return result;
     }
 
     /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#getCustomPropertyDefinitions(org.alfresco.module.org_alfresco_module_dod5015.CustomisableRmElement)
      */
-    public Map<QName, PropertyDefinition> getCustomPropertyDefinitions(CustomisableRmElement rmElement)
+    public Map<QName, PropertyDefinition> getCustomPropertyDefinitions(QName customisableType)
     {
-		QName relevantAspectQName = QName.createQName(rmElement.getCorrespondingAspect(), namespaceService);
+		QName relevantAspectQName = getCustomAspect(customisableType);
         AspectDefinition aspectDefn = dictionaryService.getAspect(relevantAspectQName);
         Map<QName, PropertyDefinition> propDefns = aspectDefn.getProperties();
 
         return propDefns;
     }
     
-    public QName addCustomPropertyDefinition(QName propId, String aspectName, String label, QName dataType, String title, String description)
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#addCustomPropertyDefinition(org.alfresco.service.namespace.QName, org.alfresco.service.namespace.QName, java.lang.String, org.alfresco.service.namespace.QName, java.lang.String, java.lang.String)
+     */
+    public QName addCustomPropertyDefinition(QName propId, QName aspectName, String label, QName dataType, String title, String description)
     {
         return addCustomPropertyDefinition(propId, aspectName, label, dataType, title, description, null, false, false, false, null);
     }
     
-    public QName addCustomPropertyDefinition(QName propId, String aspectName, String label, QName dataType, String title, String description, String defaultValue, boolean multiValued, boolean mandatory, boolean isProtected, QName lovConstraint)
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#addCustomPropertyDefinition(org.alfresco.service.namespace.QName, org.alfresco.service.namespace.QName, java.lang.String, org.alfresco.service.namespace.QName, java.lang.String, java.lang.String, java.lang.String, boolean, boolean, boolean, org.alfresco.service.namespace.QName)
+     */
+    public QName addCustomPropertyDefinition(QName propId, QName aspectName, String label, QName dataType, String title, String description, String defaultValue, boolean multiValued, boolean mandatory, boolean isProtected, QName lovConstraint)
     {
+    	if (isCustomisable(aspectName) == false)
+    	{
+    		throw new AlfrescoRuntimeException("The type/aspect " + aspectName.toPrefixString(namespaceService) + " is not customisable.");
+    	}
+    	
         // title parameter is currently ignored. Intentionally.
         if (propId == null)
         {
@@ -256,22 +556,22 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             propId = this.generateQNameFor(label);
         }
         
-        ParameterCheck.mandatoryString("aspectName", aspectName);
+        ParameterCheck.mandatory("aspectName", aspectName);
         ParameterCheck.mandatory("label", label);
         ParameterCheck.mandatory("dataType", dataType);
         
         NodeRef modelRef = getCustomModelRef(propId.getNamespaceURI());
         M2Model deserializedModel = readCustomContentModel(modelRef);
         
-        M2Aspect customPropsAspect = deserializedModel.getAspect(aspectName);
+        QName customAspect = getCustomAspect(aspectName);
+        M2Aspect customPropsAspect = deserializedModel.getAspect(customAspect.toPrefixString(namespaceService));
         
         if (customPropsAspect == null)
         {
-            throw new AlfrescoRuntimeException("Unknown aspect: " + aspectName);
+            throw new AlfrescoRuntimeException("Unknown custom aspect: " + customAspect + " for aspect " + aspectName.toPrefixString(namespaceService));
         }
         
         String propIdAsString = propId.toPrefixString(namespaceService);
-
         M2Property customProp = customPropsAspect.getProperty(propIdAsString);
         if (customProp != null)
         {
@@ -318,6 +618,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         return propId;
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#setCustomPropertyDefinitionLabel(org.alfresco.service.namespace.QName, java.lang.String)
+     */
     public QName setCustomPropertyDefinitionLabel(QName propQName, String newLabel)
     {
         ParameterCheck.mandatory("propQName", propQName);
@@ -347,6 +650,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         return propQName;
     }
     
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#setCustomPropertyDefinitionConstraint(org.alfresco.service.namespace.QName, org.alfresco.service.namespace.QName)
+     */
     public QName setCustomPropertyDefinitionConstraint(QName propQName, QName newLovConstraint)
     {
         ParameterCheck.mandatory("propQName", propQName);
@@ -395,6 +701,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         return propQName;
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#removeCustomPropertyDefinitionConstraints(org.alfresco.service.namespace.QName)
+     */
     public QName removeCustomPropertyDefinitionConstraints(QName propQName)
     {
         ParameterCheck.mandatory("propQName", propQName);
@@ -426,6 +735,12 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         return propQName;
     }
 
+    /**
+     * 
+     * @param propQName
+     * @param deserializedModel
+     * @return
+     */
     private M2Property findProperty(QName propQName, M2Model deserializedModel)
     {
         List<M2Aspect> aspects = deserializedModel.getAspects();
@@ -443,6 +758,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         throw new AlfrescoRuntimeException("Custom model does not contain property definition " + propQName);
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#removeCustomPropertyDefinition(org.alfresco.service.namespace.QName)
+     */
     public void removeCustomPropertyDefinition(QName propQName)
     {
         ParameterCheck.mandatory("propQName", propQName);
@@ -458,9 +776,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         // Need to select the correct aspect in the customModel from which we'll
         // attempt to delete the property definition.
-        for (CustomisableRmElement elem : CustomisableRmElement.values())
+        for (QName customisableType : getCustomisable())
         {
-            aspectName = elem.getCorrespondingAspect();
+        	aspectName = getCustomAspect(customisableType).toPrefixString(namespaceService);
             M2Aspect customPropsAspect = deserializedModel.getAspect(aspectName);
             
             if (customPropsAspect == null)
@@ -485,7 +803,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             }
         }
         
-        if (! found)
+        if (found == false)
         {
             throw new AlfrescoRuntimeException("Could not find property to delete: "+propQNameAsString);
         }
@@ -498,6 +816,18 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         }
     }
 
+	/**
+	 * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#getCustomReferenceDefinitions()
+	 */
+    public Map<QName, AssociationDefinition> getCustomReferenceDefinitions()
+    {
+		QName relevantAspectQName = QName.createQName(RMC_CUSTOM_ASSOCS, namespaceService);
+        AspectDefinition aspectDefn = dictionaryService.getAspect(relevantAspectQName);
+        Map<QName, AssociationDefinition> assocDefns = aspectDefn.getAssociations();
+        
+        return assocDefns;
+    }
+    
     /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#addCustomReference(org.alfresco.service.cmr.repository.NodeRef, org.alfresco.service.cmr.repository.NodeRef, org.alfresco.service.namespace.QName)
      */

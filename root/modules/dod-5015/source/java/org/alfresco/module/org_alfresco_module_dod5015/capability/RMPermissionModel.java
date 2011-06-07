@@ -18,7 +18,7 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.capability;
 
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.security.permissions.impl.SimplePermissionReference;
 
 /**

@@ -25,17 +25,18 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.module.org_alfresco_module_dod5015.CustomisableRmElement;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementCustomModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementCustomModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.service.namespace.QName;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 /**
  * Implementation for Java backed webscript to add RM custom property definitions
@@ -129,12 +130,17 @@ public class CustomPropertyDefinitionPost extends AbstractRmWebScript
         return params;
     }
 
+    /**
+     * Create a property definition based on the parameter values provided
+     * 
+     * @param params parameter values
+     * @return {@link QName} qname of the newly created custom property
+     */
     protected QName createNewPropertyDefinition(Map<String, Serializable> params)
     {
-        // Need to select the correct aspect in the customModel to which we'll add the property.
-        String customisableElement = (String)params.get(PARAM_ELEMENT);
-        CustomisableRmElement ce = CustomisableRmElement.getEnumFor(customisableElement);
-        String aspectName = ce.getCorrespondingAspect();
+    	// Get the customisable type name        
+        String customisableElement = (String)params.get(PARAM_ELEMENT);        
+        QName customisableType = mapToTypeQName(customisableElement);
         
         String label = (String)params.get(PARAM_LABEL);
         
@@ -209,7 +215,51 @@ public class CustomPropertyDefinitionPost extends AbstractRmWebScript
         {
             proposedQName = QName.createQName(RecordsManagementCustomModel.RM_CUSTOM_PREFIX, propId, namespaceService);
         }
-        return rmAdminService.addCustomPropertyDefinition(proposedQName, aspectName, label, type,
-            title, description, defaultValue, multiValued, mandatory, isProtected, constraintRef);
+        
+        return rmAdminService.addCustomPropertyDefinition(
+        			proposedQName, 
+        			customisableType, 
+        			label, 
+        			type,
+        			title, 
+        			description, 
+        			defaultValue, 
+        			multiValued, 
+        			mandatory, 
+        			isProtected, 
+        			constraintRef);
+    }
+    
+    
+    /**
+     * Takes the element name and maps it to the QName of the customisable type.  The passed element name should be a prefixed 
+     * qname string, but to support previous versions of this API a couple of hard coded checks are made first.
+     * 
+     * @param elementName
+     * @return
+     */
+    private QName mapToTypeQName(String elementName)
+    {
+    	if ("recordSeries".equalsIgnoreCase(elementName) == true)
+        {
+            return DOD5015Model.TYPE_RECORD_SERIES;
+        }
+        else if ("recordCategory".equalsIgnoreCase(elementName) == true)
+        {
+            return DOD5015Model.TYPE_RECORD_CATEGORY;
+        }
+        else if ("recordFolder".equalsIgnoreCase(elementName) == true)
+        {
+            return RecordsManagementModel.TYPE_RECORD_FOLDER;
+        }
+        else if ("record".equalsIgnoreCase(elementName) == true)
+        {
+            return RecordsManagementModel.ASPECT_RECORD;
+        }
+        else
+        {
+        	// Try and convert the string to a qname
+        	return QName.createQName(elementName, namespaceService);
+        }    	
     }
 }

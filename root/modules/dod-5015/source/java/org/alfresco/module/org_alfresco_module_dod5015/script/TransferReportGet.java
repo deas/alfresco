@@ -26,22 +26,23 @@ import java.util.Date;
 import java.util.List;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.RegexQNamePattern;
-import org.springframework.extensions.surf.util.ISO8601DateFormat;
 import org.alfresco.util.TempFileProvider;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.ISO8601DateFormat;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Returns a JSON representation of a transfer report.
@@ -58,6 +59,7 @@ public class TransferReportGet extends BaseTransferWebScript
 
     protected DictionaryService ddService;
     protected RecordsManagementService rmService;
+    protected DispositionService dispositionService;
     
     /**
      * Sets the DictionaryService instance
@@ -67,6 +69,16 @@ public class TransferReportGet extends BaseTransferWebScript
     public void setDictionaryService(DictionaryService ddService)
     {
         this.ddService = ddService;
+    }
+    
+    /**
+     * Sets the disposition service
+     * 
+     * @param dispositionService    the disposition service
+     */
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
     }
     
     /**
@@ -124,8 +136,7 @@ public class TransferReportGet extends BaseTransferWebScript
             if (itemsToTransfer.length > 0)
             {
                 // use the first transfer item to get to disposition schedule
-                DispositionSchedule ds = this.rmService.getDispositionSchedule(
-                            itemsToTransfer[0]);
+                DispositionSchedule ds = dispositionService.getDispositionSchedule(itemsToTransfer[0]);
                 if (ds != null)
                 {
                     dispositionAuthority = ds.getDispositionAuthority();

@@ -6,7 +6,6 @@ package org.alfresco.module.org_alfresco_module_dod5015.model;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.repo.copy.AbstractCopyBehaviourCallback;
 import org.alfresco.repo.copy.CopyBehaviourCallback;

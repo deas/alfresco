@@ -27,13 +27,14 @@ import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.DOD5015Model;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementSearchBehaviour;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementSearchBehaviour;
 import org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService;
 import org.alfresco.module.org_alfresco_module_dod5015.security.Role;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -49,12 +50,12 @@ import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.view.ImporterService;
 import org.alfresco.service.cmr.view.Location;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * BootstrapTestData GET WebScript implementation.
@@ -81,6 +82,7 @@ public class BootstrapTestDataGet extends DeclarativeWebScript
     private RecordsManagementSecurityService recordsManagementSecurityService;
     private AuthorityService authorityService;
     private RecordsManagementSearchBehaviour recordsManagementSearchBehaviour;
+    private DispositionService dispositionService;
         
     public void setNodeService(NodeService nodeService)
     {
@@ -90,6 +92,11 @@ public class BootstrapTestDataGet extends DeclarativeWebScript
     public void setSearchService(SearchService searchService)
     {
         this.searchService = searchService;
+    }
+    
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
     }
     
     public void setRecordsManagementService(RecordsManagementService recordsManagementService)
@@ -180,7 +187,8 @@ public class BootstrapTestDataGet extends DeclarativeWebScript
         BootstrapTestDataGet.patchLoadedData(searchService, nodeService, recordsManagementService, 
                                              recordsManagementActionService, permissionService,
                                              authorityService, recordsManagementSecurityService,
-                                             recordsManagementSearchBehaviour);
+                                             recordsManagementSearchBehaviour,
+                                             dispositionService);
         
         Map<String, Object> model = new HashMap<String, Object>(1, 1.0f);
     	model.put("success", true);
@@ -203,7 +211,8 @@ public class BootstrapTestDataGet extends DeclarativeWebScript
                                         final PermissionService permissionService,
                                         final AuthorityService authorityService,
                                         final RecordsManagementSecurityService recordsManagementSecurityService,
-                                        final RecordsManagementSearchBehaviour recordManagementSearchBehaviour)
+                                        final RecordsManagementSearchBehaviour recordManagementSearchBehaviour,
+                                        final DispositionService dispositionService)
     {
         AuthenticationUtil.RunAsWork<Object> runAsWork = new AuthenticationUtil.RunAsWork<Object>()
         {
@@ -288,7 +297,7 @@ public class BootstrapTestDataGet extends DeclarativeWebScript
                         if (nodeService.hasAspect(recordFolder, ASPECT_DISPOSITION_LIFECYCLE) == false)
                         {
                             // See if the folder has a disposition schedule that needs to be applied
-                            DispositionSchedule ds = recordsManagementService.getDispositionSchedule(recordFolder);
+                            DispositionSchedule ds = dispositionService.getDispositionSchedule(recordFolder);
                             if (ds != null)
                             {
                                 // Fire action to "set-up" the folder correctly

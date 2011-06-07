@@ -26,8 +26,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
 import org.alfresco.module.org_alfresco_module_dod5015.EventCompletionDetails;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.PersonService;
 import org.springframework.extensions.surf.util.ISO8601DateFormat;
@@ -66,7 +66,7 @@ public class DispositionLifecycleGet extends DispositionAbstractBase
         NodeRef nodeRef = parseRequestForNodeRef(req);
         
         // make sure the node passed in has a next action attached
-        DispositionAction nextAction = this.rmService.getNextDispositionAction(nodeRef);
+        DispositionAction nextAction = this.dispositionService.getNextDispositionAction(nodeRef);
         if (nextAction == null)
         {
             status.setCode(HttpServletResponse.SC_NOT_FOUND, 
@@ -81,7 +81,7 @@ public class DispositionLifecycleGet extends DispositionAbstractBase
             nextActionModel.put("url", serviceUrl);
             nextActionModel.put("name", nextAction.getName());
             nextActionModel.put("label", nextAction.getLabel());
-            nextActionModel.put("eventsEligible", this.rmService.isNextDispositionActionEligible(nodeRef));
+            nextActionModel.put("eventsEligible", this.dispositionService.isNextDispositionActionEligible(nodeRef));
             
             if (nextAction.getAsOfDate() != null)
             {

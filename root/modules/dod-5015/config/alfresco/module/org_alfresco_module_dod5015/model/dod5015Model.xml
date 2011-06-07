@@ -49,13 +49,8 @@
    
       <type name="dod:filePlan">      
          <title>File Plan</title>
-         <parent>rma:recordsManagementContainer</parent>          
-         
-         <mandatory-aspects>         
-            <aspect>rma:recordsManagementRoot</aspect>
-         </mandatory-aspects>
-                 
-      </type>
+         <parent>rma:recordsManagementRootContainer</parent>                                             
+      </type> 
       
       <type name="dod:recordSeries">
          <title>Record Series</title>
@@ -80,6 +75,7 @@
      
       <aspect name="dod:scannedRecord">
         <title>Scanned Record</title>
+        <parent>rma:recordMetaData</parent>
         <properties>
             <property name="dod:scannedFormat">
                 <title>Image Format</title>
@@ -126,6 +122,7 @@
    
       <aspect name="dod:pdfRecord">
         <title>PDF Record</title>
+        <parent>rma:recordMetaData</parent>
         <properties>            
             <property name="dod:producingApplication">
                 <title>Producing Application</title>
@@ -180,6 +177,7 @@
    
       <aspect name="dod:digitalPhotographRecord">
         <title>Digital Photograph Record</title>
+        <parent>rma:recordMetaData</parent>
         <properties>        
             <property name="dod:caption">
                 <title>Caption</title>
@@ -274,6 +272,7 @@
       
       <aspect name="dod:webRecord">
         <title>Web Record</title>
+        <parent>rma:recordMetaData</parent>
         <properties>        
             <property name="dod:webFileName">
                 <title>Web File Name</title>

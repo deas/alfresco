@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionActionDefinition;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.service.namespace.QName;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -62,7 +62,7 @@ public class DispositionActionDefinitionPut extends DispositionAbstractBase
         try
         {
             json = new JSONObject(new JSONTokener(req.getContent().getContent()));
-            actionDef = updateActionDefinition(actionDef, json, schedule);
+            actionDef = updateActionDefinition(actionDef, json);
         } 
         catch (IOException iox)
         {
@@ -90,7 +90,7 @@ public class DispositionActionDefinitionPut extends DispositionAbstractBase
      * @return The updated DispositionActionDefinition
      */
     protected DispositionActionDefinition updateActionDefinition(DispositionActionDefinition actionDef,
-              JSONObject json, DispositionSchedule schedule) throws JSONException
+              JSONObject json) throws JSONException
     {
         // create the properties for the action definition
         Map<QName, Serializable> props = new HashMap<QName, Serializable>(8);
@@ -140,6 +140,6 @@ public class DispositionActionDefinitionPut extends DispositionAbstractBase
         }
         
         // update the action definition
-        return this.rmService.updateDispositionActionDefinition(schedule, actionDef, props);
+        return this.dispositionService.updateDispositionActionDefinition(actionDef, props);
     }    
 }

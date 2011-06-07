@@ -80,6 +80,7 @@
         <property name="nodeService" ref="nodeService"/>
         <property name="caveatConfigComponent" ref="caveatConfigComponent"/>
         <property name="dictionaryService" ref="dictionaryService"/>
+        <property name="dispositionService" ref="dispositionService"/>
         <property name="recordsManagementService" ref="recordsManagementService"/>
         <!-- Capabilities -->
         <property name="accessAuditCapability" ref="rmAccessAuditCapability"/>

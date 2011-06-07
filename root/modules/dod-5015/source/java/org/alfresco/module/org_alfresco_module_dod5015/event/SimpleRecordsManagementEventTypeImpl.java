@@ -18,7 +18,6 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.event;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSelectionStrategy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.I18NUtil;

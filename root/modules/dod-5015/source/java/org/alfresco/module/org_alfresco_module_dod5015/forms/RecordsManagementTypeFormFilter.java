@@ -23,13 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.CustomisableRmElement;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.forms.FieldDefinition;
 import org.alfresco.repo.forms.FieldGroup;
 import org.alfresco.repo.forms.Form;
 import org.alfresco.repo.forms.FormData;
-import org.alfresco.repo.forms.PropertyFieldDefinition;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
@@ -81,20 +79,26 @@ public class RecordsManagementTypeFormFilter extends RecordsManagementFormFilter
         // add any custom properties for the type being created (we don't need
         // to deal with the record type in here as records are typically uploaded 
         // and then their metadata edited after the fact)
-        if (TYPE_RECORD_SERIES.equals(typeName))
+//        if (TYPE_RECORD_SERIES.equals(typeName))
+//        {
+//            addCustomRMProperties(CustomisableRmElement.RECORD_SERIES, form);
+//            groupFields(form);
+//        }
+//        else if (TYPE_RECORD_CATEGORY.equals(typeName))
+//        {
+//            addCustomRMProperties(CustomisableRmElement.RECORD_CATEGORY, form);
+//            groupFields(form);
+//        }
+//        else if (TYPE_RECORD_FOLDER.equals(typeName))
+//        {
+//            addCustomRMProperties(CustomisableRmElement.RECORD_FOLDER, form);
+//            groupFields(form);
+//        }
+        
+        if (rmAdminService.isCustomisable(typeName) == true)
         {
-            addCustomRMProperties(CustomisableRmElement.RECORD_SERIES, form);
-            groupFields(form);
-        }
-        else if (TYPE_RECORD_CATEGORY.equals(typeName))
-        {
-            addCustomRMProperties(CustomisableRmElement.RECORD_CATEGORY, form);
-            groupFields(form);
-        }
-        else if (TYPE_RECORD_FOLDER.equals(typeName))
-        {
-            addCustomRMProperties(CustomisableRmElement.RECORD_FOLDER, form);
-            groupFields(form);
+        	addCustomRMProperties(typeName, form);
+        	groupFields(form);        	
         }
     }
 

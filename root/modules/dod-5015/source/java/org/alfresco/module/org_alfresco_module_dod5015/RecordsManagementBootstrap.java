@@ -24,8 +24,8 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.transaction.TransactionService;
-import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 
 
 /**
@@ -38,6 +38,7 @@ public class RecordsManagementBootstrap extends AbstractLifecycleBean
     private TransactionService transactionService;
     private RMCaveatConfigService caveatConfigService;
     private CustomEmailMappingService customEmailMappingService;
+    private RecordsManagementAdminService adminService;
     
     public void setTransactionService(TransactionService transactionService)
     {
@@ -53,6 +54,11 @@ public class RecordsManagementBootstrap extends AbstractLifecycleBean
     {
         this.customEmailMappingService = customEmailMappingService;
     }
+    
+    public void setRecordsManagementAdminService(RecordsManagementAdminService adminService) 
+    {
+		this.adminService = adminService;
+	}
 
     public CustomEmailMappingService getCustomEmailMappingService()
     {
@@ -76,6 +82,9 @@ public class RecordsManagementBootstrap extends AbstractLifecycleBean
                         
                         // initialise custom email mapping
                         customEmailMappingService.init();
+                        
+                        // Initialise the custom model
+                        adminService.initialiseCustomModel();
                         
                         return null;
                     }

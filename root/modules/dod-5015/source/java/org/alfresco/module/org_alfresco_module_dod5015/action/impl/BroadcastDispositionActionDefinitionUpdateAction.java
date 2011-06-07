@@ -27,19 +27,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
 import org.alfresco.module.org_alfresco_module_dod5015.EventCompletionDetails;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Period;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.service.namespace.RegexQNamePattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -75,42 +72,40 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
 
         // Navigate up the containment hierarchy to get the record category grandparent and schedule.
         NodeRef dispositionScheduleNode = nodeService.getPrimaryParent(actionedUponNodeRef).getParentRef();
-        NodeRef recordCategoryNode = nodeService.getPrimaryParent(dispositionScheduleNode).getParentRef();
-        DispositionSchedule dispositionSchedule = recordsManagementService.getDispositionSchedule(recordCategoryNode);
-        boolean isRecordLevelDisposition = dispositionSchedule.isRecordLevelDisposition();
+        NodeRef rmContainer = nodeService.getPrimaryParent(dispositionScheduleNode).getParentRef();
+        DispositionSchedule dispositionSchedule = dispositionService.getAssociatedDispositionSchedule(rmContainer);
         
-        List<NodeRef> recordFolders = getRecordFoldersForCategory(recordCategoryNode);
-        for (NodeRef recordFolder : recordFolders)
+        List<NodeRef> disposableItems = dispositionService.getDisposableItems(dispositionSchedule);
+        for (NodeRef disposableItem : disposableItems)
         {
-            if (isRecordLevelDisposition == false)
+            updateDisposableItem(dispositionSchedule, disposableItem, actionedUponNodeRef, changedProps);
+        }        
+    }
+    
+    /**
+     * 
+     * @param ds
+     * @param disposableItem
+     * @param dispositionActionDefinition
+     * @param changedProps
+     */
+    private void updateDisposableItem(DispositionSchedule ds, NodeRef disposableItem, NodeRef dispositionActionDefinition, List<QName> changedProps)
+    {
+        // We need to check that this folder is under the management of the disposition schedule that
+        // has been updated
+        DispositionSchedule itemDs = dispositionService.getDispositionSchedule(disposableItem);
+        if (itemDs != null &&
+            itemDs.getNodeRef().equals(ds.getNodeRef()) == true)
+        {
+            if (this.nodeService.hasAspect(disposableItem, ASPECT_DISPOSITION_LIFECYCLE))
             {
-                if (this.nodeService.hasAspect(recordFolder, ASPECT_DISPOSITION_LIFECYCLE))
-                {
-                    // disposition lifecycle already exists for node so process changes
-                    processActionDefinitionChanges(actionedUponNodeRef, changedProps, recordFolder);
-                }
-                else
-                {
-                    // disposition lifecycle does not exist on the node so setup disposition
-                    updateNextDispositionAction(recordFolder);
-                }
+                // disposition lifecycle already exists for node so process changes
+                processActionDefinitionChanges(dispositionActionDefinition, changedProps, disposableItem);
             }
             else
             {
-                List<NodeRef> records = getRecordsForFolder(recordFolder);
-                for (NodeRef nextRecord : records)
-                {
-                    if (this.nodeService.hasAspect(nextRecord, ASPECT_DISPOSITION_LIFECYCLE))
-                    {
-                        // disposition lifecycle already exists for node so process changes
-                        processActionDefinitionChanges(actionedUponNodeRef, changedProps, nextRecord);
-                    }
-                    else
-                    {
-                        // disposition lifecycle does not exist on the node so setup disposition
-                        updateNextDispositionAction(nextRecord);
-                    }
-                }
+                // disposition lifecycle does not exist on the node so setup disposition
+                updateNextDispositionAction(disposableItem);
             }
         }
     }
@@ -127,7 +122,7 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
     {
         // check that the step being edited is the current step for the folder,
         // if not, the change has no effect on the current step so ignore
-        DispositionAction nextAction = recordsManagementService.getNextDispositionAction(recordOrFolder);
+        DispositionAction nextAction = dispositionService.getNextDispositionAction(recordOrFolder);
         if (doesChangedStepAffectNextAction(dispositionActionDef, nextAction))
         {
             // the change does effect the nextAction for this node
@@ -265,55 +260,7 @@ public class BroadcastDispositionActionDefinitionUpdateAction extends RMActionEx
         }
     }
     
-    /**
-     * This method finds all the children contained under the specified recordCategoryNode
-     * which are record folders.
-     * 
-     * @param recordCategoryNode
-     * @return List of NodeRefs representing record folders in the given record category
-     */
-    private List<NodeRef> getRecordFoldersForCategory(NodeRef recordCategoryNode)
-    {
-        List<NodeRef> result = new ArrayList<NodeRef>();
-        // This recordCategory could contain 0..n RecordFolder children.
-        List<ChildAssociationRef> childAssocs = nodeService.getChildAssocs(recordCategoryNode, ContentModel.ASSOC_CONTAINS, RegexQNamePattern.MATCH_ALL);
-        for (ChildAssociationRef nextAssoc : childAssocs)
-        {
-            NodeRef nextChild = nextAssoc.getChildRef();
-            if (recordsManagementService.isRecordFolder(nextChild))
-            {
-                result.add(nextChild);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * This method finds all the children contained under the specified recordFolderNode
-     * which are records.
-     * 
-     * @param recordFolderNode The record folder node to search
-     * @return List of NodeRefs representing records in the given record folder
-     */
-    private List<NodeRef> getRecordsForFolder(NodeRef recordFolderNode)
-    {
-        List<NodeRef> result = new ArrayList<NodeRef>();
-        // This recordFolder could contain 0..n Record children.
-        List<ChildAssociationRef> childAssocs = nodeService.getChildAssocs(recordFolderNode, ContentModel.ASSOC_CONTAINS, RegexQNamePattern.MATCH_ALL);
-        for (ChildAssociationRef nextAssoc : childAssocs)
-        {
-            NodeRef nextChild = nextAssoc.getChildRef();
-            if (recordsManagementService.isRecord(nextChild))
-            {
-                result.add(nextChild);
-            }
-        }
-        return result;
-    }
     
-    /**
-     * @see org.alfresco.repo.action.ParameterizedItemAbstractBase#addParameterDefinitions(java.util.List)
-     */
     @Override
     protected void addParameterDefinitions(List<ParameterDefinition> paramList)
     {

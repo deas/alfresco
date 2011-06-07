@@ -25,8 +25,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionActionDefinition;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEvent;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.springframework.extensions.webscripts.WebScriptException;
@@ -51,7 +51,7 @@ public class DispositionAbstractBase extends AbstractRmWebScript
         NodeRef nodeRef = parseRequestForNodeRef(req);
         
         // make sure the node passed in has a disposition schedule attached
-        DispositionSchedule schedule = this.rmService.getDispositionSchedule(nodeRef);
+        DispositionSchedule schedule = this.dispositionService.getDispositionSchedule(nodeRef);
         if (schedule == null)
         {
             throw new WebScriptException(HttpServletResponse.SC_NOT_FOUND, "Node " + 

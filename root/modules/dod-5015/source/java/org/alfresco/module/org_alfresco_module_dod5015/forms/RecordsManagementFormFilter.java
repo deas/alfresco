@@ -22,11 +22,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.module.org_alfresco_module_dod5015.CustomisableRmElement;
-import org.alfresco.module.org_alfresco_module_dod5015.DOD5015Model;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementServiceRegistry;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
 import org.alfresco.repo.forms.Field;
 import org.alfresco.repo.forms.FieldGroup;
 import org.alfresco.repo.forms.Form;
@@ -40,6 +39,7 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.ParameterCheck;
 
 /**
  * Abstract base class for records management related form filter
@@ -154,20 +154,21 @@ public abstract class RecordsManagementFormFilter<ItemType> extends AbstractFilt
      *            properties for
      * @param form The form to add the properties to
      */
-    protected void addCustomRMProperties(CustomisableRmElement rmTypeCustomAspect, Form form)
+    protected void addCustomRMProperties(QName customisableType, Form form)
     {
-        if (rmTypeCustomAspect != null)
+    	ParameterCheck.mandatory("customisableType", customisableType);
+    	ParameterCheck.mandatory("form", form);
+    	        
+        Map<QName, PropertyDefinition> customProps = rmAdminService.getCustomPropertyDefinitions(customisableType);
+
+        if (logger.isDebugEnabled() == true)
         {
-            Map<QName, PropertyDefinition> customProps = this.rmAdminService
-                        .getCustomPropertyDefinitions(rmTypeCustomAspect);
-
-            if (logger.isDebugEnabled())
-                logger.debug("Found " + customProps.size() + " custom property for " + rmTypeCustomAspect);
-
-            // setup field definition for each custom property
-            Collection<PropertyDefinition> properties = customProps.values();
-            List<Field> fields = FieldUtils.makePropertyFields(properties, CUSTOM_RM_FIELD_GROUP, namespaceService);
-            form.addFields(fields);
+            logger.debug("Found " + customProps.size() + " custom properties for customisable type " + customisableType);
         }
+
+        // setup field definition for each custom property
+        Collection<PropertyDefinition> properties = customProps.values();
+        List<Field> fields = FieldUtils.makePropertyFields(properties, CUSTOM_RM_FIELD_GROUP, namespaceService);
+        form.addFields(fields);
     }
 }

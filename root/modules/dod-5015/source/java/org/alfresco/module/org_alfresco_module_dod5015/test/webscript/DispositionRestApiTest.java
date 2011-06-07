@@ -28,14 +28,16 @@ import java.util.Map;
 import javax.transaction.UserTransaction;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.DOD5015Model;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
-import org.alfresco.module.org_alfresco_module_dod5015.test.TestUtilities;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.test.util.TestUtilities;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.web.scripts.BaseWebScriptTest;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
@@ -57,6 +59,7 @@ import org.springframework.extensions.webscripts.TestWebScriptServer.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.junit.BeforeClass;
 
 /**
  * This class tests the Rest API for disposition related operations
@@ -84,6 +87,7 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
     protected RecordsManagementService rmService;
     protected RecordsManagementActionService rmActionService;
     protected RecordsManagementEventService rmEventService;
+    protected RetryingTransactionHelper retryingTransactionHelper;
     
     @Override
     protected void setUp() throws Exception
@@ -98,14 +102,25 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
         this.rmService = (RecordsManagementService)getServer().getApplicationContext().getBean("RecordsManagementService");
         this.rmActionService = (RecordsManagementActionService)getServer().getApplicationContext().getBean("RecordsManagementActionService");
         this.rmEventService = (RecordsManagementEventService)getServer().getApplicationContext().getBean("RecordsManagementEventService");
+        this.retryingTransactionHelper = (RetryingTransactionHelper)getServer().getApplicationContext().getBean("retryingTransactionHelper");
 
         AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getSystemUserName());
 
+        retryingTransactionHelper.doInTransaction(new RetryingTransactionCallback<Void>()     
+        {
+            @Override
+            public Void execute() throws Throwable
+            {
+                TestUtilities.loadFilePlanData(getServer().getApplicationContext());
+                return null;
+            }
+        });
+        
         // Bring the filePlan into the test database.
         //
         // This is quite a slow call, so if this class grew to have many test methods,
         // there would be a real benefit in using something like @BeforeClass for the line below.
-        TestUtilities.loadFilePlanData(getServer().getApplicationContext());
+        //TestUtilities.loadFilePlanData(getServer().getApplicationContext());
     }
 
     public void testGetDispositionSchedule() throws Exception
@@ -130,7 +145,7 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
         String categoryNodeUrl = recordCategory.toString().replace("://", "/");
         String requestUrl = MessageFormat.format(GET_SCHEDULE_URL_FORMAT, categoryNodeUrl);
         rsp = sendRequest(new GetRequest(requestUrl), expectedStatus);
-        //System.out.println("GET response: " + rsp.getContentAsString());
+        System.out.println(" 888 GET response: " + rsp.getContentAsString());
         assertEquals("application/json;charset=UTF-8", rsp.getContentType());
         
         // get response as JSON
@@ -141,7 +156,7 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
         JSONObject dataObj = jsonParsedObject.getJSONObject("data");
         assertNotNull(dataObj);
         JSONObject rootDataObject = (JSONObject)dataObj;
-        assertEquals(8, rootDataObject.length());
+        assertEquals(10, rootDataObject.length());
         
         // check individual data items
         String serviceUrl = SERVICE_URL_PREFIX + requestUrl;
@@ -201,7 +216,7 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
         dataObj = jsonParsedObject.getJSONObject("data");
         assertNotNull(dataObj);
         rootDataObject = (JSONObject)dataObj;
-        assertEquals(8, rootDataObject.length());
+        assertEquals(10, rootDataObject.length());
         
         // check individual data items
         serviceUrl = SERVICE_URL_PREFIX + requestUrl;
@@ -252,13 +267,14 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
         
         // get response as JSON
         jsonParsedObject = new JSONObject(new JSONTokener(rsp.getContentAsString()));
+        System.out.println(rsp.getContentAsString());
         assertNotNull(jsonParsedObject);
 
         // check JSON data
         dataObj = jsonParsedObject.getJSONObject("data");
         assertNotNull(dataObj);
         rootDataObject = (JSONObject)dataObj;
-        assertEquals(6, rootDataObject.length());
+        assertEquals(8, rootDataObject.length());
         actions = rootDataObject.getJSONArray("actions");
         assertNotNull(actions);
         assertEquals(0, actions.length());
@@ -547,6 +563,7 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
         Response rsp = sendRequest(new GetRequest(GET_LIST_URL), 200);
         //System.out.println("GET : " + rsp.getContentAsString());
         assertEquals("application/json;charset=UTF-8", rsp.getContentType());
+        //System.out.println(rsp.getContentAsString());
         
         // get response as JSON
         JSONObject jsonParsedObject = new JSONObject(new JSONTokener(rsp.getContentAsString()));
@@ -591,7 +608,7 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
         JSONObject periodProperties = data.getJSONObject("periodProperties");
         assertEquals(SERVICE_URL_PREFIX + GET_LIST_URL + "/periodproperties", periodProperties.getString("url"));
         items = periodProperties.getJSONArray("items");
-        assertEquals(3, items.length());
+        assertEquals(4, items.length());
         assertTrue(items.length() > 0);
         item = items.getJSONObject(0);
         assertTrue(item.length() == 2);
@@ -604,10 +621,10 @@ public class DispositionRestApiTest extends BaseWebScriptTest implements Records
         // Declare record
         Map<QName, Serializable> propValues = this.nodeService.getProperties(recordOne);        
         propValues.put(RecordsManagementModel.PROP_PUBLICATION_DATE, new Date());       
-        List<String> smList = new ArrayList<String>(2);
-        smList.add("FOUO");
-        smList.add("NOFORN");
-        propValues.put(RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST, (Serializable)smList);        
+       // List<String> smList = new ArrayList<String>(2);
+       // smList.add("FOUO");
+       // smList.add("NOFORN");
+       // propValues.put(RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST, (Serializable)smList);        
         propValues.put(RecordsManagementModel.PROP_MEDIA_TYPE, "mediaTypeValue"); 
         propValues.put(RecordsManagementModel.PROP_FORMAT, "formatValue"); 
         propValues.put(RecordsManagementModel.PROP_DATE_RECEIVED, new Date());       

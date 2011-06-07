@@ -45,8 +45,10 @@
          </mandatory-aspects>
       </type>
 
-      <!-- Records management container type -->
+      <!-- Records management container types -->
+      
       <type name="rma:recordsManagementContainer">
+         
          <title>Records Managment Container</title>
          <parent>cm:folder</parent>
          <archive>false</archive>
@@ -58,6 +60,19 @@
          </mandatory-aspects>
 
       </type>
+      
+       <type name="rma:recordsManagementRootContainer">      
+         
+         <title>Records Management Root Container</title>
+         <parent>rma:recordsManagementContainer</parent>          
+                  
+         <mandatory-aspects>         
+            <aspect>rma:recordsManagementRoot</aspect>
+         </mandatory-aspects>
+                 
+      </type>
+
+	  <!--  Disposition Schedule -->
 
       <type name="rma:dispositionSchedule">
         <title>Disposition Schedule</title>
@@ -698,6 +713,10 @@
             <aspect>rma:filePlanComponent</aspect>
          </mandatory-aspects>
 
+      </aspect>
+      
+      <!--  Marker aspect used to indicate an aspect is used for record meta-data -->
+      <aspect name="rma:recordMetaData">
       </aspect>
 
       <aspect name="rma:commonRecordDetails">

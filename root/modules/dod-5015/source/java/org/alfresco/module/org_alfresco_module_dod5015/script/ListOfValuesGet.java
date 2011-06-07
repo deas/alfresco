@@ -29,6 +29,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementA
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.audit.AuditEvent;
 import org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEvent;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -55,6 +56,7 @@ public class ListOfValuesGet extends DeclarativeWebScript
     protected RecordsManagementActionService rmActionService;
     protected RecordsManagementAuditService rmAuditService;
     protected RecordsManagementEventService rmEventService;
+    protected DispositionService dispositionService;
     protected DictionaryService ddService;
     protected NamespaceService namespaceService;
     
@@ -96,6 +98,16 @@ public class ListOfValuesGet extends DeclarativeWebScript
     public void setRecordsManagementEventService(RecordsManagementEventService rmEventService)
     {
         this.rmEventService = rmEventService;
+    }
+    
+    /**
+     * Sets the disposition service
+     * 
+     * @param dispositionService    the disposition service
+     */
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
     }
 
     /**
@@ -235,7 +247,7 @@ public class ListOfValuesGet extends DeclarativeWebScript
     protected Map<String, Object> createPeriodPropertiesModel(String baseUrl)
     {
         // iterate over all period properties and get the label from their type definition
-        List<QName> periodProperties = this.rmService.getDispositionPeriodProperties();
+        List<QName> periodProperties = dispositionService.getDispositionPeriodProperties();
         List<Map<String, String>> items = new ArrayList<Map<String, String>>(periodProperties.size());
         for (QName periodProperty : periodProperties)
         {

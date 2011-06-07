@@ -24,17 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.alfresco.module.org_alfresco_module_dod5015.CustomisableRmElement;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * This class provides the implementation for the custompropdefinitions.get webscript.
@@ -43,17 +45,37 @@ import org.apache.commons.logging.LogFactory;
  */
 public class CustomPropertyDefinitionsGet extends DeclarativeWebScript
 {
+	/** Logger */
     private static Log logger = LogFactory.getLog(CustomPropertyDefinitionsGet.class);
     
     private static final String ELEMENT = "element";
     private static final String PROP_ID = "propId";
+    
+    /** Records management admin service */
     private RecordsManagementAdminService rmAdminService;
     
+    /** Namespace service */
+    private NamespaceService namespaceService;
+    
+    /**
+     * @param rmAdminService	records management admin service
+     */
     public void setRecordsManagementAdminService(RecordsManagementAdminService rmAdminService)
     {
         this.rmAdminService = rmAdminService;
     }
+    
+    /**
+     * @param namespaceService	namespace service
+     */
+    public void setNamespaceService(NamespaceService namespaceService) 
+    {
+		this.namespaceService = namespaceService;
+	}
 
+    /**
+     * @see org.springframework.extensions.webscripts.DeclarativeWebScript#executeImpl(org.springframework.extensions.webscripts.WebScriptRequest, org.springframework.extensions.webscripts.Status, org.springframework.extensions.webscripts.Cache)
+     */
     @Override
     public Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache)
     {
@@ -87,9 +109,8 @@ public class CustomPropertyDefinitionsGet extends DeclarativeWebScript
         }
         else if (elementName != null)
         {
-            CustomisableRmElement elem = CustomisableRmElement.getEnumFor(elementName);
-            Map<QName, PropertyDefinition> currentCustomProps = rmAdminService.getCustomPropertyDefinitions(elem);
-
+        	QName customisableType = mapToTypeQName(elementName);
+            Map<QName, PropertyDefinition> currentCustomProps = rmAdminService.getCustomPropertyDefinitions(customisableType);
             for (Entry<QName, PropertyDefinition> entry : currentCustomProps.entrySet())
             {
                 propData.add(entry.getValue());
@@ -108,5 +129,37 @@ public class CustomPropertyDefinitionsGet extends DeclarativeWebScript
     	model.put("customProps", propData);
     	
         return model;
+    }
+    
+    /**
+     * Takes the element name and maps it to the QName of the customisable type.  The passed element name should be a prefixed 
+     * qname string, but to support previous versions of this API a couple of hard coded checks are made first.
+     * 
+     * @param elementName
+     * @return
+     */
+    private QName mapToTypeQName(String elementName)
+    {
+    	if ("recordSeries".equalsIgnoreCase(elementName) == true)
+        {
+            return DOD5015Model.TYPE_RECORD_SERIES;
+        }
+        else if ("recordCategory".equalsIgnoreCase(elementName) == true)
+        {
+            return DOD5015Model.TYPE_RECORD_CATEGORY;
+        }
+        else if ("recordFolder".equalsIgnoreCase(elementName) == true)
+        {
+            return RecordsManagementModel.TYPE_RECORD_FOLDER;
+        }
+        else if ("record".equalsIgnoreCase(elementName) == true)
+        {
+            return RecordsManagementModel.ASPECT_RECORD;
+        }
+        else
+        {
+        	// Try and convert the string to a qname
+        	return QName.createQName(elementName, namespaceService);
+        }    	
     }
 }

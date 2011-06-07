@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.model.ImapModel;
-import org.alfresco.module.org_alfresco_module_dod5015.CustomisableRmElement;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionScheduleImpl;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementCustomModel;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionScheduleImpl;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementCustomModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.forms.Field;
 import org.alfresco.repo.forms.FieldDefinition;
 import org.alfresco.repo.forms.Form;
@@ -61,7 +61,11 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
     protected static final String TRANSIENT_CATEGORY_ID = "rmCategoryIdentifier";
     protected static final String TRANSIENT_DISPOSITION_INSTRUCTIONS = "rmDispositionInstructions";
 
+    /** Dictionary service */
     protected DictionaryService dictionaryService;
+    
+    /** Disposition service */
+    protected DispositionService dispositionService;
 
     /**
      * Sets the data dictionary service
@@ -72,6 +76,16 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
     {
         this.dictionaryService = dictionaryService;
     }
+    
+    /**
+     * Sets the disposition service
+     *  
+     * @param dispositionService    disposition service
+     */
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
+    }
 
     /*
      * @see org.alfresco.repo.forms.processor.Filter#afterGenerate(java.lang.Object, java.util.List, java.util.List, org.alfresco.repo.forms.Form, java.util.Map)
@@ -79,6 +93,8 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
     public void afterGenerate(NodeRef nodeRef, List<String> fields, List<String> forcedFields, Form form,
                 Map<String, Object> context)
     {
+    	// TODO this needs a massive refactor inorder to support any custom type or aspect ....
+    	
         // if the node has the RM marker aspect look for the custom properties
         // for the type
         if (this.nodeService.hasAspect(nodeRef, ASPECT_FILE_PLAN_COMPONENT))
@@ -94,7 +110,8 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
                 else
                 {
                     // add field defintions for all the custom properties
-                    addCustomRMProperties(CustomisableRmElement.RECORD, form);
+                    //addCustomRMProperties(CustomisableRmElement.RECORD, form);
+                	addCustomRMProperties(ASPECT_RECORD, form);
                 }
 
                 // force the "supplementalMarkingList" property to be present
@@ -127,7 +144,8 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
                     else
                     {
                         // add field defintions for all the custom properties
-                        addCustomRMProperties(CustomisableRmElement.RECORD_SERIES, form);
+                        //addCustomRMProperties(CustomisableRmElement.RECORD_SERIES, form);
+                    	addCustomRMProperties(TYPE_RECORD_SERIES, form);
                     }
                 }
                 else if (TYPE_RECORD_CATEGORY.equals(type))
@@ -142,7 +160,7 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
                     else
                     {
                         // add field defintions for all the custom properties
-                        addCustomRMProperties(CustomisableRmElement.RECORD_CATEGORY, form);
+                        addCustomRMProperties(TYPE_RECORD_CATEGORY, form);
                     }
                 }
                 else if (TYPE_RECORD_FOLDER.equals(type))
@@ -157,7 +175,7 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
                     else
                     {
                         // add field defintions for all the custom properties
-                        addCustomRMProperties(CustomisableRmElement.RECORD_FOLDER, form);
+                        addCustomRMProperties(TYPE_RECORD_FOLDER, form);
                     }
                     
                     // force the "supplementalMarkingList" property to be present
@@ -169,7 +187,7 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
                     // schedule to determine whether the disposition level can be changed i.e. record 
                     // level or folder level.
                     DispositionSchedule schedule = new DispositionScheduleImpl(this.rmServiceRegistry, this.nodeService, nodeRef);
-                    if (!rmService.canDispositionActionDefinitionsBeRemoved(schedule))
+                    if (dispositionService.hasDisposableItems(schedule) == true)
                     {
                         protectRecordLevelDispositionPropertyField(form);
                     }
@@ -332,7 +350,7 @@ public class RecordsManagementNodeFormFilter extends RecordsManagementFormFilter
         form.addFieldDefinition(dispInstructionsField);
         
         // use RMService to get disposition instructions
-        DispositionSchedule ds = this.rmService.getDispositionSchedule(nodeRef);
+        DispositionSchedule ds = dispositionService.getDispositionSchedule(nodeRef);
         if (ds != null)
         {
             String instructions = ds.getDispositionInstructions();

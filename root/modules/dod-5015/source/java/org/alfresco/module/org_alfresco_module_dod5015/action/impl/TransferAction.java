@@ -26,9 +26,9 @@ import java.util.Map;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RMDispositionActionExecuterAbstractBase;
-import org.alfresco.module.org_alfresco_module_dod5015.DOD5015Model;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionActionDefinition;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
 import org.alfresco.repo.action.executer.ActionExecuter;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.transaction.AlfrescoTransactionSupport;
@@ -116,7 +116,7 @@ public class TransferAction extends RMDispositionActionExecuterAbstractBase
             transferProps.put(PROP_TRANSFER_ACCESSION_INDICATOR, this.isAccession);
             
             // setup location property from disposition schedule
-            DispositionAction da = recordsManagementService.getNextDispositionAction(dispositionLifeCycleNodeRef);
+            DispositionAction da = dispositionService.getNextDispositionAction(dispositionLifeCycleNodeRef);
             if (da != null)
             {
                 DispositionActionDefinition actionDef = da.getDispositionActionDefinition();

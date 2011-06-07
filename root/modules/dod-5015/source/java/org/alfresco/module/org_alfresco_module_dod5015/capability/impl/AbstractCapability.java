@@ -25,15 +25,15 @@ import java.util.List;
 import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.module.org_alfresco_module_dod5015.DOD5015Model;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementAction;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.Capability;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMEntryVoter;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionActionDefinition;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.AlfrescoTransactionSupport;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -589,7 +589,7 @@ public abstract class AbstractCapability implements Capability
                     return AccessDecisionVoter.ACCESS_GRANTED;
                 }
 
-                DispositionSchedule dispositionSchedule = voter.getRecordsManagementService().getDispositionSchedule(nodeRef);
+                DispositionSchedule dispositionSchedule = voter.getDispositionService().getDispositionSchedule(nodeRef);
                 for (DispositionActionDefinition dispositionActionDefinition : dispositionSchedule.getDispositionActionDefinitions())
                 {
                     if (dispositionActionDefinition.getName().equals("destroy"))
@@ -602,13 +602,13 @@ public abstract class AbstractCapability implements Capability
                 }
 
                 // The record is all set up for destruction
-                DispositionAction nextDispositionAction = voter.getRecordsManagementService().getNextDispositionAction(nodeRef);
+                DispositionAction nextDispositionAction = voter.getDispositionService().getNextDispositionAction(nodeRef);
                 if (nextDispositionAction != null)
                 {
                     DispositionActionDefinition def = nextDispositionAction.getDispositionActionDefinition();
                     if (def != null && def.getName().equals("destroy"))
                     {
-                        if (voter.getRecordsManagementService().isNextDispositionActionEligible(nodeRef))
+                        if (voter.getDispositionService().isNextDispositionActionEligible(nodeRef))
                         {
                             if (voter.getPermissionService().hasPermission(getFilePlan(nodeRef), RMPermissionModel.DESTROY_RECORDS_SCHEDULED_FOR_DESTRUCTION) == AccessStatus.ALLOWED)
                             {
@@ -774,7 +774,7 @@ public abstract class AbstractCapability implements Capability
 
     public boolean isScheduledForCutoff(NodeRef nodeRef)
     {
-        DispositionSchedule dispositionSchedule = voter.getRecordsManagementService().getDispositionSchedule(nodeRef);
+        DispositionSchedule dispositionSchedule = voter.getDispositionService().getDispositionSchedule(nodeRef);
         if (dispositionSchedule == null)
         {
             return true;
@@ -783,7 +783,7 @@ public abstract class AbstractCapability implements Capability
         {
             if (dispositionActionDefinition.getName().equals("cutoff"))
             {
-                if (voter.getRecordsManagementService().isNextDispositionActionEligible(nodeRef))
+                if (voter.getDispositionService().isNextDispositionActionEligible(nodeRef))
                 {
                     return true;
                 }
@@ -797,13 +797,13 @@ public abstract class AbstractCapability implements Capability
         boolean result = false;
         
         // The record is all set up for destruction
-        DispositionAction nextDispositionAction = voter.getRecordsManagementService().getNextDispositionAction(nodeRef);
+        DispositionAction nextDispositionAction = voter.getDispositionService().getNextDispositionAction(nodeRef);
         if (nextDispositionAction != null)
         {
             // Get the disposition actions name
             String actionName = nextDispositionAction.getName();            
             if (actionName.equals("destroy") == true &&
-                voter.getRecordsManagementService().isNextDispositionActionEligible(nodeRef) == true)
+                voter.getDispositionService().isNextDispositionActionEligible(nodeRef) == true)
             {
                 result = true;                
             }
@@ -814,7 +814,7 @@ public abstract class AbstractCapability implements Capability
 
     public boolean mayBeScheduledForDestruction(NodeRef nodeRef)
     {
-        DispositionSchedule dispositionSchedule = voter.getRecordsManagementService().getDispositionSchedule(nodeRef);
+        DispositionSchedule dispositionSchedule = voter.getDispositionService().getDispositionSchedule(nodeRef);
         if (dispositionSchedule == null)
         {
             // There is no disposition schedule so can't be scheduled for destruction
@@ -842,13 +842,13 @@ public abstract class AbstractCapability implements Capability
 
     public boolean hasDispositionSchedule(NodeRef nodeRef)
     {
-        DispositionSchedule dispositionSchedule = voter.getRecordsManagementService().getDispositionSchedule(nodeRef);
+        DispositionSchedule dispositionSchedule = voter.getDispositionService().getDispositionSchedule(nodeRef);
         return dispositionSchedule != null;
     }
 
     public boolean isRecordLevelDisposition(NodeRef nodeRef)
     {
-        DispositionSchedule dispositionSchedule = voter.getRecordsManagementService().getDispositionSchedule(nodeRef);
+        DispositionSchedule dispositionSchedule = voter.getDispositionService().getDispositionSchedule(nodeRef);
         return dispositionSchedule.isRecordLevelDisposition();
     }
 

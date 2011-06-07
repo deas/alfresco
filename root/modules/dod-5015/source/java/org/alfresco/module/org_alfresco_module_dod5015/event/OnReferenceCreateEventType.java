@@ -24,14 +24,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
 import org.alfresco.module.org_alfresco_module_dod5015.EventCompletionDetails;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementPolicies;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementPolicies.OnCreateReference;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.CompleteEventAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
@@ -51,8 +52,11 @@ public class OnReferenceCreateEventType extends SimpleRecordsManagementEventType
     /** Records management service */
     private RecordsManagementService recordsManagementService;
     
-    /** Records managment action service */
+    /** Records management action service */
     private RecordsManagementActionService recordsManagementActionService;
+    
+    /** Disposition service */
+    private DispositionService dispositionService;
     
     /** Policy component */
     private PolicyComponent policyComponent;
@@ -67,6 +71,14 @@ public class OnReferenceCreateEventType extends SimpleRecordsManagementEventType
     {
         this.recordsManagementService = recordsManagementService;
     }    
+    
+    /**
+     * @param dispositionService    the disposition service to set
+     */
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
+    }
     
     /**
      * @param recordsManagementActionService the recordsManagementActionService to set
@@ -130,7 +142,7 @@ public class OnReferenceCreateEventType extends SimpleRecordsManagementEventType
                 // Check whether it is the reference type we care about
                 if (reference.equals(OnReferenceCreateEventType.this.reference) == true)
                 {
-                    DispositionAction da = recordsManagementService.getNextDispositionAction(toNodeRef);
+                    DispositionAction da = dispositionService.getNextDispositionAction(toNodeRef);
                     if (da != null)
                     {
                         List<EventCompletionDetails> events = da.getEventCompletionDetails();

@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
 import org.alfresco.module.org_alfresco_module_dod5015.VitalRecordDefinition;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -57,7 +57,7 @@ public class SetupRecordFolderAction extends RMActionExecuterAbstractBase
             }
                 
             // Set up the disposition schedule if the dispositions are being managed at the folder level
-            DispositionSchedule di = this.recordsManagementService.getDispositionSchedule(actionedUponNodeRef);
+            DispositionSchedule di = this.dispositionService.getDispositionSchedule(actionedUponNodeRef);
             if (di != null && di.isRecordLevelDisposition() == false)
             {
                 // Setup the next disposition action
@@ -72,7 +72,6 @@ public class SetupRecordFolderAction extends RMActionExecuterAbstractBase
     @Override
     protected void addParameterDefinitions(List<ParameterDefinition> paramList)
     {
-        // TODO Auto-generated method stub
     }
 
     @Override

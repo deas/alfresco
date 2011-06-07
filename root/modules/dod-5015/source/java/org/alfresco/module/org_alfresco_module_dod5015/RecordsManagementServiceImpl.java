@@ -20,8 +20,7 @@ package org.alfresco.module.org_alfresco_module_dod5015;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,11 +32,12 @@ import java.util.Set;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementCustomModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
-import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
+import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -49,7 +49,7 @@ import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
-import org.alfresco.util.GUID;
+import org.alfresco.util.ParameterCheck;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -86,11 +86,11 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     /** Well-known location of the scripts folder. */
     private NodeRef scriptsFolderNodeRef = new NodeRef("workspace", "SpacesStore", "rm_scripts");
     
+    /** List of available record meta-data aspects */
+    private Set<QName> recordMetaDataAspects;
+    
     /** Application context */
     private ApplicationContext applicationContext;
-    
-    /** Disposition selection strategy */
-    private DispositionSelectionStrategy dispositionSelectionStrategy;
     
     /** Java behaviour */
     private JavaBehaviour onChangeToDispositionActionDefinition;
@@ -136,16 +136,6 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     {
         this.rmActionService = rmActionService;
     }
-
-    /**
-     * Set the dispositionSelectionStrategy bean.
-     * @param dispositionSelectionStrategy
-     */
-    public void setDispositionSelectionStrategy(
-            DispositionSelectionStrategy dispositionSelectionStrategy)
-    {
-        this.dispositionSelectionStrategy = dispositionSelectionStrategy;
-    }
     
     /**
      * Sets the default RM store reference
@@ -167,11 +157,6 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                 TYPE_RECORD_FOLDER, 
                 ContentModel.ASSOC_CONTAINS,
                 new JavaBehaviour(this, "onFileContent", NotificationFrequency.TRANSACTION_COMMIT));
-        this.policyComponent.bindAssociationBehaviour(
-                QName.createQName(NamespaceService.ALFRESCO_URI, "onCreateChildAssociation"), 
-                TYPE_RECORDS_MANAGEMENT_CONTAINER, 
-                ContentModel.ASSOC_CONTAINS, 
-                new JavaBehaviour(this, "onCreateRecordFolder", NotificationFrequency.TRANSACTION_COMMIT));
         
        this.policyComponent.bindAssociationBehaviour(
                   QName.createQName(NamespaceService.ALFRESCO_URI, "onCreateChildAssociation"), 
@@ -183,9 +168,6 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         this.policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onUpdateProperties"),
                 ASPECT_VITAL_RECORD_DEFINITION,
                 new JavaBehaviour(this, "onChangeToVRDefinition", NotificationFrequency.TRANSACTION_COMMIT));
-        this.policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onAddAspect"), 
-                ASPECT_SCHEDULED, 
-                new JavaBehaviour(this, "onAddAspect", NotificationFrequency.TRANSACTION_COMMIT));
         
         // Register script execution behaviour on RM property update.
         this.policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onUpdateProperties"),
@@ -244,74 +226,6 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                 throw new AlfrescoRuntimeException("Can not add content nodes to a records management category or series, please add content to record folder.");   
             }
         }
-    }
-    
-    /**
-     * Set's up the record folder upon creation
-     * 
-     * @param childAssocRef
-     * @param bNew
-     */
-    public void onCreateRecordFolder(ChildAssociationRef childAssocRef, boolean bNew)
-    {   
-        // Get the elements of the created association
-        NodeRef parent = childAssocRef.getParentRef();
-        final NodeRef child = childAssocRef.getChildRef();
-        
-        // We need to automatically cast the created folder to RM type if it is a plain folder
-        // This occurs if the RM folder has been created via IMap, WebDav, etc
-        if (nodeService.hasAspect(child, ASPECT_FILE_PLAN_COMPONENT) == false)
-        {
-            // If the parent has the aspect "scheduled" then let us presume we are creating a record folder
-            if (nodeService.hasAspect(parent, ASPECT_SCHEDULED) == true)
-            {
-                nodeService.setType(child, TYPE_RECORD_FOLDER);
-                
-                // Generate the rm id for the new records folder
-                // TODO need to refactor into one location
-                AuthenticationUtil.runAs(new RunAsWork<Object>()
-                {
-                    public Object doWork() throws Exception 
-                    {
-                        nodeService.setProperty(child, RecordsManagementModel.PROP_IDENTIFIER, generateIdentifier(child));
-                        return null;
-                    }
-                }, AuthenticationUtil.getAdminUserName());  
-            }
-            // Otherwise for now do nothing with it as we don't have a factory to create the correct
-            // "type" of container (eg dod:recordSeries or dod:recordCategory
-        }
-        
-        // Setup record folder
-        rmActionService.executeRecordsManagementAction(child, "setupRecordFolder");       
-    }
-    
-    private String generateIdentifier(NodeRef nodeRef)
-    {
-        Calendar fileCalendar = Calendar.getInstance();
-        String year = Integer.toString(fileCalendar.get(Calendar.YEAR));
-        Long dbId = (Long) this.nodeService.getProperty(nodeRef, ContentModel.PROP_NODE_DBID);
-        String identifier = year + "-" + padString(dbId.toString(), 10);
-        return identifier;
-    }
-    
-    /**
-     * Function to pad a string with zero '0' characters to the required length
-     * 
-     * @param s String to pad with leading zero '0' characters
-     * @param len Length to pad to
-     * @return padded string or the original if already at >=len characters
-     */
-    private String padString(String s, int len)
-    {
-        String result = s;
-
-        for (int i = 0; i < (len - s.length()); i++)
-        {
-            result = "0" + result;
-        }
-
-        return result;
     }
     
     /**
@@ -406,29 +320,6 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
            }
        }
     }
-    
-    /**
-     * Called when the rma:scheduled aspect is applied
-     * 
-     * @param nodeRef The node the aspect is being applied to
-     * @param aspectTypeQName The type of aspect being applied (should be rma:scheduled)
-     */
-    public void onAddAspect(NodeRef nodeRef, QName aspectTypeQName)
-    {
-        // ensure the aspect is the one we expect
-        if (aspectTypeQName.equals(ASPECT_SCHEDULED))
-        {
-            // Check whether there is already a disposition schedule object present
-            List<ChildAssociationRef> assocs = this.nodeService.getChildAssocs(nodeRef, ASSOC_DISPOSITION_SCHEDULE, RegexQNamePattern.MATCH_ALL);            
-            if (assocs.size() == 0)
-            {
-                // Create the disposition schedule object
-                this.nodeService.createNode(nodeRef, ASSOC_DISPOSITION_SCHEDULE, 
-                            QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, QName.createValidLocalName("dispositionSchedule")),
-                            TYPE_DISPOSITION_SCHEDULE);
-            }
-        }
-    }
 
     /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementPolicies.OnCreateReference#onCreateReference(org.alfresco.service.cmr.repository.NodeRef, org.alfresco.service.cmr.repository.NodeRef, org.alfresco.service.namespace.QName)
@@ -492,23 +383,57 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     }
     
     /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getRecordsManagementRoots()
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecordsManagementRoot(org.alfresco.service.cmr.repository.NodeRef)
      */
-    public List<NodeRef> getRecordsManagementRoots()
+    public boolean isRecordsManagementRoot(NodeRef nodeRef)
     {
-        List<NodeRef> result = null;
-        SearchService searchService = (SearchService)applicationContext.getBean("searchService");        
-        String query = "ASPECT:\"" + ASPECT_RECORDS_MANAGEMENT_ROOT + "\"";        
-        ResultSet resultSet = searchService.query(defaultStoreRef, SearchService.LANGUAGE_LUCENE, query);
-        try
+        boolean result = false;
+        if (nodeService.exists(nodeRef) == true &&
+            nodeService.hasAspect(nodeRef, ASPECT_RECORDS_MANAGEMENT_ROOT) == true)            
         {
-            result = resultSet.getNodeRefs();
-        }
-        finally
-        {
-            resultSet.close();
+            result = true;
         }
         return result;
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecordsManagmentComponent(org.alfresco.service.cmr.repository.NodeRef)
+     */
+    public boolean isRecordsManagmentComponent(NodeRef nodeRef)
+    {
+        boolean result = false;
+        if (nodeService.exists(nodeRef) == true &&
+            nodeService.hasAspect(nodeRef, ASPECT_FILE_PLAN_COMPONENT) == true)
+        {
+            result = true;
+        }
+        return result;
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecordsManagementContainer(org.alfresco.service.cmr.repository.NodeRef)
+     */
+    public boolean isRecordsManagementContainer(NodeRef nodeRef)
+    {
+        QName nodeType = this.nodeService.getType(nodeRef);
+        return this.dictionaryService.isSubClass(nodeType, TYPE_RECORDS_MANAGEMENT_CONTAINER);
+    }
+
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecordFolder(org.alfresco.service.cmr.repository.NodeRef)
+     */
+    public boolean isRecordFolder(NodeRef nodeRef)
+    {
+        QName nodeType = this.nodeService.getType(nodeRef);
+        return this.dictionaryService.isSubClass(nodeType, TYPE_RECORD_FOLDER);
+    }
+
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecord(org.alfresco.service.cmr.repository.NodeRef)
+     */
+    public boolean isRecord(NodeRef nodeRef)
+    {
+        return this.nodeService.hasAspect(nodeRef, ASPECT_RECORD);
     }
     
     /**
@@ -590,43 +515,229 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
             getNodeRefPathRecursive(nodeRef, nodeRefPath);
         }
     }
-
-    /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecord(org.alfresco.service.cmr.repository.NodeRef)
-     */
-    public boolean isRecord(NodeRef nodeRef)
-    {
-        return this.nodeService.hasAspect(nodeRef, ASPECT_RECORD);
-    }
     
     /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecordsManagementContainer(org.alfresco.service.cmr.repository.NodeRef)
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getRecordsManagementRoots(org.alfresco.service.cmr.repository.StoreRef)
      */
-    public boolean isRecordsManagementContainer(NodeRef nodeRef)
+    public List<NodeRef> getRecordsManagementRoots(StoreRef storeRef)
     {
-        QName nodeType = this.nodeService.getType(nodeRef);
-        return this.dictionaryService.isSubClass(nodeType, TYPE_RECORDS_MANAGEMENT_CONTAINER);
-    }
-
-    /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecordFolder(org.alfresco.service.cmr.repository.NodeRef)
-     */
-    public boolean isRecordFolder(NodeRef nodeRef)
-    {
-        QName nodeType = this.nodeService.getType(nodeRef);
-        return this.dictionaryService.isSubClass(nodeType, TYPE_RECORD_FOLDER);
-    }
-    
-    /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecord(org.alfresco.service.cmr.repository.NodeRef, boolean)
-     */
-    public boolean isRecordDeclared(NodeRef record)
-    {
-        if (isRecord(record) == false)
+        List<NodeRef> result = null;
+        SearchService searchService = (SearchService)applicationContext.getBean("searchService");        
+        String query = "ASPECT:\"" + ASPECT_RECORDS_MANAGEMENT_ROOT + "\"";        
+        ResultSet resultSet = searchService.query(storeRef, SearchService.LANGUAGE_LUCENE, query);
+        try
         {
-            throw new AlfrescoRuntimeException("Expecting a record.  Node is not a record. (" + record.toString() + ")");
+            result = resultSet.getNodeRefs();
         }
-        return (this.nodeService.hasAspect(record, ASPECT_DECLARED_RECORD));
+        finally
+        {
+            resultSet.close();
+        }
+        return result;
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getRecordsManagementRoots()
+     */
+    public List<NodeRef> getRecordsManagementRoots()
+    {
+        return getRecordsManagementRoots(defaultStoreRef);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#createRecordsManagementRoot(org.alfresco.service.cmr.repository.NodeRef, java.lang.String, org.alfresco.service.namespace.QName)
+     */
+    public NodeRef createRecordsManagementRoot(NodeRef parent, String name, QName type)
+    {
+        ParameterCheck.mandatory("parent", parent);
+        ParameterCheck.mandatory("name", name);
+        ParameterCheck.mandatory("type", type);
+        
+        // Check the parent is not already an RM component node
+        // ie: you can't create a rm root in an existing rm hierarchy
+        if (isRecordsManagmentComponent(parent) == true)
+        {
+            throw new AlfrescoRuntimeException("You can not create a records management root in an existing records management hierarchy.");
+        }
+                
+        // Check that the passed type is a sub-type of the RMRootContainer type
+        if (TYPE_RECORDS_MANAGEMENT_ROOT_CONTAINER.equals(type) == false &&
+            dictionaryService.isSubClass(type, TYPE_RECORDS_MANAGEMENT_ROOT_CONTAINER) == false)
+        {
+            throw new AlfrescoRuntimeException("The records management root type(" + 
+                                               type.toString() + 
+                                               ") is not a sub-type of rm:recordsManagementRootContainer");
+        }
+        
+        // Build map of properties
+        Map<QName, Serializable> rmRootProps = new HashMap<QName, Serializable>(1);
+        rmRootProps.put(ContentModel.PROP_NAME, name);
+        
+        // Create the root
+        ChildAssociationRef assocRef = nodeService.createNode(
+                parent,
+                ContentModel.ASSOC_CONTAINS,
+                QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name),
+                type,
+                rmRootProps);
+        
+        // TODO do we need to create role and security groups or is this done automatically?
+        
+        return assocRef.getChildRef();
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#createRecordsManagementRoot(org.alfresco.service.cmr.repository.NodeRef, java.lang.String)
+     */
+    public NodeRef createRecordsManagementRoot(NodeRef parent, String name)
+    {
+        return createRecordsManagementRoot(parent, name, TYPE_RECORDS_MANAGEMENT_ROOT_CONTAINER);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#createRecordsManagementContainer(org.alfresco.service.cmr.repository.NodeRef, java.lang.String, org.alfresco.service.namespace.QName)
+     */
+    public NodeRef createRecordsManagementContainer(NodeRef parent, String name, QName type)
+    {
+        ParameterCheck.mandatory("parent", parent);
+        ParameterCheck.mandatory("name", name);
+        ParameterCheck.mandatory("type", type);
+        
+        // Check that the parent is a container
+        QName parentType = nodeService.getType(parent);
+        if (TYPE_RECORDS_MANAGEMENT_CONTAINER.equals(parentType) == false &&
+            dictionaryService.isSubClass(parentType, TYPE_RECORDS_MANAGEMENT_CONTAINER) == false)
+        {
+            throw new AlfrescoRuntimeException("Can not create records management container, because parent was not subtype of" +
+                                               "rm:recordsManagement (parentType=" + parentType.toString() );
+        }
+        
+        // Check that the the provided type is a sub-type of rm:recordsManagementContainer
+        if (TYPE_RECORDS_MANAGEMENT_CONTAINER.equals(type) == false &&
+            dictionaryService.isSubClass(type, TYPE_RECORDS_MANAGEMENT_CONTAINER) == false)
+        {
+            throw new AlfrescoRuntimeException("Can not create records management container, because provided type (" +
+                                                type.toString() +
+                                               ") is not a sub-type of rm:recordsManagementContainer");
+        }
+        
+        Map<QName, Serializable> props = new HashMap<QName, Serializable>(1);
+        props.put(ContentModel.PROP_NAME, name);
+        
+        return nodeService.createNode(
+                parent,
+                ContentModel.ASSOC_CONTAINS,
+                QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name),
+                type,
+                props).getChildRef();
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#createRecordsManagementContainer(org.alfresco.service.cmr.repository.NodeRef, java.lang.String)
+     */
+    public NodeRef createRecordsManagementContainer(NodeRef parent, String name)
+    {
+        // TODO for now default to rm:recordsManagementContainer but in the future
+        // the parent could give us context as to which type of container to create
+        
+        return createRecordsManagementContainer(parent, name, TYPE_RECORDS_MANAGEMENT_CONTAINER);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getAllContained(org.alfresco.service.cmr.repository.NodeRef)
+     */
+    @Override
+    public List<NodeRef> getAllContained(NodeRef container)
+    {
+        return getAllContained(container, false);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getAllContained(org.alfresco.service.cmr.repository.NodeRef, boolean)
+     */
+    @Override
+    public List<NodeRef> getAllContained(NodeRef container, boolean deep)
+    {
+        return getContained(container, null, deep);
+    }
+    
+    /**
+     * Get contained nodes of a particular type.  If null return all.
+     * 
+     * @param container container node reference
+     * @param typeFilter type filter, null if none
+     * @return {@link List}<{@link NodeRef> list of contained node references
+     */
+    private List<NodeRef> getContained(NodeRef container, QName typeFilter, boolean deep)
+    {   
+        // Parameter check
+        ParameterCheck.mandatory("container", container);
+        
+        // Check we have a container in our hands
+        if (isRecordsManagementContainer(container) == false)
+        {
+            throw new AlfrescoRuntimeException("Node reference to a rm:recordsManagementContainer node expected.");
+        }
+        
+        List<NodeRef> result = new ArrayList<NodeRef>(1);
+        List<ChildAssociationRef> assocs = this.nodeService.getChildAssocs(container, ContentModel.ASSOC_CONTAINS, RegexQNamePattern.MATCH_ALL);
+        for (ChildAssociationRef assoc : assocs)
+        {
+            NodeRef child = assoc.getChildRef();
+            QName childType = nodeService.getType(child);
+            if (typeFilter == null ||
+                typeFilter.equals(childType) == true ||
+                dictionaryService.isSubClass(childType, typeFilter) == true)
+            {
+                result.add(child);
+            }
+            
+            // Inspect the containers and add children if deep
+            if (deep == true &&
+                (TYPE_RECORDS_MANAGEMENT_CONTAINER.equals(childType) == true ||
+                 dictionaryService.isSubClass(childType, TYPE_RECORDS_MANAGEMENT_CONTAINER) == true))
+            {
+                result.addAll(getContained(child, typeFilter, deep));
+            }
+        }
+            
+        return result;
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getContainedRecordsManagementContainers(org.alfresco.service.cmr.repository.NodeRef)
+     */
+    @Override
+    public List<NodeRef> getContainedRecordsManagementContainers(NodeRef container)
+    {
+        return getContainedRecordsManagementContainers(container, false);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getContainedRecordsManagementContainers(org.alfresco.service.cmr.repository.NodeRef, boolean)
+     */
+    @Override
+    public List<NodeRef> getContainedRecordsManagementContainers(NodeRef container, boolean deep)
+    {
+        return getContained(container, TYPE_RECORDS_MANAGEMENT_CONTAINER, deep);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getContainedRecordFolders(org.alfresco.service.cmr.repository.NodeRef)
+     */
+    @Override
+    public List<NodeRef> getContainedRecordFolders(NodeRef container)
+    {
+        return getContainedRecordFolders(container, false);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getContainedRecordFolders(org.alfresco.service.cmr.repository.NodeRef, boolean)
+     */
+    @Override
+    public List<NodeRef> getContainedRecordFolders(NodeRef container, boolean deep)
+    {
+        return getContained(container, TYPE_RECORD_FOLDER, deep);
     }
     
     /**
@@ -679,6 +790,85 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     }
     
     /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#createRecordFolder(org.alfresco.service.cmr.repository.NodeRef, java.lang.String, org.alfresco.service.namespace.QName)
+     */
+    public NodeRef createRecordFolder(NodeRef rmContainer, String name, QName type)
+    {
+        ParameterCheck.mandatory("rmContainer", rmContainer);
+        ParameterCheck.mandatory("name", name);
+        ParameterCheck.mandatory("type", type);
+        
+        // Check that we are not trying to create a record folder in a root container
+        if (isRecordsManagementRoot(rmContainer) == true)
+        {
+            throw new AlfrescoRuntimeException("Can not create a record folder, because the parent is a records management root");
+        }
+        
+        // Check that the parent is a container
+        QName parentType = nodeService.getType(rmContainer);
+        if (TYPE_RECORDS_MANAGEMENT_CONTAINER.equals(parentType) == false &&
+            dictionaryService.isSubClass(parentType, TYPE_RECORDS_MANAGEMENT_CONTAINER) == false)
+        {
+            throw new AlfrescoRuntimeException("Can not create record folder, because parent was not subtype of" +
+                                               "rm:recordsManagementContainer (parentType=" + parentType.toString() );
+        }
+        
+        // Check that the the provided type is a sub-type of rm:recordFolder
+        if (TYPE_RECORD_FOLDER.equals(type) == false &&
+            dictionaryService.isSubClass(type, TYPE_RECORD_FOLDER) == false)
+        {
+            throw new AlfrescoRuntimeException("Can not create record folder, because provided type (" +
+                                                type.toString() +
+                                               ") is not a sub-type of rm:recordFolder");
+        }
+        
+        Map<QName, Serializable> props = new HashMap<QName, Serializable>(1);
+        props.put(ContentModel.PROP_NAME, name);
+        
+        return nodeService.createNode(
+                rmContainer,
+                ContentModel.ASSOC_CONTAINS,
+                QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name),
+                type,
+                props).getChildRef();
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#createRecordFolder(org.alfresco.service.cmr.repository.NodeRef, java.lang.String)
+     */
+    public NodeRef createRecordFolder(NodeRef rmContrainer, String name)
+    {
+        // TODO defaults to rm:recordFolder, but in future could auto-detect sub-type of folder based on
+        //      context
+        return createRecordFolder(rmContrainer, name, TYPE_RECORD_FOLDER);
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getRecordMetaDataAspects()
+     */
+    public Set<QName> getRecordMetaDataAspects() 
+    {
+    	if (recordMetaDataAspects == null)
+    	{
+    	    recordMetaDataAspects = new HashSet<QName>(7);
+    		Collection<QName> aspects = dictionaryService.getAllAspects();
+    		for (QName aspect : aspects) 
+    		{
+    		    AspectDefinition def = dictionaryService.getAspect(aspect);
+    		    if (def != null)
+    		    {
+    		        QName parent = def.getParentName();
+    		        if (parent != null && ASPECT_RECORD_META_DATA.equals(parent) == true)
+    		        {
+    		            recordMetaDataAspects.add(aspect);
+    		        }
+    		    }
+			}
+    	}
+    	return recordMetaDataAspects;
+	}
+    
+    /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getRecords(org.alfresco.service.cmr.repository.NodeRef)
      */
     public List<NodeRef> getRecords(NodeRef recordFolder)
@@ -700,286 +890,16 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     }
     
     /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getDispositionSchedule(org.alfresco.service.cmr.repository.NodeRef)
+     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isRecord(org.alfresco.service.cmr.repository.NodeRef, boolean)
      */
-    public DispositionSchedule getDispositionSchedule(NodeRef nodeRef)
-    {   
-        DispositionSchedule di = null;
-        NodeRef diNodeRef = null;
-        if (isRecord(nodeRef) == true)
-        {
-            // Get the record folders for the record
-            List<NodeRef> recordFolders = getRecordFolders(nodeRef);
-            // At this point, we may have disposition instruction objects from 1..n folders.
-            diNodeRef = dispositionSelectionStrategy.selectDispositionScheduleFrom(recordFolders);
-        }
-        else
-        {
-            // Get the disposition instructions for the node reference provided
-            diNodeRef = getDispositionInstructionsImpl(nodeRef);
-        }
-        
-        if (diNodeRef != null)
-        {
-            di = new DispositionScheduleImpl(serviceRegistry, nodeService, diNodeRef);
-        }
-        
-        return di;
-    }
-    
-    /*
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#addDispositionActionDefinition(org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule, java.util.Map)
-     */
-    public DispositionActionDefinition addDispositionActionDefinition(DispositionSchedule schedule,
-                Map<QName, Serializable> actionDefinitionParams)
+    public boolean isRecordDeclared(NodeRef record)
     {
-        // make sure at least a name has been defined
-        String name = (String)actionDefinitionParams.get(PROP_DISPOSITION_ACTION_NAME);
-        if (name == null || name.length() == 0)
+        if (isRecord(record) == false)
         {
-            throw new IllegalArgumentException("'name' parameter is mandatory when creating a disposition action definition");
+            throw new AlfrescoRuntimeException("Expecting a record.  Node is not a record. (" + record.toString() + ")");
         }
-        
-        // TODO: also check the action name is valid?
-        
-        // create the child association from the schedule to the action definition
-        NodeRef actionNodeRef = this.nodeService.createNode(schedule.getNodeRef(), 
-                    RecordsManagementModel.ASSOC_DISPOSITION_ACTION_DEFINITIONS, 
-                    QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, 
-                    QName.createValidLocalName(name)),
-                    RecordsManagementModel.TYPE_DISPOSITION_ACTION_DEFINITION, actionDefinitionParams).getChildRef();
-        
-        // get the updated disposition schedule and retrieve the new action definition
-        NodeRef scheduleParent = this.nodeService.getPrimaryParent(schedule.getNodeRef()).getParentRef();
-        DispositionSchedule updatedSchedule = this.getDispositionSchedule(scheduleParent);
-        return updatedSchedule.getDispositionActionDefinition(actionNodeRef.getId());
-    }
-
-    /*
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#canDispositionActionDefinitionsBeRemoved(org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule)
-     */
-    public boolean canDispositionActionDefinitionsBeRemoved(DispositionSchedule schedule)
-    {
-        NodeRef scheduleNode = schedule.getNodeRef();
-        NodeRef recordCategoryNode = nodeService.getPrimaryParent(scheduleNode).getParentRef();
-        if (schedule.isRecordLevelDisposition())
-        {
-            // if we are using record level disposition ensure there are no records under any
-            // of the record folders for the category the given schedule is for.
-            List<ChildAssociationRef> folderAssocs = nodeService.getChildAssocs(recordCategoryNode, 
-                        ContentModel.ASSOC_CONTAINS, RegexQNamePattern.MATCH_ALL);
-            for (ChildAssociationRef folderAssoc : folderAssocs)
-            {
-                NodeRef folder = folderAssoc.getChildRef();
-                if (isRecordFolder(folder))
-                {
-                    List<ChildAssociationRef> recordAssocs = nodeService.getChildAssocs(folder, 
-                                ContentModel.ASSOC_CONTAINS, RegexQNamePattern.MATCH_ALL);
-                    for (ChildAssociationRef recordAssoc : recordAssocs)
-                    {
-                        NodeRef record = recordAssoc.getChildRef();
-                        if (isRecord(record))
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            // if we are using folder level disposition ensure there are no record folder under
-            // the category the given schedule is for.
-            List<ChildAssociationRef> folderAssocs = nodeService.getChildAssocs(recordCategoryNode, 
-                        ContentModel.ASSOC_CONTAINS, RegexQNamePattern.MATCH_ALL);
-            for (ChildAssociationRef folderAssoc : folderAssocs)
-            {
-                NodeRef folder = folderAssoc.getChildRef();
-                if (isRecordFolder(folder))
-                {
-                    return false;
-                }
-            }
-        }
-        
-        return true;
-    }
-    
-    /*
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#removeDispositionActionDefinition(org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule, org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition)
-     */
-    public void removeDispositionActionDefinition(DispositionSchedule schedule,
-                DispositionActionDefinition actionDefinition)
-    {
-        // check first whether action definitions can be removed
-        if (!canDispositionActionDefinitionsBeRemoved(schedule))
-        {
-            throw new AlfrescoRuntimeException("Can not remove action definitions from schedule '" + 
-                        schedule.getNodeRef() + "' as one or more record or record folders are present.");
-        }
-        
-        // remove the child node representing the action definition
-        this.nodeService.removeChild(schedule.getNodeRef(), actionDefinition.getNodeRef());
-    }
-
-    /*
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#updateDispositionActionDefinition(org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule, org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition, java.util.Map)
-     */
-    public DispositionActionDefinition updateDispositionActionDefinition(DispositionSchedule schedule,
-                DispositionActionDefinition actionDefinition, Map<QName, Serializable> actionDefinitionParams)
-    {
-        // update the node with properties
-        this.nodeService.addProperties(actionDefinition.getNodeRef(), actionDefinitionParams);
-        
-        // get the updated disposition schedule and retrieve the updated action definition
-        NodeRef scheduleParent = this.nodeService.getPrimaryParent(schedule.getNodeRef()).getParentRef();
-        DispositionSchedule updatedSchedule = this.getDispositionSchedule(scheduleParent);
-        
-        return updatedSchedule.getDispositionActionDefinition(actionDefinition.getId());
-    }
-
-    /**
-     * This method returns a NodeRef
-     * Gets the disposition instructions 
-     * 
-     * @param nodeRef
-     * @return
-     */
-    private NodeRef getDispositionInstructionsImpl(NodeRef nodeRef)
-    {
-        NodeRef result = null;
-        
-        if (this.nodeService.hasAspect(nodeRef, ASPECT_SCHEDULED) == true)
-        {
-            List<ChildAssociationRef> childAssocs = this.nodeService.getChildAssocs(nodeRef, ASSOC_DISPOSITION_SCHEDULE, RegexQNamePattern.MATCH_ALL);
-            if (childAssocs.size() != 0)
-            {
-                ChildAssociationRef firstChildAssocRef = childAssocs.get(0);
-                result = firstChildAssocRef.getChildRef();
-            }
-        }
-        else
-        {
-            NodeRef parent = this.nodeService.getPrimaryParent(nodeRef).getParentRef();
-            if (isRecordsManagementContainer(parent) == true)
-            {
-                result = getDispositionInstructionsImpl(parent);
-            }
-        }
-        return result;
-    }
-
-   
-    /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#isNextDispositionActionEligible(org.alfresco.service.cmr.repository.NodeRef)
-     */
-    public boolean isNextDispositionActionEligible(NodeRef nodeRef)
-    {
-        boolean result = false;
-        
-        // Get the disposition instructions
-        DispositionSchedule di = getDispositionSchedule(nodeRef);
-        NodeRef nextDa = getNextDispositionActionNodeRef(nodeRef);
-        if (di != null &&
-            this.nodeService.hasAspect(nodeRef, ASPECT_DISPOSITION_LIFECYCLE) == true &&
-            nextDa != null)
-        {
-            // If it has an asOf date and it is greater than now the action is eligible
-            Date asOf = (Date)this.nodeService.getProperty(nextDa, PROP_DISPOSITION_AS_OF);
-            if (asOf != null &&
-                asOf.before(new Date()) == true)
-            {
-                result = true;
-            }
-            
-            if (result == false)
-            {
-                // If all the events specified on the action have been completed the action is eligible
-                List<ChildAssociationRef> assocs = this.nodeService.getChildAssocs(nextDa, ASSOC_EVENT_EXECUTIONS, RegexQNamePattern.MATCH_ALL);
-                for (ChildAssociationRef assoc : assocs)
-                {
-                    NodeRef eventExecution = assoc.getChildRef();
-                    Boolean isCompleteValue = (Boolean)this.nodeService.getProperty(eventExecution, PROP_EVENT_EXECUTION_COMPLETE);
-                    boolean isComplete = false;
-                    if (isCompleteValue != null)
-                    {
-                        isComplete = isCompleteValue.booleanValue();
-                        
-                        // TODO this only works for the OR use case .. need to handle optional AND handling
-                        if (isComplete == true)
-                        {
-                            result = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return result;
-    }
-    
-    /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getNextDispositionAction(org.alfresco.service.cmr.repository.NodeRef)
-     */
-    public DispositionAction getNextDispositionAction(NodeRef nodeRef)
-    {
-        DispositionAction result = null;
-        NodeRef dispositionActionNodeRef = getNextDispositionActionNodeRef(nodeRef);
-
-        if (dispositionActionNodeRef != null)
-        {
-            result = new DispositionActionImpl(this.serviceRegistry, dispositionActionNodeRef);
-        }
-        return result;
-    }
-    
-    /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getCompletedDispositionActions(org.alfresco.service.cmr.repository.NodeRef)
-     */
-    public List<DispositionAction> getCompletedDispositionActions(NodeRef nodeRef)
-    {
-        List<ChildAssociationRef> assocs = this.nodeService.getChildAssocs(nodeRef, ASSOC_DISPOSITION_ACTION_HISTORY, RegexQNamePattern.MATCH_ALL);
-        List<DispositionAction> result = new ArrayList<DispositionAction>(assocs.size());        
-        for (ChildAssociationRef assoc : assocs)
-        {
-            NodeRef dispositionActionNodeRef = assoc.getChildRef();
-            result.add(new DispositionActionImpl(serviceRegistry, dispositionActionNodeRef));
-        }        
-        return result;
-    }
-    
-    /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getLastCompletedDispostionAction(org.alfresco.service.cmr.repository.NodeRef)
-     */
-    public DispositionAction getLastCompletedDispostionAction(NodeRef nodeRef)
-    {
-       DispositionAction result = null;
-       List<DispositionAction> list = getCompletedDispositionActions(nodeRef);
-       if (list.isEmpty() == false)
-       {
-           // Get the last disposition action in the list
-           result = list.get(list.size()-1);
-       }       
-       return result;
-    }
-    
-    /**
-     * Get the next disposition action node.  Null if none present.
-     * 
-     * @param nodeRef       the disposable node reference
-     * @return NodeRef      the next disposition action, null if none
-     */
-    private NodeRef getNextDispositionActionNodeRef(NodeRef nodeRef)
-    {
-        NodeRef result = null;
-        List<ChildAssociationRef> assocs = this.nodeService.getChildAssocs(nodeRef, ASSOC_NEXT_DISPOSITION_ACTION, RegexQNamePattern.MATCH_ALL);
-        if (assocs.size() != 0)
-        {
-            result = assocs.get(0).getChildRef();
-        }
-        return result;
-    }
+        return (this.nodeService.hasAspect(record, ASPECT_DECLARED_RECORD));
+    } 
 
     /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getVitalRecordDefinition(org.alfresco.service.cmr.repository.NodeRef)
@@ -1098,41 +1018,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
             }
         }
         return result;
-    }
-    
-    /*
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getNextRecordIdentifier(org.alfresco.service.cmr.repository.NodeRef)
-     */
-    public String getNextRecordIdentifier(NodeRef container)
-    {
-        if(nodeService.hasAspect(container, ASPECT_RECORD_COMPONENT_ID))
-        {
-            String parentIdentifier = (String)nodeService.getProperty(container, PROP_IDENTIFIER);  
-            return parentIdentifier + "-" + GUID.generate();
-        }
-        else
-        {
-            return GUID.generate();
-        }
-    }
-    
-    /*
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getDispositionPeriodProperties()
-     */
-    public List<QName> getDispositionPeriodProperties()
-    {
-        DispositionPeriodProperties dpp = (DispositionPeriodProperties)this.applicationContext.getBean(
-                    DispositionPeriodProperties.BEAN_NAME);
-
-        if (dpp == null)
-        {
-            return Collections.emptyList();
-        }
-        else
-        {
-            return dpp.getPeriodProperties();
-        }
-    }
+    }      
     
     /**
      * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)

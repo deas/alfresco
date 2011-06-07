@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -64,7 +64,7 @@ public class EditDispositionActionAsOfDateAction extends RMActionExecuterAbstrac
             }
             
             // Set the dispostion action as of date
-            DispositionAction da = recordsManagementService.getNextDispositionAction(actionedUponNodeRef);
+            DispositionAction da = dispositionService.getNextDispositionAction(actionedUponNodeRef);
             if (da != null)
             {                
                 nodeService.setProperty(da.getNodeRef(), PROP_DISPOSITION_AS_OF, asOfDate);

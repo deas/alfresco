@@ -242,7 +242,7 @@ public class M2Model
         M2Aspect aspect = getAspect(name);
         if (aspect != null)
         {
-            aspects.remove(name);
+            aspects.remove(aspect);
         }
     }
 

@@ -21,8 +21,8 @@ package org.alfresco.module.org_alfresco_module_dod5015.audit;
 import java.io.Serializable;
 import java.util.Set;
 
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService;
 import org.alfresco.module.org_alfresco_module_dod5015.security.Role;
 import org.alfresco.repo.audit.extractor.AbstractDataExtractor;

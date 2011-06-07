@@ -28,19 +28,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.extensions.surf.util.I18NUtil;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
 import org.alfresco.module.org_alfresco_module_dod5015.EventCompletionDetails;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.audit.RecordsManagementAuditService;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.impl.AbstractCapability;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionActionDefinition;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEvent;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventType;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.action.executer.ActionExecuterAbstractBase;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ActionService;
@@ -58,6 +58,7 @@ import org.alfresco.service.namespace.RegexQNamePattern;
 import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.PropertyCheck;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.util.StringUtils;
 
 /**
@@ -96,6 +97,9 @@ public abstract class RMActionExecuterAbstractBase  extends ActionExecuterAbstra
     
     /** Records management service */
     protected RecordsManagementService recordsManagementService;
+    
+    /** Disposition service */
+    protected DispositionService dispositionService;
     
     /** Records management event service */
     protected RecordsManagementEventService recordsManagementEventService;
@@ -184,6 +188,14 @@ public abstract class RMActionExecuterAbstractBase  extends ActionExecuterAbstra
     {
         this.recordsManagementService = recordsManagementService;
     }    
+    
+    /**
+     * Set the disposition service
+     */
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
+    }
     
     /** 
      * Set records management event service
@@ -406,7 +418,7 @@ public abstract class RMActionExecuterAbstractBase  extends ActionExecuterAbstra
     public void updateNextDispositionAction(NodeRef nodeRef)
     {
         // Get this disposition instructions for the node
-        DispositionSchedule di = recordsManagementService.getDispositionSchedule(nodeRef);
+        DispositionSchedule di = dispositionService.getDispositionSchedule(nodeRef);
         if (di != null)
         {
             // Get the current action node

@@ -21,8 +21,8 @@ package org.alfresco.module.org_alfresco_module_dod5015.script;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionActionDefinition;
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionSchedule;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionActionDefinition;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -47,7 +47,7 @@ public class DispositionActionDefinitionDelete extends DispositionAbstractBase
         DispositionActionDefinition actionDef = parseRequestForActionDefinition(req, schedule);
         
         // remove the action definition from the schedule
-        this.rmService.removeDispositionActionDefinition(schedule, actionDef);
+        this.dispositionService.removeDispositionActionDefinition(schedule, actionDef);
         
         // return an empty model
         return new HashMap<String, Object>();

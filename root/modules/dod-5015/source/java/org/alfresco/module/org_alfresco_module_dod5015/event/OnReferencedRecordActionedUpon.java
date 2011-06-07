@@ -24,14 +24,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.module.org_alfresco_module_dod5015.DispositionAction;
 import org.alfresco.module.org_alfresco_module_dod5015.EventCompletionDetails;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementPolicies;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.CompleteEventAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
+import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
@@ -55,11 +56,16 @@ public class OnReferencedRecordActionedUpon extends SimpleRecordsManagementEvent
     /** Records management service */
     private RecordsManagementService recordsManagementService;
     
-    /** Records managment action service */
+    /** Disposition service */
+    private DispositionService dispositionService;
+    
+    /** Records management action service */
     private RecordsManagementActionService recordsManagementActionService;
     
+    /** Records management admin service */
     private RecordsManagementAdminService recordsManagementAdminService;
     
+    /** Node service */
     private NodeService nodeService;
     
     /** Policy component */
@@ -78,6 +84,14 @@ public class OnReferencedRecordActionedUpon extends SimpleRecordsManagementEvent
     {
         this.recordsManagementService = recordsManagementService;
     }    
+    
+    /**
+     * @param dispositionService    the disposition service
+     */
+    public void setDispositionService(DispositionService dispositionService)
+    {
+        this.dispositionService = dispositionService;
+    }
     
     /**
      * @param recordsManagementActionService the recordsManagementActionService to set
@@ -218,7 +232,7 @@ public class OnReferencedRecordActionedUpon extends SimpleRecordsManagementEvent
     
     private void doEventComplete(NodeRef nodeRef)
     {
-        DispositionAction da = recordsManagementService.getNextDispositionAction(nodeRef);
+        DispositionAction da = dispositionService.getNextDispositionAction(nodeRef);
         if (da != null)
         {
             List<EventCompletionDetails> events = da.getEventCompletionDetails();
