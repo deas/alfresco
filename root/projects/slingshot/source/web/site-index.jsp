@@ -4,8 +4,18 @@
 <%@ page import="org.springframework.extensions.surf.util.*" %>
 <%@ page import="java.util.*" %>
 <%
-   // retrieve user id from the session
+   // retrieve user name from the session
    String userid = (String)session.getAttribute(SlingshotUserFactory.SESSION_ATTRIBUTE_KEY_USER_ID);
+   
+   // test user dashboard page exists?
+   RequestContext context = (RequestContext)request.getAttribute(RequestContext.ATTR_REQUEST_CONTEXT);
+   if (context.getObjectService().getPage("user/" + userid + "/dashboard") == null)
+   {
+      // no user dashboard page found! create initial dashboard for this user...
+      Map<String, String> tokens = new HashMap<String, String>();
+      tokens.put("userid", userid);
+      FrameworkUtil.getServiceRegistry().getPresetsManager().constructPreset("user-dashboard", tokens);
+   }
    
    // redirect to site or user dashboard as appropriate
    String siteName = request.getParameter("site");
