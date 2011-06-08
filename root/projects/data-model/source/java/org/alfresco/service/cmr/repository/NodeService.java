@@ -360,14 +360,22 @@ public interface NodeService
     public boolean removeChildAssociation(ChildAssociationRef childAssocRef);
 
     /**
+     * @deprecated Use {@link #removeSecondaryChildAssociation(ChildAssociationRef)}
+     */
+    @Auditable(parameters = {"childAssocRef"})
+    public boolean removeSeconaryChildAssociation(ChildAssociationRef childAssocRef);
+
+    /**
      * Remove a specific secondary child association.
      * 
      * @param childAssocRef the association to remove
      * @return Returns <tt>true</tt> if the association existed, otherwise <tt>false</tt>.
      * @throws IllegalArgumentException if the association is primary
+     * 
+     * @since 4.0
      */
     @Auditable(parameters = {"childAssocRef"})
-    public boolean removeSeconaryChildAssociation(ChildAssociationRef childAssocRef);
+    public boolean removeSecondaryChildAssociation(ChildAssociationRef childAssocRef);
 
     /**
      * @param nodeRef

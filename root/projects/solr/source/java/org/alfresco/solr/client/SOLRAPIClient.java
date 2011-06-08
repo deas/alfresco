@@ -304,7 +304,6 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         else if(dataTypeName.equals(DataTypeDefinition.CONTENT))
         {
             JSONObject o = (JSONObject)value;
-            @SuppressWarnings("rawtypes")
             long contentId = o.getLong("contentId");
             
             String localeStr = o.has("locale") ? o.getString("locale") : null;
@@ -340,9 +339,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         }
         else
         {
-            @SuppressWarnings("rawtypes")
             DataTypeDefinition dataType = propertyDef.getDataType();
-            QName dataTypeName = dataType.getName();
             
             boolean isMulti = propertyDef.isMultiValued();
 
@@ -595,13 +592,13 @@ public class SOLRAPIClient extends AlfrescoHttpClient
 
             // add all default converters to this converter
             // TODO find a better way of doing this
-            Map<Class, Map<Class, Converter>> converters = DefaultTypeConverter.INSTANCE.getConverters();
+            Map<Class<?>, Map<Class<?>, Converter<?,?>>> converters = DefaultTypeConverter.INSTANCE.getConverters();
             for(Class source : converters.keySet())
             {
-                Map<Class, Converter> converters1 = converters.get(source);
+                Map<Class<?>, Converter<?,?>> converters1 = converters.get(source);
                 for(Class dest : converters1.keySet())
                 {
-                    Converter converter = converters1.get(dest);
+                    Converter<?,?> converter = converters1.get(dest);
                     instance.addConverter(source, dest, converter);
                 }
             }

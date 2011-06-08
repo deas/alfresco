@@ -25,7 +25,6 @@ import org.alfresco.wcm.client.exception.RepositoryUnavailableException;
 import org.alfresco.wcm.client.impl.HttpCredentialService;
 import org.alfresco.wcm.client.impl.HttpCredentialService.UsernameAndPassword;
 import org.apache.chemistry.opencmis.client.api.Repository;
-import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -186,13 +185,6 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
     @Override
     public void destroyObject(Object obj) throws Exception
     {
-        if (obj == null || !(obj instanceof Session))
-        {
-            throw new IllegalArgumentException("Session instance expected");
-        }
-        Session session = (Session) obj;
-        session.cancel();
-        session.clear();
     }
 
     /**
@@ -214,12 +206,6 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
     @Override
     public void passivateObject(Object obj) throws Exception
     {
-        if (obj == null || !(obj instanceof Session))
-        {
-            throw new IllegalArgumentException("Session instance expected");
-        }
-        Session session = (Session) obj;
-        session.cancel();
     }
 
     /**

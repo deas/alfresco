@@ -211,7 +211,9 @@ public class DefaultTypeConverterTest extends TestCase
         assertEquals(Float.valueOf("5"), DefaultTypeConverter.INSTANCE.convert(Float.class, Float.valueOf("5")));
         assertEquals(Double.valueOf("6"), DefaultTypeConverter.INSTANCE.convert(Double.class, Float.valueOf("6")));
         assertEquals(new BigInteger("7"), DefaultTypeConverter.INSTANCE.convert(BigInteger.class, Float.valueOf("7")));
-        assertEquals(new BigDecimal("8"), DefaultTypeConverter.INSTANCE.convert(BigDecimal.class, Float.valueOf("8")));
+        
+        assertEquals(new BigDecimal("8.0"), DefaultTypeConverter.INSTANCE.convert(BigDecimal.class, Float.valueOf("8")));
+        assertTrue(new BigDecimal("8").compareTo(DefaultTypeConverter.INSTANCE.convert(BigDecimal.class, Float.valueOf("8"))) == 0);
         
         assertEquals(Byte.valueOf("1"), DefaultTypeConverter.INSTANCE.convert(Byte.class, Double.valueOf("1")));
         assertEquals(Short.valueOf("2"), DefaultTypeConverter.INSTANCE.convert(Short.class, Double.valueOf("2")));
@@ -220,7 +222,9 @@ public class DefaultTypeConverterTest extends TestCase
         assertEquals(Float.valueOf("5"), DefaultTypeConverter.INSTANCE.convert(Float.class, Double.valueOf("5")));
         assertEquals(Double.valueOf("6"), DefaultTypeConverter.INSTANCE.convert(Double.class, Double.valueOf("6")));
         assertEquals(new BigInteger("7"), DefaultTypeConverter.INSTANCE.convert(BigInteger.class, Double.valueOf("7")));
-        assertEquals(new BigDecimal("8"), DefaultTypeConverter.INSTANCE.convert(BigDecimal.class, Double.valueOf("8")));
+        
+        assertEquals(new BigDecimal("8.0"), DefaultTypeConverter.INSTANCE.convert(BigDecimal.class, Double.valueOf("8")));
+        assertTrue(new BigDecimal("8").compareTo(DefaultTypeConverter.INSTANCE.convert(BigDecimal.class, Double.valueOf("8"))) == 0);
         
         assertEquals(Byte.valueOf("1"), DefaultTypeConverter.INSTANCE.convert(Byte.class, new BigInteger("1")));
         assertEquals(Short.valueOf("2"), DefaultTypeConverter.INSTANCE.convert(Short.class, new BigInteger("2")));
