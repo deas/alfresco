@@ -117,9 +117,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.orm-3.0.0.jar" sourcepath="src/org.springframework.orm-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web-3.0.0.jar" sourcepath="src/org.springframework.web-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jaxws_2.1_spec-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-3.8-beta3-20110506.jar" sourcepath="src/poi-3.8-beta3-20110506.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.8-beta3-20110506.jar" sourcepath="src/poi-3.8-beta3-20110506.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.8-beta3-20110506.jar" sourcepath="src/poi-3.8-beta3-20110506.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.8-beta4-20110608.jar" sourcepath="src/poi-3.8-beta4-20110608.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.8-beta4-20110608.jar" sourcepath="src/poi-3.8-beta4-20110608.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.8-beta4-20110608.jar" sourcepath="src/poi-3.8-beta4-20110608.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.15.jar"/>
