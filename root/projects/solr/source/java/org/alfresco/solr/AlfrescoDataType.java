@@ -90,10 +90,9 @@ public class AlfrescoDataType extends FieldType
      * @see org.apache.solr.schema.FieldType#getSortField(org.apache.solr.schema.SchemaField, boolean)
      */
     @Override
-    public SortField getSortField(SchemaField arg0, boolean arg1)
+    public SortField getSortField(SchemaField field, boolean reverse)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return AlfrescoSolrDataModel.getInstance(id).getSortField(field, reverse);
     }
 
     @Override
@@ -137,6 +136,7 @@ public class AlfrescoDataType extends FieldType
             throw new AlfrescoRuntimeException("Failed to read Alfresco schema", e);
         }
 
+        AlfrescoSolrDataModel.getInstance(id).setAlfrescoDataType(this);
         super.init(schema, args);
     }
 
@@ -151,9 +151,9 @@ public class AlfrescoDataType extends FieldType
     }
 
     @Override
-    public Analyzer getAnalyzer()
+    public SolrLuceneAnalyser getAnalyzer()
     {
-        return new LuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode());
+        return new SolrLuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode(), super.getAnalyzer(), AlfrescoSolrDataModel.getInstance(id));
     }
 
     public Field createField(SchemaField field, String externalVal, float boost)
@@ -211,7 +211,7 @@ public class AlfrescoDataType extends FieldType
     @Override
     public Analyzer getQueryAnalyzer()
     {
-        return new LuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode());
+        return new SolrLuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode(), super.getAnalyzer(), AlfrescoSolrDataModel.getInstance(id));
     }
 
     @Override

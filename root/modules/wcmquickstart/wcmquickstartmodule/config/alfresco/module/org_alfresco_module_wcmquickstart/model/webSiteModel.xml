@@ -489,6 +489,25 @@
             </properties>
         </aspect>
 
+        <aspect name="ws:temporaryMultilingual">
+            <title>Temporary Multilingual</title>
+            <description>Temporary aspect used for properties during transition to system multi-lingual manager</description>
+            <properties>
+                <property name="ws:translationOf">
+                    <title>Translation Of</title>
+                    <type>d:noderef</type>
+                </property>
+                <property name="ws:language">
+                    <title>Language</title>
+                    <type>d:text</type>
+                </property>
+               <property name="ws:initiallyOrphaned">
+                  <title>Orphaned</title>
+                     <type>d:boolean</type>
+               </property>
+            </properties>
+        </aspect>
+
         <aspect name="ws:templated">
             <title>Templated Aspect</title>
             <properties>

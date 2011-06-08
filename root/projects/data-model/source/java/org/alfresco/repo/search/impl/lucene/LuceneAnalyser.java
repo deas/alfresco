@@ -26,7 +26,6 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser;
-import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.LongAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.MLAnalayser;
 import org.alfresco.repo.search.impl.lucene.analysis.PathAnalyser;
@@ -41,8 +40,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 
-import com.google.gdata.data.DateTime;
-
 /**
  * Analyse properties according to the property definition. The default is to use the standard tokeniser. The tokeniser
  * should not have been called when indexing properties that require no tokenisation. (tokenise should be set to false
@@ -51,7 +48,7 @@ import com.google.gdata.data.DateTime;
  * @author andyh
  */
 
-public class LuceneAnalyser extends Analyzer
+public class LuceneAnalyser extends AbstractAnalyzer
 {
     private static Log s_logger = LogFactory.getLog(LuceneAnalyser.class);
 
@@ -74,20 +71,9 @@ public class LuceneAnalyser extends Analyzer
      */
     public LuceneAnalyser(DictionaryService dictionaryService, MLAnalysisMode mlAlaysisMode)
     {
-        this(new AlfrescoStandardAnalyser());
+        this.defaultAnalyser = new AlfrescoStandardAnalyser();
         this.dictionaryService = dictionaryService;
         this.mlAlaysisMode = mlAlaysisMode;
-    }
-
-    /**
-     * Constructs with default analyzer.
-     * 
-     * @param defaultAnalyzer
-     *            Any fields not specifically defined to use a different analyzer will use the one provided here.
-     */
-    public LuceneAnalyser(Analyzer defaultAnalyser)
-    {
-        this.defaultAnalyser = defaultAnalyser;
     }
 
     public TokenStream tokenStream(String fieldName, Reader reader, AnalysisMode analysisMode)

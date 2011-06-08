@@ -43,10 +43,18 @@ public class MLAnalayser extends Analyzer
     
     private MLAnalysisMode mlAnalaysisMode;
 
+    private Analyzer analyzer;
+    
     public MLAnalayser(DictionaryService dictionaryService, MLAnalysisMode mlAnalaysisMode)
+    {
+      this(dictionaryService, mlAnalaysisMode, null);
+    }
+    
+    public MLAnalayser(DictionaryService dictionaryService, MLAnalysisMode mlAnalaysisMode, Analyzer analyzer)
     {
         this.dictionaryService = dictionaryService;
         this.mlAnalaysisMode = mlAnalaysisMode;
+        this.analyzer = analyzer;
     }
 
     @Override
@@ -164,20 +172,24 @@ public class MLAnalayser extends Analyzer
 
     private Analyzer getAnalyser(Locale locale)
     {
-        Analyzer analyser = (Analyzer) analysers.get(locale);
-        if (analyser == null)
+        if(analyzer != null)
         {
-            analyser = findAnalyser(locale);
+            return analyzer;
+        }
+        Analyzer localeSpecificAnalyzer = (Analyzer) analysers.get(locale);
+        if (localeSpecificAnalyzer == null)
+        {
+            localeSpecificAnalyzer = findAnalyser(locale);
         }
         // wrap analyser to produce plain and prefixed tokens
-        return analyser;
+        return localeSpecificAnalyzer;
     }
 
     private Analyzer findAnalyser(Locale locale)
     {
-        Analyzer analyser = loadAnalyzer(locale);
-        analysers.put(locale, analyser);
-        return analyser;
+        Analyzer localeSpecificAnalyzer = loadAnalyzer(locale);
+        analysers.put(locale, localeSpecificAnalyzer);
+        return localeSpecificAnalyzer;
     }
 
     private Analyzer loadAnalyzer(Locale locale)
@@ -191,8 +203,8 @@ public class MLAnalayser extends Analyzer
         try
         {
             Class<?> clazz = Class.forName(analyserClassName);
-            Analyzer analyser = (Analyzer) clazz.newInstance();
-            return analyser;
+            Analyzer localeSpecificAnalyzer = (Analyzer) clazz.newInstance();
+            return localeSpecificAnalyzer;
         }
         catch (ClassNotFoundException e)
         {

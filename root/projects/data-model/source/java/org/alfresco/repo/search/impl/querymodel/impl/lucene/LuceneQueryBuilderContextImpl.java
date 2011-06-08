@@ -21,6 +21,7 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneAnalyser;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.search.SearchParameters;

@@ -21,7 +21,12 @@ package org.alfresco.util.registry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
+import org.alfresco.error.AlfrescoRuntimeException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.ParameterCheck;
 
 /**
@@ -33,10 +38,13 @@ import org.springframework.extensions.surf.util.ParameterCheck;
  */
 public class NamedObjectRegistry<T>
 {
+    private static final Log logger = LogFactory.getLog(NamedObjectRegistry.class);
+    
     private final ReentrantReadWriteLock.ReadLock readLock;
     private final ReentrantReadWriteLock.WriteLock writeLock;
     
     private Class<T> storageType;
+    private Pattern namePattern;
     private final Map<String, T> objects;
 
     /**
@@ -47,7 +55,8 @@ public class NamedObjectRegistry<T>
         ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         readLock = lock.readLock();
         writeLock = lock.writeLock();
-        this.storageType = null;                          // Deliberately null
+        this.namePattern = null;                            // Deliberately null
+        this.storageType = null;                            // Deliberately null
         this.objects = new HashMap<String, T>(13);
     }
     
@@ -82,11 +91,33 @@ public class NamedObjectRegistry<T>
     }
 
     /**
+     * Optionally set a pattern to which all object names must conform
+     * @param namePattern   a regular expression
+     */
+    public void setNamePattern(String namePattern)
+    {
+        writeLock.lock();
+        try
+        {
+            this.namePattern = Pattern.compile(namePattern);
+        }
+        catch (PatternSyntaxException e)
+        {
+            throw new AlfrescoRuntimeException(
+                    "Regular expression compilation failed for property 'namePrefix': " + e.getMessage(),
+                    e);
+        }
+        finally
+        {
+            writeLock.unlock();
+        }
+    }
+
+    /**
      * Register a named object instance.
      * 
      * @param name          the name of the object
      * @param object        the instance to register, which correspond to the type
-     *                      
      */
     public void register(String name, T object)
     {
@@ -106,7 +137,22 @@ public class NamedObjectRegistry<T>
                 throw new IllegalStateException(
                         "The registry has not been configured (setStorageType not yet called yet)");
             }
-            objects.put(name, object);
+            if (namePattern != null)
+            {
+                if (!namePattern.matcher(name).matches())
+                {
+                    throw new IllegalArgumentException(
+                            "Object name '" + name + "' does not match required pattern: " + namePattern);
+                }
+            }
+            T prevObject = objects.put(name, object);
+            if (prevObject != null && prevObject != object)
+            {
+                logger.warn(
+                        "Overwriting name object in registry: \n" +
+                        "   Previous: " + prevObject + "\n" +
+                        "   New:      " + object);
+            }
         }
         finally
         {

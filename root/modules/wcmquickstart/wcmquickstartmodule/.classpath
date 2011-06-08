@@ -12,5 +12,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Jndi-Client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MBean"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Remote API"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Web-Client"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

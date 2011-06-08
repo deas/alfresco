@@ -537,21 +537,54 @@ public class SOLRAPIClient extends AlfrescoHttpClient
 
         StringBuilder url = new StringBuilder(this.url);
         url.append(GET_CONTENT);
+        
+        StringBuilder args = new StringBuilder();
         if(nodeId != null)
         {
-            url.append("/");
-            url.append(String.valueOf(nodeId));
+            args.append("?");
+            args.append("nodeId");
+            args.append("=");
+            args.append(nodeId);            
+        }
+        else
+        {
+            throw new NullPointerException();
         }
         if(propertyName != null)
         {
-            if(url.charAt(url.length() - 1) != '/')
+            if(args.length() == 0)
             {
-                url.append("/");
+                args.append("?");
             }
-            // TODO encode
+            else
+            {
+                args.append("&");
+            }
+            args.append("propertyName");
+            args.append("=");
             URLCodec encoder = new URLCodec();
-            url.append(encoder.encode(propertyName.toString(), "UTF-8"));
+            args.append(encoder.encode(propertyName.toString(), "UTF-8"));
         }
+       
+        url.append(args);
+        
+        
+//        
+//        if(nodeId != null)
+//        {
+//            url.append("/");
+//            url.append(String.valueOf(nodeId));
+//        }
+//        if(propertyName != null)
+//        {
+//            if(url.charAt(url.length() - 1) != '/')
+//            {
+//                url.append("/");
+//            }
+//            // TODO encode
+//            URLCodec encoder = new URLCodec();
+//            url.append(encoder.encode(propertyName.toString(), "UTF-8"));
+//        }
         
         GetRequest req = new GetRequest(url.toString());
         Map<String, String> headers = new HashMap<String, String>(2);
@@ -567,7 +600,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         
         if(response.getStatus() != Status.STATUS_NOT_MODIFIED && response.getStatus() != Status.STATUS_NO_CONTENT && response.getStatus() != Status.STATUS_OK)
         {
-            throw new AlfrescoRuntimeException("GetNodeMetaData return status is " + response.getStatus());
+            throw new AlfrescoRuntimeException("GetTextContentResponse return status is " + response.getStatus());
         }
 
         return new GetTextContentResponse(response);

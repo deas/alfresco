@@ -18,7 +18,21 @@
  */
 package org.alfresco.solr;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,9 +45,15 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.node.MLPropertyInterceptor;
+import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.MultiReader;
+import org.alfresco.repo.search.impl.lucene.analysis.MLTokenDuplicator;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
+import org.alfresco.repo.search.impl.lucene.analysis.VerbatimAnalyser;
+import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
+import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.client.ContentPropertyValue;
 import org.alfresco.solr.client.GetNodesParameters;
@@ -47,33 +67,40 @@ import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Node.STATUS;
+import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.alfresco.util.CachingDateFormat;
 import org.alfresco.util.Pair;
+import org.alfresco.util.TempFileProvider;
+import org.apache.lucene.analysis.Token;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
-import org.apache.lucene.search.FieldComparator.DocComparator;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.SolrInputField;
 import org.apache.solr.common.params.CoreAdminParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreContainer;
-import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.admin.CoreAdminHandler;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrQueryResponse;
+import org.apache.solr.schema.BinaryField;
+import org.apache.solr.schema.CopyField;
+import org.apache.solr.schema.DateField;
+import org.apache.solr.schema.IndexSchema;
+import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.SolrIndexReader;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.CommitUpdateCommand;
 import org.apache.solr.update.DeleteUpdateCommand;
-import org.apache.solr.update.DocumentBuilder;
 import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
 import org.quartz.CronTrigger;
@@ -86,6 +113,8 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
+import org.springframework.util.FileCopyUtils;
 
 /**
  * @author Andy
@@ -322,6 +351,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
             System.out.println("... tracking " + core.getName());
 
+            String id = core.getSchema().getResourceLoader().getInstanceDir();
+
+            AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
+
             synchronized (this)
             {
                 if (running)
@@ -424,7 +457,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                     input.addField(LuceneQueryParser.FIELD_TXID, info.getId());
                                     input.addField(LuceneQueryParser.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
                                     cmd.solrDoc = input;
-                                    cmd.doc = DocumentBuilder.toDocument(cmd.getSolrInputDocument(), core.getSchema());
+                                    cmd.doc = AlfrescoCoreAdminHandler.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
                                     core.getUpdateHandler().addDoc(cmd);
 
                                     GetNodesParameters gnp = new GetNodesParameters();
@@ -454,6 +487,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                                 auxDocCmd.overwriteCommitted = true;
                                                 auxDocCmd.overwritePending = true;
 
+                                                ArrayList<Reader> toClose = new ArrayList<Reader>();
+                                                ArrayList<File> toDelete = new ArrayList<File>();
+
                                                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                                                 {
                                                     SolrInputDocument doc = new SolrInputDocument();
@@ -469,15 +505,88 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                                             if (value instanceof ContentPropertyValue)
                                                             {
                                                                 ContentPropertyValue typedValue = (ContentPropertyValue) value;
-                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), typedValue.getId());
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".size", typedValue.getLength());
+                                                                doc
+                                                                        .addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".locale", typedValue
+                                                                                .getLocale());
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".mimetype", typedValue
+                                                                        .getMimetype());
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".encoding", typedValue
+                                                                        .getEncoding());
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".contentDataId", typedValue
+                                                                        .getId());
+                                                                GetTextContentResponse response = client.getTextContent(node.getId(), propertyQname, null);
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".transformationStatus", response
+                                                                        .getStatus());
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".transformationTime", response
+                                                                        .getRequestDuration());
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".transformationException",
+                                                                        response.getTransformException());
+
+                                                                InputStreamReader isr = null;
+                                                                InputStream ris = response.getContent();
+
+                                                                if (ris != null)
+                                                                {
+                                                                    File temp = TempFileProvider.createTempFile("solr", "content");
+                                                                    toDelete.add(temp);
+                                                                    OutputStream os = new BufferedOutputStream(new FileOutputStream(temp));
+                                                                    FileCopyUtils.copy(ris, os);
+                                                                    // All closed
+
+                                                                    ris = new BufferedInputStream(new FileInputStream(temp));
+
+                                                                    try
+                                                                    {
+                                                                        isr = new InputStreamReader(ris, "UTF-8");
+                                                                    }
+                                                                    catch (UnsupportedEncodingException e)
+                                                                    {
+                                                                        isr = new InputStreamReader(ris);
+                                                                    }
+                                                                    toClose.add(isr);
+
+                                                                    StringBuilder builder = new StringBuilder();
+                                                                    builder.append("\u0000").append(typedValue.getLocale().toString()).append("\u0000");
+                                                                    StringReader prefix = new StringReader(builder.toString());
+                                                                    Reader multiReader = new MultiReader(prefix, isr);
+                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), multiReader);
+
+                                                                    ris = new BufferedInputStream(new FileInputStream(temp));
+
+                                                                    try
+                                                                    {
+                                                                        isr = new InputStreamReader(ris, "UTF-8");
+                                                                    }
+                                                                    catch (UnsupportedEncodingException e)
+                                                                    {
+                                                                        isr = new InputStreamReader(ris);
+                                                                    }
+                                                                    toClose.add(isr);
+
+                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__", isr);
+                                                                }
                                                             }
                                                             else if (value instanceof MLTextPropertyValue)
                                                             {
                                                                 MLTextPropertyValue typedValue = (MLTextPropertyValue) value;
+
+                                                                StringBuilder sort = new StringBuilder();
                                                                 for (Locale locale : typedValue.getLocales())
                                                                 {
-                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), locale);
+                                                                    StringBuilder builder = new StringBuilder();
+                                                                    builder.append("\u0000").append(locale.toString()).append("\u0000").append(typedValue.getValue(locale));
+                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), builder.toString());
+                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".u", builder.toString());
+                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__", builder.toString());
+                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__.u", builder.toString());
+                                                                    if (sort.length() > 0)
+                                                                    {
+                                                                        sort.append("\u0000");
+                                                                    }
+                                                                    sort.append(builder.toString());
                                                                 }
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".sort", sort.toString());
                                                             }
                                                             else if (value instanceof MultiPropertyValue)
                                                             {
@@ -487,27 +596,205 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                                                     if (singleValue instanceof ContentPropertyValue)
                                                                     {
                                                                         ContentPropertyValue current = (ContentPropertyValue) singleValue;
-                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), current.getId());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".size", current
+                                                                                .getLength());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".locale", current
+                                                                                .getLocale());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".mimetype", current
+                                                                                .getMimetype());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".encoding", current
+                                                                                .getEncoding());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".contentDataId", current
+                                                                                .getId());
+                                                                        GetTextContentResponse response = client.getTextContent(node.getId(), propertyQname, null);
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".transformationStatus",
+                                                                                response.getStatus());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".transformationTime",
+                                                                                response.getRequestDuration());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX
+                                                                                + propertyQname.toString() + ".transformationException", response.getTransformException());
+
+                                                                        InputStreamReader isr = null;
+                                                                        InputStream ris = response.getContent();
+
+                                                                        if (ris != null)
+                                                                        {
+                                                                            File temp = File.createTempFile("solr", "content");
+                                                                            OutputStream os = new BufferedOutputStream(new FileOutputStream(temp));
+                                                                            FileCopyUtils.copy(ris, os);
+                                                                            // All closed
+
+                                                                            ris = new BufferedInputStream(new FileInputStream(temp));
+
+                                                                            try
+                                                                            {
+                                                                                isr = new InputStreamReader(ris, "UTF-8");
+                                                                            }
+                                                                            catch (UnsupportedEncodingException e)
+                                                                            {
+                                                                                isr = new InputStreamReader(ris);
+                                                                            }
+                                                                            toClose.add(isr);
+
+                                                                            StringBuilder builder = new StringBuilder();
+                                                                            builder.append("\u0000").append(current.getLocale().toString()).append("\u0000");
+                                                                            StringReader prefix = new StringReader(builder.toString());
+                                                                            Reader multiReader = new MultiReader(prefix, isr);
+                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), multiReader);
+
+                                                                            ris = new BufferedInputStream(new FileInputStream(temp));
+
+                                                                            try
+                                                                            {
+                                                                                isr = new InputStreamReader(ris, "UTF-8");
+                                                                            }
+                                                                            catch (UnsupportedEncodingException e)
+                                                                            {
+                                                                                isr = new InputStreamReader(ris);
+                                                                            }
+                                                                            toClose.add(isr);
+
+                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__", isr);
+                                                                        }
                                                                     }
                                                                     else if (singleValue instanceof MLTextPropertyValue)
                                                                     {
                                                                         MLTextPropertyValue current = (MLTextPropertyValue) singleValue;
+
+                                                                        StringBuilder sort = new StringBuilder();
                                                                         for (Locale locale : current.getLocales())
                                                                         {
-                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), locale);
+                                                                            StringBuilder builder = new StringBuilder();
+                                                                            builder.append("\u0000").append(locale.toString()).append("\u0000").append(current.getValue(locale));
+                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), builder.toString());
+                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".u", builder
+                                                                                    .toString());
+                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__", builder
+                                                                                    .toString());
+                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__.u", builder
+                                                                                    .toString());
+                                                                            if (sort.length() > 0)
+                                                                            {
+                                                                                sort.append("\u0000");
+                                                                            }
+                                                                            sort.append(builder.toString());
                                                                         }
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".sort", sort.toString());
+
                                                                     }
                                                                     else if (singleValue instanceof StringPropertyValue)
                                                                     {
                                                                         StringPropertyValue current = (StringPropertyValue) singleValue;
-                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), current.getValue());
+                                                                        PropertyDefinition propertyDefinition = dataModel.getDictionaryService().getProperty(propertyQname);
+                                                                        if (propertyDefinition != null)
+                                                                        {
+                                                                            if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
+                                                                            {
+                                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".sort", current
+                                                                                        .getValue());
+                                                                                doc
+                                                                                        .addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), current
+                                                                                                .getValue());
+                                                                            }
+                                                                            else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
+                                                                            {
+                                                                                Locale locale = null;
+
+                                                                                PropertyValue localePropertyValue = properties.get(ContentModel.PROP_LOCALE);
+                                                                                if (localePropertyValue != null)
+                                                                                {
+                                                                                    locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localePropertyValue.toString());
+                                                                                }
+
+                                                                                if (locale == null)
+                                                                                {
+                                                                                    locale = I18NUtil.getLocale();
+                                                                                }
+
+                                                                                StringBuilder builder;
+
+                                                                                builder = new StringBuilder();
+                                                                                builder.append("\u0000").append(locale.toString()).append("\u0000").append(current.getValue());
+                                                                                doc
+                                                                                        .addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), builder
+                                                                                                .toString());
+                                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__", builder
+                                                                                        .toString());
+                                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".u", builder
+                                                                                        .toString());
+                                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__.u", builder
+                                                                                        .toString());
+                                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".sort", builder
+                                                                                        .toString());
+
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                doc
+                                                                                        .addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), current
+                                                                                                .getValue());
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), current.getValue());
+                                                                        }
                                                                     }
                                                                 }
                                                             }
                                                             else if (value instanceof StringPropertyValue)
                                                             {
                                                                 StringPropertyValue typedValue = (StringPropertyValue) value;
-                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), typedValue.getValue());
+
+                                                                PropertyDefinition propertyDefinition = dataModel.getDictionaryService().getProperty(propertyQname);
+                                                                if (propertyDefinition != null)
+                                                                {
+                                                                    if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
+                                                                    {
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".sort", typedValue
+                                                                                .getValue());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), typedValue.getValue());
+                                                                    }
+                                                                    else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
+                                                                    {
+                                                                        Locale locale = null;
+
+                                                                        PropertyValue localePropertyValue = properties.get(ContentModel.PROP_LOCALE);
+                                                                        if (localePropertyValue != null)
+                                                                        {
+                                                                            locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localePropertyValue.toString());
+                                                                        }
+
+                                                                        if (locale == null)
+                                                                        {
+                                                                            locale = I18NUtil.getLocale();
+                                                                        }
+
+                                                                        StringBuilder builder;
+
+                                                                        builder = new StringBuilder();
+                                                                        builder.append("\u0000").append(locale.toString()).append("\u0000").append(typedValue.getValue());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), builder.toString());
+                                                                        doc
+                                                                                .addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__", builder
+                                                                                        .toString());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".u", builder.toString());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".__.u", builder
+                                                                                .toString());
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString() + ".sort", builder
+                                                                                .toString());
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), typedValue.getValue());
+                                                                    }
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), typedValue.getValue());
+                                                                }
                                                             }
 
                                                         }
@@ -518,9 +805,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                                         doc.addField(LuceneQueryParser.FIELD_ASPECT, aspect.toString());
                                                     }
                                                     doc.addField(LuceneQueryParser.FIELD_ISNODE, "T");
-                                                    
+
                                                     leafDocCmd.solrDoc = doc;
-                                                    leafDocCmd.doc = DocumentBuilder.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema());
+                                                    leafDocCmd.doc = AlfrescoCoreAdminHandler.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
                                                     SolrInputDocument aux = new SolrInputDocument();
                                                     aux.addField(LuceneQueryParser.FIELD_ID, "AUX-" + node.getId());
@@ -543,12 +830,29 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                                     }
 
                                                     auxDocCmd.solrDoc = aux;
-                                                    auxDocCmd.doc = DocumentBuilder.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema());
+                                                    auxDocCmd.doc = AlfrescoCoreAdminHandler.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
                                                 }
 
                                                 core.getUpdateHandler().addDoc(leafDocCmd);
                                                 core.getUpdateHandler().addDoc(auxDocCmd);
+
+                                                for (Reader forClose : toClose)
+                                                {
+                                                    try
+                                                    {
+                                                        forClose.close();
+                                                    }
+                                                    catch (IOException ioe)
+                                                    {
+                                                    }
+
+                                                }
+
+                                                for (File file : toDelete)
+                                                {
+                                                    file.delete();
+                                                }
 
                                             }
                                             catch (JSONException e)
@@ -1103,5 +1407,159 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             this.lastIndexedIdBeforeHoles = lastIndexedIdBeforeHoles;
         }
 
+    }
+
+    public static Document toDocument(SolrInputDocument doc, IndexSchema schema, AlfrescoSolrDataModel model)
+    {
+        Document out = new Document();
+        out.setBoost(doc.getDocumentBoost());
+
+        // Load fields from SolrDocument to Document
+        for (SolrInputField field : doc)
+        {
+            String name = field.getName();
+            SchemaField sfield = schema.getFieldOrNull(name);
+            boolean used = false;
+            float boost = field.getBoost();
+
+            // Make sure it has the correct number
+            if (sfield != null && !sfield.multiValued() && field.getValueCount() > 1)
+            {
+                String id = "";
+                SchemaField sf = schema.getUniqueKeyField();
+                if (sf != null)
+                {
+                    id = "[" + doc.getFieldValue(sf.getName()) + "] ";
+                }
+                throw new SolrException(SolrException.ErrorCode.BAD_REQUEST, "ERROR: "
+                        + id + "multiple values encountered for non multiValued field " + sfield.getName() + ": " + field.getValue());
+            }
+
+            // load each field value
+            boolean hasField = false;
+            for (Object v : field)
+            {
+                // TODO: Sort out null
+                if (v == null)
+                {
+                    continue;
+                }
+                String val = null;
+                hasField = true;
+                boolean isBinaryField = false;
+                if (sfield != null && sfield.getType() instanceof BinaryField)
+                {
+                    isBinaryField = true;
+                    BinaryField binaryField = (BinaryField) sfield.getType();
+                    Field f = binaryField.createField(sfield, v, boost);
+                    if (f != null)
+                        out.add(f);
+                    used = true;
+                }
+                else
+                {
+                    // TODO!!! HACK -- date conversion
+                    if (sfield != null && v instanceof Date && sfield.getType() instanceof DateField)
+                    {
+                        DateField df = (DateField) sfield.getType();
+                        val = df.toInternal((Date) v) + 'Z';
+                    }
+                    else if (v != null)
+                    {
+                        val = v.toString();
+                    }
+
+                    if (sfield != null)
+                    {
+                        if (v instanceof Reader)
+                        {
+                            used = true;
+                            Field f = new Field(field.getName(), (Reader) v, model.getFieldTermVec(sfield));
+                            f.setOmitNorms(model.getOmitNorms(sfield));
+                            f.setOmitTermFreqAndPositions(sfield.omitTf());
+
+                            if (f != null)
+                            { // null fields are not added
+                                out.add(f);
+                            }
+                        }
+                        else
+                        {
+                            used = true;
+                            Field f = sfield.createField(val, boost);
+                            if (f != null)
+                            { // null fields are not added
+                                out.add(f);
+                            }
+                        }
+                    }
+                }
+
+                // Check if we should copy this field to any other fields.
+                // This could happen whether it is explicit or not.
+                List<CopyField> copyFields = schema.getCopyFieldsList(name);
+                for (CopyField cf : copyFields)
+                {
+                    SchemaField destinationField = cf.getDestination();
+                    // check if the copy field is a multivalued or not
+                    if (!destinationField.multiValued() && out.get(destinationField.getName()) != null)
+                    {
+                        throw new SolrException(SolrException.ErrorCode.BAD_REQUEST, "ERROR: multiple values encountered for non multiValued copy field "
+                                + destinationField.getName() + ": " + val);
+                    }
+
+                    used = true;
+                    Field f = null;
+                    if (isBinaryField)
+                    {
+                        if (destinationField.getType() instanceof BinaryField)
+                        {
+                            BinaryField binaryField = (BinaryField) destinationField.getType();
+                            f = binaryField.createField(destinationField, v, boost);
+                        }
+                    }
+                    else
+                    {
+                        f = destinationField.createField(cf.getLimitedValue(val), boost);
+                    }
+                    if (f != null)
+                    { // null fields are not added
+                        out.add(f);
+                    }
+                }
+
+                // In lucene, the boost for a given field is the product of the
+                // document boost and *all* boosts on values of that field.
+                // For multi-valued fields, we only want to set the boost on the
+                // first field.
+                boost = 1.0f;
+            }
+
+            // make sure the field was used somehow...
+            if (!used && hasField)
+            {
+                throw new SolrException(SolrException.ErrorCode.BAD_REQUEST, "ERROR:unknown field '" + name + "'");
+            }
+        }
+
+        // Now validate required fields or add default values
+        // fields with default values are defacto 'required'
+        for (SchemaField field : schema.getRequiredFields())
+        {
+            if (out.getField(field.getName()) == null)
+            {
+                if (field.getDefaultValue() != null)
+                {
+                    out.add(field.createField(field.getDefaultValue(), 1.0f));
+                }
+                else
+                {
+                    String id = schema.printableUniqueKey(out);
+                    String msg = "Document [" + id + "] missing required field: " + field.getName();
+                    throw new SolrException(SolrException.ErrorCode.BAD_REQUEST, msg);
+                }
+            }
+        }
+        return out;
     }
 }

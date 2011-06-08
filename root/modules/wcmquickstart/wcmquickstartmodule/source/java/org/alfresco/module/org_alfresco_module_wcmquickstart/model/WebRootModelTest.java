@@ -28,66 +28,30 @@ import java.util.Map;
 
 import javax.transaction.UserTransaction;
 
-import junit.framework.TestCase;
-
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.module.org_alfresco_module_wcmquickstart.WCMQuickStartTest;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.AbstractContentTransformerTest;
-import org.alfresco.repo.model.Repository;
-import org.alfresco.repo.security.authentication.AuthenticationComponent;
-import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.AssociationRef;
-import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.search.SearchService;
-import org.alfresco.service.cmr.security.MutableAuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
-import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.service.transaction.TransactionService;
-import org.alfresco.util.ApplicationContextHelper;
 import org.alfresco.util.GUID;
 import org.alfresco.util.PropertyMap;
-import org.springframework.context.ApplicationContext;
 
 /**
  * @author Roy Wetherall
  */
-public class WebRootModelTest extends TestCase implements WebSiteModel
+public class WebRootModelTest extends WCMQuickStartTest implements WebSiteModel
 {
-	private ApplicationContext appContext;
-	private AuthenticationComponent authenticationComponent;
-	private TransactionService transactionService;
-	private FileFolderService fileFolderService;
-	private NodeService nodeService;
-	private Repository repository;
-	private ContentService contentService;
-	private MutableAuthenticationService authenticationService;
-	private PersonService personService;
-	private PermissionService permissionService;
-	//private WorkflowService workflowService;
-	
-	NodeRef companyHome;
-	String testUserName;
-	
 	@Override
 	protected void setUp() throws Exception 
 	{
-		appContext = ApplicationContextHelper.getApplicationContext();
-		authenticationComponent = (AuthenticationComponent)appContext.getBean("authenticationComponent");
-		transactionService = (TransactionService)appContext.getBean("transactionService");
-		fileFolderService = (FileFolderService)appContext.getBean("fileFolderService");
-		nodeService = (NodeService)appContext.getBean("nodeService");
-		repository = (Repository)appContext.getBean("repositoryHelper");
-		contentService = (ContentService)appContext.getBean("contentService");
-		authenticationService = (MutableAuthenticationService)appContext.getBean("authenticationService");
-		personService = (PersonService)appContext.getBean("personService");
-		permissionService = (PermissionService)appContext.getBean("permissionService");
-		//workflowService = (WorkflowService)appContext.getBean("WorkflowService");
+	    super.setUp();
 		
 		// Set authentication		
 		authenticationComponent.setCurrentUser("admin");		

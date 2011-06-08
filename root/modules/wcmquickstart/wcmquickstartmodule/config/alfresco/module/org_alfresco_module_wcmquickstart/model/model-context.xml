@@ -115,6 +115,15 @@
       <property name="behaviourFilter" ref="policyBehaviourFilter" />
    </bean>
 
+   <bean id="wcmquickstartmodule_temporaryMultilingualAspect" class="org.alfresco.module.org_alfresco_module_wcmquickstart.model.TemporaryMultilingualAspect"
+      init-method="init">
+      <property name="nodeService" ref="nodeService" />
+      <property name="policyComponent" ref="policyComponent" />
+      <property name="behaviourFilter" ref="policyBehaviourFilter" />
+      <property name="dictionaryService" ref="dictionaryService" />
+      <property name="multilingualContentService" ref="multilingualContentService" />
+   </bean>
+
    <bean id="wcmquickstartmodule_visitorFeedback" class="org.alfresco.module.org_alfresco_module_wcmquickstart.model.VisitorFeedbackType"
       init-method="init">
       <property name="nodeService" ref="nodeService" />

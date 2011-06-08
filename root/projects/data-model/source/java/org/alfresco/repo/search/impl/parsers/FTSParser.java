@@ -1490,7 +1490,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: boost, ftsTest
+                    // elements: ftsTest, boost
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1634,7 +1634,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: boost, ftsTest
+                    // elements: ftsTest, boost
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1989,7 +1989,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: fuzzy, ftsTerm
+                    // elements: ftsTerm, fuzzy
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3260,7 +3260,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: fieldReference, ftsWord
+            // elements: ftsWord, fieldReference
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3508,7 +3508,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: FTSPHRASE, fieldReference
+            // elements: fieldReference, FTSPHRASE
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -4785,7 +4785,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsFieldGroupTest, boost
+                    // elements: boost, ftsFieldGroupTest
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5070,7 +5070,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: boost, ftsFieldGroupTest
+                    // elements: ftsFieldGroupTest, boost
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5582,7 +5582,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsFieldGroupTokenisedPhrase, slop
+                    // elements: slop, ftsFieldGroupTokenisedPhrase
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -6278,16 +6278,16 @@ public class FTSParser extends Parser {
             // 716:17: -> ftsFieldGroupProximityTerm ( proximityGroup ftsFieldGroupProximityTerm )+
             {
                 adaptor.addChild(root_0, stream_ftsFieldGroupProximityTerm.nextTree());
-                if ( !(stream_proximityGroup.hasNext()||stream_ftsFieldGroupProximityTerm.hasNext()) ) {
+                if ( !(stream_ftsFieldGroupProximityTerm.hasNext()||stream_proximityGroup.hasNext()) ) {
                     throw new RewriteEarlyExitException();
                 }
-                while ( stream_proximityGroup.hasNext()||stream_ftsFieldGroupProximityTerm.hasNext() ) {
+                while ( stream_ftsFieldGroupProximityTerm.hasNext()||stream_proximityGroup.hasNext() ) {
                     adaptor.addChild(root_0, stream_proximityGroup.nextTree());
                     adaptor.addChild(root_0, stream_ftsFieldGroupProximityTerm.nextTree());
 
                 }
-                stream_proximityGroup.reset();
                 stream_ftsFieldGroupProximityTerm.reset();
+                stream_proximityGroup.reset();
 
             }
 

@@ -84,6 +84,12 @@ public interface WebSiteModel
     public static final QName ASPECT_HAS_ANCESTORS = QName.createQName(NAMESPACE, "hasancestors");
     public static final QName PROP_ANCESTOR_SECTIONS = QName.createQName(NAMESPACE, "ancestorSections");
 
+    // ws:temporaryMultilingual aspect
+    public static final QName ASPECT_TEMPORARY_MULTILINGUAL = QName.createQName(NAMESPACE, "temporaryMultilingual");
+    public static final QName PROP_TRANSLATION_OF = QName.createQName(NAMESPACE, "translationOf");
+    public static final QName PROP_LANGUAGE = QName.createQName(NAMESPACE, "language");
+    public static final QName PROP_INITIALLY_ORPHANED = QName.createQName(NAMESPACE, "initiallyOrphaned");
+    
     // ws:imageFolder type
     public static final QName TYPE_IMAGE = QName.createQName(NAMESPACE, "image");
     public static final QName PROP_DERIVED_COMMENT_COUNT = QName.createQName(NAMESPACE, "derivedCommentCount");

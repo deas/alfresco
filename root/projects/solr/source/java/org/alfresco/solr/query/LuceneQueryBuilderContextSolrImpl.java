@@ -21,11 +21,15 @@ package org.alfresco.solr.query;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneAnalyser;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
+import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.SolrLuceneAnalyser;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 
 /**
@@ -48,10 +52,10 @@ public class LuceneQueryBuilderContextSolrImpl implements LuceneQueryBuilderCont
      * @param indexReader
      */
     public LuceneQueryBuilderContextSolrImpl(DictionaryService dictionaryService, NamespacePrefixResolver namespacePrefixResolver, TenantService tenantService,
-            SearchParameters searchParameters, MLAnalysisMode defaultSearchMLAnalysisMode, IndexReader indexReader)
+            SearchParameters searchParameters, MLAnalysisMode defaultSearchMLAnalysisMode, IndexReader indexReader, Analyzer defaultAnalyzer, AlfrescoSolrDataModel model)
     {
-        LuceneAnalyser analyzer = new LuceneAnalyser(dictionaryService, searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters
-                .getMlAnalaysisMode());
+        SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(dictionaryService, searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters
+                .getMlAnalaysisMode(), defaultAnalyzer, model);
         lqp = new SolrQueryParser(searchParameters.getDefaultFieldName(), analyzer);
         lqp.setDefaultOperator(LuceneQueryParser.OR_OPERATOR);
         lqp.setDictionaryService(dictionaryService);

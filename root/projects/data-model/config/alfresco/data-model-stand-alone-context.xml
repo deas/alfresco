@@ -129,4 +129,37 @@
             </bean>
         </constructor-arg>
     </bean>
+    
+    <!--                      -->
+    <!-- CMIS Data Dictionary -->
+    <!--                      -->
+    
+    <bean id="OpenCMISDictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="dictionaryBootstrap">
+        <property name="models">
+            <list>
+                <value>alfresco/model/cmisModel.xml</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="OpenCMISPropertyLuceneBuilderMapping" class="org.alfresco.opencmis.mapping.RuntimePropertyLuceneBuilderMapping" >
+        <property name="dictionaryService"         ref="dictionaryService" />
+        <property name="cmisDictionaryService"     ref="OpenCMISDictionaryService" />
+    </bean>
+
+    <bean id="OpenCMISDictionaryService" class="org.alfresco.opencmis.dictionary.CMISStrictDictionaryService" >
+        <property name="cmisMapping"                  ref="OpenCMISMapping" />
+        <property name="dictionaryService"            ref="dictionaryService" />
+        <property name="dictionaryDAO"                ref="dictionaryDAO" />
+        <property name="tenantService"                ref="tenantService" />
+        <property name="propertyLuceneBuilderMapping" ref="OpenCMISPropertyLuceneBuilderMapping" />
+        <!-- NOTE: The stand-alone dictionary service does not require the runtime access to property values
+             <property name="propertyAccessorMapping"      ref="OpenCMISPropertyAccessorMapping" /> -->
+    </bean>
+
+    <bean id="OpenCMISMapping" class="org.alfresco.opencmis.mapping.CMISMapping" >
+        <property name="dictionaryService"      ref="dictionaryService" />
+        <property name="namespaceService"       ref="namespaceService" />
+    </bean>
+    
 </beans>

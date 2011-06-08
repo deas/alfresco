@@ -307,7 +307,7 @@ public class LuceneQueryParser extends QueryParser
 
     private int internalSlop = 0;
 
-    private LuceneAnalyser luceneAnalyser;
+    private AbstractAnalyzer luceneAnalyser;
 
     /**
      * Parses a query string, returning a {@link org.apache.lucene.search.Query}.
@@ -418,9 +418,9 @@ public class LuceneQueryParser extends QueryParser
     public LuceneQueryParser(String arg0, Analyzer arg1)
     {
         super(arg0, arg1);
-        if (arg1 instanceof LuceneAnalyser)
+        if (arg1 instanceof AbstractAnalyzer)
         {
-            luceneAnalyser = (LuceneAnalyser) arg1;
+            luceneAnalyser = (AbstractAnalyzer) arg1;
         }
     }
 
@@ -5188,7 +5188,7 @@ public class LuceneQueryParser extends QueryParser
     }
 
     @Override
-    public LuceneAnalyser getAnalyzer()
+    public AbstractAnalyzer getAnalyzer()
     {
         return luceneAnalyser;
     }

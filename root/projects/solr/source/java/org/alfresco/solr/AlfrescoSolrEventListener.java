@@ -554,7 +554,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ACL_ID_BY_DOC_ID, aclIdByDocId);
 
         globalReaders.add("ROLE_OWNER");
-        globalReaders.add("ROLE_ADMIN");
+        globalReaders.add("ROLE_ADMINISTRATOR");
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_GLOBAL_READERS, globalReaders);
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ALL_LEAF_DOCS, allLeafDocs);
