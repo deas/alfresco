@@ -60,6 +60,20 @@ public class CannedQuerySortDetails
     }
     
     /**
+     * Construct the sort details from a list of sort pairs.
+     * <p/>
+     * Sorting is done by:<br/>
+     * <b>key:</b> the key type to sort on<br/>
+     * <b>sortOrder:</b> the ordering of values associated with the key<br/>
+     * 
+     * @param sortPairs             the sort pairs, which will be applied in order
+     */
+    public CannedQuerySortDetails(List<Pair<? extends Object, SortOrder>> sortPairs)
+    {
+        this.sortPairs = Collections.unmodifiableList(sortPairs);
+    }
+    
+    /**
      * Get the sort definitions.  The instance will become unmodifiable after this has been called.
      */
     public List<Pair<? extends Object, SortOrder>> getSortPairs()

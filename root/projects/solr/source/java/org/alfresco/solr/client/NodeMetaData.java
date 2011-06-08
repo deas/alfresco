@@ -26,6 +26,11 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 
+/**
+ * SOLR-side representation of node metadata information.
+ * 
+ * @since 4.0
+ */
 public class NodeMetaData
 {
     private long id;
@@ -101,6 +106,4 @@ public class NodeMetaData
         return "NodeMetaData [id=" + id + ", nodeRef=" + nodeRef + ", type=" + type + ", aclId=" + aclId
                 + ", properties=" + properties + ", aspects=" + aspects + ", paths=" + paths + "]";
     }
-    
-    
 }

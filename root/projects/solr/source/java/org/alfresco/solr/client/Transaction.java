@@ -18,6 +18,11 @@
  */
 package org.alfresco.solr.client;
 
+/**
+ * SOLR-side representation of transaction information.
+ * 
+ * @since 4.0
+ */
 public class Transaction
 {
     private long id;
@@ -60,7 +65,7 @@ public class Transaction
     @Override
     public String toString()
     {
-        return "TransactionInfo [id=" + id + ", commitTimeMs=" + commitTimeMs + ", updates=" + updates + ", deletes="
+        return "Transaction [id=" + id + ", commitTimeMs=" + commitTimeMs + ", updates=" + updates + ", deletes="
                 + deletes + "]";
     }
 }

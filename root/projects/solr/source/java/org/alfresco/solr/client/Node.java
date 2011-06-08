@@ -57,6 +57,4 @@ public class Node
     {
         return "NodeInfo [id=" + id + ", txnId=" + txnId + ", status=" + status + "]";
     }
-
-    
 }

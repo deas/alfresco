@@ -2,8 +2,10 @@ package org.alfresco.solr.client;
 
 import java.util.Locale;
 
-/*
+/**
  * Represents a content property value, including locale, length, content id, encoding, mime type
+ * 
+ * @since 4.0
  */
 public class ContentPropertyValue extends PropertyValue
 {
@@ -54,5 +56,4 @@ public class ContentPropertyValue extends PropertyValue
         return "ContentPropertyValue [locale=" + locale + ", length=" + length + ", id=" + id + ", encoding="
                 + encoding + ", mimetype=" + mimetype + "]";
     }
-    
 }

@@ -22,9 +22,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.extensions.surf.util.I18NUtil;
 
+/**
+ * Status code constants for SOLR.
+ * 
+ * @since 4.0
+ */
 public class Status
 {
-    /** Status code constants */
+    /* Status code constants */
     public static final int STATUS_CONTINUE = HttpServletResponse.SC_CONTINUE;
     public static final int STATUS_SWITCHING_PROTOCOLS = HttpServletResponse.SC_SWITCHING_PROTOCOLS;
     public static final int STATUS_OK = HttpServletResponse.SC_OK;

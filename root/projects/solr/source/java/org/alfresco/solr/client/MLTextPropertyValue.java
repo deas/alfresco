@@ -5,8 +5,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-/*
+/**
  * Represents a multi-lingual property value, comprising a map from locale to string value
+ * 
+ * @since 4.0
  */
 public class MLTextPropertyValue extends PropertyValue
 {
@@ -49,5 +51,4 @@ public class MLTextPropertyValue extends PropertyValue
     {
         return "MLTextPropertyValue [values=" + values + "]";
     }
-    
 }

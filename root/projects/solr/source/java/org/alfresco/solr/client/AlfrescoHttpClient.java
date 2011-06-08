@@ -18,6 +18,11 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Simple HTTP client to connect to the Alfresco server.
+ * 
+ * @since 4.0
+ */
 public class AlfrescoHttpClient
 {
     private static final Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
@@ -45,29 +50,16 @@ public class AlfrescoHttpClient
     
     /**
      * Send Request to Test Web Script Server (as admin)
-     * 
-     * @param req
-     * @param expectedStatus
-     * @return response
-     * @throws IOException
      */
-    protected Response sendRequest(Request req)
-        throws IOException
+    protected Response sendRequest(Request req) throws IOException
     {
         return sendRequest(req, null);
     }
     
     /**
      * Send Request
-     * 
-     * @param req
-     * @param expectedStatus
-     * @param asUser
-     * @return response
-     * @throws IOException
      */
-    protected Response sendRequest(Request req, String asUser)
-        throws IOException
+    protected Response sendRequest(Request req, String asUser) throws IOException
     {
         if (logger.isDebugEnabled())
         {
@@ -93,15 +85,8 @@ public class AlfrescoHttpClient
     
     /**
      * Send Remote Request to stand-alone Web Script Server
-     * 
-     * @param req
-     * @param expectedStatus
-     * @param asUser
-     * @return response
-     * @throws IOException
      */
-    protected Response sendRemoteRequest(Request req)
-        throws IOException
+    protected Response sendRemoteRequest(Request req) throws IOException
     {
         String uri = req.getFullUri();
         if (!uri.startsWith("http"))

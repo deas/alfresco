@@ -1,7 +1,9 @@
 package org.alfresco.solr.client;
 
-/*
+/**
  * Represents a property value as a string
+ * 
+ * @since 4.0
  */
 public class StringPropertyValue extends PropertyValue
 {
@@ -23,5 +25,4 @@ public class StringPropertyValue extends PropertyValue
     {
         return "StringPropertyValue [value=" + value + "]";
     }
-        
 }

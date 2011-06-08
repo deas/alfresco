@@ -41,6 +41,11 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.json.JSONException;
 
+/**
+ * Tests {@link SOLRAPIClient}
+ * 
+ * @since 4.0
+ */
 public class SOLRAPIClientTest extends TestCase
 {
     private static final String TEST_MODEL = "org/alfresco/repo/dictionary/dictionarydaotest_model.xml";

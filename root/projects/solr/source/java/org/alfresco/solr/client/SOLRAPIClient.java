@@ -342,7 +342,6 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             DataTypeDefinition dataType = propertyDef.getDataType();
             
             boolean isMulti = propertyDef.isMultiValued();
-
             if(isMulti)
             {
                 if(!(value instanceof JSONArray))

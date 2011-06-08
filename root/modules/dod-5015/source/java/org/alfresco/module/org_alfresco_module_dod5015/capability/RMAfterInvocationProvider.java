@@ -42,10 +42,10 @@ import org.alfresco.repo.search.SimpleResultSetMetaData;
 import org.alfresco.repo.search.impl.lucene.PagingLuceneResultSet;
 import org.alfresco.repo.search.impl.querymodel.QueryEngineResults;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryAfterInvocationProvider;
 import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryVoterException;
 import org.alfresco.repo.security.permissions.impl.acegi.FilteringResultSet;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.model.PagingFileInfoResults;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -66,7 +66,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class RMAfterInvocationProvider implements AfterInvocationProvider, InitializingBean
 {
-    private static Log logger = LogFactory.getLog(ACLEntryAfterInvocationProvider.class);
+    private static Log logger = LogFactory.getLog(RMAfterInvocationProvider.class);
 
     private static final String AFTER_RM = "AFTER_RM";
 
@@ -259,6 +259,14 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
             else if (FileInfo.class.isAssignableFrom(returnedObject.getClass()))
             {
                 return decide(authentication, object, config, (FileInfo) returnedObject);
+            }
+            else if (PagingFileInfoResults.class.isAssignableFrom(returnedObject.getClass()))
+            {
+                if (logger.isDebugEnabled())
+                {
+                    logger.debug("Controlled object (paged permissions already applied) - access allowed for " + object.getClass().getName());
+                }
+                return returnedObject;
             }
             else if (ChildAssociationRef.class.isAssignableFrom(returnedObject.getClass()))
             {

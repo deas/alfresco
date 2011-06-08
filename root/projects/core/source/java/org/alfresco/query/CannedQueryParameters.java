@@ -155,4 +155,14 @@ public class CannedQueryParameters
     {
         return returnTotalResultCount;
     }
+
+    /**
+     * @return parameterBean        the values that the query will be based on or <tt>null</tt>
+     *                              if not relevant to the query
+     */
+    public Object getParameterBean()
+    {
+        return parameterBean;
+    }
+
 }

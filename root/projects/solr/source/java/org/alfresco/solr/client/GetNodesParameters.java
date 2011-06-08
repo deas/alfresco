@@ -23,6 +23,11 @@ import java.util.Set;
 
 import org.alfresco.service.namespace.QName;
 
+/**
+ * Query parameters for fetching nodes.
+ * 
+ * @since 4.0
+ */
 public class GetNodesParameters
 {
     private List<Long> transactionIds;

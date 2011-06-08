@@ -3,8 +3,10 @@ package org.alfresco.solr.client;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
+/**
  * Represents a multi property value, comprising a list of other property values
+ * 
+ * @since 4.0
  */
 public class MultiPropertyValue extends PropertyValue
 {
@@ -37,5 +39,4 @@ public class MultiPropertyValue extends PropertyValue
     {
         return "MultiPropertyValue [values=" + values + "]";
     }
-    
 }
