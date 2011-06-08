@@ -18,20 +18,27 @@
  */
 package org.alfresco.solr.client;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.dictionary.NamespaceDAO;
+import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
+import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.MLText;
@@ -39,10 +46,13 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Path;
 import org.alfresco.service.cmr.repository.Path.AttributeElement;
 import org.alfresco.service.cmr.repository.Path.ChildAssocElement;
+import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.repository.datatype.TypeConversionException;
 import org.alfresco.service.cmr.repository.datatype.TypeConverter;
+import org.alfresco.service.cmr.repository.datatype.TypeConverter.Converter;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ISO8601DateFormat;
+import org.alfresco.util.Pair;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.DateUtil;
@@ -51,6 +61,7 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 // TODO error handling
 // TODO get text content transform status handling
@@ -63,11 +74,13 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     private static final String GET_CONTENT = "api/solr/textContent";
 
     private SOLRDeserializer deserializer;
+    private DictionaryService dictionaryService;
 
-    public SOLRAPIClient(NamespaceDAO namespaceDAO, String alfrescoURL, String username, String password)
+    public SOLRAPIClient(DictionaryService dictionaryService, NamespaceDAO namespaceDAO, String alfrescoURL, String username, String password)
     {
         super(alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/"), username, password);
-        deserializer = new SOLRDeserializer(namespaceDAO);
+        this.dictionaryService = dictionaryService;
+        this.deserializer = new SOLRDeserializer(namespaceDAO);
     }
 
     public List<Transaction> getTransactions(Long fromCommitTime, Long minTxnId, int maxResults) throws IOException, JSONException
@@ -127,7 +140,8 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             logger.debug(response.getContentAsString());
         }
         
-        JSONObject json = new JSONObject(response.getContentAsString());
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream()));
+        JSONObject json = new JSONObject(new JSONTokener(reader));
 
         JSONArray jsonTransactions = json.getJSONArray("transactions");
         int numTxns = jsonTransactions.length();
@@ -213,12 +227,13 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             throw new AlfrescoRuntimeException("GetNodes return status is " + response.getStatus());
         }
 
-        if(logger.isDebugEnabled())
-        {
-            logger.debug(response.getContentAsString());
-        }
-        //System.out.println("getNodes: " + response.getContentAsString());
-        JSONObject json = new JSONObject(response.getContentAsString());
+//        if(logger.isDebugEnabled())
+//        {
+//            logger.debug(response.getContentAsString());
+//        }
+
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream()));
+        JSONObject json = new JSONObject(new JSONTokener(reader));
         json.write(new PrintWriter(System.out));
 
         JSONArray jsonNodes = json.getJSONArray("nodes");
@@ -260,6 +275,100 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         }
 
         return nodes;
+    }
+    
+    private PropertyValue getSinglePropertyValue(DataTypeDefinition dataType, Object value) throws JSONException
+    {
+        PropertyValue ret = null;
+        QName dataTypeName = dataType.getName();
+
+        if(value == null || value == JSONObject.NULL)
+        {
+            ret = null;
+        }
+        else if(dataTypeName.equals(DataTypeDefinition.MLTEXT))
+        {
+            JSONArray a = (JSONArray)value;
+            Map<Locale, String> mlValues = new HashMap<Locale, String>(a.length());
+
+            for(int k = 0; k < a.length(); k++)
+            {
+                JSONObject pair = a.getJSONObject(k);
+                Locale locale = deserializer.deserializeValue(Locale.class, pair.getString("locale"));
+                String mlValue = pair.getString("value");
+                mlValues.put(locale, mlValue);
+            }
+
+            ret = new MLTextPropertyValue(mlValues);
+        }
+        else if(dataTypeName.equals(DataTypeDefinition.CONTENT))
+        {
+            JSONObject o = (JSONObject)value;
+            @SuppressWarnings("rawtypes")
+            long contentId = o.getLong("contentId");
+            
+            String localeStr = o.has("locale") ? o.getString("locale") : null;
+            Locale locale = (o.has("locale") ? deserializer.deserializeValue(Locale.class, localeStr) : null);
+
+            Long size = o.has("size") ? o.getLong("size") : null;
+
+            String encoding = o.has("encoding") ? o.getString("encoding") : null;
+            String mimetype = o.has("mimetype") ? o.getString("mimetype") : null;
+
+            ret = new ContentPropertyValue(locale, size, contentId, encoding, mimetype);
+        }
+        else
+        {
+            ret = new StringPropertyValue((String)value);
+        }
+        
+        return ret;
+    }
+
+    private PropertyValue getPropertyValue(PropertyDefinition propertyDef, Object value) throws JSONException
+    {
+        PropertyValue ret = null;
+
+        if(value == null || value == JSONObject.NULL)
+        {
+            ret = null;
+        }
+        else if(propertyDef == null)
+        {
+            // assume a string
+            ret = new StringPropertyValue((String)value);
+        }
+        else
+        {
+            @SuppressWarnings("rawtypes")
+            DataTypeDefinition dataType = propertyDef.getDataType();
+            QName dataTypeName = dataType.getName();
+            
+            boolean isMulti = propertyDef.isMultiValued();
+
+            if(isMulti)
+            {
+                if(!(value instanceof JSONArray))
+                {
+                    throw new IllegalArgumentException("Expected json array, got " + value.getClass().getName());
+                }
+
+                MultiPropertyValue multi = new MultiPropertyValue();
+                JSONArray array = (JSONArray)value;
+                for(int j = 0; j < array.length(); j++)
+                {
+                    multi.addValue(getSinglePropertyValue(dataType, array.get(j)));
+                }
+    
+                ret = multi;
+            }
+            else
+            {
+                ret = getSinglePropertyValue(dataType, value);
+            }
+        }
+        
+        return ret;
     }
     
     public List<NodeMetaData> getNodesMetaData(NodeMetaDataParameters params, int maxResults) throws IOException, JSONException
@@ -337,8 +446,9 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             logger.debug("nodesMetaData = " + response.getContentAsString());
         }
 
-        String text = response.getContentAsString();
-        JSONObject json = new JSONObject(text);
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream()));
+        // TODO - replace with streaming-based solution e.g. SimpleJSON ContentHandler
+        JSONObject json = new JSONObject(new JSONTokener(reader));
 
         JSONArray jsonNodes = json.getJSONArray("nodes");
         
@@ -383,11 +493,13 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             if(jsonNodeInfo.has("paths"))
             {
                 JSONArray jsonPaths = jsonNodeInfo.getJSONArray("paths");
-                List<String> paths = new ArrayList<String>(jsonPaths.length());
+                List<Pair<String, QName>> paths = new ArrayList<Pair<String, QName>>(jsonPaths.length());
                 for(int j = 0; j < jsonPaths.length(); j++)
                 {
-                    String path = jsonPaths.getString(j);
-                    paths.add(path);
+                    JSONObject path = new JSONObject(jsonPaths.getString(j));
+                    String pathValue = path.getString("path");
+                    QName qname = path.has("qname") ? deserializer.deserializeValue(QName.class, path.getString("qname")) : null;
+                    paths.add(new Pair<String, QName>(pathValue, qname));
                 }
                 metaData.setPaths(paths);
             }
@@ -395,28 +507,24 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             if(jsonNodeInfo.has("properties"))
             {
                 JSONObject jsonProperties = jsonNodeInfo.getJSONObject("properties");
-                Map<QName, String> properties = new HashMap<QName, String>(jsonProperties.length());
+                Map<QName, PropertyValue> properties = new HashMap<QName, PropertyValue>(jsonProperties.length());
                 @SuppressWarnings("rawtypes")
                 Iterator propKeysIterator = jsonProperties.keys();
                 while(propKeysIterator.hasNext())
                 {
                     String propName = (String)propKeysIterator.next();
                     QName propQName = deserializer.deserializeValue(QName.class, propName);
-                    Object propValueObj = jsonProperties.get(propName);
-                    // property value is either a JSONArray (for multi properties) or a String
-                    if(propValueObj instanceof JSONArray)
-                    {
-                        JSONArray array = (JSONArray)propValueObj;
-                        for(int j = 0; j < array.length(); j++)
-                        {
-                            String propValue = array.getString(j);
-                            properties.put(propQName, propValue);
-                        }
-                    }
-                    else
-                    {
-                        properties.put(propQName, (String)propValueObj);
-                    }
+                    Object propValueObj = jsonProperties.opt(propName);
+
+                    // check the expected property type to determine how to process the value
+                    PropertyDefinition propertyDef = dictionaryService.getProperty(propQName);
+//                    if(propertyDef == null)
+//                    {
+//                        // TODO which exception here?
+//                        throw new IllegalArgumentException("Could not find property definition for property " + propName);
+//                    }
+                    
+                    properties.put(propQName, getPropertyValue(propertyDef, propValueObj));
                 }
                 metaData.setProperties(properties);
             }
@@ -471,6 +579,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     /*
      * type conversions from serialized JSON values to SOLR-consumable objects 
      */
+    @SuppressWarnings("rawtypes")
     private class SOLRTypeConverter
     {
         /**
@@ -479,10 +588,24 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         private TypeConverter instance = new TypeConverter();
         private NamespaceDAO namespaceDAO;
         
+        @SuppressWarnings("unchecked")
         SOLRTypeConverter(NamespaceDAO namespaceDAO)
         {
             this.namespaceDAO = namespaceDAO;
 
+            // add all default converters to this converter
+            // TODO find a better way of doing this
+            Map<Class, Map<Class, Converter>> converters = DefaultTypeConverter.INSTANCE.getConverters();
+            for(Class source : converters.keySet())
+            {
+                Map<Class, Converter> converters1 = converters.get(source);
+                for(Class dest : converters1.keySet())
+                {
+                    Converter converter = converters1.get(dest);
+                    instance.addConverter(source, dest, converter);
+                }
+            }
+            
             // dates
             instance.addConverter(String.class, Date.class, new TypeConverter.Converter<String, Date>()
             {
@@ -673,7 +796,36 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         }
     }
     
-    public static enum TRANSFORM_STATUS
+    public static enum STATUS
+    {
+        NOT_MODIFIED, OK, NO_TRANSFORM, NO_CONTENT, UNKNOWN, TRANSFORM_FAILED, GENERAL_FAILURE;
+        
+        public static STATUS getStatus(String statusStr)
+        {
+            if(statusStr.equals("ok"))
+            {
+                return OK;
+            }
+            else if(statusStr.equals("transformFailed"))
+            {
+                return TRANSFORM_FAILED;
+            }
+            else if(statusStr.equals("noTransform"))
+            {
+                return NO_TRANSFORM;
+            }
+            else if(statusStr.equals("noContent"))
+            {
+                return NO_CONTENT;
+            }
+            else
+            {
+                return UNKNOWN;
+            }
+        }
+    }
+    
+/*    public static enum TRANSFORM_STATUS
     {
         OK, FAILED, NO_TRANSFORM, UNKNOWN;
         
@@ -696,28 +848,23 @@ public class SOLRAPIClient extends AlfrescoHttpClient
                 return UNKNOWN;
             }
         }
-    }
+    }*/
     
     public static class GetTextContentResponse extends SOLRResponse
     {
         private InputStream content;
-        private TRANSFORM_STATUS transformStatus;
+        private STATUS status;
         private String transformException;
+        private String transformStatusStr;
 
         public GetTextContentResponse(Response response) throws IOException
         {
             super(response);
+
             this.content = response.getContentAsStream();
-            String transformStatusStr = response.getHeader("XAlfresco-transformStatus");
-            if(transformStatusStr != null)
-            {
-                this.transformStatus = TRANSFORM_STATUS.getStatus(transformStatusStr);
-            }
-            else
-            {
-                this.transformStatus = null;
-            }
+            this.transformStatusStr = response.getHeader("XAlfresco-transformStatus");
             this.transformException = response.getHeader("XAlfresco-transformException");
+            setStatus();
         }
 
         public InputStream getContent()
@@ -725,9 +872,48 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             return content;
         }
 
-        public TRANSFORM_STATUS getTransformStatus()
+        public STATUS getStatus()
         {
-            return transformStatus;
+            return status;
+        }
+        
+        private void setStatus()
+        {
+            int status = response.getStatus();
+            if(status == HttpStatus.SC_NOT_MODIFIED)
+            {
+                this.status = STATUS.NOT_MODIFIED;
+            }
+            else if(status == HttpStatus.SC_INTERNAL_SERVER_ERROR)
+            {
+                this.status = STATUS.GENERAL_FAILURE;
+            }
+            else if(status == HttpStatus.SC_OK)
+            {
+                this.status = STATUS.OK;
+            }
+            else if(status == HttpStatus.SC_NO_CONTENT)
+            {
+                if(transformStatusStr == null)
+                {
+                    this.status = STATUS.UNKNOWN;
+                }
+                else
+                {
+                    if(transformStatusStr.equals("noTransform"))
+                    {
+                        this.status = STATUS.NO_TRANSFORM;
+                    }
+                    else if(transformStatusStr.equals("transformFailed"))
+                    {
+                        this.status = STATUS.TRANSFORM_FAILED;
+                    }
+                    else
+                    {
+                        this.status = STATUS.UNKNOWN;
+                    }
+                }
+            }
         }
 
         public String getTransformException()
@@ -738,11 +924,6 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         public int getContentLength()
         {
             return response.getContentLength();
-        }
-        
-        public int getStatus()
-        {
-            return response.getStatus();
         }
         
         public Long getRequestDuration()

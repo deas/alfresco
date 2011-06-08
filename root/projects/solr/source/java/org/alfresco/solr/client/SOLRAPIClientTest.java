@@ -25,28 +25,104 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.alfresco.repo.dictionary.DictionaryDAO;
+import org.alfresco.repo.dictionary.M2Model;
+import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.NamespaceService;
+import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.json.JSONException;
 
 public class SOLRAPIClientTest extends TestCase
 {
+    private static final String TEST_MODEL = "org/alfresco/repo/dictionary/dictionarydaotest_model.xml";
+
     private SOLRAPIClient client;
+    
+    private void loadModel(Map<String, M2Model> modelMap, HashSet<String> loadedModels, M2Model model)
+    {
+        String modelName = model.getName();
+        if (loadedModels.contains(modelName) == false)
+        {
+            for (M2Namespace importNamespace : model.getImports())
+            {
+                M2Model importedModel = modelMap.get(importNamespace.getUri());
+                if (importedModel != null)
+                {
+
+                    // Ensure that the imported model is loaded first
+                    loadModel(modelMap, loadedModels, importedModel);
+                }
+            }
+
+            AlfrescoSolrDataModel.getInstance("test").putModel(model);
+            loadedModels.add(modelName);
+        }
+    }
     
     @Override
     public void setUp() throws Exception
     {
+        boolean inRepoContext = true;
+        List<String> bootstrapModels = new ArrayList<String>();
+        bootstrapModels.add("alfresco/model/dictionaryModel.xml");
+        if (inRepoContext)
+        {
+            bootstrapModels.add("alfresco/model/applicationModel.xml");
+            bootstrapModels.add("alfresco/model/blogIntegrationModel.xml");
+            bootstrapModels.add("alfresco/model/calendarModel.xml");
+            bootstrapModels.add("alfresco/model/contentModel.xml");
+            bootstrapModels.add("alfresco/model/datalistModel.xml");
+            bootstrapModels.add("alfresco/model/emailServerModel.xml");
+            bootstrapModels.add("alfresco/model/forumModel.xml");
+            bootstrapModels.add("alfresco/model/imapModel.xml");
+            bootstrapModels.add("alfresco/model/linksModel.xml");
+            bootstrapModels.add("alfresco/model/siteModel.xml");
+            bootstrapModels.add("alfresco/model/systemModel.xml");
+            bootstrapModels.add("alfresco/model/transferModel.xml");
+            bootstrapModels.add("alfresco/model/wcmAppModel.xml");
+            bootstrapModels.add("alfresco/model/wcmModel.xml");
+            
+            //bootstrapModels.add("org/alfresco/repo/security/authentication/userModel.xml");
+            //bootstrapModels.add("org/alfresco/repo/action/actionModel.xml");
+            //bootstrapModels.add("org/alfresco/repo/rule/ruleModel.xml");
+            //bootstrapModels.add("org/alfresco/repo/version/version_model.xml");  
+        }
+        else
+        {
+            bootstrapModels.add(TEST_MODEL);
+        }
+        HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
+        for (String bootstrapModel : bootstrapModels)
+        {
+            System.out.println("Loading ..."+bootstrapModel);
+            InputStream modelStream = getClass().getClassLoader().getResourceAsStream(bootstrapModel);
+            M2Model model = M2Model.createModel(modelStream);
+            for (M2Namespace namespace : model.getNamespaces())
+            {
+                modelMap.put(namespace.getUri(), model);
+            }
+        }
+
+        // Load the models ensuring that they are loaded in the correct order
+        HashSet<String> loadedModels = new HashSet<String>();
+        for (M2Model model : modelMap.values())
+        {
+            loadModel(modelMap, loadedModels, model);
+        }
+        
         AlfrescoSolrDataModel model = AlfrescoSolrDataModel.getInstance("test");
-        // dummy implementation - don't know how to hook into Alfresco namespace stuff
+        // dummy implementation - don't know how to hook into SOLR-side namespace stuff
         NamespaceDAO namespaceDAO = new TestNamespaceDAO();
-        client = new SOLRAPIClient(namespaceDAO,
+        client = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
                 "http://localhost:8080/alfresco/service", "admin", "admin");
     }
     
@@ -101,6 +177,89 @@ public class SOLRAPIClientTest extends TestCase
         }
     }
     
+    public void testMetaData() throws IOException, JSONException
+    {
+        NodeMetaDataParameters metaParams = new NodeMetaDataParameters();
+        List<Long> nodeIds = new ArrayList<Long>(1);
+        nodeIds.add(1l);
+        metaParams.setNodeIds(nodeIds);
+        List<NodeMetaData> metadata = client.getNodesMetaData(metaParams, 3);
+        for(NodeMetaData info : metadata)
+        {
+            System.out.println(info);
+        }
+        
+        metaParams = new NodeMetaDataParameters();
+        nodeIds = new ArrayList<Long>(1);
+        nodeIds.add(9l);
+        metaParams.setNodeIds(nodeIds);
+        metadata = client.getNodesMetaData(metaParams, 3);
+        for(NodeMetaData info : metadata)
+        {
+            System.out.println(info);
+        }
+        
+        metaParams = new NodeMetaDataParameters();
+        nodeIds = new ArrayList<Long>(1);
+        nodeIds.add(19l);
+        metaParams.setNodeIds(nodeIds);
+        metadata = client.getNodesMetaData(metaParams, 3);
+        for(NodeMetaData info : metadata)
+        {
+            System.out.println(info);
+        }
+
+        // individual tag/category
+        // TODO check why the category path has a null QName
+        metaParams = new NodeMetaDataParameters();
+        nodeIds = new ArrayList<Long>(1);
+        nodeIds.add(49437l);
+        metaParams.setNodeIds(nodeIds);
+        metadata = client.getNodesMetaData(metaParams, 3);
+        for(NodeMetaData info : metadata)
+        {
+            System.out.println(info);
+        }
+        
+        // content with tags
+        metaParams = new NodeMetaDataParameters();
+        nodeIds = new ArrayList<Long>(1);
+        nodeIds.add(49431l);
+        metaParams.setNodeIds(nodeIds);
+        metadata = client.getNodesMetaData(metaParams, 3);
+        for(NodeMetaData info : metadata)
+        {
+            System.out.println(info);
+            MultiPropertyValue multi = (MultiPropertyValue)info.getProperties().get(QName.createQName("{http://www.alfresco.org/model/content/1.0}taggable"));
+            for(PropertyValue propValue : multi.getValues())
+            {
+                System.out.println("multi property values = " + propValue);
+            }
+        }
+
+        // content with null property values for author
+        metaParams = new NodeMetaDataParameters();
+        nodeIds = new ArrayList<Long>(1);
+        nodeIds.add(117630l);
+        metaParams.setNodeIds(nodeIds);
+        metadata = client.getNodesMetaData(metaParams, 3);
+        for(NodeMetaData info : metadata)
+        {
+            System.out.println(info);
+        }
+        
+        // content with accented characters in title properties
+        metaParams = new NodeMetaDataParameters();
+        nodeIds = new ArrayList<Long>(1);
+        nodeIds.add(117678l);
+        metaParams.setNodeIds(nodeIds);
+        metadata = client.getNodesMetaData(metaParams, 3);
+        for(NodeMetaData info : metadata)
+        {
+            System.out.println(info);
+        }
+    }
+
     private void outputTextContent(SOLRAPIClient.GetTextContentResponse response) throws IOException
     {
         InputStream in = response.getContent();
@@ -117,7 +276,7 @@ public class SOLRAPIClientTest extends TestCase
         }
     }
 
-    public void testGetTextContent()
+/*    public void testGetTextContent()
     {
         try
         {
@@ -161,7 +320,7 @@ public class SOLRAPIClientTest extends TestCase
         {
             e.printStackTrace();
         }
-    }
+    }*/
     
     private class TestNamespaceDAO implements NamespaceDAO
     {
@@ -174,6 +333,8 @@ public class SOLRAPIClientTest extends TestCase
             prefixMappings.put(NamespaceService.DEFAULT_PREFIX, NamespaceService.DEFAULT_URI);
             prefixMappings.put(NamespaceService.DICTIONARY_MODEL_PREFIX, NamespaceService.DICTIONARY_MODEL_1_0_URI);
             prefixMappings.put(NamespaceService.APP_MODEL_PREFIX, NamespaceService.APP_MODEL_1_0_URI);            
+            prefixMappings.put("ver", "http://www.alfresco.org/model/versionstore/1.0");            
+            prefixMappings.put("ver2", "http://www.alfresco.org/model/versionstore/2.0");            
         }
 
         @Override

@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.Pair;
 
 public class NodeMetaData
 {
@@ -31,9 +32,9 @@ public class NodeMetaData
     private NodeRef nodeRef;
     private QName type;
     private long aclId;
-    private Map<QName, String> properties;
+    private Map<QName, PropertyValue> properties;
     private Set<QName> aspects;
-    private List<String> paths;
+    private List<Pair<String, QName>> paths;
     public long getId()
     {
         return id;
@@ -66,11 +67,15 @@ public class NodeMetaData
     {
         this.aclId = aclId;
     }
-    public Map<QName, String> getProperties()
+    
+    /**
+     * A property value is either null or a subclass of PropertyValue
+     */
+    public Map<QName, PropertyValue> getProperties()
     {
         return properties;
     }
-    public void setProperties(Map<QName, String> properties)
+    public void setProperties(Map<QName, PropertyValue> properties)
     {
         this.properties = properties;
     }
@@ -82,11 +87,11 @@ public class NodeMetaData
     {
         this.aspects = aspects;
     }
-    public List<String> getPaths()
+    public List<Pair<String, QName>> getPaths()
     {
         return paths;
     }
-    public void setPaths(List<String> paths)
+    public void setPaths(List<Pair<String, QName>> paths)
     {
         this.paths = paths;
     }

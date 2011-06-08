@@ -23,19 +23,32 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
+import org.alfresco.model.ContentModel;
+import org.alfresco.repo.node.MLPropertyInterceptor;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
+import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.client.ContentPropertyValue;
 import org.alfresco.solr.client.GetNodesParameters;
+import org.alfresco.solr.client.MLTextPropertyValue;
+import org.alfresco.solr.client.MultiPropertyValue;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.client.NodeMetaData;
 import org.alfresco.solr.client.NodeMetaDataParameters;
+import org.alfresco.solr.client.PropertyValue;
 import org.alfresco.solr.client.SOLRAPIClient;
+import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Node.STATUS;
+import org.alfresco.util.CachingDateFormat;
+import org.alfresco.util.Pair;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.Term;
@@ -164,14 +177,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     IndexHealthReport indexHealthReport = tracker.checkIndex();
 
                     NamedList<Object> report = new SimpleOrderedMap<Object>();
-                    
+
                     report.add(cname, buildTrackerReport(tracker));
                     rsp.add("report", report);
                 }
                 else
                 {
                     NamedList<Object> report = new SimpleOrderedMap<Object>();
-                    for(CoreTracker tracker: trackers.values())
+                    for (CoreTracker tracker : trackers.values())
                     {
                         report.add(cname, buildTrackerReport(tracker));
                     }
@@ -191,20 +204,38 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             throw new SolrException(SolrException.ErrorCode.BAD_REQUEST, "Error executing default implementation of CREATE", ex);
         }
     }
-    
-    private  NamedList<Object> buildTrackerReport(CoreTracker tracker) throws IOException, JSONException
+
+    private NamedList<Object> buildTrackerReport(CoreTracker tracker) throws IOException, JSONException
     {
         IndexHealthReport indexHealthReport = tracker.checkIndex();
-        
+
         NamedList<Object> ihr = new SimpleOrderedMap<Object>();
         ihr.add("dbTransactionCount", indexHealthReport.getDbTransactionCount());
         ihr.add("duplicatedInIndexCount", indexHealthReport.getDuplicatedInIndex().cardinality());
+        if (indexHealthReport.getDuplicatedInIndex().cardinality() > 0)
+        {
+            ihr.add("firstDuplicate", indexHealthReport.getDuplicatedInIndex().nextSetBit(0L));
+        }
         ihr.add("inIndexButNotInDbCount", indexHealthReport.getInIndexButNotInDb().cardinality());
+        if (indexHealthReport.getInIndexButNotInDb().cardinality() > 0)
+        {
+            ihr.add("firstInIndexButNotInDb", indexHealthReport.getInIndexButNotInDb().nextSetBit(0L));
+        }
         ihr.add("missingFromIndexCount", indexHealthReport.getMissingFromIndex().cardinality());
+        if (indexHealthReport.getMissingFromIndex().cardinality() > 0)
+        {
+            ihr.add("firstMissingFromIndex", indexHealthReport.getMissingFromIndex().nextSetBit(0L));
+        }
         ihr.add("transactionDocsInIndexCount", indexHealthReport.getTransactionDocsInIndex());
         ihr.add("leafDocCountInIndex", indexHealthReport.getLeafDocCountInIndex());
         ihr.add("duplicatedLeafInIndexCount", indexHealthReport.getDuplicatedLeafInIndex().cardinality());
+        if (indexHealthReport.getDuplicatedLeafInIndex().cardinality() > 0)
+        {
+            ihr.add("firstDuplicateLeafInIndex", "LEAF-" + indexHealthReport.getDuplicatedLeafInIndex().nextSetBit(0L));
+        }
         ihr.add("lastIndexCommitTime", indexHealthReport.getLastIndexCommitTime());
+        Date lastDate = new Date(indexHealthReport.getLastIndexCommitTime());
+        ihr.add("lastIndexCommitDate", CachingDateFormat.getDateFormat().format(lastDate));
         ihr.add("lastIndexIdBeforeHoles", indexHealthReport.getLastIndexedIdBeforeHoles());
         return ihr;
     }
@@ -262,8 +293,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
             String id = core.getSchema().getResourceLoader().getInstanceDir();
 
-            client = new SOLRAPIClient(AlfrescoSolrDataModel.getInstance(id).getNamespaceDAO(),
-                    "http://localhost:8080/alfresco/service", "admin", "admin");
+            AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
+            client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(), "http://localhost:8080/alfresco/service", "admin", "admin");
 
             JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
             JobDataMap jobDataMap = new JobDataMap();
@@ -339,15 +370,16 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                         }
                     }
 
-                    long lastTxId = lastIndexedIdBeforeHoles;
                     long lastTxCommitTime = lastGoodTxCommitTimeInIndex;
 
                     boolean upToDate = false;
                     ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
                     List<Transaction> transactions;
+                    long loopStartingCommitTime;
                     do
                     {
-                        transactions = client.getTransactions(lastTxCommitTime, lastTxId + 1, 2000);
+                        loopStartingCommitTime = lastTxCommitTime;
+                        transactions = client.getTransactions(lastTxCommitTime, null, 2000);
                         for (Transaction info : transactions)
                         {
                             System.out.println(info);
@@ -365,7 +397,6 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                 {
                                     if (target.equals(term.text()))
                                     {
-                                        lastTxId = info.getId();
                                         lastTxCommitTime = info.getCommitTimeMs();
                                     }
                                     else
@@ -386,6 +417,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                 else
                                 {
                                     AddUpdateCommand cmd = new AddUpdateCommand();
+                                    cmd.overwriteCommitted = true;
+                                    cmd.overwritePending = true;
                                     SolrInputDocument input = new SolrInputDocument();
                                     input.addField(LuceneQueryParser.FIELD_ID, "TX-" + info.getId());
                                     input.addField(LuceneQueryParser.FIELD_TXID, info.getId());
@@ -398,6 +431,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                     ArrayList<Long> txs = new ArrayList<Long>();
                                     txs.add(info.getId());
                                     gnp.setTransactionIds(txs);
+                                    gnp.setStoreProtocol("workspace");
+                                    gnp.setStoreIdentifier("SpacesStore");
                                     List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
                                     for (Node node : nodes)
                                     {
@@ -405,28 +440,130 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                         if (node.getStatus() == STATUS.UPDATED)
                                         {
                                             System.out.println(".. updating");
-                                            // NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
-                                            // nmdp.setFromNodeId(node.getId());
-                                            // nmdp.setToNodeId(node.getId());
-                                            // List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
+                                            NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
+                                            nmdp.setFromNodeId(node.getId());
+                                            nmdp.setToNodeId(node.getId());
+                                            try
+                                            {
+                                                List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
 
-                                            AddUpdateCommand docCmd = new AddUpdateCommand();
-                                            SolrInputDocument doc = new SolrInputDocument();
-                                            doc.addField(LuceneQueryParser.FIELD_ID, "LEAF-" + node.getId());
-                                            // for (NodeMetaData nodeMetaData : nodeMetaDatas)
-                                            // {
-                                            // doc.addField(LuceneQueryParser.FIELD_ID, "LEAF-" + nodeMetaData.getId());
-                                            // }
+                                                AddUpdateCommand leafDocCmd = new AddUpdateCommand();
+                                                leafDocCmd.overwriteCommitted = true;
+                                                leafDocCmd.overwritePending = true;
+                                                AddUpdateCommand auxDocCmd = new AddUpdateCommand();
+                                                auxDocCmd.overwriteCommitted = true;
+                                                auxDocCmd.overwritePending = true;
 
-                                            docCmd.solrDoc = doc;
-                                            docCmd.doc = DocumentBuilder.toDocument(docCmd.getSolrInputDocument(), core.getSchema());
-                                            core.getUpdateHandler().addDoc(docCmd);
+                                                for (NodeMetaData nodeMetaData : nodeMetaDatas)
+                                                {
+                                                    SolrInputDocument doc = new SolrInputDocument();
+                                                    doc.addField(LuceneQueryParser.FIELD_ID, "LEAF-" + node.getId());
+                                                    doc.addField(LuceneQueryParser.FIELD_DBID, node.getId());
+
+                                                    Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
+                                                    for (QName propertyQname : properties.keySet())
+                                                    {
+                                                        PropertyValue value = properties.get(propertyQname);
+                                                        if (value != null)
+                                                        {
+                                                            if (value instanceof ContentPropertyValue)
+                                                            {
+                                                                ContentPropertyValue typedValue = (ContentPropertyValue) value;
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), typedValue.getId());
+                                                            }
+                                                            else if (value instanceof MLTextPropertyValue)
+                                                            {
+                                                                MLTextPropertyValue typedValue = (MLTextPropertyValue) value;
+                                                                for (Locale locale : typedValue.getLocales())
+                                                                {
+                                                                    doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), locale);
+                                                                }
+                                                            }
+                                                            else if (value instanceof MultiPropertyValue)
+                                                            {
+                                                                MultiPropertyValue typedValue = (MultiPropertyValue) value;
+                                                                for (PropertyValue singleValue : typedValue.getValues())
+                                                                {
+                                                                    if (singleValue instanceof ContentPropertyValue)
+                                                                    {
+                                                                        ContentPropertyValue current = (ContentPropertyValue) singleValue;
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), current.getId());
+                                                                    }
+                                                                    else if (singleValue instanceof MLTextPropertyValue)
+                                                                    {
+                                                                        MLTextPropertyValue current = (MLTextPropertyValue) singleValue;
+                                                                        for (Locale locale : current.getLocales())
+                                                                        {
+                                                                            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), locale);
+                                                                        }
+                                                                    }
+                                                                    else if (singleValue instanceof StringPropertyValue)
+                                                                    {
+                                                                        StringPropertyValue current = (StringPropertyValue) singleValue;
+                                                                        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), current.getValue());
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (value instanceof StringPropertyValue)
+                                                            {
+                                                                StringPropertyValue typedValue = (StringPropertyValue) value;
+                                                                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQname.toString(), typedValue.getValue());
+                                                            }
+
+                                                        }
+                                                    }
+                                                    doc.addField(LuceneQueryParser.FIELD_TYPE, nodeMetaData.getType().toString());
+                                                    for (QName aspect : nodeMetaData.getAspects())
+                                                    {
+                                                        doc.addField(LuceneQueryParser.FIELD_ASPECT, aspect.toString());
+                                                    }
+                                                    doc.addField(LuceneQueryParser.FIELD_ISNODE, "T");
+                                                    
+                                                    leafDocCmd.solrDoc = doc;
+                                                    leafDocCmd.doc = DocumentBuilder.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema());
+
+                                                    SolrInputDocument aux = new SolrInputDocument();
+                                                    aux.addField(LuceneQueryParser.FIELD_ID, "AUX-" + node.getId());
+                                                    aux.addField(LuceneQueryParser.FIELD_DBID, node.getId());
+                                                    aux.addField(LuceneQueryParser.FIELD_ACLID, nodeMetaData.getAclId());
+
+                                                    for (Pair<String, QName> path : nodeMetaData.getPaths())
+                                                    {
+                                                        aux.addField(LuceneQueryParser.FIELD_PATH, path.getFirst());
+                                                    }
+
+                                                    StringPropertyValue owner = (StringPropertyValue) properties.get(ContentModel.PROP_OWNER);
+                                                    if (owner == null)
+                                                    {
+                                                        owner = (StringPropertyValue) properties.get(ContentModel.PROP_CREATOR);
+                                                    }
+                                                    if (owner != null)
+                                                    {
+                                                        aux.addField(LuceneQueryParser.FIELD_OWNER, owner.getValue());
+                                                    }
+
+                                                    auxDocCmd.solrDoc = aux;
+                                                    auxDocCmd.doc = DocumentBuilder.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema());
+
+                                                }
+
+                                                core.getUpdateHandler().addDoc(leafDocCmd);
+                                                core.getUpdateHandler().addDoc(auxDocCmd);
+
+                                            }
+                                            catch (JSONException e)
+                                            {
+                                                System.out.println(e.getStackTrace());
+                                            }
+
                                         }
                                         else if (node.getStatus() == STATUS.DELETED)
                                         {
                                             System.out.println(".. deleting");
                                             DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
                                             docCmd.id = "LEAF-" + node.getId();
+                                            docCmd.fromPending = true;
+                                            docCmd.fromCommitted = true;
                                             core.getUpdateHandler().delete(docCmd);
                                         }
 
@@ -437,7 +574,6 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                                         lastIndexedCommitTime = info.getCommitTimeMs();
                                     }
 
-                                    lastTxId = info.getId();
                                     lastTxCommitTime = info.getCommitTimeMs();
                                 }
                             }
@@ -479,7 +615,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                             transactionsOrderedById = newTransactionsOrderedById;
                         }
                     }
-                    while ((transactions.size() > 0) && (upToDate == false));
+                    while ((transactions.size() > 0) && (upToDate == false) && (loopStartingCommitTime < lastTxCommitTime));
                 }
                 finally
                 {
@@ -526,26 +662,22 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             IndexHealthReport indexHealthReport = new IndexHealthReport();
 
             OpenBitSet txIdsInDb = new OpenBitSet();
-            long lastTxId = -1;
             long lastTxCommitTime = 0;
             long maxTxId = 0;
 
+            long loopStartingCommitTime;
             List<Transaction> transactions;
             do
             {
-                transactions = client.getTransactions(lastTxCommitTime, lastTxId + 1, 2000);
+                loopStartingCommitTime = lastTxCommitTime;
+                transactions = client.getTransactions(lastTxCommitTime, null, 2000);
                 for (Transaction info : transactions)
                 {
-                    lastTxId = info.getId();
                     lastTxCommitTime = info.getCommitTimeMs();
                     txIdsInDb.set(info.getId());
-                    if (lastTxId > maxTxId)
-                    {
-                        maxTxId = lastTxId;
-                    }
                 }
             }
-            while (transactions.size() > 0);
+            while ((transactions.size() > 0) && (loopStartingCommitTime < lastTxCommitTime));
 
             indexHealthReport.setDbTransactionCount(txIdsInDb.cardinality());
 
@@ -626,7 +758,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                         TermDocs termDocs = reader.termDocs(new Term(LuceneQueryParser.FIELD_TXID, term.text()));
                         while (termDocs.next())
                         {
-                            docCount++;
+                            if (!reader.isDeleted(termDocs.doc()))
+                            {
+                                docCount++;
+                            }
                         }
                         if (docCount > 1)
                         {
@@ -657,7 +792,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                         TermDocs termDocs = reader.termDocs(new Term(LuceneQueryParser.FIELD_ID, term.text()));
                         while (termDocs.next())
                         {
-                            docCount++;
+                            if (!reader.isDeleted(termDocs.doc()))
+                            {
+                                docCount++;
+                            }
                         }
                         if (docCount > 1)
                         {
@@ -676,7 +814,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 termEnum.close();
 
                 indexHealthReport.setLeafDocCountInIndex(leafCount);
-                
+
                 indexHealthReport.setLastIndexedCommitTime(lastIndexedCommitTime);
                 indexHealthReport.setLastIndexedIdBeforeHoles(lastIndexedIdBeforeHoles);
 
@@ -820,9 +958,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         long transactionDocsInIndex;
 
         long leafDocCountInIndex;
-        
+
         long lastIndexedCommitTime;
-        
+
         long lastIndexedIdBeforeHoles;
 
         /**
@@ -940,7 +1078,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
 
         /**
-         * @param lastIndexCommitTime the lastIndexCommitTime to set
+         * @param lastIndexCommitTime
+         *            the lastIndexCommitTime to set
          */
         public void setLastIndexedCommitTime(long lastIndexedCommitTime)
         {
@@ -956,13 +1095,13 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
 
         /**
-         * @param lastIndexedIdBeforeHoles the lastIndexedIdBeforeHoles to set
+         * @param lastIndexedIdBeforeHoles
+         *            the lastIndexedIdBeforeHoles to set
          */
         public void setLastIndexedIdBeforeHoles(long lastIndexedIdBeforeHoles)
         {
             this.lastIndexedIdBeforeHoles = lastIndexedIdBeforeHoles;
         }
-        
-        
+
     }
 }

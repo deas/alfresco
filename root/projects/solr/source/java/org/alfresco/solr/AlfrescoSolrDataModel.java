@@ -93,6 +93,8 @@ public class AlfrescoSolrDataModel
 
     private DictionaryComponent dictionaryComponent;
 
+    private boolean testing = true;
+
     static
     {
 
@@ -253,6 +255,11 @@ public class AlfrescoSolrDataModel
      */
     public Store getFieldStore(SchemaField field)
     {
+        if(testing)
+        {
+            return Store.YES;
+        }
+        
         PropertyDefinition propertyDefinition = getPropertyDefinition(field);
         if (propertyDefinition != null)
         {

@@ -70,10 +70,10 @@ public class SolrSchemaGenerationTest extends TestCase
             bootstrapModels.add("alfresco/model/wcmAppModel.xml");
             bootstrapModels.add("alfresco/model/wcmModel.xml");
             
-            //bootstrapModels.add("org/alfresco/repo/security/authentication/userModel.xml");
-            //bootstrapModels.add("org/alfresco/repo/action/actionModel.xml");
-            //bootstrapModels.add("org/alfresco/repo/rule/ruleModel.xml");
-            //bootstrapModels.add("org/alfresco/repo/version/version_model.xml");  
+            bootstrapModels.add("org/alfresco/repo/security/authentication/userModel.xml");
+            bootstrapModels.add("org/alfresco/repo/action/actionModel.xml");
+            bootstrapModels.add("org/alfresco/repo/rule/ruleModel.xml");
+            bootstrapModels.add("org/alfresco/repo/version/version2_model.xml");  
         }
         else
         {
