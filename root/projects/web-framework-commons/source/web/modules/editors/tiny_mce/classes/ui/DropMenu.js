@@ -1,23 +1,29 @@
 /**
- * $Id: DropMenu.js 939 2008-10-13 15:47:19Z spocke $
+ * DropMenu.js
  *
- * @author Moxiecode
- * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
+(function(tinymce) {
 	var is = tinymce.is, DOM = tinymce.DOM, each = tinymce.each, Event = tinymce.dom.Event, Element = tinymce.dom.Element;
 
-	/**#@+
-	 * @class This class is used to create drop menus, a drop menu can be a
+	/**
+	 * This class is used to create drop menus, a drop menu can be a
 	 * context menu, or a menu for a list box or a menu bar.
-	 * @member tinymce.ui.DropMenu
-	 * @base tinymce.ui.Menu
+	 *
+	 * @class tinymce.ui.DropMenu
+	 * @extends tinymce.ui.Menu
 	 */
 	tinymce.create('tinymce.ui.DropMenu:tinymce.ui.Menu', {
 		/**
 		 * Constructs a new drop menu control instance.
 		 *
+		 * @constructor
+		 * @method DropMenu
 		 * @param {String} id Button control id for the button.
 		 * @param {Object} s Optional name/value settings object.
 		 */
@@ -38,13 +44,10 @@
 			this.classPrefix = 'mceMenu';
 		},
 
-		/**#@+
-		 * @method
-		 */
-
 		/**
 		 * Created a new sub menu for the drop menu control.
 		 *
+		 * @method createMenu
 		 * @param {Object} s Optional name/value settings object.
 		 * @return {tinymce.ui.DropMenu} New drop menu instance.
 		 */
@@ -57,15 +60,25 @@
 			s['class'] = s['class'] || cs['class'];
 			s.vp_offset_x = s.vp_offset_x || cs.vp_offset_x;
 			s.vp_offset_y = s.vp_offset_y || cs.vp_offset_y;
+			s.keyboard_focus = cs.keyboard_focus;
 			m = new tinymce.ui.DropMenu(s.id || DOM.uniqueId(), s);
 
 			m.onAddItem.add(t.onAddItem.dispatch, t.onAddItem);
 
 			return m;
 		},
+		
+		focus : function() {
+			var t = this;
+			if (t.keyboardNav) {
+				t.keyboardNav.focus();
+			}
+		},
 
 		/**
 		 * Repaints the menu after new items have been added dynamically.
+		 *
+		 * @method update
 		 */
 		update : function() {
 			var t = this, s = t.settings, tb = DOM.get('menu_' + t.id + '_tbl'), co = DOM.get('menu_' + t.id + '_co'), tw, th;
@@ -92,6 +105,7 @@
 		/**
 		 * Displays the menu at the specified cordinate.
 		 *
+		 * @method showMenu
 		 * @param {Number} x Horizontal position of the menu.
 		 * @param {Number} y Vertical position of the menu.
 		 * @param {Numner} px Optional parent X position used when menus are cascading.
@@ -150,7 +164,7 @@
 
 				e = e.target;
 
-				if (e && (e = DOM.getParent(e, 'TR')) && !DOM.hasClass(e, cp + 'ItemSub')) {
+				if (e && (e = DOM.getParent(e, 'tr')) && !DOM.hasClass(e, cp + 'ItemSub')) {
 					m = t.items[e.id];
 
 					if (m.isDisabled())
@@ -177,7 +191,7 @@
 					var m, r, mi;
 
 					e = e.target;
-					if (e && (e = DOM.getParent(e, 'TR'))) {
+					if (e && (e = DOM.getParent(e, 'tr'))) {
 						m = t.items[e.id];
 
 						if (t.lastMenu)
@@ -196,18 +210,20 @@
 					}
 				});
 			}
+			
+			Event.add(co, 'keydown', t._keyHandler, t);
 
 			t.onShowMenu.dispatch(t);
 
-			if (s.keyboard_focus) {
-				Event.add(co, 'keydown', t._keyHandler, t);
-				DOM.select('a', 'menu_' + t.id)[0].focus(); // Select first link
-				t._focusIdx = 0;
+			if (s.keyboard_focus) { 
+				t._setupKeyboardNav(); 
 			}
 		},
 
 		/**
 		 * Hides the displayed menu.
+		 *
+		 * @method hideMenu
 		 */
 		hideMenu : function(c) {
 			var t = this, co = DOM.get('menu_' + t.id), e;
@@ -215,6 +231,7 @@
 			if (!t.isMenuVisible)
 				return;
 
+			if (t.keyboardNav) t.keyboardNav.destroy();
 			Event.remove(co, 'mouseover', t.mouseOverFunc);
 			Event.remove(co, 'click', t.mouseClickFunc);
 			Event.remove(co, 'keydown', t._keyHandler);
@@ -236,6 +253,7 @@
 		/**
 		 * Adds a new menu, menu item or sub classes of them to the drop menu.
 		 *
+		 * @method add
 		 * @param {tinymce.ui.Control} o Menu or menu item to add to the drop menu.
 		 * @return {tinymce.ui.Control} Same as the input control, the menu or menu item.
 		 */
@@ -253,7 +271,8 @@
 		/**
 		 * Collapses the menu, this will hide the menu and all menu items.
 		 *
-		 * @param {bool} d Optional deep state. If this is set to true all children will be collapsed as well.
+		 * @method collapse
+		 * @param {Boolean} d Optional deep state. If this is set to true all children will be collapsed as well.
 		 */
 		collapse : function(d) {
 			this.parent(d);
@@ -263,6 +282,7 @@
 		/**
 		 * Removes a specific sub menu or menu item from the drop menu.
 		 *
+		 * @method remove
 		 * @param {tinymce.ui.Control} o Menu item or menu to remove from drop menu.
 		 * @return {tinymce.ui.Control} Control instance or null if it wasn't found.
 		 */
@@ -275,12 +295,17 @@
 
 		/**
 		 * Destroys the menu. This will remove the menu from the DOM and any events added to it etc.
+		 *
+		 * @method destroy
 		 */
 		destroy : function() {
 			var t = this, co = DOM.get('menu_' + t.id);
 
+			if (t.keyboardNav) t.keyboardNav.destroy();
 			Event.remove(co, 'mouseover', t.mouseOverFunc);
+			Event.remove(DOM.select('a', co), 'focus', t.mouseOverFunc);
 			Event.remove(co, 'click', t.mouseClickFunc);
+			Event.remove(co, 'keydown', t._keyHandler);
 
 			if (t.element)
 				t.element.remove();
@@ -291,20 +316,24 @@
 		/**
 		 * Renders the specified menu node to the dom.
 		 *
+		 * @method renderNode
 		 * @return {Element} Container element for the drop menu.
 		 */
 		renderNode : function() {
 			var t = this, s = t.settings, n, tb, co, w;
 
-			w = DOM.create('div', {id : 'menu_' + t.id, 'class' : s['class'], 'style' : 'position:absolute;left:0;top:0;z-index:200000'});
-			co = DOM.add(w, 'div', {id : 'menu_' + t.id + '_co', 'class' : t.classPrefix + (s['class'] ? ' ' + s['class'] : '')});
+			w = DOM.create('div', {role: 'listbox', id : 'menu_' + t.id, 'class' : s['class'], 'style' : 'position:absolute;left:0;top:0;z-index:200000;outline:0'});
+			if (t.settings.parent) {
+				DOM.setAttrib(w, 'aria-parent', 'menu_' + t.settings.parent.id);
+			}
+			co = DOM.add(w, 'div', {role: 'presentation', id : 'menu_' + t.id + '_co', 'class' : t.classPrefix + (s['class'] ? ' ' + s['class'] : '')});
 			t.element = new Element('menu_' + t.id, {blocker : 1, container : s.container});
 
 			if (s.menu_line)
 				DOM.add(co, 'span', {'class' : t.classPrefix + 'Line'});
 
 //			n = DOM.add(co, 'div', {id : 'menu_' + t.id + '_co', 'class' : 'mceMenuContainer'});
-			n = DOM.add(co, 'table', {id : 'menu_' + t.id + '_tbl', border : 0, cellPadding : 0, cellSpacing : 0});
+			n = DOM.add(co, 'table', {role: 'presentation', id : 'menu_' + t.id + '_tbl', border : 0, cellPadding : 0, cellSpacing : 0});
 			tb = DOM.add(n, 'tbody');
 
 			each(t.items, function(o) {
@@ -317,33 +346,36 @@
 		},
 
 		// Internal functions
+		_setupKeyboardNav : function(){
+			var contextMenu, menuItems, t=this; 
+			contextMenu = DOM.select('#menu_' + t.id)[0];
+			menuItems = DOM.select('a[role=option]', 'menu_' + t.id);
+			menuItems.splice(0,0,contextMenu);
+			t.keyboardNav = new tinymce.ui.KeyboardNavigation({
+				root: 'menu_' + t.id,
+				items: menuItems,
+				onCancel: function() {
+					t.hideMenu();
+				},
+				enableUpDown: true
+			});
+			contextMenu.focus();
+		},
 
-		_keyHandler : function(e) {
-			var t = this, kc = e.keyCode;
-
-			function focus(d) {
-				var i = t._focusIdx + d, e = DOM.select('a', 'menu_' + t.id)[i];
-
-				if (e) {
-					t._focusIdx = i;
-					e.focus();
-				}
-			};
-
-			switch (kc) {
-				case 38:
-					focus(-1); // Select first link
-					return;
-
-				case 40:
-					focus(1);
-					return;
-
-				case 13:
-					return;
-
-				case 27:
-					return this.hideMenu();
+		_keyHandler : function(evt) {
+			var t = this, e;
+			switch (evt.keyCode) {
+				case 37: // Left
+					if (t.settings.parent) {
+						t.hideMenu();
+						t.settings.parent.focus();
+						Event.cancel(evt);
+					}
+					break;
+				case 39: // Right
+					if (t.mouseOverFunc)
+						t.mouseOverFunc(evt);
+					break;
 			}
 		},
 
@@ -361,8 +393,13 @@
 			}
 
 			n = ro = DOM.add(tb, 'tr', {id : o.id, 'class' : cp + 'Item ' + cp + 'ItemEnabled'});
-			n = it = DOM.add(n, 'td');
-			n = a = DOM.add(n, 'a', {href : 'javascript:;', onclick : "return false;", onmousedown : 'return false;'});
+			n = it = DOM.add(n, s.titleItem ? 'th' : 'td');
+			n = a = DOM.add(n, 'a', {id: o.id + '_aria',  role: s.titleItem ? 'presentation' : 'option', href : 'javascript:;', onclick : "return false;", onmousedown : 'return false;'});
+
+			if (s.parent) {
+				DOM.setAttrib(a, 'aria-haspopup', 'true');
+				DOM.setAttrib(a, 'aria-owns', 'menu_' + o.id);
+			}
 
 			DOM.addClass(it, s['class']);
 //			n = DOM.add(n, 'span', {'class' : 'item'});
@@ -391,7 +428,5 @@
 
 			DOM.addClass(ro, 'mceLast');
 		}
-
-		/**#@-*/
 	});
-})();
+})(tinymce);

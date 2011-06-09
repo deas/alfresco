@@ -1,38 +1,80 @@
 /**
- * $Id: Button.js 520 2008-01-07 16:30:32Z spocke $
+ * MenuButton.js
  *
- * @author Moxiecode
- * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
+(function(tinymce) {
 	var DOM = tinymce.DOM, Event = tinymce.dom.Event, each = tinymce.each;
 
-	/**#@+
-	 * @class This class is used to create a UI button. A button is basically a link
+	/**
+	 * This class is used to create a UI button. A button is basically a link
 	 * that is styled to look like a button or icon.
-	 * @member tinymce.ui.Button
-	 * @base tinymce.ui.Control
+	 *
+	 * @class tinymce.ui.MenuButton
+	 * @extends tinymce.ui.Control
+	 * @example
+	 * // Creates a new plugin class and a custom menu button
+	 * tinymce.create('tinymce.plugins.ExamplePlugin', {
+	 *     createControl: function(n, cm) {
+	 *         switch (n) {
+	 *             case 'mymenubutton':
+	 *                 var c = cm.createSplitButton('mysplitbutton', {
+	 *                     title : 'My menu button',
+	 *                     image : 'some.gif'
+	 *                 });
+	 * 
+	 *                 c.onRenderMenu.add(function(c, m) {
+	 *                     m.add({title : 'Some title', 'class' : 'mceMenuItemTitle'}).setDisabled(1);
+	 * 
+	 *                     m.add({title : 'Some item 1', onclick : function() {
+	 *                         alert('Some item 1 was clicked.');
+	 *                     }});
+	 * 
+	 *                     m.add({title : 'Some item 2', onclick : function() {
+	 *                         alert('Some item 2 was clicked.');
+	 *                     }});
+	 *               });
+	 * 
+	 *               // Return the new menubutton instance
+	 *               return c;
+	 *         }
+	 * 
+	 *         return null;
+	 *     }
+	 * });
 	 */
 	tinymce.create('tinymce.ui.MenuButton:tinymce.ui.Button', {
 		/**
 		 * Constructs a new split button control instance.
 		 *
+		 * @constructor
+		 * @method MenuButton
 		 * @param {String} id Control id for the split button.
 		 * @param {Object} s Optional name/value settings object.
+		 * @param {Editor} ed Optional the editor instance this button is for.
 		 */
-		MenuButton : function(id, s) {
-			this.parent(id, s);
+		MenuButton : function(id, s, ed) {
+			this.parent(id, s, ed);
+
+			/**
+			 * Fires when the menu is rendered.
+			 *
+			 * @event onRenderMenu
+			 */
 			this.onRenderMenu = new tinymce.util.Dispatcher(this);
+
 			s.menu_container = s.menu_container || DOM.doc.body;
 		},
 
-		/**#@+
-		 * @method
-		 */
-
 		/**
 		 * Shows the menu.
+		 *
+		 * @method showMenu
 		 */
 		showMenu : function() {
 			var t = this, p1, p2, e = DOM.get(t.id), m;
@@ -67,6 +109,8 @@
 
 		/**
 		 * Renders the menu to the DOM.
+		 *
+		 * @method renderMenu
 		 */
 		renderMenu : function() {
 			var t = this, m;
@@ -77,7 +121,10 @@
 				icons : t.settings.icons
 			});
 
-			m.onHideMenu.add(t.hideMenu, t);
+			m.onHideMenu.add(function() {
+				t.hideMenu();
+				t.focus();
+			});
 
 			t.onRenderMenu.dispatch(t, m);
 			t.menu = m;
@@ -87,6 +134,7 @@
 		 * Hides the menu. The optional event parameter is used to check where the event occured so it
 		 * doesn't close them menu if it was a event inside the menu.
 		 *
+		 * @method hideMenu
 		 * @param {Event} e Optional event object.
 		 */
 		hideMenu : function(e) {
@@ -96,7 +144,7 @@
 			if (e && e.type == "mousedown" && DOM.getParent(e.target, function(e) {return e.id === t.id || e.id === t.id + '_open';}))
 				return;
 
-			if (!e || !DOM.getParent(e.target, function(n) {return DOM.hasClass(n, 'mceMenu');})) {
+			if (!e || !DOM.getParent(e.target, '.mceMenu')) {
 				t.setState('Selected', 0);
 				Event.remove(DOM.doc, 'mousedown', t.hideMenu, t);
 				if (t.menu)
@@ -109,6 +157,8 @@
 		/**
 		 * Post render handler. This function will be called after the UI has been
 		 * rendered so that events can be added.
+		 *
+		 * @method postRender
 		 */
 		postRender : function() {
 			var t = this, s = t.settings;
@@ -122,7 +172,5 @@
 				}
 			});
 		}
-
-		/**#@-*/
 	});
-})();
+})(tinymce);

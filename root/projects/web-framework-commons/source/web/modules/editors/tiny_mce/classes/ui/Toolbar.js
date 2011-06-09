@@ -1,28 +1,32 @@
 /**
- * $Id: Toolbar.js 706 2008-03-11 20:38:31Z spocke $
+ * Toolbar.js
  *
- * @author Moxiecode
- * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-/**#@+
- * @class This class is used to create toolbars a toolbar is a container for other controls like buttons etc.
- * @member tinymce.ui.Toolbar
- * @base tinymce.ui.Container
+(function(tinymce) {
+// Shorten class names
+var dom = tinymce.DOM, each = tinymce.each;
+/**
+ * This class is used to create toolbars a toolbar is a container for other controls like buttons etc.
+ *
+ * @class tinymce.ui.Toolbar
+ * @extends tinymce.ui.Container
  */
 tinymce.create('tinymce.ui.Toolbar:tinymce.ui.Container', {
-	/**#@+
-	 * @method
-	 */
-
 	/**
 	 * Renders the toolbar as a HTML string. This method is much faster than using the DOM and when
 	 * creating a whole toolbar with buttons it does make a lot of difference.
 	 *
+	 * @method renderHTML
 	 * @return {String} HTML for the toolbar control.
 	 */
 	renderHTML : function() {
-		var t = this, h = '', c, co, dom = tinymce.DOM, s = t.settings, i, pr, nx, cl;
+		var t = this, h = '', c, co, s = t.settings, i, pr, nx, cl;
 
 		cl = t.controls;
 		for (i=0; i<cl.length; i++) {
@@ -79,8 +83,7 @@ tinymce.create('tinymce.ui.Toolbar:tinymce.ui.Container', {
 
 		h += dom.createHTML('td', {'class' : c}, dom.createHTML('span', null, '<!-- IE -->'));
 
-		return dom.createHTML('table', {id : t.id, 'class' : 'mceToolbar' + (s['class'] ? ' ' + s['class'] : ''), cellpadding : '0', cellspacing : '0', align : t.settings.align || ''}, '<tbody><tr>' + h + '</tr></tbody>');
+		return dom.createHTML('table', {id : t.id, 'class' : 'mceToolbar' + (s['class'] ? ' ' + s['class'] : ''), cellpadding : '0', cellspacing : '0', align : t.settings.align || '', role: 'presentation', tabindex: '-1'}, '<tbody><tr>' + h + '</tr></tbody>');
 	}
-
-	/**#@-*/
 });
+})(tinymce);

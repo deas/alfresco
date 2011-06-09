@@ -1,22 +1,49 @@
 /**
- * $Id: JSONRequest.js 578 2008-01-31 11:05:10Z spocke $
+ * JSONRequest.js
  *
- * @author Moxiecode
- * @copyright Copyright © 2004-2006, Moxiecode Systems AB, All rights reserved.
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
 (function() {
 	var extend = tinymce.extend, JSON = tinymce.util.JSON, XHR = tinymce.util.XHR;
 
-	/**#@+
-	 * @class This class enables you to use JSON-RPC to call backend methods.
-	 * @member tinymce.util.JSONRequest
+	/**
+	 * This class enables you to use JSON-RPC to call backend methods.
+	 *
+	 * @class tinymce.util.JSONRequest
+	 * @example
+	 * var json = new tinymce.util.JSONRequest({
+	 *     url : 'somebackend.php'
+	 * });
+	 * 
+	 * // Send RPC call 1
+	 * json.send({
+	 *     method : 'someMethod1',
+	 *     params : ['a', 'b'],
+	 *     success : function(result) {
+	 *         console.dir(result);
+	 *     }
+	 * });
+	 * 
+	 * // Send RPC call 2
+	 * json.send({
+	 *     method : 'someMethod2',
+	 *     params : ['a', 'b'],
+	 *     success : function(result) {
+	 *         console.dir(result);
+	 *     }
+	 * });
 	 */
 	tinymce.create('tinymce.util.JSONRequest', {
 		/**
 		 * Constructs a new JSONRequest instance.
 		 *
 		 * @constructor
+		 * @method JSONRequest
 		 * @param {Object} s Optional settings object.
 		 */
 		JSONRequest : function(s) {
@@ -25,13 +52,10 @@
 			this.count = 0;
 		},
 
-		/**#@+
-		 * @method
-		 */
-
 		/**
 		 * Sends a JSON-RPC call. Consult the Wiki API documentation for more details on what you can pass to this function.
 		 *
+		 * @method send
 		 * @param {Object} o Call object where there are three field id, method and params this object should also contain callbacks etc.
 		 */
 		send : function(o) {
@@ -55,7 +79,8 @@
 			};
 
 			o.error = function(ty, x) {
-				ecb.call(o.error_scope || o.scope, ty, x);
+				if (ecb)
+					ecb.call(o.error_scope || o.scope, ty, x);
 			};
 
 			o.data = JSON.serialize({
@@ -75,13 +100,13 @@
 			 * Simple helper function to send a JSON-RPC request without the need to initialize an object.
 			 * Consult the Wiki API documentation for more details on what you can pass to this function.
 			 *
+			 * @method sendRPC
+			 * @static
 			 * @param {Object} o Call object where there are three field id, method and params this object should also contain callbacks etc.
 			 */
 			sendRPC : function(o) {
 				return new tinymce.util.JSONRequest().send(o);
 			}
 		}
-
-		/**#@-*/
 	});
 }());
