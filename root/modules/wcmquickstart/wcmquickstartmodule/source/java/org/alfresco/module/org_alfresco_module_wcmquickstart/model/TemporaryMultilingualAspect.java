@@ -17,26 +17,23 @@
  */
 package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.module.org_alfresco_module_wcmquickstart.util.SiteHelper;
 import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
-import org.alfresco.repo.site.SiteModel;
-import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.ml.MultilingualContentService;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Nick Burch
  */
-public class TemporaryMultilingualAspect
+public class TemporaryMultilingualAspect implements NodeServicePolicies.OnAddAspectPolicy
 {
     private static final Log log = LogFactory.getLog(TemporaryMultilingualAspect.class);
 
@@ -57,7 +54,7 @@ public class TemporaryMultilingualAspect
     
     private MultilingualContentService multilingualContentService;
 
-    private DictionaryService dictionaryService;
+    private SiteHelper siteHelper;
 
     private NodeService nodeService;
 
@@ -81,9 +78,9 @@ public class TemporaryMultilingualAspect
         this.multilingualContentService = multilingualContentService;
     }
 
-    public void setDictionaryService(DictionaryService dictionaryService)
+    public void setSiteHelper(SiteHelper siteHelper)
     {
-        this.dictionaryService = dictionaryService;
+        this.siteHelper = siteHelper;
     }
 
     public void setNodeService(NodeService nodeService)
@@ -96,16 +93,21 @@ public class TemporaryMultilingualAspect
      */
     public void init()
     {
-        policyComponent.bindClassBehaviour(NodeServicePolicies.OnCreateNodePolicy.QNAME,
-                WebSiteModel.ASPECT_TEMPORARY_MULTILINGUAL, new JavaBehaviour(this, "onCreateNodeOnCommit",
+        policyComponent.bindClassBehaviour(NodeServicePolicies.OnAddAspectPolicy.QNAME,
+                WebSiteModel.ASPECT_TEMPORARY_MULTILINGUAL, new JavaBehaviour(this, "onAddAspect",
                         NotificationFrequency.TRANSACTION_COMMIT));
+        
+        if(log.isDebugEnabled())
+        {
+            log.debug("Enabled behaviour on " + WebSiteModel.ASPECT_TEMPORARY_MULTILINGUAL);
+        }
     }
 
     /**
-     * Identify the language of a node. This could be from a ws:language, or
+     * Identify the locale of a node. This could be from a ws:language, or
      * could be from walking up the tree until we find one.
      */
-    public String identifyLanguage(NodeRef nodeRef)
+    public Locale identifyLocale(NodeRef nodeRef)
     {
         // We can't help them if we don't have a noderef
         if(nodeRef == null)
@@ -114,8 +116,7 @@ public class TemporaryMultilingualAspect
         }
         
         // If this node is the site root, stop looking, we don't know...
-        QName nodeType = nodeService.getType(nodeRef);
-        if(dictionaryService.isSubClass(nodeType, SiteModel.TYPE_SITE))
+        if(siteHelper.isTranslationParentLimitReached(nodeRef))
         {
             return null;
         }
@@ -124,34 +125,43 @@ public class TemporaryMultilingualAspect
         String language = (String)nodeService.getProperty(nodeRef, WebSiteModel.PROP_LANGUAGE);
         if(language != null)
         {
-            return language;
+            return new Locale(language);
         }
         
         // Try the sys:locale
-        // TODO Locale instead?
-        String locale = (String)nodeService.getProperty(nodeRef, ContentModel.PROP_LOCALE);
+        Locale locale = (Locale)nodeService.getProperty(nodeRef, ContentModel.PROP_LOCALE);
         if(locale != null && !"".equals(locale))
         {
             return locale;
         }
         
         // Try the parent
-        return identifyLanguage( nodeService.getPrimaryParent(nodeRef).getParentRef() );
+        return identifyLocale( nodeService.getPrimaryParent(nodeRef).getParentRef() );
     }
 
-    @SuppressWarnings("unchecked")
-    public void onCreateNodeOnCommit(ChildAssociationRef childAssocRef)
+    @Override
+    public void onAddAspect(NodeRef nodeRef, QName aspectTypeQName)
     {
-        NodeRef nodeRef = childAssocRef.getChildRef();
-        
         NodeRef translationOf = (NodeRef)nodeService.getProperty(nodeRef, WebSiteModel.PROP_TRANSLATION_OF);
-        boolean initiallyOrphaned = (Boolean)nodeService.getProperty(nodeRef, WebSiteModel.PROP_INITIALLY_ORPHANED);
+        Boolean initiallyOrphaned = (Boolean)nodeService.getProperty(nodeRef, WebSiteModel.PROP_INITIALLY_ORPHANED);
         
         // Try to identify the language for the node
-        String language = identifyLanguage(nodeRef);
-        Locale locale = new Locale(language);
+        Locale locale = identifyLocale(nodeRef);
         
-        // If this is an explicit translation, then tie that up with the ML Service
+        if(locale == null)
+        {
+            log.warn("Asked to setup multilingual for " + nodeRef + " but no language given and no " +
+                     "translated parent found, no translation added");
+        }
+        else
+        {
+            if(log.isDebugEnabled())
+            {
+                log.debug("Enabling translation in " + locale + " for " + nodeRef);
+            }
+        }
+        
+        // Tie things up with the ML Service
         if(translationOf != null)
         {
             if(! multilingualContentService.isTranslation(translationOf))
@@ -161,7 +171,8 @@ public class TemporaryMultilingualAspect
                 throw new AlfrescoRuntimeException("Can't make a document a translation of node without a language");
             }
             
-            if(language != null)
+            // If this is an explicit translation, then tie that up with the ML Service
+            if(locale != null)
             {
                 // Mark this as a translation
                 multilingualContentService.addTranslation(
@@ -171,13 +182,49 @@ public class TemporaryMultilingualAspect
                 // Now copy over the collections
                 // TODO
             }
-            
+        }
+        else
+        {
+            if(locale != null)
+            {
+                // Mark this as being the first translation
+                multilingualContentService.makeTranslation(nodeRef, locale);
+            }
         }
         
         // If this node is initially orphaned, then create the intermediate folders
         //  that are missing for it
-        if(initiallyOrphaned)
+        if(initiallyOrphaned != null && initiallyOrphaned)
         {
+            // We currently have a situation like:
+            //   Root:
+            //     French  -> Folder1 -> Folder2 -> Document
+            //     Spanish -> Folder1 -> (Orphan) Document
+            // We need to identify the missing bits and fill them in
+            
+            // Identify the parents that are missing
+            List<Pair<NodeRef,String>> parents = new ArrayList<Pair<NodeRef,String>>();
+            
+            NodeRef parent = nodeService.getPrimaryParent(nodeRef).getParentRef();
+            while(parent != null)
+            {
+                // If we hit the site root, stop
+                if(siteHelper.isTranslationParentLimitReached(nodeRef))
+                {
+                    break;
+                }
+                
+                // If we hit something that's translated into the right language,
+                //  then we can stop
+                if(multilingualContentService.isTranslation(parent))
+                {
+                    // TODO
+                    break;
+                }
+                
+                parent = nodeService.getPrimaryParent(parent).getParentRef();
+            }
+            
             // TODO This is not yet supported
         }
         

@@ -349,6 +349,34 @@ public class SiteHelper implements WebSiteModel
             nodeService.setProperty(feedbackList, ContentModel.PROP_TITLE, listTitle);
         }
     }
+    
+    /**
+     * When checking for translation parents for quickstart, should
+     *  this node (and potentially those above it) be checked or not?
+     *  
+     * @param nodeRef The node to check for
+     */
+    public boolean isTranslationParentLimitReached(NodeRef nodeRef)
+    {
+        if(nodeRef == null)
+        {
+            return true;
+        }
+        
+        // Stop when we reach the site
+        QName nodeType = nodeService.getType(nodeRef);
+        if(dictionaryService.isSubClass(nodeType, SiteModel.TYPE_SITE))
+        {
+            return true;
+        }
+        if(dictionaryService.isSubClass(nodeType, WebSiteModel.TYPE_WEB_SITE))
+        {
+            return true;
+        }
+        
+        // Otherwise carry on
+        return false;
+    }
 
     /**
      * Set the site service

@@ -79,7 +79,7 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
         typeDef.setIsControllablePolicy(false);
         typeDef.setIsControllableAcl(false);
         typeDef.setIsIncludedInSupertypeQuery(cmisClassDef.getIncludedInSuperTypeQuery());
-        typeDef.setIsFileable(true);
+        typeDef.setIsFileable(false);
 
         typeDefInclProperties = CMISUtils.copy(typeDef);
         setTypeDefinition(typeDef, typeDefInclProperties);

@@ -120,8 +120,8 @@
       <property name="nodeService" ref="nodeService" />
       <property name="policyComponent" ref="policyComponent" />
       <property name="behaviourFilter" ref="policyBehaviourFilter" />
-      <property name="dictionaryService" ref="dictionaryService" />
       <property name="multilingualContentService" ref="multilingualContentService" />
+      <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
    </bean>
 
    <bean id="wcmquickstartmodule_visitorFeedback" class="org.alfresco.module.org_alfresco_module_wcmquickstart.model.VisitorFeedbackType"

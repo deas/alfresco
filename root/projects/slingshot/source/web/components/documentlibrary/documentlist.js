@@ -2763,6 +2763,7 @@
             editMetadataUrl: fnPageURL("edit-metadata?nodeRef=" + nodeRef),
             inlineEditUrl: fnPageURL("inline-edit?nodeRef=" + nodeRef),
             managePermissionsUrl: fnPageURL("manage-permissions?nodeRef=" + nodeRef),
+            manageTranslationsUrl: fnPageURL("manage-translations?nodeRef=" + nodeRef),
             workingCopyUrl: fnPageURL("document-details?nodeRef=" + (custom.workingCopyNode || nodeRef)),
             viewGoogleDocUrl: custom.googleDocUrl + "\" target=\"_blank",
             originalUrl: fnPageURL("document-details?nodeRef=" + (custom.workingCopyOriginal || nodeRef)),

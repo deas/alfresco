@@ -87,47 +87,48 @@ public abstract class BaseApplicationContextHelper
         instance = null;
         usedConfiguration = null;
     }
-    
+
     /**
-     * Should the Spring beans be initilised in a lazy manner, or
-     *  all in one go?
-     * Normally lazy loading/intialising shouldn't be used when
-     *  running with the full context, but it may be appropriate
-     *  to reduce startup times when using a small, cut down context.
+     * Should the Spring beans be initilised in a lazy manner, or all in one go?
+     * Normally lazy loading/intialising shouldn't be used when running with the
+     * full context, but it may be appropriate to reduce startup times when
+     * using a small, cut down context.
      */
-    public static void setUseLazyLoading(boolean lazyLoading) {
-       useLazyLoading = lazyLoading;
+    public static void setUseLazyLoading(boolean lazyLoading)
+    {
+        useLazyLoading = lazyLoading;
     }
+
     /**
-     * Will the Spring beans be initilised in a lazy manner, or
-     *  all in one go? The default it to load everything in one
-     *  go, as spring normally does.
+     * Will the Spring beans be initilised in a lazy manner, or all in one go?
+     * The default it to load everything in one go, as spring normally does.
      */
-    public static boolean isUsingLazyLoading() {
-       return useLazyLoading;
+    public static boolean isUsingLazyLoading()
+    {
+        return useLazyLoading;
     }
-    
+
     /**
-     * Should the autoStart=true property on subsystems
-     *  be honoured, or should this property be ignored
-     *  and the auto start prevented?
-     * Normally we will use the spring configuration to
-     *  decide what to start, but when running tests,
-     *  you can use this to prevent the auto start.
+     * Should the autoStart=true property on subsystems be honoured, or should
+     * this property be ignored and the auto start prevented? Normally we will
+     * use the spring configuration to decide what to start, but when running
+     * tests, you can use this to prevent the auto start.
      */
-    public static void setNoAutoStart(boolean noAutoStart) {
-       BaseApplicationContextHelper.noAutoStart = noAutoStart;
+    public static void setNoAutoStart(boolean noAutoStart)
+    {
+        BaseApplicationContextHelper.noAutoStart = noAutoStart;
     }
+
     /**
-     * Will Subsystems with the autoStart=true property set
-     *  on them be allowed to auto start? The default is to
-     *  honour the spring configuration and allow them to,
-     *  but they can be prevented if required.
+     * Will Subsystems with the autoStart=true property set on them be allowed
+     * to auto start? The default is to honour the spring configuration and
+     * allow them to, but they can be prevented if required.
      */
-    public static boolean isNoAutoStart() {
-       return noAutoStart;
+    public static boolean isNoAutoStart()
+    {
+        return noAutoStart;
     }
-    
+
     /**
      * Is there currently a context loaded and cached?
      */
@@ -135,26 +136,30 @@ public abstract class BaseApplicationContextHelper
     {
         return (instance != null);
     }
-   
+
     /**
-     * A wrapper around {@link ClassPathXmlApplicationContext} which
-     *  allows us to enable lazy loading or prevent Subsystem 
-     *  autostart as requested.
+     * A wrapper around {@link ClassPathXmlApplicationContext} which allows us
+     * to enable lazy loading or prevent Subsystem autostart as requested.
      */
-    protected static class VariableFeatureClassPathXmlApplicationContext extends ClassPathXmlApplicationContext {
-       protected VariableFeatureClassPathXmlApplicationContext(String[] configLocations) throws BeansException {
-          super(configLocations);
-       }
-       
-       protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader) {
-          super.initBeanDefinitionReader(reader);
-          
-          if(useLazyLoading) {
-             LazyClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
-          }
-          if(noAutoStart) {
-             NoAutoStartClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
-          }
-       }
+    protected static class VariableFeatureClassPathXmlApplicationContext extends ClassPathXmlApplicationContext
+    {
+        protected VariableFeatureClassPathXmlApplicationContext(String[] configLocations) throws BeansException
+        {
+            super(configLocations);
+        }
+
+        protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader)
+        {
+            super.initBeanDefinitionReader(reader);
+
+            if (useLazyLoading)
+            {
+                LazyClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
+            }
+            if (noAutoStart)
+            {
+                NoAutoStartClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
+            }
+        }
     }
 }

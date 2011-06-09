@@ -21,6 +21,7 @@
          <action type="action-link" id="onActionAssignWorkflow" label="actions.document.assign-workflow" />
          <action type="action-link" id="onActionManagePermissions" permission="permissions" label="actions.document.manage-permissions" />
          <action type="action-link" id="onActionManageAspects" permission="edit" label="actions.document.manage-aspects" />
+         <action type="simple-link" id="onActionManageTranslations" permission="edit" href="{manageTranslationsUrl}" label="actions.wcmqs.manage-translations" />
       </actionSet>
 
       <actionSet id="locked">

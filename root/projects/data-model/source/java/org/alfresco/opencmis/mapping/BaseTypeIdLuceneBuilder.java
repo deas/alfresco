@@ -28,7 +28,7 @@ import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
-import org.apache.chemistry.opencmis.server.support.query.CmisQueryException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanQuery;
@@ -141,15 +141,15 @@ public class BaseTypeIdLuceneBuilder extends AbstractLuceneBuilder
         TypeDefinitionWrapper typeDef = dictionaryService.findTypeByQueryName(tableName);
         if (typeDef == null)
         {
-            throw new CmisQueryException("Unknwon type: " + tableName);
+            throw new CmisInvalidArgumentException("Unknwon type: " + tableName);
         }
         if(!typeDef.isBaseType())
         {
-            throw new CmisQueryException("Not a base type: " + tableName);
+            throw new CmisInvalidArgumentException("Not a base type: " + tableName);
         }
         if(!typeDef.getTypeDefinition(false).isQueryable())
         {
-            throw new CmisQueryException("Type is not queryable: " + tableName);
+            throw new CmisInvalidArgumentException("Type is not queryable: " + tableName);
         }
         return typeDef.getAlfrescoClass().toString();
     }

@@ -38,6 +38,14 @@
        <property name="sectionHierarchyProcessor" ref="wqsmodule_sectionHierarchyProcessor" />
        <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
     </bean>
+
+    <bean id="webscript.org.alfresco.module.wcmquickstart.translation.get" 
+          class="org.alfresco.module.org_alfresco_module_wcmquickstart.webscript.TranslationDetailsGet" 
+          parent="webscript">
+       <property name="nodeService" ref="NodeService"/>
+       <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
+       <property name="multilingualContentService" ref="multilingualContentService" />
+    </bean>
     
     <bean id="wqsmodule_assetSerializerFactory" 
             class="org.alfresco.module.org_alfresco_module_wcmquickstart.util.XmlAssetSerializerFactory">

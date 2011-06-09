@@ -87,6 +87,27 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         assertEquals(true, nodeService.hasAspect(spanish, ContentModel.ASPECT_LOCALIZED));
         assertEquals(true, multilingualContentService.isTranslation(spanish));
         
+        
+        
+        // Now try to create one which doesn't have a language set
+        // Because we don't have a translated parent, we can't do anything for it
+        NodeRef german = nodeService.createNode(
+                editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("German"), TYPE_ARTICLE
+        ).getChildRef();
+        
+        props = new HashMap<QName, Serializable>();
+        props.put(PROP_TRANSLATION_OF, french);
+        nodeService.addAspect(german, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+        
+        assertEquals(false, nodeService.hasAspect(german, ASPECT_TEMPORARY_MULTILINGUAL));
+        assertEquals(false, nodeService.hasAspect(german, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(false, multilingualContentService.isTranslation(german));
+        
         userTransaction.commit();
     }
     
@@ -103,6 +124,7 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         multilingualContentService.makeTranslation(french, Locale.FRENCH);
         
         userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
         userTransaction.begin();
         
         // TODO Populate the collection 
@@ -145,11 +167,177 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
     
     public void testTranslationDocAllFoldersExist() throws Exception
     {
+        // Create a French folder, with two sub folders
+        UserTransaction userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+     
+        NodeRef french = nodeService.createNode(
+                editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("French"), TYPE_SECTION
+        ).getChildRef();
+        multilingualContentService.makeTranslation(french, Locale.FRENCH);
         
+        NodeRef fr_F1 = nodeService.createNode(
+                french, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub1"), TYPE_SECTION
+        ).getChildRef();
+        NodeRef fr_F2 = nodeService.createNode(
+                fr_F1, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub2"), TYPE_SECTION
+        ).getChildRef();
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+
+        
+        // Create a Spanish translation folder, and its two sub folders
+        NodeRef spanish = nodeService.createNode(
+                editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Spanish"), TYPE_SECTION
+        ).getChildRef();
+        
+        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
+        props.put(PROP_TRANSLATION_OF, french);
+        props.put(PROP_LANGUAGE, "Spanish");
+        nodeService.addAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        NodeRef es_F1 = nodeService.createNode(
+                spanish, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub1"), TYPE_SECTION
+        ).getChildRef();
+        NodeRef es_F2 = nodeService.createNode(
+                es_F1, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub2"), TYPE_SECTION
+        ).getChildRef();
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+        
+        
+        // Now create a document inside the French subfolder
+        NodeRef fr_Doc = nodeService.createNode(
+                fr_F2, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("French"), TYPE_ARTICLE
+        ).getChildRef();
+        props = new HashMap<QName, Serializable>(); // No properties needed
+        nodeService.addAspect(fr_Doc, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        // Finally create the Spanish translation document
+        NodeRef es_Doc = nodeService.createNode(
+                es_F2, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Spanish"), TYPE_ARTICLE
+        ).getChildRef();
+        
+        props = new HashMap<QName, Serializable>(); // Only need to mark what translation of
+        props.put(PROP_TRANSLATION_OF, fr_Doc);
+        nodeService.addAspect(es_Doc, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+        
+        
+        // Now check
+        assertEquals(false, nodeService.hasAspect(french, ASPECT_TEMPORARY_MULTILINGUAL));
+        assertEquals(true, nodeService.hasAspect(french, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(true, multilingualContentService.isTranslation(french));
+        assertEquals("fr", nodeService.getProperty(french, ContentModel.PROP_LOCALE).toString());
+        
+        assertEquals(false, nodeService.hasAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL));
+        assertEquals(true, nodeService.hasAspect(spanish, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(true, multilingualContentService.isTranslation(spanish));
+        assertEquals("spanish", nodeService.getProperty(spanish, ContentModel.PROP_LOCALE).toString());
+        
+        // The French document should have picked up French from its parent
+        assertEquals(false, nodeService.hasAspect(fr_Doc, ASPECT_TEMPORARY_MULTILINGUAL));
+        assertEquals(true, nodeService.hasAspect(fr_Doc, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(true, multilingualContentService.isTranslation(fr_Doc));
+        assertEquals("fr", nodeService.getProperty(fr_Doc, ContentModel.PROP_LOCALE).toString());
+        
+        // The Spanish document should have picked up Spanish from its parent
+        assertEquals(false, nodeService.hasAspect(es_Doc, ASPECT_TEMPORARY_MULTILINGUAL));
+        assertEquals(true, nodeService.hasAspect(es_Doc, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(true, multilingualContentService.isTranslation(es_Doc));
+        assertEquals("spanish", nodeService.getProperty(es_Doc, ContentModel.PROP_LOCALE).toString());
     }
     
     public void testTranslationDocFoldersToBeCreated() throws Exception
     {
+        // Create a French folder, with two sub folders
+        UserTransaction userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+     
+        NodeRef french = nodeService.createNode(
+                editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("French"), TYPE_SECTION
+        ).getChildRef();
+        multilingualContentService.makeTranslation(french, Locale.FRENCH);
         
+        NodeRef fr_F1 = nodeService.createNode(
+                french, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub1"), TYPE_SECTION
+        ).getChildRef();
+        NodeRef fr_F2 = nodeService.createNode(
+                fr_F1, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub2"), TYPE_SECTION
+        ).getChildRef();
+        
+        // TODO Collections
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+        
+        
+        // Create a Spanish translation folder, but no sub folder
+        NodeRef spanish = nodeService.createNode(
+                editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Spanish"), TYPE_SECTION
+        ).getChildRef();
+        
+        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
+        props.put(PROP_TRANSLATION_OF, french);
+        props.put(PROP_LANGUAGE, "Spanish");
+        nodeService.addAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+
+        
+        // Now create a document inside the French subfolder
+        NodeRef fr_Doc = nodeService.createNode(
+                fr_F2, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("French"), TYPE_ARTICLE
+        ).getChildRef();
+        props = new HashMap<QName, Serializable>(); // No properties needed
+        nodeService.addAspect(fr_Doc, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        
+        // Finally create the Spanish translation document
+        NodeRef es_Doc = nodeService.createNode(
+                spanish, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Spanish"), TYPE_ARTICLE
+        ).getChildRef();
+        
+        props = new HashMap<QName, Serializable>(); // Only need to mark what translation of
+        props.put(PROP_TRANSLATION_OF, fr_Doc);
+        props.put(PROP_INITIALLY_ORPHANED, true);
+        nodeService.addAspect(es_Doc, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+
+        
+        // TODO
+        
+        // Ensure the intermediate Spanish sub folders were created
+        
+        // Ensure the intermediate Spanish folders got their collections
+        
+        // Ensure the translation ended up in the right place
     }
 }

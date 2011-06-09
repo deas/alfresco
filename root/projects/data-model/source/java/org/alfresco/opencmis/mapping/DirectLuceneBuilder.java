@@ -32,7 +32,7 @@ import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
-import org.apache.chemistry.opencmis.server.support.query.CmisQueryException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
 import org.apache.lucene.index.IndexReader.FieldOption;
 import org.springframework.extensions.surf.util.I18NUtil;
 
@@ -63,7 +63,7 @@ public class DirectLuceneBuilder extends AbstractSimpleLuceneBuilder
 
         if (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT))
         {
-            throw new CmisQueryException("Order on content properties is not curently supported");
+            throw new CmisInvalidArgumentException("Order on content properties is not curently supported");
         }
         else if ((propertyDef.getDataType().getName().equals(DataTypeDefinition.MLTEXT)) || (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT)))
         {
@@ -75,7 +75,7 @@ public class DirectLuceneBuilder extends AbstractSimpleLuceneBuilder
 
             if (locales.size() > 1)
             {
-                throw new CmisQueryException("Order on text/mltext properties with more than one locale is not curently supported");
+                throw new CmisInvalidArgumentException("Order on text/mltext properties with more than one locale is not curently supported");
             }
 
             sortLocale = locales.get(0);

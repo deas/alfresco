@@ -30,7 +30,7 @@ import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
-import org.apache.chemistry.opencmis.server.support.query.CmisQueryException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanQuery;
@@ -100,14 +100,14 @@ public class ObjectTypeIdLuceneBuilder extends AbstractLuceneBuilder
     public Query buildLuceneGreaterThan(LuceneQueryParser lqp, Serializable value, PredicateMode mode,
             LuceneFunction luceneFunction) throws ParseException
     {
-        throw new CmisQueryException("Property " + PropertyIds.OBJECT_TYPE_ID + " can not be used in a 'greater than' comparison");
+        throw new CmisInvalidArgumentException("Property " + PropertyIds.OBJECT_TYPE_ID + " can not be used in a 'greater than' comparison");
     }
 
     @Override
     public Query buildLuceneGreaterThanOrEquals(LuceneQueryParser lqp, Serializable value, PredicateMode mode,
             LuceneFunction luceneFunction) throws ParseException
     {
-        throw new CmisQueryException("Property " + PropertyIds.OBJECT_TYPE_ID
+        throw new CmisInvalidArgumentException("Property " + PropertyIds.OBJECT_TYPE_ID
                 + " can not be used in a 'greater than or equals' comparison");
     }
 
@@ -181,14 +181,14 @@ public class ObjectTypeIdLuceneBuilder extends AbstractLuceneBuilder
     public Query buildLuceneLessThan(LuceneQueryParser lqp, Serializable value, PredicateMode mode,
             LuceneFunction luceneFunction) throws ParseException
     {
-        throw new CmisQueryException("Property " + PropertyIds.OBJECT_TYPE_ID + " can not be used in a 'less than' comparison");
+        throw new CmisInvalidArgumentException("Property " + PropertyIds.OBJECT_TYPE_ID + " can not be used in a 'less than' comparison");
     }
 
     @Override
     public Query buildLuceneLessThanOrEquals(LuceneQueryParser lqp, Serializable value, PredicateMode mode,
             LuceneFunction luceneFunction) throws ParseException
     {
-        throw new CmisQueryException("Property " + PropertyIds.OBJECT_TYPE_ID + " can not be used in a 'less than or equals' comparison");
+        throw new CmisInvalidArgumentException("Property " + PropertyIds.OBJECT_TYPE_ID + " can not be used in a 'less than or equals' comparison");
     }
 
     @Override

@@ -1490,7 +1490,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsTest, boost
+                    // elements: boost, ftsTest
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1989,7 +1989,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsTerm, fuzzy
+                    // elements: fuzzy, ftsTerm
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2143,7 +2143,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsPhrase, slop
+                    // elements: slop, ftsPhrase
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2297,7 +2297,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: slop, ftsTokenisedPhrase
+                    // elements: ftsTokenisedPhrase, slop
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2374,7 +2374,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsSynonym, fuzzy
+                    // elements: fuzzy, ftsSynonym
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3508,7 +3508,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: fieldReference, FTSPHRASE
+            // elements: FTSPHRASE, fieldReference
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5070,7 +5070,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsFieldGroupTest, boost
+                    // elements: boost, ftsFieldGroupTest
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5274,7 +5274,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: fuzzy, ftsFieldGroupTerm
+                    // elements: ftsFieldGroupTerm, fuzzy
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -8498,8 +8498,8 @@ public class FTSParser extends Parser {
     static final String DFA1_acceptS =
         "\4\uffff\1\2\20\uffff\1\3\1\1";
     static final String DFA1_specialS =
-        "\1\0\1\1\1\2\1\3\2\uffff\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
-        "\14\1\15\1\16\1\17\1\20\1\21\1\22\2\uffff}>";
+        "\1\0\1\1\1\2\1\3\2\uffff\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
+        "\1\15\1\16\1\17\1\20\1\21\1\22\2\uffff}>";
     static final String[] DFA1_transitionS = {
             "\1\23\1\24\1\3\1\21\1\uffff\1\22\1\uffff\1\15\1\12\2\uffff"+
             "\1\14\1\2\1\6\3\12\1\1\1\16\1\12\1\10\1\uffff\1\17\1\20\2\uffff"+
@@ -9260,8 +9260,8 @@ public class FTSParser extends Parser {
     static final String DFA31_acceptS =
         "\1\uffff\1\1\17\uffff\1\2";
     static final String DFA31_specialS =
-        "\1\0\2\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
-        "\14\1\15\1\16\1\uffff}>";
+        "\1\0\2\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
+        "\1\15\1\16\1\uffff}>";
     static final String[] DFA31_transitionS = {
             "\1\16\1\17\1\20\1\15\3\uffff\1\11\1\5\2\uffff\1\7\1\10\4\5"+
             "\1\3\1\12\1\5\1\6\1\uffff\1\13\1\14\5\uffff\1\6\1\21\2\1\1\4",

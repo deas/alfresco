@@ -26,6 +26,9 @@
       <#if form.mode == "edit" && args.itemId??>currentItem: "${args.itemId?js_string}",</#if>
       <#if form.mode == "create" && form.destination?? && form.destination?length &gt; 0>currentItem: "${form.destination?js_string}",</#if>
    </#if>
+   <#if field.control.params.startLocationParams??>
+      startLocationParams: "${field.control.params.startLocationParams?js_string}",
+   </#if>
       currentValue: "${field.value}",
       <#if field.control.params.valueType??>valueType: "${field.control.params.valueType}",</#if>
       <#if renderPickerJSSelectedValue??>selectedValue: "${renderPickerJSSelectedValue}",</#if>

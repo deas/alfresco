@@ -402,6 +402,8 @@
          <mimetype mimetype="application/vnd.ms-outlook" display="Outlook MSG">
             <extension>msg</extension>
          </mimetype>
+         
+         <!-- Microsoft Office Open XML -->
          <mimetype mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document" display="Microsoft Word 2007">
             <extension>docx</extension>
          </mimetype>
@@ -426,6 +428,16 @@
          <mimetype mimetype="application/x-indesign" display="Adobe InDesign Document">
             <extension default="true">indd</extension>
             <extension>ind</extension>
+         </mimetype>
+         <!-- iWorks -->
+         <mimetype mimetype="application/vnd.apple.keynote">
+            <extension>key</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.apple.pages">
+            <extension>pages</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.apple.numbers">
+            <extension>numbers</extension>
          </mimetype>
       </mimetypes>
    </config>

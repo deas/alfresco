@@ -2,3 +2,8 @@
 {
    background-image: url(images/preview-webasset-16.png);
 }
+
+.doclist .onActionManageTranslations a
+{
+   background-image: url(images/translate-16.png);
+}

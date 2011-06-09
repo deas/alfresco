@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template-instance>
+   <template-type>org/alfresco/translation-manager</template-type>
+   <properties>
+      <hasBreadcrumb>true</hasBreadcrumb>
+      <hasTreeview>true</hasTreeview>
+      <hasPackager>true</hasPackager>
+      <pageFamily>documentlibrary</pageFamily>
+      <container>documentLibrary</container>
+   </properties>
+   <components>
+      <!-- title: normal & portlet -->
+      <component>
+         <region-id>title</region-id>
+         <url>/components/title/collaboration-title</url>
+      </component>
+         <component>
+         <region-id>portlet-title</region-id>
+         <url>/components/title/portlet-collaboration-title</url>
+      </component>
+      <component>
+         <region-id>navigation</region-id>
+         <url>/components/navigation/collaboration-navigation</url>
+      </component>
+      <component>
+         <region-id>manage-translations</region-id>
+         <url>/wcm/translation</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+   </components>
+</template-instance>

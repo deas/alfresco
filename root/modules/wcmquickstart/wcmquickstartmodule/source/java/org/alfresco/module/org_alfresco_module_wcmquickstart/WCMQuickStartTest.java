@@ -93,39 +93,40 @@ public abstract class WCMQuickStartTest extends TestCase
         // Create the test site to work on
         companyHome = repository.getCompanyHome();
         
-        // Create the site if needed
+        // Setup the site
         site = siteService.getSite(testSiteName);
-        if(site == null)
+        if(site != null)
         {
-            site = siteService.createSite(
-                    testSiteName, testSiteName, testSiteName, testSiteName,
-                    SiteVisibility.PUBLIC
-            );
-            assertNotNull(site);
-            
-            NodeRef docLib = nodeService.createNode(
-                    site.getNodeRef(), ContentModel.ASSOC_CONTAINS, 
-                    QName.createQName("documentLibrary"), ContentModel.TYPE_FOLDER
-            ).getChildRef();
-            
-            liveSite = nodeService.createNode(
-                    docLib, ContentModel.ASSOC_CONTAINS,
-                    QName.createQName("live"), WebSiteModel.TYPE_WEB_SITE
-            ).getChildRef();
-            liveSiteRoot = nodeService.createNode(
-                    liveSite, ContentModel.ASSOC_CONTAINS,
-                    QName.createQName("root"), WebSiteModel.TYPE_WEB_ROOT
-            ).getChildRef();
-            
-            editorialSite = nodeService.createNode(
-                    docLib, ContentModel.ASSOC_CONTAINS,
-                    QName.createQName("editorial"), WebSiteModel.TYPE_WEB_SITE
-            ).getChildRef();
-            editorialSiteRoot = nodeService.createNode(
-                    editorialSite, ContentModel.ASSOC_CONTAINS,
-                    QName.createQName("root"), WebSiteModel.TYPE_WEB_ROOT
-            ).getChildRef();
+            siteService.deleteSite(testSiteName);
         }
+        site = siteService.createSite(
+                testSiteName, testSiteName, testSiteName, testSiteName,
+                SiteVisibility.PUBLIC
+        );
+        assertNotNull(site);
+        
+        NodeRef docLib = nodeService.createNode(
+                site.getNodeRef(), ContentModel.ASSOC_CONTAINS, 
+                QName.createQName("documentLibrary"), ContentModel.TYPE_FOLDER
+        ).getChildRef();
+        
+        liveSite = nodeService.createNode(
+                docLib, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("live"), WebSiteModel.TYPE_WEB_SITE
+        ).getChildRef();
+        liveSiteRoot = nodeService.createNode(
+                liveSite, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("root"), WebSiteModel.TYPE_WEB_ROOT
+        ).getChildRef();
+        
+        editorialSite = nodeService.createNode(
+                docLib, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("editorial"), WebSiteModel.TYPE_WEB_SITE
+        ).getChildRef();
+        editorialSiteRoot = nodeService.createNode(
+                editorialSite, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("root"), WebSiteModel.TYPE_WEB_ROOT
+        ).getChildRef();
         
         userTransaction.commit();
     }
@@ -137,6 +138,7 @@ public abstract class WCMQuickStartTest extends TestCase
         UserTransaction userTransaction = transactionService.getUserTransaction();
         userTransaction.begin();
         siteService.deleteSite(testSiteName);
+        site = null;
         userTransaction.commit();
     }
 }

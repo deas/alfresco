@@ -74,6 +74,8 @@ public class SolrSchemaGenerationTest extends TestCase
             bootstrapModels.add("org/alfresco/repo/action/actionModel.xml");
             bootstrapModels.add("org/alfresco/repo/rule/ruleModel.xml");
             bootstrapModels.add("org/alfresco/repo/version/version2_model.xml");  
+            
+            bootstrapModels.add("alfresco/model/bpmModel.xml");  
         }
         else
         {

@@ -39,7 +39,7 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
     private RelationshipTypeDefinitionImpl typeDef;
     private RelationshipTypeDefinitionImpl typeDefInclProperties;
 
-    public RelationshipTypeDefintionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping accessorMapping, 
+    public RelationshipTypeDefintionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping accessorMapping,
             PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, ClassDefinition cmisClassDef)
     {
         alfrescoName = cmisClassDef.getName();
@@ -56,17 +56,18 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         {
             typeDef.setQueryName(typeId);
             typeDef.setParentTypeId(null);
+            typeDef.setIsCreatable(false);
         } else
         {
             typeDef.setQueryName(cmisMapping.buildPrefixEncodedString(alfrescoName));
             typeDef.setParentTypeId(BaseTypeId.CMIS_RELATIONSHIP.value());
+            typeDef.setIsCreatable(true);
         }
 
         typeDef.setDisplayName(cmisClassDef.getTitle() != null ? cmisClassDef.getTitle() : typeId);
         typeDef.setDescription(cmisClassDef.getDescription() != null ? cmisClassDef.getDescription() : typeDef
                 .getDisplayName());
 
-        typeDef.setIsCreatable(true);
         typeDef.setIsQueryable(false);
         typeDef.setIsFulltextIndexed(false);
         typeDef.setIsControllablePolicy(false);
@@ -81,7 +82,7 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         createActionEvaluators(accessorMapping, BaseTypeId.CMIS_RELATIONSHIP);
     }
 
-    public RelationshipTypeDefintionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping accessorMapping, 
+    public RelationshipTypeDefintionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping accessorMapping,
             PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, AssociationDefinition cmisAssocDef)
     {
         alfrescoName = cmisAssocDef.getName();
@@ -156,8 +157,8 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         }
     }
 
-    public void resolveInheritance(CMISMapping cmisMapping,
-            DictionaryRegistry registry, DictionaryService dictionaryService)
+    public void resolveInheritance(CMISMapping cmisMapping, DictionaryRegistry registry,
+            DictionaryService dictionaryService)
     {
         PropertyDefinition<?> propertyDefintion;
 
@@ -183,8 +184,7 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         {
             if (child instanceof AbstractTypeDefinitionWrapper)
             {
-                ((AbstractTypeDefinitionWrapper) child).resolveInheritance(cmisMapping, registry,
-                        dictionaryService);
+                ((AbstractTypeDefinitionWrapper) child).resolveInheritance(cmisMapping, registry, dictionaryService);
             }
         }
     }

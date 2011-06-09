@@ -78,6 +78,10 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
     public static class AlfrescoFTSQParser extends QParser
     {
 
+        private static final String ALFRESCO_JSON = "ALFRESCO_JSON";
+
+        private static final String AUTHORITY_FILTER_FROM_JSON = "AUTHORITY_FILTER_FROM_JSON";
+
         LuceneQueryParser lqp;
 
         public AlfrescoFTSQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
@@ -92,95 +96,126 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
         @Override
         public Query parse() throws ParseException
         {
-           SearchParameters searchParameters = new SearchParameters();
-            
+            SearchParameters searchParameters = new SearchParameters();
+
             Iterable<ContentStream> streams = req.getContentStreams();
 
-            if (streams != null)
+            JSONObject json = (JSONObject) req.getContext().get(ALFRESCO_JSON);
+
+            if (json == null)
             {
-               
+                if (streams != null)
+                {
+
+                    try
+                    {
+                        Reader reader = null;
+                        for (ContentStream stream : streams)
+                        {
+                            reader = new BufferedReader(new InputStreamReader(stream.getStream(), "UTF-8"));
+                        }
+
+                        // TODO - replace with streaming-based solution e.g. SimpleJSON ContentHandler
+                        if (reader != null)
+                        {
+                            json = new JSONObject(new JSONTokener(reader));
+                            req.getContext().put(ALFRESCO_JSON, json);
+                        }
+                    }
+                    catch (JSONException e)
+                    {
+                        // This is expected when there is no json element to the request
+                    }
+                    catch (IOException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            if (json != null)
+            {
                 try
                 {
-                    Reader reader = null;
-                    for (ContentStream stream : streams)
+                    if (getString().equals(AUTHORITY_FILTER_FROM_JSON))
                     {
-                        reader = new BufferedReader(new InputStreamReader(stream.getStream(), "UTF-8"));
+                        String filter = json.getString("filter");
+                        if (filter != null)
+                        {
+                            searchParameters.setQuery(filter);
+                        }
                     }
-                    
-                    // TODO - replace with streaming-based solution e.g. SimpleJSON ContentHandler
-                    if (reader != null)
+                    else
                     {
-                        JSONObject json = new JSONObject(new JSONTokener(reader));
-                        
                         String query = json.getString("query");
-                        if(query != null)
+                        if (query != null)
                         {
                             searchParameters.setQuery(query);
                         }
-                        
-                        JSONArray locales = json.getJSONArray("locales");
-                        for(int i = 0; i < locales.length(); i++)
-                        {
-                            String localeString = locales.getString(i);
-                            Locale locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localeString);
-                            searchParameters.addLocale(locale);
-                        }
-                        
-                        JSONArray sort = json.getJSONArray("sort");
-                        for(int i = 0; i < sort.length(); i++)
-                        {
-                            JSONObject ordering = sort.getJSONObject(i);
-                            String field = ordering.getString("field");
-                            boolean isAscending = ordering.getBoolean("isAscending");
-                            searchParameters.addSort(field, isAscending);
-                        }
-                        
-                        JSONArray templates = json.getJSONArray("templates");
-                        for(int i = 0; i < templates.length(); i++)
-                        {
-                            JSONObject template = templates.getJSONObject(i);
-                            String name = template.getString("name");
-                            String queryTemplate = template.getString("template");
-                            searchParameters.addQueryTemplate(name, queryTemplate);
-                        }                     
-                        
-                        JSONArray allAttributes = json.getJSONArray("allAttributes");
-                        for(int i = 0; i < allAttributes.length(); i++)
-                        {
-                            String allAttribute = allAttributes.getString(i);
-                            searchParameters.addAllAttribute(allAttribute);
-                        }
-                        
-                        searchParameters.setDefaultFTSOperator(Operator.valueOf(json.getString("defaultFTSOperator")));
-                        searchParameters.setDefaultFTSFieldConnective(Operator.valueOf(json.getString("defaultFTSFieldOperator")));
-                        if(json.has("mlAnalaysisMode"))
-                        {
-                            searchParameters.setMlAnalaysisMode(MLAnalysisMode.valueOf(json.getString("mlAnalaysisMode")));
-                        }
-                        searchParameters.setNamespace(json.getString("defaultNamespace"));
-                        
-                        
-                        JSONArray textAttributes = json.getJSONArray("textAttributes");
-                        for(int i = 0; i < textAttributes.length(); i++)
-                        {
-                            String textAttribute = textAttributes.getString(i);
-                            searchParameters.addAllAttribute(textAttribute);
-                        }
                     }
+
+                    JSONArray locales = json.getJSONArray("locales");
+                    for (int i = 0; i < locales.length(); i++)
+                    {
+                        String localeString = locales.getString(i);
+                        Locale locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localeString);
+                        searchParameters.addLocale(locale);
+                    }
+
+                    JSONArray sort = json.getJSONArray("sort");
+                    for (int i = 0; i < sort.length(); i++)
+                    {
+                        JSONObject ordering = sort.getJSONObject(i);
+                        String field = ordering.getString("field");
+                        boolean isAscending = ordering.getBoolean("isAscending");
+                        searchParameters.addSort(field, isAscending);
+                    }
+
+                    JSONArray templates = json.getJSONArray("templates");
+                    for (int i = 0; i < templates.length(); i++)
+                    {
+                        JSONObject template = templates.getJSONObject(i);
+                        String name = template.getString("name");
+                        String queryTemplate = template.getString("template");
+                        searchParameters.addQueryTemplate(name, queryTemplate);
+                    }
+
+                    JSONArray allAttributes = json.getJSONArray("allAttributes");
+                    for (int i = 0; i < allAttributes.length(); i++)
+                    {
+                        String allAttribute = allAttributes.getString(i);
+                        searchParameters.addAllAttribute(allAttribute);
+                    }
+
+                    searchParameters.setDefaultFTSOperator(Operator.valueOf(json.getString("defaultFTSOperator")));
+                    searchParameters.setDefaultFTSFieldConnective(Operator.valueOf(json.getString("defaultFTSFieldOperator")));
+                    if (json.has("mlAnalaysisMode"))
+                    {
+                        searchParameters.setMlAnalaysisMode(MLAnalysisMode.valueOf(json.getString("mlAnalaysisMode")));
+                    }
+                    searchParameters.setNamespace(json.getString("defaultNamespace"));
+
+                    JSONArray textAttributes = json.getJSONArray("textAttributes");
+                    for (int i = 0; i < textAttributes.length(); i++)
+                    {
+                        String textAttribute = textAttributes.getString(i);
+                        searchParameters.addAllAttribute(textAttribute);
+                    }
+
                 }
                 catch (JSONException e)
                 {
-                   // This is expected when there is no json element to the request
+                    // This is expected when there is no json element to the request
                 }
-                catch (IOException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
             }
 
-            if(searchParameters.getQuery() == null)
+            if(json != null)
+            {
+                System.out.println(json.toString());
+            }
+            
+            if (searchParameters.getQuery() == null)
             {
                 searchParameters.setQuery(getString());
             }
@@ -196,11 +231,9 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
             String id = req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
 
+            // searchParameters.setMlAnalaysisMode(getMLAnalysisMode());
+            searchParameters.setNamespace(NamespaceService.CONTENT_MODEL_1_0_URI);
 
-
-            //                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                searchParameters.setMlAnalaysisMode(getMLAnalysisMode());
-            searchParameters.setNamespace( NamespaceService.CONTENT_MODEL_1_0_URI);
-            
             return AlfrescoSolrDataModel.getInstance(id).getFTSQuery(searchParameters, indexReader);
         }
     }
