@@ -16,11 +16,32 @@ YAHOO.util.Event.addListener(window, "load", function() {
             ]
         };
 
-        this.myDataTable = new YAHOO.widget.DataTable("markup", myColumnDefs, this.myDataSource,
+        this.myDataTable = new Alfresco.util.DataTable("markup", myColumnDefs, this.myDataSource,
                 {}
         );
     };
 });
+
+function nodeFormURL(nodeRef) {
+   return Alfresco.constants.PROXY_URI + "api/node/" +
+        nodeRef.replace(":/","") + "/formprocessor";
+};
+
+function markAsInitialTranslation(locale) {
+   Alfresco.util.Ajax.jsonRequest({
+      method: "post",
+      url: nodeFormURL("${nodeRef}"),
+      dataObj: {
+         "prop_ws_language": locale
+      },
+      successCallback: function() {
+         alert("It worked!");
+         location.reload();
+      }
+   });
+
+   return false;
+};
 </script>
 <style type="text/css">h1{
 font-family:Helvetica,Arial,sans-serif;
@@ -37,6 +58,16 @@ margin:1em 0;
 <#if locales?has_content>
 	<div class="rule-edit">
 	<h1 class="create-header">Multilingual Manager</h1>
+
+   <#if !translationEnabled>
+      <h2>This document is not currently enabled for translations</h2>
+
+      <#if currentLocale?has_content>
+         <p><a href="javascript:markAsInitialTranslation('${currentLocale}')">Mark this document as the 
+            ${currentLocale} translation</a></p>
+      </#if>
+   </#if>
+
 	<h2>Translations</h2>
 	<div id="markup">
 		<table id="languages">
@@ -52,34 +83,32 @@ margin:1em 0;
 				<tr>
 					<td title="${locale.id}">${locale.name}</td>
 					<#if translations[locale.id]?has_content>
-                  <#assign tranlsation = translations[locale.id]>
+                  <#assign translation = translations[locale.id]>
 						<td>${translation.name}</td>
-						<td><a href="inline-edit?nodeRef=workspace://SpacesStore/${translation.id}">Edit</a></td>
+						<td><a href="inline-edit?nodeRef=workspace://SpacesStore/${translation.nodeRef}">Edit</a></td>
 					<#else>
 						<td>N/A</td>
 
-						<#if parents[locale.id]?has_content>
-							<td>
-								<a href="create-content?itemKind=type&sectionconfig=${parent.sectionConfig}&orderindex=${parent.orderIndex}&translationof=${noderef}&orphan=${parent.orphan}&localeId=${locale.id}<#if parentNodeRef??>&destination=workspace://SpacesStore/${parent.id}</#if>&name=${originalName}&itemId=ws:section&mode=create&submitType=json&formId=doclib-common&showCancelButton=true">Create</a>
-							</td>
-						<#else>
-							<td>
-<#--
-								<a href="create-content?mimeType=text/html&orphan=${parent.orphan}&name=${originalName}&translationof=${noderef}&localeId=${locale.id}<#if parentNodeRef??>&destination=workspace://SpacesStore/${parent.id}</#if>&itemKind=type&itemId=${translation.type}">Create</a>
---> Create
-							</td>	
+						<td>
+                  <#if translationEnabled>
+					      <#if parents[locale.id]?has_content>
+                        <#assign parent = parents[locale.id]>
+                        <#assign orphan = !parent.allPresent>
+					   		<a href="create-content?mimeType=text/html&name=${name}&translationOf=${nodeRef}&language=${locale.id}&destination=${parent.nodeRef}&orphan=${orphan?string}&itemKind=type&itemId=${type}">Create</a>
+   						<#else>
+   							<a href="create-content?mimeType=text/html&name=${name}&translationOf=${nodeRef}&language=${locale.id}&destination=${parentNodeRef}&itemKind=type&itemId=${type}">Create</a>
+						   </#if>					
+					   <#else>
+                     <a href="#" onclick="markAsInitialTranslation('${locale.id}')">Mark this as the ${locale.name} translation</a>
 						</#if>					
 					</#if>
+   				</td>	
 				</tr>
 			</#list>
          </tbody>
 		</table>
 	</div>
 	</div>
-	<#--<#else>
-		<h1>There are no translations available for this document</h1>
-		<p><a href="?mode=createTranslation&nodeRef=${noderef}">Make this document multilingual</a></p>-->
-	<#-- </#if> -->
 <#else>
 <h1>There are no language definitions loaded - unable to load multilingual console.</h1>
 </#if>

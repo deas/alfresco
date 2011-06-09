@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.util.Pair;
 import org.alfresco.util.ParameterCheck;
 
 /**
@@ -81,20 +82,41 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
         {
             rawResults = applyPostQuerySorting(rawResults, sortDetails);
         }
+        
+        Pair<Integer, Integer> totalResultCount = null;
+        
         // Apply permissions
         String authenticationToken = parameters.getAuthenticationToken();
         if (authenticationToken != null && isApplyPostQueryPermissions())
         {
             // Work out the number of results required
             int requestedCount = parameters.getPageDetails().getResultsRequiredForPaging();
-            rawResults = applyPostQueryPermissions(rawResults, authenticationToken, requestedCount);
+            if (requestedCount != Integer.MAX_VALUE)
+            {
+                requestedCount++; // add one for "hasMoreItems"
+            }
+            PagingResults<R> postQueryResults = applyPostQueryPermissions(rawResults, authenticationToken, requestedCount);
+            
+            rawResults = postQueryResults.getPage();
+            totalResultCount = postQueryResults.getTotalResultCount();
         }
-        // Get count
-        final int[] finalTotalCount = new int[] {0};
-        if (parameters.isReturnTotalResultCount())
+        else
         {
-            finalTotalCount[0] = getTotalResultCount(rawResults);
+            int totalCount = getTotalResultCount(rawResults);
+            totalResultCount = new Pair<Integer, Integer>(totalCount, totalCount);
         }
+        
+        // Get count
+        final Pair<Integer, Integer> finalTotalCount;
+        if (parameters.requestTotalResultCountMax() > 0)
+        {
+            finalTotalCount = totalResultCount;
+        }
+        else
+        {
+            finalTotalCount = null;
+        }
+        
         // Apply paging
         CannedQueryPageDetails pagingDetails = parameters.getPageDetails();
         List<List<R>> pages = Collections.singletonList(rawResults);
@@ -102,8 +124,13 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
         {
             pages = applyPostQueryPaging(rawResults, pagingDetails);
         }
+        
         // Construct results object
         final List<List<R>> finalPages = pages;
+        
+        // Has more items beyond requested pages ? ... ie. at least one more page (with at least one result)
+        final boolean hasMoreItems = (rawResults.size() > pagingDetails.getResultsRequiredForPaging());
+        
         results = new CannedQueryResults<R>()
         {
             @Override
@@ -111,26 +138,26 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
             {
                 return AbstractCannedQuery.this;
             }
-
+            
             @Override
             public String getQueryExecutionId()
             {
                 return queryExecutionId;
             }
-
+            
             @Override
-            public int getTotalResultCount()
+            public Pair<Integer, Integer> getTotalResultCount()
             {
-                if (parameters.isReturnTotalResultCount())
+                if (parameters.requestTotalResultCountMax() > 0)
                 {
-                    return finalTotalCount[0];
+                    return finalTotalCount;
                 }
                 else
                 {
                     throw new IllegalStateException("Total results were not requested in parameters.");
                 }
             }
-
+            
             @Override
             public int getPagedResultCount()
             {
@@ -141,13 +168,13 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
                 }
                 return finalPagedCount;
             }
-
+            
             @Override
             public int getPageCount()
             {
                 return finalPages.size();
             }
-
+            
             @Override
             public R getSingleResult()
             {
@@ -157,11 +184,27 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
                 }
                 return finalPages.get(0).get(0);
             }
-
+            
+            @Override
+            public List<R> getPage()
+            {
+                if (finalPages.size() != 1)
+                {
+                    throw new IllegalStateException("There must be exactly one page of results available.");
+                }
+                return finalPages.get(0);
+            }
+            
             @Override
             public List<List<R>> getPages()
             {
                 return finalPages;
+            }
+            
+            @Override
+            public Boolean hasMoreItems()
+            {
+                return hasMoreItems;
             }
         };
         return results;
@@ -227,9 +270,9 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
      * @param authenticationToken   the authentication token provided in the parameters
      * @param requestedCount        the minimum number of results to pass the permission checks
      *                              in order to fully satisfy the paging requirements
-     * @return                      the remaining results after permissions have been applied
+     * @return                      the remaining results (as a single "page") after permissions have been applied
      */
-    protected List<R> applyPostQueryPermissions(List<R> results, String authenticationToken, int requestedCount)
+    protected PagingResults<R> applyPostQueryPermissions(List<R> results, String authenticationToken, int requestedCount)
     {
         throw new UnsupportedOperationException("Override this method if post-query filtering is required.");
     }

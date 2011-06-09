@@ -1,0 +1,520 @@
+<add allowDups="true">
+  <!-- Root -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="ID">Root</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">T</field>    
+    <field name="ISNODE">T</field>    
+    <field name="DBID">0</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/</field>    
+    <field name="DBID">0</field>    
+    <field name="ID">Root</field>    
+  </doc>
+  <!-- One -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Root</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}one</field>    
+    <field name="PRIMARYPARENT">Root</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ID">Doc-1</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 1</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 1</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">1</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one</field>    
+    <field name="DBID">1</field>    
+    <field name="ID">Doc-1</field>    
+  </doc>
+  <!-- Two -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Root</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}two</field>    
+    <field name="PRIMARYPARENT">Root</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ID">Doc-2</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 2</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 2</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">2</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}two</field>    
+    <field name="DBID">2</field>    
+    <field name="ID">Doc-2</field>    
+  </doc>
+  <!-- Three -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Root</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}three</field>    
+    <field name="PRIMARYPARENT">Root</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ID">Doc-3</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 3</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 3</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">3</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}three</field>    
+    <field name="DBID">3</field>    
+    <field name="ID">Doc-3</field>    
+  </doc>
+  <!-- Four -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Root</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}four</field>    
+    <field name="PRIMARYPARENT">Root</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ID">Doc-4</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 4</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 4</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">4</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}four</field>    
+    <field name="DBID">4</field>    
+    <field name="ID">Doc-4</field>    
+  </doc>
+  <!-- Five -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-1</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}five</field>    
+    <field name="PRIMARYPARENT">Doc-1</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ID">Doc-5</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 5</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 5</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">5</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five</field>    
+    <field name="DBID">5</field>    
+    <field name="ID">Doc-5</field>    
+  </doc>
+  <!-- Six -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-1</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}six</field>    
+    <field name="PRIMARYPARENT">Doc-1</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ID">Doc-6</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 6</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 6</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">6</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}six</field>    
+    <field name="DBID">6</field>    
+    <field name="ID">Doc-6</field>    
+  </doc>
+  <!-- Seven -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-2</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}seven</field>    
+    <field name="PRIMARYPARENT">Doc-2</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-2</field>    
+    <field name="ID">Doc-7</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 7</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 7</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">7</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}two/{http://www.alfresco.org/model/content/1.0}seven</field>    
+    <field name="DBID">7</field>    
+    <field name="ID">Doc-7</field>    
+  </doc>
+  <!-- Eight -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-2</field>     
+    <field name="PARENT">Root</field>     
+    <field name="PARENT">Doc-1</field>     
+    <field name="PARENT">Doc-2</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}eight</field>
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}eight-0</field>
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}eight-1</field>
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}eight-2</field>    
+    <field name="PRIMARYPARENT">Doc-2</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/system/1.0}children</field>
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-2</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ID">Doc-8</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 8</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 8</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">8</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}two/{http://www.alfresco.org/model/content/1.0}eight</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}eight-0</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}eight-1</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}two/{http://www.alfresco.org/model/content/1.0}eight-2</field>    
+    <field name="DBID">8</field>    
+    <field name="ID">Doc-8</field>    
+  </doc>
+  <!-- Nine -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-5</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}nine</field>    
+    <field name="PRIMARYPARENT">Doc-5</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ANCESTOR">Doc-5</field>    
+    <field name="ID">Doc-9</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 9</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 9</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">9</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}nine</field>    
+    <field name="DBID">9</field>    
+    <field name="ID">Doc-9</field>    
+  </doc>
+  <!-- Ten -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-5</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}ten</field>    
+    <field name="PRIMARYPARENT">Doc-5</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ANCESTOR">Doc-5</field>    
+    <field name="ID">Doc-10</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 10</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 10</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">10</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}ten</field>    
+    <field name="DBID">10</field>    
+    <field name="ID">Doc-10</field>    
+  </doc>
+  <!-- Eleven -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-5</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}eleven</field>    
+    <field name="PRIMARYPARENT">Doc-5</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ANCESTOR">Doc-5</field>    
+    <field name="ID">Doc-11</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 11</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 11</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">11</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}eleven</field>    
+    <field name="DBID">11</field>    
+    <field name="ID">Doc-11</field>    
+  </doc>
+  <!-- Twelve -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-5</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}twelve</field>    
+    <field name="PRIMARYPARENT">Doc-5</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ANCESTOR">Doc-5</field>    
+    <field name="ID">Doc-12</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 12</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 12</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">12</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}twelve</field>    
+    <field name="DBID">12</field>    
+    <field name="ID">Doc-12</field>    
+  </doc>
+  <!-- Thirteen -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-12</field>     
+    <field name="PARENT">Doc-2</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}thirteen;{http://www.alfresco.org/model/content/1.0}link</field>    
+    <field name="PRIMARYPARENT">Doc-12</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains;{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ANCESTOR">Doc-5</field>    
+    <field name="ANCESTOR">Doc-12</field>    
+    <field name="ANCESTOR">Doc-2</field>    
+    <field name="ID">Doc-13</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 13</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 13</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">13</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}twelve/{http://www.alfresco.org/model/content/1.0}thirteen</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}two/{http://www.alfresco.org/model/content/1.0}link</field>    
+    <field name="DBID">13</field>    
+    <field name="ID">Doc-13</field>    
+  </doc>
+  <!-- Fourteen -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-13</field>     
+    <field name="PARENT">Doc-1</field>
+    <field name="PARENT">Doc-2</field>
+    <field name="PARENT">Doc-5</field>
+    <field name="PARENT">Doc-6</field>
+    <field name="PARENT">Doc-12</field>
+    <field name="PARENT">Doc-13</field>                              
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}fourteen;{http://www.alfresco.org/model/content/1.0}common;{http://www.alfresco.org/model/content/1.0}common;{http://www.alfresco.org/model/content/1.0}common;{http://www.alfresco.org/model/content/1.0}common;{http://www.alfresco.org/model/content/1.0}common;{http://www.alfresco.org/model/content/1.0}common</field>    
+    <field name="PRIMARYPARENT">Doc-13</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains;{http://www.alfresco.org/model/content/1.0}contains;{http://www.alfresco.org/model/content/1.0}contains;{http://www.alfresco.org/model/content/1.0}contains;{http://www.alfresco.org/model/content/1.0}contains;{http://www.alfresco.org/model/content/1.0}contains;{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ANCESTOR">Doc-5</field>    
+    <field name="ANCESTOR">Doc-12</field>    
+    <field name="ANCESTOR">Doc-13</field>    
+    <field name="ANCESTOR">Doc-2</field>    
+    <field name="ANCESTOR">Doc-6</field>    
+    <field name="ID">Doc-14</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 14</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 14</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">14</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}twelve/{http://www.alfresco.org/model/content/1.0}thirteen/{http://www.alfresco.org/model/content/1.0}fourteen</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}common</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}two/{http://www.alfresco.org/model/content/1.0}common</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}common</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}six/{http://www.alfresco.org/model/content/1.0}common</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}twelve/{http://www.alfresco.org/model/content/1.0}common</field>    
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}twelve/{http://www.alfresco.org/model/content/1.0}thirteen/{http://www.alfresco.org/model/content/1.0}common</field>    
+    <field name="DBID">14</field>    
+    <field name="ID">Doc-14</field>    
+  </doc>
+  <!-- Fifteen -->
+  <doc boost="1.0">
+    <field name="ISCATEGORY">F</field>    
+    <field name="PARENT">Doc-13</field>     
+    <field name="QNAME">{http://www.alfresco.org/model/content/1.0}fifteen</field>    
+    <field name="PRIMARYPARENT">Doc-13</field>    
+    <field name="ASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="FTSSTATUS">Clean</field>    
+    <field name="PRIMARYASSOCTYPEQNAME">{http://www.alfresco.org/model/content/1.0}contains</field>    
+    <field name="ANCESTOR">Root</field>    
+    <field name="ANCESTOR">Doc-1</field>    
+    <field name="ANCESTOR">Doc-5</field>    
+    <field name="ANCESTOR">Doc-12</field>    
+    <field name="ANCESTOR">Doc-13</field>    
+    <field name="ID">Doc-15</field>    
+    <field name="TX">Tx-1</field>    
+    <field name="ISROOT">F</field>    
+    <field name="ISNODE">T</field>    
+    <field name="TYPE">{http://www.alfresco.org/model/content/1.0}folder</field>    
+    <field name="ASPECT">{http://www.alfresco.org/model/content/1.0}auditable</field>    
+    <field name="@{http://www.alfresco.org/model/system/1.0}locale">en</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}title">Document number 15</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}name">Doc 15</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}created">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}creator">Andy</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modified">2010-07-21T10:52:00.000Z</field>    
+    <field name="@{http://www.alfresco.org/model/content/1.0}modifier">Andy</field>      
+    <field name="DBID">15</field>    
+  </doc>
+  <doc>
+    <field name="PATH">/{http://www.alfresco.org/model/content/1.0}one/{http://www.alfresco.org/model/content/1.0}five/{http://www.alfresco.org/model/content/1.0}twelve/{http://www.alfresco.org/model/content/1.0}thirteen/{http://www.alfresco.org/model/content/1.0}fifteen</field>    
+    <field name="DBID">15</field>    
+    <field name="ID">Doc-15</field>    
+  </doc>
+</add>

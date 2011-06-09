@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema name="alfresco" version="1.0">
+   <types>
+      <fieldType name="alfrescoDataType" class="org.alfresco.solr.AlfrescoDataType">
+         <analyzer>
+            <tokenizer class="org.apache.solr.analysis.WhitespaceTokenizerFactory"></tokenizer>
+            <filter class="org.apache.solr.analysis.LowerCaseFilterFactory"></filter>
+         </analyzer>
+      </fieldType>
+   </types>
+   <fields>
+      <field name="ID" type="alfrescoDataType" indexed="true" omitNorms="true" stored="true" multiValued="true"></field>
+      <dynamicField name="*" type="alfrescoDataType" indexed="true" omitNorms="true" stored="true" multiValued="true"></dynamicField>
+   </fields>
+   <uniqueKey>ID</uniqueKey>
+   <defaultSearchField>ID</defaultSearchField>
+</schema>

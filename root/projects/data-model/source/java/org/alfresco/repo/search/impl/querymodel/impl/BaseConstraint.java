@@ -29,7 +29,7 @@ public abstract class BaseConstraint implements Constraint
     
     public BaseConstraint()
     {
-       this.occur = occur;
+      
     }
 
     public Occur getOccur()

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -77,5 +77,14 @@ public abstract class AbstractCannedQueryFactory<R> implements CannedQueryFactor
         // Create a GUID
         String uuid = name + "-" + GUID.generate();
         return uuid;
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public CannedQuery<R> getCannedQuery(Object parameterBean, int skipResults, int pageSize, String queryExecutionId)
+    {
+        return getCannedQuery(new CannedQueryParameters(parameterBean, skipResults, pageSize, queryExecutionId));
     }
 }

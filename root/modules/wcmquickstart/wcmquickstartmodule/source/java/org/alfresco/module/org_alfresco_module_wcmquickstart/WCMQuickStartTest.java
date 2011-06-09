@@ -25,6 +25,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationComponent;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -134,6 +135,7 @@ public abstract class WCMQuickStartTest extends TestCase
     @Override
     protected void tearDown() throws Exception
     {
+        AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
         // Remove the test site
         UserTransaction userTransaction = transactionService.getUserTransaction();
         userTransaction.begin();

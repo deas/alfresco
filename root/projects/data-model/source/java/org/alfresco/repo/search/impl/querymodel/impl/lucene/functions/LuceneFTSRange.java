@@ -21,9 +21,9 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene.functions;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
@@ -58,7 +58,7 @@ public class LuceneFTSRange extends FTSRange implements LuceneQueryBuilderCompon
     public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
             throws ParseException
     {
-        LuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
         Argument argument = functionArgs.get(ARG_FROM_INC);
         Boolean fromInc = (Boolean) argument.getValue(functionContext);
         argument = functionArgs.get(ARG_FROM);

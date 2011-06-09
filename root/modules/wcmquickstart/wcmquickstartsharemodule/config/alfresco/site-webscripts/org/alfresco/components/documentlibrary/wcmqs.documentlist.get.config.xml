@@ -67,6 +67,7 @@
          <action type="action-link" id="onActionManagePermissions" permission="permissions" label="actions.folder.manage-permissions" />
          <action type="action-link" id="onActionManageAspects" permission="edit" label="actions.folder.manage-aspects" />
          <action type="simple-link" id="onActionExplorerView" permission="repository" href="{explorerViewUrl}" label="actions.folder.explorer-view" />
+         <action type="simple-link" id="onActionManageTranslations" permission="edit" href="{manageTranslationsUrl}" label="actions.wcmqs.manage-translations" />
       </actionSet>
 
       <actionSet id="link">

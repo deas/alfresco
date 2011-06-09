@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -23,10 +23,10 @@ import java.util.List;
 /**
  * Interface for results returned by {@link CannedQuery canned queries}.
  * 
- * @author Derek Hulley
+ * @author Derek Hulley, janv
  * @since 4.0
  */
-public interface CannedQueryResults<R>
+public interface CannedQueryResults<R> extends PagingResults<R>
 {
     /**
      * Get the instance of the query that generated these results.
@@ -34,15 +34,6 @@ public interface CannedQueryResults<R>
      * @return              the query that generated these results.
      */
     CannedQuery<R> getOriginatingQuery();
-    
-    /**
-     * Get a unique ID associated with these query results.  This must be available before and
-     * after execution i.e. it must depend on the type of query and the query parameters
-     * rather than the execution results.
-     * 
-     * @return                      a unique ID associated with the query execution results
-     */
-    String getQueryExecutionId();
     
     /**
      * Get the total number of results available within the pages of this result.
@@ -59,15 +50,6 @@ public interface CannedQueryResults<R>
      * @return                  the number of pages available
      */
     int getPageCount();
-    
-    /**
-     * Get the total result count assuming no paging applied.  This value will only be available if
-     * the query supports it and the client requested it.
-     * 
-     * @return                  Returns the total results (all results, including the paged results returned)
-     * @throws IllegalStateException if the total number of available results were not requested
-     */
-    int getTotalResultCount();
     
     /**
      * Get a single result if there is only one result expected.

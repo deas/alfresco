@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.alfresco.repo.search.MLAnalysisMode;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -53,7 +53,7 @@ public class DirectLuceneBuilder extends AbstractSimpleLuceneBuilder
     }
     
     @Override
-    public String getLuceneSortField(LuceneQueryParser lqp)
+    public String getLuceneSortField(AbstractLuceneQueryParser lqp)
     {
         String field = getLuceneFieldName();
         // need to find the real field to use

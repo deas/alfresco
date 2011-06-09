@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="source/java"/>
-	<classpathentry kind="lib" path="lib/apache-solr-core-1.4.1.jar" sourcepath="src/apache-solr-1.4.1.zip"/>
-	<classpathentry kind="lib" path="lib/apache-solr-solrj-1.4.1.jar" sourcepath="src/apache-solr-1.4.1.zip"/>
-	<classpathentry kind="lib" path="lib/lucene-analyzers-2.9.3.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-2.9.3.jar" sourcepath="src/lucene-2.9.3-src.zip"/>
-	<classpathentry kind="lib" path="lib/lucene-regex-2.9.3.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-snowball-2.9.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apache-solr-core-1.4.1.jar" sourcepath="src/apache-solr-1.4.1.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/apache-solr-solrj-1.4.1.jar" sourcepath="src/apache-solr-1.4.1.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-2.9.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-core-2.9.3.jar" sourcepath="src/lucene-2.9.3-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-regex-2.9.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-snowball-2.9.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DataModel"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Core"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/DataModel"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-httpclient-3.1.jar" sourcepath="/3rd Party/src/commons-httpclient-3.1-src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/docs/apidocs"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.5.5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -26,8 +26,8 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractAnalyzer;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.analysis.LongAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.MLAnalayser;
 import org.alfresco.repo.search.impl.lucene.analysis.PathAnalyser;
@@ -114,95 +114,95 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
      */
     private Analyzer findAnalyser(String fieldName, AnalysisMode analysisMode)
     {
-        if (fieldName.equals(LuceneQueryParser.FIELD_ID))
+        if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ID))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_DBID))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_DBID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_TXID))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TXID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_TXCOMMITTIME))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_ACLID))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ACLID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_TX))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TX))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_PARENT))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PARENT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_LINKASPECT))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_LINKASPECT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_PATH))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PATH))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_ANCESTOR))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ANCESTOR))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_ISCONTAINER))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISCONTAINER))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_READER))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_READER))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_OWNER))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_OWNER))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_ISCATEGORY))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISCATEGORY))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_QNAME))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_QNAME))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_ISROOT))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISROOT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_ISNODE))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISNODE))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_ASSOCTYPEQNAME))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_PRIMARYPARENT))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_TYPE))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TYPE))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_ASPECT))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ASPECT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(LuceneQueryParser.FIELD_FTSSTATUS))
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_FTSSTATUS))
         {
             return new VerbatimAnalyser(false);
         }
@@ -359,15 +359,15 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
                     case TRUE:
                         if (dataType.getName().equals(DataTypeDefinition.CONTENT))
                         {
-                            return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY);
+                            return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE);
                         }
                         else if (dataType.getName().equals(DataTypeDefinition.TEXT))
                         {
-                            return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY);
+                            return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE);
                         }
                         else if (dataType.getName().equals(DataTypeDefinition.MLTEXT))
                         {
-                            return new MLAnalayser(dictionaryService, mlAlaysisMode);
+                            return new MLAnalayser(dictionaryService,  MLAnalysisMode.EXACT_LANGUAGE);
                         }
                         else
                         {
@@ -380,15 +380,15 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
                         case TOKENISE:
                             if (dataType.getName().equals(DataTypeDefinition.CONTENT))
                             {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY);
+                                return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE);
                             }
                             else if (dataType.getName().equals(DataTypeDefinition.TEXT))
                             {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY);
+                                return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE);
                             }
                             else if (dataType.getName().equals(DataTypeDefinition.MLTEXT))
                             {
-                                return new MLAnalayser(dictionaryService, mlAlaysisMode);
+                                return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE);
                             }
                             else
                             {

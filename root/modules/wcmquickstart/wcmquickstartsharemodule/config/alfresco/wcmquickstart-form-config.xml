@@ -52,6 +52,40 @@
       </forms>
    </config>
 
+   <config evaluator="model-type" condition="ws:section">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+               <show id="cm:title" force="true" />
+               <show id="cm:description" force="true" />
+               <show id="ws:translationOf" force="true" />
+               <show id="ws:language" force="true" />
+            </field-visibility>
+            <appearance>
+               <field id="cm:name">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                     <control-param name="contextProperty">name</control-param>
+                  </control>
+               </field>
+               <field id="cm:title">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="ws:translationOf">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">translationOf</control-param>
+                  </control>
+               </field>
+               <field id="ws:language">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">language</control-param>
+                  </control>
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
    <config evaluator="node-type" condition="ws:webroot">
       <forms>
          <form>
@@ -376,6 +410,53 @@
       </forms>
    </config>
 
+   <config evaluator="model-type" condition="ws:indexPage">
+      <forms>
+         <!-- Default form configuration for creating a ws:indexPage -->
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+               <show id="cm:title" force="true" />
+               <show id="cm:description" force="true" />
+               <show id="cm:content" force="true" />
+               <show id="ws:translationOf" force="true" />
+               <show id="ws:language" force="true" />
+            </field-visibility>
+            <appearance>
+               <field id="cm:name">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                     <control-param name="contextProperty">name</control-param>
+                  </control>
+               </field>
+               <field id="cm:title">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="cm:description">
+                  <control>
+                     <control-param name="activateLinks">true</control-param>
+                  </control>
+               </field>
+               <field id="cm:content">
+                  <control>
+                     <control-param name="editorAppearance">explorer</control-param>
+                     <control-param name="forceEditor">true</control-param>
+                  </control>
+               </field>
+               <field id="ws:translationOf">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">translationOf</control-param>
+                  </control>
+               </field>
+               <field id="ws:language">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">language</control-param>
+                  </control>
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
    <config evaluator="node-type" condition="ws:article">
       <forms>
          <!-- Default form configuration for the cm:content type -->
@@ -542,8 +623,15 @@
                <show id="cm:title" force="true" />
                <show id="cm:description" force="true" />
                <show id="cm:content" force="true" />
+               <show id="ws:translationOf" force="true" />
+               <show id="ws:language" force="true" />
             </field-visibility>
             <appearance>
+               <field id="cm:name">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                     <control-param name="contextProperty">name</control-param>
+                  </control>
+               </field>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
@@ -551,6 +639,58 @@
                   <control>
                      <control-param name="editorAppearance">explorer</control-param>
                      <control-param name="forceEditor">true</control-param>
+                  </control>
+               </field>
+               <field id="ws:translationOf">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">translationOf</control-param>
+                  </control>
+               </field>
+               <field id="ws:language">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">language</control-param>
+                  </control>
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <config evaluator="model-type" condition="ws:article">
+      <forms>
+         <!-- Default form configuration for creating a ws:indexPage -->
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+               <show id="cm:title" force="true" />
+               <show id="cm:description" force="true" />
+               <show id="cm:content" force="true" />
+               <show id="ws:translationOf" force="true" />
+               <show id="ws:language" force="true" />
+            </field-visibility>
+            <appearance>
+               <field id="cm:title">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="cm:description">
+                  <control>
+                     <control-param name="activateLinks">true</control-param>
+                  </control>
+               </field>
+               <field id="cm:content">
+                  <control>
+                     <control-param name="editorAppearance">explorer</control-param>
+                     <control-param name="forceEditor">true</control-param>
+                  </control>
+               </field>
+               <field id="ws:translationOf">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">translationOf</control-param>
+                  </control>
+               </field>
+               <field id="ws:language">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">language</control-param>
                   </control>
                </field>
             </appearance>

@@ -18,6 +18,7 @@
 package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
@@ -25,8 +26,10 @@ import org.alfresco.module.org_alfresco_module_wcmquickstart.util.SiteHelper;
 import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
-import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
+import org.alfresco.repo.publishing.PublishingModel;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.namespace.QName;
 
@@ -39,7 +42,8 @@ public class WebSiteType implements WebSiteModel
 {
     private PolicyComponent policyComponent;
     private SiteHelper siteHelper;
-
+    private NodeService nodeService;
+    
     public void setPolicyComponent(PolicyComponent policyComponent)
     {
         this.policyComponent = policyComponent;
@@ -51,13 +55,22 @@ public class WebSiteType implements WebSiteModel
     }
 
     /**
+     * @param nodeService the nodeService to set
+     */
+    public void setNodeService(NodeService nodeService)
+    {
+        this.nodeService = nodeService;
+    }
+    
+    /**
      * Binds model behaviours to policies.
      */
     public void init()
     {
+        policyComponent.bindClassBehaviour(NodeServicePolicies.OnCreateNodePolicy.QNAME,
+                WebSiteModel.TYPE_WEB_SITE, new JavaBehaviour(this, "onCreateNode"));
         policyComponent.bindClassBehaviour(NodeServicePolicies.OnUpdatePropertiesPolicy.QNAME,
-                WebSiteModel.TYPE_WEB_SITE, new JavaBehaviour(this, "onUpdatePropertiesEveryEvent",
-                        NotificationFrequency.EVERY_EVENT));
+                WebSiteModel.TYPE_WEB_SITE, new JavaBehaviour(this, "onUpdatePropertiesEveryEvent"));
     }
 
     /**
@@ -88,5 +101,20 @@ public class WebSiteType implements WebSiteModel
                 }
             }
         }
+    }
+    
+    /**
+     * On create node behaviour
+     * 
+     * @param childAssocRef
+     *            child association reference
+     */
+    public void onCreateNode(ChildAssociationRef childAssocRef)
+    {
+        NodeRef child = childAssocRef.getChildRef();
+        HashMap<QName, Serializable> props = new HashMap<QName, Serializable>();
+        props.put(PublishingModel.PROP_CHANNEL, child);
+        props.put(PublishingModel.PROP_CHANNEL_TYPE_ID, WebSiteChannelType.ID);
+        nodeService.setProperties(child, props);
     }
 }

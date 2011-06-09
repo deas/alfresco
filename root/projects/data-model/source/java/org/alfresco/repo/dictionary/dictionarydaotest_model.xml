@@ -52,10 +52,13 @@
          <parameter name="maxValue"><value>256</value></parameter>
       </constraint>
       <constraint name="test:list1" type="LIST">
+         <title>List1 title</title>
+         <description>List1 description</description>
          <parameter name="allowedValues">
              <list>
                  <value>ABC</value>
                  <value>DEF</value>
+                 <value>VALUE WITH SPACES</value>
              </list>
          </parameter>
          <parameter name="caseSensitive"><value>true</value></parameter>
@@ -249,7 +252,35 @@
             </property>
         </overrides>
       </type>
-
+      
+      <type name="test:typeWithNamedPropConstraint">
+         <title>Type with named property-defined constraint.</title>
+         <description>A type with a named constraint defined within one of its properties.</description>
+         <parent></parent>
+         
+         <properties>
+            <property name="test:constrainedProp">
+               <type>d:text</type>
+               <protected>true</protected>
+               <default></default>
+               <constraints>
+                  <constraint name="test:inlineConstraint" type="LIST">
+                     <title>Inline constraint</title>
+                     <description>An inline constraint</description>
+                        <parameter name="allowedValues">
+                           <list>
+                              <value>ALPHA</value>
+                              <value>BETA</value>
+                              <value>GAMMA, DELTA</value>
+                              <value>OMEGA</value>
+                           </list>
+                        </parameter>
+                        <parameter name="caseSensitive"><value>true</value></parameter>
+                  </constraint>
+               </constraints>
+            </property>
+         </properties>
+      </type>
    </types>
    
    <aspects>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -140,6 +140,26 @@ public class CannedQueryTest extends TestCase
         int pagedResultCount = qrOne.getPagedResultCount();
         assertEquals("Incorrect number of results", 10, pagedResultCount);
         assertEquals("No sorting was specified in the parameters", "ONE_0", qrOne.getPages().get(0).get(0));
+        assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testQueryMaxResults() throws Exception
+    {
+        // An instance of the CannedQueryFactory could be injected or constructed as well
+        CannedQueryFactory<String> qfOne = namedQueryFactoryRegistry.getNamedObject(QUERY_TEST_ONE);
+        CannedQuery<String> qOne = qfOne.getCannedQuery(null, 0, 9, null);
+        CannedQueryResults<String> qrOne = qOne.execute();
+        
+        // Get the paged result count
+        int pagedResultCount = qrOne.getPagedResultCount();
+        assertEquals("Incorrect number of results", 9, pagedResultCount);
+        assertEquals("Incorrect number of pages", 1, qrOne.getPageCount());
+        List<List<String>> pages = qrOne.getPages();
+        assertEquals("Incorrect number of pages", 1, pages.size());
+        assertEquals("No sorting was specified in the parameters", "ONE_0", qrOne.getPages().get(0).get(0));
+        assertEquals("No sorting was specified in the parameters", "ONE_9", qrOne.getPages().get(0).get(8));
+        assertFalse("Should have more pages/items", qrOne.hasMoreItems());
     }
     
     @SuppressWarnings("unchecked")
@@ -158,6 +178,7 @@ public class CannedQueryTest extends TestCase
         assertEquals("Incorrect number of pages", 2, pages.size());
         assertEquals("Incorrect results on page", 5, pages.get(0).size());
         assertEquals("Incorrect results on page", 5, pages.get(1).size());
+        assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
         
         // Skip some results and use different page sizes
         qPageDetails = new CannedQueryPageDetails(2, 3, 1, 3);
@@ -172,6 +193,21 @@ public class CannedQueryTest extends TestCase
         assertEquals("Incorrect results on page", 3, pages.get(0).size());
         assertEquals("Incorrect results on page", 3, pages.get(1).size());
         assertEquals("Incorrect results on page", 2, pages.get(2).size());
+        assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
+        
+        // Skip some results and return less pages
+        qPageDetails = new CannedQueryPageDetails(2, 3, 1, 2);
+        params = new CannedQueryParameters(null, qPageDetails, null);
+        qOne = qfOne.getCannedQuery(params);
+        qrOne = qOne.execute();
+        // Check pages
+        assertEquals("Incorrect number of results", 6, qrOne.getPagedResultCount());
+        assertEquals("Incorrect number of pages", 2, qrOne.getPageCount());
+        pages = qrOne.getPages();
+        assertEquals("Incorrect number of pages", 2, pages.size());
+        assertEquals("Incorrect results on page", 3, pages.get(0).size());
+        assertEquals("Incorrect results on page", 3, pages.get(1).size());
+        assertTrue("Should have more pages/items", qrOne.hasMoreItems());
     }
     
     @SuppressWarnings("unchecked")
@@ -187,13 +223,14 @@ public class CannedQueryTest extends TestCase
         assertEquals("Incorrect number of results", 10, qrOne.getPagedResultCount());
         assertEquals("Expected inverse sorting", "ONE_9", qrOne.getPages().get(0).get(0));
         assertEquals("Expected inverse sorting", "ONE_0", qrOne.getPages().get(0).get(9));
+        assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
     }
     
     @SuppressWarnings("unchecked")
     public void testQueryFilteredResults() throws Exception
     {
         CannedQueryFactory<String> qfOne = namedQueryFactoryRegistry.getNamedObject(QUERY_TEST_ONE);
-        CannedQueryParameters params = new CannedQueryParameters(null, null, null, "joe", false, null);
+        CannedQueryParameters params = new CannedQueryParameters(null, null, null, "joe", 0, null);
         CannedQuery<String> qOne = qfOne.getCannedQuery(params);
         CannedQueryResults<String> qrOne = qOne.execute();
         // Check pages
@@ -207,6 +244,7 @@ public class CannedQueryTest extends TestCase
         assertEquals("Incorrect result order", "ONE_7", qrOne.getPages().get(0).get(6));
         assertEquals("Incorrect result order", "ONE_8", qrOne.getPages().get(0).get(7));
         assertEquals("Incorrect result order", "ONE_9", qrOne.getPages().get(0).get(8));
+        assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
     }
     
     @SuppressWarnings("unchecked")
@@ -216,13 +254,14 @@ public class CannedQueryTest extends TestCase
         CannedQueryPageDetails qPageDetails = new CannedQueryPageDetails(5, 1, 1, 1);
         CannedQuerySortDetails qSortDetails = new CannedQuerySortDetails(
                 new Pair<Object, SortOrder>("blah", SortOrder.DESCENDING));
-        CannedQueryParameters params = new CannedQueryParameters(null, qPageDetails, qSortDetails, "joe", true, null);
+        CannedQueryParameters params = new CannedQueryParameters(null, qPageDetails, qSortDetails, "joe", 1000, null);
         CannedQuery<String> qOne = qfOne.getCannedQuery(params);
         CannedQueryResults<String> qrOne = qOne.execute();
         // Check pages
-        assertEquals("Incorrect number of total results", 9, qrOne.getTotalResultCount());        // Pre-paging
-        assertEquals("Incorrect number of paged results", 1, qrOne.getPagedResultCount());        // Skipped 5
-        assertEquals("Incorrect result order", "ONE_3", qrOne.getPages().get(0).get(0));          // Order reversed
+        assertEquals("Incorrect number of total results", new Pair(9,9), qrOne.getTotalResultCount()); // Pre-paging
+        assertEquals("Incorrect number of paged results", 1, qrOne.getPagedResultCount());             // Skipped 5
+        assertEquals("Incorrect result order", "ONE_3", qrOne.getPages().get(0).get(0));               // Order reversed
+        assertTrue("Should have more pages/items", qrOne.hasMoreItems());
     }
     
     /**
@@ -302,11 +341,12 @@ public class CannedQueryTest extends TestCase
         }
 
         @Override
-        protected List<T> applyPostQueryPermissions(List<T> results, String authenticationToken, int requestedCount)
+        protected PagingResults<T> applyPostQueryPermissions(List<T> results, String authenticationToken, int requestedCount)
         {
-            boolean cutoffAllowed = !getParameters().isReturnTotalResultCount();
+            boolean cutoffAllowed = (getParameters().requestTotalResultCountMax() == 0);
+            boolean cutoff = false;
             
-            List<T> ret = new ArrayList<T>(results.size());
+            final List<T> ret = new ArrayList<T>(results.size());
             for (T t : results)
             {
                 if (!antiResults.contains(t))
@@ -316,10 +356,40 @@ public class CannedQueryTest extends TestCase
                 // Cut off if we have enough results
                 if (cutoffAllowed && ret.size() == requestedCount)
                 {
+                    cutoff = true;
                     break;
                 }
             }
-            return ret;
+            
+            final boolean finalCutoff = cutoff;
+            final int finalCount = ret.size();
+            
+            return new PagingResults<T>()
+                {
+                    @Override
+                    public String getQueryExecutionId()
+                    {
+                        return null;
+                    }
+                    
+                    @Override
+                    public Pair<Integer, Integer> getTotalResultCount()
+                    {
+                        return new Pair<Integer, Integer>(finalCount, ((! finalCutoff) ? finalCount : null));
+                    }
+                    
+                    @Override
+                    public List<T> getPage()
+                    {
+                        return ret;
+                    }
+                    
+                    @Override
+                    public Boolean hasMoreItems()
+                    {
+                        return (! finalCutoff);
+                    }
+                };
         }
     }
 }

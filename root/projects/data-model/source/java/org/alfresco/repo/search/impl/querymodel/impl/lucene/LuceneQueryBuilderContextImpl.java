@@ -19,9 +19,9 @@
 package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 
 import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneAnalyser;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
-import org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.search.SearchParameters;
@@ -53,7 +53,7 @@ public class LuceneQueryBuilderContextImpl implements LuceneQueryBuilderContext
         LuceneAnalyser analyzer = new LuceneAnalyser(dictionaryService, searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters
                 .getMlAnalaysisMode());
         lqp = new LuceneQueryParser(searchParameters.getDefaultFieldName(), analyzer);
-        lqp.setDefaultOperator(LuceneQueryParser.OR_OPERATOR);
+        lqp.setDefaultOperator(AbstractLuceneQueryParser.OR_OPERATOR);
         lqp.setDictionaryService(dictionaryService);
         lqp.setNamespacePrefixResolver(namespacePrefixResolver);
         lqp.setTenantService(tenantService);
@@ -67,7 +67,7 @@ public class LuceneQueryBuilderContextImpl implements LuceneQueryBuilderContext
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext#getLuceneQueryParser()
      */
-    public LuceneQueryParser getLuceneQueryParser()
+    public AbstractLuceneQueryParser getLuceneQueryParser()
     {
         return lqp;
     }

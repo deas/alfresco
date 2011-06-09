@@ -23,10 +23,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.SiteHelper;
 import org.alfresco.service.cmr.ml.MultilingualContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.webscripts.Cache;
@@ -42,7 +44,9 @@ public class TranslationDetailsGet extends DeclarativeWebScript
 {
     private static final String PARAM_NODEREF = "nodeRef";
     private static final String PARAM_LOCALES = "locales";
+    private static final String PARAM_NODE_LOCALE = "nodeLocale";
     private static final String PARAM_TRANSLATIONS = "translations";
+    private static final String PARAM_TRANSLATION_ENABLED = "translationEnabled";
     private static final String PARAM_TRANSLATION_PARENTS = "translationParents";
     
     private static final Log log = LogFactory.getLog(TranslationDetailsGet.class);
@@ -73,7 +77,7 @@ public class TranslationDetailsGet extends DeclarativeWebScript
 
         // Grab the nodeRef to work on
         String nodeRefParam = req.getParameter(PARAM_NODEREF);
-        if(nodeRefParam == null)
+        if(nodeRefParam == null || nodeRefParam.length() == 0)
         {
             throw new WebScriptException(Status.STATUS_NOT_FOUND, "NodeRef not supplied but required");
         }
@@ -82,6 +86,7 @@ public class TranslationDetailsGet extends DeclarativeWebScript
         {
             throw new WebScriptException(Status.STATUS_NOT_FOUND, "NodeRef not found");
         }
+        model.put(PARAM_NODEREF, nodeRef);
         
         // Get the locales for the site
         NodeRef website = siteHelper.getRelevantWebSite(nodeRef);
@@ -90,42 +95,59 @@ public class TranslationDetailsGet extends DeclarativeWebScript
         
         // Get the translations for the node
         Map<Locale,NodeRef> translations;
+        boolean translationEnabled = false;
+        Locale nodeLocale = null;
         if(multilingualContentService.isTranslation(nodeRef))
         {
             translations = multilingualContentService.getTranslations(nodeRef);
+            translationEnabled = true;
+            nodeLocale = (Locale)nodeService.getProperty(nodeRef, ContentModel.PROP_LOCALE);
         }
         else
         {
             translations = Collections.emptyMap();
         }
         model.put(PARAM_TRANSLATIONS, translations);
+        model.put(PARAM_TRANSLATION_ENABLED, translationEnabled);
         
         // Find the nearest parent per locale for the node, as available
-        Map<Locale,NodeRef> parents = new HashMap<Locale, NodeRef>();
-        NodeRef parent = nodeService.getPrimaryParent(nodeRef).getParentRef();
-        while(parent != null)
+        // Also records if all the intermediate directories exist
+        Map<Locale,Pair<NodeRef,Boolean>> parents = new HashMap<Locale, Pair<NodeRef,Boolean>>();
+        NodeRef nodeParent = nodeService.getPrimaryParent(nodeRef).getParentRef();
+        NodeRef current = nodeParent;
+        while(current != null)
         {
-            if(siteHelper.isTranslationParentLimitReached(parent))
+            if(siteHelper.isTranslationParentLimitReached(current))
             {
                 break;
             }
             
-            if(multilingualContentService.isTranslation(parent))
+            if(multilingualContentService.isTranslation(current))
             {
-                Map<Locale,NodeRef> parentTranslations = multilingualContentService.getTranslations(parent);
+                Map<Locale,NodeRef> parentTranslations = multilingualContentService.getTranslations(current);
                 for(Locale locale : parentTranslations.keySet())
                 {
-                    // Record only the farthest out one
+                    // Record only the farthest out one for each language
                     if(! parents.containsKey(locale))
                     {
-                        parents.put(locale, parentTranslations.get(locale));
+                        Pair<NodeRef,Boolean> details = new Pair<NodeRef, Boolean>(
+                                parentTranslations.get(locale), (current == nodeParent)
+                        );
+                        parents.put(locale, details);
                     }
+                }
+ 
+                // If we don't have a locale yet, try to infer it from the parent
+                if(nodeLocale == null)
+                {
+                    nodeLocale = (Locale)nodeService.getProperty(current, ContentModel.PROP_LOCALE);
                 }
             }
             
-            parent = nodeService.getPrimaryParent(parent).getParentRef();
+            current = nodeService.getPrimaryParent(current).getParentRef();
         }
         model.put(PARAM_TRANSLATION_PARENTS, parents);
+        model.put(PARAM_NODE_LOCALE, nodeLocale);
         
         return model;
     }

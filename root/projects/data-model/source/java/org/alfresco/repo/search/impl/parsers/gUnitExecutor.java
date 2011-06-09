@@ -27,27 +27,28 @@
  */
 package org.alfresco.repo.search.impl.parsers;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
-import java.util.ArrayList;
-import java.lang.reflect.*;
 
-import org.antlr.gunit.AbstractTest;
 import org.antlr.gunit.GrammarInfo;
-import org.antlr.gunit.ITestCase;
-import org.antlr.gunit.ITestSuite;
-import org.antlr.gunit.InvalidInputException;
-import org.antlr.gunit.gUnitParser;
 import org.antlr.gunit.gUnitTestInput;
 import org.antlr.gunit.gUnitTestResult;
-import org.antlr.gunit.gUnitTestSuite;
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;
-import org.antlr.stringtemplate.CommonGroupLoader;
+import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.tree.TreeAdaptor;
 import org.antlr.stringtemplate.StringTemplate;
-import org.antlr.stringtemplate.StringTemplateGroup;
-import org.antlr.stringtemplate.StringTemplateGroupLoader;
-import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 
 public class gUnitExecutor extends org.antlr.gunit.gUnitExecutor
 {

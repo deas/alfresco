@@ -58,7 +58,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementSe
 import org.alfresco.module.org_alfresco_module_dod5015.test.util.TestUtilities;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.node.integrity.IntegrityException;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
@@ -4396,7 +4396,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         
         // Sanity check search service - eg. query
         
-        String query = "ID:"+LuceneQueryParser.escape(record.toString());
+        String query = "ID:"+AbstractLuceneQueryParser.escape(record.toString());
         ResultSet rs = this.searchService.query(SPACES_STORE, SearchService.LANGUAGE_LUCENE, query);
         
         if (expectedAllowed)

@@ -40,16 +40,16 @@ public class MLAnalayser extends Analyzer
     private DictionaryService dictionaryService;
 
     private HashMap<Locale, Analyzer> analysers = new HashMap<Locale, Analyzer>();
-    
+
     private MLAnalysisMode mlAnalaysisMode;
 
     private Analyzer analyzer;
-    
+
     public MLAnalayser(DictionaryService dictionaryService, MLAnalysisMode mlAnalaysisMode)
     {
-      this(dictionaryService, mlAnalaysisMode, null);
+        this(dictionaryService, mlAnalaysisMode, null);
     }
-    
+
     public MLAnalayser(DictionaryService dictionaryService, MLAnalysisMode mlAnalaysisMode, Analyzer analyzer)
     {
         this.dictionaryService = dictionaryService;
@@ -62,60 +62,40 @@ public class MLAnalayser extends Analyzer
     {
         // We use read ahead to get the language info - if this does not exist we need to restart
         // an use the default - there foer we need mark and restore.
-
-        if (!(reader instanceof BufferedReader))
+        BufferedReader breader = new BufferedReader(reader);
+        if (reader instanceof BufferedReader)
         {
-            BufferedReader breader = new BufferedReader(reader);
-            try
+            breader = (BufferedReader)reader;
+        }
+        else
+        {
+            breader = new BufferedReader(reader);
+        }
+
+        try
+        {
+            if (!breader.markSupported())
             {
-                if (!breader.markSupported())
+                throw new AnalysisException(
+                        "Multilingual tokenisation requires a reader that supports marks and reset");
+            }
+            breader.mark(100);
+            StringBuilder builder = new StringBuilder();
+            if (breader.read() == '\u0000')
+            {
+                String language = "";
+                String country = "";
+                String varient = "";
+                char c;
+                int count = 0;
+                while ((c = (char) breader.read()) != '\u0000')
                 {
-                    throw new AnalysisException(
-                            "Multilingual tokenisation requires a reader that supports marks and reset");
-                }
-                breader.mark(100);
-                StringBuilder builder = new StringBuilder();
-                if (breader.read() == '\u0000')
-                {
-                    String language = "";
-                    String country = "";
-                    String varient = "";
-                    char c;
-                    int count = 0;
-                    while ((c = (char) breader.read()) != '\u0000')
+                    if (count++ > 99)
                     {
-                        if (count++ > 99)
-                        {
-                            breader.reset();
-                            return getDefaultAnalyser().tokenStream(fieldName, breader);
-                        }
-                        if (c == '_')
-                        {
-                            if (language.length() == 0)
-                            {
-                                language = builder.toString();
-                            }
-                            else if (country.length() == 0)
-                            {
-                                country = builder.toString();
-                            }
-                            else if (varient.length() == 0)
-                            {
-                                varient = builder.toString();
-                            }
-                            else
-                            {
-                                breader.reset();
-                                return getDefaultAnalyser().tokenStream(fieldName, breader);
-                            }
-                            builder = new StringBuilder();
-                        }
-                        else
-                        {
-                            builder.append(c);
-                        }
+                        breader.reset();
+                        return getDefaultAnalyser().tokenStream(fieldName, breader);
                     }
-                    if (builder.length() > 0)
+                    if (c == '_')
                     {
                         if (language.length() == 0)
                         {
@@ -134,34 +114,54 @@ public class MLAnalayser extends Analyzer
                             breader.reset();
                             return getDefaultAnalyser().tokenStream(fieldName, breader);
                         }
+                        builder = new StringBuilder();
                     }
-                    Locale locale = new Locale(language, country, varient);
-                    // leave the reader where it is ....
-                    return new MLTokenDuplicator(getAnalyser(locale).tokenStream(fieldName, breader), locale, breader, mlAnalaysisMode);
+                    else
+                    {
+                        builder.append(c);
+                    }
                 }
-                else
+                if (builder.length() > 0)
                 {
-                    breader.reset();
-                    return getDefaultAnalyser().tokenStream(fieldName, breader);
+                    if (language.length() == 0)
+                    {
+                        language = builder.toString();
+                    }
+                    else if (country.length() == 0)
+                    {
+                        country = builder.toString();
+                    }
+                    else if (varient.length() == 0)
+                    {
+                        varient = builder.toString();
+                    }
+                    else
+                    {
+                        breader.reset();
+                        return getDefaultAnalyser().tokenStream(fieldName, breader);
+                    }
                 }
+                Locale locale = new Locale(language, country, varient);
+                // leave the reader where it is ....
+                return new MLTokenDuplicator(getAnalyser(locale).tokenStream(fieldName, breader), locale, breader, mlAnalaysisMode);
             }
-            catch (IOException io)
+            else
             {
-                try
-                {
-                    breader.reset();
-                }
-                catch (IOException e)
-                {
-                    throw new AnalysisException("Failed to reset buffered reader - token stream will be invalid", e);
-                }
+                breader.reset();
                 return getDefaultAnalyser().tokenStream(fieldName, breader);
             }
-
         }
-        else
+        catch (IOException io)
         {
-            throw new AnalysisException("Multilingual tokenisation requires a buffered reader");
+            try
+            {
+                breader.reset();
+            }
+            catch (IOException e)
+            {
+                throw new AnalysisException("Failed to reset buffered reader - token stream will be invalid", e);
+            }
+            return getDefaultAnalyser().tokenStream(fieldName, breader);
         }
     }
 

@@ -25,6 +25,8 @@
             prefix="sys" />
         <import uri="http://www.alfresco.org/model/datalist/1.0"
             prefix="dl" />
+        <import uri="http://www.alfresco.org/model/publishing/1.0"
+            prefix="pub" />
     </imports>
 
     <!-- Sites Namespace -->
@@ -64,6 +66,7 @@
                 <aspect>ws:ordered</aspect>
                 <aspect>cm:tagscope</aspect>
                 <aspect>cm:titled</aspect>
+                <aspect>pub:channelInfo</aspect>
             </mandatory-aspects>
         </type>
         
@@ -76,7 +79,7 @@
         <type name="ws:website">
             <title>Web Site</title>
             <description>A folder that represents a website</description>
-            <parent>cm:folder</parent>
+            <parent>pub:DeliveryChannel</parent>
             <properties>
                 <property name="ws:hostName">
                     <title>Host Name</title>
@@ -126,6 +129,11 @@
                     </target>
                 </association>
             </associations>
+            <overrides>
+               <property name="pub:channelType">
+                  <default>WebSiteChannelType</default>
+               </property>
+            </overrides>
             <mandatory-aspects>
                 <aspect>cm:titled</aspect>
             </mandatory-aspects>
@@ -135,6 +143,10 @@
             <title>Web Root</title>
             <description>Web Root Folder</description>
             <parent>ws:section</parent>
+            <mandatory-aspects>
+                <aspect>pub:ContentRoot</aspect>
+            </mandatory-aspects>
+            
         </type>
 
         <type name="ws:webassetCollectionFolder">
@@ -417,7 +429,7 @@
 
         <aspect name="ws:webasset">
             <title>Web Asset</title>
-            <parent>cm:titled</parent>
+            <parent>pub:channelInfo</parent>
             <properties>
                 <property name="ws:parentSections">
                     <title>Parent sections</title>

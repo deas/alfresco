@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -131,28 +131,61 @@ public class DictionaryDAOTest extends TestCase
         QName model = QName.createQName(TEST_URL, "dictionarydaotest");
         ModelDefinition modelDef = service.getModel(model);
         assertEquals("Model Description", modelDef.getDescription());
+        
         QName type = QName.createQName(TEST_URL, "base");
         TypeDefinition typeDef = service.getType(type);
         assertEquals("Base Title", typeDef.getTitle());
         assertEquals("Base Description", typeDef.getDescription());
+        
         QName prop = QName.createQName(TEST_URL, "prop1");
         PropertyDefinition propDef = service.getProperty(prop);
         assertEquals("Prop1 Title", propDef.getTitle());
         assertEquals("Prop1 Description", propDef.getDescription());
+        
         QName assoc = QName.createQName(TEST_URL, "assoc1");
         AssociationDefinition assocDef = service.getAssociation(assoc);
         assertEquals("Assoc1 Title", assocDef.getTitle());
         assertEquals("Assoc1 Description", assocDef.getDescription());
+        
         QName datatype = QName.createQName(TEST_URL, "datatype");
         DataTypeDefinition datatypeDef = service.getDataType(datatype);
         assertEquals("Datatype Analyser", datatypeDef.getAnalyserClassName());
+        
+        QName constraint = QName.createQName(TEST_URL, "list1");
+        ConstraintDefinition constraintDef = service.getConstraint(constraint);
+        assertEquals("List1 title", constraintDef.getTitle());
+        assertEquals("List1 description", constraintDef.getDescription());
+        
+        
+        // Localisation of List Of Values Constraint.
+        // 1. LoV defined at the top of the model.
+        ListOfValuesConstraint lovConstraint = (ListOfValuesConstraint)constraintDef.getConstraint();
+        assertEquals("Wrong localised lov value.", "ABC display", lovConstraint.getDisplayLabel("ABC"));
+        assertEquals("Wrong localised lov value.", "DEF display", lovConstraint.getDisplayLabel("DEF"));
+        assertEquals("Wrong localised lov value.", "VALUE WITH SPACES display", lovConstraint.getDisplayLabel("VALUE WITH SPACES")); // Keys with spaces.
+        assertNull(lovConstraint.getDisplayLabel("nosuchLOV"));
+        
+        // 2. A named LoV defined within a specific property "non-Ref".
+        QName constrainedPropName = QName.createQName(TEST_URL, "constrainedProp");
+        PropertyDefinition constrainedPropDef = service.getProperty(constrainedPropName);
+        List<ConstraintDefinition> constraints = constrainedPropDef.getConstraints();
+        assertEquals("Wrong number of constraints.", 1, constraints.size());
+        ConstraintDefinition inlineConstraintDef = constraints.get(0);
+        lovConstraint = (ListOfValuesConstraint)inlineConstraintDef.getConstraint();
+        assertEquals("Wrong localised lov value.", "ALPHA display", lovConstraint.getDisplayLabel("ALPHA"));
+        assertEquals("Wrong localised lov value.", "BETA display", lovConstraint.getDisplayLabel("BETA"));
+        assertEquals("Wrong localised lov value.", "GAMMA, DELTA display", lovConstraint.getDisplayLabel("GAMMA, DELTA")); // Keys with commas
+        assertEquals("Wrong localised lov value.", "OMEGA", lovConstraint.getDisplayLabel("OMEGA"));
+        assertNull(lovConstraint.getDisplayLabel("nosuchLOV"));
+        
+        // Localisation of unnamed LoV defined within a specific property are not supported.
     }
     
     public void testConstraints()
     {   
         QName model = QName.createQName(TEST_URL, "dictionarydaotest");
         Collection<ConstraintDefinition> modelConstraints = service.getConstraints(model);
-        assertEquals(20, modelConstraints.size()); // 8 + 7 + 5
+        assertEquals(21, modelConstraints.size()); // 8 + 7 + 5 + 1
         
         QName conRegExp1QName = QName.createQName(TEST_URL, "regex1");
         boolean found1 = false;
@@ -262,7 +295,7 @@ public class DictionaryDAOTest extends TestCase
         assertEquals("Incorrect number of constraints", 1, propConstraints.size());
         assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
         ListOfValuesConstraint constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
-        assertEquals("Expected 2 allowed values", 2, constraint.getAllowedValues().size());
+        assertEquals("Expected 3 allowed values", 3, constraint.getAllowedValues().size());
 
         // check the inherited property on first derived aspect
         propDef = service.getProperty(aspectOneQName, propQName);
@@ -281,7 +314,7 @@ public class DictionaryDAOTest extends TestCase
         assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
         assertTrue("Constraint instance incorrect", propConstraints.get(1).getConstraint() instanceof ListOfValuesConstraint);
         constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
-        assertEquals("Expected 1 allowed values", 2, constraint.getAllowedValues().size());
+        assertEquals("Wrong number of allowed values", 3, constraint.getAllowedValues().size());
         constraint = (ListOfValuesConstraint) propConstraints.get(1).getConstraint();
         assertEquals("Expected 1 allowed values", 1, constraint.getAllowedValues().size());
     }

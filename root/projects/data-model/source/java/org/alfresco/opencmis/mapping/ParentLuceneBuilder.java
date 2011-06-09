@@ -21,9 +21,9 @@ package org.alfresco.opencmis.mapping;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -71,7 +71,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneEquality(LuceneQueryParser lqp, Serializable value, PredicateMode mode,
+    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode,
             LuceneFunction luceneFunction) throws ParseException
     {
         String field = getLuceneFieldName();
@@ -80,7 +80,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneExists(LuceneQueryParser lqp, Boolean not) throws ParseException
+    public Query buildLuceneExists(AbstractLuceneQueryParser lqp, Boolean not) throws ParseException
     {
         if (not)
         {
@@ -92,7 +92,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneIn(LuceneQueryParser lqp, Collection<Serializable> values, Boolean not, PredicateMode mode)
+    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, Collection<Serializable> values, Boolean not, PredicateMode mode)
             throws ParseException
     {
         String field = getLuceneFieldName();
@@ -145,7 +145,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneInequality(LuceneQueryParser lqp, Serializable value, PredicateMode mode,
+    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode,
             LuceneFunction luceneFunction) throws ParseException
     {
         String field = getLuceneFieldName();
@@ -154,7 +154,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneLike(LuceneQueryParser lqp, Serializable value, Boolean not) throws ParseException
+    public Query buildLuceneLike(AbstractLuceneQueryParser lqp, Serializable value, Boolean not) throws ParseException
     {
         String field = getLuceneFieldName();
         String stringValue = getValueAsString(value);
@@ -172,7 +172,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public String getLuceneSortField(LuceneQueryParser lqp)
+    public String getLuceneSortField(AbstractLuceneQueryParser lqp)
     {
         return getLuceneFieldName();
     }

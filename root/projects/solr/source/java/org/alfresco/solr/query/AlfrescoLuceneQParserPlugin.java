@@ -18,7 +18,7 @@
  */
 package org.alfresco.solr.query;
 
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
@@ -62,7 +62,7 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
     public static class AlfrescoLuceneQParser extends QParser
     {
 
-        LuceneQueryParser lqp;
+        AbstractLuceneQueryParser lqp;
 
         public AlfrescoLuceneQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
         {
@@ -105,7 +105,7 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
 
             String id =  req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
-            LuceneQueryParser lqp = AlfrescoSolrDataModel.getInstance(id).getLuceneQueryParser(defaultField, qstr, defaultOperator, indexReader);
+            AbstractLuceneQueryParser lqp = AlfrescoSolrDataModel.getInstance(id).getLuceneQueryParser(defaultField, qstr, defaultOperator, indexReader);
             return lqp.parse(qstr);
         }
     }

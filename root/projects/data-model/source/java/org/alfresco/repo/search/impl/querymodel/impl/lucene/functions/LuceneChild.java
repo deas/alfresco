@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.QueryModelException;
@@ -60,7 +60,7 @@ public class LuceneChild extends Child implements LuceneQueryBuilderComponent
     public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
             throws ParseException
     {
-        LuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
         Argument argument = functionArgs.get(ARG_PARENT);
         String id = (String) argument.getValue(functionContext);
         argument = functionArgs.get(ARG_SELECTOR);

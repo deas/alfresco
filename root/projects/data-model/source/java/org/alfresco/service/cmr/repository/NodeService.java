@@ -656,13 +656,6 @@ public interface NodeService
             final QName assocTypeQName);
 
     /**
-     * @see #createAssociation(NodeRef, NodeRef, QName, Long)
-     */
-    @Auditable(parameters = {"sourceRef", "targetRef", "assocTypeQName"})
-    public AssociationRef createAssociation(NodeRef sourceRef, NodeRef targetRef, QName assocTypeQName)
-            throws InvalidNodeRefException, AssociationExistsException;
-    
-    /**
      * Create a peer association between two nodes, optionally specifying the ordering.
      * <p/>
      * Note that inserting the association into a specific location is more expensive than
@@ -671,14 +664,12 @@ public interface NodeService
      * @param sourceRef                 a reference to a <b>real</b> node
      * @param targetRef                 a reference to a node
      * @param assocTypeQName            the qualified name of the association type
-     * @param insertAfter               the ID of an existing association to preceed the new association
-     *                                  (<tt>null</tt>: insert at end; <tt>0</tt>: insert at start)
      * @return                          Returns a reference to the new association
      * @throws InvalidNodeRefException  if either of the nodes could not be found
      * @throws AssociationExistsException
      */
     @Auditable(parameters = {"sourceRef", "targetRef", "assocTypeQName", "insertAfter"})
-    public AssociationRef createAssociation(NodeRef sourceRef, NodeRef targetRef, QName assocTypeQName, Long insertAfter)
+    public AssociationRef createAssociation(NodeRef sourceRef, NodeRef targetRef, QName assocTypeQName)
             throws InvalidNodeRefException, AssociationExistsException;
     
     /**
@@ -693,6 +684,16 @@ public interface NodeService
             throws InvalidNodeRefException;
     
     /**
+     * Re-assign all typed target associations for a given node.
+     * 
+     * @param sourceRef                 the source node
+     * @param assocTypeQName            the specific type of the association
+     * @param targetRefs                the target nodes (not <tt>null</tt> but empty list is accepted).
+     */
+    @Auditable(parameters = {"sourceRef", "assocTypeQName", "targetRefs"})
+    public void setAssociations(NodeRef sourceRef, QName assocTypeQName, List<NodeRef> targetRefs);
+    
+    /**
      * Gets an association by ID.
      * 
      * @param assocId
@@ -704,12 +705,14 @@ public interface NodeService
     /**
      * Fetches all associations <i>from</i> the given source where the associations'
      * qualified names match the pattern provided.
+     * <p/>
+     * The results are ordered if a specific type of association is requested
      * 
-     * @param sourceRef the association source
-     * @param qnamePattern the association qname pattern to match against
-     * @return Returns a list of <code>NodeAssocRef</code> instances for which the
-     *      given node is a source
-     * @throws InvalidNodeRefException if the source node could not be found
+     * @param sourceRef                 the association source
+     * @param qnamePattern              the association qname pattern to match against
+     * @return                          a list of <code>NodeAssocRef</code> instances for which the
+     *                                  given node is a source
+     * @throws InvalidNodeRefException  if the source node could not be found
      * 
      * @see QName
      * @see org.alfresco.service.namespace.RegexQNamePattern#MATCH_ALL

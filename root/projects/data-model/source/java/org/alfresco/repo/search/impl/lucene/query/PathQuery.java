@@ -236,6 +236,7 @@ public class PathQuery extends Query
 
         private float idf;
 
+        @SuppressWarnings("unused")
         private float queryNorm;
 
         private float queryWeight;

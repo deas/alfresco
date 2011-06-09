@@ -2,8 +2,39 @@
 <classpath>
 	<classpathentry kind="src" path="source/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Core"/>
 	<classpathentry exported="true" kind="lib" path="config"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-collections-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/acegi-security-0.8.2_patched.jar" sourcepath="/3rd Party/src/acegi-security-0.8.2_patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/antlr-3.3-complete.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jaxen-1.1-beta-8.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jibx/jibx-run.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/json.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.aop-3.0.0.jar" sourcepath="/3rd Party/src/org.springframework.aop-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.asm-3.0.0.jar" sourcepath="/3rd Party/src/org.springframework.asm-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.expression-3.0.0.jar" sourcepath="/3rd Party/src/org.springframework.expression-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.webmvc-3.0.0.jar" sourcepath="/3rd Party/src/org.springframework.webmvc-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/saxpath.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/slf4j-api-1.5.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/slf4j-log4j12-1.5.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webeditor-1.0.0.CI-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT-tests.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-test-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-api-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/tika-core-1.0-SNAPSHOT.jar" sourcepath="/3rd Party/src/tika-core-1.0-SNAPSHOT.zip"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.4.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/tika-parsers-1.0-SNAPSHOT.jar" sourcepath="/3rd Party/src/tika-parsers-1.0-SNAPSHOT.zip"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/lucene-analyzers-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/lucene-core-2.4.1.jar" sourcepath="/3rd Party/src/lucene-2.4.1-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/lucene-regex-2.4.1.jar" sourcepath="/3rd Party/src/lucene-2.4.1-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/lucene-snowball-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-codec-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/xercesImpl-2.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.4.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/ant-1.7.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

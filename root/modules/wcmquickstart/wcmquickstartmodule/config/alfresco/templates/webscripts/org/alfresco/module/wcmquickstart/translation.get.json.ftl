@@ -9,15 +9,28 @@
             }<#if locale_has_next>,</#if>
          </#list>
       ],
+
+      "name": "${nodeRef.name}",
+      "type": "${nodeRef.typeShort}",
+      "locale": <#if nodeLocale??>"${nodeLocale}"<#else>null</#if>,
+      "parentNodeRef": "${nodeRef.parent.nodeRef}",
+      "translationEnabled": ${translationEnabled?string},
+
       "translations": {
          <#list translations?keys as locale>
-            "${locale}": "${translations[locale]}",
+            "${locale}": {
+               "nodeRef": "${translations[locale].nodeRef}",
+               "name": "${translations[locale].name}"
+            }
             <#if locale_has_next>,</#if>
          </#list>
       },
       "parents": {
          <#list translationParents?keys as locale>
-            "${locale}": "${translationParents[locale]}",
+            "${locale}": {
+               "nodeRef": "${translationParents[locale].first}",
+               "allPresent": ${translationParents[locale].second?string}
+            }
             <#if locale_has_next>,</#if>
          </#list>
       }

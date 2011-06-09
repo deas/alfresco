@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.springframework.extensions.surf.util.I18NUtil;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.QueryParameterDefinition;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * The options for a query
@@ -50,8 +50,6 @@ public class QueryOptions
     private Connective defaultFTSConnective = Connective.AND;
 
     private Connective defaultFTSFieldConnective = Connective.AND;
-
-    private int fetchSize = 1000;
 
     private List<Locale> locales = new ArrayList<Locale>(1);
 

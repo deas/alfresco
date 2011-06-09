@@ -18,7 +18,6 @@
  */
 package org.alfresco.repo.search.impl.parsers;
 
-import java.text.NumberFormat;
 
 /**
  * @author Andy

@@ -66,6 +66,7 @@
       this.currentPath = "";
       this.currentPage = 1;
       this.totalRecords = 0;
+      this.totalRecordsUpper = null;
       this.showingMoreActions = false;
       this.state =
       {
@@ -1604,7 +1605,8 @@
                metaFields:
                {
                   paginationRecordOffset: "startIndex",
-                  totalRecords: "totalRecords"
+                  totalRecords: "totalRecords",
+                  totalRecordsUpper : "totalRecordsUpper" // if null then totalRecords is accurate else totalRecords is lower estimate (if -1 upper estimate is unknown)
                }
             }
          });
@@ -1827,6 +1829,7 @@
          this.widgets.dataTable.handleDataReturnPayload = function DL_handleDataReturnPayload(oRequest, oResponse, oPayload)
          {
             me.totalRecords = oResponse.meta.totalRecords;
+            me.totalRecordsUpper = oResponse.meta.totalRecordsUpper;
             return oResponse.meta;
          };
 
@@ -1941,6 +1944,16 @@
                   page: this.currentPage,
                   totalRecords: this.totalRecords
                });
+               
+               if (this.totalRecordsUpper != null)
+               {
+                  this.widgets.paginator.set("pageReportTemplate", this.msg("pagination.template.page-report.more"));
+               }
+               else
+               {
+                  this.widgets.paginator.set("pageReportTemplate", this.msg("pagination.template.page-report"));
+               }
+               
                this.widgets.paginator.render();
             }
 

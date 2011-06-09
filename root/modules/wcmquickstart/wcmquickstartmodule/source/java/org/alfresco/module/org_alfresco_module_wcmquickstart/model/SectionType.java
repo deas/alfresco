@@ -41,6 +41,7 @@ import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
+import org.alfresco.repo.publishing.ChannelHelper;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.AlfrescoTransactionSupport;
@@ -62,8 +63,12 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 import org.alfresco.service.transaction.TransactionService;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import static org.alfresco.repo.publishing.PublishingModel.PROP_CHANNEL;
+import static org.alfresco.repo.publishing.PublishingModel.PROP_CHANNEL_TYPE;
 
 /**
  * ws:section type behaviours.
@@ -482,23 +487,25 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
                             }
                         }
                     }
-
                     try
                     {
                         behaviourFilter.disableBehaviour(childNode, ASPECT_WEBASSET);
                         behaviourFilter.disableBehaviour(childNode, ContentModel.ASPECT_AUDITABLE);
-                        if (childIsWebAsset)
+                        ancestorSections.addAll(parentSections);
+                        if (log.isDebugEnabled())
                         {
-                            ancestorSections.addAll(parentSections);
-                            if (log.isDebugEnabled())
-                            {
-                                log.debug("Section child is a web asset (" + childNode
-                                        + "). Setting parent section ids:  " + parentSections);
-                            }
-                            nodeService.setProperty(childNode, PROP_PARENT_SECTIONS, parentSections);
-                            nodeService.setProperty(childNode, PROP_ANCESTOR_SECTIONS, new ArrayList<NodeRef>(
-                                    ancestorSections));
+                            log.debug("Section child is a web asset (" + childNode + "). Setting parent section ids:  "
+                                    + parentSections);
                         }
+                        Pair<NodeRef, String> channelInfo = ChannelHelper.findChannelAndType(childNode, nodeService, dictionaryService);
+                        if(channelInfo != null)
+                        {
+                            nodeService.setProperty(childNode, PROP_CHANNEL, channelInfo.getFirst());
+                            nodeService.setProperty(childNode, PROP_CHANNEL_TYPE, channelInfo.getSecond());
+                        }
+                        nodeService.setProperty(childNode, PROP_PARENT_SECTIONS, parentSections);
+                        nodeService.setProperty(childNode, PROP_ANCESTOR_SECTIONS, new ArrayList<NodeRef>(
+                                ancestorSections));
                     }
                     finally
                     {
@@ -556,6 +563,14 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
     @SuppressWarnings("unchecked")
     public void processCreateNode(NodeRef section)
     {
+        // Set the Channel and ChannelType for this section.
+        Pair<NodeRef, String> channelAndType = ChannelHelper.findChannelAndType(section, nodeService, dictionaryService);
+        if(channelAndType != null)
+        {
+            nodeService.setProperty(section, PROP_CHANNEL, channelAndType.getFirst());
+            nodeService.setProperty(section, PROP_CHANNEL_TYPE, channelAndType.getSecond());
+        }
+        
         Set<NodeRef> copyNodeRefs = (Set<NodeRef>) AlfrescoTransactionSupport.getResource(COPY_NODES);
         if ((copyNodeRefs != null) && copyNodeRefs.contains(section))
         {

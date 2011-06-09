@@ -65,9 +65,17 @@ import org.json.JSONTokener;
 
 // TODO error handling
 // TODO get text content transform status handling
+/**
+ * Http client to handle SOLR-Alfresco remote calls.
+ * 
+ * @since 4.0
+ */
 public class SOLRAPIClient extends AlfrescoHttpClient
 {
     private static final Log logger = LogFactory.getLog(SOLRAPIClient.class);
+    private static final String GET_ACL_CHANGESETS_URL = "api/solr/aclchangesets";
+    private static final String GET_ACLS = "api/solr/acls";
+    private static final String GET_ACLS_READERS = "api/solr/aclsReaders";
     private static final String GET_TRANSACTIONS_URL = "api/solr/transactions";
     private static final String GET_METADATA_URL = "api/solr/metadata";
     private static final String GET_NODES_URL = "api/solr/nodes";
@@ -76,13 +84,212 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     private SOLRDeserializer deserializer;
     private DictionaryService dictionaryService;
 
-    public SOLRAPIClient(DictionaryService dictionaryService, NamespaceDAO namespaceDAO, String alfrescoURL, String username, String password)
+    public SOLRAPIClient(
+            DictionaryService dictionaryService,
+            NamespaceDAO namespaceDAO,
+            String alfrescoURL, String username, String password)
     {
         super(alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/"), username, password);
         this.dictionaryService = dictionaryService;
         this.deserializer = new SOLRDeserializer(namespaceDAO);
     }
+    
+    /**
+     * Get the ACL ChangeSets
+     * 
+     * @param fromCommitTime                the lowest commit time (optional)
+     * @param minAclChangeSetId             the lowest ChangeSet ID (optional)
+     * @param maxResults                    the maximum number of results (a reasonable value only)
+     * @return                              the ACL ChangeSets in order of commit time and ID
+     */
+    public List<AclChangeSet> getAclChangeSets(Long fromCommitTime, Long minAclChangeSetId, int maxResults)
+             throws IOException, JSONException
+    {
+        setupHttpClient();
 
+        StringBuilder url = new StringBuilder(this.url);
+        url.append(GET_ACL_CHANGESETS_URL);
+        StringBuilder args = new StringBuilder();
+        if (fromCommitTime != null)
+        {
+            args.append("?").append("fromCommitTime").append("=").append(fromCommitTime);            
+        }
+        if (minAclChangeSetId != null)
+        {
+            args.append(args.length() == 0 ? "?" : "&").append("fromId").append("=").append(minAclChangeSetId);            
+        }
+        if (maxResults != 0 && maxResults != Integer.MAX_VALUE)
+        {
+            args.append(args.length() == 0 ? "?" : "&").append("maxResults").append("=").append(maxResults);
+        }
+        url.append(args);
+        
+        GetRequest req = new GetRequest(url.toString());
+        Response response = sendRequest(req, username);
+
+        if (response.getStatus() != HttpStatus.SC_OK)
+        {
+            throw new AlfrescoRuntimeException(GET_ACL_CHANGESETS_URL + " return status:" + response.getStatus());
+        }
+
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(response.getContentAsString());
+        }
+        
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+        JSONObject json = new JSONObject(new JSONTokener(reader));
+        JSONArray aclChangeSetsJSON = json.getJSONArray("aclChangeSets");
+        List<AclChangeSet> aclChangeSets = new ArrayList<AclChangeSet>(aclChangeSetsJSON.length());
+        for (int i = 0; i < aclChangeSetsJSON.length(); i++)
+        {
+            JSONObject aclChangeSetJSON = aclChangeSetsJSON.getJSONObject(i);
+            long aclChangeSetId = aclChangeSetJSON.getLong("id");
+            long commitTimeMs = aclChangeSetJSON.getLong("commitTimeMs");
+            int aclCount = aclChangeSetJSON.getInt("aclCount");
+            AclChangeSet aclChangeSet = new AclChangeSet(aclChangeSetId, commitTimeMs, aclCount);
+            aclChangeSets.add(aclChangeSet);
+        }
+        // Done
+        return aclChangeSets;
+    }
+    
+    /**
+     * Get the ACLs associated with a given list of ACL ChangeSets.  The ACLs may be truncated for
+     * the last ACL ChangeSet in the return values - the ACL count from the
+     * {@link #getAclChangeSets(Long, Long, int) ACL ChangeSets}.
+     * 
+     * @param aclChangeSets                 the ACL ChangeSets to include
+     * @param minAclId                      the lowest ACL ID (may be <tt>null</tt>)
+     * @param maxResults                    the maximum number of results to retrieve
+     * @return                              the ACLs (includes ChangeSet ID)
+     */
+    public List<Acl> getAcls(List<AclChangeSet> aclChangeSets, Long minAclId, int maxResults) throws IOException, JSONException
+    {
+        if (aclChangeSets.size() > 512)
+        {
+            throw new IllegalArgumentException("Cannot query for more than 512 ACL ChangeSets.");
+        }
+        
+        setupHttpClient();
+
+        StringBuilder url = new StringBuilder(this.url);
+        url.append(GET_ACLS);
+        StringBuilder args = new StringBuilder();
+        if (minAclId != null)
+        {
+            args.append("?").append("fromId").append("=").append(minAclId);
+        }
+        if (maxResults != 0 && maxResults != Integer.MAX_VALUE)
+        {
+            args.append(args.length() == 0 ? "?" : "&").append("maxResults").append("=").append(maxResults);            
+        }
+        url.append(args);
+        
+        JSONObject jsonReq = new JSONObject();
+        JSONArray aclChangeSetIdsJSON = new JSONArray();
+        List<Long> aclChangeSetIds = new ArrayList<Long>();
+        for (AclChangeSet aclChangeSet : aclChangeSets)
+        {
+            Long aclChangeSetId = aclChangeSet.getId();
+            aclChangeSetIdsJSON.put(aclChangeSetId);
+            aclChangeSetIds.add(aclChangeSetId);
+        }
+        jsonReq.put("aclChangeSetIds", aclChangeSetIdsJSON);
+
+        PostRequest req = new PostRequest(url.toString(), jsonReq.toString(), "application/json");
+        Response response = sendRequest(req, username);
+
+        if (response.getStatus() != HttpStatus.SC_OK)
+        {
+            throw new AlfrescoRuntimeException(GET_ACL_CHANGESETS_URL + " return status:" + response.getStatus());
+        }
+
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(response.getContentAsString());
+        }
+        
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+        JSONObject json = new JSONObject(new JSONTokener(reader));
+        JSONArray aclsJSON = json.getJSONArray("acls");
+        List<Acl> acls = new ArrayList<Acl>(aclsJSON.length());
+        for (int i = 0; i < aclsJSON.length(); i++)
+        {
+            JSONObject aclJSON = aclsJSON.getJSONObject(i);
+            long aclChangeSetId = aclJSON.getLong("aclChangeSetId");
+            long aclId = aclJSON.getLong("id");
+            Acl acl = new Acl(aclChangeSetId, aclId);
+            acls.add(acl);
+        }
+        // Done
+        return acls;
+    }
+    
+    /**
+     * Get the ACL readers for a given list of ACLs
+     * 
+     * @param acls                          the ACLs
+     * @return                              the readers for the ACLs
+     */
+    public List<AclReaders> getAclReaders(List<Acl> acls) throws IOException, JSONException
+    {
+        if (acls.size() > 512)
+        {
+            throw new IllegalArgumentException("Cannot query for more than 512 ACLs.");
+        }
+        
+        setupHttpClient();
+
+        StringBuilder url = new StringBuilder(this.url);
+        url.append(GET_ACLS_READERS);
+        
+        JSONObject jsonReq = new JSONObject();
+        JSONArray aclIdsJSON = new JSONArray();
+        List<Long> aclIds = new ArrayList<Long>();
+        for (Acl acl : acls)
+        {
+            Long aclId = acl.getId();
+            aclIdsJSON.put(aclId);
+            aclIds.add(aclId);
+        }
+        jsonReq.put("aclIds", aclIdsJSON);
+
+        PostRequest req = new PostRequest(url.toString(), jsonReq.toString(), "application/json");
+        Response response = sendRequest(req, username);
+
+        if (response.getStatus() != HttpStatus.SC_OK)
+        {
+            throw new AlfrescoRuntimeException(GET_ACL_CHANGESETS_URL + " return status:" + response.getStatus());
+        }
+
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(response.getContentAsString());
+        }
+        
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+        JSONObject json = new JSONObject(new JSONTokener(reader));
+        JSONArray aclsReadersJSON = json.getJSONArray("aclsReaders");
+        List<AclReaders> aclsReaders = new ArrayList<AclReaders>(aclsReadersJSON.length());
+        for (int i = 0; i < aclsReadersJSON.length(); i++)
+        {
+            JSONObject aclReadersJSON = aclsReadersJSON.getJSONObject(i);
+            long aclId = aclReadersJSON.getLong("aclId");
+            JSONArray readersJSON = aclReadersJSON.getJSONArray("readers");
+            List<String> readers = new ArrayList<String>(aclReadersJSON.length());
+            for (int j = 0; j < readersJSON.length(); j++)
+            {
+                String readerJSON = readersJSON.getString(j);
+                readers.add(readerJSON);
+            }
+            AclReaders aclReaders = new AclReaders(aclId, readers);
+            aclsReaders.add(aclReaders);
+        }
+        // Done
+        return aclsReaders;
+    }
+    
     public List<Transaction> getTransactions(Long fromCommitTime, Long minTxnId, int maxResults) throws IOException, JSONException
     {
         setupHttpClient();
@@ -90,40 +297,17 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         StringBuilder url = new StringBuilder(this.url);
         url.append(GET_TRANSACTIONS_URL);
         StringBuilder args = new StringBuilder();
-        if(fromCommitTime != null)
+        if (fromCommitTime != null)
         {
-            args.append("?");
-            args.append("fromCommitTime");
-            args.append("=");
-            args.append(fromCommitTime);            
+            args.append("?").append("fromCommitTime").append("=").append(fromCommitTime);
         }
-        if(minTxnId != null)
+        if (minTxnId != null)
         {
-            if(args.length() == 0)
-            {
-                args.append("?");
-            }
-            else
-            {
-                args.append("&");
-            }
-            args.append("minTxnId");
-            args.append("=");
-            args.append(minTxnId);            
+            args.append(args.length() == 0 ? "?" : "&").append("minTxnId").append("=").append(minTxnId);            
         }
-        if(maxResults != 0 && maxResults != Integer.MAX_VALUE)
+        if (maxResults != 0 && maxResults != Integer.MAX_VALUE)
         {
-            if(args.length() == 0)
-            {
-                args.append("?");
-            }
-            else
-            {
-                args.append("&");
-            }
-            args.append("maxResults");
-            args.append("=");
-            args.append(maxResults);            
+            args.append(args.length() == 0 ? "?" : "&").append("maxResults").append("=").append(maxResults);            
         }
         url.append(args);
         
@@ -140,7 +324,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             logger.debug(response.getContentAsString());
         }
         
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream()));
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
         JSONObject json = new JSONObject(new JSONTokener(reader));
 
         JSONArray jsonTransactions = json.getJSONArray("transactions");
@@ -232,7 +416,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
 //            logger.debug(response.getContentAsString());
 //        }
 
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream()));
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
         JSONObject json = new JSONObject(new JSONTokener(reader));
         json.write(new PrintWriter(System.out));
 
@@ -254,19 +438,19 @@ public class SOLRAPIClient extends AlfrescoHttpClient
 
             if(jsonNodeInfo.has("status"))
             {
-                Node.STATUS status;
+                Node.SolrApiNodeStatus status;
                 String statusStr = jsonNodeInfo.getString("status");
                 if(statusStr.equals("u"))
                 {
-                    status = Node.STATUS.UPDATED;
+                    status = Node.SolrApiNodeStatus.UPDATED;
                 }
                 else if(statusStr.equals("d"))
                 {
-                    status = Node.STATUS.DELETED;
+                    status = Node.SolrApiNodeStatus.DELETED;
                 }
                 else
                 {
-                    status = Node.STATUS.UNKNOWN;
+                    status = Node.SolrApiNodeStatus.UNKNOWN;
                 }
                 nodeInfo.setStatus(status);
             }
@@ -442,7 +626,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             logger.debug("nodesMetaData = " + response.getContentAsString());
         }
 
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream()));
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(),  "UTF-8"));
         // TODO - replace with streaming-based solution e.g. SimpleJSON ContentHandler
         JSONObject json = new JSONObject(new JSONTokener(reader));
 
@@ -825,11 +1009,11 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         }
     }
     
-    public static enum STATUS
+    public static enum SolrApiContentStatus
     {
         NOT_MODIFIED, OK, NO_TRANSFORM, NO_CONTENT, UNKNOWN, TRANSFORM_FAILED, GENERAL_FAILURE;
         
-        public static STATUS getStatus(String statusStr)
+        public static SolrApiContentStatus getStatus(String statusStr)
         {
             if(statusStr.equals("ok"))
             {
@@ -882,7 +1066,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     public static class GetTextContentResponse extends SOLRResponse
     {
         private InputStream content;
-        private STATUS status;
+        private SolrApiContentStatus status;
         private String transformException;
         private String transformStatusStr;
 
@@ -901,7 +1085,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             return content;
         }
 
-        public STATUS getStatus()
+        public SolrApiContentStatus getStatus()
         {
             return status;
         }
@@ -911,35 +1095,35 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             int status = response.getStatus();
             if(status == HttpStatus.SC_NOT_MODIFIED)
             {
-                this.status = STATUS.NOT_MODIFIED;
+                this.status = SolrApiContentStatus.NOT_MODIFIED;
             }
             else if(status == HttpStatus.SC_INTERNAL_SERVER_ERROR)
             {
-                this.status = STATUS.GENERAL_FAILURE;
+                this.status = SolrApiContentStatus.GENERAL_FAILURE;
             }
             else if(status == HttpStatus.SC_OK)
             {
-                this.status = STATUS.OK;
+                this.status = SolrApiContentStatus.OK;
             }
             else if(status == HttpStatus.SC_NO_CONTENT)
             {
                 if(transformStatusStr == null)
                 {
-                    this.status = STATUS.UNKNOWN;
+                    this.status = SolrApiContentStatus.UNKNOWN;
                 }
                 else
                 {
                     if(transformStatusStr.equals("noTransform"))
                     {
-                        this.status = STATUS.NO_TRANSFORM;
+                        this.status = SolrApiContentStatus.NO_TRANSFORM;
                     }
                     else if(transformStatusStr.equals("transformFailed"))
                     {
-                        this.status = STATUS.TRANSFORM_FAILED;
+                        this.status = SolrApiContentStatus.TRANSFORM_FAILED;
                     }
                     else
                     {
-                        this.status = STATUS.UNKNOWN;
+                        this.status = SolrApiContentStatus.UNKNOWN;
                     }
                 }
             }

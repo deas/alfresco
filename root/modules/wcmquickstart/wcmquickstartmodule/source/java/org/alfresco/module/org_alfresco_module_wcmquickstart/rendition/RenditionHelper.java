@@ -179,7 +179,7 @@ public class RenditionHelper implements WebSiteModel
 	private void createRenditions(NodeRef section, NodeRef nodeRef, QName type, String mimetype)
 	{
 		// Get the section config to a map
-		Map<String, List<String>> renditionConfig = getRenditionConfig(section);		
+		Map<String, List<String>> renditionConfig = getRenditionConfig(section);
 		
 		if (renditionConfig.isEmpty() == false)
 		{
@@ -188,9 +188,8 @@ public class RenditionHelper implements WebSiteModel
 		}
 			
 		// Check parents if in herit rendition config
-		Boolean inherit = (Boolean)nodeService.getProperty(section, PROP_INHERIT_RENDITION_CONFIG);		
-		if (Boolean.TRUE.equals(inherit) == true &&
-			TYPE_WEB_SITE.equals(type) == false)
+		Boolean inherit = (Boolean)nodeService.getProperty(section, PROP_INHERIT_RENDITION_CONFIG);
+		if (Boolean.TRUE.equals(inherit) && TYPE_WEB_SITE.equals(type) == false)
 		{
 			NodeRef sectionParent = nodeService.getPrimaryParent(section).getParentRef();
 			createRenditions(sectionParent, nodeRef, type, mimetype);			

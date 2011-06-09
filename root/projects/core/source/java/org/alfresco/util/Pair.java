@@ -28,7 +28,7 @@ import java.io.ObjectInputStream.GetField;
  */
 public final class Pair<F, S> implements Serializable
 {
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static final Pair NULL_PAIR = new Pair(null, null);
     
     @SuppressWarnings("unchecked")

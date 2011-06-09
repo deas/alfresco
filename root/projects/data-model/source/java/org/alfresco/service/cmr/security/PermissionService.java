@@ -18,7 +18,6 @@
  */
 package org.alfresco.service.cmr.security;
 
-import java.util.List;
 import java.util.Set;
 
 import org.alfresco.service.Auditable;
@@ -208,9 +207,6 @@ public interface PermissionService
 
     /**
      * Get the permissions that can be set for a given node
-     *
-     * @param nodeRef
-     * @return
      */
     @Auditable(parameters = { "nodeRef" })
     public Set<String> getSettablePermissions(NodeRef nodeRef);
@@ -218,7 +214,6 @@ public interface PermissionService
     /**
      * Get the permissions that can be set for a given type
      *
-     * @param type
      * @return - set of permissions
      */
     @Auditable(parameters = { "type" })
@@ -228,8 +223,6 @@ public interface PermissionService
      * Check that the given authentication has a particular permission for the given node. (The default behaviour is to
      * inherit permissions)
      *
-     * @param nodeRef
-     * @param permission
      * @return - access status
      */
     @Auditable(parameters = { "nodeRef", "permission" })
@@ -250,10 +243,16 @@ public interface PermissionService
     public AccessStatus hasReadPermission(NodeRef nodeRef);
 
     /**
+     * Get the readers associated with a given ACL
+     * 
+     * @param aclId                 the low-level ACL ID
+     * @return                      set of authorities with read permission on the ACL
+     */
+    @Auditable(parameters = { "aclId" })
+    public Set<String> getReaders(Long aclId);
+    
+    /**
      * Check if a permission is allowed on an acl.
-     * @param aclID
-     * @param context
-     * @param permission
      * @return the access status
      */
     @Auditable(parameters = { "aclID", "context", "permission" })
@@ -261,8 +260,6 @@ public interface PermissionService
 
     /**
      * Delete all the permission assigned to the node
-     *
-     * @param nodeRef
      */
     @Auditable(parameters = { "nodeRef" })
     public void deletePermissions(NodeRef nodeRef);
@@ -270,7 +267,6 @@ public interface PermissionService
     /**
      * Delete all permission for the given authority.
      *
-     * @param nodeRef
      * @param authority
      *            (if null then this will match all authorities)
      */
@@ -298,29 +294,18 @@ public interface PermissionService
 
     /**
      * Set a specific permission on a node.
-     *
-     * @param nodeRef
-     * @param authority
-     * @param permission
-     * @param allow
      */
     @Auditable(parameters = { "nodeRef", "authority", "permission", "allow" })
     public void setPermission(NodeRef nodeRef, String authority, String permission, boolean allow);
 
     /**
      * Set the global inheritance behaviour for permissions on a node.
-     *
-     * @param nodeRef
-     * @param inheritParentPermissions
      */
     @Auditable(parameters = { "nodeRef", "inheritParentPermissions" })
     public void setInheritParentPermissions(NodeRef nodeRef, boolean inheritParentPermissions);
 
     /**
      * Return the global inheritance behaviour for permissions on a node.
-     *
-     * @param nodeRef
-     * @return inheritParentPermissions
      */
     @Auditable(parameters = { "nodeRef" })
     public boolean getInheritParentPermissions(NodeRef nodeRef);
@@ -328,37 +313,24 @@ public interface PermissionService
    
     /**
      * Add a permission mask to a store
-     * 
-     * @param storeRef
-     * @param authority
-     * @param permission
-     * @param allow
      */
     @Auditable(parameters = { "storeRef", "authority", "permission", "allow" })
     public void setPermission(StoreRef storeRef, String authority, String permission, boolean allow);
     
     /**
      * Remove part of a permission mask on a store
-     * @param storeRef
-     * @param authority
-     * @param permission
      */
     @Auditable(parameters = { "storeRef", "authority", "permission" })
     public void deletePermission(StoreRef storeRef, String authority, String permission);
     
     /**
      * Clear all permission masks for an authority on a store 
-     * 
-     * @param storeRef
-     * @param authority
      */
     @Auditable(parameters = { "storeRef", "authority" })
     public void clearPermission(StoreRef storeRef, String authority);
     
     /**
      * Remove all permission mask on a store
-     * 
-     * @param storeRef
      */
     @Auditable(parameters = { "storeRef" })
     public void deletePermissions(StoreRef storeRef);
@@ -374,5 +346,10 @@ public interface PermissionService
     @Auditable(parameters = { "storeRef" })
     public Set<AccessPermission> getAllSetPermissions(StoreRef storeRef);
     
+    /**
+     * Get the set of authorities for currently authenticated user
+     * 
+     * @return              a set of authorities applying to the currently-authenticated user
+     */
     public Set<String> getAuthorisations();
 }

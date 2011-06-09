@@ -20,14 +20,14 @@ package org.alfresco.solr.client;
 
 public class Node
 {
-    public static enum STATUS
+    public static enum SolrApiNodeStatus
     {
         UPDATED, DELETED, UNKNOWN;
     };
 
     private long id;
     private long txnId;
-    private STATUS status;
+    private SolrApiNodeStatus status;
     public long getId()
     {
         return id;
@@ -44,11 +44,11 @@ public class Node
     {
         this.txnId = txnId;
     }
-    public STATUS getStatus()
+    public SolrApiNodeStatus getStatus()
     {
         return status;
     }
-    public void setStatus(STATUS status)
+    public void setStatus(SolrApiNodeStatus status)
     {
         this.status = status;
     }

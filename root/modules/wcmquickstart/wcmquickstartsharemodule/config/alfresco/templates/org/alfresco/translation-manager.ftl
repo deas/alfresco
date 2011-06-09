@@ -1,5 +1,8 @@
 <#include "include/alfresco-template.ftl" />
-<@templateHeader />
+<@templateHeader>
+   <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/doclib-actions.js"></@script>
+   <@script type="text/javascript" src="${page.url.context}/res/templates/document-details/document-details.js"></@script>
+</@>
 
 <@templateBody>
    <div id="alf-hd">

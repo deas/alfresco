@@ -17,6 +17,9 @@
  */
 package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 
+import static org.alfresco.repo.publishing.PublishingModel.PROP_CHANNEL;
+import static org.alfresco.repo.publishing.PublishingModel.PROP_CHANNEL_TYPE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,6 +29,7 @@ import java.util.Set;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.policy.BehaviourFilter;
+import org.alfresco.repo.publishing.ChannelHelper;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -40,6 +44,7 @@ import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 import org.alfresco.service.transaction.TransactionService;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -174,6 +179,12 @@ public class SectionHierarchyProcessor implements WebSiteModel
                 {
                     behaviourFilter.disableBehaviour(childNode, ASPECT_WEBASSET);
                     behaviourFilter.disableBehaviour(childNode, ContentModel.ASPECT_AUDITABLE);
+                    Pair<NodeRef, String> channelInfo = ChannelHelper.findChannelAndType(childNode, nodeService, dictionaryService);
+                    if (channelInfo != null)
+                    {
+                        nodeService.setProperty(childNode, PROP_CHANNEL, channelInfo.getFirst());
+                        nodeService.setProperty(childNode, PROP_CHANNEL_TYPE, channelInfo.getSecond());
+                    }
                     nodeService.setProperty(childNode, PROP_PARENT_SECTIONS, parentSections);
                     nodeService.setProperty(childNode, PROP_ANCESTOR_SECTIONS, knownAncestors);
                 }
@@ -208,6 +219,9 @@ public class SectionHierarchyProcessor implements WebSiteModel
                             log.debug("Section child is a web asset (" + childNode + "). Setting parent section ids:  "
                                     + parentSections);
                         }
+                        Pair<NodeRef, String> channelInfo = ChannelHelper.findChannelAndType(childNode, nodeService, dictionaryService);
+                        nodeService.setProperty(childNode, PROP_CHANNEL, channelInfo.getFirst());
+                        nodeService.setProperty(childNode, PROP_CHANNEL_TYPE, channelInfo.getSecond());
                         nodeService.setProperty(childNode, PROP_PARENT_SECTIONS, parentSections);
                         nodeService.setProperty(childNode, PROP_ANCESTOR_SECTIONS, new ArrayList<NodeRef>(
                                 ancestorSections));

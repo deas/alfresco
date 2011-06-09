@@ -7,4 +7,18 @@
   <transaction allow="readonly">required</transaction>
   <lifecycle>internal</lifecycle>
   <family>SOLR</family>
+  <args>
+    <arg>
+      <name>fromId</name>
+      <description>Smallest changset ID (inclusive)</description>
+    </arg> 
+    <arg>
+      <name>fromTime</name>
+      <description>Smallest commit time (inclusive)</description>
+    </arg> 
+    <arg>
+      <name>maxResults</name>
+      <description>Maximum number of results (optional: default 1024)</description>
+    </arg> 
+ </args>
 </webscript>

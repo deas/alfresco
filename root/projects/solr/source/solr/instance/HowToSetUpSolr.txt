@@ -1,0 +1,32 @@
+This directory contains a basic test SOLR install with one core configured to track a local Alfresco instance.
+
+Copy 
+
+solr-tomcat-context.xml 
+
+to 
+
+apache-tomcat-6.0.26\conf\Catalina\localhost\solr.xml
+
+Edit the file and set:
+
+1) docBase to the solr war file in this directory (or a copy)
+2) solr/home environment to this directory or a copy
+
+When you start up you should get a solr dtaa director (./solr/data relative to the current directory)  that contains the SOLR index. 
+SOLR will automatically start to track Alfresco.
+
+
+Please delete the SOLR data dir everytime you update this distribution directory as it may invalidate the state of the index :-)
+
+
+See: http://wiki.apache.org/solr/SolrTomcat for more ....
+
+
+e.g.
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<Context docBase="W:/alfresco/BRANCHES/DEV/SWIFT/root/projects/solr/source/solr/instance/apache-solr-1.4.1.war" debug="0" crossContext="true">
+  <Environment name="solr/home" type="java.lang.String" value="W:/alfresco/BRANCHES/DEV/SWIFT/root/projects/solr/source/solr/instance" override="true"/>
+</Context>

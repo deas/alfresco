@@ -40,7 +40,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.dictionary.IndexTokenisationMode;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
@@ -60,7 +61,7 @@ import org.alfresco.solr.client.PropertyValue;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
-import org.alfresco.solr.client.Node.STATUS;
+import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.alfresco.util.Pair;
 import org.alfresco.util.TempFileProvider;
@@ -242,7 +243,7 @@ public class CoreTracker
                         if (!indexing)
                         {
                             String target = NumericEncoder.encode(info.getId());
-                            TermEnum termEnum = reader.terms(new Term(LuceneQueryParser.FIELD_TXID, target));
+                            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
                             Term term = termEnum.term();
                             termEnum.close();
                             if (term == null)
@@ -388,9 +389,9 @@ public class CoreTracker
         cmd.overwriteCommitted = true;
         cmd.overwritePending = true;
         SolrInputDocument input = new SolrInputDocument();
-        input.addField(LuceneQueryParser.FIELD_ID, "TX-" + info.getId());
-        input.addField(LuceneQueryParser.FIELD_TXID, info.getId());
-        input.addField(LuceneQueryParser.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
+        input.addField(AbstractLuceneQueryParser.FIELD_ID, "TX-" + info.getId());
+        input.addField(AbstractLuceneQueryParser.FIELD_TXID, info.getId());
+        input.addField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
         cmd.solrDoc = input;
         cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
         core.getUpdateHandler().addDoc(cmd);
@@ -403,7 +404,7 @@ public class CoreTracker
      */
     private void indexNode(AlfrescoSolrDataModel dataModel, Node node) throws IOException
     {
-        if (node.getStatus() == STATUS.UPDATED)
+        if (node.getStatus() == SolrApiNodeStatus.UPDATED)
         {
             System.out.println(".. updating");
             NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
@@ -426,8 +427,8 @@ public class CoreTracker
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
                     SolrInputDocument doc = new SolrInputDocument();
-                    doc.addField(LuceneQueryParser.FIELD_ID, "LEAF-" + node.getId());
-                    doc.addField(LuceneQueryParser.FIELD_DBID, node.getId());
+                    doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + node.getId());
+                    doc.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
 
                     Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
                     for (QName propertyQname : properties.keySet())
@@ -441,7 +442,7 @@ public class CoreTracker
                             }
                             else if (value instanceof MLTextPropertyValue)
                             {
-                                addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value);
+                                addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value, dataModel);
                             }
                             else if (value instanceof MultiPropertyValue)
                             {
@@ -454,7 +455,7 @@ public class CoreTracker
                                     }
                                     else if (singleValue instanceof MLTextPropertyValue)
                                     {
-                                        addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) singleValue);
+                                        addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) singleValue, dataModel);
 
                                     }
                                     else if (singleValue instanceof StringPropertyValue)
@@ -470,24 +471,24 @@ public class CoreTracker
 
                         }
                     }
-                    doc.addField(LuceneQueryParser.FIELD_TYPE, nodeMetaData.getType().toString());
+                    doc.addField(AbstractLuceneQueryParser.FIELD_TYPE, nodeMetaData.getType().toString());
                     for (QName aspect : nodeMetaData.getAspects())
                     {
-                        doc.addField(LuceneQueryParser.FIELD_ASPECT, aspect.toString());
+                        doc.addField(AbstractLuceneQueryParser.FIELD_ASPECT, aspect.toString());
                     }
-                    doc.addField(LuceneQueryParser.FIELD_ISNODE, "T");
+                    doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
 
                     leafDocCmd.solrDoc = doc;
                     leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
                     SolrInputDocument aux = new SolrInputDocument();
-                    aux.addField(LuceneQueryParser.FIELD_ID, "AUX-" + node.getId());
-                    aux.addField(LuceneQueryParser.FIELD_DBID, node.getId());
-                    aux.addField(LuceneQueryParser.FIELD_ACLID, nodeMetaData.getAclId());
+                    aux.addField(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + node.getId());
+                    aux.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
+                    aux.addField(AbstractLuceneQueryParser.FIELD_ACLID, nodeMetaData.getAclId());
 
                     for (Pair<String, QName> path : nodeMetaData.getPaths())
                     {
-                        aux.addField(LuceneQueryParser.FIELD_PATH, path.getFirst());
+                        aux.addField(AbstractLuceneQueryParser.FIELD_PATH, path.getFirst());
                     }
 
                     StringPropertyValue owner = (StringPropertyValue) properties.get(ContentModel.PROP_OWNER);
@@ -497,7 +498,7 @@ public class CoreTracker
                     }
                     if (owner != null)
                     {
-                        aux.addField(LuceneQueryParser.FIELD_OWNER, owner.getValue());
+                        aux.addField(AbstractLuceneQueryParser.FIELD_OWNER, owner.getValue());
                     }
 
                     auxDocCmd.solrDoc = aux;
@@ -532,7 +533,7 @@ public class CoreTracker
             }
 
         }
-        else if (node.getStatus() == STATUS.DELETED)
+        else if (node.getStatus() == SolrApiNodeStatus.DELETED)
         {
             System.out.println(".. deleting");
             DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
@@ -546,27 +547,28 @@ public class CoreTracker
     private void addContentPropertyToDoc(SolrInputDocument doc, ArrayList<Reader> toClose, ArrayList<File> toDelete, Node node, QName propertyQName,
             ContentPropertyValue contentPropertyValue) throws IOException
     {
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".contentDataId", contentPropertyValue.getId());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".contentDataId", contentPropertyValue.getId());
         GetTextContentResponse response = client.getTextContent(node.getId(), propertyQName, null);
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getRequestDuration());
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationException", response.getTransformException());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getRequestDuration());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationException", response.getTransformException());
 
         InputStreamReader isr = null;
         InputStream ris = response.getContent();
 
         if (ris != null)
         {
+            // Get and copy content
             File temp = TempFileProvider.createTempFile("solr", "content");
             toDelete.add(temp);
             OutputStream os = new BufferedOutputStream(new FileOutputStream(temp));
             FileCopyUtils.copy(ris, os);
-            // All closed
 
+            // Localised
             ris = new BufferedInputStream(new FileInputStream(temp));
 
             try
@@ -583,8 +585,9 @@ public class CoreTracker
             builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
             StringReader prefix = new StringReader(builder.toString());
             Reader multiReader = new MultiReader(prefix, isr);
-            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
+            doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
 
+            // Cross language search support
             ris = new BufferedInputStream(new FileInputStream(temp));
 
             try
@@ -597,28 +600,56 @@ public class CoreTracker
             }
             toClose.add(isr);
 
-            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", isr);
+            builder = new StringBuilder();
+            builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
+            prefix = new StringReader(builder.toString());
+            multiReader = new MultiReader(prefix, isr);
+            doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", multiReader);
         }
     }
 
-    private void addMLTextPropertyToDoc(SolrInputDocument doc, QName propertyQName, MLTextPropertyValue mlTextPropertyValue) throws IOException
+    private void addMLTextPropertyToDoc(SolrInputDocument doc, QName propertyQName, MLTextPropertyValue mlTextPropertyValue, AlfrescoSolrDataModel dataModel) throws IOException
     {
-        StringBuilder sort = new StringBuilder();
-        for (Locale locale : mlTextPropertyValue.getLocales())
+        PropertyDefinition propertyDefinition = dataModel.getDictionaryService().getProperty(propertyQName);
+        if (propertyDefinition != null)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.append("\u0000").append(locale.toString()).append("\u0000").append(mlTextPropertyValue.getValue(locale));
-            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
-            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
-            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
-            if (sort.length() > 0)
+            StringBuilder sort = new StringBuilder();
+            for (Locale locale : mlTextPropertyValue.getLocales())
             {
-                sort.append("\u0000");
+                StringBuilder builder = new StringBuilder();
+                builder.append("\u0000").append(locale.toString()).append("\u0000").append(mlTextPropertyValue.getValue(locale));
+
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                {
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
+                }
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                {
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
+                }
+
+                if (sort.length() > 0)
+                {
+                    sort.append("\u0000");
+                }
+                sort.append(builder.toString());
             }
-            sort.append(builder.toString());
+
+            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+            {
+                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
+            }
         }
-        doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
+        else
+        {
+            for (Locale locale : mlTextPropertyValue.getLocales())
+            {
+                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), mlTextPropertyValue.getValue(locale));
+            }
+        }
+
     }
 
     private void addStringPropertyToDoc(SolrInputDocument doc, QName propertyQName, StringPropertyValue stringPropertyValue, AlfrescoSolrDataModel dataModel,
@@ -629,8 +660,8 @@ public class CoreTracker
         {
             if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
             {
-                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", stringPropertyValue.getValue());
-                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", stringPropertyValue.getValue());
             }
             else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
             {
@@ -648,25 +679,34 @@ public class CoreTracker
                 }
 
                 StringBuilder builder;
-
                 builder = new StringBuilder();
                 builder.append("\u0000").append(locale.toString()).append("\u0000").append(stringPropertyValue.getValue());
-                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
-                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
-                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
-                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", builder.toString());
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                {
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
+                }
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                {
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
+                }
+
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                {
+                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", builder.toString());
+                }
 
             }
             else
             {
-                doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
             }
 
         }
         else
         {
-            doc.addField(LuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+            doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
         }
     }
 
@@ -717,7 +757,7 @@ public class CoreTracker
             for (long i = 0; i <= maxTxId + 10; i++)
             {
                 String target = NumericEncoder.encode(i);
-                TermEnum termEnum = reader.terms(new Term(LuceneQueryParser.FIELD_TXID, target));
+                TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
                 Term term = termEnum.term();
                 termEnum.close();
                 if (term == null)
@@ -729,7 +769,7 @@ public class CoreTracker
                 }
                 else
                 {
-                    if (term.field().equals(LuceneQueryParser.FIELD_TXID))
+                    if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
                     {
                         if (target.equals(term.text()))
                         {
@@ -767,14 +807,14 @@ public class CoreTracker
             }
             // count terms and check for duplicates
             int count = 0;
-            TermEnum termEnum = reader.terms(new Term(LuceneQueryParser.FIELD_TXID, ""));
+            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, ""));
             do
             {
                 Term term = termEnum.term();
-                if (term.field().equals(LuceneQueryParser.FIELD_TXID))
+                if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
                 {
                     int docCount = 0;
-                    TermDocs termDocs = reader.termDocs(new Term(LuceneQueryParser.FIELD_TXID, term.text()));
+                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_TXID, term.text()));
                     while (termDocs.next())
                     {
                         if (!reader.isDeleted(termDocs.doc()))
@@ -801,14 +841,14 @@ public class CoreTracker
             indexHealthReport.setTransactionDocsInIndex(count);
 
             int leafCount = 0;
-            termEnum = reader.terms(new Term(LuceneQueryParser.FIELD_ID, "LEAF-"));
+            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "LEAF-"));
             do
             {
                 Term term = termEnum.term();
-                if (term.field().equals(LuceneQueryParser.FIELD_ID) && term.text().startsWith("LEAF-"))
+                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("LEAF-"))
                 {
                     int docCount = 0;
-                    TermDocs termDocs = reader.termDocs(new Term(LuceneQueryParser.FIELD_ID, term.text()));
+                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
                     while (termDocs.next())
                     {
                         if (!reader.isDeleted(termDocs.doc()))
@@ -850,7 +890,7 @@ public class CoreTracker
     {
         long lastTxCommitTimeBeforeHoles = 0;
 
-        TermEnum termEnum = reader.terms(new Term(LuceneQueryParser.FIELD_TXCOMMITTIME, ""));
+        TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, ""));
         do
         {
             Term term = termEnum.term();
@@ -858,7 +898,7 @@ public class CoreTracker
             {
                 break;
             }
-            if (term.field().equals(LuceneQueryParser.FIELD_TXCOMMITTIME))
+            if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME))
             {
                 Long txCommitTime = NumericEncoder.decodeLong(term.text());
                 if (txCommitTime < cutOffTime)
@@ -886,11 +926,11 @@ public class CoreTracker
         long txid = -1;
         if (lastTxCommitTimeBeforeHoles != -1)
         {
-            TermDocs docs = reader.termDocs(new Term(LuceneQueryParser.FIELD_TXCOMMITTIME, NumericEncoder.encode(lastTxCommitTimeBeforeHoles)));
+            TermDocs docs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, NumericEncoder.encode(lastTxCommitTimeBeforeHoles)));
             while (docs.next())
             {
                 Document doc = reader.document(docs.doc());
-                Fieldable field = doc.getFieldable(LuceneQueryParser.FIELD_TXID);
+                Fieldable field = doc.getFieldable(AbstractLuceneQueryParser.FIELD_TXID);
                 if (field != null)
                 {
                     long currentTxId = Long.valueOf(field.stringValue());
@@ -910,7 +950,7 @@ public class CoreTracker
 
         try
         {
-            TermEnum termEnum = reader.terms(new Term(LuceneQueryParser.FIELD_TXCOMMITTIME, ""));
+            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, ""));
             do
             {
                 Term term = termEnum.term();
@@ -918,7 +958,7 @@ public class CoreTracker
                 {
                     break;
                 }
-                if (term.field().equals(LuceneQueryParser.FIELD_TXCOMMITTIME))
+                if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME))
                 {
                     Long txCommitTime = NumericEncoder.decodeLong(term.text());
                     lastTxCommitTime = txCommitTime;

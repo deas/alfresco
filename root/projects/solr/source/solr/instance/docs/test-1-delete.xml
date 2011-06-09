@@ -1,0 +1,19 @@
+<delete>
+  <query><![CDATA[{!alfresco v=ID:Root}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-1}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-2}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-3}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-4}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-5}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-6}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-7}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-8}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-9}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-10}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-11}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-12}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-13}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-14}]]></query>
+  <query><![CDATA[{!alfresco v=ID:Doc-15}]]></query>
+</delete>
+

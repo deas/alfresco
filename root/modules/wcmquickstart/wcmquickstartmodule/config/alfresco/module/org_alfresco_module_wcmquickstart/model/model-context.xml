@@ -148,5 +148,6 @@
       init-method="init">
       <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
       <property name="policyComponent" ref="policyComponent" />
+      <property name="nodeService" ref="nodeService" />
    </bean>
 </beans>

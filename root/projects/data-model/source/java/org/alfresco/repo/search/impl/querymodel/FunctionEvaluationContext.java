@@ -20,18 +20,12 @@ package org.alfresco.repo.search.impl.querymodel;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
-import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContextImpl;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.namespace.QName;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
 
@@ -81,7 +75,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneEquality(LuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
+    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
 
     /**
      * Note: null and not null are not required to support functions from the spec
@@ -91,7 +85,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneExists(LuceneQueryParser lqp, String propertyName, Boolean not) throws ParseException;
+    public Query buildLuceneExists(AbstractLuceneQueryParser lqp, String propertyName, Boolean not) throws ParseException;
 
     /**
      * @param lqp
@@ -102,7 +96,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneGreaterThan(LuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
+    public Query buildLuceneGreaterThan(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
 
     /**
      * @param lqp
@@ -113,7 +107,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneGreaterThanOrEquals(LuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
+    public Query buildLuceneGreaterThanOrEquals(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
 
     /**
      * @param lqp
@@ -124,7 +118,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneLessThan(LuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
+    public Query buildLuceneLessThan(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
 
     /**
      * @param lqp
@@ -135,7 +129,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneLessThanOrEquals(LuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
+    public Query buildLuceneLessThanOrEquals(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
 
     /**
      * Note: Like is not required to support functions from the spec
@@ -146,7 +140,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneLike(LuceneQueryParser lqp, String propertyName, Serializable value, Boolean not) throws ParseException;
+    public Query buildLuceneLike(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, Boolean not) throws ParseException;
 
     /**
      * @param lqp
@@ -157,7 +151,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneInequality(LuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
+    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException;
 
     /**
      * Note: In is not required to support functions from the spec
@@ -169,7 +163,7 @@ public interface FunctionEvaluationContext
      * @return the query
      * @throws ParseException
      */
-    public Query buildLuceneIn(LuceneQueryParser lqp, String propertyName, Collection<Serializable> values, Boolean not, PredicateMode mode) throws ParseException;
+    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, String propertyName, Collection<Serializable> values, Boolean not, PredicateMode mode) throws ParseException;
 
     /**
      * @param propertyName
@@ -179,7 +173,7 @@ public interface FunctionEvaluationContext
      * @param reader 
      * @return the field used for sorting the given property
      */
-    public String getLuceneSortField(LuceneQueryParser lqp, String propertyName);
+    public String getLuceneSortField(AbstractLuceneQueryParser lqp, String propertyName);
     
     /**
      * @param propertyName

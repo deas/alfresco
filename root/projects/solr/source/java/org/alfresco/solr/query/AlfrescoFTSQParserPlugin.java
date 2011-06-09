@@ -25,7 +25,7 @@ import java.io.Reader;
 import java.util.Locale;
 
 import org.alfresco.repo.search.MLAnalysisMode;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchParameters.Operator;
@@ -33,7 +33,6 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.SolrParams;
@@ -42,7 +41,6 @@ import org.apache.solr.common.util.NamedList;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.QParserPlugin;
-import org.apache.solr.search.QueryParsing;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,7 +80,7 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
 
         private static final String AUTHORITY_FILTER_FROM_JSON = "AUTHORITY_FILTER_FROM_JSON";
 
-        LuceneQueryParser lqp;
+        AbstractLuceneQueryParser lqp;
 
         public AlfrescoFTSQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
         {
@@ -161,15 +159,6 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
                         String localeString = locales.getString(i);
                         Locale locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localeString);
                         searchParameters.addLocale(locale);
-                    }
-
-                    JSONArray sort = json.getJSONArray("sort");
-                    for (int i = 0; i < sort.length(); i++)
-                    {
-                        JSONObject ordering = sort.getJSONObject(i);
-                        String field = ordering.getString("field");
-                        boolean isAscending = ordering.getBoolean("isAscending");
-                        searchParameters.addSort(field, isAscending);
                     }
 
                     JSONArray templates = json.getJSONArray("templates");

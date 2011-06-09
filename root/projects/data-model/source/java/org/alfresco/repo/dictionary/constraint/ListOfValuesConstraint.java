@@ -28,6 +28,8 @@ import org.alfresco.service.cmr.dictionary.ConstraintException;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.repository.datatype.TypeConversionException;
+import org.springframework.extensions.surf.util.I18NUtil;
+import org.springframework.util.StringUtils;
 
 /**
  * Constraint implementation that ensures the value is one of a constrained
@@ -40,6 +42,13 @@ import org.alfresco.service.cmr.repository.datatype.TypeConversionException;
  */
 public class ListOfValuesConstraint extends AbstractConstraint
 {
+    private static final String LOV_CONSTRAINT_VALUE = "listconstraint";
+    public static final String CONSTRAINT_TYPE = "LIST";
+    
+    public static final String CASE_SENSITIVE_PARAM = "caseSensitive";
+    public static final String ALLOWED_VALUES_PARAM = "allowedValues";
+    public static final String SORTED_PARAM = "sorted";
+    
     private static final String ERR_NO_VALUES = "d_dictionary.constraint.list_of_values.no_values";
     private static final String ERR_NON_STRING = "d_dictionary.constraint.string_length.non_string";
     private static final String ERR_INVALID_VALUE = "d_dictionary.constraint.list_of_values.invalid_value";
@@ -61,7 +70,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
     @Override
     public String getType()
     {
-        return "LIST";
+        return CONSTRAINT_TYPE;
     }
     
     @Override
@@ -109,6 +118,43 @@ public class ListOfValuesConstraint extends AbstractConstraint
     {
     	return allowedValues;
     }
+    
+    /**
+     * Get the display label for the specified allowable value in this constraint.
+     * A key is constructed as follows:
+     * <pre>
+     *   "listconstraint." + constraintName + "." + constraintAllowableValue.
+     *   e.g. listconstraint.test_listConstraintOne.VALUE_ONE.
+     * </pre>
+     * This key is then used to look up a properties bundle for the localised display label.
+     * Spaces are allowed in the keys, but they should be escaped in the properties file as follows:
+     * <pre>
+     * listconstraint.test_listConstraintOne.VALUE\ WITH\ SPACES=Display label
+     * </pre>
+     * 
+     * @param constraintAllowableValue
+     * @return the localised display label for the specified constraint value in the current locale.
+     *         If no localisation is defined, it will return the allowed value itself.
+     *         If the specified allowable value is not in the model, returns <code>null</code>.
+     * @since 4.0
+     * @see I18NUtil#getLocale()
+     */
+    public String getDisplayLabel(String constraintAllowableValue)
+    {
+        if (!this.allowedValues.contains(constraintAllowableValue))
+        {
+            return null;
+        }
+        
+        String key = LOV_CONSTRAINT_VALUE;
+        key += "." + this.getShortName();
+        key += "." + constraintAllowableValue;
+        key = StringUtils.replace(key, ":", "_");
+        
+        String message = I18NUtil.getMessage(key, I18NUtil.getLocale());
+        return message == null ? constraintAllowableValue : message;
+    }
+
     
     /**
      * Set the values that are allowed by the constraint.
@@ -182,7 +228,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
     public void initialize()
     {
         super.initialize();
-        checkPropertyNotNull("allowedValues", allowedValues);
+        checkPropertyNotNull(ALLOWED_VALUES_PARAM, allowedValues);
     }
     
     /**
@@ -193,9 +239,9 @@ public class ListOfValuesConstraint extends AbstractConstraint
     {
         Map<String, Object> params = new HashMap<String, Object>(2);
         
-        params.put("caseSensitive", this.caseSensitive);
-        params.put("allowedValues", this.allowedValues);
-        params.put("sorted", this.sorted);
+        params.put(CASE_SENSITIVE_PARAM, this.caseSensitive);
+        params.put(ALLOWED_VALUES_PARAM, this.allowedValues);
+        params.put(SORTED_PARAM, this.sorted);
         
         return params;
     }

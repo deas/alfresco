@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.alfresco.repo.search.impl.querymodel.Constraint;
 import org.alfresco.repo.search.impl.querymodel.Disjunction;
-import org.alfresco.repo.search.impl.querymodel.Constraint.Occur;
 
 /**
  * @author andyh
