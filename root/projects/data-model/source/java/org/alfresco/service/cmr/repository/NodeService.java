@@ -656,16 +656,29 @@ public interface NodeService
             final QName assocTypeQName);
 
     /**
-     * 
-     * @param sourceRef a reference to a <b>real</b> node
-     * @param targetRef a reference to a node
-     * @param assocTypeQName the qualified name of the association type
-     * @return Returns a reference to the new association
-     * @throws InvalidNodeRefException if either of the nodes could not be found
-     * @throws AssociationExistsException
+     * @see #createAssociation(NodeRef, NodeRef, QName, Long)
      */
     @Auditable(parameters = {"sourceRef", "targetRef", "assocTypeQName"})
     public AssociationRef createAssociation(NodeRef sourceRef, NodeRef targetRef, QName assocTypeQName)
+            throws InvalidNodeRefException, AssociationExistsException;
+    
+    /**
+     * Create a peer association between two nodes, optionally specifying the ordering.
+     * <p/>
+     * Note that inserting the association into a specific location is more expensive than
+     * specifying the natural ordering (<tt>null</tt>).
+     * 
+     * @param sourceRef                 a reference to a <b>real</b> node
+     * @param targetRef                 a reference to a node
+     * @param assocTypeQName            the qualified name of the association type
+     * @param insertAfter               the ID of an existing association to preceed the new association
+     *                                  (<tt>null</tt>: insert at end; <tt>0</tt>: insert at start)
+     * @return                          Returns a reference to the new association
+     * @throws InvalidNodeRefException  if either of the nodes could not be found
+     * @throws AssociationExistsException
+     */
+    @Auditable(parameters = {"sourceRef", "targetRef", "assocTypeQName", "insertAfter"})
+    public AssociationRef createAssociation(NodeRef sourceRef, NodeRef targetRef, QName assocTypeQName, Long insertAfter)
             throws InvalidNodeRefException, AssociationExistsException;
     
     /**
