@@ -7,18 +7,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
             {key:"action",label:"Action", sortable:false},
         ];
    
-        this.myDataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("languages"));
-        this.myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
-        this.myDataSource.responseSchema = {
-            fields: [{key:"lang"},
-                    {key:"name"},
-                    {key:"action"}
-            ]
-        };
+        this.myDataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("languages"),
+         {
+            responseType: YAHOO.util.DataSource.TYPE_HTMLTABLE,
+            responseSchema : {
+               fields: [{key:"lang"},
+                  {key:"name"},
+                  {key:"action"}
+	           ]
+            }
+         });
 
-        this.myDataTable = new Alfresco.util.DataTable("markup", myColumnDefs, this.myDataSource,
-                {}
-        );
+        this.myDataTable = new YAHOO.widget.DataTable("${args.htmlid}-markup", myColumnDefs, this.myDataSource);
     };
 });
 
@@ -69,7 +69,7 @@ margin:1em 0;
    </#if>
 
 	<h2>Translations</h2>
-	<div id="markup">
+	<div id="${args.htmlid}-markup">
 		<table id="languages">
 			<thead> 
 				<tr>

@@ -344,7 +344,7 @@ public class CannedQueryTest extends TestCase
         protected PagingResults<T> applyPostQueryPermissions(List<T> results, String authenticationToken, int requestedCount)
         {
             boolean cutoffAllowed = (getParameters().requestTotalResultCountMax() == 0);
-            boolean cutoff = false;
+            boolean hasMoreItems = false;
             
             final List<T> ret = new ArrayList<T>(results.size());
             for (T t : results)
@@ -356,12 +356,12 @@ public class CannedQueryTest extends TestCase
                 // Cut off if we have enough results
                 if (cutoffAllowed && ret.size() == requestedCount)
                 {
-                    cutoff = true;
+                    hasMoreItems = true;
                     break;
                 }
             }
             
-            final boolean finalCutoff = cutoff;
+            final boolean finalHasMoreItems = hasMoreItems;
             final int finalCount = ret.size();
             
             return new PagingResults<T>()
@@ -375,7 +375,7 @@ public class CannedQueryTest extends TestCase
                     @Override
                     public Pair<Integer, Integer> getTotalResultCount()
                     {
-                        return new Pair<Integer, Integer>(finalCount, ((! finalCutoff) ? finalCount : null));
+                        return new Pair<Integer, Integer>(finalCount, ((! finalHasMoreItems) ? finalCount : null));
                     }
                     
                     @Override
@@ -385,9 +385,15 @@ public class CannedQueryTest extends TestCase
                     }
                     
                     @Override
-                    public Boolean hasMoreItems()
+                    public boolean hasMoreItems()
                     {
-                        return (! finalCutoff);
+                        return finalHasMoreItems;
+                    }
+                    
+                    @Override
+                    public boolean permissionsApplied()
+                    {
+                        return true;
                     }
                 };
         }

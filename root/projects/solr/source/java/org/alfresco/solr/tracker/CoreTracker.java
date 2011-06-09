@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
@@ -46,10 +47,15 @@ import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.NodeReport;
+import org.alfresco.solr.client.Acl;
+import org.alfresco.solr.client.AclChangeSet;
+import org.alfresco.solr.client.AclReaders;
 import org.alfresco.solr.client.ContentPropertyValue;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.MLTextPropertyValue;
@@ -63,6 +69,7 @@ import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
+import org.alfresco.util.EqualsHelper;
 import org.alfresco.util.Pair;
 import org.alfresco.util.TempFileProvider;
 import org.apache.lucene.document.Document;
@@ -71,6 +78,10 @@ import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
@@ -81,6 +92,8 @@ import org.apache.solr.schema.CopyField;
 import org.apache.solr.schema.DateField;
 import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.schema.SchemaField;
+import org.apache.solr.search.DocIterator;
+import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexReader;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
@@ -110,15 +123,85 @@ public class CoreTracker
 
     SolrCore core;
 
+    private String url;
+
+    private String user;
+
+    private String password;
+
+    private String cron;
+
+    private StoreRef storeRef;
+
+    private long lag;
+
+    private long holeRetention;
+
+    private long batchCount;
+
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
         super();
         this.core = core;
 
+        try
+        {
+            List<String> lines = core.getResourceLoader().getLines("solrcore.properties");
+            for (String line : lines)
+            {
+                if ((line.length() == 0) || (line.startsWith("#")))
+                {
+                    continue;
+                }
+                String[] split = line.split("=", 2);
+                if (split.length != 2)
+                {
+                    return;
+                }
+                if (split[0].equals("alfresco.url"))
+                {
+                    url = split[1];
+                }
+                else if (split[0].equals("alfresco.user"))
+                {
+                    user = split[1];
+                }
+                else if (split[0].equals("alfresco.password"))
+                {
+                    password = split[1];
+                }
+                else if (split[0].equals("alfresco.cron"))
+                {
+                    cron = split[1];
+                }
+                else if (split[0].equals("alfresco.stores"))
+                {
+                    storeRef = new StoreRef(split[1]);
+                }
+                else if (split[0].equals("alfresco.lag"))
+                {
+                    lag = Long.parseLong(split[1]);
+                }
+                else if (split[0].equals("alfresco.hole.retention"))
+                {
+                    holeRetention = Long.parseLong(split[1]);
+                }
+                else if (split[0].equals("alfresco.batch.count"))
+                {
+                    batchCount = Long.parseLong(split[1]);
+                }
+
+            }
+        }
+        catch (IOException e1)
+        {
+            throw new AlfrescoRuntimeException("Error reading alfrecso core config for " + core.getName());
+        }
+
         String id = core.getSchema().getResourceLoader().getInstanceDir();
 
         AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
-        client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(), "http://localhost:8080/alfresco/service", "admin", "admin");
+        client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(), url, user, password);
 
         JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
         JobDataMap jobDataMap = new JobDataMap();
@@ -127,7 +210,7 @@ public class CoreTracker
         Trigger trigger;
         try
         {
-            trigger = new CronTrigger("CoreTrackerTrigger" + core.getName(), "Solr", "0/15 * * * * ? *");
+            trigger = new CronTrigger("CoreTrackerTrigger" + core.getName(), "Solr", cron);
             adminHandler.getScheduler().scheduleJob(job, trigger);
         }
         catch (ParseException e)
@@ -186,6 +269,7 @@ public class CoreTracker
             RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
 
             boolean indexing = false;
+            boolean aclIndexing = false;
             try
             {
                 SolrIndexSearcher solrIndexSearcher = refCounted.get();
@@ -197,9 +281,9 @@ public class CoreTracker
                 }
 
                 long startTime = System.currentTimeMillis();
-                long timeToStopIndexing = startTime - 1000L;
-                long timeBeforeWhichThereCanBeNoHoles = startTime - (60 * 60 * 1000);
-                long timeBeforeWhichThereCanBeNoHolesInIndex = lastIndexedCommitTime - (60 * 60 * 1000);
+                long timeToStopIndexing = startTime - lag;
+                long timeBeforeWhichThereCanBeNoHoles = startTime - holeRetention;
+                long timeBeforeWhichThereCanBeNoHolesInIndex = lastIndexedCommitTime - holeRetention;
                 long lastGoodTxCommitTimeInIndex = getLastTxCommitTimeBeforeHoles(reader, timeBeforeWhichThereCanBeNoHolesInIndex);
 
                 if (lastIndexedIdBeforeHoles == -1)
@@ -216,6 +300,82 @@ public class CoreTracker
                 }
 
                 long lastTxCommitTime = lastGoodTxCommitTimeInIndex;
+                long aclLastCommitTime = lastGoodTxCommitTimeInIndex;
+
+                // Track Acls up to end point
+                long aclLoopStartingCommitTime;
+                List<AclChangeSet> aclChangeSets;
+                boolean aclsUpToDate = false;
+                do
+                {
+                    aclLoopStartingCommitTime = aclLastCommitTime;
+                    aclChangeSets = client.getAclChangeSets(aclLastCommitTime, null, 2000);
+
+                    System.out.println("Scanning Acl change sets ...");
+                    if (aclChangeSets.size() > 0)
+                    {
+                        System.out.println(".... from " + aclChangeSets.get(0));
+                        System.out.println(".... to " + aclChangeSets.get(aclChangeSets.size() - 1));
+                    }
+                    else
+                    {
+                        System.out.println(".... non found after lastTxCommitTime " + aclLastCommitTime);
+                    }
+
+                    for (AclChangeSet changeSet : aclChangeSets)
+                    {
+                        if (!aclIndexing)
+                        {
+                            String target = NumericEncoder.encode(changeSet.getId());
+                            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
+                            Term term = termEnum.term();
+                            termEnum.close();
+                            if (term == null)
+                            {
+                                aclIndexing = true;
+                            }
+                            else
+                            {
+                                if (target.equals(term.text()))
+                                {
+                                    aclLastCommitTime = changeSet.getCommitTimeMs();
+                                }
+                                else
+                                {
+                                    aclIndexing = true;
+                                }
+                            }
+                        }
+
+                        if (aclIndexing)
+                        {
+                            // Make sure we do not go ahead of where we started - we will check the holes here
+                            // correctly next time
+                            if (changeSet.getCommitTimeMs() > timeToStopIndexing)
+                            {
+                                aclsUpToDate = true;
+                            }
+                            else
+                            {
+                                indexAclTransaction(dataModel, changeSet);
+                                List<Acl> acls = client.getAcls(Collections.singletonList(changeSet), null, Integer.MAX_VALUE);
+                                for (Acl acl : acls)
+                                {
+                                    List<AclReaders> readers = client.getAclReaders(Collections.singletonList(acl));
+                                    indexAcl(dataModel, readers);
+                                }
+
+                                aclLastCommitTime = changeSet.getCommitTimeMs();
+                            }
+                        }
+                    }
+                }
+                while ((aclChangeSets.size() > 0) && (aclsUpToDate == false) && (aclLoopStartingCommitTime < aclLastCommitTime));
+
+                if (aclIndexing)
+                {
+                    core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                }
 
                 boolean upToDate = false;
                 ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
@@ -279,8 +439,8 @@ public class CoreTracker
                                 ArrayList<Long> txs = new ArrayList<Long>();
                                 txs.add(info.getId());
                                 gnp.setTransactionIds(txs);
-                                gnp.setStoreProtocol("workspace");
-                                gnp.setStoreIdentifier("SpacesStore");
+                                gnp.setStoreProtocol(storeRef.getProtocol());
+                                gnp.setStoreIdentifier(storeRef.getIdentifier());
                                 List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
                                 for (Node node : nodes)
                                 {
@@ -299,7 +459,7 @@ public class CoreTracker
                             }
                         }
                         // could batch commit here
-                        if (docCount > 1000)
+                        if (docCount > batchCount)
                         {
                             core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                             docCount = 0;
@@ -357,7 +517,7 @@ public class CoreTracker
 
             if (check)
             {
-                checkIndex();
+                checkIndex(null, null, null, null, null, null);
             }
         }
         catch (IOException e1)
@@ -379,6 +539,31 @@ public class CoreTracker
     }
 
     /**
+     * @param acl
+     * @param readers
+     */
+    private void indexAcl(AlfrescoSolrDataModel dataModel, List<AclReaders> aclReaderList) throws IOException
+    {
+
+        for (AclReaders aclReaders : aclReaderList)
+        {
+            AddUpdateCommand cmd = new AddUpdateCommand();
+            cmd.overwriteCommitted = true;
+            cmd.overwritePending = true;
+            SolrInputDocument input = new SolrInputDocument();
+            input.addField(AbstractLuceneQueryParser.FIELD_ID, "ACL-" + aclReaders.getId());
+            input.addField(AbstractLuceneQueryParser.FIELD_ACLID, aclReaders.getId());
+            for (String reader : aclReaders.getReaders())
+            {
+                input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
+            }
+            cmd.solrDoc = input;
+            cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
+            core.getUpdateHandler().addDoc(cmd);
+        }
+    }
+
+    /**
      * @param dataModel
      * @param info
      * @throws IOException
@@ -392,6 +577,25 @@ public class CoreTracker
         input.addField(AbstractLuceneQueryParser.FIELD_ID, "TX-" + info.getId());
         input.addField(AbstractLuceneQueryParser.FIELD_TXID, info.getId());
         input.addField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
+        cmd.solrDoc = input;
+        cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
+        core.getUpdateHandler().addDoc(cmd);
+    }
+
+    /**
+     * @param dataModel
+     * @param info
+     * @throws IOException
+     */
+    private void indexAclTransaction(AlfrescoSolrDataModel dataModel, AclChangeSet changeSet) throws IOException
+    {
+        AddUpdateCommand cmd = new AddUpdateCommand();
+        cmd.overwriteCommitted = true;
+        cmd.overwritePending = true;
+        SolrInputDocument input = new SolrInputDocument();
+        input.addField(AbstractLuceneQueryParser.FIELD_ID, "ACLTX-" + changeSet.getId());
+        input.addField(AbstractLuceneQueryParser.FIELD_ACLTXID, changeSet.getId());
+        input.addField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
         cmd.solrDoc = input;
         cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
         core.getUpdateHandler().addDoc(cmd);
@@ -670,7 +874,7 @@ public class CoreTracker
                 PropertyValue localePropertyValue = properties.get(ContentModel.PROP_LOCALE);
                 if (localePropertyValue != null)
                 {
-                    locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localePropertyValue.toString());
+                    locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, ((StringPropertyValue) localePropertyValue).getValue());
                 }
 
                 if (locale == null)
@@ -715,23 +919,56 @@ public class CoreTracker
      * @throws IOException
      * @throws JSONException
      */
-    public IndexHealthReport checkIndex() throws IOException, JSONException
+    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws IOException, JSONException
     {
 
         IndexHealthReport indexHealthReport = new IndexHealthReport();
+        Long minTxId = null;
+        Long minAclTxId = null;
 
+        // DB TX Count
         OpenBitSet txIdsInDb = new OpenBitSet();
-        long lastTxCommitTime = 0;
+        Long lastTxCommitTime = Long.valueOf(0);
+        if (fromTime != null)
+        {
+            lastTxCommitTime = fromTime;
+        }
         long maxTxId = 0;
 
         long loopStartingCommitTime;
         List<Transaction> transactions;
-        do
+        DO: do
         {
             loopStartingCommitTime = lastTxCommitTime;
-            transactions = client.getTransactions(lastTxCommitTime, null, 2000);
+            transactions = client.getTransactions(lastTxCommitTime, fromTx, 2000);
             for (Transaction info : transactions)
             {
+                // include
+                if (toTime != null)
+                {
+                    if (info.getCommitTimeMs() > toTime.longValue())
+                    {
+                        break DO;
+                    }
+                }
+                if (toTx != null)
+                {
+                    if (info.getId() > toTx.longValue())
+                    {
+                        break DO;
+                    }
+                }
+
+                // bounds for later loops
+                if (minTxId == null)
+                {
+                    minTxId = info.getId();
+                }
+                if (maxTxId < info.getId())
+                {
+                    maxTxId = info.getId();
+                }
+
                 lastTxCommitTime = info.getCommitTimeMs();
                 txIdsInDb.set(info.getId());
             }
@@ -740,7 +977,62 @@ public class CoreTracker
 
         indexHealthReport.setDbTransactionCount(txIdsInDb.cardinality());
 
+        // DB ACL TX Count
+
+        OpenBitSet aclTxIdsInDb = new OpenBitSet();
+        Long lastAclTxCommitTime = Long.valueOf(0);
+        if (fromTime != null)
+        {
+            lastAclTxCommitTime = fromTime;
+        }
+        long maxAclTxId = 0;
+
+        List<AclChangeSet> aclTransactions;
+        DO: do
+        {
+            loopStartingCommitTime = lastAclTxCommitTime;
+            aclTransactions = client.getAclChangeSets(lastAclTxCommitTime, fromAclTx, 2000);
+            for (AclChangeSet set : aclTransactions)
+            {
+                // include
+                if (toTime != null)
+                {
+                    if (set.getCommitTimeMs() > toTime.longValue())
+                    {
+                        break DO;
+                    }
+                }
+                if (toAclTx != null)
+                {
+                    if (set.getId() > toAclTx.longValue())
+                    {
+                        break DO;
+                    }
+                }
+
+                // bounds for later loops
+                if (minAclTxId == null)
+                {
+                    minAclTxId = set.getId();
+                }
+                if (maxAclTxId < set.getId())
+                {
+                    maxAclTxId = set.getId();
+                }
+
+                lastAclTxCommitTime = set.getCommitTimeMs();
+                aclTxIdsInDb.set(set.getId());
+            }
+        }
+        while ((aclTransactions.size() > 0) && (loopStartingCommitTime < lastAclTxCommitTime));
+
+        indexHealthReport.setDbAclTransactionCount(aclTxIdsInDb.cardinality());
+
+        // Index TX Count
+
         OpenBitSet txIdsInIndex = new OpenBitSet();
+
+        OpenBitSet aclTxIdsInIndex = new OpenBitSet();
 
         RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
 
@@ -754,57 +1046,64 @@ public class CoreTracker
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
             SolrIndexReader reader = solrIndexSearcher.getReader();
 
-            for (long i = 0; i <= maxTxId + 10; i++)
+            // Index TX Count
+            if (minTxId != null)
             {
-                String target = NumericEncoder.encode(i);
-                TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
-                Term term = termEnum.term();
-                termEnum.close();
-                if (term == null)
+                for (long i = minTxId; i <= maxTxId; i++)
                 {
-                    if (txIdsInDb.get(i))
+                    String target = NumericEncoder.encode(i);
+                    TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
+                    Term term = termEnum.term();
+                    termEnum.close();
+                    if (term == null)
                     {
-                        indexHealthReport.setMissingFromIndex(i);
-                    }
-                }
-                else
-                {
-                    if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
-                    {
-                        if (target.equals(term.text()))
+                        if (txIdsInDb.get(i))
                         {
-                            if (txIdsInIndex.get(i))
+                            indexHealthReport.setMissingTxFromIndex(i);
+                        }
+                    }
+                    else
+                    {
+                        if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
+                        {
+                            if (target.equals(term.text()))
                             {
-                                indexHealthReport.setDuplicatedInIndex(i);
+                                if (txIdsInIndex.get(i))
+                                {
+                                    indexHealthReport.setDuplicatedTxInIndex(i);
+                                }
+                                else
+                                {
+                                    txIdsInIndex.set(i);
+                                }
+
+                                if (!txIdsInDb.get(i))
+                                {
+                                    indexHealthReport.setTxInIndexButNotInDb(i);
+                                }
                             }
                             else
                             {
-                                txIdsInIndex.set(i);
-                            }
-
-                            if (!txIdsInDb.get(i))
-                            {
-                                indexHealthReport.setInIndexButNotInDb(i);
+                                if (txIdsInDb.get(i))
+                                {
+                                    indexHealthReport.setMissingTxFromIndex(i);
+                                }
                             }
                         }
                         else
                         {
                             if (txIdsInDb.get(i))
                             {
-                                indexHealthReport.setMissingFromIndex(i);
+                                indexHealthReport.setMissingTxFromIndex(i);
                             }
                         }
                     }
-                    else
-                    {
-                        if (txIdsInDb.get(i))
-                        {
-                            indexHealthReport.setMissingFromIndex(i);
-                        }
-                    }
-                }
 
+                }
             }
+
+            indexHealthReport.setUniqueTransactionDocsInIndex(txIdsInIndex.cardinality());
+
             // count terms and check for duplicates
             int count = 0;
             TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, ""));
@@ -813,22 +1112,24 @@ public class CoreTracker
                 Term term = termEnum.term();
                 if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
                 {
-                    int docCount = 0;
-                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_TXID, term.text()));
-                    while (termDocs.next())
+                    long txid = NumericEncoder.decodeLong(term.text());
+                    if ((minTxId != null) && (txid >= minTxId) && (txid <= maxTxId))
                     {
-                        if (!reader.isDeleted(termDocs.doc()))
+                        int docCount = 0;
+                        TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_TXID, term.text()));
+                        while (termDocs.next())
                         {
-                            docCount++;
+                            if (!reader.isDeleted(termDocs.doc()))
+                            {
+                                docCount++;
+                            }
                         }
+                        if (docCount > 1)
+                        {
+                            indexHealthReport.setDuplicatedTxInIndex(txid);
+                        }
+                        count++;
                     }
-                    if (docCount > 1)
-                    {
-                        long txid = NumericEncoder.decodeLong(term.text());
-                        indexHealthReport.setDuplicatedInIndex(txid);
-                    }
-
-                    count++;
                 }
                 else
                 {
@@ -839,6 +1140,104 @@ public class CoreTracker
             termEnum.close();
 
             indexHealthReport.setTransactionDocsInIndex(count);
+
+            // ACL TX
+
+            if (minAclTxId != null)
+            {
+                for (long i = minAclTxId; i <= maxTxId; i++)
+                {
+                    String target = NumericEncoder.encode(i);
+                    termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
+                    Term term = termEnum.term();
+                    termEnum.close();
+                    if (term == null)
+                    {
+                        if (aclTxIdsInDb.get(i))
+                        {
+                            indexHealthReport.setMissingAclTxFromIndex(i);
+                        }
+                    }
+                    else
+                    {
+                        if (term.field().equals(AbstractLuceneQueryParser.FIELD_ACLTXID))
+                        {
+                            if (target.equals(term.text()))
+                            {
+                                if (aclTxIdsInIndex.get(i))
+                                {
+                                    indexHealthReport.setDuplicatedAclTxInIndex(i);
+                                }
+                                else
+                                {
+                                    aclTxIdsInIndex.set(i);
+                                }
+
+                                if (!aclTxIdsInDb.get(i))
+                                {
+                                    indexHealthReport.setAclTxInIndexButNotInDb(i);
+                                }
+                            }
+                            else
+                            {
+                                if (aclTxIdsInDb.get(i))
+                                {
+                                    indexHealthReport.setMissingAclTxFromIndex(i);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (aclTxIdsInDb.get(i))
+                            {
+                                indexHealthReport.setMissingAclTxFromIndex(i);
+                            }
+                        }
+                    }
+
+                }
+            }
+            indexHealthReport.setUniqueAclTransactionDocsInIndex(aclTxIdsInIndex.cardinality());
+
+            // count terms and check for duplicates
+            count = 0;
+            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, ""));
+            do
+            {
+                Term term = termEnum.term();
+                long txid = NumericEncoder.decodeLong(term.text());
+                if ((minAclTxId != null) && (txid >= minAclTxId) && (txid <= maxAclTxId))
+                {
+                    if (term.field().equals(AbstractLuceneQueryParser.FIELD_ACLTXID))
+                    {
+                        int docCount = 0;
+                        TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, term.text()));
+                        while (termDocs.next())
+                        {
+                            if (!reader.isDeleted(termDocs.doc()))
+                            {
+                                docCount++;
+                            }
+                        }
+                        if (docCount > 1)
+                        {
+                            indexHealthReport.setDuplicatedAclTxInIndex(txid);
+                        }
+
+                        count++;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+
+            indexHealthReport.setAclTransactionDocsInIndex(count);
+
+            // LEAF
 
             int leafCount = 0;
             termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "LEAF-"));
@@ -873,6 +1272,8 @@ public class CoreTracker
             termEnum.close();
 
             indexHealthReport.setLeafDocCountInIndex(leafCount);
+
+            // Other
 
             indexHealthReport.setLastIndexedCommitTime(lastIndexedCommitTime);
             indexHealthReport.setLastIndexedIdBeforeHoles(lastIndexedIdBeforeHoles);
@@ -1132,5 +1533,158 @@ public class CoreTracker
             }
         }
         return out;
+    }
+
+    /**
+     * @param dbid
+     * @return
+     */
+    public NodeReport checkNode(Long dbid)
+    {
+        NodeReport nodeReport = new NodeReport();
+        nodeReport.setDbid(dbid);
+
+        // In DB
+
+        GetNodesParameters parameters = new GetNodesParameters();
+        parameters.setFromNodeId(dbid);
+        parameters.setToNodeId(dbid);
+        List<Node> dbnodes;
+        try
+        {
+            dbnodes = client.getNodes(parameters, 1);
+            if (dbnodes.size() == 1)
+            {
+                Node dbnode = dbnodes.get(0);
+                nodeReport.setDbNodeStatus(dbnode.getStatus());
+                nodeReport.setDbTx(dbnode.getTxnId());
+            }
+            else
+            {
+                nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
+                nodeReport.setDbTx(-1l);
+            }
+        }
+        catch (IOException e)
+        {
+            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
+            nodeReport.setDbTx(-2l);
+        }
+        catch (JSONException e)
+        {
+            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
+            nodeReport.setDbTx(-3l);
+        }
+
+        // In Index
+
+        try
+        {
+            RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
+
+            refCounted = core.getSearcher(false, true, null);
+            if (refCounted == null)
+            {
+                return nodeReport;
+            }
+
+            try
+            {
+                SolrIndexSearcher solrIndexSearcher = refCounted.get();
+                SolrIndexReader reader = solrIndexSearcher.getReader();
+
+                String dbidString = NumericEncoder.encode(dbid);
+                DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term("DBID", dbidString)));
+                // should find leaf and aux
+                for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+                    Document document = solrIndexSearcher.doc(doc);
+                    Fieldable fieldable = document.getFieldable("ID");
+                    if (fieldable != null)
+                    {
+                        String value = fieldable.stringValue();
+                        if (value != null)
+                        {
+                            if (value.startsWith("LEAF-"))
+                            {
+                                nodeReport.setIndexLeafDoc(Long.valueOf(doc));
+                            }
+                            else if (value.startsWith("AUX-"))
+                            {
+                                nodeReport.setIndexAuxDoc(Long.valueOf(doc));
+                            }
+                        }
+                    }
+
+                }
+                DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("TXID", "*")));
+                for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+                    Document document = solrIndexSearcher.doc(doc);
+                    Fieldable fieldable = document.getFieldable("TXID");
+                    if (fieldable != null)
+                    {
+
+                        if ((nodeReport.getIndexLeafDoc() == null) || (doc < nodeReport.getIndexLeafDoc().longValue()))
+                        {
+                            String value = fieldable.stringValue();
+                            long txid = Long.parseLong(value);
+                            nodeReport.setIndexLeafTx(txid);
+                        }
+                        if ((nodeReport.getIndexAuxDoc() == null) || (doc < nodeReport.getIndexAuxDoc().longValue()))
+                        {
+                            String value = fieldable.stringValue();
+                            long txid = Long.parseLong(value);
+                            nodeReport.setIndexAuxTx(txid);
+                        }
+                    }
+                }
+
+            }
+            finally
+            {
+                refCounted.decref();
+            }
+
+        }
+        catch (IOException e)
+        {
+
+        }
+
+        return nodeReport;
+    }
+
+    public List<Long> getNodesForDbTransaction(Long txid)
+    {
+
+        try
+        {
+            ArrayList<Long> answer = new ArrayList<Long>();
+            GetNodesParameters gnp = new GetNodesParameters();
+            ArrayList<Long> txs = new ArrayList<Long>();
+            txs.add(txid);
+            gnp.setTransactionIds(txs);
+            gnp.setStoreProtocol(storeRef.getProtocol());
+            gnp.setStoreIdentifier(storeRef.getIdentifier());
+            List<Node> nodes;
+            nodes = client.getNodes(gnp, Integer.MAX_VALUE);
+            for (Node node : nodes)
+            {
+                answer.add(node.getId());
+            }
+            return answer;
+        }
+        catch (IOException e)
+        {
+            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+        }
+        catch (JSONException e)
+        {
+            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+        }
+
     }
 }

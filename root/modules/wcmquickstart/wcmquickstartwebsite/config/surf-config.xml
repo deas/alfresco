@@ -37,6 +37,7 @@
                 <!-- Interceptors added to apply application-wide processing to requests. See also quickstart-request.xml -->
                 <ref bean="cmisSessionInterceptor"/>
                 <ref bean="applicationDataInterceptor"/>
+                <ref bean="rootNavInterceptor"/>
             </list>
         </property>    
 

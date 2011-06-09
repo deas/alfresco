@@ -85,6 +85,8 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
         
         Pair<Integer, Integer> totalResultCount = null;
         
+        final boolean permissionsApplied;
+        
         // Apply permissions
         String authenticationToken = parameters.getAuthenticationToken();
         if (authenticationToken != null && isApplyPostQueryPermissions())
@@ -99,11 +101,15 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
             
             rawResults = postQueryResults.getPage();
             totalResultCount = postQueryResults.getTotalResultCount();
+            
+            permissionsApplied = postQueryResults.permissionsApplied();
         }
         else
         {
             int totalCount = getTotalResultCount(rawResults);
             totalResultCount = new Pair<Integer, Integer>(totalCount, totalCount);
+            
+            permissionsApplied = ((rawResults instanceof PermissionedResults) && ((PermissionedResults)rawResults).permissionsApplied());
         }
         
         // Get count
@@ -202,9 +208,15 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
             }
             
             @Override
-            public Boolean hasMoreItems()
+            public boolean hasMoreItems()
             {
                 return hasMoreItems;
+            }
+            
+            @Override
+            public boolean permissionsApplied()
+            {
+                return permissionsApplied;
             }
         };
         return results;

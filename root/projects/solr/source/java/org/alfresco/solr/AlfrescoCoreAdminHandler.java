@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.analysis.MLTokenDuplicator;
 import org.alfresco.repo.search.impl.lucene.analysis.VerbatimAnalyser;
@@ -129,8 +130,6 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
     }
 
-    
-    
     /**
      * @return the scheduler
      */
@@ -138,8 +137,6 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     {
         return scheduler;
     }
-    
-    
 
     /**
      * @return the trackers
@@ -165,25 +162,174 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 }
                 return false;
             }
+            else if (a.equalsIgnoreCase("NODEREPORT"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    Long dbid = null;
+                    if (params.get("dbid") != null)
+                    {
+                        dbid = Long.valueOf(params.get("dbid"));
+                        NamedList<Object> report = new SimpleOrderedMap<Object>();
+                        report.add(cname, buildNodeReport(tracker, dbid));
+                        rsp.add("report", report);
+
+                    }
+                    else
+                    {
+                        throw new AlfrescoRuntimeException("No dbid parameter set");
+                    }
+                }
+                else
+                {
+                    Long dbid = null;
+                    if (params.get("dbid") != null)
+                    {
+                        dbid = Long.valueOf(params.get("dbid"));
+                        NamedList<Object> report = new SimpleOrderedMap<Object>();
+                        for (String trackerName : trackers.keySet())
+                        {
+                            CoreTracker tracker = trackers.get(trackerName);
+                            report.add(trackerName, buildNodeReport(tracker, dbid));
+                        }
+                        rsp.add("report", report);
+                    }
+                    else
+                    {
+                        throw new AlfrescoRuntimeException("No dbid parameter set");
+                    }
+
+                }
+                return false;
+            }
+            else if (a.equalsIgnoreCase("TXREPORT"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    Long txid = null;
+                    if (params.get("txid") != null)
+                    {
+                        txid = Long.valueOf(params.get("txid"));
+                        NamedList<Object> report = new SimpleOrderedMap<Object>();
+                        report.add(cname, buildTxReport(tracker, txid));
+                        rsp.add("report", report);
+
+                    }
+                    else
+                    {
+                        throw new AlfrescoRuntimeException("No txid parameter set");
+                    }
+                }
+                else
+                {
+                    Long txid = null;
+                    if (params.get("txid") != null)
+                    {
+                        txid = Long.valueOf(params.get("txid"));
+                        NamedList<Object> report = new SimpleOrderedMap<Object>();
+                        for (String trackerName : trackers.keySet())
+                        {
+                            CoreTracker tracker = trackers.get(trackerName);
+                            report.add(trackerName, buildTxReport(tracker, txid));
+                        }
+                        rsp.add("report", report);
+                    }
+                    else
+                    {
+                        throw new AlfrescoRuntimeException("No txid parameter set");
+                    }
+
+                }
+                return false;
+            }
             else if (a.equalsIgnoreCase("REPORT"))
             {
                 if (cname != null)
                 {
+                    Long fromTime = null;
+                    if (params.get("fromTime") != null)
+                    {
+                        fromTime = Long.valueOf(params.get("fromTime"));
+                    }
+                    Long toTime = null;
+                    if (params.get("toTime") != null)
+                    {
+                        toTime = Long.valueOf(params.get("toTime"));
+                    }
+                    Long fromTx = null;
+                    if (params.get("fromTx") != null)
+                    {
+                        fromTx = Long.valueOf(params.get("fromTx"));
+                    }
+                    Long toTx = null;
+                    if (params.get("toTx") != null)
+                    {
+                        toTx = Long.valueOf(params.get("toTx"));
+                    }
+                    Long fromAclTx = null;
+                    if (params.get("fromAclTx") != null)
+                    {
+                        fromAclTx = Long.valueOf(params.get("fromAclTx"));
+                    }
+                    Long toAclTx = null;
+                    if (params.get("toAclTx") != null)
+                    {
+                        toAclTx = Long.valueOf(params.get("toAclTx"));
+                    }
 
                     CoreTracker tracker = trackers.get(cname);
-                    IndexHealthReport indexHealthReport = tracker.checkIndex();
 
                     NamedList<Object> report = new SimpleOrderedMap<Object>();
-
-                    report.add(cname, buildTrackerReport(tracker));
+                    if (tracker != null)
+                    {
+                        report.add(cname, buildTrackerReport(tracker, fromTx, toTx, fromAclTx, toAclTx, fromTime, toTime));
+                    }
+                    else
+                    {
+                        report.add(cname, "Core unknown");
+                    }
                     rsp.add("report", report);
                 }
                 else
                 {
-                    NamedList<Object> report = new SimpleOrderedMap<Object>();
-                    for (CoreTracker tracker : trackers.values())
+                    Long fromTime = null;
+                    if (params.get("fromTime") != null)
                     {
-                        report.add(cname, buildTrackerReport(tracker));
+                        fromTime = Long.valueOf(params.get("fromTime"));
+                    }
+                    Long toTime = null;
+                    if (params.get("toTime") != null)
+                    {
+                        toTime = Long.valueOf(params.get("toTime"));
+                    }
+                    Long fromTx = null;
+                    if (params.get("fromTx") != null)
+                    {
+                        fromTx = Long.valueOf(params.get("fromTx"));
+                    }
+                    Long toTx = null;
+                    if (params.get("toTx") != null)
+                    {
+                        toTx = Long.valueOf(params.get("toTx"));
+                    }
+                    Long fromAclTx = null;
+                    if (params.get("fromAclTx") != null)
+                    {
+                        fromAclTx = Long.valueOf(params.get("fromAclTx"));
+                    }
+                    Long toAclTx = null;
+                    if (params.get("toAclTx") != null)
+                    {
+                        toAclTx = Long.valueOf(params.get("toAclTx"));
+                    }
+
+                    NamedList<Object> report = new SimpleOrderedMap<Object>();
+                    for (String coreName : trackers.keySet())
+                    {
+                        CoreTracker tracker = trackers.get(coreName);
+                        report.add(coreName, buildTrackerReport(tracker, fromTx, toTx, fromAclTx, toAclTx, fromTime, toTime));
                     }
                     rsp.add("report", report);
                 }
@@ -202,40 +348,97 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private NamedList<Object> buildTrackerReport(CoreTracker tracker) throws IOException, JSONException
+    private NamedList<Object> buildTxReport(CoreTracker tracker, Long txid) throws IOException, JSONException
     {
-        IndexHealthReport indexHealthReport = tracker.checkIndex();
+        NamedList<Object> nr = new SimpleOrderedMap<Object>();
+        nr.add("TXID", txid);
+        nr.add("transaction", buildTrackerReport(tracker, txid, txid, 0l, 0l, null, null));
+        NamedList<Object> nodes = new SimpleOrderedMap<Object>();
+        // add node reports ....
+        List<Long> dbNodeIds = tracker.getNodesForDbTransaction(txid);
+        for(Long dbid : dbNodeIds)
+        {
+            nodes.add("DBID "+dbid, buildNodeReport(tracker, dbid));
+        }
+        nr.add("txDbNodeCount", dbNodeIds.size());
+        nr.add("nodes", nodes);
+        return nr;
+    }
+    
+    private NamedList<Object> buildNodeReport(CoreTracker tracker, Long dbid) throws IOException, JSONException
+    {
+        NodeReport nodeReport = tracker.checkNode(dbid);
+
+        NamedList<Object> nr = new SimpleOrderedMap<Object>();
+        nr.add("Node DBID", nodeReport.getDbid());
+        nr.add("DB TX", nodeReport.getDbTx());
+        nr.add("DB TX status", nodeReport.getDbNodeStatus().toString());
+        nr.add("Leaf doc in Index", nodeReport.getIndexLeafDoc());
+        nr.add("Aux doc in Index", nodeReport.getIndexAuxDoc());
+        if (nodeReport.getIndexLeafDoc() != null)
+        {
+            nr.add("Leaf tx in Index", nodeReport.getIndexLeafTx());
+        }
+        if (nodeReport.getIndexAuxDoc() != null)
+        {
+            nr.add("Aux tx in Index", nodeReport.getIndexAuxTx());
+        }
+        return nr;
+    }
+
+    private NamedList<Object> buildTrackerReport(CoreTracker tracker, Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws IOException,
+            JSONException
+    {
+        IndexHealthReport indexHealthReport = tracker.checkIndex(fromTx, toTx, fromAclTx, toAclTx, fromTime, toTime);
 
         NamedList<Object> ihr = new SimpleOrderedMap<Object>();
-        ihr.add("dbTransactionCount", indexHealthReport.getDbTransactionCount());
-        ihr.add("duplicatedInIndexCount", indexHealthReport.getDuplicatedInIndex().cardinality());
-        if (indexHealthReport.getDuplicatedInIndex().cardinality() > 0)
+        ihr.add("DB transaction count", indexHealthReport.getDbTransactionCount());
+        ihr.add("DB acl transaction count", indexHealthReport.getDbAclTransactionCount());
+        ihr.add("Count of duplicated transactions in the index", indexHealthReport.getDuplicatedTxInIndex().cardinality());
+        if (indexHealthReport.getDuplicatedTxInIndex().cardinality() > 0)
         {
-            ihr.add("firstDuplicate", indexHealthReport.getDuplicatedInIndex().nextSetBit(0L));
+            ihr.add("First duplicate", indexHealthReport.getDuplicatedTxInIndex().nextSetBit(0L));
         }
-        ihr.add("inIndexButNotInDbCount", indexHealthReport.getInIndexButNotInDb().cardinality());
-        if (indexHealthReport.getInIndexButNotInDb().cardinality() > 0)
+        ihr.add("Count of duplicated acl transactions in the index", indexHealthReport.getDuplicatedAclTxInIndex().cardinality());
+        if (indexHealthReport.getDuplicatedAclTxInIndex().cardinality() > 0)
         {
-            ihr.add("firstInIndexButNotInDb", indexHealthReport.getInIndexButNotInDb().nextSetBit(0L));
+            ihr.add("First duplicate acl tx", indexHealthReport.getDuplicatedAclTxInIndex().nextSetBit(0L));
         }
-        ihr.add("missingFromIndexCount", indexHealthReport.getMissingFromIndex().cardinality());
-        if (indexHealthReport.getMissingFromIndex().cardinality() > 0)
+        ihr.add("Count of transactions in the index but not the DB", indexHealthReport.getTxInIndexButNotInDb().cardinality());
+        if (indexHealthReport.getTxInIndexButNotInDb().cardinality() > 0)
         {
-            ihr.add("firstMissingFromIndex", indexHealthReport.getMissingFromIndex().nextSetBit(0L));
+            ihr.add("First transaction in the index but not the DB", indexHealthReport.getTxInIndexButNotInDb().nextSetBit(0L));
         }
-        ihr.add("transactionDocsInIndexCount", indexHealthReport.getTransactionDocsInIndex());
-        ihr.add("leafDocCountInIndex", indexHealthReport.getLeafDocCountInIndex());
-        ihr.add("duplicatedLeafInIndexCount", indexHealthReport.getDuplicatedLeafInIndex().cardinality());
+        ihr.add("Count of acl transactions in the index but not the DB", indexHealthReport.getAclTxInIndexButNotInDb().cardinality());
+        if (indexHealthReport.getAclTxInIndexButNotInDb().cardinality() > 0)
+        {
+            ihr.add("First acl transaction in the index but not the DB", indexHealthReport.getAclTxInIndexButNotInDb().nextSetBit(0L));
+        }
+        ihr.add("Count of missing transactions from the Index", indexHealthReport.getMissingTxFromIndex().cardinality());
+        if (indexHealthReport.getMissingTxFromIndex().cardinality() > 0)
+        {
+            ihr.add("First transaction missing from the Index", indexHealthReport.getMissingTxFromIndex().nextSetBit(0L));
+        }
+        ihr.add("Count of missing acl transactions from the Index", indexHealthReport.getMissingAclTxFromIndex().cardinality());
+        if (indexHealthReport.getMissingAclTxFromIndex().cardinality() > 0)
+        {
+            ihr.add("First acl transaction missing from the Index", indexHealthReport.getMissingAclTxFromIndex().nextSetBit(0L));
+        }
+        ihr.add("Index transaction count", indexHealthReport.getTransactionDocsInIndex());
+        ihr.add("Index acl transaction count", indexHealthReport.getAclTransactionDocsInIndex());
+        ihr.add("Index unique transaction count", indexHealthReport.getTransactionDocsInIndex());
+        ihr.add("Index unique acl transaction count", indexHealthReport.getAclTransactionDocsInIndex());
+        ihr.add("Index leaf count", indexHealthReport.getLeafDocCountInIndex());
+        ihr.add("Count of duplicate leaves in the index", indexHealthReport.getDuplicatedLeafInIndex().cardinality());
         if (indexHealthReport.getDuplicatedLeafInIndex().cardinality() > 0)
         {
-            ihr.add("firstDuplicateLeafInIndex", "LEAF-" + indexHealthReport.getDuplicatedLeafInIndex().nextSetBit(0L));
+            ihr.add("First duplicate leaf in the index", "LEAF-" + indexHealthReport.getDuplicatedLeafInIndex().nextSetBit(0L));
         }
-        ihr.add("lastIndexCommitTime", indexHealthReport.getLastIndexCommitTime());
-        Date lastDate = new Date(indexHealthReport.getLastIndexCommitTime());
-        ihr.add("lastIndexCommitDate", CachingDateFormat.getDateFormat().format(lastDate));
-        ihr.add("lastIndexIdBeforeHoles", indexHealthReport.getLastIndexedIdBeforeHoles());
+        ihr.add("Last index commit time", indexHealthReport.getLastIndexedCommitTime());
+        Date lastDate = new Date(indexHealthReport.getLastIndexedCommitTime());
+        ihr.add("Last Index commit date", CachingDateFormat.getDateFormat().format(lastDate));
+        ihr.add("Last TX id before holes", indexHealthReport.getLastIndexedIdBeforeHoles());
         return ihr;
     }
 
-    
 }

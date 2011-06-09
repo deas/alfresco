@@ -47,6 +47,9 @@
     <bean id="urlUtils" class="org.alfresco.wcm.client.util.impl.UrlUtilsImpl">
         <property name="cmisIdEncoder" ref="cmisIdEncoder"/>     
     </bean>
+
+    <!-- Locale Resolver -->
+    <bean id="localeResolver" class="org.alfresco.wcm.client.viewresolver.NewLocaleResolver" />
     
     <!-- Beans that provide Freemarker directives-->
     <bean id="urlDirective" class="org.alfresco.wcm.client.directive.UrlDirective">
@@ -82,6 +85,11 @@
         <property name="webSiteService" ref="webSiteService"/>
         <property name="modelDecorator" ref="modelDecorator"/>
     </bean>  
+
+    <!-- Intercept any controller and add application-wide rootnav data. -->
+    <bean id="rootNavInterceptor" class="org.alfresco.wcm.client.interceptor.RootNavInterceptor" init-method="init">
+        <property name="webSiteService" ref="webSiteService"/>
+    </bean>
 	
     <!-- Streamed asset controller, eg streams images from the repository -->    
     <bean id="assetController" class="org.alfresco.wcm.client.controller.StreamedAssetController">

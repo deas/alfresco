@@ -2,6 +2,7 @@
 
 <solr persistent="true" sharedLib="lib" >
   <cores adminPath="/admin/cores" adminHandler="org.alfresco.solr.AlfrescoCoreAdminHandler">
-    <core name="test" instanceDir="testCore" />
+    <core name="alfresco" instanceDir="workspace-SpacesStore" />
+    <core name="archive" instanceDir="archive-SpacesStore" />
   </cores>
 </solr>

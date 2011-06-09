@@ -25,8 +25,9 @@
 <config>
 
   <alfresco>
-    <track>true</track>
+    <track>${enable.alfresco.tracking}</track>
   </alfresco>
+
   <!-- Set this to 'false' if you want solr to continue working after it has 
        encountered an severe configuration error.  In a production environment, 
        you may want solr to keep working even if one handler is mis-configured.
@@ -72,7 +73,7 @@
   <!-- Used to specify an alternate directory to hold all index data
        other than the default ./data under the Solr home.
        If replication is in use, this should match the replication configuration. -->
-  <dataDir>${solr.data.dir:./solr/data}</dataDir>
+  <dataDir>${data.dir}</dataDir>
 
 
   <!-- WARNING: this <indexDefaults> section only provides defaults for index writers
@@ -92,7 +93,7 @@
       flushed to the Directory.  -->
     <ramBufferSizeMB>32</ramBufferSizeMB>
     <!-- <maxMergeDocs>2147483647</maxMergeDocs> -->
-    <maxFieldLength>10000</maxFieldLength>
+    <maxFieldLength>${max.field.length}</maxFieldLength>
     <writeLockTimeout>1000</writeLockTimeout>
     <commitLockTimeout>10000</commitLockTimeout>
 
@@ -581,23 +582,7 @@
   <searchComponent name="setLocale"     class="org.alfresco.solr.SetLocaleSearchComponent" />
   <searchComponent name="clearLocale"     class="org.alfresco.solr.ClearLocaleSearchComponent" />
 
-  <requestHandler name="afts" class="solr.SearchHandler" >
-    <lst name="defaults">
-     <str name="defType">afts</str>
-    </lst>
-    <arr name="components">
-      <str>setLocale</str>
-      <str>query</str>
-      <str>facet</str>
-      <str>mlt</str>
-      <str>highlight</str>
-      <str>stats</str>
-      <str>debug</str>
-      <str>clearLocale</str>
-    </arr>
-  </requestHandler>
-
-  <requestHandler name="/alfresco/afts" class="solr.SearchHandler" >
+  <requestHandler name="/afts" class="solr.SearchHandler" >
     <lst name="defaults">
      <str name="defType">afts</str>
     </lst>

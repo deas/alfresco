@@ -13,8 +13,23 @@ Edit the file and set:
 1) docBase to the solr war file in this directory (or a copy)
 2) solr/home environment to this directory or a copy
 
-When you start up you should get a solr dtaa director (./solr/data relative to the current directory)  that contains the SOLR index. 
-SOLR will automatically start to track Alfresco.
+For each core:
+archive-SpacesStore/conf
+workspace-SpacesStore/conf
+
+edit solrcore.properties to define:
+
+ # Follow the pattern <dataDir>/localhost/workspace/SpacesStore
+ data.dir=w:/solrData/localhost/workspace/SpacesStore
+ alfresco.url=http://localhost:8080/alfresco/service
+ alfresco.user=admin
+ alfresco.password=admin
+
+and possibly how often you want to update
+
+ alfresco.cron=0/15 * * * * ? *
+
+The other defaults should be OK.
 
 
 Please delete the SOLR data dir everytime you update this distribution directory as it may invalidate the state of the index :-)

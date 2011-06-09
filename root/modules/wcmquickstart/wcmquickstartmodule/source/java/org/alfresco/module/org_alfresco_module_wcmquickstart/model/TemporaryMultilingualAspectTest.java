@@ -27,6 +27,7 @@ import javax.transaction.UserTransaction;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.WCMQuickStartTest;
 import org.alfresco.service.cmr.ml.MultilingualContentService;
+import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 
@@ -71,7 +72,7 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         nodeService.addAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL, props);
         
         assertEquals(true, nodeService.hasAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL));
-        assertEquals(false, nodeService.hasAspect(spanish, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(false, nodeService.hasAspect(spanish, ContentModel.ASPECT_MULTILINGUAL_DOCUMENT));
         assertEquals(false, multilingualContentService.isTranslation(spanish));
         
         
@@ -85,6 +86,7 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         
         assertEquals(false, nodeService.hasAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL));
         assertEquals(true, nodeService.hasAspect(spanish, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(true, nodeService.hasAspect(spanish, ContentModel.ASPECT_MULTILINGUAL_DOCUMENT));
         assertEquals(true, multilingualContentService.isTranslation(spanish));
         
         
@@ -105,7 +107,7 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         userTransaction.begin();
         
         assertEquals(false, nodeService.hasAspect(german, ASPECT_TEMPORARY_MULTILINGUAL));
-        assertEquals(false, nodeService.hasAspect(german, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(false, nodeService.hasAspect(german, ContentModel.ASPECT_MULTILINGUAL_DOCUMENT));
         assertEquals(false, multilingualContentService.isTranslation(german));
         
         userTransaction.commit();
@@ -126,9 +128,37 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         userTransaction.commit();
         userTransaction = transactionService.getUserTransaction();
         userTransaction.begin();
+
         
-        // TODO Populate the collection 
+        // Check we have an index page, not currently translated
+        NodeRef frenchIndex = nodeService.getChildByName(
+                french, ContentModel.ASSOC_CONTAINS, "index.html"
+        );
+        assertNotNull(frenchIndex);
+        assertEquals(false, multilingualContentService.isTranslation(frenchIndex));
         
+        
+        // Put some things into the collection
+        NodeRef frenchCollection = nodeService.getChildByName(
+                french, ContentModel.ASSOC_CONTAINS, "collections"
+        );
+        
+        NodeRef collectionMisc = nodeService.createNode(
+                frenchCollection, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Misc"), ContentModel.TYPE_CONTENT
+        ).getChildRef();
+        nodeService.setProperty(collectionMisc, ContentModel.PROP_NAME, "Misc");
+        
+        AssociationRef collectionFeatured = nodeService.createAssociation(
+                nodeService.getChildByName(frenchCollection, ContentModel.ASSOC_CONTAINS, "featured.articles"),
+                collectionMisc,
+                ContentModel.ASSOC_REFERENCES
+        );
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+                
         
         // Now create the Spanish one
         NodeRef spanish = nodeService.createNode(
@@ -143,7 +173,7 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
 
         
         assertEquals(true, nodeService.hasAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL));
-        assertEquals(false, nodeService.hasAspect(spanish, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(false, nodeService.hasAspect(spanish, ContentModel.ASPECT_MULTILINGUAL_DOCUMENT));
         assertEquals(false, multilingualContentService.isTranslation(spanish));
         
         
@@ -159,9 +189,39 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         assertEquals(true, nodeService.hasAspect(spanish, ContentModel.ASPECT_LOCALIZED));
         assertEquals(true, multilingualContentService.isTranslation(spanish));
         
-        // Now check the Spanish collections
-        // TODO
+        Locale spanishLocale = (Locale)nodeService.getProperty(spanish, ContentModel.PROP_LOCALE);
+        assertEquals("spanish", spanishLocale.toString());
         
+        
+        // Now check the Spanish collections
+        NodeRef spanishCollection = nodeService.getChildByName(
+                spanish, ContentModel.ASSOC_CONTAINS, "collections"
+        ); 
+        assertNotNull(spanishCollection);
+        NodeRef collectionMiscES = nodeService.getChildByName(
+                spanishCollection, ContentModel.ASSOC_CONTAINS, "Misc"
+        );
+        assertNotNull(collectionMiscES);
+        
+        // The association won't have been copied
+        NodeRef collectionFeaturedES = nodeService.getChildByName(
+                nodeService.getChildByName(spanishCollection, ContentModel.ASSOC_CONTAINS, "featured.articles"),  
+                ContentModel.ASSOC_CONTAINS, "Misc"
+        ); 
+        assertNull(collectionFeaturedES);
+        
+        
+        // And check the index page was created and is a translation
+        NodeRef spanishIndex = nodeService.getChildByName(
+                spanish, ContentModel.ASSOC_CONTAINS, "index.html"
+        );
+        assertNotNull(spanishIndex);
+        assertEquals(true, multilingualContentService.isTranslation(frenchIndex));
+        assertEquals(true, multilingualContentService.isTranslation(spanishIndex));
+        assertEquals(spanishIndex, multilingualContentService.getTranslations(frenchIndex).get(spanishLocale));
+        
+        
+        // Finish
         userTransaction.commit();
     }
     
@@ -242,11 +302,13 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         // Now check
         assertEquals(false, nodeService.hasAspect(french, ASPECT_TEMPORARY_MULTILINGUAL));
         assertEquals(true, nodeService.hasAspect(french, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(true, nodeService.hasAspect(french, ContentModel.ASPECT_MULTILINGUAL_DOCUMENT));
         assertEquals(true, multilingualContentService.isTranslation(french));
         assertEquals("fr", nodeService.getProperty(french, ContentModel.PROP_LOCALE).toString());
         
         assertEquals(false, nodeService.hasAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL));
         assertEquals(true, nodeService.hasAspect(spanish, ContentModel.ASPECT_LOCALIZED));
+        assertEquals(true, nodeService.hasAspect(spanish, ContentModel.ASPECT_MULTILINGUAL_DOCUMENT));
         assertEquals(true, multilingualContentService.isTranslation(spanish));
         assertEquals("spanish", nodeService.getProperty(spanish, ContentModel.PROP_LOCALE).toString());
         
@@ -261,6 +323,9 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         assertEquals(true, nodeService.hasAspect(es_Doc, ContentModel.ASPECT_LOCALIZED));
         assertEquals(true, multilingualContentService.isTranslation(es_Doc));
         assertEquals("spanish", nodeService.getProperty(es_Doc, ContentModel.PROP_LOCALE).toString());
+        
+        // Finish
+        userTransaction.commit();
     }
     
     public void testTranslationDocFoldersToBeCreated() throws Exception
@@ -273,16 +338,19 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
                 editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
                 QName.createQName("French"), TYPE_SECTION
         ).getChildRef();
+        nodeService.setProperty(french, ContentModel.PROP_NAME, "French");
         multilingualContentService.makeTranslation(french, Locale.FRENCH);
         
         NodeRef fr_F1 = nodeService.createNode(
                 french, ContentModel.ASSOC_CONTAINS,
                 QName.createQName("Sub1"), TYPE_SECTION
         ).getChildRef();
+        nodeService.setProperty(fr_F1, ContentModel.PROP_NAME, "Sub1");
         NodeRef fr_F2 = nodeService.createNode(
                 fr_F1, ContentModel.ASSOC_CONTAINS,
                 QName.createQName("Sub2"), TYPE_SECTION
         ).getChildRef();
+        nodeService.setProperty(fr_F2, ContentModel.PROP_NAME, "Sub2");
         
         // TODO Collections
         
@@ -291,11 +359,12 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         userTransaction.begin();
         
         
-        // Create a Spanish translation folder, but no sub folder
+        // Create a Spanish translation folder, but no sub folders
         NodeRef spanish = nodeService.createNode(
                 editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
                 QName.createQName("Spanish"), TYPE_SECTION
         ).getChildRef();
+        nodeService.setProperty(spanish, ContentModel.PROP_NAME, "Spanish");
         
         Map<QName,Serializable> props = new HashMap<QName, Serializable>();
         props.put(PROP_TRANSLATION_OF, french);
@@ -310,8 +379,9 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         // Now create a document inside the French subfolder
         NodeRef fr_Doc = nodeService.createNode(
                 fr_F2, ContentModel.ASSOC_CONTAINS,
-                QName.createQName("French"), TYPE_ARTICLE
+                QName.createQName("French Document.txt"), TYPE_ARTICLE
         ).getChildRef();
+        nodeService.setProperty(fr_Doc, ContentModel.PROP_NAME, "French Document.txt");
         props = new HashMap<QName, Serializable>(); // No properties needed
         nodeService.addAspect(fr_Doc, ASPECT_TEMPORARY_MULTILINGUAL, props);
         
@@ -319,8 +389,9 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         // Finally create the Spanish translation document
         NodeRef es_Doc = nodeService.createNode(
                 spanish, ContentModel.ASSOC_CONTAINS,
-                QName.createQName("Spanish"), TYPE_ARTICLE
+                QName.createQName("Spanish Document.txt"), TYPE_ARTICLE
         ).getChildRef();
+        nodeService.setProperty(es_Doc, ContentModel.PROP_NAME, "Spanish Document.txt");
         
         props = new HashMap<QName, Serializable>(); // Only need to mark what translation of
         props.put(PROP_TRANSLATION_OF, fr_Doc);
@@ -332,12 +403,32 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         userTransaction.begin();
 
         
-        // TODO
-        
         // Ensure the intermediate Spanish sub folders were created
+        NodeRef spanishSub1 = nodeService.getChildByName(spanish, ContentModel.ASSOC_CONTAINS, "Sub1");
+        assertNotNull("Spanish Sub Folder 1 not created", spanishSub1);
+        NodeRef spanishSub2 = nodeService.getChildByName(spanishSub1, ContentModel.ASSOC_CONTAINS, "Sub2");
+        assertNotNull("Spanish Sub Folder 2 not created", spanishSub2);
+
         
         // Ensure the intermediate Spanish folders got their collections
+        // TODO
         
+        // And check the index page
+        // TODO
+
         // Ensure the translation ended up in the right place
+        assertNotNull(
+                "Spanish doc isn't in Sub Folder 2", 
+                nodeService.getChildByName(spanishSub2, ContentModel.ASSOC_CONTAINS, "Spanish Document.txt")
+        );
+        assertNull(
+                "Spanish doc has gone from the root", 
+                nodeService.getChildByName(spanish, ContentModel.ASSOC_CONTAINS, "Spanish Document.txt")
+        );
+        assertEquals(spanishSub2, nodeService.getPrimaryParent(es_Doc).getParentRef());
+        assertEquals("Spanish Document.txt", nodeService.getPrimaryParent(es_Doc).getQName().getLocalName());
+
+        // Finish
+        userTransaction.commit();
     }
 }

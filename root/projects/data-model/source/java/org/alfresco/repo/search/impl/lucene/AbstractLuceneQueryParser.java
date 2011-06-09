@@ -134,7 +134,9 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public static final String FIELD_READER = "READER";
     public static final String FIELD_AUTHORITY = "AUTHORITY";
     public static final String FIELD_TXID = "TXID";
+    public static final String FIELD_ACLTXID = "ACLTXID";
     public static final String FIELD_TXCOMMITTIME = "TXCOMMITTIME";
+    public static final String FIELD_ACLTXCOMMITTIME = "ACLTXCOMMITTIME";
     public static final String FIELD_LINKASPECT = "LINKASPECT";
     public static final String FIELD_ANCESTOR = "ANCESTOR";
     public static final String FIELD_ISCATEGORY = "ISCATEGORY";
@@ -838,9 +840,17 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 return createTxIdQuery(queryText);
             }
+            else if (field.equals(FIELD_ACLTXID))
+            {
+                return createAclTxIdQuery(queryText);
+            }
             else if (field.equals(FIELD_TXCOMMITTIME))
             {
                 return createTxCommitTimeQuery(queryText);
+            }
+            else if (field.equals(FIELD_ACLTXCOMMITTIME))
+            {
+                return createAclTxCommitTimeQuery(queryText);
             }
             else
             {
@@ -892,10 +902,20 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     {
         return getFieldQueryImpl(FIELD_TXID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
     }
+    
+    protected Query createAclTxIdQuery(String queryText) throws ParseException
+    {
+        return getFieldQueryImpl(FIELD_ACLTXID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
 
     protected Query createTxCommitTimeQuery(String queryText) throws ParseException
     {
         return getFieldQueryImpl(FIELD_TXCOMMITTIME, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
+    
+    protected Query createAclTxCommitTimeQuery(String queryText) throws ParseException
+    {
+        return getFieldQueryImpl(FIELD_ACLTXCOMMITTIME, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
     }
 
     protected Query createDataTypeDefinitionQuery(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException

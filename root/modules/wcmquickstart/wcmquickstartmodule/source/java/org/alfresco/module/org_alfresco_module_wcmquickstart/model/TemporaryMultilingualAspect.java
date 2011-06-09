@@ -18,6 +18,7 @@
 package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,7 +30,10 @@ import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
+import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.ml.MultilingualContentService;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
+import org.alfresco.service.cmr.repository.CopyService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
@@ -52,9 +56,13 @@ public class TemporaryMultilingualAspect implements NodeServicePolicies.OnAddAsp
 
     private BehaviourFilter behaviourFilter;
     
+    private DictionaryService dictionaryService;
+    
     private MultilingualContentService multilingualContentService;
 
     private SiteHelper siteHelper;
+
+    private CopyService copyService;
 
     private NodeService nodeService;
 
@@ -83,9 +91,19 @@ public class TemporaryMultilingualAspect implements NodeServicePolicies.OnAddAsp
         this.siteHelper = siteHelper;
     }
 
+    public void setCopyService(CopyService copyService)
+    {
+        this.copyService = copyService;
+    }
+
     public void setNodeService(NodeService nodeService)
     {
         this.nodeService = nodeService;
+    }
+
+    public void setDictionaryService(DictionaryService dictionaryService)
+    {
+        this.dictionaryService = dictionaryService;
     }
 
     /**
@@ -128,15 +146,117 @@ public class TemporaryMultilingualAspect implements NodeServicePolicies.OnAddAsp
             return new Locale(language);
         }
         
-        // Try the sys:locale
-        Locale locale = (Locale)nodeService.getProperty(nodeRef, ContentModel.PROP_LOCALE);
-        if(locale != null && !"".equals(locale))
+        // If it's a translated document, then try the sys:locale on it
+        // (Ignore the locale on non translated documents, as that's likely
+        //  to just be the system wide locale, and hence not much use)
+        if(nodeService.hasAspect(nodeRef, ContentModel.ASPECT_MULTILINGUAL_DOCUMENT))
         {
-            return locale;
+            Locale locale = (Locale)nodeService.getProperty(nodeRef, ContentModel.PROP_LOCALE);
+            if(locale != null && !"".equals(locale))
+            {
+                return locale;
+            }
         }
         
         // Try the parent
         return identifyLocale( nodeService.getPrimaryParent(nodeRef).getParentRef() );
+    }
+    
+    /**
+     * When translating a section, copy over certain resources from the
+     *  section we're a translation of
+     */
+    private void copyResourcesForSection(NodeRef newSection, NodeRef sourceSection)
+    {
+        // If this isn't a section, then we don't need to do anything
+        QName type = nodeService.getType(newSection);
+        if(! dictionaryService.isSubClass(type, WebSiteModel.TYPE_SECTION))
+        {
+            // No resources to copy
+            return;
+        }
+        
+        // Grab the two languages
+        Locale srcLocale = (Locale)nodeService.getProperty(sourceSection, ContentModel.PROP_LOCALE);
+        Locale dstLocale = (Locale)nodeService.getProperty(newSection, ContentModel.PROP_LOCALE);
+        if(srcLocale == null || dstLocale == null)
+        {
+            log.warn("One of the sections lacks a locale, this shouldn't happen!");
+            return;
+        }
+        
+        // Process the collections
+        NodeRef srcCollection = nodeService.getChildByName(
+                sourceSection, ContentModel.ASSOC_CONTAINS, "collections"
+        );
+        NodeRef dstCollection = nodeService.getChildByName(
+                newSection, ContentModel.ASSOC_CONTAINS, "collections"
+        );
+        if(srcCollection != null && dstCollection != null)
+        {
+            // Copy each child of the collection in turn
+            for(ChildAssociationRef ref :nodeService.getChildAssocs(srcCollection))
+            {
+                if(ref.isPrimary())
+                {
+                    String name = (String)nodeService.getProperty(ref.getChildRef(), ContentModel.PROP_NAME);
+                    if(nodeService.getChildByName(dstCollection, ref.getTypeQName(), name) != null)
+                    {
+                        // There's already something in the destination collection
+                        //  with this name. Assume it's deliberate, and don't copy
+                    }
+                    else
+                    {
+                        // Copy the resource over
+                        NodeRef copy = copyService.copy(
+                                ref.getChildRef(),
+                                dstCollection,
+                                ref.getTypeQName(),
+                                ref.getQName(),
+                                true
+                        );
+                        nodeService.setProperty(copy, ContentModel.PROP_NAME, name);
+                    }
+                }
+                else
+                {
+                    // Don't copy non primary associations
+                    
+                    // Note: If it's a static asset collection, we may in future want to try to
+                    //  identify the equivalent translated assets, ask Brian R for details... 
+                }
+            }
+        }
+        else
+        {
+            // This shouldn't happen - aspect behaviour should have already triggered
+            log.warn("Missing collections on WCM Section! Unable to migrate assets");
+        }
+        
+        
+        // Mark the index page as a translation
+        NodeRef srcIndex = nodeService.getChildByName(
+                sourceSection, ContentModel.ASSOC_CONTAINS, "index.html"
+        );
+        NodeRef dstIndex = nodeService.getChildByName(
+                newSection, ContentModel.ASSOC_CONTAINS, "index.html"
+        );
+        if(srcIndex != null && dstIndex != null)
+        {
+            // Ensure the source one is translated
+            if(! multilingualContentService.isTranslation(srcIndex))
+            {
+                multilingualContentService.makeTranslation(srcIndex, srcLocale);
+            }
+            
+            // Now mark the new on as a translation
+            multilingualContentService.addTranslation(dstIndex, srcIndex, dstLocale);
+        }
+        else
+        {
+            // This shouldn't happen - aspect behaviour should have already triggered
+            log.warn("Missing index page on WCM Section! Unable to associate index pages");
+        }
     }
 
     @Override
@@ -179,8 +299,8 @@ public class TemporaryMultilingualAspect implements NodeServicePolicies.OnAddAsp
                         nodeRef, translationOf, locale
                 );
                 
-                // Now copy over the collections
-                // TODO
+                // Now copy over the resources (collections etc)
+                copyResourcesForSection(nodeRef, translationOf);
             }
         }
         else
@@ -194,38 +314,100 @@ public class TemporaryMultilingualAspect implements NodeServicePolicies.OnAddAsp
         
         // If this node is initially orphaned, then create the intermediate folders
         //  that are missing for it
-        if(initiallyOrphaned != null && initiallyOrphaned)
+        if(initiallyOrphaned != null && initiallyOrphaned && translationOf != null)
         {
             // We currently have a situation like:
             //   Root:
             //     French  -> Folder1 -> Folder2 -> Document
             //     Spanish -> Folder1 -> (Orphan) Document
             // We need to identify the missing bits and fill them in
+            //
+            // The logic is:
+            //  Start at the original document
+            //  Work up until we find something that has a translation
+            //   which is the parent of the new document
+            //  If we find this, create new folders that fill in the
+            //   gap in between, then move the translation
+            //  If we don't, then something is wrong and don't create
+            //   or move anything (shouldn't normally happen)
+            ChildAssociationRef orphanRef = nodeService.getPrimaryParent(nodeRef); 
+            NodeRef orphanParent = orphanRef.getParentRef();
+            Locale originalLocale = (Locale)nodeService.getProperty(translationOf, ContentModel.PROP_LOCALE);
             
-            // Identify the parents that are missing
+            // Holds the details of the folders we'll need to create
+            //  on the translated side
             List<Pair<NodeRef,String>> parents = new ArrayList<Pair<NodeRef,String>>();
             
-            NodeRef parent = nodeService.getPrimaryParent(nodeRef).getParentRef();
+            NodeRef parent = nodeService.getPrimaryParent(translationOf).getParentRef();
             while(parent != null)
             {
                 // If we hit the site root, stop
-                if(siteHelper.isTranslationParentLimitReached(nodeRef))
+                if(siteHelper.isTranslationParentLimitReached(parent))
                 {
                     break;
                 }
                 
-                // If we hit something that's translated into the right language,
-                //  then we can stop
+                // If we hit something that's the translation of the orphan
+                //  folder, then we've reached the point to stop
                 if(multilingualContentService.isTranslation(parent))
                 {
-                    // TODO
-                    break;
+                    if(multilingualContentService.getTranslations(parent).values().contains(orphanParent))
+                    {
+                        // This folder is translated as where the orphan lives, so stop
+                        break;
+                    }
+                    else
+                    {
+                        // This folder is translated, but not into the right language
+                        // Keep going upwards
+                    }
                 }
                 
+                // Record this parent as missing
+                String parentName = (String)nodeService.getProperty(parent, ContentModel.PROP_NAME);
+                parents.add(new Pair<NodeRef,String>(parent, parentName));
+                
+                // One level up
                 parent = nodeService.getPrimaryParent(parent).getParentRef();
             }
             
-            // TODO This is not yet supported
+            // Create the folders, in reverse
+            Collections.reverse(parents);
+            NodeRef transParent = orphanParent;
+            for(Pair<NodeRef,String> create : parents)
+            {
+                // Mark the original as being translated
+                if(! multilingualContentService.isTranslation(create.getFirst()))
+                {
+                    multilingualContentService.makeTranslation(create.getFirst(), originalLocale);
+                }
+                
+                // Create the new folder
+                NodeRef newFolder = nodeService.createNode(
+                        transParent,
+                        ContentModel.ASSOC_CONTAINS,
+                        QName.createQName(create.getSecond()),
+                        nodeService.getType(create.getFirst())
+                ).getChildRef();
+                nodeService.setProperty(newFolder, ContentModel.PROP_NAME, create.getSecond());
+                
+                // Mark it as a translation
+                multilingualContentService.addTranslation(
+                        newFolder, create.getFirst(), locale
+                );
+                
+                // Copy the resources
+                copyResourcesForSection(newFolder, create.getFirst());
+                
+                // Ready for the next one
+                transParent = newFolder;
+            }
+            
+            // Finally, move the node to its new home
+            nodeService.moveNode(
+                    nodeRef, transParent, 
+                    orphanRef.getTypeQName(), orphanRef.getQName()
+            );
         }
         
         // Finally tidy up by removing the temp aspect

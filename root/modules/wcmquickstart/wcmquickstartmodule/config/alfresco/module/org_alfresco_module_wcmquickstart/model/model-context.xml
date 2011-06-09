@@ -118,9 +118,11 @@
    <bean id="wcmquickstartmodule_temporaryMultilingualAspect" class="org.alfresco.module.org_alfresco_module_wcmquickstart.model.TemporaryMultilingualAspect"
       init-method="init">
       <property name="nodeService" ref="nodeService" />
+      <property name="copyService" ref="copyService" />
       <property name="policyComponent" ref="policyComponent" />
       <property name="behaviourFilter" ref="policyBehaviourFilter" />
       <property name="multilingualContentService" ref="multilingualContentService" />
+      <property name="dictionaryService" ref="dictionaryService" />
       <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
    </bean>
 

@@ -36,7 +36,7 @@ import junit.framework.TestCase;
 public class AlfrescoSolrEventListenerTest extends TestCase
 {
     
-    static AlfrescoSolrEventListener asel = new AlfrescoSolrEventListener();
+    static AlfrescoSolrEventListener asel = new AlfrescoSolrEventListener(null);
     
     
     SimpleCacheSection[] start = new SimpleCacheSection[] 

@@ -17,7 +17,9 @@ Setup
 
 - edit "build.properties" and change settings such as:
 
-  - edit "jmeter.install.dir" and change to install director for JMeter 2.4
+  - edit "jmeter.install.dir" and change to absolute directory for JMeter 2.4, eg. /my/path/to/jakarta-jmeter-2.4
+ 
+  - edit "user.dir" and change to absolute directory for "repository-bm" project, eg. /my/path/to/alfresco/root/projects/repository-bm
 
   - edit "baseurl.webdav" and change hostname
 
@@ -38,6 +40,8 @@ Setup
 
 
 Run test(s)
+
+- make sure that the Alfresco server has been started and is remotely accessible (on the configured URLs , eg. http://myhost:8080/alfresco)
 
 - either from the JMeter UI - open and run individual JMeter test plans (see source/test-resourcesi/*.jmx)
 - or from command-line - run "ant run-jmeter-XXX" (see "ant -p" for XXX options)

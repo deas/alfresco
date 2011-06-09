@@ -20,7 +20,6 @@
 package org.alfresco.service.cmr.publishing;
 
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.version.Version;
 
 /**
  * @author Brian
@@ -29,4 +28,6 @@ import org.alfresco.service.cmr.version.Version;
 public interface PublishingPackageEntry
 {
     NodeRef getNodeRef();
+    NodeSnapshot getSnapshot();
+    boolean isPublish();
 }

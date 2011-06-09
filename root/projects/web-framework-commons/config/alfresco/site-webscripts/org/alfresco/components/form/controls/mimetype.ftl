@@ -61,6 +61,10 @@
          <@mimetypeOption mt="application/msword" />
          <@mimetypeOption mt="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
          <@mimetypeOption mt="application/vnd.ms-outlook" />
+         <@mimetypeOption mt="application/vnd.apple.keynote" />
+         <@mimetypeOption mt="application/vnd.apple.pages" />
+         <@mimetypeOption mt="application/vnd.apple.numbers" />
+         <@mimetypeOption mt="audio/x-mpeg" />
          <@mimetypeOption mt="audio/mpeg" />
          <@mimetypeOption mt="video/mpeg" />
          <@mimetypeOption mt="video/mpeg2" />
@@ -101,6 +105,9 @@
          <@mimetypeOption mt="video/x-rad-screenplay" />
          <@mimetypeOption mt="image/x-cmu-raster" />
          <@mimetypeOption mt="image/x-rgb" />
+         <@mimetypeOption mt="application/photoshop" />
+         <@mimetypeOption mt="image/vnd.adobe.premiere" />
+         <@mimetypeOption mt="audio/vnd.adobe.soundbooth" />
          <@mimetypeOption mt="text/richtext" />
          <@mimetypeOption mt="application/rtf" />
          <@mimetypeOption mt="image/svg" />

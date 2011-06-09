@@ -93,7 +93,9 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_READER);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_AUTHORITY);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_TXID);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ACLTXID);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME);
     }
 
     /**

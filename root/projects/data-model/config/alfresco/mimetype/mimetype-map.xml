@@ -28,6 +28,14 @@
             <extension default="true">psd</extension>
          </mimetype>
 
+         <mimetype mimetype="image/vnd.adobe.premiere" display="Adobe Photoshop">
+            <extension default="true">ppj</extension>
+         </mimetype>
+
+         <mimetype mimetype="audio/vnd.adobe.soundbooth" display="Adobe SoundBooth">
+            <extension default="true">asnd</extension>
+         </mimetype>
+
          <mimetype mimetype="application/framemaker" display="Adobe FrameMaker">
             <extension default="true">fm</extension>
          </mimetype>
@@ -161,10 +169,6 @@
          <mimetype mimetype="text/css" text="true" display="Style Sheet">
             <extension>css</extension>
          </mimetype>
-         <mimetype mimetype="application/msword" display="Microsoft Word">
-            <extension default="true">doc</extension>
-            <extension>dot</extension>
-         </mimetype>
          <mimetype mimetype="application/wordperfect" display="WordPerfect">
             <extension>wpd</extension>
          </mimetype>
@@ -282,10 +286,8 @@
          <mimetype mimetype="image/x-portable-pixmap" display="Pixmap Image">
             <extension>ppm</extension>
          </mimetype>
-         <mimetype mimetype="application/vnd.ms-powerpoint" display="Microsoft PowerPoint">
-            <extension>ppt</extension>
-            <extension>pps</extension>
-            <extension>pot</extension>
+         <mimetype mimetype="image/vnd.adobe.photoshop" display="Adobe Photoship Image">
+            <extension>psd</extension>
          </mimetype>
          <mimetype mimetype="image/x-cmu-raster" display="Raster Image">
             <extension>ras</extension>
@@ -367,11 +369,6 @@
          <mimetype mimetype="image/x-xbitmap" display="XBitmap Image">
             <extension>xbm</extension>
          </mimetype>
-         <mimetype mimetype="application/vnd.ms-excel" display="Microsoft Excel">
-            <extension display="Excel Spreadsheet" default="true">xls</extension>
-            <extension display="Excel Template">xlt</extension>
-            <extension display="Excel Macro">xlm</extension>
-         </mimetype>
          <mimetype mimetype="image/x-xpixmap" display="XPixmap Image">
             <extension>xpm</extension>
          </mimetype>
@@ -402,6 +399,22 @@
          <mimetype mimetype="application/vnd.ms-outlook" display="Outlook MSG">
             <extension>msg</extension>
          </mimetype>
+
+         <!-- Microsoft Office -->
+         <mimetype mimetype="application/vnd.ms-excel" display="Microsoft Excel">
+            <extension display="Excel Spreadsheet" default="true">xls</extension>
+            <extension display="Excel Template">xlt</extension>
+            <extension display="Excel Macro">xlm</extension>
+         </mimetype>
+         <mimetype mimetype="application/msword" display="Microsoft Word">
+            <extension default="true">doc</extension>
+            <extension>dot</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-powerpoint" display="Microsoft PowerPoint">
+            <extension>ppt</extension>
+            <extension>pps</extension>
+            <extension>pot</extension>
+         </mimetype>
          
          <!-- Microsoft Office Open XML -->
          <mimetype mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document" display="Microsoft Word 2007">
@@ -430,13 +443,13 @@
             <extension>ind</extension>
          </mimetype>
          <!-- iWorks -->
-         <mimetype mimetype="application/vnd.apple.keynote">
+         <mimetype mimetype="application/vnd.apple.keynote" display="Apple iWork Keynote">
             <extension>key</extension>
          </mimetype>
-         <mimetype mimetype="application/vnd.apple.pages">
+         <mimetype mimetype="application/vnd.apple.pages" display="Apple iWork Pages">
             <extension>pages</extension>
          </mimetype>
-         <mimetype mimetype="application/vnd.apple.numbers">
+         <mimetype mimetype="application/vnd.apple.numbers" display="Apple iWork Numbers">
             <extension>numbers</extension>
          </mimetype>
       </mimetypes>

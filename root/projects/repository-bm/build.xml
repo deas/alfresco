@@ -110,6 +110,7 @@
          failureproperty="jmeter.test.failure">
 
       <jvmarg value="-Xmx2G"/>
+      <jvmarg value="-Duser.dir=${user.dir}"/>
       
       <!-- Force suitable defaults -->
       <property name="jmeter.save.saveservice.output_format" value="xml"/>
@@ -126,9 +127,6 @@
       
     </jmeter>
     
-    <!-- <fail message="jmeter test failed" if="jmeter.test.failure" /> -->
-    
-
     <antcall target="timestamp2">
       <param name="message" value="start" />
     </antcall>
@@ -166,6 +164,11 @@
     <antcall target="timestamp2">
       <param name="message" value="finish" />
     </antcall>
+
+    <!-- comment-in if you want to stop on failure -->
+    <!--
+    <fail message="jmeter test failed" if="jmeter.test.failure" /> 
+    -->
     
   </target>
   

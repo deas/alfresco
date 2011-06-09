@@ -55,12 +55,12 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
     
     public final static String DELIM = "/";
     
-    protected String testUserUN = "admin";
-    protected String testUserPW = "admin";
+    protected String testUserUN = null;
+    protected String testUserPW = null;
     
     protected String testBaseUrl = null;
-    protected String testBaseFolderPath = "/testdata"; // relative to "/Company Home"
-    protected String testThreadFolder = "/t01";
+    protected String testBaseFolderPath = null;
+    protected String testThreadFolder = null;
     protected String testPathIn = null;
     protected long   testLen = -1L;
     
@@ -101,52 +101,64 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
                 propertiesMap.put(nameValue[0], nameValue[1]);
             }
             
-            String val = propertiesMap.get("un");
-            if (val != null)
+            if (propertiesMap.size() == 0)
             {
-                testUserUN = new String(val);
-            }
-            
-            val = propertiesMap.get("pwd");
-            if (val != null)
-            {
-                testUserPW = new String(val);
-            }
-            
-            val = propertiesMap.get("baseurl");
-            if (val != null)
-            {
-                testBaseUrl = new String(val);
-            }
-            
-            val = propertiesMap.get("basefolderpath");
-            if (val != null)
-            {
-                testBaseFolderPath = new String(val);
-            }
-            
-            val = propertiesMap.get("threadnum");
-            if (val != null)
-            {
-                // eg. 0, 1, 2 ... 99, 100, 101, ...
-                int threadNum = new Integer(new String(val));
+                // some defaults for local test
+                testUserUN = "admin";
+                testUserPW = "admin";
                 
-                // eg. convert to t01 to t05 (if maxFolders = 5)
-                threadNum = threadNum % maxFolders;
-                threadNum++;
-                testThreadFolder = (threadNum < 10 ? "t0"+threadNum : "t"+threadNum);
+                testBaseFolderPath = "/testdata"; // relative to "/Company Home"
+                testThreadFolder = "/t01";
             }
-            
-            val = propertiesMap.get("path");
-            if (val != null)
+            else
             {
-                testPathIn = new String(val);
-            }
-            
-            val = propertiesMap.get("len");
-            if (val != null)
-            {
-                testLen = new Long(new String(val));
+                String val = propertiesMap.get("un");
+                if (val != null)
+                {
+                    testUserUN = new String(val);
+                }
+                
+                val = propertiesMap.get("pwd");
+                if (val != null)
+                {
+                    testUserPW = new String(val);
+                }
+                
+                val = propertiesMap.get("baseurl");
+                if (val != null)
+                {
+                    testBaseUrl = new String(val);
+                }
+                
+                val = propertiesMap.get("basefolderpath");
+                if (val != null)
+                {
+                    testBaseFolderPath = new String(val);
+                }
+                
+                val = propertiesMap.get("threadnum");
+                if (val != null)
+                {
+                    // eg. 0, 1, 2 ... 99, 100, 101, ...
+                    int threadNum = new Integer(new String(val));
+                    
+                    // eg. convert to t01 to t05 (if maxFolders = 5)
+                    threadNum = threadNum % maxFolders;
+                    threadNum++;
+                    testThreadFolder = (threadNum < 10 ? "t0"+threadNum : "t"+threadNum);
+                }
+                
+                val = propertiesMap.get("path");
+                if (val != null)
+                {
+                    testPathIn = new String(val);
+                }
+                
+                val = propertiesMap.get("len");
+                if (val != null)
+                {
+                    testLen = new Long(new String(val));
+                }
             }
             
             // normalize paths
@@ -208,14 +220,13 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
                 
                 // note: for now, assume user dir is an eclipse project directory (eg. "repository-bm" or "system-build-test")
                 String zipPath = userDir+"/../repository-bm/source/test-resources/testdata_mini.zip";
-                System.out.println("Test data dir does NOT exist hence import: "+zipPath);
-                
-                
                 expandAndImport("/", zipPath);
+                
+                System.out.println("Test data dir does NOT exist hence imported: "+zipPath);
             }
             else
             {
-                System.out.println("Test data dir exists hence assume import is NOT required");
+                //System.out.println("Test data dir exists hence assume import is NOT required");
             }
             
             testDataImported = true;
@@ -404,7 +415,7 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
         
         // note: sub-paths have already been normalized
         sb.append(testBaseFolderPath).
-           append(testThreadFolder).
+           append((testThreadFolder == null ? "" : testThreadFolder)).
            append(testPathCurrent);
         
         if (logger.isTraceEnabled())
@@ -582,7 +593,14 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
     protected void expandAndImport(String parentFolderUrl, String zipFilePath) throws Exception
     {
         // do the import here
-        ZipFile zipFile = new ZipFile(zipFilePath);
+        File file = new File(zipFilePath);
+        if (! file.exists())
+        {
+            String errorMesg = "File does not exist - cannot import: "+zipFilePath;
+            System.out.println(errorMesg);
+            throw new Exception(errorMesg);
+        }
+        ZipFile zipFile = new ZipFile(file);
         
         File tempDir = null;
         try

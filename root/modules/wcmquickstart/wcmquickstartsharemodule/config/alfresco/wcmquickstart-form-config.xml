@@ -60,11 +60,12 @@
                <show id="cm:title" force="true" />
                <show id="cm:description" force="true" />
                <show id="ws:translationOf" force="true" />
+               <show id="ws:initiallyOrphaned" force="true" />
                <show id="ws:language" force="true" />
             </field-visibility>
             <appearance>
                <field id="cm:name">
-                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                  <control template="/org/alfresco/components/form/controls/namefield.ftl">
                      <control-param name="contextProperty">name</control-param>
                   </control>
                </field>
@@ -74,6 +75,11 @@
                <field id="ws:translationOf">
                   <control template="/org/alfresco/components/form/controls/hidden.ftl">
                      <control-param name="contextProperty">translationOf</control-param>
+                  </control>
+               </field>
+               <field id="ws:initiallyOrphaned">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">orphan</control-param>
                   </control>
                </field>
                <field id="ws:language">
@@ -420,11 +426,12 @@
                <show id="cm:description" force="true" />
                <show id="cm:content" force="true" />
                <show id="ws:translationOf" force="true" />
+               <show id="ws:initiallyOrphaned" force="true" />
                <show id="ws:language" force="true" />
             </field-visibility>
             <appearance>
                <field id="cm:name">
-                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                  <control template="/org/alfresco/components/form/controls/namefield.ftl">
                      <control-param name="contextProperty">name</control-param>
                   </control>
                </field>
@@ -445,6 +452,11 @@
                <field id="ws:translationOf">
                   <control template="/org/alfresco/components/form/controls/hidden.ftl">
                      <control-param name="contextProperty">translationOf</control-param>
+                  </control>
+               </field>
+               <field id="ws:initiallyOrphaned">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">orphan</control-param>
                   </control>
                </field>
                <field id="ws:language">
@@ -628,7 +640,7 @@
             </field-visibility>
             <appearance>
                <field id="cm:name">
-                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                  <control template="/org/alfresco/components/form/controls/namefield.ftl">
                      <control-param name="contextProperty">name</control-param>
                   </control>
                </field>
@@ -666,9 +678,15 @@
                <show id="cm:description" force="true" />
                <show id="cm:content" force="true" />
                <show id="ws:translationOf" force="true" />
+               <show id="ws:initiallyOrphaned" force="true" />
                <show id="ws:language" force="true" />
             </field-visibility>
             <appearance>
+               <field id="cm:name">
+                  <control template="/org/alfresco/components/form/controls/namefield.ftl">
+                     <control-param name="contextProperty">name</control-param>
+                  </control>
+               </field>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
@@ -686,6 +704,11 @@
                <field id="ws:translationOf">
                   <control template="/org/alfresco/components/form/controls/hidden.ftl">
                      <control-param name="contextProperty">translationOf</control-param>
+                  </control>
+               </field>
+               <field id="ws:initiallyOrphaned">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">orphan</control-param>
                   </control>
                </field>
                <field id="ws:language">

@@ -126,7 +126,15 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
         {
             return new LongAnalyser();
         }
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ACLTXID))
+        {
+            return new LongAnalyser();
+        }
         else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME))
+        {
+            return new LongAnalyser();
+        }
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME))
         {
             return new LongAnalyser();
         }

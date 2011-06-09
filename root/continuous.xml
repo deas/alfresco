@@ -130,7 +130,8 @@
                     distribute-extensions-office2003,
                     distribute-deployment,
                     distribute-webeditor,
-                    distribute-wcmqs-extension" />
+                    distribute-wcmqs-extension,
+                    distribute-solr" />
 
    <target name="set-build-number"
            depends="continuous-init, set-build-devbox-number, set-revision-number">
@@ -825,6 +826,17 @@
         <tarfileset src="${dir.continuous.assemble}/temp.tar"/>
       </zip>
       <delete quiet="yes" file="${dir.continuous.assemble}/temp.tar" />
+
+   </target>
+
+   <target name="distribute-solr"
+           description="Creates the ZIP file of the sample SOLR installation"
+           depends="set-build-number">
+      <mkdir dir="${dir.continuous.dist}" />
+
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.solr}.zip">
+         <zipfileset dir="${dir.project.solr.instance}" />
+      </zip>
 
    </target>
 

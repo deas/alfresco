@@ -112,7 +112,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         StringBuilder args = new StringBuilder();
         if (fromCommitTime != null)
         {
-            args.append("?").append("fromCommitTime").append("=").append(fromCommitTime);            
+            args.append("?").append("fromTime").append("=").append(fromCommitTime);            
         }
         if (minAclChangeSetId != null)
         {

@@ -138,9 +138,15 @@ public class TranslationDetailsGet extends DeclarativeWebScript
                 }
  
                 // If we don't have a locale yet, try to infer it from the parent
+                // However, only pay attention to the locales of translated parents,
+                //  we ignore the locale on non translated parents as that's usually just
+                //  the server locale and not of much use
                 if(nodeLocale == null)
                 {
-                    nodeLocale = (Locale)nodeService.getProperty(current, ContentModel.PROP_LOCALE);
+                    if(nodeService.hasAspect(current, ContentModel.ASPECT_MULTILINGUAL_DOCUMENT))
+                    {
+                        nodeLocale = (Locale)nodeService.getProperty(current, ContentModel.PROP_LOCALE);
+                    }
                 }
             }
             

@@ -179,6 +179,12 @@ public class AlfrescoUpdateHandler extends UpdateHandler
     
     ConcurrentHashMap<Long, Long> updatedTx = new ConcurrentHashMap<Long, Long>();
     
+    ConcurrentHashMap<Long, Long> deletedAclTx = new ConcurrentHashMap<Long, Long>();
+
+    ConcurrentHashMap<Long, Long> addedAclTx = new ConcurrentHashMap<Long, Long>();
+    
+    ConcurrentHashMap<Long, Long> updatedAclTx = new ConcurrentHashMap<Long, Long>();
+    
     AtomicBoolean deleteAll = new AtomicBoolean(false);
     
     AtomicBoolean checkCache = new AtomicBoolean(false);
@@ -336,6 +342,9 @@ public class AlfrescoUpdateHandler extends UpdateHandler
                     case TX:
                         updatedTx.put(dbidAncAclid.txid, dbidAncAclid.txid);
                         break;
+                    case ACLTX:
+                        updatedAclTx.put(dbidAncAclid.acltxid, dbidAncAclid.acltxid);
+                        break;
                     case UNKOWN:
                     default:
                         break;
@@ -367,6 +376,9 @@ public class AlfrescoUpdateHandler extends UpdateHandler
                         break;
                     case TX:
                         addedTx.put(dbidAncAclid.txid, dbidAncAclid.txid);
+                        break;
+                    case ACLTX:
+                        addedAclTx.put(dbidAncAclid.acltxid, dbidAncAclid.acltxid);
                         break;
                     case UNKOWN:
                     default:
@@ -439,6 +451,11 @@ public class AlfrescoUpdateHandler extends UpdateHandler
             {
                 Long txid = Long.valueOf(cmd.id.substring(4));
                 deletedTx.put(txid, txid);
+            }
+            else if(cmd.id.startsWith("ACLTX-"))
+            {
+                Long txid = Long.valueOf(cmd.id.substring(4));
+                deletedAclTx.put(txid, txid);
             }
             
         }
@@ -598,6 +615,10 @@ public class AlfrescoUpdateHandler extends UpdateHandler
             oldSearcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ADDED_TX, addedTx);
             oldSearcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DELETED_TX, deletedTx);
             oldSearcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_UPDATED_TX, updatedTx);
+            
+            oldSearcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ADDED_ACL_TX, addedAclTx);
+            oldSearcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DELETED_ACL_TX, deletedAclTx);
+            oldSearcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_UPDATED_ACL_TX, updatedAclTx);
             refCounted.decref();
             
             // open a new searcher in the sync block to avoid opening it
@@ -626,6 +647,10 @@ public class AlfrescoUpdateHandler extends UpdateHandler
             addedTx = new ConcurrentHashMap<Long, Long>();
             deletedTx = new ConcurrentHashMap<Long, Long>();
             updatedTx = new ConcurrentHashMap<Long, Long>();
+            
+            addedAclTx = new ConcurrentHashMap<Long, Long>();
+            deletedAclTx = new ConcurrentHashMap<Long, Long>();
+            updatedAclTx = new ConcurrentHashMap<Long, Long>();
             
             error = false;
         }
@@ -699,6 +724,10 @@ public class AlfrescoUpdateHandler extends UpdateHandler
             addedTx = new ConcurrentHashMap<Long, Long>();
             deletedTx = new ConcurrentHashMap<Long, Long>();
             updatedTx = new ConcurrentHashMap<Long, Long>();
+            
+            addedAclTx = new ConcurrentHashMap<Long, Long>();
+            deletedAclTx = new ConcurrentHashMap<Long, Long>();
+            updatedAclTx = new ConcurrentHashMap<Long, Long>();
             
             error = false;
         }
@@ -974,7 +1003,7 @@ public class AlfrescoUpdateHandler extends UpdateHandler
     
     static enum DocType
     {
-        LEAF, AUX, ACL, UNKOWN, TX;
+        LEAF, AUX, ACL, UNKOWN, TX, ACLTX;
     }
     
     static class DbidAndAclid
@@ -982,6 +1011,7 @@ public class AlfrescoUpdateHandler extends UpdateHandler
         Long dbid;
         Long aclid;
         Long txid;
+        Long acltxid;
         
         
         DbidAndAclid(Document doc) 
@@ -998,11 +1028,18 @@ public class AlfrescoUpdateHandler extends UpdateHandler
                 aclid = Long.valueOf(aclField[0].stringValue());
             }
             
-            Fieldable[] idField = doc.getFieldables("TXID");
-            if((idField != null) && (idField.length > 0))
+            Fieldable[] txIdField = doc.getFieldables("TXID");
+            if((txIdField != null) && (txIdField.length > 0))
             {
                 
-                txid = Long.valueOf(idField[0].stringValue());
+                txid = Long.valueOf(txIdField[0].stringValue());
+            }
+
+            Fieldable[] aclTxIdField = doc.getFieldables("ACLTXID");
+            if((aclTxIdField != null) && (aclTxIdField.length > 0))
+            {
+                
+                acltxid = Long.valueOf(aclTxIdField[0].stringValue());
             }
 
         }
@@ -1020,7 +1057,14 @@ public class AlfrescoUpdateHandler extends UpdateHandler
                 {
                     if(txid == null)
                     {
-                        return DocType.UNKOWN;
+                        if(acltxid == null)
+                        {
+                            return DocType.UNKOWN;
+                        }
+                        else
+                        {
+                            return DocType.ACLTX;
+                        }
                     }
                     else
                     {

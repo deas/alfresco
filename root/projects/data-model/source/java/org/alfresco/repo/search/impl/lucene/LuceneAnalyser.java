@@ -112,7 +112,15 @@ public class LuceneAnalyser extends AbstractAnalyzer
         {
             analyser = new LongAnalyser();
         }
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ACLTXID))
+        {
+            analyser = new LongAnalyser();
+        }
         else if (fieldName.equals(LuceneQueryParser.FIELD_TXCOMMITTIME))
+        {
+            analyser = new LongAnalyser();
+        }
+        else if (fieldName.equals(LuceneQueryParser.FIELD_ACLTXCOMMITTIME))
         {
             analyser = new LongAnalyser();
         }

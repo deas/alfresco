@@ -28,7 +28,7 @@ import org.alfresco.util.Pair;
  * @author janv
  * @since 4.0
  */
-public interface PagingResults<R>
+public interface PagingResults<R> extends PermissionedResults
 {
     public List<R> getPage();
     
@@ -38,13 +38,12 @@ public interface PagingResults<R>
      * Note: could also return true if page was cutoff/trimmed for some reason 
      *       (eg. due to permission checks of large page of requested max items)
      * 
-     * @return more items (on next page)
+     * @return true if more items (eg. on next page)
      * 
-     *         - true  => at least one more page (ie. at least one more item on the next page)
-     *         - false => no more items (ie. this is the last page)
-     *         - null  -> unknown whether are more items / pages
+     *         - true  => at least one more page (or incomplete page - if cutoff)
+     *         - false => last page (or incomplete page - if cutoff)
      */
-    public Boolean hasMoreItems();
+    public boolean hasMoreItems();
     
     /**
      * Get the total result count assuming no paging applied.  This value will only be available if

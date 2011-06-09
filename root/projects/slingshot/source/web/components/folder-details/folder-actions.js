@@ -169,6 +169,7 @@
             editMetadataUrl: fnPageURL("edit-metadata?nodeRef=" + nodeRef),
             folderRulesUrl: fnPageURL("folder-rules?nodeRef=" + nodeRef),
             managePermissionsUrl: fnPageURL("manage-permissions?nodeRef=" + nodeRef),
+            manageTranslationsUrl: fnPageURL("manage-translations?nodeRef=" + nodeRef),
             explorerViewUrl: $combine(this.options.repositoryUrl, "/n/showSpaceDetails/", nodeRefUri) + "\" target=\"_blank",
             sourceRepositoryUrl: this.viewInSourceRepositoryURL(recordData) + "\" target=\"_blank"
          });

@@ -24,15 +24,21 @@ public class IndexHealthReport
 {
     long dbTransactionCount;
 
-    OpenBitSet missingFromIndex = new OpenBitSet();
+    OpenBitSet missingTxFromIndex = new OpenBitSet();
 
-    OpenBitSet duplicatedInIndex = new OpenBitSet();
+    OpenBitSet duplicatedTxInIndex = new OpenBitSet();
 
-    OpenBitSet inIndexButNotInDb = new OpenBitSet();
+    OpenBitSet txInIndexButNotInDb = new OpenBitSet();
 
     OpenBitSet duplicatedLeafInIndex = new OpenBitSet();
 
     long transactionDocsInIndex;
+    
+    long uniqueTransactionDocsInIndex;
+    
+    long uniqueAclTransactionDocsInIndex;
+
+    long aclTransactionDocsInIndex;
 
     long leafDocCountInIndex;
 
@@ -40,12 +46,25 @@ public class IndexHealthReport
 
     long lastIndexedIdBeforeHoles;
 
+    long dbAclTransactionCount;
+
+    OpenBitSet missingAclTxFromIndex = new OpenBitSet();
+
+    OpenBitSet duplicatedAclTxInIndex = new OpenBitSet();
+
+    OpenBitSet aclTxInIndexButNotInDb = new OpenBitSet();
+
     /**
      * @return the transactionDocsInIndex
      */
     public long getTransactionDocsInIndex()
     {
         return transactionDocsInIndex;
+    }
+
+    public long getAclTransactionDocsInIndex()
+    {
+        return aclTransactionDocsInIndex;
     }
 
     /**
@@ -91,27 +110,60 @@ public class IndexHealthReport
     }
 
     /**
+     * @param transactionDocsInIndex
+     *            the transactionDocsInIndex to set
+     */
+    public void setAclTransactionDocsInIndex(long aclTransactionDocsInIndex)
+    {
+        this.aclTransactionDocsInIndex = aclTransactionDocsInIndex;
+    }
+
+    /**
      * @return the missingFromIndex
      */
-    public OpenBitSet getMissingFromIndex()
+    public OpenBitSet getMissingTxFromIndex()
     {
-        return missingFromIndex;
+        return missingTxFromIndex;
+    }
+
+    /**
+     * @return the missingFromIndex
+     */
+    public OpenBitSet getMissingAclTxFromIndex()
+    {
+        return missingAclTxFromIndex;
     }
 
     /**
      * @return the duplicatedInIndex
      */
-    public OpenBitSet getDuplicatedInIndex()
+    public OpenBitSet getDuplicatedTxInIndex()
     {
-        return duplicatedInIndex;
+        return duplicatedTxInIndex;
+    }
+
+    /**
+     * @return the duplicatedInIndex
+     */
+    public OpenBitSet getDuplicatedAclTxInIndex()
+    {
+        return duplicatedAclTxInIndex;
     }
 
     /**
      * @return the inIndexButNotInDb
      */
-    public OpenBitSet getInIndexButNotInDb()
+    public OpenBitSet getTxInIndexButNotInDb()
     {
-        return inIndexButNotInDb;
+        return txInIndexButNotInDb;
+    }
+
+    /**
+     * @return the inIndexButNotInDb
+     */
+    public OpenBitSet getAclTxInIndexButNotInDb()
+    {
+        return aclTxInIndexButNotInDb;
     }
 
     /**
@@ -131,27 +183,34 @@ public class IndexHealthReport
         this.dbTransactionCount = dbTransactionCount;
     }
 
-    public void setMissingFromIndex(long txid)
+    public void setMissingTxFromIndex(long txid)
     {
-        missingFromIndex.set(txid);
+        missingTxFromIndex.set(txid);
+    }
+    
+    public void setMissingAclTxFromIndex(long txid)
+    {
+        missingAclTxFromIndex.set(txid);
     }
 
-    public void setDuplicatedInIndex(long txid)
+    public void setDuplicatedTxInIndex(long txid)
     {
-        duplicatedInIndex.set(txid);
+        duplicatedTxInIndex.set(txid);
+    }
+    
+    public void setDuplicatedAclTxInIndex(long txid)
+    {
+        duplicatedAclTxInIndex.set(txid);
     }
 
-    public void setInIndexButNotInDb(long txid)
+    public void setTxInIndexButNotInDb(long txid)
     {
-        inIndexButNotInDb.set(txid);
+        txInIndexButNotInDb.set(txid);
     }
-
-    /**
-     * @return the lastIndexCommitTime
-     */
-    public long getLastIndexCommitTime()
+    
+    public void setAclTxInIndexButNotInDb(long txid)
     {
-        return lastIndexedCommitTime;
+        aclTxInIndexButNotInDb.set(txid);
     }
 
     /**
@@ -179,5 +238,63 @@ public class IndexHealthReport
     {
         this.lastIndexedIdBeforeHoles = lastIndexedIdBeforeHoles;
     }
+
+    /**
+     * @param cardinality
+     */
+    public void setDbAclTransactionCount(long dbAclTransactionCount)
+    {
+        this.dbAclTransactionCount = dbAclTransactionCount;
+    }
+
+    /**
+     * @return the dbAclTransactionCount
+     */
+    public long getDbAclTransactionCount()
+    {
+        return dbAclTransactionCount;
+    }
+
+    /**
+     * @return the uniqueTransactionDocsInIndex
+     */
+    public long getUniqueTransactionDocsInIndex()
+    {
+        return uniqueTransactionDocsInIndex;
+    }
+
+    /**
+     * @param uniqueTransactionDocsInIndex the uniqueTransactionDocsInIndex to set
+     */
+    public void setUniqueTransactionDocsInIndex(long uniqueTransactionDocsInIndex)
+    {
+        this.uniqueTransactionDocsInIndex = uniqueTransactionDocsInIndex;
+    }
+
+    /**
+     * @return the uniqueAclTransactionDocsInIndex
+     */
+    public long getUniqueAclTransactionDocsInIndex()
+    {
+        return uniqueAclTransactionDocsInIndex;
+    }
+
+    /**
+     * @param uniqueAclTransactionDocsInIndex the uniqueAclTransactionDocsInIndex to set
+     */
+    public void setUniqueAclTransactionDocsInIndex(long uniqueAclTransactionDocsInIndex)
+    {
+        this.uniqueAclTransactionDocsInIndex = uniqueAclTransactionDocsInIndex;
+    }
+
+    /**
+     * @return the lastIndexedCommitTime
+     */
+    public long getLastIndexedCommitTime()
+    {
+        return lastIndexedCommitTime;
+    }
+    
+    
 
 }

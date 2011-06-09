@@ -181,6 +181,11 @@ public class WebSiteServiceImpl extends WebSiteService
             {
                 context = context.substring(1);
             }
+            if(hostPort == null)
+            {
+                // Default to port 80 if not set
+                hostPort = new BigInteger("80");
+            }
             String key = hostName + ":" + hostPort.toString() + "/" + context;
 
             String title = result.getPropertyValueById(Asset.PROPERTY_TITLE);
