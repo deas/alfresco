@@ -36,7 +36,8 @@
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML,
-      $hasEventInterest = Alfresco.util.hasEventInterest;
+      $hasEventInterest = Alfresco.util.hasEventInterest,
+      $combine = Alfresco.util.combinePaths;
    
    /**
     * ObjectFinder constructor.
@@ -359,6 +360,15 @@
          startLocation: null,
          
          /**
+          * Specifies the parameters to pass to the node locator service
+          * when determining the start location node.
+          * 
+          * @property startLocationParams
+          * @type string
+          */
+         startLocationParams: null,
+         
+         /**
           * Specifies the Root Node, above which the object picker will not navigate.
           * Values supported are:
           *
@@ -552,33 +562,13 @@
          this._populateSelectedItems();
          this.options.objectRenderer.onPickerShow();
          
-         // only refresh the items if we're not in authority mode
-         if (this._inAuthorityMode() === false)
+         if (!this.options.objectRenderer.startLocationResolved && (this.options.startLocation || this.options.rootNode))
          {
-            YAHOO.Bubbling.fire("refreshItemList",
-            {
-               eventGroup: this
-            });
+            this._resolveStartLocation();
          }
          else
          {
-            // get the current search term
-            var searchTermInput = Dom.get(this.pickerId + "-searchText");
-            var searchTerm = searchTermInput.value;
-            if (searchTerm.length >= this.options.minSearchTermLength && searchTerm.length > 0)
-            {
-               // refresh the previous search
-               YAHOO.Bubbling.fire("refreshItemList",
-               {
-                  eventGroup: this,
-                  searchTerm: searchTerm
-               });
-            }
-            else
-            {
-               // focus ready for a search
-               searchTermInput.focus();
-            }
+            this._fireRefreshEvent();
          }
          
          p_obj.set("disabled", true);
@@ -1714,6 +1704,221 @@
       },
       
       /**
+       * Resolves the start location provided to the component and refreshes
+       * the picker to show the children of that start location.
+       * 
+       * @method _resolveStartLocation
+       * @private
+       */
+      _resolveStartLocation: function ObjectFinder__resolveStartLocation()
+      {
+         if (this.options.startLocation || this.options.rootNode)
+         {
+            this.options.startLocation = (this.options.startLocation || this.options.rootNode);
+            
+            if (Alfresco.logger.isDebugEnabled())
+            {
+               Alfresco.logger.debug("Resolving startLocation of '" + this.options.startLocation + "'");
+            }
+            
+            var startingNodeRef = null;
+            
+            // check first for the start locations that don't require a remote call
+            if (this.options.startLocation.charAt(0) == "{")
+            {
+               if (this.options.startLocation == "{companyhome}")
+               {
+                  startingNodeRef = "alfresco://company/home";
+               }
+               else if (this.options.startLocation == "{userhome}")
+               {
+                  startingNodeRef = "alfresco://user/home";
+               }
+               else if (this.options.startLocation == "{siteshome}")
+               {
+                  startingNodeRef = "alfresco://sites/home";
+               }
+               else if (this.options.startLocation == "{self}")
+               {
+                  if (this.options.currentItem && this.options.currentItem !== null)
+                  {
+                     startingNodeRef = this.options.currentItem;
+                  }
+                  else
+                  {
+                     startingNodeRef = "alfresco://company/home";
+                     
+                     if (Alfresco.logger.isDebugEnabled())
+                     {
+                        Alfresco.logger.warn("To use a start location of {self} a 'currentItem' parameter is required, defaulting to company home");
+                     }
+                  }
+               }
+            }
+            else if (this.options.startLocation.charAt(0) == "/")
+            {
+               // start location is an XPath, this will be dealt with later so set to empty string to ignore it
+               startingNodeRef = "";
+            }
+            else
+            {
+               // start location must be a hardcoded nodeRef
+               startingNodeRef = this.options.startLocation;
+            }
+            
+            if (startingNodeRef != null)
+            {
+               // we already know the start location so just refresh
+               this.options.objectRenderer.options.parentNodeRef = startingNodeRef;
+               this._fireRefreshEvent();
+            }
+            else
+            {
+               // we don't know the start location so try the remote node locator service
+               this._locateStartingNode();
+            }
+         }
+         else
+         {
+            this._fireRefreshEvent();
+         }
+      },
+      
+      /**
+       * Locates the NodeRef for the start location by calling the remote node locator
+       * service and refreshes the picker.
+       * 
+       * @method _locateStartingNode
+       * @private
+       */
+      _locateStartingNode: function ObjectFinder__locateStartingNode()
+      {
+         if (this.options.startLocation && this.options.currentItem && this.options.currentItem !== null)
+         {
+            var nodeLocator = "companyhome";
+            
+            // for backwards compatibility support the well known {parent} start location
+            if (this.options.startLocation == "{parent}")
+            {
+               nodeLocator = "ancestor";
+            }
+            else if (this.options.startLocation.length > 2 && 
+                     this.options.startLocation.charAt(0) == "{" &&
+                     this.options.startLocation.charAt(this.options.startLocation.length-1) == "}")
+            {
+               // strip off the { } characters
+               nodeLocator = this.options.startLocation.substring(1, this.options.startLocation.length-1);
+            }
+            
+            // build the base URL for the nodelocator service call
+            var url = $combine(Alfresco.constants.PROXY_URI, "/api/", this.options.currentItem.replace("://", "/"), 
+                  "nodelocator", nodeLocator);
+            
+            // add parameters for the call to the node locator service, if there are any
+            if (this.options.startLocationParams && this.options.startLocationParams != null)
+            {
+               url += "?" + encodeURI(this.options.startLocationParams);
+            }
+            
+            // define success handler
+            var successHandler = function ObjectFinder__locateStartingNode_successHandler(response)
+            {
+               var startingNodeRef = response.json.data.nodeRef;
+               
+               if (Alfresco.logger.isDebugEnabled())
+               {
+                  Alfresco.logger.debug("startLocation resolved to: " + startingNodeRef);
+               }
+               
+               this.options.objectRenderer.options.parentNodeRef = startingNodeRef;
+               this._fireRefreshEvent();
+            };
+            
+            // define failure handler
+            var failureHandler = function ObjectFinder__locateStartingNode_failureHandler(response)
+            {
+               if (Alfresco.logger.isDebugEnabled())
+               {
+                  Alfresco.logger.error("Failed to locate node: " + response.serverResponse.responseText);
+               }
+               
+               // just use the defaults, normally company home
+               this._fireRefreshEvent();
+            };
+            
+            if (Alfresco.logger.isDebugEnabled())
+            {
+               Alfresco.logger.debug("Generated nodelocator url: " + url);
+            }
+            
+            // call the node locator webscript
+            var config =
+            {
+               method: "GET",
+               url: url,
+               successCallback: 
+               { 
+                  fn: successHandler, 
+                  scope: this
+               },
+               failureCallback:
+               {
+                  fn: failureHandler,
+                  scope: this
+               }
+            };
+            Alfresco.util.Ajax.request(config);
+         }
+         else 
+         {
+            if (Alfresco.logger.isDebugEnabled())
+            {
+               Alfresco.logger.warn("To use a start location of " + this.options.startLocation + 
+                     " a 'currentItem' parameter is required");
+            }
+            
+            this._fireRefreshEvent();
+         } 
+      },
+      
+      /**
+       * Fires the refreshItemList event to refresh the contents of the picker.
+       * 
+       * @method _fireRefreshEvent
+       * @private
+       */
+      _fireRefreshEvent: function ObjectFinder__fireRefreshEvent()
+      {
+         if (this._inAuthorityMode() === false)
+         {
+            YAHOO.Bubbling.fire("refreshItemList",
+            {
+               eventGroup: this
+            });
+         }
+         else
+         {
+            // get the current search term
+            var searchTermInput = Dom.get(this.pickerId + "-searchText");
+            var searchTerm = searchTermInput.value;
+            if (searchTerm.length >= this.options.minSearchTermLength)
+            {
+               // refresh the previous search
+               YAHOO.Bubbling.fire("refreshItemList",
+               {
+                  eventGroup: this,
+                  searchTerm: searchTerm
+               });
+            }
+            else
+            {
+               // focus ready for a search
+               searchTermInput.focus();
+            }
+         }
+      },
+      
+      /**
        * Create YUI resizer widget
        *
        * @method _createResizer
@@ -2705,90 +2910,8 @@
        */
       _generatePickerChildrenUrlPath: function ObjectRenderer__generatePickerChildrenUrlPath(nodeRef)
       {
-         var pathStart = nodeRef,
-             pathEnd = "children";
-         
-         if (!this.startLocationResolved && (this.options.startLocation || this.options.rootNode))
-         {
-            this.options.startLocation = (this.options.startLocation || this.options.rootNode);
-
-            if (Alfresco.logger.isDebugEnabled())
-            {
-               Alfresco.logger.debug("Resolving startLocation of '" + this.options.startLocation + "'");
-            }
-            
-            if (this.options.startLocation.charAt(0) == "{")
-            {
-               if (this.options.startLocation == "{companyhome}")
-               {
-                  pathStart = "alfresco://company/home";
-               }
-               else if (this.options.startLocation == "{userhome}")
-               {
-                  pathStart = "alfresco://user/home";
-               }
-               else if (this.options.startLocation == "{siteshome}")
-               {
-                  pathStart = "alfresco://sites/home";
-               }
-               else if (this.options.startLocation == "{self}")
-               {
-                  if (this.options.currentItem && this.options.currentItem !== null)
-                  {
-                     pathStart = this.options.currentItem;
-                  }
-                  else if (Alfresco.logger.isDebugEnabled())
-                  {
-                     Alfresco.logger.warn("To use a start location of {self} a 'currentItem' parameter is required");
-                  }
-               }
-               else if (this.options.startLocation == "{doclib}")
-               {
-                  if (this.options.currentItem && this.options.currentItem !== null)
-                  {
-                     // we need to find the document library the node being edited
-                     // is located within
-                     pathStart = this.options.currentItem;
-                     pathEnd = "doclib";
-                  }
-                  else if (Alfresco.logger.isDebugEnabled())
-                  {
-                     Alfresco.logger.warn("To use a start location of {doclib} a 'currentItem' parameter is required");
-                  }
-               }
-               else if (this.options.startLocation == "{parent}")
-               {
-                  if (this.options.currentItem && this.options.currentItem !== null)
-                  {
-                     // we want to find all the siblings of the node being edited
-                     pathStart = this.options.currentItem;
-                     pathEnd = "siblings";
-                  }
-                  else if (Alfresco.logger.isDebugEnabled())
-                  {
-                     Alfresco.logger.warn("To use a start location of {parent} a 'currentItem' parameter is required");
-                  }
-               }
-               else if (Alfresco.logger.isDebugEnabled())
-               {
-                  Alfresco.logger.warn("Unrecognised startLocation option detected '" + this.options.startLocation + "'");
-               }
-            }
-            else if (this.options.startLocation.charAt(0) == "/")
-            {
-               // start location is an XPath, this will be passed as a parameter
-               // so set pathStart to empty string
-               pathStart = "";
-            }
-            else
-            {
-               // start location must be a hardcoded nodeRef
-               pathStart = this.options.startLocation;
-            }
-         }
-         
          // generate the path portion of the url
-         return $combine("/", pathStart.replace("://", "/"), pathEnd);
+         return $combine("/", nodeRef.replace("://", "/"), "children");
       },
       
       /**
