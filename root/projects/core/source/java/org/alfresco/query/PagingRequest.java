@@ -59,6 +59,14 @@ public class PagingRequest
     }
     
     /**
+     * Change the skip count. Must be called before the paging query is run. 
+     */
+    protected void setSkipCount(int skipCount)
+    {
+        this.skipCount = skipCount;
+    }
+    
+    /**
      * Size of the page - if skip count is 0 then return up to max items.
      * 
      * @return
@@ -66,6 +74,14 @@ public class PagingRequest
     public int getMaxItems()
     {
         return maxItems;
+    }
+    
+    /**
+     * Change the size of the page. Must be called before the paging query is run.
+     */
+    protected void setMaxItems(int maxItems)
+    {
+        this.maxItems = maxItems;
     }
     
     /**
@@ -99,4 +115,11 @@ public class PagingRequest
         return queryExecutionId;
     }
     
+    /**
+     * Change the unique query ID for the results. Must be called before the paging query is run.
+     */
+    protected void setQueryExecutionId(String queryExecutionId)
+    {
+        this.queryExecutionId = queryExecutionId; 
+    }
 }
