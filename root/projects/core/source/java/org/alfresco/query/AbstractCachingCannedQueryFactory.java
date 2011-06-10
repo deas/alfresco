@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -55,23 +55,23 @@ public abstract class AbstractCachingCannedQueryFactory<R> extends AbstractCanne
      */
     protected abstract CannedQuery<R> getCannedQueryImpl(CannedQueryParameters parameters);
     
-    private class CannedQueryCacheFacade<T> extends AbstractCannedQuery<T>
+    private class CannedQueryCacheFacade<R> extends AbstractCannedQuery<R>
     {
-        private final AbstractCannedQuery<T> delegate;
+        private final AbstractCannedQuery<R> delegate;
         
         private CannedQueryCacheFacade(
                 CannedQueryParameters params, String queryExecutionId,
-                AbstractCannedQuery<T> delegate)
+                AbstractCannedQuery<R> delegate)
         {
             super(params, queryExecutionId);
             this.delegate = delegate;
         }
-
+        
         @Override
-        protected List<T> query(CannedQueryParameters parameters)
+        protected List<R> queryAndFilter(CannedQueryParameters parameters)
         {
             // Copy the parameters and remove all references to paging.
-            // The underlying query will return full results (possibly sorted and filtered)
+            // The underlying query will return full or filtered results (possibly also sorted)
             // but will not apply page limitations
             
             throw new UnsupportedOperationException();

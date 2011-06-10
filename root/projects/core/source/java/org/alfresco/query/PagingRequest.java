@@ -19,33 +19,72 @@
 package org.alfresco.query;
 
 
+
 /**
- * Marker interface for single page request (unsorted)
+ * Simple wrapper for single page request (with optional request for total count up to a given max)
  * 
  * @author janv
  * @since 4.0
  */
-public interface PagingRequest
+public class PagingRequest
 {
+    private int skipCount = 0;
+    private int maxItems;
+    
+    private int requestTotalCountMax = 0; // request total count up to a given max (0 => do not request total count)
+    private String queryExecutionId;
+    
+    public PagingRequest(int maxItems, String queryExecutionId)
+    {
+        this.maxItems = maxItems;
+        this.queryExecutionId = queryExecutionId;
+    }
+    
+    public PagingRequest(int skipCount, int maxItems, String queryExecutionId)
+    {
+        this.skipCount = skipCount;
+        this.maxItems = maxItems;
+        this.queryExecutionId = queryExecutionId;
+    }
+    
     /**
      * Results to skip before retrieving the page.  Usually a multiple of page size (ie. page size * num pages to skip).
      * Default is 0.
      * 
      * @return
      */
-    public int getSkipCount();
+    public int getSkipCount()
+    {
+        return skipCount;
+    }
     
     /**
      * Size of the page - if skip count is 0 then return up to max items.
      * 
      * @return
      */
-    public int getMaxItems();
+    public int getMaxItems()
+    {
+        return maxItems;
+    }
     
     /**
-     * Request total count up to a given maximum.  Default is 0 => do not request total count (which allows possible query optimisation).
+     * Get requested total count (up to a given maximum).
      */
-    public int getRequestTotalCountMax();
+    public int getRequestTotalCountMax()
+    {
+        return requestTotalCountMax;
+    }
+    
+    /**
+     * Set request total count (up to a given maximum).  Default is 0 => do not request total count (which allows possible query optimisation).
+     * 
+     * @param requestTotalCountMax
+     */
+    public void setRequestTotalCountMax(int requestTotalCountMax)
+    {
+        this.requestTotalCountMax = requestTotalCountMax;
+    }
     
     /**
      * Get a unique ID associated with these query results.  This must be available before and
@@ -55,5 +94,9 @@ public interface PagingRequest
      * 
      * @return                      a unique ID associated with the query execution results
      */
-    public String getQueryExecutionId();
+    public String getQueryExecutionId()
+    {
+        return queryExecutionId;
+    }
+    
 }

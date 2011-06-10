@@ -327,7 +327,12 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         // Finish
         userTransaction.commit();
     }
-    
+
+    /**
+     * Creates a folder structure in one language, and creates a translation
+     *  for a document in it. The folder structure in the destination
+     *  language should be created.
+     */
     public void testTranslationDocFoldersToBeCreated() throws Exception
     {
         // Create a French folder, with two sub folders
@@ -403,18 +408,31 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
         userTransaction.begin();
 
         
-        // Ensure the intermediate Spanish sub folders were created
+        // Ensure the intermediate Spanish sub folders were created, and
+        //  were marked as translations
         NodeRef spanishSub1 = nodeService.getChildByName(spanish, ContentModel.ASSOC_CONTAINS, "Sub1");
         assertNotNull("Spanish Sub Folder 1 not created", spanishSub1);
         NodeRef spanishSub2 = nodeService.getChildByName(spanishSub1, ContentModel.ASSOC_CONTAINS, "Sub2");
         assertNotNull("Spanish Sub Folder 2 not created", spanishSub2);
+        assertEquals(true, multilingualContentService.isTranslation(spanishSub1));
+        assertEquals(true, multilingualContentService.isTranslation(spanishSub2));
+        assertEquals(fr_F1, multilingualContentService.getTranslationForLocale(spanishSub1, Locale.FRENCH));
+        assertEquals(fr_F2, multilingualContentService.getTranslationForLocale(spanishSub2, Locale.FRENCH));
 
         
         // Ensure the intermediate Spanish folders got their collections
         // TODO
         
         // And check the index page
-        // TODO
+        NodeRef spanishSub2Index = nodeService.getChildByName(spanishSub2, ContentModel.ASSOC_CONTAINS, "index.html");
+        assertNotNull(spanishSub2Index);
+        NodeRef frenchhSub2Index = nodeService.getChildByName(fr_F2, ContentModel.ASSOC_CONTAINS, "index.html");
+        assertNotNull(frenchhSub2Index);
+        assertEquals(true, multilingualContentService.isTranslation(frenchhSub2Index));
+        assertEquals(true, multilingualContentService.isTranslation(spanishSub2Index));
+        assertEquals(frenchhSub2Index, multilingualContentService.getTranslationForLocale(spanishSub2Index, Locale.FRENCH));
+        
+
 
         // Ensure the translation ended up in the right place
         assertNotNull(
@@ -426,6 +444,133 @@ public class TemporaryMultilingualAspectTest extends WCMQuickStartTest implement
                 nodeService.getChildByName(spanish, ContentModel.ASSOC_CONTAINS, "Spanish Document.txt")
         );
         assertEquals(spanishSub2, nodeService.getPrimaryParent(es_Doc).getParentRef());
+        assertEquals("Spanish Document.txt", nodeService.getPrimaryParent(es_Doc).getQName().getLocalName());
+
+        // Finish
+        userTransaction.commit();
+    }
+    
+    /**
+     * Creates a folder structure in two languages, but without creating
+     *  the translation link between them. Creates a translated document,
+     *  and the folder structures should be linked up. 
+     */
+    public void testTranslationDocFoldersClaiming() throws Exception
+    {
+        // Create a French folder, with two sub folders
+        UserTransaction userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+     
+        NodeRef french = nodeService.createNode(
+                editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("French"), TYPE_SECTION
+        ).getChildRef();
+        nodeService.setProperty(french, ContentModel.PROP_NAME, "French");
+        multilingualContentService.makeTranslation(french, Locale.FRENCH);
+        
+        NodeRef fr_F1 = nodeService.createNode(
+                french, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub1"), TYPE_SECTION
+        ).getChildRef();
+        nodeService.setProperty(fr_F1, ContentModel.PROP_NAME, "Sub1");
+        NodeRef fr_F2 = nodeService.createNode(
+                fr_F1, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub2"), TYPE_SECTION
+        ).getChildRef();
+        nodeService.setProperty(fr_F2, ContentModel.PROP_NAME, "Sub2");
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+        
+        
+        // Create a Spanish translation folder, and two sub folders
+        //  that aren't marked as translations
+        NodeRef spanish = nodeService.createNode(
+                editorialSiteRoot, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Spanish"), TYPE_SECTION
+        ).getChildRef();
+        nodeService.setProperty(spanish, ContentModel.PROP_NAME, "Spanish");
+        
+        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
+        props.put(PROP_TRANSLATION_OF, french);
+        props.put(PROP_LANGUAGE, "Spanish");
+        nodeService.addAspect(spanish, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        NodeRef es_F1 = nodeService.createNode(
+                spanish, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub1"), TYPE_SECTION
+        ).getChildRef();
+        nodeService.setProperty(es_F1, ContentModel.PROP_NAME, "Sub1");
+        NodeRef es_F2 = nodeService.createNode(
+                es_F1, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Sub2"), TYPE_SECTION
+        ).getChildRef();
+        nodeService.setProperty(es_F2, ContentModel.PROP_NAME, "Sub2");
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+
+        
+        // Now create a document inside the French subfolder
+        NodeRef fr_Doc = nodeService.createNode(
+                fr_F2, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("French Document.txt"), TYPE_ARTICLE
+        ).getChildRef();
+        nodeService.setProperty(fr_Doc, ContentModel.PROP_NAME, "French Document.txt");
+        props = new HashMap<QName, Serializable>(); // No properties needed
+        nodeService.addAspect(fr_Doc, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        
+        // Finally create the Spanish translation document
+        // Place it at the root of the Spanish site, as the intermediate folders
+        //  aren't translations
+        NodeRef es_Doc = nodeService.createNode(
+                spanish, ContentModel.ASSOC_CONTAINS,
+                QName.createQName("Spanish Document.txt"), TYPE_ARTICLE
+        ).getChildRef();
+        nodeService.setProperty(es_Doc, ContentModel.PROP_NAME, "Spanish Document.txt");
+        
+        props = new HashMap<QName, Serializable>(); // Only need to mark what translation of
+        props.put(PROP_TRANSLATION_OF, fr_Doc);
+        props.put(PROP_INITIALLY_ORPHANED, true);
+        nodeService.addAspect(es_Doc, ASPECT_TEMPORARY_MULTILINGUAL, props);
+        
+        userTransaction.commit();
+        userTransaction = transactionService.getUserTransaction();
+        userTransaction.begin();
+
+        
+        // Ensure the intermediate Spanish sub folders were marked 
+        //  as being translations
+        assertEquals(true, multilingualContentService.isTranslation(es_F1));
+        assertEquals(true, multilingualContentService.isTranslation(es_F2));
+        assertEquals(fr_F1, multilingualContentService.getTranslationForLocale(es_F1, Locale.FRENCH));
+        assertEquals(fr_F2, multilingualContentService.getTranslationForLocale(es_F2, Locale.FRENCH));
+
+        
+        // And check the index pages
+        NodeRef spanishSub2Index = nodeService.getChildByName(es_F2, ContentModel.ASSOC_CONTAINS, "index.html");
+        assertNotNull(spanishSub2Index);
+        NodeRef frenchhSub2Index = nodeService.getChildByName(fr_F2, ContentModel.ASSOC_CONTAINS, "index.html");
+        assertNotNull(frenchhSub2Index);
+        assertEquals(true, multilingualContentService.isTranslation(frenchhSub2Index));
+        assertEquals(true, multilingualContentService.isTranslation(spanishSub2Index));
+        assertEquals(frenchhSub2Index, multilingualContentService.getTranslationForLocale(spanishSub2Index, Locale.FRENCH));
+        
+
+
+        // Ensure the translation ended up in the right place
+        assertNotNull(
+                "Spanish doc isn't in Sub Folder 2", 
+                nodeService.getChildByName(es_F2, ContentModel.ASSOC_CONTAINS, "Spanish Document.txt")
+        );
+        assertNull(
+                "Spanish doc has gone from the root", 
+                nodeService.getChildByName(spanish, ContentModel.ASSOC_CONTAINS, "Spanish Document.txt")
+        );
+        assertEquals(es_F2, nodeService.getPrimaryParent(es_Doc).getParentRef());
         assertEquals("Spanish Document.txt", nodeService.getPrimaryParent(es_Doc).getQName().getLocalName());
 
         // Finish

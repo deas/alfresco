@@ -587,7 +587,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
         // check the aspects
         ClassDefinition[] aspectDefs = nodeDef.getAspects();
         assertNotNull("aspects should not be null", aspectDefs);
-        assertEquals("There should be 3 aspects", 3, aspectDefs.length);
+        assertEquals("There should be 4 aspects", 4, aspectDefs.length);
 
         for (ClassDefinition aspectDef : aspectDefs)
         {
@@ -598,6 +598,10 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
             if (name.equals("{http://www.alfresco.org/model/system/1.0}referenceable"))
             {
                 assertEquals("Wrong number of properties", 4, aspectDef.getProperties().length);
+            }
+            else if (name.equals("{http://www.alfresco.org/model/system/1.0}localized"))
+            {
+                assertEquals("Wrong number of properties", 1, aspectDef.getProperties().length);
             }
             else if (name.equals("{http://www.alfresco.org/model/content/1.0}auditable"))
             {

@@ -16,6 +16,7 @@ model.parentNodeRef = detailsObj.data.parentNodeRef;
 model.locales = detailsObj.data.locales;
 /* Language of the node */
 model.currentLocale = detailsObj.data.locale;
+model.currentLocaleName = detailsObj.data.localeName;
 
 /* Translations of the node */
 model.translations = detailsObj.data.translations;

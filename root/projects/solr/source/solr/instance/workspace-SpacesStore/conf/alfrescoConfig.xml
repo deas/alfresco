@@ -2,6 +2,7 @@
 <alfresco>
       <model>alfresco/actionModel.xml</model>
       <model>alfresco/dictionaryModel.xml</model>
+      <model>alfresco/cmisModel.xml</model>
       <model>alfresco/applicationModel.xml</model>
       <model>alfresco/blogIntegrationModel.xml</model>
       <model>alfresco/calendarModel.xml</model>

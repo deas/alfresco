@@ -81,16 +81,11 @@
 	</bean>  
 
     <!-- Intercept any controller and add application-wide data to the request. -->
-    <bean id="applicationDataInterceptor" class="org.alfresco.wcm.client.interceptor.ApplicationDataInterceptor">
+    <bean id="applicationDataInterceptor" class="org.alfresco.wcm.client.interceptor.ApplicationDataInterceptor" init-method="init">
         <property name="webSiteService" ref="webSiteService"/>
         <property name="modelDecorator" ref="modelDecorator"/>
     </bean>  
 
-    <!-- Intercept any controller and add application-wide rootnav data. -->
-    <bean id="rootNavInterceptor" class="org.alfresco.wcm.client.interceptor.RootNavInterceptor" init-method="init">
-        <property name="webSiteService" ref="webSiteService"/>
-    </bean>
-	
     <!-- Streamed asset controller, eg streams images from the repository -->    
     <bean id="assetController" class="org.alfresco.wcm.client.controller.StreamedAssetController">
         <property name="urlUtils" ref="urlUtils"/>

@@ -31,6 +31,8 @@ public class IndexHealthReport
     OpenBitSet txInIndexButNotInDb = new OpenBitSet();
 
     OpenBitSet duplicatedLeafInIndex = new OpenBitSet();
+    
+    OpenBitSet duplicatedAuxInIndex = new OpenBitSet();
 
     long transactionDocsInIndex;
     
@@ -41,6 +43,8 @@ public class IndexHealthReport
     long aclTransactionDocsInIndex;
 
     long leafDocCountInIndex;
+    
+    long auxDocCountInIndex;
 
     long lastIndexedCommitTime;
 
@@ -82,6 +86,22 @@ public class IndexHealthReport
     {
         return leafDocCountInIndex;
     }
+    
+    /**
+     * @param auxCount
+     */
+    public void setAuxDocCountInIndex(long auxDocCountInIndex)
+    {
+        this.auxDocCountInIndex = auxDocCountInIndex;
+    }
+
+    /**
+     * @return the leafDocCountInIndex
+     */
+    public long getAuxDocCountInIndex()
+    {
+        return auxDocCountInIndex;
+    }
 
     /**
      * @param txid
@@ -98,6 +118,23 @@ public class IndexHealthReport
     public OpenBitSet getDuplicatedLeafInIndex()
     {
         return duplicatedLeafInIndex;
+    }
+    
+    /**
+     * @param txid
+     */
+    public void setDuplicatedAuxInIndex(long txid)
+    {
+        duplicatedAuxInIndex.set(txid);
+
+    }
+
+    /**
+     * @return the duplicatedLeafInIndex
+     */
+    public OpenBitSet getDuplicatedAuxInIndex()
+    {
+        return duplicatedAuxInIndex;
     }
 
     /**

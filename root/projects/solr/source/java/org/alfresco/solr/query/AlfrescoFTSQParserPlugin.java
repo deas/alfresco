@@ -45,6 +45,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author Andy
@@ -160,7 +161,7 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
                         Locale locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localeString);
                         searchParameters.addLocale(locale);
                     }
-
+                   
                     JSONArray templates = json.getJSONArray("templates");
                     for (int i = 0; i < templates.length(); i++)
                     {
@@ -209,6 +210,11 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
                 searchParameters.setQuery(getString());
             }
 
+            if(searchParameters.getLocales().size() == 0)
+            {
+                searchParameters.addLocale(I18NUtil.getLocale());
+            }
+            
             String defaultField = getParam(CommonParams.DF);
             if (defaultField == null)
             {

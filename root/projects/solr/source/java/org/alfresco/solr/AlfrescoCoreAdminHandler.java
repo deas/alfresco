@@ -203,6 +203,47 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 }
                 return false;
             }
+            else if (a.equalsIgnoreCase("ACLREPORT"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    Long aclid = null;
+                    if (params.get("aclid") != null)
+                    {
+                        aclid = Long.valueOf(params.get("aclid"));
+                        NamedList<Object> report = new SimpleOrderedMap<Object>();
+                        report.add(cname, buildAclReport(tracker, aclid));
+                        rsp.add("report", report);
+
+                    }
+                    else
+                    {
+                        throw new AlfrescoRuntimeException("No aclid parameter set");
+                    }
+                }
+                else
+                {
+                    Long aclid = null;
+                    if (params.get("aclid") != null)
+                    {
+                        aclid = Long.valueOf(params.get("aclid"));
+                        NamedList<Object> report = new SimpleOrderedMap<Object>();
+                        for (String trackerName : trackers.keySet())
+                        {
+                            CoreTracker tracker = trackers.get(trackerName);
+                            report.add(trackerName, buildAclReport(tracker, aclid));
+                        }
+                        rsp.add("report", report);
+                    }
+                    else
+                    {
+                        throw new AlfrescoRuntimeException("No dbid parameter set");
+                    }
+
+                }
+                return false;
+            }
             else if (a.equalsIgnoreCase("TXREPORT"))
             {
                 if (cname != null)
@@ -239,6 +280,47 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     else
                     {
                         throw new AlfrescoRuntimeException("No txid parameter set");
+                    }
+
+                }
+                return false;
+            }
+            else if (a.equalsIgnoreCase("ACLTXREPORT"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    Long acltxid = null;
+                    if (params.get("acltxid") != null)
+                    {
+                        acltxid = Long.valueOf(params.get("acltxid"));
+                        NamedList<Object> report = new SimpleOrderedMap<Object>();
+                        report.add(cname, buildAclTxReport(tracker, acltxid));
+                        rsp.add("report", report);
+
+                    }
+                    else
+                    {
+                        throw new AlfrescoRuntimeException("No acltxid parameter set");
+                    }
+                }
+                else
+                {
+                    Long acltxid = null;
+                    if (params.get("acltxid") != null)
+                    {
+                        acltxid = Long.valueOf(params.get("acltxid"));
+                        NamedList<Object> report = new SimpleOrderedMap<Object>();
+                        for (String trackerName : trackers.keySet())
+                        {
+                            CoreTracker tracker = trackers.get(trackerName);
+                            report.add(trackerName, buildAclTxReport(tracker, acltxid));
+                        }
+                        rsp.add("report", report);
+                    }
+                    else
+                    {
+                        throw new AlfrescoRuntimeException("No acltxid parameter set");
                     }
 
                 }
@@ -348,6 +430,38 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
+    private NamedList<Object> buildAclTxReport(CoreTracker tracker, Long acltxid) throws IOException, JSONException
+    {
+        NamedList<Object> nr = new SimpleOrderedMap<Object>();
+        nr.add("TXID", acltxid);
+        nr.add("transaction", buildTrackerReport(tracker, 0l, 0l, acltxid, acltxid, null, null));
+        NamedList<Object> nodes = new SimpleOrderedMap<Object>();
+        // add node reports ....
+        List<Long> dbAclIds = tracker.getAclsForDbAclTransaction(acltxid);
+        for(Long aclid : dbAclIds)
+        {
+            nodes.add("ACLID "+aclid, buildAclReport(tracker, aclid));
+        }
+        nr.add("aclTxDbAclCount", dbAclIds.size());
+        nr.add("nodes", nodes);
+        return nr;
+    }
+    
+    private NamedList<Object> buildAclReport(CoreTracker tracker, Long aclid) throws IOException, JSONException
+    {
+        AclReport aclReport = tracker.checkAcl(aclid);
+
+        NamedList<Object> nr = new SimpleOrderedMap<Object>();
+        nr.add("Acl Id", aclReport.getAclId());
+        nr.add("Acl doc in index", aclReport.getIndexAclDoc());
+        if (aclReport.getIndexAclDoc() != null)
+        {
+            nr.add("Acl tx in Index", aclReport.getIndexAclTx());
+        }
+      
+        return nr;
+    }
+    
     private NamedList<Object> buildTxReport(CoreTracker tracker, Long txid) throws IOException, JSONException
     {
         NamedList<Object> nr = new SimpleOrderedMap<Object>();

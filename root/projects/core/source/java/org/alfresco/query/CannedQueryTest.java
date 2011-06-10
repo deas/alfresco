@@ -227,7 +227,7 @@ public class CannedQueryTest extends TestCase
     }
     
     @SuppressWarnings("unchecked")
-    public void testQueryFilteredResults() throws Exception
+    public void testQueryPermissionCheckedResults() throws Exception
     {
         CannedQueryFactory<String> qfOne = namedQueryFactoryRegistry.getNamedObject(QUERY_TEST_ONE);
         CannedQueryParameters params = new CannedQueryParameters(null, null, null, "joe", 0, null);
@@ -248,7 +248,7 @@ public class CannedQueryTest extends TestCase
     }
     
     @SuppressWarnings("unchecked")
-    public void testQueryFilteredPagedTotalCount() throws Exception
+    public void testQueryPermissionCheckedPagedTotalCount() throws Exception
     {
         CannedQueryFactory<String> qfOne = namedQueryFactoryRegistry.getNamedObject(QUERY_TEST_ONE);
         CannedQueryPageDetails qPageDetails = new CannedQueryPageDetails(5, 1, 1, 1);
@@ -310,7 +310,7 @@ public class CannedQueryTest extends TestCase
         }
         
         @Override
-        protected List<T> query(CannedQueryParameters parameters)
+        protected List<T> queryAndFilter(CannedQueryParameters parameters)
         {
             return results;
         }

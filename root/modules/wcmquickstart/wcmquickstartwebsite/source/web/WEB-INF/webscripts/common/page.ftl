@@ -9,7 +9,7 @@
 <div id="body-wrapper">
     <div class="clearfix">
         <div id="logo"> 
-            <a href="${url.context}/">${webSite.description!}</a>
+            <a href="${url.context}${rootSection.path}">${rootSection.description!}</a>
             <#if webSite.title??><p class="logo-desc">${webSite.title}</p></#if>
         </div>
         <div class="link-menu">

@@ -34,9 +34,11 @@ function markAsInitialTranslation(locale) {
       dataObj: {
          "prop_ws_language": locale
       },
-      successCallback: function() {
-         alert("It worked!");
-         location.reload();
+      successCallback: {
+         fn: function() {
+            location.reload();
+         },
+         scope: this
       }
    });
 
@@ -63,8 +65,8 @@ margin:1em 0;
       <h2>This document is not currently enabled for translations</h2>
 
       <#if currentLocale?has_content>
-         <p><a href="javascript:markAsInitialTranslation('${currentLocale}')">Mark this document as the 
-            ${currentLocale} translation</a></p>
+         <p><a href="#" onclick="return markAsInitialTranslation('${currentLocale}')">Mark this document as the 
+            ${currentLocaleName} translation</a></p>
       </#if>
    </#if>
 

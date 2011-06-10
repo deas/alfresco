@@ -37,6 +37,7 @@ public class M2Property
     private String description = null;
     private String propertyType = null;
     private boolean isProtected = false;
+    private boolean isEncrypted = false;
     private boolean isMandatory = false;
     private boolean isMandatoryEnforced = false;
     private boolean isMultiValued = false;
@@ -135,6 +136,16 @@ public class M2Property
     public void setMandatory(boolean isMandatory)
     {
         this.isMandatory = isMandatory;
+    }
+    
+    public boolean isEncrypted()
+    {
+        return isEncrypted;
+    }
+    
+    public void setEncrypted(boolean isEncrypted)
+    {
+        this.isEncrypted = isEncrypted;
     }
     
     public boolean isMandatoryEnforced()

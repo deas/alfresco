@@ -136,6 +136,7 @@ public class AlfrescoDataType extends FieldType
             throw new AlfrescoRuntimeException("Failed to read Alfresco schema", e);
         }
 
+        AlfrescoSolrDataModel.getInstance(id).afterInitModels();
         AlfrescoSolrDataModel.getInstance(id).setAlfrescoDataType(this);
         super.init(schema, args);
     }

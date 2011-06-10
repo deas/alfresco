@@ -97,7 +97,8 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
     private NamespaceService namespaceService;
     private MimetypeMap mimetypeMap;
     private SectionHierarchyProcessor sectionHierarchyProcessor;
-
+    private ChannelHelper channelHelper;
+    
     /** The section index page name */
     private String sectionIndexPageName = "index.html";
 
@@ -310,6 +311,7 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
         policyComponent.bindAssociationBehaviour(NodeServicePolicies.OnDeleteChildAssociationPolicy.QNAME,
                 WebSiteModel.TYPE_SECTION, ContentModel.ASSOC_CONTAINS, new JavaBehaviour(this,
                         "onDeleteChildAssociationTransactionCommit", NotificationFrequency.TRANSACTION_COMMIT));
+        this.channelHelper = new ChannelHelper(nodeService, dictionaryService);
     }
 
     /**
@@ -497,7 +499,7 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
                             log.debug("Section child is a web asset (" + childNode + "). Setting parent section ids:  "
                                     + parentSections);
                         }
-                        Pair<NodeRef, String> channelInfo = ChannelHelper.findChannelAndType(childNode, nodeService, dictionaryService);
+                        Pair<NodeRef, String> channelInfo = channelHelper.findChannelAndType(childNode);
                         if(channelInfo != null)
                         {
                             nodeService.setProperty(childNode, PROP_CHANNEL, channelInfo.getFirst());
@@ -564,7 +566,7 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
     public void processCreateNode(NodeRef section)
     {
         // Set the Channel and ChannelType for this section.
-        Pair<NodeRef, String> channelAndType = ChannelHelper.findChannelAndType(section, nodeService, dictionaryService);
+        Pair<NodeRef, String> channelAndType = channelHelper.findChannelAndType(section);
         if(channelAndType != null)
         {
             nodeService.setProperty(section, PROP_CHANNEL, channelAndType.getFirst());

@@ -1046,6 +1046,7 @@
 
   <queryParser name="alfresco" class="org.alfresco.solr.query.AlfrescoLuceneQParserPlugin"/>
   <queryParser name="afts" class="org.alfresco.solr.query.AlfrescoFTSQParserPlugin"/>
+  <queryParser name="cmis" class="org.alfresco.solr.query.CmisQParserPlugin"/>
 
   <!-- example of registering a custom function parser 
   <valueSourceParser name="myfunc" class="com.mycompany.MyValueSourceParser" />

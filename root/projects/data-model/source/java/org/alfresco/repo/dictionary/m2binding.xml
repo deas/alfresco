@@ -119,6 +119,7 @@
       <structure name="constraints" test-method="hasConstraints" usage="optional">
          <collection field="constraints" item-type="org.alfresco.repo.dictionary.M2Constraint" factory="org.alfresco.repo.dictionary.M2Model.createList" usage="optional"/>
       </structure>
+      <value name="encrypted" field="isEncrypted" usage="optional"/>
    </mapping>
 
    <mapping abstract="true" class="org.alfresco.repo.dictionary.M2NamedValue">

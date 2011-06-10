@@ -53,7 +53,8 @@ public class ModelDecorator
 			WebSite website = (WebSite)requestContext.getValue("webSite");
 		    model.put("webSite", website);
 		    model.put("section", requestContext.getValue("section"));
-		    model.put("asset", requestContext.getValue("asset"));
+            model.put("asset", requestContext.getValue("asset"));
+            model.put("rootSection", requestContext.getValue("rootSection"));
 		    
 		    // If spring freemarker macros are used then this line is needed as the Surf freemarker view
 		    // resolver doesn't put the spring request context into the model.

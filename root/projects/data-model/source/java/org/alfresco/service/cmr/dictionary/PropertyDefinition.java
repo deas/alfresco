@@ -91,6 +91,8 @@ public interface PropertyDefinition extends ClassAttributeDefinition
      */
     public boolean isProtected();
 
+    public boolean isEncrypted();
+    
     /**
      * @return true => indexed, false => not indexed
      */

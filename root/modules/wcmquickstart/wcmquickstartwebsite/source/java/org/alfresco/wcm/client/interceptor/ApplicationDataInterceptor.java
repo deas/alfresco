@@ -17,6 +17,11 @@
  */
 package org.alfresco.wcm.client.interceptor;
 
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.RequestContext;
 import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
+import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -43,6 +49,14 @@ public class ApplicationDataInterceptor extends HandlerInterceptorAdapter
     
     private WebSiteService webSiteService;
     private ModelDecorator modelDecorator;
+    private Set<String> countryCodes = new TreeSet<String>();
+    private Set<String> languageCodes = new TreeSet<String>();
+
+    public void init()
+    {
+        countryCodes.addAll(Arrays.asList(Locale.getISOCountries()));
+        languageCodes.addAll(Arrays.asList(Locale.getISOLanguages()));
+    }
 
     /**
      * @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#preHandle(HttpServletRequest,
@@ -93,9 +107,50 @@ public class ApplicationDataInterceptor extends HandlerInterceptorAdapter
         }
         requestContext.setValue("section", section);
 
+        setLocaleFromPath(requestContext, path);
+        
         return super.preHandle(request, response, handler);
     }
 
+    private void setLocaleFromPath(RequestContext requestContext, String path)
+    {
+        WebSite webSite = (WebSite) requestContext.getValue("webSite");
+        Section rootSection = webSite.getRootSection();
+        int pathlength = path.length();
+
+        // Do we have a directory?
+        if (pathlength > 1)
+        {
+            // Split
+            String[] pathElements = path.split("/");
+            if (log.isDebugEnabled())
+            {
+                log.debug("RootNavInterceptor: " + pathElements.length + " : " + path);
+            }
+
+            // What's the top level section?
+            String topLevelPath = pathElements[1];
+
+            if ((topLevelPath.length() == 2) && languageCodes.contains(topLevelPath))
+            {
+                // Looks like a locale based path, treat as such
+                rootSection = webSite.getSectionByPath("/" + topLevelPath + "/");
+                String language = topLevelPath;
+                Locale locale = null;
+
+                // set locale onto Alfresco thread local
+                locale = I18NUtil.parseLocale(language);
+                I18NUtil.setLocale(locale);
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Picked " + I18NUtil.getLocale() + " from " + topLevelPath);
+                }
+                requestContext.setValue("locale", locale);
+            }
+        }
+        requestContext.setValue("rootSection", rootSection);
+    }
+    
     /**
      * @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#postHandle(HttpServletRequest,
      *      HttpServletResponse, Object, ModelAndView)

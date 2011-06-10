@@ -742,4 +742,154 @@ public class SearchParameters
                 + textAttributes + "]";
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((allAttributes == null) ? 0 : allAttributes.hashCode());
+        result = prime * result + ((defaultFTSFieldOperator == null) ? 0 : defaultFTSFieldOperator.hashCode());
+        result = prime * result + ((defaultFTSOperator == null) ? 0 : defaultFTSOperator.hashCode());
+        result = prime * result + ((defaultFieldName == null) ? 0 : defaultFieldName.hashCode());
+        result = prime * result + (excludeDataInTheCurrentTransaction ? 1231 : 1237);
+        result = prime * result + ((language == null) ? 0 : language.hashCode());
+        result = prime * result + limit;
+        result = prime * result + ((limitBy == null) ? 0 : limitBy.hashCode());
+        result = prime * result + ((locales == null) ? 0 : locales.hashCode());
+        result = prime * result + maxItems;
+        result = prime * result + (int) (maxPermissionCheckTimeMillis ^ (maxPermissionCheckTimeMillis >>> 32));
+        result = prime * result + maxPermissionChecks;
+        result = prime * result + ((mlAnalaysisMode == null) ? 0 : mlAnalaysisMode.hashCode());
+        result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+        result = prime * result + ((permissionEvaluation == null) ? 0 : permissionEvaluation.hashCode());
+        result = prime * result + ((query == null) ? 0 : query.hashCode());
+        result = prime * result + ((queryParameterDefinitions == null) ? 0 : queryParameterDefinitions.hashCode());
+        result = prime * result + ((queryTemplates == null) ? 0 : queryTemplates.hashCode());
+        result = prime * result + skipCount;
+        result = prime * result + ((sortDefinitions == null) ? 0 : sortDefinitions.hashCode());
+        result = prime * result + ((stores == null) ? 0 : stores.hashCode());
+        result = prime * result + ((textAttributes == null) ? 0 : textAttributes.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SearchParameters other = (SearchParameters) obj;
+        if (allAttributes == null)
+        {
+            if (other.allAttributes != null)
+                return false;
+        }
+        else if (!allAttributes.equals(other.allAttributes))
+            return false;
+        if (defaultFTSFieldOperator != other.defaultFTSFieldOperator)
+            return false;
+        if (defaultFTSOperator != other.defaultFTSOperator)
+            return false;
+        if (defaultFieldName == null)
+        {
+            if (other.defaultFieldName != null)
+                return false;
+        }
+        else if (!defaultFieldName.equals(other.defaultFieldName))
+            return false;
+        if (excludeDataInTheCurrentTransaction != other.excludeDataInTheCurrentTransaction)
+            return false;
+        if (language == null)
+        {
+            if (other.language != null)
+                return false;
+        }
+        else if (!language.equals(other.language))
+            return false;
+        if (limit != other.limit)
+            return false;
+        if (limitBy != other.limitBy)
+            return false;
+        if (locales == null)
+        {
+            if (other.locales != null)
+                return false;
+        }
+        else if (!locales.equals(other.locales))
+            return false;
+        if (maxItems != other.maxItems)
+            return false;
+        if (maxPermissionCheckTimeMillis != other.maxPermissionCheckTimeMillis)
+            return false;
+        if (maxPermissionChecks != other.maxPermissionChecks)
+            return false;
+        if (mlAnalaysisMode != other.mlAnalaysisMode)
+            return false;
+        if (namespace == null)
+        {
+            if (other.namespace != null)
+                return false;
+        }
+        else if (!namespace.equals(other.namespace))
+            return false;
+        if (permissionEvaluation != other.permissionEvaluation)
+            return false;
+        if (query == null)
+        {
+            if (other.query != null)
+                return false;
+        }
+        else if (!query.equals(other.query))
+            return false;
+        if (queryParameterDefinitions == null)
+        {
+            if (other.queryParameterDefinitions != null)
+                return false;
+        }
+        else if (!queryParameterDefinitions.equals(other.queryParameterDefinitions))
+            return false;
+        if (queryTemplates == null)
+        {
+            if (other.queryTemplates != null)
+                return false;
+        }
+        else if (!queryTemplates.equals(other.queryTemplates))
+            return false;
+        if (skipCount != other.skipCount)
+            return false;
+        if (sortDefinitions == null)
+        {
+            if (other.sortDefinitions != null)
+                return false;
+        }
+        else if (!sortDefinitions.equals(other.sortDefinitions))
+            return false;
+        if (stores == null)
+        {
+            if (other.stores != null)
+                return false;
+        }
+        else if (!stores.equals(other.stores))
+            return false;
+        if (textAttributes == null)
+        {
+            if (other.textAttributes != null)
+                return false;
+        }
+        else if (!textAttributes.equals(other.textAttributes))
+            return false;
+        return true;
+    }
+    
+    
+
 }

@@ -137,6 +137,10 @@ public class MimetypeMap implements MimetypeService
     public static final String MIMETYPE_STAROFFICE5_WRITER = "application/vnd.stardivision.writer";
     public static final String MIMETYPE_STAROFFICE5_WRITER_GLOBAL = "application/vnd.stardivision.writer-global";
     public static final String MIMETYPE_STAROFFICE5_MATH = "application/vnd.stardivision.math";
+    // Apple iWorks
+    public static final String MIMETYPE_IWORK_KEYNOTE = "application/vnd.apple.keynote";
+    public static final String MIMETYPE_IWORK_NUMBERS = "application/vnd.apple.numbers";
+    public static final String MIMETYPE_IWORK_PAGES = "application/vnd.apple.pages";
     // WordPerfect
     public static final String MIMETYPE_WORDPERFECT = "application/wordperfect";
     // Audio

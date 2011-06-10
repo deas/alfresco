@@ -108,7 +108,7 @@ public class CMISMapping implements InitializingBean
      * @see
      * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
-    public void afterPropertiesSet() throws Exception
+    public void afterPropertiesSet()
     {
         //
         // Type Mappings

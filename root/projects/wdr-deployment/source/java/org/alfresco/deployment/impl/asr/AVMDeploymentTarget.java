@@ -608,6 +608,11 @@ public class AVMDeploymentTarget implements Serializable, DeploymentTarget
             throw new DeploymentException(MSG_ERR_INVALID_TICKET, params);
 	    }
 	    
+	    if(logger.isDebugEnabled())
+	    {
+	        logger.debug("in getListingImpl path:" + path + ", ticket:" + ticket);
+	    }
+	    
 	    String localStoreName = getLocalStoreName(deployment.getAuthoringStoreName());
 	    
 	    String dst = localStoreName + ":" + getLocalPath(path);

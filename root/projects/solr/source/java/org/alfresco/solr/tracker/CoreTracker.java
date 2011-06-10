@@ -50,6 +50,7 @@ import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.AclReport;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.NodeReport;
@@ -1273,6 +1274,42 @@ public class CoreTracker
 
             indexHealthReport.setLeafDocCountInIndex(leafCount);
 
+            // AUX
+
+            int auxCount = 0;
+            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "AUX-"));
+            do
+            {
+                Term term = termEnum.term();
+                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("AUX-"))
+                {
+                    int docCount = 0;
+                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    while (termDocs.next())
+                    {
+                        if (!reader.isDeleted(termDocs.doc()))
+                        {
+                            docCount++;
+                        }
+                    }
+                    if (docCount > 1)
+                    {
+                        long txid = Long.parseLong(term.text().substring(5));
+                        indexHealthReport.setDuplicatedAuxInIndex(txid);
+                    }
+
+                    auxCount++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+
+            indexHealthReport.setAuxDocCountInIndex(auxCount);
+
             // Other
 
             indexHealthReport.setLastIndexedCommitTime(lastIndexedCommitTime);
@@ -1686,5 +1723,130 @@ public class CoreTracker
             throw new AlfrescoRuntimeException("Failed to get nodes", e);
         }
 
+    }
+
+    /**
+     * @param acltxid
+     * @return
+     */
+    public List<Long> getAclsForDbAclTransaction(Long acltxid)
+    {
+        try
+        {
+            ArrayList<Long> answer = new ArrayList<Long>();
+            List<AclChangeSet> changeSet = client.getAclChangeSets(null, acltxid, 1);
+            List<Acl> acls = client.getAcls(changeSet, null, Integer.MAX_VALUE);
+            for (Acl acl : acls)
+            {
+                answer.add(acl.getId());
+            }
+            return answer;
+        }
+        catch (IOException e)
+        {
+            throw new AlfrescoRuntimeException("Failed to get acls", e);
+        }
+        catch (JSONException e)
+        {
+            throw new AlfrescoRuntimeException("Failed to get acls", e);
+        }
+    }
+
+    /**
+     * @param aclid
+     * @return
+     */
+    public AclReport checkAcl(Long aclid)
+    {
+        AclReport aclReport = new AclReport();
+        aclReport.setAclId(aclid);
+
+        // In DB
+
+        try
+        {
+            List<AclReaders> readers = client.getAclReaders(Collections.singletonList(new Acl(0, aclid)));
+            aclReport.setExistsInDb(readers.size() == 1);
+        }
+        catch (IOException e)
+        {
+            aclReport.setExistsInDb(false);
+        }
+        catch (JSONException e)
+        {
+            aclReport.setExistsInDb(false);
+        }
+
+        // In Index
+
+        try
+        {
+            RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
+
+            refCounted = core.getSearcher(false, true, null);
+            if (refCounted == null)
+            {
+                return aclReport;
+            }
+
+            try
+            {
+                SolrIndexSearcher solrIndexSearcher = refCounted.get();
+                SolrIndexReader reader = solrIndexSearcher.getReader();
+
+                String aclIdString = NumericEncoder.encode(aclid);
+                DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term("ACLID", aclIdString)));
+                // should find leaf and aux
+                for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+                    
+                    Document document = solrIndexSearcher.doc(doc);
+                    Fieldable fieldable = document.getFieldable("ID");
+                    if (fieldable != null)
+                    {
+                        String value = fieldable.stringValue();
+                        if (value != null)
+                        {
+                            if (value.startsWith("ACL-"))
+                            {
+                                aclReport.setIndexAclDoc(Long.valueOf(doc));
+                            }
+                        }
+                    }
+
+                }
+                DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("ACLTXID", "*")));
+                for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+                    Document document = solrIndexSearcher.doc(doc);
+                    Fieldable fieldable = document.getFieldable("ACLTXID");
+                    if (fieldable != null)
+                    {
+
+                        if ((aclReport.getIndexAclDoc() == null) || (doc < aclReport.getIndexAclDoc().longValue()))
+                        {
+                            String value = fieldable.stringValue();
+                            long acltxid = Long.parseLong(value);
+                            aclReport.setIndexAclTx(acltxid);
+                        }
+                     
+                    }
+                }
+
+            }
+            finally
+            {
+                refCounted.decref();
+            }
+
+        }
+        catch (IOException e)
+        {
+
+        }
+
+        return aclReport;
     }
 }

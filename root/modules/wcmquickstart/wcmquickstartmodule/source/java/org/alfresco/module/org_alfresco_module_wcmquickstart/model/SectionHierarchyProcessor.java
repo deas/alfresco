@@ -168,6 +168,7 @@ public class SectionHierarchyProcessor implements WebSiteModel
     {
         if (childNode != null && nodeService.hasAspect(childNode, ASPECT_WEBASSET))
         {
+            ChannelHelper channelHelper = new ChannelHelper(nodeService, dictionaryService);
             List<ChildAssociationRef> parentAssocs = nodeService.getParentAssocs(childNode,
                     ContentModel.ASSOC_CONTAINS, RegexQNamePattern.MATCH_ALL);
             ArrayList<NodeRef> parentSections = new ArrayList<NodeRef>(parentAssocs.size());
@@ -179,7 +180,7 @@ public class SectionHierarchyProcessor implements WebSiteModel
                 {
                     behaviourFilter.disableBehaviour(childNode, ASPECT_WEBASSET);
                     behaviourFilter.disableBehaviour(childNode, ContentModel.ASPECT_AUDITABLE);
-                    Pair<NodeRef, String> channelInfo = ChannelHelper.findChannelAndType(childNode, nodeService, dictionaryService);
+                    Pair<NodeRef, String> channelInfo = channelHelper.findChannelAndType(childNode);
                     if (channelInfo != null)
                     {
                         nodeService.setProperty(childNode, PROP_CHANNEL, channelInfo.getFirst());
@@ -219,7 +220,7 @@ public class SectionHierarchyProcessor implements WebSiteModel
                             log.debug("Section child is a web asset (" + childNode + "). Setting parent section ids:  "
                                     + parentSections);
                         }
-                        Pair<NodeRef, String> channelInfo = ChannelHelper.findChannelAndType(childNode, nodeService, dictionaryService);
+                        Pair<NodeRef, String> channelInfo = channelHelper.findChannelAndType(childNode);
                         nodeService.setProperty(childNode, PROP_CHANNEL, channelInfo.getFirst());
                         nodeService.setProperty(childNode, PROP_CHANNEL_TYPE, channelInfo.getSecond());
                         nodeService.setProperty(childNode, PROP_PARENT_SECTIONS, parentSections);

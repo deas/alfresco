@@ -40,7 +40,7 @@ public class TikaCharsetFinder extends AbstractCharactersetFinder
         detector.setText(buffer);
         CharsetMatch match = detector.detect();
 
-        if(match.getConfidence() > threshold)
+        if(match != null && match.getConfidence() > threshold)
         {
             return Charset.forName(match.getName());
         }

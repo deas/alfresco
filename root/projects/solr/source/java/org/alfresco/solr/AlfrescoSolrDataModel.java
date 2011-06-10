@@ -27,10 +27,20 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.alfresco.cmis.CMISScope;
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.opencmis.dictionary.CMISDictionaryService;
+import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
+import org.alfresco.opencmis.mapping.CMISMapping;
+import org.alfresco.opencmis.mapping.RuntimePropertyLuceneBuilderMapping;
+import org.alfresco.opencmis.search.CMISQueryOptions;
+import org.alfresco.opencmis.search.CMISQueryParser;
+import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
+import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
+import org.alfresco.repo.dictionary.DictionaryNamespaceComponent;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
@@ -50,6 +60,8 @@ import org.alfresco.repo.search.impl.querymodel.Ordering;
 import org.alfresco.repo.search.impl.querymodel.QueryModelFactory;
 import org.alfresco.repo.search.impl.querymodel.QueryOptions.Connective;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilder;
+import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
+import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContextImpl;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryModelFactory;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
@@ -57,6 +69,7 @@ import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.MLText;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
@@ -64,6 +77,8 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.query.LuceneQueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.SolrQueryParser;
 import org.alfresco.util.ISO9075;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
+import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
@@ -108,6 +123,8 @@ public class AlfrescoSolrDataModel
 
     private DictionaryComponent dictionaryComponent;
 
+    private CMISStrictDictionaryService cmisDictionaryService;
+    
     private boolean testing = true;
 
     private AlfrescoDataType alfrescoDataType;
@@ -115,41 +132,41 @@ public class AlfrescoSolrDataModel
     static
     {
 
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ID, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TX, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PARENT, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_LINKASPECT, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TX, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PARENT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_LINKASPECT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PATH, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ANCESTOR, Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCONTAINER, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCATEGORY, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ANCESTOR, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCONTAINER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCATEGORY, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_QNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISROOT, Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISROOT, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, Store.YES, Index.ANALYZED, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISNODE, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISNODE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TYPE, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASPECT, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TYPE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASPECT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_DBID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
 
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLID, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_READER, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_OWNER, Store.YES, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_READER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_OWNER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
 
         addAdditionalContentField(".size", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addAdditionalContentField(".locale", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addAdditionalContentField(".mimetype", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-        addAdditionalContentField(".encoding", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addAdditionalContentField(".locale", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addAdditionalContentField(".mimetype", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addAdditionalContentField(".encoding", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".contentDocId", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addAdditionalContentField(".transformationException", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addAdditionalContentField(".transformationException", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".transformationTime", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addAdditionalContentField(".transformationStatus", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+        addAdditionalContentField(".transformationStatus", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".__", Store.NO, Index.ANALYZED, TermVector.NO, false);
 
         addAdditionalTextField(".__", Store.NO, Index.ANALYZED, TermVector.NO, true);
@@ -225,7 +242,6 @@ public class AlfrescoSolrDataModel
 
     private AlfrescoSolrDataModel()
     {
-
         tenantService = new SingleTServiceImpl();
         namespaceDAO = new NamespaceDAOImpl();
         namespaceDAO.setTenantService(tenantService);
@@ -237,11 +253,37 @@ public class AlfrescoSolrDataModel
 
         dictionaryComponent = new DictionaryComponent();
         dictionaryComponent.setDictionaryDAO(dictionaryDAO);
+        
+        // cmis dictionary
+        CMISMapping cmisMapping = new CMISMapping();
+        DictionaryNamespaceComponent namespaceService = new DictionaryNamespaceComponent();
+        namespaceService.setNamespaceDAO(namespaceDAO);
+        cmisMapping.setNamespaceService(namespaceService);
+        cmisMapping.setDictionaryService(dictionaryComponent);
+        cmisMapping.afterPropertiesSet();
+        
+        cmisDictionaryService = new CMISStrictDictionaryService();
+        cmisDictionaryService.setCmisMapping(cmisMapping);
+        cmisDictionaryService.setDictionaryService(dictionaryComponent);
+        cmisDictionaryService.setDictionaryDAO(dictionaryDAO);
+        cmisDictionaryService.setTenantService(tenantService);
+        
+        RuntimePropertyLuceneBuilderMapping luceneBuilderMapping = new RuntimePropertyLuceneBuilderMapping();
+        luceneBuilderMapping.setDictionaryService(dictionaryComponent);
+        luceneBuilderMapping.setCmisDictionaryService(cmisDictionaryService);
+        cmisDictionaryService.setPropertyLuceneBuilderMapping(luceneBuilderMapping);
+
+        luceneBuilderMapping.afterPropertiesSet();
     }
 
     public DictionaryService getDictionaryService()
     {
         return dictionaryComponent;
+    }
+
+    public CMISDictionaryService getCMISDictionaryService()
+    {
+        return cmisDictionaryService;
     }
 
     public NamespaceDAO getNamespaceDAO()
@@ -511,6 +553,11 @@ public class AlfrescoSolrDataModel
         dictionaryDAO.putModel(model);
     }
 
+    public void afterInitModels()
+    {
+        cmisDictionaryService.afterDictionaryInit();
+    }
+    
     private static class NonDictionaryField
     {
         private String name;
@@ -825,9 +872,59 @@ public class AlfrescoSolrDataModel
             selectorGroup = selectorGroups.get(0);
         }
         Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
-        return luceneQuery;
+        // query needs some search parameters fro correct caching ....
+        
+        ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, searchParameters);
+        return contextAwareQuery;
     }
 
+    public Query getCMISQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader) throws ParseException
+    {
+        // convert search parameters to cmis query options
+        // TODO: how to handle store ref
+        CMISQueryOptions options = new CMISQueryOptions(searchParameters.getQuery(), StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        options.setDefaultFieldName(searchParameters.getDefaultFieldName());
+        // TODO: options.setDefaultFTSConnective()
+        // TODO: options.setDefaultFTSFieldConnective()
+        options.setIncludeInTransactionData(!searchParameters.excludeDataInTheCurrentTransaction());
+        options.setLocales(searchParameters.getLocales());
+        options.setMlAnalaysisMode(searchParameters.getMlAnalaysisMode());
+        options.setQueryParameterDefinitions(searchParameters.getQueryParameterDefinitions());
+        
+        // parse cmis syntax
+        CapabilityJoin joinSupport = (mode == CMISQueryMode.CMS_STRICT) ? CapabilityJoin.NONE : CapabilityJoin.INNERONLY;
+        BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
+        CmisFunctionEvaluationContext functionContext = new CmisFunctionEvaluationContext();
+        functionContext.setCmisDictionaryService(cmisDictionaryService);
+        functionContext.setValidScopes(validScopes);
+        CMISQueryParser parser = new CMISQueryParser(options, cmisDictionaryService, joinSupport);
+        org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = parser.parse(new LuceneQueryModelFactory(), functionContext);
+        
+        // build lucene query
+        Set<String> selectorGroup = null;
+        if (queryModelQuery.getSource() != null)
+        {
+            List<Set<String>> selectorGroups = queryModelQuery.getSource().getSelectorGroups(functionContext);
+            if (selectorGroups.size() == 0)
+            {
+                throw new UnsupportedOperationException("No selectors");
+            }
+            if (selectorGroups.size() > 1)
+            {
+                throw new UnsupportedOperationException("Advanced join is not supported");
+            }
+            selectorGroup = selectorGroups.get(0);
+        }
+
+        LuceneQueryBuilderContextSolrImpl luceneContext = new LuceneQueryBuilderContextSolrImpl(dictionaryComponent, namespaceDAO, tenantService, searchParameters,
+                getMLAnalysisMode(), indexReader, alfrescoDataType.getAnalyzer(), this);
+        LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
+        org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
+
+        ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, searchParameters);
+        return contextAwareQuery;
+    }
+    
     /**
      * @param field
      * @param reverse

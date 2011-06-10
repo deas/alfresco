@@ -71,16 +71,16 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
         }
         
         // Get the raw query results
-        List<R> rawResults = query(parameters);
+        List<R> rawResults = queryAndFilter(parameters);
         if (rawResults == null)
         {
             throw new AlfrescoRuntimeException("Execution returned 'null' results");
         }
+        
         // Apply sorting
-        CannedQuerySortDetails sortDetails = parameters.getSortDetails();
         if (isApplyPostQuerySorting())
         {
-            rawResults = applyPostQuerySorting(rawResults, sortDetails);
+            rawResults = applyPostQuerySorting(rawResults, parameters.getSortDetails());
         }
         
         Pair<Integer, Integer> totalResultCount = null;
@@ -101,7 +101,6 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
             
             rawResults = postQueryResults.getPage();
             totalResultCount = postQueryResults.getTotalResultCount();
-            
             permissionsApplied = postQueryResults.permissionsApplied();
         }
         else
@@ -223,18 +222,18 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
     }
     
     /**
-     * Implement the basic query, returning all available results.
+     * Implement the basic query, returning either filtered or all results.
      * <p/>
-     * The implementation may optimally select, sort and apply permissions.
+     * The implementation may optimally select, filter, sort and apply permissions.
      * If not, however, the subsequent post-query methods
-     * ({@link #applyPostQueryPermissions(List, String)},
-     * {@link #applyPostQuerySorting(List, CannedQuerySortDetails)} and
-     * {@link #applyPostQueryPaging(List, CannedQueryPageDetails)}) can
+     * ({@link #applyPostQuerySorting(List, CannedQuerySortDetails)},
+     *  {@link #applyPostQueryPermissions(List, String)} and
+     *  {@link #applyPostQueryPaging(List, CannedQueryPageDetails)}) can
      * be used to trim the results as required.
      * 
      * @param parameters            the full parameters to be used for execution
      */
-    protected abstract List<R> query(CannedQueryParameters parameters);
+    protected abstract List<R> queryAndFilter(CannedQueryParameters parameters);
     
     /**
      * Override to get post-query calls to do sorting.
@@ -247,9 +246,8 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
     }
     
     /**
-     * Called after the {@link #applyPostQueryPermissions(List) permission filtering} to allow the
-     * remaining results to be sorted.  Note that the {@link #query()} implementation may optimally
-     * sort results during retrieval, in which case this method does not need to be implemented.
+     * Called before {@link #applyPostQueryPermissions(List)} to allow the results to be sorted prior to permission checks.
+     * Note that the {@link #query()} implementation may optimally sort results during retrieval, in which case this method does not need to be implemented.
      * 
      * @param results               the results to sort
      * @param sortDetails           details of the sorting requirements
@@ -338,7 +336,7 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
         int firstResult = skipResults + ((pageNumber-1) * pageSize);            // first of window
         
         List<List<R>> pages = new ArrayList<List<R>>(pageCount);
-
+        
         // First some shortcuts
         if (skipResults == 0 && pageSize > availableResults)
         {

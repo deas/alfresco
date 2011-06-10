@@ -60,7 +60,7 @@ public class RuntimePropertyLuceneBuilderMapping implements PropertyLuceneBuilde
     }
     
     @Override
-    public void afterPropertiesSet() throws Exception
+    public void afterPropertiesSet()
     {
         registerPropertyLuceneBuilder(PropertyIds.OBJECT_ID, new ObjectIdLuceneBuilder(dictionaryService));
         registerPropertyLuceneBuilder(PropertyIds.OBJECT_TYPE_ID, new ObjectTypeIdLuceneBuilder(cmisDictionaryService));

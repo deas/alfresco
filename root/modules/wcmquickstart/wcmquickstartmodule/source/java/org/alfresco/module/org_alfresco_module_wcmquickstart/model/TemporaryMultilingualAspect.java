@@ -382,25 +382,35 @@ public class TemporaryMultilingualAspect implements NodeServicePolicies.OnAddAsp
                     multilingualContentService.makeTranslation(create.getFirst(), originalLocale);
                 }
                 
-                // Create the new folder
-                NodeRef newFolder = nodeService.createNode(
+                // Is there already a folder with the right name that we can claim?
+                // This would happen if they created the structure by hand already
+                NodeRef transFolder = nodeService.getChildByName(
                         transParent,
                         ContentModel.ASSOC_CONTAINS,
-                        QName.createQName(create.getSecond()),
-                        nodeService.getType(create.getFirst())
-                ).getChildRef();
-                nodeService.setProperty(newFolder, ContentModel.PROP_NAME, create.getSecond());
+                        create.getSecond()
+                );
+                if(transFolder == null)
+                {
+                    // It's not there yet, so create it
+                    transFolder = nodeService.createNode(
+                            transParent,
+                            ContentModel.ASSOC_CONTAINS,
+                            QName.createQName(create.getSecond()),
+                            nodeService.getType(create.getFirst())
+                    ).getChildRef();
+                    nodeService.setProperty(transFolder, ContentModel.PROP_NAME, create.getSecond());
+                }
                 
                 // Mark it as a translation
                 multilingualContentService.addTranslation(
-                        newFolder, create.getFirst(), locale
+                        transFolder, create.getFirst(), locale
                 );
                 
                 // Copy the resources
-                copyResourcesForSection(newFolder, create.getFirst());
+                copyResourcesForSection(transFolder, create.getFirst());
                 
                 // Ready for the next one
-                transParent = newFolder;
+                transParent = transFolder;
             }
             
             // Finally, move the node to its new home
