@@ -17,7 +17,7 @@
 
 <style>
 #logo a {
-   background:url("/wcmqs/images/AlfrescoLogo200.jpg") no-repeat;
+   background:url("${url.context}/images/AlfrescoLogo200.jpg") no-repeat;
 }
 </style>
 
@@ -27,13 +27,11 @@
 <div id="body-wrapper">
     <div class="clearfix">
         <div id="logo"> 
-            <a href="/wcmqs/">This is a demonstration Alfresco WCM backed Internet Web Site</a>
+            <a href="${url.context}/">This is a demonstration Alfresco WCM backed Internet Web Site</a>
             <p class="logo-desc">Alfresco WCM Quick Start</p>
         </div>
         <div class="link-menu">
             <ul>                
-                <!--<li><a href="#">Accessibility</a></li>-->
-                <li><a href="/wcmqs/contact/contact.html">Contact</a></li>
             </ul>
         </div>
     </div>
@@ -42,7 +40,7 @@
 
         <div id="myslidemenu" class="jqueryslidemenu">
             <ul class="primary-menu">
-                <li><a href="/wcmqs/" accesskey="1">Home</a></li>
+                <li><a href="${url.context}/" accesskey="1">Home</a></li>
             <ul>
         </div>    
     </div>

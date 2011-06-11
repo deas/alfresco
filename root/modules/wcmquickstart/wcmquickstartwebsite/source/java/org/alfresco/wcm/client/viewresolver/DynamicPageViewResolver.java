@@ -39,6 +39,8 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 public class DynamicPageViewResolver extends AbstractWebFrameworkViewResolver
 {
+    public final static String RAW_TEMPLATE_NAME = "raw";
+    
     public DynamicPageViewResolver()
     {
         // The default caching provided by the AbstractCachingViewResolver class
@@ -76,11 +78,10 @@ public class DynamicPageViewResolver extends AbstractWebFrameworkViewResolver
             // else ask the asset what its template should be
             template = asset.getTemplate();
 
-            if (template == null)
+            //If the asset doesn't have any template specified or explicitly specifies the "raw" template
+            //then we will stream the asset content directly.
+            if (template == null || RAW_TEMPLATE_NAME.equalsIgnoreCase(template))
             {
-                //The controller should have filtered this request before it reaches us
-                //but we'll try to do something moderately sensible and cause the asset
-                //to be streamed "raw".
                 return createStreamView(asset);
             }
         }
