@@ -188,7 +188,7 @@ public class WebScriptCallerImpl implements WebScriptCaller
     {
         if (log.isDebugEnabled())
         {
-            log.debug("Received non-OK response when invoking GET method on path " + httpMethod.getPath() + 
+            log.debug("Received non-OK response when invoking method on path " + httpMethod.getPath() + 
                     ". Response was:\n" + httpMethod.getResponseBodyAsString());
         }
         else

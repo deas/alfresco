@@ -22,10 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.wcm.client.exception.RepositoryUnavailableException;
-import org.alfresco.wcm.client.impl.HttpCredentialService;
-import org.alfresco.wcm.client.impl.HttpCredentialService.UsernameAndPassword;
 import org.apache.chemistry.opencmis.client.api.Repository;
-import org.apache.chemistry.opencmis.client.api.SessionFactory;
+import org.apache.chemistry.opencmis.client.bindings.spi.AbstractAuthenticationProvider;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
@@ -47,28 +45,48 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
     private final static Log log = LogFactory.getLog(GuestSessionFactoryImpl.class);
     private int repositoryPollInterval;
     private Repository repository;
-    private SessionFactory sessionFactory;
+    private SessionFactoryImpl sessionFactory;
     private Map<String, String> parameters;
     private volatile Thread waitForRepository;
     private Exception lastException;
-    private HttpCredentialService credentialService;
+    private AbstractAuthenticationProvider authenticationProvider;
     private String repoUrl;
+    private String username;
+    private String password;
 
     /**
      * Create a CMIS session factory.
      * 
      * @param repo
      *            CMIS repository URL
-     * @param user
-     *            CMIS user
-     * @param password
-     *            CMIS password
      */
-    public GuestSessionFactoryImpl(String repo, HttpCredentialService credentialService, int repositoryPollInterval)
+    public GuestSessionFactoryImpl()
     {
-        this.repoUrl = repo;
-        this.credentialService = credentialService;
+    }
+
+    public void setRepositoryPollInterval(int repositoryPollInterval)
+    {
         this.repositoryPollInterval = repositoryPollInterval;
+    }
+
+    public void setAuthenticationProvider(AbstractAuthenticationProvider authenticationProvider)
+    {
+        this.authenticationProvider = authenticationProvider;
+    }
+
+    public void setRepoUrl(String repoUrl)
+    {
+        this.repoUrl = repoUrl;
+    }
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public void setPassword(String password)
+    {
+        this.password = password;
     }
 
     /**
@@ -105,14 +123,10 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
     {
         if (sessionFactory == null)
         {
-            UsernameAndPassword credentials = credentialService.getHttpCredentials();
-            String user = credentials.username;
-            String password = credentials.password;
-            
             this.parameters = new HashMap<String, String>();
 
             // user credentials
-            parameters.put(SessionParameter.USER, user);
+            parameters.put(SessionParameter.USER, username);
             parameters.put(SessionParameter.PASSWORD, password);
 
             // connection settings
@@ -120,14 +134,14 @@ public class GuestSessionFactoryImpl implements PoolableObjectFactory, Runnable
             parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
 
             // Create session factory
-            this.sessionFactory = SessionFactoryImpl.newInstance();
+            this.sessionFactory = (SessionFactoryImpl) SessionFactoryImpl.newInstance();
         }
     }
     
     private void getRepository()
     {
         configureSessionFactory();
-        List<Repository> repositories = sessionFactory.getRepositories(parameters);
+        List<Repository> repositories = sessionFactory.getRepositories(parameters, null, authenticationProvider, null);
         this.repository = repositories.get(0);
     }
 

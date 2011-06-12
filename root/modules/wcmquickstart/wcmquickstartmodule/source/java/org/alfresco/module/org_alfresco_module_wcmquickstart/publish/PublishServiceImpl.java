@@ -200,8 +200,11 @@ public class PublishServiceImpl implements PublishService
         } 
         else
         {
-            log.warn("Request has been made to publish from a site that has no target configured: "
+            if (log.isDebugEnabled())
+            {
+                log.debug("Request has been made to publish from a site that has no target configured: "
                     + websiteId);
+            }
         }
     }
     

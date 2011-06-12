@@ -62,13 +62,10 @@ public class RepositoryExceptionResolver extends SimpleMappingExceptionResolver
             Exception ex)
     {
         // Log the exception
-        if (!(ex instanceof RepositoryUnavailableException)) // Don't bother to
-                                                             // log these for
-                                                             // every request.
-                                                             // It will be
-                                                             // logged by
-                                                             // GuestSessionFactoryImpl.
+        if (!(ex instanceof RepositoryUnavailableException))
         {
+            // Don't bother to log these for every request. It will be logged 
+            // by GuestSessionFactoryImpl. 
             log.error(ex, ex);
         }
 

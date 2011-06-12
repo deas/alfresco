@@ -21,10 +21,16 @@
    </bean>
 
    <!-- CMIS Session factory for anonymous visitors to the website -->
-   <bean id="guestSessionFactory" class="org.alfresco.wcm.client.util.impl.GuestSessionFactoryImpl" init-method="init" depends-on="webscriptCaller">
-      <constructor-arg value="%{wcmqs.api.alfresco.cmis}" />
-      <constructor-arg ref="httpCredentialService" />
-      <constructor-arg value="%{wcmqs.api.repositoryPollMilliseconds}" /> <!-- Poll for repository -->
+   <bean id="guestSessionFactory" class="org.alfresco.wcm.client.util.impl.GuestSessionFactoryImpl" init-method="init">
+      <property name="authenticationProvider" ref="cmisAuthenticationProvider" />
+      <property name="username" value="%{wcmqs.api.user}" />
+      <property name="password" value="%{wcmqs.api.password}" />
+      <property name="repoUrl" value="%{wcmqs.api.alfresco.cmis}" />
+      <property name="repositoryPollInterval" value="%{wcmqs.api.repositoryPollMilliseconds}" />
+   </bean>
+
+   <bean id="cmisAuthenticationProvider" class="org.alfresco.wcm.client.util.impl.AlfrescoTicketCmisAuthenticationProvider">
+      <property name="webscriptCaller" ref="webscriptCaller" />
    </bean>
 
    <!-- Pool of anonymous CMIS sessions -->
@@ -147,13 +153,6 @@
       <property name="baseUrl" value="%{wcmqs.api.alfresco.webscript}" />
    </bean>
 
-   <bean id="httpCredentialService" class="org.alfresco.wcm.client.impl.AlfrescoTicketCredentialServiceImpl">
-      <property name="webscriptCaller" ref="webscriptCaller" />
-      <property name="username" value="%{wcmqs.api.user}" />
-      <property name="password" value="%{wcmqs.api.password}" />
-   </bean>
-   
-   
    <!--  EH Cache manager -->
    <bean name="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" />
 
