@@ -22,9 +22,12 @@ package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 import static org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel.TYPE_WEB_ROOT;
 import static org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel.TYPE_WEB_SITE;
 
+import java.io.Serializable;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.repo.publishing.AbstractChannelType;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 
 /**
@@ -68,4 +71,77 @@ public class WebSiteChannelType extends AbstractChannelType
     {
         return TYPE_WEB_ROOT;
     }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public void publish(NodeRef nodeToPublish, Map<QName, Serializable> properties)
+    {
+        //NOOP
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public void unpublish(NodeRef nodeToUnpublish, Map<QName, Serializable> properties)
+    {
+        //NOOP
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public void updateStatus(String status, Map<QName, Serializable> properties)
+    {
+        //NOOP
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public boolean canPublish()
+    {
+        return false;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public boolean canUnpublish()
+    {
+        return false;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public boolean canPublishStatusUpdates()
+    {
+        return false;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public Set<String> getSupportedMimetypes()
+    {
+        return null;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public Set<QName> getSupportedContentTypes()
+    {
+        return null;
+    }
+
 }
