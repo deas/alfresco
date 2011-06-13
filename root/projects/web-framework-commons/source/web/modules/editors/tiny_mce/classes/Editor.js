@@ -983,12 +983,23 @@
 					ThemeManager.load(s.theme, 'themes/' + s.theme + '/editor_template' + tinymce.suffix + '.js');
 
 				each(explode(s.plugins), function(p) {
-					if (p && p.charAt(0) != '-' && !PluginManager.urls[p]) {
-						// Skip safari plugin, since it is removed as of 3.3b1
-						if (p == 'safari')
-							return;
-
-						PluginManager.load(p, 'plugins/' + p + '/editor_plugin' + tinymce.suffix + '.js');
+					if (p &&!PluginManager.urls[p]) {
+						if (p.charAt(0) == '-') {
+							p = p.substr(1, p.length);
+							var dependencies = PluginManager.dependencies(p);
+							each(dependencies, function(dep) {
+								var defaultSettings = {prefix:'plugins/', resource: dep, suffix:'/editor_plugin' + tinymce.suffix + '.js'};
+								var dep = PluginManager.createUrl(defaultSettings, dep);
+								PluginManager.load(dep.resource, dep);
+								
+							});
+						} else {
+							// Skip safari plugin, since it is removed as of 3.3b1
+							if (p == 'safari') {
+								return;
+							}
+							PluginManager.load(p, {prefix:'plugins/', resource: p, suffix:'/editor_plugin' + tinymce.suffix + '.js'});
+						}
 					}
 				});
 
@@ -1010,7 +1021,7 @@
 		 * @method init
 		 */
 		init : function() {
-			var n, t = this, s = t.settings, w, h, e = t.getElement(), o, ti, u, bi, bc, re, i;
+			var n, t = this, s = t.settings, w, h, e = t.getElement(), o, ti, u, bi, bc, re, i, initializedPlugins = [];
 
 			tinymce.add(t);
 
@@ -1033,20 +1044,25 @@
 				if (t.theme.init && s.init_theme)
 					t.theme.init(t, ThemeManager.urls[s.theme] || tinymce.documentBaseURL.replace(/\/$/, ''));
 			}
-
-			// Create all plugins
-			each(explode(s.plugins.replace(/\-/g, '')), function(p) {
+			function initPlugin(p) {
 				var c = PluginManager.get(p), u = PluginManager.urls[p] || tinymce.documentBaseURL.replace(/\/$/, ''), po;
-
-				if (c) {
+				if (c && tinymce.inArray(initializedPlugins,p) === -1) {
+					each(PluginManager.dependencies(p), function(dep){
+						initPlugin(dep);
+					});
 					po = new c(t, u);
 
 					t.plugins[p] = po;
 
-					if (po.init)
+					if (po.init) {
 						po.init(t, u);
+						initializedPlugins.push(p);
+					}
 				}
-			});
+			}
+			
+			// Create all plugins
+			each(explode(s.plugins.replace(/\-/g, '')), initPlugin);
 
 			// Setup popup CSS path(s)
 			if (s.popup_css !== false) {
@@ -1207,7 +1223,8 @@
 			n = DOM.add(o.iframeContainer, 'iframe', { 
 				id : t.id + "_ifr",
 				src : u || 'javascript:""', // Workaround for HTTPS warning in IE6/7
-				frameBorder : '0', 
+				frameBorder : '0',
+				allowTransparency : "true",
 				title : s.aria_label,
 				style : {
 					width : '100%',
@@ -1233,41 +1250,68 @@
 		 *
 		 * @method setupIframe
 		 */
-		setupIframe : function() {
+		setupIframe : function(filled) {
 			var t = this, s = t.settings, e = DOM.get(t.id), d = t.getDoc(), h, b;
 
 			// Setup iframe body
-			if (!isIE || !tinymce.relaxedDomain) {
+			if ((!isIE || !tinymce.relaxedDomain) && !filled) {
+				// We need to wait for the load event on Gecko
+				if (isGecko && !s.readonly) {
+					t.getWin().onload = function() {
+						window.setTimeout(function() {
+							var b = t.getBody(), undef;
+
+							// Editable element needs to have some contents or backspace/delete won't work properly for some odd reason on FF 3.6 or older
+							b.innerHTML = '<br>';
+
+							// Check if Gecko supports contentEditable mode FF2 doesn't
+							if (b.contentEditable !== undef) {
+								// Setting the contentEditable off/on seems to force caret mode in the editor and enabled auto focus
+								b.contentEditable = false;
+								b.contentEditable = true;
+
+								// Caret doesn't get rendered when you mousedown on the HTML element on FF 3.x
+								t.onMouseDown.add(function(ed, e) {
+									if (e.target.nodeName === "HTML") {
+										d.designMode = 'on'; // Render the caret
+
+										// Remove design mode again after a while so it has some time to execute
+										window.setTimeout(function() {
+											d.designMode = 'off';
+											t.getBody().focus();
+										}, 1);
+									}
+								});
+							} else
+								d.designMode = 'on';
+
+							// Call setup frame once the contentEditable/designMode has been initialized
+							// since the caret won't be rendered some times otherwise.
+							t.setupIframe(true);
+						}, 1);
+					};
+				}
+
 				d.open();
 				d.write(t.iframeHTML);
 				d.close();
 
 				if (tinymce.relaxedDomain)
 					d.domain = tinymce.relaxedDomain;
+
+				// Wait for iframe onload event on Gecko
+				if (isGecko && !s.readonly)
+					return;
 			}
 
-			// Design mode needs to be added here Ctrl+A will fail otherwise
-			if (!isIE) {
-				try {
-					if (!s.readonly)
-						d.designMode = 'On';
-				} catch (ex) {
-					// Will fail on Gecko if the editor is placed in an hidden container element
-					// The design mode will be set ones the editor is focused
-				}
-			}
+			// It will not steal focus while setting contentEditable
+			b = t.getBody();
+			b.disabled = true;
 
-			// IE needs to use contentEditable or it will display non secure items for HTTPS
-			if (isIE) {
-				// It will not steal focus if we hide it while setting contentEditable
-				b = t.getBody();
-				DOM.hide(b);
+			if (!isGecko && !s.readonly)
+				b.contentEditable = true;
 
-				if (!s.readonly)
-					b.contentEditable = true;
-
-				DOM.show(b);
-			}
+			b.disabled = false;
 
 			/**
 			 * Schema instance, enables you to validate elements and it's children.
@@ -1305,38 +1349,44 @@
 			 */
 			t.parser = new tinymce.html.DomParser(s, t.schema);
 
-			// Force anchor names closed
-			t.parser.addAttributeFilter('name', function(nodes, name) {
-				var i = nodes.length, sibling, prevSibling, parent, node;
-
-				while (i--) {
-					node = nodes[i];
-					if (node.name === 'a' && node.firstChild) {
-						parent = node.parent;
-
-						// Move children after current node
-						sibling = node.lastChild;
-						do {
-							prevSibling = sibling.prev;
-							parent.insert(sibling, node);
-							sibling = prevSibling;
-						} while (sibling);
+			// Force anchor names closed, unless the setting "allow_html_in_named_anchor" is explicitly included.
+			if (!t.settings.allow_html_in_named_anchor) {
+				t.parser.addAttributeFilter('name', function(nodes, name) {
+					var i = nodes.length, sibling, prevSibling, parent, node;
+	
+					while (i--) {
+						node = nodes[i];
+						if (node.name === 'a' && node.firstChild) {
+							parent = node.parent;
+	
+							// Move children after current node
+							sibling = node.lastChild;
+							do {
+								prevSibling = sibling.prev;
+								parent.insert(sibling, node);
+								sibling = prevSibling;
+							} while (sibling);
+						}
 					}
-				}
-			});
+				});
+			}
 
 			// Convert src and href into data-mce-src, data-mce-href and data-mce-style
 			t.parser.addAttributeFilter('src,href,style', function(nodes, name) {
-				var i = nodes.length, node, dom = t.dom, value;
+				var i = nodes.length, node, dom = t.dom, value, internalName;
 
 				while (i--) {
 					node = nodes[i];
 					value = node.attr(name);
+					internalName = 'data-mce-' + name;
 
-					if (name === "style")
-						node.attr('data-mce-style', dom.serializeStyle(dom.parseStyle(value), node.name));
-					else
-						node.attr('data-mce-' + name, t.convertURL(value, name, node.name));
+					// Add internal attribute if we need to we don't on a refresh of the document
+					if (!node.attributes.map[internalName]) {	
+						if (name === "style")
+							node.attr(internalName, dom.serializeStyle(dom.parseStyle(value), node.name));
+						else
+							node.attr(internalName, t.convertURL(value, name, node.name));
+					}
 				}
 			});
 
@@ -1674,53 +1724,36 @@
 				});
 
 				t.onSetContent.add(t.selection.onSetContent.add(fixLinks));
-
-				if (!s.readonly) {
-					try {
-						// Design mode must be set here once again to fix a bug where
-						// Ctrl+A/Delete/Backspace didn't work if the editor was added using mceAddControl then removed then added again
-						d.designMode = 'Off';
-						d.designMode = 'On';
-					} catch (ex) {
-						// Will fail on Gecko if the editor is placed in an hidden container element
-						// The design mode will be set ones the editor is focused
-					}
-				}
 			}
 
-			// A small timeout was needed since firefox will remove. Bug: #1838304
-			setTimeout(function () {
-				if (t.removed)
-					return;
+			t.load({initial : true, format : 'html'});
+			t.startContent = t.getContent({format : 'raw'});
+			t.undoManager.add();
+			t.initialized = true;
 
-				t.load({initial : true, format : 'html'});
-				t.startContent = t.getContent({format : 'raw'});
-				t.undoManager.add();
-				t.initialized = true;
+			t.onInit.dispatch(t);
+			t.execCallback('setupcontent_callback', t.id, t.getBody(), t.getDoc());
+			t.execCallback('init_instance_callback', t);
+			t.focus(true);
+			t.nodeChanged({initial : 1});
 
-				t.onInit.dispatch(t);
-				t.execCallback('setupcontent_callback', t.id, t.getBody(), t.getDoc());
-				t.execCallback('init_instance_callback', t);
-				t.focus(true);
-				t.nodeChanged({initial : 1});
+			// Load specified content CSS last
+			each(t.contentCSS, function(u) {
+				t.dom.loadCSS(u);
+			});
 
-				// Load specified content CSS last
-				each(t.contentCSS, function(u) {
-					t.dom.loadCSS(u);
-				});
+			// Handle auto focus
+			if (s.auto_focus) {
+				setTimeout(function () {
+					var ed = tinymce.get(s.auto_focus);
 
-				// Handle auto focus
-				if (s.auto_focus) {
-					setTimeout(function () {
-						var ed = tinymce.get(s.auto_focus);
+					ed.selection.select(ed.getBody(), 1);
+					ed.selection.collapse(1);
+					ed.getBody().focus();
+					ed.getWin().focus();
+				}, 100);
+			}
 
-						ed.selection.select(ed.getBody(), 1);
-						ed.selection.collapse(1);
-						ed.getWin().focus();
-					}, 100);
-				}
-			}, 1);
-	
 			e = null;
 		},
 
@@ -2496,7 +2529,7 @@
 		 * tinyMCE.activeEditor.setContent('[b]some[/b] html', {format : 'bbcode'});
 		 */
 		setContent : function(content, args) {
-			var self = this, rootNode, body = self.getBody();
+			var self = this, rootNode, body = self.getBody(), forcedRootBlockName;
 
 			// Setup args object
 			args = args || {};
@@ -2513,7 +2546,15 @@
 			// Padd empty content in Gecko and Safari. Commands will otherwise fail on the content
 			// It will also be impossible to place the caret in the editor unless there is a BR element present
 			if (!tinymce.isIE && (content.length === 0 || /^\s+$/.test(content))) {
-				body.innerHTML = '<br data-mce-bogus="1" />';
+				forcedRootBlockName = self.settings.forced_root_block;
+				if (forcedRootBlockName)
+					content = '<' + forcedRootBlockName + '><br data-mce-bogus="1"></' + forcedRootBlockName + '>';
+				else
+					content = '<br data-mce-bogus="1">';
+
+				body.innerHTML = content;
+				self.selection.select(body, true);
+				self.selection.collapse(true);
 				return;
 			}
 
@@ -2927,8 +2968,10 @@
 					if (isGecko && !s.readonly) {
 						if (t._isHidden()) {
 							try {
-								if (!s.content_editable)
-									d.designMode = 'On';
+								if (!s.content_editable) {
+									d.body.contentEditable = false;
+									d.body.contentEditable = true;
+								}
 							} catch (ex) {
 								// Fails if it's hidden
 							}
@@ -2955,20 +2998,20 @@
 				t.onMouseDown.add(setOpts);
 			}
 
-			// Workaround for bug, http://bugs.webkit.org/show_bug.cgi?id=12250
-			// WebKit can't even do simple things like selecting an image
-			// This also fixes so it's possible to select mceItemAnchors
-			if (tinymce.isWebKit) {
-				t.onClick.add(function(ed, e) {
-					e = e.target;
+			t.onClick.add(function(ed, e) {
+				e = e.target;
 
-					// Needs tobe the setBaseAndExtend or it will fail to select floated images
-					if (e.nodeName == 'IMG' || (e.nodeName == 'A' && dom.hasClass(e, 'mceItemAnchor'))) {
-						t.selection.getSel().setBaseAndExtent(e, 0, e, 1);
-						t.nodeChanged();
-					}
-				});
-			}
+				// Workaround for bug, http://bugs.webkit.org/show_bug.cgi?id=12250
+				// WebKit can't even do simple things like selecting an image
+				// Needs tobe the setBaseAndExtend or it will fail to select floated images
+				if (tinymce.isWebKit && e.nodeName == 'IMG')
+					t.selection.getSel().setBaseAndExtent(e, 0, e, 1);
+
+				if (e.nodeName == 'A' && dom.hasClass(e, 'mceItemAnchor'))
+					t.selection.select(e);
+
+				t.nodeChanged();
+			});
 
 			// Add node change handlers
 			t.onMouseUp.add(t.nodeChanged);
@@ -3099,21 +3142,6 @@
 						cb : cb
 					};
 				});
-
-				t.onKeyDown.add(function(ed, e) {
-					var sel;
-
-					switch (e.keyCode) {
-						case 8:
-							sel = t.getDoc().selection;
-
-							// Fix IE control + backspace browser bug
-							if (sel.createRange && sel.createRange().item) {
-								ed.dom.remove(sel.createRange().item(0));
-								return Event.cancel(e);
-							}
-					}
-				});
 			}
 
 			if (tinymce.isOpera) {
@@ -3140,69 +3168,25 @@
 				});
 
 				t.onKeyUp.add(function(ed, e) {
-					var rng, parent, bookmark;
+					var keyCode = e.keyCode;
 
-					// Fix for bug #3168, to remove odd ".." nodes from the DOM we need to get/set the HTML of the parent node.
-					if (isIE && e.keyCode == 8) {
-						rng = t.selection.getRng();
-						if (rng.parentElement) {
-							parent = rng.parentElement();
-							bookmark = t.selection.getBookmark();
-							parent.innerHTML = parent.innerHTML;
-							t.selection.moveToBookmark(bookmark);
-						}
-					}
-
-					if ((e.keyCode >= 33 && e.keyCode <= 36) || (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode == 13 || e.keyCode == 45 || e.ctrlKey)
+					if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 13 || keyCode == 45 || e.ctrlKey)
 						addUndo();
 				});
 
 				t.onKeyDown.add(function(ed, e) {
-					var rng, parent, bookmark, keyCode = e.keyCode;
+					var keyCode = e.keyCode, sel;
 
-					// IE has a really odd bug where the DOM might include an node that doesn't have
-					// a proper structure. If you try to access nodeValue it would throw an illegal value exception.
-					// This seems to only happen when you delete contents and it seems to be avoidable if you refresh the element
-					// after you delete contents from it. See: #3008923
-					if (isIE && keyCode == 46) {
-						rng = t.selection.getRng();
+					if (keyCode == 8) {
+						sel = t.getDoc().selection;
 
-						if (rng.parentElement) {
-							parent = rng.parentElement();
+						// Fix IE control + backspace browser bug
+						if (sel && sel.createRange && sel.createRange().item) {
+							t.undoManager.beforeChange();
+							ed.dom.remove(sel.createRange().item(0));
+							addUndo();
 
-							if (!t.undoManager.typing) {
-								t.undoManager.beforeChange();
-								t.undoManager.typing = true;
-								t.undoManager.add();
-							}
-
-							// Select next word when ctrl key is used in combo with delete
-							if (e.ctrlKey) {
-								rng.moveEnd('word', 1);
-								rng.select();
-							}
-
-							// Delete contents
-							t.selection.getSel().clear();
-
-							// Check if we are within the same parent
-							if (rng.parentElement() == parent) {
-								bookmark = t.selection.getBookmark();
-
-								try {
-									// Update the HTML and hopefully it will remove the artifacts
-									parent.innerHTML = parent.innerHTML;
-								} catch (ex) {
-									// And since it's IE it can sometimes produce an unknown runtime error
-								}
-
-								// Restore the caret position
-								t.selection.moveToBookmark(bookmark);
-							}
-
-							// Block the default delete behavior since it might be broken
-							e.preventDefault();
-							return;
+							return Event.cancel(e);
 						}
 					}
 
@@ -3222,8 +3206,8 @@
 					// If key isn't shift,ctrl,alt,capslock,metakey
 					if ((keyCode < 16 || keyCode > 20) && keyCode != 224 && keyCode != 91 && !t.undoManager.typing) {
 						t.undoManager.beforeChange();
-						t.undoManager.add();
 						t.undoManager.typing = true;
+						t.undoManager.add();
 					}
 				});
 
@@ -3232,7 +3216,7 @@
 						addUndo();
 				});
 			}
-			
+
 			// Bug fix for FireFox keeping styles from end of selection instead of start.
 			if (tinymce.isGecko) {
 				function getAttributeApplyFunction() {

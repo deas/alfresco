@@ -232,7 +232,7 @@
 		self.parse = function(html, args) {
 			var parser, rootNode, node, nodes, i, l, fi, fl, list, name, validate,
 				blockElements, startWhiteSpaceRegExp, invalidChildren = [],
-				endWhiteSpaceRegExp, allWhiteSpaceRegExp, whiteSpaceElements, children, nonEmptyElements;
+				endWhiteSpaceRegExp, allWhiteSpaceRegExp, whiteSpaceElements, children, nonEmptyElements, rootBlockName;
 
 			args = args || {};
 			matchedNodes = {};
@@ -241,11 +241,34 @@
 			nonEmptyElements = schema.getNonEmptyElements();
 			children = schema.children;
 			validate = settings.validate;
+			rootBlockName = "forced_root_block" in args ? args.forced_root_block : settings.forced_root_block;
 
 			whiteSpaceElements = schema.getWhiteSpaceElements();
 			startWhiteSpaceRegExp = /^[ \t\r\n]+/;
 			endWhiteSpaceRegExp = /[ \t\r\n]+$/;
 			allWhiteSpaceRegExp = /[ \t\r\n]+/g;
+
+			function addRootBlocks() {
+				var node = rootNode.firstChild, next, rootBlockNode;
+
+				while (node) {
+					next = node.next;
+
+					if (node.type == 3 || (node.type == 1 && node.name !== 'p' && !blockElements[node.name] && !node.attr('data-mce-type'))) {
+						if (!rootBlockNode) {
+							// Create a new root block element
+							rootBlockNode = createNode(rootBlockName, 1);
+							rootNode.insert(rootBlockNode, node);
+							rootBlockNode.append(node);
+						} else
+							rootBlockNode.append(node);
+					} else {
+						rootBlockNode = null;
+					}
+
+					node = next;
+				};
+			};
 
 			function createNode(name, type) {
 				var node = new Node(name, type), list;
@@ -434,35 +457,28 @@
 				}
 			}, schema);
 
-			rootNode = node = new Node(settings.root_name, 11);
+			rootNode = node = new Node(args.context || settings.root_name, 11);
 
 			parser.parse(html);
 
-			if (validate)
-				fixInvalidChildren(invalidChildren);
-
-			// Run node filters
-			for (name in matchedNodes) {
-				list = nodeFilters[name];
-				nodes = matchedNodes[name];
-
-				// Remove already removed children
-				fi = nodes.length;
-				while (fi--) {
-					if (!nodes[fi].parent)
-						nodes.splice(fi, 1);
-				}
-
-				for (i = 0, l = list.length; i < l; i++)
-					list[i](nodes, name, args);
+			// Fix invalid children or report invalid children in a contextual parsing
+			if (validate && invalidChildren.length) {
+				if (!args.context)
+					fixInvalidChildren(invalidChildren);
+				else
+					args.invalid = true;
 			}
 
-			// Run attribute filters
-			for (i = 0, l = attributeFilters.length; i < l; i++) {
-				list = attributeFilters[i];
+			// Wrap nodes in the root into block elements if the root is body
+			if (rootBlockName && rootNode.name == 'body')
+				addRootBlocks();
 
-				if (list.name in matchedAttributes) {
-					nodes = matchedAttributes[list.name];
+			// Run filters only when the contents is valid
+			if (!args.invalid) {
+				// Run node filters
+				for (name in matchedNodes) {
+					list = nodeFilters[name];
+					nodes = matchedNodes[name];
 
 					// Remove already removed children
 					fi = nodes.length;
@@ -471,8 +487,27 @@
 							nodes.splice(fi, 1);
 					}
 
-					for (fi = 0, fl = list.callbacks.length; fi < fl; fi++)
-						list.callbacks[fi](nodes, list.name, args);
+					for (i = 0, l = list.length; i < l; i++)
+						list[i](nodes, name, args);
+				}
+
+				// Run attribute filters
+				for (i = 0, l = attributeFilters.length; i < l; i++) {
+					list = attributeFilters[i];
+
+					if (list.name in matchedAttributes) {
+						nodes = matchedAttributes[list.name];
+
+						// Remove already removed children
+						fi = nodes.length;
+						while (fi--) {
+							if (!nodes[fi].parent)
+								nodes.splice(fi, 1);
+						}
+
+						for (fi = 0, fl = list.callbacks.length; fi < fl; fi++)
+							list.callbacks[fi](nodes, list.name, args);
+					}
 				}
 			}
 
@@ -486,6 +521,9 @@
 			self.addNodeFilter('br', function(nodes, name) {
 				var i, l = nodes.length, node, blockElements = schema.getBlockElements(),
 					nonEmptyElements = schema.getNonEmptyElements(), parent, prev, prevName;
+
+				// Remove brs from body element as well
+				blockElements.body = 1;
 
 				// Must loop forwards since it will otherwise remove all brs in <p>a<br><br><br></p>
 				for (i = 0; i < l; i++) {
