@@ -144,4 +144,12 @@ public class WebSiteChannelType extends AbstractChannelType
         return null;
     }
 
+    /**
+    * {@inheritDoc}
+    */
+    public String getNodeUrl(NodeRef node)
+    {
+        return null;
+    }
+
 }
