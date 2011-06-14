@@ -179,7 +179,10 @@ public class WebassetCollectionHelper implements WebSiteModel
             searchParameters.setMaxItems(maxQuerySize);
             searchParameters.setQuery(query);
             
-
+            if (log.isDebugEnabled())
+            {
+                log.debug("About to run query for dynamic asset collection (" + collection + "): " + query);
+            }
             try
             {
                 // Execute the query
@@ -213,11 +216,9 @@ public class WebassetCollectionHelper implements WebSiteModel
                 nodeService.setProperty(collection, PROP_REFRESH_AT, now.getTime());
 
             }
-            catch (AlfrescoRuntimeException e)
+            catch (Exception e)
             {
-                // Rethrow
-                throw new AlfrescoRuntimeException("Invalid collection query.  Please check query for syntax errors: " + query,
-                        e);
+                log.error("Failed to complete update of dynamic asset collection (" + collection + "): " + query, e);
             }
         }
     }

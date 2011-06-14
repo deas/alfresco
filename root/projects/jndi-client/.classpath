@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/virtual-tomcat/tomcat-coyote.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/virtual-tomcat/naming-resources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/virtual-tomcat/naming-factory.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/virtual-tomcat/catalina.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/virtual-tomcat/catalina.jar" sourcepath="/3rd Party/src/apache-tomcat-6.0.18-src.zip"/>
 	<classpathentry kind="lib" path="/Repository/config"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
