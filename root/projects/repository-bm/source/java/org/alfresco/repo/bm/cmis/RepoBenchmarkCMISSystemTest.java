@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -427,7 +427,7 @@ public class RepoBenchmarkCMISSystemTest extends AbstractRepoBenchmarkSystemTest
             name = "folder-" + System.currentTimeMillis() + "-" + random.nextInt(1000);
         }
         
-        String type = "cmis:folder";
+        String type = "cmis:folder, P:cm:titled"; // alfresco opencmis extension
         
         Folder folder = (Folder)session.getObjectByPath(parentFolderPath);
         
