@@ -54,5 +54,7 @@
 			<accessrule kind="nonaccessible" pattern="org.springframework.*3.0.0.jar"/>
 		</accessrules>
 	</classpathentry>
+	<classpathentry kind="lib" path="/RepoBM/lib/sardine/httpclient-4.0.3.jar"/>
+	<classpathentry kind="lib" path="/RepoBM/lib/sardine/httpcore-4.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

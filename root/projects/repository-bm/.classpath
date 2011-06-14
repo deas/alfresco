@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.6.jar" sourcepath="/3rd Party/src/junit-4.6-src.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
-	<classpathentry kind="lib" path="lib/opencmis-alfext/alfresco-opencmis-extension-110208.jar"/>
 	<classpathentry kind="lib" path="lib/sardine/sardine-146-patched.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
