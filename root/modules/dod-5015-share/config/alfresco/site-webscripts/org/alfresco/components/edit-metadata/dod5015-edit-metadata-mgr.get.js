@@ -1,18 +1,16 @@
-function main()
+<import resource="/org/alfresco/components/edit-metadata/edit-metadata-mgr.get.js">
+
+function alfresco_dod5015_main()
 {
-   // Need to know what type of node this is - document or folder
-   var nodeRef = page.url.args.nodeRef,
-      nodeType = "document",
-      connector = remote.connect("alfresco"),
-      result = connector.get("/slingshot/edit-metadata/node/" + nodeRef.replace(":/", ""));
+   // Call for meta data again (response is cached) so we can alter the nodeType
+   var nodeRef = model.nodeRef,
+      nodeType = model.nodeType;
+      result = remote.connect("alfresco").get("/slingshot/edit-metadata/node/" + nodeRef.replace(":/", ""));
 
    if (result.status == 200)
    {
       // Determine the return page's nodeType and nodeRef depending on type being edited
       var metadata = eval('(' + result + ')');
-      nodeType = metadata.node.isContainer ? "folder" : "document";
-      nodeRef = metadata.node.nodeRef;
-
       switch (String(metadata.node.type))
       {
          case "dod:recordSeries":
@@ -37,4 +35,4 @@ function main()
    model.nodeType = nodeType;
 }
 
-main();
+alfresco_dod5015_main();

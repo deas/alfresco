@@ -204,13 +204,13 @@
          
          // Find files to upload
          var startedUploads = 0,
-            length = this.dataTable.getRecordSet().getLength(),
+            length = this.widgets.dataTable.getRecordSet().getLength(),
             record, flashId, fileInfo, attributes, contentType,
             recordType = this.widgets.recordType.get("selectedMenuItem").value;
          
          for (var i = 0; i < length && startedUploads < noOfUploadsToStart; i++)
          {
-            record = this.dataTable.getRecordSet().getRecord(i);
+            record = this.widgets.dataTable.getRecordSet().getRecord(i);
             flashId = record.getData("id");
             fileInfo = this.fileStore[flashId];
             if (fileInfo.state === this.STATE_BROWSING)
