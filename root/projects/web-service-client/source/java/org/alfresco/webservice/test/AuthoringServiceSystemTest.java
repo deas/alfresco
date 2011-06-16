@@ -287,17 +287,17 @@ public class AuthoringServiceSystemTest extends BaseWebServiceSystemTest
         assertNotNull(emptyVersionHistory);
         assertNull(emptyVersionHistory.getVersions());
         
-        // Create the version
+        // Create the minor version 0.1
         VersionResult result = this.authoringService.createVersion(predicate, getVersionComments(), false);        
         assertNotNull(result);
         assertEquals(1, result.getNodes().length);
         assertEquals(1, result.getVersions().length);
         Version version = result.getVersions()[0];
-        assertEquals("1.0", version.getLabel());
+        assertEquals("0.1", version.getLabel());
         // TODO check commentaries
         // TODO check creator
         
-        // Get the version history
+        // Get the version history create minor version 0.2
         this.authoringService.createVersion(predicate, getVersionComments(), false);
         VersionHistory versionHistory = this.authoringService.getVersionHistory(reference);
         assertNotNull(versionHistory);
@@ -307,13 +307,13 @@ public class AuthoringServiceSystemTest extends BaseWebServiceSystemTest
         // Update the content
         this.contentService.write(reference, Constants.PROP_CONTENT, SECOND_VERSION_CONTENT.getBytes(), null);
         
-        // Create another version
+        // Create another version 0.4
         VersionResult versionResult2 = this.authoringService.createVersion(predicate, getVersionComments(), false);
         assertNotNull(versionResult2);
         assertEquals(1, versionResult2.getNodes().length);
         assertEquals(1, versionResult2.getVersions().length);
         Version version2 = versionResult2.getVersions()[0];
-        assertEquals("1.3", version2.getLabel());
+        assertEquals("0.4", version2.getLabel());
         // TODO check commentaries
         // TODO check creator
         
@@ -323,7 +323,7 @@ public class AuthoringServiceSystemTest extends BaseWebServiceSystemTest
         assertEquals(4, versionHistory2.getVersions().length);
         // TODO some more tests ...
         
-        // Create a major version
+        // Create a major version (1.0)
         NamedValue versionVal = Utils.createNamedValue("versionType","MAJOR");
         NamedValue descriptionVal = Utils.createNamedValue("description", "new description");
         NamedValue[] comments = new NamedValue[]{versionVal,descriptionVal};
@@ -332,7 +332,7 @@ public class AuthoringServiceSystemTest extends BaseWebServiceSystemTest
         assertEquals(1, result5.getNodes().length);
         assertEquals(1, result5.getVersions().length);
         Version version5 = result5.getVersions()[0];
-        assertEquals("2.0", version5.getLabel());
+        assertEquals("1.0", version5.getLabel());
         
         // Confirm the current content of the node
         Content[] contents = this.contentService.read(new Predicate(new Reference[]{reference}, BaseWebServiceSystemTest.store, null), Constants.PROP_CONTENT.toString());
@@ -341,7 +341,7 @@ public class AuthoringServiceSystemTest extends BaseWebServiceSystemTest
         assertEquals(SECOND_VERSION_CONTENT, content1);
         
         // Revert the node to the first version
-        this.authoringService.revertVersion(reference, "1.0");
+        this.authoringService.revertVersion(reference, "0.1");
         
         // Confirm that the state of the node has been reverted
         Content[] contents2 = this.contentService.read(new Predicate(new Reference[]{reference}, BaseWebServiceSystemTest.store, null), Constants.PROP_CONTENT.toString());
