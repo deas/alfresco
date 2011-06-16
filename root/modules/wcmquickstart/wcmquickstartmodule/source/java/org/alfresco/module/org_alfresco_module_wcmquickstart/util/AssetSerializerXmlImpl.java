@@ -38,6 +38,7 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.dom4j.tree.FlyweightCDATA;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -233,9 +234,7 @@ public class AssetSerializerXmlImpl implements AssetSerializer
             break;
 
         case text:
-            writer.startCDATA();
-            writer.write(value.toString());
-            writer.endCDATA();
+            writer.write(new FlyweightCDATA(value.toString()));
             break;
 
         case content:
