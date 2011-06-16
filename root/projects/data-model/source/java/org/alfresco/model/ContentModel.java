@@ -217,6 +217,8 @@ public interface ContentModel
     static final QName PROP_EMAIL_FEED_ID = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "emailFeedId"); // system-maintained
     static final QName PROP_EMAIL_FEED_DISABLED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "emailFeedDisabled");
     
+    static final QName PROP_SUBSCRIPTIONS_PRIVATE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "subscriptionsPrivate");
+    
     static final QName ASPECT_PERSON_DISABLED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "personDisabled");
     
     static final QName ASSOC_AVATAR = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "avatar");
