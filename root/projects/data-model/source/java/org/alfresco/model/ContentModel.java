@@ -210,6 +210,8 @@ public interface ContentModel
     static final QName PROP_SKYPE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "skype");
     static final QName PROP_GOOGLEUSERNAME = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "googleusername");
     static final QName PROP_INSTANTMSG = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "instantmsg");
+    static final QName PROP_USER_STATUS = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "userStatus");
+    static final QName PROP_USER_STATUS_TIME = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "userStatusTime");
     
     static final QName PROP_SIZE_CURRENT = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "sizeCurrent"); // system-maintained
     static final QName PROP_SIZE_QUOTA = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "sizeQuota");

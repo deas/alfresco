@@ -2,4 +2,13 @@
  * User Profile - Toolbar Component GET method
  */
 
-model.activeUserProfile = (page.url.templateArgs["userid"] == null || page.url.templateArgs["userid"] == user.name);
+var userId = page.url.templateArgs["userid"];
+model.activeUserProfile = (userId == null || userId == user.name);
+
+if(model.activeUserProfile) {
+	var following = remote.call("/api/subscriptions/" + encodeURIComponent(userId) + "/following/count");
+	model.following = eval('(' + following + ')').count;
+	
+	var followers = remote.call("/api/subscriptions/" + encodeURIComponent(userId) + "/followers/count");
+	model.followers = eval('(' + followers + ')').count;
+}
