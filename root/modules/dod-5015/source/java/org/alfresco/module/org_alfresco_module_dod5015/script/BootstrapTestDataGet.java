@@ -35,6 +35,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSe
 import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementSearchBehaviour;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RmSiteType;
 import org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService;
 import org.alfresco.module.org_alfresco_module_dod5015.security.Role;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -65,10 +66,8 @@ public class BootstrapTestDataGet extends DeclarativeWebScript
 {
     private static Log logger = LogFactory.getLog(BootstrapTestDataGet.class);
     
-    private static final String COMPONENT_DOCUMENT_LIBRARY = "documentLibrary";
     private static final String ARG_SITE_NAME = "site";
     private static final String ARG_IMPORT = "import";
-    private static final String DEFAULT_SITE_NAME = "rm";
     
     private static final StoreRef SPACES_STORE = new StoreRef(StoreRef.PROTOCOL_WORKSPACE, "SpacesStore");
     
@@ -150,7 +149,7 @@ public class BootstrapTestDataGet extends DeclarativeWebScript
         }
         
         // resolve rm site
-        String siteName = DEFAULT_SITE_NAME;
+        String siteName = RmSiteType.DEFAULT_SITE_NAME;
         if (req.getParameter(ARG_SITE_NAME) != null)
         {
             siteName = req.getParameter(ARG_SITE_NAME);
@@ -165,10 +164,10 @@ public class BootstrapTestDataGet extends DeclarativeWebScript
             }
             
             // resolve documentLibrary (filePlan) container
-            NodeRef filePlan = siteService.getContainer(siteName, COMPONENT_DOCUMENT_LIBRARY);
+            NodeRef filePlan = siteService.getContainer(siteName, RmSiteType.COMPONENT_DOCUMENT_LIBRARY);
             if (filePlan == null)
             {
-                filePlan = siteService.createContainer(siteName, COMPONENT_DOCUMENT_LIBRARY, DOD5015Model.TYPE_FILE_PLAN, null);
+                filePlan = siteService.createContainer(siteName, RmSiteType.COMPONENT_DOCUMENT_LIBRARY, DOD5015Model.TYPE_FILE_PLAN, null);
             }
             
             // import the RM test data ACP into the the provided filePlan node reference

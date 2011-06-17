@@ -18,6 +18,8 @@
       <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
       <!-- Import Alfresco Content Domain Model Definitions -->
       <import uri="http://www.alfresco.org/model/system/1.0" prefix="sys" />
+      <!--  Import Alfresco Site Model Definitions -->
+      <import uri="http://www.alfresco.org/model/site/1.0" prefix="st"/>
    </imports>
 
    <!-- Records Management Namespace -->
@@ -26,6 +28,12 @@
    </namespaces>
 
    <types>
+   
+      <!--  Custom RM site type -->
+      <type name="rma:rmsite">
+         <title>RM Site</title>
+         <parent>st:site</parent>
+      </type>
 
       <!-- Caveat config - allowed values for users/groups for supplemental markings and/or user-defined fields -->
       <type name="rma:caveatConfig">

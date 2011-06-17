@@ -6,7 +6,8 @@ function main()
       shortName: args["shortname"],
       sitePreset: "rm-site-dashboard",
       title: msg.get("title.rmsite"),
-      description: msg.get("description.rmsite")
+      description: msg.get("description.rmsite"),
+      type: "{http://www.alfresco.org/model/recordsmanagement/1.0}rmsite"
    };
    var scriptRemoteConnector = remote.connect("alfresco"),
       repoResponse = scriptRemoteConnector.post("/api/sites", jsonUtils.toJSONString(siteJson), "application/json");

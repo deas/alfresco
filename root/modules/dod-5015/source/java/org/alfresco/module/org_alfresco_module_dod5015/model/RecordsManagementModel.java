@@ -34,6 +34,9 @@ public interface RecordsManagementModel extends RecordsManagementCustomModel
     // Model
     public static QName RM_MODEL = QName.createQName(RM_URI, "recordsmanagement");
     
+    // RM Site
+    public static QName TYPE_RM_SITE = QName.createQName(RM_URI, "rmsite");
+    
     // Caveat config
     public static QName TYPE_CAVEAT_CONFIG = QName.createQName(RM_URI, "caveatConfig");
     

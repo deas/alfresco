@@ -4,7 +4,7 @@
 <beans>
 	
 	<!-- Bootstrap Records Management Models -->   
-    <bean id="org_alfresco_module_dod5015_dictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="dictionaryBootstrap">
+    <bean id="org_alfresco_module_dod5015_dictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="siteService_dictionaryBootstrap">
         <property name="models">
             <list>
                 <value>alfresco/module/org_alfresco_module_dod5015/model/recordsModel.xml</value>
@@ -52,6 +52,12 @@
    	  <property name="dictionaryService" ref="DictionaryService"/>
       <property name="recordsManagementActionService" ref="RecordsManagementActionService"/>
       <property name="recordsManagementIdentifierService" ref="recordsManagementIdentifierService"/>
+   </bean>
+   
+   <bean id="org_alfresco_module_dod5015_RmSiteType" 
+   		 class="org.alfresco.module.org_alfresco_module_dod5015.model.RmSiteType" 
+   		 parent="org_alfresco_module_dod5015_BaseBehaviour">
+   	  <property name="siteService" ref="SiteService"/>
    </bean>
    
    <!--  Record Component Identifier aspect behaviour bean -->
