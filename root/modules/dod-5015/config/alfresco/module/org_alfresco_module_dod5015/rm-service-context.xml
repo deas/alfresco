@@ -139,9 +139,9 @@
                 <![CDATA[
                 org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getDispositionSchedule=RM.Read.0
                 org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getAssociatedDispositionSchedule=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getAssociatedRecordsManagementContainer=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.hasDisposableItems=RM.Read.0
-                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getDisposableItems=RM.Read.0
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getAssociatedRecordsManagementContainer=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.hasDisposableItems=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.getDisposableItems=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.createDispositionSchedule=RM_ALLOW               
                 org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.addDispositionActionDefinition=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService.removeDispositionActionDefinition=RM_ALLOW
@@ -165,6 +165,7 @@
         <property name="permissionService" ref="PermissionService"/>
         <property name="nodeService" ref="NodeService"/>
         <property name="policyComponent" ref="policyComponent"/>
+        <property name="ownableService" ref="OwnableService"/>
         <property name="recordsManagementService" ref="RecordsManagementService"/>
         <property name="capabilitySets">
         	<map>
