@@ -50,6 +50,7 @@ import org.alfresco.service.cmr.security.AccessPermission;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
+import org.alfresco.service.cmr.security.OwnableService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
@@ -80,6 +81,10 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
     /** Policy component */
     private PolicyComponent policyComponent;
     
+    /** Owner service */
+    private OwnableService ownableService;
+    
+    /** Records management service */
     private RecordsManagementService recordsManagementService;
     
     /** Node service */
@@ -136,6 +141,16 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
     {
         this.policyComponent = policyComponent;
     }
+    
+    /**
+     * Set the ownable service
+     * 
+     * @param ownableService	ownable service
+     */
+    public void setOwnableService(OwnableService ownableService) 
+    {
+		this.ownableService = ownableService;
+	}
     
     /**
      * Set records management service
@@ -474,6 +489,9 @@ public class RecordsManagementSecurityServiceImpl implements RecordsManagementSe
                         if (isAdmin == true)
                         {
                             permissionService.setPermission(rmRootNode, role.getRoleGroupName(), RMPermissionModel.FILING, true);
+                            
+                            // Add the owner of the root node into the admin group
+                            //authorityService.addAuthority(role.getRoleGroupName(), ownableService.getOwner(rmRootNode));
                         }
                     }
                 }

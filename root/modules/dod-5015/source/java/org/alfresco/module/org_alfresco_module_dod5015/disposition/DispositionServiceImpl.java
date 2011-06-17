@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementServiceRegistry;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
