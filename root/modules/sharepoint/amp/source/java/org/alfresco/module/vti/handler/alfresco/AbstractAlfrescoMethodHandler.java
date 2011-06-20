@@ -933,7 +933,10 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
 
             if (getNodeService().hasAspect(curDocumentNodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
             {
-                getNodeService().addAspect(curDocumentNodeRef, ContentModel.ASPECT_VERSIONABLE, null);
+                // adds 'versionable' aspect and saves current version
+                versionService.createVersion(curDocumentNodeRef, null);
+                // creates new version to save new changes and avoid creating initial version when transaction is committed
+                versionService.createVersion(curDocumentNodeRef, null);
             }
 
             if (getNodeService().hasAspect(curDocumentNodeRef, ContentModel.ASPECT_AUTHOR) == false)

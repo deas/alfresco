@@ -20,6 +20,8 @@ package org.alfresco.repo.security.authentication;
 
 import java.util.Set;
 
+import org.alfresco.service.Auditable;
+
 
 /**
  * Manage authentication tickets
@@ -73,12 +75,14 @@ public interface TicketComponent
      * @return - the user name
      * @throws AuthenticationException
      */
+    @Auditable(parameters = {"ticket"}, recordable = {false})
     public String validateTicket(String ticket) throws AuthenticationException;
     
     /**
      * Invalidate the tickets by id
      * @param ticket
      */
+    @Auditable(parameters = {"ticket"}, recordable = {false})
     public void invalidateTicketById(String ticket);
     
     /**

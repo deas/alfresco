@@ -44,6 +44,7 @@ import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.version.VersionService;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,6 +76,8 @@ public class VtiIfHeaderAction extends HttpServlet implements VtiAction
     private MimetypeService mimetypeService;
 
     private VtiPathHelper pathHelper;
+    
+    private VersionService versionService;
 
     static
     {
@@ -143,6 +146,19 @@ public class VtiIfHeaderAction extends HttpServlet implements VtiAction
         this.pathHelper = pathHelper;
     }
 
+    /**
+     * <p>
+     * VersionService setter.
+     * </p>
+     * 
+     * @param versionService {@link VersionService}.
+     */
+    public void setVersionService(VersionService versionService)
+    {
+        this.versionService = versionService;
+    }
+
+    
     /**
      * <p>Getting server version of document for merging.</p> 
      *
@@ -245,8 +261,14 @@ public class VtiIfHeaderAction extends HttpServlet implements VtiAction
         }
         else
         {
+            if (nodeService.hasAspect(nodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
+            {
+                // adds 'versionable' aspect and saves current version
+                versionService.createVersion(nodeRef, null);
+            }
+
             // original document writer
-            writer = fileFolderService.getWriter(nodeRef);  
+            writer = fileFolderService.getWriter(nodeRef);
 
         }
 

@@ -226,6 +226,7 @@
         <property name="authenticationService" ref="AuthenticationService" />
         <property name="mimetypeService" ref="MimetypeService" />
         <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="versionService" ref="VersionService" />
     </bean>
 
     <bean id="vtiBrowserAction" class="org.alfresco.module.vti.web.actions.VtiBrowserAction">
