@@ -119,6 +119,11 @@ public class M2Model
     {
         try
         {
+        	if(bindingType == null)
+        	{
+        		bindingType = ModelDefinition.XMLBindingType.DEFAULT;
+        	}
+
         	String bindingName = bindingType.toString();
             IBindingFactory factory = (bindingName != null) ? BindingDirectory.getFactory(bindingName, M2Model.class) :
             	BindingDirectory.getFactory("default", M2Model.class);
