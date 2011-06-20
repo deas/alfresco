@@ -211,7 +211,6 @@ import org.alfresco.util.EqualsHelper;
         property.setStoredInIndex(propertyDef.isStoredInIndex());
         property.setTitle(propertyDef.getTitle());
         property.setIndexTokenisationMode(propertyDef.getIndexTokenisationMode());
-        property.setEncrypted(propertyDef.isEncrypted());
         
         return property;
     }
@@ -237,7 +236,6 @@ import org.alfresco.util.EqualsHelper;
         sb.append("isStoredInIndex: " + isStoredInIndex() + "\n");
         sb.append("isIndexedAtomically: " + isIndexedAtomically() + "\n");
         sb.append("indexTokenisationMode: " + getIndexTokenisationMode() + "\n");
-        sb.append("encrypted: " + isEncrypted() + "\n");
 
         return sb.toString();
     }
@@ -594,12 +592,5 @@ import org.alfresco.util.EqualsHelper;
         }
         
         return modelDiffs;
-    }
-
-
-    @Override
-    public boolean isEncrypted()
-    {
-        return m2Property.isEncrypted();
     }
 }

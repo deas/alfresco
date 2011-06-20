@@ -226,20 +226,6 @@
          </properties>
       </type>
       
-      <type name="test:encrypted">
-         <parent>test:base</parent>
-         <properties>
-            <property name="test:text_encrypted">
-               <type>d:text</type>
-               <encrypted>true</encrypted>
-            </property>
-            <property name="test:mltext_encrypted">
-               <type>d:mltext</type>
-               <encrypted>true</encrypted>
-            </property>
-         </properties>
-      </type>
-      
       <type name="test:overridetype1">
         <properties>
             <property name="test:propoverride">

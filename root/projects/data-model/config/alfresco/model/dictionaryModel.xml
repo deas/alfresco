@@ -23,6 +23,11 @@
          <java-class>java.lang.Object</java-class>
       </data-type>
 
+      <data-type name="d:encrypted">
+         <analyser-class>org.alfresco.repo.search.impl.lucene.analysis.EmptyAnalyser</analyser-class>
+         <java-class>javax.crypto.SealedObject</java-class>
+      </data-type>
+
       <data-type name="d:text">
          <analyser-class>org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser</analyser-class>
          <java-class>java.lang.String</java-class>

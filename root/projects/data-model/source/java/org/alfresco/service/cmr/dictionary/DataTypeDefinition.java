@@ -35,6 +35,7 @@ public interface DataTypeDefinition
     // Built-in Property Types
     //
     public QName ANY = QName.createQName(NamespaceService.DICTIONARY_MODEL_1_0_URI, "any");
+    public QName ENCRYPTED = QName.createQName(NamespaceService.DICTIONARY_MODEL_1_0_URI, "encrypted");
     public QName TEXT = QName.createQName(NamespaceService.DICTIONARY_MODEL_1_0_URI, "text");
     public QName MLTEXT = QName.createQName(NamespaceService.DICTIONARY_MODEL_1_0_URI, "mltext");
     public QName CONTENT = QName.createQName(NamespaceService.DICTIONARY_MODEL_1_0_URI, "content");
