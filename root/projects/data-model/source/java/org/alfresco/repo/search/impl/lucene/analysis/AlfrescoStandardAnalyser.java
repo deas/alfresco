@@ -33,6 +33,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 public class AlfrescoStandardAnalyser extends Analyzer
 {
+    @SuppressWarnings("rawtypes")
     private Set stopSet;
 
     /**
