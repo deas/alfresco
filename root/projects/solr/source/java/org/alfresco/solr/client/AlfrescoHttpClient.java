@@ -13,6 +13,7 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
@@ -99,16 +100,21 @@ public class AlfrescoHttpClient
         // construct method
         HttpMethod httpMethod = null;
         String method = req.getMethod();
-        if (method.equalsIgnoreCase("GET"))
+        if(method.equalsIgnoreCase("GET"))
         {
             GetMethod get = new GetMethod(req.getFullUri());
             httpMethod = get;
         }
-        else if (method.equalsIgnoreCase("POST"))
+        else if(method.equalsIgnoreCase("POST"))
         {
             PostMethod post = new PostMethod(req.getFullUri());
             post.setRequestEntity(new ByteArrayRequestEntity(req.getBody(), req.getType()));
             httpMethod = post;
+        }
+        else if(method.equalsIgnoreCase("HEAD"))
+        {
+            HeadMethod head = new HeadMethod(req.getFullUri());
+            httpMethod = head;
         }
         else
         {
@@ -338,7 +344,7 @@ public class AlfrescoHttpClient
     }
     
     /**
-     * Test GET Request
+     * HTTP GET Request
      */
     public static class GetRequest extends Request
     {
@@ -349,7 +355,19 @@ public class AlfrescoHttpClient
     }
 
     /**
-     * Test POST Request
+     * HTTP HEAD request
+     *
+     */
+    public static class HeadRequest extends Request
+    {
+        public HeadRequest(String uri)
+        {
+            super("get", uri);
+        }
+    }
+    
+    /**
+     * HTTP POST Request
      */
     public static class PostRequest extends Request
     {

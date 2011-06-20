@@ -18,6 +18,7 @@
  */
 package org.alfresco.repo.dictionary;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -150,5 +151,15 @@ public class M2ModelDefinition implements ModelDefinition
             }
         }
         return false;
+    }
+    
+    public void toXML(XMLBindingType bindingType, OutputStream xml)
+    {
+        model.toXML(bindingType, xml);
+    }
+    
+    public long getChecksum(XMLBindingType bindingType)
+    {
+        return model.getChecksum(bindingType);
     }
 }

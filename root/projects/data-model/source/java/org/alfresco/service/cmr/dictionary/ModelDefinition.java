@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.dictionary;
 
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 
@@ -31,6 +32,24 @@ import org.alfresco.service.namespace.QName;
  */
 public interface ModelDefinition
 {
+    public static enum XMLBindingType
+    {
+    	DEFAULT
+    	{
+    		public String toString()
+    		{
+    			return "default";
+    		}
+    	},
+    	SOLR
+    	{
+    		public String toString()
+    		{
+    			return "solr";
+    		}
+    	}
+    };
+
     /**
      * @return the model name
      */
@@ -77,4 +96,8 @@ public interface ModelDefinition
      * @return  true => model imports the uri
      */
     public boolean isNamespaceImported(String uri);
+
+    public void toXML(XMLBindingType bindingType, OutputStream xml);
+
+    public long getChecksum(XMLBindingType bindingType);
 }

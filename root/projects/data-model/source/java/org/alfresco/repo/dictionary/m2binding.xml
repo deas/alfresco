@@ -1,4 +1,4 @@
-<binding>
+<binding name="default">
 
    <namespace uri="http://www.alfresco.org/model/dictionary/1.0" default="elements"/>
    

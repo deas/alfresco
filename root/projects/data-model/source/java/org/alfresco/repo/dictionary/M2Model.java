@@ -18,19 +18,24 @@
  */
 package org.alfresco.repo.dictionary;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.zip.CRC32;
 
 import org.alfresco.service.cmr.dictionary.DictionaryException;
+import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.jibx.runtime.BindingDirectory;
 import org.jibx.runtime.IBindingFactory;
 import org.jibx.runtime.IMarshallingContext;
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
+import org.jibx.runtime.impl.GenericXMLWriter;
 
 
 /**
@@ -81,9 +86,14 @@ public class M2Model
      */
     public static M2Model createModel(InputStream xml)
     {
+        return createModel("default", xml);
+    }
+    
+    public static M2Model createModel(String bindingName, InputStream xml)
+    {
         try
         {
-            IBindingFactory factory = BindingDirectory.getFactory(M2Model.class);
+            IBindingFactory factory = BindingDirectory.getFactory(bindingName, M2Model.class);
             IUnmarshallingContext context = factory.createUnmarshallingContext();
             Object obj = context.unmarshalDocument(xml, null);
             return (M2Model)obj;
@@ -91,7 +101,7 @@ public class M2Model
         catch(JiBXException e)
         {
             throw new DictionaryException("Failed to parse model", e);
-        }
+        }        
     }
 
     
@@ -102,9 +112,16 @@ public class M2Model
      */
     public void toXML(OutputStream xml)
     {
+        toXML(null, xml);
+    }
+    
+    public void toXML(ModelDefinition.XMLBindingType bindingType, OutputStream xml)
+    {
         try
         {
-            IBindingFactory factory = BindingDirectory.getFactory(M2Model.class);
+        	String bindingName = bindingType.toString();
+            IBindingFactory factory = (bindingName != null) ? BindingDirectory.getFactory(bindingName, M2Model.class) :
+            	BindingDirectory.getFactory("default", M2Model.class);
             IMarshallingContext context = factory.createMarshallingContext();
             context.setIndent(4);
             context.marshalDocument(this, "UTF-8", null, xml);
@@ -115,6 +132,20 @@ public class M2Model
         }
     }
 
+    public long getChecksum(ModelDefinition.XMLBindingType bindingType)
+    {
+        final CRC32 crc = new CRC32();
+
+        // construct the crc directly from the model's xml stream
+        toXML(bindingType, new OutputStream() {
+            public void write(int b) throws IOException
+            {
+                crc.update(b);
+            }
+        });
+
+        return crc.getValue();
+    }
     
     /**
      * Create a compiled form of this model

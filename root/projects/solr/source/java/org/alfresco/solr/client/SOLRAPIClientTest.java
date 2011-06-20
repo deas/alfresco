@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,6 +59,8 @@ public class SOLRAPIClientTest extends TestCase
 
     private SOLRAPIClient client;
     
+    private M2Model testModel;
+
     private void loadModel(Map<String, M2Model> modelMap, HashSet<String> loadedModels, M2Model model)
     {
         String modelName = model.getName();
@@ -133,7 +137,10 @@ public class SOLRAPIClientTest extends TestCase
         // dummy implementation - don't know how to hook into SOLR-side namespace stuff
         NamespaceDAO namespaceDAO = new TestNamespaceDAO();
         client = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
-                "http://127.0.0.1:8085/alfresco/service", "admin", "admin");
+                "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
+
+        InputStream modelStream = getClass().getClassLoader().getResourceAsStream("org/alfresco/solr/client/testModel.xml");
+        testModel = M2Model.createModel(modelStream);
     }
     
     /**
@@ -347,6 +354,21 @@ public class SOLRAPIClientTest extends TestCase
         }
     }
 
+    public void testGetModel() throws IOException, JSONException
+    {
+    	AlfrescoModel alfModel = client.getModel(QName.createQName("http://www.alfresco.org/model/content/1.0", "contentmodel"));
+    	M2Model model = alfModel.getModel();
+    	assertNotNull(model);
+    	assertEquals("Returned model has incorrect name", "cm:contentmodel", model.getName());
+    	assertNotNull(alfModel.getChecksum());
+    }
+    
+    public void testGetModelDiffs() throws IOException, JSONException
+    {
+    	List<AlfrescoModelDiff> diffs = client.getModelsDiff(Collections.EMPTY_LIST);
+    	assertTrue(diffs.size() > 0);
+    }
+    
     private void outputTextContent(SOLRAPIClient.GetTextContentResponse response) throws IOException
     {
         InputStream in = response.getContent();
@@ -412,7 +434,8 @@ public class SOLRAPIClientTest extends TestCase
     private class TestNamespaceDAO implements NamespaceDAO
     {
         private Map<String, String> prefixMappings = new HashMap<String, String>(10);
-        
+        private Map<String, List<String>> prefixReverseMappings = new HashMap<String, List<String>>(10);
+
         TestNamespaceDAO()
         {
             prefixMappings.put(NamespaceService.CONTENT_MODEL_PREFIX, NamespaceService.CONTENT_MODEL_1_0_URI);
@@ -421,7 +444,15 @@ public class SOLRAPIClientTest extends TestCase
             prefixMappings.put(NamespaceService.DICTIONARY_MODEL_PREFIX, NamespaceService.DICTIONARY_MODEL_1_0_URI);
             prefixMappings.put(NamespaceService.APP_MODEL_PREFIX, NamespaceService.APP_MODEL_1_0_URI);            
             prefixMappings.put("ver", "http://www.alfresco.org/model/versionstore/1.0");            
-            prefixMappings.put("ver2", "http://www.alfresco.org/model/versionstore/2.0");            
+            prefixMappings.put("ver2", "http://www.alfresco.org/model/versionstore/2.0");
+            
+            prefixReverseMappings.put(NamespaceService.CONTENT_MODEL_1_0_URI, Arrays.asList(NamespaceService.CONTENT_MODEL_PREFIX));
+            prefixReverseMappings.put(NamespaceService.SYSTEM_MODEL_PREFIX, Arrays.asList(NamespaceService.SYSTEM_MODEL_1_0_URI));
+            prefixReverseMappings.put(NamespaceService.DEFAULT_PREFIX, Arrays.asList(NamespaceService.DEFAULT_URI));
+            prefixReverseMappings.put(NamespaceService.DICTIONARY_MODEL_PREFIX, Arrays.asList(NamespaceService.DICTIONARY_MODEL_1_0_URI));
+            prefixReverseMappings.put(NamespaceService.APP_MODEL_PREFIX, Arrays.asList(NamespaceService.APP_MODEL_1_0_URI));            
+            prefixReverseMappings.put("ver", Arrays.asList("http://www.alfresco.org/model/versionstore/1.0"));            
+            prefixReverseMappings.put("ver2", Arrays.asList("http://www.alfresco.org/model/versionstore/2.0"));
         }
 
         @Override
@@ -433,7 +464,7 @@ public class SOLRAPIClientTest extends TestCase
         @Override
         public Collection<String> getPrefixes(String namespaceURI) throws NamespaceException
         {
-            return null;
+            return prefixReverseMappings.get(namespaceURI);
         }
 
         @Override

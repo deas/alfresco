@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -63,7 +65,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-// TODO error handling
+// TODO error handling, including dealing with a repository that is not responsive (ConnectException in sendRemoteRequest)
 // TODO get text content transform status handling
 /**
  * Http client to handle SOLR-Alfresco remote calls.
@@ -80,9 +82,14 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     private static final String GET_METADATA_URL = "api/solr/metadata";
     private static final String GET_NODES_URL = "api/solr/nodes";
     private static final String GET_CONTENT = "api/solr/textContent";
+    private static final String GET_MODEL = "api/solr/model/{0}";
+    private static final String GET_MODELS_DIFF = "api/solr/modelsdiff";
+
+    private static final String CHECKSUM_HEADER = "XAlfresco-modelChecksum";
 
     private SOLRDeserializer deserializer;
     private DictionaryService dictionaryService;
+    private NamespaceDAO namespaceDAO;
 
     public SOLRAPIClient(
             DictionaryService dictionaryService,
@@ -91,6 +98,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     {
         super(alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/"), username, password);
         this.dictionaryService = dictionaryService;
+        this.namespaceDAO = namespaceDAO;
         this.deserializer = new SOLRDeserializer(namespaceDAO);
     }
     
@@ -789,6 +797,80 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         return new GetTextContentResponse(response);
     }
     
+    public AlfrescoModel getModel(QName modelName) throws IOException, JSONException
+    {
+        setupHttpClient();
+
+        StringBuilder url = new StringBuilder(this.url);
+
+        URLCodec encoder = new URLCodec();
+        MessageFormat mf = new MessageFormat(GET_MODEL);
+        // make sure we send the short QName (the webscript expects it)
+        url.append(mf.format(new Object[] {encoder.encode(modelName.toPrefixString(namespaceDAO), "UTF-8")}));
+        
+        GetRequest req = new GetRequest(url.toString());
+        
+        Response response = sendRequest(req, username);
+
+        if(response.getStatus() != HttpStatus.SC_OK)
+        {
+            throw new AlfrescoRuntimeException("GetModel return status is " + response.getStatus());
+        }
+
+        return new AlfrescoModel(M2Model.createModel(response.getContentAsStream()),
+                Long.valueOf(response.getHeader(CHECKSUM_HEADER)));
+    }
+    
+    public List<AlfrescoModelDiff> getModelsDiff(List<AlfrescoModel> currentModels) throws IOException, JSONException
+    {
+        setupHttpClient();
+
+        StringBuilder url = new StringBuilder(this.url);
+        url.append(GET_MODELS_DIFF);
+
+        JSONObject body = new JSONObject();
+        JSONArray jsonModels = new JSONArray();
+        for(AlfrescoModel model : currentModels)
+        {
+            JSONObject jsonModel = new JSONObject();
+            jsonModel.put("name", model.getModel().getName());
+            jsonModel.put("checksum", model.getChecksum());
+            jsonModels.put(jsonModel);
+        }
+        body.put("models", jsonModels);
+
+        PostRequest req = new PostRequest(url.toString(), body.toString(), "application/json");
+        
+        Response response = sendRequest(req, username);
+
+        if(response.getStatus() != HttpStatus.SC_OK)
+        {
+            throw new AlfrescoRuntimeException("GetModelsDiff return status is " + response.getStatus());
+        }
+
+        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+        JSONObject json = new JSONObject(new JSONTokener(reader));
+        json.write(new PrintWriter(System.out));
+        JSONArray jsonDiffs = json.getJSONArray("diffs");
+        if(jsonDiffs == null)
+        {
+            throw new AlfrescoRuntimeException("GetModelsDiff badly formatted response");
+        }
+
+        List<AlfrescoModelDiff> diffs = new ArrayList<AlfrescoModelDiff>(jsonDiffs.length());
+        for(int i = 0; i < jsonDiffs.length(); i++)
+        {
+            JSONObject jsonDiff = jsonDiffs.getJSONObject(i);
+            diffs.add(new AlfrescoModelDiff(
+                    QName.createQName(jsonDiff.getString("name")),
+                    AlfrescoModelDiff.TYPE.valueOf(jsonDiff.getString("type")),
+                    (jsonDiff.isNull("oldChecksum") ? null : jsonDiff.getLong("oldChecksum")),
+                    (jsonDiff.isNull("newChecksum") ? null : jsonDiff.getLong("newChecksum"))));
+        }
+
+        return diffs;
+    }
+
     /*
      * type conversions from serialized JSON values to SOLR-consumable objects 
      */
