@@ -42,6 +42,22 @@ function main()
    
    // editable if request profile is for the current user
    model.isEditable = (profileId == null || profileId == user.name);
+   
+   // add follow/unfollow buttons if request profile is not for the current user
+   if (!model.isEditable)
+   {
+      var params = new Array(1);
+      params.push(page.url.templateArgs["userid"]);
+
+      var connector = remote.connect("alfresco");
+      var result = connector.post("/api/subscriptions/" + encodeURIComponent(user.name) + "/follows",
+                                  jsonUtils.toJSONString(params),
+                                  "application/json");
+      if (result.status == 200) {
+         model.follows = eval('(' + result + ')')[0][page.url.templateArgs["userid"]];
+      }
+     
+   }
 }
 
 main();

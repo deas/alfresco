@@ -1,6 +1,11 @@
 <#assign el=args.htmlid>
 <div id="${el}-body" class="profile">
    <div id="${el}-readview">
+      <div>          
+         <form id="${el}-form-private" action="${url.context}/service/components/profile/private" method="post">
+             <input type="checkbox" name="private" value="0" /> Private
+         </form>        
+      </div>
       <div class="viewcolumn">
          <div class="header-bar">${msg("label.following")}</div>
          <#if (numPeople >0)>
@@ -21,7 +26,9 @@
                 </div>  
                </#if>
                <div>
-               <a href="link">unfollow</a>
+                  <form id="${el}-form-unfollow" action="${url.context}/service/components/profile/following" method="post">
+                     <button id="${el}-button-unfollow" name="unfollow">${msg("button.unfollow")}</button>
+                  </form>      
                </div> 
                <hr/>
             </li>

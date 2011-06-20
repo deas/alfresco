@@ -39,6 +39,16 @@
       <div class="editcolumn">
          <div class="btn-edit"><button id="${el}-button-edit" name="edit">${msg("button.editprofile")}</button></div>
       </div>
+      <#else>
+      <#if follows??>
+      <div class="editcolumn">
+         <#if follows>
+         <div class="btn-unfollow"><button id="${el}-button-unfollow" name="unfollow">${msg("button.unfollow")}</button></div>
+         <#else>
+         <div class="btn-follow"><button id="${el}-button-follow" name="follow">${msg("button.follow")}</button></div>
+         </#if>
+      </div>
+      </#if>
       </#if>
       <div class="viewcolumn">
          <div class="header-bar">${msg("label.about")}</div>

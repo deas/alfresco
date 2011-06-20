@@ -20,9 +20,6 @@
                   </#if>
                 </div>  
                </#if>
-               <div>
-               <a href="link">unfollow</a>
-               </div> 
                <hr/>
             </li>
          </#list>
