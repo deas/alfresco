@@ -370,8 +370,6 @@
          // Set the menu title:
          this.setMenuTitle(menuTitle);
 
-         // TODO This doesn't work!
-
          var firstUL = Dom.getElementsByClassName("first-of-type", "ul", navContainer)[0],
          firstLI = Dom.getElementsByClassName("first-of-type", "li", firstUL)[0];
          
@@ -461,10 +459,10 @@
          var dir = event.target.rel,
             newNodeRef = this.getVersionNodeRef(dir);
          
-         // TODO: add check for disabled;
-         
-         this.update(newNodeRef);
-         
+         if (!Dom.hasClass(event.target, "disabled")) 
+         {
+            this.update(newNodeRef);
+         }
          //prevent the default action.
          event.preventDefault();
       },
