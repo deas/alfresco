@@ -18,7 +18,6 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.test.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
 import org.alfresco.module.org_alfresco_module_dod5015.test.util.BaseRMTestCase;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.GUID;
 import org.springframework.util.CollectionUtils;
 
 
@@ -137,14 +137,15 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public NodeRef run()
             {
-                return rmService.createRecordsManagementRoot(folder, getId());
+                String id = setString("id", GUID.generate());
+                return rmService.createRecordsManagementRoot(folder, id);
             }
 
             @Override
             public void test(NodeRef result)
             {
                 assertNotNull("Unable to create records management root", result);
-                basicRMContainerCheck(result, getId(), TYPE_RECORDS_MANAGEMENT_ROOT_CONTAINER);
+                basicRMContainerCheck(result, getString("id"), TYPE_RECORDS_MANAGEMENT_ROOT_CONTAINER);
             }
         });
         
@@ -154,14 +155,15 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public NodeRef run()
             {
-                return rmService.createRecordsManagementRoot(folder, getId(), DOD5015Model.TYPE_FILE_PLAN);
+                String id = setString("id", GUID.generate());
+                return rmService.createRecordsManagementRoot(folder, id, DOD5015Model.TYPE_FILE_PLAN);
             }
 
             @Override
             public void test(NodeRef result)
             {
                 assertNotNull("Unable to create records management root", result);
-                basicRMContainerCheck(result, getId(), DOD5015Model.TYPE_FILE_PLAN);
+                basicRMContainerCheck(result, getString("id"), DOD5015Model.TYPE_FILE_PLAN);
             }
         });
         
@@ -171,7 +173,7 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public void run()
             {
-                rmService.createRecordsManagementRoot(rmContainer, getId());                                
+                rmService.createRecordsManagementRoot(rmContainer, GUID.generate());                                
             }
         });
         
@@ -181,7 +183,7 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public void run()
             {
-                rmService.createRecordsManagementRoot(folder, getId(), TYPE_FOLDER);                                
+                rmService.createRecordsManagementRoot(folder, GUID.generate(), TYPE_FOLDER);                                
             }
         });
     }
@@ -200,14 +202,15 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public NodeRef run()
             {
-                return rmService.createRecordsManagementContainer(rmRootContainer, getId());
+                String id = setString("id", GUID.generate());
+                return rmService.createRecordsManagementContainer(rmRootContainer, id);
             }
 
             @Override
             public void test(NodeRef result)
             {
                 assertNotNull("Unable to create records management container", result);
-                basicRMContainerCheck(result, getId(), TYPE_RECORDS_MANAGEMENT_CONTAINER);
+                basicRMContainerCheck(result, getString("id"), TYPE_RECORDS_MANAGEMENT_CONTAINER);
             }
         });
         
@@ -217,14 +220,15 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public NodeRef run()
             {
-                return rmService.createRecordsManagementContainer(rmContainer, getId());
+                String id = setString("id", GUID.generate());
+                return rmService.createRecordsManagementContainer(rmContainer, id);
             }
 
             @Override
             public void test(NodeRef result)
             {
                 assertNotNull("Unable to create records management container", result);
-                basicRMContainerCheck(result, getId(), TYPE_RECORDS_MANAGEMENT_CONTAINER);
+                basicRMContainerCheck(result, getString("id"), TYPE_RECORDS_MANAGEMENT_CONTAINER);
             }
         });
         
@@ -234,14 +238,15 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public NodeRef run()
             {
-                return rmService.createRecordsManagementContainer(rmRootContainer, getId(), DOD5015Model.TYPE_RECORD_SERIES);
+                String id = setString("id", GUID.generate());
+                return rmService.createRecordsManagementContainer(rmRootContainer, id, DOD5015Model.TYPE_RECORD_SERIES);
             }
 
             @Override
             public void test(NodeRef result)
             {
                 assertNotNull("Unable to create records management container", result);
-                basicRMContainerCheck(result, getId(), DOD5015Model.TYPE_RECORD_SERIES);
+                basicRMContainerCheck(result, getString("id"), DOD5015Model.TYPE_RECORD_SERIES);
             }
         });
         
@@ -251,7 +256,7 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public void run()
             {
-                rmService.createRecordsManagementContainer(folder, getId());                                
+                rmService.createRecordsManagementContainer(folder, GUID.generate());                                
             }
         });
         
@@ -261,7 +266,7 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public void run()
             {
-                rmService.createRecordsManagementContainer(rmRootContainer, getId(), TYPE_FOLDER);                                
+                rmService.createRecordsManagementContainer(rmRootContainer, GUID.generate(), TYPE_FOLDER);                                
             }
         });
     }
@@ -460,14 +465,15 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public NodeRef run()
             {
-                return rmService.createRecordFolder(rmContainer, getId());
+                String id = setString("id", GUID.generate());
+                return rmService.createRecordFolder(rmContainer, id);
             }
 
             @Override
             public void test(NodeRef result)
             {
                 assertNotNull("Unable to create record folder", result);
-                basicRMContainerCheck(result, getId(), TYPE_RECORD_FOLDER);
+                basicRMContainerCheck(result, getString("id"), TYPE_RECORD_FOLDER);
             }
         });
         
@@ -479,7 +485,7 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public void run()
             {
-                rmService.createRecordFolder(rmContainer, getId(), TYPE_FOLDER);                                
+                rmService.createRecordFolder(rmContainer, GUID.generate(), TYPE_FOLDER);                                
             }
         });
         
@@ -489,7 +495,7 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public void run()
             {
-                rmService.createRecordFolder(rmRootContainer, getId());                                
+                rmService.createRecordFolder(rmRootContainer, GUID.generate());                                
             }
         });
     }

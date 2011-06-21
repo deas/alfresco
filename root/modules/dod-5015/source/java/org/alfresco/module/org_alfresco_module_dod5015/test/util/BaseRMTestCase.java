@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
@@ -21,6 +18,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSc
 import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -33,10 +31,11 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ApplicationContextHelper;
-import org.alfresco.util.GUID;
+import org.alfresco.util.RetryingTransactionHelperTestCase;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -44,7 +43,7 @@ import org.springframework.context.ApplicationContext;
  * 
  * @author Roy Wetherall
  */
-public abstract class BaseRMTestCase extends TestCase 
+public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase 
                                      implements RecordsManagementModel, ContentModel
 {    
     /** Application context */
@@ -70,6 +69,7 @@ public abstract class BaseRMTestCase extends TestCase
     protected PolicyComponent policyComponent;
     protected NamespaceService namespaceService;
     protected SearchService searchService;
+    protected SiteService siteService;
     
     /** RM Services */
     protected RecordsManagementService rmService;
@@ -77,6 +77,7 @@ public abstract class BaseRMTestCase extends TestCase
     protected RecordsManagementEventService eventService;
     protected RecordsManagementAdminService adminService;    
     protected RecordsManagementActionService actionService;
+    protected RecordsManagementSearchService rmSearchService;
     
     /** test data */
     protected StoreRef storeRef;
@@ -174,6 +175,7 @@ public abstract class BaseRMTestCase extends TestCase
         searchService = (SearchService)this.applicationContext.getBean("SearchService");
         policyComponent = (PolicyComponent)this.applicationContext.getBean("policyComponent");  
         dictionaryService = (DictionaryService)this.applicationContext.getBean("DictionaryService");
+        siteService = (SiteService)this.applicationContext.getBean("SiteService");
         
         // Get RM services
         rmService = (RecordsManagementService)applicationContext.getBean("RecordsManagementService");
@@ -181,6 +183,7 @@ public abstract class BaseRMTestCase extends TestCase
         eventService = (RecordsManagementEventService)applicationContext.getBean("RecordsManagementEventService");
         adminService = (RecordsManagementAdminService)applicationContext.getBean("RecordsManagementAdminService");
         actionService = (RecordsManagementActionService)this.applicationContext.getBean("RecordsManagementActionService");
+        rmSearchService = (RecordsManagementSearchService)this.applicationContext.getBean("RecordsManagementSearchService");
         
         // Setup test data
         setupTestData();
@@ -210,6 +213,15 @@ public abstract class BaseRMTestCase extends TestCase
                 return null;
             }
         });       
+    }
+    
+    /**
+     * @see org.alfresco.util.RetryingTransactionHelperTestCase#getRetryingTransactionHelper()
+     */
+    @Override
+    public RetryingTransactionHelper getRetryingTransactionHelper()
+    {
+        return retryingTransactionHelper;
     }
     
     /**
@@ -394,172 +406,4 @@ public abstract class BaseRMTestCase extends TestCase
         this.nodeService.setProperty(recordOne, ContentModel.PROP_TITLE, "titleValue");
         this.actionService.executeRecordsManagementAction(recordOne, "declareRecord");
 	}
-
-    /**
-     * 
-     * @param <A>
-     * @param test
-     * @return
-     */
-    // TODO asUser option
-    protected <A> A doTestInTransaction(final Test<A> test)
-    {
-        RetryingTransactionCallback<A> doRun = new RetryingTransactionCallback<A>()
-        {
-            @Override
-            public A execute() throws Throwable
-            {
-                return test.run();
-            }            
-        };        
-        final A result = retryingTransactionHelper.doInTransaction(doRun);
-        
-        RetryingTransactionCallback<Void> doTest = new RetryingTransactionCallback<Void>()
-        {
-            @Override
-            public Void execute() throws Throwable
-            {
-                test.test(result);
-                return null;
-            }
-            
-        };
-        retryingTransactionHelper.doInTransaction(doTest);
-        
-        return result;        
-    }
-    
-    /**
-     * 
-     * @param test
-     */
-    // TODO asUser option
-    protected void doTestInTransaction(final FailureTest test)
-    {
-        RetryingTransactionCallback<Void> doRun = new RetryingTransactionCallback<Void>()
-        {
-            @Override
-            public Void execute() throws Throwable
-            {         
-                Class<?> eType = test.getExpectedExceptionClass();                
-                try
-                {
-                    test.run();                    
-                }
-                catch (Throwable exception)
-                {   
-                    if (eType.isInstance(exception) == false)
-                    {
-                        // Genuine error so re-throw
-                        throw exception;
-                    }
-                    
-                    // Otherwise, it's an expected failure 
-                    return null;
-                }               
-                
-                // Fail since not expected to succeed
-                fail(test.getMessage());
-                return null;
-            }            
-        };        
-        retryingTransactionHelper.doInTransaction(doRun);
-    }    
-    
-    /**
-     *
-     */
-    private abstract class Common
-    {
-        protected static final String KEY_ID = "id";
-        protected Map<String, Object> model = new HashMap<String, Object>(5);
-        
-        public Common()
-        {
-            model.put(KEY_ID, GUID.generate());
-        }
-        
-        @SuppressWarnings("unused")
-		protected String getId()
-        {
-            return (String)model.get(KEY_ID);
-        }
-        
-        @SuppressWarnings("unused")
-        protected NodeRef setNodeRef(String key, NodeRef nodeRef)
-        {
-            if (nodeRef != null)
-            {
-                model.put(key, nodeRef);
-            }
-            return nodeRef;
-        }
-        
-        @SuppressWarnings("unused")
-        protected NodeRef getNodeRef(String key)
-        {
-            return (NodeRef)model.get(key);
-        }
-    }
-    
-    /**
-     *
-     */
-    protected abstract class Test<A> extends Common
-    {   
-        public Test()
-        {
-            super();
-        }
-        
-        public abstract A run() throws Exception; 
-        
-        public void test(A result) throws Exception
-        {
-            // Default implementation does nothing, override to execute 
-            // tests in new transaction
-        }
-    }
-    
-    /**
-     *
-     */
-    protected abstract class FailureTest extends Common
-    {   
-    	private String message = "Test expected to fail.";
-    	private Class<?> expectedExceptionClass = AlfrescoRuntimeException.class;
-    	
-    	public FailureTest(String message)
-    	{
-    		this.message = message;
-    	}
-    	
-    	public FailureTest(Class<?> expectedExceptionClass)
-    	{
-    		this.expectedExceptionClass = expectedExceptionClass;
-    	}
-    	
-    	public FailureTest(String message, Class<?> expectedExceptionClass)
-    	{
-    		this.message = message;
-    		this.expectedExceptionClass = expectedExceptionClass;
-    	}
-    	
-        public Class<?> getExpectedExceptionClass()
-        {
-            return expectedExceptionClass;
-        }
-        
-        public String getMessage()
-        {
-        	return message;
-        }
-        
-        public FailureTest()
-        {
-            super();
-        }
-        
-        public abstract void run() throws Exception;
-    }
 }
