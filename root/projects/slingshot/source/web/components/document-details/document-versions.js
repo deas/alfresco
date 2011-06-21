@@ -114,6 +114,14 @@
       latestVersion: null,
 
       /**
+       * A cached copy of the version history to limit duplicate calls.
+       * 
+       * @property versionCache
+       * @type {Object} XHR response object
+       */
+      versionCache: null,
+      
+      /**
        * Fired by YUI when parent element is available for scripting
        *
        * @method onReady
@@ -131,6 +139,10 @@
                   // Also skip the first version since that is the current version
                   this.latestVersion = oFullResponse.splice(0, 1)[0];
                   Dom.get(this.id + "-latestVersion").innerHTML = this.getDocumentVersionMarkup(this.latestVersion);
+
+                  // Cache the version data for other components (e.g. HistoricPropertiesViewer)
+                  this.versionCache = oFullResponse;
+                  
                   return (
                   {
                      "data" : oFullResponse
@@ -184,6 +196,7 @@
             html += '   <a href="#" name=".onRevertVersionClick" rel="' + doc.label + '" class="' + this.id + ' revert" title="' + this.msg("label.revert") + '">&nbsp;</a>';
          }
          html += '      <a href="' + downloadURL + '" class="download" title="' + this.msg("label.download") + '">&nbsp;</a>';
+         html += '		<a href="#" name=".onViewHistoricPropertiesClick" rel="' + doc.nodeRef + '" class="' + this.id + ' historicProperties" title="' + this.msg("label.historicProperties") + '">&nbsp;</a>';
          html += '   </span>';
          html += '   <div class="clear"></div>';
          html += '   <div class="version-details">';
@@ -204,7 +217,7 @@
 
       /**
        * Called when a "onRevertVersionClick" link has been clicked for a version.
-       * Will display the devert version dialog.
+       * Will display the revert version dialog.
        *
        * @method onRevertVersionClick
        * @param version
@@ -242,6 +255,29 @@
          YAHOO.Bubbling.fire("metadataRefresh", {});
       },
 
+      /**
+       * Called when a "onViewHistoricPropertiesClick" link has been clicked for a version.
+       * Will display the Properties dialogue for that version.
+       *
+       * @method onViewHistoricPropertiesClick
+       * @param version
+       */
+      onViewHistoricPropertiesClick: function DocumentVersions_onViewHistoricPropertiesClick(nodeRef)
+      {
+
+         // Call the Hictoric Properties Viewer Module
+         Alfresco.module.getHistoricPropertiesViewerInstance().show(
+         {
+            filename: this.latestVersion.name,
+            currentNodeRef: this.options.nodeRef,
+            latestVersion: this.latestVersion,
+            nodeRef: nodeRef
+         });
+
+      },
+      
+      
+      
       /**
        * Called when the "onUploadNewVersionClick" link has been clicked.
        * Will display the upload dialog in new version mode.

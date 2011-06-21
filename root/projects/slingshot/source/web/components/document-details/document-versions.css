@@ -63,6 +63,11 @@
    background-image: url(../documentlibrary/images/download-16.png);
 }
 
+.document-versions .actions a.historicProperties
+{
+   background-image: url(../documentlibrary/images/metadata-16.png);
+}
+
 .document-versions .actions a.revert
 {
    background-image: url(../images/revert-16.png);
