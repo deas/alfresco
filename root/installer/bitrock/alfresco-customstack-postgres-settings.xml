@@ -447,8 +447,18 @@
 	</choiceParameter>
     </parameterList>
     <readyToInstallActionList>
-        <!-- <setInstallerVariable name="postgres_data_directory" value="${alfresco_data_directory}/postgresql" /> -->
-        <setInstallerVariable name="postgres_data_directory" value="${postgres_root_directory}/data" />
+        <setInstallerVariable name="postgres_data_directory" value="${alfresco_data_directory}/postgresql" />
+        <!-- <setInstallerVariable name="postgres_data_directory" value="${postgres_root_directory}/data" /> -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_startup).value" value="${alfrescocustomstack_services_startup}" />
+                <setInstallerVariable name="component(postgresservice).parameter(postgres_service_startup).value" value="${alfrescocustomstack_services_startup}" />
+                <setInstallerVariable name="component(openofficecomponent).parameter(openofficeservice_startup).value" value="${alfrescocustomstack_services_startup}" />
+            </actionList>
+            <ruleList>
+                <platformTest type="windows" />
+            </ruleList>
+        </actionGroup>
 
     </readyToInstallActionList>
 
