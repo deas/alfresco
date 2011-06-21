@@ -1,8 +1,8 @@
 <#assign el=args.htmlid>
 <div id="${el}-body" class="profile">
+   <div class="header-bar">${msg("label.followers")}</div>
    <div id="${el}-readview">
       <div class="viewcolumn">
-         <div class="header-bar">${msg("label.followers")}</div>
          <#if (numPeople >0)>
          <ul class="people">
          <#list data.people as user>

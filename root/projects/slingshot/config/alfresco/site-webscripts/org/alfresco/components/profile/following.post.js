@@ -1,14 +1,11 @@
-
-var params = new Array(2);
-params["userid"] = oldpass;
-
+var params = new Array(1);
+params.push(args["unfollowuser"]);
 
 var connector = remote.connect("alfresco");
-var result = connector.post(
-      "/api/person/subscriptions/" + encodeURIComponent(user.name),
-      jsonUtils.toJSONString(params),
-      "application/json");
+var result = connector.post("/api/subscriptions/" + encodeURIComponent(user.name) + "/unfollow",
+                            jsonUtils.toJSONString(params),
+                            "application/json");
 
-
-status.code = 307;
-status.location = url.service + "/temp";
+status.code = 302;
+status.location = url.context + "/page/user/" + encodeURIComponent(user.name) + "/following";
+status.redirect = true;

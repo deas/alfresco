@@ -1,5 +1,5 @@
 <webscript>
   <shortname>Unfollow</shortname>
-  <description>Unfollows a person</description>
+  <description>Unfollow a person</description>
   <url>/components/profile/following</url>
 </webscript>

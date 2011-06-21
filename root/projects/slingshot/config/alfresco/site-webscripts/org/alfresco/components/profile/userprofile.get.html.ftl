@@ -42,11 +42,15 @@
       <#else>
       <#if follows??>
       <div class="editcolumn">
+         <form id="${htmlid}-follow-form" action="${url.context}/service/components/profile/userprofile-follow" method="post">
          <#if follows>
+         <input type="hidden" name="unfollowuser" value="${profile.name}"/>
          <div class="btn-unfollow"><button id="${el}-button-unfollow" name="unfollow">${msg("button.unfollow")}</button></div>
          <#else>
+         <input type="hidden" name="followuser" value="${profile.name}"/>
          <div class="btn-follow"><button id="${el}-button-follow" name="follow">${msg("button.follow")}</button></div>
          </#if>
+         </form>
       </div>
       </#if>
       </#if>

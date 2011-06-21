@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Private list</shortname>
+  <description>Mark the subscription list private</description>
+  <url>/components/profile/following-private</url>
+</webscript>
