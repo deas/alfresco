@@ -99,6 +99,18 @@ function specialize(item, activity, summary)
       case "org.alfresco.site.liked":
          item.suppressSite = true;
          break;
+      case "org.alfresco.subscriptions.followed":
+          item.fullName = trim(summary.followerFirstName + " " + summary.followerLastName);
+          item.userProfile = userProfileUrl(summary.followerUserName);
+          item.custom0 = trim(summary.userFirstName + " " + summary.userLastName);
+          item.suppressSite = true;
+          break;
+      case "org.alfresco.subscriptions.subscribed":
+          item.fullName = trim(summary.subscriberFirstName + " " + summary.subscriberLastName);
+          item.userProfile = userProfileUrl(summary.subscriberUserName);
+          item.custom0 = summary.node;
+          item.suppressSite = true;
+          break;
    }
    
    return item;

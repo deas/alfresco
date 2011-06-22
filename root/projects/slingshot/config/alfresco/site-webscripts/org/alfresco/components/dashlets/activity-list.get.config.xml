@@ -43,4 +43,6 @@
    <style type="org.alfresco.datalists.list-created" css="datalist" />
    <style type="org.alfresco.datalists.list-updated" css="datalist" />
    <style type="org.alfresco.datalists.list-deleted" css="datalist" />
+   <style type="org.alfresco.subscription.followed" css="user" />
+   <style type="org.alfresco.subscription.subscribed" css="user" />
 </styles>
