@@ -96,8 +96,10 @@
                classpath="${dir.project.3rdparty.lib}/jibx/jibx-bind.jar;${dir.project.3rdparty.lib}/jibx/jibx-run.jar;${dir.project.3rdparty.lib}/bcel.jar;${dir.project.3rdparty.lib}/xpp3-1.1.3_8.jar" />
 
       <bind verbose="false" 
-            load="true" 
-            binding="${file.jibx.binding.m2}">
+            load="true">
+         <bindingfileset dir="${dir.jibx.binding.m2}">
+            <include name="*binding.xml"/>
+         </bindingfileset>
          <classpath>
             <pathelement path="${dir.project.core.classes}"/>
             <pathelement path="${dir.project.datamodel.classes}"/>
