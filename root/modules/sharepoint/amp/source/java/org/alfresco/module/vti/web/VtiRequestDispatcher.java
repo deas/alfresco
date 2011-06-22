@@ -365,6 +365,10 @@ public class VtiRequestDispatcher extends HttpServlet
             return customRules;
         }
 
+        public String toString()
+        {
+            return "VTI Action Mapping for " + getUriPattern() + " to " + customRules;
+        }
     }
 
 }

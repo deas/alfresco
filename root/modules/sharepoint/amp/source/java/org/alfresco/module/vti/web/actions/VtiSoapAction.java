@@ -75,6 +75,7 @@ public class VtiSoapAction implements VtiAction
             {
                 soapResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 createFaultSOAPResponse(soapResponse.getDocument(), e, endpoint);
+                logger.warn("Failure executing Vti request", e);
             }
             try
             {

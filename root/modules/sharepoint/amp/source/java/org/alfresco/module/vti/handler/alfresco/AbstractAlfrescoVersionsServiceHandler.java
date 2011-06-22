@@ -287,7 +287,18 @@ public abstract class AbstractAlfrescoVersionsServiceHandler implements Versions
         docVersion.setCreatedBy(version.getFrozenModifier());
         docVersion.setCreatedTime(VtiUtils.formatVersionDate(version.getFrozenModifiedDate()));
         ContentData content = (ContentData) nodeService.getProperty(version.getFrozenStateNodeRef(), ContentModel.PROP_CONTENT);
-        docVersion.setSize(content.getSize());
+        
+        if(content != null)
+        {
+           docVersion.setSize(content.getSize());
+        }
+        else
+        {
+           logger.info(
+                 "The frozen version " + version.getFrozenStateNodeRef() + " of " + version.getVersionedNodeRef() + 
+                 " at " + version.getVersionLabel() + " has no content property, so no size can be given for the version"
+           );
+        }
 
         String versionDescription = version.getDescription();
         if (versionDescription != null)
