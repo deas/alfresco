@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g 2011-05-12 10:23:39
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g 2011-06-22 10:18:56
 
 package org.alfresco.repo.search.impl.parsers;
 
@@ -180,14 +180,14 @@ public class FTSLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g"; }
+    public String getGrammarFileName() { return "W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g"; }
 
     // $ANTLR start "FTSPHRASE"
     public final void mFTSPHRASE() throws RecognitionException {
         try {
             int _type = FTSPHRASE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:867:9: ( '\"' ( F_ESC | ~ ( '\\\\' | '\"' ) )* '\"' | '\\'' ( F_ESC | ~ ( '\\\\' | '\\'' ) )* '\\'' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:867:9: ( '\"' ( F_ESC | ~ ( '\\\\' | '\"' ) )* '\"' | '\\'' ( F_ESC | ~ ( '\\\\' | '\\'' ) )* '\\'' )
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -206,10 +206,10 @@ public class FTSLexer extends Lexer {
             }
             switch (alt3) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:868:9: '\"' ( F_ESC | ~ ( '\\\\' | '\"' ) )* '\"'
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:868:9: '\"' ( F_ESC | ~ ( '\\\\' | '\"' ) )* '\"'
                     {
                     match('\"'); if (state.failed) return ;
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:869:9: ( F_ESC | ~ ( '\\\\' | '\"' ) )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:869:9: ( F_ESC | ~ ( '\\\\' | '\"' ) )*
                     loop1:
                     do {
                         int alt1=3;
@@ -225,14 +225,14 @@ public class FTSLexer extends Lexer {
 
                         switch (alt1) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:870:17: F_ESC
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:870:17: F_ESC
                     	    {
                     	    mF_ESC(); if (state.failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:872:17: ~ ( '\\\\' | '\"' )
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:872:17: ~ ( '\\\\' | '\"' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -258,10 +258,10 @@ public class FTSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:878:11: '\\'' ( F_ESC | ~ ( '\\\\' | '\\'' ) )* '\\''
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:878:11: '\\'' ( F_ESC | ~ ( '\\\\' | '\\'' ) )* '\\''
                     {
                     match('\''); if (state.failed) return ;
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:879:9: ( F_ESC | ~ ( '\\\\' | '\\'' ) )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:879:9: ( F_ESC | ~ ( '\\\\' | '\\'' ) )*
                     loop2:
                     do {
                         int alt2=3;
@@ -277,14 +277,14 @@ public class FTSLexer extends Lexer {
 
                         switch (alt2) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:880:17: F_ESC
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:880:17: F_ESC
                     	    {
                     	    mF_ESC(); if (state.failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:882:17: ~ ( '\\\\' | '\\'' )
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:882:17: ~ ( '\\\\' | '\\'' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -324,18 +324,18 @@ public class FTSLexer extends Lexer {
         try {
             int _type = URI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:896:9: ( '{' ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+ COLON )? ( ( ( '//' )=> '//' ) ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )* )? ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' )* ( '?' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )* )? ( '#' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )* )? '}' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:897:9: '{' ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+ COLON )? ( ( ( '//' )=> '//' ) ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )* )? ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' )* ( '?' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )* )? ( '#' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )* )? '}'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:896:9: ( '{' ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+ COLON )? ( ( ( '//' )=> '//' ) ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )* )? ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' )* ( '?' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )* )? ( '#' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )* )? '}' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:897:9: '{' ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+ COLON )? ( ( ( '//' )=> '//' ) ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )* )? ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' )* ( '?' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )* )? ( '#' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )* )? '}'
             {
             match('{'); if (state.failed) return ;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:898:9: ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+ COLON )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:898:9: ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+ COLON )?
             int alt5=2;
             alt5 = dfa5.predict(input);
             switch (alt5) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:899:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+ COLON
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:899:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+ COLON
                     {
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:905:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:905:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )+
                     int cnt4=0;
                     loop4:
                     do {
@@ -349,7 +349,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                     	    {
                     	    if ( input.LA(1)=='!'||input.LA(1)=='$'||(input.LA(1)>='&' && input.LA(1)<='.')||(input.LA(1)>='0' && input.LA(1)<='9')||input.LA(1)==';'||input.LA(1)=='='||(input.LA(1)>='@' && input.LA(1)<='[')||input.LA(1)==']'||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~' ) {
                     	        input.consume();
@@ -382,7 +382,7 @@ public class FTSLexer extends Lexer {
 
             }
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:912:9: ( ( ( '//' )=> '//' ) ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )* )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:912:9: ( ( ( '//' )=> '//' ) ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )* )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -399,17 +399,17 @@ public class FTSLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:17: ( ( '//' )=> '//' ) ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:17: ( ( '//' )=> '//' ) ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )*
                     {
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:17: ( ( '//' )=> '//' )
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:19: ( '//' )=> '//'
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:17: ( ( '//' )=> '//' )
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:19: ( '//' )=> '//'
                     {
                     match("//"); if (state.failed) return ;
 
 
                     }
 
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:914:17: ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:914:17: ( ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON ) )*
                     loop6:
                     do {
                         int alt6=2;
@@ -428,7 +428,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:915:25: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:915:25: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )=> ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )
                     	    {
                     	    if ( input.LA(1)=='!'||input.LA(1)=='$'||(input.LA(1)>='&' && input.LA(1)<='.')||(input.LA(1)>='0' && input.LA(1)<=';')||input.LA(1)=='='||(input.LA(1)>='@' && input.LA(1)<='[')||input.LA(1)==']'||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~' ) {
                     	        input.consume();
@@ -455,7 +455,7 @@ public class FTSLexer extends Lexer {
 
             }
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:930:9: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:930:9: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' )*
             loop8:
             do {
                 int alt8=2;
@@ -468,7 +468,7 @@ public class FTSLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             	    {
             	    if ( input.LA(1)=='!'||input.LA(1)=='$'||(input.LA(1)>='&' && input.LA(1)<=';')||input.LA(1)=='='||(input.LA(1)>='@' && input.LA(1)<='[')||input.LA(1)==']'||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~' ) {
             	        input.consume();
@@ -489,7 +489,7 @@ public class FTSLexer extends Lexer {
                 }
             } while (true);
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:937:9: ( '?' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )* )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:937:9: ( '?' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )* )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -498,10 +498,10 @@ public class FTSLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:938:17: '?' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:938:17: '?' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )*
                     {
                     match('?'); if (state.failed) return ;
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:939:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:939:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' )*
                     loop9:
                     do {
                         int alt9=2;
@@ -514,7 +514,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                     	    {
                     	    if ( input.LA(1)=='!'||input.LA(1)=='$'||(input.LA(1)>='&' && input.LA(1)<=';')||input.LA(1)=='='||(input.LA(1)>='?' && input.LA(1)<='[')||input.LA(1)==']'||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~' ) {
                     	        input.consume();
@@ -541,7 +541,7 @@ public class FTSLexer extends Lexer {
 
             }
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:948:9: ( '#' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )* )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:948:9: ( '#' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )* )?
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -550,10 +550,10 @@ public class FTSLexer extends Lexer {
             }
             switch (alt12) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:949:17: '#' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:949:17: '#' ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )*
                     {
                     match('#'); if (state.failed) return ;
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:950:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:950:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON | '/' | '?' | '#' )*
                     loop11:
                     do {
                         int alt11=2;
@@ -566,7 +566,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt11) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                     	    {
                     	    if ( input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='$')||(input.LA(1)>='&' && input.LA(1)<=';')||input.LA(1)=='='||(input.LA(1)>='?' && input.LA(1)<='[')||input.LA(1)==']'||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~' ) {
                     	        input.consume();
@@ -608,8 +608,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "F_URI_ALPHA"
     public final void mF_URI_ALPHA() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:965:9: ( 'A' .. 'Z' | 'a' .. 'z' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:965:9: ( 'A' .. 'Z' | 'a' .. 'z' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             if ( (input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -633,8 +633,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "F_URI_DIGIT"
     public final void mF_URI_DIGIT() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:972:9: ( '0' .. '9' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:973:9: '0' .. '9'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:972:9: ( '0' .. '9' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:973:9: '0' .. '9'
             {
             matchRange('0','9'); if (state.failed) return ;
 
@@ -649,8 +649,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "F_URI_ESC"
     public final void mF_URI_ESC() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:978:9: ( '%' F_HEX F_HEX )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:979:9: '%' F_HEX F_HEX
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:978:9: ( '%' F_HEX F_HEX )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:979:9: '%' F_HEX F_HEX
             {
             match('%'); if (state.failed) return ;
             mF_HEX(); if (state.failed) return ;
@@ -667,8 +667,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "F_URI_OTHER"
     public final void mF_URI_OTHER() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:984:9: ( '-' | '.' | '_' | '~' | '[' | ']' | '@' | '!' | '$' | '&' | '\\'' | '(' | ')' | '*' | '+' | ',' | ';' | '=' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:984:9: ( '-' | '.' | '_' | '~' | '[' | ']' | '@' | '!' | '$' | '&' | '\\'' | '(' | ')' | '*' | '+' | ',' | ';' | '=' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             if ( input.LA(1)=='!'||input.LA(1)=='$'||(input.LA(1)>='&' && input.LA(1)<='.')||input.LA(1)==';'||input.LA(1)=='='||input.LA(1)=='@'||input.LA(1)=='['||input.LA(1)==']'||input.LA(1)=='_'||input.LA(1)=='~' ) {
                 input.consume();
@@ -694,8 +694,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = OR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1010:9: ( ( 'O' | 'o' ) ( 'R' | 'r' ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1011:9: ( 'O' | 'o' ) ( 'R' | 'r' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1010:9: ( ( 'O' | 'o' ) ( 'R' | 'r' ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1011:9: ( 'O' | 'o' ) ( 'R' | 'r' )
             {
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
@@ -733,8 +733,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = AND;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1022:9: ( ( 'A' | 'a' ) ( 'N' | 'n' ) ( 'D' | 'd' ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1023:9: ( 'A' | 'a' ) ( 'N' | 'n' ) ( 'D' | 'd' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1022:9: ( ( 'A' | 'a' ) ( 'N' | 'n' ) ( 'D' | 'd' ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1023:9: ( 'A' | 'a' ) ( 'N' | 'n' ) ( 'D' | 'd' )
             {
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
                 input.consume();
@@ -782,8 +782,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1038:9: ( ( 'N' | 'n' ) ( 'O' | 'o' ) ( 'T' | 't' ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1039:9: ( 'N' | 'n' ) ( 'O' | 'o' ) ( 'T' | 't' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1038:9: ( ( 'N' | 'n' ) ( 'O' | 'o' ) ( 'T' | 't' ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1039:9: ( 'N' | 'n' ) ( 'O' | 'o' ) ( 'T' | 't' )
             {
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
@@ -831,8 +831,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = TILDA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1054:9: ( '~' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1055:9: '~'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1054:9: ( '~' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1055:9: '~'
             {
             match('~'); if (state.failed) return ;
 
@@ -851,8 +851,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1059:9: ( '(' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1060:9: '('
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1059:9: ( '(' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1060:9: '('
             {
             match('('); if (state.failed) return ;
 
@@ -871,8 +871,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1064:9: ( ')' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1065:9: ')'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1064:9: ( ')' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1065:9: ')'
             {
             match(')'); if (state.failed) return ;
 
@@ -891,8 +891,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1069:9: ( '+' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1070:9: '+'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1069:9: ( '+' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1070:9: '+'
             {
             match('+'); if (state.failed) return ;
 
@@ -911,8 +911,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1074:9: ( '-' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1075:9: '-'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1074:9: ( '-' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1075:9: '-'
             {
             match('-'); if (state.failed) return ;
 
@@ -931,8 +931,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1079:9: ( ':' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1080:9: ':'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1079:9: ( ':' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1080:9: ':'
             {
             match(':'); if (state.failed) return ;
 
@@ -951,8 +951,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = STAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1084:9: ( '*' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1085:9: '*'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1084:9: ( '*' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1085:9: '*'
             {
             match('*'); if (state.failed) return ;
 
@@ -971,8 +971,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = DOTDOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1089:9: ( '..' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1090:9: '..'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1089:9: ( '..' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1090:9: '..'
             {
             match(".."); if (state.failed) return ;
 
@@ -992,8 +992,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1094:9: ( '.' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1095:9: '.'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1094:9: ( '.' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1095:9: '.'
             {
             match('.'); if (state.failed) return ;
 
@@ -1012,8 +1012,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = AMP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1099:9: ( '&' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1100:9: '&'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1099:9: ( '&' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1100:9: '&'
             {
             match('&'); if (state.failed) return ;
 
@@ -1032,8 +1032,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = EXCLAMATION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1104:9: ( '!' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1105:9: '!'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1104:9: ( '!' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1105:9: '!'
             {
             match('!'); if (state.failed) return ;
 
@@ -1052,8 +1052,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = BAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1109:9: ( '|' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1110:9: '|'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1109:9: ( '|' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1110:9: '|'
             {
             match('|'); if (state.failed) return ;
 
@@ -1072,8 +1072,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = EQUALS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1114:9: ( '=' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1115:9: '='
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1114:9: ( '=' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1115:9: '='
             {
             match('='); if (state.failed) return ;
 
@@ -1092,8 +1092,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = QUESTION_MARK;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1119:9: ( '?' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1120:9: '?'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1119:9: ( '?' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1120:9: '?'
             {
             match('?'); if (state.failed) return ;
 
@@ -1112,8 +1112,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = LCURL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1124:9: ( '{' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1125:9: '{'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1124:9: ( '{' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1125:9: '{'
             {
             match('{'); if (state.failed) return ;
 
@@ -1132,8 +1132,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = RCURL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1129:9: ( '}' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1130:9: '}'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1129:9: ( '}' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1130:9: '}'
             {
             match('}'); if (state.failed) return ;
 
@@ -1152,8 +1152,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = LSQUARE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1134:9: ( '[' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1135:9: '['
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1134:9: ( '[' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1135:9: '['
             {
             match('['); if (state.failed) return ;
 
@@ -1172,8 +1172,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = RSQUARE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1139:9: ( ']' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1140:9: ']'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1139:9: ( ']' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1140:9: ']'
             {
             match(']'); if (state.failed) return ;
 
@@ -1192,8 +1192,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = TO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1144:9: ( ( 'T' | 't' ) ( 'O' | 'o' ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1145:9: ( 'T' | 't' ) ( 'O' | 'o' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1144:9: ( ( 'T' | 't' ) ( 'O' | 'o' ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1145:9: ( 'T' | 't' ) ( 'O' | 'o' )
             {
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
@@ -1231,8 +1231,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1156:9: ( ',' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1157:9: ','
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1156:9: ( ',' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1157:9: ','
             {
             match(','); if (state.failed) return ;
 
@@ -1251,8 +1251,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = CARAT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1161:9: ( '^' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1162:9: '^'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1161:9: ( '^' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1162:9: '^'
             {
             match('^'); if (state.failed) return ;
 
@@ -1271,8 +1271,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = DOLLAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1166:9: ( '$' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1167:9: '$'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1166:9: ( '$' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1167:9: '$'
             {
             match('$'); if (state.failed) return ;
 
@@ -1291,8 +1291,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = GT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1171:9: ( '>' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1172:9: '>'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1171:9: ( '>' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1172:9: '>'
             {
             match('>'); if (state.failed) return ;
 
@@ -1311,8 +1311,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = LT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1176:9: ( '<' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1177:9: '<'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1176:9: ( '<' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1177:9: '<'
             {
             match('<'); if (state.failed) return ;
 
@@ -1331,8 +1331,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = AT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1181:9: ( '@' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1182:9: '@'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1181:9: ( '@' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1182:9: '@'
             {
             match('@'); if (state.failed) return ;
 
@@ -1351,8 +1351,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = PERCENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1186:9: ( '%' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1187:9: '%'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1186:9: ( '%' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1187:9: '%'
             {
             match('%'); if (state.failed) return ;
 
@@ -1371,8 +1371,8 @@ public class FTSLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1196:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '$' | '#' | F_ESC )* )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1197:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '$' | '#' | F_ESC )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1196:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '$' | '#' | F_ESC )* )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1197:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '$' | '#' | F_ESC )*
             {
             if ( (input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -1384,7 +1384,7 @@ public class FTSLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1202:9: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '$' | '#' | F_ESC )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1202:9: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '$' | '#' | F_ESC )*
             loop13:
             do {
                 int alt13=8;
@@ -1488,49 +1488,49 @@ public class FTSLexer extends Lexer {
 
                 switch (alt13) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1203:17: 'a' .. 'z'
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1203:17: 'a' .. 'z'
             	    {
             	    matchRange('a','z'); if (state.failed) return ;
 
             	    }
             	    break;
             	case 2 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1204:19: 'A' .. 'Z'
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1204:19: 'A' .. 'Z'
             	    {
             	    matchRange('A','Z'); if (state.failed) return ;
 
             	    }
             	    break;
             	case 3 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1205:19: '0' .. '9'
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1205:19: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (state.failed) return ;
 
             	    }
             	    break;
             	case 4 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1206:19: '_'
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1206:19: '_'
             	    {
             	    match('_'); if (state.failed) return ;
 
             	    }
             	    break;
             	case 5 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1207:19: '$'
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1207:19: '$'
             	    {
             	    match('$'); if (state.failed) return ;
 
             	    }
             	    break;
             	case 6 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1208:19: '#'
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1208:19: '#'
             	    {
             	    match('#'); if (state.failed) return ;
 
             	    }
             	    break;
             	case 7 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1209:19: F_ESC
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1209:19: F_ESC
             	    {
             	    mF_ESC(); if (state.failed) return ;
 
@@ -1558,10 +1558,10 @@ public class FTSLexer extends Lexer {
         try {
             int _type = DECIMAL_INTEGER_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1214:9: ( ( PLUS | MINUS )? DECIMAL_NUMERAL )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1215:9: ( PLUS | MINUS )? DECIMAL_NUMERAL
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1214:9: ( ( PLUS | MINUS )? DECIMAL_NUMERAL )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1215:9: ( PLUS | MINUS )? DECIMAL_NUMERAL
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1215:9: ( PLUS | MINUS )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1215:9: ( PLUS | MINUS )?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -1570,7 +1570,7 @@ public class FTSLexer extends Lexer {
             }
             switch (alt14) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -1605,10 +1605,10 @@ public class FTSLexer extends Lexer {
         try {
             int _type = FTSWORD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1223:9: ( ( F_ESC | INWORD )+ )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1224:9: ( F_ESC | INWORD )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1223:9: ( ( F_ESC | INWORD )+ )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1224:9: ( F_ESC | INWORD )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1224:9: ( F_ESC | INWORD )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1224:9: ( F_ESC | INWORD )+
             int cnt15=0;
             loop15:
             do {
@@ -1625,14 +1625,14 @@ public class FTSLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1225:17: F_ESC
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1225:17: F_ESC
             	    {
             	    mF_ESC(); if (state.failed) return ;
 
             	    }
             	    break;
             	case 2 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1226:19: INWORD
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1226:19: INWORD
             	    {
             	    mINWORD(); if (state.failed) return ;
 
@@ -1665,10 +1665,10 @@ public class FTSLexer extends Lexer {
         try {
             int _type = FTSPRE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1231:9: ( ( F_ESC | INWORD )+ STAR )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1232:9: ( F_ESC | INWORD )+ STAR
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1231:9: ( ( F_ESC | INWORD )+ STAR )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1232:9: ( F_ESC | INWORD )+ STAR
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1232:9: ( F_ESC | INWORD )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1232:9: ( F_ESC | INWORD )+
             int cnt16=0;
             loop16:
             do {
@@ -1685,14 +1685,14 @@ public class FTSLexer extends Lexer {
 
                 switch (alt16) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1233:17: F_ESC
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1233:17: F_ESC
             	    {
             	    mF_ESC(); if (state.failed) return ;
 
             	    }
             	    break;
             	case 2 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1234:19: INWORD
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1234:19: INWORD
             	    {
             	    mINWORD(); if (state.failed) return ;
 
@@ -1726,10 +1726,10 @@ public class FTSLexer extends Lexer {
         try {
             int _type = FTSWILD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1240:9: ( ( F_ESC | INWORD | STAR | QUESTION_MARK )+ )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1241:9: ( F_ESC | INWORD | STAR | QUESTION_MARK )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1240:9: ( ( F_ESC | INWORD | STAR | QUESTION_MARK )+ )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1241:9: ( F_ESC | INWORD | STAR | QUESTION_MARK )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1241:9: ( F_ESC | INWORD | STAR | QUESTION_MARK )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1241:9: ( F_ESC | INWORD | STAR | QUESTION_MARK )+
             int cnt17=0;
             loop17:
             do {
@@ -1752,28 +1752,28 @@ public class FTSLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1242:17: F_ESC
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1242:17: F_ESC
             	    {
             	    mF_ESC(); if (state.failed) return ;
 
             	    }
             	    break;
             	case 2 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1243:19: INWORD
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1243:19: INWORD
             	    {
             	    mINWORD(); if (state.failed) return ;
 
             	    }
             	    break;
             	case 3 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1244:19: STAR
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1244:19: STAR
             	    {
             	    mSTAR(); if (state.failed) return ;
 
             	    }
             	    break;
             	case 4 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1245:19: QUESTION_MARK
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1245:19: QUESTION_MARK
             	    {
             	    mQUESTION_MARK(); if (state.failed) return ;
 
@@ -1804,11 +1804,11 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "F_ESC"
     public final void mF_ESC() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1251:9: ( '\\\\' ( 'u' F_HEX F_HEX F_HEX F_HEX | . ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1252:9: '\\\\' ( 'u' F_HEX F_HEX F_HEX F_HEX | . )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1251:9: ( '\\\\' ( 'u' F_HEX F_HEX F_HEX F_HEX | . ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1252:9: '\\\\' ( 'u' F_HEX F_HEX F_HEX F_HEX | . )
             {
             match('\\'); if (state.failed) return ;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1253:9: ( 'u' F_HEX F_HEX F_HEX F_HEX | . )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1253:9: ( 'u' F_HEX F_HEX F_HEX F_HEX | . )
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -1833,7 +1833,7 @@ public class FTSLexer extends Lexer {
             }
             switch (alt18) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1255:17: 'u' F_HEX F_HEX F_HEX F_HEX
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1255:17: 'u' F_HEX F_HEX F_HEX F_HEX
                     {
                     match('u'); if (state.failed) return ;
                     mF_HEX(); if (state.failed) return ;
@@ -1844,7 +1844,7 @@ public class FTSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1257:19: .
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1257:19: .
                     {
                     matchAny(); if (state.failed) return ;
 
@@ -1865,8 +1865,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "F_HEX"
     public final void mF_HEX() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1263:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1263:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -1890,8 +1890,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "INWORD"
     public final void mINWORD() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1271:9: ( '\\u0030' .. '\\u0039' | '\\u0041' .. '\\u005a' | '\\u0061' .. '\\u007a' | '\\u00aa' | '\\u00b5' | '\\u00ba' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u0236' | '\\u0250' .. '\\u02c1' | '\\u02c6' .. '\\u02d1' | '\\u02e0' .. '\\u02e4' | '\\u02ee' | '\\u037a' | '\\u0386' | '\\u0388' .. '\\u038a' | '\\u038c' | '\\u038e' .. '\\u03a1' | '\\u03a3' .. '\\u03ce' | '\\u03d0' .. '\\u03f5' | '\\u03f7' .. '\\u03fb' | '\\u0400' .. '\\u0481' | '\\u048a' .. '\\u04ce' | '\\u04d0' .. '\\u04f5' | '\\u04f8' .. '\\u04f9' | '\\u0500' .. '\\u050f' | '\\u0531' .. '\\u0556' | '\\u0559' | '\\u0561' .. '\\u0587' | '\\u05d0' .. '\\u05ea' | '\\u05f0' .. '\\u05f2' | '\\u0621' .. '\\u063a' | '\\u0640' .. '\\u064a' | '\\u0660' .. '\\u0669' | '\\u066e' .. '\\u066f' | '\\u0671' .. '\\u06d3' | '\\u06d5' | '\\u06e5' .. '\\u06e6' | '\\u06ee' .. '\\u06fc' | '\\u06ff' | '\\u0710' | '\\u0712' .. '\\u072f' | '\\u074d' .. '\\u074f' | '\\u0780' .. '\\u07a5' | '\\u07b1' | '\\u0904' .. '\\u0939' | '\\u093d' | '\\u0950' | '\\u0958' .. '\\u0961' | '\\u0966' .. '\\u096f' | '\\u0985' .. '\\u098c' | '\\u098f' .. '\\u0990' | '\\u0993' .. '\\u09a8' | '\\u09aa' .. '\\u09b0' | '\\u09b2' | '\\u09b6' .. '\\u09b9' | '\\u09bd' | '\\u09dc' .. '\\u09dd' | '\\u09df' .. '\\u09e1' | '\\u09e6' .. '\\u09f1' | '\\u0a05' .. '\\u0a0a' | '\\u0a0f' .. '\\u0a10' | '\\u0a13' .. '\\u0a28' | '\\u0a2a' .. '\\u0a30' | '\\u0a32' .. '\\u0a33' | '\\u0a35' .. '\\u0a36' | '\\u0a38' .. '\\u0a39' | '\\u0a59' .. '\\u0a5c' | '\\u0a5e' | '\\u0a66' .. '\\u0a6f' | '\\u0a72' .. '\\u0a74' | '\\u0a85' .. '\\u0a8d' | '\\u0a8f' .. '\\u0a91' | '\\u0a93' .. '\\u0aa8' | '\\u0aaa' .. '\\u0ab0' | '\\u0ab2' .. '\\u0ab3' | '\\u0ab5' .. '\\u0ab9' | '\\u0abd' | '\\u0ad0' | '\\u0ae0' .. '\\u0ae1' | '\\u0ae6' .. '\\u0aef' | '\\u0b05' .. '\\u0b0c' | '\\u0b0f' .. '\\u0b10' | '\\u0b13' .. '\\u0b28' | '\\u0b2a' .. '\\u0b30' | '\\u0b32' .. '\\u0b33' | '\\u0b35' .. '\\u0b39' | '\\u0b3d' | '\\u0b5c' .. '\\u0b5d' | '\\u0b5f' .. '\\u0b61' | '\\u0b66' .. '\\u0b6f' | '\\u0b71' | '\\u0b83' | '\\u0b85' .. '\\u0b8a' | '\\u0b8e' .. '\\u0b90' | '\\u0b92' .. '\\u0b95' | '\\u0b99' .. '\\u0b9a' | '\\u0b9c' | '\\u0b9e' .. '\\u0b9f' | '\\u0ba3' .. '\\u0ba4' | '\\u0ba8' .. '\\u0baa' | '\\u0bae' .. '\\u0bb5' | '\\u0bb7' .. '\\u0bb9' | '\\u0be7' .. '\\u0bef' | '\\u0c05' .. '\\u0c0c' | '\\u0c0e' .. '\\u0c10' | '\\u0c12' .. '\\u0c28' | '\\u0c2a' .. '\\u0c33' | '\\u0c35' .. '\\u0c39' | '\\u0c60' .. '\\u0c61' | '\\u0c66' .. '\\u0c6f' | '\\u0c85' .. '\\u0c8c' | '\\u0c8e' .. '\\u0c90' | '\\u0c92' .. '\\u0ca8' | '\\u0caa' .. '\\u0cb3' | '\\u0cb5' .. '\\u0cb9' | '\\u0cbd' | '\\u0cde' | '\\u0ce0' .. '\\u0ce1' | '\\u0ce6' .. '\\u0cef' | '\\u0d05' .. '\\u0d0c' | '\\u0d0e' .. '\\u0d10' | '\\u0d12' .. '\\u0d28' | '\\u0d2a' .. '\\u0d39' | '\\u0d60' .. '\\u0d61' | '\\u0d66' .. '\\u0d6f' | '\\u0d85' .. '\\u0d96' | '\\u0d9a' .. '\\u0db1' | '\\u0db3' .. '\\u0dbb' | '\\u0dbd' | '\\u0dc0' .. '\\u0dc6' | '\\u0e01' .. '\\u0e30' | '\\u0e32' .. '\\u0e33' | '\\u0e40' .. '\\u0e46' | '\\u0e50' .. '\\u0e59' | '\\u0e81' .. '\\u0e82' | '\\u0e84' | '\\u0e87' .. '\\u0e88' | '\\u0e8a' | '\\u0e8d' | '\\u0e94' .. '\\u0e97' | '\\u0e99' .. '\\u0e9f' | '\\u0ea1' .. '\\u0ea3' | '\\u0ea5' | '\\u0ea7' | '\\u0eaa' .. '\\u0eab' | '\\u0ead' .. '\\u0eb0' | '\\u0eb2' .. '\\u0eb3' | '\\u0ebd' | '\\u0ec0' .. '\\u0ec4' | '\\u0ec6' | '\\u0ed0' .. '\\u0ed9' | '\\u0edc' .. '\\u0edd' | '\\u0f00' | '\\u0f20' .. '\\u0f29' | '\\u0f40' .. '\\u0f47' | '\\u0f49' .. '\\u0f6a' | '\\u0f88' .. '\\u0f8b' | '\\u1000' .. '\\u1021' | '\\u1023' .. '\\u1027' | '\\u1029' .. '\\u102a' | '\\u1040' .. '\\u1049' | '\\u1050' .. '\\u1055' | '\\u10a0' .. '\\u10c5' | '\\u10d0' .. '\\u10f8' | '\\u1100' .. '\\u1159' | '\\u115f' .. '\\u11a2' | '\\u11a8' .. '\\u11f9' | '\\u1200' .. '\\u1206' | '\\u1208' .. '\\u1246' | '\\u1248' | '\\u124a' .. '\\u124d' | '\\u1250' .. '\\u1256' | '\\u1258' | '\\u125a' .. '\\u125d' | '\\u1260' .. '\\u1286' | '\\u1288' | '\\u128a' .. '\\u128d' | '\\u1290' .. '\\u12ae' | '\\u12b0' | '\\u12b2' .. '\\u12b5' | '\\u12b8' .. '\\u12be' | '\\u12c0' | '\\u12c2' .. '\\u12c5' | '\\u12c8' .. '\\u12ce' | '\\u12d0' .. '\\u12d6' | '\\u12d8' .. '\\u12ee' | '\\u12f0' .. '\\u130e' | '\\u1310' | '\\u1312' .. '\\u1315' | '\\u1318' .. '\\u131e' | '\\u1320' .. '\\u1346' | '\\u1348' .. '\\u135a' | '\\u1369' .. '\\u1371' | '\\u13a0' .. '\\u13f4' | '\\u1401' .. '\\u166c' | '\\u166f' .. '\\u1676' | '\\u1681' .. '\\u169a' | '\\u16a0' .. '\\u16ea' | '\\u1700' .. '\\u170c' | '\\u170e' .. '\\u1711' | '\\u1720' .. '\\u1731' | '\\u1740' .. '\\u1751' | '\\u1760' .. '\\u176c' | '\\u176e' .. '\\u1770' | '\\u1780' .. '\\u17b3' | '\\u17d7' | '\\u17dc' | '\\u17e0' .. '\\u17e9' | '\\u1810' .. '\\u1819' | '\\u1820' .. '\\u1877' | '\\u1880' .. '\\u18a8' | '\\u1900' .. '\\u191c' | '\\u1946' .. '\\u196d' | '\\u1970' .. '\\u1974' | '\\u1d00' .. '\\u1d6b' | '\\u1e00' .. '\\u1e9b' | '\\u1ea0' .. '\\u1ef9' | '\\u1f00' .. '\\u1f15' | '\\u1f18' .. '\\u1f1d' | '\\u1f20' .. '\\u1f45' | '\\u1f48' .. '\\u1f4d' | '\\u1f50' .. '\\u1f57' | '\\u1f59' | '\\u1f5b' | '\\u1f5d' | '\\u1f5f' .. '\\u1f7d' | '\\u1f80' .. '\\u1fb4' | '\\u1fb6' .. '\\u1fbc' | '\\u1fbe' | '\\u1fc2' .. '\\u1fc4' | '\\u1fc6' .. '\\u1fcc' | '\\u1fd0' .. '\\u1fd3' | '\\u1fd6' .. '\\u1fdb' | '\\u1fe0' .. '\\u1fec' | '\\u1ff2' .. '\\u1ff4' | '\\u1ff6' .. '\\u1ffc' | '\\u2071' | '\\u207f' | '\\u2102' | '\\u2107' | '\\u210a' .. '\\u2113' | '\\u2115' | '\\u2119' .. '\\u211d' | '\\u2124' | '\\u2126' | '\\u2128' | '\\u212a' .. '\\u212d' | '\\u212f' .. '\\u2131' | '\\u2133' .. '\\u2139' | '\\u213d' .. '\\u213f' | '\\u2145' .. '\\u2149' | '\\u3005' .. '\\u3006' | '\\u3031' .. '\\u3035' | '\\u303b' .. '\\u303c' | '\\u3041' .. '\\u3096' | '\\u309d' .. '\\u309f' | '\\u30a1' .. '\\u30fa' | '\\u30fc' .. '\\u30ff' | '\\u3105' .. '\\u312c' | '\\u3131' .. '\\u318e' | '\\u31a0' .. '\\u31b7' | '\\u31f0' .. '\\u31ff' | '\\u3400' .. '\\u4db5' | '\\u4e00' .. '\\u9fa5' | '\\ua000' .. '\\ua48c' | '\\uac00' .. '\\ud7a3' | '\\uf900' .. '\\ufa2d' | '\\ufa30' .. '\\ufa6a' | '\\ufb00' .. '\\ufb06' | '\\ufb13' .. '\\ufb17' | '\\ufb1d' | '\\ufb1f' .. '\\ufb28' | '\\ufb2a' .. '\\ufb36' | '\\ufb38' .. '\\ufb3c' | '\\ufb3e' | '\\ufb40' .. '\\ufb41' | '\\ufb43' .. '\\ufb44' | '\\ufb46' .. '\\ufbb1' | '\\ufbd3' .. '\\ufd3d' | '\\ufd50' .. '\\ufd8f' | '\\ufd92' .. '\\ufdc7' | '\\ufdf0' .. '\\ufdfb' | '\\ufe70' .. '\\ufe74' | '\\ufe76' .. '\\ufefc' | '\\uff10' .. '\\uff19' | '\\uff21' .. '\\uff3a' | '\\uff41' .. '\\uff5a' | '\\uff66' .. '\\uffbe' | '\\uffc2' .. '\\uffc7' | '\\uffca' .. '\\uffcf' | '\\uffd2' .. '\\uffd7' | '\\uffda' .. '\\uffdc' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1271:9: ( '\\u0030' .. '\\u0039' | '\\u0041' .. '\\u005a' | '\\u0061' .. '\\u007a' | '\\u00aa' | '\\u00b5' | '\\u00ba' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u0236' | '\\u0250' .. '\\u02c1' | '\\u02c6' .. '\\u02d1' | '\\u02e0' .. '\\u02e4' | '\\u02ee' | '\\u037a' | '\\u0386' | '\\u0388' .. '\\u038a' | '\\u038c' | '\\u038e' .. '\\u03a1' | '\\u03a3' .. '\\u03ce' | '\\u03d0' .. '\\u03f5' | '\\u03f7' .. '\\u03fb' | '\\u0400' .. '\\u0481' | '\\u048a' .. '\\u04ce' | '\\u04d0' .. '\\u04f5' | '\\u04f8' .. '\\u04f9' | '\\u0500' .. '\\u050f' | '\\u0531' .. '\\u0556' | '\\u0559' | '\\u0561' .. '\\u0587' | '\\u05d0' .. '\\u05ea' | '\\u05f0' .. '\\u05f2' | '\\u0621' .. '\\u063a' | '\\u0640' .. '\\u064a' | '\\u0660' .. '\\u0669' | '\\u066e' .. '\\u066f' | '\\u0671' .. '\\u06d3' | '\\u06d5' | '\\u06e5' .. '\\u06e6' | '\\u06ee' .. '\\u06fc' | '\\u06ff' | '\\u0710' | '\\u0712' .. '\\u072f' | '\\u074d' .. '\\u074f' | '\\u0780' .. '\\u07a5' | '\\u07b1' | '\\u0904' .. '\\u0939' | '\\u093d' | '\\u0950' | '\\u0958' .. '\\u0961' | '\\u0966' .. '\\u096f' | '\\u0985' .. '\\u098c' | '\\u098f' .. '\\u0990' | '\\u0993' .. '\\u09a8' | '\\u09aa' .. '\\u09b0' | '\\u09b2' | '\\u09b6' .. '\\u09b9' | '\\u09bd' | '\\u09dc' .. '\\u09dd' | '\\u09df' .. '\\u09e1' | '\\u09e6' .. '\\u09f1' | '\\u0a05' .. '\\u0a0a' | '\\u0a0f' .. '\\u0a10' | '\\u0a13' .. '\\u0a28' | '\\u0a2a' .. '\\u0a30' | '\\u0a32' .. '\\u0a33' | '\\u0a35' .. '\\u0a36' | '\\u0a38' .. '\\u0a39' | '\\u0a59' .. '\\u0a5c' | '\\u0a5e' | '\\u0a66' .. '\\u0a6f' | '\\u0a72' .. '\\u0a74' | '\\u0a85' .. '\\u0a8d' | '\\u0a8f' .. '\\u0a91' | '\\u0a93' .. '\\u0aa8' | '\\u0aaa' .. '\\u0ab0' | '\\u0ab2' .. '\\u0ab3' | '\\u0ab5' .. '\\u0ab9' | '\\u0abd' | '\\u0ad0' | '\\u0ae0' .. '\\u0ae1' | '\\u0ae6' .. '\\u0aef' | '\\u0b05' .. '\\u0b0c' | '\\u0b0f' .. '\\u0b10' | '\\u0b13' .. '\\u0b28' | '\\u0b2a' .. '\\u0b30' | '\\u0b32' .. '\\u0b33' | '\\u0b35' .. '\\u0b39' | '\\u0b3d' | '\\u0b5c' .. '\\u0b5d' | '\\u0b5f' .. '\\u0b61' | '\\u0b66' .. '\\u0b6f' | '\\u0b71' | '\\u0b83' | '\\u0b85' .. '\\u0b8a' | '\\u0b8e' .. '\\u0b90' | '\\u0b92' .. '\\u0b95' | '\\u0b99' .. '\\u0b9a' | '\\u0b9c' | '\\u0b9e' .. '\\u0b9f' | '\\u0ba3' .. '\\u0ba4' | '\\u0ba8' .. '\\u0baa' | '\\u0bae' .. '\\u0bb5' | '\\u0bb7' .. '\\u0bb9' | '\\u0be7' .. '\\u0bef' | '\\u0c05' .. '\\u0c0c' | '\\u0c0e' .. '\\u0c10' | '\\u0c12' .. '\\u0c28' | '\\u0c2a' .. '\\u0c33' | '\\u0c35' .. '\\u0c39' | '\\u0c60' .. '\\u0c61' | '\\u0c66' .. '\\u0c6f' | '\\u0c85' .. '\\u0c8c' | '\\u0c8e' .. '\\u0c90' | '\\u0c92' .. '\\u0ca8' | '\\u0caa' .. '\\u0cb3' | '\\u0cb5' .. '\\u0cb9' | '\\u0cbd' | '\\u0cde' | '\\u0ce0' .. '\\u0ce1' | '\\u0ce6' .. '\\u0cef' | '\\u0d05' .. '\\u0d0c' | '\\u0d0e' .. '\\u0d10' | '\\u0d12' .. '\\u0d28' | '\\u0d2a' .. '\\u0d39' | '\\u0d60' .. '\\u0d61' | '\\u0d66' .. '\\u0d6f' | '\\u0d85' .. '\\u0d96' | '\\u0d9a' .. '\\u0db1' | '\\u0db3' .. '\\u0dbb' | '\\u0dbd' | '\\u0dc0' .. '\\u0dc6' | '\\u0e01' .. '\\u0e30' | '\\u0e32' .. '\\u0e33' | '\\u0e40' .. '\\u0e46' | '\\u0e50' .. '\\u0e59' | '\\u0e81' .. '\\u0e82' | '\\u0e84' | '\\u0e87' .. '\\u0e88' | '\\u0e8a' | '\\u0e8d' | '\\u0e94' .. '\\u0e97' | '\\u0e99' .. '\\u0e9f' | '\\u0ea1' .. '\\u0ea3' | '\\u0ea5' | '\\u0ea7' | '\\u0eaa' .. '\\u0eab' | '\\u0ead' .. '\\u0eb0' | '\\u0eb2' .. '\\u0eb3' | '\\u0ebd' | '\\u0ec0' .. '\\u0ec4' | '\\u0ec6' | '\\u0ed0' .. '\\u0ed9' | '\\u0edc' .. '\\u0edd' | '\\u0f00' | '\\u0f20' .. '\\u0f29' | '\\u0f40' .. '\\u0f47' | '\\u0f49' .. '\\u0f6a' | '\\u0f88' .. '\\u0f8b' | '\\u1000' .. '\\u1021' | '\\u1023' .. '\\u1027' | '\\u1029' .. '\\u102a' | '\\u1040' .. '\\u1049' | '\\u1050' .. '\\u1055' | '\\u10a0' .. '\\u10c5' | '\\u10d0' .. '\\u10f8' | '\\u1100' .. '\\u1159' | '\\u115f' .. '\\u11a2' | '\\u11a8' .. '\\u11f9' | '\\u1200' .. '\\u1206' | '\\u1208' .. '\\u1246' | '\\u1248' | '\\u124a' .. '\\u124d' | '\\u1250' .. '\\u1256' | '\\u1258' | '\\u125a' .. '\\u125d' | '\\u1260' .. '\\u1286' | '\\u1288' | '\\u128a' .. '\\u128d' | '\\u1290' .. '\\u12ae' | '\\u12b0' | '\\u12b2' .. '\\u12b5' | '\\u12b8' .. '\\u12be' | '\\u12c0' | '\\u12c2' .. '\\u12c5' | '\\u12c8' .. '\\u12ce' | '\\u12d0' .. '\\u12d6' | '\\u12d8' .. '\\u12ee' | '\\u12f0' .. '\\u130e' | '\\u1310' | '\\u1312' .. '\\u1315' | '\\u1318' .. '\\u131e' | '\\u1320' .. '\\u1346' | '\\u1348' .. '\\u135a' | '\\u1369' .. '\\u1371' | '\\u13a0' .. '\\u13f4' | '\\u1401' .. '\\u166c' | '\\u166f' .. '\\u1676' | '\\u1681' .. '\\u169a' | '\\u16a0' .. '\\u16ea' | '\\u1700' .. '\\u170c' | '\\u170e' .. '\\u1711' | '\\u1720' .. '\\u1731' | '\\u1740' .. '\\u1751' | '\\u1760' .. '\\u176c' | '\\u176e' .. '\\u1770' | '\\u1780' .. '\\u17b3' | '\\u17d7' | '\\u17dc' | '\\u17e0' .. '\\u17e9' | '\\u1810' .. '\\u1819' | '\\u1820' .. '\\u1877' | '\\u1880' .. '\\u18a8' | '\\u1900' .. '\\u191c' | '\\u1946' .. '\\u196d' | '\\u1970' .. '\\u1974' | '\\u1d00' .. '\\u1d6b' | '\\u1e00' .. '\\u1e9b' | '\\u1ea0' .. '\\u1ef9' | '\\u1f00' .. '\\u1f15' | '\\u1f18' .. '\\u1f1d' | '\\u1f20' .. '\\u1f45' | '\\u1f48' .. '\\u1f4d' | '\\u1f50' .. '\\u1f57' | '\\u1f59' | '\\u1f5b' | '\\u1f5d' | '\\u1f5f' .. '\\u1f7d' | '\\u1f80' .. '\\u1fb4' | '\\u1fb6' .. '\\u1fbc' | '\\u1fbe' | '\\u1fc2' .. '\\u1fc4' | '\\u1fc6' .. '\\u1fcc' | '\\u1fd0' .. '\\u1fd3' | '\\u1fd6' .. '\\u1fdb' | '\\u1fe0' .. '\\u1fec' | '\\u1ff2' .. '\\u1ff4' | '\\u1ff6' .. '\\u1ffc' | '\\u2071' | '\\u207f' | '\\u2102' | '\\u2107' | '\\u210a' .. '\\u2113' | '\\u2115' | '\\u2119' .. '\\u211d' | '\\u2124' | '\\u2126' | '\\u2128' | '\\u212a' .. '\\u212d' | '\\u212f' .. '\\u2131' | '\\u2133' .. '\\u2139' | '\\u213d' .. '\\u213f' | '\\u2145' .. '\\u2149' | '\\u3005' .. '\\u3006' | '\\u3031' .. '\\u3035' | '\\u303b' .. '\\u303c' | '\\u3041' .. '\\u3096' | '\\u309d' .. '\\u309f' | '\\u30a1' .. '\\u30fa' | '\\u30fc' .. '\\u30ff' | '\\u3105' .. '\\u312c' | '\\u3131' .. '\\u318e' | '\\u31a0' .. '\\u31b7' | '\\u31f0' .. '\\u31ff' | '\\u3400' .. '\\u4db5' | '\\u4e00' .. '\\u9fa5' | '\\ua000' .. '\\ua48c' | '\\uac00' .. '\\ud7a3' | '\\uf900' .. '\\ufa2d' | '\\ufa30' .. '\\ufa6a' | '\\ufb00' .. '\\ufb06' | '\\ufb13' .. '\\ufb17' | '\\ufb1d' | '\\ufb1f' .. '\\ufb28' | '\\ufb2a' .. '\\ufb36' | '\\ufb38' .. '\\ufb3c' | '\\ufb3e' | '\\ufb40' .. '\\ufb41' | '\\ufb43' .. '\\ufb44' | '\\ufb46' .. '\\ufbb1' | '\\ufbd3' .. '\\ufd3d' | '\\ufd50' .. '\\ufd8f' | '\\ufd92' .. '\\ufdc7' | '\\ufdf0' .. '\\ufdfb' | '\\ufe70' .. '\\ufe74' | '\\ufe76' .. '\\ufefc' | '\\uff10' .. '\\uff19' | '\\uff21' .. '\\uff3a' | '\\uff41' .. '\\uff5a' | '\\uff66' .. '\\uffbe' | '\\uffc2' .. '\\uffc7' | '\\uffca' .. '\\uffcf' | '\\uffd2' .. '\\uffd7' | '\\uffda' .. '\\uffdc' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='\u00AA'||input.LA(1)=='\u00B5'||input.LA(1)=='\u00BA'||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u0236')||(input.LA(1)>='\u0250' && input.LA(1)<='\u02C1')||(input.LA(1)>='\u02C6' && input.LA(1)<='\u02D1')||(input.LA(1)>='\u02E0' && input.LA(1)<='\u02E4')||input.LA(1)=='\u02EE'||input.LA(1)=='\u037A'||input.LA(1)=='\u0386'||(input.LA(1)>='\u0388' && input.LA(1)<='\u038A')||input.LA(1)=='\u038C'||(input.LA(1)>='\u038E' && input.LA(1)<='\u03A1')||(input.LA(1)>='\u03A3' && input.LA(1)<='\u03CE')||(input.LA(1)>='\u03D0' && input.LA(1)<='\u03F5')||(input.LA(1)>='\u03F7' && input.LA(1)<='\u03FB')||(input.LA(1)>='\u0400' && input.LA(1)<='\u0481')||(input.LA(1)>='\u048A' && input.LA(1)<='\u04CE')||(input.LA(1)>='\u04D0' && input.LA(1)<='\u04F5')||(input.LA(1)>='\u04F8' && input.LA(1)<='\u04F9')||(input.LA(1)>='\u0500' && input.LA(1)<='\u050F')||(input.LA(1)>='\u0531' && input.LA(1)<='\u0556')||input.LA(1)=='\u0559'||(input.LA(1)>='\u0561' && input.LA(1)<='\u0587')||(input.LA(1)>='\u05D0' && input.LA(1)<='\u05EA')||(input.LA(1)>='\u05F0' && input.LA(1)<='\u05F2')||(input.LA(1)>='\u0621' && input.LA(1)<='\u063A')||(input.LA(1)>='\u0640' && input.LA(1)<='\u064A')||(input.LA(1)>='\u0660' && input.LA(1)<='\u0669')||(input.LA(1)>='\u066E' && input.LA(1)<='\u066F')||(input.LA(1)>='\u0671' && input.LA(1)<='\u06D3')||input.LA(1)=='\u06D5'||(input.LA(1)>='\u06E5' && input.LA(1)<='\u06E6')||(input.LA(1)>='\u06EE' && input.LA(1)<='\u06FC')||input.LA(1)=='\u06FF'||input.LA(1)=='\u0710'||(input.LA(1)>='\u0712' && input.LA(1)<='\u072F')||(input.LA(1)>='\u074D' && input.LA(1)<='\u074F')||(input.LA(1)>='\u0780' && input.LA(1)<='\u07A5')||input.LA(1)=='\u07B1'||(input.LA(1)>='\u0904' && input.LA(1)<='\u0939')||input.LA(1)=='\u093D'||input.LA(1)=='\u0950'||(input.LA(1)>='\u0958' && input.LA(1)<='\u0961')||(input.LA(1)>='\u0966' && input.LA(1)<='\u096F')||(input.LA(1)>='\u0985' && input.LA(1)<='\u098C')||(input.LA(1)>='\u098F' && input.LA(1)<='\u0990')||(input.LA(1)>='\u0993' && input.LA(1)<='\u09A8')||(input.LA(1)>='\u09AA' && input.LA(1)<='\u09B0')||input.LA(1)=='\u09B2'||(input.LA(1)>='\u09B6' && input.LA(1)<='\u09B9')||input.LA(1)=='\u09BD'||(input.LA(1)>='\u09DC' && input.LA(1)<='\u09DD')||(input.LA(1)>='\u09DF' && input.LA(1)<='\u09E1')||(input.LA(1)>='\u09E6' && input.LA(1)<='\u09F1')||(input.LA(1)>='\u0A05' && input.LA(1)<='\u0A0A')||(input.LA(1)>='\u0A0F' && input.LA(1)<='\u0A10')||(input.LA(1)>='\u0A13' && input.LA(1)<='\u0A28')||(input.LA(1)>='\u0A2A' && input.LA(1)<='\u0A30')||(input.LA(1)>='\u0A32' && input.LA(1)<='\u0A33')||(input.LA(1)>='\u0A35' && input.LA(1)<='\u0A36')||(input.LA(1)>='\u0A38' && input.LA(1)<='\u0A39')||(input.LA(1)>='\u0A59' && input.LA(1)<='\u0A5C')||input.LA(1)=='\u0A5E'||(input.LA(1)>='\u0A66' && input.LA(1)<='\u0A6F')||(input.LA(1)>='\u0A72' && input.LA(1)<='\u0A74')||(input.LA(1)>='\u0A85' && input.LA(1)<='\u0A8D')||(input.LA(1)>='\u0A8F' && input.LA(1)<='\u0A91')||(input.LA(1)>='\u0A93' && input.LA(1)<='\u0AA8')||(input.LA(1)>='\u0AAA' && input.LA(1)<='\u0AB0')||(input.LA(1)>='\u0AB2' && input.LA(1)<='\u0AB3')||(input.LA(1)>='\u0AB5' && input.LA(1)<='\u0AB9')||input.LA(1)=='\u0ABD'||input.LA(1)=='\u0AD0'||(input.LA(1)>='\u0AE0' && input.LA(1)<='\u0AE1')||(input.LA(1)>='\u0AE6' && input.LA(1)<='\u0AEF')||(input.LA(1)>='\u0B05' && input.LA(1)<='\u0B0C')||(input.LA(1)>='\u0B0F' && input.LA(1)<='\u0B10')||(input.LA(1)>='\u0B13' && input.LA(1)<='\u0B28')||(input.LA(1)>='\u0B2A' && input.LA(1)<='\u0B30')||(input.LA(1)>='\u0B32' && input.LA(1)<='\u0B33')||(input.LA(1)>='\u0B35' && input.LA(1)<='\u0B39')||input.LA(1)=='\u0B3D'||(input.LA(1)>='\u0B5C' && input.LA(1)<='\u0B5D')||(input.LA(1)>='\u0B5F' && input.LA(1)<='\u0B61')||(input.LA(1)>='\u0B66' && input.LA(1)<='\u0B6F')||input.LA(1)=='\u0B71'||input.LA(1)=='\u0B83'||(input.LA(1)>='\u0B85' && input.LA(1)<='\u0B8A')||(input.LA(1)>='\u0B8E' && input.LA(1)<='\u0B90')||(input.LA(1)>='\u0B92' && input.LA(1)<='\u0B95')||(input.LA(1)>='\u0B99' && input.LA(1)<='\u0B9A')||input.LA(1)=='\u0B9C'||(input.LA(1)>='\u0B9E' && input.LA(1)<='\u0B9F')||(input.LA(1)>='\u0BA3' && input.LA(1)<='\u0BA4')||(input.LA(1)>='\u0BA8' && input.LA(1)<='\u0BAA')||(input.LA(1)>='\u0BAE' && input.LA(1)<='\u0BB5')||(input.LA(1)>='\u0BB7' && input.LA(1)<='\u0BB9')||(input.LA(1)>='\u0BE7' && input.LA(1)<='\u0BEF')||(input.LA(1)>='\u0C05' && input.LA(1)<='\u0C0C')||(input.LA(1)>='\u0C0E' && input.LA(1)<='\u0C10')||(input.LA(1)>='\u0C12' && input.LA(1)<='\u0C28')||(input.LA(1)>='\u0C2A' && input.LA(1)<='\u0C33')||(input.LA(1)>='\u0C35' && input.LA(1)<='\u0C39')||(input.LA(1)>='\u0C60' && input.LA(1)<='\u0C61')||(input.LA(1)>='\u0C66' && input.LA(1)<='\u0C6F')||(input.LA(1)>='\u0C85' && input.LA(1)<='\u0C8C')||(input.LA(1)>='\u0C8E' && input.LA(1)<='\u0C90')||(input.LA(1)>='\u0C92' && input.LA(1)<='\u0CA8')||(input.LA(1)>='\u0CAA' && input.LA(1)<='\u0CB3')||(input.LA(1)>='\u0CB5' && input.LA(1)<='\u0CB9')||input.LA(1)=='\u0CBD'||input.LA(1)=='\u0CDE'||(input.LA(1)>='\u0CE0' && input.LA(1)<='\u0CE1')||(input.LA(1)>='\u0CE6' && input.LA(1)<='\u0CEF')||(input.LA(1)>='\u0D05' && input.LA(1)<='\u0D0C')||(input.LA(1)>='\u0D0E' && input.LA(1)<='\u0D10')||(input.LA(1)>='\u0D12' && input.LA(1)<='\u0D28')||(input.LA(1)>='\u0D2A' && input.LA(1)<='\u0D39')||(input.LA(1)>='\u0D60' && input.LA(1)<='\u0D61')||(input.LA(1)>='\u0D66' && input.LA(1)<='\u0D6F')||(input.LA(1)>='\u0D85' && input.LA(1)<='\u0D96')||(input.LA(1)>='\u0D9A' && input.LA(1)<='\u0DB1')||(input.LA(1)>='\u0DB3' && input.LA(1)<='\u0DBB')||input.LA(1)=='\u0DBD'||(input.LA(1)>='\u0DC0' && input.LA(1)<='\u0DC6')||(input.LA(1)>='\u0E01' && input.LA(1)<='\u0E30')||(input.LA(1)>='\u0E32' && input.LA(1)<='\u0E33')||(input.LA(1)>='\u0E40' && input.LA(1)<='\u0E46')||(input.LA(1)>='\u0E50' && input.LA(1)<='\u0E59')||(input.LA(1)>='\u0E81' && input.LA(1)<='\u0E82')||input.LA(1)=='\u0E84'||(input.LA(1)>='\u0E87' && input.LA(1)<='\u0E88')||input.LA(1)=='\u0E8A'||input.LA(1)=='\u0E8D'||(input.LA(1)>='\u0E94' && input.LA(1)<='\u0E97')||(input.LA(1)>='\u0E99' && input.LA(1)<='\u0E9F')||(input.LA(1)>='\u0EA1' && input.LA(1)<='\u0EA3')||input.LA(1)=='\u0EA5'||input.LA(1)=='\u0EA7'||(input.LA(1)>='\u0EAA' && input.LA(1)<='\u0EAB')||(input.LA(1)>='\u0EAD' && input.LA(1)<='\u0EB0')||(input.LA(1)>='\u0EB2' && input.LA(1)<='\u0EB3')||input.LA(1)=='\u0EBD'||(input.LA(1)>='\u0EC0' && input.LA(1)<='\u0EC4')||input.LA(1)=='\u0EC6'||(input.LA(1)>='\u0ED0' && input.LA(1)<='\u0ED9')||(input.LA(1)>='\u0EDC' && input.LA(1)<='\u0EDD')||input.LA(1)=='\u0F00'||(input.LA(1)>='\u0F20' && input.LA(1)<='\u0F29')||(input.LA(1)>='\u0F40' && input.LA(1)<='\u0F47')||(input.LA(1)>='\u0F49' && input.LA(1)<='\u0F6A')||(input.LA(1)>='\u0F88' && input.LA(1)<='\u0F8B')||(input.LA(1)>='\u1000' && input.LA(1)<='\u1021')||(input.LA(1)>='\u1023' && input.LA(1)<='\u1027')||(input.LA(1)>='\u1029' && input.LA(1)<='\u102A')||(input.LA(1)>='\u1040' && input.LA(1)<='\u1049')||(input.LA(1)>='\u1050' && input.LA(1)<='\u1055')||(input.LA(1)>='\u10A0' && input.LA(1)<='\u10C5')||(input.LA(1)>='\u10D0' && input.LA(1)<='\u10F8')||(input.LA(1)>='\u1100' && input.LA(1)<='\u1159')||(input.LA(1)>='\u115F' && input.LA(1)<='\u11A2')||(input.LA(1)>='\u11A8' && input.LA(1)<='\u11F9')||(input.LA(1)>='\u1200' && input.LA(1)<='\u1206')||(input.LA(1)>='\u1208' && input.LA(1)<='\u1246')||input.LA(1)=='\u1248'||(input.LA(1)>='\u124A' && input.LA(1)<='\u124D')||(input.LA(1)>='\u1250' && input.LA(1)<='\u1256')||input.LA(1)=='\u1258'||(input.LA(1)>='\u125A' && input.LA(1)<='\u125D')||(input.LA(1)>='\u1260' && input.LA(1)<='\u1286')||input.LA(1)=='\u1288'||(input.LA(1)>='\u128A' && input.LA(1)<='\u128D')||(input.LA(1)>='\u1290' && input.LA(1)<='\u12AE')||input.LA(1)=='\u12B0'||(input.LA(1)>='\u12B2' && input.LA(1)<='\u12B5')||(input.LA(1)>='\u12B8' && input.LA(1)<='\u12BE')||input.LA(1)=='\u12C0'||(input.LA(1)>='\u12C2' && input.LA(1)<='\u12C5')||(input.LA(1)>='\u12C8' && input.LA(1)<='\u12CE')||(input.LA(1)>='\u12D0' && input.LA(1)<='\u12D6')||(input.LA(1)>='\u12D8' && input.LA(1)<='\u12EE')||(input.LA(1)>='\u12F0' && input.LA(1)<='\u130E')||input.LA(1)=='\u1310'||(input.LA(1)>='\u1312' && input.LA(1)<='\u1315')||(input.LA(1)>='\u1318' && input.LA(1)<='\u131E')||(input.LA(1)>='\u1320' && input.LA(1)<='\u1346')||(input.LA(1)>='\u1348' && input.LA(1)<='\u135A')||(input.LA(1)>='\u1369' && input.LA(1)<='\u1371')||(input.LA(1)>='\u13A0' && input.LA(1)<='\u13F4')||(input.LA(1)>='\u1401' && input.LA(1)<='\u166C')||(input.LA(1)>='\u166F' && input.LA(1)<='\u1676')||(input.LA(1)>='\u1681' && input.LA(1)<='\u169A')||(input.LA(1)>='\u16A0' && input.LA(1)<='\u16EA')||(input.LA(1)>='\u1700' && input.LA(1)<='\u170C')||(input.LA(1)>='\u170E' && input.LA(1)<='\u1711')||(input.LA(1)>='\u1720' && input.LA(1)<='\u1731')||(input.LA(1)>='\u1740' && input.LA(1)<='\u1751')||(input.LA(1)>='\u1760' && input.LA(1)<='\u176C')||(input.LA(1)>='\u176E' && input.LA(1)<='\u1770')||(input.LA(1)>='\u1780' && input.LA(1)<='\u17B3')||input.LA(1)=='\u17D7'||input.LA(1)=='\u17DC'||(input.LA(1)>='\u17E0' && input.LA(1)<='\u17E9')||(input.LA(1)>='\u1810' && input.LA(1)<='\u1819')||(input.LA(1)>='\u1820' && input.LA(1)<='\u1877')||(input.LA(1)>='\u1880' && input.LA(1)<='\u18A8')||(input.LA(1)>='\u1900' && input.LA(1)<='\u191C')||(input.LA(1)>='\u1946' && input.LA(1)<='\u196D')||(input.LA(1)>='\u1970' && input.LA(1)<='\u1974')||(input.LA(1)>='\u1D00' && input.LA(1)<='\u1D6B')||(input.LA(1)>='\u1E00' && input.LA(1)<='\u1E9B')||(input.LA(1)>='\u1EA0' && input.LA(1)<='\u1EF9')||(input.LA(1)>='\u1F00' && input.LA(1)<='\u1F15')||(input.LA(1)>='\u1F18' && input.LA(1)<='\u1F1D')||(input.LA(1)>='\u1F20' && input.LA(1)<='\u1F45')||(input.LA(1)>='\u1F48' && input.LA(1)<='\u1F4D')||(input.LA(1)>='\u1F50' && input.LA(1)<='\u1F57')||input.LA(1)=='\u1F59'||input.LA(1)=='\u1F5B'||input.LA(1)=='\u1F5D'||(input.LA(1)>='\u1F5F' && input.LA(1)<='\u1F7D')||(input.LA(1)>='\u1F80' && input.LA(1)<='\u1FB4')||(input.LA(1)>='\u1FB6' && input.LA(1)<='\u1FBC')||input.LA(1)=='\u1FBE'||(input.LA(1)>='\u1FC2' && input.LA(1)<='\u1FC4')||(input.LA(1)>='\u1FC6' && input.LA(1)<='\u1FCC')||(input.LA(1)>='\u1FD0' && input.LA(1)<='\u1FD3')||(input.LA(1)>='\u1FD6' && input.LA(1)<='\u1FDB')||(input.LA(1)>='\u1FE0' && input.LA(1)<='\u1FEC')||(input.LA(1)>='\u1FF2' && input.LA(1)<='\u1FF4')||(input.LA(1)>='\u1FF6' && input.LA(1)<='\u1FFC')||input.LA(1)=='\u2071'||input.LA(1)=='\u207F'||input.LA(1)=='\u2102'||input.LA(1)=='\u2107'||(input.LA(1)>='\u210A' && input.LA(1)<='\u2113')||input.LA(1)=='\u2115'||(input.LA(1)>='\u2119' && input.LA(1)<='\u211D')||input.LA(1)=='\u2124'||input.LA(1)=='\u2126'||input.LA(1)=='\u2128'||(input.LA(1)>='\u212A' && input.LA(1)<='\u212D')||(input.LA(1)>='\u212F' && input.LA(1)<='\u2131')||(input.LA(1)>='\u2133' && input.LA(1)<='\u2139')||(input.LA(1)>='\u213D' && input.LA(1)<='\u213F')||(input.LA(1)>='\u2145' && input.LA(1)<='\u2149')||(input.LA(1)>='\u3005' && input.LA(1)<='\u3006')||(input.LA(1)>='\u3031' && input.LA(1)<='\u3035')||(input.LA(1)>='\u303B' && input.LA(1)<='\u303C')||(input.LA(1)>='\u3041' && input.LA(1)<='\u3096')||(input.LA(1)>='\u309D' && input.LA(1)<='\u309F')||(input.LA(1)>='\u30A1' && input.LA(1)<='\u30FA')||(input.LA(1)>='\u30FC' && input.LA(1)<='\u30FF')||(input.LA(1)>='\u3105' && input.LA(1)<='\u312C')||(input.LA(1)>='\u3131' && input.LA(1)<='\u318E')||(input.LA(1)>='\u31A0' && input.LA(1)<='\u31B7')||(input.LA(1)>='\u31F0' && input.LA(1)<='\u31FF')||(input.LA(1)>='\u3400' && input.LA(1)<='\u4DB5')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FA5')||(input.LA(1)>='\uA000' && input.LA(1)<='\uA48C')||(input.LA(1)>='\uAC00' && input.LA(1)<='\uD7A3')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFA2D')||(input.LA(1)>='\uFA30' && input.LA(1)<='\uFA6A')||(input.LA(1)>='\uFB00' && input.LA(1)<='\uFB06')||(input.LA(1)>='\uFB13' && input.LA(1)<='\uFB17')||input.LA(1)=='\uFB1D'||(input.LA(1)>='\uFB1F' && input.LA(1)<='\uFB28')||(input.LA(1)>='\uFB2A' && input.LA(1)<='\uFB36')||(input.LA(1)>='\uFB38' && input.LA(1)<='\uFB3C')||input.LA(1)=='\uFB3E'||(input.LA(1)>='\uFB40' && input.LA(1)<='\uFB41')||(input.LA(1)>='\uFB43' && input.LA(1)<='\uFB44')||(input.LA(1)>='\uFB46' && input.LA(1)<='\uFBB1')||(input.LA(1)>='\uFBD3' && input.LA(1)<='\uFD3D')||(input.LA(1)>='\uFD50' && input.LA(1)<='\uFD8F')||(input.LA(1)>='\uFD92' && input.LA(1)<='\uFDC7')||(input.LA(1)>='\uFDF0' && input.LA(1)<='\uFDFB')||(input.LA(1)>='\uFE70' && input.LA(1)<='\uFE74')||(input.LA(1)>='\uFE76' && input.LA(1)<='\uFEFC')||(input.LA(1)>='\uFF10' && input.LA(1)<='\uFF19')||(input.LA(1)>='\uFF21' && input.LA(1)<='\uFF3A')||(input.LA(1)>='\uFF41' && input.LA(1)<='\uFF5A')||(input.LA(1)>='\uFF66' && input.LA(1)<='\uFFBE')||(input.LA(1)>='\uFFC2' && input.LA(1)<='\uFFC7')||(input.LA(1)>='\uFFCA' && input.LA(1)<='\uFFCF')||(input.LA(1)>='\uFFD2' && input.LA(1)<='\uFFD7')||(input.LA(1)>='\uFFDA' && input.LA(1)<='\uFFDC') ) {
                 input.consume();
@@ -1920,12 +1920,12 @@ public class FTSLexer extends Lexer {
             CommonToken d=null;
             CommonToken r=null;
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1582:9: (d= START_RANGE_I r= DOTDOT | d= START_RANGE_F r= DOTDOT | ( PLUS | MINUS )? ( DIGIT )+ DOT ( DIGIT )* ( EXPONENT )? | ( PLUS | MINUS )? DOT ( DIGIT )+ ( EXPONENT )? | ( PLUS | MINUS )? ( DIGIT )+ EXPONENT )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1582:9: (d= START_RANGE_I r= DOTDOT | d= START_RANGE_F r= DOTDOT | ( PLUS | MINUS )? ( DIGIT )+ DOT ( DIGIT )* ( EXPONENT )? | ( PLUS | MINUS )? DOT ( DIGIT )+ ( EXPONENT )? | ( PLUS | MINUS )? ( DIGIT )+ EXPONENT )
             int alt28=5;
             alt28 = dfa28.predict(input);
             switch (alt28) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1583:9: d= START_RANGE_I r= DOTDOT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1583:9: d= START_RANGE_I r= DOTDOT
                     {
                     int dStart8689 = getCharIndex();
                     int dStartLine8689 = getLine();
@@ -1953,7 +1953,7 @@ public class FTSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1590:11: d= START_RANGE_F r= DOTDOT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1590:11: d= START_RANGE_F r= DOTDOT
                     {
                     int dStart8718 = getCharIndex();
                     int dStartLine8718 = getLine();
@@ -1981,9 +1981,9 @@ public class FTSLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1598:9: ( PLUS | MINUS )? ( DIGIT )+ DOT ( DIGIT )* ( EXPONENT )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1598:9: ( PLUS | MINUS )? ( DIGIT )+ DOT ( DIGIT )* ( EXPONENT )?
                     {
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1598:9: ( PLUS | MINUS )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1598:9: ( PLUS | MINUS )?
                     int alt19=2;
                     int LA19_0 = input.LA(1);
 
@@ -1992,7 +1992,7 @@ public class FTSLexer extends Lexer {
                     }
                     switch (alt19) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                             {
                             if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                                 input.consume();
@@ -2010,7 +2010,7 @@ public class FTSLexer extends Lexer {
 
                     }
 
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:9: ( DIGIT )+
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:9: ( DIGIT )+
                     int cnt20=0;
                     loop20:
                     do {
@@ -2024,7 +2024,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt20) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:9: DIGIT
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:9: DIGIT
                     	    {
                     	    mDIGIT(); if (state.failed) return ;
 
@@ -2042,7 +2042,7 @@ public class FTSLexer extends Lexer {
                     } while (true);
 
                     mDOT(); if (state.failed) return ;
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:20: ( DIGIT )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:20: ( DIGIT )*
                     loop21:
                     do {
                         int alt21=2;
@@ -2055,7 +2055,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt21) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:20: DIGIT
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:20: DIGIT
                     	    {
                     	    mDIGIT(); if (state.failed) return ;
 
@@ -2067,7 +2067,7 @@ public class FTSLexer extends Lexer {
                         }
                     } while (true);
 
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:27: ( EXPONENT )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:27: ( EXPONENT )?
                     int alt22=2;
                     int LA22_0 = input.LA(1);
 
@@ -2076,7 +2076,7 @@ public class FTSLexer extends Lexer {
                     }
                     switch (alt22) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:27: EXPONENT
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1602:27: EXPONENT
                             {
                             mEXPONENT(); if (state.failed) return ;
 
@@ -2089,9 +2089,9 @@ public class FTSLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1604:9: ( PLUS | MINUS )? DOT ( DIGIT )+ ( EXPONENT )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1604:9: ( PLUS | MINUS )? DOT ( DIGIT )+ ( EXPONENT )?
                     {
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1604:9: ( PLUS | MINUS )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1604:9: ( PLUS | MINUS )?
                     int alt23=2;
                     int LA23_0 = input.LA(1);
 
@@ -2100,7 +2100,7 @@ public class FTSLexer extends Lexer {
                     }
                     switch (alt23) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                             {
                             if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                                 input.consume();
@@ -2119,7 +2119,7 @@ public class FTSLexer extends Lexer {
                     }
 
                     mDOT(); if (state.failed) return ;
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1608:13: ( DIGIT )+
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1608:13: ( DIGIT )+
                     int cnt24=0;
                     loop24:
                     do {
@@ -2133,7 +2133,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt24) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1608:13: DIGIT
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1608:13: DIGIT
                     	    {
                     	    mDIGIT(); if (state.failed) return ;
 
@@ -2150,7 +2150,7 @@ public class FTSLexer extends Lexer {
                         cnt24++;
                     } while (true);
 
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1608:20: ( EXPONENT )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1608:20: ( EXPONENT )?
                     int alt25=2;
                     int LA25_0 = input.LA(1);
 
@@ -2159,7 +2159,7 @@ public class FTSLexer extends Lexer {
                     }
                     switch (alt25) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1608:20: EXPONENT
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1608:20: EXPONENT
                             {
                             mEXPONENT(); if (state.failed) return ;
 
@@ -2172,9 +2172,9 @@ public class FTSLexer extends Lexer {
                     }
                     break;
                 case 5 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1610:9: ( PLUS | MINUS )? ( DIGIT )+ EXPONENT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1610:9: ( PLUS | MINUS )? ( DIGIT )+ EXPONENT
                     {
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1610:9: ( PLUS | MINUS )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1610:9: ( PLUS | MINUS )?
                     int alt26=2;
                     int LA26_0 = input.LA(1);
 
@@ -2183,7 +2183,7 @@ public class FTSLexer extends Lexer {
                     }
                     switch (alt26) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                             {
                             if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                                 input.consume();
@@ -2201,7 +2201,7 @@ public class FTSLexer extends Lexer {
 
                     }
 
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1614:9: ( DIGIT )+
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1614:9: ( DIGIT )+
                     int cnt27=0;
                     loop27:
                     do {
@@ -2215,7 +2215,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt27) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1614:9: DIGIT
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1614:9: DIGIT
                     	    {
                     	    mDIGIT(); if (state.failed) return ;
 
@@ -2249,10 +2249,10 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "START_RANGE_I"
     public final void mSTART_RANGE_I() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1619:9: ( ( PLUS | MINUS )? ( DIGIT )+ )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1620:9: ( PLUS | MINUS )? ( DIGIT )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1619:9: ( ( PLUS | MINUS )? ( DIGIT )+ )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1620:9: ( PLUS | MINUS )? ( DIGIT )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1620:9: ( PLUS | MINUS )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1620:9: ( PLUS | MINUS )?
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -2261,7 +2261,7 @@ public class FTSLexer extends Lexer {
             }
             switch (alt29) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -2279,7 +2279,7 @@ public class FTSLexer extends Lexer {
 
             }
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1624:9: ( DIGIT )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1624:9: ( DIGIT )+
             int cnt30=0;
             loop30:
             do {
@@ -2293,7 +2293,7 @@ public class FTSLexer extends Lexer {
 
                 switch (alt30) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1624:9: DIGIT
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1624:9: DIGIT
             	    {
             	    mDIGIT(); if (state.failed) return ;
 
@@ -2322,10 +2322,10 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "START_RANGE_F"
     public final void mSTART_RANGE_F() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1629:9: ( ( PLUS | MINUS )? ( DIGIT )+ DOT )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1630:9: ( PLUS | MINUS )? ( DIGIT )+ DOT
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1629:9: ( ( PLUS | MINUS )? ( DIGIT )+ DOT )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1630:9: ( PLUS | MINUS )? ( DIGIT )+ DOT
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1630:9: ( PLUS | MINUS )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1630:9: ( PLUS | MINUS )?
             int alt31=2;
             int LA31_0 = input.LA(1);
 
@@ -2334,7 +2334,7 @@ public class FTSLexer extends Lexer {
             }
             switch (alt31) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -2352,7 +2352,7 @@ public class FTSLexer extends Lexer {
 
             }
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1634:9: ( DIGIT )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1634:9: ( DIGIT )+
             int cnt32=0;
             loop32:
             do {
@@ -2366,7 +2366,7 @@ public class FTSLexer extends Lexer {
 
                 switch (alt32) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1634:9: DIGIT
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1634:9: DIGIT
             	    {
             	    mDIGIT(); if (state.failed) return ;
 
@@ -2396,7 +2396,7 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "DECIMAL_NUMERAL"
     public final void mDECIMAL_NUMERAL() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1642:9: ( ZERO_DIGIT | NON_ZERO_DIGIT ( DIGIT )* )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1642:9: ( ZERO_DIGIT | NON_ZERO_DIGIT ( DIGIT )* )
             int alt34=2;
             int LA34_0 = input.LA(1);
 
@@ -2415,17 +2415,17 @@ public class FTSLexer extends Lexer {
             }
             switch (alt34) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1643:9: ZERO_DIGIT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1643:9: ZERO_DIGIT
                     {
                     mZERO_DIGIT(); if (state.failed) return ;
 
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1644:11: NON_ZERO_DIGIT ( DIGIT )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1644:11: NON_ZERO_DIGIT ( DIGIT )*
                     {
                     mNON_ZERO_DIGIT(); if (state.failed) return ;
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1644:26: ( DIGIT )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1644:26: ( DIGIT )*
                     loop33:
                     do {
                         int alt33=2;
@@ -2438,7 +2438,7 @@ public class FTSLexer extends Lexer {
 
                         switch (alt33) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1644:26: DIGIT
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1644:26: DIGIT
                     	    {
                     	    mDIGIT(); if (state.failed) return ;
 
@@ -2464,8 +2464,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "DIGIT"
     public final void mDIGIT() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1649:9: ( ZERO_DIGIT | NON_ZERO_DIGIT )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1649:9: ( ZERO_DIGIT | NON_ZERO_DIGIT )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9') ) {
                 input.consume();
@@ -2489,8 +2489,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "ZERO_DIGIT"
     public final void mZERO_DIGIT() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1656:9: ( '0' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1657:9: '0'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1656:9: ( '0' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1657:9: '0'
             {
             match('0'); if (state.failed) return ;
 
@@ -2505,8 +2505,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "NON_ZERO_DIGIT"
     public final void mNON_ZERO_DIGIT() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1662:9: ( '1' .. '9' )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1663:9: '1' .. '9'
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1662:9: ( '1' .. '9' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1663:9: '1' .. '9'
             {
             matchRange('1','9'); if (state.failed) return ;
 
@@ -2521,8 +2521,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "E"
     public final void mE() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1668:9: ( ( 'e' | 'E' ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1669:9: ( 'e' | 'E' )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1668:9: ( ( 'e' | 'E' ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1669:9: ( 'e' | 'E' )
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -2546,8 +2546,8 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "EXPONENT"
     public final void mEXPONENT() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1677:9: ( E SIGNED_INTEGER )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1678:9: E SIGNED_INTEGER
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1677:9: ( E SIGNED_INTEGER )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1678:9: E SIGNED_INTEGER
             {
             mE(); if (state.failed) return ;
             mSIGNED_INTEGER(); if (state.failed) return ;
@@ -2563,10 +2563,10 @@ public class FTSLexer extends Lexer {
     // $ANTLR start "SIGNED_INTEGER"
     public final void mSIGNED_INTEGER() throws RecognitionException {
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1683:9: ( ( PLUS | MINUS )? ( DIGIT )+ )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1684:9: ( PLUS | MINUS )? ( DIGIT )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1683:9: ( ( PLUS | MINUS )? ( DIGIT )+ )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1684:9: ( PLUS | MINUS )? ( DIGIT )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1684:9: ( PLUS | MINUS )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1684:9: ( PLUS | MINUS )?
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -2575,7 +2575,7 @@ public class FTSLexer extends Lexer {
             }
             switch (alt35) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -2593,7 +2593,7 @@ public class FTSLexer extends Lexer {
 
             }
 
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1688:9: ( DIGIT )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1688:9: ( DIGIT )+
             int cnt36=0;
             loop36:
             do {
@@ -2607,7 +2607,7 @@ public class FTSLexer extends Lexer {
 
                 switch (alt36) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1688:9: DIGIT
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1688:9: DIGIT
             	    {
             	    mDIGIT(); if (state.failed) return ;
 
@@ -2638,10 +2638,10 @@ public class FTSLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1697:9: ( ( ' ' | '\\t' | '\\r' | '\\n' | '\\u000C' | '\\u00a0' | '\\u1680' | '\\u180e' | '\\u2000' .. '\\u200b' | '\\u2028' .. '\\u2029' | '\\u202f' | '\\u205f' | '\\u3000' )+ )
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1698:9: ( ' ' | '\\t' | '\\r' | '\\n' | '\\u000C' | '\\u00a0' | '\\u1680' | '\\u180e' | '\\u2000' .. '\\u200b' | '\\u2028' .. '\\u2029' | '\\u202f' | '\\u205f' | '\\u3000' )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1697:9: ( ( ' ' | '\\t' | '\\r' | '\\n' | '\\u000C' | '\\u00a0' | '\\u1680' | '\\u180e' | '\\u2000' .. '\\u200b' | '\\u2028' .. '\\u2029' | '\\u202f' | '\\u205f' | '\\u3000' )+ )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1698:9: ( ' ' | '\\t' | '\\r' | '\\n' | '\\u000C' | '\\u00a0' | '\\u1680' | '\\u180e' | '\\u2000' .. '\\u200b' | '\\u2028' .. '\\u2029' | '\\u202f' | '\\u205f' | '\\u3000' )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1698:9: ( ' ' | '\\t' | '\\r' | '\\n' | '\\u000C' | '\\u00a0' | '\\u1680' | '\\u180e' | '\\u2000' .. '\\u200b' | '\\u2028' .. '\\u2029' | '\\u202f' | '\\u205f' | '\\u3000' )+
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1698:9: ( ' ' | '\\t' | '\\r' | '\\n' | '\\u000C' | '\\u00a0' | '\\u1680' | '\\u180e' | '\\u2000' .. '\\u200b' | '\\u2028' .. '\\u2029' | '\\u202f' | '\\u205f' | '\\u3000' )+
             int cnt37=0;
             loop37:
             do {
@@ -2655,7 +2655,7 @@ public class FTSLexer extends Lexer {
 
                 switch (alt37) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             	    {
             	    if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' '||input.LA(1)=='\u00A0'||input.LA(1)=='\u1680'||input.LA(1)=='\u180E'||(input.LA(1)>='\u2000' && input.LA(1)<='\u200B')||(input.LA(1)>='\u2028' && input.LA(1)<='\u2029')||input.LA(1)=='\u202F'||input.LA(1)=='\u205F'||input.LA(1)=='\u3000' ) {
             	        input.consume();
@@ -2696,271 +2696,271 @@ public class FTSLexer extends Lexer {
     // $ANTLR end "WS"
 
     public void mTokens() throws RecognitionException {
-        // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:8: ( FTSPHRASE | URI | OR | AND | NOT | TILDA | LPAREN | RPAREN | PLUS | MINUS | COLON | STAR | DOTDOT | DOT | AMP | EXCLAMATION | BAR | EQUALS | QUESTION_MARK | LCURL | RCURL | LSQUARE | RSQUARE | TO | COMMA | CARAT | DOLLAR | GT | LT | AT | PERCENT | ID | DECIMAL_INTEGER_LITERAL | FTSWORD | FTSPRE | FTSWILD | FLOATING_POINT_LITERAL | WS )
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:8: ( FTSPHRASE | URI | OR | AND | NOT | TILDA | LPAREN | RPAREN | PLUS | MINUS | COLON | STAR | DOTDOT | DOT | AMP | EXCLAMATION | BAR | EQUALS | QUESTION_MARK | LCURL | RCURL | LSQUARE | RSQUARE | TO | COMMA | CARAT | DOLLAR | GT | LT | AT | PERCENT | ID | DECIMAL_INTEGER_LITERAL | FTSWORD | FTSPRE | FTSWILD | FLOATING_POINT_LITERAL | WS )
         int alt38=38;
         alt38 = dfa38.predict(input);
         switch (alt38) {
             case 1 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:10: FTSPHRASE
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:10: FTSPHRASE
                 {
                 mFTSPHRASE(); if (state.failed) return ;
 
                 }
                 break;
             case 2 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:20: URI
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:20: URI
                 {
                 mURI(); if (state.failed) return ;
 
                 }
                 break;
             case 3 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:24: OR
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:24: OR
                 {
                 mOR(); if (state.failed) return ;
 
                 }
                 break;
             case 4 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:27: AND
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:27: AND
                 {
                 mAND(); if (state.failed) return ;
 
                 }
                 break;
             case 5 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:31: NOT
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:31: NOT
                 {
                 mNOT(); if (state.failed) return ;
 
                 }
                 break;
             case 6 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:35: TILDA
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:35: TILDA
                 {
                 mTILDA(); if (state.failed) return ;
 
                 }
                 break;
             case 7 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:41: LPAREN
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:41: LPAREN
                 {
                 mLPAREN(); if (state.failed) return ;
 
                 }
                 break;
             case 8 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:48: RPAREN
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:48: RPAREN
                 {
                 mRPAREN(); if (state.failed) return ;
 
                 }
                 break;
             case 9 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:55: PLUS
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:55: PLUS
                 {
                 mPLUS(); if (state.failed) return ;
 
                 }
                 break;
             case 10 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:60: MINUS
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:60: MINUS
                 {
                 mMINUS(); if (state.failed) return ;
 
                 }
                 break;
             case 11 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:66: COLON
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:66: COLON
                 {
                 mCOLON(); if (state.failed) return ;
 
                 }
                 break;
             case 12 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:72: STAR
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:72: STAR
                 {
                 mSTAR(); if (state.failed) return ;
 
                 }
                 break;
             case 13 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:77: DOTDOT
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:77: DOTDOT
                 {
                 mDOTDOT(); if (state.failed) return ;
 
                 }
                 break;
             case 14 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:84: DOT
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:84: DOT
                 {
                 mDOT(); if (state.failed) return ;
 
                 }
                 break;
             case 15 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:88: AMP
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:88: AMP
                 {
                 mAMP(); if (state.failed) return ;
 
                 }
                 break;
             case 16 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:92: EXCLAMATION
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:92: EXCLAMATION
                 {
                 mEXCLAMATION(); if (state.failed) return ;
 
                 }
                 break;
             case 17 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:104: BAR
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:104: BAR
                 {
                 mBAR(); if (state.failed) return ;
 
                 }
                 break;
             case 18 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:108: EQUALS
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:108: EQUALS
                 {
                 mEQUALS(); if (state.failed) return ;
 
                 }
                 break;
             case 19 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:115: QUESTION_MARK
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:115: QUESTION_MARK
                 {
                 mQUESTION_MARK(); if (state.failed) return ;
 
                 }
                 break;
             case 20 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:129: LCURL
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:129: LCURL
                 {
                 mLCURL(); if (state.failed) return ;
 
                 }
                 break;
             case 21 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:135: RCURL
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:135: RCURL
                 {
                 mRCURL(); if (state.failed) return ;
 
                 }
                 break;
             case 22 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:141: LSQUARE
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:141: LSQUARE
                 {
                 mLSQUARE(); if (state.failed) return ;
 
                 }
                 break;
             case 23 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:149: RSQUARE
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:149: RSQUARE
                 {
                 mRSQUARE(); if (state.failed) return ;
 
                 }
                 break;
             case 24 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:157: TO
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:157: TO
                 {
                 mTO(); if (state.failed) return ;
 
                 }
                 break;
             case 25 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:160: COMMA
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:160: COMMA
                 {
                 mCOMMA(); if (state.failed) return ;
 
                 }
                 break;
             case 26 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:166: CARAT
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:166: CARAT
                 {
                 mCARAT(); if (state.failed) return ;
 
                 }
                 break;
             case 27 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:172: DOLLAR
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:172: DOLLAR
                 {
                 mDOLLAR(); if (state.failed) return ;
 
                 }
                 break;
             case 28 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:179: GT
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:179: GT
                 {
                 mGT(); if (state.failed) return ;
 
                 }
                 break;
             case 29 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:182: LT
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:182: LT
                 {
                 mLT(); if (state.failed) return ;
 
                 }
                 break;
             case 30 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:185: AT
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:185: AT
                 {
                 mAT(); if (state.failed) return ;
 
                 }
                 break;
             case 31 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:188: PERCENT
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:188: PERCENT
                 {
                 mPERCENT(); if (state.failed) return ;
 
                 }
                 break;
             case 32 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:196: ID
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:196: ID
                 {
                 mID(); if (state.failed) return ;
 
                 }
                 break;
             case 33 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:199: DECIMAL_INTEGER_LITERAL
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:199: DECIMAL_INTEGER_LITERAL
                 {
                 mDECIMAL_INTEGER_LITERAL(); if (state.failed) return ;
 
                 }
                 break;
             case 34 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:223: FTSWORD
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:223: FTSWORD
                 {
                 mFTSWORD(); if (state.failed) return ;
 
                 }
                 break;
             case 35 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:231: FTSPRE
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:231: FTSPRE
                 {
                 mFTSPRE(); if (state.failed) return ;
 
                 }
                 break;
             case 36 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:238: FTSWILD
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:238: FTSWILD
                 {
                 mFTSWILD(); if (state.failed) return ;
 
                 }
                 break;
             case 37 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:246: FLOATING_POINT_LITERAL
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:246: FLOATING_POINT_LITERAL
                 {
                 mFLOATING_POINT_LITERAL(); if (state.failed) return ;
 
                 }
                 break;
             case 38 :
-                // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:269: WS
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:1:269: WS
                 {
                 mWS(); if (state.failed) return ;
 
@@ -2973,8 +2973,8 @@ public class FTSLexer extends Lexer {
 
     // $ANTLR start synpred1_FTS
     public final void synpred1_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:899:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )
-        // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:899:17: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER )
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
         {
         if ( input.LA(1)=='!'||input.LA(1)=='$'||(input.LA(1)>='&' && input.LA(1)<='.')||(input.LA(1)>='0' && input.LA(1)<='9')||input.LA(1)==';'||input.LA(1)=='='||(input.LA(1)>='@' && input.LA(1)<='[')||input.LA(1)==']'||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~' ) {
             input.consume();
@@ -2993,8 +2993,8 @@ public class FTSLexer extends Lexer {
 
     // $ANTLR start synpred2_FTS
     public final void synpred2_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:19: ( '//' )
-        // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:20: '//'
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:19: ( '//' )
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:913:20: '//'
         {
         match("//"); if (state.failed) return ;
 
@@ -3005,8 +3005,8 @@ public class FTSLexer extends Lexer {
 
     // $ANTLR start synpred3_FTS
     public final void synpred3_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:915:25: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )
-        // W:\\alfresco\\BRANCHES\\DEV\\SWIFT\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:915:25: ( F_URI_ALPHA | F_URI_DIGIT | F_URI_OTHER | COLON )
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
         {
         if ( input.LA(1)=='!'||input.LA(1)=='$'||(input.LA(1)>='&' && input.LA(1)<='.')||(input.LA(1)>='0' && input.LA(1)<=';')||input.LA(1)=='='||(input.LA(1)>='@' && input.LA(1)<='[')||input.LA(1)==']'||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~' ) {
             input.consume();
