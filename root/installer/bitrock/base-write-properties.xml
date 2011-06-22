@@ -1,0 +1,35 @@
+<component>
+    <name>basewriteproperties</name>
+    <description>Base Write Properties</description>
+    <canBeEdited>0</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+    <postInstallationActionList>
+        <iniFileSet>
+            <file>${installdir}/properties.ini</file>
+            <section>General</section>
+            <key>installdir</key>
+            <value>${installdir}</value>
+        </iniFileSet>
+        <iniFileSet>
+            <file>${installdir}/properties.ini</file>
+            <section>General</section>
+            <key>base_stack_name</key>
+            <value>${project.fullName}</value>
+        </iniFileSet>
+        <iniFileSet>
+            <file>${installdir}/properties.ini</file>
+            <section>General</section>
+            <key>base_stack_version</key>
+            <value>${project.version}</value>
+        </iniFileSet>
+        <changePermissions>
+            <files>${installdir}/properties.ini</files>
+            <permissions>0700</permissions>
+            <ruleList>
+                <platformTest type="unix"/>
+            </ruleList>
+        </changePermissions>
+    </postInstallationActionList>
+</component>
+

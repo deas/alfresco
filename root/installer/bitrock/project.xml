@@ -104,6 +104,12 @@
 
 	<include file="postgres-service.xml" />
 
+	<include file="manager.xml" />
+	<include file="base-write-properties.xml"/>
+	<include file="java-properties.xml" />
+	<include file="postgres-properties.xml" />
+	<include file="tomcat-properties.xml" />
+
     	<include file="alfrescodm.xml" />
         <include file="alfresco-apply-amps.xml" />
 
