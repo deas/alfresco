@@ -520,18 +520,20 @@
 <!-- Please refer to http://wiki.apache.org/solr/SolrReplication for details on configuring replication -->
 <!-- remove the <lst name="master"> section if this is just a slave -->
 <!-- remove  the <lst name="slave"> section if this is just a master -->
-<!--
+
 <requestHandler name="/replication" class="solr.ReplicationHandler" >
     <lst name="master">
-      <str name="replicateAfter">commit</str>
-      <str name="replicateAfter">startup</str>
       <str name="confFiles">schema.xml,stopwords.txt</str>
+      <str name="backupAfter">startup</str>
+      <str name="backupAfter">optimize</str>
     </lst>
+    <!--
     <lst name="slave">
       <str name="masterUrl">http://localhost:8983/solr/replication</str>
       <str name="pollInterval">00:00:60</str>
     </lst>
-</requestHandler>-->
+    -->
+</requestHandler>
 
   <!-- DisMaxRequestHandler allows easy searching across multiple fields
        for simple user-entered phrases.  It's implementation is now
@@ -585,6 +587,22 @@
   <requestHandler name="/afts" class="solr.SearchHandler" >
     <lst name="defaults">
      <str name="defType">afts</str>
+    </lst>
+    <arr name="components">
+      <str>setLocale</str>
+      <str>query</str>
+      <str>facet</str>
+      <str>mlt</str>
+      <str>highlight</str>
+      <str>stats</str>
+      <str>debug</str>
+      <str>clearLocale</str>
+    </arr>
+  </requestHandler>
+
+ <requestHandler name="/cmis" class="solr.SearchHandler" >
+    <lst name="defaults">
+     <str name="defType">cmis</str>
     </lst>
     <arr name="components">
       <str>setLocale</str>

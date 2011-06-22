@@ -600,6 +600,22 @@
     </arr>
   </requestHandler>
 
+ <requestHandler name="/cmis" class="solr.SearchHandler" >
+    <lst name="defaults">
+     <str name="defType">cmis</str>
+    </lst>
+    <arr name="components">
+      <str>setLocale</str>
+      <str>query</str>
+      <str>facet</str>
+      <str>mlt</str>
+      <str>highlight</str>
+      <str>stats</str>
+      <str>debug</str>
+      <str>clearLocale</str>
+    </arr>
+  </requestHandler>
+
   <!-- Note how you can register the same handler multiple times with
        different names (and different init parameters)
     -->

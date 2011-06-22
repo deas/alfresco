@@ -828,6 +828,13 @@ public class AlfrescoSolrDataModel
         return parser;
     }
 
+    public LuceneQueryBuilderContext getLuceneQueryBuilderContext(SearchParameters searchParameters, IndexReader indexReader)
+    {
+        LuceneQueryBuilderContextSolrImpl luceneContext = new LuceneQueryBuilderContextSolrImpl(dictionaryComponent, namespaceDAO, tenantService, searchParameters,
+                getMLAnalysisMode(), indexReader, alfrescoDataType.getAnalyzer(), this);
+        return luceneContext;
+    }
+    
     public Query getFTSQuery(SearchParameters searchParameters, IndexReader indexReader) throws ParseException
     {
         QueryModelFactory factory = new LuceneQueryModelFactory();
@@ -851,8 +858,7 @@ public class AlfrescoSolrDataModel
 
         LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
 
-        LuceneQueryBuilderContextSolrImpl luceneContext = new LuceneQueryBuilderContextSolrImpl(dictionaryComponent, namespaceDAO, tenantService, searchParameters,
-                getMLAnalysisMode(), indexReader, alfrescoDataType.getAnalyzer(), this);
+        LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader);
 
         Set<String> selectorGroup = null;
         if (queryModelQuery.getSource() != null)
@@ -878,7 +884,7 @@ public class AlfrescoSolrDataModel
         return contextAwareQuery;
     }
 
-    public Query getCMISQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader) throws ParseException
+    public  org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader) throws ParseException
     {
         // convert search parameters to cmis query options
         // TODO: how to handle store ref
@@ -893,10 +899,7 @@ public class AlfrescoSolrDataModel
         
         // parse cmis syntax
         CapabilityJoin joinSupport = (mode == CMISQueryMode.CMS_STRICT) ? CapabilityJoin.NONE : CapabilityJoin.INNERONLY;
-        BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
-        CmisFunctionEvaluationContext functionContext = new CmisFunctionEvaluationContext();
-        functionContext.setCmisDictionaryService(cmisDictionaryService);
-        functionContext.setValidScopes(validScopes);
+        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode);
         CMISQueryParser parser = new CMISQueryParser(options, cmisDictionaryService, joinSupport);
         org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = parser.parse(new LuceneQueryModelFactory(), functionContext);
         
@@ -915,15 +918,33 @@ public class AlfrescoSolrDataModel
             }
             selectorGroup = selectorGroups.get(0);
         }
-
-        LuceneQueryBuilderContextSolrImpl luceneContext = new LuceneQueryBuilderContextSolrImpl(dictionaryComponent, namespaceDAO, tenantService, searchParameters,
-                getMLAnalysisMode(), indexReader, alfrescoDataType.getAnalyzer(), this);
+        return queryModelQuery;
+    }
+    
+    public CmisFunctionEvaluationContext getCMISFunctionEvaluationContext(CMISQueryMode mode)
+    {
+        BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
+        CmisFunctionEvaluationContext functionContext = new CmisFunctionEvaluationContext();
+        functionContext.setCmisDictionaryService(cmisDictionaryService);
+        functionContext.setValidScopes(validScopes);
+        return functionContext;
+    }
+    
+    public Query getCMISQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery) throws ParseException
+    {
+        BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
+        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode);
+        
+        Set<String> selectorGroup = queryModelQuery.getSource().getSelectorGroups(functionContext).get(0);
+        
+        LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader);
         LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
         org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
 
         ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, searchParameters);
         return contextAwareQuery;
     }
+    
     
     /**
      * @param field
