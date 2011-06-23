@@ -56,6 +56,8 @@ public interface SearchService
     
     public static final String LANGUAGE_CMIS_ALFRESCO = "cmis-alfresco";
 
+    public static final String LANGUAGE_SOLR_CMIS = "solr-cmis";
+
     /**
      * Search against a store. Pulls back all attributes on each node. Does not
      * allow parameterisation.
