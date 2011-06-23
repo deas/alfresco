@@ -22,6 +22,7 @@ package org.alfresco.util.collections;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,6 +41,7 @@ public abstract class CollectionUtils
 
     /**
      * Converts a {@link Collection} of values of type F to a {@link Serializable} {@link List} of values of type T.
+     * Filters out all values converted to <code>null</code>.
      * @param <F> From type
      * @param <T> To type
      * @param values the values to convert.
@@ -48,10 +50,18 @@ public abstract class CollectionUtils
      */
     public static <F, T> List<T> transform(Collection<F> values, Function<? super F, ? extends T> transformer)
     {
+        if(values == null || values.isEmpty())
+        {
+            return Collections.emptyList();
+        }
         List<T> results = new ArrayList<T>(values.size());
         for (F value : values)
         {
-            results.add(transformer.apply(value));
+            T result = transformer.apply(value);
+            if(result != null)
+            {
+                results.add(result);
+            }
         }
         return results;
     }
@@ -60,5 +70,41 @@ public abstract class CollectionUtils
     {
         return transform(values, TO_STRING_TRANSFORMER);
     }
+    
+    /**
+     * Returns a filtered {@link List} of values. Only values for which <code>filter.apply(T) returns true</code> are included in the {@link List} or returned values. 
+     * @param <T> The type of the {@link Collection}
+     * @param values the {@link Collection} to be filtered.
+     * @param filter the {@link Function} used to filter the {@link Collection}.
+     * @return the filtered {@link List} of values.
+     */
+    public static <T> List<T> filter(Collection<T> values, final Function<? super T, Boolean > filter)
+    {
+        return transform(values, new Function<T, T>()
+        {
+            public T apply(T value)
+            {
+                if(filter.apply(value))
+                {
+                    return value;
+                }
+                return null;
+            }
+        });
+    }
 
+    public static <T> List<T> flatten(Collection<? extends Collection<? extends T>> values)
+    {
+        List<T> results = new ArrayList<T>();
+        for (Collection<? extends T> collection : values)
+        {
+            results.addAll(collection);
+        }
+        return results;
+    }
+    
+    public static <F, T> List<T> transformFlat(Collection<F> values, Function<? super F, ? extends Collection<? extends T>> transformer)
+    {
+        return flatten(transform(values, transformer));
+    }
 }
