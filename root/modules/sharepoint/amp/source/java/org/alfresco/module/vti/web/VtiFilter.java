@@ -36,6 +36,7 @@ import org.alfresco.module.vti.handler.AuthenticationHandler;
 import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.handler.SiteMemberMappingException;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
+import org.alfresco.module.vti.web.actions.VtiSoapAction;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.apache.commons.logging.Log;
@@ -270,7 +271,19 @@ public class VtiFilter implements Filter
             httpResponse.setHeader("MicrosoftSharePointTeamServices", "14.00.0.000");
             httpResponse.setHeader("Cache-Control", "no-cache");
             httpResponse.setHeader("Connection", "close");
-            httpResponse.setContentType("application/x-vermeer-rpc");
+            
+            // The content type depends on if we're doing SOAP or FPE
+            String soapAction = VtiSoapAction.getSOAPAction(httpRequest);
+            if(soapAction != null)
+            {
+               // SOAP Request
+               httpResponse.setContentType("text/xml; charset=utf-8");
+            }
+            else
+            {
+               // Front Page Extensions Request
+               httpResponse.setContentType("application/x-vermeer-rpc");
+            }
         }
     }    
     
