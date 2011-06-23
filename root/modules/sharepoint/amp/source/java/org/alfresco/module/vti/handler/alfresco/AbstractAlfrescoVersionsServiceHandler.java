@@ -28,6 +28,8 @@ import javax.transaction.UserTransaction;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.VersionsServiceHandler;
+import org.alfresco.module.vti.handler.VtiHandlerException;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -36,6 +38,7 @@ import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.version.Version;
+import org.alfresco.service.cmr.version.VersionDoesNotExistException;
 import org.alfresco.service.cmr.version.VersionHistory;
 import org.alfresco.service.cmr.version.VersionService;
 import org.alfresco.service.cmr.version.VersionType;
@@ -193,7 +196,63 @@ public abstract class AbstractAlfrescoVersionsServiceHandler implements Versions
      */
     public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion)
     {
-        throw new UnsupportedOperationException("This method is not supported");
+       if (logger.isDebugEnabled())
+          logger.debug("Method with name 'deleteVersion' is started for " + fileVersion + " of " + fileName);
+
+      FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+
+      assertDocument(documentFileInfo);
+      UserTransaction tx = transactionService.getUserTransaction(false);
+      try
+      {
+          tx.begin();
+          
+          VersionHistory history = versionService.getVersionHistory(documentFileInfo.getNodeRef());
+          if(history == null)
+          {
+              // Versioning is disabled
+              throw new VtiHandlerException(VtiError.V_VERSION_NOT_FOUND);
+          }
+          
+          Version version = history.getVersion(fileVersion);
+
+          if(logger.isDebugEnabled())
+          {
+             logger.debug("Deleteing version " + version);
+          }
+          versionService.deleteVersion(documentFileInfo.getNodeRef(), version);
+
+          tx.commit();
+      }
+      catch (Exception e)
+      {
+          try
+          {
+              tx.rollback();
+          }
+          catch (Exception tex)
+          {
+          }
+          if (logger.isDebugEnabled())
+              logger.debug("Error: version was not deleted. ", e);
+          
+          if(e instanceof VersionDoesNotExistException)
+          {
+             throw new VtiHandlerException(VtiError.V_VERSION_NOT_FOUND); 
+          }
+          if(e instanceof VtiHandlerException)
+          {
+             throw (VtiHandlerException)e;
+          }
+          throw new RuntimeException("Version was not deleted. May be you don't have appropriate permissions.");
+      }
+
+      List<DocumentVersionBean> result = getVersions(documentFileInfo);
+
+      if (logger.isDebugEnabled())
+          logger.debug("Method with name 'deleteVersion' is finished.");
+
+      return result;
     }
 
     /**

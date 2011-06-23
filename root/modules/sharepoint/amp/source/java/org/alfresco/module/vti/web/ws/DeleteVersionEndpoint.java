@@ -60,12 +60,7 @@ public class DeleteVersionEndpoint extends AbstractEndpoint
     {
         if (logger.isDebugEnabled())
             logger.debug("Soap Method with name " + getName() + " is started.");
-        if (true)
-        {
-            if (logger.isWarnEnabled())
-                logger.debug("Return error 'This operation is not supported by server.'");
-            throw new Exception("This operation is not supported by server.");
-        }
+        
         // mapping xml namespace to prefix
         SimpleNamespaceContext nc = new SimpleNamespaceContext();
         nc.addNamespace(prefix, namespace);
