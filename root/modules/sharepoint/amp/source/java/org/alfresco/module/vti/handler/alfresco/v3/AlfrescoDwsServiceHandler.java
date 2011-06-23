@@ -39,6 +39,7 @@ import org.alfresco.module.vti.handler.alfresco.VtiExceptionUtils;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.module.vti.metadata.dic.Permission;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.dic.WorkspaceType;
 import org.alfresco.module.vti.metadata.model.DocumentBean;
 import org.alfresco.module.vti.metadata.model.DwsBean;
@@ -242,7 +243,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
 
         if (docLibFileInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
 
         addDwsContentRecursive(docLibFileInfo, dwsContent, "documentLibrary/");
@@ -418,7 +419,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
         // ensure that new dws will be created in Sites space
         if (!parentUrl.equals(""))
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
 
         // replace all illegal characters
@@ -481,7 +482,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
             
             if (t instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiHandlerException.NO_PERMISSIONS);
             }
 
             throw VtiExceptionUtils.createRuntimeException(t);
@@ -553,7 +554,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
             
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiHandlerException.NO_PERMISSIONS);
             }
 
             throw VtiExceptionUtils.createRuntimeException(e);
@@ -615,7 +616,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
             
             if (t instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiHandlerException.NO_PERMISSIONS);
             }
 
             throw VtiExceptionUtils.createRuntimeException(t);

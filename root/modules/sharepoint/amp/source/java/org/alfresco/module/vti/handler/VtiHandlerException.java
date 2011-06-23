@@ -18,6 +18,8 @@
  */
 package org.alfresco.module.vti.handler;
 
+import org.alfresco.module.vti.metadata.dic.VtiError;
+
 /**
  * Exception for SOAP services and VTI methods
  * 
@@ -25,29 +27,50 @@ package org.alfresco.module.vti.handler;
  */
 public class VtiHandlerException extends RuntimeException
 {
-
-    public static final String NOT_FOUND = "Not found";
-    public static final String ITEM_NOT_FOUND = "Could not find the specified item";
-    public static final String LIST_NOT_FOUND = "Could not find the specified list";
-    public static final String NOT_PERMISSIONS = "Does not permissions";
-    public static final String ALREADY_EXISTS = "Already exists";
-    public static final String DOESNOT_EXIST = "Doesn't exist";
-    public static final String URL_NOT_FOUND = "Url not found";
-    public static final String OWSSVR_ERRORACCESSDENIED = "Owssvr access denied";
-    public static final String BAD_URL = "Bad Url";
-    public static final String UNDEFINED = "Undefined";
-    public static final String DOC_NOT_CHECKED_OUT = "File not checked out";
-    public static final String DOC_CHECKED_OUT = "File checked out";
-    public static final String PRIMARY_PARENT_NOT_EXIST = "Folder does not exist";
-    public static final String FOLDER_ALREADY_EXISTS = "Folder already exisits";
-    public static final String FILE_ALREADY_EXISTS = "File already exsits";
-    public static final String REMOVE_DIRECTORY = "Directory could not be removed";
-    public static final String FILE_OPEN_FOR_WRITE = "Can't open for writing";
-    public static final String REMOVE_FILE = "File could not be removed";
-    public static final String URL_DIR_NOT_FOUND = "Folder does not exist";
-    public static final String HAS_ILLEGAL_CHARACTERS = "The name contains characters that are not permitted";
+    public static final VtiError NOT_FOUND = VtiError.NOT_FOUND;
+    public static final VtiError ITEM_NOT_FOUND = VtiError.ITEM_NOT_FOUND;
+    public static final VtiError LIST_NOT_FOUND = VtiError.LIST_NOT_FOUND;
+    public static final VtiError NO_PERMISSIONS = VtiError.NO_PERMISSIONS;
+    public static final VtiError ALREADY_EXISTS = VtiError.ALREADY_EXISTS;
+    public static final VtiError DOES_NOT_EXIST = VtiError.DOES_NOT_EXIST;
+    public static final VtiError URL_NOT_FOUND = VtiError.V_URL_NOT_FOUND;
+    public static final VtiError OWSSVR_ERRORACCESSDENIED = VtiError.V_OWSSVR_ERRORACCESSDENIED;
+    public static final VtiError BAD_URL = VtiError.V_BAD_URL;
+    public static final VtiError UNDEFINED = VtiError.V_UNDEFINED;
+    public static final VtiError DOC_NOT_CHECKED_OUT = VtiError.V_DOC_NOT_CHECKED_OUT;
+    public static final VtiError DOC_CHECKED_OUT = VtiError.V_DOC_CHECKED_OUT;
+    public static final VtiError PRIMARY_PARENT_NOT_EXIST = VtiError.PRIMARY_PARENT_NOT_EXIST;
+    public static final VtiError FOLDER_ALREADY_EXISTS = VtiError.FOLDER_ALREADY_EXISTS;
+    public static final VtiError FILE_ALREADY_EXISTS = VtiError.FILE_ALREADY_EXISTS;
+    public static final VtiError REMOVE_DIRECTORY = VtiError.V_REMOVE_DIRECTORY;
+    public static final VtiError FILE_OPEN_FOR_WRITE = VtiError.V_FILE_OPEN_FOR_WRITE;
+    public static final VtiError REMOVE_FILE = VtiError.V_REMOVE_FILE;
+    public static final VtiError URL_DIR_NOT_FOUND = VtiError.V_URL_DIR_NOT_FOUND;
+    public static final VtiError HAS_ILLEGAL_CHARACTERS = VtiError.V_HAS_ILLEGAL_CHARACTERS;
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * What SharePoint error code to return
+     */
+    private int errorCode = -1;
+    
+    /**
+     * What Error this is
+     */
+    private VtiError error = VtiError.V_UNDEFINED;
+
+    /**
+     * Create exception with specified message
+     * 
+     * @param error the specified error
+     */
+    public VtiHandlerException(VtiError error)
+    {
+        super(error.getMessage());
+        this.errorCode = error.getErrorCode();
+        this.error = error;
+    }
 
     /**
      * Create exception with specified message
@@ -57,6 +80,19 @@ public class VtiHandlerException extends RuntimeException
     public VtiHandlerException(String message)
     {
         super(message);
+    }
+
+    /**
+     * Create exception with specified message ant throwable object
+     * 
+     * @param error the specified error
+     * @param throwable
+     */
+    public VtiHandlerException(VtiError error, Throwable throwable)
+    {
+        super(error.getMessage(), throwable);
+        this.errorCode = error.getErrorCode();
+        this.error = error;
     }
 
     /**
@@ -78,5 +114,22 @@ public class VtiHandlerException extends RuntimeException
     public VtiHandlerException(Throwable throwable)
     {
         super(throwable);
+    }
+    
+    /**
+     * Return the error code, or -1 if not known
+     */
+    public int getErrorCode()
+    {
+        return errorCode;
+    }
+    
+    /**
+     * Return the underlying error, if known,
+     *  or {@link VtiError#V_UNDEFINED} if not
+     */
+    public VtiError getError()
+    {
+        return error;
     }
 }

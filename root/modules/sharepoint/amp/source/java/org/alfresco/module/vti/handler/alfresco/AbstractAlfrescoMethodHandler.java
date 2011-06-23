@@ -38,6 +38,7 @@ import org.alfresco.module.vti.metadata.dialog.DialogsMetaInfo;
 import org.alfresco.module.vti.metadata.dic.DocumentStatus;
 import org.alfresco.module.vti.metadata.dic.PutOption;
 import org.alfresco.module.vti.metadata.dic.RenameOption;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.dic.VtiSort;
 import org.alfresco.module.vti.metadata.dic.VtiSortField;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
@@ -476,7 +477,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
         {
             if (VtiUtils.hasIllegalCharacter(urlPart))
             {
-                throw new VtiHandlerException(VtiHandlerException.HAS_ILLEGAL_CHARACTERS);
+                throw new VtiHandlerException(VtiError.V_HAS_ILLEGAL_CHARACTERS);
             }            
         }
         
@@ -491,7 +492,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
             {
                 logger.debug("Invalid name for new directory. Name should not be empty.");
             }
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
 
         FileInfo parentFileInfo = getPathHelper().resolvePathFileInfo(parentName);
@@ -676,7 +677,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
         String destName = parentChildPaths.getSecond();
         if (destName.length() == 0)
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
 
         UserTransaction tx = getTransactionService().getUserTransaction(false);
@@ -804,7 +805,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
 
             if (e instanceof FileNotFoundException)
             {
-                throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+                throw new VtiHandlerException(VtiError.V_BAD_URL);
             }
 
             if (e instanceof NodeLockedException)
@@ -854,7 +855,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
         String documentName = parentChildPaths.getSecond();
         if (documentName.length() == 0)
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
 
         FileInfo curDocumentFileInfo; // file info for document for put_document method
@@ -1415,7 +1416,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
     {
         if (fileInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
     }
 }

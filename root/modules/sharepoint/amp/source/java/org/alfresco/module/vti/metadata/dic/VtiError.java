@@ -20,17 +20,23 @@
 package org.alfresco.module.vti.metadata.dic;
 
 /**
- * <p>Enum of the standard errors that may be raised while protocol usage.</p>
+ * <p>Enum of the standard errors that may be raised by the protocol usage.</p>
  * 
  * @author Michael Shavnev
  * @author Dmitry Lazurkin
- *
  */
 public enum VtiError
 {
+    NOT_FOUND (10, "Not found."),
+    ITEM_NOT_FOUND (-1, "Could not find the specified item"),
+    LIST_NOT_FOUND (-1, "Could not find the specified list"),
+    NO_PERMISSIONS (3, "You do not have permissions to that"),
+    ALREADY_EXISTS (-1, "The object already exists"),
+    DOES_NOT_EXIST (-1, "The object doesn't exist"),
+
     WRITE_ERROR (0x0002000C, "Write error on file."),
     CANNOT_RENAME_DEST_EXISTS (0x00020019, "Cannot rename : destination already exists."),
-    FILE_ALREADY_EXISTS (0x00090002, "A file already exsits."),
+    FILE_ALREADY_EXISTS (0x00090002, "A file already exists."),
     V_BAD_URL (0x00090005, "The provided URL is invalid."),
     V_URL_NOT_FOUND (0x00090006, "There is no file with URL in this Web."),
     PRIMARY_PARENT_NOT_EXIST (0x00090007, "The folder that would hold URL does not exist on the server."),
@@ -48,20 +54,22 @@ public enum VtiError
     V_OWSSVR_ERRORACCESSDENIED (0x001E0002, "Access denied."),
     V_OWSSVR_ERRORSERVERINCAPABLE (0x001E0006, "The server does not support this capability. "),
     
-    V_UNDIFUNED (0x0000000, "Undefined error");
+    V_VERSION_NOT_FOUND (0x80131600 , "The version could not be found."),
+    
+    V_UNDEFINED (0x0000000, "Undefined error");
 
-    private final String messagePattern;
+    private final String message;
     private final int errorCode;
 
-    VtiError(int errorCode, String messagePattern)
+    VtiError(int errorCode, String message)
     {
         this.errorCode = errorCode;
-        this.messagePattern = messagePattern;
+        this.message = message;
     }
 
-    public String getMessagePattern()
+    public String getMessage()
     {
-        return messagePattern;
+        return message;
     }
 
     public int getErrorCode()

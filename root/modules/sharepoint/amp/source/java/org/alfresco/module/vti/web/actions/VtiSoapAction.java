@@ -20,6 +20,8 @@ package org.alfresco.module.vti.web.actions;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -108,6 +110,40 @@ public class VtiSoapAction implements VtiAction
     }
     
     /**
+     * Returns the SOAP Action that was requested, or NULL if the request
+     *  isn't a SOAP action.
+     * This method handles any de-quoting that is required.
+     */
+    public static String getSOAPAction(HttpServletRequest request)
+    {
+       // Fetch, and de-quote if needed the action
+       String soapAction = request.getHeader("SOAPAction");
+       if (soapAction != null)
+       {
+          // SOAP 1.1, de-quote
+          if (soapAction.startsWith("\"") && soapAction.endsWith("\""))
+          {
+             soapAction = soapAction.substring(1, soapAction.length()-1);
+          }
+       }
+       else
+       {
+          // SOAP 1.2
+          if (request.getContentType() != null)
+          {
+             Pattern p = Pattern.compile("action=\"(.*?)\"");
+             Matcher m = p.matcher(request.getContentType());
+             if(m.find())
+             {
+                soapAction = m.group(1);
+             }
+          }
+       }
+       
+       return soapAction;
+    }
+    
+    /**
      * <p>
      * Dispatch among set of VtiEndpoints.
      * 
@@ -115,7 +151,7 @@ public class VtiSoapAction implements VtiAction
      */
     protected VtiEndpoint dispatchRequest(VtiSoapRequest request)
     {
-        String soapAction = request.getHeader("SOAPAction");
+        String soapAction = getSOAPAction(request);
         VtiEndpoint result = endpointsMapping.get(soapAction);
         return result;
     }
@@ -125,21 +161,21 @@ public class VtiSoapAction implements VtiAction
 
         if (e instanceof VtiHandlerException)
         {
+            VtiHandlerException handlerException = (VtiHandlerException)e;
             Element resultElement = responsElement.addElement(vtiEndpoint.getName() + "Response", vtiEndpoint.getNamespace()).addElement(vtiEndpoint.getName() + "Result");
-            String errorMessage = ((VtiHandlerException) e).getMessage();
+            
+            String errorMessage = handlerException.getMessage();
             String errorCode;
-            if (errorMessage.equals(VtiHandlerException.NOT_FOUND))
+            if(handlerException.getErrorCode() > -1)
             {
-                errorCode = "10";
-            }
-            else if (errorMessage.equals(VtiHandlerException.NOT_PERMISSIONS))
-            {
-                errorCode = "3";
+               errorCode = Integer.toString(handlerException.getErrorCode());
             }
             else
             {
                 errorCode = "13";
             }
+            // TODO Is this correct? Should we really be returning a different
+            //  error code in this case to the other SOAP ones?
             resultElement.addElement("Error").addAttribute("ID", errorCode);
         }
         else

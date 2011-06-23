@@ -72,7 +72,7 @@ public abstract class AbstractMethod implements VtiMethod
             {
                 doExecute(request, response);
             }
-            catch (VtiMehtodException e)
+            catch (VtiMethodException e)
             {
                 if (logger.isDebugEnabled())
                 {
@@ -82,7 +82,7 @@ public abstract class AbstractMethod implements VtiMethod
                     }
                 }
 
-                if (e.getErrorCode() == VtiError.V_UNDIFUNED.getErrorCode())
+                if (e.getErrorCode() == VtiError.V_UNDEFINED.getErrorCode())
                 {
                     response.getOutputStream().write(MAGIC_STRING_IRRECOVERABLE_ERROR.getBytes());
                 }
@@ -111,7 +111,7 @@ public abstract class AbstractMethod implements VtiMethod
      * @param request Vti Frontpage request ({@link VtiFpRequest})
      * @param response Vti Frontpage response ({@link VtiFpResponse})
      */    
-    protected abstract void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMehtodException, IOException;
+    protected abstract void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMethodException, IOException;
 
     
     /**
@@ -121,7 +121,7 @@ public abstract class AbstractMethod implements VtiMethod
      * @param request Vti Frontpage request
      * @param response Vti Frontpage response
      */  
-    protected void processDocMetaInfo(DocMetaInfo docMetaInfo, VtiFpRequest request, VtiFpResponse response) throws VtiMehtodException, IOException
+    protected void processDocMetaInfo(DocMetaInfo docMetaInfo, VtiFpRequest request, VtiFpResponse response) throws VtiMethodException, IOException
     {
         response.writeMetaDictionary(VtiProperty.FILE_THICKETDIR, VtiType.BOOLEAN, VtiConstraint.R, docMetaInfo.getThicketdir());
         response.writeMetaDictionary(VtiProperty.FILE_TIMECREATED, VtiType.TIME, VtiConstraint.R, docMetaInfo.getTimecreated());

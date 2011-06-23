@@ -68,7 +68,7 @@ public class FileOpenDialog extends AbstractMethod
      * @param request Vti Frontpage request ({@link VtiFpRequest})
      * @param response Vti Frontpage response ({@link VtiFpResponse})      
      */
-    protected void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMehtodException, IOException
+    protected void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMethodException, IOException
     {
         if (logger.isDebugEnabled())
         {
@@ -89,7 +89,7 @@ public class FileOpenDialog extends AbstractMethod
         }
         catch (VtiHandlerException e)
         {
-            throw new VtiMehtodException(e);
+            throw new VtiMethodException(e);
         }
 
         List<DialogMetaInfo> items = dialogInfo.getDialogMetaInfoList();

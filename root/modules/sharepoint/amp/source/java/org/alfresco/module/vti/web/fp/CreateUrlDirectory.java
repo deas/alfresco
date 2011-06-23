@@ -39,7 +39,7 @@ public class CreateUrlDirectory extends AbstractMethod
      * @param response Vti Frontpage response ({@link VtiFpResponse})      
      */
     @Override
-    protected void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMehtodException, IOException
+    protected void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMethodException, IOException
     {
         // Currently not supported
     }

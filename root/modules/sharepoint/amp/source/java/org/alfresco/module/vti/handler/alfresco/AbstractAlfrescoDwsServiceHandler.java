@@ -32,6 +32,7 @@ import org.alfresco.module.vti.handler.DwsServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.dic.CAMLMethod;
 import org.alfresco.module.vti.metadata.dic.Permission;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.dic.WorkspaceType;
 import org.alfresco.module.vti.metadata.model.AssigneeBean;
 import org.alfresco.module.vti.metadata.model.DocumentBean;
@@ -294,7 +295,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         if (dwsInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.URL_NOT_FOUND);
+            throw new VtiHandlerException(VtiError.V_URL_NOT_FOUND);
         }
 
         // set the title of currently opened document workspace site
@@ -364,13 +365,13 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         FileInfo parentFileInfo = pathHelper.resolvePathFileInfo(parentPath);
         if (parentFileInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
 
         String dwsName = parentChildPaths.getSecond();
         if (dwsName.length() == 0)
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
 
         UserTransaction tx = transactionService.getUserTransaction(false);
@@ -395,7 +396,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
             }
 
             throw VtiExceptionUtils.createRuntimeException(e);
@@ -418,12 +419,12 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         if (dwsFileInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+            throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
 
         if (dwsFileInfo.isFolder() == false)
         {
-            throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+            throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
 
         UserTransaction tx = transactionService.getUserTransaction(false);
@@ -447,7 +448,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
             }
 
             throw VtiExceptionUtils.createRuntimeException(e);
@@ -469,7 +470,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         {
             if (VtiUtils.hasIllegalCharacter(part))
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+                throw new VtiHandlerException(VtiError.NOT_FOUND);
             }
         }
         
@@ -477,7 +478,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         if (folderFileInfo != null)
         {
-            throw new VtiHandlerException(VtiHandlerException.ALREADY_EXISTS);
+            throw new VtiHandlerException(VtiError.ALREADY_EXISTS);
         }
 
         Pair<String, String> parentChildPaths = VtiPathHelper.splitPathParentChild(url);
@@ -486,13 +487,13 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         FileInfo parentFileInfo = pathHelper.resolvePathFileInfo(parentPath);
         if (parentFileInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+            throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
 
         String dwsName = parentChildPaths.getSecond();
         if (dwsName.length() == 0)
         {
-            throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+            throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
 
         UserTransaction tx = transactionService.getUserTransaction(false);
@@ -516,7 +517,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
             }
 
             throw VtiExceptionUtils.createRuntimeException(e);
@@ -537,12 +538,12 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         if (folderFileInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+            throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
 
         if (folderFileInfo.isFolder() == false)
         {
-            throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+            throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
 
         UserTransaction tx = transactionService.getUserTransaction(false);
@@ -566,7 +567,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
             }
             throw VtiExceptionUtils.createRuntimeException(e);
         }
@@ -586,7 +587,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         if (dwsFileInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+            throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
 
         UserTransaction tx = transactionService.getUserTransaction(false);
@@ -610,7 +611,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
             }
 
             throw VtiExceptionUtils.createRuntimeException(e);
@@ -631,7 +632,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         if (dwsInfo == null)
         {
-            throw new VtiHandlerException(VtiHandlerException.NOT_FOUND);
+            throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
 
         UserTransaction tx = transactionService.getUserTransaction(false);
@@ -655,10 +656,10 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
             }
 
-            throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+            throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
         }
 
         if (logger.isDebugEnabled())

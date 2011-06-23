@@ -125,7 +125,7 @@ public class AlfrescoUserGroupServiceHandler extends AbstractAlfrescoUserGroupSe
                     }
                     if (logger.isDebugEnabled())
                         logger.debug("Error: The user does not have sufficient rights.", e);
-                    throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                    throw new VtiHandlerException(VtiHandlerException.NO_PERMISSIONS);
                 }
 
             }
@@ -133,7 +133,7 @@ public class AlfrescoUserGroupServiceHandler extends AbstractAlfrescoUserGroupSe
             {
                 if (logger.isDebugEnabled())
                     logger.debug("Error: The user does not have sufficient rights.");
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiHandlerException.NO_PERMISSIONS);
             }
         }
         if (logger.isDebugEnabled())

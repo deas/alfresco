@@ -33,9 +33,9 @@ public class NotImplementedVtiMethod extends AbstractMethod
      * @param request Vti Frontpage request ({@link VtiFpRequest})
      * @param response Vti Frontpage response ({@link VtiFpResponse})
      */
-    protected void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMehtodException, IOException
+    protected void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMethodException, IOException
     {
-        throw new VtiMehtodException(VtiError.V_OWSSVR_ERRORSERVERINCAPABLE);
+        throw new VtiMethodException(VtiError.V_OWSSVR_ERRORSERVERINCAPABLE);
     }
     
     public NotImplementedVtiMethod(String vtiMethodName)

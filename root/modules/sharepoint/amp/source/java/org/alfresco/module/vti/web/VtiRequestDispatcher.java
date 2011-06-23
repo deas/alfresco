@@ -233,7 +233,7 @@ public class VtiRequestDispatcher extends HttpServlet
             if (logger.isDebugEnabled())
             {
                 logger.debug("Action found for request");
-                logger.debug("Execute target action");
+                logger.debug("Execute target action " + targetAction.toString());
             }
             targetAction.execute(httpRequest, httpResponse);
         }

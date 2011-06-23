@@ -34,7 +34,7 @@ public class SaveFormDialog extends AbstractMethod
      * @see org.alfresco.module.vti.method.AbstractVtiMethod#doExecute(org.alfresco.module.vti.VtiRequest, org.alfresco.module.vti.VtiResponse)
      */
     @Override
-    protected void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMehtodException, IOException
+    protected void doExecute(VtiFpRequest request, VtiFpResponse response) throws VtiMethodException, IOException
     {
         // do nothing
     }

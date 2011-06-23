@@ -22,6 +22,7 @@ import java.util.List;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoUserGroupServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.UserBean;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -74,7 +75,7 @@ public class AlfrescoUserGroupServiceHandler extends AbstractAlfrescoUserGroupSe
 
         if (dwsFileInfo.isFolder() == false)
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
 
         for (UserBean userBean : usersList)
@@ -86,7 +87,7 @@ public class AlfrescoUserGroupServiceHandler extends AbstractAlfrescoUserGroupSe
             else
             {
                 // The user does not have sufficient rights
-                throw new VtiHandlerException(VtiHandlerException.NOT_PERMISSIONS);
+                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
             }
         }
     }

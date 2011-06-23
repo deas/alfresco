@@ -35,6 +35,7 @@ import org.alfresco.module.vti.handler.alfresco.VtiExceptionUtils;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.module.vti.metadata.dic.DocumentStatus;
 import org.alfresco.module.vti.metadata.dic.GetOption;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.Document;
@@ -144,7 +145,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                     {
                         logger.debug("Url must start with alfresco context.");
                     }
-                    throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+                    throw new VtiHandlerException(VtiError.V_BAD_URL);
                 }
 
                 if (url.equalsIgnoreCase(alfrescoContext))
@@ -204,7 +205,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                 }
                 if (webUrl.equals(""))
                 {
-                    throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+                    throw new VtiHandlerException(VtiError.V_BAD_URL);
                 }
                 return new String[] { webUrl, fileUrl };
             }

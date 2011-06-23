@@ -87,7 +87,7 @@ public class DefaultAuthenticationHandler implements AuthenticationHandler
         catch (Exception e)
         {
             if (dwsName == null)
-                throw new SiteMemberMappingException(VtiHandlerException.DOESNOT_EXIST);
+                throw new SiteMemberMappingException(VtiHandlerException.DOES_NOT_EXIST);
             else
                 return false;
         }

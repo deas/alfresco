@@ -34,7 +34,7 @@ import org.alfresco.module.vti.metadata.dic.VtiSortField;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.Document;
-import org.alfresco.module.vti.web.fp.VtiMehtodException;
+import org.alfresco.module.vti.web.fp.VtiMethodException;
 
 /**
  * Front Page protocol fundamental API.
@@ -76,7 +76,7 @@ public interface MethodHandler
      *        a full list of the documents contained in that folder.
      * @param listChildWebs <i>true</i> if folder represents a web site; otherwise, <i>false</i>
      * @return DocsMetaInfo
-     * @throws VtiMehtodException ({@link VtiMehtodException})
+     * @throws VtiMethodException ({@link VtiMethodException})
      */
     public DocsMetaInfo getListDocuments(String serviceName, boolean listHiddenDocs, boolean listExplorerDocs, String platform, String initialURL, boolean listRecurse,
             boolean listLinkInfo, boolean listFolders, boolean listFiles, boolean listIncludeParent, boolean listDerived, boolean listBorders, boolean validateWelcomeNames,
