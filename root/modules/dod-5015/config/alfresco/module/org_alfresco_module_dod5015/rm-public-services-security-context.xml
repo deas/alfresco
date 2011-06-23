@@ -414,7 +414,7 @@
                 org.alfresco.service.cmr.model.FileFolderService.searchSimple=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.Read,RM.Read.0,AFTER_RM.FilterNode 
                 org.alfresco.service.cmr.model.FileFolderService.rename=ACL_NODE.0.sys:base.WriteProperties,RM.Update.0
                 org.alfresco.service.cmr.model.FileFolderService.move=ACL_NODE.0.sys:base.DeleteNode,ACL_NODE.1.sys:base.CreateChildren,RM.Move.0.1 
-                org.alfresco.service.cmr.model.FileFolderService.moveFrom=ACL_NODE.0.sys:base.DeleteNode,ACL_NODE.2.sys:base.CreateChildren,RM.Move.0.1 
+                org.alfresco.service.cmr.model.FileFolderService.moveFrom=ACL_NODE.0.sys:base.DeleteNode,ACL_NODE.2.sys:base.CreateChildren,RM.Move.0.2 
                 org.alfresco.service.cmr.model.FileFolderService.copy=ACL_NODE.0.sys:base.Read,ACL_NODE.1.sys:base.CreateChildren,RM.Read.0,RM.Create.1.0
                 org.alfresco.service.cmr.model.FileFolderService.create=ACL_NODE.0.sys:base.CreateChildren,RM.Create.0.2 
                 org.alfresco.service.cmr.model.FileFolderService.delete=ACL_NODE.0.sys:base.DeleteNode,RM.Delete.0 

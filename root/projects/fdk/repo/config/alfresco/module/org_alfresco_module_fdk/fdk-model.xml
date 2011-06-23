@@ -21,6 +21,7 @@
    <!-- FDK Namespace -->
    <namespaces>
       <namespace uri="http://www.alfresco.org/model/fdk/1.0" prefix="fdk"/>
+      <namespace uri="http://www.alfresco.org/model/my-fdk/1.0" prefix="my-fdk"/>
    </namespaces>
 
    <constraints>
@@ -444,6 +445,15 @@
       
       <type name="fdk:with_underscore">
          <parent>cm:content</parent>
+      </type>
+      
+      <type name="my-fdk:namespace-with-dash">
+         <parent>fdk:everything</parent>
+         <properties>
+            <property name="my-fdk:more_text">
+               <type>d:text</type>
+            </property>
+         </properties>
       </type>
    </types>
    
