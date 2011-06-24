@@ -150,7 +150,7 @@
          <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
          <junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
             <jvmarg value="-server"/>
-            <jvmarg value="-XX:MaxPermSize=128M"/>
+            <jvmarg value="-XX:MaxPermSize=256M"/>
             <jvmarg value="-Dcom.sun.management.jmxremote"/>
             <classpath>
             <path refid="classpath.unit.test"/>
