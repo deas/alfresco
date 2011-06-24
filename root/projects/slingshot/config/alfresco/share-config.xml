@@ -234,34 +234,34 @@
             <class>org.springframework.extensions.webscripts.RequestCachingConnector</class>
             <authenticator-id>alfresco-ticket</authenticator-id>
          </connector>
+         
+         <!-- Activiti admin connector -->
+         <authenticator>
+            <id>activiti-admin-authenticator</id>
+            <name>activiti-admin-authenticator</name>
+            <description>Authenticator authenticating against alfresco, but
+               used on activiti-admin endpoint</description>
+            <class>org.alfresco.web.config.ActivitiAdminAuthenticator</class>
+         </authenticator>
+         <connector>
+            <id>activiti-admin-connector</id>
+            <name>Alfresco Activiti Admin UI Connector</name>
+            <description>Connects to an Activiti UI instance using
+               ticket-based authentication</description>
+            <class>org.alfresco.web.config.ActivitiAdminConnector</class>
+            <authenticator-id>activiti-admin-authenticator</authenticator-id>
+         </connector>
+         <endpoint>
+            <id>activiti-admin</id>
+            <name>Alfresco - user access</name>
+            <description>Access to Activiti Admin UI, that requires user
+               authentication</description>
+            <connector-id>activiti-admin-connector</connector-id>
+            <endpoint-url>http://localhost:8080/alfresco/activiti-admin
+            </endpoint-url>
+            <identity>user</identity>
+         </endpoint>
       </remote>
-
-      <!-- Activiti admin connector -->
-      <authenticator>
-         <id>activiti-admin-authenticator</id>
-         <name>activiti-admin-authenticator</name>
-         <description>Authenticator authenticating against alfresco, but
-            used on activiti-admin endpoint</description>
-         <class>org.alfresco.web.config.ActivitiAdminAuthenticator</class>
-      </authenticator>
-      <connector>
-         <id>activiti-admin-connector</id>
-         <name>Alfresco Activiti Admin UI Connector</name>
-         <description>Connects to an Activiti UI instance using
-            ticket-based authentication</description>
-         <class>org.alfresco.web.config.ActivitiAdminConnector</class>
-         <authenticator-id>activiti-admin-authenticator</authenticator-id>
-      </connector>
-      <endpoint>
-         <id>activiti-admin</id>
-         <name>Alfresco - user access</name>
-         <description>Access to Activiti Admin UI, that requires user
-            authentication</description>
-         <connector-id>activiti-admin-connector</connector-id>
-         <endpoint-url>http://localhost:8080/alfresco/activiti-admin
-         </endpoint-url>
-         <identity>user</identity>
-      </endpoint>
    </config>
 
 </alfresco-config>
