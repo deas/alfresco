@@ -18,6 +18,7 @@
 package org.alfresco.wcm.client.impl;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -205,7 +206,7 @@ public abstract class ResourceBaseImpl implements Resource
             ContentInfo contentInfo = (ContentInfo) properties.get("cm:content");
             if (contentInfo != null)
             {
-                properties.put(PropertyIds.CONTENT_STREAM_LENGTH, contentInfo.getSize());
+                properties.put(PropertyIds.CONTENT_STREAM_LENGTH, BigInteger.valueOf(contentInfo.getSize()));
                 properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, contentInfo.getMimeType());
             }
         }
