@@ -18,7 +18,6 @@
  */
 package org.alfresco.query;
 
-
 /**
  * Simple wrapper for single page request (with optional request for total count up to a given max)
  * 
@@ -32,13 +31,48 @@ public class PagingRequest
     
     private int requestTotalCountMax = 0; // request total count up to a given max (0 => do not request total count)
     private String queryExecutionId;
+
+    /**
+     * Construct a page request
+     * 
+     * @param maxItems              the maximum number of items per page
+     */
+    public PagingRequest(int maxItems)
+    {
+        this.maxItems = maxItems;
+    }
     
+    /**
+     * Construct a page request
+     * 
+     * @param maxItems              the maximum number of items per page
+     * @param skipCount             the number of items to skip before the first page
+     */
+    public PagingRequest(int skipCount, int maxItems)
+    {
+        this.skipCount = skipCount;
+        this.maxItems = maxItems;
+    }
+    
+    /**
+     * Construct a page request
+     * 
+     * @param maxItems              the maximum number of items per page
+     * @param queryExecutionId      a query execution ID associated with ealier paged requests
+     */
     public PagingRequest(int maxItems, String queryExecutionId)
     {
         setMaxItems(maxItems);
         this.queryExecutionId = queryExecutionId;
     }
     
+    /**
+     * Construct a page request
+     * 
+     * @param maxItems              the maximum number of items per page
+     * @param skipCount             the number of items to skip before the first page
+     * @param queryExecutionId      a query execution ID associated with ealier paged requests
+     */
     public PagingRequest(int skipCount, int maxItems, String queryExecutionId)
     {
         setSkipCount(skipCount);
@@ -50,7 +84,7 @@ public class PagingRequest
      * Results to skip before retrieving the page.  Usually a multiple of page size (ie. page size * num pages to skip).
      * Default is 0.
      * 
-     * @return
+     * @return          the number of results to skip before the page
      */
     public int getSkipCount()
     {
@@ -68,7 +102,7 @@ public class PagingRequest
     /**
      * Size of the page - if skip count is 0 then return up to max items.
      * 
-     * @return
+     * @return          the maximum size of the page
      */
     public int getMaxItems()
     {
