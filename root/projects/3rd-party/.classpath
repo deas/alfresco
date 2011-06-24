@@ -169,11 +169,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/rome-0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/tagsoup-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wss4j-1.5.4-patched.jar" sourcepath="src/wss4j-1.5.4-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/google/gdata-client-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/google/gdata-core-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/google/gdata-docs-3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/google/gdata-media-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/google/google-collect-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-tck-atompub-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.5.0.jar" sourcepath="src/pdfbox-1.5.0-src.zip"/>
@@ -227,5 +222,10 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-linkedin-1.0.0.M3.jar" sourcepath="src/spring-social-linkedin-1.0.0.M3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-twitter-1.0.0.M3.jar" sourcepath="src/spring-social-twitter-1.0.0.M3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-web-1.0.0.M3.jar" sourcepath="src/spring-social-web-1.0.0.M3-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-client-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-core-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-docs-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-media-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/google-collect-1.0.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
