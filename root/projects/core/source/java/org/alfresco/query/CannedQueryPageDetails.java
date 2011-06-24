@@ -55,6 +55,22 @@ public class CannedQueryPageDetails
     }
     
     /**
+     * Construct with defaults
+     * <ul>
+     *   <li><b>pageNumber:</b> {@link #DEFAULT_PAGE_NUMBER}</li>
+     *   <li><b>pageCount:</b> {@link #DEFAULT_PAGE_COUNT}</li>
+     * </ul>
+     * @param skipResults               results to skip before <i>page one</i>
+     *                                  (default <b>{@link #DEFAULT_SKIP_RESULTS}</b>)
+     * @param pageSize                  the size of each page
+     *                                  (default <b>{@link #DEFAULT_PAGE_SIZE}</b>)
+     */
+    public CannedQueryPageDetails(int skipResults, int pageSize)
+    {
+        this (skipResults, pageSize, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_COUNT);
+    }
+    
+    /**
      * @param skipResults               results to skip before <i>page one</i>
      *                                  (default <b>{@link #DEFAULT_SKIP_RESULTS}</b>)
      * @param pageSize                  the size of each page
@@ -88,6 +104,16 @@ public class CannedQueryPageDetails
         {
             throw new IllegalArgumentException("pageCount must be greater than zero.");
         }
+    }
+    
+    /**
+     * Helper constructor to transform a paging request into the Canned Query form.
+     * 
+     * @param pagingRequest             the paging details
+     */
+    public CannedQueryPageDetails(PagingRequest pagingRequest)
+    {
+        this(pagingRequest.getSkipCount(), pagingRequest.getMaxItems());
     }
     
     @Override

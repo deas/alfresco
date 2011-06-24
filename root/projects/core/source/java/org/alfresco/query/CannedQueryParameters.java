@@ -60,7 +60,7 @@ public class CannedQueryParameters
      * <ul>
      *    <li><b>pageDetails.pageNumber</b>: <tt>1</tt></li>
      *    <li><b>pageDetails.pageCount</b>: <tt>1</tt></li>
-     *    <li><b>authenticationToken</b>: <tt>""</tt></li>
+     *    <li><b>authenticationToken</b>: <tt>null</tt></li>
      *    <li><b>requestTotalResultCountMax</b>: <tt>0</tt></li>
      * </ul>
      *  
