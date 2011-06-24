@@ -67,15 +67,6 @@ public class WebSiteChannelType extends AbstractChannelType
     * {@inheritDoc}
     */
     @Override
-    public QName getContentRootNodeType()
-    {
-        return TYPE_WEB_ROOT;
-    }
-
-    /**
-    * {@inheritDoc}
-    */
-    @Override
     public void publish(NodeRef nodeToPublish, Map<QName, Serializable> properties)
     {
         //NOOP
