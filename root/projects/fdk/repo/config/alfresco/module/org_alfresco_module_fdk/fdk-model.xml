@@ -48,6 +48,18 @@
             </list>
          </parameter>
       </constraint>
+      
+      <constraint name="fdk:capitals" type="LIST">
+         <parameter name="allowedValues">
+            <list>
+               <value>London, England</value>
+               <value>Paris, France</value>
+               <value>Washington DC, USA</value>
+               <value>Beijing, China</value>
+               <value>Canberra, Australia</value>
+            </list>
+         </parameter>
+      </constraint>
 
       <constraint name="fdk:summary" type="LENGTH">
          <parameter name="minLength">
@@ -333,6 +345,12 @@
                <type>d:text</type>
                <constraints>
                   <constraint ref="fdk:email" />
+               </constraints>
+            </property>
+            <property name="fdk:capitalCity">
+               <type>d:text</type>
+               <constraints>
+                  <constraint ref="fdk:capitals" />
                </constraints>
             </property>
          </properties>

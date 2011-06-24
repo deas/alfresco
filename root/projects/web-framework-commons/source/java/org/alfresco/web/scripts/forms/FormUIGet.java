@@ -98,6 +98,7 @@ public class FormUIGet extends DeclarativeWebScript
     protected static final String CM_NAME_PROP = "prop_cm_name";
     protected static final String MSG_DEFAULT_SET_LABEL = "form.default.set.label";
     protected static final String INDENT = "   ";
+    protected static final String DELIMITER = "#alf#";
     
     protected static final String SUBMIT_TYPE_MULTIPART = "multipart";
     protected static final String SUBMIT_TYPE_JSON = "json";
@@ -137,6 +138,7 @@ public class FormUIGet extends DeclarativeWebScript
     protected static final String CONTROL_SELECT_MANY = "/org/alfresco/components/form/controls/selectmany.ftl";
     protected static final String CONTROL_SELECT_ONE = "/org/alfresco/components/form/controls/selectone.ftl";
     protected static final String CONTROL_PARAM_OPTIONS = "options";
+    protected static final String CONTROL_PARAM_OPTION_SEPARATOR = "optionSeparator";
     
     protected static final String MODEL_DATA = "data";
     protected static final String MODEL_DEFINITION = "definition";
@@ -1933,8 +1935,10 @@ public class FormUIGet extends DeclarativeWebScript
                     optionsList.add(options.getString(x));
                 }
                 
+                // ALF-7961: don't use a comma as the list separator
                 field.getControl().getParams().put(CONTROL_PARAM_OPTIONS, 
-                            StringUtils.collectionToCommaDelimitedString(optionsList));
+                            StringUtils.collectionToDelimitedString(optionsList, DELIMITER));
+                field.getControl().getParams().put(CONTROL_PARAM_OPTION_SEPARATOR, DELIMITER);
             }
         }
         else if (CONSTRAINT_LENGTH.equals(constraint.getId()))

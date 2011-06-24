@@ -283,6 +283,7 @@
                <show id="fdk:lengthConstraint" />
                <show id="fdk:minmaxConstraint" />
                <show id="fdk:regexConstraint" />
+               <show id="fdk:capitalCity" />
             </field-visibility>
          </form>
          
