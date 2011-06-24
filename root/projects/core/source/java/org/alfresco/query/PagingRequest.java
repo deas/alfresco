@@ -19,7 +19,6 @@
 package org.alfresco.query;
 
 
-
 /**
  * Simple wrapper for single page request (with optional request for total count up to a given max)
  * 
@@ -28,7 +27,7 @@ package org.alfresco.query;
  */
 public class PagingRequest
 {
-    private int skipCount = 0;
+    private int skipCount = CannedQueryPageDetails.DEFAULT_SKIP_RESULTS;
     private int maxItems;
     
     private int requestTotalCountMax = 0; // request total count up to a given max (0 => do not request total count)
@@ -36,14 +35,14 @@ public class PagingRequest
     
     public PagingRequest(int maxItems, String queryExecutionId)
     {
-        this.maxItems = maxItems;
+        setMaxItems(maxItems);
         this.queryExecutionId = queryExecutionId;
     }
     
     public PagingRequest(int skipCount, int maxItems, String queryExecutionId)
     {
-        this.skipCount = skipCount;
-        this.maxItems = maxItems;
+        setSkipCount(skipCount);
+        setMaxItems(maxItems);
         this.queryExecutionId = queryExecutionId;
     }
     
@@ -63,7 +62,7 @@ public class PagingRequest
      */
     protected void setSkipCount(int skipCount)
     {
-        this.skipCount = skipCount;
+        this.skipCount = (skipCount < 0 ? CannedQueryPageDetails.DEFAULT_SKIP_RESULTS : skipCount);
     }
     
     /**
@@ -81,7 +80,7 @@ public class PagingRequest
      */
     protected void setMaxItems(int maxItems)
     {
-        this.maxItems = maxItems;
+        this.maxItems = (maxItems < 0 ? CannedQueryPageDetails.DEFAULT_PAGE_SIZE : maxItems);
     }
     
     /**
