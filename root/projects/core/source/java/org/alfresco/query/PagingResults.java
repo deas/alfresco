@@ -34,7 +34,7 @@ public interface PagingResults<R> extends PermissionedResults
     
     /**
      * True if more items on next page. 
-     * 
+     * <p/>
      * Note: could also return true if page was cutoff/trimmed for some reason 
      *       (eg. due to permission checks of large page of requested max items)
      * 
@@ -48,13 +48,14 @@ public interface PagingResults<R> extends PermissionedResults
     /**
      * Get the total result count assuming no paging applied.  This value will only be available if
      * the query supports it and the client requested it.  By default, it is not requested.
-     * 
+     * <p/>
      * Returns result as an approx "range" pair <lower, upper>
-     * 
-     * - null (or lower is null) => unknown total count (or not requested by the client).
-     * - lower = upper           => total count should be accurate
-     * - lower < upper           => total count is an approximation ("about") - somewhere in the given range (inclusive)
-     * - upper is null           => total count is "more than" lower (upper is unknown)
+     * <ul>
+     * <li>null (or lower is null) => unknown total count (or not requested by the client).</li>
+     * <li>lower = upper           => total count should be accurate</li>
+     * <li>lower < upper           => total count is an approximation ("about") - somewhere in the given range (inclusive)</li>
+     * <li>upper is null           => total count is "more than" lower (upper is unknown)</li>
+     * </ul>
      * 
      * @return                  Returns the total results as a range (all results, including the paged results returned)
      */

@@ -18,7 +18,6 @@
  */
 package org.alfresco.query;
 
-
 /**
  * Marker interface to show that permissions have already been applied to the results (and possibly cutoff)
  *
@@ -27,7 +26,13 @@ package org.alfresco.query;
  */
 public interface PermissionedResults
 {
-    public boolean permissionsApplied(); // true - if permissions have been applied to the results
+    /**
+     * @return      <tt>true</tt> - if permissions have been applied to the results
+     */
+    public boolean permissionsApplied();
     
-    public boolean hasMoreItems();       // true - if permission checks caused results to be cutoff (either due to max count or max time)
+    /**
+     * @return      <tt>true</tt> - if permission checks caused results to be cutoff (either due to max count or max time)
+     */
+    public boolean hasMoreItems(); 
 }
