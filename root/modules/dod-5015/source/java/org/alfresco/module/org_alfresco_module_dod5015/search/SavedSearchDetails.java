@@ -19,8 +19,6 @@
 package org.alfresco.module.org_alfresco_module_dod5015.search;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.service.cmr.model.FileFolderService;
-import org.alfresco.service.cmr.repository.NodeRef;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,29 +43,26 @@ import org.json.JSONObject;
  *             
  * @author Roy Wetherall
  */
-public class SavedSearchDetails 
+public class SavedSearchDetails extends ReportDetails
 {
     // JSON label values
-    private static final String SITE_ID = "siteid";
-    private static final String NAME = "name";
-    private static final String DESCRIPTION = "description";
-    private static final String QUERY = "query";
-    private static final String PUBLIC = "public";
+    public static final String SITE_ID = "siteid";
+    public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String QUERY = "query";
+    public static final String SORT = "sort";
+    public static final String PARAMS = "params";
+    public static final String PUBLIC = "public";
+    public static final String REPORT = "report";
     
     /** Site id */
 	private String siteId;
-	
-	/** Name */
-	private String name;
-	
-	/** Description */
-	private String description;
-	
-	/** Query */
-	private String query;
-	
+		
 	/** Indicates whether the saved search is public or not */
 	private boolean isPublic;
+	
+	/** Indicates whether the saved search is a report */
+	private boolean isReport = false;
 	
 	/**
 	 * 
@@ -95,10 +90,24 @@ public class SavedSearchDetails
     	    String name = search.getString(NAME);
     	    
     	    // Get the description
-    	    String description = null;
+    	    String description = "";
     	    if (search.has(DESCRIPTION) == true)
     	    {
     	        description = search.getString(DESCRIPTION);
+    	    }
+    	    
+    	    // Get the sort string
+    	    String sort = "";
+    	    if (search.has(SORT) == true)
+    	    {
+    	        sort = search.getString(SORT);
+    	    }
+    	    
+    	    // Get the param string
+    	    String params = "";
+    	    if (search.has(PARAMS) == true)
+    	    {
+    	        params = search.getString(PARAMS);
     	    }
     	    
     	    // Get the query
@@ -106,7 +115,7 @@ public class SavedSearchDetails
     	    {
     	        throw new AlfrescoRuntimeException("Can not create saved search details from json, because required query is not present. " + jsonString);
     	    }
-    	    String query = search.getString(QUERY);
+    	    String query = search.getString(QUERY);    	    
     	    
     	    // Determine whether the saved query is public or not
     	    boolean isPublic = false;
@@ -115,8 +124,15 @@ public class SavedSearchDetails
     	        isPublic = search.getBoolean(PUBLIC);
     	    }
     	    
+    	    // Determine whether the saved query is a report or not
+    	    boolean isReport = false;
+    	    if (search.has(REPORT) == true)
+    	    {
+    	        isReport = search.getBoolean(REPORT);
+    	    }
+    	    
     	    // Create the saved search details object
-    	    return new SavedSearchDetails(siteId, name, description, query, isPublic);    	    
+    	    return new SavedSearchDetails(siteId, name, description, query, sort, params, isPublic, isReport);    	    
 	    }
 	    catch (JSONException exception)
 	    {
@@ -130,71 +146,23 @@ public class SavedSearchDetails
 	 * @param description
 	 * @param isPublic
 	 */
-	public SavedSearchDetails(String siteId, String name, String description, String query, boolean isPublic) 
+	public SavedSearchDetails(String siteId, String name, String description, String query, String sort, String params, boolean isPublic, boolean isReport) 
 	{
+	    super(name, description, query, sort, params);
 		this.siteId = siteId;
-		this.name = name;
-		this.description = description;
-		this.query = query;
 		this.isPublic = isPublic;
+		this.isReport = isReport;
 	}
 	
 	/**
-	 * 
 	 * @return
 	 */
 	public String getSiteId() 
 	{
 		return siteId;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getName() 
-	{
-		return name;
-	}
+	}	
 	
 	/**
-	 * 
-	 * @return
-	 */
-	public String getDescription() 
-	{
-		return description;
-	}
-
-	/**
-	 * 
-	 * @param description
-	 */
-	public void setDescription(String description) 
-	{
-		this.description = description;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getQuery()
-    {
-        return query;
-    }
-	
-	/**
-	 * 
-	 * @param query
-	 */
-	public void setQuery(String query)
-    {
-        this.query = query;
-    }
-	
-	/**
-	 * 
 	 * @return
 	 */
 	public boolean isPublic() 
@@ -203,7 +171,14 @@ public class SavedSearchDetails
 	}
 	
 	/**
-	 * 
+	 * @return
+	 */
+	public boolean isReport()
+    {
+        return isReport;
+    }
+	
+	/**
 	 * @return
 	 */
 	public String toJSONString()
@@ -215,6 +190,8 @@ public class SavedSearchDetails
     	    jsonObject.put(NAME, name);
     	    jsonObject.put(DESCRIPTION, description);
     	    jsonObject.put(QUERY, query);
+    	    jsonObject.put(SORT, sort);
+    	    jsonObject.put(PARAMS, params);
     	    jsonObject.put(PUBLIC, isPublic);
     	    return jsonObject.toString();
 	    }

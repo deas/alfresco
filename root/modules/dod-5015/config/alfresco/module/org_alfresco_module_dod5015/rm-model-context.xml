@@ -58,6 +58,7 @@
    		 class="org.alfresco.module.org_alfresco_module_dod5015.model.RmSiteType" 
    		 parent="org_alfresco_module_dod5015_BaseBehaviour">
    	  <property name="siteService" ref="SiteService"/>
+   	  <property name="recordsManagementSearchService" ref="RecordsManagementSearchService" />
    </bean>
    
    <!--  Record Component Identifier aspect behaviour bean -->

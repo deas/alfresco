@@ -71,11 +71,15 @@
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getNodeRefPath=RM.Read.0
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordsManagementRoot=RM.Read.0,AFTER_RM.FilterNode
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordsManagementRoots=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.createRecordsManagementRoot=RM_ALLOW
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.createRecordsManagementRoot=RM.WRITE.0
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getAllContained=RM.Read.0,AFTER_RM.FilterNode
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getContainedRecordsManagementContainers=RM.Read.0,AFTER_RM.FilterNode
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getContainedRecordFolders=RM.Read.0,AFTER_RM.FilterNode
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.createRecordsManagementContainer=RM.Write.0
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordFolderDeclared=RM.Read.0
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.createRecordFolder=RM.Write.0                
-                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecords=RM.Read.0,AFTER_RM.FilterNode                
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecords=RM.Read.0,AFTER_RM.FilterNode       
+                org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordMetaDataAspects=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getRecordFolders=RM.Read.0,AFTER_RM.FilterNode                
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.isRecordDeclared=RM.Read.0
                 org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService.getVitalRecordDefinition=RM.Read.0
@@ -161,7 +165,21 @@
     
     <bean id="recordsManagementSearchService" class="org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchServiceImpl">        
         <property name="fileFolderService" ref="FileFolderService"/>
-        <property name="siteService" ref="SiteService"/>     
+        <property name="siteService" ref="SiteService"/>  
+        <property name="namespaceService" ref="NamespaceService" />
+        <property name="reportsJSON">
+        	<value>
+                <![CDATA[
+                [
+                	{
+                		"name" : "Test",
+                		"description" : "This is a test query.",
+                		"query" : "keywords:\"test\""
+                	}
+                ]
+                ]]>
+            </value>
+        </property>   
     </bean>
     
     <bean id="RecordsManagementSearchService" class="org.springframework.aop.framework.ProxyFactoryBean">
@@ -208,7 +226,8 @@
                 org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService.getSavedSearches=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService.getSavedSearch=RM_ALLOW
                 org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService.saveSearch=RM_ALLOW
-                org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService.deleteSavedSearch=RM_ALLOW               
+                org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService.deleteSavedSearch=RM_ALLOW   
+                org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService.addReports=RM_ALLOW            
                 org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService.*=RM_DENY
                 ]]>
             </value>

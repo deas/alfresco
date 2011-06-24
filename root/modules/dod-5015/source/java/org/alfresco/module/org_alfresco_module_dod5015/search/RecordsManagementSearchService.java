@@ -28,7 +28,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
  * @author Roy Wetherall
  */
 public interface RecordsManagementSearchService 
-{
+{   
 	/**
 	 * Execute a records management search
 	 * @param query	search query string
@@ -61,7 +61,7 @@ public interface RecordsManagementSearchService
      * @param isPublic
      * @return
      */
-    SavedSearchDetails saveSearch(String siteId, String name, String description, String query, boolean isPublic);
+    SavedSearchDetails saveSearch(String siteId, String name, String description, String query, String sort, String params, boolean isPublic);
 	
 	/**
 	 * 
@@ -76,4 +76,10 @@ public interface RecordsManagementSearchService
 	 * @param name
 	 */
 	void deleteSavedSearch(SavedSearchDetails savedSearchDetails);
+	
+    /**
+     * Adds the reports as saved searches to a given site.
+     * @param siteId    site id
+     */
+    void addReports(String siteId);
 }

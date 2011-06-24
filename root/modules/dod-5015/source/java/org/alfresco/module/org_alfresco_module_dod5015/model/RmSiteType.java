@@ -3,6 +3,7 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.model;
 
+import org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService;
 import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
@@ -36,6 +37,9 @@ public class RmSiteType implements RecordsManagementModel,
     /** Node service */
     private NodeService nodeService;
     
+    /** Record Management Search Service */
+    private RecordsManagementSearchService recordsManagementSearchService;
+    
     /**
      * Set the policy component
      * @param policyComponent   policy component
@@ -61,6 +65,14 @@ public class RmSiteType implements RecordsManagementModel,
     public void setNodeService(NodeService nodeService)
     {
         this.nodeService = nodeService;
+    }
+    
+    /**
+     * @param recordsManagementSearchService    records management search service
+     */
+    public void setRecordsManagementSearchService(RecordsManagementSearchService recordsManagementSearchService)
+    {
+        this.recordsManagementSearchService = recordsManagementSearchService;
     }
     
     /**
@@ -100,6 +112,9 @@ public class RmSiteType implements RecordsManagementModel,
                 	{	                
 	                	// Create the file plan component
 	                	siteService.createContainer(siteInfo.getShortName(), COMPONENT_DOCUMENT_LIBRARY, DOD5015Model.TYPE_FILE_PLAN, null);
+	                	
+	                	// Add the reports
+	                	recordsManagementSearchService.addReports(siteInfo.getShortName());
                 	}
                     return null;
                 }
