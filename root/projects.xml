@@ -2318,16 +2318,8 @@
               dir="${dir.project.webclient.samplewebsite}" />
       <mkdir dir="${dir.project.webclient.samplewebsite}/alfresco/classes"/>
 
-      <javac srcdir="${dir.project.webclient.test.resources}/websites/alfresco/ROOT/WEB-INF/classes"
-             destdir="${dir.project.webclient.samplewebsite}/alfresco/classes" 
-             fork="true"
-             memoryMaximumSize="${mem.size.max}" 
-             deprecation="${javac.deprecation}" 
-             debug="${javac.debug}"  
-             target="${javac.target}" 
-             source="${javac.source}"
-             encoding="${javac.encoding}"
-             classpathref="classpath.compile" />
+      <compile-java-javac srcdir="${dir.project.webclient.test.resources}/websites/alfresco/ROOT/WEB-INF/classes"
+           classesdir="${dir.project.webclient.samplewebsite}/alfresco/classes" />
 
       <jar basedir="${dir.project.webclient.classes}"
            destfile="${dir.project.webclient.samplewebsite}/alfresco/alfresco-form-data-functions.jar"

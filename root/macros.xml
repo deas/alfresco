@@ -16,16 +16,17 @@
       </sequential>
    </macrodef>
    
-   <macrodef name="compile-java" description="Compiles Java source files in the given project">
-      <attribute name="projectdir" />
+   <macrodef name="compile-java-javac" description="Compiles Java source files in the given source directory to the given classes directory">
+      <attribute name="srcdir" />
+      <attribute name="classesdir" />
       <attribute name="compileExcludes" default="" />
       <element name="addPath" optional="yes" />
       <sequential>
-         <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+         <mkdir dir="@{classesdir}" />
          
          <!-- Our classpath is getting too long. We'll need to specify it in a temporary file instead! -->
          <path id="compile-java-classpath">
-            <pathelement location="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+            <pathelement location="@{classesdir}" />
             <addPath />
             <path refid="classpath.compile" />
             <path refid="classpath.compile.extension" />
@@ -33,26 +34,37 @@
          <tempfile property="compile-java-classpath-file" deleteonexit="true" />
          <echo message="-classpath${line.separator}${toString:compile-java-classpath}" file="${compile-java-classpath-file}" />
 
-         <javac destdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" fork="true"
+         <javac destdir="@{classesdir}" fork="true"
                 memoryMaximumSize="${mem.size.max}" deprecation="${javac.deprecation}" 
                 debug="${javac.debug}"  target="${javac.target}" source="${javac.source}" encoding="${javac.encoding}"
                 excludes="@{compileExcludes}" includeAntRuntime="false">
             <compilerarg value="@${compile-java-classpath-file}"/>
-            <src path="@{projectdir}/${dir.name.source}/${dir.name.java}" />
+            <src path="@{srcdir}" />
 
             <!-- To run javac with Xlint:unchecked, uncomment the line below  -->
             <!-- <compilerarg value="-Xlint:unchecked"/> -->
 
          </javac>
          
-         <copy todir="@{projectdir}/${dir.name.build}/${dir.name.classes}">
-            <fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
+         <copy todir="@{classesdir}">
+            <fileset dir="@{srcdir}">
                <patternset>
                   <exclude name="**/*.java" />
                   <exclude name="log4j.properties" />
                </patternset>
             </fileset>
          </copy>
+      </sequential>
+   </macrodef>
+
+   <macrodef name="compile-java" description="Compiles Java source files in the given project">
+      <attribute name="projectdir" />
+      <attribute name="compileExcludes" default="" />
+      <element name="addPath" optional="yes" />
+      <sequential>
+         <compile-java-javac srcdir="@{projectdir}/${dir.name.source}/${dir.name.java}" classesdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" compileExcludes="@{compileExcludes}">
+            <addPath/>
+         </compile-java-javac>
       </sequential>
    </macrodef>
 
