@@ -20,14 +20,14 @@
       <attribute name="srcdir" />
       <attribute name="classesdir" />
       <attribute name="compileExcludes" default="" />
-      <element name="addPath" optional="yes" />
+      <element name="addPath2" optional="yes" />
       <sequential>
          <mkdir dir="@{classesdir}" />
          
          <!-- Our classpath is getting too long. We'll need to specify it in a temporary file instead! -->
          <path id="compile-java-classpath">
             <pathelement location="@{classesdir}" />
-            <addPath />
+            <addPath2 />
             <path refid="classpath.compile" />
             <path refid="classpath.compile.extension" />
          </path>
@@ -63,7 +63,9 @@
       <element name="addPath" optional="yes" />
       <sequential>
          <compile-java-javac srcdir="@{projectdir}/${dir.name.source}/${dir.name.java}" classesdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" compileExcludes="@{compileExcludes}">
-            <addPath/>
+            <addPath2>
+               <addPath /> 
+            </addPath2>
          </compile-java-javac>
       </sequential>
    </macrodef>
