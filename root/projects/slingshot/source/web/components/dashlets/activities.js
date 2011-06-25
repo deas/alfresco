@@ -149,7 +149,7 @@
          this.widgets.user.set("label", this.msg("filter.all"));
          this.widgets.user.value = "all";
          this.widgets.activities.set("label", this.msg("filter.actall"));
-         this.widgets.activities.value = "actall";
+         this.widgets.activities.value = "";
 
          this.services.preferences.request(PREFERENCES_ACTIVITIES,
          {
@@ -157,7 +157,7 @@
             {
                fn: function(p_oResponse)
                {
-                  var activitiesPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_ACTIVITIES, "actall");
+                  var activitiesPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_ACTIVITIES, "");
                   if (activitiesPreference !== null)
                   {
                      this.widgets.range.value = activitiesPreference;
@@ -216,7 +216,7 @@
                   // Display the toolbar now that we have selected the filter
                   Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
                   // Populate the activity list
-                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value);
+                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.actvities.value);
                },
                scope: this
             },
@@ -227,7 +227,7 @@
                   // Display the toolbar now that we have selected the filter
                   Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
                   // Populate the activity list
-                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value);
+                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.actvities.value);
                },
                scope: this
             }
@@ -238,7 +238,7 @@
        * Populate the activity list via Ajax request
        * @method populateActivityList
        */
-      populateActivityList: function Activities_populateActivityList(dateFilter, userFilter)
+      populateActivityList: function Activities_populateActivityList(dateFilter, userFilter, activityFilter)
       {
          // Load the activity list
          Alfresco.util.Ajax.request(
@@ -249,7 +249,8 @@
                site: this.options.siteId,
                mode: this.options.mode,
                dateFilter: dateFilter,
-               userFilter: userFilter
+               userFilter: userFilter,
+               activityFilter: activityFilter
             },
             successCallback:
             {
@@ -284,7 +285,7 @@
          {
             this.activityList.innerHTML = html;
          }
-         this.updateFeedLink(this.widgets.range.value, this.widgets.user.value);
+         this.updateFeedLink(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
       },
 
       /**
@@ -300,7 +301,7 @@
        * Sets the the feed link
        * @method updateFeedLink
        */
-      updateFeedLink: function Activities_updateFeedLink(dateFilter,userFilter)
+      updateFeedLink: function Activities_updateFeedLink(dateFilter,userFilter,activityFilter)
       {         
          var url = Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/dashlets/activities/list?";
          var dataObj =
@@ -309,7 +310,8 @@
             mode: this.options.mode,
             site: this.options.siteId,
             dateFilter: dateFilter,
-            userFilter: userFilter
+            userFilter: userFilter,
+            activityFilter: activityFilter
          };
          url += Alfresco.util.Ajax.jsonToParamString(dataObj, true);
          this.link = url;
@@ -340,7 +342,7 @@
          {
             this.widgets.range.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.range.value = menuItem.value;
-            this.populateActivityList(this.widgets.range.value, this.widgets.user.value);
+            this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
             this.services.preferences.set(PREF_RANGE, this.widgets.range.value);
          }
       },
@@ -360,7 +362,7 @@
          {
             this.widgets.user.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.user.value = menuItem.value;
-            this.populateActivityList(this.widgets.range.value, this.widgets.user.value);
+            this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
             this.services.preferences.set(PREF_FILTER, this.widgets.user.value);
          }
       },
@@ -380,8 +382,8 @@
          {
             this.widgets.activities.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.activities.value = menuItem.value;
-            this.populateActivityList(this.widgets.range.value, this.widgets.user.value);
-            this.services.preferences.set(PREF_ACTIVITIES, this.widgets.user.value);
+            this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
+            this.services.preferences.set(PREF_ACTIVITIES, this.widgets.activities.value);
          }
       }
    });

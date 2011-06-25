@@ -8,7 +8,8 @@ function getFilters(filterType)
       filters.push(
       {
          type: xmlFilter.@type.toString(),
-         label: xmlFilter.@label.toString()
+         label: xmlFilter.@label.toString(),
+         activities: xmlFilter.@activities.toString()
       });
    }
 

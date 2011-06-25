@@ -128,7 +128,7 @@ function specialize(item, activity, summary)
 function getActivities()
 {
    // Call the correct repo script depending on the mode
-   var mode = args.mode, site = args.site, userFilter = args.userFilter, connector,
+   var mode = args.mode, site = args.site, userFilter = args.userFilter, activityFilter = args.activityFilter, connector,
       result =
       {
          status: 0
@@ -149,16 +149,22 @@ function getActivities()
    switch(userFilter)
    {
       case "others":
-    	  actParam = "&exclUser=true";
+         actParam = "&exclUser=true";
          break; 
       case "mine":
-    	  actParam = "&exclOthers=true";
+         actParam = "&exclOthers=true";
          break;
       case "following":
-    	  actParam = "&following=true";
+         actParam = "&following=true";
          break;
    }
 
+   // Filter by activityFilter
+   if (activityFilter)
+   {
+	   actParam = actParam + "&activityFilter=" + encodeURI(activityFilter);
+   }
+   
    // Filter by site
    if (mode == "site" && site)
    {
