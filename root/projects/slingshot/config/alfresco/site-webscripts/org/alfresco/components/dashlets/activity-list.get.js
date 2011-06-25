@@ -100,17 +100,22 @@ function specialize(item, activity, summary)
          item.suppressSite = true;
          break;
       case "org.alfresco.subscriptions.followed":
-          item.fullName = trim(summary.followerFirstName + " " + summary.followerLastName);
-          item.userProfile = userProfileUrl(summary.followerUserName);
-          item.custom0 = trim(summary.userFirstName + " " + summary.userLastName);
-          item.suppressSite = true;
-          break;
+         item.fullName = trim(summary.followerFirstName + " " + summary.followerLastName);
+         item.userProfile = userProfileUrl(summary.followerUserName);
+         item.secondFullName = trim(summary.userFirstName + " " + summary.userLastName);
+         item.secondUserProfile = userProfileUrl(summary.userUsertName);
+         item.suppressSite = true;
+         break;
       case "org.alfresco.subscriptions.subscribed":
-          item.fullName = trim(summary.subscriberFirstName + " " + summary.subscriberLastName);
-          item.userProfile = userProfileUrl(summary.subscriberUserName);
-          item.custom0 = summary.node;
-          item.suppressSite = true;
-          break;
+         item.fullName = trim(summary.subscriberFirstName + " " + summary.subscriberLastName);
+         item.userProfile = userProfileUrl(summary.subscriberUserName);
+         item.custom0 = summary.node;
+         item.suppressSite = true;
+         break;
+      case "org.alfresco.profile.status-changed":
+         item.custom0 = summary.status;
+         item.suppressSite = true;
+         break;
    }
    
    return item;
@@ -140,24 +145,27 @@ function getActivities()
    }
 
    // Filter by user
-   var excl = "";
+   var actParam = "";
    switch(userFilter)
    {
       case "others":
-         excl = "&exclUser=true";
+    	  actParam = "&exclUser=true";
          break; 
       case "mine":
-         excl = "&exclOthers=true";
-         break; 
+    	  actParam = "&exclOthers=true";
+         break;
+      case "following":
+    	  actParam = "&following=true";
+         break;
    }
 
    // Filter by site
    if (mode == "site" && site)
    {
-      excl = excl + "&s=" + encodeURI(site);
+	   actParam = actParam + "&s=" + encodeURI(site);
    }
 
-   result = connector.get("/api/activities/feed/user?format=json" + excl);
+   result = connector.get("/api/activities/feed/user?format=json" + actParam);
 
    if (result.status == 200)
    {

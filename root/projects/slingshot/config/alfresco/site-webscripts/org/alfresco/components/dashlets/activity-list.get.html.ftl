@@ -15,6 +15,11 @@
       <#else>
          <#assign userLink>&quot;<em>${activity.fullName?html}</em>&quot;</#assign>
       </#if>
+      <#if activity.secondUserProfile??>
+         <#assign secondUserLink><a href="${activity.secondUserProfile?html}" class="theme-color-1">${activity.secondFullName!""?html}</a></#assign>
+      <#else>
+         <#assign secondUserLink>&quot;<em>${activity.secondFullName!""?html}</em>&quot;</#assign>
+      </#if>
       <#if activity.itemPage??>
          <#assign itemLink><a href="${activity.itemPage?html}" class="${(cssClasses[activity.type])!""} item-link theme-color-1">${activity.title?html}</a></#assign>
       <#else>
@@ -27,7 +32,7 @@
          <#assign lastDay = thisDay>
 <div class="new-day"><div class="ruler"></div><span>${thisDay}</span></div>
       </#if>
-      <#assign detail = msg(activity.type, itemLink, userLink, activity.custom0?html, activity.custom1?html, siteLink)>
+      <#assign detail = msg(activity.type, itemLink, userLink, activity.custom0?html, activity.custom1?html, siteLink, secondUserLink)>
       <#if mode = "user" && !activity.suppressSite><#assign detail = msg("in.site", detail, siteLink)></#if>
 <div class="activity">
    <div class="avatar"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${activity.userName?url}/thumbnail/avatar32" alt="${activity.fullName?html}" /></div>

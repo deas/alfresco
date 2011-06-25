@@ -17,3 +17,4 @@ function getFilters(filterType)
 
 model.filterRanges = getFilters("filter-range");
 model.filterTypes = getFilters("filter-type");
+model.filterActivities  = getFilters("filter-activities");

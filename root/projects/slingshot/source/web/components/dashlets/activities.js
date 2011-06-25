@@ -37,7 +37,8 @@
     */
    var PREFERENCES_ACTIVITIES = "org.alfresco.share.activities",
        PREF_FILTER = PREFERENCES_ACTIVITIES + ".filter",
-       PREF_RANGE = PREFERENCES_ACTIVITIES + ".range";
+       PREF_RANGE = PREFERENCES_ACTIVITIES + ".range",
+       PREF_ACTIVITIES = PREFERENCES_ACTIVITIES + ".activities";
    
    /**
     * Dashboard Activities constructor.
@@ -132,6 +133,13 @@
             lazyloadmenu: false
          });
          
+         this.widgets.activities = Alfresco.util.createYUIButton(this, "activities", this.onActivitiesFilterChanged,
+         {
+            type: "menu",
+            menu: "activities-menu",
+            lazyloadmenu: false
+         });
+         
          // The activity list container
          this.activityList = Dom.get(this.id + "-activityList");
          
@@ -140,6 +148,8 @@
          this.widgets.range.value = "7";
          this.widgets.user.set("label", this.msg("filter.all"));
          this.widgets.user.value = "all";
+         this.widgets.activities.set("label", this.msg("filter.actall"));
+         this.widgets.activities.value = "actall";
 
          this.services.preferences.request(PREFERENCES_ACTIVITIES,
          {
@@ -147,6 +157,25 @@
             {
                fn: function(p_oResponse)
                {
+                  var activitiesPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_ACTIVITIES, "actall");
+                  if (activitiesPreference !== null)
+                  {
+                     this.widgets.range.value = activitiesPreference;
+                     // set the correct menu label
+                     var menuItems = this.widgets.activities.getMenu().getItems();
+                     for (index in menuItems)
+                     {
+                        if (menuItems.hasOwnProperty(index))
+                        {
+                           if (menuItems[index].value === activitiesPreference)
+                           {
+                              this.widgets.activities.set("label", menuItems[index].cfg.getProperty("text"));
+                              break;
+                           }
+                        }
+                     }
+                  }
+                  
                   var rangePreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_RANGE, "7");
                   if (rangePreference !== null)
                   {
@@ -333,6 +362,26 @@
             this.widgets.user.value = menuItem.value;
             this.populateActivityList(this.widgets.range.value, this.widgets.user.value);
             this.services.preferences.set(PREF_FILTER, this.widgets.user.value);
+         }
+      },
+      
+      /**
+       * Activities drop-down changed event handler
+       *
+       * @method onActivitiesFilterChanged
+       * @param p_sType {string} The event
+       * @param p_aArgs {array} Event arguments
+       */
+      onActivitiesFilterChanged: function Activities_onActivitiesFilterChanged(p_sType, p_aArgs)
+      {
+         var menuItem = p_aArgs[1];
+         
+         if (menuItem)
+         {
+            this.widgets.activities.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.activities.value = menuItem.value;
+            this.populateActivityList(this.widgets.range.value, this.widgets.user.value);
+            this.services.preferences.set(PREF_ACTIVITIES, this.widgets.user.value);
          }
       }
    });

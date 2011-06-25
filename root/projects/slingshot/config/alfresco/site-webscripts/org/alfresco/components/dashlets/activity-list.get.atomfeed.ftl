@@ -18,6 +18,11 @@
       <#assign itemLink="<a href=\"${absurl(activity.itemPage)}\">${activity.title?html}</a>">
       <#assign siteTitle=siteTitles[activity.siteId]!activity.siteId>
       <#assign siteLink="<a href=\"${absurl(activity.sitePage)}\">${siteTitle?html}</a>">
+      <#if activity.secondUserProfile??>
+        <#assign secondUserLink="<a href=\"${absurl(activity.secondUserProfile)}\">${activity.secondFullName!\"\"?html}</a>">
+      <#else>
+        <#assign secondUserLink="">
+      </#if>
    <entry xmlns='http://www.w3.org/2005/Atom'>      
       <#assign detail = msg(activity.type, activity.title?xml, activity.fullName?xml, activity.custom0, activity.custom1, siteTitle?xml)>
       <#if mode="user" && !activity.suppressSite><#assign detail=msg("in.site", detail, siteTitle?xml)></#if>
@@ -25,7 +30,7 @@
       <link rel="alternate" type="text/html" href="${absurl(activity.itemPage)}" />
       <id>${activity.id}</id>
       <updated>${activity.date.isoDate}</updated>
-      <#assign detailHTML = msg(activity.type, itemLink, userLink, activity.custom0, activity.custom1, siteLink)>
+      <#assign detailHTML = msg(activity.type, itemLink, userLink, activity.custom0, activity.custom1, siteLink, secondUserLink)>
       <#if mode = "user" && !activity.suppressSite><#assign detailHTML = msg("in.site", detailHTML, siteLink)></#if>
       <summary type="html">
          <![CDATA[${msg(detailHTML)}]]>
