@@ -345,7 +345,12 @@ public interface ContentModel
     static final QName PROP_PREFERENCE_VALUES = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "preferenceValues");
     static final QName ASSOC_PREFERENCE_IMAGE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "preferenceImage");
     
-    // Dublin code aspect
+    // Syndication Aspect
+    static final QName ASPECT_SYNDICATION = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "syndication");
+    static final QName PROP_PUBLISHED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "published");
+    static final QName PROP_UPDATED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "updated");
+    
+    // Dublin core aspect
     static final QName ASPECT_DUBLINCORE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "dublincore");
     
     //
