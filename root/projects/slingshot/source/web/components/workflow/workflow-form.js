@@ -185,6 +185,13 @@
       {
          if (this.isReady && this.workflow)
          {
+            // Display the view diagrambutton if diagram is available
+            if (this.workflow.diagramUrl)
+            {
+               Dom.removeClass(this.id + "-viewWorkflowDiagram");
+               Alfresco.util.createYUIButton(this, "viewWorkflowDiagram", this.viewWorkflowDiagram);
+            }
+
             // Split the task list in current and history tasks and save the most recent one
             var tasks = this.workflow.tasks, recentTask;
             for (var i = 0, il = tasks.length; i < il; i++)
@@ -394,6 +401,18 @@
 
          // Fire event so other components knows the form finally has been loaded
          YAHOO.Bubbling.fire("workflowFormReady", this);         
+      },
+
+      /**
+       * Called when view workflow diagram button is clicked.
+       * WIll display the workflow's diagram.
+       */
+      viewWorkflowDiagram: function()
+      {
+         if (this.workflow.diagramUrl)
+         {
+            showLightbox({ src: Alfresco.constants.PROXY_URI + this.workflow.diagramUrl });
+         }
       },
 
       /**

@@ -135,6 +135,7 @@ function listenKey () {	document.onkeypress = getKey; }
 //
 // showLightbox()
 // Preloads images. Pleaces new image in lightbox then centers and displays.
+// objLink Object or HTMLElement with "title" and "href"/"url" attributes to be used as box's title and src of image to display.
 //
 function showLightbox(objLink)
 {
@@ -165,7 +166,7 @@ function showLightbox(objLink)
 	imgPreload = new Image();
 
 	imgPreload.onload=function(){
-		objImage.src = objLink.href;
+		objImage.src = objLink.href || objLink.src;
 
 		// center lightbox and make sure that the top and left values are not negative
 		// and the image placed outside the viewport
@@ -178,11 +179,17 @@ function showLightbox(objLink)
       objLightbox.style.minWidth = '128px';
       objLightboxDetails.style.minWidth = '128px';
 		objLightboxDetails.style.width = imgPreload.width + 'px';
-		
-		if(objLink.getAttribute('title')){
+
+      var title= objLink.title;
+      if (!title && objLink.getAttribute)
+      {
+         // An HTMLELement weas passed in
+         title = objLink.getAttribute('title');
+      }
+		if (title){
 			objCaption.style.display = 'block';
 			//objCaption.style.width = imgPreload.width + 'px';
-			objCaption.innerHTML = objLink.getAttribute('title');
+			objCaption.innerHTML = title;
 		} else {
 			objCaption.style.display = 'none';
 		}
@@ -215,7 +222,7 @@ function showLightbox(objLink)
 		return false;
 	}
 
-	imgPreload.src = objLink.href;
+	imgPreload.src = objLink.href || objLink.src;
 	
 }
 

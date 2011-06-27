@@ -2,6 +2,14 @@
 {
    font-size: 116%;
    font-weight: normal;
+   margin-bottom: 0.5em;
+   margin-top: 0.5em;
+}
+
+.workflow-form .workflow-summary-buttons
+{
+   float: right;
+   margin-top: -2.5em;
 }
 
 .workflow-form .summary
@@ -9,6 +17,7 @@
    padding: 1em;
    margin-bottom: 1.5em;
    margin-top: 0.5em;
+   clear: both;
 }
 
 .workflow-form .summary .status,

@@ -15,7 +15,12 @@ new Alfresco.component.WorkflowForm("${el}").setOptions(
 -->
    <#-- Will be inserted in the top of the form after its been loaded through ajax -->
    <div id="${el}-summary-form-section">
-      <h3>${msg("header.workflowSummary")}</h3>
+      <h3>
+         ${msg("header.workflowSummary")}
+      </h3>
+      <div class="workflow-summary-buttons">
+         <button id="${el}-viewWorkflowDiagram" class="hidden">${msg("button.viewWorkflowDiagram")}</button>
+      </div>
       <div class="form-element-background-color form-element-border summary">
          <div class="summary-icons">
             <h3>${msg("label.general")}</h3>
