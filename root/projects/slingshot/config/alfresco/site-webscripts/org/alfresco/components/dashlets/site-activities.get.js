@@ -8,7 +8,8 @@ function getFilters(filterType)
       filters.push(
       {
          type: xmlFilter.@type.toString(),
-         label: xmlFilter.@label.toString()
+         label: xmlFilter.@label.toString(),
+         activities: xmlFilter.@activities.toString()
       });
    }
 
@@ -17,3 +18,4 @@ function getFilters(filterType)
 
 model.filterRanges = getFilters("filter-range");
 model.filterTypes = getFilters("filter-type");
+model.filterActivities  = getFilters("filter-activities");

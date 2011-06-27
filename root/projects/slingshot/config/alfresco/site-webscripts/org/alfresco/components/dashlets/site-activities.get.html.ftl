@@ -59,6 +59,17 @@
             <option value="${filter.type?html}">${msg("filter." + filter.label)}</option>
          </#list>
          </select>
+         <span class="align-left first-child">Filter:</span>
+         <span class="align-left yui-button yui-menu-button" id="${id}-activities">
+            <span class="first-child">
+               <button type="button" tabindex="0"></button>
+            </span>
+         </span>
+         <select id="${id}-activities-menu">
+         <#list filterActivities as filter>
+            <option value="${filter.activities?html}">${msg("filter." + filter.label)}</option>
+         </#list>
+         </select>
       </div>
    </div>
    <div id="${id}-activityList" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>></div>
