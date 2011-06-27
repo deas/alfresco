@@ -59,7 +59,7 @@
             <option value="${filter.type?html}">${msg("filter." + filter.label)}</option>
          </#list>
          </select>
-         <span class="align-left first-child">Filter:</span>
+         <span class="align-left first-child" style="padding-top:5px">${msg("label.filter")}:</span>
          <span class="align-left yui-button yui-menu-button" id="${id}-activities">
             <span class="first-child">
                <button type="button" tabindex="0"></button>

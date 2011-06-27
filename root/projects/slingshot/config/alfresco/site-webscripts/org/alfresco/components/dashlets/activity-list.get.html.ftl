@@ -16,9 +16,9 @@
          <#assign userLink>&quot;<em>${activity.fullName?html}</em>&quot;</#assign>
       </#if>
       <#if activity.secondUserProfile??>
-         <#assign secondUserLink><a href="${activity.secondUserProfile?html}" class="theme-color-1">${activity.secondFullName!""?html}</a></#assign>
+         <#assign secondUserLink><a href="${activity.secondUserProfile?html}" class="theme-color-1">${(activity.secondFullName!"")?html}</a></#assign>
       <#else>
-         <#assign secondUserLink>&quot;<em>${activity.secondFullName!""?html}</em>&quot;</#assign>
+         <#assign secondUserLink>&quot;<em>${(activity.secondFullName!"")?html}</em>&quot;</#assign>
       </#if>
       <#if activity.itemPage??>
          <#assign itemLink><a href="${activity.itemPage?html}" class="${(cssClasses[activity.type])!""} item-link theme-color-1">${activity.title?html}</a></#assign>

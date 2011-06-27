@@ -103,7 +103,8 @@ function specialize(item, activity, summary)
          item.fullName = trim(summary.followerFirstName + " " + summary.followerLastName);
          item.userProfile = userProfileUrl(summary.followerUserName);
          item.secondFullName = trim(summary.userFirstName + " " + summary.userLastName);
-         item.secondUserProfile = userProfileUrl(summary.userUsertName);
+         item.secondUserProfile = userProfileUrl(summary.userUserName);
+         item.itemPage = item.userProfile;
          item.suppressSite = true;
          break;
       case "org.alfresco.subscriptions.subscribed":
@@ -114,6 +115,7 @@ function specialize(item, activity, summary)
          break;
       case "org.alfresco.profile.status-changed":
          item.custom0 = summary.status;
+         item.itemPage = item.userProfile;
          item.suppressSite = true;
          break;
    }
