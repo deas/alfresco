@@ -48,15 +48,15 @@ function main()
    {
       var params = new Array(1);
       params.push(page.url.templateArgs["userid"]);
-
+      
       var connector = remote.connect("alfresco");
       var result = connector.post("/api/subscriptions/" + encodeURIComponent(user.name) + "/follows",
                                   jsonUtils.toJSONString(params),
                                   "application/json");
-      if (result.status == 200) {
+      if (result.status == 200)
+      {
          model.follows = eval('(' + result + ')')[0][page.url.templateArgs["userid"]];
       }
-     
    }
 }
 
