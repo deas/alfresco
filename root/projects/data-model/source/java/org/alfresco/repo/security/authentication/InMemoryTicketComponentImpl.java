@@ -190,7 +190,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
     		for (String key : ticketsCache.getKeys())
             {
     			Ticket ticket = ticketsCache.get(key);
-    			if (ticket.getNewEntry() != null)
+    			if (ticket != null && ticket.getNewEntry() != null)
     			{
     				count++;
     			}
