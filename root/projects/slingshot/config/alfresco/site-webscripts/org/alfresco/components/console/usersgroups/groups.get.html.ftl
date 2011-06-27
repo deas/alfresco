@@ -28,7 +28,7 @@
       <div class="yui-g separator">
          <div class="yui-u first">
             <div class="search-text">
-               <input type="text" id="${el}-search-text" name="-" value="" />
+               <input type="text" id="${el}-search-text" name="-" value="" maxlength="255"/>
                <!-- Search button -->
                <div class="search-button">
                   <span class="yui-button yui-push-button" id="${el}-search-button">
