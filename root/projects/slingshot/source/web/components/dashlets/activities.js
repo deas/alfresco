@@ -160,7 +160,7 @@
                   var activitiesPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_ACTIVITIES, "");
                   if (activitiesPreference !== null)
                   {
-                     this.widgets.range.value = activitiesPreference;
+                     this.widgets.activities.value = activitiesPreference;
                      // set the correct menu label
                      var menuItems = this.widgets.activities.getMenu().getItems();
                      for (index in menuItems)
@@ -216,7 +216,7 @@
                   // Display the toolbar now that we have selected the filter
                   Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
                   // Populate the activity list
-                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.actvities.value);
+                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
                },
                scope: this
             },
@@ -227,7 +227,7 @@
                   // Display the toolbar now that we have selected the filter
                   Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
                   // Populate the activity list
-                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.actvities.value);
+                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
                },
                scope: this
             }
