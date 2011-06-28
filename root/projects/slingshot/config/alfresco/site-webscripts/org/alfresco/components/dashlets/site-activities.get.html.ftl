@@ -67,7 +67,7 @@
          </span>
          <select id="${id}-activities-menu">
          <#list filterActivities as filter>
-            <option value="${filter.activities?html}">${msg("filter." + filter.label)}</option>
+            <option value="${filter.activities?html}">${msg(filter.label)}</option>
          </#list>
          </select>
       </div>
