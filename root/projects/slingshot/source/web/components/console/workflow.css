@@ -1,0 +1,16 @@
+.workflow
+{
+   margin: 16px 10px 10px;
+}
+
+.workflow .title
+{
+   font-size: 123.1%;
+   font-weight: bold;
+   padding-bottom: 0.5em;
+}
+
+.workflow .row
+{
+   padding: 0.333em 0.333em 0.333em 1.333em;
+}
