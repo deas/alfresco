@@ -147,7 +147,8 @@
    </bean>
    
    <!-- Slingshot Factory beans -->
-   <bean id="webframework.factory.user.slingshot" class="org.alfresco.web.site.SlingshotUserFactory" parent="webframework.factory.base" />
+   <!-- TODO: move org.alfresco.web.site.EnterpriseSlingshotUserFactory to enterprise, revive plain SlingshotUserFactory in community-->
+   <bean id="webframework.factory.user.slingshot" class="org.alfresco.web.site.EnterpriseSlingshotUserFactory" parent="webframework.factory.base" />
    
    <!-- "no-component" processor -->
    <bean id="webframework.rendition.processor.nocomponent" class="org.springframework.extensions.surf.site.EmptyRegionRenderer" />

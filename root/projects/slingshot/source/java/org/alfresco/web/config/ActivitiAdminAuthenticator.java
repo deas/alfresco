@@ -25,8 +25,8 @@ import org.springframework.extensions.webscripts.connector.Credentials;
 
 public class ActivitiAdminAuthenticator extends AlfrescoAuthenticator
 {
-    private static final CharSequence ACTIVITI_ADMIN_UI_PATH = "alfresco/activiti-admin";
-    private static final CharSequence ALFRESCO_SERVICE_BASE_PATH = "alfresco/s";
+    private static final CharSequence ACTIVITI_ADMIN_UI_PATH = "/activiti-admin";
+    private static final CharSequence ALFRESCO_SERVICE_BASE_PATH = "/s";
     
     @Override
     public ConnectorSession authenticate(String endpoint, Credentials credentials,
