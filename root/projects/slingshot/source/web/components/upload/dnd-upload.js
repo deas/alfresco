@@ -556,14 +556,9 @@
          // Apply the config before it is shown
          this._applyConfig();
 
-         // Enable the Esc key listener
-         this.widgets.escapeListener.enable();
-         this.panel.setFirstLastFocusable();
-         this.panel.show();
-
-         var newFiles = [],
-             data,
-             uniqueFileToken;
+         var displayDialog = false,
+            data,
+            uniqueFileToken;
 
          for (var i = 0; i < this.showConfig.files.length; i++)
          {
@@ -676,9 +671,16 @@
                      text: this.msg("message.zeroByteFileSelected", this.showConfig.files[i].fileName)
                   });
                }
+               else if (!Alfresco.forms.validation.nodeName({ id: 'file', value: this.showConfig.files[i].fileName }, null, null, null, true))
+               {
+                  Alfresco.util.PopupManager.displayMessage(
+                  {
+                     text: this.msg("message.illegalCharacters")
+                  });
+               }
                else
                {
-                  // Add the event listener functions to the upload propertie of the XMLHttpRequest object...
+                  // Add the event listener functions to the upload properties of the XMLHttpRequest object...
                   var request = new XMLHttpRequest();
                   request.upload.addEventListener("progress", progressListener, false);
                   request.upload.addEventListener("load", successListener, false);
@@ -697,7 +699,7 @@
                       id: fileId,
                       name: fileName,
                       size: this.showConfig.files[i].size
-                  }
+                  };
 
                   // Construct an object containing the data required for file upload...
                   var uploadData =
@@ -708,7 +710,7 @@
                      siteId: this.showConfig.siteId,
                      containerId: this.showConfig.containerId,
                      uploaddirectory: this.showConfig.uploadDirectory
-                  }
+                  };
 
                   // Add the upload data to the file store. It is important that we don't initiate the XMLHttpRequest
                   // send operation before the YUI DataTable has finished rendering because if the file being uploaded
@@ -722,11 +724,20 @@
                      uploadData: uploadData,
                      request: request
                   };
+
+                  // Add file to file table
+                  this.dataTable.addRow(data);
+                  this.addedFiles[uniqueFileToken] = this._getUniqueFileToken(data);
+                  displayDialog = true;
                }
 
-               // Add file to file table
-               this.dataTable.addRow(data);
-               this.addedFiles[uniqueFileToken] = this._getUniqueFileToken(data);
+               if (displayDialog)
+               {
+                  // Enable the Esc key listener
+                  this.widgets.escapeListener.enable();
+                  this.panel.setFirstLastFocusable();
+                  this.panel.show();
+               }
             }
             catch(exception)
             {
@@ -774,7 +785,7 @@
          else
          {
             // Process the upload failure...
-            this._processUploadFailure(fileInfo, event.status);
+            this._processUploadFailure(fileInfo, fileInfo.request.status);
          }
       },
 

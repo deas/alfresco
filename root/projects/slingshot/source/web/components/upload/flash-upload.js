@@ -609,6 +609,7 @@
                // Add the failure label to the filename & and as a title attribute
                var msg = this.msg("label.illegalChars");
                fileInfo.progressInfo["innerHTML"] = fileInfo.progressInfo["innerHTML"] + " " + msg;
+               fileInfo.progressInfo.setAttribute("title", msg);
                fileInfo.progressInfoCell.setAttribute("title", msg);
 
                // Change the style of the progress bar

@@ -239,13 +239,13 @@
                var mockField = 
                {
                   id: field.id,
-                  value: _this._fileName
+                  value: args.uploader._fileName
                };
                if (!Alfresco.forms.validation.nodeName(mockField, args, event, form, silent, message))
                {
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: Alfresco.util.message("message.illegalCharacters")
+                     text: args.uploader.msg("message.illegalCharacters")
                   });
                   return false;
                }
@@ -254,7 +254,7 @@
                   return true;
                }
             }
-         }, null, "change");
+         }, { uploader: this }, "change");
 
          // The ok button is the submit button, and it should be enabled when the form is ready
          form.setShowSubmitStateDynamically(true, false);
