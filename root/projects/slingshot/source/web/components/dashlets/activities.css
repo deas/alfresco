@@ -1,3 +1,8 @@
+.activities .toolbar .activities-filter
+{
+   line-height: 2em;
+}
+
 .activities .empty
 {
    background-image: url(../images/help-activities-bw-32.png);
