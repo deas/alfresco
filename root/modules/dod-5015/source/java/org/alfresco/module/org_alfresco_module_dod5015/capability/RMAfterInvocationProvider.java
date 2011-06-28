@@ -38,6 +38,7 @@ import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.query.PagingResults;
 import org.alfresco.repo.search.SimpleResultSetMetaData;
 import org.alfresco.repo.search.impl.lucene.PagingLuceneResultSet;
 import org.alfresco.repo.search.impl.querymodel.QueryEngineResults;
@@ -45,7 +46,6 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryVoterException;
 import org.alfresco.repo.security.permissions.impl.acegi.FilteringResultSet;
 import org.alfresco.service.cmr.model.FileInfo;
-import org.alfresco.service.cmr.model.PagingFileInfoResults;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -260,7 +260,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
             {
                 return decide(authentication, object, config, (FileInfo) returnedObject);
             }
-            else if (PagingFileInfoResults.class.isAssignableFrom(returnedObject.getClass()))
+            else if (PagingResults.class.isAssignableFrom(returnedObject.getClass()))
             {
                 if (logger.isDebugEnabled())
                 {
