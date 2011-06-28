@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * Dashboard Activities common component.
  * 
@@ -36,9 +36,9 @@
     * Preferences
     */
    var PREFERENCES_ACTIVITIES = "org.alfresco.share.activities",
-       PREF_FILTER = PREFERENCES_ACTIVITIES + ".filter",
-       PREF_RANGE = PREFERENCES_ACTIVITIES + ".range",
-       PREF_ACTIVITIES = PREFERENCES_ACTIVITIES + ".activities";
+       PREF_FILTER = ".filter",
+       PREF_RANGE = ".range",
+       PREF_ACTIVITIES = ".activities";
    
    /**
     * Dashboard Activities constructor.
@@ -91,7 +91,15 @@
           * @type string
           * @default "today"
           */
-         activeFilter: "today"
+         activeFilter: "today",
+         
+         /**
+          * Component region ID.
+          * 
+          * @property regionId
+          * @type string
+          */
+         regionId: ""
       },
 
       /**
@@ -151,13 +159,13 @@
          this.widgets.activities.set("label", this.msg("activities.filter.all"));
          this.widgets.activities.value = "";
 
-         this.services.preferences.request(PREFERENCES_ACTIVITIES,
+         this.services.preferences.request(this.buildPreferences(),
          {
             successCallback:
             {
                fn: function(p_oResponse)
                {
-                  var activitiesPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_ACTIVITIES, "");
+                  var activitiesPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.buildPreferences(PREF_ACTIVITIES), "");
                   if (activitiesPreference !== null)
                   {
                      this.widgets.activities.value = activitiesPreference;
@@ -176,7 +184,7 @@
                      }
                   }
                   
-                  var rangePreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_RANGE, "7");
+                  var rangePreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.buildPreferences(PREF_RANGE), "7");
                   if (rangePreference !== null)
                   {
                      this.widgets.range.value = rangePreference;
@@ -195,7 +203,7 @@
                      }
                   }
                   
-                  var filterPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_FILTER, "all");
+                  var filterPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.buildPreferences(PREF_FILTER), "all");
                   if (filterPreference !== null)
                   {
                      this.widgets.user.value = filterPreference;
@@ -232,6 +240,21 @@
                scope: this
             }
          });
+      },
+      
+      /**
+       * Build the Activities dashlet preferences name string with optional suffix.
+       * The component region ID and the current siteId (if any) is used as part of the
+       * preferences name - to uniquely identify the preference within the site or user
+       * dashboard context.
+       * 
+       * @method buildPreferences
+       * @param suffix {string} optional suffix to append to the preferences name
+       */
+      buildPreferences: function Activities_buildPreferences(suffix)
+      {
+         var opt = this.options;
+         return PREFERENCES_ACTIVITIES + "." + opt.regionId + (opt.siteId ? ("." + opt.siteId) : "") + (suffix ? suffix : "");
       },
       
       /**
@@ -343,7 +366,7 @@
             this.widgets.range.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.range.value = menuItem.value;
             this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
-            this.services.preferences.set(PREF_RANGE, this.widgets.range.value);
+            this.services.preferences.set(this.buildPreferences(PREF_RANGE), this.widgets.range.value);
          }
       },
       
@@ -363,7 +386,7 @@
             this.widgets.user.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.user.value = menuItem.value;
             this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
-            this.services.preferences.set(PREF_FILTER, this.widgets.user.value);
+            this.services.preferences.set(this.buildPreferences(PREF_FILTER), this.widgets.user.value);
          }
       },
       
@@ -383,7 +406,7 @@
             this.widgets.activities.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.activities.value = menuItem.value;
             this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
-            this.services.preferences.set(PREF_ACTIVITIES, this.widgets.activities.value);
+            this.services.preferences.set(this.buildPreferences(PREF_ACTIVITIES), this.widgets.activities.value);
          }
       }
    });

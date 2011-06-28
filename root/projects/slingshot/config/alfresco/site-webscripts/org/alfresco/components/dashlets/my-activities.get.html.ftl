@@ -6,7 +6,8 @@
    var activities = new Alfresco.dashlet.Activities("${jsid}").setOptions(
    {
       siteId: "${page.url.templateArgs.site!""}",
-      mode: "user"
+      mode: "user",
+      regionId: "${args['region-id']?js_string}"
    }).setMessages(${messages});
    new Alfresco.widget.DashletResizer("${jsid}", "${instance.object.id}");
 
