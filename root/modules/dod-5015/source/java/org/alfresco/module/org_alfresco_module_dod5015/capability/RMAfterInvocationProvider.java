@@ -38,6 +38,7 @@ import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.query.PermissionedResults;
 import org.alfresco.repo.search.SimpleResultSetMetaData;
 import org.alfresco.repo.search.impl.lucene.PagingLuceneResultSet;
 import org.alfresco.repo.search.impl.querymodel.QueryEngineResults;
@@ -45,7 +46,6 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryVoterException;
 import org.alfresco.repo.security.permissions.impl.acegi.FilteringResultSet;
 import org.alfresco.service.cmr.model.FileInfo;
-import org.alfresco.service.cmr.model.PagingFileInfoResults;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -94,6 +94,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public boolean supports(Class clazz)
     {
         return (MethodInvocation.class.isAssignableFrom(clazz));
@@ -101,8 +102,6 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
 
     public void afterPropertiesSet() throws Exception
     {
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -215,6 +214,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         this.entryVoter = entryVoter;
     }
 
+    @SuppressWarnings("rawtypes")
     public Object decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Object returnedObject) throws AccessDeniedException
     {
         if (logger.isDebugEnabled())
@@ -260,13 +260,9 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
             {
                 return decide(authentication, object, config, (FileInfo) returnedObject);
             }
-            else if (PagingFileInfoResults.class.isAssignableFrom(returnedObject.getClass()))
+            else if (PermissionedResults.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Controlled object (paged permissions already applied) - access allowed for " + object.getClass().getName());
-                }
-                return returnedObject;
+                return decide(authentication, object, config, (PermissionedResults) returnedObject);
             }
             else if (ChildAssociationRef.class.isAssignableFrom(returnedObject.getClass()))
             {
@@ -420,6 +416,17 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         return returnedObject;
     }
 
+    private PermissionedResults decide(Authentication authentication, Object object, ConfigAttributeDefinition config, PermissionedResults returnedObject) throws AccessDeniedException
+    {
+        if (!returnedObject.permissionsApplied())
+        {
+            throw new UnsupportedOperationException("PermissionedResults must have permissionsApplied() == true.");
+        }
+        // This passes
+        return returnedObject;
+    }
+    
+    @SuppressWarnings("rawtypes")
     private List<ConfigAttributeDefintion> extractSupportedDefinitions(ConfigAttributeDefinition config)
     {
         List<ConfigAttributeDefintion> definitions = new ArrayList<ConfigAttributeDefintion>();
@@ -690,7 +697,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         return new QueryEngineResults(answer);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private Collection decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Collection returnedObject) throws AccessDeniedException
 
     {
@@ -825,14 +832,9 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
     }
 
     private Object[] decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Object[] returnedObject) throws AccessDeniedException
-
     {
+        // Assumption: value is not null
         BitSet incudedSet = new BitSet(returnedObject.length);
-
-        if (returnedObject == null)
-        {
-            return null;
-        }
 
         List<ConfigAttributeDefintion> supportedDefinitions = extractSupportedDefinitions(config);
 
@@ -990,8 +992,8 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         return testNodeRef;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Map decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Map returnedObject) throws AccessDeniedException
-
     {
         if (returnedObject.containsKey(RecordsManagementModel.PROP_HOLD_REASON))
         {
