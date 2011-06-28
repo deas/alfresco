@@ -57,9 +57,10 @@
       /**
        * Decoupled event listeners
        */
+      this.eventGroup = htmlId;
       YAHOO.Bubbling.on("itemSelected", this.onItemSelected, this);
       YAHOO.Bubbling.on("itemDeselected", this.onItemDeselected, this);
-
+      YAHOO.Bubbling.on("allItemsDeselected", this.onAllItemsDeselected, this);
       return this;
    };
    
@@ -469,6 +470,7 @@
          // Fire the personSelected bubble event
          YAHOO.Bubbling.fire("itemSelected",
          {
+            eventGroup: this,
             itemName: p_obj.getData("fullName"),
             displayName: p_obj.getData("displayName")
          });
@@ -514,7 +516,7 @@
       {
          var obj = args[1];
          // Should be person details in the arguments
-         if (obj && (obj.itemName !== null))
+         if (obj && (obj.itemName !== null) && (!obj.eventGroup || (obj.eventGroup && Alfresco.util.hasEventInterest(this, args))))
          {
             var itemName = obj.itemName;
             // Add the itemName to the selectedItems object
@@ -553,7 +555,7 @@
       {
          var obj = args[1];
          // Should be item details in the arguments
-         if (obj && (obj.itemName !== null))
+         if (obj && (obj.itemName !== null) && (!obj.eventGroup || (obj.eventGroup && Alfresco.util.hasEventInterest(this, args))))
          {
             delete this.selectedItems[obj.itemName];
             this.singleSelectedItem = "";
@@ -571,6 +573,32 @@
             else
             {
                this.itemSelectButtons[obj.itemName].set("disabled", false);
+            }
+         }
+      },
+
+      /**
+       * All Items Deselected event handler
+       *
+       * @method onAllItemsDeselected
+       * @param layer {object} Event fired
+       * @param args {array} Event parameters (depends on event type)
+       */
+      onAllItemsDeselected: function GroupFinder_onAllItemsDeselected(layer, args)
+      {
+         var obj = args[1];
+         // Should be item details in the arguments
+         if (obj && (!obj.eventGroup || (obj.eventGroup && Alfresco.util.hasEventInterest(this, args))))
+         {
+            this.selectedItems = {};
+            this.singleSelectedItem = "";
+            // Re-enable the add button(s)
+            for (var button in this.itemSelectButtons)
+            {
+               if (this.itemSelectButtons.hasOwnProperty(button))
+               {
+                  this.itemSelectButtons[button].set("disabled", false);
+               }
             }
          }
       },

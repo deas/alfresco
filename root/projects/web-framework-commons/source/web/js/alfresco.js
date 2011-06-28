@@ -1196,7 +1196,7 @@ Alfresco.util.useAsButton = function(el, callbackFn, callbackObj, callbackScope)
 {
    YAHOO.util.Event.addListener(el, "click", callbackFn, callbackObj, callbackScope);
    if (YAHOO.lang.isString(el)) {
-      el = Dom.get(el);
+      el = YAHOO.util.Dom.get(el);
    }
    if(!el.getAttribute("tabindex")) {
       el.setAttribute("tabindex", "0");

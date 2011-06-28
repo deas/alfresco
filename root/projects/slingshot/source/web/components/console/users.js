@@ -40,7 +40,7 @@
    /**
     * ConsoleUsers constructor.
     * 
-    * @param {String} htmlId The HTML id üof the parent element
+    * @param {String} htmlId The HTML id ï¿½of the parent element
     * @return {Alfresco.ConsoleUsers} The new ConsoleUsers instance
     * @constructor
     */
@@ -755,11 +755,22 @@
                this._groups.push(group);
                
                var groupDiv = Dom.get(parent.id + "-create-groups");
-               var html = groupDiv.innerHTML;
                var idx = (this._groups.length - 1);
-               html += " <span id='" + parent.id + "_group" + idx + "' onclick=\"YAHOO.Bubbling.fire('removeGroupCreate', {id: " +
-                     idx + "});\" class='group-item' title='" + $html(parent._msg("label.removegroup")) + "'>" + $html(group.displayName) + "</span>";
-               groupDiv.innerHTML = html;
+               var groupEl = document.createElement("span");
+               groupEl.setAttribute("id", parent.id + "_group" + idx);
+               groupEl.setAttribute("title", parent._msg("label.removegroup"));
+               Dom.addClass(groupEl, "group-item");
+               groupEl.innerHTML = $html(group.displayName);
+               groupDiv.appendChild(groupEl);
+
+               Alfresco.util.useAsButton(groupEl, function(e, obj)
+               {
+                  // Remove group from ui
+                  YAHOO.Bubbling.fire('removeGroupCreate', { id: obj.idx });
+
+                  // Tell group finder to deselect the group
+                  YAHOO.Bubbling.fire('itemDeselected', { eventGroup: parent.modules.createGroupFinder, itemName: obj.group.itemName });
+               }, { idx: idx, group: group });
             }
          },
          
@@ -831,6 +842,13 @@
             {
                this._form.init();
             }
+
+            // Notify group finder that no groups are selected
+            YAHOO.Bubbling.fire("allItemsDeselected",
+            {
+               eventGroup: parent.modules.createGroupFinder
+            });
+
          },
          
          onShow: function onShow()
@@ -970,13 +988,25 @@
                this._groups.push(group);
                
                var groupDiv = Dom.get(parent.id + "-update-groups"),
-                  html = groupDiv.innerHTML,
-                  idx = (this._groups.length-1);
-               
-               html += " <span id='" + parent.id + "_group" + idx + "' onclick=\"YAHOO.Bubbling.fire('removeGroupUpdate', {id: " +
-                     idx + "});\" class='group-item' title='" + $html(parent._msg("label.removegroup")) + "'>" + $html(group.displayName) + "</span>";
-               groupDiv.innerHTML = html;
-               
+                  idx = (this._groups.length-1),
+                  groupEl = document.createElement("span");
+               groupEl.setAttribute("id", parent.id + "_group" + idx);
+               groupEl.setAttribute("title", parent._msg("label.removegroup"));
+               Dom.addClass(groupEl, "group-item");
+               groupEl.innerHTML = $html(group.displayName);
+               groupDiv.appendChild(groupEl);
+
+               Alfresco.util.useAsButton(groupEl, function(e, obj)
+               {
+                  // Remove group from ui
+                  YAHOO.Bubbling.fire('removeGroupUpdate', { id: obj.idx });
+
+                  // Tell group finder to deselect the group
+                  YAHOO.Bubbling.fire('itemDeselected', { eventGroup: parent.modules.updateGroupFinder, itemName: obj.group.itemName });
+               }, { idx: idx, group: group });
+
+
+
                // if this group wasn't one of the original list, then add it to the addition list
                found = false;
                for (i = 0, j = this._originalGroups.length; i < j; i++)
@@ -1159,11 +1189,23 @@
                
                // add groups the user is already assigned to and maintain a copy of the original group list
                me.resetGroups();
+               YAHOO.Bubbling.fire("allItemsDeselected",
+               {
+                  eventGroup: parent.modules.updateGroupFinder
+               });
                me._originalGroups = person.groups;
                for (var i=0, j=person.groups.length; i<j; i++)
                {
                   me.addGroup(
                   {
+                     "itemName": person.groups[i].itemName,
+                     "displayName": person.groups[i].displayName
+                  });
+
+                  // Make the group finder aware of which groups the user already has
+                  YAHOO.Bubbling.fire("itemSelected",
+                  {
+                     eventGroup: parent.modules.updateGroupFinder,
                      "itemName": person.groups[i].itemName,
                      "displayName": person.groups[i].displayName
                   });
@@ -1181,7 +1223,10 @@
                
                // Make main panel area visible
                Dom.setStyle(parent.id + "-update-main", "visibility", "visible");
-               
+
+
+
+
                me._form.updateSubmitElements();
             };
             
