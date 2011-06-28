@@ -1,0 +1,60 @@
+/* Controls the look and feel of the Social Publishing Dialogue and Publish History view. */
+.social-publishing .formsection
+{
+   padding:10px;
+}
+
+div.statusUpdate-checkboxes
+{
+   padding-top:10px;
+}
+
+.social-publishing h3 {
+   margin:5px 0;
+}
+
+div.status-channel
+{
+   margin:5px;   
+}
+
+.social-publishing textarea {
+   width:20em;   
+}
+
+div.status-channel img 
+{
+   margin: -2px 4px;
+}
+
+div.status-count {
+   float:right;    
+   font-size:1.2em;
+   margin:0.5em 1em;
+   text-align:center;
+}
+
+div.status-count strong {
+   display: block;
+}
+
+.social-publishing input {
+   margin-top: 5px;
+}
+
+.social-publishing-header {
+   padding-right:25px;
+}
+
+div.publishConfirm div.success {
+   padding-bottom:10px;
+}
+
+div.publishConfirm div.success img {
+   padding:0 6px;   
+}
+
+div.publishConfirm a {
+   display:block;
+   color: #FFFFFF;
+}

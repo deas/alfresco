@@ -931,6 +931,22 @@
          siteUrl = siteUrl.substring(Alfresco.constants.URL_CONTEXT.length);
 
          return $combine(urlMapping[repoId], "/", siteUrl);
+      },
+      
+      /**
+       * Social Publishing
+       * 
+       * @method onActionPublish
+       * @param asset {object} Object literal representing the file or folder to be actioned
+       */
+      onActionPublish: function dlA_onActionPublish(asset) {
+         
+         // Call the Hictoric Properties Viewer Module
+         Alfresco.module.getSocialPublishingInstance().show(
+         {
+            nodeRef: asset.nodeRef,
+            filename: asset.fileName
+         }); 
       }
    };
 })();

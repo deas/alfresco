@@ -8,6 +8,7 @@
    <script type="text/javascript" src="${page.url.context}/res/components/people-finder/people-finder.js"></script>
    <script type="text/javascript" src="${page.url.context}/res/modules/documentlibrary/permissions.js"></script>
    <script type="text/javascript" src="${page.url.context}/res/modules/documentlibrary/aspects.js"></script>
+   <script type="text/javascript" src="${page.url.context}/res/modules/social-publish.js"></script>
 <#else>
    <script type="text/javascript" src="${page.url.context}/res/js/documentlibrary-actions-min.js"></script>
 </#if>
@@ -19,3 +20,5 @@
 <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/documentlibrary/permissions.css" />
 <#-- Manage Aspects -->
 <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/documentlibrary/aspects.css" />
+<#-- Social Publishing -->
+<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/social-publish.css" />
