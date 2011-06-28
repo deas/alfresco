@@ -83,10 +83,6 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
             rawResults = applyPostQuerySorting(rawResults, parameters.getSortDetails());
         }
         
-        Pair<Integer, Integer> totalResultCount = null;
-        
-        final boolean permissionsApplied;
-        
         // Apply permissions
         String authenticationToken = parameters.getAuthenticationToken();
         if (authenticationToken != null && isApplyPostQueryPermissions())
@@ -97,30 +93,26 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
             {
                 requestedCount++; // add one for "hasMoreItems"
             }
-            PagingResults<R> postQueryResults = applyPostQueryPermissions(rawResults, authenticationToken, requestedCount);
             
-            rawResults = postQueryResults.getPage();
-            totalResultCount = postQueryResults.getTotalResultCount();
-            permissionsApplied = postQueryResults.permissionsApplied();
-        }
-        else
-        {
-            int totalCount = getTotalResultCount(rawResults);
-            totalResultCount = new Pair<Integer, Integer>(totalCount, totalCount);
-            
-            permissionsApplied = ((rawResults instanceof PermissionedResults) && ((PermissionedResults)rawResults).permissionsApplied());
+            rawResults = applyPostQueryPermissions(rawResults, authenticationToken, requestedCount);
         }
         
-        // Get count
-        final Pair<Integer, Integer> finalTotalCount;
-        if (parameters.requestTotalResultCountMax() > 0)
+        final boolean permissionsApplied;
+        final boolean permissionsCutoff;
+        if (rawResults instanceof PermissionedResults)
         {
-            finalTotalCount = totalResultCount;
+            permissionsApplied = ((PermissionedResults)rawResults).permissionsApplied();
+            permissionsCutoff = ((PermissionedResults)rawResults).hasMoreItems();
         }
         else
         {
-            finalTotalCount = null;
+            permissionsApplied = false;
+            permissionsCutoff = false;
         }
+        
+        // Get total count - note: upper bound not yet estimated (null if permission checks caused the results to be truncated/cutoff)
+        int totalCount = getTotalResultCount(rawResults);
+        final Pair<Integer, Integer> finalTotalCount = new Pair<Integer, Integer>(totalCount, (! permissionsCutoff ? totalCount : null));
         
         // Apply paging
         CannedQueryPageDetails pagingDetails = parameters.getPageDetails();
@@ -282,7 +274,7 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
      *                              in order to fully satisfy the paging requirements
      * @return                      the remaining results (as a single "page") after permissions have been applied
      */
-    protected PagingResults<R> applyPostQueryPermissions(List<R> results, String authenticationToken, int requestedCount)
+    protected List<R> applyPostQueryPermissions(List<R> results, String authenticationToken, int requestedCount)
     {
         throw new UnsupportedOperationException("Override this method if post-query filtering is required.");
     }

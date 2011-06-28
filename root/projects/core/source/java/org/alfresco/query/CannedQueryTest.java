@@ -341,10 +341,9 @@ public class CannedQueryTest extends TestCase
         }
 
         @Override
-        protected PagingResults<T> applyPostQueryPermissions(List<T> results, String authenticationToken, int requestedCount)
+        protected List<T> applyPostQueryPermissions(List<T> results, String authenticationToken, int requestedCount)
         {
             boolean cutoffAllowed = (getParameters().requestTotalResultCountMax() == 0);
-            boolean hasMoreItems = false;
             
             final List<T> ret = new ArrayList<T>(results.size());
             for (T t : results)
@@ -356,46 +355,11 @@ public class CannedQueryTest extends TestCase
                 // Cut off if we have enough results
                 if (cutoffAllowed && ret.size() == requestedCount)
                 {
-                    hasMoreItems = true;
                     break;
                 }
             }
             
-            final boolean finalHasMoreItems = hasMoreItems;
-            final int finalCount = ret.size();
-            
-            return new PagingResults<T>()
-                {
-                    @Override
-                    public String getQueryExecutionId()
-                    {
-                        return null;
-                    }
-                    
-                    @Override
-                    public Pair<Integer, Integer> getTotalResultCount()
-                    {
-                        return new Pair<Integer, Integer>(finalCount, ((! finalHasMoreItems) ? finalCount : null));
-                    }
-                    
-                    @Override
-                    public List<T> getPage()
-                    {
-                        return ret;
-                    }
-                    
-                    @Override
-                    public boolean hasMoreItems()
-                    {
-                        return finalHasMoreItems;
-                    }
-                    
-                    @Override
-                    public boolean permissionsApplied()
-                    {
-                        return true;
-                    }
-                };
+            return ret;
         }
     }
 }
