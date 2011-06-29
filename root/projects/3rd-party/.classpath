@@ -131,7 +131,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/jbpm/jbpm-identity-3.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm/jbpm-jpdl-3.3.1.jar" sourcepath="src/jbpm-jpdl-3.3.1.GA-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jutf7-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mockito-all-1.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mockito-all-1.8.0.jar" sourcepath="C:/Users/Nick/.m2/repository/org/mockito/mockito-all/1.8.0/mockito-all-1.8.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/abdera/stax-api-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/XmlSchema-1.4.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-regex-2.4.1.jar" sourcepath="src/lucene-2.4.1-src.zip"/>
@@ -175,7 +175,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.5.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/urlrewritefilter-3.1.0.jar" sourcepath="src/urlrewritefilter-3.1.0-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/junit-4.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/groovy-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>

@@ -31,6 +31,15 @@ import java.util.List;
  */
 public abstract class CollectionUtils
 {
+    public static boolean isEmpty(Collection<?> items)
+    {
+        if(items == null)
+        {
+            return true;
+        }
+        return items.isEmpty();
+    }
+    
     public static final Function<Object, String> TO_STRING_TRANSFORMER = new Function<Object, String>()
     {
         public String apply(Object value)
