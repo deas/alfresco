@@ -217,15 +217,14 @@
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7-SNAPSHOT.jar" sourcepath="src/activiti-engine-5.7-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.7-SNAPSHOT.jar" sourcepath="src/activiti-spring-5.7-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-youtube-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-core-1.0.0.M3.jar" sourcepath="src/spring-social-core-1.0.0.M3-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-facebook-1.0.0.M3.jar" sourcepath="src/spring-social-facebook-1.0.0.M3-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-linkedin-1.0.0.M3.jar" sourcepath="src/spring-social-linkedin-1.0.0.M3-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-twitter-1.0.0.M3.jar" sourcepath="src/spring-social-twitter-1.0.0.M3-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-web-1.0.0.M3.jar" sourcepath="src/spring-social-web-1.0.0.M3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-client-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-core-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-docs-3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-media-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/google-collect-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-core-1.0.0.RC1.jar" sourcepath="src/spring-social-core-1.0.0.RC1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-web-1.0.0.RC1.jar" sourcepath="src/spring-social-web-1.0.0.RC1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-twitter-1.0.0.RC1.jar" sourcepath="src/spring-social-twitter-1.0.0.RC1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-facebook-1.0.0.RC1.jar" sourcepath="src/spring-social-facebook-1.0.0.RC1-sources.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
