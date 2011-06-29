@@ -87,10 +87,10 @@ public class CannedQueryPageDetails
         this.pageNumber = pageNumber;
         this.pageCount = pageCount;
         
-        // Done some checks
+        // Do some checks
         if (skipResults < 0)
         {
-            throw new IllegalArgumentException("Cannot skip few than 0 results.");
+            throw new IllegalArgumentException("Cannot skip fewer than 0 results.");
         }
         if (pageSize < 1)
         {

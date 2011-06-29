@@ -138,7 +138,7 @@ public class CannedQueryTest extends TestCase
         }
         // Get the paged result count
         int pagedResultCount = qrOne.getPagedResultCount();
-        assertEquals("Incorrect number of results", 10, pagedResultCount);
+        assertEquals("Incorrect number of results", 9, pagedResultCount);
         assertEquals("No sorting was specified in the parameters", "ONE_0", qrOne.getPages().get(0).get(0));
         assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
     }
@@ -171,13 +171,13 @@ public class CannedQueryTest extends TestCase
         CannedQuery<String> qOne = qfOne.getCannedQuery(params);
         CannedQueryResults<String> qrOne = qOne.execute();
         // Check pages
-        assertEquals("Incorrect number of results", 10, qrOne.getPagedResultCount());
+        assertEquals("Incorrect number of results", 9, qrOne.getPagedResultCount());
         assertEquals("No sorting was specified in the parameters", "ONE_0", qrOne.getPages().get(0).get(0));
-        assertEquals("No sorting was specified in the parameters", "ONE_9", qrOne.getPages().get(1).get(4));
+        assertEquals("No sorting was specified in the parameters", "ONE_9", qrOne.getPages().get(1).get(3));
         List<List<String>> pages = qrOne.getPages();
         assertEquals("Incorrect number of pages", 2, pages.size());
         assertEquals("Incorrect results on page", 5, pages.get(0).size());
-        assertEquals("Incorrect results on page", 5, pages.get(1).size());
+        assertEquals("Incorrect results on page", 4, pages.get(1).size());
         assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
         
         // Skip some results and use different page sizes
@@ -186,13 +186,13 @@ public class CannedQueryTest extends TestCase
         qOne = qfOne.getCannedQuery(params);
         qrOne = qOne.execute();
         // Check pages
-        assertEquals("Incorrect number of results", 8, qrOne.getPagedResultCount());
+        assertEquals("Incorrect number of results", 7, qrOne.getPagedResultCount());
         assertEquals("Incorrect number of pages", 3, qrOne.getPageCount());
         pages = qrOne.getPages();
         assertEquals("Incorrect number of pages", 3, pages.size());
         assertEquals("Incorrect results on page", 3, pages.get(0).size());
         assertEquals("Incorrect results on page", 3, pages.get(1).size());
-        assertEquals("Incorrect results on page", 2, pages.get(2).size());
+        assertEquals("Incorrect results on page", 1, pages.get(2).size());
         assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
         
         // Skip some results and return less pages
@@ -220,9 +220,9 @@ public class CannedQueryTest extends TestCase
         CannedQuery<String> qOne = qfOne.getCannedQuery(params);
         CannedQueryResults<String> qrOne = qOne.execute();
         // Check pages
-        assertEquals("Incorrect number of results", 10, qrOne.getPagedResultCount());
+        assertEquals("Incorrect number of results", 9, qrOne.getPagedResultCount());
         assertEquals("Expected inverse sorting", "ONE_9", qrOne.getPages().get(0).get(0));
-        assertEquals("Expected inverse sorting", "ONE_0", qrOne.getPages().get(0).get(9));
+        assertEquals("Expected inverse sorting", "ONE_0", qrOne.getPages().get(0).get(8));
         assertFalse("Should NOT have any more pages/items", qrOne.hasMoreItems());
     }
     
@@ -230,7 +230,7 @@ public class CannedQueryTest extends TestCase
     public void testQueryPermissionCheckedResults() throws Exception
     {
         CannedQueryFactory<String> qfOne = namedQueryFactoryRegistry.getNamedObject(QUERY_TEST_ONE);
-        CannedQueryParameters params = new CannedQueryParameters(null, null, null, "joe", 0, null);
+        CannedQueryParameters params = new CannedQueryParameters(null, null, null, 0, null);
         CannedQuery<String> qOne = qfOne.getCannedQuery(params);
         CannedQueryResults<String> qrOne = qOne.execute();
         // Check pages
@@ -254,11 +254,12 @@ public class CannedQueryTest extends TestCase
         CannedQueryPageDetails qPageDetails = new CannedQueryPageDetails(5, 1, 1, 1);
         CannedQuerySortDetails qSortDetails = new CannedQuerySortDetails(
                 new Pair<Object, SortOrder>("blah", SortOrder.DESCENDING));
-        CannedQueryParameters params = new CannedQueryParameters(null, qPageDetails, qSortDetails, "joe", 1000, null);
+        CannedQueryParameters params = new CannedQueryParameters(null, qPageDetails, qSortDetails, 1000, null);
         CannedQuery<String> qOne = qfOne.getCannedQuery(params);
         CannedQueryResults<String> qrOne = qOne.execute();
         // Check pages
-        assertEquals("Incorrect number of total results", new Pair(9,9), qrOne.getTotalResultCount()); // Pre-paging
+        assertEquals("Incorrect number of total results",
+                new Pair<Integer, Integer>(9,9), qrOne.getTotalResultCount()); // Pre-paging
         assertEquals("Incorrect number of paged results", 1, qrOne.getPagedResultCount());             // Skipped 5
         assertEquals("Incorrect result order", "ONE_3", qrOne.getPages().get(0).get(0));               // Order reversed
         assertTrue("Should have more pages/items", qrOne.hasMoreItems());
@@ -304,7 +305,7 @@ public class CannedQueryTest extends TestCase
                 CannedQueryParameters params,
                 String queryExecutionId, List<T> results, Set<Object> antiResults)
         {
-            super(params, queryExecutionId);
+            super(params);
             this.results = results;
             this.antiResults = antiResults;
         }
@@ -341,7 +342,7 @@ public class CannedQueryTest extends TestCase
         }
 
         @Override
-        protected List<T> applyPostQueryPermissions(List<T> results, String authenticationToken, int requestedCount)
+        protected List<T> applyPostQueryPermissions(List<T> results, int requestedCount)
         {
             boolean cutoffAllowed = (getParameters().requestTotalResultCountMax() == 0);
             

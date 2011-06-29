@@ -35,7 +35,6 @@ public class CannedQueryParameters
     private final Object parameterBean;
     private final CannedQueryPageDetails pageDetails;
     private final CannedQuerySortDetails sortDetails;
-    private final String authenticationToken;
     private final int requestTotalResultCountMax;
     private final String queryExecutionId;
 
@@ -43,7 +42,6 @@ public class CannedQueryParameters
      * <ul>
      *    <li><b>pageDetails</b>: <tt>null</tt></li>
      *    <li><b>sortDetails</b>: <tt>null</tt></li>
-     *    <li><b>authenticationToken</b>: <tt>null</tt></li>
      *    <li><b>requestTotalResultCountMax</b>: <tt>0</tt></li>
      *    <li><b>queryExecutionId</b>: <tt>null</tt></li>
      * </ul>
@@ -52,7 +50,7 @@ public class CannedQueryParameters
      */
     public CannedQueryParameters(Object parameterBean)
     {
-        this (parameterBean, null, null, null, DEFAULT_REQUEST_TOTAL_COUNT_MAX, null);
+        this (parameterBean, null, null, DEFAULT_REQUEST_TOTAL_COUNT_MAX, null);
     }
 
     /**
@@ -72,7 +70,12 @@ public class CannedQueryParameters
             int pageSize,
             String queryExecutionId)
     {
-        this (parameterBean, new CannedQueryPageDetails(skipResults, pageSize, CannedQueryPageDetails.DEFAULT_PAGE_NUMBER, CannedQueryPageDetails.DEFAULT_PAGE_COUNT), null, "", DEFAULT_REQUEST_TOTAL_COUNT_MAX, queryExecutionId);
+        this (
+                parameterBean,
+                new CannedQueryPageDetails(skipResults, pageSize, CannedQueryPageDetails.DEFAULT_PAGE_NUMBER, CannedQueryPageDetails.DEFAULT_PAGE_COUNT),
+                null,
+                DEFAULT_REQUEST_TOTAL_COUNT_MAX,
+                queryExecutionId);
     }
 
     /**
@@ -90,7 +93,7 @@ public class CannedQueryParameters
             CannedQueryPageDetails pageDetails,
             CannedQuerySortDetails sortDetails)
     {
-        this (parameterBean, pageDetails, sortDetails, null, DEFAULT_REQUEST_TOTAL_COUNT_MAX, null);
+        this (parameterBean, pageDetails, sortDetails, DEFAULT_REQUEST_TOTAL_COUNT_MAX, null);
     }
 
     /**
@@ -113,14 +116,12 @@ public class CannedQueryParameters
             Object parameterBean,
             CannedQueryPageDetails pageDetails,
             CannedQuerySortDetails sortDetails,
-            String authenticationToken,
             int requestTotalResultCountMax,
             String queryExecutionId)
     {
         this.parameterBean = parameterBean;
         this.pageDetails = pageDetails == null ? new CannedQueryPageDetails() : pageDetails;
         this.sortDetails = sortDetails == null ? new CannedQuerySortDetails() : sortDetails;
-        this.authenticationToken = authenticationToken;
         this.requestTotalResultCountMax = requestTotalResultCountMax;
         this.queryExecutionId = queryExecutionId;
     }
@@ -133,7 +134,6 @@ public class CannedQueryParameters
           .append("[parameterBean=").append(parameterBean)
           .append(", pageDetails=").append(pageDetails)
           .append(", sortDetails=").append(sortDetails)
-          .append(", authenticationToken=").append(authenticationToken)
           .append(", requestTotalResultCountMax=").append(requestTotalResultCountMax)
           .append(", queryExecutionId=").append(queryExecutionId)
           .append("]");
@@ -151,14 +151,6 @@ public class CannedQueryParameters
     public CannedQuerySortDetails getSortDetails()
     {
         return sortDetails;
-    }
-
-    /**
-     * @return              query execution authentication token (may be <tt>null</tt> for no authentication)
-     */
-    public String getAuthenticationToken()
-    {
-        return authenticationToken;
     }
 
     /**

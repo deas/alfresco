@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.util.GUID;
 import org.alfresco.util.Pair;
 import org.alfresco.util.ParameterCheck;
 
@@ -40,17 +41,17 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
     private CannedQueryResults<R> results;
     
     /**
-     * Construct the canned query given the original parameters applied
+     * Construct the canned query given the original parameters applied.
+     * <p/>
+     * A random GUID query execution ID will be generated.
      * 
      * @param parameters            the original query parameters
-     * @param queryExecutionId      the unique ID of this query
      */
-    protected AbstractCannedQuery(CannedQueryParameters parameters, String queryExecutionId)
+    protected AbstractCannedQuery(CannedQueryParameters parameters)
     {
         ParameterCheck.mandatory("parameters", parameters);
-        ParameterCheck.mandatory("queryExecutionId", queryExecutionId);
         this.parameters = parameters;
-        this.queryExecutionId = queryExecutionId;
+        this.queryExecutionId = GUID.generate();
     }
 
     @Override
@@ -84,8 +85,7 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
         }
         
         // Apply permissions
-        String authenticationToken = parameters.getAuthenticationToken();
-        if (authenticationToken != null && isApplyPostQueryPermissions())
+        if (isApplyPostQueryPermissions())
         {
             // Work out the number of results required
             int requestedCount = parameters.getPageDetails().getResultsRequiredForPaging();
@@ -94,7 +94,7 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
                 requestedCount++; // add one for "hasMoreItems"
             }
             
-            rawResults = applyPostQueryPermissions(rawResults, authenticationToken, requestedCount);
+            rawResults = applyPostQueryPermissions(rawResults, requestedCount);
         }
         
         final boolean permissionsApplied;
@@ -269,12 +269,11 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
      * or all available results have been examined.
      * 
      * @param results               the results to apply permissions to
-     * @param authenticationToken   the authentication token provided in the parameters
      * @param requestedCount        the minimum number of results to pass the permission checks
      *                              in order to fully satisfy the paging requirements
      * @return                      the remaining results (as a single "page") after permissions have been applied
      */
-    protected List<R> applyPostQueryPermissions(List<R> results, String authenticationToken, int requestedCount)
+    protected List<R> applyPostQueryPermissions(List<R> results, int requestedCount)
     {
         throw new UnsupportedOperationException("Override this method if post-query filtering is required.");
     }

@@ -59,11 +59,9 @@ public abstract class AbstractCachingCannedQueryFactory<R> extends AbstractCanne
     {
         private final AbstractCannedQuery<R> delegate;
         
-        private CannedQueryCacheFacade(
-                CannedQueryParameters params, String queryExecutionId,
-                AbstractCannedQuery<R> delegate)
+        private CannedQueryCacheFacade(CannedQueryParameters params, AbstractCannedQuery<R> delegate)
         {
-            super(params, queryExecutionId);
+            super(params);
             this.delegate = delegate;
         }
         
