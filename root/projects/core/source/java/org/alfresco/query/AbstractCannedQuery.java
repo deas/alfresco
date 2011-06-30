@@ -88,31 +88,12 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
         if (isApplyPostQueryPermissions())
         {
             // Work out the number of results required
-            int requestedCount = parameters.getPageDetails().getResultsRequiredForPaging();
-            if (requestedCount != Integer.MAX_VALUE)
-            {
-                requestedCount++; // add one for "hasMoreItems"
-            }
-            
+            int requestedCount = parameters.getResultsRequired();
             rawResults = applyPostQueryPermissions(rawResults, requestedCount);
         }
-        
-        final boolean permissionsApplied;
-        final boolean permissionsCutoff;
-        if (rawResults instanceof PermissionedResults)
-        {
-            permissionsApplied = ((PermissionedResults)rawResults).permissionsApplied();
-            permissionsCutoff = ((PermissionedResults)rawResults).hasMoreItems();
-        }
-        else
-        {
-            permissionsApplied = false;
-            permissionsCutoff = false;
-        }
-        
-        // Get total count - note: upper bound not yet estimated (null if permission checks caused the results to be truncated/cutoff)
-        int totalCount = getTotalResultCount(rawResults);
-        final Pair<Integer, Integer> finalTotalCount = new Pair<Integer, Integer>(totalCount, (! permissionsCutoff ? totalCount : null));
+
+        // Get total count
+        final Pair<Integer, Integer> totalCount = getTotalResultCount(rawResults);
         
         // Apply paging
         CannedQueryPageDetails pagingDetails = parameters.getPageDetails();
@@ -145,9 +126,9 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
             @Override
             public Pair<Integer, Integer> getTotalResultCount()
             {
-                if (parameters.requestTotalResultCountMax() > 0)
+                if (parameters.getTotalResultCountMax() > 0)
                 {
-                    return finalTotalCount;
+                    return totalCount;
                 }
                 else
                 {
@@ -202,12 +183,6 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
             public boolean hasMoreItems()
             {
                 return hasMoreItems;
-            }
-            
-            @Override
-            public boolean permissionsApplied()
-            {
-                return permissionsApplied;
             }
         };
         return results;
@@ -279,18 +254,21 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
     }
     
     /**
-     * Get the total number of available results after sorting and filtering.
+     * Get the total number of available results after querying, filtering, sorting and permission checking.
      * <p/>
      * The default implementation assumes that the given results are the final total possible.
      * 
      * @param results               the results after filtering and sorting, but before paging
-     * @return                      the total number of results before paging
-     * @throws UnsupportedOperationException if the implementation does not support  retrieval
-     *                              of the total query result count.
+     * @return                      pair representing (a) the total number of results and
+     *                              (b) the estimated (or actual) number of maximum results
+     *                              possible for this query.
+     * 
+     * @see CannedQueryParameters#getTotalResultCountMax()
      */
-    protected int getTotalResultCount(List<R> results)
+    protected Pair<Integer, Integer> getTotalResultCount(List<R> results)
     {
-        return results.size();
+        Integer size = results.size();
+        return new Pair<Integer, Integer>(size, size);
     }
     
     /**

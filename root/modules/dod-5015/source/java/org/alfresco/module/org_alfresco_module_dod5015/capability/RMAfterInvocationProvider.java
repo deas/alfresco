@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,14 +37,16 @@ import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
-import org.alfresco.query.PagingResults;
 import org.alfresco.repo.search.SimpleResultSetMetaData;
 import org.alfresco.repo.search.impl.lucene.PagingLuceneResultSet;
 import org.alfresco.repo.search.impl.querymodel.QueryEngineResults;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.permissions.PermissionCheckCollection;
+import org.alfresco.repo.security.permissions.PermissionCheckValue;
+import org.alfresco.repo.security.permissions.PermissionCheckedCollection.PermissionCheckedCollectionMixin;
+import org.alfresco.repo.security.permissions.PermissionCheckedValue;
 import org.alfresco.repo.security.permissions.impl.acegi.ACLEntryVoterException;
 import org.alfresco.repo.security.permissions.impl.acegi.FilteringResultSet;
-import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -94,6 +95,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public boolean supports(Class clazz)
     {
         return (MethodInvocation.class.isAssignableFrom(clazz));
@@ -101,8 +103,6 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
 
     public void afterPropertiesSet() throws Exception
     {
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -215,6 +215,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         this.entryVoter = entryVoter;
     }
 
+    @SuppressWarnings("rawtypes")
     public Object decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Object returnedObject) throws AccessDeniedException
     {
         if (logger.isDebugEnabled())
@@ -240,96 +241,52 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                 }
                 return null;
             }
+            else if (PermissionCheckedValue.class.isAssignableFrom(returnedObject.getClass()))
+            {
+                return decide(authentication, object, config, (PermissionCheckedValue) returnedObject);
+            }
+            else if (PermissionCheckValue.class.isAssignableFrom(returnedObject.getClass()))
+            {
+                return decide(authentication, object, config, (PermissionCheckValue) returnedObject);
+            }
             else if (StoreRef.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Store access");
-                }
                 return decide(authentication, object, config, nodeService.getRootNode((StoreRef) returnedObject)).getStoreRef();
             }
             else if (NodeRef.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Node access");
-                }
                 return decide(authentication, object, config, (NodeRef) returnedObject);
-            }
-            else if (FileInfo.class.isAssignableFrom(returnedObject.getClass()))
-            {
-                return decide(authentication, object, config, (FileInfo) returnedObject);
-            }
-            else if (PagingResults.class.isAssignableFrom(returnedObject.getClass()))
-            {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Controlled object (paged permissions already applied) - access allowed for " + object.getClass().getName());
-                }
-                return returnedObject;
             }
             else if (ChildAssociationRef.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Child Association access");
-                }
                 return decide(authentication, object, config, (ChildAssociationRef) returnedObject);
             }
             else if (AssociationRef.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Child Association access");
-                }
                 return decide(authentication, object, config, (AssociationRef) returnedObject);
             }
             else if (ResultSet.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Result Set access");
-                }
                 return decide(authentication, object, config, (ResultSet) returnedObject);
             }
             else if (PagingLuceneResultSet.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Result Set access");
-                }
                 return decide(authentication, object, config, (PagingLuceneResultSet) returnedObject);
             }
             else if (QueryEngineResults.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Result Set access");
-                }
                 return decide(authentication, object, config, (QueryEngineResults) returnedObject);
             }
             else if (Collection.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Collection Access");
-                }
                 return decide(authentication, object, config, (Collection) returnedObject);
             }
             else if (returnedObject.getClass().isArray())
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Array Access");
-                }
                 return decide(authentication, object, config, (Object[]) returnedObject);
             }
             else if (Map.class.isAssignableFrom(returnedObject.getClass()))
             {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Map Access");
-                }
                 return decide(authentication, object, config, (Map) returnedObject);
             }
             else
@@ -362,6 +319,22 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
 
     }
 
+    private PermissionCheckedValue decide(Authentication authentication, Object object, ConfigAttributeDefinition config, PermissionCheckedValue returnedObject) throws AccessDeniedException
+    {
+        // This passes as it has already been filtered
+        // TODO: Get the filter that was applied and double-check
+        return returnedObject;
+    }
+    
+    private PermissionCheckValue decide(Authentication authentication, Object object, ConfigAttributeDefinition config, PermissionCheckValue returnedObject) throws AccessDeniedException
+    {
+        // Get the wrapped value
+        NodeRef nodeRef = returnedObject.getNodeRef();
+        decide(authentication, object, config, nodeRef);
+        // This passes
+        return returnedObject;
+    }
+    
     private NodeRef decide(Authentication authentication, Object object, ConfigAttributeDefinition config, NodeRef returnedObject) throws AccessDeniedException
 
     {
@@ -370,7 +343,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
             return null;
         }
 
-        if (isUnfitered(returnedObject))
+        if (isUnfiltered(returnedObject))
         {
             return returnedObject;
         }
@@ -403,23 +376,13 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         }
     }
 
-    private boolean isUnfitered(NodeRef nodeRef)
+    private boolean isUnfiltered(NodeRef nodeRef)
     {
         return !nodeService.hasAspect(nodeRef, RecordsManagementModel.ASPECT_FILE_PLAN_COMPONENT);
 
     }
 
-    private FileInfo decide(Authentication authentication, Object object, ConfigAttributeDefinition config, FileInfo returnedObject) throws AccessDeniedException
-
-    {
-        // Filter via nodeRef
-        NodeRef nodeRef = returnedObject.getNodeRef();
-        // this is virtually equivalent to the noderef
-        decide(authentication, object, config, nodeRef);
-        // the noderef was allowed
-        return returnedObject;
-    }
-
+    @SuppressWarnings("rawtypes")
     private List<ConfigAttributeDefintion> extractSupportedDefinitions(ConfigAttributeDefinition config)
     {
         List<ConfigAttributeDefintion> definitions = new ArrayList<ConfigAttributeDefintion>();
@@ -472,7 +435,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
 
             // Enforce Read Policy
 
-            if (isUnfitered(testNodeRef))
+            if (isUnfiltered(testNodeRef))
             {
                 continue;
             }
@@ -518,7 +481,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                 testNodeRef = returnedObject.getTargetRef();
             }
 
-            if (isUnfitered(testNodeRef))
+            if (isUnfiltered(testNodeRef))
             {
                 continue;
             }
@@ -642,7 +605,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                     checkRead = parentCheckRead;
                 }
 
-                if (isUnfitered(testNodeRef))
+                if (isUnfiltered(testNodeRef))
                 {
                     continue;
                 }
@@ -690,9 +653,8 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         return new QueryEngineResults(answer);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Collection decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Collection returnedObject) throws AccessDeniedException
-
     {
         if (returnedObject == null)
         {
@@ -700,45 +662,81 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         }
 
         List<ConfigAttributeDefintion> supportedDefinitions = extractSupportedDefinitions(config);
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Entries are " + supportedDefinitions);
+        }
 
         if (supportedDefinitions.size() == 0)
         {
             return returnedObject;
         }
 
-        Set<Object> removed = new HashSet<Object>();
-
-        if (logger.isDebugEnabled())
+        // Default to the system-wide values and we'll see if they need to be reduced
+        long targetResultCount = returnedObject.size(); 
+        int maxPermissionChecks = Integer.MAX_VALUE;
+        long maxPermissionCheckTimeMillis = this.maxPermissionCheckTimeMillis; 
+        if (returnedObject instanceof PermissionCheckCollection<?>)
         {
-            logger.debug("Entries are " + supportedDefinitions);
+            PermissionCheckCollection permissionCheckCollection = (PermissionCheckCollection) returnedObject;
+            // Get values
+            targetResultCount = permissionCheckCollection.getTargetResultCount();
+            if (permissionCheckCollection.getCutOffAfterCount() > 0)
+            {
+                maxPermissionChecks = permissionCheckCollection.getCutOffAfterCount();
+            }
+            if (permissionCheckCollection.getCutOffAfterTimeMs() > 0)
+            {
+                maxPermissionCheckTimeMillis = permissionCheckCollection.getCutOffAfterTimeMs();
+            }
         }
-
-        // record search start time
+        
+        // Start timer and counter for cut-off
+        boolean cutoff = false;
         long startTimeMillis = System.currentTimeMillis();
         int count = 0;
-
-        Iterator iterator = returnedObject.iterator();
-        while (iterator.hasNext())
+        
+        // Keep values explicitly
+        List<Object> keepValues = new ArrayList<Object>(returnedObject.size());
+        
+        for (Object nextObject : returnedObject)
         {
-            Object nextObject = iterator.next();
-
             // if the maximum result size or time has been exceeded, then we have to remove only
             long currentTimeMillis = System.currentTimeMillis();
-            if (count >= maxPermissionChecks || (currentTimeMillis - startTimeMillis) > maxPermissionCheckTimeMillis)
+            
+            // NOTE: for reference - the "maxPermissionChecks" has never been honoured by this loop (since previously the count was not being incremented)
+            if (count >= targetResultCount)
             {
-                // just remove it
-                iterator.remove();
-                continue;
+                // We have enough results.  We stop without cutoff.
+                break;
             }
-
+            else if (count >= maxPermissionChecks)
+            {
+                // We have been cut off by count
+                cutoff = true;
+                if (logger.isDebugEnabled())
+                {
+                    logger.debug("decide (collection) cut-off: " + count + " checks exceeded " + maxPermissionChecks + " checks");
+                }
+                break;
+            }
+            else if ((currentTimeMillis - startTimeMillis) > maxPermissionCheckTimeMillis)
+            {
+                // We have been cut off by time
+                cutoff = true;
+                if (logger.isDebugEnabled())
+                {
+                    logger.debug("decide (collection) cut-off: " + (currentTimeMillis - startTimeMillis) + "ms exceeded " + maxPermissionCheckTimeMillis + "ms");
+                }
+                break;
+            }
+            
             boolean allowed = true;
             for (ConfigAttributeDefintion cad : supportedDefinitions)
             {
                 if (cad.mode.equalsIgnoreCase("FilterNode"))
                 {
-
                     NodeRef testNodeRef = null;
-
                     if (cad.parent)
                     {
                         if (StoreRef.class.isAssignableFrom(nextObject.getClass()))
@@ -758,13 +756,14 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                         {
                             testNodeRef = ((AssociationRef) nextObject).getSourceRef();
                         }
-                        else if (FileInfo.class.isAssignableFrom(nextObject.getClass()))
+                        else if (PermissionCheckValue.class.isAssignableFrom(nextObject.getClass()))
                         {
-                            testNodeRef = ((FileInfo) nextObject).getNodeRef();
+                            NodeRef nodeRef = ((PermissionCheckValue) nextObject).getNodeRef();
+                            testNodeRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
                         }
                         else
                         {
-                            throw new ACLEntryVoterException("The specified parameter is not a collection of NodeRefs or ChildAssociationRefs");
+                            throw new ACLEntryVoterException("The specified parameter is recognized: " + nextObject.getClass());
                         }
                     }
                     else
@@ -785,13 +784,13 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                         {
                             testNodeRef = ((AssociationRef) nextObject).getTargetRef();
                         }
-                        else if (FileInfo.class.isAssignableFrom(nextObject.getClass()))
+                        else if (PermissionCheckValue.class.isAssignableFrom(nextObject.getClass()))
                         {
-                            testNodeRef = ((FileInfo) nextObject).getNodeRef();
+                            testNodeRef = ((PermissionCheckValue) nextObject).getNodeRef();
                         }
                         else
                         {
-                            throw new ACLEntryVoterException("The specified parameter is not a collection of NodeRefs, ChildAssociationRefs or FileInfos");
+                            throw new ACLEntryVoterException("The specified parameter is recognized: " + nextObject.getClass());
                         }
                     }
 
@@ -800,39 +799,54 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                         logger.debug("\t" + cad.typeString + " test on " + testNodeRef + " from " + nextObject.getClass().getName());
                     }
 
-                    if (isUnfitered(testNodeRef))
+                    if (isUnfiltered(testNodeRef))      // Null allows
                     {
-                        continue;
+                        continue;                       // Continue to next ConfigAttributeDefintion
                     }
 
                     if (allowed && (testNodeRef != null) && (entryVoter.getViewRecordsCapability().checkRead(testNodeRef) != AccessDecisionVoter.ACCESS_GRANTED))
                     {
                         allowed = false;
+                        break;                          // No point evaluating more ConfigAttributeDefintions
                     }
                 }
             }
-            if (!allowed)
+            
+            // Failure or success, increase the count
+            count++;
+            
+            if (allowed)
             {
-                removed.add(nextObject);
+                keepValues.add(nextObject);
             }
         }
-        for (Object toRemove : removed)
+        // Work out how many were left unchecked (for whatever reason)
+        int sizeOriginal = returnedObject.size();
+        int checksRemaining = sizeOriginal - count;
+        // Note: There are use-cases where unmodifiable collections are passing through.
+        //       So make sure that the collection needs modification at all
+        if (keepValues.size() < sizeOriginal)
         {
-            while (returnedObject.remove(toRemove))
-                ;
+            // There are values that need to be removed.  We have to modify the collection.
+            try
+            {
+                returnedObject.clear();
+                returnedObject.addAll(keepValues);
+            }
+            catch (UnsupportedOperationException e)
+            {
+                throw new AccessDeniedException("Permission-checked list must be modifiable", e);
+            }
         }
-        return returnedObject;
+
+        // Attach the extra permission-check data to the collection
+        return PermissionCheckedCollectionMixin.create(returnedObject, cutoff, checksRemaining, sizeOriginal);
     }
 
     private Object[] decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Object[] returnedObject) throws AccessDeniedException
-
     {
+        // Assumption: value is not null
         BitSet incudedSet = new BitSet(returnedObject.length);
-
-        if (returnedObject == null)
-        {
-            return null;
-        }
 
         List<ConfigAttributeDefintion> supportedDefinitions = extractSupportedDefinitions(config);
 
@@ -866,13 +880,14 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                     {
                         testNodeRef = ((ChildAssociationRef) current).getParentRef();
                     }
-                    else if (FileInfo.class.isAssignableFrom(current.getClass()))
+                    else if (PermissionCheckValue.class.isAssignableFrom(current.getClass()))
                     {
-                        testNodeRef = ((FileInfo) current).getNodeRef();
+                        NodeRef nodeRef = ((PermissionCheckValue) current).getNodeRef();
+                        testNodeRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
                     }
                     else
                     {
-                        throw new ACLEntryVoterException("The specified array is not of NodeRef or ChildAssociationRef");
+                        throw new ACLEntryVoterException("The specified parameter is recognized: " + current.getClass());
                     }
                 }
                 else
@@ -889,13 +904,13 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                     {
                         testNodeRef = ((ChildAssociationRef) current).getChildRef();
                     }
-                    else if (FileInfo.class.isAssignableFrom(current.getClass()))
+                    else if (PermissionCheckValue.class.isAssignableFrom(current.getClass()))
                     {
-                        testNodeRef = ((FileInfo) current).getNodeRef();
+                        testNodeRef = ((PermissionCheckValue) current).getNodeRef();
                     }
                     else
                     {
-                        throw new ACLEntryVoterException("The specified array is not of NodeRef or ChildAssociationRef");
+                        throw new ACLEntryVoterException("The specified parameter is recognized: " + current.getClass());
                     }
                 }
 
@@ -904,7 +919,7 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
                     logger.debug("\t" + cad.typeString + " test on " + testNodeRef + " from " + current.getClass().getName());
                 }
 
-                if (isUnfitered(testNodeRef))
+                if (isUnfiltered(testNodeRef))
                 {
                     continue;
                 }
@@ -953,9 +968,10 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         {
             testNodeRef = ((ChildAssociationRef) current).getParentRef();
         }
-        else if (FileInfo.class.isAssignableFrom(current.getClass()))
+        else if (PermissionCheckValue.class.isAssignableFrom(current.getClass()))
         {
-            testNodeRef = ((FileInfo) current).getNodeRef();
+            NodeRef nodeRef = ((PermissionCheckValue) current).getNodeRef();
+            testNodeRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
         }
         else
         {
@@ -979,9 +995,9 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         {
             testNodeRef = ((ChildAssociationRef) current).getChildRef();
         }
-        else if (FileInfo.class.isAssignableFrom(current.getClass()))
+        else if (PermissionCheckValue.class.isAssignableFrom(current.getClass()))
         {
-            testNodeRef = ((FileInfo) current).getNodeRef();
+            testNodeRef = ((PermissionCheckValue) current).getNodeRef();
         }
         else
         {
@@ -990,8 +1006,8 @@ public class RMAfterInvocationProvider implements AfterInvocationProvider, Initi
         return testNodeRef;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Map decide(Authentication authentication, Object object, ConfigAttributeDefinition config, Map returnedObject) throws AccessDeniedException
-
     {
         if (returnedObject.containsKey(RecordsManagementModel.PROP_HOLD_REASON))
         {

@@ -344,7 +344,7 @@ public class CannedQueryTest extends TestCase
         @Override
         protected List<T> applyPostQueryPermissions(List<T> results, int requestedCount)
         {
-            boolean cutoffAllowed = (getParameters().requestTotalResultCountMax() == 0);
+            boolean cutoffAllowed = (getParameters().getTotalResultCountMax() == 0);
             
             final List<T> ret = new ArrayList<T>(results.size());
             for (T t : results)

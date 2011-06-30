@@ -234,6 +234,7 @@
             <list>
                 <ref bean="afterAcl"/>
                 <ref bean="afterRm"/>
+                <ref bean="afterAclMarking"/>
             </list>
         </property>
     </bean>

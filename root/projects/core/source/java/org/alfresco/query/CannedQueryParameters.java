@@ -30,19 +30,19 @@ package org.alfresco.query;
  */
 public class CannedQueryParameters
 {
-    public static final int DEFAULT_REQUEST_TOTAL_COUNT_MAX = 0; // default 0 => don't request total count
+    public static final int DEFAULT_TOTAL_COUNT_MAX = 0; // default 0 => don't request total count
     
     private final Object parameterBean;
     private final CannedQueryPageDetails pageDetails;
     private final CannedQuerySortDetails sortDetails;
-    private final int requestTotalResultCountMax;
+    private final int totalResultCountMax;
     private final String queryExecutionId;
 
     /**
      * <ul>
      *    <li><b>pageDetails</b>: <tt>null</tt></li>
      *    <li><b>sortDetails</b>: <tt>null</tt></li>
-     *    <li><b>requestTotalResultCountMax</b>: <tt>0</tt></li>
+     *    <li><b>totalResultCountMax</b>: <tt>0</tt></li>
      *    <li><b>queryExecutionId</b>: <tt>null</tt></li>
      * </ul>
      *  
@@ -50,7 +50,7 @@ public class CannedQueryParameters
      */
     public CannedQueryParameters(Object parameterBean)
     {
-        this (parameterBean, null, null, DEFAULT_REQUEST_TOTAL_COUNT_MAX, null);
+        this (parameterBean, null, null, DEFAULT_TOTAL_COUNT_MAX, null);
     }
 
     /**
@@ -58,8 +58,7 @@ public class CannedQueryParameters
      * <ul>
      *    <li><b>pageDetails.pageNumber</b>: <tt>1</tt></li>
      *    <li><b>pageDetails.pageCount</b>: <tt>1</tt></li>
-     *    <li><b>authenticationToken</b>: <tt>null</tt></li>
-     *    <li><b>requestTotalResultCountMax</b>: <tt>0</tt></li>
+     *    <li><b>totalResultCountMax</b>: <tt>0</tt></li>
      * </ul>
      *  
      * @see #NamedQueryParameters(Object, CannedQueryPageDetails, CannedQuerySortDetails, String, int, String)
@@ -74,15 +73,14 @@ public class CannedQueryParameters
                 parameterBean,
                 new CannedQueryPageDetails(skipResults, pageSize, CannedQueryPageDetails.DEFAULT_PAGE_NUMBER, CannedQueryPageDetails.DEFAULT_PAGE_COUNT),
                 null,
-                DEFAULT_REQUEST_TOTAL_COUNT_MAX,
+                DEFAULT_TOTAL_COUNT_MAX,
                 queryExecutionId);
     }
 
     /**
      * Defaults:
      * <ul>
-     *    <li><b>authenticationToken</b>: <tt>null</tt></li>
-     *    <li><b>requestTotalResultCountMax</b>: <tt>0</tt></li>
+     *    <li><b>totalResultCountMax</b>: <tt>0</tt></li>
      *    <li><b>queryExecutionId</b>: <tt>null</tt></li>
      * </ul>
      *  
@@ -93,7 +91,7 @@ public class CannedQueryParameters
             CannedQueryPageDetails pageDetails,
             CannedQuerySortDetails sortDetails)
     {
-        this (parameterBean, pageDetails, sortDetails, DEFAULT_REQUEST_TOTAL_COUNT_MAX, null);
+        this (parameterBean, pageDetails, sortDetails, DEFAULT_TOTAL_COUNT_MAX, null);
     }
 
     /**
@@ -104,10 +102,9 @@ public class CannedQueryParameters
      *                              if not relevant to the query
      * @param pageDetails           the type of paging to be applied or <tt>null</tt> for none
      * @param sortDetails           the type of sorting to be applied or <tt>null</tt> for none
-     * @param authenticationToken   an authentication token (application-dependent) to be supplied
-     *                              if permission-based filtering should be applied, otherwise <tt>null</tt>
-     * @param requestTotalResultCountMax <tt>true</tt> if the query should not only return the required rows
-     *                              but should also return the total number of possible rows
+     * @param totalResultCountMax   greater than zero if the query should not only return the required rows
+     *                              but should also return the total number of possible rows up to
+     *                              the given maximum.
      * @param queryExecutionId      ID of a previously-executed query to be used during follow-up
      *                              page requests - <tt>null</tt> if not available
      */
@@ -116,13 +113,18 @@ public class CannedQueryParameters
             Object parameterBean,
             CannedQueryPageDetails pageDetails,
             CannedQuerySortDetails sortDetails,
-            int requestTotalResultCountMax,
+            int totalResultCountMax,
             String queryExecutionId)
     {
+        if (totalResultCountMax < 0)
+        {
+            throw new IllegalArgumentException("totalResultCountMax cannot be negative.");
+        }
+        
         this.parameterBean = parameterBean;
         this.pageDetails = pageDetails == null ? new CannedQueryPageDetails() : pageDetails;
         this.sortDetails = sortDetails == null ? new CannedQuerySortDetails() : sortDetails;
-        this.requestTotalResultCountMax = requestTotalResultCountMax;
+        this.totalResultCountMax = totalResultCountMax;
         this.queryExecutionId = queryExecutionId;
     }
 
@@ -134,7 +136,7 @@ public class CannedQueryParameters
           .append("[parameterBean=").append(parameterBean)
           .append(", pageDetails=").append(pageDetails)
           .append(", sortDetails=").append(sortDetails)
-          .append(", requestTotalResultCountMax=").append(requestTotalResultCountMax)
+          .append(", requestTotalResultCountMax=").append(totalResultCountMax)
           .append(", queryExecutionId=").append(queryExecutionId)
           .append("]");
         return sb.toString();
@@ -166,9 +168,28 @@ public class CannedQueryParameters
      *                              also return the total count (number of possible rows) up to the given max
      *                              if 0 then query does not need to return the total count
      */
-    public int requestTotalResultCountMax()
+    public int getTotalResultCountMax()
     {
-        return requestTotalResultCountMax;
+        return totalResultCountMax;
+    }
+    
+    /**
+     * Helper method to get the total number of query results that need to be obtained in order
+     * to satisfy the {@link #getPageDetails() paging requirements}, the
+     * {@link #requestTotalResultCountMax() maximum result count} ... and an extra to provide
+     * 'hasMore' functionality.
+     * 
+     * @return                      the minimum number of results required before pages can be created
+     */
+    public int getResultsRequired()
+    {
+        int resultsForPaging = pageDetails.getResultsRequiredForPaging();
+        if (resultsForPaging < Integer.MAX_VALUE)       // Add one for 'hasMore'
+        {
+            resultsForPaging++;
+        }
+        int maxRequired = Math.max(totalResultCountMax, resultsForPaging);
+        return maxRequired;
     }
 
     /**
@@ -179,5 +200,4 @@ public class CannedQueryParameters
     {
         return parameterBean;
     }
-
 }

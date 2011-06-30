@@ -28,7 +28,7 @@ import org.alfresco.util.Pair;
  * @author janv
  * @since 4.0
  */
-public interface PagingResults<R> extends PermissionedResults
+public interface PagingResults<R>
 {
     public List<R> getPage();
     
@@ -38,9 +38,8 @@ public interface PagingResults<R> extends PermissionedResults
      * Note: could also return true if page was cutoff/trimmed for some reason 
      *       (eg. due to permission checks of large page of requested max items)
      * 
-     * @return true if more items (eg. on next page)
-     * 
-     *         - true  => at least one more page (or incomplete page - if cutoff)
+     * @return true if more items (eg. on next page)<br/>
+     *         - true  => at least one more page (or incomplete page - if cutoff)<br/>
      *         - false => last page (or incomplete page - if cutoff)
      */
     public boolean hasMoreItems();
@@ -51,10 +50,10 @@ public interface PagingResults<R> extends PermissionedResults
      * <p/>
      * Returns result as an approx "range" pair <lower, upper>
      * <ul>
-     * <li>null (or lower is null) => unknown total count (or not requested by the client).</li>
-     * <li>lower = upper           => total count should be accurate</li>
-     * <li>lower < upper           => total count is an approximation ("about") - somewhere in the given range (inclusive)</li>
-     * <li>upper is null           => total count is "more than" lower (upper is unknown)</li>
+     * <li>null (or lower is null):     unknown total count (or not requested by the client).</li>
+     * <li>lower = upper          :     total count should be accurate</li>
+     * <li>lower < upper          :     total count is an approximation ("about") - somewhere in the given range (inclusive)</li>
+     * <li>upper is null          :     total count is "more than" lower (upper is unknown)</li>
      * </ul>
      * 
      * @return                  Returns the total results as a range (all results, including the paged results returned)
