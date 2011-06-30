@@ -106,7 +106,7 @@ import org.springframework.beans.PropertyAccessException;
         }
     }
 
-    /* package */synchronized void resolveDependencies(ModelQuery query)
+    /* package */synchronized void resolveDependencies(ModelQuery query, boolean enableConstraintClassLoading)
     {
         if (resolving)
         {
@@ -116,7 +116,7 @@ import org.springframework.beans.PropertyAccessException;
         try
         {
             resolving = true;
-            resolveInternal(query);
+            resolveInternal(query, enableConstraintClassLoading);
         }
         finally
         {
@@ -124,7 +124,7 @@ import org.springframework.beans.PropertyAccessException;
         }
     }
 
-    private synchronized void resolveInternal(ModelQuery query)
+    private synchronized void resolveInternal(ModelQuery query, boolean enableConstraintClassLoading)
     {
         if (constraint != null)
         {
@@ -158,7 +158,7 @@ import org.springframework.beans.PropertyAccessException;
                 throw new DictionaryException(ERR_REF_NOT_FOUND, ref, shortName);
             }
             // make sure that the constraint definition has itself been resolved
-            constraintDef.resolveDependencies(query);
+            constraintDef.resolveDependencies(query, enableConstraintClassLoading);
             // just use the constraint provided by the referenced definition
             this.constraint = constraintDef.getConstraint();
             
@@ -190,9 +190,12 @@ import org.springframework.beans.PropertyAccessException;
                 // try to establish it as a class
                 try
                 {
-                    @SuppressWarnings("unchecked")
-                    Class clazz = Class.forName(type);
-                    constraint = (Constraint) clazz.newInstance();
+                    if(enableConstraintClassLoading)
+                    {
+                        @SuppressWarnings("unchecked")
+                        Class clazz = Class.forName(type);
+                        constraint = (Constraint) clazz.newInstance();
+                    }
                 }
                 catch (ClassNotFoundException ee)
                 {
@@ -208,78 +211,81 @@ import org.springframework.beans.PropertyAccessException;
                 }
             }
             
-            // property setters
-            BeanWrapper beanWrapper = new BeanWrapperImpl(constraint);
-            List<M2NamedValue> constraintNamedValues = m2Constraint.getParameters();
-            
-            if (constraintNamedValues != null)
+            if(constraint != null)
             {
-                for (M2NamedValue namedValue : constraintNamedValues)
+                // property setters
+                BeanWrapper beanWrapper = new BeanWrapperImpl(constraint);
+                List<M2NamedValue> constraintNamedValues = m2Constraint.getParameters();
+
+                if (constraintNamedValues != null)
                 {
-                    String namedValueName = namedValue.getName();
-                    // Check for reserved properties
-                    if (namedValueName.equals(PROP_SHORT_NAME))
+                    for (M2NamedValue namedValue : constraintNamedValues)
                     {
-                        throw new DictionaryException(ERR_RESERVED_PROPERTY, PROP_SHORT_NAME, namedValueName);
+                        String namedValueName = namedValue.getName();
+                        // Check for reserved properties
+                        if (namedValueName.equals(PROP_SHORT_NAME))
+                        {
+                            throw new DictionaryException(ERR_RESERVED_PROPERTY, PROP_SHORT_NAME, namedValueName);
+                        }
+
+                        Object value = null;
+                        if (namedValue.getSimpleValue() != null && namedValue.getListValue() != null)
+                        {
+                            throw new DictionaryException(ERR_SIMPLE_AND_LIST, shortName, namedValue.getName());
+                        }
+                        else if (namedValue.getSimpleValue() != null)
+                        {
+                            value = namedValue.getSimpleValue();
+                        }
+                        else if (namedValue.getListValue() != null)
+                        {
+                            value = namedValue.getListValue();
+                        }
+                        try
+                        {
+                            beanWrapper.setPropertyValue(namedValueName, value);
+                        }
+                        catch (PropertyAccessException e)
+                        {
+                            throw new DictionaryException(ERR_PROPERTY_MISMATCH, e, namedValueName, shortName);
+                        }
+                        catch (InvalidPropertyException e)
+                        {
+                            throw new DictionaryException(ERR_PROPERTY_MISMATCH, e, namedValueName, shortName);
+                        }
                     }
-                    
-                    Object value = null;
-                    if (namedValue.getSimpleValue() != null && namedValue.getListValue() != null)
+
+                    // Pass in the short name as a special property, if it is available
+                    if (beanWrapper.isWritableProperty(PROP_SHORT_NAME))
                     {
-                        throw new DictionaryException(ERR_SIMPLE_AND_LIST, shortName, namedValue.getName());
+                        try
+                        {
+                            beanWrapper.setPropertyValue(PROP_SHORT_NAME, shortName);
+                        }
+                        catch (PropertyAccessException e)
+                        {
+                            throw new DictionaryException(ERR_PROPERTY_MISMATCH, e, shortName, shortName);
+                        }
+                        catch (InvalidPropertyException e)
+                        {
+                            throw new DictionaryException(ERR_PROPERTY_MISMATCH, e, shortName, shortName);
+                        }
                     }
-                    else if (namedValue.getSimpleValue() != null)
+
+                    if ((title != null) && (beanWrapper.isWritableProperty(PROP_TITLE)))
                     {
-                        value = namedValue.getSimpleValue();
+                        beanWrapper.setPropertyValue(PROP_TITLE, title);
                     }
-                    else if (namedValue.getListValue() != null)
+
+                    if ((title != null) && (beanWrapper.isWritableProperty(PROP_DESCRIPTION)))
                     {
-                        value = namedValue.getListValue();
-                    }
-                    try
-                    {
-                        beanWrapper.setPropertyValue(namedValueName, value);
-                    }
-                    catch (PropertyAccessException e)
-                    {
-                        throw new DictionaryException(ERR_PROPERTY_MISMATCH, e, namedValueName, shortName);
-                    }
-                    catch (InvalidPropertyException e)
-                    {
-                        throw new DictionaryException(ERR_PROPERTY_MISMATCH, e, namedValueName, shortName);
+                        beanWrapper.setPropertyValue(PROP_DESCRIPTION, description);
                     }
                 }
-                
-                // Pass in the short name as a special property, if it is available
-                if (beanWrapper.isWritableProperty(PROP_SHORT_NAME))
-                {
-                    try
-                    {
-                        beanWrapper.setPropertyValue(PROP_SHORT_NAME, shortName);
-                    }
-                    catch (PropertyAccessException e)
-                    {
-                        throw new DictionaryException(ERR_PROPERTY_MISMATCH, e, shortName, shortName);
-                    }
-                    catch (InvalidPropertyException e)
-                    {
-                        throw new DictionaryException(ERR_PROPERTY_MISMATCH, e, shortName, shortName);
-                    }
-                }
-                
-                if ((title != null) && (beanWrapper.isWritableProperty(PROP_TITLE)))
-                {
-                    beanWrapper.setPropertyValue(PROP_TITLE, title);
-                }
-                
-                if ((title != null) && (beanWrapper.isWritableProperty(PROP_DESCRIPTION)))
-                {
-                    beanWrapper.setPropertyValue(PROP_DESCRIPTION, description);
-                }
-            }
-            
+
             // now initialize
             constraint.initialize();
+            }
         }
     }
 

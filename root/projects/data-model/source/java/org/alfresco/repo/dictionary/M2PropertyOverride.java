@@ -31,7 +31,7 @@ public class M2PropertyOverride
 {
     private String name;
     private Boolean isMandatory;
-    private boolean isMandatoryEnforced = false;
+    private Boolean isMandatoryEnforced;
     private String defaultValue;
     private List<M2Constraint> constraints;
     
@@ -63,7 +63,7 @@ public class M2PropertyOverride
         this.isMandatory = isMandatory;
     }
     
-    public boolean isMandatoryEnforced()
+    public Boolean isMandatoryEnforced()
     {
         return isMandatoryEnforced;
     }

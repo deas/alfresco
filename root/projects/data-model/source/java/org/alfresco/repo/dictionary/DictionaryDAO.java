@@ -115,6 +115,18 @@ public interface DictionaryDAO extends ModelQuery
     public QName putModel(M2Model model);
     
     /**
+     * Adds a model to the dictionary.  The model is compiled and validated.
+     * Constraints are not loaded.
+     * 
+     * This method should only be used to load models where the enforcement of constraints is never required.
+     * For example, SOLR read only use of the index where contraints are not required and thier definitions may not be available.  
+     * 
+     * @param model the model to add
+     * @return QName name of model
+     */
+    public QName putModelIgnoringConstraints(M2Model model);
+    
+    /**
      * Removes a model from the dictionary.  The types and aspect in the model will no longer be 
      * available.
      * 

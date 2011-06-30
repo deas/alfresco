@@ -82,7 +82,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     private static final String GET_METADATA_URL = "api/solr/metadata";
     private static final String GET_NODES_URL = "api/solr/nodes";
     private static final String GET_CONTENT = "api/solr/textContent";
-    private static final String GET_MODEL = "api/solr/model/{0}";
+    private static final String GET_MODEL = "api/solr/model";
     private static final String GET_MODELS_DIFF = "api/solr/modelsdiff";
 
     private static final String CHECKSUM_HEADER = "XAlfresco-modelChecksum";
@@ -799,14 +799,16 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     
     public AlfrescoModel getModel(QName modelName) throws IOException, JSONException
     {
+        // If the model is new to the SOLR side the prefix will be unknown so we can not generate prefixes for the request!
+        // Always use the full QName with explicit URI
         setupHttpClient();
 
         StringBuilder url = new StringBuilder(this.url);
 
         URLCodec encoder = new URLCodec();
-        MessageFormat mf = new MessageFormat(GET_MODEL);
-        // make sure we send the short QName (the webscript expects it)
-        url.append(mf.format(new Object[] {encoder.encode(modelName.toPrefixString(namespaceDAO), "UTF-8")}));
+        // must send the long name as we may not have the prefix registered
+        url.append(GET_MODEL);
+        url.append("?modelQName=").append(encoder.encode(modelName.toString(), "UTF-8"));
         
         GetRequest req = new GetRequest(url.toString());
         
@@ -833,7 +835,8 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         for(AlfrescoModel model : currentModels)
         {
             JSONObject jsonModel = new JSONObject();
-            jsonModel.put("name", model.getModel().getName());
+            QName modelQName = QName.createQName( model.getModel().getName(), namespaceDAO);
+            jsonModel.put("name", modelQName.toString());
             jsonModel.put("checksum", model.getChecksum());
             jsonModels.put(jsonModel);
         }

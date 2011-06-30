@@ -55,7 +55,7 @@ import org.apache.commons.logging.LogFactory;
  * @author David Caruana
  *
  */
-/*package*/ class CompiledModel implements ModelQuery
+public class CompiledModel implements ModelQuery
 {
     
     // Logger
@@ -78,7 +78,7 @@ import org.apache.commons.logging.LogFactory;
      * @param dictionaryDAO dictionary DAO
      * @param namespaceDAO namespace DAO
      */
-    /*package*/ CompiledModel(M2Model model, DictionaryDAO dictionaryDAO, NamespaceDAO namespaceDAO)
+    /*package*/ CompiledModel(M2Model model, DictionaryDAO dictionaryDAO, NamespaceDAO namespaceDAO, boolean enableConstraintClassLoading)
     {
         try
         {
@@ -96,10 +96,12 @@ import org.apache.commons.logging.LogFactory;
             resolveInheritance(query, localPrefixes, constraints);
             
             // Phase 4: Resolve constraint dependencies
+
             for (ConstraintDefinition def : constraints.values())
             {
-                ((M2ConstraintDefinition)def).resolveDependencies(query);
+                ((M2ConstraintDefinition)def).resolveDependencies(query, enableConstraintClassLoading);
             }
+            
         }
         catch(Exception e)
         {
@@ -111,7 +113,7 @@ import org.apache.commons.logging.LogFactory;
     /**
      * @return the model definition
      */
-    /*package*/ M2Model getM2Model()
+    public M2Model getM2Model()
     {
         return model;
     }
@@ -176,6 +178,7 @@ import org.apache.commons.logging.LogFactory;
             }
             constraints.put(qname, def);
         }
+        
     }    
     
     

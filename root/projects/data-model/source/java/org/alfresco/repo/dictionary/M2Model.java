@@ -159,9 +159,9 @@ public class M2Model
      * @param namespaceDAO  namespace DAO
      * @return  the compiled form of the model
      */
-    /*package*/ CompiledModel compile(DictionaryDAO dictionaryDAO, NamespaceDAO namespaceDAO)
+    /*package*/ CompiledModel compile(DictionaryDAO dictionaryDAO, NamespaceDAO namespaceDAO, boolean enableConstraintClassLoading)
     {
-        CompiledModel compiledModel = new CompiledModel(this, dictionaryDAO, namespaceDAO);
+        CompiledModel compiledModel = new CompiledModel(this, dictionaryDAO, namespaceDAO, enableConstraintClassLoading);
         return compiledModel;
     }
 

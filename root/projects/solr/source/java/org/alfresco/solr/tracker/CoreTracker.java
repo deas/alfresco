@@ -20,9 +20,11 @@ package org.alfresco.solr.tracker;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,11 +32,14 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -42,11 +47,14 @@ import java.util.Map;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
+import org.alfresco.repo.dictionary.M2Model;
+import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
@@ -57,6 +65,8 @@ import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclReaders;
+import org.alfresco.solr.client.AlfrescoModel;
+import org.alfresco.solr.client.AlfrescoModelDiff;
 import org.alfresco.solr.client.ContentPropertyValue;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.MLTextPropertyValue;
@@ -303,6 +313,76 @@ public class CoreTracker
                 long lastTxCommitTime = lastGoodTxCommitTimeInIndex;
                 long aclLastCommitTime = lastGoodTxCommitTimeInIndex;
 
+                // track models
+                // reflect changes changes and update on disk copy
+               
+                List<AlfrescoModelDiff> modelDiffs = client.getModelsDiff(dataModel.getAlfrescoModels());
+                HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
+                
+                for (AlfrescoModelDiff modelDiff : modelDiffs)
+                {
+                    switch(modelDiff.getType())
+                    {
+                    case CHANGED:
+                        AlfrescoModel changedModel = client.getModel(modelDiff.getModelName());
+                        for (M2Namespace namespace : changedModel.getModel().getNamespaces())
+                        {
+                            modelMap.put(namespace.getUri(), changedModel.getModel());
+                        }
+                        break;
+                    case NEW:
+                        AlfrescoModel newModel = client.getModel(modelDiff.getModelName());
+                        for (M2Namespace namespace : newModel.getModel().getNamespaces())
+                        {
+                            modelMap.put(namespace.getUri(), newModel.getModel());
+                        }
+                        break;
+                    case REMOVED:
+                        break;
+                    }
+                }
+               
+                HashSet<String> loadedModels = new HashSet<String>();
+                for (M2Model model : modelMap.values())
+                {
+                    loadModel(modelMap, loadedModels, model, dataModel);
+                }
+                dataModel.afterInitModels();
+                
+                File alfrescoModelDir = new File(id, "alfrescoModels");
+                if(!alfrescoModelDir.exists())
+                {
+                    alfrescoModelDir.mkdir();
+                }
+                for (AlfrescoModelDiff modelDiff : modelDiffs)
+                {
+                    switch(modelDiff.getType())
+                    {
+                    case CHANGED:
+                        M2Model changedModel = dataModel.getM2Model(modelDiff.getModelName());
+                        File removedFile = new File(alfrescoModelDir, getModelFileName(changedModel));
+                        removedFile.delete();
+                        File changedFile = new File(alfrescoModelDir, getModelFileName(changedModel));
+                        FileOutputStream cos = new FileOutputStream(changedFile);
+                        changedModel.toXML(cos);
+                        cos.flush();
+                        cos.close();
+                        break;
+                    case NEW:
+                        M2Model newModel = dataModel.getM2Model(modelDiff.getModelName());
+                        // add on file
+                        File newFile = new File(alfrescoModelDir, getModelFileName(newModel));
+                        FileOutputStream nos = new FileOutputStream(newFile);
+                        newModel.toXML(nos);
+                        nos.flush();
+                        nos.close();
+                        break;
+                    case REMOVED:
+                        // TODO: list and delete by pattern
+                        break;
+                    }
+                }
+                
                 // Track Acls up to end point
                 long aclLoopStartingCommitTime;
                 List<AclChangeSet> aclChangeSets;
@@ -1848,5 +1928,33 @@ public class CoreTracker
         }
 
         return aclReport;
+    }
+   
+    
+    private void loadModel(Map<String, M2Model> modelMap, HashSet<String> loadedModels, M2Model model, AlfrescoSolrDataModel dataModel)
+    {
+        String modelName = model.getName();
+        if (loadedModels.contains(modelName) == false)
+        {
+            for (M2Namespace importNamespace : model.getImports())
+            {
+                M2Model importedModel = modelMap.get(importNamespace.getUri());
+                if (importedModel != null)
+                {
+
+                    // Ensure that the imported model is loaded first
+                    loadModel(modelMap, loadedModels, importedModel, dataModel);
+                }
+            }
+
+            dataModel.putModel(model);
+            loadedModels.add(modelName);
+            System.out.println("Loading model "+model.getName());
+        }
+    }
+    
+    private String getModelFileName(M2Model model)
+    {
+        return model.getName().replace(":", ".")+"."+model.getChecksum(XMLBindingType.DEFAULT)+".xml";
     }
 }

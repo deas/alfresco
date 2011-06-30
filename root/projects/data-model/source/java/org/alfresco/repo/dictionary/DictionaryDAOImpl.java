@@ -264,10 +264,24 @@ public class DictionaryDAOImpl implements DictionaryDAO
      */
     public QName putModel(M2Model model)
     {
+        return putModelImpl(model, true);
+    }
+    
+    @Override
+    public QName putModelIgnoringConstraints(M2Model model)
+    {
+        return putModelImpl(model, false);
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.dictionary.impl.DictionaryDAO#putModel(org.alfresco.repo.dictionary.impl.M2Model)
+     */
+    public QName putModelImpl(M2Model model, boolean enableConstraintClassLoading)
+    {
         String tenantDomain = tenantService.getCurrentUserDomain();
         
         // Compile model definition
-        CompiledModel compiledModel = model.compile(this, namespaceDAO);
+        CompiledModel compiledModel = model.compile(this, namespaceDAO, enableConstraintClassLoading);
         QName modelName = compiledModel.getModelDefinition().getName();
         
         // Remove namespace definitions for previous model, if it exists
@@ -436,7 +450,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
      * @param modelName  the model name
      * @return the compiled model of the given name
      */
-    /* package */ CompiledModel getCompiledModel(QName modelName)
+    public CompiledModel getCompiledModel(QName modelName)
     {
         String tenantDomain = tenantService.getCurrentUserDomain();
         if (! tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
@@ -1149,7 +1163,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
     public List<M2ModelDiff> diffModel(M2Model model)
     {
         // Compile model definition
-        CompiledModel compiledModel = model.compile(this, namespaceDAO);
+        CompiledModel compiledModel = model.compile(this, namespaceDAO, true);
         QName modelName = compiledModel.getModelDefinition().getName();
         
         CompiledModel previousVersion = null;

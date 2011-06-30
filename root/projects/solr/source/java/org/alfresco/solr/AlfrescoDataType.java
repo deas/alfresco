@@ -18,6 +18,11 @@
  */
 package org.alfresco.solr;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -46,14 +51,13 @@ import org.apache.solr.schema.FieldType;
 import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.QParser;
+import org.springframework.extensions.surf.util.I18NUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Generic data type for alfresco - the field instance specifies as much as it can TODO: This is a generic multi-valued
- * type - consider a single valued type for performance. TODO: wire up config for Alfresco data models etc and implement
- * init.
+ * Generic data type for alfresco - the single match all field has to be multi-valued.
  * 
  * @author Andy
  */
@@ -100,43 +104,92 @@ public class AlfrescoDataType extends FieldType
     {
         HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
         id = schema.getResourceLoader().getInstanceDir();
-        InputStream is = schema.getResourceLoader().openResource("alfrescoConfig.xml");
-        Config alfrescoConf;
-        try
+
+        File alfrescoModelDir = new File(id, "alfrescoModels");
+        if (alfrescoModelDir.exists() && alfrescoModelDir.isDirectory())
         {
-            alfrescoConf = new Config(schema.getResourceLoader(), "schema", is, "/alfresco/");
-            Document document = alfrescoConf.getDocument();
-            final XPath xpath = alfrescoConf.getXPath();
-
-            String expression = "/alfresco/model";
-            NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-
-            for (int i = 0; i < nodes.getLength(); i++)
+            for (File file : alfrescoModelDir.listFiles(new FileFilter()
             {
-                Node node = nodes.item(i);
-                String modelLocaltion = node.getTextContent();
-                InputStream modelStream = schema.getResourceLoader().openResource(modelLocaltion);
-                M2Model model = M2Model.createModel(modelStream);
-                for (M2Namespace namespace : model.getNamespaces())
+                @Override
+                public boolean accept(File pathname)
                 {
-                    modelMap.put(namespace.getUri(), model);
+                    return pathname.isFile() && pathname.getName().endsWith(".xml");
                 }
-            }
 
-            // Load the models ensuring that they are loaded in the correct order
-            HashSet<String> loadedModels = new HashSet<String>();
-            for (M2Model model : modelMap.values())
+            }))
             {
-                loadModel(modelMap, loadedModels, model);
+                InputStream modelStream;
+                try
+                {
+                    modelStream = new FileInputStream(file);
+                    M2Model model = M2Model.createModel(modelStream);
+                    modelStream.close();
+                    for (M2Namespace namespace : model.getNamespaces())
+                    {
+                        modelMap.put(namespace.getUri(), model);
+                    }
+                }
+                catch (FileNotFoundException e)
+                {
+                    throw new AlfrescoRuntimeException("File not found", e);
+                }
+                catch (IOException e)
+                {
+                    throw new AlfrescoRuntimeException("File not found", e);
+                }
+
             }
-
         }
-        catch (Exception e)
+        // Load the models ensuring that they are loaded in the correct order
+        HashSet<String> loadedModels = new HashSet<String>();
+        for (M2Model model : modelMap.values())
         {
-            throw new AlfrescoRuntimeException("Failed to read Alfresco schema", e);
+            loadModel(modelMap, loadedModels, model);
         }
 
-        AlfrescoSolrDataModel.getInstance(id).afterInitModels();
+        // TODO: load analyser properties bundle
+        // I18NUtil.registerResourceBundle(resourceBundle); - one set of analysers per solr instance ??
+
+        // InputStream is = schema.getResourceLoader().openResource("alfrescoConfig.xml");
+        // Config alfrescoConf;
+        // try
+        // {
+        // alfrescoConf = new Config(schema.getResourceLoader(), "schema", is, "/alfresco/");
+        // Document document = alfrescoConf.getDocument();
+        // final XPath xpath = alfrescoConf.getXPath();
+        //
+        // String expression = "/alfresco/model";
+        // NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
+        //
+        // for (int i = 0; i < nodes.getLength(); i++)
+        // {
+        // Node node = nodes.item(i);
+        // String modelLocaltion = node.getTextContent();
+        // InputStream modelStream = schema.getResourceLoader().openResource(modelLocaltion);
+        // M2Model model = M2Model.createModel(modelStream);
+        // for (M2Namespace namespace : model.getNamespaces())
+        // {
+        // modelMap.put(namespace.getUri(), model);
+        // }
+        // }
+        //
+        // // Load the models ensuring that they are loaded in the correct order
+        // HashSet<String> loadedModels = new HashSet<String>();
+        // for (M2Model model : modelMap.values())
+        // {
+        // loadModel(modelMap, loadedModels, model);
+        // }
+        //
+        // }
+        // catch (Exception e)
+        // {
+        // throw new AlfrescoRuntimeException("Failed to read Alfresco schema", e);
+        // }
+
+        if(modelMap.size() > 0)
+        {
+            AlfrescoSolrDataModel.getInstance(id).afterInitModels();
+        }
         AlfrescoSolrDataModel.getInstance(id).setAlfrescoDataType(this);
         super.init(schema, args);
     }
@@ -154,7 +207,8 @@ public class AlfrescoDataType extends FieldType
     @Override
     public SolrLuceneAnalyser getAnalyzer()
     {
-        return new SolrLuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode(), super.getAnalyzer(), AlfrescoSolrDataModel.getInstance(id));
+        return new SolrLuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode(), super.getAnalyzer(),
+                AlfrescoSolrDataModel.getInstance(id));
     }
 
     public Field createField(SchemaField field, String externalVal, float boost)
@@ -212,7 +266,8 @@ public class AlfrescoDataType extends FieldType
     @Override
     public Analyzer getQueryAnalyzer()
     {
-        return new SolrLuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode(), super.getAnalyzer(), AlfrescoSolrDataModel.getInstance(id));
+        return new SolrLuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode(), super.getAnalyzer(),
+                AlfrescoSolrDataModel.getInstance(id));
     }
 
     @Override

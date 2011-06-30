@@ -166,7 +166,7 @@ import org.alfresco.util.EqualsHelper;
 
         // Process Mandatory Value
         Boolean isOverrideMandatory = override.isMandatory();
-        boolean isOverrideMandatoryEnforced = override.isMandatoryEnforced();
+        Boolean isOverrideMandatoryEnforced = override.isMandatoryEnforced();
         if (isOverrideMandatory != null && propertyDef.isMandatory())
         {
             // the override specified whether the property should be mandatory or not
@@ -177,7 +177,7 @@ import org.alfresco.util.EqualsHelper;
                         "d_dictionary.property.err.cannot_relax_mandatory",
                         propertyDef.getName().toPrefixString());
             }
-            else if (!isOverrideMandatoryEnforced && propertyDef.isMandatoryEnforced())
+            else if ((isOverrideMandatoryEnforced != null) && !isOverrideMandatoryEnforced && propertyDef.isMandatoryEnforced())
             {
                 throw new DictionaryException(
                         "d_dictionary.property.err.cannot_relax_mandatory_enforcement",
@@ -185,7 +185,7 @@ import org.alfresco.util.EqualsHelper;
             }
         }
         property.setMandatory(isOverrideMandatory == null ? propertyDef.isMandatory() : isOverrideMandatory);
-        property.setMandatoryEnforced(isOverrideMandatoryEnforced);
+        property.setMandatoryEnforced(isOverrideMandatoryEnforced == null ? propertyDef.isMandatoryEnforced() : isOverrideMandatoryEnforced);
 
         // inherit or override constraints
         List<M2Constraint> overrideConstraints = override.getConstraints();

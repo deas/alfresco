@@ -21,11 +21,14 @@ package org.alfresco.solr;
 import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import javax.script.CompiledScript;
 
 import org.alfresco.cmis.CMISScope;
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -67,6 +70,7 @@ import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -74,6 +78,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.query.LuceneQueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.SolrQueryParser;
 import org.alfresco.util.ISO9075;
@@ -550,9 +555,14 @@ public class AlfrescoSolrDataModel
      */
     public void putModel(M2Model model)
     {
-        dictionaryDAO.putModel(model);
+        dictionaryDAO.putModelIgnoringConstraints(model);
     }
 
+    public M2Model getM2Model(QName modelQName)
+    {
+        return dictionaryDAO.getCompiledModel(modelQName).getM2Model();
+    }
+    
     public void afterInitModels()
     {
         cmisDictionaryService.afterDictionaryInit();
@@ -1270,6 +1280,22 @@ public class AlfrescoSolrDataModel
                 return withLocale;
             }
         }
+    }
+
+    /**
+     * @return
+     */
+    public List<AlfrescoModel> getAlfrescoModels()
+    {
+        
+        ArrayList<AlfrescoModel> answer = new ArrayList<AlfrescoModel>();
+        for(QName modelName : dictionaryDAO.getModels())
+        {
+            M2Model m2Model = dictionaryDAO.getCompiledModel(modelName).getM2Model();
+            answer.add(new AlfrescoModel(m2Model, dictionaryComponent.getModel(modelName).getChecksum(ModelDefinition.XMLBindingType.DEFAULT)));
+        }
+        return answer;
+        
     }
 
 }

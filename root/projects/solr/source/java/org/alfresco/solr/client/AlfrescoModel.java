@@ -12,7 +12,7 @@ public class AlfrescoModel
     private M2Model model;
     private Long checksum;
     
-    AlfrescoModel(M2Model model, Long checksum)
+    public AlfrescoModel(M2Model model, Long checksum)
     {
         this.model = model;
         this.checksum = checksum;

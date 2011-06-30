@@ -3,6 +3,7 @@
    <namespace uri="http://www.alfresco.org/model/dictionary/1.0" default="elements"/>
    
    <format type="java.util.Date" serializer="org.alfresco.repo.dictionary.M2XML.serialiseDate" deserializer="org.alfresco.repo.dictionary.M2XML.deserialiseDate"/>
+   <format type="java.lang.Boolean" serializer="org.alfresco.repo.dictionary.M2XML.serialiseBoolean" deserializer="org.alfresco.repo.dictionary.M2XML.deserialiseBoolean"/>
          
    <mapping name="model" class="org.alfresco.repo.dictionary.M2Model">
       <value style="attribute" name="name" field="name"/>

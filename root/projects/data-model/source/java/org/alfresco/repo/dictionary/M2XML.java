@@ -22,6 +22,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import org.alfresco.util.CachingDateFormat;
 
 
@@ -71,4 +73,23 @@ public class M2XML
         return xmlDate;
     }
     
+    public static Boolean deserialiseBoolean(String booleanString) throws ParseException
+    {
+        Boolean bool = null;
+        if((booleanString != null) && booleanString.length() > 0)
+        {
+            bool = Boolean.valueOf(booleanString);
+        }
+        return bool;
+    }
+    
+    public static String serialiseBoolean(Boolean bool)
+    {
+        String booleanString = null;
+        if (bool != null)
+        {
+            booleanString = bool.toString();
+        }
+        return booleanString;
+    }
 }

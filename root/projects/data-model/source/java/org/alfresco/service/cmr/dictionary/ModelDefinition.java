@@ -40,13 +40,6 @@ public interface ModelDefinition
     		{
     			return "default";
     		}
-    	},
-    	SOLR
-    	{
-    		public String toString()
-    		{
-    			return "solr";
-    		}
     	}
     };
 
