@@ -61,6 +61,12 @@ public abstract class AbstractCannedQuery<R> implements CannedQuery<R>
     }
     
     @Override
+    public String toString()
+    {
+        return "AbstractCannedQuery [parameters=" + parameters + ", class=" + this.getClass() + "]";
+    }
+
+    @Override
     public synchronized final CannedQueryResults<R> execute()
     {
         // Check that we are not requerying
