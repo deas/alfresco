@@ -91,6 +91,13 @@
                     </ruleList>
                 </throwError>
                 <throwError>
+                    <text>The installation directory must be a path containing only letters, numbers and the characters '/', '.', '-' and '_'.</text>
+                    <ruleList>
+			<platformTest type="windows" />
+			<regExMatch text="${installdir}" logic="does_not_match" pattern="^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$" />
+                    </ruleList>
+                </throwError>
+                <throwError>
                     <text>Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}.</text>
                     <ruleList>
                         <platformTest type="windows" />

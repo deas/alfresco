@@ -12,6 +12,13 @@
             </ruleList>
         </setInstallerVariable> 
     </initializationActionList>
+    <installationAbortedActionList>
+            <deleteFile path="${installdir}/alf_data" >
+            <ruleList>
+                <compareText text="${postgres_execute_abort_action_list}" logic="equals" value="1" />
+            </ruleList>
+        </deleteFile>
+    </installationAbortedActionList>
     <parameterList>
         
         <directoryParameter name="alfresco_base_application_directory" value="${installdir}" ask="0" />
