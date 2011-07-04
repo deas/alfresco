@@ -21,6 +21,7 @@ package org.alfresco.jlan.server.filesys.db;
 
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.cache.FileState;
+import org.alfresco.jlan.server.filesys.cache.FileStateProxy;
 import org.alfresco.jlan.server.filesys.cache.NetworkFileStateInterface;
 import org.alfresco.jlan.server.filesys.loader.FileLoader;
 
@@ -35,9 +36,9 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 	
 	public final static String DBCacheFile		= "DBCacheFile";
 	
-	//	File state
+	//	File state proxy
 	
-	private FileState m_state;
+	private FileStateProxy m_stateProxy;
 	
 	//	Associated file loader
 	
@@ -89,8 +90,8 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 	 * @return int
 	 */
 	public final int getStatus() {
-		if ( m_state != null)
-			return m_state.getStatus();
+		if ( m_stateProxy != null)
+			return m_stateProxy.getFileState().getDataStatus();
 		return -1;
 	}
 
@@ -100,7 +101,7 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 	 * @return boolean
 	 */
 	public final boolean hasFileState() {
-		return m_state != null ? true : false;
+		return m_stateProxy != null ? true : false;
 	}
 		
 	/**
@@ -109,7 +110,7 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 	 * @return FileState
 	 */
 	public final FileState getFileState() {
-		return m_state;
+		return m_stateProxy.getFileState();
 	}
 	
 	/**
@@ -156,7 +157,9 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 	public final void setFileDetails(DBFileInfo info) {
 		setFileId(info.getFileId());
 		setName(info.getFileName());
-		setFullName(info.getFullName());
+		
+		if ( info.getFullName() != null && info.getFullName().length() > 0)
+			setFullName(info.getFullName());
 		setDirectoryId(info.getDirectoryId());
 		
 		setFileSize(info.getSize());
@@ -170,7 +173,7 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 	}
 		
 	/**
-	 * Set the file state
+	 * Set the file data status
 	 * 
 	 * @param state int
 	 */
@@ -178,8 +181,8 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 		
 		//	Set the file state
 		
-		if ( m_state != null)
-			m_state.setStatus(state);
+		if ( m_stateProxy != null)
+			m_stateProxy.getFileState().setDataStatus(state);
 	}
 	
 	/**
@@ -192,12 +195,12 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 	}
 	
 	/**
-	 * Set the associated file state
+	 * Set the associated file state, via a proxy object
 	 * 
-	 * @param state FileState
+	 * @param stateProxy FileStateProxy
 	 */
-	public final void setFileState(FileState state) {
-		m_state = state;
+	public final void setFileState(FileStateProxy stateProxy) {
+		m_stateProxy = stateProxy;
 	}
 	
 	/**

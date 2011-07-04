@@ -55,10 +55,10 @@ public class WinNT {
 
 	//	NTCreateAndX flags (oplocks/target)
 	
-	public static final int RequestOplock		= 0x0002;
-	public static final int RequestBatchOplock	= 0x0004;
-	public static final int TargetDirectory		= 0x0008;
-	public static final int ExtendedResponse	= 0x0010;
+	public static final int RequestExclusiveOplock		= 0x0002;
+	public static final int RequestBatchOplock			= 0x0004;
+	public static final int TargetDirectory				= 0x0008;
+	public static final int ExtendedResponse			= 0x0010;
 		
 	//	NTCreateAndX create options flags
 	
@@ -70,4 +70,13 @@ public class WinNT {
 	public static final int CreateNonDirectory	= 0x00000040;
 	public static final int CreateRandomAccess	= 0x00000800;
 	public static final int CreateDeleteOnClose	= 0x00001000;
+	
+	public static final int CreateReparsePoint  = 0x00200000;
+	
+	// Granted oplock type (NTCreateAndX response)
+	
+	public static final int GrantedOplockNone		= 0;
+	public static final int GrantedOplockExclusive	= 1;
+	public static final int GrantedOplockBatch		= 2;
+	public static final int GrantedOplockLevelII	= 3;
 }

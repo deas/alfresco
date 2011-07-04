@@ -31,11 +31,14 @@ import org.alfresco.jlan.server.filesys.DiskSharedDevice;
 import org.alfresco.jlan.server.filesys.FileAttribute;
 import org.alfresco.jlan.server.filesys.FileSystem;
 import org.alfresco.jlan.server.filesys.cache.FileState;
+import org.alfresco.jlan.server.filesys.cache.FileStateCacheListener;
 import org.alfresco.jlan.server.filesys.cache.FileStateLockManager;
 import org.alfresco.jlan.server.filesys.loader.DeleteFileRequest;
 import org.alfresco.jlan.server.filesys.loader.FileLoader;
 import org.alfresco.jlan.server.filesys.loader.FileRequestQueue;
 import org.alfresco.jlan.server.filesys.quota.QuotaManagerException;
+import org.alfresco.jlan.server.locking.LockManager;
+import org.alfresco.jlan.server.locking.OpLockManager;
 import org.alfresco.jlan.server.thread.ThreadRequestPool;
 import org.alfresco.jlan.util.MemorySize;
 import org.springframework.extensions.config.ConfigElement;
@@ -45,7 +48,7 @@ import org.springframework.extensions.config.ConfigElement;
  * 
  * @author gkspencer
  */
-public class DBDeviceContext extends DiskDeviceContext {
+public class DBDeviceContext extends DiskDeviceContext implements FileStateCacheListener {
 
 	// Default file state cache timeout
 
@@ -476,14 +479,6 @@ public class DBDeviceContext extends DiskDeviceContext {
 		m_rootInfo.setModifyDateTime(timeNow);
 		m_rootInfo.setChangeDateTime(timeNow);
 
-		// Enable the file state cache
-
-		enableStateCache(true);
-
-		// Create the file state based lock manager
-		
-		m_lockManager = new FileStateLockManager( getStateCache());
-		
 		// Set the enabled database features
 
 		if ( hasNTFSStreamsEnabled() == true && m_loader.supportsStreams() == true)
@@ -517,11 +512,6 @@ public class DBDeviceContext extends DiskDeviceContext {
 			throw new DeviceContextException("Database interface initialization failure, " + ex.toString());
 		}
 
-		// Set the default file state cache timeout
-
-		getStateCache().setCacheTimer(m_cacheTimer);
-		getStateCache().setCheckInterval(Math.max(5000, m_cacheTimer / 4));
-
 		// Initialize the file loader, if it is a seperate class from the database interface
 
 		if ( m_loaderClass != null) {
@@ -553,6 +543,14 @@ public class DBDeviceContext extends DiskDeviceContext {
 
 			setFilesystemAttributes(getFilesystemAttributes() + FileSystem.NTFSStreams);
 		}
+		
+		// Indicate that the filesystem requires a file state cache
+		
+		setRequiresStateCache( true);
+		
+		// Mark the filesystem as unavailable until the file state cache has finished initializing
+		
+		setAvailable( false);
 	}
 
 	/**
@@ -659,10 +657,27 @@ public class DBDeviceContext extends DiskDeviceContext {
 	 * 
 	 * @return FileStateLockManager
 	 */
-	public FileStateLockManager getLockManager() {
+	public FileStateLockManager getFileStateLockManager() {
 		return m_lockManager;
 	}
 
+    /**
+     * Return the lock manager, if enabled
+     * 
+     * @return LockManager
+     */
+    public LockManager getLockManager() {
+    	return m_lockManager;
+    }
+    
+    /**
+     * Return the oplock manager, if enabled
+     * 
+     * @return OpLockManager
+     */
+    public OpLockManager getOpLockManager() {
+    	return m_lockManager;
+    }
 	/**
 	 * Check if oplocks should be enabled
 	 * 
@@ -890,6 +905,10 @@ public class DBDeviceContext extends DiskDeviceContext {
 	public void startFilesystem(DiskSharedDevice disk)
 		throws DeviceContextException {
 
+		// Start the file loader
+		
+		getFileLoader().startLoader( this);
+		
 		// Start the quota manager, if configured
 
 		if ( hasQuotaManager()) {
@@ -903,6 +922,17 @@ public class DBDeviceContext extends DiskDeviceContext {
 			catch (QuotaManagerException ex) {
 				throw new DeviceContextException(ex.toString());
 			}
+		}
+		
+		// Create the file state based lock manager
+		
+		m_lockManager = new FileStateLockManager( getStateCache());
+		
+		// Set the default file state cache timeout
+
+		if ( hasStateCache()) {
+			getStateCache().setFileStateExpireInterval( m_cacheTimer);
+			getStateCache().setCheckInterval(Math.max(5000, m_cacheTimer / 4));
 		}
 		
 		// Start the lock manager, use the thread pool if available
@@ -923,5 +953,35 @@ public class DBDeviceContext extends DiskDeviceContext {
     		
     		m_lockManager.startLockManager( "OplockExpire_" + disk.getName(), threadPool);
 		}
+	}
+	
+	/**
+	 * Cache initializing
+	 */
+	public void stateCacheInitializing() {
+		
+		// Set the filesystem as unavailable until the file state cache has initialized
+		
+		setAvailable( false);
+	}
+	
+	/**
+	 * Cache running
+	 */
+	public void stateCacheRunning() {
+		
+		// Set the filesystem as available
+		
+		setAvailable( true);
+	}
+	
+	/**
+	 * Cache shutting down
+	 */
+	public void stateCacheShuttingDown() {
+		
+		// Set the filesystem as unavailable
+		
+		setAvailable( false);
 	}
 }

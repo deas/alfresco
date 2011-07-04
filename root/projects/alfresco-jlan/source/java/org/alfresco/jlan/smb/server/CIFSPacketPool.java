@@ -178,8 +178,6 @@ public class CIFSPacketPool {
 	 */
 	public final void releasePacket( SMBSrvPacket smbPkt) {
 		
-		// TEST
-		//
 		// Check if the packet is queued for async I/O
 		
 		if ( smbPkt.isQueuedForAsyncIO())
@@ -223,9 +221,14 @@ public class CIFSPacketPool {
 				Debug.println("[SMB] Over sized associated packet left for garbage collector");
 			
 			// Clear the associated packet
-			
+
+			smbPkt.getAssociatedPacket().setBuffer( null);
 			smbPkt.clearAssociatedPacket();
 		}
+
+		// Clear the buffer
+		
+		smbPkt.setBuffer( null);
 	}
 	
 	/**

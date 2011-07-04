@@ -51,6 +51,8 @@ public class DataBuffer {
 		m_data = new byte[DefaultBufferSize];
 		m_pos = 0;
 		m_offset = 0;
+		
+		m_endpos = m_data.length;
 	}
 
 	/**
@@ -62,6 +64,8 @@ public class DataBuffer {
 		m_data = new byte[siz];
 		m_pos = 0;
 		m_offset = 0;
+		
+		m_endpos = m_data.length;
 	}
 
 	/**
@@ -122,6 +126,15 @@ public class DataBuffer {
 		return m_endpos - m_pos;
 	}
 
+	/**
+	 * Return the used buffer length
+	 * 
+	 * @return int
+	 */
+	public final int getUsedLength() {
+		return m_pos - m_offset;
+	}
+	
 	/**
 	 * Return the displacement from the start of the buffer to the current buffer position
 	 * 
@@ -423,14 +436,32 @@ public class DataBuffer {
 	}
 
 	/**
+	 * Set the end of buffer position, and reset the read position to the beginning of the buffer
+	 * 
+	 * @param endPos int
+	 */
+	public final void setEndOfBuffer(int endPos) {
+		m_endpos = endPos;
+		m_pos = m_offset;
+	}
+
+	/**
 	 * Set the data length
 	 * 
 	 * @param len int
 	 */
 	public final void setLength(int len) {
-		m_pos = m_offset + len;
+		m_endpos = m_offset + len;
 	}
 
+	/**
+	 * Reset the data buffer
+	 */
+	public final void resetBuffer() {
+		m_pos = 0;
+		m_endpos = m_data.length;
+	}
+	
 	/**
 	 * Append a byte value to the buffer
 	 * 

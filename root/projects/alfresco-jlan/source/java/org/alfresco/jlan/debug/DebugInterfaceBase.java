@@ -88,10 +88,10 @@ public abstract class DebugInterfaceBase implements DebugInterface {
 	/**
 	 * Output an exception
 	 * 
-	 * @param ex Throwable
+	 * @param ex Exception
 	 * @param level int
 	 */
-	public void debugPrintln( Throwable ex, int level) {
+	public void debugPrintln( Exception ex, int level) {
 		
 		//	Write the exception stack trace records to an in-memory stream
 		

@@ -39,9 +39,19 @@ public class AccessDeniedException extends java.io.IOException {
   /**
    * AccessDeniedException constructor.
    *
-   * @param s java.lang.String
+   * @param s String
    */
   public AccessDeniedException(String s) {
     super(s);
+  }
+
+  /**
+   * AccessDeniedException constructor.
+   *
+   * @param s String
+   * @param ex Throwable
+   */
+  public AccessDeniedException(String s, Throwable ex) {
+    super(s, ex);
   }
 }

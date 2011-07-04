@@ -218,8 +218,9 @@ public class TransactBuffer {
 
 		if ( dbuf != null) {				
 			m_dataBuf = new DataBuffer(dbuf, doff, dlen);
-      m_dataBuf.setLength( dlen);
-    }
+//			m_dataBuf.setLength( dlen);
+			m_dataBuf.setPosition( dlen);
+		}
 		
 		//	Set the function code
 		

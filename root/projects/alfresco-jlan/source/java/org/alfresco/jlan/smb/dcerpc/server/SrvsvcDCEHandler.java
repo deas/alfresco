@@ -20,7 +20,9 @@
 package org.alfresco.jlan.smb.dcerpc.server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import org.alfresco.jlan.debug.Debug;
@@ -179,7 +181,7 @@ public class SrvsvcDCEHandler implements DCEHandler {
 
 		// Create a list of share information objects of the required information level
 
-		Vector<ShareInfo> infoList = new Vector<ShareInfo>();
+		List<Object> infoList = new ArrayList<Object>();
 		Enumeration<SharedDevice> enm = shareList.enumerateShares();
 
 		while (enm.hasMoreElements()) {

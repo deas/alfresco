@@ -324,13 +324,13 @@ class PipeLanmanHandler {
 			// Pack the data block
 
 			DataBuffer dataBuf = replyBuf.getDataBuffer();
-			Enumeration enm = shrList.enumerateShares();
+			Enumeration<SharedDevice> enm = shrList.enumerateShares();
 
 			while (enm.hasMoreElements()) {
 
 				// Get the current share
 
-				SharedDevice shrDev = (SharedDevice) enm.nextElement();
+				SharedDevice shrDev = enm.nextElement();
 
 				// Pack the share name, share type and comment pointer
 

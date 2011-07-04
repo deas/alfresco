@@ -35,12 +35,14 @@ import org.alfresco.jlan.server.filesys.DiskInterface;
 import org.alfresco.jlan.server.filesys.DiskOfflineException;
 import org.alfresco.jlan.server.filesys.DiskSizeInterface;
 import org.alfresco.jlan.server.filesys.DiskVolumeInterface;
+import org.alfresco.jlan.server.filesys.FileAccessToken;
 import org.alfresco.jlan.server.filesys.FileAttribute;
 import org.alfresco.jlan.server.filesys.FileExistsException;
 import org.alfresco.jlan.server.filesys.FileIdInterface;
 import org.alfresco.jlan.server.filesys.FileInfo;
 import org.alfresco.jlan.server.filesys.FileName;
 import org.alfresco.jlan.server.filesys.FileNameException;
+import org.alfresco.jlan.server.filesys.FileOfflineException;
 import org.alfresco.jlan.server.filesys.FileOpenParams;
 import org.alfresco.jlan.server.filesys.FileSharingException;
 import org.alfresco.jlan.server.filesys.FileStatus;
@@ -157,13 +159,25 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         //  Check the main file state cache
               
         fstate = getFileState(file.getFullName(), dbCtx, false);
+
+        //  DEBUG
+        
+        if ( Debug.EnableInfo && hasDebug())
+          Debug.println("** Last file close, no file state for " + file.getFullName());
       }
       else {
         
         // If the file open count is now zero then reset the stored sharing mode
           
-        if ( fstate.decrementOpenCount() == 0)
-          fstate.setSharedAccess( SharingMode.READWRITE + SharingMode.DELETE);
+        if ( dbCtx.getStateCache().releaseFileAccess(fstate, file.getAccessToken()) == 0) {
+          
+          //  DEBUG
+          
+          if ( Debug.EnableInfo && hasDebug())
+            Debug.println("** Last file close, reset shared access for " + file.getFullName() + ", state=" + fstate);
+        }
+        else if ( Debug.EnableInfo && hasDebug())
+        	Debug.println("** File close, file=" + file.getFullName() + ", openCount=" + fstate.getOpenCount());
       }
 
       //  Release any locks on the file owned by this session
@@ -337,6 +351,9 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       
     //  Create the new directory entry
     
+    FileAccessToken accessToken = null;
+    int fid = -1;
+    
     try {
 
       //  Get the directory name
@@ -371,13 +388,19 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       if ( params.hasCreateOption( WinNT.CreateDirectory) == false)
         throw new IOException( "Create directory called for non-directory");
       
+   	  // Check if the file can be opened in the requested mode
+  	  //
+  	  // Note: The file status is set to NotExist at this point, the file record creation may fail
+    	
+      accessToken = dbCtx.getStateCache().grantFileAccess( params, fstate, FileStatus.NotExist);
+      
       //  Use the database interface to create the new file record
       
-      int fid = dbCtx.getDBInterface().createFileRecord(dname, dirId, params, retain);
+      fid = dbCtx.getDBInterface().createFileRecord(dname, dirId, params, retain);
 
       //  Indicate that the path exists
       
-      fstate.setFileStatus( FileStatus.DirectoryExists);
+      fstate.setFileStatus( FileStatus.DirectoryExists, FileState.ReasonFolderCreated);
       
       //  Set the file id for the new directory
       
@@ -400,9 +423,23 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         NamedFileLoader namedLoader = (NamedFileLoader) dbCtx.getFileLoader();
         namedLoader.createDirectory(params.getPath(), fid);
       }
+      
+      // Release the access token
+      
+      if ( accessToken != null) {
+          dbCtx.getStateCache().releaseFileAccess(fstate, accessToken);
+          accessToken = null;
+      }
     }
     catch (Exception ex) {
       Debug.println(ex);
+    }
+    finally {
+    	
+      // Check if the file is not valid but an access token has been allocated
+      	
+      if ( fid == -1 && accessToken != null)
+        dbCtx.getStateCache().releaseFileAccess(fstate, accessToken);
     }
   }
 
@@ -472,6 +509,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     //  Create a new file
     
     DBNetworkFile file = null;
+    FileAccessToken accessToken = null;
 
     try {
 
@@ -502,13 +540,24 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       if ( params.hasMode() == false)
         params.setMode(DefaultNFSFileMode);
       
+  	  // Check if the current file open allows the required shared access
+  	
+      if ( params.getPath().equals( "\\") == false) {
+
+      	// Check if the file can be opened in the requested mode
+    	//
+    	// Note: The file status is set to NotExist at this point, the file record creation may fail
+      	
+      	accessToken = dbCtx.getStateCache().grantFileAccess( params, fstate, FileStatus.NotExist);
+      }
+      
       //  Create a new file record
       
       int fid = dbCtx.getDBInterface().createFileRecord(fname, dirId, params, retain);
 
       //  Indicate that the file exists
         
-      fstate.setFileStatus( FileStatus.FileExists);
+      fstate.setFileStatus( FileStatus.FileExists, FileState.ReasonFileCreated);
 
       //  Save the file id
         
@@ -528,8 +577,10 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       file.setFullName(params.getPath());
       file.setDirectoryId(dirId);
       file.setAttributes(params.getAttributes());
-      file.setFileState(fstate);
+      file.setFileState( dbCtx.getStateCache().getFileStateProxy(fstate));
         
+      file.setAccessToken( accessToken);
+      
       //  Open the file
         
       file.openFile(true);
@@ -543,13 +594,21 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       // DEBUG
       
       Debug.println("Create file error: " + ex.toString());
-//      Debug.println(ex);
+      Debug.println(ex);
+    }
+    finally {
+    	
+      // Check if the file is not valid but an access token has been allocated
+    	
+      if ( file == null && accessToken != null)
+    	dbCtx.getStateCache().releaseFileAccess(fstate, accessToken);
     }
 
     //  Return the new file details
 
     if (file == null)
       throw new IOException( "Failed to create file " + params.getPath());
+/**
     else {
       
       // Save the file sharing mode, needs to be done before the open count is incremented
@@ -561,7 +620,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     
       fstate.incrementOpenCount();
     }
-
+**/
     //  Return the network file
     
     return file;
@@ -630,7 +689,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         
       //  Indicate that the path does not exist
 
-      fstate.setFileStatus( FileStatus.NotExist);
+      fstate.setFileStatus( FileStatus.NotExist, FileState.ReasonFolderDeleted);
       fstate.setFileId(-1);
       fstate.removeAttribute(FileState.FileInformation);
     }
@@ -681,6 +740,8 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     if ( fstate == null)
       fstate = getFileState(name, dbCtx, true);
         
+    DBFileInfo dbInfo = null;
+    
     try {
 
       //  Check if the file is within an active retention period
@@ -692,7 +753,8 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
 
       //  Get the file details
       
-      DBFileInfo dbInfo = getFileDetails(name, dbCtx, fstate);
+      dbInfo = getFileDetails(name, dbCtx, fstate);
+      
       if ( dbInfo == null)
         throw new FileNotFoundException(name);
       
@@ -705,12 +767,12 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       //  an exception
       
       if ( dbCtx.isTrashCanEnabled() == false)
-        dbCtx.getFileLoader().deleteFile(name, dbInfo.getFileId(), 0);
+        dbCtx.getFileLoader().deleteFile(name, fstate.getFileId(), 0);
 
       //  If the file is a symbolic link delete the symbolic link record
       
       if ( dbInfo.isFileType() == FileType.SymbolicLink)
-        dbCtx.getDBInterface().deleteSymbolicLinkRecord( dbInfo.getDirectoryId(), dbInfo.getFileId());
+        dbCtx.getDBInterface().deleteSymbolicLinkRecord( dbInfo.getDirectoryId(), fstate.getFileId());
       
       // Check if the file has any NTFS streams
       
@@ -755,11 +817,11 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       
       //  Delete the file record
 
-      dbCtx.getDBInterface().deleteFileRecord(dbInfo.getDirectoryId(), dbInfo.getFileId(), dbCtx.isTrashCanEnabled());
+      dbCtx.getDBInterface().deleteFileRecord(dbInfo.getDirectoryId(), fstate.getFileId(), dbCtx.isTrashCanEnabled());
       
       //  Indicate that the path does not exist
 
-      fstate.setFileStatus( FileStatus.NotExist);
+      fstate.setFileStatus( FileStatus.NotExist, FileState.ReasonFileDeleted);
       fstate.setFileId(-1);
       fstate.removeAttribute(FileState.FileInformation);
       
@@ -769,12 +831,11 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         
         //  Release the file space back to the filesystem free space
         
-        dbCtx.getQuotaManager().releaseSpace(sess, tree, dbInfo.getFileId(), null, dbInfo.getSize());
+        dbCtx.getQuotaManager().releaseSpace(sess, tree, fstate.getFileId(), null, dbInfo.getSize());
       }
     }
     catch (DBException ex) {
-      Debug.println(ex);
-      throw new IOException();
+    	throw new IOException( "Failed to delete file " + name);
     }
   }
 
@@ -795,6 +856,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     //  Check if the path contains an NTFS stream name
 
     int fileSts = FileStatus.NotExist;
+    FileState fstate = null;
         
     if ( FileName.containsStreamName(name)) {
       
@@ -822,7 +884,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
 
       //  Get, or create, the file state for the path
       
-      FileState fstate = getFileState( name, dbCtx, true);
+      fstate = getFileState( name, dbCtx, true);
   
       //  Check if the file exists status has been cached
       
@@ -833,14 +895,20 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         //  Get the file details
         
         DBFileInfo dbInfo = getFileDetails(name,dbCtx,fstate);
+
         if ( dbInfo != null) {
           if ( dbInfo.isDirectory() == true)
             fileSts = FileStatus.DirectoryExists;
           else
             fileSts = FileStatus.FileExists;
+          
+          // Save the file id
+          
+          if ( dbInfo.getFileId() != -1)
+        	  fstate.setFileId( dbInfo.getFileId());
         }
         else {
-          
+      
           //  Indicate that the file does not exist
           
           fstate.setFileStatus( FileStatus.NotExist);
@@ -926,9 +994,16 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       
       if ( fstate != null) {
         
-        //  Check if the file information is available
+    	// Check if the file stream exists
+    	  
+    	if ( fstate.getFileStatus() != FileStatus.NotExist) {
+    		  
+    		//  Check if the file information is available
         
-        finfo = (FileInfo) fstate.findAttribute(FileState.FileInformation);
+    		finfo = (FileInfo) fstate.findAttribute(FileState.FileInformation);
+    	}
+    	else
+    		return null;
       }
 
       //  If the cached file information is not available then create it
@@ -1074,6 +1149,12 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     
     FileState fstate = getFileState(params.getPath(), dbCtx, true);
     
+    // Check if the file has a data update in progress, the file will be offline until the
+    // data update completes
+    
+    if ( fstate != null && fstate.hasDataUpdateInProgress())
+    	throw new FileOfflineException( "Data update in progress");
+    
     //  Check if we are opening a stream associated with the main file
     
     if ( fstate != null && params.isStream()) {
@@ -1098,7 +1179,8 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     DBFileInfo finfo = getFileDetails(params.getPath(), dbCtx, fstate);
     
     if (finfo == null)
-      throw new AccessDeniedException();
+//      throw new AccessDeniedException();
+   		throw new FileNotFoundException();
 
     //  If retention is enabled get the expiry date/time
     
@@ -1118,114 +1200,56 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     
 	// Check if the current file open allows the required shared access
 	
-	boolean nosharing = false;
+    FileAccessToken accessToken = null;
+    
+    if ( params.getPath().equals( "\\") == false) {
 
-	// Check for execute access mode, only allow on .EXE files for now
-	
-//	if ( params.getAccessMode() == AccessMode.NTFileGenericExecute && params.getPath().toLowerCase().endsWith( ".exe") == false)
-//		throw new AccessDeniedException("Invalid access mode");
-	
-	if ( fstate.getOpenCount() > 0) {
-		
-		// Check for impersonation security level from the original process that opened the file
-		
-		if ( params.getSecurityLevel() == WinNT.SecurityImpersonation && params.getProcessId() == fstate.getProcessId())
-			nosharing = false;
-
-		// Check if the caller wants read access, check the sharing mode
-		// Check if the caller wants write access, check if the sharing mode allows write
-		
-    	else if ( params.isReadOnlyAccess() && (fstate.getSharedAccess() & SharingMode.READ) != 0)
-    		nosharing = false;
-		
-		// Check if the caller wants write access, check the sharing mode
-		
-    	else if (( params.isReadWriteAccess() || params.isWriteOnlyAccess()) && (fstate.getSharedAccess() & SharingMode.WRITE) == 0)
-    	{
-    		// DEBUG
-    		
-    		if ( Debug.EnableDbg && hasDebug())
-    			Debug.println("Sharing mode disallows write access path=" + params.getPath());
-    		
-    		// Access not allowed
-    		
-    		throw new AccessDeniedException( "Sharing mode (write)");
-    	}
+    	// Check if the file can be opened in the requested mode
     	
-		// Check if the file has been opened for exclusive access
-		
-		else if ( fstate.getSharedAccess() == SharingMode.NOSHARING)
-			nosharing = true;
-		
-		// Check if the required sharing mode is allowed by the current file open
-		
-		else if ( ( fstate.getSharedAccess() & params.getSharedAccess()) != params.getSharedAccess())
-			nosharing = true;
-		
-		// Check if the caller wants exclusive access to the file
-		
-    	else if ( params.getSharedAccess() == SharingMode.NOSHARING)
-    		nosharing = true;
-	}
-	
-	// Check if the file allows shared access
-	
-	if ( nosharing == true)
-    {
-    	if ( params.getPath().equals( "\\") == false) {
-    		
-    		// DEBUG
-    		
-    		if ( Debug.EnableDbg && hasDebug())
-    			Debug.println("Sharing violation path=" + params.getPath() + ", sharing=0x" + Integer.toHexString(fstate.getSharedAccess()));
-    	
-    		// File is locked by another user
-    		
-    		throw new FileSharingException("File already open, " + params.getPath());
-    	}
+    	accessToken = dbCtx.getStateCache().grantFileAccess( params, fstate, finfo.isDirectory() ? FileStatus.DirectoryExists : FileStatus.FileExists);
     }
-	
-	// Update the file sharing mode and process id, if this is the first file open
-	
-	fstate.setSharedAccess( params.getSharedAccess());
-	fstate.setProcessId( params.getProcessId());
 	
 	// DEBUG
 	
-	if ( Debug.EnableDbg && fstate.getOpenCount() == 0 && hasDebug())
-		Debug.println("Path " + params.getPath() + ", sharing=0x" + Integer.toHexString(params.getSharedAccess()) + ", PID=" + params.getProcessId());
+	if ( Debug.EnableDbg && hasDebug())
+		Debug.println("DB openFile() name=" + params.getPath() + ", sharing=0x" + Integer.toHexString(params.getSharedAccess()) + ", PID=" + params.getProcessId() + ", token=" + accessToken);
 
-    //  Create a JDBC network file and open the top level file
-
-    if ( Debug.EnableInfo && hasDebug())
-      Debug.println("DB openFile() name=" + params.getPath());
-      
-    DBNetworkFile jdbcFile = (DBNetworkFile) dbCtx.getFileLoader().openFile(params, finfo.getFileId(), 0,
-                                                                                  finfo.getDirectoryId(), false, finfo.isDirectory());
-
-    jdbcFile.setFileDetails(finfo);
-    jdbcFile.setFileState(fstate);
-        
-    // Set the granted file access
-    
-//    if ( finfo.isReadOnly() || params.isReadOnlyAccess())
-    if ( params.isReadOnlyAccess())
-    	jdbcFile.setGrantedAccess( NetworkFile.READONLY);
-    else if ( params.isWriteOnlyAccess())
-    	jdbcFile.setGrantedAccess( NetworkFile.WRITEONLY);
-    else
-    	jdbcFile.setGrantedAccess( NetworkFile.READWRITE);
-    
-    //  Set the file owner
-    
-    if ( sess != null)
-      jdbcFile.setOwnerSessionId(sess.getUniqueId());
-      
-    //  Update the file open count
-    
-    fstate.setFileStatus( finfo.isDirectory() ? FileStatus.DirectoryExists : FileStatus.FileExists);
-    fstate.incrementOpenCount();
-    
+	DBNetworkFile jdbcFile = null;
+	
+	try {
+	    //  Create a JDBC network file and open the top level file
+	
+	    jdbcFile = (DBNetworkFile) dbCtx.getFileLoader().openFile(params, finfo.getFileId(), 0, finfo.getDirectoryId(), false, finfo.isDirectory());
+	
+	    jdbcFile.setFileDetails(finfo);
+	    jdbcFile.setFileState( dbCtx.getStateCache().getFileStateProxy( fstate));
+	        
+	    // Set the granted file access
+	    
+	    if ( params.isReadOnlyAccess())
+	    	jdbcFile.setGrantedAccess( NetworkFile.READONLY);
+	    else if ( params.isWriteOnlyAccess())
+	    	jdbcFile.setGrantedAccess( NetworkFile.WRITEONLY);
+	    else
+	    	jdbcFile.setGrantedAccess( NetworkFile.READWRITE);
+	    
+	    //  Set the file owner
+	    
+	    if ( sess != null)
+	      jdbcFile.setOwnerSessionId(sess.getUniqueId());
+	      
+	    // Save the access token
+	    
+	    jdbcFile.setAccessToken( accessToken);
+	}
+	finally {
+		
+		// If the file object is not valid then release the file access that was granted
+		
+		if ( jdbcFile == null)
+			dbCtx.getStateCache().releaseFileAccess(fstate, accessToken);
+	}
+	
     //  Return the network file
         
     return jdbcFile;
@@ -1282,11 +1306,6 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         if ( jfile.getFileState().canReadFile( pos, siz, sess.getProcessId()) == false)
           throw new LockConflictException();
       }
-      
-      //  Debug
-      
-      if ( jfile.getFileState().getOpenCount() == 0)
-        Debug.println("**** readFile() Open Count Is ZERO ****");
       
       //  Read from the file
 
@@ -1419,10 +1438,6 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       //  Update the file state with the new file name/path
       
       dbCtx.getStateCache().renameFileState(newName, fstate, curInfo.isDirectory());
-
-      // Remove any cached file information
-      
-      fstate.removeAttribute(FileState.FileInformation);
     }
     catch (DBException ex) {
       throw new FileNotFoundException(oldName);
@@ -1480,7 +1495,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     //  Debug
     
     if ( Debug.EnableInfo && hasDebug())
-      Debug.println("DB setFileInformation() name=" + name + ", info=" + info.toString());
+      Debug.println("DB setFileInformation() name=" + name + ", info=" + info.toString() + ", set flags=" + info.getSetFileInformationFlagsString());
 
     // If the only flag set is the delete on close flag then return, nothing to do
     
@@ -2058,12 +2073,19 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     //  Get the file id for the specified file
 
     int fid = getFileId(filePath, fname, dirId, dbCtx);
-    if (fid == -1)
-      return null;
+    if (fid == -1) {
+    	
+    	// Set the file status as not existing
+    	
+    	if ( fstate != null)
+    		fstate.setFileStatus( FileStatus.NotExist);
+    	return null;
+    }
     
     //  Create the file information
     
     DBFileInfo finfo = getFileInfo( filePath, dirId, fid, dbCtx);
+    
     if ( finfo != null && fstate != null) {
       
       //  Set various file state details
@@ -2076,12 +2098,18 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       finfo.setFileName( fname);
       finfo.setFullName(path);
       
-      // check if files should be marked as offline
+      // Check if files should be marked as offline
       
       if ( dbCtx.hasOfflineFiles() && finfo.hasAttribute( FileAttribute.NTOffline) == false) {
         if ( dbCtx.getOfflineFileSize() == 0 || finfo.getSize() >= dbCtx.getOfflineFileSize())
           finfo.setFileAttributes( finfo.getFileAttributes() + FileAttribute.NTOffline);
       }
+    }
+    else if ( finfo == null && fstate != null) {
+    	
+    	// Set the file status
+    	
+    	fstate.setFileStatus( FileStatus.NotExist);
     }
 
     //  Check if the path is a file stream
@@ -2741,7 +2769,6 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     if ( Debug.EnableInfo && hasDebug())
       Debug.println("### getStreamInformation() called ###");
     
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -2847,9 +2874,16 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     //  Create a new stream record
 
     DBNetworkFile file = null;
-
+    FileAccessToken accessToken = null;
+    FileState fstate = null;
+    
     try {
 
+   	  // Check if the file can be opened in the requested mode
+      	
+      fstate = getFileState(params.getFullPath(), dbCtx, true);
+      accessToken = dbCtx.getStateCache().grantFileAccess( params, fstate, FileStatus.FileExists);
+      
       //  Create a new stream record
       
       int stid = dbCtx.getDBInterface().createStreamRecord(params.getStreamName(), finfo.getFileId());
@@ -2863,12 +2897,13 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       file.setDirectoryId(finfo.getDirectoryId());
       file.setAttributes(params.getAttributes());
       
-      //  Create a new file state for the stream
+      //  Set the file state for the file
       
-      FileState fstate = getFileState(params.getFullPath(), dbCtx, true);
-      file.setFileState(fstate);
-      fstate.setFileStatus( FileStatus.FileExists);
-      fstate.incrementOpenCount();
+      file.setFileState(dbCtx.getStateCache().getFileStateProxy(fstate));
+      
+      // Store the access token
+      
+      file.setAccessToken( accessToken);
       
       //  Open the stream file
       
@@ -2889,6 +2924,13 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         Debug.println("Error: " + ex.toString());
         Debug.println(ex);
       }
+    }
+    finally {
+    	
+        // Check if the stream file is not valid but an access token has been allocated
+      	
+        if ( file == null && accessToken != null)
+          dbCtx.getStateCache().releaseFileAccess(fstate, accessToken);
     }
 
     //  If the file/stream is not valid throw an exception
@@ -2935,49 +2977,64 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     if ( sInfo == null)
       throw new FileNotFoundException("Stream does not exist, " + params.getFullPath());
 
-    //  Get, or create, a file state for the stream
-  
-    FileState fstate = getFileState(params.getFullPath(), dbCtx, true);
-              
-    //  Check if the file shared access indicates exclusive file access
-  
-    if ( params.getSharedAccess() == SharingMode.NOSHARING && fstate.getOpenCount() > 0 &&
-    		params.getProcessId() != fstate.getProcessId())
-      throw new FileSharingException("File already open, " + params.getPath());
+    // Open the stream
+    
+    DBNetworkFile jdbcFile = null;
+    FileAccessToken accessToken = null;
+    FileState fstate = null;
+    
+    try {
+    	
+	    //  Get, or create, a file state for the stream
+	  
+	    fstate = getFileState(params.getFullPath(), dbCtx, true);
 
-    //  Set the file information for the stream, using the stream information
+	    // Check if the file stream can be opened in the requested mode
+    	
+    	accessToken = dbCtx.getStateCache().grantFileAccess( params, fstate, FileStatus.FileExists);
+	              
+	    //  Check if the file shared access indicates exclusive file access
+	  
+	    if ( params.getSharedAccess() == SharingMode.NOSHARING && fstate.getOpenCount() > 0 &&
+	    		params.getProcessId() != fstate.getProcessId())
+	      throw new FileSharingException("File already open, " + params.getPath());
+	
+	    //  Set the file information for the stream, using the stream information
+	    
+	    DBFileInfo sfinfo = new DBFileInfo(sInfo.getName(), params.getFullPath(), finfo.getFileId(), finfo.getDirectoryId());
+	    
+	    sfinfo.setFileSize(sInfo.getSize());
+	    sfinfo.setFileAttributes( FileAttribute.Normal);
+	    
+	    sfinfo.setCreationDateTime( sInfo.getCreationDateTime());
+	    sfinfo.setModifyDateTime( sInfo.getModifyDateTime());
+	    sfinfo.setAccessDateTime( sInfo.getAccessDateTime());
+	
+	    fstate.addAttribute(FileState.FileInformation, sfinfo);
+	    
+	    //  Create a JDBC network file and open the stream
+	
+	    if ( Debug.EnableInfo && hasDebug())
+	      Debug.println("DB openStream() file=" + params.getPath() + ", stream=" + sInfo.getName());
+	    
+	    jdbcFile = (DBNetworkFile) dbCtx.getFileLoader().openFile(params, finfo.getFileId(), sInfo.getStreamId(),
+	    															finfo.getDirectoryId(), false, false);
+	
+	    jdbcFile.setFileState(dbCtx.getStateCache().getFileStateProxy(fstate));
+	    jdbcFile.setFileDetails( sfinfo);
+	    
+	    //  Open the stream file, if not a directory
+	  
+	    jdbcFile.openFile(false);
+    }
+    finally {
+    	
+        // Check if the stream file is not valid but an access token has been allocated
+      	
+        if ( jdbcFile == null && accessToken != null)
+          dbCtx.getStateCache().releaseFileAccess(fstate, accessToken);
+      }
     
-    DBFileInfo sfinfo = new DBFileInfo(sInfo.getName(), params.getFullPath(), finfo.getFileId(), finfo.getDirectoryId());
-    
-    sfinfo.setFileSize(sInfo.getSize());
-    sfinfo.setFileAttributes( FileAttribute.Normal);
-    
-    sfinfo.setCreationDateTime( sInfo.getCreationDateTime());
-    sfinfo.setModifyDateTime( sInfo.getModifyDateTime());
-    sfinfo.setAccessDateTime( sInfo.getAccessDateTime());
-
-    fstate.addAttribute(FileState.FileInformation, sfinfo);
-    
-    //  Create a JDBC network file and open the stream
-
-    if ( Debug.EnableInfo && hasDebug())
-      Debug.println("DB openStream() file=" + params.getPath() + ", stream=" + sInfo.getName());
-    
-    DBNetworkFile jdbcFile = (DBNetworkFile) dbCtx.getFileLoader().openFile(params, finfo.getFileId(), sInfo.getStreamId(),
-                                                                                  finfo.getDirectoryId(), false, false);
-
-    jdbcFile.setFileState(fstate);
-    jdbcFile.setFileDetails( sfinfo);
-    
-    //  Open the stream file, if not a directory
-  
-    jdbcFile.openFile(false);
-
-    //  Update the file open count
-  
-    fstate.setFileStatus( FileStatus.FileExists);
-    fstate.incrementOpenCount();
-  
     //  Return the network file
       
     return jdbcFile;
@@ -3030,11 +3087,14 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
               
         fstate = getFileState(stream.getFullName(), dbCtx, false);
       }
-      else {
-        
-        //  Decrement the open file count for this file
-        
-        fstate.decrementOpenCount();
+      
+      // Release the file access token for the stream
+      
+      if ( jdbcFile.hasAccessToken()) {
+
+    	// Release the access token, update the open file count
+    	  
+    	dbCtx.getStateCache().releaseFileAccess(fstate, jdbcFile.getAccessToken());
       }
 
       //  Check if we have a valid file state
@@ -3358,7 +3418,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     // Access the context
 	    
     DBDeviceContext dbCtx = (DBDeviceContext) tree.getContext();
-    return dbCtx.getLockManager();
+    return dbCtx.getFileStateLockManager();
   }
   
   /**
@@ -3373,7 +3433,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     // Access the context
 	    
     DBDeviceContext dbCtx = (DBDeviceContext) tree.getContext();
-    return dbCtx.getLockManager();
+    return dbCtx.getFileStateLockManager();
   }
   
 	/**

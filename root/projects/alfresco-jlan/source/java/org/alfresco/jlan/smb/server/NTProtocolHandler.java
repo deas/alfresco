@@ -71,6 +71,7 @@ import org.alfresco.jlan.server.filesys.TreeConnection;
 import org.alfresco.jlan.server.filesys.UnsupportedInfoLevelException;
 import org.alfresco.jlan.server.filesys.VolumeInfo;
 import org.alfresco.jlan.server.locking.FileLockingInterface;
+import org.alfresco.jlan.server.locking.LocalOpLockDetails;
 import org.alfresco.jlan.server.locking.LockManager;
 import org.alfresco.jlan.server.locking.OpLockDetails;
 import org.alfresco.jlan.server.locking.OpLockInterface;
@@ -373,14 +374,19 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					}
 				}
 				else {
-				    
-				    // Send an error response, invalid user id or tree id
-				    
-	                m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+					
+					// Need to send a response or the client may hang
+					
+					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
+//					m_sess.sendErrorResponseSMB( smbPkt, 0x00010002, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 				}
 				break;
 		}
 
+		// Run any request post processors
+		
+		runRequestPostProcessors( m_sess);
+		
 		// Return the handled status
 
 		return handledOK;
@@ -1578,6 +1584,10 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 		transBuf.setReturnLimits(tranPkt.getMaximumReturnSetupCount(), tranPkt.getMaximumReturnParameterCount(), tranPkt.getMaximumReturnDataCount());
 
+		// Clear the transaction packet buffer, as it is owned by the original packet
+		
+		tranPkt.setBuffer( null);
+		
 		// Check for a multi-packet transaction, for a multi-packet transaction we just acknowledge
 		// the receive with an empty response SMB
 
@@ -2924,6 +2934,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 		smbPkt.setParameterCount(0);
 		smbPkt.setByteCount(0);
+		smbPkt.setSuccessStatus();
 
 		// Send the response packet
 
@@ -3054,6 +3065,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Filesystem is offline
 
 			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectPathNotFound, SMBStatus.HRDDriveNotReady, SMBStatus.ErrHrd);
+			return;
 		}
 		catch (IOException ex) {
 
@@ -3067,7 +3079,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 		smbPkt.setParameterCount(0);
 		smbPkt.setByteCount(0);
-
+		smbPkt.setSuccessStatus();
+		
 		// Send the response packet
 
 		m_sess.sendResponseSMB(smbPkt);
@@ -3190,6 +3203,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Filesystem is offline
 
 			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectPathNotFound, SMBStatus.HRDDriveNotReady, SMBStatus.ErrHrd);
+			return;
 		}
 		catch (IOException ex) {
 
@@ -3203,6 +3217,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 		smbPkt.setParameterCount(0);
 		smbPkt.setByteCount(0);
+		smbPkt.setSuccessStatus();
 
 		// Send the response packet
 
@@ -4215,6 +4230,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		paramBuf.skipBytes(4);
 
 		String path = paramBuf.getString(tbuf.isUnicode());
+		if ( path.length() == 0)
+			path = FileName.DOS_SEPERATOR_STR;
 
 		// Normalize paths that end with the NTFS data stream name
 		
@@ -4293,7 +4310,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				StreamInfoList streamList = ntfsStreams.getStreamList(m_sess, conn, path);
 
 				if ( streamList == null) {
-					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNotFound, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNoSuchFile, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+//					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNotFound, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 					return;
 				}
 
@@ -4308,7 +4326,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				FileInfo fileInfo = disk.getFileInformation(m_sess, conn, path);
 
 				if ( fileInfo == null) {
-					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNotFound, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNoSuchFile, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+//					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNotFound, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 					return;
 				}
 
@@ -4354,7 +4373,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Requested file does not exist
 
 //			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNotFound, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
-            m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNoSuchFile, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNoSuchFile, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 			return;
 		}
 		catch (PathNotFoundException ex) {
@@ -4383,6 +4402,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Filesystem is offline
 
 			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectPathNotFound, SMBStatus.HRDDriveNotReady, SMBStatus.ErrHrd);
+			return;
 		}
 		catch (AccessDeniedException ex) {
 		    
@@ -5065,6 +5085,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		paramBuf.skipBytes(4);
 
 		String path = paramBuf.getString(tbuf.isUnicode());
+		if ( path.length() == 0)
+			path = FileName.DOS_SEPERATOR_STR;
 
 		// Debug
 
@@ -5515,6 +5537,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 		// Return the count of bytes actually written
 
+		smbPkt.setSuccessStatus();
 		smbPkt.setParameterCount(6);
 		smbPkt.setAndXCommand(0xFF);
 		smbPkt.setParameter(1, 0); // AndX offset
@@ -5586,7 +5609,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		TreeConnection conn = vc.findConnection(treeId);
 
 		if ( conn == null) {
-			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -5696,6 +5719,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		// Set the create flags, with oplock requests
 		
 		params.setNTCreateFlags( flags);
+		params.setTreeId( treeId);
 
 		// Debug
 
@@ -5714,7 +5738,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		int fid;
 		NetworkFile netFile = null;
 		int respAction = 0;
-		OpLockDetails oplock = null;
+		LocalOpLockDetails oplock = null;
 
 		try {
 
@@ -6888,7 +6912,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			prms.putByte(2);
 		}
-		else if ( (flags & WinNT.RequestOplock) != 0) {
+		else if ( (flags & WinNT.RequestExclusiveOplock) != 0) {
 
 			// Exclusive oplock granted
 
@@ -7661,20 +7685,98 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			
 			if ( oplock != null) {
 
-				// Check if the session that owns the oplock is still valid
+				// DEBUG
 				
-				SMBSrvSession opSess = oplock.getOwnerSession();
+				if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+					m_sess.debugPrintln( "Check oplock on file " + params.getPath() + ", oplock=" + oplock);
 				
-				if ( opSess.isShutdown() == false) {
+				// Check if the oplock is local
+				
+				boolean deferredPkt = false;
+				
+				if ( oplock instanceof LocalOpLockDetails) {
 					
-					// Check if session owns the oplock
+					// Access the local oplock details
 					
-					if ( opSess.getUniqueId() == sess.getUniqueId() && oplock.getOwnerPID() == pkt.getProcessId())
-						return;
+					LocalOpLockDetails localOpLock = (LocalOpLockDetails) oplock;
+					
+					// Check if the session that owns the oplock is still valid
+					
+					SMBSrvSession opSess = localOpLock.getOwnerSession();
+					
+					if ( opSess.isShutdown() == false) {
+						
+						// Check if the open is not accessing the file data, ie. accessing attributes only
+						
+						if (( params.getAccessMode() & (AccessMode.NTSynchronize + AccessMode.NTReadAttrib + AccessMode.NTWriteAttrib)) == 0)
+							return;
+	
+						// Check if the oplock has a failed break timeout, do not send another break request to the client, fail the open
+						// request with an access denied error
+						
+						if ( oplock.hasOplockBreakFailed()) {
+						
+							// DEBUG
+							
+							if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+								m_sess.debugPrintln("Oplock has failed break attempt, failing open request params=" + params);
+							
+							// Fail the open request with an access denied error
+							
+							throw new AccessDeniedException( "Oplock has failed break");
+						}
+						
+						// Need to send an oplock break to the oplock owner before we can continue processing the current file open request
+						
+						try {
+							
+							// DEBUG
+							
+							if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+								m_sess.debugPrintln("Oplock break required, owner=" + oplock + ", open=" + sess.getUniqueId() + ", PID=" + pkt.getProcessId() + ", MID=" + pkt.getMultiplexId());
+								
+							// Request the owner session break the oplock
+							
+							oplockMgr.requestOpLockBreak( oplock.getPath(), oplock, m_sess, pkt);
+							
+							// Indicate that the current CIFS request packet processing should be deferred, until the oplock break is received
+							// from the owner
+							
+							deferredPkt = true;
+						}
+	
+						catch ( IOException ex) {
+							
+							// Log the error
+							
+							if ( Debug.EnableError) {
+								Debug.println("Failed to send local oplock break:", Debug.Error);
+								Debug.println(ex, Debug.Error);
+							}
+							
+							// Throw an access denied exception so that the file open is rejected
+							
+							throw new AccessDeniedException( "Oplock break send failed");
+						}
+					}
+					else {
+						
+						//	Oplock owner session is no longer valid, release the oplock
+						
+						oplockMgr.releaseOpLock( oplock.getPath());
+	
+						// DEBUG
+						
+						if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+							m_sess.debugPrintln("Oplock released, session invalid sess=" + opSess.getUniqueId());
+					}
+				}
+				else if ( oplock.isRemoteLock()) {
 					
 					// Check if the open is not accessing the file data, ie. accessing attributes only
 					
-					if (( params.getAccessMode() & (AccessMode.NTSynchronize + AccessMode.NTReadAttrib + AccessMode.NTWriteAttrib)) == 0)
+//					if (( params.getAccessMode() & (AccessMode.NTSynchronize + AccessMode.NTReadAttrib + AccessMode.NTWriteAttrib)) == 0)
+					if (( params.getAccessMode() & (AccessMode.NTRead + AccessMode.NTWrite + AccessMode.NTAppend)) == 0)
 						return;
 
 					// Check if the oplock has a failed break timeout, do not send another break request to the client, fail the open
@@ -7692,102 +7794,45 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 						throw new AccessDeniedException( "Oplock has failed break");
 					}
 					
-					// Need to send an oplock break to the oplock owner before we can continue processing the current file open request
-					
-					SMBSrvPacket opBreakPkt = null;
-					boolean deferredPkt = false;
-					
 					try {
 						
-						// DEBUG
+						// Send a remote oplock break request to the owner node
 						
-						if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-							m_sess.debugPrintln("Oplock break required, owner=" + oplock + ", open=" + sess.getUniqueId() + ", PID=" + pkt.getProcessId() + ", MID=" + pkt.getMultiplexId());
-							
-						// File has an existing oplock, we need to break the current oplock before the new file open can proceed
-						//
-						// Store the file open request details
-						
-						oplock.setDeferredSession( m_sess, pkt);
-						
-						// Alocate a packet for the oplock break request to be sent on the owner client session
-	
-						opBreakPkt = new SMBSrvPacket( 128);
-						
-						// Build the oplock break request
-						
-						opBreakPkt.clearHeader();
-						
-						opBreakPkt.setCommand( PacketType.LockingAndX);
-						
-						opBreakPkt.setFlags( 0);
-						opBreakPkt.setFlags2( 0);
-						
-						opBreakPkt.setTreeId( oplock.getOwnerTreeId());
-						opBreakPkt.setProcessId( 0xFFFF);
-						opBreakPkt.setUserId( 0);
-						opBreakPkt.setMultiplexId( 0xFFFF);
-						
-						opBreakPkt.setParameterCount( 8);
-						opBreakPkt.setAndXCommand( PacketType.NoChainedCommand);
-						opBreakPkt.setParameter(1, 0);							// AndX offset
-						opBreakPkt.setParameter(2, oplock.getOwnerFileId());	// FID
-						opBreakPkt.setParameter(3, LockingAndX.OplockBreak + LockingAndX.Level2OpLock);
-						opBreakPkt.setParameterLong(4, 0);						// timeout
-						opBreakPkt.setParameter(6, 0);							// number of unlocks
-						opBreakPkt.setParameter(7, 0);							// number of locks
-						
-						opBreakPkt.setByteCount( 0);
-						
-						// Send the oplock break to the session that owns the oplock
-						
-						boolean breakSent = opSess.sendAsynchResponseSMB( opBreakPkt, opBreakPkt.getLength());
+						oplockMgr.requestOpLockBreak( oplock.getPath(), oplock, m_sess, pkt);
 						
 						// DEBUG
 						
 						if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-							m_sess.debugPrintln("Oplock break sent to " + opSess.getUniqueId() + " async=" + (breakSent ? "Sent" : "Queued"));
+							m_sess.debugPrintln("Remote oplock break sent, oplock=" + oplock);
 						
 						// Indicate that the current CIFS request packet processing should be deferred, until the oplock break is received
 						// from the owner
 						
 						deferredPkt = true;
-						
-						// Notify the oplock manager that an oplock break is in progress
-						
-						oplockMgr.informOpLockBreakInProgress( oplock.getPath(), oplock);
 					}
-
 					catch ( IOException ex) {
 						
 						// Log the error
 						
 						if ( Debug.EnableError) {
-							Debug.println("Failed to send oplock break:", Debug.Error);
+							Debug.println("Failed to send remote oplock break:", Debug.Error);
 							Debug.println(ex, Debug.Error);
 						}
+						
+						// Clear the deferred session details
+						
+						oplock.clearDeferredSession();
 						
 						// Throw an access denied exception so that the file open is rejected
 						
 						throw new AccessDeniedException( "Oplock break send failed");
 					}
-					
-					// Check if the CIFS file open request processing should be deferred until the oplock break has completed
-					
-					if ( deferredPkt == true)
-						throw new DeferredPacketException( "Waiting for oplock break");
 				}
-				else {
-					
-					//	Oplock owner session is no longer valid, release the oplock
-					
-					oplockMgr.releaseOpLock( oplock.getPath());
 
-					// DEBUG
-					
-					if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-						m_sess.debugPrintln("Oplock released, session invalid sess=" + opSess.getUniqueId());
-				}
+				// Check if the CIFS file open request processing should be deferred until the oplock break has completed
+				
+				if ( deferredPkt == true)
+					throw new DeferredPacketException( "Waiting for oplock break");
 			}
 		}
 		
@@ -7805,9 +7850,9 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 	 * @param tree TreeConnection
 	 * @param params FileOpenParams
 	 * @param netFile NetworkFile
-	 * @return OpLockDetails
+	 * @return LocalOpLockDetails
 	 */
-	private final OpLockDetails grantOpLock(SMBSrvSession sess, SMBSrvPacket pkt, DiskInterface disk, TreeConnection tree, FileOpenParams params, NetworkFile netFile) {
+	private final LocalOpLockDetails grantOpLock(SMBSrvSession sess, SMBSrvPacket pkt, DiskInterface disk, TreeConnection tree, FileOpenParams params, NetworkFile netFile) {
 		
 		// Check if the client requested an oplock, or the file open is on a folder
 		
@@ -7816,7 +7861,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		
 		// Check if the filesystem supports oplocks
 		
-		OpLockDetails oplock = null;
+		LocalOpLockDetails oplock = null;
 		
 		if ( disk instanceof OpLockInterface) {
 			
@@ -7841,13 +7886,13 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					
 				// Create the oplock details
 				
-				oplock = new OpLockDetails( oplockTyp, params.getPath(), sess, pkt, netFile.isDirectory());
+				oplock = new LocalOpLockDetails( oplockTyp, params.getPath(), sess, pkt, netFile.isDirectory());
 				
 				try {
 					
 					// Store the oplock via the oplock manager, check if the oplock grant was allowed
 					
-					if ( oplockMgr.grantOpLock( params.getPath(), oplock)) {
+					if ( oplockMgr.grantOpLock( params.getPath(), oplock, netFile)) {
 					
 						// Save the oplock details with the opened file
 						
@@ -7863,7 +7908,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 						// DEBUG
 						
 						if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-							m_sess.debugPrintln( "Oplock not granted sess=" + sess.getUniqueId() + " oplock=" + oplock);
+							m_sess.debugPrintln( "Oplock not granted sess=" + sess.getUniqueId() + " oplock=" + oplock + " (Open count)");
 
 						// Clear the oplock, not granted
 						

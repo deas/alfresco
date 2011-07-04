@@ -65,6 +65,8 @@ import org.alfresco.jlan.server.filesys.DiskSharedDevice;
 import org.alfresco.jlan.server.filesys.FilesystemsConfigSection;
 import org.alfresco.jlan.server.filesys.SrvDiskInfo;
 import org.alfresco.jlan.server.filesys.VolumeInfo;
+import org.alfresco.jlan.server.filesys.cache.FileStateCache;
+import org.alfresco.jlan.server.filesys.cache.StandaloneFileStateCache;
 import org.alfresco.jlan.server.thread.ThreadRequestPool;
 import org.alfresco.jlan.smb.Dialect;
 import org.alfresco.jlan.smb.DialectSelector;
@@ -2163,6 +2165,73 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			diskInfo = new SrvDiskInfo(2560000, 64, 512, 2304000);
 		}
 
+		// Check if a state cache is configured
+		
+		Element cacheElem = findChildNode("stateCache", disk.getChildNodes());
+		FileStateCache stateCache = null;
+		
+		if ( cacheElem != null) {
+
+			// Convert the state cache configuration
+			
+			ConfigElement cacheConfig = buildConfigElement( cacheElem);
+			
+			// Get the cache type
+			
+			attr = cacheElem.getAttribute( "type");
+			if ( attr.equalsIgnoreCase( "standalone")) {
+				
+				// Create a standalone file state cache
+				
+				stateCache = new StandaloneFileStateCache();
+			}
+			else if ( attr.equalsIgnoreCase( "cluster")) {
+				
+				// Create a clustered file state cache, need to load the class to avoid a reference to it
+				
+				try {
+					stateCache = (FileStateCache) Class.forName( "org.alfresco.jlan.server.filesys.cache.hazelcast.HazelCastClusterFileStateCache").newInstance();
+				}
+				catch ( ClassNotFoundException ex) {
+					throw new InvalidConfigurationException( "Clustered file state cache not available, check build/Jar");
+				}
+				catch ( Exception ex) {
+					throw new InvalidConfigurationException( "Failed to load clustered file state cache class, " + ex);
+				}
+			}
+			else if ( attr.equalsIgnoreCase( "custom")) {
+
+				// Get the custom state cache class name
+				
+				Element cacheClass = findChildNode( "class", cacheElem.getChildNodes());
+				if ( cacheClass == null || getText( cacheClass).length() == 0)
+					throw new InvalidConfigurationException( "Custom state cache class not specified");
+				
+				// Create a custom file state cache
+				
+				try {
+					Object cacheObj = Class.forName( getText( cacheClass)).newInstance();
+					if ( cacheObj instanceof FileStateCache == false)
+						throw new InvalidConfigurationException( "State cache class is not a FileStateCache based class");
+					
+					stateCache = (FileStateCache) cacheObj; 
+				}
+				catch ( ClassNotFoundException ex) {
+					throw new InvalidConfigurationException( "Clustered file state cache not available, check build/Jar");
+				}
+				catch ( Exception ex) {
+					throw new InvalidConfigurationException( "Failed to load clustered file state cache class, " + ex);
+				}
+			}
+			
+			// Initialize the cache
+			
+			if ( stateCache != null)
+				stateCache.initializeCache( cacheConfig, this);
+			else
+				throw new InvalidConfigurationException( "Failed to initialize state cache for filesystem " + name);
+		}
+		
 		// Check if a share with this name already exists
 
 		if ( filesysConfig.getShares().findShare(name) != null)
@@ -2203,6 +2272,18 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				devCtx.setShareName(name);
 
+				// Create the default file state cache type if the filesystem requires it, for backwards compatability
+				
+				if ( devCtx.requiresStateCache() && stateCache == null) {
+					stateCache = new StandaloneFileStateCache();
+					stateCache.initializeCache( new GenericConfigElement( "stateCache"), this);
+				}
+				
+				if ( devCtx.requiresStateCache() == false && stateCache != null)
+					throw new InvalidConfigurationException( "Filesystem does not use state caching");
+
+				devCtx.setStateCache( stateCache);
+				
 				// Create the disk shared device and add to the server's list of shares
 
 				DiskSharedDevice diskDev = new DiskSharedDevice(name, diskDrv, devCtx);
@@ -2226,6 +2307,11 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				devCtx.startFilesystem(diskDev);
 
+				// Pass the driver/context details to the state cache
+				
+				if ( devCtx.hasStateCache())
+					devCtx.getStateCache().setDriverDetails(diskDev);
+				
 				// Add the new share to the list of available shares
 
 				filesysConfig.addShare(diskDev);
@@ -2235,10 +2321,10 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			throw new InvalidConfigurationException("Disk driver class " + getText(classElem) + " not found");
 		}
 		catch (DeviceContextException ex) {
-			throw new InvalidConfigurationException("Driver context error, " + ex.toString());
+			throw new InvalidConfigurationException("Driver context error", ex);
 		}
 		catch (Exception ex) {
-			throw new InvalidConfigurationException("Disk share setup error, " + ex.toString());
+			throw new InvalidConfigurationException("Disk share setup error", ex);
 		}
 	}
 

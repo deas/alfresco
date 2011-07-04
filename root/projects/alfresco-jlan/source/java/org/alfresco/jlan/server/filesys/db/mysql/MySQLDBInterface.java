@@ -94,6 +94,10 @@ public class MySQLDBInterface extends JdbcDBInterface implements DBQueueInterfac
 
 	public final static String LockFileName = "MySQLLoader.lock";
 
+	// MySQL error codes
+	
+	private static final int ErrorDuplicateEntry	= 1062;
+	
 	// Database connection and prepared statement used to write file requests to the queue tables
 
 	private Connection m_dbConn;
@@ -236,10 +240,10 @@ public class MySQLDBInterface extends JdbcDBInterface implements DBQueueInterfac
 
 				// Create various indexes
 
-				stmt.execute("ALTER TABLE " + getFileSysTableName() + " ADD INDEX IFileDirId (FileName,DirId);");
+				stmt.execute("ALTER TABLE " + getFileSysTableName() + " ADD UNIQUE INDEX IFileDirId (FileName,DirId);");
 				stmt.execute("ALTER TABLE " + getFileSysTableName() + " ADD INDEX IDirId (DirId);");
 				stmt.execute("ALTER TABLE " + getFileSysTableName() + " ADD INDEX IDir (DirId,Directory);");
-				stmt.execute("ALTER TABLE " + getFileSysTableName() + " ADD INDEX IFileDirIdDir (FileName,DirId,Directory);");
+				stmt.execute("ALTER TABLE " + getFileSysTableName() + " ADD UNIQUE INDEX IFileDirIdDir (FileName,DirId,Directory);");
 
 				stmt.close();
 
@@ -532,6 +536,7 @@ public class MySQLDBInterface extends JdbcDBInterface implements DBQueueInterfac
 		Statement stmt = null;
 
 		int fileId = -1;
+		boolean duplicateKey = false;
 
 		try {
 
@@ -544,7 +549,7 @@ public class MySQLDBInterface extends JdbcDBInterface implements DBQueueInterfac
 			stmt = conn.createStatement();
 			String chkFileName = checkNameForSpecialChars(fname);
 
-			String qsql = "SELECT FileName FROM " + getFileSysTableName() + " WHERE FileName = '" + chkFileName
+			String qsql = "SELECT FileName,FileId FROM " + getFileSysTableName() + " WHERE FileName = '" + chkFileName
 					+ "' AND DirId = " + dirId;
 
 			// DEBUG
@@ -555,8 +560,14 @@ public class MySQLDBInterface extends JdbcDBInterface implements DBQueueInterfac
 			// Check if the file/folder already exists
 
 			ResultSet rs = stmt.executeQuery(qsql);
-			if ( rs.next())
-				throw new FileExistsException();
+			if ( rs.next()) {
+				
+				// File record already exists, return the existing file id
+				
+				fileId = rs.getInt("FileId");
+				Debug.println("File record already exists for " + fname + ", fileId=" + fileId);
+				return fileId;
+			}
 
 			// Check if a file or folder record should be created
 
@@ -657,6 +668,23 @@ public class MySQLDBInterface extends JdbcDBInterface implements DBQueueInterfac
 					Debug.println("[mySQL] Created file name=" + fname + ", dirId=" + dirId + ", fileId=" + fileId);
 			}
 		}
+		catch ( SQLException ex) {
+			
+			// Check for a duplicate key error, another client may have created the file
+			
+			if ( ex.getErrorCode() == ErrorDuplicateEntry) {
+				
+				// Flag that a duplicate key error occurred, we can return the previously allocated file id
+				
+				duplicateKey = true;
+			}
+			else {
+				
+				// Rethrow the exception
+			
+				throw new DBException(ex.toString());
+			}
+		}
 		catch (Exception ex) {
 
 			// DEBUG
@@ -696,6 +724,20 @@ public class MySQLDBInterface extends JdbcDBInterface implements DBQueueInterfac
 				releaseConnection(conn);
 		}
 
+		// If a duplicate key error occurred get the previously allocated file id
+		
+		if ( duplicateKey == true) {
+			
+			// Get the previously allocated file id for the file record
+			
+			fileId = getFileId(dirId, fname, false, true);
+
+			// DEBUG
+
+			if ( Debug.EnableInfo && hasSQLDebug())
+				Debug.println("[mySQL] Duplicate key error, lookup file id, dirId=" + dirId + ", fname=" + fname + ", fid=" + fileId);
+		}
+		
 		// Return the allocated file id
 
 		return fileId;
@@ -839,7 +881,14 @@ public class MySQLDBInterface extends JdbcDBInterface implements DBQueueInterfac
 
 			// Delete the file/folder, or mark as deleted
 
-			stmt.executeUpdate(sql);
+			int recCnt = stmt.executeUpdate(sql);
+			if ( recCnt == 0) {
+				ResultSet rs = stmt.executeQuery( "SELECT * FROM " + getFileSysTableName() + " WHERE FileId = " + fid);
+				while ( rs.next())
+					Debug.println( "Found file " + rs.getString( "FileName"));
+			
+				throw new DBException( "Failed to delete file record for fid=" + fid);
+			}
 
 			// Check if retention is enabled
 

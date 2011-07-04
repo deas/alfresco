@@ -117,6 +117,10 @@ public class FileStateReaper implements Runnable {
     		Debug.println( "Added file state cache for " + filesysName);
     	
     	m_stateCaches.put( filesysName, stateCache);
+    	
+    	// Inform the cache it can now start
+
+    	stateCache.stateCacheStarted();
     }
     
     /**
@@ -126,12 +130,16 @@ public class FileStateReaper implements Runnable {
      */
     public final void removeStateCache( String filesysName)
     {
-    	m_stateCaches.remove( filesysName);
+    	FileStateCache stateCache = m_stateCaches.remove( filesysName);
 
     	// DEBUG
     	
     	if ( Debug.EnableDbg && hasDebug())
     		Debug.println( "Removed file state table for " + filesysName);
+    	
+    	// Inform the cache to shut down
+
+    	stateCache.stateCacheShuttingDown();
     }
     
     /**
@@ -210,6 +218,21 @@ public class FileStateReaper implements Runnable {
 	 * Request the file state checker thread to shutdown
 	 */
 	public final void shutdownRequest() {
+		
+		// Remove all the file state caches
+		
+		Enumeration<String> filesysNames = m_stateCaches.keys();
+		
+		while ( filesysNames.hasMoreElements()) {
+			
+    		// Get the current filesystem name and remove the state cache
+    		
+    		String filesysName = filesysNames.nextElement();
+    		removeStateCache( filesysName);
+		}
+		
+		// Shutdown the checker thread
+		
 		m_shutdown = true;
 		
 		if ( m_thread != null)

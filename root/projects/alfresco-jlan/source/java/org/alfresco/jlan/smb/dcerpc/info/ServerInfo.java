@@ -31,12 +31,12 @@ import org.alfresco.jlan.smb.dcerpc.DCEWriteable;
  */
 public class ServerInfo implements DCEWriteable, DCEReadable {
 
-  //	Information levels supported
+	//	Information levels supported
   
-  public static final int InfoLevel0		= 0;
-  public static final int InfoLevel1		=	1;
-  public static final int InfoLevel101	=	101;
-  public static final int InfoLevel102	= 102;
+	public static final int InfoLevel0		= 0;
+	public static final int InfoLevel1		= 1;
+	public static final int InfoLevel101	= 101;
+	public static final int InfoLevel102	= 102;
   
 	//	Server platform ids
 	

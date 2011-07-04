@@ -103,6 +103,13 @@ public interface FileLoader {
 		throws FileLoaderException, IOException;
 		
 	/**
+	 * Start the file loader
+	 * 
+	 * @param ctx DeviceContext
+	 */
+	public void startLoader( DeviceContext ctx);
+	
+	/**
 	 * Shutdown the file loader and release all resources
 	 * 
 	 * @param immediate boolean

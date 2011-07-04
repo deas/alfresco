@@ -203,6 +203,9 @@ public final class SMBErrorText {
 			case SMBStatus.DOSDirectoryNotEmpty:
 				errtext = "Directory not empty";
 				break;
+			case SMBStatus.DOSNotLocked:
+				errtext = "Not locked";
+				break;
 			case 230:
 				errtext = "Named pipe invalid";
 				break;
@@ -742,6 +745,9 @@ public final class SMBErrorText {
 				break;
 			case SMBStatus.NTAccountLocked:
 				errtext = "Account is locked";
+				break;
+			case SMBStatus.SMBInvalidSMB:
+				errtext = "Invalid SMB, or not supported";
 				break;
 			default:
 				errtext = "Unknown NT status 0x" + Integer.toHexString(errcode);

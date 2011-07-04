@@ -91,7 +91,7 @@ public class VirtualCircuit {
   private SearchContext[] m_search;
   private int m_searchCount;
 
-  //  Active transaction details
+  //  Active CIFS transaction details
   
   private SrvTransactBuffer m_transact;
 

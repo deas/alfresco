@@ -179,7 +179,7 @@ public abstract class TimedThreadRequest implements ThreadRequest, Comparable<Ti
      */
     public final void restartRequest() {
         if ( isPaused())
-            setRunAtTime( getRunAtTime());
+            setRunAtTime( System.currentTimeMillis() + (getRepeatInterval() * 1000L));
     }
     
     /**

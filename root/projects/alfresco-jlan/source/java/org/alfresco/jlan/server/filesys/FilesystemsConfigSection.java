@@ -121,7 +121,7 @@ public class FilesystemsConfigSection extends ConfigSection {
             // Remove the filesystem from the file state cache, if enabled
             
             if ( m_stateReaper != null)
-                m_stateReaper.removeStateCache( devCtx.getDeviceName());
+                m_stateReaper.removeStateCache( share.getName());
             
             // Close the device context
         

@@ -121,6 +121,9 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 	 * @param stateCache FileStateCache
 	 */
 	public FileStateLockManager(FileStateCache stateCache) {
+		
+		// Save the associated state cache
+		
 		m_stateCache = stateCache;
 		
 		// Create the oplock break queue
@@ -158,7 +161,7 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 		//	any existing locks. Add the lock to the file instance so that locks can be removed if the
 		//	file is closed/session abnormally terminates.
 		
-		fstate.addLock(lock);
+		m_stateCache.addLock( fstate, lock);
 		file.addLock(lock);
 	}
 
@@ -190,12 +193,16 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 		
 		//	Remove the lock from the active lock list for the file, and the file instance
 	
-		fstate.removeLock(lock);
-		file.removeLock(lock);
+		try {
+			m_stateCache.removeLock( fstate, lock);
+		}
+		finally {
+			file.removeLock(lock);
+		}
 	}
 	
 	/**
-	 * Create a lock object, use the standard FileLock object.
+	 * Create a file lock object.
 	 * 
 	 * @param sess SrvSession
 	 * @param tree TreeConnection
@@ -208,7 +215,7 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 
 		//	Create a lock object to represent the file lock
 		
-		return new FileLock(offset, len, pid);
+		return m_stateCache.createFileLockObject( file, offset, len, pid);
 	}
 	
 	/**
@@ -287,7 +294,7 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 		
 		FileState fstate = m_stateCache.findFileState(path);
 		if ( fstate != null)
-			return fstate.getOpLock();
+			return m_stateCache.getOpLock( fstate);
 
 		// No oplock
 		
@@ -299,34 +306,37 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 	 * 
 	 * @param path String
 	 * @param oplock OpLockDetails
+	 * @param netFile NetworkFile
 	 * @return boolean
 	 * @exception ExistingOpLockException	If the file already has an oplock
 	 */
-	public boolean grantOpLock(String path, OpLockDetails oplock)
+	public boolean grantOpLock(String path, OpLockDetails oplock, NetworkFile netFile)
 		throws ExistingOpLockException {
 
 		// Get, or create, a file state
 		
 		FileState fstate = m_stateCache.findFileState(path, true);
 		
-		// Check if the file is already in use
-		
-		if ( fstate.getOpenCount() != 1)
-			return false;
-
 		// Set the oplock
-		
-		fstate.setOpLock( oplock);
-		return true;
+
+		return m_stateCache.addOpLock( fstate, oplock, netFile);
 	}
-	
+
 	/**
-	 * Inform the oplock manager that an oplock break is in progress for the specified file/oplock
+	 * Request an oplock break on the specified oplock
 	 * 
 	 * @param path String
 	 * @param oplock OpLockDetails
+	 * @param sess SMBSrvSession
+	 * @param pkt SMBSrvPacket
+	 * @exception IOException
 	 */
-	public void informOpLockBreakInProgress(String path, OpLockDetails oplock) {
+	public void requestOpLockBreak( String path, OpLockDetails oplock, SMBSrvSession sess, SMBSrvPacket pkt)
+		throws IOException {
+
+		// Request an oplock break
+		
+		m_stateCache.requestOplockBreak( path, oplock, sess, pkt);
 		
 		// Add the oplock to the break in progress queue
 		
@@ -352,8 +362,11 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 		// Get the file state
 		
 		FileState fstate = m_stateCache.findFileState(path);
+
+		// Remove the oplock from the file
+		
 		if ( fstate != null)
-			fstate.clearOpLock();
+			m_stateCache.clearOpLock( fstate);
 		
 		// Remove from the pending oplock break queue
 		
@@ -369,7 +382,7 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 	 */
 	public int checkExpiredOplockBreaks() {
 		
-		// Check if there are ny oplock breaks in progress
+		// Check if there are any oplock breaks in progress
 		
 		if ( m_oplockQueue.size() == 0)
 			return 0;
@@ -391,47 +404,62 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 				
 				// Check if the oplock break has timed out
 				
-				if ( opLock.hasDeferredSession() && (opLock.getOplockBreakTime() + OpLockBreakTimeout) <= timeNow) {
+				if ( opLock.hasDeferredSession()) {
 					
-					// Get the deferred request details
+					// Check if the oplock break request has timed out
 					
-					SMBSrvSession sess = opLock.getDeferredSession();
-					SMBSrvPacket  pkt  = opLock.getDeferredPacket();
+					if ((opLock.getOplockBreakTime() + OpLockBreakTimeout) <= timeNow) {
 					
-					try {
+						// Get the deferred request details
 						
-						// Return an error for the deferred file open request
+						SMBSrvSession sess = opLock.getDeferredSession();
+						SMBSrvPacket  pkt  = opLock.getDeferredPacket();
 						
-						if ( sess.sendAsyncErrorResponseSMB( pkt, SMBStatus.NTAccessDenied, SMBStatus.NTErr) == true) {
-						
-							// DEBUG
+						try {
 							
-							if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-								sess.debugPrintln( "Oplock break timeout, oplock=" + opLock);
+							// Return an error for the deferred file open request
 							
-							// Release the packet back to the pool
+							if ( sess.sendAsyncErrorResponseSMB( pkt, SMBStatus.NTAccessDenied, SMBStatus.NTErr) == true) {
 							
-							sess.getPacketPool().releasePacket( pkt);
+								// DEBUG
+								
+								if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+									sess.debugPrintln( "Oplock break timeout, oplock=" + opLock);
+								
+								// Release the packet back to the pool
+								
+								sess.getPacketPool().releasePacket( pkt);
+							}
+							else if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+								sess.debugPrintln( "Failed to send open reject, oplock break timed out, oplock=" + opLock);
 						}
-						else if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-							sess.debugPrintln( "Failed to send open reject, oplock break timed out, oplock=" + opLock);
-					}
-					catch ( IOException ex) {
+						catch ( IOException ex) {
+							
+						}
 						
+						// Remove the oplock break from the queue
+						
+						m_oplockQueue.remove( path);
+						
+						// Clear the deferred packet details
+						
+						opLock.clearDeferredSession();
+						
+						// Mark the oplock has having a failed oplock break
+						
+						opLock.setOplockBreakFailed();
+						
+						// Update the expired oplock break count
+						
+						expireCnt++;
 					}
+				}
+				else {
 					
-					// Remove the oplock break from the queue
+					// Oplock no longer has a deferred request, remove it from the queue
 					
 					m_oplockQueue.remove( path);
-					
-					// Clear the deferred packet details
-					
-					opLock.clearDeferredSession();
-					
-					// Mark the oplock has having a failed oplock break
-					
-					opLock.setOplockBreakFailed();
-					
+
 					// Update the expired oplock break count
 					
 					expireCnt++;

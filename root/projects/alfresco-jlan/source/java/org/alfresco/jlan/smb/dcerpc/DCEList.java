@@ -19,7 +19,8 @@
 
 package org.alfresco.jlan.smb.dcerpc;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DCE/RPC List Class
@@ -36,13 +37,13 @@ public abstract class DCEList {
 
   //	List of DCE/RPC readable/writeable objects
   
-  private Vector m_dceObjects;
+  private List<Object> m_dceObjects;
 
   /**
    * Default constructor
    */
   protected DCEList() {
-    m_dceObjects = new Vector();
+    m_dceObjects = new ArrayList<Object>();
   }
 
   /**
@@ -51,7 +52,7 @@ public abstract class DCEList {
    * @param infoLevel int
    */
   protected DCEList(int infoLevel) {
-    m_dceObjects = new Vector();
+    m_dceObjects = new ArrayList<Object>();
     m_infoLevel  = infoLevel;
   }
 
@@ -73,7 +74,7 @@ public abstract class DCEList {
       
       //	Indicate that the container is valid
       
-      m_dceObjects = new Vector();
+      m_dceObjects = new ArrayList<Object>();
     }
     else {
 
@@ -104,9 +105,9 @@ public abstract class DCEList {
 	/**
 	 * Return the object list
 	 * 
-	 * @return Vector
+	 * @return List<Object>
 	 */
-	public final Vector getList() {
+	public final List<Object> getList() {
 	  return m_dceObjects;
 	}
 
@@ -125,7 +126,7 @@ public abstract class DCEList {
 	  
 	  //	Return the object
 	  
-	  return m_dceObjects.elementAt(idx);
+	  return m_dceObjects.get(idx);
 	}
 	
 	/**
@@ -143,7 +144,7 @@ public abstract class DCEList {
 	 * @param obj Object
 	 */
 	protected final void addObject(Object obj) {
-	  m_dceObjects.addElement(obj);
+	  m_dceObjects.add(obj);
 	}
 
 	/**
@@ -158,9 +159,9 @@ public abstract class DCEList {
 	/**
 	 * Set the object list
 	 * 
-	 * @param list Vector
+	 * @param list List<Object>
 	 */
-	protected final void setList(Vector list) {
+	protected final void setList(List<Object> list) {
 	  m_dceObjects = list;
 	}
 	
@@ -216,7 +217,7 @@ public abstract class DCEList {
 	        
 	        //	Get a readable object
 	        
-	        DCEReadable element = (DCEReadable) getList().elementAt(i);
+	        DCEReadable element = (DCEReadable) getList().get(i);
 	        
 	        //	Load the strings for the readable object
 	        
@@ -265,7 +266,7 @@ public abstract class DCEList {
   		  
   		  //	Get an object from the list
   		  
-  		  DCEWriteable object = (DCEWriteable) m_dceObjects.elementAt(i);
+  		  DCEWriteable object = (DCEWriteable) m_dceObjects.get(i);
   		  
   		  //	Write the object to the buffer, strings may go into the seperate string buffer which will be appended
   		  //	to the main buffer after all the objects have been written

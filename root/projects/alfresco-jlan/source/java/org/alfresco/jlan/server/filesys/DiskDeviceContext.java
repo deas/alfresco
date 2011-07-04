@@ -22,7 +22,10 @@ package org.alfresco.jlan.server.filesys;
 import org.alfresco.jlan.server.core.DeviceContext;
 import org.alfresco.jlan.server.core.DeviceContextException;
 import org.alfresco.jlan.server.filesys.cache.FileStateCache;
+import org.alfresco.jlan.server.filesys.cache.FileStateCacheListener;
 import org.alfresco.jlan.server.filesys.quota.QuotaManager;
+import org.alfresco.jlan.server.locking.LockManager;
+import org.alfresco.jlan.server.locking.OpLockManager;
 import org.alfresco.jlan.smb.server.notify.NotifyChangeHandler;
 import org.alfresco.jlan.smb.server.notify.NotifyRequest;
 
@@ -62,6 +65,7 @@ public class DiskDeviceContext extends DeviceContext {
     // File state cache
 
     private FileStateCache m_stateCache;
+    private boolean m_requireStateCache;
 
 	/**
 	 * Class constructor
@@ -162,6 +166,15 @@ public class DiskDeviceContext extends DeviceContext {
 	 */
 	public final boolean isCaseless() {
 	  return ( m_filesysAttribs & FileSystem.CasePreservedNames) == 0 ? true : false;
+	}
+	
+	/**
+	 * Check if the filesystem requires a file state cache
+	 * 
+	 * @return boolean
+	 */
+	public final boolean requiresStateCache() {
+		return m_requireStateCache;
 	}
 	
 	/**
@@ -346,16 +359,43 @@ public class DiskDeviceContext extends DeviceContext {
     }
 
     /**
-     * Enable/disable the file state cache
+     * Set the file state cache
      * 
-     * @param ena boolean
+     * @param stateCache FileStateCache
      */
-    public final void enableStateCache(boolean ena) {
-        if ( ena == true) {
-            if ( m_stateCache == null)
-                m_stateCache = new FileStateCache();
-        }
-        else
-            m_stateCache = null;
+    public final void setStateCache( FileStateCache stateCache) {
+    	m_stateCache = stateCache;
+    	
+    	// Check if the disk device context is a cache listener
+    	
+    	if ( this instanceof FileStateCacheListener)
+    		m_stateCache.addStateCacheListener((FileStateCacheListener) this);
+    }
+    
+    /**
+     * Set/clear the requires file state cache flag
+     * 
+     * @boolean reqStateCache boolean
+     */
+    public final void setRequiresStateCache( boolean reqStateCache) {
+    	m_requireStateCache = reqStateCache;
+    }
+    
+    /**
+     * Return the lock manager, if enabled
+     * 
+     * @return LockManager
+     */
+    public LockManager getLockManager() {
+    	return null;
+    }
+    
+    /**
+     * Return the oplock manager, if enabled
+     * 
+     * @return OpLockManager
+     */
+    public OpLockManager getOpLockManager() {
+    	return null;
     }
 }

@@ -21,7 +21,8 @@ package org.alfresco.jlan.server.filesys.db;
 
 import java.io.IOException;
 
-import org.alfresco.jlan.server.filesys.cache.FileState;
+import org.alfresco.jlan.server.filesys.FileAttribute;
+import org.alfresco.jlan.server.filesys.cache.FileStateProxy;
 
 /**
  * Directory Network File Class
@@ -42,6 +43,7 @@ public class DirectoryNetworkFile extends DBNetworkFile {
 	 */
 	public DirectoryNetworkFile(String name, int fid, int did) {
 		super(name,fid,0,did);
+		setAttributes( FileAttribute.Directory);
 	}
 	
 	/**
@@ -50,11 +52,12 @@ public class DirectoryNetworkFile extends DBNetworkFile {
 	 * @param name String
 	 * @param fid int
 	 * @param did int
-	 * @param state FileState
+	 * @param stateProxy FileState
 	 */
-	public DirectoryNetworkFile(String name, int fid, int did, FileState state) {
+	public DirectoryNetworkFile(String name, int fid, int did, FileStateProxy stateProxy) {
 		super(name,fid,0,did);
-		setFileState(state);
+		setFileState(stateProxy);
+		setAttributes( FileAttribute.Directory);
 	}
 	
 	/**

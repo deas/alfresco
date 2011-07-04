@@ -29,45 +29,48 @@ public class DCEPipeType {
 	//	IPC$ client pipe names
 	
 	private static final String[] _pipeNames = { "\\PIPE\\srvsvc",
-      	  																		 "\\PIPE\\samr",
-      	  																		 "\\PIPE\\winreg",
-      	  																		 "\\PIPE\\wkssvc",
-      	  																		 "\\PIPE\\NETLOGON",
-      	  																		 "\\PIPE\\lsarpc",
-      	  																		 "\\PIPE\\spoolss",
-      	  																		 "\\PIPE\\netdfs",
-      	  																		 "\\PIPE\\svcctl",
-      	  																		 "\\PIPE\\EVENTLOG",
-      	  																		 "\\PIPE\\NETLOGON"
+      	  										 "\\PIPE\\samr",
+      	  										 "\\PIPE\\winreg",
+      	  										 "\\PIPE\\wkssvc",
+      	  										 "\\PIPE\\NETLOGON",
+      	  										 "\\PIPE\\lsarpc",
+      	  										 "\\PIPE\\spoolss",
+      	  										 "\\PIPE\\netdfs",
+      	  										 "\\PIPE\\svcctl",
+      	  										 "\\PIPE\\EVENTLOG",
+      	  										 "\\PIPE\\NETLOGON",
+												 "\\PIPE\\InitShutdown"
 	};
 
 	//	IPC$ server pipe names
 	
 	private static final String[] _srvNames = { "\\PIPE\\ntsvcs",
-	  																					"\\PIPE\\lsass",
-	  																					"\\PIPE\\winreg",
-	  																					"\\PIPE\\ntsvcs",
-	  																					"\\PIPE\\lsass",
-	  																					"\\PIPE\\lsass",
-	  																					"\\PIPE\\spoolss",
-	  																					"\\PIPE\\netdfs",
-	  																					"\\PIPE\\svcctl",
-	  																					"\\PIPE\\EVENTLOG"
+	  											"\\PIPE\\lsass",
+	  											"\\PIPE\\winreg",
+	  											"\\PIPE\\ntsvcs",
+	  											"\\PIPE\\lsass",
+	  											"\\PIPE\\lsass",
+	  											"\\PIPE\\spoolss",
+	  											"\\PIPE\\netdfs",
+	  											"\\PIPE\\svcctl",
+	  											"\\PIPE\\EVENTLOG",
+												"\\PIPE\\InitShutdown"
 	};
 	
 	//	IPC$ pipe ids
 	
 	public static final int PIPE_SRVSVC		= 0;
-	public static final int PIPE_SAMR			= 1;
+	public static final int PIPE_SAMR		= 1;
 	public static final int PIPE_WINREG		= 2;
 	public static final int PIPE_WKSSVC		= 3;
-	public static final int PIPE_NETLOGON = 4;
+	public static final int PIPE_NETLOGON 	= 4;
 	public static final int PIPE_LSARPC		= 5;
 	public static final int PIPE_SPOOLSS	= 6;
 	public static final int PIPE_NETDFS		= 7;
 	public static final int PIPE_SVCCTL		= 8;
 	public static final int PIPE_EVENTLOG	= 9;
-	public static final int PIPE_NETLOGON1= 10;
+	public static final int PIPE_NETLOGON1	= 10;
+	public static final int PIPE_INITSHUT 	= 11;
 	
 	//	IPC$ pipe UUIDs
 	
@@ -82,6 +85,7 @@ public class DCEPipeType {
 	private static UUID _uuidSvcctl		= new UUID("367abb81-9844-35f1-ad32-98f038001003", 2);
 	private static UUID _uuidEventLog	= new UUID("82273FDC-E32A-18C3-3F78-827929DC23EA", 0);
 	private static UUID _uuidNetLogon1= new UUID("12345678-1234-abcd-ef00-01234567cffb", 1);
+	private static UUID _uuidInitShut = new UUID("894de0c0-0d55-11d3-a322-00c04fa321a1", 1);
 
 //	private static UUID _uuidAtSvc    = new UUID("1ff70682-0a51-30e8-076d-740be8cee98b", 1);
 
@@ -165,6 +169,9 @@ public class DCEPipeType {
 	    case PIPE_EVENTLOG:
 	    	ret = _uuidEventLog;
 	    	break;
+	    case PIPE_INITSHUT:
+		    ret = _uuidInitShut;
+		    break;
 	  }
 	  return ret;
 	}

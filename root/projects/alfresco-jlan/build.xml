@@ -4,92 +4,224 @@
 <!-- Build the standalone version of the Alfresco JLAN Server Jars -->
 
 <project name="Alfresco JLAN Server" default="createJar" basedir=".">
-  <!-- Create the JLAN Server Jar (without database interface implementations) -->
+	
+    <!-- Create the JLAN Server Jar (without database interface implementations) -->
 	<target name="createJar">
-    <mkdir dir="build/standalone"/>
-    <javac destdir="build/standalone" classpath="service/wrapper.jar" debug="on">
-      <src path="source/java"/>
-	  <src path="source/standalone-java"/>
-      <include name="**/*.java"/>
-      <exclude name="org/alfresco/jlan/server/filesys/db/mysql/**"/>
-      <exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
-      <exclude name="org/alfresco/jlan/server/filesys/db/derby/**"/>
-    </javac>
+		<delete dir="build/standalone" quiet="true"/>
+		<mkdir dir="build/standalone"/>
+		<javac destdir="build/standalone" classpath="service/wrapper.jar:hazelcast/hazelcast-1.9.2.1.jar" debug="on">
+			<src path="source/java"/>
+			<src path="source/standalone-java"/>
+			<include name="**/*.java"/>
+			<exclude name="org/alfresco/jlan/debug/cluster/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/cache/cluster/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/cache/jgroups/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/cache/hazelcast/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/mysql/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/derby/**"/>
+			<exclude name="org/alfresco/jlan/client/**"/>
+			<exclude name="org/alfresco/jlan/client/admin/**"/>
+			<exclude name="org/alfresco/jlan/client/demo/**"/>
+			<exclude name="org/alfresco/jlan/client/info/**"/>
+			<exclude name="org/alfresco/jlan/client/smb/**"/>
+			<exclude name="org/alfresco/jlan/smb/dcerpc/client/**"/>
+		</javac>
     
-    <mkdir dir="jars"/>
+		<mkdir dir="jars"/>
  		<delete file="jars/alfresco-jlan.jar" quiet="true"/>
  		<jar jarfile="jars/alfresco-jlan.jar"
- 			 manifest="source/meta-inf/alfrescojlan_manifest.mf"
-       basedir="build/standalone"/>
+			manifest="source/meta-inf/alfrescojlan_manifest.mf"
+			basedir="build/standalone"/>
 	</target>
 
-  <!-- Create the JLAN Server Jar (with database interface implementations for Derby/mySQL) -->
+    <!-- Create the JLAN Server and Client Jar (with mySQL/Derby database interface implementations and cluster support) -->
+	<target name="createJarFull">
+		<delete dir="build/standalone" quiet="true"/>
+		<mkdir dir="build/standalone"/>
+		<javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.2.1.jar" debug="on">
+			<src path="source/java"/>
+			<src path="source/standalone-java"/>
+			<include name="**/*.java"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
+		</javac>
+    
+		<mkdir dir="jars"/>
+ 		<delete file="jars/alfresco-jlan-full.jar" quiet="true"/>
+ 		<jar jarfile="jars/alfresco-jlan-full.jar"
+			manifest="source/meta-inf/alfrescojlan_manifest.mf"
+			basedir="build/standalone"/>
+	</target>
+
+    <!-- Create the JLAN Server Jar (with database interface implementations for Derby/mySQL) -->
 	<target name="createJarDB">
-    <mkdir dir="build/standalone"/>
-    <javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar" debug="on">
-      <src path="source/java"/>
-	  <src path="source/standalone-java"/>
-      <include name="**/*.java"/>
-      <exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
-    </javac>
+		<delete dir="build/standalone-db" quiet="true"/>
+		<mkdir dir="build/standalone-db"/>
+		<javac destdir="build/standalone-db" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.2.1.jar" debug="on">
+		  <src path="source/java"/>
+		  <src path="source/standalone-java"/>
+		  <include name="**/*.java"/>
+		  <exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
+		  <exclude name="org/alfresco/jlan/client/**"/>
+		  <exclude name="org/alfresco/jlan/client/admin/**"/>
+		  <exclude name="org/alfresco/jlan/client/demo/**"/>
+		  <exclude name="org/alfresco/jlan/client/info/**"/>
+		  <exclude name="org/alfresco/jlan/client/smb/**"/>
+		  <exclude name="org/alfresco/jlan/smb/dcerpc/client/**"/>
+		</javac>
     
  		<delete file="jars/alfresco-jlan-db.jar" quiet="true"/>
  		<jar jarfile="jars/alfresco-jlan-db.jar"
  			 manifest="source/meta-inf/alfrescojlan_manifest.mf"
-       basedir="build/standalone"/>
+       basedir="build/standalone-db"/>
 	</target>
 
-  <!-- Create the JLAN Server Jar (with database interface implementations for Oracle/Derby/mySQL) -->
-  <!--                                                                                             -->
-  <!-- Requires the Oracle ojdbc14.jar to be copied to the libs/ /folder                           -->
+	<!-- Create the JLAN Server Jar (with database interface implementations for Oracle/Derby/mySQL) -->
+    <!--                                                                                             -->
+    <!-- Requires the Oracle ojdbc14.jar to be copied to the libs/ /folder                           -->
   
 	<target name="createJarDBOracle">
-    <mkdir dir="build/standalone"/>
-    <javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar" debug="on">
-      <src path="source/java"/>
-	  <src path="source/standalone-java"/>
-      <include name="**/*.java"/>
-    </javac>
+		<delete dir="build/standalone-dbora" quiet="true"/>
+		<mkdir dir="build/standalone-dbora"/>
+		<javac destdir="build/standalone-dbora" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.2.1.jar" debug="on">
+		  <src path="source/java"/>
+		  <src path="source/standalone-java"/>
+		  <include name="**/*.java"/>
+		  <exclude name="org/alfresco/jlan/client/**"/>
+		  <exclude name="org/alfresco/jlan/client/admin/**"/>
+		  <exclude name="org/alfresco/jlan/client/demo/**"/>
+		  <exclude name="org/alfresco/jlan/client/info/**"/>
+		  <exclude name="org/alfresco/jlan/client/smb/**"/>
+		  <exclude name="org/alfresco/jlan/smb/dcerpc/client/**"/>
+		</javac>
     
  		<delete file="jars/alfresco-jlan-dbora.jar" quiet="true"/>
  		<jar jarfile="jars/alfresco-jlan-dbora.jar"
  			 manifest="source/meta-inf/alfrescojlan_manifest.mf"
-       basedir="build/standalone"/>
+       basedir="build/standalone-dbora"/>
 	</target>
 
-  <!-- Create a kit for deploying the Alfresco JLAN Server -->
-  <target name="createKit" depends="createJar,createJarDB">
-    <delete dir="build/kitting" quiet="true"/>
-    <mkdir dir="build/kitting"/>
+    <!-- Create the JLAN Server Jar (with JGroups, without database interface implementations) -->
+	<target name="createJarCluster">
+		<delete dir="build/standalone-cluster" quiet="true"/>
+		<mkdir dir="build/standalone-cluster"/>
+		<javac destdir="build/standalone-cluster" classpath="service/wrapper.jar:hazelcast/hazelcast-1.9.2.1.jar" debug="on">
+			<src path="source/java"/>
+			<src path="source/standalone-java"/>
+			<include name="**/*.java"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/mysql/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/derby/**"/>
+			<exclude name="org/alfresco/jlan/client/**"/>
+			<exclude name="org/alfresco/jlan/client/admin/**"/>
+			<exclude name="org/alfresco/jlan/client/demo/**"/>
+			<exclude name="org/alfresco/jlan/client/info/**"/>
+			<exclude name="org/alfresco/jlan/client/smb/**"/>
+			<exclude name="org/alfresco/jlan/smb/dcerpc/client/**"/>
+		</javac>
     
-    <copy todir="build/kitting" file="runsrv.bat"/>
-    <copy todir="build/kitting" file="runsrv.sh"/>
-    <copy todir="build/kitting" file="jlanConfig.xml"/>
-    <copy todir="build/kitting" file="jlanserver.dtd"/>
+		<mkdir dir="jars"/>
+ 		<delete file="jars/alfresco-jlan-cluster.jar" quiet="true"/>
+ 		<jar jarfile="jars/alfresco-jlan-cluster.jar"
+			manifest="source/meta-inf/alfrescojlan_manifest.mf"
+			basedir="build/standalone-cluster"/>
+	</target>
+	
+    <!-- Create the JLAN Client Jar -->
+	<target name="createJarClient">
+		<delete dir="build/standalone" quiet="true"/>
+		<mkdir dir="build/standalone"/>
+		<javac destdir="build/standalone" debug="on">
+			<src path="source/java"/>
+			<src path="source/standalone-java"/>
+			<include name="**/*.java"/>
+			<exclude name="org/alfresco/jlan/app/**"/>
+			<exclude name="org/alfresco/jlan/debug/cluster/**"/>
+			<exclude name="org/alfresco/jlan/ftp/**"/>
+			<exclude name="org/alfresco/jlan/netbios/server/**"/>
+			<exclude name="org/alfresco/jlan/netbios/win32/**"/>
+			<exclude name="org/alfresco/jlan/oncrpc/**"/>
+			<exclude name="org/alfresco/jlan/oncrpc/mount/**"/>
+			<exclude name="org/alfresco/jlan/oncrpc/nfs/**"/>
+			<exclude name="org/alfresco/jlan/oncrpc/portmap/**"/>
+			<exclude name="org/alfresco/jlan/sample/**"/>
+			<exclude name="org/alfresco/jlan/server/**"/>
+			<exclude name="org/alfresco/jlan/server/auth/**"/>
+			<exclude name="org/alfresco/jlan/server/auth/acl/**"/>
+			<exclude name="org/alfresco/jlan/server/auth/asn/**"/>
+			<exclude name="org/alfresco/jlan/server/auth/kerberos/**"/>
+			<exclude name="org/alfresco/jlan/server/auth/ntlm/**"/>
+			<exclude name="org/alfresco/jlan/server/auth/passthru/**"/>
+			<exclude name="org/alfresco/jlan/server/auth/spnego/**"/>
+			<exclude name="org/alfresco/jlan/server/config/**"/>
+			<exclude name="org/alfresco/jlan/server/core/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/cache/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/cache/cluster/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/cache/cluster/hazelcast/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/cache/cluster/jgroups/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/loader/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/pseudo/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/quota/**"/>
+			<exclude name="org/alfresco/jlan/server/locking/**"/>
+			<exclude name="org/alfresco/jlan/server/memory/**"/>
+			<exclude name="org/alfresco/jlan/server/thread/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/dcerpc/server/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/mailslot/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/mailslot/win32/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/server/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/server/disk/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/server/nio/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/server/notify/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/server/ntfs/**"/>
+			<exclude name="org/alfresco/jlan/server/smb/server/win32/**"/>
+			<exclude name="org/alfresco/jlan/util/db/**"/>
+			<exclude name="org/alfresco/jlan/util/win32/**"/>
+		</javac>
     
-    <copy todir="build/kitting/service">
-      <fileset dir="service"/>
-    </copy> 
-    <copy todir="build/kitting/jars">
-      <fileset dir="jars"/>
-    </copy>
-    <copy todir="build/kitting/jni">
-      <fileset dir="jni"/>
-    </copy>
-    <copy todir="build/kitting/libs">
-      <fileset dir="libs"/>
-    </copy>
-    <copy todir="build/kitting/guides">
-      <fileset dir="guides"/>
-    </copy>
-            
-    <delete file="build/alfresco-jlan.zip" quiet="true"/>
-		<zip zipfile="build/alfresco-jlan.zip" basedir="build/kitting"/>
-		<delete dir="build/kitting" quiet="true"/>
-    
-  </target>
+		<mkdir dir="jars"/>
+ 		<delete file="jars/alfresco-jlan-client.jar" quiet="true"/>
+ 		<jar jarfile="jars/alfresco-jlan-client.jar"
+			basedir="build/standalone"/>
+	</target>
+
+	<!-- Create a kit for deploying the Alfresco JLAN Server -->
+	<target name="createKit" depends="createJar,createJarFull,createJarDB,createJarCluster,createJarClient">
+	    <delete dir="build/kitting" quiet="true"/>
+	    <mkdir dir="build/kitting"/>
+	    
+	    <copy todir="build/kitting" file="runsrv.bat"/>
+	    <copy todir="build/kitting" file="runsrv.sh"/>
+	    <copy todir="build/kitting" file="jlanConfig.xml"/>
+	    <copy todir="build/kitting" file="jlanserver.dtd"/>
+	    
+	    <copy todir="build/kitting/service">
+	      <fileset dir="service"/>
+	    </copy> 
+	    <copy todir="build/kitting/jars">
+	      <fileset dir="jars"/>
+	    </copy>
+	    <copy todir="build/kitting/jni">
+	      <fileset dir="jni"/>
+	    </copy>
+	    <copy todir="build/kitting/libs">
+	      <fileset dir="libs"/>
+	    </copy>
+	    <copy todir="build/kitting/hazelcast">
+	      <fileset dir="hazelcast"/>
+	    </copy>
+	    <copy todir="build/kitting/guides">
+	      <fileset dir="guides"/>
+	    </copy>
+	            
+	    <delete file="build/alfresco-jlan.zip" quiet="true"/>
+			<zip zipfile="build/alfresco-jlan.zip" basedir="build/kitting"/>
+			<delete dir="build/kitting" quiet="true"/>
+	    
+	</target>
   
-  <!-- Generate the JLAN Server Javadocs -->	
+    <!-- Generate the JLAN Server Javadocs -->	
 	<target name="createDocs">
     <mkdir dir="javadoc"/>
 		<javadoc sourcepath="source/java"
@@ -105,7 +237,8 @@
 			<group title="NetBIOS Server" packages="org.alfresco.jlan.netbios*"/>
 			<group title="FTP Server" packages="org.alfresco.jlan.ftp*"/>
 			<group title="NFS Server" packages="org.alfresco.jlan.oncrpc*"/>
-      <group title="Database Filesystem" packages="org.alfresco.jlan.server.filesys.db*"/>
+		    <group title="Database Filesystem" packages="org.alfresco.jlan.server.filesys.db*"/>
+			<group title="Alfresco JLAN Client API" packages="org.alfresco.jlan.client"/>
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
 		</javadoc>
 	</target>

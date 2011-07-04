@@ -42,9 +42,19 @@ public class LockConflictException extends IOException {
 	/**
 	 * Class constructor.
 	 * 
-	 * @param s java.lang.String
+	 * @param s String
 	 */
 	public LockConflictException(String s) {
 		super(s);
+	}
+
+	/**
+	 * Class constructor.
+	 * 
+	 * @param s String
+	 * @param ex Throwable
+	 */
+	public LockConflictException(String s, Throwable ex) {
+		super(s, ex);
 	}
 }

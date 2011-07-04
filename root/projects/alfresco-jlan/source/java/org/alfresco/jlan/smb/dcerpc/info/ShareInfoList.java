@@ -19,7 +19,8 @@
 
 package org.alfresco.jlan.smb.dcerpc.info;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.alfresco.jlan.smb.dcerpc.DCEBuffer;
 import org.alfresco.jlan.smb.dcerpc.DCEBufferException;
@@ -29,8 +30,9 @@ import org.alfresco.jlan.smb.dcerpc.DCEReadable;
 /**
  * Server Share Information List Class
  * 
- * <p>Holds the details for a DCE/RPC share enumeration request or response.
- *
+ * <p>
+ * Holds the details for a DCE/RPC share enumeration request or response.
+ * 
  * @author gkspencer
  */
 public class ShareInfoList extends DCEList {
@@ -39,27 +41,26 @@ public class ShareInfoList extends DCEList {
 	 * Default constructor
 	 */
 	public ShareInfoList() {
-	  super();
+		super();
 	}
 
-  /**
-   * Class constructor
-   * 
-   * @param buf DCEBuffer
-   * @exception DCEBufferException
-   */
-  public ShareInfoList(DCEBuffer buf)
-  	throws DCEBufferException {
-    super(buf);
-  }
-  
+	/**
+	 * Class constructor
+	 * 
+	 * @param buf DCEBuffer
+	 * @exception DCEBufferException
+	 */
+	public ShareInfoList(DCEBuffer buf) throws DCEBufferException {
+		super(buf);
+	}
+
 	/**
 	 * Class constructor
 	 * 
 	 * @param infoLevel int
 	 */
 	public ShareInfoList(int infoLevel) {
-	  super(infoLevel);
+		super(infoLevel);
 	}
 
 	/**
@@ -69,41 +70,41 @@ public class ShareInfoList extends DCEList {
 	 * @return ShareInfo
 	 */
 	public final ShareInfo getShare(int idx) {
-	  return (ShareInfo) getElement(idx);
+		return (ShareInfo) getElement(idx);
 	}
-	
-  /**
-   * Create a new share information object
-   * 
-   * @return DCEReadable
-   */
-  protected DCEReadable getNewObject() {
-    return new ShareInfo(getInformationLevel());
-  }
 
-  /**
-   * Add a share to the list
-   * 
-   * @param share ShareInfo
-   */
-  public final void addShare(ShareInfo share) {
-    
-    //	Check if the share list is valid
-    
-    if ( getList() == null)
-      	setList(new Vector());
-    
-    //	Add the share
-    
-    getList().addElement(share);
-  }
-  
+	/**
+	 * Create a new share information object
+	 * 
+	 * @return DCEReadable
+	 */
+	protected DCEReadable getNewObject() {
+		return new ShareInfo(getInformationLevel());
+	}
+
+	/**
+	 * Add a share to the list
+	 * 
+	 * @param share ShareInfo
+	 */
+	public final void addShare(ShareInfo share) {
+
+		// Check if the share list is valid
+
+		if ( getList() == null)
+			setList(new ArrayList<Object>());
+
+		// Add the share
+
+		getList().add(share);
+	}
+
 	/**
 	 * Set the share information list
 	 * 
-	 * @param list Vector
+	 * @param list List<Object>
 	 */
-	public final void setShareList(Vector list) {
-	  setList(list);
+	public final void setShareList(List<Object> list) {
+		setList(list);
 	}
 }

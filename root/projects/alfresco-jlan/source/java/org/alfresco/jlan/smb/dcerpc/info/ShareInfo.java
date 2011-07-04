@@ -33,32 +33,32 @@ import org.alfresco.jlan.smb.dcerpc.DCEWriteable;
  */
 public class ShareInfo implements DCEWriteable, DCEReadable {
 
-  //	Information levels supported
+	//	Information levels supported
   
-  public static final int InfoLevel0		= 0;
-  public static final int InfoLevel1		= 1;
-  public static final int InfoLevel2  	= 2;
-  public static final int InfoLevel502	= 502;
-  public static final int InfoLevel1005	= 1005;
+	public static final int InfoLevel0		= 0;
+	public static final int InfoLevel1		= 1;
+	public static final int InfoLevel2  	= 2;
+	public static final int InfoLevel502	= 502;
+	public static final int InfoLevel1005	= 1005;
   
 	//	Share types
 	
-	public static final int Disk		    = 0x00000000;
+	public static final int Disk		= 0x00000000;
 	public static final int PrintQueue	= 0x00000001;
-	public static final int Device			= 0x00000002;
-	public static final int IPC					= 0x00000003;
-	public static final int Hidden			= 0x80000000;
+	public static final int Device		= 0x00000002;
+	public static final int IPC			= 0x00000003;
+	public static final int Hidden		= 0x80000000;
 
-  //	Share permission flags
+	//	Share permission flags
 
-  public static final int Read 		= 0x01;
-  public static final int Write 	= 0x02;
-  public static final int Create 	= 0x04;
-  public static final int Execute = 0x08;
-  public static final int Delete 	= 0x10;
-  public static final int Attrib 	= 0x20;
-  public static final int Perm 		= 0x40;
-  public static final int All 		= 0x7F;
+	public static final int Read 		= 0x01;
+	public static final int Write 		= 0x02;
+	public static final int Create 		= 0x04;
+	public static final int Execute 	= 0x08;
+	public static final int Delete 		= 0x10;
+	public static final int Attrib 		= 0x20;
+	public static final int Perm 		= 0x40;
+	public static final int All 		= 0x7F;
 
 	//	Information level
 	

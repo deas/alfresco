@@ -118,9 +118,10 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 	private int m_maxQueueSize;
 	private int m_lowQueueSize;
 
-	// Enable debug output
+	// Enable debug output, additional thread level debug output
 
 	private boolean m_debug;
+	private boolean m_threadDebug;
 
 	// Number of worker threads to create for read/write requests
 
@@ -381,7 +382,6 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 
 		// Split the file name to get the name only
 
-		String fullName = params.getFullPath();
 		String[] paths = FileName.splitPath(params.getPath());
 		String name = paths[1];
 		
@@ -441,7 +441,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 
 			// Create a placeholder network file for the directory
 
-			netFile = new DirectoryNetworkFile(name, fid, did, fstate);
+			netFile = new DirectoryNetworkFile(name, fid, did, m_stateCache.getFileStateProxy(fstate));
 
 			// Debug
 
@@ -1119,8 +1119,6 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 
 		// Check if the database interface being used supports the required features
 
-		DBQueueInterface dbQueue = null;
-
 		if ( ctx instanceof DBDeviceContext) {
 
 			// Access the database device context
@@ -1132,9 +1130,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 			if ( getContext().getDBInterface().supportsFeature(DBInterface.FeatureQueue) == false)
 				throw new FileLoaderException("DBLoader requires queue support in database interface");
 
-			if ( getContext().getDBInterface() instanceof DBQueueInterface)
-				dbQueue = (DBQueueInterface) getContext().getDBInterface();
-			else
+			if ( getContext().getDBInterface() instanceof DBQueueInterface == false)
 				throw new FileLoaderException("Database interface does not implement queue interface");
 
 			// Check if the object id feature is supported by the database interface
@@ -1150,6 +1146,19 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 		else
 			throw new FileLoaderException("Requires database device context");
 
+		// Check if background loader debug is enabled
+
+		if ( params.getChild("ThreadDebug") != null)
+			m_threadDebug = true;
+	}
+
+	/**
+	 * Start the file loader
+	 * 
+	 * @param ctx DeviceContext
+	 */
+	public void startLoader( DeviceContext ctx) {
+		
 		// Get the file state cache from the context
 
 		m_stateCache = getContext().getStateCache();
@@ -1158,12 +1167,14 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 
 		m_stateCache.addStateListener(this);
 
-		// Check if background loader debug is enabled
+		// Get the database interface
+		
+		DBQueueInterface dbQueue = null;
 
-		boolean bgDebug = false;
-
-		if ( params.getChild("ThreadDebug") != null)
-			bgDebug = true;
+		if ( getContext().getDBInterface() instanceof DBQueueInterface)
+			dbQueue = (DBQueueInterface) getContext().getDBInterface();
+		else
+			throw new RuntimeException("Database interface does not implement queue interface");
 
 		// Perform a queue cleanup before starting the thread pool. This will check the temporary cache area and delete
 		// files that are not part of a queued save/transaction save request.
@@ -1206,7 +1217,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 		m_backgroundLoader.setReadWorkers(m_readWorkers);
 		m_backgroundLoader.setWriteWorkers(m_writeWorkers);
 
-		m_backgroundLoader.setDebug(bgDebug);
+		m_backgroundLoader.setDebug( m_threadDebug);
 
 		// Start the file loader threads, start the request loading if there are pending file save requests
 
@@ -1222,7 +1233,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 				queueFileRequest(recoveredQueue.removeRequestNoWait());
 		}
 	}
-
+	
 	/**
 	 * Shutdown the file loader and release all resources
 	 * 
@@ -1504,7 +1515,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 
 						// Reset the file state to indicate file data load required
 
-						state.setStatus(FileState.FILE_LOADWAIT);
+						state.setDataStatus(FileState.FILE_LOADWAIT);
 
 						// Check if the temporary file sub-directory is now empty, and it is not the current temporary
 						// sub-directory
@@ -1714,7 +1725,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 
 			// Create the new network file
 
-			netFile = new CachedNetworkFile(fname, fid, stid, did, state, fileSeg, this);
+			netFile = new CachedNetworkFile(fname, fid, stid, did, m_stateCache.getFileStateProxy(state), fileSeg, this);
 
 			netFile.setGrantedAccess(params.isReadOnlyAccess() ? NetworkFile.READONLY : NetworkFile.READWRITE);
 			netFile.setSequentialOnly(params.isSequentialAccessOnly());

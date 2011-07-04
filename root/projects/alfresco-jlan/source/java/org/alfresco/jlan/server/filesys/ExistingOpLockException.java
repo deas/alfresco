@@ -47,4 +47,14 @@ public class ExistingOpLockException extends IOException {
 	public ExistingOpLockException(String s) {
 		super(s);
 	}
+
+	/**
+	 * Class constructor.
+	 * 
+	 * @param s String
+	 * @param ex Exception
+	 */
+	public ExistingOpLockException(String s, Exception ex) {
+		super(s, ex);
+	}
 }

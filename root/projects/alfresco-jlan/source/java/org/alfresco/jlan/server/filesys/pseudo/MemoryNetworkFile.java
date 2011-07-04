@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.alfresco.jlan.server.filesys.FileInfo;
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.cache.FileState;
+import org.alfresco.jlan.server.filesys.cache.LocalFileState;
 import org.alfresco.jlan.server.filesys.cache.NetworkFileStateInterface;
 import org.alfresco.jlan.smb.SeekType;
 
@@ -272,7 +273,7 @@ public class MemoryNetworkFile extends NetworkFile implements NetworkFileStateIn
     // Create a dummy file state
         
     if ( m_state == null)
-      m_state = new FileState(getFullName(), false);
+      m_state = new LocalFileState(getFullName(), false);
     return m_state;
   }
 }

@@ -3850,6 +3850,10 @@ class CoreProtocolHandler extends ProtocolHandler {
 				break;
 		}
 
+		// Run any request post processors
+		
+		runRequestPostProcessors( m_sess);
+		
 		// Return the handled status
 
 		return handledOK;

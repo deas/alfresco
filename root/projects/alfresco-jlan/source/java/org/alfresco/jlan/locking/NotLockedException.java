@@ -42,9 +42,19 @@ public class NotLockedException extends IOException {
 	/**
 	 * Class constructor.
 	 * 
-	 * @param s java.lang.String
+	 * @param s String
 	 */
 	public NotLockedException(String s) {
 		super(s);
+	}
+
+	/**
+	 * Class constructor.
+	 * 
+	 * @param s String
+	 * @param ex Throwable
+	 */
+	public NotLockedException(String s, Throwable ex) {
+		super(s, ex);
 	}
 }

@@ -124,6 +124,10 @@ public class FileOpenParams {
   
     private SrvSession m_sess;
   
+    // Tree id
+    
+    private int m_treeId = -1;
+    
 	/**
 	 * Class constructor for Core SMB dialect Open SMB requests
 	 * 
@@ -373,6 +377,15 @@ public class FileOpenParams {
 		return (m_createOptions & flag) != 0 ? true : false;
 	}
 
+	/**
+	 * Return the create options flags
+	 * 
+	 * @return int
+	 */
+	public final int getCreateOptions() {
+		return m_createOptions;
+	}
+	
 	/**
 	 * Check if a file stream has been specified in the path to be created/opened
 	 * 
@@ -626,7 +639,7 @@ public class FileOpenParams {
 	 * @return boolean
 	 */
 	public final boolean requestExclusiveOpLock() {
-		return (m_createFlags & WinNT.RequestOplock) != 0 ? true : false;
+		return (m_createFlags & WinNT.RequestExclusiveOplock) != 0 ? true : false;
 	}
 	
 	/**
@@ -668,6 +681,33 @@ public class FileOpenParams {
     return (m_accessMode & mode) == mode ? true : false;
   }
   
+    /**
+     * Check if the tree id has been set
+     * 
+     * @return boolean
+     */
+  	public final boolean hasTreeId() {
+  		return m_treeId != -1 ? true : false;
+  	}
+  	
+  	/**
+  	 * Return the tree id
+  	 * 
+  	 * @return int
+  	 */
+  	public final int getTreeId() {
+  		return m_treeId;
+  	}
+  	
+  	/**
+  	 * Set the tree id the file open is on
+  	 * 
+  	 * @param treeId int
+  	 */
+  	public final void setTreeId( int treeId) {
+  		m_treeId = treeId;
+  	}
+  	
 	/**
 	 * Set the Unix mode
 	 * 
@@ -808,6 +848,11 @@ public class FileOpenParams {
 		int pos = fileName.indexOf(StreamSeparator);
 		if ( pos == -1) {
 			m_path = fileName;
+			
+			// Convert empty path to root path
+			
+			if ( m_path.length() == 0)
+				m_path = FileName.DOS_SEPERATOR_STR;
 			return;
 		}
 		
@@ -830,7 +875,7 @@ public class FileOpenParams {
 	 * @return String
 	 */
 	public String toString() {
-		StringBuffer str = new StringBuffer();
+		StringBuilder str = new StringBuilder();
 		str.append("[");
 
 		str.append(getPath());
@@ -843,8 +888,8 @@ public class FileOpenParams {
 		str.append(Integer.toHexString(getAttributes()));
 		str.append(",alloc=");
 		str.append(getAllocationSize());
-		str.append(",share=0x");
-		str.append(Integer.toHexString(getSharedAccess()));
+		str.append(",share=");
+		str.append( SharingMode.getSharingModeAsString( getSharedAccess()));
 		str.append(",pid=");
 		str.append(getProcessId());
 		

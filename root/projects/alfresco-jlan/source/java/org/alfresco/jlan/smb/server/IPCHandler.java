@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.alfresco.jlan.debug.Debug;
+import org.alfresco.jlan.netbios.RFCNetBIOSProtocol;
 import org.alfresco.jlan.server.filesys.DiskOfflineException;
 import org.alfresco.jlan.server.filesys.FileInfo;
 import org.alfresco.jlan.server.filesys.NetworkFile;
@@ -179,6 +180,12 @@ class IPCHandler {
 			procTrans2QueryFile(sess, vc, tbuf, smbPkt);
 			break;
 
+		// Wait for named pipe
+			
+		case NamedPipeTransaction.WaitNamedPipe:
+			sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNotSupported, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+			break;
+			
 		// Unknown command
 
 		default:

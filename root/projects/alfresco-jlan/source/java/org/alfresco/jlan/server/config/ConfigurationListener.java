@@ -35,8 +35,8 @@ public interface ConfigurationListener {
 
 	//	Configuration listener status codes
 	
-	public static final int StsIgnored					= 0;
-	public static final int StsAccepted					= 1;
+	public static final int StsIgnored			= 0;
+	public static final int StsAccepted			= 1;
 	public static final int StsNewSessionsOnly	= 2;
 	public static final int StsRestartRequired	= 3;
 	

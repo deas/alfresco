@@ -104,10 +104,10 @@ public class JDKLoggingDebug extends DebugInterfaceBase {
 	/**
 	 * Output an exception
 	 * 
-	 * @param ex Throwable
+	 * @param ex Exception
 	 * @param level int
 	 */
-	public void debugPrintln( Throwable ex, int level) {
+	public void debugPrintln( Exception ex, int level) {
 		
 		// Check if the logging level is enabled
 		  

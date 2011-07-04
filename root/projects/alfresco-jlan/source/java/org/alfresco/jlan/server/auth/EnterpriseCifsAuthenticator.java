@@ -785,7 +785,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 
 		// If the user is logged on then allocate a virtual circuit
 
-		int uid = 0;
+		int uid = 0xFFFF;
 
 		if ( loggedOn == true) {
 
@@ -822,7 +822,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 		respPkt.setCommand(reqPkt.getCommand());
 		respPkt.setByteCount(0);
 
-		respPkt.setTreeId(0xFFFF);
+		respPkt.setTreeId( loggedOn ? 0 : 0xFFFF);
 		respPkt.setUserId(uid);
 
 		// Set the various flags

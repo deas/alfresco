@@ -21,6 +21,8 @@ package org.alfresco.jlan.smb.server;
 
 import java.io.IOException;
 
+import org.alfresco.jlan.server.RequestPostProcessor;
+import org.alfresco.jlan.server.SrvSession;
 import org.alfresco.jlan.server.filesys.DiskDeviceContext;
 import org.alfresco.jlan.server.filesys.DiskInterface;
 import org.alfresco.jlan.server.filesys.DiskSizeInterface;
@@ -194,5 +196,30 @@ abstract class ProtocolHandler {
 		//	Return the volume information
 		
 		return volInfo;
+	}
+	
+	/**
+	 * Run any request post processors that are queued for a session
+	 * 
+	 * @param sess SrvSession
+	 */
+	protected final void runRequestPostProcessors( SrvSession sess) {
+		
+		// Run the request post processor(s)
+		
+		while ( sess.hasPostProcessorRequests()) {
+			
+			try {
+				
+				// Dequeue the current request post processor and run it
+				
+				RequestPostProcessor postProc = sess.getNextPostProcessor();
+				postProc.runProcessor();
+			}
+			catch ( Throwable ex) {
+
+				// Sink any errors, no a lot that can be done
+			}
+		}
 	}
 }

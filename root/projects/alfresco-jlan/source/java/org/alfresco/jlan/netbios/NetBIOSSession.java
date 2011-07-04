@@ -52,68 +52,68 @@ public final class NetBIOSSession extends NetworkSession {
 
 	//	Constants
 	//
-  // Protocol name
+	// Protocol name
   
-  private static final String ProtocolName = "TCP/IP NetBIOS";
+	private static final String ProtocolName = "TCP/IP NetBIOS";
   
-  //  Name lookup types
+	//  Name lookup types
 
-  public static final int DNSOnly     = 1;
-  public static final int WINSOnly    = 2;
-  public static final int WINSAndDNS  = 3;
+	public static final int DNSOnly     = 1;
+	public static final int WINSOnly    = 2;
+	public static final int WINSAndDNS  = 3;
 
 	//	Caller name template
 	
 	public static final int MaxCallerNameTemplateLength	= 8;
-	public static final char SessionIdChar 							= '#';
-	public static final char JVMIdChar     							= '@';
-	public static final String ValidTemplateChars 			= "@#_";
+	public static final char SessionIdChar 				= '#';
+	public static final char JVMIdChar     				= '@';
+	public static final String ValidTemplateChars 		= "@#_";
 	
 	//	Default find name buffer size
 	
-	private static final int FindNameBufferSize					= 2048;
+	private static final int FindNameBufferSize			= 2048;
 	
-  //  Per session overrides
-  //
-  //  Remote socket to connect to, default is 139, and name port
+	//  Per session overrides
+	//
+	//  Remote socket to connect to, default is 139, and name port
 
-  private int m_remotePort = RFCNetBIOSProtocol.PORT;
-  private int m_namePort   = RFCNetBIOSProtocol.NAME_PORT;
+	private int m_remotePort = RFCNetBIOSProtocol.PORT;
+  	private int m_namePort   = RFCNetBIOSProtocol.NAME_PORT;
   
-  //  Subnet mask override
+  	//  Subnet mask override
   
-  private String m_subnetMask = _subnetMask;
+  	private String m_subnetMask = _subnetMask;
   
-  //  WINS server address override
+  	//  WINS server address override
   
-  private InetAddress m_winsServer = _winsServer;
+  	private InetAddress m_winsServer = _winsServer;
   
-  //  Name lookup type and timeout overrides
+  	//  Name lookup type and timeout overrides
   
-  private int m_lookupType = _lookupType;
-  private int m_lookupTmo  = _lookupTmo;
+  	private int m_lookupType = _lookupType;
+  	private int m_lookupTmo  = _lookupTmo;
   
-  //  Use wildcard server name in session connection override
+  	//  Use wildcard server name in session connection override
   
-  private boolean m_useWildcardServerName = _useWildcardFileServer;
+  	private boolean m_useWildcardServerName = _useWildcardFileServer;
   
-  //  Socket used to connect and read/write to remote host
+  	//  Socket used to connect and read/write to remote host
 
-  private Socket m_nbSocket;
+  	private Socket m_nbSocket;
 
-  //  Input and output data streams, from the socket network connection
+  	//  Input and output data streams, from the socket network connection
 
-  private DataInputStream m_nbIn;
-  private DataOutputStream m_nbOut;
+  	private DataInputStream m_nbIn;
+  	private DataOutputStream m_nbOut;
 
-  // 	Local and remote name types
+  	// 	Local and remote name types
 
-  private char m_locNameType = NetBIOSName.FileServer;
-  private char m_remNameType = NetBIOSName.FileServer;
+  	private char m_locNameType = NetBIOSName.FileServer;
+  	private char m_remNameType = NetBIOSName.FileServer;
 
-  //  Unique session identifier, used to generate a unique caller name when opening a new session
+  	//  Unique session identifier, used to generate a unique caller name when opening a new session
 
-  private static int m_sessIdx = 0;
+  	private static int m_sessIdx = 0;
 
 	//	Unique JVM id, used to generate a unique caller name when multiple JVMs may be running on the same
 	//	host
@@ -136,37 +136,37 @@ public final class NetBIOSSession extends NetworkSession {
 	
 	private static String m_localNamePart; 
 	
-  //  Transaction identifier, used for datagrams
+	//  Transaction identifier, used for datagrams
 
-  private static short m_tranIdx = 1;
+	private static short m_tranIdx = 1;
 
-  //  RFC NetBIOS name service datagram socket
+	//  RFC NetBIOS name service datagram socket
 
-  private static DatagramSocket m_dgramSock = null;
+	private static DatagramSocket m_dgramSock = null;
 
-  //  Debug enable flag
+	//  Debug enable flag
 
-  private static boolean m_debug = false;
+	private static boolean m_debug = false;
 
-  //  Subnet mask, required for broadcast name lookup requests
+	//  Subnet mask, required for broadcast name lookup requests
 
-  private static String _subnetMask = null;
+	private static String _subnetMask = null;
 
 	//	WINS server address
 	
 	private static InetAddress _winsServer;
 	
-  // 	Flag to control whether name lookups use WINS/NetBIOS lookup or DNS
+	// 	Flag to control whether name lookups use WINS/NetBIOS lookup or DNS
 
-  private static int _lookupType = WINSAndDNS;
+  	private static int _lookupType = WINSAndDNS;
 
-  // 	NetBIOS name lookup timeout value.
+  	// 	NetBIOS name lookup timeout value.
 
-  private static int _lookupTmo = 500;
+  	private static int _lookupTmo = 500;
   
-  //	Flag to control use of the '*SMBSERVER' name when connecting to a file server
+  	//	Flag to control use of the '*SMBSERVER' name when connecting to a file server
   
-  private static boolean _useWildcardFileServer = true;
+  	private static boolean _useWildcardFileServer = true;
 
 	/**
 	 * NetBIOS session class constructor.
@@ -739,6 +739,151 @@ public final class NetBIOSSession extends NetworkSession {
 
 		//	Get the list of names from the response, should only be one name
 		
+		NetBIOSNameList nameList = rxpkt.getAnswerNameList();
+		if ( nameList != null && nameList.numberOfNames() > 0)
+			return nameList.getName(0);
+		return null;			
+	}
+
+	/**
+	 * Find a NetBIOS name on the network
+	 *
+	 * @param nbname   NetBIOS name to search for
+	 * @param tmo      Timeout value for receiving incoming datagrams
+	 * @param lookupTypes Types of name lookup to use (DNS and/or NetBIOS)
+	 * @param sess     NetBIOS session to use to override various settings
+	 * @return         NetBIOS name details
+	 * @exception      java.io.IOException   If an I/O error occurs
+	 */
+	public static NetBIOSName FindName ( NetBIOSName nbName, int tmo, int lookupTypes, NetBIOSSession sess)
+		throws IOException {
+
+		//  Check if only DNS lookups should be used
+
+		if ( lookupTypes == DNSOnly) {
+
+			// Convert the address to a name using a DNS lookup
+
+			InetAddress inetAddr = InetAddress.getByName(nbName.getFullName());
+			return new NetBIOSName( inetAddr.getHostName(), nbName.getType(), nbName.isGroupName(), inetAddr.getAddress());
+		}
+
+		//  Get the local address details
+
+		InetAddress locAddr = InetAddress.getLocalHost ();
+
+		//  Create a datagram socket
+
+		if ( m_dgramSock == null) {
+
+			//  Create a datagram socket
+
+			m_dgramSock = new DatagramSocket ();
+		}
+
+		//  Set the datagram socket timeout, in milliseconds
+
+		m_dgramSock.setSoTimeout ( tmo);
+
+		//  Check if the lookup should use WINS or a broadcast
+
+		boolean wins = false;
+		if (( sess != null && sess.hasWINSServer()) || hasDefaultWINSServer())
+			wins = true;
+
+		//  Create a name lookup NetBIOS packet
+
+		NetBIOSPacket nbpkt = new NetBIOSPacket ();
+		nbpkt.buildNameQueryRequest(nbName, m_tranIdx++, wins);
+
+		//  Get the local host numeric address
+
+		String locIP = locAddr.getHostAddress ();
+		int dotIdx = locIP.indexOf ( '.');
+		if ( dotIdx == -1)
+			return null;
+
+		//  Get the subnet mask addresses, using either the global settings or per session settings
+
+		String subnetMask = getDefaultSubnetMask();
+		if ( sess != null)
+			subnetMask = sess.getSubnetMask();
+
+		//	If a WINS server has been configured the request is sent directly to the WINS server, if not then
+		//	a broadcast is done on the local subnet.
+
+		InetAddress destAddr = null;
+
+		if ( hasDefaultWINSServer() == false || (sess != null && sess.hasWINSServer() == false)) {
+
+			//  Check if the subnet mask has been set, if not then generate a subnet mask
+
+			if ( subnetMask == null)
+				subnetMask = GenerateSubnetMask ( null);
+
+			//  Build a broadcast destination address
+
+			destAddr = InetAddress.getByName ( subnetMask);
+		}
+		else {
+
+			//	Use the WINS server address
+
+			if ( sess != null)
+				destAddr = sess.getWINSServer();
+			else
+				destAddr = getDefaultWINSServer();
+		}
+
+		//	Build the name lookup request
+
+		DatagramPacket dgram = new DatagramPacket ( nbpkt.getBuffer(), nbpkt.getLength(),
+				destAddr, RFCNetBIOSProtocol.NAME_PORT);
+
+		//  Allocate a receive datagram packet
+
+		byte [] rxbuf = new byte [ FindNameBufferSize];
+		DatagramPacket rxdgram = new DatagramPacket ( rxbuf, rxbuf.length);
+
+		//  Create a NetBIOS packet using the receive buffer
+
+		NetBIOSPacket rxpkt = new NetBIOSPacket ( rxbuf);
+
+		//  DEBUG
+
+		if ( m_debug)
+			nbpkt.DumpPacket( false);
+
+		//  Send the find name datagram
+
+		m_dgramSock.send ( dgram);
+
+		//  Receive a reply datagram
+
+		boolean rxOK = false;
+
+		do {
+
+			//  Receive a datagram packet
+
+			m_dgramSock.receive ( rxdgram);
+
+			//  DEBUG
+
+			if ( Debug.EnableInfo && m_debug) {
+				Debug.println ( "NetBIOS: Rx Datagram");
+				rxpkt.DumpPacket ( false);
+			}
+
+			//  Check if this is a valid response datagram
+
+			if ( rxpkt.isResponse () && rxpkt.getOpcode () == NetBIOSPacket.RESP_QUERY)
+				rxOK = true;
+
+		} while ( ! rxOK);
+
+		//	Get the list of names from the response, should only be one name
+
 		NetBIOSNameList nameList = rxpkt.getAnswerNameList();
 		if ( nameList != null && nameList.numberOfNames() > 0)
 			return nameList.getName(0);

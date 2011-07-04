@@ -27,6 +27,7 @@ import org.alfresco.jlan.server.filesys.AccessDeniedException;
 import org.alfresco.jlan.server.filesys.FileInfo;
 import org.alfresco.jlan.server.filesys.FileOfflineException;
 import org.alfresco.jlan.server.filesys.cache.FileState;
+import org.alfresco.jlan.server.filesys.cache.FileStateProxy;
 import org.alfresco.jlan.server.filesys.loader.FileLoader;
 import org.alfresco.jlan.server.filesys.loader.FileRequest;
 import org.alfresco.jlan.server.filesys.loader.FileSegment;
@@ -74,11 +75,11 @@ public class CachedNetworkFile extends DBNetworkFile {
 	 * @param fid int
 	 * @param stid int
 	 * @param did int
-	 * @param state FileState
+	 * @param stateProxy FileStateProxy
 	 * @param segment FileSegment
 	 * @param loader FileLoader
 	 */
-	public CachedNetworkFile(String name, int fid, int stid, int did, FileState state, FileSegment segment, FileLoader loader) {
+	public CachedNetworkFile(String name, int fid, int stid, int did, FileStateProxy state, FileSegment segment, FileLoader loader) {
 		super(name, fid, stid, did);
 
 		// Set the file segment and memory segment list

@@ -247,19 +247,24 @@ public final class SMBStatus {
 	public static final int NTRangeNotLocked 		= 0xC000007E;
 	public static final int NTDiskFull 				= 0xC000007F;
 	public static final int NTPipeBusy 				= 0xC00000AE;
+	public static final int NTPipeDisconnected    	= 0xC00000B0;
 	public static final int NTFileIsADirectory 		= 0xC00000BA;
 	public static final int NTNotSupported 			= 0xC00000BB;
 	public static final int NTBadDeviceType 		= 0xC00000CB;
 	public static final int NTBadNetName 			= 0xC00000CC;
 	public static final int NTRequestNotAccepted 	= 0xC00000D0;
+	public static final int NTPipeEmpty           	= 0xC00000D9;
 	public static final int NTNoSuchDomain 			= 0xC00000DF;
 	public static final int NTTooManyOpenFiles 		= 0xC000011F;
 	public static final int NTCancelled 			= 0xC0000120;
 	public static final int NTInvalidLevel 			= 0xC0000148;
+	public static final int NTPipeBroken          	= 0xC000014B;
 	public static final int NTPasswordChangeReq 	= 0xC0000224;
 	public static final int NTAccountLocked			= 0xC0000234;
 	public static final int NTFileOffline 			= 0xC0000267;
 
+	public static final int SMBInvalidSMB				= 0x00010002;
+	
 	public static final int Win32FileNotFound 			= 2;
 	public static final int Win32PathNotFound 			= 3;
 	public static final int Win32AccessDenied 			= 5;
@@ -281,6 +286,7 @@ public final class SMBStatus {
 	public static final int Win32ExtendedError 			= 1208;
 	public static final int Win32NoNetwork 				= 1222;
 
+	
 	public static final int NTBufferOverflow 	= 0x80000005;
 	public static final int NTNoMoreFiles 		= 0x80000006;
 	public static final int NTNotifyEnumDir 	= 0x0000010C;

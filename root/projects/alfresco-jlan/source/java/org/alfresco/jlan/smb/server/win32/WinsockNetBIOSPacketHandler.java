@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.netbios.win32.NetBIOSSocket;
 import org.alfresco.jlan.netbios.win32.WinsockNetBIOSException;
+import org.alfresco.jlan.server.core.NoPooledMemoryException;
 import org.alfresco.jlan.smb.server.CIFSPacketPool;
 import org.alfresco.jlan.smb.server.PacketHandler;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
@@ -159,12 +160,16 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler implements Asynch
 				Debug.println("***** Still no data after 100ms *****");
 		}
 		
-		SMBSrvPacket pkt = getPacketPool().allocatePacket( rxlen + 8);
+		SMBSrvPacket pkt = null;
 		
 		// Receive an SMB/CIFS request packet via the Winsock NetBIOS socket
 
 		try {
 
+			// Allocate a packet for the data
+			
+			pkt = getPacketPool().allocatePacket( rxlen + 8);
+			
 			// Read a packet of data
 
 			rxlen = m_sessSock.read(pkt.getBuffer(), 4, pkt.getBufferLength() - 4);
@@ -181,6 +186,7 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler implements Asynch
 					// Release the packet back to the pool
 					
 					getPacketPool().releasePacket( pkt);
+					pkt = null;
 				
 					// Throw an exception
 					
@@ -195,7 +201,22 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler implements Asynch
 					
 					// Allocate a larger buffer to hold the full packet
 					
-					SMBSrvPacket pkt2 = getPacketPool().allocatePacket( getPacketPool().getLargestSize());
+					SMBSrvPacket pkt2 = null;
+					
+					try {
+						pkt2 = getPacketPool().allocatePacket( getPacketPool().getLargestSize());
+					}
+					catch ( NoPooledMemoryException ex) {
+						
+						// Release the original packet back to the pool
+						
+						getPacketPool().releasePacket( pkt);
+						pkt = null;
+					
+						// Throw an exception
+						
+						throw new RuntimeException("Winsock NetBIOS receive error on second stage receive (no pooled memory)");
+					}
 					
 					// Copy the existing receive data to the new packet
 					
@@ -211,13 +232,14 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler implements Asynch
 
 					rxlen2 = m_sessSock.read( pkt.getBuffer(), rxlen, pkt.getBufferLength() - rxlen);
 					
-					// Update the total received length
+					// Check the status of the second read
 					
 					if ( rxlen2 == ReceiveBufferSizeError) {
 						
 						// Release the packet back to the pool
 						
 						getPacketPool().releasePacket( pkt);
+						pkt = null;
 					
 						// Throw an exception
 						

@@ -19,172 +19,254 @@
 
 package org.alfresco.jlan.locking;
 
-import java.util.Vector;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * File Lock List Class
- *
+ * 
  * <p>Contains a list of the current locks on a file.
- *
+ * 
  * @author gkspencer
  */
-public class FileLockList {
+public class FileLockList implements Serializable {
 
-  //  List of file locks
+	// Serialization id
 
-  private Vector<FileLock> m_lockList;
+	private static final long serialVersionUID = 1L;
 
-  /**
-   * Construct an empty file lock list.
-   */
-  public FileLockList() {
-    m_lockList = new Vector<FileLock>();
-  }
-  
-  /**
-   * Add a lock to the list
-   *
-   * @param lock Lock to be added to the list.
-   */
-  public final void addLock(FileLock lock) {
-    m_lockList.add(lock);
-  }
-  
+	// List of file locks
+
+	private ArrayList<FileLock> m_lockList;
+
+	/**
+	 * Construct an empty file lock list.
+	 */
+	public FileLockList() {
+		m_lockList = new ArrayList<FileLock>();
+	}
+
+	/**
+	 * Add a lock to the list
+	 * 
+	 * @param lock Lock to be added to the list.
+	 */
+	public final void addLock(FileLock lock) {
+		m_lockList.add(lock);
+	}
+
+	/**
+	 * Find the matching lock
+	 * 
+	 * @param lock FileLock
+	 * @return FileLock
+	 */
+	public final FileLock findLock( FileLock lock) {
+		return findLock( lock.getOffset(), lock.getLength(), lock.getProcessId());
+	}
+	
+	/**
+	 * Find the matching lock
+	 * 
+	 * @param offset long
+	 * @param len long
+	 * @param pid int
+	 * @return FileLock
+	 */
+	public final FileLock findLock( long offset, long len, int pid) {
+		
+		// Check if there are any locks in the list
+
+		if ( numberOfLocks() == 0)
+			return null;
+
+		// Search for the required lock
+
+		FileLock fLock = null;
+		
+		for (int i = 0; i < numberOfLocks(); i++) {
+
+			// Get the current lock details
+
+			fLock = getLockAt(i);
+			if ( fLock.getOffset() == offset && fLock.getLength() == len && fLock.getProcessId() == pid) {
+
+				// Return the matching lock
+
+				return fLock;
+			}
+		}
+
+		// Lock not found
+
+		return null;
+	}
+	
 	/**
 	 * Remove a lock from the list
-	 *
+	 * 
 	 * @param lock FileLock
 	 * @return FileLock
 	 */
 	public final FileLock removeLock(FileLock lock) {
 		return removeLock(lock.getOffset(), lock.getLength(), lock.getProcessId());
 	}
-	
-  /**
-   * Remove a lock from the list
-   *
-   * @param offset	 Starting offset of the lock
-   * @param len      Locked section length
-   * @param pid			 Owner process id
+
+	/**
+	 * Remove a lock from the list
+	 * 
+	 * @param offset Starting offset of the lock
+	 * @param len Locked section length
+	 * @param pid Owner process id
 	 * @return FileLock
-   */
-  public final FileLock removeLock(long offset, long len, int pid) {
+	 */
+	public final FileLock removeLock(long offset, long len, int pid) {
 
-		//  Check if there are any locks in the list
+		// Check if there are any locks in the list
 
-		if (numberOfLocks() == 0)
+		if ( numberOfLocks() == 0)
 			return null;
 
-		//  Search for the required lock
+		// Search for the required lock
 
 		for (int i = 0; i < numberOfLocks(); i++) {
 
-			//  Get the current lock details
+			// Get the current lock details
 
 			FileLock curLock = getLockAt(i);
-			if ( curLock.getOffset()    == offset &&
-					 curLock.getLength()    == len    &&
-					 curLock.getProcessId() == pid) {
-					 	
-				//	Remove the lock from the list
-				
-				m_lockList.removeElementAt(i);
+			if ( curLock.getOffset() == offset && curLock.getLength() == len && curLock.getProcessId() == pid) {
+
+				// Remove the lock from the list
+
+				m_lockList.remove(i);
 				return curLock;
-		 	}
+			}
 		}
-		
-		//	Lock not found
-		
-    return null;
-  }
+
+		// Lock not found
+
+		return null;
+	}
 
 	/**
-   * Remove all locks from the list
-   */
-  public final void removeAllLocks() {
-    m_lockList.removeAllElements();
-  }
-  
-  /**
-   * Return the specified lock details
-   *
-   * @param idx Lock index
-   * @return FileLock
-   */
-  public final FileLock getLockAt(int idx) {
-    if (idx < m_lockList.size())
-      return m_lockList.get(idx);
-    return null;
-  }
-  
-  /**
-   * Check if the new lock should be allowed by comparing with the locks in the list.
-   *
-   * @param lock FileLock
-   * @return boolean true if the lock can be granted, else false.
-   */
-  public final boolean allowsLock(FileLock lock) {
+	 * Remove all locks from the list
+	 */
+	public final void removeAllLocks() {
+		m_lockList.clear();
+	}
 
-    //  If the list is empty we can allow the lock request
+	/**
+	 * Return the specified lock details
+	 * 
+	 * @param idx Lock index
+	 * @return FileLock
+	 */
+	public final FileLock getLockAt(int idx) {
+		if ( idx < m_lockList.size())
+			return m_lockList.get(idx);
+		return null;
+	}
 
-    if (numberOfLocks() == 0)
-      return true;
+	/**
+	 * Remove the lock at the specified index in the list
+	 * 
+	 * @param idx Lock index
+	 * @return FileLock
+	 */
+	public final FileLock removeLockAt(int idx) {
+		if ( idx < m_lockList.size())
+			return m_lockList.remove(idx);
+		return null;
+	}
 
-    //  Search for any overlapping locks
+	/**
+	 * Check if the new lock should be allowed by comparing with the locks in the list.
+	 * 
+	 * @param lock FileLock
+	 * @return boolean true if the lock can be granted, else false.
+	 */
+	public final boolean allowsLock(FileLock lock) {
 
-    for (int i = 0; i < numberOfLocks(); i++) {
+		// If the list is empty we can allow the lock request
 
-      //  Get the current lock details
+		if ( numberOfLocks() == 0)
+			return true;
 
-      FileLock curLock = getLockAt(i);
-      if ( curLock.hasOverlap(lock))      
-        return false;
-    }
+		// Search for any overlapping locks
 
-    //  The lock does not overlap with any existing locks
+		for (int i = 0; i < numberOfLocks(); i++) {
 
-    return true;
-  }
+			// Get the current lock details
+
+			FileLock curLock = getLockAt(i);
+			if ( curLock.hasOverlap(lock))
+				return false;
+		}
+
+		// The lock does not overlap with any existing locks
+
+		return true;
+	}
 
 	/**
 	 * Check if the file is readable for the specified section of the file and process id
 	 * 
-   * @param offset long
-   * @param len long
-   * @param pid int
+	 * @param lock FileLock
+	 * @return boolean
+	 */
+	public final boolean canReadFile(FileLock lock) {
+		return canReadFile(lock.getOffset(), lock.getLength(), lock.getProcessId());
+	}
+
+	/**
+	 * Check if the file is readable for the specified section of the file and process id
+	 * 
+	 * @param offset long
+	 * @param len long
+	 * @param pid int
 	 * @return boolean
 	 */
 	public final boolean canReadFile(long offset, long len, int pid) {
 
-		//  If the list is empty we can allow the read request
+		// If the list is empty we can allow the read request
 
-		if (numberOfLocks() == 0)
+		if ( numberOfLocks() == 0)
 			return true;
 
-		//  Search for a lock that prevents the read
+		// Search for a lock that prevents the read
 
 		for (int i = 0; i < numberOfLocks(); i++) {
 
-			//  Get the current lock details
+			// Get the current lock details
 
 			FileLock curLock = getLockAt(i);
-			
-			//	Check if the process owns the lock, if not then check if there is an overlap
-			
+
+			// Check if the process owns the lock, if not then check if there is an overlap
+
 			if ( curLock.getProcessId() != pid) {
-				
-				//	Check if the read overlaps with the locked area
-				
+
+				// Check if the read overlaps with the locked area
+
 				if ( curLock.hasOverlap(offset, len) == true)
 					return false;
 			}
 		}
 
-		//  The lock does not overlap with any existing locks
+		// The lock does not overlap with any existing locks
 
 		return true;
 	}
-	
+
+	/**
+	 * Check if the file is writeable for the specified section of the file and process id
+	 * 
+	 * @param lock FileLock
+	 * @return boolean
+	 */
+	public final boolean canWriteFile(FileLock lock) {
+		return canWriteFile(lock.getOffset(), lock.getLength(), lock.getProcessId());
+	}
+
 	/**
 	 * Check if the file is writeable for the specified section of the file and process id
 	 * 
@@ -195,41 +277,41 @@ public class FileLockList {
 	 */
 	public final boolean canWriteFile(long offset, long len, int pid) {
 
-		//  If the list is empty we can allow the read request
+		// If the list is empty we can allow the read request
 
-		if (numberOfLocks() == 0)
+		if ( numberOfLocks() == 0)
 			return true;
 
-		//  Search for a lock that prevents the read
+		// Search for a lock that prevents the read
 
 		for (int i = 0; i < numberOfLocks(); i++) {
 
-			//  Get the current lock details
+			// Get the current lock details
 
 			FileLock curLock = getLockAt(i);
-			
-			//	Check if the process owns the lock, if not then check if there is an overlap
-			
+
+			// Check if the process owns the lock, if not then check if there is an overlap
+
 			if ( curLock.getProcessId() != pid) {
-				
-				//	Check if the read overlaps with the locked area
-				
+
+				// Check if the read overlaps with the locked area
+
 				if ( curLock.hasOverlap(offset, len) == true)
 					return false;
 			}
 		}
 
-		//  The lock does not overlap with any existing locks
+		// The lock does not overlap with any existing locks
 
 		return true;
 	}
-	
-  /**
-   * Return the count of locks in the list.
-   *
-   * @return int Number of locks in the list.
-   */
-  public final int numberOfLocks() {
-    return m_lockList.size();
-  }
+
+	/**
+	 * Return the count of locks in the list.
+	 * 
+	 * @return int Number of locks in the list.
+	 */
+	public final int numberOfLocks() {
+		return m_lockList.size();
+	}
 }

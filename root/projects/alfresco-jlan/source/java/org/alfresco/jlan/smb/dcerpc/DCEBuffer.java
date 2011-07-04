@@ -40,7 +40,7 @@ public class DCEBuffer {
 	public static final int HDR_VERMAJOR		= 0;
 	public static final int HDR_VERMINOR		= 1;
 	public static final int HDR_PDUTYPE			= 2;
-	public static final int HDR_FLAGS				= 3;
+	public static final int HDR_FLAGS			= 3;
 	public static final int HDR_DATAREP			= 4;
 	public static final int HDR_FRAGLEN			= 5;
 	public static final int HDR_AUTHLEN			= 6;
@@ -53,7 +53,7 @@ public class DCEBuffer {
 	public static final int FLG_FIRSTFRAG		= 0x01;
 	public static final int FLG_LASTFRAG		= 0x02;
 	public static final int FLG_CANCEL			= 0x04;
-	public static final int FLG_IDEMPOTENT	= 0x20;
+	public static final int FLG_IDEMPOTENT		= 0x20;
 	public static final int FLG_BROADCAST		= 0x40;
 	
 	public static final int FLG_ONLYFRAG		= 0x03;
@@ -62,17 +62,17 @@ public class DCEBuffer {
 	
 	public static final int VERSIONMAJOR		= 0;
 	public static final int VERSIONMINOR		= 1;
-	public static final int PDUTYPE					= 2;
+	public static final int PDUTYPE				= 2;
 	public static final int HEADERFLAGS			= 3;
 	public static final int PACKEDDATAREP		= 4;
 	public static final int FRAGMENTLEN			= 8;
-	public static final int AUTHLEN					= 10;
-	public static final int CALLID					= 12;
-	public static final int DCEDATA					= 16;
+	public static final int AUTHLEN				= 10;
+	public static final int CALLID				= 12;
+	public static final int DCEDATA				= 16;
 	
 	//	DCE/RPC Request offsets
 	
-	public static final int ALLOCATIONHINT	= 16;
+	public static final int ALLOCATIONHINT		= 16;
 	public static final int PRESENTIDENT		= 20;
 	public static final int OPERATIONID			= 22;
 	public static final int OPERATIONDATA		= 24;
@@ -87,7 +87,7 @@ public class DCEBuffer {
 	
 	public final static int ALIGN_NONE		= -1;
 	public final static int ALIGN_SHORT		= 0;
-	public final static int ALIGN_INT			= 1;
+	public final static int ALIGN_INT		= 1;
 	public final static int ALIGN_LONG		= 2;
 	
 	//	Maximum string length
@@ -1445,6 +1445,28 @@ public class DCEBuffer {
 	  DataPacker.putIntelInt(sLen != 0 ? DUMMY_ADDRESS : 0,m_buffer,m_pos + 4);
 	  
 	  m_pos += 8;
+	}
+	
+	/**
+	 * Append Unicode characters to the buffer
+	 * 
+	 * @param str String
+	 * @param align int
+	 */
+	public final void putUnicodeBytes(String str, int align) {
+	  
+		//  Check if there is enough space in the buffer
+    
+		if ( m_buffer.length - m_pos < str.length() * 2)
+			extendBuffer();
+    
+		// Pack the Unicode characters
+    
+		m_pos = DataPacker.putString(str, m_buffer, m_pos, false, true);
+    
+		//  Align the buffer position
+    
+		alignPosition(align);
 	}
 	
 	/**

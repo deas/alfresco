@@ -124,6 +124,10 @@ public abstract class NetworkFile {
 	
 	private OpLockDetails m_oplock;
 	
+	// Access token object
+	
+	private FileAccessToken m_accessToken;
+	
 	/**
 	 * Create a network file object with the specified file identifier.
 	 * 
@@ -857,6 +861,33 @@ public abstract class NetworkFile {
 	public final void setProtocolId(int id) {
 	    m_protocolId = id;
 	}
+
+	/**
+	 * Check if the file has an access token
+	 * 
+	 * @return boolean
+	 */
+	public final boolean hasAccessToken() {
+		return m_accessToken != null ? true : false;
+	}
+	
+	/**
+	 * Return the access token
+	 * 
+	 * @return FileAccessToken
+	 */
+	public final FileAccessToken getAccessToken() {
+		return m_accessToken;
+	}
+	
+	/**
+	 * Set, or clear, the access token
+	 * 
+	 * @param token FileAccessToken
+	 */
+	public final void setAccessToken( FileAccessToken token) {
+		m_accessToken = token;
+	}
 	
 	/**
 	 * Open the file
@@ -933,5 +964,37 @@ public abstract class NetworkFile {
 	public void close()
 		throws IOException {
 		closeFile();
+	}
+	
+	/**
+	 * Return the file details as a string
+	 * 
+	 * @return String
+	 */
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		
+		str.append( "[");
+		str.append( getName());
+		str.append( "/");
+		str.append( getFullName());
+		
+		str.append( " ");
+		str.append( isDirectory() ? "D" : "-");
+		str.append( isArchived()  ? "A" : "-");
+		str.append( isSystem()    ? "S" : "-");
+		str.append( isHidden()    ? "H" : "-");
+		
+		str.append( " ");
+		str.append( getFileSize());
+		
+		str.append( ":");
+		str.append( getFileId());
+		str.append("/");
+		str.append( getDirectoryId());
+		
+		str.append( "]");
+		
+		return str.toString();
 	}
 }

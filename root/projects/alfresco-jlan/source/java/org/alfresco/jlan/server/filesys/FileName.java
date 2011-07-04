@@ -32,7 +32,7 @@ public final class FileName {
 
 	//	DOS file name seperator
 
-	public static final char DOS_SEPERATOR 				= '\\';
+	public static final char DOS_SEPERATOR 			= '\\';
 	public static final String DOS_SEPERATOR_STR 	= "\\";
 
 	//	NTFS Stream seperator

@@ -46,25 +46,25 @@ public interface DBInterface {
   //
   //	Database interface supported/requested features
   
-  public static final int FeatureNTFS							= 0x0001;		//	NTFS streams
-  public static final int FeatureRetention				= 0x0002;		//	data retention
-  public static final int FeatureQueue						= 0x0004;		//	background load/save queues
-  public static final int FeatureData							= 0x0008;		//	load/save file data to database fields
-  public static final int FeatureJarData					= 0x0010;		// load/save multiple file data to Jar files
-  public static final int FeatureObjectId					= 0x0020;		//	keep file id to object id mapping details
-  public static final int FeatureSymLinks         = 0x0040;   // symbolic links
+  public static final int FeatureNTFS			= 0x0001;	//	NTFS streams
+  public static final int FeatureRetention		= 0x0002;	//	data retention
+  public static final int FeatureQueue			= 0x0004;	//	background load/save queues
+  public static final int FeatureData			= 0x0008;	//	load/save file data to database fields
+  public static final int FeatureJarData		= 0x0010;	//  load/save multiple file data to Jar files
+  public static final int FeatureObjectId		= 0x0020;	//	keep file id to object id mapping details
+  public static final int FeatureSymLinks       = 0x0040;	//  symbolic links
   
   //	File information levels, for the getFileInformation() method
   
-  public static final int FileNameOnly		=	0;	//	file name only
-  public static final int FileIds					= 1;	//	name, directory id and file id
-  public static final int FileAll					= 2;	//	all available information
+  public static final int FileNameOnly		= 0;	//	file name only
+  public static final int FileIds			= 1;	//	name, directory id and file id
+  public static final int FileAll			= 2;	//	all available information
 
   //	File stream information levels, for getStreamInformation() and getStreamsList() methods
   
-  public static final int StreamNameOnly	=	0;	//	stream name only
-  public static final int StreamIds				= 1;	//	stream name, file id and stream id
-  public static final int StreamAll				= 2;	//	all available information
+  public static final int StreamNameOnly	= 0;	//	stream name only
+  public static final int StreamIds			= 1;	//	stream name, file id and stream id
+  public static final int StreamAll			= 2;	//	all available information
 
   /**
    * Return the database interface name

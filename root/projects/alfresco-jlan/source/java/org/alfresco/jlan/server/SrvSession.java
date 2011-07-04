@@ -60,7 +60,7 @@ public abstract class SrvSession {
 
 	// Client details
 
-	private ThreadLocal<ClientInfo> m_clientInfo;
+	private static ThreadLocal<ClientInfo> m_clientInfo = new ThreadLocal<ClientInfo>();
 
 	// Authentication context, used during the initial session setup phase
 
@@ -89,12 +89,16 @@ public abstract class SrvSession {
 
 	// Transaction object, for filesystems that implement the TransactionalFilesystemInterface
 
-	private ThreadLocal<Object> m_tx;
-	private ThreadLocal<TransactionalFilesystemInterface> m_txInterface;
+	private static ThreadLocal<Object> m_tx = new ThreadLocal<Object>();
+	private static ThreadLocal<TransactionalFilesystemInterface> m_txInterface = new ThreadLocal<TransactionalFilesystemInterface>();
 
 	// Time of last I/O on this session
 	
 	private long m_lastIO;
+	
+	// Request post-processing hook
+	
+	private RequestPostProcessor m_reqPostProcessor;
 	
 	/**
 	 * Class constructor
@@ -331,6 +335,25 @@ public abstract class SrvSession {
 	 */
 	public final long getLastIOTime() {
 		return m_lastIO;
+	}
+	
+	/**
+	 * Check if there are post processor requests queued
+	 * 
+	 * @return boolean
+	 */
+	public final boolean hasPostProcessorRequests() {
+		return RequestPostProcessor.hasPostProcessor();
+	}
+	
+	/**
+	 * Return the post processor at the head of the queue, or null if there are no more post processors
+	 * queued.
+	 * 
+	 * @return RequestPostProcessor
+	 */
+	public final RequestPostProcessor getNextPostProcessor() {
+		return RequestPostProcessor.dequeuePostProcessor();
 	}
 	
 	/**

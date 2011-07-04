@@ -3,6 +3,8 @@
 	<name>Alfresco JLAN</name>
 	<comment></comment>
 	<projects>
+		<project>3rd Party</project>
+		<project>Core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

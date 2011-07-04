@@ -41,6 +41,7 @@ import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.cache.FileState;
 import org.alfresco.jlan.server.filesys.cache.FileStateCache;
 import org.alfresco.jlan.server.filesys.cache.FileStateListener;
+import org.alfresco.jlan.server.filesys.cache.FileStateProxy;
 import org.alfresco.jlan.server.filesys.loader.BackgroundFileLoader;
 import org.alfresco.jlan.server.filesys.loader.CachedFileInfo;
 import org.alfresco.jlan.server.filesys.loader.FileLoader;
@@ -51,7 +52,6 @@ import org.alfresco.jlan.server.filesys.loader.FileRequest;
 import org.alfresco.jlan.server.filesys.loader.FileRequestQueue;
 import org.alfresco.jlan.server.filesys.loader.FileSegment;
 import org.alfresco.jlan.server.filesys.loader.FileSegmentInfo;
-import org.alfresco.jlan.server.filesys.loader.MemorySegmentList;
 import org.alfresco.jlan.server.filesys.loader.MultipleFileRequest;
 import org.alfresco.jlan.server.filesys.loader.SingleFileRequest;
 import org.alfresco.jlan.util.MemorySize;
@@ -158,9 +158,10 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 	private int m_maxQueueSize;
 	private int m_lowQueueSize;
 
-	// Enable debug output
+	// Enable debug output, additional thread level debug output
 
 	private boolean m_debug;
+	private boolean m_threadDebug;
 
 	// Number of worker threads to create for read/write requests
 
@@ -596,7 +597,6 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 		// Split the file name to get the name only
 
-		String fullName = params.getFullPath();
 		String[] paths = FileName.splitPath(params.getPath());
 		String name = paths[1];
 
@@ -655,12 +655,13 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 			// Create a placeholder network file for the directory
 
-			netFile = new DirectoryNetworkFile(name, fid, did, fstate);
+			netFile = new DirectoryNetworkFile(name, fid, did, m_stateCache.getFileStateProxy(fstate));
+			netFile.setFullName( params.getPath());
 
 			// Debug
 
 			if ( Debug.EnableInfo && hasDebug())
-				Debug.println("DBFileLoader.openFile() DIR state=" + fstate);
+				Debug.println("DBFileLoader.openFile() DIR state=" + fstate + ", netfile=" + netFile);
 		}
 
 		// Return the network file
@@ -707,10 +708,14 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 				if ( fileSeg.isSaveQueued() == false) {
 
+					// Indicate that the file data has been updated
+					
+					m_stateCache.setDataUpdateInProgress( cacheFile.getFileState());
+					
 					// Create a file save request for the updated file segment
 
-					SingleFileRequest fileReq = new SingleFileRequest(FileRequest.SAVE, cacheFile.getFileId(), cacheFile
-							.getStreamId(), fileSeg.getInfo(), netFile.getFullNameStream(), cacheFile.getFileState());
+					SingleFileRequest fileReq = new SingleFileRequest(FileRequest.SAVE, cacheFile.getFileId(), cacheFile.getStreamId(),
+														fileSeg.getInfo(), cacheFile.getFileState().getPath(), cacheFile.getFileState());
 					// Set the file segment status
 
 					fileSeg.setStatus(FileSegmentInfo.SaveWait, true);
@@ -843,8 +848,7 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 		SingleFileRequest loadReq = (SingleFileRequest) req;
 
 		if ( Debug.EnableInfo && hasDebug()) {
-			Debug
-					.println("## DBFileLoader loadFile() req=" + loadReq.toString() + ", thread="
+			Debug.println("## DBFileLoader loadFile() req=" + loadReq.toString() + ", thread="
 							+ Thread.currentThread().getName());
 			startTime = System.currentTimeMillis();
 		}
@@ -966,8 +970,8 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 	}
 
 	/**
-	 * Load the requested file from a Jar file on the Centera. The Jar file must first be loaded
-	 * from the Centera, then the file data is unpacked to the temporary file. The Jar file is
+	 * Load the requested file from a Jar file. The Jar file must first be loaded
+	 * from the database, then the file data is unpacked to the temporary file. The Jar file is
 	 * cached as there may be other files accessed in the same Jar file.
 	 * 
 	 * @param loadReq SingleFileRequest
@@ -1352,7 +1356,15 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 			// Process a single file save request
 
-			saveSts = storeSingleFile((SingleFileRequest) req);
+			SingleFileRequest singleReq = (SingleFileRequest) req;
+			
+			saveSts = storeSingleFile( singleReq);
+			
+			// If the file data save was successful, or had an unrecoverable error, then update the file 
+			// data status
+			
+			if ( saveSts == StsSuccess || saveSts == StsError)
+				m_stateCache.setDataUpdateCompleted( singleReq.getFileState());
 		}
 
 		// Check for a multi file request
@@ -1361,7 +1373,26 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 			// Process a multi file save request
 
-			saveSts = storeMultipleFile((MultipleFileRequest) req);
+			MultipleFileRequest multiReq = (MultipleFileRequest) req;
+			
+			saveSts = storeMultipleFile( multiReq);
+			
+			// If the file data save was successful, or had an unrecoverable error, then update the file 
+			// data status for each file in the multi file save
+			
+			if ( saveSts == StsSuccess || saveSts == StsError) {
+
+				// Update the data save status for each file in the multi file save
+				
+				for ( int idx = 0; idx < multiReq.getNumberOfFiles(); idx++) {
+					
+					// Get the current cached file details
+					
+					CachedFileInfo cacheFileInfo = multiReq.getFileInfo( idx);
+					if ( cacheFileInfo != null && cacheFileInfo.hasFileState())
+						m_stateCache.setDataUpdateCompleted( cacheFileInfo.getFileState());
+				}
+			}
 		}
 		else {
 
@@ -1952,8 +1983,6 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 		// Check if the database interface being used supports the required features
 
-		DBQueueInterface dbQueue = null;
-
 		if ( ctx instanceof DBDeviceContext) {
 
 			// Access the database device context
@@ -1965,9 +1994,7 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 			if ( getContext().getDBInterface().supportsFeature(DBInterface.FeatureQueue) == false)
 				throw new FileLoaderException("DBLoader requires queue support in database interface");
 
-			if ( getContext().getDBInterface() instanceof DBQueueInterface)
-				dbQueue = (DBQueueInterface) getContext().getDBInterface();
-			else
+			if ( getContext().getDBInterface() instanceof DBQueueInterface == false)
 				throw new FileLoaderException("Database interface does not implement queue interface");
 
 			// Check if the data store feature is supported by the database interface
@@ -1989,6 +2016,20 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 		else
 			throw new FileLoaderException("Requires database device context");
 
+		// Check if background loader debug is enabled
+
+		if ( params.getChild("ThreadDebug") != null)
+			m_threadDebug = true;
+
+	}
+
+	/**
+	 * Start the file loader
+	 * 
+	 * @param ctx DeviceContext
+	 */
+	public void startLoader( DeviceContext ctx) {
+		
 		// Get the file state cache from the context
 
 		m_stateCache = getContext().getStateCache();
@@ -1997,16 +2038,17 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 		m_stateCache.addStateListener(this);
 
-		// Check if background loader debug is enabled
+		// Get the database interface
+		
+		DBQueueInterface dbQueue = null;
 
-		boolean bgDebug = false;
-
-		if ( params.getChild("ThreadDebug") != null)
-			bgDebug = true;
-
+		if ( getContext().getDBInterface() instanceof DBQueueInterface)
+			dbQueue = (DBQueueInterface) getContext().getDBInterface();
+		else
+			throw new RuntimeException("Database interface does not implement queue interface");
+		
 		// Perform a queue cleanup before starting the thread pool. This will check the temporary
-		// cache area and delete
-		// files that are not part of a queued save/transaction save request.
+		// cache area and delete files that are not part of a queued save/transaction save request.
 
 		FileRequestQueue recoveredQueue = null;
 
@@ -2047,7 +2089,7 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 		m_backgroundLoader.setReadWorkers(m_readWorkers);
 		m_backgroundLoader.setWriteWorkers(m_writeWorkers);
 
-		m_backgroundLoader.setDebug(bgDebug);
+		m_backgroundLoader.setDebug( m_threadDebug);
 
 		// Start the worker thread pool
 
@@ -2363,7 +2405,7 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 						// Reset the file state to indicate file data load required
 
-						state.setStatus(FileState.FILE_LOADWAIT);
+						state.setDataStatus(FileState.FILE_LOADWAIT);
 
 						// Check if the temporary file sub-directory is now empty, and it is not the
 						// current temporary sub-directory
@@ -2476,10 +2518,8 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 		throws IOException {
 
 		// The file state is used to synchronize the creation of the file segment as there may be
-		// other
-		// sessions opening the file at the same time. We have to be careful that only one thread
-		// creates the
-		// file segment.
+		// other sessions opening the file at the same time. We have to be careful that only one thread
+		// creates the file segment.
 
 		FileSegment fileSeg = null;
 		CachedNetworkFile netFile = null;
@@ -2554,7 +2594,8 @@ public class DBFileLoader implements FileLoader, BackgroundFileLoader, FileState
 
 			// Create the new network file
 
-			netFile = new CachedNetworkFile(fname, fid, stid, did, state, fileSeg, this);
+			FileStateProxy stateProxy = m_stateCache.getFileStateProxy(state);
+			netFile = new CachedNetworkFile(fname, fid, stid, did, stateProxy, fileSeg, this);
 
 			netFile.setGrantedAccess(params.isReadOnlyAccess() ? NetworkFile.READONLY : NetworkFile.READWRITE);
 			netFile.setSequentialOnly(params.isSequentialAccessOnly());

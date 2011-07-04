@@ -363,6 +363,16 @@ public class SimpleFileLoader implements FileLoader, NamedFileLoader {
 	}
 
 	/**
+	 * Start the file loader
+	 * 
+	 * @param ctx DeviceContext
+	 */
+	public void startLoader( DeviceContext ctx) {
+		
+		//	Nothing to do
+	}
+	
+	/**
 	 * Shutdown the file loader and release all resources
 	 * 
 	 * @param immediate boolean

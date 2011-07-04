@@ -123,7 +123,7 @@ public final class Debug {
 	 * @param ex Exception
 	 */
 	public static final void println(Exception ex) {
-		m_debug.debugPrintln(ex, Error);
+		println(ex, Error);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public final class Debug {
 	 * @param ex Throwable
 	 */
 	public static final void println(Throwable ex) {
-		m_debug.debugPrintln(ex, Error);
+		println(ex, Error);
 	}
 	
 	/**

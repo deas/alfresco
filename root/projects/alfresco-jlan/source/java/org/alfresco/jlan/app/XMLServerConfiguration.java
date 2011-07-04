@@ -31,6 +31,7 @@ import org.alfresco.jlan.ftp.FTPSiteInterface;
 import org.alfresco.jlan.ftp.InvalidPathException;
 import org.alfresco.jlan.oncrpc.nfs.NFSConfigSection;
 import org.alfresco.jlan.server.config.InvalidConfigurationException;
+import org.alfresco.jlan.server.filesys.cache.hazelcast.ClusterConfigSection;
 import org.springframework.extensions.config.ConfigElement;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -100,6 +101,10 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 			Element root = doc.getDocumentElement();
 			NodeList childNodes = root.getChildNodes();
 
+			// Process the cluster settings element
+
+			procClusterElement(findChildNode("cluster", childNodes));
+			
 			// Process the debug settings element
 
 			procDebugElement(findChildNode("debug", childNodes));
@@ -230,19 +235,9 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 		FTPConfigSection ftpConfig = new FTPConfigSection(this);
 
-		// Check if IPv6 support is enabled
-		
-		Element elem = findChildNode("IPv6", ftp.getChildNodes());
-		if ( elem != null) {
-			
-			// Enable IPv6 support
-			
-			ftpConfig.setIPv6Enabled( true);
-		}
-		
 		// Check for a bind address
 
-		elem = findChildNode("bindto", ftp.getChildNodes());
+		Element elem = findChildNode("bindto", ftp.getChildNodes());
 		if ( elem != null) {
 
 			// Check if the network adapter name has been specified
@@ -897,5 +892,71 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 		if ( findChildNode("fileCacheDebug", nfs.getChildNodes()) != null)
 			nfsConfig.setNFSFileCacheDebug(true);
+	}
+	
+	/**
+	 * Process the servers XML element
+	 * 
+	 * @param cluster Element
+	 * @exception InvalidConfigurationException
+	 */
+	protected final void procClusterElement(Element cluster)
+		throws InvalidConfigurationException {
+
+		// Check if the cluster element has been specified
+
+		if ( cluster != null) {
+
+			// Check if the Hazelcast classes are available on the classpath
+			
+			try {
+				
+				// Check for various Hazelcast classes
+				
+				Class.forName( "com.hazelcast.core.HazelcastInstance");
+				Class.forName( "com.hazelcast.core.IMap");
+				Class.forName( "com.hazelcast.core.ITopic");
+				
+				// Check for the cluster configuration section
+				
+				Class.forName( "org.alfresco.jlan.server.filesys.cache.hazelcast.ClusterConfigSection");
+			}
+			catch ( ClassNotFoundException ex) {
+				throw new InvalidConfigurationException( "Hazelcast classes not found on the classpath, required for cluster support");
+			}
+
+			// Create the cluster configuration section
+			
+			ClusterConfigSection clusterConfig = new ClusterConfigSection( this);
+			
+			// Get the path to the HazelCast configuration file
+
+			Element elem = findChildNode("configFile", cluster.getChildNodes());
+			
+			if ( elem != null) {
+				
+				// Check that the configuration file exists, and is a file
+
+				String configPath = getText( elem);
+				
+				try {
+					File confFile = new File( configPath);
+					if ( confFile.exists() == false)
+						throw new InvalidConfigurationException( "HazelCast configuration file does not exist, " + configPath);
+					
+					if ( confFile.isDirectory())
+						throw new InvalidConfigurationException( "HazelCast configuration file is a folder path, " + configPath);
+					
+					// Set the Hazelcast cluster configuration file location
+					
+					clusterConfig.setConfigFile( configPath);
+				}
+				catch ( Exception ex) {
+					throw new InvalidConfigurationException( "HazelCast configuration file not valid", ex);
+				}
+			}
+			else
+				throw new InvalidConfigurationException( "HazelCast configuration file not specified");
+		}
 	}
 }

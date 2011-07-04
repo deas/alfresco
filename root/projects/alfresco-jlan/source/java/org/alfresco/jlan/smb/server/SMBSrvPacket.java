@@ -143,6 +143,10 @@ public class SMBSrvPacket {
 	
 	private int m_deferredCount;
 	
+	// Request packet, do not set the 'response' flag
+	
+	private boolean m_requestPkt;
+	
 	/**
 	 * Default constructor
 	 */
@@ -1018,6 +1022,15 @@ public class SMBSrvPacket {
 	}
 
 	/**
+	 * Check if this is a request packet
+	 * 
+	 * @return boolean
+	 */
+	public final boolean isRequestPacket() {
+		return m_requestPkt;
+	}
+	
+	/**
 	 * Pack a byte (8 bit) value into the byte area
 	 * 
 	 * @param val byte
@@ -1528,6 +1541,13 @@ public class SMBSrvPacket {
 	}
 
 	/**
+	 * Set a success status code
+	 */
+	public final void setSuccessStatus() {
+		setLongErrorCode( SMBStatus.NTSuccess);
+	}
+	
+	/**
 	 * Set the SMB flags value.
 	 * 
 	 * @param flg SMB flags value.
@@ -1829,6 +1849,15 @@ public class SMBSrvPacket {
 	 */
 	public final void incrementDeferredCount() {
 		m_deferredCount++;
+	}
+	
+	/**
+	 * Set/clear the request packet flag
+	 * 
+	 * @param reqPkt boolean
+	 */
+	public final void setRequestPacket( boolean reqPkt) {
+		m_requestPkt = reqPkt;
 	}
 	
 	/**

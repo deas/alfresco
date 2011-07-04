@@ -19,7 +19,12 @@
 
 package org.alfresco.jlan.server.locking;
 
+import java.io.IOException;
+
 import org.alfresco.jlan.server.filesys.ExistingOpLockException;
+import org.alfresco.jlan.server.filesys.NetworkFile;
+import org.alfresco.jlan.smb.server.SMBSrvPacket;
+import org.alfresco.jlan.smb.server.SMBSrvSession;
 
 /**
  * OpLock Manager Interface
@@ -51,19 +56,24 @@ public interface OpLockManager {
 	 * 
 	 * @param path String
 	 * @param oplock OpLockDetails
+	 * @param netFile NetworkFile
 	 * @return boolean
 	 * @exception ExistingOpLockException	If the file already has an oplock
 	 */
-	public boolean grantOpLock(String path, OpLockDetails oplock)
+	public boolean grantOpLock(String path, OpLockDetails oplock, NetworkFile netFile)
 		throws ExistingOpLockException;
 	
 	/**
-	 * Inform the oplock manager that an oplock break is in progress for the specified file/oplock
+	 * Request an oplock break on the specified oplock
 	 * 
 	 * @param path String
 	 * @param oplock OpLockDetails
+	 * @param sess SMBSrvSession
+	 * @param pkt SMBSrvPacket
+	 * @exception IOException
 	 */
-	public void informOpLockBreakInProgress(String path, OpLockDetails oplock);
+	public void requestOpLockBreak( String path, OpLockDetails oplock, SMBSrvSession sess, SMBSrvPacket pkt)
+		throws IOException;
 	
 	/**
 	 * Release an oplock

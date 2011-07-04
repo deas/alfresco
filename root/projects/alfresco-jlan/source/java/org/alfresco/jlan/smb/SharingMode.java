@@ -36,4 +36,42 @@ public class SharingMode {
 	public final static int DELETE	  = 0x0004;
 	
 	public final static int READWRITE = READ + WRITE;
+	public final static int READWRITEDELETE = READ + WRITE + DELETE;
+	
+	/**
+	 * Return a sharing mode as a string
+	 * 
+	 * @param mode int
+	 * @return String
+	 */
+	public final static String getSharingModeAsString( int mode) {
+		
+		String modeStr = "";
+		
+		switch ( mode) {
+			case NOSHARING:
+				modeStr = "Exclusive";
+				break;
+			case READ:
+				modeStr = "ReadOnly";
+				break;
+			case WRITE:
+				modeStr = "Write";
+				break;
+			case DELETE:
+				modeStr = "Delete";
+				break;
+			case READWRITE:
+				modeStr = "ReadWrite";
+				break;
+			case READWRITEDELETE:
+				modeStr = "ReadWriteDelete";
+				break;
+			default:
+				modeStr = "0x" + Integer.toHexString( mode);
+				break;
+		}
+		
+		return modeStr;
+	}
 }

@@ -982,8 +982,7 @@ public class BackgroundLoadSave {
 	public void queueFileRequest(FileRequest req) {
 
 		// Make sure the associated file state stays in memory for a short time, if the queue is
-		// small
-		// the request may get processed soon.
+		// small the request may get processed soon.
 
 		if ( req instanceof SingleFileRequest) {
 
@@ -1015,8 +1014,7 @@ public class BackgroundLoadSave {
 
 					//
 					// Check if this request is the last file in the current transaction, if so then
-					// the transaction
-					// is ready to be processed
+					// the transaction is ready to be processed
 
 					if ( fileReq.isLastTransactionFile())
 						m_tranLoader.addTransaction("" + fileReq.getTransactionId());
