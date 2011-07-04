@@ -226,5 +226,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-web-1.0.0.RC1.jar" sourcepath="src/spring-social-web-1.0.0.RC1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-twitter-1.0.0.RC1.jar" sourcepath="src/spring-social-twitter-1.0.0.RC1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-facebook-1.0.0.RC1.jar" sourcepath="src/spring-social-facebook-1.0.0.RC1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hazelcast/hazelcast-1.9.3.1.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
