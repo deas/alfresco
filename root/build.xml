@@ -190,11 +190,15 @@
       <patternset id="files.tests.startup">
          <include name="**/RepositoryStartupTest.java" />
       </patternset>
+      <patternset id="files.tests.intermittent">
+         <include name="**/WCMTestSuite.java" />
+      </patternset>
       <patternset id="files.tests">
          <exclude name="**/Base*Test.java" />
          <exclude name="**/Abstract*Test.java" />
          <exclude name="**/*SystemTest.java" />
          <exclude name="**/RepositoryStartupTest.java" />
+         <exclude name="**/WCMTestSuite.java" />
 
          <!-- Exclude tests that require JodConverter/OpenOffice.org as these are hanging the build server -->
          <exclude name="**/*OOoTest.java" />

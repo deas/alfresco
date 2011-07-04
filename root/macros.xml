@@ -1,118 +1,118 @@
 <project name="macros">
 
-   <!-- **************************************************************************** -->
-   <!-- ** This file contains the macro definitions used by the main build script ** -->
-   <!-- **************************************************************************** -->
-   
-   <macrodef name="clean" description="Cleans the given project">
-      <attribute name="projectdir" />
-      <sequential>
-         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
-         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.dist}" />
-         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.lib}" />
-         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.assemble}" />
-         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
-         <delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.docs}" />
-      </sequential>
-   </macrodef>
-   
-   <macrodef name="compile-java-javac" description="Compiles Java source files in the given source directory to the given classes directory">
-      <attribute name="srcdir" />
-      <attribute name="classesdir" />
-      <attribute name="compileExcludes" default="" />
-      <element name="addPath2" optional="yes" />
-      <sequential>
-         <mkdir dir="@{classesdir}" />
-         
-         <!-- Our classpath is getting too long. We'll need to specify it in a temporary file instead! -->
-         <path id="compile-java-classpath">
-            <pathelement location="@{classesdir}" />
-            <addPath2 />
-            <path refid="classpath.compile" />
-            <path refid="classpath.compile.extension" />
-         </path>
-         <tempfile property="compile-java-classpath-file" deleteonexit="true" />
-         <echo message="-classpath${line.separator}${toString:compile-java-classpath}" file="${compile-java-classpath-file}" />
+	<!-- **************************************************************************** -->
+	<!-- ** This file contains the macro definitions used by the main build script ** -->
+	<!-- **************************************************************************** -->
 
-         <javac destdir="@{classesdir}" fork="true"
+	<macrodef name="clean" description="Cleans the given project">
+		<attribute name="projectdir" />
+		<sequential>
+			<delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+			<delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.dist}" />
+			<delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.lib}" />
+			<delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.assemble}" />
+			<delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
+			<delete includeEmptyDirs="true" quiet="yes" dir="@{projectdir}/${dir.name.build}/${dir.name.docs}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="compile-java-javac" description="Compiles Java source files in the given source directory to the given classes directory">
+		<attribute name="srcdir" />
+		<attribute name="classesdir" />
+		<attribute name="compileExcludes" default="" />
+		<element name="addPath2" optional="yes" />
+		<sequential>
+			<mkdir dir="@{classesdir}" />
+
+			<!-- Our classpath is getting too long. We'll need to specify it in a temporary file instead! -->
+			<path id="compile-java-classpath">
+				<pathelement location="@{classesdir}" />
+				<addPath2 />
+				<path refid="classpath.compile" />
+				<path refid="classpath.compile.extension" />
+			</path>
+			<tempfile property="compile-java-classpath-file" deleteonexit="true" />
+			<echo message="-classpath${line.separator}${toString:compile-java-classpath}" file="${compile-java-classpath-file}" />
+
+			<javac destdir="@{classesdir}" fork="true"
                 memoryMaximumSize="${mem.size.max}" deprecation="${javac.deprecation}" 
                 debug="${javac.debug}"  target="${javac.target}" source="${javac.source}" encoding="${javac.encoding}"
                 excludes="@{compileExcludes}" includeAntRuntime="false">
-            <compilerarg value="@${compile-java-classpath-file}"/>
-            <src path="@{srcdir}" />
+				<compilerarg value="@${compile-java-classpath-file}"/>
+				<src path="@{srcdir}" />
 
-            <!-- To run javac with Xlint:unchecked, uncomment the line below  -->
-            <!-- <compilerarg value="-Xlint:unchecked"/> -->
+				<!-- To run javac with Xlint:unchecked, uncomment the line below  -->
+				<!-- <compilerarg value="-Xlint:unchecked"/> -->
 
-         </javac>
-         
-         <copy todir="@{classesdir}">
-            <fileset dir="@{srcdir}">
-               <patternset>
-                  <exclude name="**/*.java" />
-                  <exclude name="log4j.properties" />
-               </patternset>
-            </fileset>
-         </copy>
-      </sequential>
-   </macrodef>
+			</javac>
 
-   <macrodef name="compile-java" description="Compiles Java source files in the given project">
-      <attribute name="projectdir" />
-      <attribute name="compileExcludes" default="" />
-      <element name="addPath" optional="yes" />
-      <sequential>
-         <compile-java-javac srcdir="@{projectdir}/${dir.name.source}/${dir.name.java}" classesdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" compileExcludes="@{compileExcludes}">
-            <addPath2>
-               <addPath /> 
-            </addPath2>
-         </compile-java-javac>
-      </sequential>
-   </macrodef>
+			<copy todir="@{classesdir}">
+				<fileset dir="@{srcdir}">
+					<patternset>
+						<exclude name="**/*.java" />
+						<exclude name="log4j.properties" />
+					</patternset>
+				</fileset>
+			</copy>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="compile-java-inc-generated" 
+	<macrodef name="compile-java" description="Compiles Java source files in the given project">
+		<attribute name="projectdir" />
+		<attribute name="compileExcludes" default="" />
+		<element name="addPath" optional="yes" />
+		<sequential>
+			<compile-java-javac srcdir="@{projectdir}/${dir.name.source}/${dir.name.java}" classesdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" compileExcludes="@{compileExcludes}">
+				<addPath2>
+					<addPath />
+				</addPath2>
+			</compile-java-javac>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="compile-java-inc-generated" 
              description="Compiles Java source files and generated Java files in the given project">
-      <attribute name="projectdir" />
-      <element name="addPath" optional="yes" />
-      <sequential>
-         <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+		<attribute name="projectdir" />
+		<element name="addPath" optional="yes" />
+		<sequential>
+			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
 
-         <!-- Our classpath is getting too long. We'll need to specify it in a temporary file instead! -->
-         <path id="compile-java-classpath">
-		 <pathelement location="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
-		 <addPath />
-		 <path refid="classpath.compile" />
-		 <path refid="classpath.compile.extension" />
-         </path>
-         <tempfile property="compile-java-classpath-file" deleteonexit="true" />
-         <echo message="-classpath${line.separator}${toString:compile-java-classpath}" file="${compile-java-classpath-file}" />
-		 
-         <javac destdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" fork="true"
+			<!-- Our classpath is getting too long. We'll need to specify it in a temporary file instead! -->
+			<path id="compile-java-classpath">
+				<pathelement location="@{projectdir}/${dir.name.build}/${dir.name.classes}" />
+				<addPath />
+				<path refid="classpath.compile" />
+				<path refid="classpath.compile.extension" />
+			</path>
+			<tempfile property="compile-java-classpath-file" deleteonexit="true" />
+			<echo message="-classpath${line.separator}${toString:compile-java-classpath}" file="${compile-java-classpath-file}" />
+
+			<javac destdir="@{projectdir}/${dir.name.build}/${dir.name.classes}" fork="true"
                 memoryMaximumSize="${mem.size.max}" deprecation="${javac.deprecation}" 
                 debug="${javac.debug}"  target="${javac.target}" source="${javac.source}" encoding="${javac.encoding}">
-            <compilerarg value="@${compile-java-classpath-file}"/>
-            <src path="@{projectdir}/${dir.name.source}/${dir.name.java}" />
-            <src path="@{projectdir}/${dir.name.source}/${dir.name.generated}" />
-         </javac>
-         
-         <copy todir="@{projectdir}/${dir.name.build}/${dir.name.classes}">
-            <fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
-               <patternset>
-                  <exclude name="**/*.java" />
-                  <exclude name="log4j.properties" />
-               </patternset>
-            </fileset>
-         </copy>
-      </sequential>
-   </macrodef>
-   
-   <macrodef name="generate-javadocs">
-      <attribute name="projectdir" />
-      <attribute name="documenttitle" />
-      <attribute name="windowtitle" />
-      <sequential>
-         <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.docs}/${dir.name.java}" />
-         <javadoc maxmemory="${mem.size.max}" author="true" version="true" 
+				<compilerarg value="@${compile-java-classpath-file}"/>
+				<src path="@{projectdir}/${dir.name.source}/${dir.name.java}" />
+				<src path="@{projectdir}/${dir.name.source}/${dir.name.generated}" />
+			</javac>
+
+			<copy todir="@{projectdir}/${dir.name.build}/${dir.name.classes}">
+				<fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
+					<patternset>
+						<exclude name="**/*.java" />
+						<exclude name="log4j.properties" />
+					</patternset>
+				</fileset>
+			</copy>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="generate-javadocs">
+		<attribute name="projectdir" />
+		<attribute name="documenttitle" />
+		<attribute name="windowtitle" />
+		<sequential>
+			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.docs}/${dir.name.java}" />
+			<javadoc maxmemory="${mem.size.max}" author="true" version="true" 
                   sourcepath="@{projectdir}/${dir.name.source}/${dir.name.java}" 
                   destdir="@{projectdir}/${dir.name.build}/${dir.name.docs}/${dir.name.java}" 
                   packagenames="${javadoc.packages.include}"
@@ -122,23 +122,23 @@
                   windowtitle="@{windowtitle}"
                   encoding="${javac.encoding}"
                   useexternalfile="true">
-            <classpath>
-            <path refid="classpath.javadoc"/>
-            <path refid="classpath.javadoc.extension"/>
-         </classpath>
-            <!-- doclet that hides public classes/members via @exclude -->
-            <doclet name="ExcludeDoclet" path="${dir.project.3rdparty.lib}/${dir.name.devenv}/exclude-doclet.jar"/>
-         </javadoc>
-      </sequential>
-   </macrodef>
-   
-   <macrodef name="generate-generated-javadocs">
-      <attribute name="projectdir" />
-      <attribute name="documenttitle" />
-      <attribute name="windowtitle" />
-      <sequential>
-         <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.docs}/${dir.name.java}" />
-         <javadoc maxmemory="${mem.size.max}" author="true" version="true" 
+				<classpath>
+					<path refid="classpath.javadoc"/>
+					<path refid="classpath.javadoc.extension"/>
+				</classpath>
+				<!-- doclet that hides public classes/members via @exclude -->
+				<doclet name="ExcludeDoclet" path="${dir.project.3rdparty.lib}/${dir.name.devenv}/exclude-doclet.jar"/>
+			</javadoc>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="generate-generated-javadocs">
+		<attribute name="projectdir" />
+		<attribute name="documenttitle" />
+		<attribute name="windowtitle" />
+		<sequential>
+			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.docs}/${dir.name.java}" />
+			<javadoc maxmemory="${mem.size.max}" author="true" version="true" 
                   sourcepath="@{projectdir}/${dir.name.source}/${dir.name.generated}" 
                   destdir="@{projectdir}/${dir.name.build}/${dir.name.docs}/${dir.name.java}/generated" 
                   packagenames="${javadoc.packages.include}"
@@ -148,136 +148,158 @@
                   windowtitle="@{windowtitle}"
                   encoding="${javac.encoding}"
                   useexternalfile="true">
-            <classpath>
-            <path refid="classpath.javadoc"/>
-            <path refid="classpath.javadoc.extension"/>
-         </classpath>
-            <!-- doclet that hides public classes/members via @exclude -->
-            <doclet name="ExcludeDoclet" path="${dir.project.3rdparty.lib}/${dir.name.devenv}/exclude-doclet.jar"/>
-         </javadoc>
-      </sequential>
-   </macrodef>
-   
-   <macrodef name="run-tests-startup" description="Runs the startup tests for the given project">
-      <attribute name="projectdir" />
-      <sequential>
-         <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
-         <junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
-            <jvmarg value="-server"/>
-            <jvmarg value="-XX:MaxPermSize=256M"/>
-            <jvmarg value="-Dcom.sun.management.jmxremote"/>
-            <classpath>
-            <path refid="classpath.unit.test"/>
-            <path refid="classpath.unit.test.extension"/>
-         </classpath>
-            <formatter type="xml" />
-            <batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
-               <fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
-                  <patternset refid="files.tests.startup" />
-               </fileset>
-            </batchtest>
-         </junit>
-      </sequential>
-   </macrodef>
+				<classpath>
+					<path refid="classpath.javadoc"/>
+					<path refid="classpath.javadoc.extension"/>
+				</classpath>
+				<!-- doclet that hides public classes/members via @exclude -->
+				<doclet name="ExcludeDoclet" path="${dir.project.3rdparty.lib}/${dir.name.devenv}/exclude-doclet.jar"/>
+			</javadoc>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="run-tests" description="Runs the tests for the given project">
-      <attribute name="projectdir" />
-      <sequential>
-         <mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
-         <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
-            <jvmarg value="-server"/>
-            <jvmarg value="-XX:MaxPermSize=256M"/>
-            <jvmarg value="-Dcom.sun.management.jmxremote"/>
-            <classpath>
-            <path refid="classpath.unit.test"/>
-            <path refid="classpath.unit.test.extension"/>
-         </classpath>
-            <formatter type="xml" />
-            <batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
-               <fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
-                  <patternset refid="files.tests" />
-               </fileset>
-            </batchtest>
-         </junit>
-      </sequential>
-   </macrodef>
+	<macrodef name="run-tests-startup" description="Runs the startup tests for the given project">
+		<attribute name="projectdir" />
+		<sequential>
+			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
+			<junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
+				<jvmarg value="-server"/>
+				<jvmarg value="-XX:MaxPermSize=256M"/>
+				<jvmarg value="-Dcom.sun.management.jmxremote"/>
+				<classpath>
+					<path refid="classpath.unit.test"/>
+					<path refid="classpath.unit.test.extension"/>
+				</classpath>
+				<formatter type="xml" />
+				<batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
+					<fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
+						<patternset refid="files.tests.startup" />
+					</fileset>
+				</batchtest>
+			</junit>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="deploy-virtual-tomcat" 
+	<macrodef name="run-tests-intermittent" description="Runs the intermittently-successful tests for the given project">
+		<attribute name="projectdir" />
+		<sequential>
+			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
+			<junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
+				<jvmarg value="-server"/>
+				<jvmarg value="-XX:MaxPermSize=256M"/>
+				<jvmarg value="-Dcom.sun.management.jmxremote"/>
+				<classpath>
+					<path refid="classpath.unit.test"/>
+					<path refid="classpath.unit.test.extension"/>
+				</classpath>
+				<formatter type="xml" />
+				<batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
+					<fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
+						<patternset refid="files.tests.intermittent" />
+					</fileset>
+				</batchtest>
+			</junit>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="run-tests" description="Runs the tests for the given project">
+		<attribute name="projectdir" />
+		<sequential>
+			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
+			<junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
+				<jvmarg value="-server"/>
+				<jvmarg value="-XX:MaxPermSize=256M"/>
+				<jvmarg value="-Dcom.sun.management.jmxremote"/>
+				<classpath>
+					<path refid="classpath.unit.test"/>
+					<path refid="classpath.unit.test.extension"/>
+				</classpath>
+				<formatter type="xml" />
+				<batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
+					<fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
+						<patternset refid="files.tests" />
+					</fileset>
+				</batchtest>
+			</junit>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="deploy-virtual-tomcat" 
              description="Deploys the files required for the virtualisation server to the given location">
-      <attribute name="location" />
-      <sequential>
-         <copy todir="@{location}/server/lib">
-            <fileset dir="${dir.project.3rdparty.lib}" includes="org.springframework*.jar"/>
-         </copy>
-         <copy todir="@{location}/server/lib"  file="${dir.project.3rdparty.lib}/hibernate-3.2.6-patched.jar"/>
-         <copy todir="@{location}/server/lib"  file="${dir.project.3rdparty.lib}/aopalliance.jar"/>
-         <copy todir="@{location}/server/lib"  file="${dir.project.catalinavirtual.dist}/${file.name.jar.catalinavirtual}"/>
-         <copy todir="@{location}/common/lib"  file="${dir.project.jndi.dist}/${file.name.jar.jndi}"/>
-         <copy todir="@{location}/common/lib"  file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}"/>
-         <copy todir="@{location}/common/lib"  file="${dir.project.repository.dist}/${file.name.jar.repository}"/>
-         <copy todir="@{location}/common/lib"  file="${dir.project.core.dist}/${file.name.jar.core}"/>
-         <copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-shared.properties"/>
-         <copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-jmxrmi.password"/>
-         <copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-jmxrmi.access"/>
-         <copy todir="@{location}/conf"        file="${dir.project.jndi.config}/alfresco-virtserver-context.xml"/>
-         <copy todir="@{location}/conf"        file="${dir.project.jndi.config}/alfresco-virtserver.properties"/>
-         <copy todir="@{location}/conf"        file="${dir.project.catalinavirtual.config}/server.xml" overwrite="yes"/>
-         <copy todir="@{location}/conf"        file="${dir.project.catalinavirtual.config}/web.xml"    overwrite="yes"/>
-      </sequential>
-   </macrodef>
+		<attribute name="location" />
+		<sequential>
+			<copy todir="@{location}/server/lib">
+				<fileset dir="${dir.project.3rdparty.lib}" includes="org.springframework*.jar"/>
+			</copy>
+			<copy todir="@{location}/server/lib"  file="${dir.project.3rdparty.lib}/hibernate-3.2.6-patched.jar"/>
+			<copy todir="@{location}/server/lib"  file="${dir.project.3rdparty.lib}/aopalliance.jar"/>
+			<copy todir="@{location}/server/lib"  file="${dir.project.catalinavirtual.dist}/${file.name.jar.catalinavirtual}"/>
+			<copy todir="@{location}/common/lib"  file="${dir.project.jndi.dist}/${file.name.jar.jndi}"/>
+			<copy todir="@{location}/common/lib"  file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}"/>
+			<copy todir="@{location}/common/lib"  file="${dir.project.repository.dist}/${file.name.jar.repository}"/>
+			<copy todir="@{location}/common/lib"  file="${dir.project.core.dist}/${file.name.jar.core}"/>
+			<copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-shared.properties"/>
+			<copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-jmxrmi.password"/>
+			<copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-jmxrmi.access"/>
+			<copy todir="@{location}/conf"        file="${dir.project.jndi.config}/alfresco-virtserver-context.xml"/>
+			<copy todir="@{location}/conf"        file="${dir.project.jndi.config}/alfresco-virtserver.properties"/>
+			<copy todir="@{location}/conf"        file="${dir.project.catalinavirtual.config}/server.xml" overwrite="yes"/>
+			<copy todir="@{location}/conf"        file="${dir.project.catalinavirtual.config}/web.xml"    overwrite="yes"/>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="install-amp" description="Installs an AMP file into the given WAR file">
-      <attribute name="ampfile" />
-      <attribute name="warfile" />
-      <sequential>
-         <java dir="." fork="true" classname="org.alfresco.repo.module.tool.ModuleManagementTool" jvm="${env.JAVA_HOME}/bin/java">
-            <classpath refid="classpath.compile"/>
-            <arg line="install @{ampfile} @{warfile} -force -verbose -nobackup"/>
-         </java>
-      </sequential>
-   </macrodef>
+	<macrodef name="install-amp" description="Installs an AMP file into the given WAR file">
+		<attribute name="ampfile" />
+		<attribute name="warfile" />
+		<sequential>
+			<java dir="." fork="true" classname="org.alfresco.repo.module.tool.ModuleManagementTool" jvm="${env.JAVA_HOME}/bin/java">
+				<classpath refid="classpath.compile"/>
+				<arg line="install @{ampfile} @{warfile} -force -verbose -nobackup"/>
+			</java>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="minimize-javascript">
-      <attribute name="sourcedir" />
-      <attribute name="destdir" />
-      <sequential>
-         <apply executable="java" parallel="false" dest="@{destdir}">
-            <fileset dir="@{sourcedir}">
-               <include name="**/*.js" />
-               <exclude name="**/*-min.js" />
-               <exclude name="**/WEB-INF/**" />
-               <exclude name="**/tiny_mce/**" />
-               <exclude name="**/yui/**" />
-               <exclude name="**/log4javascript*.js" />
-            </fileset>
-            <arg line="-jar"/>
-            <arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
-            <arg line="-p"/>
-            <arg line="-o"/>
-            <targetfile />
-            <srcfile />
-            <mapper type="glob" from="*.js" to="*-min.js"/>
-         </apply>
-      </sequential>
-   </macrodef>
+	<macrodef name="minimize-javascript">
+		<attribute name="sourcedir" />
+		<attribute name="destdir" />
+		<sequential>
+			<apply executable="java" parallel="false" dest="@{destdir}">
+				<fileset dir="@{sourcedir}">
+					<include name="**/*.js" />
+					<exclude name="**/*-min.js" />
+					<exclude name="**/WEB-INF/**" />
+					<exclude name="**/tiny_mce/**" />
+					<exclude name="**/yui/**" />
+					<exclude name="**/log4javascript*.js" />
+				</fileset>
+				<arg line="-jar"/>
+				<arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
+				<arg line="-p"/>
+				<arg line="-o"/>
+				<targetfile />
+				<srcfile />
+				<mapper type="glob" from="*.js" to="*-min.js"/>
+			</apply>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="minimize-javascript-file">
-      <attribute name="sourcefile" />
-      <attribute name="destfile" />
-      <sequential>
-         <apply executable="java" parallel="false">
-            <fileset file="@{sourcefile}" />
-            <arg line="-jar"/>
-            <arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
-            <arg line="-p"/>
-            <arg line="-o"/>
-            <arg line="@{destfile}" />
-            <srcfile />
-         </apply>
-      </sequential>
-   </macrodef>
+	<macrodef name="minimize-javascript-file">
+		<attribute name="sourcefile" />
+		<attribute name="destfile" />
+		<sequential>
+			<apply executable="java" parallel="false">
+				<fileset file="@{sourcefile}" />
+				<arg line="-jar"/>
+				<arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
+				<arg line="-p"/>
+				<arg line="-o"/>
+				<arg line="@{destfile}" />
+				<srcfile />
+			</apply>
+		</sequential>
+	</macrodef>
 
-   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
        Wrapper that brings the Alfresco webapp and the virtualization
        server up (if they weren't already up) to execute the Ant target 
@@ -301,111 +323,114 @@
        environment (all it assumes is that both servers are installed).
 
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-   <macrodef name="alfresco-virtual-antcall">
-      <attribute name="target"/>
-      <sequential>         
-         <default-if-not-set  propname ="tomcat.home"
+	<macrodef name="alfresco-virtual-antcall">
+		<attribute name="target"/>
+		<sequential>
+			<default-if-not-set  propname ="tomcat.home"
                               propvalue="${env.TOMCAT_HOME}"/>
 
-         <default-if-not-set  propname ="virtual.tomcat.home"
+			<default-if-not-set  propname ="virtual.tomcat.home"
                               propvalue="${env.VIRTUAL_TOMCAT_HOME}"/>
 
-         <check-server-status propname="virtual.tomcat.previously.started"
+			<check-server-status propname="virtual.tomcat.previously.started"
                               server  ="localhost"
                               port    ="8180"/>
 
-         <check-server-status propname="tomcat.previously.started"
+			<check-server-status propname="tomcat.previously.started"
                               server  ="localhost"
                               port    ="8080"/>
 
-         <parallel>
-            <antcall target="start-tomcat-if-necessary"/>
-            <antcall target="start-virtual-tomcat-if-necessary"/>
-            <sequential>
-               <echo>Waiting for Alfresco Tomcat...</echo>
-               <antcall target="wait-for-alfresco"/>
-               <echo>Alfresco's Tomcat is up</echo>
+			<parallel>
+				<antcall target="start-tomcat-if-necessary"/>
+				<antcall target="start-virtual-tomcat-if-necessary"/>
+				<sequential>
+					<echo>Waiting for Alfresco Tomcat...</echo>
+					<antcall target="wait-for-alfresco"/>
+					<echo>Alfresco's Tomcat is up</echo>
 
-               <echo>Waiting for Virtual Tomcat...</echo>
-               <antcall target="wait-for-virtual-tomcat"/>
-               <echo>Virtual Tomcat is up</echo>
+					<echo>Waiting for Virtual Tomcat...</echo>
+					<antcall target="wait-for-virtual-tomcat"/>
+					<echo>Virtual Tomcat is up</echo>
 
-               <antcall target="@{target}"/>
+					<antcall target="@{target}"/>
 
-               <antcall target="virtual-tomcat-stop-if-necessary"/>
-               <antcall target="tomcat-stop-if-necessary"/>
-            </sequential>
-         </parallel>
-      </sequential>
-   </macrodef>
+					<antcall target="virtual-tomcat-stop-if-necessary"/>
+					<antcall target="tomcat-stop-if-necessary"/>
+				</sequential>
+			</parallel>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="default-if-not-set">
-      <attribute name="propname"/>
-      <attribute name="propvalue"/>
-      <sequential>
-         <condition property= "@{propname}"  value="@{propvalue}">
-            <not> <isset property="@{propname}"/>  </not>
-         </condition>
-      </sequential>
-   </macrodef>
+	<macrodef name="default-if-not-set">
+		<attribute name="propname"/>
+		<attribute name="propvalue"/>
+		<sequential>
+			<condition property= "@{propname}"  value="@{propvalue}">
+				<not>
+					<isset property="@{propname}"/>
+				</not>
+			</condition>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="check-server-status">
-      <attribute name="propname"/>
-      <attribute name="server"/>
-      <attribute name="port"/>
-      <sequential>
-         <condition property="@{propname}">
-            <socket server="@{server}" port="@{port}"/>
-         </condition>
-      </sequential>
-   </macrodef>
+	<macrodef name="check-server-status">
+		<attribute name="propname"/>
+		<attribute name="server"/>
+		<attribute name="port"/>
+		<sequential>
+			<condition property="@{propname}">
+				<socket server="@{server}" port="@{port}"/>
+			</condition>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="tomcat-start">
-      <attribute name="heapmax" default="-Xmx512M"/>
-      <sequential>
-         <echo>Starting Alfresco Tomcat:  ${tomcat.home}</echo>
-         <java jar="${tomcat.home}/bin/bootstrap.jar" 
+	<macrodef name="tomcat-start">
+		<attribute name="heapmax" default="-Xmx512M"/>
+		<sequential>
+			<echo>Starting Alfresco Tomcat:  ${tomcat.home}</echo>
+			<java jar="${tomcat.home}/bin/bootstrap.jar" 
                fork="true" jvm="${env.JAVA_HOME}/bin/java">
-            <jvmarg value="-Dcatalina.home=${tomcat.home}"/>
-            <jvmarg value="-Dcatalina.base=${tomcat.home}"/>
-            <jvmarg value="-server"/>
-            <jvmarg value="@{heapmax}"/>
-            <jvmarg value="-Djava.io.tmpdir=${tomcat.home}/temp"/>
-            <jvmarg value="-Djava.security.policy=${tomcat.home}/conf/catalina.policy"/>
-         </java>
-      </sequential>
-   </macrodef>
+				<jvmarg value="-Dcatalina.home=${tomcat.home}"/>
+				<jvmarg value="-Dcatalina.base=${tomcat.home}"/>
+				<jvmarg value="-server"/>
+				<jvmarg value="@{heapmax}"/>
+				<jvmarg value="-Djava.io.tmpdir=${tomcat.home}/temp"/>
+				<jvmarg value="-Djava.security.policy=${tomcat.home}/conf/catalina.policy"/>
+			</java>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="virtual-tomcat-start">
-       <attribute name="heapmax" default="-Xmx512M"/>
-       <sequential>
-           <antcall  target="wait-for-alfresco"/>
-           <echo>Starting Virtual Tomcat:  ${virtual.tomcat.home}</echo>
-           <java jar="${virtual.tomcat.home}/bin/bootstrap.jar" 
+	<macrodef name="virtual-tomcat-start">
+		<attribute name="heapmax" default="-Xmx512M"/>
+		<sequential>
+			<antcall  target="wait-for-alfresco"/>
+			<echo>Starting Virtual Tomcat:  ${virtual.tomcat.home}</echo>
+			<java jar="${virtual.tomcat.home}/bin/bootstrap.jar" 
                  fork="true" jvm="${env.JAVA_HOME}/bin/java">
-               <jvmarg value="-Dcatalina.home=${virtual.tomcat.home}"/>
-               <jvmarg value="-Dcatalina.base=${virtual.tomcat.home}"/>
-               <jvmarg value="-server"/>
-               <jvmarg value="@{heapmax}"/>
-               <jvmarg value="-Djava.io.tmpdir=${virtual.tomcat.home}/temp"/>
-               <jvmarg value="-Djava.security.policy=${virtual.tomcat.home}/conf/catalina.policy"/>
-           </java>
-       </sequential>
-   </macrodef>
+				<jvmarg value="-Dcatalina.home=${virtual.tomcat.home}"/>
+				<jvmarg value="-Dcatalina.base=${virtual.tomcat.home}"/>
+				<jvmarg value="-server"/>
+				<jvmarg value="@{heapmax}"/>
+				<jvmarg value="-Djava.io.tmpdir=${virtual.tomcat.home}/temp"/>
+				<jvmarg value="-Djava.security.policy=${virtual.tomcat.home}/conf/catalina.policy"/>
+			</java>
+		</sequential>
+	</macrodef>
 
-   <macrodef name="generate-classpath">
-      <attribute name="libdir"/>
-      <attribute name="classfile"/>
-      <attribute name="classprop"/>
-      <!-- as part of fix for ETHREEOH-3996 - allow extra directories to be added to the classpath -->
-      <attribute name="optionalDirs" default=""/>
+	<macrodef name="generate-classpath">
+		<attribute name="libdir"/>
+		<attribute name="classfile"/>
+		<attribute name="classprop"/>
+		<!-- as part of fix for ETHREEOH-3996 - allow extra directories to be added to the classpath -->
+		<attribute name="optionalDirs" default=""/>
 
-      <sequential>
-      <echo file="@{classfile}"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-   <classpathentry kind="src" path="source"/>
-   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-   <classpathentry exported="true" kind="lib" path="]]></echo>
+		<sequential>
+			<echo file="@{classfile}">
+				<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<classpath>
+					<classpathentry kind="src" path="source"/>
+					<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+					<classpathentry exported="true" kind="lib" path="]]></echo>
      <pathconvert pathsep="@@@" dirsep="/" property="@{classprop}">
        <path>
             <fileset dir="@{libdir}" includes="**/*.jar"/>
@@ -420,15 +445,15 @@
 
       <replace file="@{classfile}" token="@@@">
          <replacevalue><![CDATA["/>
-   <classpathentry exported="true" kind="lib" path="]]></replacevalue>
+					<classpathentry exported="true" kind="lib" path="]]></replacevalue>
       </replace>
 
       <echo file="@{classfile}" append="true"><![CDATA["/>
-   <classpathentry kind="output" path="build"/>
-</classpath>
+					<classpathentry kind="output" path="build"/>
+				</classpath>
 ]]></echo>
-       </sequential>
-   </macrodef>
+		</sequential>
+	</macrodef>
 
 
 

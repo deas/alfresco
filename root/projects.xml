@@ -345,6 +345,7 @@
    <target name="test-repository" 
            depends="compile-repository">
       <run-tests-startup projectdir="${dir.project.repository}" />
+      <run-tests-intermittent projectdir="${dir.project.repository}" />
       <run-tests projectdir="${dir.project.repository}" />
    </target>
    
