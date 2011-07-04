@@ -626,14 +626,15 @@ class IPCHandler {
 		prms.packLong(0); // Change time
 
 		prms.packInt(0x0080); // File attributes
-		prms.packLong(4096); // Allocation size
+		prms.packLong(0); // Allocation size
 		prms.packLong(0); // End of file
 		prms.packWord(2); // File type - named pipe, message mode
 		prms.packByte(0xFF); // Pipe instancing count
 		prms.packByte(0x05); // IPC state bits
 
 		prms.packByte(0); // directory flag
-
+		prms.packWord(0); // byte count = 0
+		
 		// Pack the extra extended response area, if requested
 		
 		if ( extendedResponse == true) {
@@ -655,14 +656,18 @@ class IPCHandler {
 			prms.packWord( 0);
 		}
 		
-		smbPkt.setByteCount(0);
+		// Set the AndX offset
 
-		smbPkt.setAndXCommand(0xFF);
-		smbPkt.setParameter(1, smbPkt.getLength()); // AndX offset
+		int endPos = prms.getPosition();
+		smbPkt.setParameter(1, endPos - RFCNetBIOSProtocol.HEADER_LEN);
+
+		// Set the status
+		
+		smbPkt.setLongErrorCode( SMBStatus.NTSuccess);
 
 		// Send the response packet
 
-		sess.sendResponseSMB(smbPkt);
+		sess.sendResponseSMB(smbPkt, endPos - RFCNetBIOSProtocol.HEADER_LEN);
 	}
 
 	/**
