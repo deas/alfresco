@@ -39,6 +39,8 @@ import org.springframework.extensions.surf.util.StringBuilderWriter;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.connector.Connector;
 import org.springframework.extensions.webscripts.connector.ConnectorContext;
+import org.springframework.extensions.webscripts.connector.CredentialVault;
+import org.springframework.extensions.webscripts.connector.Credentials;
 import org.springframework.extensions.webscripts.connector.HttpMethod;
 import org.springframework.extensions.webscripts.connector.Response;
 import org.springframework.extensions.webscripts.connector.User;
@@ -60,6 +62,8 @@ public class SlingshotUserFactory extends AlfrescoUserFactory
     public static final String PROP_USERSTATUS = "userStatus";
     public static final String PROP_USERSTATUSTIME = "userStatusTime";  
     
+    public static final String ACTIVITI_ADMIN_ENDPOINT_ID = "activiti-admin";
+    
     /**
      * @see org.alfresco.web.site.UserFactory#authenticate(org.alfresco.web.site.RequestContext, javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
      */
@@ -72,6 +76,15 @@ public class SlingshotUserFactory extends AlfrescoUserFactory
         if (!AuthenticationUtil.isGuest(username))
         {
             authenticated = super.authenticate(request, username, password);
+            
+            if (authenticated)
+            {
+                // Add activiti-admin credentials to the vault as well.
+                CredentialVault vault = frameworkUtils.getCredentialVault(request.getSession(), username);
+                Credentials credentials = vault.newCredentials(ACTIVITI_ADMIN_ENDPOINT_ID);
+                credentials.setProperty(Credentials.CREDENTIAL_USERNAME, username);
+                credentials.setProperty(Credentials.CREDENTIAL_PASSWORD, password);
+            }
         }
         return authenticated;
     }
