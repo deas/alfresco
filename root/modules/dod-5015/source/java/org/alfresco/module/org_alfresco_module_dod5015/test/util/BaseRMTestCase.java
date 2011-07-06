@@ -18,6 +18,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSc
 import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionService;
 import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.module.org_alfresco_module_dod5015.model.RmSiteType;
 import org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.policy.PolicyComponent;
@@ -31,7 +32,9 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
+import org.alfresco.service.cmr.site.SiteVisibility;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ApplicationContextHelper;
@@ -61,6 +64,9 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
     protected QName ASPECT_CUSTOM_ASPECT = QName.createQName(URI, "customAspect");
     protected QName ASPECT_RECORD_META_DATA = QName.createQName(URI, "recordMetaData");
     
+    /** Site id */
+    protected static final String SITE_ID = "mySite";
+    
     /** Services */
     protected NodeService nodeService;
     protected ContentService contentService;
@@ -81,7 +87,8 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
     
     /** test data */
     protected StoreRef storeRef;
-    protected NodeRef rootNodeRef;    
+    protected NodeRef rootNodeRef;   
+    protected SiteInfo siteInfo;
     protected NodeRef folder;
     protected NodeRef rmRootContainer;
     protected NodeRef rmContainer;
@@ -94,25 +101,25 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
      *      |
      *      |--mhContainer
      *         |
-     *         |--mhContainer-1-1 (has schedule)
+     *         |--mhContainer-1-1 (has schedule - folder level)
      *         |  |
      *         |  |--mhContainer-2-1
      *         |     |
      *         |     |--mhContainer-3-1
      *         |         
-     *         |--mhContainer-1-2 (has schedule)
+     *         |--mhContainer-1-2 (has schedule - folder level)
      *            |
      *            |--mhContainer-2-2
      *            |  |
      *            |  |--mhContainer-3-2
      *            |  |
-     *            |  |--mhContainer-3-3 (has schedule)
+     *            |  |--mhContainer-3-3 (has schedule - record level)
      *            |  
-     *            |--mhContainer-2-3 (has schedule)
+     *            |--mhContainer-2-3 (has schedule - folder level)
      *               |
      *               |--mhContainer-3-4
      *               |     
-     *               |--mhContainer-3-5 (has schedule)        
+     *               |--mhContainer-3-5 (has schedule- record level)        
      */
     
     protected NodeRef mhContainer;
@@ -207,8 +214,11 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
                 // As system user
                 AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getSystemUserName());
                 
-                // Delete the store
-                nodeService.deleteStore(storeRef);
+                // Delete the folder
+                nodeService.deleteNode(folder);
+                
+                // Delete the site
+                siteService.deleteSite(SITE_ID);
                 
                 return null;
             }
@@ -235,30 +245,34 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
             public Object execute() throws Throwable
             {
                 // As system user
-                AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getSystemUserName());
+                AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
                 
                 // Create store and get the root node reference
-                storeRef = nodeService.createStore(StoreRef.PROTOCOL_WORKSPACE, "RM2_" + System.currentTimeMillis());
-                assertNotNull("Store was not created", storeRef);
-                rootNodeRef = nodeService.getRootNode(storeRef); 
-                assertNotNull("Can not retrieve root node reference", rootNodeRef);
+                //storeRef = nodeService.createStore(StoreRef.PROTOCOL_WORKSPACE, "RM2_" + System.currentTimeMillis());
+                //assertNotNull("Store was not created", storeRef);
+                //rootNodeRef = nodeService.getRootNode(storeRef); 
+                //assertNotNull("Can not retrieve root node reference", rootNodeRef);
+                
+                storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
+                rootNodeRef = nodeService.getRootNode(storeRef);
                 
                 // Create folder
                 String containerName = "RM2_" + System.currentTimeMillis();
                 Map<QName, Serializable> containerProps = new HashMap<QName, Serializable>(1);
                 containerProps.put(ContentModel.PROP_NAME, containerName);
                 folder = nodeService.createNode(
-                        rootNodeRef, 
-                        ContentModel.ASSOC_CHILDREN, 
-                        QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, containerName), 
-                        ContentModel.TYPE_FOLDER,
-                        containerProps).getChildRef();
+                      rootNodeRef, 
+                      ContentModel.ASSOC_CHILDREN, 
+                      QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, containerName), 
+                      ContentModel.TYPE_FOLDER,
+                      containerProps).getChildRef();
                 assertNotNull("Could not create base folder", folder);
                 
-                // Create RM root
-                rmRootContainer = rmService.createRecordsManagementRoot(folder, "rmRoot");
-                assertNotNull("Could not create root container", rmRootContainer);
-                
+                // Create the site
+                siteInfo = siteService.createSite("preset", SITE_ID, "title", "descrition", SiteVisibility.PUBLIC, RecordsManagementModel.TYPE_RM_SITE);
+                rmRootContainer = siteService.getContainer(SITE_ID, RmSiteType.COMPONENT_DOCUMENT_LIBRARY);
+                assertNotNull("Site document library container was not created successfully.", rmRootContainer);
+                                
                 // Create RM container
                 rmContainer = rmService.createRecordsManagementContainer(rmRootContainer, "rmContainer");
                 assertNotNull("Could not create rm container", rmContainer);
@@ -304,10 +318,10 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
                 mhContainer31 = rmService.createRecordsManagementContainer(mhContainer21, "mhContainer31");
                 mhContainer32 = rmService.createRecordsManagementContainer(mhContainer22, "mhContainer32");
                 mhContainer33 = rmService.createRecordsManagementContainer(mhContainer22, "mhContainer33");
-                mhDispositionSchedule33 = createBasicDispositionSchedule(mhContainer33, "ds33", DEFAULT_DISPOSITION_AUTHORITY, false, true);
+                mhDispositionSchedule33 = createBasicDispositionSchedule(mhContainer33, "ds33", DEFAULT_DISPOSITION_AUTHORITY, true, true);
                 mhContainer34 = rmService.createRecordsManagementContainer(mhContainer23, "mhContainer34");
                 mhContainer35 = rmService.createRecordsManagementContainer(mhContainer23, "mhContainer35");
-                mhDispositionSchedule35 = createBasicDispositionSchedule(mhContainer35, "ds35", DEFAULT_DISPOSITION_AUTHORITY, false, true);
+                mhDispositionSchedule35 = createBasicDispositionSchedule(mhContainer35, "ds35", DEFAULT_DISPOSITION_AUTHORITY, true, true);
                 
                 // Record folders
                 mhRecordFolder41 = rmService.createRecordFolder(mhContainer31, "mhFolder41");
@@ -367,7 +381,7 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
             adParams = new HashMap<QName, Serializable>(3);
             adParams.put(PROP_DISPOSITION_ACTION_NAME, "destroy");
             adParams.put(PROP_DISPOSITION_DESCRIPTION, DEFAULT_DISPOSITION_DESCRIPTION);
-            adParams.put(PROP_DISPOSITION_PERIOD, "weekly|1");            
+            adParams.put(PROP_DISPOSITION_PERIOD, "immediately|0");            
             
             dispositionService.addDispositionActionDefinition(dispositionSchedule, adParams);
         }
@@ -375,21 +389,33 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
         return dispositionSchedule;
     }
     
-	protected NodeRef createRecord(NodeRef recordFolder, String name)
+    protected NodeRef createRecord(NodeRef recordFolder, String name)
+    {
+        return createRecord(recordFolder, name, null, "Some test content");
+    }
+    
+	protected NodeRef createRecord(NodeRef recordFolder, String name, Map<QName, Serializable> properties, String content)
 	{
     	// Create the document
-        Map<QName, Serializable> props = new HashMap<QName, Serializable>(1);
-        props.put(ContentModel.PROP_NAME, name);
+	    if (properties == null)
+	    {
+	        properties = new HashMap<QName, Serializable>(1);
+	    }
+        if (properties.containsKey(ContentModel.PROP_NAME) == false)
+        {
+            properties.put(ContentModel.PROP_NAME, name);
+        }
         NodeRef recordOne = this.nodeService.createNode(recordFolder, 
                                                         ContentModel.ASSOC_CONTAINS, 
                                                         QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name), 
-                                                        ContentModel.TYPE_CONTENT).getChildRef();
+                                                        ContentModel.TYPE_CONTENT,
+                                                        properties).getChildRef();
         
         // Set the content
         ContentWriter writer = contentService.getWriter(recordOne, ContentModel.PROP_CONTENT, true);
         writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
         writer.setEncoding("UTF-8");
-        writer.putContent("There is some content in this record");
+        writer.putContent(content);
         
         return recordOne;
 	}   

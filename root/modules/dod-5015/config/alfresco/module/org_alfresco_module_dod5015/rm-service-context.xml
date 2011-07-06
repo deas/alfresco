@@ -167,14 +167,40 @@
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="siteService" ref="SiteService"/>  
         <property name="namespaceService" ref="NamespaceService" />
+        <property name="searchService" ref="SearchService" />
         <property name="reportsJSON">
         	<value>
                 <![CDATA[
                 [
                 	{
-                		"name" : "Test",
-                		"description" : "This is a test query.",
-                		"query" : "keywords:\"test\""
+                		"name" : "Vital Records Due For Review",
+                		"description" : "All records currently due for review.",
+                		"search" : "keywords:\"test\""
+                	},
+                	{
+                		"name" : "Undeclared Records",
+                		"description" : "All undeclared records.",
+                		"search" : "keywords:\"test\""
+                	},
+                	{
+                		"name" : "Records Due For Cutoff",
+                		"description" : "All records currently due for cutoff.",
+                		"search" : "keywords:\"test\""
+                	},
+                	{
+                		"name" : "Records Due For Transfer",
+                		"description" : "All records currently due for transfer.",
+                		"search" : "keywords:\"test\""
+                	},
+                	{
+                		"name" : "Records Due For Destruction",
+                		"description" : "All records currently due for cutoff.",
+                		"search" : "keywords:\"test\""
+                	},
+                	{
+                		"name" : "Frozen Records",
+                		"description" : "All frozen records.",
+                		"search" : "keywords:\"test\""
                 	}
                 ]
                 ]]>

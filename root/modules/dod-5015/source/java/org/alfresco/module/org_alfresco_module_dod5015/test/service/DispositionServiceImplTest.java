@@ -54,12 +54,12 @@ public class DispositionServiceImplTest extends BaseRMTestCase
                 // Get the containers disposition schedule
                 DispositionSchedule ds = dispositionService.getDispositionSchedule(rmContainer);
                 assertNotNull(ds);                
-                checkDispositionSchedule(ds);
+                checkDispositionSchedule(ds, false);
                 
                 // Get the folders disposition schedule
                 ds = dispositionService.getDispositionSchedule(rmContainer);
                 assertNotNull(ds);                  
-                checkDispositionSchedule(ds);
+                checkDispositionSchedule(ds, false);
                 
                 return null;
             }
@@ -104,42 +104,45 @@ public class DispositionServiceImplTest extends BaseRMTestCase
                 assertNull(dispositionService.getDispositionSchedule(mhContainer));
                 
                 // Level 1
-                doCheck(mhContainer11, "ds11");  
-                doCheck(mhContainer12, "ds12");
+                doCheck(mhContainer11, "ds11", false);  
+                doCheck(mhContainer12, "ds12", false);
                 
                 // Level 2
-                doCheck(mhContainer21, "ds11");
-                doCheck(mhContainer22, "ds12");
-                doCheck(mhContainer23, "ds23");
+                doCheck(mhContainer21, "ds11", false);
+                doCheck(mhContainer22, "ds12", false);
+                doCheck(mhContainer23, "ds23", false);
                 
                 // Level 3
-                doCheck(mhContainer31, "ds11");
-                doCheck(mhContainer32, "ds12");
-                doCheck(mhContainer33, "ds33");
-                doCheck(mhContainer34, "ds23");
-                doCheck(mhContainer35, "ds35");    
+                doCheck(mhContainer31, "ds11", false);
+                doCheck(mhContainer32, "ds12", false);
+                doCheck(mhContainer33, "ds33", true);
+                doCheck(mhContainer34, "ds23", false);
+                doCheck(mhContainer35, "ds35", true);    
                 
                 // Folders
-                doCheckFolder(mhRecordFolder41, "ds11");
-                doCheckFolder(mhRecordFolder42, "ds12");
-                doCheckFolder(mhRecordFolder43, "ds33");
-                doCheckFolder(mhRecordFolder44, "ds23");
-                doCheckFolder(mhRecordFolder45, "ds35"); 
+                doCheckFolder(mhRecordFolder41, "ds11", false);
+                doCheckFolder(mhRecordFolder42, "ds12", false);
+                doCheckFolder(mhRecordFolder43, "ds33", true);
+                doCheckFolder(mhRecordFolder44, "ds23", false);
+                doCheckFolder(mhRecordFolder45, "ds35", true); 
                 
                 return null;
             }
             
-            private void doCheck(NodeRef container, String dispositionInstructions)
+            private void doCheck(NodeRef container, String dispositionInstructions, boolean isRecordLevel)
             {
                 DispositionSchedule ds = dispositionService.getDispositionSchedule(container);
                 assertNotNull(ds);
-                checkDispositionSchedule(ds, dispositionInstructions, DEFAULT_DISPOSITION_AUTHORITY); 
+                checkDispositionSchedule(ds, dispositionInstructions, DEFAULT_DISPOSITION_AUTHORITY, isRecordLevel); 
             }
             
-            private void doCheckFolder(NodeRef container, String dispositionInstructions)
+            private void doCheckFolder(NodeRef container, String dispositionInstructions, boolean isRecordLevel)
             {
-                doCheck(container, dispositionInstructions);
-                assertNotNull(dispositionService.getNextDispositionAction(container));
+                doCheck(container, dispositionInstructions, isRecordLevel);
+                if (isRecordLevel == false)
+                {
+                    assertNotNull(dispositionService.getNextDispositionAction(container));
+                }
             }
         }); 
         
@@ -150,11 +153,11 @@ public class DispositionServiceImplTest extends BaseRMTestCase
      * 
      * @param ds    disposition scheduleS
      */
-    private void checkDispositionSchedule(DispositionSchedule ds, String dispositionInstructions, String dispositionAuthority)
+    private void checkDispositionSchedule(DispositionSchedule ds, String dispositionInstructions, String dispositionAuthority, boolean isRecordLevel)
     {
         assertEquals(dispositionAuthority, ds.getDispositionAuthority());
         assertEquals(dispositionInstructions, ds.getDispositionInstructions());
-        assertFalse(ds.isRecordLevelDisposition());     
+        assertEquals(isRecordLevel, ds.isRecordLevelDisposition());     
         
         List<DispositionActionDefinition> defs = ds.getDispositionActionDefinitions();
         assertNotNull(defs);
@@ -173,9 +176,9 @@ public class DispositionServiceImplTest extends BaseRMTestCase
      * 
      * @param ds
      */
-    private void checkDispositionSchedule(DispositionSchedule ds)
+    private void checkDispositionSchedule(DispositionSchedule ds, boolean isRecordLevel)
     {
-        checkDispositionSchedule(ds, DEFAULT_DISPOSITION_INSTRUCTIONS, DEFAULT_DISPOSITION_AUTHORITY);
+        checkDispositionSchedule(ds, DEFAULT_DISPOSITION_INSTRUCTIONS, DEFAULT_DISPOSITION_AUTHORITY, isRecordLevel);
     }
     
     /**
@@ -192,7 +195,7 @@ public class DispositionServiceImplTest extends BaseRMTestCase
                 // Get the containers disposition schedule
                 DispositionSchedule ds = dispositionService.getAssociatedDispositionSchedule(rmContainer);
                 assertNotNull(ds);                
-                checkDispositionSchedule(ds);
+                checkDispositionSchedule(ds, false);
                 
                 // Show the null disposition schedules
                 assertNull(dispositionService.getAssociatedDispositionSchedule(rmRootContainer));
@@ -226,29 +229,29 @@ public class DispositionServiceImplTest extends BaseRMTestCase
                 assertNull(dispositionService.getAssociatedDispositionSchedule(mhContainer));
                 
                 // Level 1
-                doCheck(mhContainer11, "ds11");  
-                doCheck(mhContainer12, "ds12");
+                doCheck(mhContainer11, "ds11", false);  
+                doCheck(mhContainer12, "ds12", false);
                 
                 // Level 2
                 assertNull(dispositionService.getAssociatedDispositionSchedule(mhContainer21));
                 assertNull(dispositionService.getAssociatedDispositionSchedule(mhContainer22));
-                doCheck(mhContainer23, "ds23");
+                doCheck(mhContainer23, "ds23", false);
                 
                 // Level 3
                 assertNull(dispositionService.getAssociatedDispositionSchedule(mhContainer31));
                 assertNull(dispositionService.getAssociatedDispositionSchedule(mhContainer32));
-                doCheck(mhContainer33, "ds33");
+                doCheck(mhContainer33, "ds33", true);
                 assertNull(dispositionService.getAssociatedDispositionSchedule(mhContainer34));
-                doCheck(mhContainer35, "ds35");    
+                doCheck(mhContainer35, "ds35", true);    
                 
                 return null;
             }
             
-            private void doCheck(NodeRef container, String dispositionInstructions)
+            private void doCheck(NodeRef container, String dispositionInstructions, boolean isRecordLevel)
             {
                 DispositionSchedule ds = dispositionService.getAssociatedDispositionSchedule(container);
                 assertNotNull(ds);
-                checkDispositionSchedule(ds, dispositionInstructions, DEFAULT_DISPOSITION_AUTHORITY); 
+                checkDispositionSchedule(ds, dispositionInstructions, DEFAULT_DISPOSITION_AUTHORITY, isRecordLevel); 
             }
         });       
     }
@@ -288,8 +291,8 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             	assertTrue(dispositionService.hasDisposableItems(mhDispositionSchedule11));
             	assertTrue(dispositionService.hasDisposableItems(mhDispositionSchedule12));
             	assertTrue(dispositionService.hasDisposableItems(mhDispositionSchedule23));
-            	assertTrue(dispositionService.hasDisposableItems(mhDispositionSchedule33));
-            	assertTrue(dispositionService.hasDisposableItems(mhDispositionSchedule35));
+            	assertFalse(dispositionService.hasDisposableItems(mhDispositionSchedule33));
+            	assertFalse(dispositionService.hasDisposableItems(mhDispositionSchedule35));
                 
                 return null;
             }
@@ -343,13 +346,11 @@ public class DispositionServiceImplTest extends BaseRMTestCase
                 
                 nodeRefs = dispositionService.getDisposableItems(mhDispositionSchedule33);
                 assertNotNull(nodeRefs);
-                assertEquals(1, nodeRefs.size());
-                assertTrue(nodeRefs.contains(mhRecordFolder43));
+                assertEquals(0, nodeRefs.size());
                 
                 nodeRefs = dispositionService.getDisposableItems(mhDispositionSchedule35);
                 assertNotNull(nodeRefs);
-                assertEquals(1, nodeRefs.size());
-                assertTrue(nodeRefs.contains(mhRecordFolder45));
+                assertEquals(0, nodeRefs.size());
                 
                 return null;
             }
@@ -384,7 +385,7 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             	assertNotNull(ds);
             	
             	// Check the disposition schedule
-            	checkDispositionSchedule(ds, "testCreateDispositionSchedule", "testCreateDispositionSchedule");
+            	checkDispositionSchedule(ds, "testCreateDispositionSchedule", "testCreateDispositionSchedule", false);
             }
         });      
         
@@ -438,8 +439,8 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             	assertNotNull(testB);
             	
             	// Check the disposition schedule
-            	checkDispositionSchedule(testA, "testA", "testA");
-            	checkDispositionSchedule(testB, "testB", "testB");
+            	checkDispositionSchedule(testA, "testA", "testA", false);
+            	checkDispositionSchedule(testB, "testB", "testB", false);
             }
         });      
         
@@ -527,7 +528,10 @@ public class DispositionServiceImplTest extends BaseRMTestCase
     // TODO DispositionActionDefinition addDispositionActionDefinition
    
     // TODO void removeDispositionActionDefinition(
-            
+        
+    private NodeRef record43;
+    private NodeRef record45;
+    
     public void testUpdateDispositionActionDefinitionMultiHier() throws Exception
     {
         doTestInTransaction(new Test<Void>()
@@ -535,12 +539,24 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             @Override
             public Void run() throws Exception
             {
+                record43 = createRecord(mhRecordFolder43, "record1.txt");
+                record45 = createRecord(mhRecordFolder45, "record2.txt");
+                
+                return null;
+            }   
+        });
+        
+        doTestInTransaction(new Test<Void>()
+        {
+            @Override
+            public Void run() throws Exception
+            {
                 // Check all the current record folders first
-                checkRecordFolderUnchanged(mhRecordFolder41);
-                checkRecordFolderUnchanged(mhRecordFolder42);
-                checkRecordFolderUnchanged(mhRecordFolder43);
-                checkRecordFolderUnchanged(mhRecordFolder44);
-                checkRecordFolderUnchanged(mhRecordFolder45);
+                checkDisposableItemUnchanged(mhRecordFolder41);
+                checkDisposableItemUnchanged(mhRecordFolder42);
+                checkDisposableItemUnchanged(record43);
+                checkDisposableItemUnchanged(mhRecordFolder44);
+                checkDisposableItemUnchanged(record45);
                 
                 updateDispositionScheduleOnContainer(mhContainer11);
                 
@@ -551,11 +567,11 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             public void test(Void result) throws Exception
             {
                 // Check all the current record folders first
-                checkRecordFolderChanged(mhRecordFolder41);
-                checkRecordFolderUnchanged(mhRecordFolder42);
-                checkRecordFolderUnchanged(mhRecordFolder43);
-                checkRecordFolderUnchanged(mhRecordFolder44);
-                checkRecordFolderUnchanged(mhRecordFolder45);;
+                checkDisposableItemChanged(mhRecordFolder41);
+                checkDisposableItemUnchanged(mhRecordFolder42);
+                checkDisposableItemUnchanged(record43);
+                checkDisposableItemUnchanged(mhRecordFolder44);
+                checkDisposableItemUnchanged(record45);;
             }
         }); 
         
@@ -573,11 +589,11 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             public void test(Void result) throws Exception
             {
                 // Check all the current record folders first
-                checkRecordFolderChanged(mhRecordFolder41);
-                checkRecordFolderChanged(mhRecordFolder42);
-                checkRecordFolderUnchanged(mhRecordFolder43);
-                checkRecordFolderUnchanged(mhRecordFolder44);
-                checkRecordFolderUnchanged(mhRecordFolder45);;
+                checkDisposableItemChanged(mhRecordFolder41);
+                checkDisposableItemChanged(mhRecordFolder42);
+                checkDisposableItemUnchanged(record43);
+                checkDisposableItemUnchanged(mhRecordFolder44);
+                checkDisposableItemUnchanged(record45);;
             }
         }); 
         
@@ -595,11 +611,11 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             public void test(Void result) throws Exception
             {
                 // Check all the current record folders first
-                checkRecordFolderChanged(mhRecordFolder41);
-                checkRecordFolderChanged(mhRecordFolder42);
-                checkRecordFolderChanged(mhRecordFolder43);
-                checkRecordFolderUnchanged(mhRecordFolder44);
-                checkRecordFolderUnchanged(mhRecordFolder45);;
+                checkDisposableItemChanged(mhRecordFolder41);
+                checkDisposableItemChanged(mhRecordFolder42);
+                checkDisposableItemChanged(record43);
+                checkDisposableItemUnchanged(mhRecordFolder44);
+                checkDisposableItemUnchanged(record45);;
             }
         });
         
@@ -617,11 +633,11 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             public void test(Void result) throws Exception
             {
                 // Check all the current record folders first
-                checkRecordFolderChanged(mhRecordFolder41);
-                checkRecordFolderChanged(mhRecordFolder42);
-                checkRecordFolderChanged(mhRecordFolder43);
-                checkRecordFolderChanged(mhRecordFolder44);
-                checkRecordFolderUnchanged(mhRecordFolder45);;
+                checkDisposableItemChanged(mhRecordFolder41);
+                checkDisposableItemChanged(mhRecordFolder42);
+                checkDisposableItemChanged(record43);
+                checkDisposableItemChanged(mhRecordFolder44);
+                checkDisposableItemUnchanged(record45);
             }
         });
         
@@ -639,11 +655,11 @@ public class DispositionServiceImplTest extends BaseRMTestCase
             public void test(Void result) throws Exception
             {
                 // Check all the current record folders first
-                checkRecordFolderChanged(mhRecordFolder41);
-                checkRecordFolderChanged(mhRecordFolder42);
-                checkRecordFolderChanged(mhRecordFolder43);
-                checkRecordFolderChanged(mhRecordFolder44);
-                checkRecordFolderChanged(mhRecordFolder45);;
+                checkDisposableItemChanged(mhRecordFolder41);
+                checkDisposableItemChanged(mhRecordFolder42);
+                checkDisposableItemChanged(record43);
+                checkDisposableItemChanged(mhRecordFolder44);
+                checkDisposableItemChanged(record45);
             }
         });
     }
@@ -656,7 +672,7 @@ public class DispositionServiceImplTest extends BaseRMTestCase
         pub.publish(dad.getNodeRef());
     }
     
-    private void checkRecordFolderUnchanged(NodeRef recordFolder)
+    private void checkDisposableItemUnchanged(NodeRef recordFolder)
     {
         checkDispositionAction(
                 dispositionService.getNextDispositionAction(recordFolder), 
@@ -665,7 +681,7 @@ public class DispositionServiceImplTest extends BaseRMTestCase
                 PERIOD_NONE);                
     }
     
-    private void checkRecordFolderChanged(NodeRef recordFolder) throws Exception
+    private void checkDisposableItemChanged(NodeRef recordFolder) throws Exception
     {
         checkDispositionAction(
                 dispositionService.getNextDispositionAction(recordFolder), 
@@ -674,13 +690,13 @@ public class DispositionServiceImplTest extends BaseRMTestCase
                 "week|1");                
     }
     
-    private void updateDispositionScheduleOnContainer(NodeRef container)
+    private void updateDispositionScheduleOnContainer(NodeRef nodeRef)
     {
         Map<QName, Serializable> updateProps = new HashMap<QName, Serializable>(3);
         updateProps.put(PROP_DISPOSITION_PERIOD, "week|1"); 
         updateProps.put(PROP_DISPOSITION_EVENT, (Serializable)Arrays.asList(DEFAULT_EVENT_NAME, "abolished"));
         
-        DispositionSchedule ds = dispositionService.getAssociatedDispositionSchedule(container);
+        DispositionSchedule ds = dispositionService.getDispositionSchedule(nodeRef);
         DispositionActionDefinition dad = ds.getDispositionActionDefinitionByName("cutoff");
         dispositionService.updateDispositionActionDefinition(dad, updateProps);     
         publishDispositionActionDefinitionChange(dad);

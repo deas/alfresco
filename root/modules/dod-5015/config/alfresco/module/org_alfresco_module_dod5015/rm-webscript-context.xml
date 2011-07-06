@@ -299,4 +299,20 @@
     <bean id="webscript.org.alfresco.rma.applyfixmob1573.get" class="org.alfresco.module.org_alfresco_module_dod5015.script.ApplyFixMob1573Get" parent="webscript">
         <property name="contentService" ref="ContentService" />
     </bean>
+    
+    <!--  RM search web script -->
+    <bean id="webscript.org.alfresco.slingshot.rmsearch.rmsavedsearches.get" 
+          class="org.alfresco.module.org_alfresco_module_dod5015.script.slingshot.RMSavedSearchesGet" 
+          parent="webscript">
+    	<property name="siteService" ref="SiteService"/>
+    	<property name="recordsManagementSearchService" ref="RecordsManagementSearchService"/>
+    </bean>
+    
+    <bean id="webscript.org.alfresco.slingshot.rmsearch.rmsavedsearches.post" 
+          class="org.alfresco.module.org_alfresco_module_dod5015.script.slingshot.RMSavedSearchesPost" 
+          parent="webscript">
+    	<property name="siteService" ref="SiteService"/>
+    	<property name="recordsManagementSearchService" ref="RecordsManagementSearchService"/>
+    	<property name="namespaceService" ref="namespaceService"/>
+    </bean>
 </beans>

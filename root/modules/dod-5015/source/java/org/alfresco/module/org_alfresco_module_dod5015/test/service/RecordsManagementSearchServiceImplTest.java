@@ -5,11 +5,12 @@ package org.alfresco.module.org_alfresco_module_dod5015.test.service;
 
 import java.util.List;
 
+import org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchParameters;
 import org.alfresco.module.org_alfresco_module_dod5015.search.SavedSearchDetails;
 import org.alfresco.module.org_alfresco_module_dod5015.test.util.BaseRMTestCase;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.security.MutableAuthenticationService;
-import org.alfresco.service.cmr.site.SiteInfo;
-import org.alfresco.service.cmr.site.SiteVisibility;
 import org.alfresco.util.TestWithUserUtils;
 
 /**
@@ -22,10 +23,8 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
     @Override
     protected boolean isMultiHierarchyTest()
     {
-        return false;
+        return true;
     }
-    
-    private static final String SITE_ID = "mySite";
     
     private static final String SEARCH1 = "search1";
     private static final String SEARCH2 = "search2";
@@ -35,10 +34,23 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
     private static final String USER1 = "user1";
     private static final String USER2 = "user2";
     
-    MutableAuthenticationService authenticationService;
+    private NodeRef folderLevelRecordFolder;
+    private NodeRef recordLevelRecordFolder;
     
-    private SiteInfo siteInfo;    
+    private NodeRef recordOne;
+    private NodeRef recordTwo;
+    private NodeRef recordThree;
+    private NodeRef recordFour;
+    private NodeRef recordFive;
+    private NodeRef recordSix;
     
+    private MutableAuthenticationService authenticationService;
+    
+    private int numberOfReports;
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.test.util.BaseRMTestCase#setupTestData()
+     */
     @Override
     protected void setupTestData()
     {
@@ -51,13 +63,42 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
             @Override
             public Void run()
             {
-                // Create test site
-                siteInfo = siteService.createSite("preset", SITE_ID, "title", "descrition", SiteVisibility.PUBLIC);
-                assertNotNull(siteInfo);
-                
                 // Create test users                
                 TestWithUserUtils.createUser(USER1, USER1, rootNodeRef, nodeService, authenticationService);
                 TestWithUserUtils.createUser(USER2, USER2, rootNodeRef, nodeService, authenticationService);
+                
+                // Count the number of pre-defined reports
+                List<SavedSearchDetails> searches = rmSearchService.getSavedSearches(SITE_ID);
+                assertNotNull(searches);
+                numberOfReports = searches.size();
+                
+                return null;
+            }
+        });
+    }
+    
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.test.util.BaseRMTestCase#setupMultiHierarchyTestData()
+     */
+    @Override
+    protected void setupMultiHierarchyTestData()
+    {
+        super.setupMultiHierarchyTestData();
+        
+        doTestInTransaction(new Test<Void>()
+        {
+            @Override
+            public Void run()
+            {
+                folderLevelRecordFolder = mhRecordFolder42;
+                recordLevelRecordFolder = mhRecordFolder43;                
+                
+                recordOne = createRecord(folderLevelRecordFolder, "recordOne.txt", null, "record one - folder level - elephant");
+                recordTwo = createRecord(folderLevelRecordFolder, "recordTwo.txt", null, "record two - folder level - snake");
+                recordThree = createRecord(folderLevelRecordFolder, "recordThree.txt", null, "record three - folder level - monkey");
+                recordFour = createRecord(recordLevelRecordFolder, "recordFour.txt", null, "record four - record level - elephant");
+                recordFive = createRecord(recordLevelRecordFolder, "recordFive.txt", null, "record five - record level - snake");
+                recordSix = createRecord(recordLevelRecordFolder, "recordSix.txt", null, "record six - record level - monkey");
                 
                 return null;
             }
@@ -78,28 +119,45 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
                 TestWithUserUtils.deleteUser(USER1, USER1, rootNodeRef, nodeService, authenticationService);
                 TestWithUserUtils.deleteUser(USER2, USER2, rootNodeRef, nodeService, authenticationService);
                 
-                // Delete test site
-                siteService.deleteSite(SITE_ID);
-                
                 return null;
             }
         });
     }
     
-    // TODO List<NodeRef> search(String query); 
-    
-    public void testSaveSearch()
+    public void testSearch()
     {
-       // Add some saved searches (as admin user)
+        // Full text search 
         doTestInTransaction(new Test<Void>()
         {
             @Override
             public Void run()
             {
-                SavedSearchDetails details1 = rmSearchService.saveSearch(SITE_ID, SEARCH1, "description1", "query1", "sort1", "param1", true);
-                checkSearchDetails(details1, "mySite", "search1", "description1", "query1", "sort1", "param1", true);
-                SavedSearchDetails details2 = rmSearchService.saveSearch(SITE_ID, SEARCH2, "description2", "query2", "sort2", "param2", false);
-                checkSearchDetails(details2, "mySite", "search2", "description2", "query2", "sort2", "param2", false);
+                String query = "keywords:\"elephant\"";                
+                List<NodeRef> results = rmSearchService.search(SITE_ID, query, new RecordsManagementSearchParameters());
+                assertNotNull(results);
+                assertEquals(2, results.size());
+                
+                return null;
+            }
+        });
+        
+        // Property search
+        
+        // 
+    }
+    
+    public void testSaveSearch()
+    {
+        // Add some saved searches (as admin user)
+        doTestInTransaction(new Test<Void>()
+        {
+            @Override
+            public Void run()
+            {
+                SavedSearchDetails details1 = rmSearchService.saveSearch(SITE_ID, SEARCH1, "description1", "query1", new RecordsManagementSearchParameters(), true);
+                checkSearchDetails(details1, "mySite", "search1", "description1", "query1", new RecordsManagementSearchParameters(), true);
+                SavedSearchDetails details2 = rmSearchService.saveSearch(SITE_ID, SEARCH2, "description2", "query2", new RecordsManagementSearchParameters(), false);
+                checkSearchDetails(details2, "mySite", "search2", "description2", "query2", new RecordsManagementSearchParameters(), false);
                 
                 return null;
             }
@@ -112,10 +170,10 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
             @Override
             public Void run()
             {
-                SavedSearchDetails details1 = rmSearchService.saveSearch(SITE_ID, SEARCH3, "description3", "query3", "sort3", "param3", false);
-                checkSearchDetails(details1, "mySite", SEARCH3, "description3", "query3", "sort3", "param3", false);
-                SavedSearchDetails details2 = rmSearchService.saveSearch(SITE_ID, SEARCH4, "description4", "query4", "sort4", "param4", false);
-                checkSearchDetails(details2, "mySite", SEARCH4, "description4", "query4", "sort4", "param4", false);
+                SavedSearchDetails details1 = rmSearchService.saveSearch(SITE_ID, SEARCH3, "description3", "query3", new RecordsManagementSearchParameters(), false);
+                checkSearchDetails(details1, "mySite", SEARCH3, "description3", "query3", new RecordsManagementSearchParameters(), false);
+                SavedSearchDetails details2 = rmSearchService.saveSearch(SITE_ID, SEARCH4, "description4", "query4", new RecordsManagementSearchParameters(), false);
+                checkSearchDetails(details2, "mySite", SEARCH4, "description4", "query4", new RecordsManagementSearchParameters(), false);
                 
                 return null;
             }
@@ -130,15 +188,15 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
             {
                 List<SavedSearchDetails> searches = rmSearchService.getSavedSearches(SITE_ID);
                 assertNotNull(searches);
-                assertEquals(2, searches.size());
+                assertEquals(numberOfReports + 2, searches.size());
                 
                 SavedSearchDetails search1 = rmSearchService.getSavedSearch(SITE_ID, SEARCH1);
                 assertNotNull(search1);
-                checkSearchDetails(search1, "mySite", "search1", "description1", "query1", "sort1", "param1", true);
+                checkSearchDetails(search1, "mySite", "search1", "description1", "query1", new RecordsManagementSearchParameters(), true);
                 
                 SavedSearchDetails search2 = rmSearchService.getSavedSearch(SITE_ID, SEARCH2);
                 assertNotNull(search2);
-                checkSearchDetails(search2, "mySite", "search2", "description2", "query2", "sort2", "param2", false);
+                checkSearchDetails(search2, "mySite", "search2", "description2", "query2", new RecordsManagementSearchParameters(), false);
                 
                 SavedSearchDetails search3 = rmSearchService.getSavedSearch(SITE_ID, SEARCH3);
                 assertNull(search3);
@@ -159,22 +217,22 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
             {
                 List<SavedSearchDetails> searches = rmSearchService.getSavedSearches(SITE_ID);
                 assertNotNull(searches);
-                assertEquals(3, searches.size());
+                assertEquals(numberOfReports + 3, searches.size());
                 
                 SavedSearchDetails search1 = rmSearchService.getSavedSearch(SITE_ID, SEARCH1);
                 assertNotNull(search1);
-                checkSearchDetails(search1, "mySite", "search1", "description1", "query1", "sort1", "param1", true);
+                checkSearchDetails(search1, "mySite", "search1", "description1", "query1", new RecordsManagementSearchParameters(), true);
                 
                 SavedSearchDetails search2 = rmSearchService.getSavedSearch(SITE_ID, SEARCH2);
                 assertNull(search2);
                 
                 SavedSearchDetails search3 = rmSearchService.getSavedSearch(SITE_ID, SEARCH3);
                 assertNotNull(search3);
-                checkSearchDetails(search3, "mySite", SEARCH3, "description3", "query3", "sort3", "param3", false);
+                checkSearchDetails(search3, "mySite", SEARCH3, "description3", "query3", new RecordsManagementSearchParameters(), false);
                 
                 SavedSearchDetails search4 = rmSearchService.getSavedSearch(SITE_ID, SEARCH4);
                 assertNotNull(search4);
-                checkSearchDetails(search4, "mySite", "search4", "description4", "query4", "sort4", "param4", false);
+                checkSearchDetails(search4, "mySite", "search4", "description4", "query4", new RecordsManagementSearchParameters(), false);
                 
                 return null;
             }
@@ -189,38 +247,49 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
             {
                 SavedSearchDetails search1 = rmSearchService.getSavedSearch(SITE_ID, SEARCH1);
                 assertNotNull(search1);
-                checkSearchDetails(search1, SITE_ID, SEARCH1, "description1", "query1", "sort1", "param1", true);
+                checkSearchDetails(search1, SITE_ID, SEARCH1, "description1", "query1", new RecordsManagementSearchParameters(), true);
                 
-                rmSearchService.saveSearch(SITE_ID, SEARCH1, "change", "change", "change", "change", true);
+                rmSearchService.saveSearch(SITE_ID, SEARCH1, "change", "change", new RecordsManagementSearchParameters(), true);
                 
                 search1 = rmSearchService.getSavedSearch(SITE_ID, SEARCH1);
                 assertNotNull(search1);
-                checkSearchDetails(search1, SITE_ID, SEARCH1, "change", "change", "change", "change", true);
+                checkSearchDetails(search1, SITE_ID, SEARCH1, "change", "change", new RecordsManagementSearchParameters(), true);
                 
                 return null;                
             }
         });
         
-        // Delete searches (as admin user)   
+        // Delete searches (as admin user)  
+        // TODO
     }
     
+    /**
+     * Check the details of the saved search.
+     */
     private void checkSearchDetails(
                     SavedSearchDetails details, 
                     String siteid, 
                     String name, 
                     String description, 
                     String query, 
-                    String sort, 
-                    String params, 
+                    RecordsManagementSearchParameters searchParameters, 
                     boolean isPublic)
     {
         assertNotNull(details);
         assertEquals(siteid, details.getSiteId());
         assertEquals(name, details.getName());
         assertEquals(description, details.getDescription());
-        assertEquals(query, details.getQuery());
-        assertEquals(sort, details.getSort());
-        assertEquals(params, details.getParams());
-        assertEquals(isPublic, details.isPublic());       
+        assertEquals(query, details.getSearch());
+        assertEquals(isPublic, details.isPublic());
+        
+        assertEquals(searchParameters.getMaxItems(), details.getSearchParameters().getMaxItems());
+        assertEquals(searchParameters.isIncludeRecords(), details.getSearchParameters().isIncludeRecords());
+        assertEquals(searchParameters.isIncludeUndeclaredRecords(), details.getSearchParameters().isIncludeUndeclaredRecords());
+        assertEquals(searchParameters.isIncludeVitalRecords(), details.getSearchParameters().isIncludeVitalRecords());
+        assertEquals(searchParameters.isIncludeRecordFolders(), details.getSearchParameters().isIncludeRecordFolders());
+        assertEquals(searchParameters.isIncludeFrozen(), details.getSearchParameters().isIncludeFrozen());
+        assertEquals(searchParameters.isIncludeCutoff(), details.getSearchParameters().isIncludeCutoff());
+        
+        // Check the other stuff ....
     }
 }

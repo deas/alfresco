@@ -32,27 +32,25 @@ public class ReportDetails
 	/** Description */
 	protected String description;
 	
-	/** Query */
-	protected String query;
+	/** Search */
+	protected String search;
 	
-	/** Sort */
-	protected String sort;
-	
-	/** Params */
-	protected String params;
+	/** Search parameters */
+	protected RecordsManagementSearchParameters searchParameters;
 
 	/**
-	 * @param name         name 
-	 * @param description  description string
-	 * @param query        query string
+	 * 
+	 * @param name
+	 * @param description
+	 * @param search
+	 * @param searchParameters
 	 */
-	public ReportDetails(String name, String description, String query, String sort, String params) 
+	public ReportDetails(String name, String description, String search, RecordsManagementSearchParameters searchParameters) 
 	{
 		this.name = name;
 		this.description = description;
-		this.query = query;
-		this.sort = sort;
-		this.params = params;
+		this.search = search;
+		this.searchParameters = searchParameters;
 	}
 	
 	/**
@@ -80,50 +78,34 @@ public class ReportDetails
 	}
 
 	/**
-	 * @return {@link String}  query string
+	 * @return {@link String}  search string
 	 */
-	public String getQuery()
+	public String getSearch()
     {
-        return query;
+        return search;
     }
 	
 	/**
 	 * @param query query string
 	 */
-	public void setQuery(String query)
+	public void setSearch(String search)
     {
-        this.query = query;
+        this.search = search;
     }	
-	
-	/**
-	 * @return {@link String}  sort string 
-	 */
-	public String getSort()
-    {
-        return sort;
-    }
-	
-	/**
-	 * @param sort
-	 */
-	public void setSort(String sort)
-    {
-        this.sort = sort;
-    }
 	
 	/**
 	 * @return
 	 */
-	public String getParams()
+	public RecordsManagementSearchParameters getSearchParameters()
     {
-        return params;
+        return searchParameters;
     }
 	
 	/**
-	 * @param params
+	 * @param searchParameters
 	 */
-	public void setParams(String params)
+	public void setSearchParameters(RecordsManagementSearchParameters searchParameters)
     {
-        this.params = params;
+        this.searchParameters = searchParameters;
     }
 }

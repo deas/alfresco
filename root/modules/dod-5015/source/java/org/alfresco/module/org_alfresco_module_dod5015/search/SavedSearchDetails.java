@@ -18,7 +18,9 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.search;
 
+
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.service.namespace.NamespaceService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,15 +33,42 @@ import org.json.JSONObject;
  *         "siteid" : "rm",
  *         "name": "search name",
  *         "description": "the search description",
- *         "query": "the complete search query string",
+ *         "search": "the search sting as entered by the user",
  *         "public": boolean,
- *         "params": "terms=keywords:xyz&undeclared=true",
- *         "sort": "cm:name/asc"
+ *         "searchparams" :
+ *         {    
+ *            "maxItems" : 500,
+ *            "records" : true,
+ *            "undeclaredrecords" : false,
+ *            "vitalrecords" : false,
+ *            "recordfolders" : false,
+ *            "frozen" : false,
+ *            "cutoff" : false,
+ *            "containertypes" : 
+ *            [
+ *              "rma:recordSeries",
+ *              "rma:recordCategory"
+ *            ]
+ *            "sort" :    
+ *            [
+ *               {
+ *                  "field" : "cm:name",
+ *                  "ascending" : true
+ *               }
+ *            ]
+ *         }
  *      }
  *      
- *      where: name and query values are mandatory
- *             params are in URL encoded name/value pair format
- *             sort is in comma separated "property/dir" packed format i.e. "cm:name/asc,cm:title/desc"
+ *      where: name and query values are mandatory,
+ *             searchparams contains the filters, sort, etc information about the query
+ *             query is there for backward compatibility             
+ *      note:
+ *            "params": "terms=keywords:xyz&undeclared=true", 
+ *            "sort": "cm:name/asc"
+ *            "query": "the complete search query string", 
+ *            ... are sometimes found in the place of searchparams and are migrated to the new format when re-saved
+ *            params are in URL encoded name/value pair format
+ *            sort is in comma separated "property/dir" packed format i.e. "cm:name/asc,cm:title/desc"
  *             
  * @author Roy Wetherall
  */
@@ -49,11 +78,10 @@ public class SavedSearchDetails extends ReportDetails
     public static final String SITE_ID = "siteid";
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
-    public static final String QUERY = "query";
-    public static final String SORT = "sort";
-    public static final String PARAMS = "params";
+    public static final String SEARCH = "search";
     public static final String PUBLIC = "public";
     public static final String REPORT = "report";
+    public static final String SEARCHPARAMS = "searchparams";
     
     /** Site id */
 	private String siteId;
@@ -63,13 +91,20 @@ public class SavedSearchDetails extends ReportDetails
 	
 	/** Indicates whether the saved search is a report */
 	private boolean isReport = false;
-	
+		  
+    /** Namespace service */
+    NamespaceService namespaceService;
+    
+    RecordsManagementSearchServiceImpl searchService;
+    
+    private SavedSearchDetailsCompatibility compatibility;
+    
 	/**
 	 * 
 	 * @param jsonString
 	 * @return
 	 */
-	public static SavedSearchDetails createFromJSON(String jsonString)
+	/*package*/ static SavedSearchDetails createFromJSON(String jsonString, NamespaceService namespaceService, RecordsManagementSearchServiceImpl searchService)
 	{
 	    try
 	    {
@@ -96,26 +131,28 @@ public class SavedSearchDetails extends ReportDetails
     	        description = search.getString(DESCRIPTION);
     	    }
     	    
-    	    // Get the sort string
-    	    String sort = "";
-    	    if (search.has(SORT) == true)
-    	    {
-    	        sort = search.getString(SORT);
-    	    }
+    	    // TODO ... we need to do some compatibility stuff in here in case we come across an "old" saved search
     	    
-    	    // Get the param string
-    	    String params = "";
-    	    if (search.has(PARAMS) == true)
-    	    {
-    	        params = search.getString(PARAMS);
-    	    }
-    	    
+//    	    // Get the sort string
+//    	    String sort = "";
+//    	    if (search.has(SORT) == true)
+//    	    {
+//    	        sort = search.getString(SORT);
+//    	    }
+//    	    
+//    	    // Get the param string
+//    	    String params = "";
+//    	    if (search.has(PARAMS) == true)
+//    	    {
+//    	        params = search.getString(PARAMS);
+//    	    }
+//    	    
     	    // Get the query
-    	    if (search.has(QUERY) == false)
+    	    if (search.has(SEARCH) == false)
     	    {
-    	        throw new AlfrescoRuntimeException("Can not create saved search details from json, because required query is not present. " + jsonString);
+    	        throw new AlfrescoRuntimeException("Can not create saved search details from json, because required search is not present. " + jsonString);
     	    }
-    	    String query = search.getString(QUERY);    	    
+    	    String query = search.getString(SEARCH);    	    
     	    
     	    // Determine whether the saved query is public or not
     	    boolean isPublic = false;
@@ -131,8 +168,14 @@ public class SavedSearchDetails extends ReportDetails
     	        isReport = search.getBoolean(REPORT);
     	    }
     	    
+    	    RecordsManagementSearchParameters searchParameters = new RecordsManagementSearchParameters();
+    	    if (search.has(SEARCHPARAMS) == true)
+    	    {
+    	        searchParameters = RecordsManagementSearchParameters.createFromJSON(search.getJSONObject(SEARCHPARAMS), namespaceService);
+    	    }
+    	    
     	    // Create the saved search details object
-    	    return new SavedSearchDetails(siteId, name, description, query, sort, params, isPublic, isReport);    	    
+    	    return new SavedSearchDetails(siteId, name, description, query, searchParameters, isPublic, isReport, namespaceService, searchService);    	    
 	    }
 	    catch (JSONException exception)
 	    {
@@ -146,12 +189,24 @@ public class SavedSearchDetails extends ReportDetails
 	 * @param description
 	 * @param isPublic
 	 */
-	public SavedSearchDetails(String siteId, String name, String description, String query, String sort, String params, boolean isPublic, boolean isReport) 
+	/*package*/ SavedSearchDetails(
+	        String siteId, 
+	        String name, 
+	        String description, 
+	        String serach, 
+	        RecordsManagementSearchParameters searchParameters, 
+	        boolean isPublic, 
+	        boolean isReport,
+	        NamespaceService namespaceService,
+	        RecordsManagementSearchServiceImpl searchService) 
 	{
-	    super(name, description, query, sort, params);
+	    super(name, description, serach, searchParameters);
 		this.siteId = siteId;
 		this.isPublic = isPublic;
 		this.isReport = isReport;
+		this.namespaceService = namespaceService;
+		this.compatibility = new SavedSearchDetailsCompatibility(this, namespaceService, searchService);
+		this.searchService = searchService;
 	}
 	
 	/**
@@ -178,10 +233,15 @@ public class SavedSearchDetails extends ReportDetails
         return isReport;
     }
 	
+	public SavedSearchDetailsCompatibility getCompatibility()
+	{
+	    return compatibility;
+	}
+	
 	/**
 	 * @return
 	 */
-	public String toJSONString()
+	/*package*/ String toJSONString()
 	{
 	    try
 	    {
@@ -189,9 +249,8 @@ public class SavedSearchDetails extends ReportDetails
     	    jsonObject.put(SITE_ID, siteId);
     	    jsonObject.put(NAME, name);
     	    jsonObject.put(DESCRIPTION, description);
-    	    jsonObject.put(QUERY, query);
-    	    jsonObject.put(SORT, sort);
-    	    jsonObject.put(PARAMS, params);
+    	    jsonObject.put(SEARCH, search);
+    	    jsonObject.put(SEARCHPARAMS, searchParameters.toJSONObject(namespaceService));
     	    jsonObject.put(PUBLIC, isPublic);
     	    return jsonObject.toString();
 	    }

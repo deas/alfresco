@@ -45,11 +45,18 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
      */
     public void testIsRecordsManagmentComponent() throws Exception
     {
-        assertFalse("The root node should not be a rm component", rmService.isRecordsManagmentComponent(rootNodeRef));
-        assertFalse("The folder should not be a rm component", rmService.isRecordsManagmentComponent(folder));
-        assertTrue("The rm root container should be a rm component", rmService.isRecordsManagmentComponent(rmRootContainer));
-        assertTrue("The rm container should be a rm component", rmService.isRecordsManagmentComponent(rmContainer));
-        assertTrue("The rm folder should be a rm component", rmService.isRecordsManagmentComponent(rmFolder));
+        doTestInTransaction(new Test<NodeRef>()
+        {
+            @Override
+            public NodeRef run()
+            {
+                assertTrue("The rm root container should be a rm component", rmService.isRecordsManagmentComponent(rmRootContainer));
+                assertTrue("The rm container should be a rm component", rmService.isRecordsManagmentComponent(rmContainer));
+                assertTrue("The rm folder should be a rm component", rmService.isRecordsManagmentComponent(rmFolder));
+                
+                return null;
+            }
+        });
     }
     
     /**
@@ -57,11 +64,18 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
      */
     public void testIsRecordsManagmentRoot() throws Exception
     {
-        assertFalse("This should not be a records management root", rmService.isRecordsManagementRoot(rootNodeRef));
-        assertFalse("This should not be a records management root", rmService.isRecordsManagementRoot(folder));
-        assertTrue("This is a records management root", rmService.isRecordsManagementRoot(rmRootContainer));
-        assertFalse("This should not be a records management root", rmService.isRecordsManagementRoot(rmContainer));
-        assertFalse("This should not be a records management root", rmService.isRecordsManagementRoot(rmFolder));
+        doTestInTransaction(new Test<NodeRef>()
+        {
+            @Override
+            public NodeRef run()
+            {
+                assertTrue("This is a records management root", rmService.isRecordsManagementRoot(rmRootContainer));
+                assertFalse("This should not be a records management root", rmService.isRecordsManagementRoot(rmContainer));
+                assertFalse("This should not be a records management root", rmService.isRecordsManagementRoot(rmFolder));
+                
+                return null;
+            }
+        });
     }
     
     /**
@@ -69,11 +83,18 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
      */
     public void testIsRecordsManagementContainer() throws Exception
     {
-        assertFalse("This should not be a records management container", rmService.isRecordsManagementContainer(rootNodeRef));
-        assertFalse("This should not be a records management container", rmService.isRecordsManagementContainer(folder));
-        assertTrue("This is a records management container", rmService.isRecordsManagementContainer(rmRootContainer));
-        assertTrue("This is a records management container", rmService.isRecordsManagementContainer(rmContainer));
-        assertFalse("This should not be a records management container", rmService.isRecordsManagementContainer(rmFolder));
+        doTestInTransaction(new Test<NodeRef>()
+        {
+            @Override
+            public NodeRef run()
+            {
+                assertTrue("This is a records management container", rmService.isRecordsManagementContainer(rmRootContainer));
+                assertTrue("This is a records management container", rmService.isRecordsManagementContainer(rmContainer));
+                assertFalse("This should not be a records management container", rmService.isRecordsManagementContainer(rmFolder));
+                
+                return null;
+            }
+        });
     }
     
     /**
@@ -81,11 +102,18 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
      */
     public void testIsRecordFolder() throws Exception
     {
-        assertFalse("This should not be a record folder", rmService.isRecordFolder(rootNodeRef));
-        assertFalse("This should not be a record folder", rmService.isRecordFolder(folder));
-        assertFalse("This should not be a record folder", rmService.isRecordFolder(rmRootContainer));
-        assertFalse("This should not be a record folder", rmService.isRecordFolder(rmContainer));
-        assertTrue("This should be a record folder", rmService.isRecordFolder(rmFolder));
+        doTestInTransaction(new Test<NodeRef>()
+        {
+            @Override
+            public NodeRef run()
+            {
+                assertFalse("This should not be a record folder", rmService.isRecordFolder(rmRootContainer));
+                assertFalse("This should not be a record folder", rmService.isRecordFolder(rmContainer));
+                assertTrue("This should be a record folder", rmService.isRecordFolder(rmFolder));
+                
+                return null;
+            }
+        });
     }
     
     // TODO void testIsRecord()
@@ -97,11 +125,18 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
      */
     public void testGetRecordsManagementRoot() throws Exception
     {
-        assertNull(rmService.getRecordsManagementRoot(rootNodeRef));
-        assertNull(rmService.getRecordsManagementRoot(folder));
-        assertEquals(rmRootContainer, rmService.getRecordsManagementRoot(rmRootContainer));
-        assertEquals(rmRootContainer, rmService.getRecordsManagementRoot(rmContainer));
-        assertEquals(rmRootContainer, rmService.getRecordsManagementRoot(rmFolder));
+        doTestInTransaction(new Test<NodeRef>()
+        {
+            @Override
+            public NodeRef run()
+            {
+                assertEquals(rmRootContainer, rmService.getRecordsManagementRoot(rmRootContainer));
+                assertEquals(rmRootContainer, rmService.getRecordsManagementRoot(rmContainer));
+                assertEquals(rmRootContainer, rmService.getRecordsManagementRoot(rmFolder));
+                
+                return null;
+            }
+        });
     }
     
     /********** Record Management Root methods **********/
@@ -111,18 +146,27 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
      */
     public void testGetRecordsManagementRoots() throws Exception
     {
-        List<NodeRef> roots = rmService.getRecordsManagementRoots(storeRef);
-        assertNotNull(roots);
-        assertEquals(1,roots.size());
-        assertEquals(rmRootContainer, roots.get(0));
-        
-        RecordsManagementServiceImpl temp = (RecordsManagementServiceImpl)applicationContext.getBean("recordsManagementService");
-        temp.setDefaultStoreRef(storeRef);
-        
-        roots = rmService.getRecordsManagementRoots();
-        assertNotNull(roots);
-        assertEquals(1,roots.size());
-        assertEquals(rmRootContainer, roots.get(0));       
+        doTestInTransaction(new Test<NodeRef>()
+        {
+            @Override
+            public NodeRef run()
+            {
+                List<NodeRef> roots = rmService.getRecordsManagementRoots(storeRef);
+                assertNotNull(roots);
+                assertEquals(1, roots.size());
+                assertEquals(rmRootContainer, roots.get(0));
+                
+                RecordsManagementServiceImpl temp = (RecordsManagementServiceImpl)applicationContext.getBean("recordsManagementService");
+                temp.setDefaultStoreRef(storeRef);
+                
+                roots = rmService.getRecordsManagementRoots();
+                assertNotNull(roots);
+                assertEquals(1, roots.size());
+                assertEquals(rmRootContainer, roots.get(0)); 
+                
+                return null;
+            }
+        });      
     }
     
     /**
