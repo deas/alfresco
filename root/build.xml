@@ -1137,6 +1137,28 @@
                    warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
    </target>
 
+   <target name="deploy-solr" description="Add the repository specific files to the SOLR instance" depends="package-core, package-datamodel, package-solr" >
+      <delete includeemptydirs="true">
+         <fileset dir="${dir.project.solr.instance.lib}" includes="**/*"/>
+      </delete>
+
+      <copy todir="${dir.project.solr.instance.lib}" 
+            file="${dir.project.core.dist}/${file.name.jar.core}" />
+      <copy todir="${dir.project.solr.instance.lib}" 
+            file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}" />
+      <copy todir="${dir.project.solr.instance.lib}" 
+            file="${dir.project.solr.dist}/${file.name.jar.solr}" />
+
+      <taskdef name="copy-libs-from-classpath"
+               classname="org.alfresco.devenv.ant.CopyLibrariesFromEclipseClasspath">
+         <classpath refid="classpath.compile" />
+      </taskdef>
+
+      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.core}" libdir="${dir.project.3rdparty}" />
+      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.datamodel}" libdir="${dir.project.3rdparty}" />
+      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.solr}" libdir="${dir.project.3rdparty}" />
+
+   </target>
 
 
    <!-- ****************************************************** -->
