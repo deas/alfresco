@@ -108,7 +108,7 @@
          <value>alfresco</value>
       </property>
       <property name="api">
-         <value>/remotestore</value>
+         <value>/remoteadm</value><!--remotestore remoteadm-->
       </property>
       <property name="storeId">
          <value>sitestore</value>
