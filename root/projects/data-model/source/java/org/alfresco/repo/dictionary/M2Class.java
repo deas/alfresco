@@ -36,6 +36,7 @@ public abstract class M2Class
     private String parentName = null;
     private Boolean archive = null;
     private Boolean includedInSuperTypeQuery = null;
+    private String analyserResourceBundleName = null;
     
     private List<M2Property> properties = new ArrayList<M2Property>();
     private List<M2PropertyOverride> propertyOverrides = new ArrayList<M2PropertyOverride>();
@@ -257,6 +258,19 @@ public abstract class M2Class
     public List<String> getMandatoryAspects()
     {
         return Collections.unmodifiableList(mandatoryAspects);
+    }
+
+    /**
+     * @return
+     */
+    public String getAnalyserResourceBundleName()
+    {
+        return analyserResourceBundleName;
+    }
+
+    public void setAnalyserResourceBundleName(String analyserResourceBundleName)
+    {
+        this.analyserResourceBundleName = analyserResourceBundleName;
     } 
     
 }

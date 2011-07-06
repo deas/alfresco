@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.CRC32;
 
 import org.alfresco.service.cmr.dictionary.DictionaryException;
@@ -35,7 +34,6 @@ import org.jibx.runtime.IBindingFactory;
 import org.jibx.runtime.IMarshallingContext;
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
-import org.jibx.runtime.impl.GenericXMLWriter;
 
 
 /**
@@ -51,6 +49,7 @@ public class M2Model
     private String author = null;
     private Date published = null;
     private String version;
+    private String  analyserResourceBundleName = null;
 
     private List<M2Namespace> namespaces = new ArrayList<M2Namespace>();
     private List<M2Namespace> imports = new ArrayList<M2Namespace>();
@@ -457,6 +456,21 @@ public class M2Model
     private static List createList()
     {
         return new ArrayList();
+    }
+
+
+    /**
+     * @return
+     */
+    public String getAnalyserResourceBundleName()
+    {
+        return analyserResourceBundleName;
+    }
+
+
+    public void setAnalyserResourceBundleName(String analyserResourceBundleName)
+    {
+        this.analyserResourceBundleName = analyserResourceBundleName;
     }
 
 }

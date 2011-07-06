@@ -41,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Analyse properties according to the property definition. The default is to use the standard tokeniser. The tokeniser
@@ -379,7 +380,7 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
                         }
                         else
                         {
-                            return loadAnalyzer(dataType);
+                            return loadAnalyzer(propertyDef);
                         }
                     case BOTH:
                         switch (analysisMode)
@@ -400,7 +401,7 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
                             }
                             else
                             {
-                                return loadAnalyzer(dataType);
+                                return loadAnalyzer(propertyDef);
                             }
                         case IDENTIFIER:
                             if (dataType.getName().equals(DataTypeDefinition.MLTEXT))
@@ -447,32 +448,60 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
      * @param dataType
      * @return
      */
-    private Analyzer loadAnalyzer(DataTypeDefinition dataType)
+    private Analyzer loadAnalyzer(PropertyDefinition property)
     {
-        String analyserClassName = dataType.getAnalyserClassName().trim();
+        String analyserClassName = property.resolveAnalyserClassName(I18NUtil.getLocale()).trim();
         try
         {
             Class<?> clazz = Class.forName(analyserClassName);
             Analyzer analyser = (Analyzer) clazz.newInstance();
             if (s_logger.isDebugEnabled())
             {
-                s_logger.debug("Loaded " + analyserClassName + " for type " + dataType.getName());
+                s_logger.debug("Loaded " + analyserClassName + " for type " + property.getName());
             }
             return analyser;
         }
         catch (ClassNotFoundException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type " + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser for property of type " + property.getName() + " using " + analyserClassName);
         }
         catch (InstantiationException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type " + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser for property of type " + property.getName() + " using " + analyserClassName);
         }
         catch (IllegalAccessException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type " + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser for property of type " + property.getName() + " using " + analyserClassName);
         }
     }
+    
+    private Analyzer loadAnalyzer( DataTypeDefinition dataTypeDef )
+    {
+        String analyserClassName = dataTypeDef.resolveAnalyserClassName(I18NUtil.getLocale()).trim();
+        try
+        {
+            Class<?> clazz = Class.forName(analyserClassName);
+            Analyzer analyser = (Analyzer) clazz.newInstance();
+            if (s_logger.isDebugEnabled())
+            {
+                s_logger.debug("Loaded " + analyserClassName + " for type " + dataTypeDef.getName());
+            }
+            return analyser;
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new RuntimeException("Unable to load analyser for property of type " + dataTypeDef.getName() + " using " + analyserClassName);
+        }
+        catch (InstantiationException e)
+        {
+            throw new RuntimeException("Unable to load analyser for property of type " + dataTypeDef.getName() + " using " + analyserClassName);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException("Unable to load analyser for property of type " + dataTypeDef.getName() + " using " + analyserClassName);
+        }
+    }
+
 
     /**
      * For multilingual fields we separate the tokens for each instance to break phrase queries spanning different

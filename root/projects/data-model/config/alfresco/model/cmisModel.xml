@@ -16,17 +16,17 @@
   <data-types>
 
     <data-type name="cmis:id">
-      <analyser-class>org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser</analyser-class>
+      <default-analyser-class>org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser</default-analyser-class>
       <java-class>java.lang.String</java-class>
     </data-type>
 
     <data-type name="cmis:uri">
-      <analyser-class>org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser</analyser-class>
+      <default-analyser-class>org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser</default-analyser-class>
       <java-class>java.lang.String</java-class>
     </data-type>
 
     <data-type name="cmis:html">
-      <analyser-class>org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser</analyser-class>
+      <default-analyser-class>org.alfresco.repo.search.impl.lucene.analysis.AlfrescoStandardAnalyser</default-analyser-class>
       <java-class>java.lang.String</java-class>
     </data-type>
 

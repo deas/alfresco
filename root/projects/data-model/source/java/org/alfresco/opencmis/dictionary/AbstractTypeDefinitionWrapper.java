@@ -384,7 +384,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
                     break;
                 case TRUE:
                 default:
-                    String analyserClassName = propDef.getDataType().getAnalyserClassName();
+                    String analyserClassName = propDef.resolveAnalyserClassName();
                     if (propDef.getDataType().getName().equals(DataTypeDefinition.BOOLEAN))
                     {
                         result.setIsOrderable(true);

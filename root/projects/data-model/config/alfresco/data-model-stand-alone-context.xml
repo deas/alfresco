@@ -51,6 +51,9 @@
         <property name="dictionaryRegistryCache">
             <ref bean="compiledModelsCache"/>
         </property>
+        <property name="defaultAnalyserResourceBundleName">
+            <value>alfresco/model/dataTypeAnalyzers</value>
+        </property>
     </bean>
     
     <bean name="compiledModelsCache" class="org.alfresco.repo.cache.MemoryCache" /> 
@@ -84,7 +87,6 @@
         </property>
         <property name="labels">
             <list>
-                <value>alfresco/model/dataTypeAnalyzers</value>
                 <value>alfresco/messages/dictionary-model</value>
             </list>
         </property>

@@ -197,4 +197,19 @@ public interface DictionaryDAO extends ModelQuery
     
     // MT-specific
     public boolean isModelInherited(QName name);
+
+    /**
+     * @return
+     */
+    public String getDefaultAnalyserResourceBundleName();
+
+    /**
+     * @return
+     */
+    ClassLoader getResourceClassLoader();
+
+    /**
+     * @param resourceClassLoader
+     */
+    void setResourceClassLoader(ClassLoader resourceClassLoader);
 }

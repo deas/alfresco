@@ -24,7 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -47,6 +49,7 @@ import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -83,6 +86,9 @@ public class DictionaryDAOImpl implements DictionaryDAO
     // Logger
     private static Log logger = LogFactory.getLog(DictionaryDAO.class);
 
+    private String defaultAnalyserResourceBundleName;
+    
+    private ClassLoader resourceClassLoader;
 
 	// inject dependencies
     
@@ -96,6 +102,17 @@ public class DictionaryDAOImpl implements DictionaryDAO
         this.dictionaryRegistryCache = dictionaryRegistryCache;
     }
     
+    @Override 
+    public String getDefaultAnalyserResourceBundleName()
+    {
+        return defaultAnalyserResourceBundleName;
+    }
+
+    public void setDefaultAnalyserResourceBundleName(String defaultAnalyserResourceBundleName)
+    {
+        this.defaultAnalyserResourceBundleName = defaultAnalyserResourceBundleName;
+    }
+
     /**
      * Construct
      * 
@@ -1302,6 +1319,10 @@ public class DictionaryDAOImpl implements DictionaryDAO
         return M2ModelDiffs;
     }
     
+
+   
+    
+   
     public class DictionaryRegistry
     {
         private Map<String, List<CompiledModel>> uriToModels = new HashMap<String, List<CompiledModel>>(0);
@@ -1336,4 +1357,17 @@ public class DictionaryDAOImpl implements DictionaryDAO
             this.compiledModels = compiledModels;
         }
     }
+
+    @Override
+    public ClassLoader getResourceClassLoader()
+    {
+        return resourceClassLoader;
+    }
+
+    @Override
+    public void setResourceClassLoader(ClassLoader resourceClassLoader)
+    {
+        this.resourceClassLoader = resourceClassLoader;
+    }
+
 }

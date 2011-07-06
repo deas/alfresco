@@ -52,6 +52,7 @@ import org.alfresco.util.EqualsHelper;
     protected M2Class m2Class;
     protected QName name;
     protected QName parentName = null;
+    protected ClassDefinition parentClassDefinition;
     
     private Map<QName, M2PropertyOverride> propertyOverrides = new HashMap<QName, M2PropertyOverride>();
     private Map<QName, PropertyDefinition> properties = new HashMap<QName, PropertyDefinition>();
@@ -67,6 +68,7 @@ import org.alfresco.util.EqualsHelper;
     private Boolean inheritedArchive = null;
     private Boolean includedInSuperTypeQuery = null;
     private Boolean inheritedIncludedInSuperTypeQuery = null;
+    private String  analyserResourceBundleName;
     
     /**
      * Construct
@@ -178,6 +180,8 @@ import org.alfresco.util.EqualsHelper;
                 defaultAspectNames.add(name);
             }
         }
+        
+        this.analyserResourceBundleName = m2Class.getAnalyserResourceBundleName();
     }
     
     @Override
@@ -203,6 +207,7 @@ import org.alfresco.util.EqualsHelper;
             {
                 throw new DictionaryException("Parent class " + parentName.toPrefixString() + " of class " + name.toPrefixString() + " is not found");
             }
+            parentClassDefinition = parent;
         }
         
         for (PropertyDefinition def : properties.values())
@@ -716,5 +721,23 @@ import org.alfresco.util.EqualsHelper;
         }
         
         return modelDiffs;
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.service.cmr.dictionary.ClassDefinition#getAnalyserResourceBundleName()
+     */
+    @Override
+    public String getAnalyserResourceBundleName()
+    {
+        return analyserResourceBundleName;
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.service.cmr.dictionary.ClassDefinition#getParentClassDefinition()
+     */
+    @Override
+    public ClassDefinition getParentClassDefinition()
+    {
+        return parentClassDefinition;
     }
 }

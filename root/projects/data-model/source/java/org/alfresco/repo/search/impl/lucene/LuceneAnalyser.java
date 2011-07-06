@@ -257,7 +257,7 @@ public class LuceneAnalyser extends AbstractAnalyzer
                             }
                             else
                             {
-                                analyser = loadAnalyzer(dataType);
+                                analyser = loadAnalyzer(propertyDef);
                             }
                             break;
                         case BOTH:
@@ -279,7 +279,7 @@ public class LuceneAnalyser extends AbstractAnalyzer
                                 }
                                 else
                                 {
-                                    analyser = loadAnalyzer(dataType);
+                                    analyser = loadAnalyzer(propertyDef);
                                 }
                                 break;
                             case IDENTIFIER:
@@ -340,30 +340,57 @@ public class LuceneAnalyser extends AbstractAnalyzer
      * @param dataType
      * @return
      */
-    private Analyzer loadAnalyzer(DataTypeDefinition dataType)
+    private Analyzer loadAnalyzer( PropertyDefinition propertyDef )
     {
-        String analyserClassName = dataType.getAnalyserClassName().trim();
+        String analyserClassName = propertyDef.resolveAnalyserClassName().trim();
         try
         {
             Class<?> clazz = Class.forName(analyserClassName);
             Analyzer analyser = (Analyzer) clazz.newInstance();
             if (s_logger.isDebugEnabled())
             {
-                s_logger.debug("Loaded " + analyserClassName + " for type " + dataType.getName());
+                s_logger.debug("Loaded " + analyserClassName + " for type " + propertyDef.getName());
             }
             return analyser;
         }
         catch (ClassNotFoundException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type " + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser for property of type " + propertyDef.getName() + " using " + analyserClassName);
         }
         catch (InstantiationException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type " + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser for property of type " + propertyDef.getName() + " using " + analyserClassName);
         }
         catch (IllegalAccessException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type " + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser for property of type " + propertyDef.getName() + " using " + analyserClassName);
+        }
+    }
+    
+    private Analyzer loadAnalyzer( DataTypeDefinition dataTypeDef )
+    {
+        String analyserClassName = dataTypeDef.resolveAnalyserClassName().trim();
+        try
+        {
+            Class<?> clazz = Class.forName(analyserClassName);
+            Analyzer analyser = (Analyzer) clazz.newInstance();
+            if (s_logger.isDebugEnabled())
+            {
+                s_logger.debug("Loaded " + analyserClassName + " for type " + dataTypeDef.getName());
+            }
+            return analyser;
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new RuntimeException("Unable to load analyser for property of type " + dataTypeDef.getName() + " using " + analyserClassName);
+        }
+        catch (InstantiationException e)
+        {
+            throw new RuntimeException("Unable to load analyser for property of type " + dataTypeDef.getName() + " using " + analyserClassName);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException("Unable to load analyser for property of type " + dataTypeDef.getName() + " using " + analyserClassName);
         }
     }
 

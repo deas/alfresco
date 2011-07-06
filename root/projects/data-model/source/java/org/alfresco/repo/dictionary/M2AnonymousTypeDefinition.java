@@ -29,6 +29,7 @@ import java.util.Set;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ChildAssociationDefinition;
+import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
@@ -211,6 +212,24 @@ import org.alfresco.service.namespace.QName;
     public Map<QName, ChildAssociationDefinition> getChildAssociations()
     {
         return Collections.unmodifiableMap(childassociations);
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.service.cmr.dictionary.ClassDefinition#getAnalyserResourceBundleName()
+     */
+    @Override
+    public String getAnalyserResourceBundleName()
+    {
+       return type.getAnalyserResourceBundleName();
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.service.cmr.dictionary.ClassDefinition#getParentClassDefinition()
+     */
+    @Override
+    public ClassDefinition getParentClassDefinition()
+    {
+        return type.getParentClassDefinition();
     }
 
 }

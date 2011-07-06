@@ -2010,8 +2010,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.DATETIME))
                 {
-                    DataTypeDefinition dataType = propertyDef.getDataType();
-                    String analyserClassName = dataType.getAnalyserClassName();
+                    String analyserClassName = propertyDef.resolveAnalyserClassName();
                     boolean usesDateTimeAnalyser = analyserClassName.equals(DateTimeAnalyser.class.getCanonicalName());
                     // Expand query for internal date time format
 

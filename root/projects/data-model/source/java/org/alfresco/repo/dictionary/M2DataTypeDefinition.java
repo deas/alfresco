@@ -19,8 +19,10 @@
 package org.alfresco.repo.dictionary;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.springframework.extensions.surf.util.I18NUtil;
+import org.springframework.util.StringUtils;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
@@ -39,6 +41,7 @@ import org.alfresco.service.namespace.QName;
     private ModelDefinition model;
     private QName name;
     private M2DataType dataType;
+    private String  analyserResourceBundleName;
     
     
     /*package*/ M2DataTypeDefinition(ModelDefinition model, M2DataType propertyType, NamespacePrefixResolver resolver)
@@ -50,6 +53,7 @@ import org.alfresco.service.namespace.QName;
             throw new DictionaryException("Cannot define data type " + name.toPrefixString() + " as namespace " + name.getNamespaceURI() + " is not defined by model " + model.getName().toPrefixString());
         }
         this.dataType = propertyType;
+        this.analyserResourceBundleName = dataType.getAnalyserResourceBundleName();
     }
 
 
@@ -124,26 +128,13 @@ import org.alfresco.service.namespace.QName;
         }
         return value;
     }
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.PropertyTypeDefinition#getAnalyserClassName()
-     */
-    public String getAnalyserClassName()
-    {
-        return getAnalyserClassName(I18NUtil.getLocale());
-    }
-
+   
     /* (non-Javadoc)
      * @see org.alfresco.service.cmr.dictionary.DataTypeDefinition#getAnalyserClassName(java.util.Locale)
      */
-    public String getAnalyserClassName(Locale locale)
+    public String getDefaultAnalyserClassName()
     {
-        String value = M2Label.getLabel(locale, model, "datatype", name, "analyzer");
-        if (value == null)
-        {
-            value = dataType.getAnalyserClassName();
-        }
-        return value;
+        return dataType.getDefaultAnalyserClassName();
     }
 
     /* (non-Javadoc)
@@ -153,5 +144,91 @@ import org.alfresco.service.namespace.QName;
     {
         return dataType.getJavaClassName();
     }
+
+
+    /* (non-Javadoc)
+     * @see org.alfresco.service.cmr.dictionary.DataTypeDefinition#getAnalyserResourceBundleName()
+     */
+    @Override
+    public String getAnalyserResourceBundleName()
+    {
+        return analyserResourceBundleName;
+    }
+    
+    @Override
+    public String resolveAnalyserClassName()
+    { 
+        return resolveAnalyserClassName(I18NUtil.getLocale());
+    }
+    
+    /**
+     * @param dataType
+     * @param locale
+     * @param resourceBundleClassLoader
+     * @return
+     */
+    @Override
+    public String resolveAnalyserClassName(Locale locale)
+    {
+        ClassLoader resourceBundleClassLoader = getModel().getDictionaryDAO().getResourceClassLoader();
+        if(resourceBundleClassLoader == null)
+        {
+            resourceBundleClassLoader = this.getClass().getClassLoader();
+        }
+        
+        StringBuilder keyBuilder = new StringBuilder(64);
+        keyBuilder.append(getModel().getName().toPrefixString());
+        keyBuilder.append(".datatype");
+        keyBuilder.append(".").append(getName().toPrefixString());
+        keyBuilder.append(".analyzer");
+        String key = StringUtils.replace(keyBuilder.toString(), ":", "_");
+        
+        String analyserClassName = null;
+        
+        String defaultAnalyserResourceBundleName = this.getModel().getDictionaryDAO().getDefaultAnalyserResourceBundleName();
+        if(defaultAnalyserResourceBundleName != null)
+        {
+            ResourceBundle bundle = ResourceBundle.getBundle(defaultAnalyserResourceBundleName, locale, resourceBundleClassLoader);
+            if(bundle.containsKey(key))
+            {
+                analyserClassName = bundle.getString(key);
+            }
+        }
+        
+        String analyserResourceBundleName;
+        if(analyserClassName == null)
+        {
+            analyserResourceBundleName = dataType.getAnalyserResourceBundleName();
+            if(analyserResourceBundleName != null)
+            {
+                ResourceBundle bundle = ResourceBundle.getBundle(analyserResourceBundleName, locale, resourceBundleClassLoader);
+                if(bundle.containsKey(key))
+                {
+                    analyserClassName = bundle.getString(key);
+                }
+            }
+        }
+        
+        if(analyserClassName == null)
+        {
+            analyserResourceBundleName = getModel().getAnalyserResourceBundleName();
+            if(analyserResourceBundleName != null)
+            {
+                ResourceBundle bundle = ResourceBundle.getBundle(analyserResourceBundleName, locale, resourceBundleClassLoader);
+                if(bundle.containsKey(key))
+                {
+                    analyserClassName = bundle.getString(key);
+                }
+            }
+        }
+        
+        if(analyserClassName == null)
+        {
+            analyserClassName = dataType.getDefaultAnalyserClassName();
+        }
+        
+        return analyserClassName;
+    }
+
     
 }

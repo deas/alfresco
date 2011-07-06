@@ -85,7 +85,7 @@ public class CompiledModel implements ModelQuery
             // Phase 1: Construct model definitions from model entries
             //          resolving qualified names
             this.model = model;
-            constructDefinitions(model, namespaceDAO);
+            constructDefinitions(model, namespaceDAO, dictionaryDAO);
     
             // Phase 2: Resolve dependencies between model definitions
             ModelQuery query = new DelegateModelQuery(this, dictionaryDAO);
@@ -125,12 +125,12 @@ public class CompiledModel implements ModelQuery
      * @param model model definition
      * @param namespaceDAO namespace DAO
      */
-    private void constructDefinitions(M2Model model, NamespaceDAO namespaceDAO)
+    private void constructDefinitions(M2Model model, NamespaceDAO namespaceDAO, DictionaryDAO dictionaryDAO)
     {
         NamespacePrefixResolver localPrefixes = createLocalPrefixResolver(model, namespaceDAO);
     
         // Construct Model Definition
-        modelDefinition = new M2ModelDefinition(model, localPrefixes);
+        modelDefinition = new M2ModelDefinition(model, localPrefixes, dictionaryDAO);
         
         // Construct Property Types
         for (M2DataType propType : model.getPropertyTypes())

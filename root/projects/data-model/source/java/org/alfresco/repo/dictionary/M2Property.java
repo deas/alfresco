@@ -45,6 +45,7 @@ public class M2Property
     private Boolean isIndexedAtomically = null;
     private Boolean isStoredInIndex = null;
     private IndexTokenisationMode indexTokenisationMode = null;
+    private String  analyserResourceBundleName;
     private List<M2Constraint> constraints = new ArrayList<M2Constraint>();
 
     /*package*/ M2Property()
@@ -256,4 +257,21 @@ public class M2Property
             }
         }
     }
+
+
+    /**
+     * @return
+     */
+    public String getAnalyserResourceBundleName()
+    {
+        return analyserResourceBundleName;
+    }
+
+
+    public void setAnalyserResourceBundleName(String analyserResourceBundleName)
+    {
+        this.analyserResourceBundleName = analyserResourceBundleName;
+    }
+    
+    
 }

@@ -24,31 +24,36 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Locale;
 
-import org.springframework.extensions.surf.util.I18NUtil;
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.namespace.QName;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 public class MLAnalayser extends Analyzer
 {
-    private static Log    s_logger = LogFactory.getLog(MLAnalayser.class);
+    private static Log s_logger = LogFactory.getLog(MLAnalayser.class);
 
     private DictionaryService dictionaryService;
 
-    private HashMap<Locale, Analyzer> analysers = new HashMap<Locale, Analyzer>();
+    private HashMap<Pair<String, Locale>, Analyzer> analysers = new HashMap<Pair<String, Locale>, Analyzer>();
 
     private MLAnalysisMode mlAnalaysisMode;
 
     private Analyzer analyzer;
-
+    
     public MLAnalayser(DictionaryService dictionaryService, MLAnalysisMode mlAnalaysisMode)
     {
         this(dictionaryService, mlAnalaysisMode, null);
     }
+ 
 
     public MLAnalayser(DictionaryService dictionaryService, MLAnalysisMode mlAnalaysisMode, Analyzer analyzer)
     {
@@ -93,7 +98,7 @@ public class MLAnalayser extends Analyzer
                     if (count++ > 99)
                     {
                         breader.reset();
-                        return getDefaultAnalyser().tokenStream(fieldName, breader);
+                        return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
                     }
                     if (c == '_')
                     {
@@ -112,7 +117,7 @@ public class MLAnalayser extends Analyzer
                         else
                         {
                             breader.reset();
-                            return getDefaultAnalyser().tokenStream(fieldName, breader);
+                            return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
                         }
                         builder = new StringBuilder();
                     }
@@ -138,17 +143,17 @@ public class MLAnalayser extends Analyzer
                     else
                     {
                         breader.reset();
-                        return getDefaultAnalyser().tokenStream(fieldName, breader);
+                        return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
                     }
                 }
                 Locale locale = new Locale(language, country, varient);
                 // leave the reader where it is ....
-                return new MLTokenDuplicator(getAnalyser(locale).tokenStream(fieldName, breader), locale, breader, mlAnalaysisMode);
+                return new MLTokenDuplicator(getAnalyser(fieldName, locale).tokenStream(fieldName, breader), locale, breader, mlAnalaysisMode);
             }
             else
             {
                 breader.reset();
-                return getDefaultAnalyser().tokenStream(fieldName, breader);
+                return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
             }
         }
         catch (IOException io)
@@ -161,44 +166,56 @@ public class MLAnalayser extends Analyzer
             {
                 throw new AnalysisException("Failed to reset buffered reader - token stream will be invalid", e);
             }
-            return getDefaultAnalyser().tokenStream(fieldName, breader);
+            return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
         }
     }
 
-    private Analyzer getDefaultAnalyser()
+    private Analyzer getDefaultAnalyser(String fieldName)
     {
-        return getAnalyser(I18NUtil.getLocale());
+        return getAnalyser(fieldName, I18NUtil.getLocale());
     }
 
-    private Analyzer getAnalyser(Locale locale)
+    private Analyzer getAnalyser(String fieldName, Locale locale)
     {
         if(analyzer != null)
         {
             return analyzer;
         }
-        Analyzer localeSpecificAnalyzer = (Analyzer) analysers.get(locale);
+        Pair<String, Locale> key = new Pair<String, Locale>(fieldName, locale);
+        Analyzer localeSpecificAnalyzer = (Analyzer) analysers.get(key);
         if (localeSpecificAnalyzer == null)
         {
-            localeSpecificAnalyzer = findAnalyser(locale);
+            localeSpecificAnalyzer = findAnalyser(key);
         }
         // wrap analyser to produce plain and prefixed tokens
         return localeSpecificAnalyzer;
     }
 
-    private Analyzer findAnalyser(Locale locale)
+    private Analyzer findAnalyser(Pair<String, Locale> key)
     {
-        Analyzer localeSpecificAnalyzer = loadAnalyzer(locale);
-        analysers.put(locale, localeSpecificAnalyzer);
+        Analyzer localeSpecificAnalyzer = loadAnalyzer(key);
+        analysers.put(key, localeSpecificAnalyzer);
         return localeSpecificAnalyzer;
     }
 
-    private Analyzer loadAnalyzer(Locale locale)
+    private Analyzer loadAnalyzer(Pair<String, Locale> key)
     {
-        DataTypeDefinition dataType = dictionaryService.getDataType(DataTypeDefinition.TEXT);
-        String analyserClassName = dataType.getAnalyserClassName(locale);
+        QName propertyQName = QName.createQName(key.getFirst().substring(1));
+        PropertyDefinition propertyDef = dictionaryService.getProperty(propertyQName);
+        String analyserClassName;
+        if(propertyDef == null)
+        {
+            DataTypeDefinition dataType = dictionaryService.getDataType(DataTypeDefinition.TEXT);
+            analyserClassName = dataType.resolveAnalyserClassName(key.getSecond());
+        }
+        else
+        {
+            analyserClassName = propertyDef.resolveAnalyserClassName(key.getSecond());
+        }
+        
         if (s_logger.isDebugEnabled())
         {
-            s_logger.debug("Loading " + analyserClassName + " for " + locale);
+            s_logger.debug("Loading " + analyserClassName + " for " + key);
         }
         try
         {
@@ -208,18 +225,17 @@ public class MLAnalayser extends Analyzer
         }
         catch (ClassNotFoundException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type "
-                    + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser" + analyserClassName);
         }
         catch (InstantiationException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type "
-                    + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser" + analyserClassName);
         }
         catch (IllegalAccessException e)
         {
-            throw new RuntimeException("Unable to load analyser for property of type "
-                    + dataType.getName() + " using " + analyserClassName);
+            throw new RuntimeException("Unable to load analyser" + analyserClassName);
         }
     }
+    
+    
 }

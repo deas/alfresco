@@ -129,4 +129,17 @@ public interface ClassDefinition
      */
     public List<AspectDefinition> getDefaultAspects(boolean inherited);
     
+    /**
+     * Get the name of the property bundle that defines analyser mappings for this class (keyed by the type of the property) 
+     * @return the resource or null if not set.
+     */
+    public String getAnalyserResourceBundleName();
+    
+    /**
+     * Get the parent class definition
+     * 
+     * @return
+     */
+    public ClassDefinition getParentClassDefinition();
+    
 }

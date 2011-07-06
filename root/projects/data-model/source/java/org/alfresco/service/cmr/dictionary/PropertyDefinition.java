@@ -20,6 +20,7 @@
 package org.alfresco.service.cmr.dictionary;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.service.namespace.QName;
@@ -122,4 +123,23 @@ public interface PropertyDefinition extends ClassAttributeDefinition
      * @return Returns a list of property constraint definitions
      */
     public List<ConstraintDefinition> getConstraints();
+    
+    /**
+     * Get the name of the property bundle that defines analyser mappings for this class.
+     * @return the resource or null if not set.
+     */
+    public String getAnalyserResourceBundleName();
+
+    /**
+     * @param locale
+     * @param resourceBundleClassLoader
+     * @return
+     */
+    public String resolveAnalyserClassName(Locale locale);
+    
+    /**
+     * 
+     * @return
+     */
+    public String resolveAnalyserClassName();
 }

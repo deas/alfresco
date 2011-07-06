@@ -204,11 +204,15 @@ public class AlfrescoDataType extends FieldType
         writer.writeStr(name, f.stringValue(), true);
     }
 
+    public Analyzer getDefaultAnalyzer()
+    {
+        return  super.getAnalyzer();
+    }
+    
     @Override
     public SolrLuceneAnalyser getAnalyzer()
     {
-        return new SolrLuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode(), super.getAnalyzer(),
-                AlfrescoSolrDataModel.getInstance(id));
+        return AlfrescoSolrDataModel.getInstance(id).getSolrLuceneAnalyser();
     }
 
     public Field createField(SchemaField field, String externalVal, float boost)
@@ -266,8 +270,7 @@ public class AlfrescoDataType extends FieldType
     @Override
     public Analyzer getQueryAnalyzer()
     {
-        return new SolrLuceneAnalyser(AlfrescoSolrDataModel.getInstance(id).getDictionaryService(), AlfrescoSolrDataModel.getInstance(id).getMLAnalysisMode(), super.getAnalyzer(),
-                AlfrescoSolrDataModel.getInstance(id));
+        return AlfrescoSolrDataModel.getInstance(id).getQueryAnalyser();
     }
 
     @Override

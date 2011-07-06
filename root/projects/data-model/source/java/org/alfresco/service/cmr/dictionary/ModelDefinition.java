@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 
+import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.service.namespace.QName;
 
 
@@ -93,4 +94,15 @@ public interface ModelDefinition
     public void toXML(XMLBindingType bindingType, OutputStream xml);
 
     public long getChecksum(XMLBindingType bindingType);
+    
+    /**
+     * Get the name of the property bundle that defines analyser mappings for this model (keyed by the type of the property) 
+     * @return the resource or null if not set.
+     */
+    public String getAnalyserResourceBundleName();
+
+    /**
+     * @return
+     */
+    public DictionaryDAO getDictionaryDAO();
 }

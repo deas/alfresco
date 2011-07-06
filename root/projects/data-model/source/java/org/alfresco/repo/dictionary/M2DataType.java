@@ -30,8 +30,9 @@ public class M2DataType
     private String name = null;
     private String title = null;
     private String description = null;
-    private String analyserClassName = null;
+    private String defaultAnalyserClassName = null;
     private String javaClassName = null;
+    private String analyserResourceBundleName = null;
     
     
     /*package*/ M2DataType()
@@ -76,15 +77,15 @@ public class M2DataType
     }
     
     
-    public String getAnalyserClassName()
+    public String getDefaultAnalyserClassName()
     {
-        return analyserClassName;
+        return defaultAnalyserClassName;
     }
     
     
-    public void setAnalyserClassName(String analyserClassName)
+    public void setDefaultAnalyserClassName(String defaultAnalyserClassName)
     {
-        this.analyserClassName = analyserClassName;;
+        this.defaultAnalyserClassName = defaultAnalyserClassName;;
     }
 
     
@@ -97,6 +98,21 @@ public class M2DataType
     public void setJavaClassName(String javaClassName)
     {
         this.javaClassName = javaClassName;;
+    }
+
+
+    /**
+     * @return
+     */
+    public String getAnalyserResourceBundleName()
+    {
+        return analyserResourceBundleName; 
+    }
+
+
+    public void setAnalyserResourceBundleName(String analyserResourceBundleName)
+    {
+        this.analyserResourceBundleName = analyserResourceBundleName;
     }
     
 }

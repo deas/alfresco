@@ -75,20 +75,36 @@ public interface DataTypeDefinition
      * @return the human-readable class description 
      */
     public String getDescription();
+    
+    /**
+     * Get the name of the property bundle that defines analyser mappings for this data type (keyed by the type of the property) 
+     * @return the resource or null if not set.
+     */
+    public String getAnalyserResourceBundleName();
 
-    /**
-     * @return the indexing analyser class
-     */
-    public String getAnalyserClassName();
-    
-    /**
-     * @return the indexing analyser class for the specified locale
-     */
-    public String getAnalyserClassName(Locale locale);
-    
     /**
      * @return the equivalent java class name (or null, if not mapped) 
      */
     public String getJavaClassName();
+    
+    /**
+     * Get the default analyser class - used when no resource bundles can be found and no repository default is set.
+     * @return
+     */
+    public String getDefaultAnalyserClassName();
+
+    /**
+     * @param defaultAnalyserResourceBundleName
+     * @param locale
+     * @param resourceBundleClassLoader
+     * @return
+     */
+    public String resolveAnalyserClassName(Locale locale);
+    
+    /**
+     * 
+     * @return
+     */
+    public String resolveAnalyserClassName();
     
 }

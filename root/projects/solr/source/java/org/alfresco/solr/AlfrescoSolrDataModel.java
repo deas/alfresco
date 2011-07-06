@@ -18,7 +18,12 @@
  */
 package org.alfresco.solr;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,6 +89,7 @@ import org.alfresco.solr.query.SolrQueryParser;
 import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
@@ -96,6 +102,9 @@ import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
+import org.apache.solr.common.SolrException;
+import org.apache.solr.common.util.FileUtils;
+import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.Sorting;
 import org.dom4j.io.XMLWriter;
@@ -129,10 +138,12 @@ public class AlfrescoSolrDataModel
     private DictionaryComponent dictionaryComponent;
 
     private CMISStrictDictionaryService cmisDictionaryService;
-    
+
     private boolean testing = true;
 
     private AlfrescoDataType alfrescoDataType;
+
+    private String id;
 
     static
     {
@@ -233,7 +244,7 @@ public class AlfrescoSolrDataModel
             AlfrescoSolrDataModel model = models.get(id);
             if (model == null)
             {
-                model = new AlfrescoSolrDataModel();
+                model = new AlfrescoSolrDataModel(id);
                 models.put(id, model);
             }
             return model;
@@ -245,8 +256,10 @@ public class AlfrescoSolrDataModel
 
     }
 
-    private AlfrescoSolrDataModel()
+    private AlfrescoSolrDataModel(String id)
     {
+        this.id = id;
+
         tenantService = new SingleTServiceImpl();
         namespaceDAO = new NamespaceDAOImpl();
         namespaceDAO.setTenantService(tenantService);
@@ -255,10 +268,13 @@ public class AlfrescoSolrDataModel
         dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
         dictionaryDAO.setTenantService(tenantService);
         dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
+        // TODO: use config ....
+        dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
+        dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
 
         dictionaryComponent = new DictionaryComponent();
         dictionaryComponent.setDictionaryDAO(dictionaryDAO);
-        
+
         // cmis dictionary
         CMISMapping cmisMapping = new CMISMapping();
         DictionaryNamespaceComponent namespaceService = new DictionaryNamespaceComponent();
@@ -266,13 +282,13 @@ public class AlfrescoSolrDataModel
         cmisMapping.setNamespaceService(namespaceService);
         cmisMapping.setDictionaryService(dictionaryComponent);
         cmisMapping.afterPropertiesSet();
-        
+
         cmisDictionaryService = new CMISStrictDictionaryService();
         cmisDictionaryService.setCmisMapping(cmisMapping);
         cmisDictionaryService.setDictionaryService(dictionaryComponent);
         cmisDictionaryService.setDictionaryDAO(dictionaryDAO);
         cmisDictionaryService.setTenantService(tenantService);
-        
+
         RuntimePropertyLuceneBuilderMapping luceneBuilderMapping = new RuntimePropertyLuceneBuilderMapping();
         luceneBuilderMapping.setDictionaryService(dictionaryComponent);
         luceneBuilderMapping.setCmisDictionaryService(cmisDictionaryService);
@@ -529,7 +545,7 @@ public class AlfrescoSolrDataModel
      */
     public Query getRangeQuery(SchemaField field, String part1, String part2, boolean minInclusive, boolean maxInclusive)
     {
-        SolrLuceneAnalyser defaultAnalyser = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getAnalyzer().getDefaultAnalyser(), this);
+        SolrLuceneAnalyser defaultAnalyser = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
         SolrQueryParser parser = new SolrQueryParser("TEXT", defaultAnalyser);
         parser.setDefaultOperator(Operator.AND);
         parser.setNamespacePrefixResolver(namespaceDAO);
@@ -562,12 +578,12 @@ public class AlfrescoSolrDataModel
     {
         return dictionaryDAO.getCompiledModel(modelQName).getM2Model();
     }
-    
+
     public void afterInitModels()
     {
         cmisDictionaryService.afterDictionaryInit();
     }
-    
+
     private static class NonDictionaryField
     {
         private String name;
@@ -593,230 +609,278 @@ public class AlfrescoSolrDataModel
         }
     }
 
-    public void generateSchema(XMLWriter xmlWriter) throws IOException, SAXException
-    {
-        xmlWriter.startDocument();
-
-        AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("", "name", "name", null, "alfresco");
-        attrs.addAttribute("", "version", "version", null, "1.0");
-        xmlWriter.startElement("", "schema", "schema", attrs);
-
-        xmlWriter.startElement("", "types", "types", new AttributesImpl());
-        writeFieldType(xmlWriter, "alfrescoDataType", "org.alfresco.solr.AlfrescoDataType");
-        xmlWriter.endElement("", "types", "types");
-
-        xmlWriter.startElement("", "fields", "fields", new AttributesImpl());
-
-        for (NonDictionaryField field : nonDictionaryFields.values())
-        {
-            writeField(xmlWriter, field);
-        }
-
-        for (QName modelName : dictionaryComponent.getAllModels())
-        {
-            for (QName propertyName : dictionaryComponent.getProperties(modelName))
-            {
-                PropertyDefinition propertyDefinition = dictionaryComponent.getProperty(propertyName);
-                writeField(xmlWriter, propertyDefinition);
-            }
-        }
-        xmlWriter.endElement("", "fields", "fields");
-
-        xmlWriter.startElement("", "uniqueKey", "uniqueKey", new AttributesImpl());
-        xmlWriter.write("ID");
-        xmlWriter.endElement("", "uniqueKey", "uniqueKey");
-
-        xmlWriter.startElement("", "defaultSearchField", "defaultSearchField", new AttributesImpl());
-        xmlWriter.write("ID");
-        xmlWriter.endElement("", "defaultSearchField", "defaultSearchField");
-
-        xmlWriter.endElement("", "schema", "schema");
-
-        xmlWriter.endDocument();
-        xmlWriter.close();
-    }
-
-    private void writeFieldType(XMLWriter xmlWriter, String name, String clazz) throws SAXException
-    {
-        AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("", "name", "name", null, name);
-        attrs.addAttribute("", "class", "class", null, clazz);
-        xmlWriter.startElement("", "fieldType", "fieldType", attrs);
-        xmlWriter.startElement("", "analyzer", "analyzer", new AttributesImpl());
-        AttributesImpl tokenizerAttrs = new AttributesImpl();
-        tokenizerAttrs.addAttribute("", "class", "class", null, "org.apache.solr.analysis.WhitespaceTokenizerFactory");
-        xmlWriter.startElement("", "tokenizer", "tokenizer", tokenizerAttrs);
-        xmlWriter.endElement("", "tokenizer", "tokenizer");
-        AttributesImpl filterAttrs = new AttributesImpl();
-        filterAttrs.addAttribute("", "class", "class", null, "org.apache.solr.analysis.LowerCaseFilterFactory");
-        xmlWriter.startElement("", "filter", "filter", filterAttrs);
-        xmlWriter.endElement("", "filter", "filter");
-        xmlWriter.endElement("", "analyzer", "analyzer");
-        xmlWriter.endElement("", "fieldType", "fieldType");
-    }
-
-    private void writeField(XMLWriter xmlWriter, PropertyDefinition propertyDefinition) throws SAXException
-    {
-        String name = "@" + propertyDefinition.getName().toString();
-
-        Store store = propertyDefinition.isStoredInIndex() ? Store.YES : Store.NO;
-        boolean multiValued = propertyDefinition.isMultiValued();
-        if (propertyDefinition.isIndexed())
-        {
-            switch (propertyDefinition.getIndexTokenisationMode())
-            {
-            case BOTH:
-                writeField(xmlWriter, name, "alfrescoDataType", store, Index.ANALYZED, TermVector.NO, multiValued);
-                if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.CONTENT))
-                {
-                    writeField(xmlWriter, name + ".size", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".locale", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".mimetype", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".encoding", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".contentDataId", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationException", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationTime", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationStatus", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, false);
-                }
-                else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
-                {
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                }
-                else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
-                {
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                }
-                else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
-                {
-                    DataTypeDefinition dataType = propertyDefinition.getDataType();
-                    String analyserClassName = dataType.getAnalyserClassName();
-                    if (analyserClassName.equals(DateTimeAnalyser.class.getCanonicalName()))
-                    {
-                        writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, multiValued);
-                    }
-                    else
-                    {
-                        // nothing
-                    }
-                }
-                else
-                {
-                    // nothing
-                }
-                break;
-            case FALSE:
-                writeField(xmlWriter, name, "alfrescoDataType", store, Index.NOT_ANALYZED, TermVector.NO, multiValued);
-                if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.CONTENT))
-                {
-                    writeField(xmlWriter, name + ".size", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".locale", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".mimetype", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".encoding", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".contentDataId", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationException", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationTime", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationStatus", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                }
-                else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
-                {
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                }
-                else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
-                {
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                }
-                break;
-            case TRUE:
-                writeField(xmlWriter, name, "alfrescoDataType", store, Index.ANALYZED, TermVector.NO, multiValued);
-                if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.CONTENT))
-                {
-                    writeField(xmlWriter, name + ".size", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".locale", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".mimetype", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".encoding", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".contentDataId", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationException", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationTime", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".transformationStatus", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
-                }
-                else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
-                {
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                }
-                else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
-                {
-                    writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                    writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, true);
-                }
-                else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
-                {
-                    DataTypeDefinition dataType = propertyDefinition.getDataType();
-                    String analyserClassName = dataType.getAnalyserClassName();
-                    if (analyserClassName.equals(DateTimeAnalyser.class.getCanonicalName()))
-                    {
-                        writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, multiValued);
-                    }
-                    else
-                    {
-                        // nothing
-                    }
-                }
-                break;
-            default:
-            }
-
-        }
-        else
-        {
-            writeField(xmlWriter, name, "alfrescoDataType", store, Index.NO, TermVector.NO, multiValued);
-        }
-    }
-
-    private void writeField(XMLWriter xmlWriter, NonDictionaryField field) throws SAXException
-    {
-        writeField(xmlWriter, field.name, "alfrescoDataType", field.store, field.index, field.termVector, field.multiValued);
-    }
-
-    private void writeField(XMLWriter xmlWriter, String name, String fieldType, Store store, Index index, TermVector termVector, boolean multiValued) throws SAXException
-    {
-        AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("", "name", "name", null, name);
-        attrs.addAttribute("", "type", "type", null, fieldType);
-
-        attrs.addAttribute("", "indexed", "indexed", null, Boolean.valueOf(index != Index.NO).toString());
-        if ((index == Index.NOT_ANALYZED_NO_NORMS) || (index == Index.ANALYZED_NO_NORMS))
-        {
-            attrs.addAttribute("", "omitNorms", "omitNorms", null, "true");
-        }
-
-        attrs.addAttribute("", "stored", "stored", null, Boolean.valueOf(store != Store.NO).toString());
-
-        attrs.addAttribute("", "multiValued", "multiValued", null, Boolean.valueOf(multiValued).toString());
-
-        xmlWriter.startElement("", "field", "field", attrs);
-        xmlWriter.endElement("", "field", "field");
-    }
+    // public void generateSchema(XMLWriter xmlWriter) throws IOException, SAXException
+    // {
+    // xmlWriter.startDocument();
+    //
+    // AttributesImpl attrs = new AttributesImpl();
+    // attrs.addAttribute("", "name", "name", null, "alfresco");
+    // attrs.addAttribute("", "version", "version", null, "1.0");
+    // xmlWriter.startElement("", "schema", "schema", attrs);
+    //
+    // xmlWriter.startElement("", "types", "types", new AttributesImpl());
+    // writeFieldType(xmlWriter, "alfrescoDataType", "org.alfresco.solr.AlfrescoDataType");
+    // xmlWriter.endElement("", "types", "types");
+    //
+    // xmlWriter.startElement("", "fields", "fields", new AttributesImpl());
+    //
+    // for (NonDictionaryField field : nonDictionaryFields.values())
+    // {
+    // writeField(xmlWriter, field);
+    // }
+    //
+    // for (QName modelName : dictionaryComponent.getAllModels())
+    // {
+    // for (QName propertyName : dictionaryComponent.getProperties(modelName))
+    // {
+    // PropertyDefinition propertyDefinition = dictionaryComponent.getProperty(propertyName);
+    // writeField(xmlWriter, propertyDefinition);
+    // }
+    // }
+    // xmlWriter.endElement("", "fields", "fields");
+    //
+    // xmlWriter.startElement("", "uniqueKey", "uniqueKey", new AttributesImpl());
+    // xmlWriter.write("ID");
+    // xmlWriter.endElement("", "uniqueKey", "uniqueKey");
+    //
+    // xmlWriter.startElement("", "defaultSearchField", "defaultSearchField", new AttributesImpl());
+    // xmlWriter.write("ID");
+    // xmlWriter.endElement("", "defaultSearchField", "defaultSearchField");
+    //
+    // xmlWriter.endElement("", "schema", "schema");
+    //
+    // xmlWriter.endDocument();
+    // xmlWriter.close();
+    // }
+    //
+    // private void writeFieldType(XMLWriter xmlWriter, String name, String clazz) throws SAXException
+    // {
+    // AttributesImpl attrs = new AttributesImpl();
+    // attrs.addAttribute("", "name", "name", null, name);
+    // attrs.addAttribute("", "class", "class", null, clazz);
+    // xmlWriter.startElement("", "fieldType", "fieldType", attrs);
+    // xmlWriter.startElement("", "analyzer", "analyzer", new AttributesImpl());
+    // AttributesImpl tokenizerAttrs = new AttributesImpl();
+    // tokenizerAttrs.addAttribute("", "class", "class", null, "org.apache.solr.analysis.WhitespaceTokenizerFactory");
+    // xmlWriter.startElement("", "tokenizer", "tokenizer", tokenizerAttrs);
+    // xmlWriter.endElement("", "tokenizer", "tokenizer");
+    // AttributesImpl filterAttrs = new AttributesImpl();
+    // filterAttrs.addAttribute("", "class", "class", null, "org.apache.solr.analysis.LowerCaseFilterFactory");
+    // xmlWriter.startElement("", "filter", "filter", filterAttrs);
+    // xmlWriter.endElement("", "filter", "filter");
+    // xmlWriter.endElement("", "analyzer", "analyzer");
+    // xmlWriter.endElement("", "fieldType", "fieldType");
+    // }
+    //
+    // private void writeField(XMLWriter xmlWriter, PropertyDefinition propertyDefinition) throws SAXException
+    // {
+    // String name = "@" + propertyDefinition.getName().toString();
+    //
+    // Store store = propertyDefinition.isStoredInIndex() ? Store.YES : Store.NO;
+    // boolean multiValued = propertyDefinition.isMultiValued();
+    // if (propertyDefinition.isIndexed())
+    // {
+    // switch (propertyDefinition.getIndexTokenisationMode())
+    // {
+    // case BOTH:
+    // writeField(xmlWriter, name, "alfrescoDataType", store, Index.ANALYZED, TermVector.NO, multiValued);
+    // if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.CONTENT))
+    // {
+    // writeField(xmlWriter, name + ".size", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO,
+    // false);
+    // writeField(xmlWriter, name + ".locale", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // false);
+    // writeField(xmlWriter, name + ".mimetype", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".encoding", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".contentDataId", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationException", "alfrescoDataType", Store.NO,
+    // Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationTime", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationStatus", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, false);
+    // }
+    // else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
+    // {
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
+    // writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // }
+    // else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
+    // {
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
+    // writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // }
+    // else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
+    // {
+    // DataTypeDefinition dataType = propertyDefinition.getDataType();
+    // String analyserClassName = propertyDefinition.resolveAnalyserClassName(locale, classLoader);
+    // if (analyserClassName.equals(DateTimeAnalyser.class.getCanonicalName()))
+    // {
+    // writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO,
+    // multiValued);
+    // }
+    // else
+    // {
+    // // nothing
+    // }
+    // }
+    // else
+    // {
+    // // nothing
+    // }
+    // break;
+    // case FALSE:
+    // writeField(xmlWriter, name, "alfrescoDataType", store, Index.NOT_ANALYZED, TermVector.NO, multiValued);
+    // if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.CONTENT))
+    // {
+    // writeField(xmlWriter, name + ".size", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO,
+    // false);
+    // writeField(xmlWriter, name + ".locale", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // false);
+    // writeField(xmlWriter, name + ".mimetype", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".encoding", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".contentDataId", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationException", "alfrescoDataType", Store.NO,
+    // Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationTime", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationStatus", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // false);
+    // }
+    // else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
+    // {
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
+    // writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // }
+    // else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
+    // {
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
+    // writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // }
+    // break;
+    // case TRUE:
+    // writeField(xmlWriter, name, "alfrescoDataType", store, Index.ANALYZED, TermVector.NO, multiValued);
+    // if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.CONTENT))
+    // {
+    // writeField(xmlWriter, name + ".size", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO,
+    // false);
+    // writeField(xmlWriter, name + ".locale", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // false);
+    // writeField(xmlWriter, name + ".mimetype", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".encoding", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".contentDataId", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationException", "alfrescoDataType", Store.NO,
+    // Index.NOT_ANALYZED_NO_NORMS, TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationTime", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".transformationStatus", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS,
+    // TermVector.NO, false);
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // false);
+    // }
+    // else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
+    // {
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
+    // writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // }
+    // else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
+    // {
+    // writeField(xmlWriter, name + ".__", "alfrescoDataType", Store.NO, Index.ANALYZED, TermVector.NO, true);
+    // writeField(xmlWriter, name + ".u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".__.u", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.NOT_ANALYZED_NO_NORMS, TermVector.NO,
+    // true);
+    // }
+    // else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
+    // {
+    // DataTypeDefinition dataType = propertyDefinition.getDataType();
+    // String analyserClassName = propertyDefinition.resolveAnalyserClassName();
+    // if (analyserClassName.equals(DateTimeAnalyser.class.getCanonicalName()))
+    // {
+    // writeField(xmlWriter, name + ".sort", "alfrescoDataType", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO,
+    // multiValued);
+    // }
+    // else
+    // {
+    // // nothing
+    // }
+    // }
+    // break;
+    // default:
+    // }
+    //
+    // }
+    // else
+    // {
+    // writeField(xmlWriter, name, "alfrescoDataType", store, Index.NO, TermVector.NO, multiValued);
+    // }
+    // }
+    //
+    // private void writeField(XMLWriter xmlWriter, NonDictionaryField field) throws SAXException
+    // {
+    // writeField(xmlWriter, field.name, "alfrescoDataType", field.store, field.index, field.termVector,
+    // field.multiValued);
+    // }
+    //
+    // private void writeField(XMLWriter xmlWriter, String name, String fieldType, Store store, Index index, TermVector
+    // termVector, boolean multiValued) throws SAXException
+    // {
+    // AttributesImpl attrs = new AttributesImpl();
+    // attrs.addAttribute("", "name", "name", null, name);
+    // attrs.addAttribute("", "type", "type", null, fieldType);
+    //
+    // attrs.addAttribute("", "indexed", "indexed", null, Boolean.valueOf(index != Index.NO).toString());
+    // if ((index == Index.NOT_ANALYZED_NO_NORMS) || (index == Index.ANALYZED_NO_NORMS))
+    // {
+    // attrs.addAttribute("", "omitNorms", "omitNorms", null, "true");
+    // }
+    //
+    // attrs.addAttribute("", "stored", "stored", null, Boolean.valueOf(store != Store.NO).toString());
+    //
+    // attrs.addAttribute("", "multiValued", "multiValued", null, Boolean.valueOf(multiValued).toString());
+    //
+    // xmlWriter.startElement("", "field", "field", attrs);
+    // xmlWriter.endElement("", "field", "field");
+    // }
 
     public AbstractLuceneQueryParser getLuceneQueryParser(String defaultField, String query, Operator defaultOperator, IndexReader indexReader)
     {
@@ -824,7 +888,7 @@ public class AlfrescoSolrDataModel
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setLanguage(SearchService.LANGUAGE_LUCENE);
         searchParameters.setQuery(query);
-        SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getAnalyzer().getDefaultAnalyser(), this);
+        SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
         SolrQueryParser parser = new SolrQueryParser(defaultField, analyzer);
         parser.setDefaultOperator(defaultOperator);
         parser.setNamespacePrefixResolver(namespaceDAO);
@@ -844,7 +908,7 @@ public class AlfrescoSolrDataModel
                 getMLAnalysisMode(), indexReader, alfrescoDataType.getAnalyzer(), this);
         return luceneContext;
     }
-    
+
     public Query getFTSQuery(SearchParameters searchParameters, IndexReader indexReader) throws ParseException
     {
         QueryModelFactory factory = new LuceneQueryModelFactory();
@@ -889,12 +953,13 @@ public class AlfrescoSolrDataModel
         }
         Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
         // query needs some search parameters fro correct caching ....
-        
+
         ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, searchParameters);
         return contextAwareQuery;
     }
 
-    public  org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader) throws ParseException
+    public org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader)
+            throws ParseException
     {
         // convert search parameters to cmis query options
         // TODO: how to handle store ref
@@ -906,13 +971,13 @@ public class AlfrescoSolrDataModel
         options.setLocales(searchParameters.getLocales());
         options.setMlAnalaysisMode(searchParameters.getMlAnalaysisMode());
         options.setQueryParameterDefinitions(searchParameters.getQueryParameterDefinitions());
-        
+
         // parse cmis syntax
         CapabilityJoin joinSupport = (mode == CMISQueryMode.CMS_STRICT) ? CapabilityJoin.NONE : CapabilityJoin.INNERONLY;
         CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode);
         CMISQueryParser parser = new CMISQueryParser(options, cmisDictionaryService, joinSupport);
         org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = parser.parse(new LuceneQueryModelFactory(), functionContext);
-        
+
         // build lucene query
         Set<String> selectorGroup = null;
         if (queryModelQuery.getSource() != null)
@@ -930,7 +995,7 @@ public class AlfrescoSolrDataModel
         }
         return queryModelQuery;
     }
-    
+
     public CmisFunctionEvaluationContext getCMISFunctionEvaluationContext(CMISQueryMode mode)
     {
         BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
@@ -939,14 +1004,15 @@ public class AlfrescoSolrDataModel
         functionContext.setValidScopes(validScopes);
         return functionContext;
     }
-    
-    public Query getCMISQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery) throws ParseException
+
+    public Query getCMISQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery)
+            throws ParseException
     {
         BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
         CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode);
-        
+
         Set<String> selectorGroup = queryModelQuery.getSource().getSelectorGroups(functionContext).get(0);
-        
+
         LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader);
         LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
         org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
@@ -954,8 +1020,7 @@ public class AlfrescoSolrDataModel
         ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, searchParameters);
         return contextAwareQuery;
     }
-    
-    
+
     /**
      * @param field
      * @param reverse
@@ -1124,7 +1189,7 @@ public class AlfrescoSolrDataModel
 
         private String stripLocale(String withLocale)
         {
-            if(withLocale == null)
+            if (withLocale == null)
             {
                 return withLocale;
             }
@@ -1166,7 +1231,7 @@ public class AlfrescoSolrDataModel
         final Collator collator;
 
         private String bottom;
-        
+
         Locale collatorLocale;
 
         MLTextSortFieldComparator(int numHits, String field, Locale collatorLocale)
@@ -1237,7 +1302,7 @@ public class AlfrescoSolrDataModel
         private String findBestValue(String withLocale)
         {
             // split strin into MLText object
-            if(withLocale == null)
+            if (withLocale == null)
             {
                 return withLocale;
             }
@@ -1245,31 +1310,31 @@ public class AlfrescoSolrDataModel
             {
                 MLText mlText = new MLText();
                 String[] parts = withLocale.split("\u0000");
-                for(int i = 0; (i+2) <= parts.length; i+=3)
+                for (int i = 0; (i + 2) <= parts.length; i += 3)
                 {
                     Locale locale = null;
-                    String[] localeParts = parts[i+1].split("_");
-                    if(localeParts.length == 1)
+                    String[] localeParts = parts[i + 1].split("_");
+                    if (localeParts.length == 1)
                     {
                         locale = new Locale(localeParts[0]);
                     }
-                    else if(localeParts.length == 2)
+                    else if (localeParts.length == 2)
                     {
                         locale = new Locale(localeParts[0], localeParts[1]);
                     }
-                    else if(localeParts.length == 3)
+                    else if (localeParts.length == 3)
                     {
                         locale = new Locale(localeParts[0], localeParts[1], localeParts[2]);
                     }
-                    if(locale != null)
-                    { 
-                        if(i+2 ==  parts.length)
+                    if (locale != null)
+                    {
+                        if (i + 2 == parts.length)
                         {
                             mlText.addValue(locale, "");
                         }
                         else
                         {
-                            mlText.addValue(locale, parts[i+2]);
+                            mlText.addValue(locale, parts[i + 2]);
                         }
                     }
                 }
@@ -1287,15 +1352,61 @@ public class AlfrescoSolrDataModel
      */
     public List<AlfrescoModel> getAlfrescoModels()
     {
-        
+
         ArrayList<AlfrescoModel> answer = new ArrayList<AlfrescoModel>();
-        for(QName modelName : dictionaryDAO.getModels())
+        for (QName modelName : dictionaryDAO.getModels())
         {
             M2Model m2Model = dictionaryDAO.getCompiledModel(modelName).getM2Model();
             answer.add(new AlfrescoModel(m2Model, dictionaryComponent.getModel(modelName).getChecksum(ModelDefinition.XMLBindingType.DEFAULT)));
         }
         return answer;
-        
+
     }
 
+    /**
+     * @param defaultAnalyzer
+     * @return
+     */
+    public SolrLuceneAnalyser getSolrLuceneAnalyser()
+    {
+        return new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
+    }
+
+    /**
+     * @return
+     */
+    public ClassLoader getResourceClassLoader()
+    {
+
+        File f = new File(id, "alfrescoResources");
+        if (f.canRead() && f.isDirectory())
+        {
+
+            URL[] urls = new URL[1];
+
+            try
+            {
+                URL url = f.toURI().normalize().toURL();
+                urls[0] = url;
+            }
+            catch (MalformedURLException e)
+            {
+                throw new AlfrescoRuntimeException("Failed to add resources to classpath ", e);
+            }
+
+            return URLClassLoader.newInstance(urls, this.getClass().getClassLoader());
+        }
+        else
+        {
+            return this.getClass().getClassLoader();
+        }
+    }
+
+    /**
+     * @return
+     */
+    public Analyzer getQueryAnalyser()
+    {
+        return getSolrLuceneAnalyser();
+    }
 }
