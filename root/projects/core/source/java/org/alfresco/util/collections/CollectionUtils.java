@@ -75,6 +75,33 @@ public abstract class CollectionUtils
         return results;
     }
     
+    /**
+     * Converts a {@link Collection} of values of type F to a {@link Serializable} {@link List} of values of type T.
+     * Filters out all values converted to <code>null</code>.
+     * @param <F> From type
+     * @param <T> To type
+     * @param values the values to convert.
+     * @param transformer Used to convert values.
+     * @return
+     */
+    public static <F, T> List<T> transform(Function<? super F, ? extends T> transformer, F... values)
+    {
+        if(values == null || values.length<1)
+        {
+            return Collections.emptyList();
+        }
+        List<T> results = new ArrayList<T>(values.length);
+        for (F value : values)
+        {
+            T result = transformer.apply(value);
+            if(result != null)
+            {
+                results.add(result);
+            }
+        }
+        return results;
+    }
+    
     public static List<String> toListOfStrings(Collection<?> values)
     {
         return transform(values, TO_STRING_TRANSFORMER);
