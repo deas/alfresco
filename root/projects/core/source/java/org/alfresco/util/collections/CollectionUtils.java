@@ -22,7 +22,6 @@ package org.alfresco.util.collections;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,7 +60,7 @@ public abstract class CollectionUtils
     {
         if(values == null || values.isEmpty())
         {
-            return Collections.emptyList();
+            return new ArrayList<T>();
         }
         List<T> results = new ArrayList<T>(values.size());
         for (F value : values)
@@ -88,7 +87,7 @@ public abstract class CollectionUtils
     {
         if(values == null || values.length<1)
         {
-            return Collections.emptyList();
+            return new ArrayList<T>();
         }
         List<T> results = new ArrayList<T>(values.length);
         for (F value : values)
