@@ -153,16 +153,16 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             {
                 List<NodeRef> roots = rmService.getRecordsManagementRoots(storeRef);
                 assertNotNull(roots);
-                assertEquals(1, roots.size());
-                assertEquals(rmRootContainer, roots.get(0));
+                assertTrue(roots.size() != 0);
+                assertTrue(roots.contains(rmRootContainer));
                 
                 RecordsManagementServiceImpl temp = (RecordsManagementServiceImpl)applicationContext.getBean("recordsManagementService");
                 temp.setDefaultStoreRef(storeRef);
                 
                 roots = rmService.getRecordsManagementRoots();
                 assertNotNull(roots);
-                assertEquals(1, roots.size());
-                assertEquals(rmRootContainer, roots.get(0)); 
+                assertTrue(roots.size() != 0);
+                assertTrue(roots.contains(rmRootContainer)); 
                 
                 return null;
             }
