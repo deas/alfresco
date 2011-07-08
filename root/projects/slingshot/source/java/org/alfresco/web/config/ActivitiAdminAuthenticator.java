@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -23,27 +23,30 @@ import org.springframework.extensions.webscripts.connector.AlfrescoAuthenticator
 import org.springframework.extensions.webscripts.connector.ConnectorSession;
 import org.springframework.extensions.webscripts.connector.Credentials;
 
+/**
+ * Authenticator for the embedeed Activiti Admin UI
+ *
+ * @author Frederik Heremans
+ * @since 4.0
+ */
 public class ActivitiAdminAuthenticator extends AlfrescoAuthenticator
 {
-    private static final CharSequence ACTIVITI_ADMIN_UI_PATH = "/activiti-admin";
-    private static final CharSequence ALFRESCO_SERVICE_BASE_PATH = "/s";
+    private static final String ACTIVITI_ADMIN_UI_PATH = "/activiti-admin";
+    private static final String ALFRESCO_SERVICE_BASE_PATH = "/s";
     
     @Override
     public ConnectorSession authenticate(String endpoint, Credentials credentials,
                 ConnectorSession connectorSession) throws AuthenticationException
     {
         String endPointToUse = getAlfrescoEndpoint(endpoint);
-        ConnectorSession session = super.authenticate(endPointToUse, credentials, connectorSession);
-        return session;
+        return super.authenticate(endPointToUse, credentials, connectorSession);
     }
 
     /**
-     * Create alfresco api base endpoint, based on activiti-admin endpoint
-     * url.
+     * Create alfresco api base endpoint, based on activiti-admin endpoint url.
      */
     private String getAlfrescoEndpoint(String endpoint)
     {
         return endpoint.replace(ACTIVITI_ADMIN_UI_PATH, ALFRESCO_SERVICE_BASE_PATH);
     }
-    
 }

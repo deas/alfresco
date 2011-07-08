@@ -248,7 +248,7 @@
             <authenticator-id>alfresco-ticket</authenticator-id>
          </connector>
          
-         <!-- Activiti admin connector -->
+         <!-- Activiti admin authentication -->
          <authenticator>
             <id>activiti-admin-authenticator</id>
             <name>activiti-admin-authenticator</name>
@@ -266,12 +266,10 @@
          </connector>
          <endpoint>
             <id>activiti-admin</id>
-            <name>Alfresco - user access</name>
-            <description>Access to Activiti Admin UI, that requires user
-               authentication</description>
+            <name>Activiti Admin UI - user access</name>
+            <description>Access to Activiti Admin UI, that requires user authentication</description>
             <connector-id>activiti-admin-connector</connector-id>
-            <endpoint-url>http://localhost:8080/alfresco/activiti-admin
-            </endpoint-url>
+            <endpoint-url>http://localhost:8080/alfresco/activiti-admin</endpoint-url>
             <identity>user</identity>
          </endpoint>
       </remote>

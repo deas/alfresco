@@ -146,7 +146,7 @@
          // process the transitions
          if (this.options.currentValue !== null && this.options.currentValue.length > 0)
          {
-            var transitionPairs = this.options.currentValue.split(",");
+            var transitionPairs = this.options.currentValue.split("#alf#");
             for (var i = 0, ii = transitionPairs.length; i < ii; i++)
             {
                // retrieve the transition info and split
