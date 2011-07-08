@@ -2,13 +2,11 @@ package org.alfresco.module.org_alfresco_module_dod5015.search;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
@@ -174,11 +172,11 @@ public class SavedSearchDetailsCompatibility
      */
     public String getParams()
     {
-        try
-        {
+        //try
+        //{
 	        List<QName> includeContainerTypes = this.savedSearchDetails.getSearchParameters().getIncludedContainerTypes();            
 	        StringBuilder builder = new StringBuilder(128);	        	       
-	        builder.append("terms=").append(URLEncoder.encode(this.savedSearchDetails.getSearch(), "UTF-8")).append("&")
+	        builder.append("terms=").append(this.savedSearchDetails.getSearch()).append("&")
 	               .append("records=").append(this.savedSearchDetails.getSearchParameters().isIncludeRecords()).append("&")
 	               .append("undeclared=").append(this.savedSearchDetails.getSearchParameters().isIncludeUndeclaredRecords()).append("&")
 	               .append("vital=").append(this.savedSearchDetails.getSearchParameters().isIncludeVitalRecords()).append("&")
@@ -188,11 +186,11 @@ public class SavedSearchDetailsCompatibility
 	               .append("categories=").append(includeContainerTypes.contains(DOD5015Model.TYPE_RECORD_CATEGORY)).append("&")
 	               .append("series=").append(includeContainerTypes.contains(DOD5015Model.TYPE_RECORD_SERIES));	        
 	        return builder.toString();
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new AlfrescoRuntimeException("Unable to generate compatibility paramteres for saved search details.", e);
-        }
+        //}
+        //catch (UnsupportedEncodingException e)
+       // {
+       //     throw new AlfrescoRuntimeException("Unable to generate compatibility paramteres for saved search details.", e);
+        //}
     }
     
     /**

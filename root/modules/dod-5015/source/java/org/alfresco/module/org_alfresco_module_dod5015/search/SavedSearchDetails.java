@@ -21,6 +21,7 @@ package org.alfresco.module.org_alfresco_module_dod5015.search;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.service.namespace.NamespaceService;
+import org.alfresco.util.ParameterCheck;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,6 +83,10 @@ public class SavedSearchDetails extends ReportDetails
     public static final String PUBLIC = "public";
     public static final String REPORT = "report";
     public static final String SEARCHPARAMS = "searchparams";
+    
+    // JSON values for backwards compatibility
+    public static final String QUERY = "query";
+    public static final String SORT = "sort";
     
     /** Site id */
 	private String siteId;
@@ -152,7 +157,7 @@ public class SavedSearchDetails extends ReportDetails
     	    {
     	        throw new AlfrescoRuntimeException("Can not create saved search details from json, because required search is not present. " + jsonString);
     	    }
-    	    String query = search.getString(SEARCH);    	    
+    	    String serach = search.getString(SEARCH);    	    
     	    
     	    // Determine whether the saved query is public or not
     	    boolean isPublic = false;
@@ -175,7 +180,7 @@ public class SavedSearchDetails extends ReportDetails
     	    }
     	    
     	    // Create the saved search details object
-    	    return new SavedSearchDetails(siteId, name, description, query, searchParameters, isPublic, isReport, namespaceService, searchService);    	    
+    	    return new SavedSearchDetails(siteId, name, description, serach, searchParameters, isPublic, isReport, namespaceService, searchService);    	    
 	    }
 	    catch (JSONException exception)
 	    {
@@ -201,7 +206,12 @@ public class SavedSearchDetails extends ReportDetails
 	        RecordsManagementSearchServiceImpl searchService) 
 	{
 	    super(name, description, serach, searchParameters);
-		this.siteId = siteId;
+		
+        ParameterCheck.mandatory("siteId", siteId);
+        ParameterCheck.mandatory("namespaceService", namespaceService);
+        ParameterCheck.mandatory("searchService", searchService);
+	    
+	    this.siteId = siteId;
 		this.isPublic = isPublic;
 		this.isReport = isReport;
 		this.namespaceService = namespaceService;
@@ -250,8 +260,13 @@ public class SavedSearchDetails extends ReportDetails
     	    jsonObject.put(NAME, name);
     	    jsonObject.put(DESCRIPTION, description);
     	    jsonObject.put(SEARCH, search);
-    	    jsonObject.put(SEARCHPARAMS, searchParameters.toJSONObject(namespaceService));
+    	    jsonObject.put(SEARCHPARAMS, searchParameters.toJSONObject(namespaceService));    	    
     	    jsonObject.put(PUBLIC, isPublic);
+    	    
+    	    // Add full query for backward compatibility
+    	    jsonObject.put(QUERY, searchService.buildQueryString(search, searchParameters));
+    	    jsonObject.put(SORT, compatibility.getSort());
+    	    
     	    return jsonObject.toString();
 	    }
 	    catch (JSONException exception)

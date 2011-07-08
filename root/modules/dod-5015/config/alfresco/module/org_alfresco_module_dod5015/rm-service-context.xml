@@ -175,32 +175,65 @@
                 	{
                 		"name" : "Vital Records Due For Review",
                 		"description" : "All records currently due for review.",
-                		"search" : "keywords:\"test\""
+                		"search" : "reviewAsOf:[MIN TO TODAY]",
+                		"searchparams" :
+                		{
+                			"records" : true,
+                			"vitalrecords" : true
+                		}                		
                 	},
                 	{
                 		"name" : "Undeclared Records",
                 		"description" : "All undeclared records.",
-                		"search" : "keywords:\"test\""
+                		"search" : "ISNODE:T AND NOT ASPECT:\"rma:declaredRecord\"",
+                		"searchparams" :
+                		{
+                			"records" : true,
+                			"undeclaredrecords" : true
+                		}
                 	},
                 	{
-                		"name" : "Records Due For Cutoff",
-                		"description" : "All records currently due for cutoff.",
-                		"search" : "keywords:\"test\""
+                		"name" : "Records Eligible For Cutoff",
+                		"description" : "All records currently eligible for cutoff.",
+                		"search" : "dispositionActionName:\"cutoff\" AND (dispositionEventsEligible:true OR dispositionActionAsOf:[MIN TO TODAY])",
+                		"searchparams" :
+                		{
+                			"records" : true,
+                			"recordfolders" : true
+                		}
                 	},
                 	{
-                		"name" : "Records Due For Transfer",
-                		"description" : "All records currently due for transfer.",
-                		"search" : "keywords:\"test\""
+                		"name" : "Records Eligible For Transfer",
+                		"description" : "All records currently eligible for transfer.",
+                		"search" : "dispositionActionName:\"transfer\" AND (dispositionEventsEligible:true OR dispositionActionAsOf:[MIN TO TODAY])",
+                		"searchparams" :
+                		{
+                			"records" : true,
+                			"recordfolders" : true,
+                			"cutoff" : true
+                		}
                 	},
                 	{
-                		"name" : "Records Due For Destruction",
-                		"description" : "All records currently due for cutoff.",
-                		"search" : "keywords:\"test\""
+                		"name" : "Records Eligible For Destruction",
+                		"description" : "All records currently eligible for destruction.",
+                		"search" : "dispositionActionName:\"destroy\" AND (dispositionEventsEligible:true OR dispositionActionAsOf:[MIN TO TODAY])",
+                		"searchparams" :
+                		{
+                			"records" : true,
+                			"recordfolders" : true,
+                			"cutoff" : true
+                		}
                 	},
                 	{
                 		"name" : "Frozen Records",
                 		"description" : "All frozen records.",
-                		"search" : "keywords:\"test\""
+                		"search" : "ISNODE:T",
+                		"searchparams" :
+                		{
+                			"records" : true,
+                			"recordfolders" : true,
+                			"frozen" : true
+                		}
                 	}
                 ]
                 ]]>
