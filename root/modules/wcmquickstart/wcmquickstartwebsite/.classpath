@@ -12,12 +12,16 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT-tests.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-test-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-api-1.0.0.CI-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.0.jar" sourcepath="/3rd Party/src/org.springframework.web-sources-3.0.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.webmvc-3.0.0.jar" sourcepath="/3rd Party/src/org.springframework.web.servlet-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/j2ee/jsp.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/j2ee/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/rome-1.0RC2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Web Editor"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/freemarker-2.3.18-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.18-patched.zip"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.beans-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -223,11 +223,8 @@ public class HierarchicalSqlSessionFactoryBean extends SqlSessionFactoryBean
          *
          * @return SqlSessionFactory
          * @throws IOException if loading the config file failed
-         * @throws IllegalAccessException
-         * @throws InstantiationException
          */
-        protected SqlSessionFactory buildSqlSessionFactory() throws IOException, IllegalAccessException,
-                InstantiationException {
+        protected SqlSessionFactory buildSqlSessionFactory() throws IOException {
 
             HierarchicalXMLConfigBuilder xmlConfigBuilder;
             Configuration configuration;
