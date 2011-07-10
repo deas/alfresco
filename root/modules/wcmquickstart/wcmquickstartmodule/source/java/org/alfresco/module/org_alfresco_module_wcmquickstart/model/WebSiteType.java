@@ -114,7 +114,6 @@ public class WebSiteType implements WebSiteModel
         NodeRef child = childAssocRef.getChildRef();
         HashMap<QName, Serializable> props = new HashMap<QName, Serializable>();
         props.put(PublishingModel.PROP_CHANNEL, child);
-        props.put(PublishingModel.PROP_CHANNEL_TYPE_ID, WebSiteChannelType.ID);
         nodeService.setProperties(child, props);
     }
 }

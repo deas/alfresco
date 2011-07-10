@@ -76,9 +76,5 @@
       <property name="searchStore" value="${wcmqs.searchstore}" />
    </bean>
 
-   <bean id="org_alfresco_module_wcmquickstart_WebSiteChannelType" 
-   class="org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteChannelType"
-   parent="baseChannelType"   />
-
    <import resource="classpath*:alfresco/extension/webquickstart-custom-context.xml" />
 </beans>
