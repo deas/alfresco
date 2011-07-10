@@ -412,16 +412,6 @@ public class WebRootModelTest extends WCMQuickStartTest implements WebSiteModel
         assertNotNull(channel);
         assertEquals(liveSite, channel);
         
-        //Test Channel Type on Webasset
-        String channelType = (String)nodeService.getProperty(webassetOne, PublishingModel.PROP_CHANNEL_TYPE);
-        assertNotNull(channelType);
-        assertEquals(WebSiteChannelType.ID, channelType);
-        
-        //Test Channel Type on Section
-        channelType = (String)nodeService.getProperty(section1, PublishingModel.PROP_CHANNEL_TYPE);
-        assertNotNull(channelType);
-        assertEquals(WebSiteChannelType.ID, channelType);
-        
         //Test that moving web assets causes the parent sections to be updated 
         fileFolderService.move(webassetOne, section2, null);
         fileFolderService.move(webassetTwo, section2, null);
