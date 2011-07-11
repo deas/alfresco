@@ -1,0 +1,270 @@
+<project>
+    <vendor>Alfresco Software, Inc.</vendor>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <fullName>Alfresco Community Edition Upgrade Stack</fullName>
+    <shortName>alfresco</shortName>
+    <version>3.4.b-0</version>
+    <installerFilename>${product_shortname}-community-upgrade-withpostgresql-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
+    <licenseFile></licenseFile>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
+    <logoImage>images/alfresco_top_right.png</logoImage>
+    <splashImage>images/splash.png</splashImage>
+    <allowLanguageSelection>1</allowLanguageSelection>
+    <productDisplayIcon>${installdir}/alfresco.ico</productDisplayIcon>
+    <defaultLanguage>en</defaultLanguage>
+    <defaultUnixDirectoryPermissions>755</defaultUnixDirectoryPermissions>
+    <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
+    <allowComponentSelection>0</allowComponentSelection>
+    <leftImage>images/alfresco_left.png</leftImage>
+    <allowedLanguages>en fr es it de ja</allowedLanguages>
+    <enableRollback>0</enableRollback>
+    <installationType>upgrade</installationType>
+
+    <platformOptionsList>
+        <platformOptions>
+            <platform>osx</platform>
+            <height>430</height>
+        </platformOptions>
+	<platformOptions>
+	    <platform>linux</platform>
+	    <height>430</height>
+	</platformOptions>
+	<platformOptions>
+	    <platform>linux-x64</platform>
+	    <height>430</height>
+	</platformOptions>
+	<platformOptions>
+	    <platform>linux-ia64</platform>
+	    <height>430</height>
+	</platformOptions>
+    </platformOptionsList>
+
+    <customLanguageFileList>
+	<language> 
+	    <code>en</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-en.po</file>
+	</language>
+	<language> 
+	    <code>fr</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-fr.po</file>
+	</language>
+	<language> 
+	    <code>es</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-es.po</file>
+	</language>
+	<language> 
+	    <code>de</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-de.po</file>
+	</language>
+	<language> 
+	    <code>it</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-it.po</file>
+	</language>
+	<language> 
+	    <code>ja</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-ja.po</file>
+	</language>
+    </customLanguageFileList>
+
+    <readyToInstallActionList>
+	<!-- Gets previous AMPs -->
+	<actionGroup>
+	    <actionList>
+		<findFile>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <baseDirectory>${alfresco_amps_directory}</baseDirectory>
+		    <findAll>1</findAll>
+		    <variable>previous_amps</variable>
+		    <pattern>*.amp</pattern>
+		</findFile>
+		<findFile>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <baseDirectory>${alfresco_amps_share_directory}</baseDirectory>
+		    <findAll>1</findAll>
+		    <variable>previous_amps_share</variable>
+		    <pattern>*.amp</pattern>
+		</findFile>
+		<componentSelection>                                                                
+                  <deselect>alfrescosharepoint,alfrescorm,alfrescowcmqs,alfrescoquickr</deselect>
+		</componentSelection>
+
+		<actionGroup>
+		    <actionList>
+			<componentSelection select="alfrescorm" />
+		    </actionList>
+		    <ruleList>
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-dod" />
+		    </ruleList>
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<componentSelection select="alfrescoquickr" />
+		    </actionList>
+		    <ruleList>
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-quickr" />
+		    </ruleList>
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<componentSelection select="alfrescowcmqs" />
+		    </actionList>
+		    <ruleList>
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-wcmqs" />
+		    </ruleList>
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<componentSelection select="alfrescosharepoint" />
+		    </actionList>
+		    <ruleList>
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-spp" />
+		    </ruleList>
+		</actionGroup>
+		<logMessage text="component(alfrescosharepoint).selected=${component(alfrescosharepoint).selected}"/>
+		<logMessage text="component(alfrescorm).selected=${component(alfrescorm).selected}"/>
+		<logMessage text="component(alfrescowcmqs).selected=${component(alfrescowcmqs).selected}"/>
+		<logMessage text="component(alfrescoquickr).selected=${component(alfrescoquickr).selected}"/>
+	    </actionList>
+	</actionGroup>
+    </readyToInstallActionList>
+
+    <componentList>
+        <include file="alfresco-componentselection-java.xml" />
+        <include file="alfresco-customstack-build-settings.xml" />
+        <include file="alfresco-build-settings.xml" />
+        <include file="alfresco-functions.xml" />
+
+	<include file="alfresco-get-installdir.xml"/>
+	<include file="java-properties.xml" />
+	<include file="postgres-properties.xml" />
+	<include file="tomcat-properties.xml" />
+	
+	<include file="alfresco-update-backup.xml" />
+
+    	<include file="alfrescodm.xml" />
+        <include file="alfresco-apply-amps.xml" />
+
+
+        <include file="alfresco-sharepoint.xml" />
+        <include file="alfresco-records-management.xml" />
+	<include file="alfresco-wcmqs.xml" />
+	<include file="alfrescowcm.xml" />
+        <include file="alfresco-quickr.xml" />
+	<!--<include file="base-unix-service.xml" />
+
+	<include file="openoffice.xml"/>
+	<include file="imagemagick.xml"/>
+    	<include file="swftools.xml"/>
+        <include file="alfresco-customstack-postgres-settings.xml" />
+        <include file="alfresco-customstack-shortcuts.xml" />
+
+    	<include file="tomcat-service.xml" /> -->
+
+    </componentList>
+
+    <parameterList>
+        <stringParameter name="reserved_ports" ask="0" value="" />
+    </parameterList>
+
+    <postInstallationActionList>
+    </postInstallationActionList>
+    
+    <finalPageActionList>
+	<setInstallerVariable name="finalpage_start_servers" value="0" show="0" />
+
+	<actionGroup>
+	    <progressText>Launch ${product_fullname} Share</progressText>
+	    <actionList>
+		<actionGroup>
+		    <actionList>
+			<setInstallerVariable name="finalpage_start_servers" value="1" />
+			<runProgram>
+			    <progressText>Starting servers. Please be patient.</progressText>
+			    <program>${installdir}/${ctlscript_unix}</program>
+			    <programArguments>start &amp;</programArguments>
+			    <ruleList>
+				<platformTest type="unix" />
+			    </ruleList>
+			</runProgram>
+			<runProgram>
+			    <progressText>Starting servers. Please be patient.</progressText>
+			    <program>${installdir}/servicerun.bat</program>
+			    <programArguments>START</programArguments>
+			    <ruleList>
+				<platformTest type="windows" />
+			    </ruleList>
+			</runProgram>
+		    </actionList>
+		</actionGroup>
+	    </actionList>
+	</actionGroup>
+
+	<actionGroup show="0">
+	    <actionList>
+		<showProgressDialog title="Starting servers ..." >
+		    <actionList>
+			<waitForPort port="${application_server_port}" timeout="10000" />
+			<findFile baseDirectory="${application_server_directory}/logs" variable="windowsTomcatLogFile" pattern="stderr_*" >
+			    <ruleList>
+				<platformTest type="windows" />
+			    </ruleList>
+			</findFile>
+			<logMessage text="Tomcat log file ${windowsTomcatLogFile}" />
+			<foreach values="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20" variables="iteration" progressText="Deploying Alfresco. Please be patient.">
+			    <actionList>
+				<actionGroup>
+				    <actionList>
+					<wait ms="10000" />
+					<logMessage text="Waiting for 'Server startup' in ${application_server_directory}/logs/catalina.out" />
+				    </actionList>
+				    <ruleList>
+					<platformTest type="unix" />
+					<fileContentTest path="${application_server_directory}/logs/catalina.out" text="Server startup" logic="does_not_contain" />
+				    </ruleList>
+				</actionGroup>
+				<actionGroup>
+				    <actionList>
+					<wait ms="20000" />
+					<logMessage text="Waiting for 'Server startup' in ${windowsTomcatLogFile}" />
+				    </actionList>
+				    <ruleList>
+					<platformTest type="windows" />
+					<fileContentTest path="${windowsTomcatLogFile}" text="Server startup" logic="does_not_contain" />
+				    </ruleList>
+				</actionGroup>
+			    </actionList>
+			</foreach>
+		    </actionList>
+		</showProgressDialog>
+		<launchBrowser> 
+		    <url>http://${application_server_domain}:${application_server_port}/share</url>
+		    <ruleList>
+			<compareText text="${installer_ui}" logic="equals" value="gui"/>
+		    </ruleList>
+		</launchBrowser>
+	    </actionList>
+	    <ruleList>
+		<isTrue value="${finalpage_start_servers}" />
+		<compareText text="${application_server_installation_type}" logic="equals" value="bundled" />
+		<compareText text="${installer_ui}" logic="equals" value="gui"/>
+                <isTrue value="${component(postgres).selected}" />
+	    </ruleList>
+	</actionGroup>
+		
+	<showInfo>
+            <text>You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat.</text>
+            <ruleList>
+                <compareText text="${application_server_installation_type}" logic="equals" value="existing" />
+	    </ruleList>
+	</showInfo>
+    </finalPageActionList>
+    
+</project>

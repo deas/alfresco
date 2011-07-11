@@ -1,0 +1,74 @@
+<component>
+    <name>alfrescogetproperties</name>
+    <description>Alfresco Get Properties</description>
+    <canBeEdited>0</canBeEdited>
+    <show>0</show>
+    <selected>1</selected>
+
+    <initializationActionList>
+    </initializationActionList>
+
+    <parameterList>
+        <directoryParameter>
+            <name>installdir</name>
+            <title>Installation folder</title>
+            <description>Select a folder</description>
+            <explanation>Please choose a folder that contains an installation of Alfresco.</explanation>
+            <default/>
+            <mustBeWritable>1</mustBeWritable>
+            <mustExist>1</mustExist>
+            <allowEmptyValue>0</allowEmptyValue>
+            <cliOptionName>prefix</cliOptionName>
+            <insertAfter>components</insertAfter>
+            <width>32</width>
+            <validationActionList>
+                <throwError>
+                    <text>That folder does not seem to contain a valid installation of Alfresco. The file properties.ini is missing or it is not a valid installation.</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <fileTest path="${installdir}/properties.ini" condition="not_exists"/>
+                    </ruleList>
+                </throwError>
+                <iniFileGet>
+		    <file>${installdir}/properties.ini</file>
+		    <section>General</section>
+		    <key>base_stack_name</key>
+		    <variable>base_stack_name</variable>
+		</iniFileGet>
+		<iniFileGet>
+		    <file>${installdir}/properties.ini</file>
+		    <section>General</section>
+		    <key>base_stack_version</key>
+		    <variable>base_stack_version</variable>
+		</iniFileGet>
+                <throwError>
+                    <text>That folder does not seem to contain a valid installation of Alfresco. This upgrade requires an Alfresco 3.4 version or later.</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+			<compareVersions version1="${base_stack_version}" logic="less" version2="3.4" />
+                    </ruleList>
+                </throwError>
+
+            </validationActionList>
+        </directoryParameter>
+    </parameterList>
+    <readyToInstallActionList>
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>General</section>
+                    <key>base_stack_name</key>
+                    <variable>base_stack_name</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>General</section>
+                    <key>base_stack_version</key>
+                    <variable>base_stack_version</variable>
+                </iniFileGet>
+            </actionList>
+        </actionGroup>
+    </readyToInstallActionList>
+</component>
+

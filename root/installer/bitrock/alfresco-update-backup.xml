@@ -1,0 +1,154 @@
+<component>
+    <name>alfrescoupdatebackup</name>
+    <description>Alfresco Update Backup</description>
+    <detailedDescription></detailedDescription>
+    <canBeEdited>0</canBeEdited>
+    <selected>1</selected>
+    <show>0</show>
+
+
+    <initializationActionList>
+	<setInstallerVariable name="component(alfresco).parameter(alfresco_ftp_port).ask" value="0" />
+	<setInstallerVariable name="component(alfresco).parameter(alfresco_rmi_port).ask" value="0" />
+	<setInstallerVariable name="component(alfresco).parameter(alfresco_data_directory).ask" value="0" />
+	<setInstallerVariable name="component(alfresco).parameter(alfresco_admin_password).ask" value="0" />
+	<setInstallerVariable name="component(alfrescoquickr).parameter(alfrescoquickr_configuration).ask" value="0" />
+	<setInstallerVariable name="ctlscript_unix" value="alfresco.sh" />
+	
+    </initializationActionList>
+
+
+    <readyToInstallActionList>
+        <createTimeStamp>
+            <format>%Y-%m-%d</format>
+            <variable>timestamp</variable>
+	</createTimeStamp>
+        <generateRandomValue variable="randomvalue" length="4"/>
+	<setInstallerVariable name="alfrescoupdate_backup_directory" value="${installdir}/backup-${timestamp}" />
+	<setInstallerVariable name="alfrescoupdate_backup_directory" value="${installdir}/backup-${timestamp}-${randomvalue}">
+            <ruleList>
+                <fileTest path="${alfrescoupdate_backup_directory}" condition="exists" />
+	    </ruleList>
+	</setInstallerVariable>
+	<createDirectory path="${alfrescoupdate_backup_directory}" />
+	<createDirectory path="${alfrescoupdate_backup_directory}/webapps" />
+	<setInstallerVariable name="tomcat_dirname" value="tomcat" />
+	<setInstallerVariable name="tomcat_server_directory" value="${application_server_directory}" />
+
+	<runProgram>
+	    <progressText>Stopping Tomcat...</progressText>
+	    <program>${installdir}/alfresco.sh</program>
+	    <programArguments>stop tomcat</programArguments>
+	    <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<runProgram>
+	    <progressText>Stopping Tomcat...</progressText>
+	    <program>${application_server_directory.dos}\scripts\servicerun.bat</program>
+	    <programArguments>STOP</programArguments>
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+	</runProgram>
+
+	<copyFile>
+	    <progressText>Creating backup...</progressText>
+	    <origin>${application_server_directory}/webapps/*.war</origin>
+	    <destination>${alfrescoupdate_backup_directory}/webapps</destination>
+	</copyFile>
+	<deleteFile path="${application_server_directory}/webapps/*.war" />
+
+	<!-- Tomcat files -->
+	<copyFile origin="${application_server_directory}/lib" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile origin="${application_server_directory}/shared" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile origin="${application_server_directory}/endorsed" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile origin="${application_server_directory}/conf" destination="${alfrescoupdate_backup_directory}" />
+
+
+	<!-- AMPs -->
+	<copyFile origin="${alfresco_amps_directory}" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile origin="${alfresco_amps_share_directory}" destination="${alfrescoupdate_backup_directory}" />
+
+	<!-- Remove previous AMPs -->
+	<actionGroup>
+	    <actionList>
+		<actionGroup>
+		    <actionList>
+			<deleteFile path="${alfresco_amps_directory}/alfresco-community-dod*" />
+			<deleteFile path="${alfresco_amps_share_directory}/alfresco-community-dod*" />
+		    </actionList>
+		    <ruleList>
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-dod" />
+		    </ruleList>
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<deleteFile path="${alfresco_amps_directory}/alfresco-community-quickr*" />
+			<deleteFile path="${alfresco_amps_share_directory}/alfresco-community-quickr*" />
+		    </actionList>
+		    <ruleList>
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-quickr" />
+		    </ruleList>
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<deleteFile path="${alfresco_amps_directory}/alfresco-community-wcmqs*" />
+			<deleteFile path="${alfresco_amps_share_directory}/alfresco-community-wcmqs*" />
+		    </actionList>
+		    <ruleList>
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-wcmqs" />
+		    </ruleList>
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<deleteFile path="${alfresco_amps_directory}/alfresco-community-spp*" />
+			<deleteFile path="${alfresco_amps_share_directory}/alfresco-community-spp*" />
+		    </actionList>
+		    <ruleList>
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-spp" />
+		    </ruleList>
+		</actionGroup>
+	    </actionList>
+	</actionGroup>
+    </readyToInstallActionList>
+
+    <postInstallationActionList>
+	<addFilesToUninstaller>
+	    <files>${alfrescoupdate_backup_directory}</files>
+	</addFilesToUninstaller>
+
+	<copyFile origin="${alfrescoupdate_backup_directory}/shared/classes/alfresco-global.properties" destination="${application_server_directory}/shared/classes" >
+	    <ruleList>
+		<fileExists path="${alfrescoupdate_backup_directory}/shared/classes/alfresco-global.properties" />
+	    </ruleList>
+	</copyFile>
+	<copyFile origin="${alfrescoupdate_backup_directory}/shared/classes/alfresco/extension/custom-lotus.properties" destination="${application_server_directory}/shared/classes" >
+	    <ruleList>
+		<fileExists path="${alfrescoupdate_backup_directory}/shared/classes/alfresco/extension/custom-lotus.properties" />
+	    </ruleList>
+	</copyFile>
+
+	<runProgram>
+	    <abortOnError>0</abortOnError>
+	    <showMessageOnError>0</showMessageOnError>
+	    <progressText>Cleaning temporary files...</progressText>
+	    <program>${installdir}/bin/clean_tomcat.sh</program>
+	    <programArguments></programArguments>
+	    <ruleList>
+		<platformTest type="unix" />
+	    </ruleList>
+	</runProgram>
+	<runProgram>
+	    <abortOnError>0</abortOnError>
+	    <showMessageOnError>0</showMessageOnError>
+	    <progressText>Cleaning temporary files...</progressText>
+	    <program>${installdir}/bin/clean_tomcat.bat</program>
+	    <programArguments></programArguments>
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+	</runProgram>
+    </postInstallationActionList>
+
+</component>

@@ -715,6 +715,12 @@
         </exec>
     </target>
     
+    <target name="windows-upgrade-installer">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-upgrade-win.txt" failifexecutionfails="true">
+            <arg line='${installer.build.type} project-patch.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.upgrade.win}"'/>
+        </exec>
+    </target>
+    
     <target name="osx-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-osx.txt" failifexecutionfails="false">
             <arg line='${installer.build.type} project.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
@@ -750,6 +756,12 @@
     <target name="linux-deployment-installer">
         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-linux.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} deployment.xml linux ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
+        </exec>
+    </target>
+    
+    <target name="linux-upgrade-installer">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-upgrade-linux.txt" failifexecutionfails="true">
+            <arg line='${installer.build.type} project-patch.xml linux ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.upgrade.linux}"'/>
         </exec>
     </target>
     
@@ -794,6 +806,15 @@
             <antcall target="osx-deployment-installer"/>
             <antcall target="linux-64-bit-installer"/>
             <antcall target="linux-deployment-installer"/>
+        </parallel>
+        <antcall target="distribute-upgraders"/>
+   </target>
+   
+   <target name="distribute-upgraders"
+           depends="continuous-init, set-build-number, set-bitrock-builder" >
+        <parallel threadCount="2">
+            <antcall target="windows-upgrade-installer"/>
+            <antcall target="linux-upgrade-installer"/>
         </parallel>
    </target>
 
