@@ -831,7 +831,7 @@
 
    <target name="distribute-solr"
            description="Creates the ZIP file of the sample SOLR installation"
-           depends="set-build-number">
+           depends="set-build-number, deploy-solr">
       <mkdir dir="${dir.continuous.dist}" />
 
       <zip destfile="${dir.continuous.dist}/${file.name.dist.solr}.zip">
