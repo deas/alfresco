@@ -224,9 +224,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.jdbc-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.orm-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.transaction-3.0.5.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.web-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.test-sources-3.0.5.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/JSlideShare-0.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JSlideShare-0.6.jar" sourcepath="src/JSlideShare-0.6-sources.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
