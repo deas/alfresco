@@ -40,6 +40,7 @@ import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.service.cmr.repository.AssociationRef;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
@@ -51,7 +52,7 @@ import org.alfresco.service.namespace.RegexQNamePattern;
  */
 public class WebAssetAspect implements WebSiteModel, CopyServicePolicies.OnCopyNodePolicy,
         ContentServicePolicies.OnContentUpdatePolicy, NodeServicePolicies.OnAddAspectPolicy,
-        NodeServicePolicies.BeforeDeleteNodePolicy
+        NodeServicePolicies.BeforeDeleteNodePolicy, NodeServicePolicies.OnDeleteNodePolicy
 {
     /** Policy component */
     private PolicyComponent policyComponent;
@@ -138,6 +139,8 @@ public class WebAssetAspect implements WebSiteModel, CopyServicePolicies.OnCopyN
                 new JavaBehaviour(this, "onUpdatePropertiesEachEvent", NotificationFrequency.EVERY_EVENT));
         policyComponent.bindClassBehaviour(NodeServicePolicies.BeforeDeleteNodePolicy.QNAME, ASPECT_WEBASSET,
                 new JavaBehaviour(this, "beforeDeleteNode", NotificationFrequency.FIRST_EVENT));
+        policyComponent.bindClassBehaviour(NodeServicePolicies.OnDeleteNodePolicy.QNAME, ASPECT_WEBASSET,
+                new JavaBehaviour(this, "onDeleteNode", NotificationFrequency.TRANSACTION_COMMIT));
     }
 
     /**
@@ -228,18 +231,19 @@ public class WebAssetAspect implements WebSiteModel, CopyServicePolicies.OnCopyN
         }
     }
 
-    /**
-     * @see org.alfresco.repo.node.NodeServicePolicies.BeforeDeleteNodePolicy#beforeDeleteNode(org.alfresco.service.cmr.repository.NodeRef)
-     */
     @Override
     public void beforeDeleteNode(NodeRef nodeRef)
     {
+        // Remove all referencing associations
+        removeAll(nodeService.getSourceAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));
+    }
+
+    @Override
+    public void onDeleteNode(ChildAssociationRef childAssocRef, boolean isNodeArchived)
+    {
+        NodeRef nodeRef = childAssocRef.getChildRef();
         // Enqueue nodes
         publishService.enqueueRemovedNodes(nodeRef);
-
-        // Remove all referencing and referenced associations
-        removeAll(nodeService.getSourceAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));
-        removeAll(nodeService.getTargetAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));
     }
 
     /**
@@ -255,4 +259,6 @@ public class WebAssetAspect implements WebSiteModel, CopyServicePolicies.OnCopyN
             nodeService.removeAssociation(assoc.getSourceRef(), assoc.getTargetRef(), assoc.getTypeQName());
         }
     }
+
+
 }

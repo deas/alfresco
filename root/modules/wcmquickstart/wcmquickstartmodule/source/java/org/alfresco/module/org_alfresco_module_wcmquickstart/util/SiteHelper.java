@@ -241,7 +241,8 @@ public class SiteHelper implements WebSiteModel
         NodeRef container = null;
         SiteInfo siteInfo = getRelevantShareSite(noderef);
         NodeRef websiteId = getRelevantWebSite(noderef);
-        if (siteInfo != null && nodeService.exists(siteInfo.getNodeRef()) == true)
+        NodeRef shareSiteId = siteInfo == null ? null : siteInfo.getNodeRef();
+        if (siteInfo != null && nodeService.exists(shareSiteId) && !nodeService.getNodeStatus(shareSiteId).isDeleted())
         {
             if (websiteId == null)
             {
