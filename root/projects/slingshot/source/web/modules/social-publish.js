@@ -261,16 +261,18 @@
        */
       onPublishButtonClick: function SP_onPublishButtonClick()
       {
-         // Confirmation dialogue
+         // create the JSON object for the POST request.
          var publishData = 
             {
                "channelName": Dom.get(this.id + "-channel-select").value,
-               "publishNodes": [this.showConfig.nodeRef]
+               "publishNodes": [this.showConfig.nodeRef],
+               "statusUpdate" : {}
             },
             me = this,
             statusUpdateChannels = []
             includeStatus = false;
          
+         // Are any of the status update channels selected?
          for (var i = 0; i < this.widgets.statusUpdateCheckboxes.length; i++) {
             if (this.widgets.statusUpdateCheckboxes[i].checked) {
                statusUpdateChannels.push(this.widgets.statusUpdateCheckboxes[i].value);
@@ -278,17 +280,24 @@
             }
          }
          
+         // Build up the JSON object for the statusUpdate
          if (includeStatus) {
             publishData.statusUpdate = 
             {
                "message": this.widgets.statusUpdateText.value,
-               "nodeRef": this.showConfig.nodeRef,
                "channelNames": statusUpdateChannels
+            }
+            // If the URL is to be included, add the nodeRef to the statusUpdate obj
+            if (this.widgets.statusUpdateURL.checked) {
+               publishData.statusUpdate.nodeRef = this.showConfig.nodeRef
             }
          };
          
+         // Define success and failure functions inline so they have closeure access to local vars.
          var success = function SP_onPublishSuccess(response)
          {
+            // Build up necessary data and HTML.
+            // It looks more complicated than it actually is.
             var fileName = me.showConfig.filename, 
                channelName = response.config.dataObj.channelName,
                docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "site/" + Alfresco.constants.SITE + "/document-details?nodeRef=" + me.showConfig.nodeRef;
@@ -315,14 +324,9 @@
                });
             
             balloon.show();
-         },
-         failure = function SP_onPublishFailure(response)
-         {
-            console.log("Error: onPublishFailure");
-            alert("This didn't actually work, because the API isn't there yet, but we can pretend.");
-            success(response);
-         }; 
+         }
          
+         // Make the POST request to the publishing queue
          Alfresco.util.Ajax.request(
          {
             url: Alfresco.constants.PROXY_URI + "api/publishing/" + Alfresco.constants.SITE + "/queue",
@@ -335,11 +339,7 @@
                fn: success,
                scope: this
             },
-            failureCallback:
-            {
-               fn: failure,
-               scope: this
-            }
+            failureMessage: Alfresco.util.message("socialPublish.confirm.failure", this.name)
          });
          
          // Hide the panel
