@@ -917,6 +917,23 @@
       </forms>
    </config>
    
+   <!-- Subscriptions (subsystem) -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=Subscriptions,id1=default">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="subscriptions.enabled" />
+            </field-visibility>
+            <appearance>
+               <set id="subscriptions" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="subscriptions.enabled" label-id="subscriptions.field.subscriptions.enabled" set="subscriptions">
+                 <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
    <!-- Google Docs (Subsystem) -->
    <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=googledocs,id1=default">
       <forms>
