@@ -853,6 +853,7 @@
          <fileset file="${dir.project.slingshot.src.web}/components/people-finder/people-finder.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/permissions.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/aspects.js" />
+         <fileset file="${dir.project.slingshot.src.web}/modules/social-publish.js" />
       </concat>
 
       <concat destfile="${dir.deploy.tomcat.application.slingshot}/js/datalist-actions.js" force="no">
