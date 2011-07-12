@@ -31,8 +31,10 @@ import org.alfresco.module.org_alfresco_module_dod5015.VitalRecordDefinition;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase;
 import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionSchedule;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.repo.action.ParameterDefinitionImpl;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
+import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
@@ -44,9 +46,13 @@ import org.alfresco.service.namespace.QName;
  */
 public class FileAction extends RMActionExecuterAbstractBase
 {
+    /** Parameter names */
+    public static final String PARAM_RECORD_METADATA_ASPECTS = "recordMetadataAspects";
+    
     /**
      * @see org.alfresco.repo.action.executer.ActionExecuterAbstractBase#executeImpl(org.alfresco.service.cmr.action.Action, org.alfresco.service.cmr.repository.NodeRef)
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected void executeImpl(Action action, NodeRef actionedUponNodeRef)
     {
@@ -54,6 +60,9 @@ public class FileAction extends RMActionExecuterAbstractBase
         //
         // check the record is within a folder
         // check that the folder we are filing into is not closed
+        
+        // Get the optional list of record meta-data aspects
+        List<QName> recordMetadataAspects = (List<QName>)action.getParameterValue(PARAM_RECORD_METADATA_ASPECTS);
             
     	// Add the record aspect (doesn't matter if it is already present)
     	if (nodeService.hasAspect(actionedUponNodeRef, ASPECT_RECORD) == false)
@@ -78,7 +87,16 @@ public class FileAction extends RMActionExecuterAbstractBase
         recordProperties.put(RecordsManagementModel.PROP_DATE_FILED, fileCalendar.getTime());
 
         // Set the record properties
-        this.nodeService.setProperties(actionedUponNodeRef, recordProperties);        
+        this.nodeService.setProperties(actionedUponNodeRef, recordProperties);     
+        
+        // Apply any record meta-data aspects
+        if (recordMetadataAspects != null && recordMetadataAspects.size() != 0)
+        {
+            for (QName aspect : recordMetadataAspects)
+            {
+                nodeService.addAspect(actionedUponNodeRef, aspect, null);
+            }
+        }
 
         // Calculate the review schedule
         VitalRecordDefinition viDef = this.recordsManagementService.getVitalRecordDefinition(actionedUponNodeRef);
@@ -121,6 +139,7 @@ public class FileAction extends RMActionExecuterAbstractBase
     protected void addParameterDefinitions(List<ParameterDefinition> paramList)
     {              
         // No parameters
+        paramList.add(new ParameterDefinitionImpl(PARAM_RECORD_METADATA_ASPECTS, DataTypeDefinition.QNAME, false, "Record Metadata Aspects", true));
     }
 
     @Override

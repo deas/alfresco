@@ -43,6 +43,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.impl.BroadcastDisp
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.CompleteEventAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.EditDispositionActionAsOfDateAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.EditReviewAsOfDateAction;
+import org.alfresco.module.org_alfresco_module_dod5015.action.impl.FileAction;
 import org.alfresco.module.org_alfresco_module_dod5015.action.impl.FreezeAction;
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService;
@@ -3423,6 +3424,37 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         props.put(PROP_SCANNED_BIT_DEPTH.toPrefixString(serviceRegistry.getNamespaceService()), "10");
         rmActionService.executeRecordsManagementAction(testDocument, "applyScannedRecord", props);
 
+        assertTrue("Custom type should have ScannedRecord aspect.", nodeService.hasAspect(testDocument, DOD5015Model.ASPECT_SCANNED_RECORD));
+        
+        txn.rollback();
+    }
+    
+    public void testFileDOD5015CustomTypes2() throws Exception
+    {
+        NodeRef recordCategory = TestUtilities.getRecordCategory(this.searchService, "Reports", "AIS Audit Records");    
+                
+        NodeRef recordFolder = createRecordFolder(recordCategory, "March AIS Audit Records");
+        setComplete();
+        endTransaction();
+        
+        UserTransaction txn = transactionService.getUserTransaction(false);
+        txn.begin();
+        
+        NodeRef testDocument = this.nodeService.createNode(recordFolder, 
+                ContentModel.ASSOC_CONTAINS, 
+                QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "CustomType"), 
+                ContentModel.TYPE_CONTENT).getChildRef();
+
+        // It's not necessary to set content for this test.
+        
+        // File the record
+        List<QName> aspects = new ArrayList<QName>(1);
+        aspects.add(DOD5015Model.ASPECT_SCANNED_RECORD);
+        Map<String, Serializable> props = new HashMap<String, Serializable>(1);
+        props.put(FileAction.PARAM_RECORD_METADATA_ASPECTS, (Serializable)aspects);
+        rmActionService.executeRecordsManagementAction(testDocument, "file", props);
+
+        assertTrue("testDocument should be a record.", rmService.isRecord(testDocument));
         assertTrue("Custom type should have ScannedRecord aspect.", nodeService.hasAspect(testDocument, DOD5015Model.ASPECT_SCANNED_RECORD));
         
         txn.rollback();
