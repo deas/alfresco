@@ -19,6 +19,8 @@
 package org.alfresco.repo.search.impl.lucene;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.lucene.index.IndexReader;
@@ -33,6 +35,12 @@ import org.apache.lucene.index.TermEnum;
  */
 public class LuceneUtils
 {
+    /**
+     * This is the date string format as required by Lucene e.g. "1970\\-01\\-01T00:00:00"
+     * @since 4.0
+     */
+    private static final SimpleDateFormat LUCENE_DATETIME_FORMAT = new SimpleDateFormat("yyyy\\-MM\\-dd'T'HH:mm:ss");
+    
     public static boolean fieldHasTerm(IndexReader indexReader, String field)
     {
         try
@@ -59,6 +67,15 @@ public class LuceneUtils
         {
             throw new AlfrescoRuntimeException("Could not find terms for sort field ", e);
         }
-
+    }
+    
+    /**
+     * Returns a date string in the format required by Lucene.
+     * 
+     * @since 4.0
+     */
+    public static String getLuceneDateString(Date date)
+    {
+        return LUCENE_DATETIME_FORMAT.format(date);
     }
 }
