@@ -698,7 +698,6 @@ public class RuntimeExec
         private final InputStream is;
         private final Charset charset;
         private final StringBuffer buffer;          // we require the synchronization
-        private boolean isRunning;
         private boolean completed;
 
         /**
@@ -712,14 +711,11 @@ public class RuntimeExec
             this.is = is;
             this.charset = charset;
             this.buffer = new StringBuffer(BUFFER_SIZE);
-            this.isRunning = false;
             this.completed = false;
         }
 
         public synchronized void run()
         {
-            // mark this thread as running
-            isRunning = true;
             completed = false;
 
             byte[] bytes = new byte[BUFFER_SIZE];
@@ -740,8 +736,6 @@ public class RuntimeExec
                     count = tempIs.read(bytes);
                 }
                 // done
-                isRunning = false;
-                completed = true;
             }
             catch (IOException e)
             {
@@ -760,6 +754,10 @@ public class RuntimeExec
                     {
                     }
                 }
+                // The thread has finished consuming the stream
+                completed = true;
+                // Notify waiters
+                this.notifyAll();       // Note: Method is synchronized
             }
         }
 
@@ -770,12 +768,12 @@ public class RuntimeExec
          */
         public synchronized void waitForCompletion()
         {
-            while (!completed && !isRunning)
+            while (!completed)
             {
                 try
                 {
                     // release our lock and wait a bit
-                    this.wait(200L); // 200 ms
+                    this.wait(1000L); // 200 ms
                 }
                 catch (InterruptedException e)
                 {

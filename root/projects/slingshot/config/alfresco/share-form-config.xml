@@ -400,7 +400,6 @@
                      <control-param name="password">true</control-param>
                   </control>
                </field>
-               <field id="trx:enabled" label="Transfer Target is enabled" />
             </appearance>
          </form>
       </forms>
