@@ -496,7 +496,7 @@
          }
          
          this.itemSelectButtons = {};
-         this._performSearch("*" + searchTerm);
+         this._performSearch(searchTerm);
       },
 
 
