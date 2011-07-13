@@ -191,7 +191,8 @@
          <include name="**/RepositoryStartupTest.java" />
       </patternset>
       <patternset id="files.tests.intermittent">
-         <include name="**/WCMTestSuite.java" />
+         <include name="**/org/alfresco/wcm/WCMTestSuite.java" />
+         <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
       </patternset>
       <patternset id="files.tests">
          <exclude name="**/Base*Test.java" />
@@ -217,7 +218,6 @@
          <include name="**/org/alfresco/repo/content/metadata/xml/XmlMetadataExtracterTest.java" />
          <!-- Domain Tests -->
          <exclude name="**/org/alfresco/repo/domain/**/*Test.java" />
-         <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
          <!-- Model (Multilingual and File Folder) Tests -->
          <exclude name="**/org/alfresco/repo/model/**/*Test.java" />
          <include name="**/org/alfresco/repo/model/ModelTestSuite.java" />
