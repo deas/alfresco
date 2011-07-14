@@ -20,6 +20,7 @@
          <action type="action-link" id="onActionManagePermissions" permission="permissions" label="actions.document.manage-permissions" />
          <action type="action-link" id="onActionManageAspects" permission="edit" label="actions.document.manage-aspects" />
          <action type="action-link" id="onActionChangeType" permission="edit" label="actions.document.change-type" />
+         <action type="action-link" id="onActionPublish" permission="edit" label="actions.document.publish" />
       </actionSet>
 
       <actionSet id="locked">

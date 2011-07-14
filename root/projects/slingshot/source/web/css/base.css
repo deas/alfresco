@@ -850,7 +850,8 @@ div.dashlet div.hdr
 
 /* Document & Folder Details Pages */
 
-.document-versions .document-version
+.document-versions .document-version,
+.document-publishing .document-version
 {
    font-size: 93%;
 }

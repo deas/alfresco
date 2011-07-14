@@ -192,6 +192,14 @@
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
       </component>
+      <!-- document-details: normal only -->
+      <component>
+         <region-id>document-publishing</region-id>
+         <url>/components/document-details/document-publishing</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
       <!-- document-actions: normal & repository -->
       <component>
          <region-id>document-actions</region-id>

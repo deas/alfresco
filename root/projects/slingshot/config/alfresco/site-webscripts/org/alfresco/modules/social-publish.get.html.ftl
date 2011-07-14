@@ -33,10 +33,12 @@
 				            
 				<div class="statusUpdate-checkboxes">
 					<h3>${msg("socialPublish.dialogue.statusUpdate.select")}</h3>
+					<#assign count = 0>
 					<#list statusUpdateChannels as statusUpdateChannel>
+				      <#assign count = count + 1>
 						<div class="status-channel">
-	   				   <input class="statusUpdate-checkboxes" type="checkbox" name="" value="${statusUpdateChannel.name?html}" id="${el}-statusUpdate-checkbox-channel-${statusUpdateChannel.name?html}"/>
-		     			   <label for="${el}-statusUpdate-checkbox-channel-${statusUpdateChannel.name?html}"><img src="${statusUpdateChannel.channelType.icon?html}" width="16" height="16"/>${statusUpdateChannel.title?html}</label>
+	   				   <input class="statusUpdate-checkboxes" type="checkbox" name="" value="${statusUpdateChannel.name?html}" id="${el}-statusUpdate-checkbox-channel-${count}"/>
+		     			   <label for="${el}-statusUpdate-checkbox-channel-${count}"><img src="${statusUpdateChannel.channelType.icon?html}" width="16" height="16"/>${statusUpdateChannel.title?html}</label>
 				   	</div>
                </#list>
 				</div>

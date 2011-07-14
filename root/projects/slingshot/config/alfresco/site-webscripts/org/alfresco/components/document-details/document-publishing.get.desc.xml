@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>document-details-publishing</shortname>
+  <description>Document Details Publishing Component</description>
+  <url>/components/document-details/document-publishing</url>
+</webscript>

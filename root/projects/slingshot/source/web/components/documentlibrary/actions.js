@@ -941,7 +941,7 @@
        */
       onActionPublish: function dlA_onActionPublish(asset) {
          
-         // Call the Hictoric Properties Viewer Module
+         // Call the Social Publishing Module
          Alfresco.module.getSocialPublishingInstance().show(
          {
             nodeRef: asset.nodeRef,

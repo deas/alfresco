@@ -712,7 +712,23 @@
             }
          });
       },
-
+      
+      /**
+       * Social Publishing
+       * 
+       * @method onActionPublish
+       * @param asset {object} Object literal representing the file or folder to be actioned
+       */
+      onActionPublish: function dlA_onActionPublish(asset) {
+         
+         // Call the Social Publishing Module
+         Alfresco.module.getSocialPublishingInstance().show(
+         {
+            nodeRef: asset.nodeRef,
+            filename: asset.fileName
+         }); 
+      },
+      
       /**
        * Delete Asset confirmed.
        *

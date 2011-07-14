@@ -1,0 +1,89 @@
+.document-publishing .publishing-panel-left
+{
+   float: left;
+}
+
+.document-publishing .publishing-panel-right
+{
+   border-left: 1px solid #ccc;
+   margin-left: 2.5em;
+   padding-left: 0.5em;
+}
+
+.document-publishing .h4
+{
+   clear: both;
+}
+
+.document-publishing .publish-events
+{
+   margin-bottom: 1.5em;
+   margin-top: 0.5em;
+}
+
+.document-publishing .publish-events h3
+{
+   margin-bottom: 0.5em;
+   float: left;
+   width: auto;
+}
+
+.document-publishing .publish-events h3 .document-version
+{
+   margin-right: 0.8em;
+}
+
+.document-publishing .actions
+{
+   float: right;
+   width: 5em;
+   text-align: right;
+}
+
+.document-publishing .actions a
+{
+   background-repeat: no-repeat;
+   background-position: left;
+   padding: 0.5em;
+   text-decoration: none;
+}
+
+.document-publishing .actions a.unpublish
+{
+   background-image: url(../documentlibrary/images/remove-16.png);
+}
+
+.document-publishing .publishing-details-left
+{
+   float: left;
+}
+
+.document-publishing .publishing-details-right
+{
+   margin-left: 40px;
+}
+
+.document-publishing  .alfresco-datatable td
+{
+   border-bottom: medium none !important;
+}
+
+.document-publishing  .alfresco-datatable td .yui-dt-liner
+{
+   padding: 4px 0 10px;
+}
+
+.document-publishing .channel-details,
+.document-publishing .status-details
+{
+	padding: 3px 0;
+}
+
+.document-publishing .channel-details img,
+.document-publishing .status-details img
+{  
+   clear: left;
+   float: left;
+   padding-right: 3px;
+	margin-top: -1px;
+}

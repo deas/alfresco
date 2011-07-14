@@ -47,6 +47,7 @@
             <@region id=doclibType + "document-permissions" scope="template" protected=true />
             <@region id=doclibType + "document-workflows" scope="template" protected=true />
             <@region id=doclibType + "document-versions" scope="template" protected=true />
+				<@region id=doclibType + "document-publishing" scope="template" protected=true />
             <#if doclibType?starts_with("dod5015")>
                <@region id=doclibType + "document-references" scope="template" protected=true />
             </#if>            
