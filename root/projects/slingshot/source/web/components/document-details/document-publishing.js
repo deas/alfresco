@@ -182,7 +182,8 @@
             html += '<div class="publishing-panel-right">';
             html += '   <h3 class="thin dark">' + $html(nodeName) +  '</h3>';         
             html += '   <span class="actions">';
-            if (!event.channel.channelType.canUnpublish && event.status) {
+            // Files can be unpublished only if the channel supports it AND they have successfully been published
+            if (event.channel.channelType.canUnpublish && event.status === "COMPLETED") {
                html += '		<a href="#" name=".onUnpublishClick" rel="' + nodeRef + '" class="' + this.id + ' unpublish" title="' + this.msg("publishingHistory.action.unpublish") + '">&nbsp;</a>';
             }
             html += '   </span>';

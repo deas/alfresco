@@ -148,46 +148,35 @@
              throw new Error("A nodeRef & filename must be provided");
          }
          
-         // Check if the dialog has been showed before & the nodeRef is the same
-         if (this.widgets.panel && this.widgets.panel.nodeRef === this.showConfig.nodeRef)
+         // If this.widgets.panel exists, but is for a different nodeRef, start again.
+         if (this.widgets.panel) 
          {
-            // Display it.
-            this._showPanel();
+            this.widgets.panel.destroy;
          }
-         else
+         
+         // If it hasn't load the gui (template) from the server
+         Alfresco.util.Ajax.request(
          {
-            
-            // If this.widgets.panel exists, but is for a different nodeRef, start again.
-            if (this.widgets.panel) 
+            url: Alfresco.constants.URL_SERVICECONTEXT + "modules/social-publishing?nodeRef=" + this.showConfig.nodeRef + "&siteId=" + Alfresco.constants.SITE + "&htmlid=" + this.id,
+            successCallback:
             {
-               this.widgets.panel.destroy;
-            }
-            
-            // If it hasn't load the gui (template) from the server
-            Alfresco.util.Ajax.request(
-            {
-               url: Alfresco.constants.URL_SERVICECONTEXT + "modules/social-publishing?nodeRef=" + this.showConfig.nodeRef + "&siteId=" + Alfresco.constants.SITE + "&htmlid=" + this.id,
-               successCallback:
-               {
-                  fn: this.onTemplateLoaded,
-                  scope: this
-               },
-               failureMessage: Alfresco.util.message("socialPublish.template.error", this.name),
-               execScripts: true
-            });
-            
-            // Register the ESC key to close the dialog
-            this.widgets.escapeListener = new KeyListener(document,
-            {
-               keys: KeyListener.KEY.ESCAPE
+               fn: this.onTemplateLoaded,
+               scope: this
             },
-            {
-               fn: this.onCancelButtonClick,
-               scope: this,
-               correctScope: true
-            }); 
-            
-         }
+            failureMessage: Alfresco.util.message("socialPublish.template.error", this.name),
+            execScripts: true
+         });
+         
+         // Register the ESC key to close the dialog
+         this.widgets.escapeListener = new KeyListener(document,
+         {
+            keys: KeyListener.KEY.ESCAPE
+         },
+         {
+            fn: this.onCancelButtonClick,
+            scope: this,
+            correctScope: true
+         }); 
                   
       },
 
