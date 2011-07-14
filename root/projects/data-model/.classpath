@@ -21,7 +21,6 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-api-1.0.0.CI-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/tika-core-1.0-SNAPSHOT.jar" sourcepath="/3rd Party/src/tika-core-1.0-SNAPSHOT.zip"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.4.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/tika-parsers-1.0-SNAPSHOT.jar" sourcepath="/3rd Party/src/tika-parsers-1.0-SNAPSHOT.zip"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/lucene-analyzers-2.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/lucene-core-2.4.1.jar" sourcepath="/3rd Party/src/lucene-2.4.1-src.zip"/>
@@ -30,7 +29,6 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-codec-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/xercesImpl-2.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.4.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/ant-1.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.aop-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.asm-3.0.5.RELEASE.jar"/>
@@ -40,5 +38,7 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.5.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.5.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
