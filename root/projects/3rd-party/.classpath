@@ -190,14 +190,6 @@
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.3-complete.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.4.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.4.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.4.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.4.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.4.0-SNAPSHOT.jar" sourcepath="/Users/fmuller/projects/opencmis/svn/chemistry-opencmis-commons/chemistry-opencmis-commons-impl/src/main/java"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.4.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/chemistry-opencmis-test-browser-0.4.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.0.0.CI-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7-SNAPSHOT.jar" sourcepath="src/activiti-engine-5.7-SNAPSHOT-sources.jar"/>
@@ -228,5 +220,13 @@
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.test-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/JSlideShare-0.6.jar" sourcepath="src/JSlideShare-0.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.5.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.5.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.5.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.5.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.5.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.5.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.5.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-test-browser-0.5.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
