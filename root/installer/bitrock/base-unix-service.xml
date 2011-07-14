@@ -241,40 +241,39 @@ exit $RETVAL
                     </ruleList>
 		</actionGroup>
 
-<!--Install services on: redhat, fedora, mandrake -->
-<actionGroup>
-                    <actionList>
-                        <runProgram>
-                            <program>chkconfig</program>
-                            <programArguments>--del ${baseunixservice_script_name}</programArguments>
-                        </runProgram>
-                        <runProgram>
-                            <program>chkconfig</program>
-                            <programArguments>--add ${baseunixservice_script_name}</programArguments>
-                        </runProgram>
+		<!--Install services on: redhat, fedora, mandrake, suse -->
+		<actionGroup>
+		    <actionList>
+			<runProgram>
+			    <program>chkconfig</program>
+			    <programArguments>--del ${baseunixservice_script_name}</programArguments>
+			</runProgram>
+			<runProgram>
+			    <program>chkconfig</program>
+			    <programArguments>--add ${baseunixservice_script_name}</programArguments>
+			    <ruleList>
+				<compareText text="${linux_distribution}" logic="does_not_equal" value="suse"/>
+			    </ruleList>
+			</runProgram>
+			<runProgram>
+			    <program>chkconfig</program>
+			    <programArguments>${baseunixservice_script_name} 2345</programArguments>
+			    <ruleList>
+				<compareText text="${linux_distribution}" logic="equals" value="suse"/>
+			    </ruleList>
+			</runProgram>
+			<setInstallerVariableFromScriptOutput>
+			    <abortOnError>0</abortOnError>
+			    <showMessageOnError>0</showMessageOnError>
+			    <name>baseunixservice_info</name>
+			    <exec>chkconfig</exec>
+			    <execArgs>--list ${baseunixservice_script_name}</execArgs>
+			</setInstallerVariableFromScriptOutput>
+			<logMessage text="${baseunixservice_info}" />
                     </actionList>
                     <ruleEvaluationLogic>and</ruleEvaluationLogic>
                     <ruleList>
                         <compareText text="${linux_distribution}" logic="does_not_equal" value="debian"/>
-                        <programTest condition="is_in_path" name="chkconfig"/>
-                    </ruleList>
-                </actionGroup>
-
-                <!--Install services on: suse -->
-                <actionGroup>
-                    <actionList>
-                        <runProgram>
-                            <program>chkconfig</program>
-                            <programArguments>--del ${baseunixservice_script_name}</programArguments>
-                        </runProgram>
-                        <runProgram>
-                            <program>chkconfig</program>
-                            <programArguments>${baseunixservice_script_name} 2345</programArguments>
-                        </runProgram>
-                    </actionList>
-                    <ruleEvaluationLogic>and</ruleEvaluationLogic>
-                    <ruleList>
-                        <compareText text="${linux_distribution}" logic="equals" value="suse"/>
                         <programTest condition="is_in_path" name="chkconfig"/>
                     </ruleList>
                 </actionGroup>
