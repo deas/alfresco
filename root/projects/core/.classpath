@@ -26,7 +26,7 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.beans-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.core-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.jdbc-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.orm-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.transaction-3.0.5.RELEASE.jar"/>
