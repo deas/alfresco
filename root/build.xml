@@ -193,6 +193,8 @@
       <patternset id="files.tests.intermittent">
          <include name="**/org/alfresco/wcm/WCMTestSuite.java" />
          <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
+         <include name="**/org/alfresco/repo/web/scripts/publishing/PublishingRestApiTest.java" />
+         <include name="**/org/alfresco/repo/publishing/PublishWebContentJbpmTest.java" />
       </patternset>
       <patternset id="files.tests">
          <exclude name="**/Base*Test.java" />
@@ -200,6 +202,7 @@
          <exclude name="**/*SystemTest.java" />
          <exclude name="**/RepositoryStartupTest.java" />
          <exclude name="**/WCMTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/web/scripts/publishing/PublishingRestApiTest.java" />
 
          <!-- Exclude tests that require JodConverter/OpenOffice.org as these are hanging the build server -->
          <exclude name="**/*OOoTest.java" />
@@ -210,6 +213,10 @@
          <!-- Auditable Tests -->
          <exclude name="**/org/alfresco/repo/audit/**/*Test.java" />
          <include name="**/org/alfresco/repo/audit/AuditTestSuite.java" />
+         <!-- AVM Tests -->
+         <exclude name="**/org/alfresco/repo/avm/**/*Test.java" />
+         <exclude name="**/org/alfresco/repo/avm/**/*TestP.java" />
+         <include name="**/org/alfresco/repo/avm/AVMTestSuite.java" />
          <!-- Content Tests -->
          <exclude name="**/org/alfresco/repo/content/**/*Test.java" />
          <include name="**/org/alfresco/repo/content/DataModelContentTestSuite.java" />
@@ -221,13 +228,12 @@
          <!-- Model (Multilingual and File Folder) Tests -->
          <exclude name="**/org/alfresco/repo/model/**/*Test.java" />
          <include name="**/org/alfresco/repo/model/ModelTestSuite.java" />
+         <!-- Publishing Tests -->
+         <exclude name="**/org/alfresco/repo/publishing/**/*Test.java" />
+         <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
          <!-- Version Tests -->
          <exclude name="**/org/alfresco/repo/version/**/*Test.java" />
          <include name="**/org/alfresco/repo/version/VersionTestSuite.java" />
-         <!-- AVM Tests -->
-         <exclude name="**/org/alfresco/repo/avm/**/*Test.java" />
-         <exclude name="**/org/alfresco/repo/avm/**/*TestP.java" />
-         <include name="**/org/alfresco/repo/avm/AVMTestSuite.java" />
          <!-- Workflow Tests -->
          <exclude name="**/org/alfresco/repo/workflow/**/*Test.java" />
          <include name="**/org/alfresco/repo/workflow/WorkflowTestSuite.java" />
