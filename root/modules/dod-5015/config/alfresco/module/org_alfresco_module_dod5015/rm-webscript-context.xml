@@ -315,4 +315,24 @@
     	<property name="recordsManagementSearchService" ref="RecordsManagementSearchService"/>
     	<property name="namespaceService" ref="namespaceService"/>
     </bean>
+    
+    <bean id="webscript.org.alfresco.slingshot.rmsearch.rmsavedsearches.delete" 
+          class="org.alfresco.module.org_alfresco_module_dod5015.script.slingshot.RMSavedSearchesDelete" 
+          parent="webscript">
+    	<property name="siteService" ref="SiteService"/>
+    	<property name="recordsManagementSearchService" ref="RecordsManagementSearchService"/>
+    </bean>
+    
+    <bean id="webscript.org.alfresco.slingshot.rmsearch.rmsearch.get" 
+          class="org.alfresco.module.org_alfresco_module_dod5015.script.slingshot.RMSearchGet" 
+          parent="webscript">
+    	<property name="siteService" ref="SiteService"/>
+    	<property name="recordsManagementSearchService" ref="RecordsManagementSearchService"/>
+    	<property name="namespaceService" ref="namespaceService"/>
+    	<property name="nodeService" ref="NodeService"/>
+    	<property name="dictionaryService" ref="DictionaryService"/>
+    	<property name="permissionService" ref="PermissionService"/>
+    	<property name="personService" ref="PersonService"/>
+    	<property name="contentService" ref="ContentService"/>
+    </bean>
 </beans>

@@ -133,7 +133,9 @@ public class RecordsManagementSearchServiceImplTest extends BaseRMTestCase
             public Void run()
             {
                 String query = "keywords:\"elephant\"";                
-                List<NodeRef> results = rmSearchService.search(SITE_ID, query, new RecordsManagementSearchParameters());
+                RecordsManagementSearchParameters params = new RecordsManagementSearchParameters();
+                params.setIncludeUndeclaredRecords(true);
+                List<NodeRef> results = rmSearchService.search(SITE_ID, query, params);
                 assertNotNull(results);
                 assertEquals(2, results.size());
                 

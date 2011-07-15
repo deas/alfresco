@@ -225,10 +225,11 @@
          this.widgets.tabs.selectTab(1);
          
          // execute the search and populate the results
-         var query = this._buildSearchQuery();
+         var query = this._getSearchQuery();
          if (query != null)
          {
-            this._performSearch(query);
+        	var filters = this._getSearchFilters();
+            this._performSearch(query, filters);
          }
       },
       
@@ -242,7 +243,7 @@
       onSaveSearch: function RecordsSearch_onSaveSearch(e, args)
       {
          // get values to pass to the module
-         var query = this._buildSearchQuery();
+         var query = this._getSearchQuery();
          if (query != null)
          {
             // build up params to pass to the module
@@ -294,7 +295,7 @@
          Dom.get(this.id + "-vital").disabled = false;
          Dom.get(this.id + "-undeclared").checked = false;
          Dom.get(this.id + "-vital").checked = false;
-         Dom.get(this.id + "-folders").checked = false;
+         Dom.get(this.id + "-folders").checked = true;
          Dom.get(this.id + "-categories").checked = false;
          Dom.get(this.id + "-series").checked = false;
          Dom.get(this.id + "-frozen").checked = false;
@@ -443,89 +444,101 @@
          Alfresco.util.insertAtCursor(Dom.get(this.id + "-terms"), attribute);
       },
       
+      _getSearchFilters: function RecordsSearch__getSearchFilters()
+      {
+    	  var filters = "";
+    	  
+    	  filters += "records/";
+    	  if (Dom.get(this.id + "-records").checked)
+    	  {
+    		  filters += "true";
+    	  }
+    	  else
+    	  {
+    		  filters += "false";
+    	  }
+    	  
+    	  filters += ",undeclared/";
+    	  if (Dom.get(this.id + "-undeclared").checked)
+    	  {
+    		  filters += "true";
+    	  }
+    	  else
+    	  {
+    		  filters += "false";
+    	  }
+
+    	  filters += ",vital/";
+    	  if (Dom.get(this.id + "-vital").checked)
+    	  {
+			  filters += "true";
+		  }
+		  else
+		  {
+			  filters += "false";
+		  }
+    	  
+    	  filters += ",folders/";
+    	  if (Dom.get(this.id + "-folders").checked)
+    	  {
+    		  filters += "true";
+    	  }
+    	  else
+    	  {
+    		  filters += "false";
+    	  }
+    	  
+    	  filters += ",categories/";
+    	  if (Dom.get(this.id + "-categories").checked)
+    	  {
+    		  filters += "true";
+    	  }
+    	  else
+    	  {
+    		  filters += "false";
+    	  }
+    	  
+    	  filters += ",series/";
+    	  if (Dom.get(this.id + "-series").checked)
+    	  {
+    		  filters += "true";
+    	  }
+    	  else
+    	  {
+    		  filters += "false";
+    	  }
+    	  
+    	  filters += ",frozen/";
+    	  if (Dom.get(this.id + "-frozen").checked)
+    	  {
+    		  filters += "true";
+    	  }
+    	  else
+    	  {
+    		  filters += "false";
+    	  }
+    	  
+    	  filters += ",cutoff/";
+    	  if ( Dom.get(this.id + "-cutoff").checked)
+    	  {
+    		  filters += "true";
+    	  }
+    	  else
+    	  {
+    		  filters += "false";
+    	  }
+    	  
+    	  return filters;
+      },      
+      
       /**
-       * Builds the search query based on the current search terms and parameters.
-       *
-       * @method _buildSearchQuery
-       * @return {string} Full query string for execution or null if incorrect options set
-       * @private
+       * Gets the search query entered by the user.
        */
-      _buildSearchQuery: function RecordsSearch__buildSearchQuery()
+      _getSearchQuery: function RecordsSearch__getSearchQuery()
       {
          var queryElem = Dom.get(this.id + "-terms");
          var userQuery = YAHOO.lang.trim(queryElem.value);
-         
-         var query = "";
-         
-         // record components
-         var selectRecords = Dom.get(this.id + "-records").checked;
-         if (selectRecords)
-         {
-            query += 'ASPECT:"rma:record"';
-         }
-         if (selectRecords && Dom.get(this.id + "-undeclared").checked === false)
-         {
-            query += (query.length != 0 ? ' AND ' : '') + 'ASPECT:"rma:declaredRecord"';
-         }
-         if (selectRecords && Dom.get(this.id + "-vital").checked)
-         {
-            query += (query.length != 0 ? ' AND ' : '') + 'ASPECT:"rma:vitalRecord"';
-         }
-         
-         // container components
-         var containerQuery = "";
-         if (Dom.get(this.id + "-folders").checked)
-         {
-            containerQuery += ' TYPE:"rma:recordFolder"';
-         }
-         if (Dom.get(this.id + "-categories").checked)
-         {
-            containerQuery += ' TYPE:"dod:recordCategory"';
-         }
-         if (Dom.get(this.id + "-series").checked)
-         {
-            containerQuery += ' TYPE:"dod:recordSeries"';
-         }
-         if (containerQuery.length !== 0)
-         {
-            if (query.length != 0)
-            {
-               query = '(' + query + ') (' + containerQuery + ')';
-            }
-            else
-            {
-               query = containerQuery;
-            }
-         }
-         
-         // default to all nodes if no search term is entered
-         if (userQuery.length === 0)
-         {
-            userQuery = "ISNODE:T";
-         }
-         
-         // must have selected at least some components or container types to search against
-         if (query.length !== 0)
-         {
-            // constrain by optional component markers
-            if (Dom.get(this.id + "-frozen").checked)
-            {
-               query = '(' + query + ') AND ASPECT:"rma:frozen"';
-            }
-            if (Dom.get(this.id + "-cutoff").checked)
-            {
-              query = '(' + query + ') AND ASPECT:"rma:cutOff"';
-            }
-            
-            // construct final query elements
-            query = '(' + query + ') AND (' + userQuery + ') AND NOT ASPECT:"rma:versionedRecord"';
-         }
-         else
-         {
-            query = null;
-         }
-         
-         return query;
+         return userQuery;
       },
       
       /**

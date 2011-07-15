@@ -661,7 +661,7 @@
        * @method _performSearch
        * @param query {string} Query to execute
        */
-      _performSearch: function RecordsResults__performSearch(query)
+      _performSearch: function RecordsResults__performSearch(query, filters)
       {
          // empty results table
          this._clearSearchResults();
@@ -697,7 +697,7 @@
             }
          }
          
-         this.widgets.dataSource.sendRequest(this._buildSearchParams(query),
+         this.widgets.dataSource.sendRequest(this._buildSearchParams(query, filters),
          {
             success: successHandler,
             failure: failureHandler,
@@ -738,13 +738,14 @@
        * @param query {string} Query to execute
        * @return {string} The parameters string for search.
        */
-      _buildSearchParams: function RecordsResults__buildSearchParams(query)
+      _buildSearchParams: function RecordsResults__buildSearchParams(query, filters)
       {
          // build the parameter string and encode each value
-         var params = YAHOO.lang.substitute("site={site}&query={query}&sortby={sortby}&maxResults={maxResults}",
+         var params = YAHOO.lang.substitute("site={site}&query={query}&sortby={sortby}&filters={filters}&maxResults={maxResults}",
          {
             site: encodeURIComponent(this.options.siteId),
             query : query !== null ? encodeURIComponent(query) : "",
+            filters : encodeURIComponent(filters),
             sortby : encodeURIComponent(this._buildSortParam()),
             maxResults : this.options.maxResults + 1 // to be able to know whether we got more results
          });

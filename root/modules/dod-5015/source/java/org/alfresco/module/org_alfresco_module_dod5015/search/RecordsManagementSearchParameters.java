@@ -82,7 +82,7 @@ public class RecordsManagementSearchParameters
     private boolean includeRecords = true;
     private boolean includeUndeclaredRecords = false;
     private boolean includeVitalRecords = false;
-    private boolean includeRecordFolders = false;
+    private boolean includeRecordFolders = true;
     private boolean includeFrozen = false;
     private boolean includeCutoff = false;
     

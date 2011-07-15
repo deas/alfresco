@@ -144,21 +144,7 @@ public class RecordsManagementSearchServiceImpl implements RecordsManagementSear
                    if (report.has("searchparams") == true)
                    {
                        searchParameters = RecordsManagementSearchParameters.createFromJSON(report.getJSONObject("searchparams"), namespaceService);
-                   }
-                   
-//                   // Get the sort string
-//                   String sort = "";
-//                   if (report.has(SavedSearchDetails.SORT) == true)
-//                   {
-//                       sort = report.getString(SavedSearchDetails.SORT);
-//                   }
-//                   
-//                   // Get the param string
-//                   String params = "";
-//                   if (report.has(SavedSearchDetails.PARAMS) == true)
-//                   {
-//                       params = report.getString(SavedSearchDetails.PARAMS);
-//                   }
+                   }                 
                    
                    // Create the report details and add to list
     	           ReportDetails reportDetails = new ReportDetails(name, description, query, searchParameters);
@@ -189,7 +175,7 @@ public class RecordsManagementSearchServiceImpl implements RecordsManagementSear
         
         // create the search parameters 
         SearchParameters searchParameters = new SearchParameters();
-        searchParameters.setQuery(query);
+        searchParameters.setQuery(fullQuery.toString());
         searchParameters.setLanguage(SearchService.LANGUAGE_FTS_ALFRESCO);
         searchParameters.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
         searchParameters.setMaxItems(rmSearchParameters.getMaxItems());
@@ -235,15 +221,7 @@ public class RecordsManagementSearchServiceImpl implements RecordsManagementSear
            {
                appendAspect(aspectQuery, "rma:vitalRecord");
            }
-       }       
-       if (searchParameters.isIncludeFrozen() == true)
-       {
-           appendAspect(aspectQuery, "rma:frozen");
-       }       
-       if (searchParameters.isIncludeCutoff() == true)
-       {
-           appendAspect(aspectQuery, "rma:cutOff");
-       }
+       }  
        
        StringBuilder typeQuery = new StringBuilder();
        if (searchParameters.isIncludeRecordFolders() == true)
@@ -267,8 +245,14 @@ public class RecordsManagementSearchServiceImpl implements RecordsManagementSear
        }
        else
        {
-           // TODO .. if the query term is a basic string then do a full text search ...           
-           query.append(queryTerm);
+           if (isComplexQueryTerm(queryTerm) == true)
+           {
+               query.append(queryTerm);
+           }
+           else
+           {
+               query.append("keywords:\"" + queryTerm + "\"");
+           }
        }
 
        StringBuilder fullQuery = new StringBuilder(1024);
@@ -294,16 +278,34 @@ public class RecordsManagementSearchServiceImpl implements RecordsManagementSear
                fullQuery.append(")");
            }
        }
+              
+       if (searchParameters.isIncludeFrozen() == true)
+       {
+           appendAspect(fullQuery, "rma:frozen");
+       }   
+       else
+       {
+           appendNotAspect(fullQuery, "rma:frozen");
+       }
+       if (searchParameters.isIncludeCutoff() == true)
+       {
+           appendAspect(fullQuery, "rma:cutOff");
+       }
        
        if (fullQuery.length() != 0)
        {
            fullQuery.append(" AND ");
        }
        fullQuery.append("(")
-                .append(queryTerm)
+                .append(query)
                 .append(") AND NOT ASPECT:\"rma:versionedRecord\"");                
        
        return fullQuery.toString();
+    }
+    
+    private boolean isComplexQueryTerm(String query)
+    {
+        return query.matches(".*[\":].*");
     }
     
     /**
@@ -314,6 +316,11 @@ public class RecordsManagementSearchServiceImpl implements RecordsManagementSear
     private void appendAspect(StringBuilder sb, String aspect)
     {
         appendWithJoin(sb, " AND ", "ASPECT:\"", aspect, "\""); 
+    }
+    
+    private void appendNotAspect(StringBuilder sb, String aspect)
+    {
+        appendWithJoin(sb, " AND ", "NOT ASPECT:\"", aspect, "\""); 
     }
     
     /**

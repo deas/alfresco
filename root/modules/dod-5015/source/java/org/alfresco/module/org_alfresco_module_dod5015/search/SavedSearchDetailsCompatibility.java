@@ -19,14 +19,19 @@ import org.alfresco.service.namespace.QName;
  */
 public class SavedSearchDetailsCompatibility
 {
-    private final SavedSearchDetails savedSearchDetails;    
+    /** Saved search details */
+    private final SavedSearchDetails savedSearchDetails;
+    
+    /** Namespace service */
     private final NamespaceService namespaceService;
+    
+    /** Records management search service implementation */
     private final RecordsManagementSearchServiceImpl searchService;
 
     /**
-     * 
-     * @param params
-     * @return
+     * Retrieve the search from the parameter string
+     * @param params    parameter string
+     * @return String   search term
      */
     public static String getSearchFromParams(String params)
     {
@@ -53,6 +58,11 @@ public class SavedSearchDetailsCompatibility
         return search;
     }
     
+    public static RecordsManagementSearchParameters createSearchParameters(String params, String sort, NamespaceService namespaceService)
+    {
+        return createSearchParameters(params, new String[]{"&", "="}, sort, namespaceService);
+    }
+    
     /**
      * 
      * @param params
@@ -60,16 +70,16 @@ public class SavedSearchDetailsCompatibility
      * @param namespaceService
      * @return
      */
-    public static RecordsManagementSearchParameters createSearchParameters(String params, String sort, NamespaceService namespaceService)
+    public static RecordsManagementSearchParameters createSearchParameters(String params, String[] paramsDelim, String sort, NamespaceService namespaceService)
     {
         RecordsManagementSearchParameters result = new RecordsManagementSearchParameters();
         List<QName> includedContainerTypes = new ArrayList<QName>(2);
         
         // Map the param values into the search parameter object
-        String[] values = params.split("&");
+        String[] values = params.split(paramsDelim[0]);
         for (String value : values)
         {
-            String[] paramValues = value.split("=");
+            String[] paramValues = value.split(paramsDelim[1]);
             String paramName = paramValues[0].trim();
             String paramValue = paramValues[1].trim();
             if ("records".equals(paramName) == true)
@@ -96,37 +106,41 @@ public class SavedSearchDetailsCompatibility
             {
                 result.setIncludeCutoff(Boolean.parseBoolean(paramValue));
             }
-            else if ("categories".equals(paramName) == true)
+            else if ("categories".equals(paramName) == true && Boolean.parseBoolean(paramValue) == true)
             {
                 includedContainerTypes.add(DOD5015Model.TYPE_RECORD_CATEGORY);
             }
-            else if ("series".equals(paramName) == true)
+            else if ("series".equals(paramName) == true && Boolean.parseBoolean(paramValue) == true)
             {
                 includedContainerTypes.add(DOD5015Model.TYPE_RECORD_SERIES);
             }
         }
         result.setIncludedContainerTypes(includedContainerTypes);
         
-        // Map the sort string into the search details
-        String[] sortPairs = sort.split(",");
-        Map<QName, Boolean> sortOrder = new HashMap<QName, Boolean>(sortPairs.length);
-        for (String sortPairString : sortPairs)
+        if (sort != null)
         {
-            String[] sortPair = sortPairString.split("/");
-            QName field = QName.createQName(sortPair[0], namespaceService);
-            Boolean isAcsending = Boolean.FALSE;
-            if ("asc".equals(sortPair[1]) == true)
+            // Map the sort string into the search details
+            String[] sortPairs = sort.split(",");
+            Map<QName, Boolean> sortOrder = new HashMap<QName, Boolean>(sortPairs.length);
+            for (String sortPairString : sortPairs)
             {
-                isAcsending = Boolean.TRUE;
+                String[] sortPair = sortPairString.split("/");
+                QName field = QName.createQName(sortPair[0], namespaceService);
+                Boolean isAcsending = Boolean.FALSE;
+                if ("asc".equals(sortPair[1]) == true)
+                {
+                    isAcsending = Boolean.TRUE;
+                }
+                sortOrder.put(field, isAcsending);
             }
-            sortOrder.put(field, isAcsending);
+            result.setSortOrder(sortOrder);
         }
-        result.setSortOrder(sortOrder);
         
         return result;
     }
     
     /**
+     * Constructor
      * @param savedSearchDetails
      */
     public SavedSearchDetailsCompatibility(SavedSearchDetails savedSearchDetails, 
@@ -139,7 +153,7 @@ public class SavedSearchDetailsCompatibility
     }
     
     /**
-     * 
+     * Get the sort string from the saved search details
      * @return
      */
     public String getSort()
@@ -167,34 +181,27 @@ public class SavedSearchDetailsCompatibility
     }
     
     /**
-     * 
+     * Get the parameter string from the saved search details
      * @return
      */
     public String getParams()
     {
-        //try
-        //{
-	        List<QName> includeContainerTypes = this.savedSearchDetails.getSearchParameters().getIncludedContainerTypes();            
-	        StringBuilder builder = new StringBuilder(128);	        	       
-	        builder.append("terms=").append(this.savedSearchDetails.getSearch()).append("&")
-	               .append("records=").append(this.savedSearchDetails.getSearchParameters().isIncludeRecords()).append("&")
-	               .append("undeclared=").append(this.savedSearchDetails.getSearchParameters().isIncludeUndeclaredRecords()).append("&")
-	               .append("vital=").append(this.savedSearchDetails.getSearchParameters().isIncludeVitalRecords()).append("&")
-	               .append("folders=").append(this.savedSearchDetails.getSearchParameters().isIncludeRecordFolders()).append("&")
-	               .append("frozen=").append(this.savedSearchDetails.getSearchParameters().isIncludeFrozen()).append("&")
-	               .append("cutoff=").append(this.savedSearchDetails.getSearchParameters().isIncludeCutoff()).append("&")
-	               .append("categories=").append(includeContainerTypes.contains(DOD5015Model.TYPE_RECORD_CATEGORY)).append("&")
-	               .append("series=").append(includeContainerTypes.contains(DOD5015Model.TYPE_RECORD_SERIES));	        
-	        return builder.toString();
-        //}
-        //catch (UnsupportedEncodingException e)
-       // {
-       //     throw new AlfrescoRuntimeException("Unable to generate compatibility paramteres for saved search details.", e);
-        //}
+        List<QName> includeContainerTypes = this.savedSearchDetails.getSearchParameters().getIncludedContainerTypes();            
+        StringBuilder builder = new StringBuilder(128);	        	       
+        builder.append("terms=").append(this.savedSearchDetails.getSearch()).append("&")
+               .append("records=").append(this.savedSearchDetails.getSearchParameters().isIncludeRecords()).append("&")
+               .append("undeclared=").append(this.savedSearchDetails.getSearchParameters().isIncludeUndeclaredRecords()).append("&")
+               .append("vital=").append(this.savedSearchDetails.getSearchParameters().isIncludeVitalRecords()).append("&")
+               .append("folders=").append(this.savedSearchDetails.getSearchParameters().isIncludeRecordFolders()).append("&")
+               .append("frozen=").append(this.savedSearchDetails.getSearchParameters().isIncludeFrozen()).append("&")
+               .append("cutoff=").append(this.savedSearchDetails.getSearchParameters().isIncludeCutoff()).append("&")
+               .append("categories=").append(includeContainerTypes.contains(DOD5015Model.TYPE_RECORD_CATEGORY)).append("&")
+               .append("series=").append(includeContainerTypes.contains(DOD5015Model.TYPE_RECORD_SERIES));	        
+        return builder.toString();
     }
     
     /**
-     * 
+     * Build the full query string
      * @return
      */
     public String getQuery()

@@ -87,6 +87,7 @@ public class SavedSearchDetails extends ReportDetails
     // JSON values for backwards compatibility
     public static final String QUERY = "query";
     public static final String SORT = "sort";
+    public static final String PARAMS = "params";
     
     /** Site id */
 	private String siteId;
@@ -135,29 +136,44 @@ public class SavedSearchDetails extends ReportDetails
     	    {
     	        description = search.getString(DESCRIPTION);
     	    }
-    	    
-    	    // TODO ... we need to do some compatibility stuff in here in case we come across an "old" saved search
-    	    
-//    	    // Get the sort string
-//    	    String sort = "";
-//    	    if (search.has(SORT) == true)
-//    	    {
-//    	        sort = search.getString(SORT);
-//    	    }
-//    	    
-//    	    // Get the param string
-//    	    String params = "";
-//    	    if (search.has(PARAMS) == true)
-//    	    {
-//    	        params = search.getString(PARAMS);
-//    	    }
-//    	    
+
     	    // Get the query
+    	    String query = null;
     	    if (search.has(SEARCH) == false)
     	    {
-    	        throw new AlfrescoRuntimeException("Can not create saved search details from json, because required search is not present. " + jsonString);
+    	        // We are probably dealing with a "old" style saved search
+    	        if (search.has(PARAMS) == true)
+    	        {
+    	            String oldParams = search.getString(PARAMS);
+    	            query = SavedSearchDetailsCompatibility.getSearchFromParams(oldParams);
+    	        }
+    	        else
+    	        {
+    	            throw new AlfrescoRuntimeException("Can not create saved search details from json, because required search is not present. " + jsonString);
+    	        }
+    	    
     	    }
-    	    String serach = search.getString(SEARCH);    	    
+    	    else
+    	    {
+    	        query = search.getString(SEARCH);
+    	    }
+            
+    	    // Get the search parameters
+            RecordsManagementSearchParameters searchParameters = new RecordsManagementSearchParameters();
+            if (search.has(SEARCHPARAMS) == true)
+            {
+                searchParameters = RecordsManagementSearchParameters.createFromJSON(search.getJSONObject(SEARCHPARAMS), namespaceService);
+            }
+            else
+            {
+                // See if we are dealing with the old style of saved search
+                if (search.has(PARAMS) == true)
+                {
+                    String oldParams = search.getString(PARAMS);
+                    String oldSort = search.getString(SORT);
+                    searchParameters = SavedSearchDetailsCompatibility.createSearchParameters(oldParams, oldSort, namespaceService);
+                }
+            }
     	    
     	    // Determine whether the saved query is public or not
     	    boolean isPublic = false;
@@ -173,14 +189,8 @@ public class SavedSearchDetails extends ReportDetails
     	        isReport = search.getBoolean(REPORT);
     	    }
     	    
-    	    RecordsManagementSearchParameters searchParameters = new RecordsManagementSearchParameters();
-    	    if (search.has(SEARCHPARAMS) == true)
-    	    {
-    	        searchParameters = RecordsManagementSearchParameters.createFromJSON(search.getJSONObject(SEARCHPARAMS), namespaceService);
-    	    }
-    	    
     	    // Create the saved search details object
-    	    return new SavedSearchDetails(siteId, name, description, serach, searchParameters, isPublic, isReport, namespaceService, searchService);    	    
+    	    return new SavedSearchDetails(siteId, name, description, query, searchParameters, isPublic, isReport, namespaceService, searchService);    	    
 	    }
 	    catch (JSONException exception)
 	    {
