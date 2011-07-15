@@ -20,6 +20,7 @@ package org.alfresco.repo.search.impl.lucene;
 
 import java.util.List;
 
+import org.alfresco.repo.search.IndexerAndSearcher;
 import org.alfresco.repo.search.impl.querymodel.QueryOptions;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchParameters;
@@ -48,5 +49,5 @@ public interface LuceneQueryLanguageSPI
     /**
      * Register
      */
-    public void setFactories(List<AbstractLuceneIndexerAndSearcherFactory> factories);
+    public void setFactories(List<IndexerAndSearcher> factories);
 }

@@ -89,7 +89,7 @@ public interface SearchService
      */
     @Auditable(parameters = {"store", "language", "query", "queryParameterDefinitions"})
     public ResultSet query(StoreRef store, String language, String query,
-            QueryParameterDefinition[] queryParameterDefintions);
+            QueryParameterDefinition[] queryParameterDefinitions);
 
     
     /**

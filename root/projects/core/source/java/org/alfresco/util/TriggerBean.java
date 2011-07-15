@@ -24,7 +24,7 @@ import org.quartz.Scheduler;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 
-public class TriggerBean extends AbstractTriggerBean
+public class TriggerBean extends AbstractTriggerBean implements TriggerBeanSPI
 {
     public long startDelay = 0;
 
@@ -37,41 +37,49 @@ public class TriggerBean extends AbstractTriggerBean
         super();
     }
 
+    @Override
     public int getRepeatCount()
     {
         return repeatCount;
     }
 
+    @Override
     public void setRepeatCount(int repeatCount)
     {
         this.repeatCount = repeatCount;
     }
 
+    @Override
     public long getRepeatInterval()
     {
         return repeatInterval;
     }
 
+    @Override
     public void setRepeatInterval(long repeatInterval)
     {
         this.repeatInterval = repeatInterval;
     }
 
+    @Override
     public void setRepeatIntervalMinutes(long repeatIntervalMinutes)
     {
         this.repeatInterval = repeatIntervalMinutes * 60L * 1000L;
     }
 
+    @Override
     public long getStartDelay()
     {
         return startDelay;
     }
 
+    @Override
     public void setStartDelay(long startDelay)
     {
         this.startDelay = startDelay;
     }
 
+    @Override
     public void setStartDelayMinutes(long startDelayMinutes)
     {
         this.startDelay = startDelayMinutes * 60L * 1000L;

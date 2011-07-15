@@ -73,7 +73,7 @@
   <!-- Used to specify an alternate directory to hold all index data
        other than the default ./data under the Solr home.
        If replication is in use, this should match the replication configuration. -->
-  <dataDir>${data.dir}</dataDir>
+  <dataDir>${data.dir.root}/${data.dir.store}</dataDir>
 
 
   <!-- WARNING: this <indexDefaults> section only provides defaults for index writers
