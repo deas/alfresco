@@ -370,4 +370,13 @@ public interface ContentModel
     static final QName PROP_CREDENTIALS_EXPIRY_DATE = QName.createQName(USER_MODEL_URI, "credentialsExpiryDate");
     static final QName PROP_ACCOUNT_LOCKED = QName.createQName(USER_MODEL_URI, "accountLocked");
     static final QName PROP_SALT = QName.createQName(USER_MODEL_URI, "salt");    
+    
+    // 
+    // Indexing control
+    //
+    
+    static final QName ASPECT_INDEX_CONTROL = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "indexControl");
+    static final QName PROP_IS_INDEXED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "isIndexed");
+    static final QName PROP_IS_CONTENT_INDEXED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "isContentIndexed");
+    
 }
