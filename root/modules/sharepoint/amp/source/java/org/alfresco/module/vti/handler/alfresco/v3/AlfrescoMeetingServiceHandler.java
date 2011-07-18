@@ -44,6 +44,7 @@ import org.alfresco.module.vti.metadata.model.MwsStatus;
 import org.alfresco.module.vti.metadata.model.MwsTemplate;
 import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
 import org.alfresco.repo.SessionUser;
+import org.alfresco.repo.calendar.CalendarModel;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.model.FileExistsException;
@@ -100,20 +101,6 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
     protected ShareUtils shareUtils;
 
-    private static final QName TYPE_EVENT = QName.createQName("http://www.alfresco.org/model/calendar", "calendarEvent");
-    private static final QName PROP_WHAT_EVENT = QName.createQName("http://www.alfresco.org/model/calendar", "whatEvent");
-    private static final QName PROP_WHERE_EVENT = QName.createQName("http://www.alfresco.org/model/calendar", "whereEvent");
-    private static final QName PROP_DESCRIPTION_EVENT = QName.createQName("http://www.alfresco.org/model/calendar", "descriptionEvent");
-    private static final QName PROP_FROM_DATE_EVENT = QName.createQName("http://www.alfresco.org/model/calendar", "fromDate");
-    private static final QName PROP_TO_DATE_EVENT = QName.createQName("http://www.alfresco.org/model/calendar", "toDate");
-    private static final QName PROP_IS_OUTLOOK = QName.createQName("http://www.alfresco.org/model/calendar", "isOutlook");
-    private static final QName PROP_IGNORE_EVENT_LIST = QName.createQName("http://www.alfresco.org/model/calendar", "ignoreEventList");
-    private static final QName PROP_IGNORE_EVENT = QName.createQName("http://www.alfresco.org/model/calendar", "ignoreEvent");
-    private static final QName PROP_RECURRENCE_RULE = QName.createQName("http://www.alfresco.org/model/calendar", "recurrenceRule");
-    private static final QName PROP_RECURRENCE_LAST_MEETING = QName.createQName("http://www.alfresco.org/model/calendar", "recurrenceLastMeeting");
-    private static final QName PROP_DATE = QName.createQName("http://www.alfresco.org/model/calendar", "date");
-    private static final QName PROP_OUTLOOK_UID = QName.createQName("http://www.alfresco.org/model/calendar", "outlookUID");
-    
     /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#addMeetingFromICal(String, MeetingBean)
      */
@@ -141,7 +128,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         }
 
         final Map<QName, Serializable> props = fillMeetingProperties(meeting, true);
-        props.put(PROP_IS_OUTLOOK, true);
+        props.put(CalendarModel.PROP_IS_OUTLOOK, true);
 
         final NodeRef finalcalendarContainer = calendarContainer;
         transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<Object>()
@@ -150,7 +137,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
             {
                 nodeService.createNode(finalcalendarContainer, ContentModel.ASSOC_CONTAINS, 
                             QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, (String) props.get(ContentModel.PROP_NAME)), 
-                            TYPE_EVENT, props);
+                            CalendarModel.TYPE_EVENT, props);
                 return null;
             }
         });
@@ -233,7 +220,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
             for (FileInfo child : childs)
             {
-                if (nodeService.getType(child.getNodeRef()).equals(TYPE_EVENT))
+                if (nodeService.getType(child.getNodeRef()).equals(CalendarModel.TYPE_EVENT))
                 {
                     count++;
                 }
@@ -286,14 +273,14 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
                     HashMap<QName, Serializable> properties = new HashMap<QName, Serializable>();
                     try
                     {
-                        properties.put(PROP_DATE, new SimpleDateFormat("yyyyMMdd").parse(String.valueOf(recurrenceId)));
+                        properties.put(CalendarModel.PROP_IGNORE_EVENT_DATE, new SimpleDateFormat("yyyyMMdd").parse(String.valueOf(recurrenceId)));
                     }
                     catch (ParseException e)
                     {
                         throw new RuntimeException(e);
                     }
-                    nodeService.createNode(meetingNodeRef, PROP_IGNORE_EVENT_LIST, QName.createQName(NamespaceService.CONTENT_MODEL_PREFIX, "ignoreEvent_" + recurrenceId + "_"
-                            + GUID.generate()), PROP_IGNORE_EVENT, properties);
+                    nodeService.createNode(meetingNodeRef, CalendarModel.ASSOC_IGNORE_EVENT_LIST, QName.createQName(NamespaceService.CONTENT_MODEL_PREFIX, "ignoreEvent_" + recurrenceId + "_"
+                            + GUID.generate()), CalendarModel.TYPE_IGNORE_EVENT, properties);
                 }
                 return null;
             }
@@ -540,11 +527,11 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         }
         if (meeting.getSubject() != null)
         {
-            props.put(PROP_WHAT_EVENT, meeting.getSubject());
+            props.put(CalendarModel.PROP_WHAT, meeting.getSubject());
         }
         if (meeting.getLocation() != null)
         {
-            props.put(PROP_WHERE_EVENT, meeting.getLocation());
+            props.put(CalendarModel.PROP_WHERE, meeting.getLocation());
         }
         
         Calendar from = Calendar.getInstance();
@@ -563,12 +550,12 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
             meeting.setEndDate(to.getTime());
         }
         
-        props.put(PROP_FROM_DATE_EVENT, meeting.getStartDate());
-        props.put(PROP_TO_DATE_EVENT, meeting.getEndDate());
-        props.put(PROP_DESCRIPTION_EVENT, "");
-        props.put(PROP_OUTLOOK_UID, meeting.getId());
-        props.put(PROP_RECURRENCE_RULE, meeting.getReccurenceRule());
-        props.put(PROP_RECURRENCE_LAST_MEETING, meeting.getLastMeetingDate()); 
+        props.put(CalendarModel.PROP_FROM_DATE, meeting.getStartDate());
+        props.put(CalendarModel.PROP_TO_DATE, meeting.getEndDate());
+        props.put(CalendarModel.PROP_DESCRIPTION, "");
+        props.put(CalendarModel.PROP_OUTLOOK_UID, meeting.getId());
+        props.put(CalendarModel.PROP_RECURRENCE_RULE, meeting.getReccurenceRule());
+        props.put(CalendarModel.PROP_RECURRENCE_LAST_MEETING, meeting.getLastMeetingDate()); 
         return props;
     }
 
@@ -586,7 +573,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
         if (result == null)
         {
-            List<NodeRef> nodeRefs = searchService.selectNodes(calendarNodeRef, "*//.[@" + PROP_OUTLOOK_UID.toPrefixString(namespaceService) + "='" + uid + "']", null,
+            List<NodeRef> nodeRefs = searchService.selectNodes(calendarNodeRef, "*//.[@" + CalendarModel.PROP_OUTLOOK_UID.toPrefixString(namespaceService) + "='" + uid + "']", null,
                     namespaceService, false);
             if (nodeRefs != null && nodeRefs.size() == 1)
             {
