@@ -22,8 +22,12 @@ package org.alfresco.module.vti.metadata.model;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.service.cmr.calendar.CalendarEntry;
+
 /**
  * The meeting bean
+ * 
+ * TODO Tie this in with the new {@link CalendarEntry} code
  * 
  * @author StasSo
  */

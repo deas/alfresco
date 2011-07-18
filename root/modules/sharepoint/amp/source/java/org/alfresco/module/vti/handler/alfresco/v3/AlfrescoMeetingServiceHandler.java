@@ -47,6 +47,7 @@ import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.calendar.CalendarModel;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
+import org.alfresco.service.cmr.calendar.CalendarService;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -68,6 +69,8 @@ import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Alfresco implementation of MeetingServiceHandler
+ * 
+ * TODO Switch this to using the new {@link CalendarService}
  * 
  * @author PavelYur
  */
