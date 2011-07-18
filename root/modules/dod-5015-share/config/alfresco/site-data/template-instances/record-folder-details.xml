@@ -15,23 +15,23 @@
          <url>/components/navigation/collaboration-navigation</url>
       </component>
       <component>
-         <region-id>dod5015-actions-common</region-id>
+         <region-id>actions-common</region-id>
          <url>/components/documentlibrary/dod5015/actions-common</url>
       </component>
       <component>
-         <region-id>dod5015-path</region-id>
+         <region-id>path</region-id>
          <url>/components/folder-details/dod5015/path</url>
       </component>
       <component>
-         <region-id>dod5015-events</region-id>
+         <region-id>events</region-id>
          <url>/components/fileplan/events</url>
       </component>
       <component>
-         <region-id>dod5015-folder-metadata-header</region-id>
+         <region-id>folder-metadata-header</region-id>
          <url>/components/folder-details/folder-metadata-header</url>
       </component>
       <component>
-         <region-id>dod5015-folder-metadata</region-id>
+         <region-id>folder-metadata</region-id>
          <url>/components/form</url>
          <properties>
             <itemKind>node</itemKind>
@@ -41,11 +41,11 @@
          </properties>
       </component>
       <component>
-         <region-id>dod5015-folder-actions</region-id>
+         <region-id>folder-actions</region-id>
          <url>/components/folder-details/dod5015/folder-actions</url>
       </component>
       <component>
-         <region-id>dod5015-folder-links</region-id>
+         <region-id>folder-links</region-id>
          <url>/components/folder-details/folder-links</url>
       </component>
    </components>

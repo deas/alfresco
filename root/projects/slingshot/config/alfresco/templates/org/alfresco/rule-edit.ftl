@@ -3,17 +3,17 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id=appType + "header" scope="global" protected=true />
-      <@region id=appType + doclibType + "title" scope="template" protected=true />
-      <@region id=appType + doclibType + "navigation" scope="template" protected=true />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="template" />
+      <@region id="navigation" scope="template" />
    </div>
    <div id="bd">
-      <@region id="rule-edit" scope="template" protected=true />
+      <@region id="rule-edit" scope="template" />
    </div>
 </@>
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global" />
    </div>
 </@>

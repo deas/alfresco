@@ -2,10 +2,14 @@
 <template-instance>
     <template-type>org/alfresco/customise-dashboard</template-type>
     <components>
+
+       <!-- Title -->
        <component>
           <region-id>title</region-id>
           <url>/components/title/user-dashboard-title</url>
        </component>
+
+       <!-- Customise Layout -->
        <component>
           <region-id>customise-layout</region-id>
           <url>/components/dashboard/customise-layout</url>
@@ -13,6 +17,8 @@
              <dashboardType>user</dashboardType>
           </properties>
        </component>
+
+       <!-- Customise Dashlets -->
        <component>
           <region-id>customise-dashlets</region-id>
           <url>/components/dashboard/customise-dashlets</url>

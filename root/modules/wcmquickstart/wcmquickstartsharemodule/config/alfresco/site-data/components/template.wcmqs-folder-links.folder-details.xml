@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<component>
-   <scope>template</scope>
-   <region-id>wcmqs-folder-links</region-id>
-   <source-id>folder-details</source-id>
-   <url>/components/folder-details/folder-links</url>
-</component>

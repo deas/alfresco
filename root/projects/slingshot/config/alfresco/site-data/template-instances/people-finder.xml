@@ -2,6 +2,8 @@
 <template-instance>
    <template-type>org/alfresco/people-finder</template-type>
    <components>
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/simple-title</url>
@@ -9,6 +11,8 @@
             <title>title.peopleFinder</title>
          </properties>
       </component>
+
+      <!-- People Finder -->
       <component>
          <region-id>people-finder</region-id>
          <url>/components/people-finder/people-finder</url>
@@ -17,5 +21,6 @@
             <viewMode>Alfresco.PeopleFinder.VIEW_MODE_FULLPAGE</viewMode>
          </properties>
       </component>
+
    </components>
 </template-instance>

@@ -6,14 +6,20 @@
       <container>wiki</container>
    </properties>
    <components>
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/collaboration-title</url>
       </component>
+
+      <!-- Navigation -->
       <component>
          <region-id>navigation</region-id>
          <url>/components/navigation/collaboration-navigation</url>
       </component>
+
+      <!-- Toolbar -->
       <component>
          <region-id>toolbar</region-id>
          <url>/components/wiki/toolbar</url>
@@ -21,9 +27,12 @@
             <showBackLink>true</showBackLink>
          </properties>
       </component>
+
+      <!-- Wiki Pages -->
       <component>
          <region-id>wikipage</region-id>
          <url>/components/wiki/page</url>
       </component>
+
    </components>
 </template-instance>

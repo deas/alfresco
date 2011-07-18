@@ -5,6 +5,8 @@
       <pageFamily>documentlibrary</pageFamily>
    </properties>
    <components>
+      <![CDATA[
+
       <!-- title: normal, portlet, repo, task & workflow -->
       <component>
          <region-id>title</region-id>
@@ -85,6 +87,7 @@
          <region-id>portlet-workflows-navigation</region-id>
          <url>/components/workflow/workflow-toolbar</url>
       </component>
+      ]]>
 
    </components>
 </template-instance>

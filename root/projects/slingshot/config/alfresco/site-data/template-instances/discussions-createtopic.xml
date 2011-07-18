@@ -6,14 +6,20 @@
       <container>discussions</container>
    </properties>
    <components>
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/collaboration-title</url>
       </component>
+
+      <!-- Navigation -->
       <component>
          <region-id>navigation</region-id>
          <url>/components/navigation/collaboration-navigation</url>
       </component>
+
+      <!-- CreateTopic -->
       <component>
          <region-id>createtopic</region-id>
          <url>/components/discussions/createtopic</url>

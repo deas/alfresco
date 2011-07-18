@@ -5,31 +5,31 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id=appType + "header" scope="global" protected=true />
-      <@region id=appType + doclibType + "title" scope="template" protected=true />
-      <@region id=appType + doclibType + "navigation" scope="template" protected=true />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="template" />
+      <@region id="navigation" scope="template" />
    </div>
    <div id="bd">
-      <@region id=doclibType + "path" scope="template" protected=true />
-      <@region id="rules-header" scope="template" protected=true />
+      <@region id="path" scope="template" />
+      <@region id="rules-header" scope="template" />
       <div class="clear"></div>
 
       <#if ruleset.linkedToRuleSet??>
-         <@region id="rules-linked" scope="template" protected=true />
+         <@region id="rules-linked" scope="template" />
       <#elseif ruleset.rules??>
          <div class="yui-g">
             <div class="yui-g first">
                <div id="inherited-rules-container" class="hidden">
-               <@region id="inherited-rules" scope="template" protected=true />
+               <@region id="inherited-rules" scope="template" />
                </div>
-               <@region id="folder-rules" scope="template" protected=true />
+               <@region id="folder-rules" scope="template" />
             </div>
             <div class="yui-g">
-               <@region id="rule-details" scope="template" protected=true />
+               <@region id="rule-details" scope="template" />
             </div>
          </div>
       <#else>
-         <@region id="rules-none" scope="template" protected=true />
+         <@region id="rules-none" scope="template" />
       </#if>
    </div>
 
@@ -94,6 +94,6 @@
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global" />
    </div>
 </@>

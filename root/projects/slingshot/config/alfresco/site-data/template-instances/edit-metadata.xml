@@ -6,45 +6,58 @@
       <container>documentLibrary</container>
    </properties>
    <components>
-      <!-- title: normal, portlet, repository & portlet+repository -->
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
-         <url>/components/title/collaboration-title</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site title -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/title/collaboration-title</url>
+                  </evaluation>
+                  <!-- otherwise: Repository title -->
+                  <evaluation id="repo">
+                     <url>/components/title/simple-title</url>
+                     <properties>
+                        <title>title.repository</title>
+                        <subtitle>title.browser</subtitle>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
-      <component>
-         <region-id>portlet-title</region-id>
-         <url>/components/title/portlet-collaboration-title</url>
-      </component>
-      <component>
-         <region-id>repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
+
+      <!-- Site Navigation -->
       <component>
          <region-id>navigation</region-id>
-         <url>/components/navigation/collaboration-navigation</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site navigation -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/navigation/collaboration-navigation</url>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
-      <!-- edit-metadata-mgr: normal & repository -->
+
+      <!-- Edit Metadata Form Manager -->
       <component>
          <region-id>edit-metadata-mgr</region-id>
          <url>/components/edit-metadata/edit-metadata-mgr</url>
       </component>
-      <component>
-         <region-id>repo-edit-metadata-mgr</region-id>
-         <url>/components/edit-metadata/edit-metadata-mgr</url>
-      </component>
-      <!-- edit-metadata: normal & repository -->
+
+      <!-- Edit Metadata Form -->
       <component>
          <region-id>edit-metadata</region-id>
          <url>/components/form</url>
@@ -57,17 +70,6 @@
             <showCancelButton>true</showCancelButton>
          </properties>
       </component>
-      <component>
-         <region-id>repo-edit-metadata</region-id>
-         <url>/components/form</url>
-         <properties>
-            <itemKind>node</itemKind>
-            <itemId>{nodeRef}</itemId>
-            <mode>edit</mode>
-            <submitType>json</submitType>
-            <showCaption>true</showCaption>
-            <showCancelButton>true</showCancelButton>
-         </properties>
-      </component>
+
    </components>
 </template-instance>

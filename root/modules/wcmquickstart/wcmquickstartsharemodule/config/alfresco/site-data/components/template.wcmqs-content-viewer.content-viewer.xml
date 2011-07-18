@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<component>
-   <scope>page</scope>
-   <region-id>wcmqs-content-viewer</region-id>
-   <source-id>content-viewer</source-id>
-   <url>/components/content-viewer</url>
-</component>

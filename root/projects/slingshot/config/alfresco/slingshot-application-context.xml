@@ -177,5 +177,35 @@
          <value>dictionary</value>
       </property>
    </bean>
-   
+
+   <!-- Extension utils -->
+   <bean id="slingshot.evaluator.utility" class="org.alfresco.web.extensibility.SlingshotEvaluatorUtil">
+      <property name="serviceRegistry" ref="webframework.service.registry" />
+   </bean>
+
+   <!-- Module extensibility evaluators -->
+   <bean id="site.module.evaluator" class="org.alfresco.web.extensibility.SlingshotSiteModuleEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
+   <bean id="portlet.module.evaluator" class="org.alfresco.web.extensibility.SlingshotPortletModuleEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
+
+   <!-- Component extensibility evaluators -->
+   <bean id="site.component.evaluator" class="org.alfresco.web.extensibility.SlingshotSiteComponentElementEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
+   <bean id="preset.component.evaluator" class="org.alfresco.web.extensibility.SlingshotPresetComponentElementEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
+   <bean id="config.component.evaluator" class="org.alfresco.web.extensibility.SlingshotConfigComponentElementEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+      <property name="configService" ref="web.config" />
+   </bean>
+   <bean id="equals.component.evaluator" class="org.alfresco.web.extensibility.SlingshotEqualsComponentElementEvaluator"/>
+   <bean id="portlet.component.evaluator" class="org.alfresco.web.extensibility.SlingshotPortletComponentElementEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
+
+
 </beans>

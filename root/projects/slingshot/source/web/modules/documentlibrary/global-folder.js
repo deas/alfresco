@@ -264,9 +264,19 @@
           * @type int
           * @default -1
           */
-         maximumFolderCountRepo: -1
+         maximumFolderCountRepo: -1,
+
+
+         /**
+          * Config for sites with specific container types
+          *
+          * @property siteTreeContainerTypes
+          * @type Object
+          */
+         siteTreeContainerTypes: {}
       },
-      
+
+
       /**
        * Container element for template in DOM.
        * 
@@ -330,7 +340,7 @@
             this._beforeShowDialog();
          }
       },
-      
+
       /**
        * Event callback when dialog template has been loaded
        *
@@ -1124,14 +1134,8 @@
          var rootLabel = "location.path.repository";
          if (this.options.viewMode == DLGF.VIEW_MODE_SITE)
          {
-            if (this.options.containerType == "dod:filePlan")
-            {
-               rootLabel = "location.path.filePlan";
-            }
-            else
-            {
-               rootLabel = "location.path.documents";
-            }
+            var treeConfig = this.options.siteTreeContainerTypes[this.options.containerType] || {};
+            rootLabel = treeConfig.rootLabel || "location.path.documents";
          }
          else if (this.options.viewMode == DLGF.VIEW_MODE_USERHOME)
          {
@@ -1203,39 +1207,45 @@
          var uriTemplate = Alfresco.constants.PROXY_URI;
          if (this.options.viewMode == DLGF.VIEW_MODE_SITE)
          {
-            if (this.options.containerType == "dod:filePlan")
+            var treeConfig = this.options.siteTreeContainerTypes[this.options.containerType] || {};
+            if (treeConfig.uri)
             {
-               uriTemplate += "slingshot/doclib/dod5015/treenode/site/{site}/{container}{path}";
+               uriTemplate += treeConfig.uri;
             }
             else
             {
                uriTemplate += "slingshot/doclib/treenode/site/{site}/{container}{path}";
+               uriTemplate += "?children={evaluateChildFoldersSite}";
+               uriTemplate += "&max={maximumFolderCountSite}";
             }
-            uriTemplate += "?children=" + this.options.evaluateChildFoldersSite;
-            uriTemplate += "&max=" + this.options.maximumFolderCountSite;
          }
          else
          {
             if (this.options.viewMode == DLGF.VIEW_MODE_USERHOME)
             {
                uriTemplate += "slingshot/doclib/treenode/node/{userHome}{path}";
-               uriTemplate += "?children=" + this.options.evaluateChildFoldersRepo;
+               uriTemplate += "?children={evaluateChildFoldersRepo}";
             }
             else
             {
                uriTemplate += "slingshot/doclib/treenode/node/alfresco/company/home{path}";
-               uriTemplate += "?children=" + this.options.evaluateChildFoldersRepo;
-               uriTemplate += "&libraryRoot=" + this.options.rootNode;
+               uriTemplate += "?children={evaluateChildFoldersRepo}";
+               uriTemplate += "&libraryRoot={rootNode}";
             }
-            uriTemplate += "&max=" + this.options.maximumFolderCountRepo;
+            uriTemplate += "&max={maximumFolderCountRepo}";
          }
 
          var url = YAHOO.lang.substitute(uriTemplate,
          {
             site: encodeURIComponent(this.options.siteId),
             container: encodeURIComponent(this.options.containerId),
+            rootNode: this.options.rootNode,
             userHome: (this.options.userHome || "").replace(":/", ""),
-            path: Alfresco.util.encodeURIPath(path)
+            path: Alfresco.util.encodeURIPath(path),
+            evaluateChildFoldersSite: this.options.evaluateChildFoldersSite + '',
+            maximumFolderCountSite: this.options.maximumFolderCountSite,
+            evaluateChildFoldersRepo: this.options.evaluateChildFoldersRepo + '',
+            maximumFolderCountRepo: this.options.maximumFolderCountRepo
          });
 
          return url;

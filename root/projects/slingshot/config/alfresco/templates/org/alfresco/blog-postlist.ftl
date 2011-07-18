@@ -11,22 +11,22 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id="header" scope="global" protected=true />
-      <@region id="title" scope="template" protected=true />
-      <@region id="navigation" scope="template" protected=true />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="template" />
+      <@region id="navigation" scope="template" />
    </div>
    <div id="bd">
       <div class="yui-t1" id="alfresco-blog-postlist">
          <div id="yui-main">
             <div class="yui-b" id="alf-content">
-               <@region id="toolbar" scope="template" protected=true />
-               <@region id="postlist" scope="template" protected=true />
+               <@region id="toolbar" scope="template" />
+               <@region id="postlist" scope="template" />
             </div>
          </div>
          <div class="yui-b" id="alf-filters">
-            <@region id="filters" scope="template" protected=true />
-            <@region id="archives" scope="template" protected=true />
-            <@region id="tags" scope="template" protected=true />
+            <@region id="filters" scope="template" />
+            <@region id="archives" scope="template" />
+            <@region id="tags" scope="template" />
          </div>
       </div>
    </div>
@@ -34,6 +34,6 @@
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global" />
    </div>
 </@>

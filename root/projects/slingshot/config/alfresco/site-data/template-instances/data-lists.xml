@@ -6,22 +6,26 @@
       <container>dataLists</container>
    </properties>
    <components>
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/collaboration-title</url>
       </component>
+
+      <!-- Navigation -->
       <component>
          <region-id>navigation</region-id>
          <url>/components/navigation/collaboration-navigation</url>
       </component>
-      <component>
-         <region-id>actions-common</region-id>
-         <url>/components/data-lists/actions-common</url>
-      </component>
+
+      <!-- Toolbar -->
       <component>
          <region-id>toolbar</region-id>
          <url>/components/data-lists/toolbar</url>
       </component>
+
+      <!-- Datagrid -->
       <component>
          <region-id>datagrid</region-id>
          <url>/components/data-lists/datagrid</url>
@@ -29,14 +33,25 @@
             <pagination>true</pagination>
          </properties>
       </component>
+
+      <!-- Datalist -->
       <component>
          <region-id>datalists</region-id>
          <url>/components/data-lists/datalists</url>
       </component>
+
+      <!-- Filter -->
       <component>
          <region-id>filter</region-id>
          <url>/components/data-lists/filter</url>
       </component>
+
+      <!-- Actions Common -->
+      <component>
+         <region-id>actions-common</region-id>
+         <url>/components/data-lists/actions-common</url>
+      </component>
+
    </components>
 </template-instance>
 

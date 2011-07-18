@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<component>
-   <scope>template</scope>
-   <region-id>wcmqs-edit-metadata-mgr</region-id>
-   <source-id>edit-metadata</source-id>
-   <url>/components/edit-metadata/edit-metadata-mgr</url>
-</component>

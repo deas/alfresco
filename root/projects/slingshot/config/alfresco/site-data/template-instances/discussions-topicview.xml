@@ -6,14 +6,20 @@
       <container>discussions</container>
    </properties>
    <components>
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/collaboration-title</url>
       </component>
+
+      <!-- Navigation -->
       <component>
          <region-id>navigation</region-id>
          <url>/components/navigation/collaboration-navigation</url>
       </component>
+
+      <!-- Toolbar -->
       <component>
          <region-id>toolbar</region-id>
          <url>/components/discussions/toolbar</url>
@@ -21,13 +27,18 @@
             <showNavigationBar>true</showNavigationBar>
          </properties>
       </component>
+
+      <!-- Topic -->
       <component>
          <region-id>topic</region-id>
          <url>/components/discussions/topic</url>
       </component>
+
+      <!-- Replies -->
       <component>
          <region-id>replies</region-id>
          <url>/components/discussions/replies</url>
       </component>
+
    </components>
 </template-instance>

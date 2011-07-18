@@ -62,22 +62,22 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id="header" scope="global" protected=true />
-      <@region id="title" scope="template" protected=true />
-      <@region id="navigation" scope="template" protected=true />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="template" />
+      <@region id="navigation" scope="template" />
    </div>
    <div id="bd">
-      <@region id="actions-common" scope="template" protected=true />
+      <@region id="actions-common" scope="template" />
         <div class="yui-t1" id="alfresco-data-lists">
            <div id="yui-main">
               <div class="yui-b" id="alf-content">
-                <@region id="toolbar" scope="template" protected=true />               
-                <@region id="datagrid" scope="template" protected=true />
+                <@region id="toolbar" scope="template" />
+                <@region id="datagrid" scope="template" />
               </div>
            </div>
            <div class="yui-b" id="alf-filters">
-               <@region id="datalists" scope="template" protected=true />
-               <@region id="filter" scope="template" protected=true />
+               <@region id="datalists" scope="template" />
+               <@region id="filter" scope="template" />
            </div>
         </div>
    </div>
@@ -85,6 +85,6 @@
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global" />
    </div>
 </@>

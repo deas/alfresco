@@ -152,6 +152,20 @@
       </file-upload>
    </config>
 
+   <!-- Global folder picker config section -->
+   <config evaluator="string-compare" condition="GlobalFolder">
+      <siteTree>
+         <!--
+         <container type="cm:folder">
+            <!-- Use a specific label for this container type in the tree -->
+            <rootLabel>location.path.documents</rootLabel>
+            <!-- Use a specific uri to retreive the child nodes for this container type in the tree -->
+            <uri>slingshot/doclib/treenode/site/{site}/{container}{path}?children={evaluateChildFoldersSite}&amp;max={maximumFolderCountSite}</uri>
+         </container>
+         -->
+      </siteTree>
+   </config>
+
    <!-- Repository Library config section -->
    <config evaluator="string-compare" condition="RepositoryLibrary" replace="true">
       <!--
@@ -176,7 +190,7 @@
    </config>
    
    <!-- Kerberos settings -->
-   <!-- To enaable kerberos rename this condition to "Kerberos" -->
+   <!-- To enable kerberos rename this condition to "Kerberos" -->
    <config evaluator="string-compare" condition="KerberosDisabled" replace="true">
       <kerberos>
          <!--

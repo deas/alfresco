@@ -12,21 +12,21 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id="header" scope="global" protected=true />
-      <@region id="title" scope="template" protected=true />
-      <@region id="navigation" scope="template" protected=true />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="template" />
+      <@region id="navigation" scope="template" />
    </div>
    <div id="bd">
       <div class="yui-t1" id="alfresco-calendar">
          <div id="yui-main">
             <div id="divCalendarContent">
-               <@region id="toolbar" scope="template" protected=true class="toolbar" />               
-               <@region id="view" scope="template" protected=true class="view" />
+               <@region id="toolbar" scope="template" class="toolbar" />
+               <@region id="view" scope="template" class="view" />
             </div>
          </div>
          <div id="divCalendarFilters">
-            <@region id="calendar" scope="template" protected=true />
-            <@region id="tags" scope="template" protected=true />
+            <@region id="calendar" scope="template" />
+            <@region id="tags" scope="template" />
          </div>
       </div>
    </div>
@@ -34,7 +34,7 @@
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global" />
    </div>
 </@>
 

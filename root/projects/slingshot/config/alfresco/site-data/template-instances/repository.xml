@@ -2,7 +2,8 @@
 <template-instance>
    <template-type>org/alfresco/repository</template-type>
    <components>
-      <!-- title: normal & portlet mode -->
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/simple-title</url>
@@ -11,22 +12,20 @@
             <subtitle>title.browser</subtitle>
          </properties>
       </component>
-      <component>
-         <region-id>portlet-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
+
+      <!-- Actions -->
       <component>
          <region-id>actions-common</region-id>
          <url>/components/documentlibrary/actions-common</url>
       </component>
+
+      <!-- Toolbar -->
       <component>
          <region-id>toolbar</region-id>
          <url>/components/documentlibrary/repo/toolbar</url>
       </component>
+
+      <!-- Documentlist -->
       <component>
          <region-id>documentlist</region-id>
          <url>/components/documentlibrary/repo/documentlist</url>
@@ -34,22 +33,32 @@
             <pagination>true</pagination>
          </properties>
       </component>
+
+      <!-- Filter -->
       <component>
          <region-id>filter</region-id>
          <url>/components/documentlibrary/repo/filter</url>
       </component>
+
+      <!-- Tree -->
       <component>
          <region-id>tree</region-id>
          <url>/components/documentlibrary/repo/tree</url>
       </component>
+
+      <!-- Categories -->
       <component>
          <region-id>categories</region-id>
          <url>/components/documentlibrary/categories</url>
       </component>
+
+      <!-- Tags -->
       <component>
          <region-id>tags</region-id>
          <url>/components/tag-filter</url>
       </component>
+
+      <!-- Uploaders -->
       <component>
          <region-id>html-upload</region-id>
          <url>/components/upload/html-upload</url>
@@ -66,5 +75,6 @@
          <region-id>dnd-upload</region-id>
          <url>/components/upload/dnd-upload</url>
       </component>
+
    </components>
 </template-instance>

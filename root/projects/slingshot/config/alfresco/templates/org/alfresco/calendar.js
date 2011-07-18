@@ -1,5 +1,4 @@
 <import resource="classpath:alfresco/site-webscripts/org/alfresco/components/calendar/enabledViews.js">
-<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
 
 /**
  * Calendar template controller script
@@ -19,4 +18,3 @@ var filteredView = function()
 }()
 
 context.setValue("filteredView",filteredView);
-model.metaPage = AlfrescoUtil.getMetaPage();

@@ -47,6 +47,18 @@
       evaluateChildFoldersSite: ${evaluateChildFoldersSite!"true"},
       maximumFolderCountSite: ${(maximumFolderCountSite!"-1")},
       evaluateChildFoldersRepo: ${evaluateChildFoldersRepo!"true"},
-      maximumFolderCountRepo: ${(maximumFolderCountRepo!"-1")}
+      maximumFolderCountRepo: ${(maximumFolderCountRepo!"-1")},
+      siteTreeContainerTypes: {
+         <#assign siteTreeConfig = config.scoped["GlobalFolder"]["siteTree"]!>
+         <#if siteTreeConfig.getChildren?? && siteTreeConfig.getChildren("container")??>
+            <#list siteTreeConfig.childrenMap["container"] as container>
+            "${container.attributes["type"]}":
+            {
+               uri: <#if container.getChildValue("uri")??>"${container.getChildValue("uri")?js_string}"<#else>null</#if>,
+               rootLabel: <#if container.getChildValue("rootLabel")??>"${container.getChildValue("rootLabel")?js_string}"<#else>null</#if>
+            }
+            </#list>
+         </#if>
+      }
    });
 //]]></script>

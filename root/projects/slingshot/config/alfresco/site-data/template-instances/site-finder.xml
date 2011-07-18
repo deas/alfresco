@@ -2,6 +2,8 @@
 <template-instance>
    <template-type>org/alfresco/site-finder</template-type>
    <components>
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/simple-title</url>
@@ -9,6 +11,8 @@
             <title>title.siteFinder</title>
          </properties>
       </component>
+
+      <!--Site Finder -->
       <component>
          <region-id>site-finder</region-id>
          <url>/components/site-finder</url>

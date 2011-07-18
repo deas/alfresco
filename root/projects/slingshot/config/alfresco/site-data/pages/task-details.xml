@@ -8,11 +8,13 @@
    <authentication>user</authentication>
    <components>
 
+      <!-- Title -->
       <component>
          <region-id>data-header</region-id>
          <url>/components/workflow/task-details-header</url>
       </component>
 
+      <!-- Data Form -->
       <component>
          <region-id>data-form</region-id>
          <url>/components/form</url>
@@ -24,11 +26,13 @@
          </properties>
       </component>
 
+      <!-- Data Actions -->
       <component>
          <region-id>data-actions</region-id>
          <url>/components/workflow/task-details-actions</url>
       </component>
 
+      <!-- Data Loader -->
       <component>
          <region-id>data-loader</region-id>
          <url>/components/data/data-loader</url>

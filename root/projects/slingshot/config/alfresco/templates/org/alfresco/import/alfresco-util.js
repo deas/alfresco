@@ -3,8 +3,14 @@ var this_AlfrescoUtil = this;
 var AlfrescoUtil =
 {
    /**
+    *
+    * NOTE DEPRECATED! This method was previously used to dynamically change the region-id's in the template.
+    * Use evaluators to change the components inisde the region instead.
+    *
+    * ----------------------------------------------------------------------------------------------------
+    *
     * Returns the "referrer" which can be used to decide which components that shall be bound in to a page.
-    * 
+    *
     * Note! Requires documentlibrary.js to have been imported so it can look at the value of model.doclibType.
     * Note!! The referrer may only contain numbers or characters.
     *

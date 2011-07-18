@@ -6,63 +6,80 @@
       <container>documentLibrary</container>
    </properties>
    <components>
-      <!-- title: normal, portlet, repository & portlet+repository -->
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
-         <url>/components/title/collaboration-title</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site title -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/title/collaboration-title</url>
+                  </evaluation>
+                  <!-- otherwise: Repository title -->
+                  <evaluation id="repo">
+                     <url>/components/title/simple-title</url>
+                     <properties>
+                        <title>title.repository</title>
+                        <subtitle>title.browser</subtitle>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
-      <component>
-         <region-id>portlet-title</region-id>
-         <url>/components/title/portlet-collaboration-title</url>
-      </component>
-      <component>
-         <region-id>repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
+
+      <!-- Site Navigation -->
       <component>
          <region-id>navigation</region-id>
-         <url>/components/navigation/collaboration-navigation</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site navigation -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/navigation/collaboration-navigation</url>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
-      <!-- actions-common: normal & repository -->
-      <component>
-         <region-id>actions-common</region-id>
-         <url>/components/documentlibrary/actions-common</url>
-      </component>
-      <component>
-         <region-id>repo-actions-common</region-id>
-         <url>/components/documentlibrary/actions-common</url>
-      </component>
-      <!-- path: normal & repository -->
+
+      <!-- Path -->
       <component>
          <region-id>path</region-id>
-         <url>/components/folder-details/path</url>
-      </component>            
-      <component>
-         <region-id>repo-path</region-id>
-         <url>/components/folder-details/repo/path</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site folder path -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/folder-details/path</url>
+                  </evaluation>
+                  <!-- otherwise: Repository folder path -->
+                  <evaluation id="repo">
+                     <url>/components/folder-details/repo/path</url>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
-      <!-- folder-metadata-header: normal & repository -->
+
+      <!-- Folder Metadata Header -->
       <component>
          <region-id>folder-metadata-header</region-id>
          <url>/components/folder-details/folder-metadata-header</url>
       </component>
-      <component>
-         <region-id>repo-folder-metadata-header</region-id>
-         <url>/components/folder-details/folder-metadata-header</url>
-      </component>
-      <!-- folder-metadata: normal & repository -->
+
+      <!-- Folder Metadata -->
       <component>
          <region-id>folder-metadata</region-id>
          <url>/components/form</url>
@@ -72,43 +89,65 @@
             <mode>view</mode>
          </properties>
       </component>
-      <component>
-         <region-id>repo-folder-metadata</region-id>
-         <url>/components/form</url>
-         <properties>
-            <itemKind>node</itemKind>
-            <itemId>{nodeRef}</itemId>
-            <mode>view</mode>
-         </properties>
-      </component>
-      <!-- folder-info: normal & repository -->
+
+      <!-- Folder Info -->
       <component>
          <region-id>folder-info</region-id>
-         <url>/components/folder-details/folder-info</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site folder info -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/folder-details/folder-info</url>
+                  </evaluation>
+                  <!-- otherwise: Repository folder info -->
+                  <evaluation id="repo">
+                     <url>/components/folder-details/repo/folder-info</url>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
+
+
+      <!-- Actions (common) -->
       <component>
-         <region-id>repo-folder-info</region-id>
-         <url>/components/folder-details/repo/folder-info</url>
+         <region-id>actions-common</region-id>
+         <url>/components/documentlibrary/actions-common</url>
       </component>
-      <!-- folder-actions: normal & repository -->
+
+      <!-- Folder Actions -->
       <component>
          <region-id>folder-actions</region-id>
-         <url>/components/folder-details/folder-actions</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site folder actions -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/folder-details/folder-actions</url>
+                  </evaluation>
+                  <!-- otherwise: Repository folder actions -->
+                  <evaluation id="repo">
+                     <url>/components/folder-details/repo/folder-actions</url>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
-      <component>
-         <region-id>repo-folder-actions</region-id>
-         <url>/components/folder-details/repo/folder-actions</url>
-      </component>
-      <!-- folder-links: normal & repository -->
+
+      <!-- Folder Links -->
       <component>
          <region-id>folder-links</region-id>
          <url>/components/folder-details/folder-links</url>
       </component>
-      <component>
-         <region-id>repo-folder-links</region-id>
-         <url>/components/folder-details/folder-links</url>
-      </component>
-      <!-- comments: normal & repository -->      
+
+      <!-- Comments -->
       <component>
          <region-id>comments</region-id>
          <url>/components/comments/list</url>
@@ -117,13 +156,6 @@
             <activityType>folder</activityType>
          </properties>
       </component>
-      <component>
-         <region-id>repo-comments</region-id>
-         <url>/components/comments/list</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-            <activityType>folder</activityType>
-         </properties>
-      </component>
+
    </components>
 </template-instance>

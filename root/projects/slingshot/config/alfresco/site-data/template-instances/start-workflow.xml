@@ -5,88 +5,106 @@
       <pageFamily>documentlibrary</pageFamily>
    </properties>
    <components>
-      <!-- title: normal, portlet, repo, tasks & workflow -->
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
-         <url>/components/title/collaboration-title</url>
-      </component>
-      <component>
-         <region-id>portlet-title</region-id>
-         <url>/components/title/portlet-collaboration-title</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if referred from my tasks page: My Tasks title -->
+                  <evaluation id="tasks">
+                     <evaluators>
+                        <evaluator type="equals.component.evaluator">
+                           <params>
+                              <referrer>{referrer}</referrer>
+                              <tasks>tasks</tasks>
+                           </params>
+                        </evaluator>
+                     </evaluators>
+                     <url>/components/title/simple-title</url>
+                     <properties>
+                        <title>title.myTasks</title>
+                     </properties>
+                  </evaluation>
+                  <!-- if referred from my workflows page: My Workflows title -->
+                  <evaluation id="workflows">
+                     <evaluators>
+                        <evaluator type="equals.component.evaluator">
+                           <params>
+                              <referrer>{referrer}</referrer>
+                              <workflows>workflows</workflows>
+                           </params>
+                        </evaluator>
+                     </evaluators>
+                     <url>/components/title/simple-title</url>
+                     <properties>
+                        <title>title.myWorkflows</title>
+                     </properties>
+                  </evaluation>
+                  <!-- if in site: Site title -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/title/collaboration-title</url>
+                  </evaluation>
+                  <!-- otherwise: Repository title -->
+                  <evaluation id="repo">
+                     <url>/components/title/simple-title</url>
+                     <properties>
+                        <title>title.repository</title>
+                        <subtitle>title.browser</subtitle>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
 
-      <component>
-         <region-id>repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
-
-      <component>
-         <region-id>tasks-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myTasks</title>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-tasks-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myTasks</title>
-         </properties>
-      </component>
-
-      <component>
-         <region-id>workflows-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myWorkflows</title>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-workflows-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myWorkflows</title>
-         </properties>
-      </component>
-
-      <!-- navigation: normal, tasks & workflow -->
+      <!-- Site Navigation -->
       <component>
          <region-id>navigation</region-id>
-         <url>/components/navigation/collaboration-navigation</url>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if referred from my tasks page: Task toolbar -->
+                  <evaluation id="tasks">
+                     <evaluators>
+                        <evaluator type="equals.component.evaluator">
+                           <params>
+                              <referer>{referer}</referer>
+                              <tasks>tasks</tasks>
+                           </params>
+                        </evaluator>
+                     </evaluators>
+                     <url>/components/workflow/task-toolbar</url>
+                  </evaluation>
+                  <!-- if referred from my workflows page: Workflows toolbar -->
+                  <evaluation id="workflows">
+                     <evaluators>
+                        <evaluator type="equals.component.evaluator">
+                           <params>
+                              <referer>{referer}</referer>
+                              <workflows>workflows</workflows>
+                           </params>
+                        </evaluator>
+                     </evaluators>
+                     <url>/components/workflow/workflow-toolbar</url>
+                  </evaluation>
+                  <!-- if in site: Site navigation -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/navigation/collaboration-navigation</url>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
 
-      <component>
-         <region-id>tasks-navigation</region-id>
-         <url>/components/workflow/task-toolbar</url>
-      </component>
-      <component>
-         <region-id>portlet-tasks-navigation</region-id>
-         <url>/components/workflow/task-toolbar</url>
-      </component>
-
-      <component>
-         <region-id>workflows-navigation</region-id>
-         <url>/components/workflow/workflow-toolbar</url>
-      </component>
-      <component>
-         <region-id>portlet-workflows-navigation</region-id>
-         <url>/components/workflow/workflow-toolbar</url>
-      </component>
-
-      <!-- start workflow form -->
+      <!-- Start Workflow Form -->
       <component>
          <region-id>start-workflow</region-id>
          <url>/components/workflow/start</url>

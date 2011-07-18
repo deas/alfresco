@@ -15,4 +15,3 @@ function getMaxItems()
 
 model.preferences = AlfrescoUtil.getPreferences("org.alfresco.share.docsummary.dashlet");
 model.maxItems = getMaxItems();
-model.dod5015 = args.dod5015;

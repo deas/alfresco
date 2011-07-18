@@ -2,10 +2,14 @@
 <template-instance>
     <template-type>org/alfresco/customise-site</template-type>
     <components>
+
+       <!-- Title -->
        <component>
           <region-id>title</region-id>
           <url>/components/title/collaboration-title</url>
        </component>
+
+       <!-- Customise Pages -->
        <component>
           <region-id>customise-pages</region-id>
           <url>/components/site/customise-pages</url>

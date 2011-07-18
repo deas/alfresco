@@ -1,0 +1,14 @@
+<alfresco-config>
+
+   <config evaluator="string-compare" condition="GlobalFolder">
+
+      <siteTree>
+         <container type="dod:filePlan">
+            <rootLabel>path.fileplan</rootLabel>
+            <uri>slingshot/doclib/dod5015/treenode/site/{site}/{container}{path}?children={evaluateChildFoldersSite}&amp;max={maximumFolderCountSite}</uri>
+         </container>
+      </siteTree>
+
+   </config>
+
+</alfresco-config>

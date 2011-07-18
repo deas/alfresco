@@ -2,9 +2,12 @@
 <template-instance>
    <template-type>org/alfresco/portlet-template</template-type>
    <components>
+
+      <!-- Document Libraries -->
       <component>
          <region-id>portlet-component</region-id>
          <url>/components/my-documentlibraries/my-doclibs</url>
       </component>
+
    </components>
 </template-instance>

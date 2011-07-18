@@ -123,7 +123,7 @@
          </page>
       </pages>
    </preset>
-   
+
    <!-- Well known preset used to generate the default RM Site dashboard -->
    <preset id="rm-site-dashboard">
       <components>
@@ -185,7 +185,7 @@
          </page>
       </pages>
    </preset>
-   
+
    <!-- Well known preset used to generate the Sharepoint protocol integration Site -->
    <preset id="document-workspace">
       <components>
@@ -246,68 +246,7 @@
          </page>
       </pages>
    </preset>
-   
-   <!-- Well known preset used to generate the Sharepoint protocol integration meeting Site -->
-   <preset id="meeting-workspace">
-      <components>
-         <!-- title -->
-         <component>
-            <scope>page</scope>
-            <region-id>title</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/title/collaboration-title</url>
-         </component>
-         <!-- navigation -->
-         <component>
-            <scope>page</scope>
-            <region-id>navigation</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/navigation/collaboration-navigation</url>
-            <properties>
-               <dashboardType>site</dashboardType>
-            </properties>
-         </component>
-         <!-- dashboard components -->
-         <component>
-            <scope>page</scope>
-            <region-id>full-width-dashlet</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/dynamic-welcome</url>
-         </component>
-         <component>
-            <scope>page</scope>
-            <region-id>component-1-1</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/colleagues</url>
-         </component>
-         <component>
-            <scope>page</scope>
-            <region-id>component-2-1</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/docsummary</url>
-         </component>
-         <component>
-            <scope>page</scope>
-            <region-id>component-2-2</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/activityfeed</url>
-         </component>
-      </components>
-      <pages>
-         <page id="site/${siteid}/dashboard">
-            <title>Meeting Workspace Dashboard</title>
-            <title-id>page.meeting_workspace.title</title-id>
-            <description>Meeting Workspace dashboard page</description>
-            <description-id>page.meeting_workspace.description</description-id>
-            <template-instance>dashboard-2-columns-wide-left</template-instance>
-            <authentication>user</authentication>
-            <properties>
-               <sitePages>[{"pageId":"documentlibrary"}, {"pageId":"calendar"}]</sitePages>
-            </properties>
-         </page>
-      </pages>
-   </preset>
-   
+
    <!-- Well known preset used to generate the Sharepoint protocol integration meeting Site -->
    <preset id="meeting-workspace">
       <components>
@@ -368,65 +307,6 @@
          </page>
       </pages>
    </preset>
-   
-   <!-- Well known preset used to generate the Sharepoint protocol integration meeting Site -->
-   <preset id="meeting-workspace">
-      <components>
-         <!-- title -->
-         <component>
-            <scope>page</scope>
-            <region-id>title</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/title/collaboration-title</url>
-         </component>
-         <!-- navigation -->
-         <component>
-            <scope>page</scope>
-            <region-id>navigation</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/navigation/collaboration-navigation</url>
-         </component>
-         <!-- dashboard components -->
-         <component>
-            <scope>page</scope>
-            <region-id>full-width-dashlet</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/dynamic-welcome</url>
-            <properties>
-               <dashboardType>site</dashboardType>
-            </properties>
-         </component>
-         <component>
-            <scope>page</scope>
-            <region-id>component-1-1</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/colleagues</url>
-         </component>
-         <component>
-            <scope>page</scope>
-            <region-id>component-2-1</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/docsummary</url>
-         </component>
-         <component>
-            <scope>page</scope>
-            <region-id>component-2-2</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/activityfeed</url>
-         </component>
-      </components>
-      <pages>
-         <page id="site/${siteid}/dashboard">
-            <title>Meeting Workspace Dashboard</title>
-            <title-id>page.meeting_workspace.title</title-id>
-            <description>Meeting Workspace dashboard page</description>
-            <description-id>page.meeting_workspace.description</description-id>
-            <template-instance>dashboard-2-columns-wide-left</template-instance>
-            <authentication>user</authentication>
-            <properties>
-               <sitePages>[{"pageId":"documentlibrary"}, {"pageId":"calendar"}]</sitePages>
-            </properties>
-         </page>
-      </pages>
-   </preset>
+
+
 </presets>

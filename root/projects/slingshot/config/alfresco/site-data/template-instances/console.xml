@@ -2,10 +2,14 @@
 <template-instance>
    <template-type>org/alfresco/console</template-type>
    <components>
+
+      <!-- Tools -->
       <component>
          <region-id>tools</region-id>
          <url>/components/console/tools</url>
       </component>
+
+      <!-- Uploaders -->
       <component>
          <region-id>html-upload</region-id>
          <url>/components/upload/html-upload</url>

@@ -3,11 +3,11 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id=appType + "header" scope="global" protected=true />
-      <@region id=appType + referrer + "title" scope="template" protected=true />
-      <@region id=appType + referrer + "navigation" scope="template" protected=true />
+      <@region id="header" scope="global"/>
+      <@region id="title" scope="template"/>
+      <@region id="navigation" scope="template"/>
       <#if page.url.args.nodeRef??>
-         <@region id=referrer + "path" scope="template" protected=true />
+         <@region id="path" scope="template"/>
       </#if>
    </div>
    <div id="bd">
@@ -23,7 +23,7 @@
    {
       nodeRef: new Alfresco.util.NodeRef("${page.url.args.nodeRef?js_string}"),
       siteId: "${page.url.templateArgs.site!""}",
-      rootNode: "${rootNode!"null"}"
+      rootNode: "${(config.scoped["RepositoryLibrary"]["root-node"].getValue())!"alfresco://company/home"}"
    });
    //]]></script>
    </#if>
@@ -31,7 +31,7 @@
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global"/>
       <@region id="data-loader" scope="page" />
    </div>
 </@>

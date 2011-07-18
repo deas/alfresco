@@ -43,7 +43,11 @@
             <!-- Pick the mode: development, production -->             
             <mode>production</mode>
          </autowire>
-      
+
+         <module-deployment>
+             <mode>manual</mode>
+         </module-deployment>
+
       </web-framework>
 
    </config>

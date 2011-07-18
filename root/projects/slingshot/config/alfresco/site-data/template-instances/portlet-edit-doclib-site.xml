@@ -2,6 +2,8 @@
 <template-instance>
    <template-type>org/alfresco/portlet-template</template-type>
    <components>
+
+      <!-- Edit Document-->
       <component>
          <region-id>portlet-component</region-id>
          <url>/components/portlet/edit-doclib-site</url>

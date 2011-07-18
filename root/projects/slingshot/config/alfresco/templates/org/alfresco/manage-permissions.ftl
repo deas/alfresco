@@ -6,13 +6,13 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id=appType + "header" scope="global" protected=true />
-      <@region id=appType + doclibType + "title" scope="template" protected=true />
-      <@region id=appType + doclibType + "navigation" scope="template" protected=true />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="template" />
+      <@region id="navigation" scope="template" />
    </div>
    <div id="bd">
-      <@region id=doclibType + "path" scope="template" protected=true />
-      <@region id="manage-permissions" scope="template" protected=true />
+      <@region id="path" scope="template" />
+      <@region id="manage-permissions" scope="template" />
    </div>
 
    <script type="text/javascript">//<![CDATA[
@@ -20,13 +20,13 @@
    {
       nodeRef: new Alfresco.util.NodeRef("${url.args.nodeRef?js_string}"),
       siteId: "${page.url.templateArgs.site!""}",
-      rootNode: "${rootNode!"null"}"
+      rootNode: "${(config.scoped["RepositoryLibrary"]["root-node"].getValue())!"alfresco://company/home"}"
    });
    //]]></script>
 </@>
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global" />
    </div>
 </@>

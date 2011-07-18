@@ -7,9 +7,12 @@
    <template-instance>replication-job</template-instance>
    <authentication>admin</authentication>
    <components>
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/admin-console</url>
       </component>
+
    </components>
 </page>

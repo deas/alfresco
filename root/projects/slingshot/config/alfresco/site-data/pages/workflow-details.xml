@@ -8,22 +8,25 @@
    <authentication>user</authentication>
    <components>
 
-      <!-- workflow: header, form, actions & workflow loader -->
+      <!-- Data Header -->
       <component>
          <region-id>data-header</region-id>
          <url>/components/workflow/workflow-details-header</url>
       </component>
 
+      <!-- Data Form -->
       <component>
          <region-id>data-form</region-id>
          <url>/components/workflow/workflow-form</url>
       </component>
 
+      <!-- Data Actions -->
       <component>
          <region-id>data-actions</region-id>
          <url>/components/workflow/workflow-details-actions</url>
       </component>
 
+      <!-- Data Loader -->
       <component>
          <region-id>data-loader</region-id>
          <url>/components/data/data-loader</url>

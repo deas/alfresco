@@ -6,87 +6,108 @@
       <container>documentLibrary</container>
    </properties>
    <components>
-      <!-- title: normal, portlet, repository & portlet+repository -->
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
-         <url>/components/title/collaboration-title</url>
-      </component>
-      <component>
-         <region-id>portlet-title</region-id>
-         <url>/components/title/portlet-collaboration-title</url>
-      </component>
-      <component>
-         <region-id>repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
-      <component>
-         <region-id>navigation</region-id>
-         <url>/components/navigation/collaboration-navigation</url>
-      </component>
-      <!-- actions-common: normal & repository -->
-      <component>
-         <region-id>actions-common</region-id>
-         <url>/components/documentlibrary/actions-common</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-actions-common</region-id>
-         <url>/components/documentlibrary/actions-common</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <!-- path: normal & repository -->
-      <component>
-         <region-id>document-header</region-id>
-         <url>/components/document-details/document-header</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-            <rootPage>documentlibrary</rootPage>
-            <rootLabelId>path.documents</rootLabelId>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-document-header</region-id>
-         <url>/components/document-details/document-header</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-            <rootPage>repository</rootPage>
-            <rootLabelId>path.repository</rootLabelId>
-         </properties>
-      </component>
-      <!-- web-preview: normal & repository -->
-      <component>
-         <region-id>web-preview</region-id>
-         <url>/components/preview/web-preview</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-            <disableI18nInputFix>false</disableI18nInputFix>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-web-preview</region-id>
-         <url>/components/preview/web-preview</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-            <disableI18nInputFix>false</disableI18nInputFix>
-         </properties>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site title -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/title/collaboration-title</url>
+                  </evaluation>
+                  <!-- otherwise: Repository title -->
+                  <evaluation id="repo">
+                     <url>/components/title/simple-title</url>
+                     <properties>
+                        <title>title.repository</title>
+                        <subtitle>title.browser</subtitle>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
 
+      <!-- Site Navigation -->
+      <component>
+         <region-id>navigation</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site navigation -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/navigation/collaboration-navigation</url>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+
+      <!-- Document Header -->
+      <component>
+         <region-id>document-header</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site header -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/document-details/document-header</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                        <rootPage>documentlibrary</rootPage>
+                        <rootLabelId>path.documents</rootLabelId>
+                     </properties>
+                  </evaluation>
+                  <!-- otherwise: Repo header -->
+                  <evaluation id="repo">
+                     <url>/components/document-details/document-header</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                        <rootPage>repository</rootPage>
+                        <rootLabelId>path.repository</rootLabelId>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+
+      <!-- WebPreview -->
+      <component>
+         <region-id>web-preview</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <evaluation>
+                     <evaluators>
+                        <evaluator type="config.component.evaluator">
+                           <params>
+                              <element>DocumentDetails/document-details/display-web-preview</element>
+                           </params>
+                        </evaluator>
+                     </evaluators>
+                     <url>/components/preview/web-preview</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+
+      <!-- Comments -->
       <component>
          <region-id>comments</region-id>
          <url>/components/comments/list</url>
@@ -95,112 +116,8 @@
             <activityType>document</activityType>
          </properties>
       </component>
-      <component>
-         <region-id>repo-comments</region-id>
-         <url>/components/comments/list</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-            <activityType>document</activityType>
-         </properties>
-      </component>
 
-
-      <!-- document-metadata-header: normal & repository -->
-      <component>
-         <region-id>document-metadata-header</region-id>
-         <url>/components/document-details/document-metadata-header</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-document-metadata-header</region-id>
-         <url>/components/document-details/document-metadata-header</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <!-- document-metadata: normal & repository -->
-      <component>
-         <region-id>document-metadata</region-id>
-         <url>/components/form</url>
-         <properties>
-            <itemKind>node</itemKind>
-            <itemId>{nodeRef}</itemId>
-            <mode>view</mode>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-document-metadata</region-id>
-         <url>/components/form</url>
-         <properties>
-            <itemKind>node</itemKind>
-            <itemId>{nodeRef}</itemId>
-            <mode>view</mode>
-         </properties>
-      </component>
-      <!-- document-tags: normal & repository -->
-      <component>
-         <region-id>document-tags</region-id>
-         <url>/components/document-details/document-tags</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-document-tags</region-id>
-         <url>/components/document-details/repo/document-tags</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <!-- document-permissions only normal (since site permissions isn't applicable for repository)-->
-      <component>
-         <region-id>document-permissions</region-id>
-         <url>/components/document-details/document-permissions</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <!-- document-versions: normal & repository -->
-      <component>
-         <region-id>document-workflows</region-id>
-         <url>/components/document-details/document-workflows</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-document-workflows</region-id>
-         <url>/components/document-details/document-workflows</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <!-- document-versions: normal & repository -->
-      <component>
-         <region-id>document-versions</region-id>
-         <url>/components/document-details/document-versions</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <component>
-         <region-id>repo-document-versions</region-id>
-         <url>/components/document-details/document-versions</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <!-- document-details: normal only -->
-      <component>
-         <region-id>document-publishing</region-id>
-         <url>/components/document-details/document-publishing</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-      <!-- document-actions: normal & repository -->
+      <!-- Document Actions (incl commons) -->
       <component>
          <region-id>document-actions</region-id>
          <url>/components/document-details/document-actions</url>
@@ -209,13 +126,35 @@
          </properties>
       </component>
       <component>
-         <region-id>repo-document-actions</region-id>
-         <url>/components/document-details/repo/document-actions</url>
+         <region-id>actions-common</region-id>
+         <url>/components/documentlibrary/actions-common</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
       </component>
-      <!-- document-links: normal & repository -->
+
+      <!-- Document Tags -->
+      <component>
+         <region-id>document-tags</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site tags -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/document-details/document-tags</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+
+      <!-- Document Links -->
       <component>
          <region-id>document-links</region-id>
          <url>/components/document-details/document-links</url>
@@ -223,13 +162,64 @@
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
       </component>
+
+      <!-- Document Metadata -->
       <component>
-         <region-id>repo-document-links</region-id>
-         <url>/components/document-details/document-links</url>
+         <region-id>document-metadata</region-id>
+         <url>/components/document-details/document-metadata</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
       </component>
+
+      <!-- Document Permissions -->
+      <component>
+         <region-id>document-permissions</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Permissions -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/document-details/document-permissions</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+
+      <!-- Document Workflows -->
+      <component>
+         <region-id>document-workflows</region-id>
+         <url>/components/document-details/document-workflows</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+
+      <!-- Document Versions -->
+      <component>
+         <region-id>document-versions</region-id>
+         <url>/components/document-details/document-versions</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+
+      <component>
+         <region-id>document-publishing</region-id>
+         <url>/components/document-details/document-publishing</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+
+      <!-- Uploaders -->
       <component>
          <region-id>html-upload</region-id>
          <url>/components/upload/html-upload</url>
@@ -242,5 +232,6 @@
          <region-id>file-upload</region-id>
          <url>/components/upload/file-upload</url>
       </component>
+
    </components>
 </template-instance>

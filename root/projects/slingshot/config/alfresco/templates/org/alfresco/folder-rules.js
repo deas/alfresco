@@ -1,4 +1,3 @@
-<import resource="classpath:/alfresco/templates/org/alfresco/documentlibrary.js">
 
 function main()
 {
@@ -36,7 +35,14 @@ function loadDisplayInfo(connector, nodeRef)
 
    if (siteId == null)
    {
-      url += "?libraryRoot=" + encodeURIComponent(model.rootNode);
+      // Repository Library root node
+      var rootNode = "alfresco://company/home",
+         repoConfig = config.scoped["RepositoryLibrary"]["root-node"];
+      if (repoConfig !== null)
+      {
+         rootNode = repoConfig.value;
+      }
+      url += "?libraryRoot=" + encodeURIComponent(rootNode);
    }
    var result = connector.get(url);
    if (result.status == 200)

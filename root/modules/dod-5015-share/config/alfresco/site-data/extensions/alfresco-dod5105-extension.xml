@@ -1,0 +1,640 @@
+<extension>
+   <modules>
+      <module>
+         <id>Alfresco DOD5015 Records Management</id>
+
+         <!-- Base evaluator that decides if any of the component bindings should be used at all -->
+         <evaluator>site.module.evaluator</evaluator>
+         <evaluatorProperties>
+            <sites>.*</sites>
+            <sitePresets>rm-site-dashboard</sitePresets>
+         </evaluatorProperties>
+
+         <!-- Apply the following component bindings when the base evaluator above passes -->
+         <components>
+
+            <!-- DOCUMENT LIBRARY (SITE) -->
+
+            <!-- Hide Documents filter -->
+            <component>
+               <scope>template</scope>
+               <region-id>filter</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!--
+               Replace with DOD5015 specific tree,
+               Add DOD5015 File Plan filter &
+               Add DOD5015 Saved Search filter
+            -->
+            <component>
+               <scope>template</scope>
+               <region-id>tree</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <!-- Replace DOD5015 specific tree -->
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <url>/components/documentlibrary/dod5015/tree</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+                  <!-- Add DOD5015 File Plan filter -->
+                  <sub-component id="dod5015FilePlan">
+                     <evaluations>
+                        <evaluation id="dod5015-fileplan">
+                           <url>/components/documentlibrary/dod5015/fileplan</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+                  <!-- Add DOD5015 Saved Search filter -->
+                  <sub-component id="dod5015SavedSearch">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <url>/components/documentlibrary/dod5015/savedsearch</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide documents Tags filter -->
+            <component>
+               <scope>template</scope>
+               <region-id>tags</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Replace with DOD5015 specific Toolbar -->
+            <component>
+               <scope>template</scope>
+               <region-id>toolbar</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <url>/components/documentlibrary/dod5015/toolbar</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Replace with DOD5015 specific Actions -->
+            <component>
+               <scope>template</scope>
+               <region-id>actions-common</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <url>/components/documentlibrary/dod5015/actions-common</url>
+                           <properties>
+                              <nodeRef>{nodeRef}</nodeRef>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Replace with DOD5015 specific Document List -->
+            <component>
+               <scope>template</scope>
+               <region-id>documentlist</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <url>/components/documentlibrary/dod5015/documentlist</url>
+                           <properties>
+                              <pagination>true</pagination>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Replace with DOD5015 specific File Upload -->
+            <component>
+               <scope>template</scope>
+               <region-id>file-upload</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <url>/components/upload/dod5015/file-upload</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Replace with DOD5015 specific Flash Upload -->
+            <component>
+               <scope>template</scope>
+               <region-id>flash-upload</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <url>/components/upload/dod5015/flash-upload</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Replace with DOD5015 specific Html Upload -->
+            <component>
+               <scope>template</scope>
+               <region-id>html-upload</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015">
+                           <url>/components/upload/dod5015/html-upload</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- DOCUMENT DETAILS -->
+
+            <!-- Records Management Document Header -->
+            <component>
+               <scope>template</scope>
+               <region-id>document-header</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- Site header (if in site) -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/document-details/document-header</url>
+                           <properties>
+                              <nodeRef>{nodeRef}</nodeRef>
+                              <rootPage>documentlibrary</rootPage>
+                              <rootLabelId>path.fileplan</rootLabelId>
+                              <showFavourite>false</showFavourite>
+                              <showLikes>false</showLikes>
+                              <showComments>false</showComments>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Add DOD5015 Events -->
+            <component>
+               <scope>template</scope>
+               <region-id>web-preview</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="dod5015-events">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/fileplan/events</url>
+                           <properties>
+                              <nodeRef>{nodeRef}</nodeRef>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Comments -->
+            <component id="template.comments.document-details">
+               <scope>template</scope>
+               <region-id>comments</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Replace with DOD5015 specific Actions -->
+            <component>
+               <scope>template</scope>
+               <region-id>document-actions</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- DOD5015 specific Actions -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/document-details/dod5015/document-actions</url>
+                           <properties>
+                              <nodeRef>{nodeRef}</nodeRef>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+            <component>
+               <scope>template</scope>
+               <region-id>actions-common</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- DOD5015 specific Actions (common) -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/documentlibrary/dod5015/actions-common</url>
+                           <properties>
+                              <nodeRef>{nodeRef}</nodeRef>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Document Tags -->
+            <component>
+               <scope>template</scope>
+               <region-id>document-tags</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!--
+               Replace with DOD5015 specific view form,
+               Add DOD5015 references
+             -->
+            <component>
+               <scope>template</scope>
+               <region-id>document-metadata</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <!-- Replace with DOD5015 specific metadata -->
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/document-details/document-metadata</url>
+                           <properties>
+                              <nodeRef>{nodeRef}</nodeRef>
+                              <formId>rm</formId>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+                  <sub-component id="dod5015-references">
+                     <evaluations>
+                        <!-- Add DOD5015 references -->
+                        <evaluation id="dod5015-references">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/document-details/dod5015/document-references</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Document Permissions -->
+            <component id="template.document-permissions.document-details">
+               <scope>template</scope>
+               <region-id>document-permissions</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- Hide permissions -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Document Workflows -->
+            <component>
+               <scope>template</scope>
+               <region-id>document-workflows</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- Hide workflows -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Version History -->
+            <component>
+               <scope>template</scope>
+               <region-id>document-versions</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- if in site: Hide versions -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- EDIT METADATA -->
+
+            <!-- Replace with DOD5015 specific Form Manager -->
+            <component>
+               <scope>template</scope>
+               <region-id>edit-metadata-mgr</region-id>
+               <source-id>edit-metadata</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- if in site: dod5015 form manager -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/edit-metadata/dod5015/edit-metadata-mgr</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Replace with DOD5015 specific Form -->
+            <component>
+               <scope>template</scope>
+               <region-id>edit-metadata</region-id>
+               <source-id>edit-metadata</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- if in site: dod5015 form -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/form</url>
+                           <properties>
+                              <itemKind>node</itemKind>
+                              <itemId>{nodeRef}</itemId>
+                              <formId>rm</formId>
+                              <mode>edit</mode>
+                              <submitType>json</submitType>
+                              <showCaption>true</showCaption>
+                              <showCancelButton>true</showCancelButton>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- FOLDER DETAILS -->
+
+            <!--
+               NOTE!
+
+               The folder-details page shall actually never be used from a Records Management site,
+               but if somebody happens to manipulate a url for a record-serie, record-category or a record-folder
+               its important tha we DON't display any "un-versioned" data. Therefore we hide all the usual components
+               on the fodler-details page and make sure to only display the node's metadata below a header.
+            -->
+
+            <!--
+               Hide Comments,
+               Add metadata header &
+               Add DOD5015 specific metadata
+             -->
+            <component>
+               <scope>template</scope>
+               <region-id>comments</region-id>
+               <source-id>folder-details</source-id>
+               <sub-components>
+                  <!-- Hide comments -->
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+                  <!-- Add Metadata Header -->
+                  <sub-component id="dod5015-metadata-header">
+                     <evaluations>
+                        <!-- if in site: dod5015 form -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/folder-details/folder-metadata-header</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+                  <!-- Add DOD5015 Metadata -->
+                  <sub-component id="dod5015-metadata">
+                     <evaluations>
+                        <!-- if in site: dod5015 form -->
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/form</url>
+                           <properties>
+                              <itemKind>node</itemKind>
+                              <itemId>{nodeRef}</itemId>
+                              <formId>rm</formId>
+                              <mode>view</mode>
+                           </properties>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Folder Metadata Header -->
+            <component>
+               <scope>template</scope>
+               <region-id>folder-metadata-header</region-id>
+               <source-id>folder-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Folder Metadata Header -->
+            <component>
+               <scope>template</scope>
+               <region-id>folder-metadata</region-id>
+               <source-id>folder-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Folder Info -->
+            <component>
+               <scope>template</scope>
+               <region-id>folder-info</region-id>
+               <source-id>folder-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide Folder Info -->
+            <component>
+               <scope>template</scope>
+               <region-id>folder-actions</region-id>
+               <source-id>folder-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- Hide Folder Info -->
+            <component>
+               <scope>template</scope>
+               <region-id>folder-links</region-id>
+               <source-id>folder-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="dod5015-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+         </components>
+      </module>
+
+   </modules>
+</extension>

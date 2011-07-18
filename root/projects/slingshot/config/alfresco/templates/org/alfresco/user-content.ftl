@@ -3,17 +3,17 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id="header" scope="global" protected=true/>
-      <@region id="title" scope="template" protected=true />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="template" />
    </div>
    <div id="bd">
-      <@region id="toolbar" scope="template" protected=true />
-      <@region id="user-content" scope="template" protected=true />
+      <@region id="toolbar" scope="template" />
+      <@region id="user-content" scope="template" />
    </div>
 </@>
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global" />
    </div>
 </@>

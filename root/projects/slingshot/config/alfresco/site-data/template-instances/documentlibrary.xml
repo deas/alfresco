@@ -6,27 +6,32 @@
       <container>documentLibrary</container>
    </properties>
    <components>
-      <!-- title: normal & portlet -->
+
+      <!-- Title -->
       <component>
          <region-id>title</region-id>
          <url>/components/title/collaboration-title</url>
       </component>
-      <component>
-         <region-id>portlet-title</region-id>
-         <url>/components/title/portlet-collaboration-title</url>
-      </component>
+
+      <!-- Navigation -->
       <component>
          <region-id>navigation</region-id>
          <url>/components/navigation/collaboration-navigation</url>
       </component>
+
+      <!-- Actions -->
       <component>
          <region-id>actions-common</region-id>
          <url>/components/documentlibrary/actions-common</url>
       </component>
+
+      <!-- Toolbar -->
       <component>
          <region-id>toolbar</region-id>
          <url>/components/documentlibrary/toolbar</url>
       </component>
+
+      <!-- Documentlist -->
       <component>
          <region-id>documentlist</region-id>
          <url>/components/documentlibrary/documentlist</url>
@@ -34,15 +39,21 @@
             <pagination>true</pagination>
          </properties>
       </component>
+
+      <!-- Filter -->
       <component>
          <region-id>filter</region-id>
          <url>/components/documentlibrary/filter</url>
       </component>
+
+      <!-- Tree -->
       <component>
          <region-id>tree</region-id>
          <url>/components/documentlibrary/tree</url>
          <properties></properties>
       </component>
+
+      <!-- Tags -->
       <component>
          <region-id>tags</region-id>
          <url>/components/tag-filter</url>
@@ -50,6 +61,8 @@
             <scoped>true</scoped>
          </properties>   
       </component>
+
+      <!-- Uploaders -->
       <component>
          <region-id>html-upload</region-id>
          <url>/components/upload/html-upload</url>
@@ -66,5 +79,6 @@
          <region-id>dnd-upload</region-id>
          <url>/components/upload/dnd-upload</url>
       </component>
+
    </components>
 </template-instance>

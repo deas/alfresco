@@ -4,12 +4,12 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id="header" scope="global" protected=true />
-      <@region id="title" scope="page" protected=true />
-      <@region id="navigation" scope="page" protected=true />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="page" />
+      <@region id="navigation" scope="page" />
    </div>
    <div id="alf-full-width">
-      <@region id="full-width-dashlet" scope="page" protected=true/>
+      <@region id="full-width-dashlet" scope="page" />
    </div>
    <div id="bd">
       <@layout.grid gridColumns gridClass "component" />
@@ -18,6 +18,6 @@
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global" />
    </div>
 </@>

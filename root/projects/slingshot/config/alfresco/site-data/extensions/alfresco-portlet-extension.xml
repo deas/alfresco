@@ -1,0 +1,341 @@
+<extension>
+   <modules>
+      <module>
+         <id>Alfresco Portlet Extension</id>
+
+         <!-- Base evaluator that decides if any of the component bindings should be used at all -->
+         <evaluator>portlet.module.evaluator</evaluator>
+         <evaluatorProperties>
+            <portletUrls>.*</portletUrls>
+         </evaluatorProperties>
+
+         <components>
+
+            <!-- ALL PAGES -->
+
+            <!-- Hide Header -->
+            <component>
+               <scope>global</scope>
+               <region-id>header</region-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="portlet">
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- DOCUMENT LIBRARY -->
+
+            <!-- Replace with Portlet specific site Title -->
+            <component>
+               <scope>template</scope>
+               <region-id>title</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <evaluation id="portlet">
+                           <url>/components/title/portlet-collaboration-title</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide site Navigation -->
+            <component>
+               <scope>template</scope>
+               <region-id>navigation</region-id>
+               <source-id>documentlibrary</source-id>
+               <sub-components>
+
+
+
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- if in site: hide navigation -->
+                        <evaluation id="portlet-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- DOCUMENT DETAILS -->
+
+            <!-- Replace site Title with Portlet specific Title -->
+            <component>
+               <scope>template</scope>
+               <region-id>title</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- Portlet title (for site documents) -->
+                        <evaluation id="portlet-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/title/portlet-collaboration-title</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide site Navigation-->
+            <component>
+               <scope>template</scope>
+               <region-id>navigation</region-id>
+               <source-id>document-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <!-- if in site: hide navigation -->
+                     <evaluations>
+                        <evaluation id="portlet-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- EDIT METADATA -->
+
+            <!-- Replace site Title with Portlet specific Title -->
+            <component>
+               <scope>template</scope>
+               <region-id>title</region-id>
+               <source-id>edit-metadata</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- if in site: replace with portlet title -->
+                        <evaluation id="portlet-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/title/portlet-collaboration-title</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide site Navigation -->
+            <component>
+               <scope>template</scope>
+               <region-id>navigation</region-id>
+               <source-id>edit-metadata</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- if in site: hide navigation -->
+                        <evaluation id="portlet-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- FOLDER DETAILS -->
+
+            <!-- Replace site Title with Portlet specific Title -->
+            <component>
+               <scope>template</scope>
+               <region-id>title</region-id>
+               <source-id>folder-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- Portlet title (for site folder) -->
+                        <evaluation id="portlet-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <url>/components/title/portlet-collaboration-title</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide site Navigation-->
+            <component>
+               <scope>template</scope>
+               <region-id>navigation</region-id>
+               <source-id>folder-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <!-- if in site: hide navigation -->
+                     <evaluations>
+                        <evaluation id="portlet-site">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- WORKFLOW DETAILS -->
+
+            <!-- Replace site Title with Portlet specific Title -->
+            <component>
+               <scope>template</scope>
+               <region-id>title</region-id>
+               <source-id>workflow-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- if in site and not referred: Portlet title -->
+                        <evaluation id="portlet-siteWithoutReferrer">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                              <evaluator type="equals.component.evaluator" negate="true">
+                                 <params>
+                                    <referrer>{referrer}</referrer>
+                                    <workflows>workflows</workflows>
+                                 </params>
+                              </evaluator>
+                              <evaluator type="equals.component.evaluator" negate="true">
+                                 <params>
+                                    <referrer>{referrer}</referrer>
+                                    <tasks>tasks</tasks>
+                                 </params>
+                              </evaluator>
+                           </evaluators>
+                           <url>/components/title/portlet-collaboration-title</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide site Navigation-->
+            <component>
+               <scope>template</scope>
+               <region-id>navigation</region-id>
+               <source-id>workflow-details</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <!-- if in site and not referred: hide navigation -->
+                     <evaluations>
+                        <evaluation id="portlet-siteWithoutReferrer">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                              <evaluator type="equals.component.evaluator" negate="true">
+                                 <params>
+                                    <referrer>{referrer}</referrer>
+                                    <workflows>workflows</workflows>
+                                 </params>
+                              </evaluator>
+                              <evaluator type="equals.component.evaluator" negate="true">
+                                 <params>
+                                    <referrer>{referrer}</referrer>
+                                    <tasks>tasks</tasks>
+                                 </params>
+                              </evaluator>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+            <!-- START WORKFLOW -->
+
+            <!-- Replace site Title with Portlet specific Title -->
+            <component>
+               <scope>template</scope>
+               <region-id>title</region-id>
+               <source-id>start-workflow</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <evaluations>
+                        <!-- if in site and not referred: Portlet title -->
+                        <evaluation id="portlet-siteWithoutReferrer">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                              <evaluator type="equals.component.evaluator" negate="true">
+                                 <params>
+                                    <referrer>{referrer}</referrer>
+                                    <workflows>workflows</workflows>
+                                 </params>
+                              </evaluator>
+                              <evaluator type="equals.component.evaluator" negate="true">
+                                 <params>
+                                    <referrer>{referrer}</referrer>
+                                    <tasks>tasks</tasks>
+                                 </params>
+                              </evaluator>
+                           </evaluators>
+                           <url>/components/title/portlet-collaboration-title</url>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+            <!-- Hide site Navigation-->
+            <component>
+               <scope>template</scope>
+               <region-id>navigation</region-id>
+               <source-id>start-workflow</source-id>
+               <sub-components>
+                  <sub-component id="default">
+                     <!-- if in site and not referred: hide navigation -->
+                     <evaluations>
+                        <evaluation id="portlet-siteWithoutReferrer">
+                           <evaluators>
+                              <evaluator type="site.component.evaluator"/>
+                              <evaluator type="equals.component.evaluator" negate="true">
+                                 <params>
+                                    <referrer>{referrer}</referrer>
+                                    <workflows>workflows</workflows>
+                                 </params>
+                              </evaluator>
+                              <evaluator type="equals.component.evaluator" negate="true">
+                                 <params>
+                                    <referrer>{referrer}</referrer>
+                                    <tasks>tasks</tasks>
+                                 </params>
+                              </evaluator>
+                           </evaluators>
+                           <render>false</render>
+                        </evaluation>
+                     </evaluations>
+                  </sub-component>
+               </sub-components>
+            </component>
+
+
+         </components>
+      </module>
+
+   </modules>
+</extension>

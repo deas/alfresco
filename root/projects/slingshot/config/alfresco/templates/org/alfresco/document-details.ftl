@@ -7,62 +7,42 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id=appType + "header" scope="global" protected=true />
-      <@region id=appType + doclibType + "title" scope="template" protected=true />
-      <@region id=appType + doclibType + "navigation" scope="template" protected=true />
+      <@region id="header" scope="global"/>
+      <@region id="title" scope="template"/>
+      <@region id="navigation" scope="template"/>
    </div>
    <div id="bd">
-      <@region id=doclibType + "actions-common" scope="template" protected=true />
-      <@region id=doclibType + "actions" scope="template" protected=true />
-      <@region id=doclibType + "document-header" scope="template" protected=true />
-
+      <@region id="actions-common" scope="template"/>
+      <@region id="actions" scope="template"/>
+      <@region id="document-header" scope="template"/>
       <div class="yui-gc">
          <div class="yui-u first">
             <#if (config.scoped['DocumentDetails']['document-details'].getChildValue('display-web-preview') == "true")>
-               <@region id=doclibType + "web-preview" scope="template" protected=true />
+               <@region id="web-preview" scope="template"/>
             </#if>
-            <#if doclibType?starts_with("dod5015")>
-               <@region id=doclibType + "events" scope="template" protected=true />
-            <#else>
-               <@region id=doclibType + "comments" scope="template" protected=true />
-            </#if>
+            <@region id="comments" scope="template"/>
          </div>
          <div class="yui-u">
-            <@region id=doclibType + "document-actions" scope="template" protected=true />
-            <@region id=doclibType + "document-tags" scope="template" protected=true />
-            <@region id=appType + doclibType + "document-links" scope="template" protected=true />
-            <div id="document-details-meta-data">
-               <@region id=doclibType + "document-metadata-header" scope="template" protected=true />
-               <@region id=doclibType + "document-metadata" scope="template" protected=true />
-               <script type="text/javascript">//<![CDATA[
-                  var metaDataHeader = YUISelector.query("#document-details-meta-data h2", null, true);
-                     metaData = YUISelector.query("#document-details-meta-data > div", null)[1];
-                  if (metaDataHeader && metaData)
-                  {
-                     metaDataHeader.parentNode.insertBefore(metaData, metaDataHeader.nextSibling);
-                     Alfresco.util.createTwister(metaDataHeader, "DocumentProperties");
-                  }
-               //]]></script>
-            </div>
-            <@region id=doclibType + "document-permissions" scope="template" protected=true />
-            <@region id=doclibType + "document-workflows" scope="template" protected=true />
-            <@region id=doclibType + "document-versions" scope="template" protected=true />
-				<@region id=doclibType + "document-publishing" scope="template" protected=true />
-            <#if doclibType?starts_with("dod5015")>
-               <@region id=doclibType + "document-references" scope="template" protected=true />
-            </#if>            
+            <@region id="document-actions" scope="template"/>
+            <@region id="document-tags" scope="template"/>
+            <@region id="document-links" scope="template"/>
+            <@region id="document-metadata" scope="template"/>
+            <@region id="document-permissions" scope="template"/>
+            <@region id="document-workflows" scope="template"/>
+            <@region id="document-versions" scope="template"/>
+            <@region id="document-publishing" scope="template"/>
          </div>
       </div>
 
-      <@region id="html-upload" scope="template" protected=true />
-      <@region id="flash-upload" scope="template" protected=true />
-      <@region id="file-upload" scope="template" protected=true />
+      <@region id="html-upload" scope="template"/>
+      <@region id="flash-upload" scope="template"/>
+      <@region id="file-upload" scope="template"/>
    </div>
 
 </@>
 
 <@templateFooter>
    <div id="alf-ft">
-      <@region id="footer" scope="global" protected=true />
+      <@region id="footer" scope="global"/>
    </div>
 </@>

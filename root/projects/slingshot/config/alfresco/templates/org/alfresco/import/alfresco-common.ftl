@@ -1,32 +1,9 @@
-<#macro uriTemplates>
-   <#assign uriConfig = config.scoped["UriTemplate"]["uri-templates"]>
-   <script type="text/javascript">//<![CDATA[
-      Alfresco.constants.URI_TEMPLATES =
-      {
-   <#list uriConfig.childrenMap["uri-template"] as c>
-         "${c.attributes["id"]}": "${c.value}"<#if c_has_next>,</#if>
-   </#list>
-      }
-   //]]></script>
-</#macro>
-
-<#macro helpPages>
-   <#assign helpConfig = config.scoped["HelpPages"]["help-pages"]>
-   <script type="text/javascript">//<![CDATA[
-      Alfresco.constants.HELP_PAGES =
-      {
-   <#list helpConfig.children as c>
-         "${c.name}": "${c.value}"<#if c_has_next>,</#if>
-   </#list>
-      }
-   //]]></script>
-</#macro>
-
-<#macro htmlEditor htmlEditor="YAHOO.widget.SimpleEditor">
-   <script type="text/javascript">//<![CDATA[
-      Alfresco.constants.HTML_EDITOR = '${htmlEditor}';
-   //]]></script>
-</#macro>
+<#--
+   Deprecated: These files are now brought in for every page from the extendable components/resources.get.html webscript.
+-->
+<#macro uriTemplates></#macro>
+<#macro helpPages></#macro>
+<#macro htmlEditor htmlEditor="YAHOO.widget.SimpleEditor"></#macro>
 
 <#function globalConfig key default>
    <#if config.global.flags??>
