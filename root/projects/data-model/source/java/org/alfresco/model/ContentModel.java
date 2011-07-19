@@ -102,9 +102,11 @@ public interface ContentModel
     
     // copy aspect constants
     static final QName ASPECT_COPIEDFROM = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "copiedfrom");
-    static final QName PROP_COPY_REFERENCE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "source");
+    static final QName ASSOC_ORIGINAL = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "original");
     
     // working copy aspect contants
+    static final QName ASPECT_CHECKED_OUT = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "checkedOut");
+    static final QName ASSOC_WORKING_COPY_LINK = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "workingcopylink");
     static final QName ASPECT_WORKING_COPY = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "workingcopy");
     static final QName PROP_WORKING_COPY_OWNER = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "workingCopyOwner");
     static final QName PROP_WORKING_COPY_MODE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "workingCopyMode");

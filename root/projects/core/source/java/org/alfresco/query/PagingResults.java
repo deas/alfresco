@@ -30,6 +30,11 @@ import org.alfresco.util.Pair;
  */
 public interface PagingResults<R>
 {
+    /**
+     * Get the page of results.
+     * 
+     * @return      the results - possibly empty but never <tt>null</tt>
+     */
     public List<R> getPage();
     
     /**

@@ -170,27 +170,6 @@ public class VtiDocumentHepler
     }
 
     /**
-     * Returns original node reference for working copy node reference
-     * 
-     * @param workingCopyNodeRef node reference to working copy ({@link NodeRef})
-     * @return NodeRef node reference to node, which is source for working copy node. Null indicates error
-     */
-    public NodeRef getOriginalNodeRef(NodeRef workingCopyNodeRef)
-    {
-        NodeRef originalNodeRef = null;
-
-        if (nodeService.hasAspect(workingCopyNodeRef, ContentModel.ASPECT_WORKING_COPY) == true)
-        {
-            if (nodeService.hasAspect(workingCopyNodeRef, ContentModel.ASPECT_COPIEDFROM) == true)
-            {
-                originalNodeRef = (NodeRef) nodeService.getProperty(workingCopyNodeRef, ContentModel.PROP_COPY_REFERENCE);
-            }
-        }
-
-        return originalNodeRef;
-    }
-
-    /**
      * Check document on checkout
      * 
      * @param documentStatus status of document ({@link DocumentStatus})

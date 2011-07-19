@@ -1085,13 +1085,14 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
             Map<QName, Serializable> originalProps = null;
             Map<QName, Serializable> workingCopyProps = null;
 
-            if (getNodeService().hasAspect(fileInfo.getNodeRef(), ContentModel.ASPECT_WORKING_COPY))
+            NodeRef workingCopyNodeRef = getCheckOutCheckInService().getCheckedOut(fileInfo.getNodeRef());
+            if (workingCopyNodeRef != null)
             {
                 // we have working copy
                 workingCopyFileInfo = fileInfo;
                 workingCopyProps = workingCopyFileInfo.getProperties();
 
-                originalFileInfo = getFileFolderService().getFileInfo(getDocumentHelper().getOriginalNodeRef(workingCopyFileInfo.getNodeRef()));
+                originalFileInfo = getFileFolderService().getFileInfo(workingCopyNodeRef);
 
                 isLongCheckedout = true;
             }
@@ -1107,7 +1108,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 if (isLongCheckedout)
                 {
                     // retrieves file info and props for working copy
-                    NodeRef workingCopyNodeRef = getCheckOutCheckInService().getWorkingCopy(originalFileInfo.getNodeRef());
+                    workingCopyNodeRef = getCheckOutCheckInService().getWorkingCopy(originalFileInfo.getNodeRef());
                     workingCopyFileInfo = getFileFolderService().getFileInfo(workingCopyNodeRef);
                     workingCopyProps = workingCopyFileInfo.getProperties();
                 }

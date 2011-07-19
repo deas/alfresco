@@ -95,6 +95,28 @@ public class CannedQueryParameters
     }
 
     /**
+     * Construct all the parameters for executing a named query, using values from the
+     * {@link PagingRequest}.
+     * 
+     * @param parameterBean         the values that the query will be based on or <tt>null</tt>
+     *                              if not relevant to the query
+     * @param sortDetails           the type of sorting to be applied or <tt>null</tt> for none
+     * @param pageRequest           the type of paging to be applied or <tt>null</tt> for none
+     */
+    public CannedQueryParameters(
+            Object parameterBean,
+            CannedQuerySortDetails sortDetails,
+            PagingRequest pagingRequest)
+    {
+        this (
+                parameterBean,
+                pagingRequest == null ? null : new CannedQueryPageDetails(pagingRequest),
+                sortDetails,
+                pagingRequest == null ? 0 : pagingRequest.getRequestTotalCountMax(),
+                pagingRequest == null ? null : pagingRequest.getQueryExecutionId());
+    }
+
+    /**
      * Construct all the parameters for executing a named query.  Note that the allowable values
      * for the arguments depend on the specific query being executed.
      * 
