@@ -747,6 +747,19 @@
         <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}" />
     </target>
     
+    <target name="osx-upgrade-installer">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-upgrade-osx.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project-patch.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.upgrade.osx}"'/>
+        </exec>
+        <tar destfile="${dir.continuous.dist}/${file.name.dist.upgrade.osx}.tar.gz"
+             longfile="gnu"
+             compression="gzip">
+            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.upgrade.osx}"
+                        prefix="${file.name.dist.upgrade.osx}" mode="755"/>
+        </tar>
+        <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.upgrade.osx}" />
+    </target>
+    
     <target name="linux-64-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
@@ -815,6 +828,7 @@
         <parallel threadCount="2">
             <antcall target="windows-upgrade-installer"/>
             <antcall target="linux-upgrade-installer"/>
+            <antcall target="osx-upgrade-installer"/>
         </parallel>
    </target>
 

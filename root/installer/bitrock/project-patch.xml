@@ -101,7 +101,7 @@
 			<componentSelection select="alfrescorm" />
 		    </actionList>
 		    <ruleList>
-			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-dod" />
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-${alfresco_edition}-dod" />
 		    </ruleList>
 		</actionGroup>
 		<actionGroup>
@@ -109,7 +109,7 @@
 			<componentSelection select="alfrescoquickr" />
 		    </actionList>
 		    <ruleList>
-			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-quickr" />
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-${alfresco_edition}-quickr" />
 		    </ruleList>
 		</actionGroup>
 		<actionGroup>
@@ -117,7 +117,7 @@
 			<componentSelection select="alfrescowcmqs" />
 		    </actionList>
 		    <ruleList>
-			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-wcmqs" />
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-${alfresco_edition}-wcmqs" />
 		    </ruleList>
 		</actionGroup>
 		<actionGroup>
@@ -125,7 +125,7 @@
 			<componentSelection select="alfrescosharepoint" />
 		    </actionList>
 		    <ruleList>
-			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-community-spp" />
+			<compareText text="${previous_amps} ${previous_amps_share}" logic="contains" value="alfresco-${alfresco_edition}-spp" />
 		    </ruleList>
 		</actionGroup>
 		<logMessage text="component(alfrescosharepoint).selected=${component(alfrescosharepoint).selected}"/>
@@ -143,9 +143,6 @@
         <include file="alfresco-functions.xml" />
 
 	<include file="alfresco-get-installdir.xml"/>
-	<include file="java-properties.xml" />
-	<include file="postgres-properties.xml" />
-	<include file="tomcat-properties.xml" />
 	
 	<include file="alfresco-update-backup.xml" />
 
@@ -156,17 +153,7 @@
         <include file="alfresco-sharepoint.xml" />
         <include file="alfresco-records-management.xml" />
 	<include file="alfresco-wcmqs.xml" />
-	<include file="alfrescowcm.xml" />
         <include file="alfresco-quickr.xml" />
-	<!--<include file="base-unix-service.xml" />
-
-	<include file="openoffice.xml"/>
-	<include file="imagemagick.xml"/>
-    	<include file="swftools.xml"/>
-        <include file="alfresco-customstack-postgres-settings.xml" />
-        <include file="alfresco-customstack-shortcuts.xml" />
-
-    	<include file="tomcat-service.xml" /> -->
 
     </componentList>
 

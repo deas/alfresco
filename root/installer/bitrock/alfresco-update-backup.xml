@@ -13,6 +13,7 @@
 	<setInstallerVariable name="component(alfresco).parameter(alfresco_data_directory).ask" value="0" />
 	<setInstallerVariable name="component(alfresco).parameter(alfresco_admin_password).ask" value="0" />
 	<setInstallerVariable name="component(alfrescoquickr).parameter(alfrescoquickr_configuration).ask" value="0" />
+	<setInstallerVariable name="component(alfrescosharepoint).parameter(alfresco_sharepoint_port).ask" value="0" />
 	<setInstallerVariable name="ctlscript_unix" value="alfresco.sh" />
 	
     </initializationActionList>
@@ -33,9 +34,10 @@
 	<createDirectory path="${alfrescoupdate_backup_directory}" />
 	<createDirectory path="${alfrescoupdate_backup_directory}/webapps" />
 	<setInstallerVariable name="tomcat_dirname" value="tomcat" />
-	<setInstallerVariable name="tomcat_server_directory" value="${application_server_directory}" />
 
 	<runProgram>
+	    <abortOnError>0</abortOnError>
+	    <showMessageOnError>0</showMessageOnError>
 	    <progressText>Stopping Tomcat...</progressText>
 	    <program>${installdir}/alfresco.sh</program>
 	    <programArguments>stop tomcat</programArguments>
@@ -44,6 +46,8 @@
 	    </ruleList>
 	</runProgram>
 	<runProgram>
+	    <abortOnError>0</abortOnError>
+	    <showMessageOnError>0</showMessageOnError>
 	    <progressText>Stopping Tomcat...</progressText>
 	    <program>${application_server_directory.dos}\scripts\servicerun.bat</program>
 	    <programArguments>STOP</programArguments>
@@ -60,15 +64,15 @@
 	<deleteFile path="${application_server_directory}/webapps/*.war" />
 
 	<!-- Tomcat files -->
-	<copyFile origin="${application_server_directory}/lib" destination="${alfrescoupdate_backup_directory}" />
-	<copyFile origin="${application_server_directory}/shared" destination="${alfrescoupdate_backup_directory}" />
-	<copyFile origin="${application_server_directory}/endorsed" destination="${alfrescoupdate_backup_directory}" />
-	<copyFile origin="${application_server_directory}/conf" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile abortOnError="0" showMessageOnError="0" origin="${application_server_directory}/lib" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile abortOnError="0" showMessageOnError="0" origin="${application_server_directory}/shared" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile abortOnError="0" showMessageOnError="0" origin="${application_server_directory}/endorsed" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile abortOnError="0" showMessageOnError="0" origin="${application_server_directory}/conf" destination="${alfrescoupdate_backup_directory}" />
 
 
 	<!-- AMPs -->
-	<copyFile origin="${alfresco_amps_directory}" destination="${alfrescoupdate_backup_directory}" />
-	<copyFile origin="${alfresco_amps_share_directory}" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile abortOnError="0" showMessageOnError="0" origin="${alfresco_amps_directory}" destination="${alfrescoupdate_backup_directory}" />
+	<copyFile abortOnError="0" showMessageOnError="0" origin="${alfresco_amps_share_directory}" destination="${alfrescoupdate_backup_directory}" />
 
 	<!-- Remove previous AMPs -->
 	<actionGroup>

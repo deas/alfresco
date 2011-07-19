@@ -376,6 +376,7 @@
 
         <deleteFile path="${installdir}/tomcat" />
         <deleteFile path="${installdir}/postgresql" />
+        <deleteFile path="${installdir}/properties.ini"/>
         <deleteFile path="${installdir}" >
             <ruleList>
                 <fileTest path="${installdir}" condition="is_empty"/>

@@ -23,50 +23,46 @@
             <width>32</width>
             <validationActionList>
                 <throwError>
-                    <text>That folder does not seem to contain a valid installation of Alfresco. The file properties.ini is missing or it is not a valid installation.</text>
+                    <text>That folder does not seem to contain a valid installation of Alfresco 3.4 version or later.</text>
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
-                        <fileTest path="${installdir}/properties.ini" condition="not_exists"/>
+                        <fileTest path="${installdir}/tomcat" condition="not_exists"/>
+                        <fileTest path="${installdir}/alfresco.sh" condition="not_exists"/>
                     </ruleList>
                 </throwError>
-                <iniFileGet>
-		    <file>${installdir}/properties.ini</file>
-		    <section>General</section>
-		    <key>base_stack_name</key>
-		    <variable>base_stack_name</variable>
-		</iniFileGet>
-		<iniFileGet>
-		    <file>${installdir}/properties.ini</file>
-		    <section>General</section>
-		    <key>base_stack_version</key>
-		    <variable>base_stack_version</variable>
-		</iniFileGet>
-                <throwError>
-                    <text>That folder does not seem to contain a valid installation of Alfresco. This upgrade requires an Alfresco 3.4 version or later.</text>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-			<compareVersions version1="${base_stack_version}" logic="less" version2="3.4" />
-                    </ruleList>
-                </throwError>
-
-            </validationActionList>
+	    </validationActionList>
         </directoryParameter>
     </parameterList>
     <readyToInstallActionList>
         <actionGroup>
             <actionList>
-                <iniFileGet>
-                    <file>${installdir}/properties.ini</file>
-                    <section>General</section>
-                    <key>base_stack_name</key>
-                    <variable>base_stack_name</variable>
-                </iniFileGet>
-                <iniFileGet>
-                    <file>${installdir}/properties.ini</file>
-                    <section>General</section>
-                    <key>base_stack_version</key>
-                    <variable>base_stack_version</variable>
-                </iniFileGet>
+		<setInstallerVariable name="java_home_directory" value="${installdir}/java" />
+		<actionGroup>
+		    <actionList>
+			<readFile path="${installdir}/scripts/setenv.sh" name="alfresco_setenv" />
+			<setInstallerVariableFromRegEx> 
+			    <name>java_home_directory</name>
+			    <text>alfresco_setenv</text>
+			    <substitution>\2</substitution>
+			    <pattern>(^|.*\n)\s*JAVA_HOME\s*=\s*([^\n]*).*</pattern>
+			</setInstallerVariableFromRegEx>
+		    </actionList>
+		    <ruleList>
+			<platformTest type="osx" />
+		    </ruleList>
+		</actionGroup>
+		<setInstallerVariable name="application_server_directory" value="${installdir}/tomcat" />
+		<setInstallerVariable name="tomcat_server_directory" value="${installdir}/tomcat" />
+		<setInstallerVariable name="application_server_conf_directory" value="${installdir}/tomcat/conf" />
+		<xmlFileGet>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <file>${application_server_conf_directory}/server.xml</file>
+		    <element>/Server/Service/Connector[not(@scheme) and @protocol='HTTP/1.1']</element>
+		    <attribute>port</attribute>
+		    <variable>application_server_port</variable>
+		</xmlFileGet>
+		<setInstallerVariable name="tomcat_server_port" value="${application_server_port}" />
             </actionList>
         </actionGroup>
     </readyToInstallActionList>
