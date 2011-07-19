@@ -1,20 +1,29 @@
 package org.alfresco.solr.client;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.AlgorithmParameters;
 import java.util.Map;
 
+import org.alfresco.encryption.EncryptionUtils;
+import org.alfresco.encryption.Encryptor;
+import org.alfresco.encryption.KeyProvider;
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.util.Pair;
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,21 +36,29 @@ import org.apache.commons.logging.LogFactory;
 public class AlfrescoHttpClient
 {
     private static final Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
-    
+
     protected String url;
     protected String username;
     protected String password;
 
+    protected boolean secureComms;
+
     // Remote Server access
     private HttpClient httpClient = null;
+
+    private Encryptor encryptor;
+    private EncryptionUtils encryptionUtils;
     
-    public AlfrescoHttpClient(String alfrescoURL, String username, String password)
+    public AlfrescoHttpClient(EncryptionService encryptionService, boolean secureComms, String alfrescoURL, String username, String password)
     {
+    	this.secureComms = secureComms;
         this.url = alfrescoURL;
         this.username = username;
         this.password = password;
+        this.encryptionUtils = encryptionService.getEncryptionUtils();
+        this.encryptor = encryptionService.getEncryptor();
     }
-
+    
     protected void setupHttpClient()
     {
         httpClient = new HttpClient();
@@ -54,15 +71,15 @@ public class AlfrescoHttpClient
     /**
      * Send Request to Test Web Script Server (as admin)
      */
-    protected Response sendRequest(Request req) throws IOException
+    protected Response sendRequest(Request req) throws AuthenticationException, IOException
     {
         return sendRequest(req, null);
     }
-    
+
     /**
      * Send Request
      */
-    protected Response sendRequest(Request req, String asUser) throws IOException
+    protected Response sendRequest(Request req, String asUser) throws AuthenticationException, IOException
     {
         if (logger.isDebugEnabled())
         {
@@ -71,26 +88,23 @@ public class AlfrescoHttpClient
         }
 
         Response res = sendRemoteRequest(req);
-        
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("");
-            logger.debug("* Response: " + res.getStatus() + " " + req.getMethod() + " " + req.getFullUri() + "\n" + res.getContentAsString());
-        }
-        
-//        if (expectedStatus > 0 && expectedStatus != res.getStatus())
+
+//        if (logger.isDebugEnabled())
 //        {
-//            fail("Status code " + res.getStatus() + " returned, but expected " + expectedStatus + " for " + req.getFullUri() + " (" + req.getMethod() + ")\n" + res.getContentAsString());
+//            logger.debug("");
+//            logger.debug("* Response: " + res.getStatus() + " " + req.getMethod() + " " + req.getFullUri() + "\n" + res.getContentAsString());
 //        }
-        
+
         return res;
     }
     
     /**
      * Send Remote Request to stand-alone Web Script Server
      */
-    protected Response sendRemoteRequest(Request req) throws IOException
+    protected Response sendRemoteRequest(Request req) throws AuthenticationException, IOException
     {
+    	byte[] message = null;
+    	RequestEntity requestEntity = null;
         String uri = req.getFullUri();
         if (!uri.startsWith("http"))
         {
@@ -108,7 +122,23 @@ public class AlfrescoHttpClient
         else if(method.equalsIgnoreCase("POST"))
         {
             PostMethod post = new PostMethod(req.getFullUri());
-            post.setRequestEntity(new ByteArrayRequestEntity(req.getBody(), req.getType()));
+
+            message = req.getBody();
+            if(secureComms)
+            {
+    	        // encrypt body
+    	        Pair<byte[], AlgorithmParameters> encrypted = encryptor.encrypt(KeyProvider.ALIAS_SOLR, null, message);
+    	        encryptionUtils.setRequestAlgorithmParameters(post, encrypted.getSecond());
+
+    	        requestEntity = new ByteArrayRequestEntity(encrypted.getFirst(), "application/octet-stream");
+            }
+            else
+            {
+            	requestEntity = new ByteArrayRequestEntity(req.getBody(), req.getType());
+            }
+
+	        post.setRequestEntity(requestEntity);
+
             httpMethod = post;
         }
         else if(method.equalsIgnoreCase("HEAD"))
@@ -120,6 +150,12 @@ public class AlfrescoHttpClient
         {
             throw new AlfrescoRuntimeException("Http Method " + method + " not supported");
         }
+
+        if(secureComms)
+        {
+        	encryptionUtils.setRequestAuthentication(httpMethod, message);
+        }
+
         if (req.getHeaders() != null)
         {
             for (Map.Entry<String, String> header : req.getHeaders().entrySet())
@@ -132,7 +168,22 @@ public class AlfrescoHttpClient
         long startTime = System.currentTimeMillis();
         httpClient.executeMethod(httpMethod);
         long endTime = System.currentTimeMillis();
-        return new HttpMethodResponse(httpMethod, Long.valueOf(endTime - startTime));
+
+        if(secureComms)
+        {
+			// check that the request returned with an ok status
+			if(httpMethod.getStatusCode() == HttpStatus.SC_UNAUTHORIZED)
+			{
+				throw new AuthenticationException(httpMethod);
+			}
+			//"Request " + httpMethod.getPath() + " responded with an error code " + httpMethod.getStatusCode()
+	
+	        return new SecureHttpMethodResponse(httpMethod, Long.valueOf(endTime - startTime), httpMethod.getHostConfiguration(), encryptionUtils);
+        }
+        else
+        {
+        	return new HttpMethodResponse(httpMethod, Long.valueOf(endTime - startTime));
+        }
     }
     
     /**
@@ -140,79 +191,43 @@ public class AlfrescoHttpClient
      */
     public interface Response
     {
-        public byte[] getContentAsByteArray();
-        
         public InputStream getContentAsStream() throws IOException;
-        
-        public String getContentAsString()
-            throws UnsupportedEncodingException;
         
         public String getHeader(String name);
         
         public String getContentType();
         
-        public int getContentLength();
-        
         public int getStatus();
         
         public Long getRequestDuration();
+        
+        public void release();
     }
-    
+
     public static class HttpMethodResponse implements Response
     {
-        private HttpMethod method;
-        private Long duration;
+    	protected HttpMethod method;
+    	protected Long duration;
 
-        public HttpMethodResponse(HttpMethod method, Long duration)
+        public HttpMethodResponse(HttpMethod method, Long duration) throws IOException
         {
             this.method = method;
             this.duration = duration;
         }
+        
+        public void release()
+        {
+        	method.releaseConnection();
+        }
 
         public InputStream getContentAsStream() throws IOException
         {
-            return method.getResponseBodyAsStream();            
-        }
-
-        public byte[] getContentAsByteArray()
-        {
-            try
-            {
-                return method.getResponseBody();
-            }
-            catch (IOException e)
-            {
-                return null;
-            }
-        }
-
-        public String getContentAsString() throws UnsupportedEncodingException
-        {
-            try
-            {
-                return method.getResponseBodyAsString();
-            }
-            catch (IOException e)
-            {
-                return null;
-            }
+        	return method.getResponseBodyAsStream();
         }
 
         public String getContentType()
         {
             return getHeader("Content-Type");
-        }
-
-        public int getContentLength()
-        {
-            try
-            {
-                return method.getResponseBody().length;
-            }
-            catch (IOException e)
-            {
-                return 0;
-            }
         }
 
         public String getHeader(String name)
@@ -230,7 +245,51 @@ public class AlfrescoHttpClient
         {
             return duration;
         }
+    }
+    
+    public static class SecureHttpMethodResponse extends HttpMethodResponse
+    {
+    	protected HostConfiguration hostConfig;
+        protected EncryptionUtils encryptionUtils;
+		// Need to get as a byte array because we need to read the request twice, once for authentication
+		// and again by the web service.
+        protected byte[] decryptedBody;
 
+        public SecureHttpMethodResponse(HttpMethod method, Long duration, HostConfiguration hostConfig, 
+        		EncryptionUtils encryptionUtils) throws AuthenticationException, IOException
+        {
+        	super(method, duration);
+        	this.hostConfig = hostConfig;
+            this.encryptionUtils = encryptionUtils;
+            
+//    		if(method.getStatusCode() == HttpStatus.SC_OK)
+//    		{
+    			this.decryptedBody = encryptionUtils.decryptResponseBody(method);
+//    		}
+
+    		// authenticate the response
+    		if(!authenticate())
+    		{
+    			throw new AuthenticationException(method);
+    		}
+        }
+        
+        protected boolean authenticate() throws IOException
+        {
+        	return encryptionUtils.authenticateResponse(method, hostConfig.getHost(), decryptedBody);
+        }
+        
+        public InputStream getContentAsStream() throws IOException
+        {
+        	if(decryptedBody != null)
+        	{
+        		return new ByteArrayInputStream(decryptedBody);
+        	}
+        	else
+        	{
+        		return null;
+        	}
+        }
     }
     
     public static class Request

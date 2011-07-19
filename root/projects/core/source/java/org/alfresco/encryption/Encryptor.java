@@ -1,5 +1,6 @@
-package org.alfresco.repo.security.encryption;
+package org.alfresco.encryption;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.security.AlgorithmParameters;
 
@@ -43,6 +44,15 @@ public interface Encryptor
      * @return                      the unencrypted data
      */
     byte[] decrypt(String keyAlias, AlgorithmParameters params, byte[] input);
+    
+    /**
+     * Decrypt an input stream
+     * 
+     * @param keyAlias              the encryption key alias
+     * @param in	                the data to decrypt
+     * @return                      the unencrypted data
+     */
+    InputStream decrypt(String keyAlias, AlgorithmParameters params, InputStream in);
     
     /**
      * Encrypt an object
@@ -90,4 +100,13 @@ public interface Encryptor
      *                                  <tt>SealedObject</tt>
      */
     Serializable unsealObject(String keyAlias, Serializable input);
+
+    /**
+     * Decodes encoded cipher algorithm parameters
+     * 
+     * @param encoded the encoded cipher algorithm parameters
+     * @return the decoded cipher algorithmParameters
+     */
+    AlgorithmParameters decodeAlgorithmParameters(byte[] encoded);
+
 }

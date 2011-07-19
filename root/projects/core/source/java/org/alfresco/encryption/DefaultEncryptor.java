@@ -1,4 +1,4 @@
-package org.alfresco.repo.security.encryption;
+package org.alfresco.encryption;
 
 import java.security.AlgorithmParameters;
 import java.security.Key;
@@ -13,9 +13,6 @@ import org.alfresco.util.PropertyCheck;
  */
 public class DefaultEncryptor extends AbstractEncryptor
 {
-    private String cipherAlgorithm;
-    private String cipherProvider;
-    
     private final ThreadLocal<Cipher> threadCipher;
 
     /**
@@ -35,16 +32,6 @@ public class DefaultEncryptor extends AbstractEncryptor
         setKeyProvider(keyProvider);
         setCipherAlgorithm(cipherAlgorithm);
         setCipherProvider(cipherProvider);
-    }
-
-    public void setCipherAlgorithm(String cipherAlgorithm)
-    {
-        this.cipherAlgorithm = cipherAlgorithm;
-    }
-
-    public void setCipherProvider(String cipherProvider)
-    {
-        this.cipherProvider = cipherProvider;
     }
     
     public void init()

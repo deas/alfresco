@@ -19,9 +19,11 @@
 package org.alfresco.solr.client;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.AlgorithmParameters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,6 +36,10 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.alfresco.encryption.DefaultEncryptionUtils;
+import org.alfresco.encryption.KeyProvider;
+import org.alfresco.encryption.KeyStoreLoader;
+import org.alfresco.encryption.MACUtils.MACInput;
 import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
@@ -42,12 +48,19 @@ import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.util.Pair;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 
 /**
  * Tests {@link SOLRAPIClient}
+ * 
+ * Note: need to make sure that source/solr/instance is on the run classpath.
  * 
  * @since 4.0
  */
@@ -57,8 +70,12 @@ public class SOLRAPIClientTest extends TestCase
     
     private static final String TEST_MODEL = "org/alfresco/repo/dictionary/dictionarydaotest_model.xml";
 
+    private EncryptionService invalidKeyEncryptionService;
+    private TamperWithEncryptionService tamperWithEncryptionService;
     private SOLRAPIClient client;
-    
+    private SOLRAPIClient invalidKeyClient;
+    private SOLRAPIClient tamperWithClient;
+
     private M2Model testModel;
 
     private void loadModel(Map<String, M2Model> modelMap, HashSet<String> loadedModels, M2Model model)
@@ -136,8 +153,38 @@ public class SOLRAPIClientTest extends TestCase
         AlfrescoSolrDataModel model = AlfrescoSolrDataModel.getInstance("test");
         // dummy implementation - don't know how to hook into SOLR-side namespace stuff
         NamespaceDAO namespaceDAO = new TestNamespaceDAO();
+
+        // Load the key store from the classpath
+        KeyStoreLoader keyStoreLoader = new KeyStoreLoader()
+        {
+        	public InputStream getKeyStore(String location)
+        	throws FileNotFoundException
+        	{
+        		return getClass().getClassLoader().getResourceAsStream(location);
+        	}
+        };
+
+        // note small message timeout - 2s
+        invalidKeyEncryptionService = new EncryptionService(keyStoreLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
+        		"DESede/CBC/PKCS5Padding",
+        		"JCEKS", null, "mp6yc0UD9e", "TxHTt0nrwQ", 2*1000,
+        		"HmacSHA1");
+        invalidKeyClient = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
+        		invalidKeyEncryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
+
+        tamperWithEncryptionService = new TamperWithEncryptionService(keyStoreLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
+        		"DESede/CBC/PKCS5Padding",
+        		"JCEKS", null, "mp6yc0UD9e", "TxHTt0nrwQ", 2*1000,
+        		"HmacSHA1");
+        tamperWithClient = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
+        		tamperWithEncryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
+        
+        EncryptionService encryptionService = new EncryptionService(keyStoreLoader, "workspace-SpacesStore/conf/.keystore", 
+        		"127.0.0.1", "DESede/CBC/PKCS5Padding",
+        		"JCEKS", null, "mp6yc0UD9e", "TxHTtOnrwQ", 30*1000,
+        		"HmacSHA1");
         client = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
-                "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
+        		encryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
 
         InputStream modelStream = getClass().getClassLoader().getResourceAsStream("org/alfresco/solr/client/testModel.xml");
         testModel = M2Model.createModel(modelStream);
@@ -271,7 +318,7 @@ public class SOLRAPIClientTest extends TestCase
         }
     }
     
-    public void testMetaData() throws IOException, JSONException
+    public void testMetaData() throws AuthenticationException, IOException, JSONException
     {
         NodeMetaDataParameters metaParams = new NodeMetaDataParameters();
         List<Long> nodeIds = new ArrayList<Long>(1);
@@ -354,7 +401,7 @@ public class SOLRAPIClientTest extends TestCase
         }
     }
 
-    public void testGetModel() throws IOException, JSONException
+    public void testGetModel() throws AuthenticationException, IOException, JSONException
     {
     	AlfrescoModel alfModel = client.getModel(QName.createQName("http://www.alfresco.org/model/content/1.0", "contentmodel"));
     	M2Model model = alfModel.getModel();
@@ -363,10 +410,52 @@ public class SOLRAPIClientTest extends TestCase
     	assertNotNull(alfModel.getChecksum());
     }
     
-    public void testGetModelDiffs() throws IOException, JSONException
+    public void testGetModelDiffs() throws AuthenticationException, IOException, JSONException
     {
     	List<AlfrescoModelDiff> diffs = client.getModelsDiff(Collections.EMPTY_LIST);
     	assertTrue(diffs.size() > 0);
+    }
+
+    public void testMAC() throws IOException, JSONException
+    {
+    	// dodyClient has a secret key that is not the same as the repository's. This
+    	// should fail with a 401
+    	try
+    	{
+    		List<Transaction> transactions = invalidKeyClient.getTransactions(1298288417234l, null, 5);
+    	}
+    	catch(AuthenticationException e)
+    	{
+    		assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
+    	}
+
+    	try
+    	{
+        	tamperWithEncryptionService.setOverrideTimestamp(true);
+        	List<Transaction> transactions = tamperWithClient.getTransactions(1298288417234l, null, 5);
+    	}
+    	catch(AuthenticationException e)
+    	{
+    		assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
+    	}
+    	finally
+    	{
+    		tamperWithEncryptionService.setOverrideTimestamp(false);    		
+    	}
+    	
+    	try
+    	{
+    		tamperWithEncryptionService.setOverrideMAC(true);
+    		List<Transaction> transactions = tamperWithClient.getTransactions(1298288417234l, null, 5);
+    	}
+    	catch(AuthenticationException e)
+    	{
+    		assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
+    	}
+    	finally
+    	{
+    		tamperWithEncryptionService.setOverrideMAC(false);    		
+    	}
     }
     
     private void outputTextContent(SOLRAPIClient.GetTextContentResponse response) throws IOException
@@ -384,8 +473,8 @@ public class SOLRAPIClientTest extends TestCase
             }
         }
     }
-
-/*    public void testGetTextContent()
+/*
+    public void testGetTextContent()
     {
         try
         {
@@ -429,8 +518,8 @@ public class SOLRAPIClientTest extends TestCase
         {
             e.printStackTrace();
         }
-    }*/
-    
+    }
+*/
     private class TestNamespaceDAO implements NamespaceDAO
     {
         private Map<String, String> prefixMappings = new HashMap<String, String>(10);
@@ -519,4 +608,94 @@ public class SOLRAPIClientTest extends TestCase
         {
         }
     };
+
+    /**
+     * Overrides request encryption to create dodgy MAC and timestamp on requests
+     *
+     */
+    private static class TestEncryptionUtils extends DefaultEncryptionUtils
+    {
+    	private boolean overrideMAC = false;
+    	private boolean overrideTimestamp = false;
+
+    	public void setOverrideMAC(boolean overrideMAC)
+		{
+			this.overrideMAC = overrideMAC;
+		}
+
+		public void setOverrideTimestamp(boolean overrideTimestamp)
+		{
+			this.overrideTimestamp = overrideTimestamp;
+		}
+
+		@Override
+        public void setRequestAuthentication(HttpMethod method, byte[] message) throws IOException
+        {
+        	if(method instanceof PostMethod)
+        	{
+    	        // encrypt body
+    	        Pair<byte[], AlgorithmParameters> encrypted = encryptor.encrypt(KeyProvider.ALIAS_SOLR, null, message);
+    	        setRequestAlgorithmParameters(method, encrypted.getSecond());
+
+    	        ((PostMethod)method).setRequestEntity(new ByteArrayRequestEntity(encrypted.getFirst(), "application/octet-stream"));
+        	}
+
+    	    long requestTimestamp = System.currentTimeMillis();
+    	
+    	    // add MAC header
+    	    byte[] mac = macUtils.generateMAC(KeyProvider.ALIAS_SOLR,
+    	    		new MACInput(message, requestTimestamp, getLocalIPAddress()));
+    	
+    		if(logger.isDebugEnabled())
+    		{
+    			logger.debug("Setting MAC " + mac + " on HTTP request " + method.getPath());
+    			logger.debug("Setting timestamp " + requestTimestamp + " on HTTP request " + method.getPath());
+    		}
+    	    
+    		if(overrideMAC)
+    		{
+    			mac[0] += (byte)1;
+    		}
+    	    setRequestMac(method, mac);
+
+    	    if(overrideTimestamp)
+    	    {
+    	    	requestTimestamp += 60000;
+    	    }
+    	    // prevent replays
+    	    setRequestTimestamp(method, requestTimestamp);
+        }    	
+    }
+    
+    private static class TamperWithEncryptionService extends EncryptionService
+    {
+    	TamperWithEncryptionService(KeyStoreLoader keyStoreLoader, String keyStoreLocation, String alfrescoHost,
+    			String cipherAlgorithm, String keyStoreType, String keyStoreProvider, String keyStorePassword, String solrKeyPassword,
+    			long messageTimeout, String macAlgorithm)
+    			{
+    		super(keyStoreLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm, keyStoreType, keyStoreProvider, keyStorePassword,
+    				solrKeyPassword, messageTimeout, macAlgorithm);
+    			}
+
+    	@Override
+    	protected void setupEncryptionUtils()
+    	{
+    		encryptionUtils = new TestEncryptionUtils();
+    		TestEncryptionUtils testEncryptionUtils = (TestEncryptionUtils)encryptionUtils;
+    		testEncryptionUtils.setEncryptor(getEncryptor());
+    		testEncryptionUtils.setMacUtils(getMacUtils());
+    		testEncryptionUtils.setMessageTimeout(messageTimeout);
+    		testEncryptionUtils.setRemoteIP(alfrescoHost);
+    	}
+    	
+    	public void setOverrideTimestamp(boolean overrideTimestamp)
+		{
+    		((TestEncryptionUtils)encryptionUtils).setOverrideTimestamp(overrideTimestamp);
+		}
+
+    	public void setOverrideMAC(boolean overrideMAC)
+		{
+    		((TestEncryptionUtils)encryptionUtils).setOverrideMAC(overrideMAC);
+		}
+    }
 }

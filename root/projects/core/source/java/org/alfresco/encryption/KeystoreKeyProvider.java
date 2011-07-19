@@ -1,7 +1,5 @@
-package org.alfresco.repo.security.encryption;
+package org.alfresco.encryption;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Key;
@@ -16,7 +14,6 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.util.PropertyCheck;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.ResourceUtils;
 
 /**
  * 
@@ -39,6 +36,8 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     private String type;
     private Map<String, Key> keys;
     
+    private KeyStoreLoader keyStoreLoader;
+
     private final ReadLock readLock;
     private final WriteLock writeLock;
     
@@ -56,17 +55,23 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     /**
      * Convenience constructor for tests.  Note that {@link #init()} is also called.
      */
-    /* package */ KeystoreKeyProvider(String location, String provider, String type, Map<String, String> passwords)
+    /* package */ KeystoreKeyProvider(String location, KeyStoreLoader keyStoreLoader, String provider, String type, Map<String, String> passwords)
     {
         this();
         setLocation(location);
         setProvider(provider);
         setType(type);
         setPasswords(passwords);
+        setKeyStoreLoader(keyStoreLoader);
         init();
     }
 
-    public void setLocation(String location)
+    public void setKeyStoreLoader(KeyStoreLoader keyStoreLoader)
+	{
+		this.keyStoreLoader = keyStoreLoader;
+	}
+
+	public void setLocation(String location)
     {
         this.location = location;
     }
@@ -149,12 +154,11 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
                 ks = KeyStore.getInstance(type, provider);
             }
             // Load it up
-            File ksFile = ResourceUtils.getFile(location);
-            if (!ksFile.exists())
+            is = keyStoreLoader.getKeyStore(location);
+            if(is == null)
             {
-                throw new IOException("Unable to find keystore file: " + ksFile);
+                throw new IOException("Unable to find keystore file: " + location);
             }
-            is = new FileInputStream(ksFile);
             ks.load(is, pwdKeyStore == null ? null : pwdKeyStore.toCharArray());
             // Loaded
             if (logger.isDebugEnabled())

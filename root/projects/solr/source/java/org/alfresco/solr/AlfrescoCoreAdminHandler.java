@@ -18,11 +18,7 @@
  */
 package org.alfresco.solr;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.Writer;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,19 +26,13 @@ import java.util.List;
 import java.util.Properties;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.repo.search.MLAnalysisMode;
-import org.alfresco.repo.search.impl.lucene.analysis.MLTokenDuplicator;
-import org.alfresco.repo.search.impl.lucene.analysis.VerbatimAnalyser;
+import org.alfresco.solr.client.AuthenticationException;
+import org.alfresco.solr.client.Node;
 import org.alfresco.solr.tracker.CoreTracker;
 import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.util.CachingDateFormat;
-import org.apache.lucene.analysis.Token;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.solr.common.SolrException;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.SolrInputField;
 import org.apache.solr.common.params.CoreAdminParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
@@ -51,11 +41,6 @@ import org.apache.solr.core.CoreContainer;
 import org.apache.solr.handler.admin.CoreAdminHandler;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrQueryResponse;
-import org.apache.solr.schema.BinaryField;
-import org.apache.solr.schema.CopyField;
-import org.apache.solr.schema.DateField;
-import org.apache.solr.schema.IndexSchema;
-import org.apache.solr.schema.SchemaField;
 import org.json.JSONException;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
@@ -64,7 +49,6 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author Andy
@@ -431,7 +415,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private NamedList<Object> buildAclTxReport(CoreTracker tracker, Long acltxid) throws IOException, JSONException
+    private NamedList<Object> buildAclTxReport(CoreTracker tracker, Long acltxid) throws AuthenticationException, IOException, JSONException
     {
         NamedList<Object> nr = new SimpleOrderedMap<Object>();
         nr.add("TXID", acltxid);
@@ -462,21 +446,43 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
       
         return nr;
     }
-    
-    private NamedList<Object> buildTxReport(CoreTracker tracker, Long txid) throws IOException, JSONException
+
+    private NamedList<Object> buildTxReport(CoreTracker tracker, Long txid) throws AuthenticationException, IOException, JSONException
     {
         NamedList<Object> nr = new SimpleOrderedMap<Object>();
         nr.add("TXID", txid);
         nr.add("transaction", buildTrackerReport(tracker, txid, txid, 0l, 0l, null, null));
         NamedList<Object> nodes = new SimpleOrderedMap<Object>();
         // add node reports ....
-        List<Long> dbNodeIds = tracker.getNodesForDbTransaction(txid);
-        for(Long dbid : dbNodeIds)
+        List<Node> dbNodes = tracker.getFullNodesForDbTransaction(txid);
+        for(Node node : dbNodes)
         {
-            nodes.add("DBID "+dbid, buildNodeReport(tracker, dbid));
+            nodes.add("DBID "+node.getId(), buildNodeReport(tracker, node));
         }
-        nr.add("txDbNodeCount", dbNodeIds.size());
+
+        nr.add("txDbNodeCount", dbNodes.size());
         nr.add("nodes", nodes);
+        return nr;
+    }
+    
+    private NamedList<Object> buildNodeReport(CoreTracker tracker, Node node) throws IOException, JSONException
+    {
+        NodeReport nodeReport = tracker.checkNode(node);
+
+        NamedList<Object> nr = new SimpleOrderedMap<Object>();
+        nr.add("Node DBID", nodeReport.getDbid());
+        nr.add("DB TX", nodeReport.getDbTx());
+        nr.add("DB TX status", nodeReport.getDbNodeStatus().toString());
+        nr.add("Leaf doc in Index", nodeReport.getIndexLeafDoc());
+        nr.add("Aux doc in Index", nodeReport.getIndexAuxDoc());
+        if (nodeReport.getIndexLeafDoc() != null)
+        {
+            nr.add("Leaf tx in Index", nodeReport.getIndexLeafTx());
+        }
+        if (nodeReport.getIndexAuxDoc() != null)
+        {
+            nr.add("Aux tx in Index", nodeReport.getIndexAuxTx());
+        }
         return nr;
     }
     
@@ -502,7 +508,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     }
 
     private NamedList<Object> buildTrackerReport(CoreTracker tracker, Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws IOException,
-            JSONException
+            JSONException, AuthenticationException
     {
         IndexHealthReport indexHealthReport = tracker.checkIndex(fromTx, toTx, fromAclTx, toAclTx, fromTime, toTime);
 

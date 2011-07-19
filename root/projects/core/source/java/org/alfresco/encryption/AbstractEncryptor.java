@@ -1,7 +1,8 @@
-package org.alfresco.repo.security.encryption;
+package org.alfresco.encryption;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.security.AlgorithmParameters;
 import java.security.Key;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
 import javax.crypto.SealedObject;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -24,8 +26,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractEncryptor implements Encryptor
 {
-    private static final Log logger = LogFactory.getLog(AbstractEncryptor.class);
-    
+    private static final Log logger = LogFactory.getLog(Encryptor.class);
+    protected String cipherAlgorithm;
+    protected String cipherProvider;
+
     private KeyProvider keyProvider;
     
     /**
@@ -124,6 +128,28 @@ public abstract class AbstractEncryptor implements Encryptor
         try
         {
             return cipher.doFinal(input);
+        }
+        catch (Throwable e)
+        {
+            throw new AlfrescoRuntimeException("Decryption failed for key alias: " + keyAlias, e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InputStream decrypt(String keyAlias, AlgorithmParameters params, InputStream input)
+    {
+        Cipher cipher = getCipher(keyAlias, params, Cipher.DECRYPT_MODE);
+        if (cipher == null)
+        {
+            return input;
+        }
+
+        try
+        {
+            return new CipherInputStream(input, cipher);
         }
         catch (Throwable e)
         {
@@ -229,4 +255,52 @@ public abstract class AbstractEncryptor implements Encryptor
             throw new AlfrescoRuntimeException("Failed to unseal object", e);
         }
     }
+
+    public void setCipherAlgorithm(String cipherAlgorithm)
+    {
+        this.cipherAlgorithm = cipherAlgorithm;
+    }
+    
+    public String getCipherAlgorithm()
+    {
+        return this.cipherAlgorithm;
+    }
+
+    public void setCipherProvider(String cipherProvider)
+    {
+        this.cipherProvider = cipherProvider;
+    }
+    
+    public String getCipherProvider()
+    {
+        return this.cipherProvider;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AlgorithmParameters decodeAlgorithmParameters(byte[] encoded)
+    {
+    	try
+    	{
+	        AlgorithmParameters p = null;
+	        String algorithm = "DESede";
+	        if(getCipherProvider() != null)
+        	{
+	        	p = AlgorithmParameters.getInstance(algorithm, getCipherProvider());
+        	}
+	        else
+	        {
+	        	p = AlgorithmParameters.getInstance(/*getCipherAlgorithm()*/algorithm);
+	        }
+	        p.init(encoded);
+	        return p;
+    	}
+    	catch(Exception e)
+    	{
+    		throw new AlfrescoRuntimeException("", e);
+    	}
+    }
+
 }

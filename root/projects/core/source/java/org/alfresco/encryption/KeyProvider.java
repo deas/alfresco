@@ -1,4 +1,4 @@
-package org.alfresco.repo.security.encryption;
+package org.alfresco.encryption;
 
 import java.security.Key;
 

@@ -20,11 +20,10 @@ package org.alfresco.solr.tracker;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,7 +31,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +42,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.alfresco.encryption.KeyStoreLoader;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
@@ -53,8 +52,8 @@ import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
-import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
+import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
@@ -67,20 +66,21 @@ import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclReaders;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.client.AlfrescoModelDiff;
+import org.alfresco.solr.client.AuthenticationException;
 import org.alfresco.solr.client.ContentPropertyValue;
+import org.alfresco.solr.client.EncryptionService;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.MLTextPropertyValue;
 import org.alfresco.solr.client.MultiPropertyValue;
 import org.alfresco.solr.client.Node;
+import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.alfresco.solr.client.NodeMetaData;
 import org.alfresco.solr.client.NodeMetaDataParameters;
 import org.alfresco.solr.client.PropertyValue;
 import org.alfresco.solr.client.SOLRAPIClient;
+import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
-import org.alfresco.solr.client.Node.SolrApiNodeStatus;
-import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
-import org.alfresco.util.EqualsHelper;
 import org.alfresco.util.Pair;
 import org.alfresco.util.TempFileProvider;
 import org.apache.lucene.document.Document;
@@ -89,15 +89,14 @@ import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.SolrInputField;
 import org.apache.solr.core.SolrCore;
+import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.schema.BinaryField;
 import org.apache.solr.schema.CopyField;
 import org.apache.solr.schema.DateField;
@@ -134,6 +133,8 @@ public class CoreTracker
 
     SolrCore core;
 
+    private String alfrescoHost;
+
     private String url;
 
     private String user;
@@ -149,6 +150,17 @@ public class CoreTracker
     private long holeRetention;
 
     private long batchCount;
+
+    // encryption properties
+    private String cipherAlgorithm;
+    private String keyStoreType;
+    private String keyStoreProvider;
+    private String keyStorePassword;
+    private String solrKeyPassword;
+    private String keyStoreLocation;
+    private long messageTimeout;
+    private String macAlgorithm;
+    private boolean secureCommsEnabled = true;
 
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
@@ -172,6 +184,10 @@ public class CoreTracker
                 if (split[0].equals("alfresco.url"))
                 {
                     url = split[1];
+                }
+                else  if (split[0].equals("alfresco.host"))
+                {
+                	alfrescoHost = split[1];
                 }
                 else if (split[0].equals("alfresco.user"))
                 {
@@ -201,7 +217,42 @@ public class CoreTracker
                 {
                     batchCount = Long.parseLong(split[1]);
                 }
-
+                else if (split[0].equals("alfresco.encryption.cipherAlgorithm"))
+                {
+                    cipherAlgorithm = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.keystore.type"))
+                {
+                    keyStoreType = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.keystore.provider"))
+                {
+                    keyStoreProvider = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.keystore.password.solr"))
+                {
+                    solrKeyPassword = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.keystore.password"))
+                {
+                	keyStorePassword = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.keystore.location"))
+                {
+                	keyStoreLocation = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.messageTimeout"))
+                {
+                	messageTimeout = Long.parseLong(split[1]);
+                }
+                else if (split[0].equals("alfresco.encryption.macAlgorithm"))
+                {
+                	macAlgorithm = split[1];
+                }
+                else if (split[0].equals("solr.secureComms.enabled"))
+                {
+                	secureCommsEnabled = Boolean.valueOf(split[1]);
+                }
             }
         }
         catch (IOException e1)
@@ -209,10 +260,23 @@ public class CoreTracker
             throw new AlfrescoRuntimeException("Error reading alfrecso core config for " + core.getName());
         }
 
-        String id = core.getSchema().getResourceLoader().getInstanceDir();
-
+        final SolrResourceLoader loader = core.getSchema().getResourceLoader();
+        String id = loader.getInstanceDir();
         AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
-        client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(), url, user, password);
+
+        // load keystore from the Solr core location
+        KeyStoreLoader keyStoreLoader = new KeyStoreLoader()
+    	{
+			public InputStream getKeyStore(String location)
+					throws FileNotFoundException
+			{
+				return loader.openResource(location);
+			}
+    	};
+        EncryptionService encryptionService = new EncryptionService(keyStoreLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm,
+        		keyStoreType, keyStoreProvider, keyStorePassword, solrKeyPassword, messageTimeout, macAlgorithm);
+        client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(),
+        		encryptionService, secureCommsEnabled, url, user, password);
 
         JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
         JobDataMap jobDataMap = new JobDataMap();
@@ -611,6 +675,11 @@ public class CoreTracker
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
+        catch (AuthenticationException e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         finally
         {
             running = false;
@@ -816,7 +885,11 @@ public class CoreTracker
             {
                 System.out.println(e.getStackTrace());
             }
-
+            catch (AuthenticationException e1)
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
         else if (node.getStatus() == SolrApiNodeStatus.DELETED)
         {
@@ -830,7 +903,7 @@ public class CoreTracker
     }
 
     private void addContentPropertyToDoc(SolrInputDocument doc, ArrayList<Reader> toClose, ArrayList<File> toDelete, Node node, QName propertyQName,
-            ContentPropertyValue contentPropertyValue) throws IOException
+            ContentPropertyValue contentPropertyValue) throws AuthenticationException, IOException
     {
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
@@ -1000,7 +1073,8 @@ public class CoreTracker
      * @throws IOException
      * @throws JSONException
      */
-    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws IOException, JSONException
+    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime)
+    throws AuthenticationException, IOException, JSONException
     {
 
         IndexHealthReport indexHealthReport = new IndexHealthReport();
@@ -1651,49 +1725,12 @@ public class CoreTracker
         }
         return out;
     }
-
-    /**
-     * @param dbid
-     * @return
-     */
-    public NodeReport checkNode(Long dbid)
+    
+    public NodeReport checkNodeCommon(NodeReport nodeReport)
     {
-        NodeReport nodeReport = new NodeReport();
-        nodeReport.setDbid(dbid);
-
-        // In DB
-
-        GetNodesParameters parameters = new GetNodesParameters();
-        parameters.setFromNodeId(dbid);
-        parameters.setToNodeId(dbid);
-        List<Node> dbnodes;
-        try
-        {
-            dbnodes = client.getNodes(parameters, 1);
-            if (dbnodes.size() == 1)
-            {
-                Node dbnode = dbnodes.get(0);
-                nodeReport.setDbNodeStatus(dbnode.getStatus());
-                nodeReport.setDbTx(dbnode.getTxnId());
-            }
-            else
-            {
-                nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
-                nodeReport.setDbTx(-1l);
-            }
-        }
-        catch (IOException e)
-        {
-            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
-            nodeReport.setDbTx(-2l);
-        }
-        catch (JSONException e)
-        {
-            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
-            nodeReport.setDbTx(-3l);
-        }
-
         // In Index
+
+    	long dbid = nodeReport.getDbid();
 
         try
         {
@@ -1708,7 +1745,6 @@ public class CoreTracker
             try
             {
                 SolrIndexSearcher solrIndexSearcher = refCounted.get();
-                SolrIndexReader reader = solrIndexSearcher.getReader();
 
                 String dbidString = NumericEncoder.encode(dbid);
                 DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term("DBID", dbidString)));
@@ -1774,6 +1810,96 @@ public class CoreTracker
         return nodeReport;
     }
 
+    public NodeReport checkNode(Node node)
+    {
+        NodeReport nodeReport = new NodeReport();
+        nodeReport.setDbid(node.getId());
+
+        nodeReport.setDbNodeStatus(node.getStatus());
+        nodeReport.setDbTx(node.getTxnId());
+
+        checkNodeCommon(nodeReport);
+        
+        return nodeReport;
+    }
+
+    /**
+     * @param dbid
+     * @return
+     */
+    public NodeReport checkNode(Long dbid)
+    {
+        NodeReport nodeReport = new NodeReport();
+        nodeReport.setDbid(dbid);
+
+        // In DB
+
+        GetNodesParameters parameters = new GetNodesParameters();
+        parameters.setFromNodeId(dbid);
+        parameters.setToNodeId(dbid);
+        List<Node> dbnodes;
+        try
+        {
+            dbnodes = client.getNodes(parameters, 1);
+            if (dbnodes.size() == 1)
+            {
+                Node dbnode = dbnodes.get(0);
+                nodeReport.setDbNodeStatus(dbnode.getStatus());
+                nodeReport.setDbTx(dbnode.getTxnId());
+            }
+            else
+            {
+                nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
+                nodeReport.setDbTx(-1l);
+            }
+        }
+        catch (IOException e)
+        {
+            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
+            nodeReport.setDbTx(-2l);
+        }
+        catch (JSONException e)
+        {
+            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
+            nodeReport.setDbTx(-3l);
+        }
+        catch (AuthenticationException e1)
+        {
+            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
+            nodeReport.setDbTx(-4l);
+        }
+
+        checkNodeCommon(nodeReport);
+
+        return nodeReport;
+    }
+
+    public List<Node> getFullNodesForDbTransaction(Long txid)
+    {
+        try
+        {
+            GetNodesParameters gnp = new GetNodesParameters();
+            ArrayList<Long> txs = new ArrayList<Long>();
+            txs.add(txid);
+            gnp.setTransactionIds(txs);
+            gnp.setStoreProtocol(storeRef.getProtocol());
+            gnp.setStoreIdentifier(storeRef.getIdentifier());
+            return client.getNodes(gnp, Integer.MAX_VALUE);
+        }
+        catch (IOException e)
+        {
+            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+        }
+        catch (JSONException e)
+        {
+            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+        }
+        catch (AuthenticationException e)
+        {
+        	throw new AlfrescoRuntimeException("Failed to get nodes", e);
+        }
+    }
+
     public List<Long> getNodesForDbTransaction(Long txid)
     {
 
@@ -1802,7 +1928,10 @@ public class CoreTracker
         {
             throw new AlfrescoRuntimeException("Failed to get nodes", e);
         }
-
+        catch (AuthenticationException e)
+        {
+        	throw new AlfrescoRuntimeException("Failed to get nodes", e);
+        }
     }
 
     /**
@@ -1830,6 +1959,10 @@ public class CoreTracker
         {
             throw new AlfrescoRuntimeException("Failed to get acls", e);
         }
+        catch (AuthenticationException e)
+        {
+        	throw new AlfrescoRuntimeException("Failed to get acls", e);
+        }
     }
 
     /**
@@ -1853,6 +1986,10 @@ public class CoreTracker
             aclReport.setExistsInDb(false);
         }
         catch (JSONException e)
+        {
+            aclReport.setExistsInDb(false);
+        }
+        catch (AuthenticationException e)
         {
             aclReport.setExistsInDb(false);
         }

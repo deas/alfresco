@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -93,10 +92,10 @@ public class SOLRAPIClient extends AlfrescoHttpClient
 
     public SOLRAPIClient(
             DictionaryService dictionaryService,
-            NamespaceDAO namespaceDAO,
-            String alfrescoURL, String username, String password)
+            NamespaceDAO namespaceDAO, EncryptionService encryptionService,
+            boolean secureComms, String alfrescoURL, String username, String password)
     {
-        super(alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/"), username, password);
+        super(encryptionService, secureComms, alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/"), username, password);
         this.dictionaryService = dictionaryService;
         this.namespaceDAO = namespaceDAO;
         this.deserializer = new SOLRDeserializer(namespaceDAO);
@@ -111,7 +110,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
      * @return                              the ACL ChangeSets in order of commit time and ID
      */
     public List<AclChangeSet> getAclChangeSets(Long fromCommitTime, Long minAclChangeSetId, int maxResults)
-             throws IOException, JSONException
+             throws AuthenticationException, IOException, JSONException
     {
         setupHttpClient();
 
@@ -140,13 +139,22 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             throw new AlfrescoRuntimeException(GET_ACL_CHANGESETS_URL + " return status:" + response.getStatus());
         }
 
-        if (logger.isDebugEnabled())
+        JSONObject json = null;
+        try
         {
-            logger.debug(response.getContentAsString());
+	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+	        json = new JSONObject(new JSONTokener(reader));
+        }
+        finally
+        {
+        	response.release();
         }
         
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
-        JSONObject json = new JSONObject(new JSONTokener(reader));
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(json.toString(3));
+        }
+        
         JSONArray aclChangeSetsJSON = json.getJSONArray("aclChangeSets");
         List<AclChangeSet> aclChangeSets = new ArrayList<AclChangeSet>(aclChangeSetsJSON.length());
         for (int i = 0; i < aclChangeSetsJSON.length(); i++)
@@ -172,7 +180,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
      * @param maxResults                    the maximum number of results to retrieve
      * @return                              the ACLs (includes ChangeSet ID)
      */
-    public List<Acl> getAcls(List<AclChangeSet> aclChangeSets, Long minAclId, int maxResults) throws IOException, JSONException
+    public List<Acl> getAcls(List<AclChangeSet> aclChangeSets, Long minAclId, int maxResults) throws AuthenticationException, IOException, JSONException
     {
         if (aclChangeSets.size() > 512)
         {
@@ -212,14 +220,23 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
             throw new AlfrescoRuntimeException(GET_ACL_CHANGESETS_URL + " return status:" + response.getStatus());
         }
-
-        if (logger.isDebugEnabled())
+        
+        JSONObject json = null;
+        try
         {
-            logger.debug(response.getContentAsString());
+	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+	        json = new JSONObject(new JSONTokener(reader));
+        }
+        finally
+        {
+        	response.release();
         }
         
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
-        JSONObject json = new JSONObject(new JSONTokener(reader));
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(json.toString(3));
+        }
+
         JSONArray aclsJSON = json.getJSONArray("acls");
         List<Acl> acls = new ArrayList<Acl>(aclsJSON.length());
         for (int i = 0; i < aclsJSON.length(); i++)
@@ -240,7 +257,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
      * @param acls                          the ACLs
      * @return                              the readers for the ACLs
      */
-    public List<AclReaders> getAclReaders(List<Acl> acls) throws IOException, JSONException
+    public List<AclReaders> getAclReaders(List<Acl> acls) throws AuthenticationException, IOException, JSONException
     {
         if (acls.size() > 512)
         {
@@ -270,14 +287,23 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
             throw new AlfrescoRuntimeException(GET_ACL_CHANGESETS_URL + " return status:" + response.getStatus());
         }
-
-        if (logger.isDebugEnabled())
+        
+        JSONObject json = null;
+        try
         {
-            logger.debug(response.getContentAsString());
+	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+	        json = new JSONObject(new JSONTokener(reader));
+        }
+        finally
+        {
+        	response.release();
         }
         
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
-        JSONObject json = new JSONObject(new JSONTokener(reader));
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(json.toString(3));
+        }
+
         JSONArray aclsReadersJSON = json.getJSONArray("aclsReaders");
         List<AclReaders> aclsReaders = new ArrayList<AclReaders>(aclsReadersJSON.length());
         for (int i = 0; i < aclsReadersJSON.length(); i++)
@@ -298,7 +324,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         return aclsReaders;
     }
     
-    public List<Transaction> getTransactions(Long fromCommitTime, Long minTxnId, int maxResults) throws IOException, JSONException
+    public List<Transaction> getTransactions(Long fromCommitTime, Long minTxnId, int maxResults) throws AuthenticationException, IOException, JSONException
     {
         setupHttpClient();
 
@@ -327,14 +353,22 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             throw new AlfrescoRuntimeException("GetTransactions return status is " + response.getStatus());
         }
 
-        if(logger.isDebugEnabled())
+        JSONObject json = null;
+        try
         {
-            logger.debug(response.getContentAsString());
+	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+	        json = new JSONObject(new JSONTokener(reader));
+        }
+        finally
+        {
+        	response.release();
+        }
+
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(json.toString(3));
         }
         
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
-        JSONObject json = new JSONObject(new JSONTokener(reader));
-
         JSONArray jsonTransactions = json.getJSONArray("transactions");
         int numTxns = jsonTransactions.length();
         List<Transaction> transactions = new ArrayList<Transaction>(numTxns);
@@ -352,7 +386,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         return transactions;
     }
     
-    public List<Node> getNodes(GetNodesParameters parameters, int maxResults) throws IOException, JSONException
+    public List<Node> getNodes(GetNodesParameters parameters, int maxResults) throws AuthenticationException, IOException, JSONException
     {
         setupHttpClient();
 
@@ -419,13 +453,17 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             throw new AlfrescoRuntimeException("GetNodes return status is " + response.getStatus());
         }
 
-//        if(logger.isDebugEnabled())
-//        {
-//            logger.debug(response.getContentAsString());
-//        }
+        JSONObject json = null;
+        try
+        {
+	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+	        json = new JSONObject(new JSONTokener(reader));
+        }
+        finally
+        {
+        	response.release();
+        }
 
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
-        JSONObject json = new JSONObject(new JSONTokener(reader));
         json.write(new PrintWriter(System.out));
 
         JSONArray jsonNodes = json.getJSONArray("nodes");
@@ -559,7 +597,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         return ret;
     }
     
-    public List<NodeMetaData> getNodesMetaData(NodeMetaDataParameters params, int maxResults) throws IOException, JSONException
+    public List<NodeMetaData> getNodesMetaData(NodeMetaDataParameters params, int maxResults) throws AuthenticationException, IOException, JSONException
     {
         setupHttpClient();
 
@@ -629,15 +667,22 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             throw new AlfrescoRuntimeException("GetNodeMetaData return status is " + response.getStatus());
         }
         
-        if(logger.isDebugEnabled())
+        JSONObject json = null;
+        try
         {
-            logger.debug("nodesMetaData = " + response.getContentAsString());
+	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+	        json = new JSONObject(new JSONTokener(reader));
+        }
+        finally
+        {
+        	response.release();
         }
 
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(),  "UTF-8"));
-        // TODO - replace with streaming-based solution e.g. SimpleJSON ContentHandler
-        JSONObject json = new JSONObject(new JSONTokener(reader));
-
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(json.toString(3));
+        }
+        
         JSONArray jsonNodes = json.getJSONArray("nodes");
         
         List<NodeMetaData> nodes = new ArrayList<NodeMetaData>(jsonNodes.length());
@@ -722,7 +767,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         return nodes;
     }
     
-    public GetTextContentResponse getTextContent(Long nodeId, QName propertyName, Long modifiedSince) throws IOException
+    public GetTextContentResponse getTextContent(Long nodeId, QName propertyName, Long modifiedSince) throws AuthenticationException, IOException
     {
         setupHttpClient();
 
@@ -797,7 +842,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         return new GetTextContentResponse(response);
     }
     
-    public AlfrescoModel getModel(QName modelName) throws IOException, JSONException
+    public AlfrescoModel getModel(QName modelName) throws AuthenticationException, IOException, JSONException
     {
         // If the model is new to the SOLR side the prefix will be unknown so we can not generate prefixes for the request!
         // Always use the full QName with explicit URI
@@ -811,7 +856,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         url.append("?modelQName=").append(encoder.encode(modelName.toString(), "UTF-8"));
         
         GetRequest req = new GetRequest(url.toString());
-        
+
         Response response = sendRequest(req, username);
 
         if(response.getStatus() != HttpStatus.SC_OK)
@@ -819,11 +864,18 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             throw new AlfrescoRuntimeException("GetModel return status is " + response.getStatus());
         }
 
-        return new AlfrescoModel(M2Model.createModel(response.getContentAsStream()),
-                Long.valueOf(response.getHeader(CHECKSUM_HEADER)));
+        try
+        {
+	        return new AlfrescoModel(M2Model.createModel(response.getContentAsStream()),
+	                Long.valueOf(response.getHeader(CHECKSUM_HEADER)));
+        }
+        finally
+        {
+        	response.release();
+        }
     }
     
-    public List<AlfrescoModelDiff> getModelsDiff(List<AlfrescoModel> currentModels) throws IOException, JSONException
+    public List<AlfrescoModelDiff> getModelsDiff(List<AlfrescoModel> currentModels) throws AuthenticationException, IOException, JSONException
     {
         setupHttpClient();
 
@@ -843,7 +895,6 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         body.put("models", jsonModels);
 
         PostRequest req = new PostRequest(url.toString(), body.toString(), "application/json");
-        
         Response response = sendRequest(req, username);
 
         if(response.getStatus() != HttpStatus.SC_OK)
@@ -851,8 +902,17 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             throw new AlfrescoRuntimeException("GetModelsDiff return status is " + response.getStatus());
         }
 
-        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
-        JSONObject json = new JSONObject(new JSONTokener(reader));
+        JSONObject json = null;
+        try
+        {
+	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+	        json = new JSONObject(new JSONTokener(reader));
+        }
+        finally
+        {
+        	response.release();
+        }
+        
         json.write(new PrintWriter(System.out));
         JSONArray jsonDiffs = json.getJSONArray("diffs");
         if(jsonDiffs == null)
@@ -1159,9 +1219,16 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
             super(response);
 
-            this.content = response.getContentAsStream();
-            this.transformStatusStr = response.getHeader("XAlfresco-transformStatus");
-            this.transformException = response.getHeader("XAlfresco-transformException");
+            try
+            {
+	            this.content = response.getContentAsStream();
+	            this.transformStatusStr = response.getHeader("XAlfresco-transformStatus");
+	            this.transformException = response.getHeader("XAlfresco-transformException");
+            }
+            finally
+            {
+            	response.release();
+            }
             setStatus();
         }
 
@@ -1218,12 +1285,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
             return transformException;
         }
-        
-        public int getContentLength()
-        {
-            return response.getContentLength();
-        }
-        
+
         public Long getRequestDuration()
         {
             return response.getRequestDuration();
