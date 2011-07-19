@@ -142,4 +142,26 @@ public abstract class CollectionUtils
     {
         return flatten(transform(values, transformer));
     }
+    
+    /**
+     * Finds the first value for which <code>acceptor</code> returns <code>true</code>.
+     * @param <T>
+     * @param values
+     * @param acceptor
+     * @return returns accepted value or <code>null</code>.
+     */
+    public static <T> T findFirst(Collection<T> values, Function<? super T, Boolean> acceptor)
+    {
+        if (values != null )
+        {
+            for (T value : values)
+            {
+                if (acceptor.apply(value))
+                {
+                    return value;
+                }
+            }
+        }
+        return null;
+    }
 }
