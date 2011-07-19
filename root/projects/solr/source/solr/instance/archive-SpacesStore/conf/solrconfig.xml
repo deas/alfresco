@@ -574,15 +574,24 @@
     </lst>
   </requestHandler>
 
+  <searchComponent name="setLocale"     class="org.alfresco.solr.SetLocaleSearchComponent" />
+  <searchComponent name="clearLocale"     class="org.alfresco.solr.ClearLocaleSearchComponent" />
 
-  <requestHandler name="alfresco" class="solr.SearchHandler" >
+  <requestHandler name="/alfresco" class="solr.SearchHandler" >
     <lst name="defaults">
      <str name="defType">alfresco</str>
     </lst>
+    <arr name="components">
+      <str>setLocale</str>
+      <str>query</str>
+      <str>facet</str>
+      <str>mlt</str>
+      <str>highlight</str>
+      <str>stats</str>
+      <str>debug</str>
+      <str>clearLocale</str>
+    </arr>
   </requestHandler>
-
-  <searchComponent name="setLocale"     class="org.alfresco.solr.SetLocaleSearchComponent" />
-  <searchComponent name="clearLocale"     class="org.alfresco.solr.ClearLocaleSearchComponent" />
 
   <requestHandler name="/afts" class="solr.SearchHandler" >
     <lst name="defaults">

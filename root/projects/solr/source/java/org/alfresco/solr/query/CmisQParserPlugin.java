@@ -223,9 +223,9 @@ public class CmisQParserPlugin extends QParserPlugin
             }
             
             String defaultField = getParam(CommonParams.DF);
-            if (defaultField == null)
+            if(defaultField != null)
             {
-                defaultField = getReq().getSchema().getDefaultSearchFieldName();
+                searchParameters.setDefaultFieldName(defaultField);
             }
 
             // these could either be checked & set here, or in the SolrQueryParser constructor

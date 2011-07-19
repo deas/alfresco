@@ -216,7 +216,10 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
             }
             
             String defaultField = getParam(CommonParams.DF);
-            searchParameters.setDefaultFieldName(defaultField);
+            if(defaultField != null)
+            {
+                searchParameters.setDefaultFieldName(defaultField);
+            }
 
             // these could either be checked & set here, or in the SolrQueryParser constructor
 

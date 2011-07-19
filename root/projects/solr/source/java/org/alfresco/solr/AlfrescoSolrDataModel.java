@@ -59,6 +59,7 @@ import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.repo.search.impl.parsers.AlfrescoFunctionEvaluationContext;
 import org.alfresco.repo.search.impl.parsers.FTSParser;
@@ -882,14 +883,20 @@ public class AlfrescoSolrDataModel
     // xmlWriter.endElement("", "field", "field");
     // }
 
-    public AbstractLuceneQueryParser getLuceneQueryParser(String defaultField, String query, Operator defaultOperator, IndexReader indexReader)
+   
+    public AbstractLuceneQueryParser getLuceneQueryParser(SearchParameters searchParameters, IndexReader indexReader)
     {
-        // TODO: Ordering
-        SearchParameters searchParameters = new SearchParameters();
-        searchParameters.setLanguage(SearchService.LANGUAGE_LUCENE);
-        searchParameters.setQuery(query);
         SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
-        SolrQueryParser parser = new SolrQueryParser(defaultField, analyzer);
+        SolrQueryParser parser = new SolrQueryParser(searchParameters.getDefaultFieldName(), analyzer);
+        Operator defaultOperator;
+        if (searchParameters.getDefaultOperator() == SearchParameters.AND)
+        {
+            defaultOperator = LuceneQueryParser.AND_OPERATOR;
+        }
+        else
+        {
+            defaultOperator = LuceneQueryParser.OR_OPERATOR;
+        }
         parser.setDefaultOperator(defaultOperator);
         parser.setNamespacePrefixResolver(namespaceDAO);
         parser.setDictionaryService(dictionaryComponent);
