@@ -25,16 +25,13 @@
  */
 (function()
 {
-   Alfresco.module.DoclibActions = function(workingMode)
+   Alfresco.module.DoclibActions = function()
    {
       this.name = "Alfresco.module.DoclibActions";
       
       /* Load YUI Components */
       Alfresco.util.YUILoaderHelper.require(["json"], this.onComponentsLoaded, this);
       
-      /* Working mode */
-      this.workingMode = workingMode !== undefined ? workingMode : Alfresco.doclib.MODE_SITE;
-
       return this;
    };
 
@@ -48,15 +45,6 @@
        * @type boolean
        */
       isReady: false,
-
-      /**
-       * Working mode: Site or Repository.
-       * 
-       * @property workingMode
-       * @type {number}
-       * @default Alfresco.doclib.MODE_SITE
-       */
-      workingMode: Alfresco.doclib.MODE_SITE,
 
       /**
        * Object literal for default AJAX request configuration
@@ -82,7 +70,7 @@
        *
        * @method onComponentsLoaded
        */
-      onComponentsLoaded: function DLA_onComponentsLoaded()
+      onComponentsLoaded: function DoclibActions_onComponentsLoaded()
       {
          this.isReady = true;
       },
@@ -94,7 +82,7 @@
        * @private
        * @return {boolean} false: module not ready for use
        */
-      _runAction: function DLA__runAction(config, obj)
+      _runAction: function DoclibActions__runAction(config, obj)
       {
          // Check components loaded
          if (!this.isReady)
@@ -169,7 +157,7 @@
        * @param action.config {object} optional additional request configuration overrides
        * @return {boolean} false: module not ready
        */
-      genericAction: function DLA_genericAction(action)
+      genericAction: function DoclibActions_genericAction(action)
       {
          var path = "",
             success = action.success,
@@ -186,7 +174,7 @@
             Alfresco.logger.warn("Alfresco.module.DoclibActions.genericAction()", "action.params deprecated. Use action.webscript.params instead.");
          }
 
-         var fnCallback = function DLA_genericAction_callback(data, obj)
+         var fnCallback = function DoclibActions_genericAction_callback(data, obj)
          {
             // Check for notification event
             if (obj)
@@ -312,10 +300,10 @@
        * @param page {string} page to link to from activity
        * @param data {object} data attached to activity
        */
-      postActivity: function DLA_postActivity(siteId, activityType, page, data)
+      postActivity: function DoclibActions_postActivity(siteId, activityType, page, data)
       {
          // No activities in Repository mode
-         if (this.workingMode == Alfresco.doclib.MODE_REPOSITORY || siteId == null || siteId.length == 0)
+         if (!Alfresco.util.isValueSet(siteId))
          {
             return;
          }

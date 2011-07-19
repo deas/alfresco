@@ -98,22 +98,12 @@
       options:
       {
          /**
-          * Working mode: Site or Repository.
-          * Affects how actions operate, e.g. actvities are not posted in Repository mode.
-          * 
-          * @property workingMode
-          * @type number
-          * @default Alfresco.doclib.MODE_SITE
-          */
-         workingMode: Alfresco.doclib.MODE_SITE,
-
-         /**
           * Current siteId.
           * 
           * @property siteId
           * @type string
           */
-         siteId: "",
+         siteId: null,
 
          /**
           * ContainerId representing root container
@@ -223,7 +213,7 @@
             menu: "createContent-menu",
             lazyloadmenu: false,
             disabled: true,
-            value: "create"
+            value: "CreateChildren"
          });
          this.dynamicControls.push(this.widgets.createContent);
 
@@ -231,15 +221,15 @@
          this.widgets.newFolder = Alfresco.util.createYUIButton(this, "newFolder-button", this.onNewFolder,
          {
             disabled: true,
-            value: "create"
+            value: "CreateChildren"
          });
          this.dynamicControls.push(this.widgets.newFolder);
          
-         // File Upload button: user needs  "create" access
+         // File Upload button: user needs  "CreateChildren" access
          this.widgets.fileUpload = Alfresco.util.createYUIButton(this, "fileUpload-button", this.onFileUpload,
          {
             disabled: true,
-            value: "create"
+            value: "CreateChildren"
          });
          this.dynamicControls.push(this.widgets.fileUpload);
 
@@ -282,7 +272,7 @@
          this.dynamicControls.push(this.widgets.folderUp);
 
          // DocLib Actions module
-         this.modules.actions = new Alfresco.module.DoclibActions(this.options.workingMode);
+         this.modules.actions = new Alfresco.module.DoclibActions();
          
          // Reference to Document List component
          this.modules.docList = Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentList");
@@ -540,23 +530,24 @@
       },
       
       /**
-       * Delete Multiple Assets.
+       * Delete Multiple Records.
        *
        * @method onActionDelete
-       * @param assets {object} Object literal representing one or more file(s) or folder(s) to be actioned
+       * @param records {object} Object literal representing one or more file(s) or folder(s) to be actioned
        */
-      onActionDelete: function DLTB_onActionDelete(assets)
+      onActionDelete: function DLTB_onActionDelete(records)
       {
          var me = this,
             fileNames = [];
          
-         for (var i = 0, j = assets.length; i < j; i++)
+         for (var i = 0, j = records.length; i < j; i++)
          {
-            fileNames.push("<span class=\"" + assets[i].type + "\">" + $html(assets[i].displayName) + "</span>");
+            fileNames.push("<span class=\"" + (records[i].jsNode.isContainer ? "folder" : "document") + "\">" + $html(records[i].displayName) + "</span>");
          }
          
          var confirmTitle = this.msg("title.multiple-delete.confirm"),
-            confirmMsg = this.msg("message.multiple-delete.confirm", assets.length);
+            confirmMsg = this.msg("message.multiple-delete.confirm", records.length);
+
          confirmMsg += "<div class=\"toolbar-file-list\">" + fileNames.join("") + "</div>";
 
          Alfresco.util.PopupManager.displayPrompt(
@@ -571,7 +562,7 @@
                handler: function DLTB_onActionDelete_delete()
                {
                   this.destroy();
-                  me._onActionDeleteConfirm.call(me, assets);
+                  me._onActionDeleteConfirm.call(me, records);
                }
             },
             {
@@ -586,22 +577,22 @@
       },
 
       /**
-       * Delete Multiple Assets confirmed.
+       * Delete Multiple Records confirmed.
        *
        * @method _onActionDeleteConfirm
-       * @param assets {array} Array containing assets to be deleted
+       * @param records {array} Array containing records to be deleted
        * @private
        */
-      _onActionDeleteConfirm: function DLTB__onActionDeleteConfirm(assets)
+      _onActionDeleteConfirm: function DLTB__onActionDeleteConfirm(records)
       {
-         var multipleAssets = [], i, ii;
-         for (i = 0, ii = assets.length; i < ii; i++)
+         var multipleRecords = [], i, ii;
+         for (i = 0, ii = records.length; i < ii; i++)
          {
-            multipleAssets.push(assets[i].nodeRef);
+            multipleRecords.push(records[i].jsNode.nodeRef.nodeRef);
          }
          
          // Success callback function
-         var fnSuccess = function DLTB__oADC_success(data, assets)
+         var fnSuccess = function DLTB__oADC_success(data, records)
          {
             var result;
             var successCount = 0;
@@ -635,7 +626,7 @@
             }
 
             // Activities, in Site mode only
-            if (this.options.workingMode == Alfresco.doclib.MODE_SITE)
+            if (Alfresco.util.isValueSet(this.options.siteId, true))
             {
                var activityData;
                if (successCount > 0)
@@ -683,7 +674,7 @@
                {
                   fn: fnSuccess,
                   scope: this,
-                  obj: assets
+                  obj: records
                }
             },
             failure:
@@ -704,14 +695,14 @@
                requestContentType: Alfresco.util.Ajax.JSON,
                dataObj:
                {
-                  nodeRefs: multipleAssets
+                  nodeRefs: multipleRecords
                }
             }
          });
       },
 
       /**
-       * Deselect currectly selected assets.
+       * Deselect currectly selected records.
        *
        * @method onActionDeselectAll
        */
@@ -780,23 +771,26 @@
          {
             obj.filterOwner = obj.filterOwner || Alfresco.util.FilterManager.getOwner(obj.filterId);
 
-            if (this.currentFilter.filterOwner != obj.filterOwner || this.currentFilter.filterId != obj.filterId)
+            if (obj.filterOwner)
             {
-               var filterOwner = obj.filterOwner.split(".")[1],
-                  ownerIdClass = filterOwner + "_" + obj.filterId;
-               
-               // Obtain array of DIVs we might want to hide
-               var divs = YAHOO.util.Selector.query('div.hideable', Dom.get(this.id)), div;
-               for (var i = 0, j = divs.length; i < j; i++)
+               if (this.currentFilter.filterOwner != obj.filterOwner || this.currentFilter.filterId != obj.filterId)
                {
-                  div = divs[i];
-                  if (Dom.hasClass(div, filterOwner) || Dom.hasClass(div, ownerIdClass))
+                  var filterOwner = obj.filterOwner.split(".")[1],
+                     ownerIdClass = filterOwner + "_" + obj.filterId;
+
+                  // Obtain array of DIVs we might want to hide
+                  var divs = YAHOO.util.Selector.query('div.hideable', Dom.get(this.id)), div;
+                  for (var i = 0, j = divs.length; i < j; i++)
                   {
-                     Dom.removeClass(div, "toolbar-hidden");
-                  }
-                  else
-                  {
-                     Dom.addClass(div, "toolbar-hidden");
+                     div = divs[i];
+                     if (Dom.hasClass(div, filterOwner) || Dom.hasClass(div, ownerIdClass))
+                     {
+                        Dom.removeClass(div, "toolbar-hidden");
+                     }
+                     else
+                     {
+                        Dom.addClass(div, "toolbar-hidden");
+                     }
                   }
                }
             }
@@ -990,7 +984,7 @@
                file = files[i];
                
                // Required user access level - logical AND of each file's permissions
-               fileAccess = file.permissions.userAccess;
+               fileAccess = file.node.permissions.user;
                for (index in fileAccess)
                {
                   if (fileAccess.hasOwnProperty(index))

@@ -174,6 +174,22 @@
          -->
          <maximum-tag-count>100</maximum-tag-count>
       </filters>
+      
+      <!--
+         Status Indicators
+      -->
+      <indicators>
+         <indicator id="simple-workflow">
+            <aspect>app:simpleworkflow</aspect>
+            <label>tip.simple-workflow</label>
+            <image>simple-workflow-indicator-16.png</image>
+         </indicator>
+         <indicator id="rulesw">
+            <aspect>rule:rules</aspect>
+            <label>tip.rules</label>
+            <image>rules-indicator-16.png</image>
+         </indicator>
+      </indicators>
    </config>
 
    <!-- Repository Library config section -->
@@ -195,6 +211,330 @@
          -->
          <maximum-folder-count>500</maximum-folder-count>
       </tree>
+   </config>
+   
+   <!-- Document Library Actions config section -->
+   <config evaluator="string-compare" condition="DocLibActions">
+      <actions>
+         <!-- Download document -->
+         <action id="document-download" type="link" label="actions.document.download">
+            <param name="href">{downloadUrl}</param>
+         </action>
+
+         <!-- View document in browser -->
+         <action id="document-view-content" type="link" label="actions.document.view">
+            <param name="href">{viewUrl}</param>
+         </action>
+
+         <!-- View document details -->
+         <action id="document-view-details" type="pagelink" label="actions.document.view-details">
+            <param name="page">document-details?nodeRef={node.nodeRef}</param>
+         </action>
+
+         <!-- View folder details -->
+         <action id="folder-view-details" type="pagelink" label="actions.folder.view-details">
+            <param name="page">folder-details?nodeRef={node.nodeRef}</param>
+         </action>
+
+         <!-- Edit document properties -->
+         <action id="document-edit-properties" type="javascript" label="actions.document.edit-metadata">
+            <param name="function">onActionDetails</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+         </action>
+
+         <!-- Edit folder properties -->
+         <action id="folder-edit-properties" type="javascript" label="actions.folder.edit-metadata">
+            <param name="function">onActionDetails</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+         </action>
+
+         <!-- Approve simple workflow -->
+         <action id="document-approve" type="javascript" label="{node.actionLabels['approveStep']}">
+            <param name="function">onActionSimpleApprove</param>
+            <evaluator>slingshot.action.evaluator.simpleApproveEvaluator</evaluator> <!-- aspect check, property != null check, action name = property value -->
+         </action>
+
+         <!-- Reject simple workflow -->
+         <action id="document-reject" type="javascript" label="{node.actionLabels['rejectStep']}">
+            <param name="function">onActionSimpleReject</param>
+            <evaluator>slingshot.action.evaluator.simpleRejectEvaluator</evaluator> <!-- aspect check, property != null check, action name = property value -->
+         </action>
+
+         <!-- Locate with path view -->
+         <action id="document-locate" type="javascript" label="actions.document.locate">
+            <param name="function">onActionLocate</param>
+            <evaluator>slingshot.action.evaluator.locateActionEvaluator</evaluator>
+         </action>
+
+         <!-- Upload new version -->
+         <action id="document-upload-new-version" type="javascript" label="actions.document.upload-new-version">
+            <param name="function">onActionUploadNewVersion</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+         </action>
+
+         <!-- Inline edit -->
+         <action id="document-inline-edit" type="link" label="actions.document.inline-edit">
+            <param name="href">{inlineEditUrl}</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>slingshot.action.evaluator.inlineEditEvaluator</evaluator> <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
+         </action>
+
+         <!-- Edit online -->
+         <action id="document-edit-online" type="javascript" label="actions.document.edit-online">
+            <param name="function">onActionEditOnline</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>slingshot.action.evaluator.onlineEditEvaluator</evaluator> <!-- vti module check, mimetype check -->
+            <condition type="javascript"><![CDATA[
+               YAHOO.env.ua.ie !== 0
+            ]]></condition>
+         </action>
+
+         <!-- Edit offline -->
+         <action id="document-edit-offline" type="javascript" label="actions.document.edit-offline">
+            <param name="function">onActionEditOffline</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspectEvaluator</evaluator>
+         </action>
+
+         <!-- Copy to -->
+         <action id="document-copy-to" type="javascript" label="actions.document.copy-to">
+            <param name="function">onActionCopyTo</param>
+            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspectEvaluator</evaluator>
+         </action>
+
+         <!-- Move to -->
+         <action id="document-move-to" type="javascript" label="actions.document.move-to">
+            <param name="function">onActionMoveTo</param>
+            <permissions>
+               <permission allow="true">Delete</permission>
+            </permissions>
+            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspectEvaluator</evaluator>
+         </action>
+
+         <!-- Delete -->
+         <action id="document-delete" type="javascript" label="actions.document.delete">
+            <param name="function">onActionDelete</param>
+            <permissions>
+               <permission allow="true">Delete</permission>
+            </permissions>
+         </action>
+
+         <!-- Assign workflow -->
+         <action id="document-assign-workflow" type="javascript" label="actions.document.assign-workflow">
+            <param name="function">onActionAssignWorkflow</param>
+         </action>
+
+         <!-- Manage permissions (site roles) -->
+         <action id="document-manage-site-permissions" type="javascript" label="actions.document.manage-permissions">
+            <param name="function">onActionManagePermissions</param>
+            <permissions>
+               <permission allow="true">ChangePermissions</permission>
+            </permissions>
+         </action>
+
+         <!-- Manage permissions (repository roles) -->
+         <action id="document-manage-repo-permissions" type="pagelink" label="actions.document.manage-permissions">
+            <param name="page">manage-permissions?nodeRef={node.nodeRef}</param>
+            <permissions>
+               <permission allow="true">ChangePermissions</permission>
+            </permissions>
+         </action>
+
+         <!-- Manage aspects -->
+         <action id="document-manage-aspects" type="javascript" label="actions.document.manage-aspects">
+            <param name="function">onActionManageAspects</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+         </action>
+
+         <!-- View original (of a Working Copy pair) -->
+         <action id="document-view-original" type="pagelink" label="actions.document.view-original">
+            <param name="page">document-details?nodeRef={workingCopy.sourceNodeRef}</param>
+            <evaluator>slingshot.action.evaluator.isWorkingCopyEvaluator</evaluator> <!-- cm:workingcopy aspect -->
+         </action>
+
+         <!-- View working copy (of a Working Copy pair) -->
+         <action id="document-view-working-copy" type="pagelink" label="actions.document.view-working-copy">
+            <param name="page">document-details?nodeRef={workingCopy.workingCopyNodeRef}</param>
+            <evaluator>slingshot.action.evaluator.hasWorkingCopyEvaluator</evaluator> <!-- cm:workingcopy aspect -->
+         </action>
+
+         <!-- Cancel editing (cancel checkout) -->
+         <action id="document-cancel-editing" type="javascript" label="actions.document.cancel-editing">
+            <param name="function">onActionCancelEditing</param>
+            <permissions>
+               <permission allow="true">CancelCheckOut</permission>
+            </permissions>
+            <evaluator>slingshot.action.evaluator.isWorkingCopyEvaluator</evaluator>
+         </action>
+
+         <!-- Manage folder rules -->
+         <action id="folder-manage-rules" type="pagelink" label="actions.folder.rules">
+            <param name="page">folder-rules?nodeRef={node.nodeRef}</param>
+            <permissions>
+               <permission allow="true">ChangePermissions</permission>
+            </permissions>
+         </action>
+
+         <!-- View in Explorer client -->
+         <action id="view-in-explorer" type="link" label="actions.folder.explorer-view">
+            <param name="href">{explorerViewUrl}</param>
+            <param name="target">_blank</param>
+            <condition type="javascript"><![CDATA[
+               Config.repositoryUrl.length > 0 && !Alfresco.constants.PORTLET
+            ]]></condition>
+         </action>
+
+         <!-- Checkout to Google Docs -->
+         <action id="document-checkout-to-googledocs" type="javascript" label="actions.document.checkout-google">
+            <param name="function">onActionCheckoutToGoogleDocs</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>slingshot.action.evaluator.googleDocsEditableEvaluator</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleEditable -->
+         </action>
+
+         <!-- Checkin from Google Docs -->
+         <action id="document-checkin-from-googledocs" type="javascript" label="actions.document.checkin-google">
+            <param name="function">onActionCheckinFromGoogleDocs</param>
+            <evaluator>slingshot.action.evaluator.googleDocsCheckInEvaluator</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource, cm:workingCopyOwner = currentUser -->
+         </action>
+
+         <!-- View in Google Docs -->
+         <action id="document-googledoc-view" type="link" label="actions.document.view-google-doc">
+            <param name="href">{workingCopy.googleDocUrl}</param>
+            <param name="target">_blank</param>
+            <evaluator>slingshot.action.evaluator.googleDocsViewEvaluator</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource -->
+         </action>
+
+         <!-- Transferred node: View in source repository -->
+         <action id="document-view-in-source-repository" type="link" label="actions.document.view-source-repository">
+            <param name="href">{sourceRepositoryUrl}</param> <!-- calculated from siteId, item.location.repositoryId, replicationUrlMapping from share-config-custom.xml and node.type -->
+            <param name="target">_blank</param>
+            <evaluator>slingshot.action.evaluator.transferredEvaluator</evaluator> <!-- aspect trx:transferred -->
+            <condition type="javascript"><![CDATA[
+               !Alfresco.constants.PORTLET
+            ]]></condition>
+         </action>
+
+      </actions>
+
+      <actionGroups>
+         <actionGroup id="empty"></actionGroup>
+
+         <actionGroup id="document-browse">
+            <action index="100" id="document-download" />
+            <action index="110" id="document-view-content" />
+            <action index="120" id="document-locate" />
+            <action index="130" id="document-edit-properties" />
+            <action index="140" id="document-upload-new-version" />
+            <action index="150" id="document-view-original" />
+            <action index="160" id="document-view-working-copy" />
+            <action index="170" id="document-approve" />
+            <action index="180" id="document-reject" />
+            <action index="190" id="document-inline-edit" />
+            <action index="200" id="document-edit-online" />
+            <action index="210" id="document-edit-offline" />
+            <action index="220" id="document-googledoc-view" />
+            <action index="230" id="document-checkout-to-googledocs" />
+            <action index="240" id="document-checkin-from-googledocs" />
+            <action index="250" id="document-copy-to" />
+            <action index="260" id="document-move-to" />
+            <action index="270" id="document-delete" />
+            <action index="280" id="document-assign-workflow" />
+            <action index="290" id="document-cancel-editing" />
+         </actionGroup>
+
+         <actionGroup id="document-details">
+            <action index="100" id="document-download" />
+            <action index="110" id="document-view-content" />
+            <action index="120" id="document-edit-properties" />
+            <action index="130" id="document-upload-new-version" />
+            <action index="140" id="document-view-original" />
+            <action index="150" id="document-view-working-copy" />
+            <action index="160" id="document-approve" />
+            <action index="170" id="document-reject" />
+            <action index="180" id="document-inline-edit" />
+            <action index="190" id="document-edit-online" />
+            <action index="200" id="document-edit-offline" />
+            <action index="210" id="document-googledoc-view" />
+            <action index="220" id="document-checkout-to-googledocs" />
+            <action index="230" id="document-checkin-from-googledocs" />
+            <action index="240" id="document-copy-to" />
+            <action index="250" id="document-move-to" />
+            <action index="260" id="document-delete" />
+            <action index="270" id="document-assign-workflow" />
+            <action index="280" id="document-cancel-editing" />
+            <action index="290" id="document-manage-site-permissions" />
+            <action index="300" id="document-manage-repo-permissions" />
+            <action index="310" id="document-manage-aspects" />
+            <action index="320" id="document-view-in-source-repository" />
+         </actionGroup>
+
+         <actionGroup id="folder-browse">
+            <action index="100" id="folder-view-details" />
+            <action index="110" id="folder-edit-properties" />
+            <action index="120" id="document-approve" />
+            <action index="130" id="document-reject" />
+            <action index="140" id="document-locate" label="actions.folder.locate" />
+            <action index="150" id="document-copy-to" label="actions.folder.copy-to" />
+            <action index="160" id="document-move-to" label="actions.folder.move-to" />
+            <action index="170" id="folder-manage-rules" />
+            <action index="180" id="document-delete" label="actions.folder.delete" />
+         </actionGroup>
+
+         <actionGroup id="folder-details">
+            <action index="100" id="folder-edit-properties" />
+            <action index="110" id="document-approve" />
+            <action index="120" id="document-reject" />
+            <action index="130" id="document-copy-to" label="actions.folder.copy-to" />
+            <action index="140" id="document-move-to" label="actions.folder.move-to" />
+            <action index="150" id="folder-manage-rules" />
+            <action index="160" id="document-delete" label="actions.folder.delete" />
+            <action index="170" id="document-manage-site-permissions" label="actions.folder.manage-permissions" />
+            <action index="180" id="document-manage-repo-permissions" label="actions.folder.manage-permissions" />
+            <action index="190" id="document-manage-aspects" label="actions.folder.manage-aspects" />
+            <action index="200" id="view-in-explorer" />
+            <action index="210" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
+         </actionGroup>
+
+         <actionGroup id="document-link-browse">
+            <action index="100" id="document-locate" label="actions.link.locate">
+               <evaluator />
+            </action>
+            <action index="110" id="document-delete" label="actions.link.delete" />
+         </actionGroup>
+
+         <actionGroup id="document-link-details">
+            <action index="100" id="document-delete" label="actions.link.delete" />
+         </actionGroup>
+
+         <actionGroup id="folder-link-browse">
+            <action index="100" id="folder-view-details" />
+            <action index="110" id="document-locate" label="actions.link.locate">
+               <evaluator />
+            </action>
+            <action index="120" id="document-delete" label="actions.link.delete" />
+         </actionGroup>
+
+         <actionGroup id="folder-link-details">
+            <action index="100" id="document-delete" label="actions.link.delete" />
+         </actionGroup>
+
+      </actionGroups>
    </config>
 
 </alfresco-config>

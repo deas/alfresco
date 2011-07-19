@@ -1,34 +1,21 @@
-.folder-links
+.folder-links .link-info
 {
-   background-color: #fafafa;
-   padding: 1.5em 1em 2em 2em;
-   border-left: 1px solid #ccc;
-   border-top: 1px dashed #ccc;
-   margin-right: -10px;
+   padding: 0 1em 1em 0;
 }
 
-.folder-links .heading
+.folder-links h3
 {
-   color: #333333;
-   font-size: 131%;
+   margin-bottom: 0.5em;
 }
 
-.folder-links .url-title
+.folder-links .link-info input
 {
-   color: #333333;
-   font-size: 100%;
-   padding-top: 1.5em;
-   padding-bottom: 0.4em;
-}
-
-.folder-links .link-value
-{
-   width: 178px;
-   margin-bottom: 1em;
+   width: 100%;
    padding: 0.4em;
+   display: block;
 }
 
-.folder-links .copy-button
+.folder-links .link-info a
 {
-   display: none;
+ margin-left: 0.5em;
 }

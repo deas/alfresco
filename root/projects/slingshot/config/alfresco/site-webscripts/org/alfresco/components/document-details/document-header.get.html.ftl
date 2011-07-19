@@ -30,20 +30,25 @@
    <div class="document-header">
 
       <!-- Message banner -->
-      <#if document.custom?? && (document.custom.isWorkingCopy?? || document.custom.hasWorkingCopy??) >
-        <#if (document.lockedByUser!"")?length != 0 >
+      <#if document.workingCopy??>
+         <#if document.workingCopy.isWorkingCopy??>
+            <#assign lockUser = node.properties["cm:workingCopyOwner"]>
+         <#else>
+            <#assign lockUser = node.properties["cm:lockOwner"]>
+         </#if>
+         <#if lockUser??>
             <div class="status-banner theme-bg-color-2 theme-border-4">
-            <#assign lockedByLink = userProfileLink(document.lockedByUser, document.lockedBy, 'class="theme-color-1"') >
-            <#if (document.custom.googleDocUrl!"")?length != 0 >
-               <#assign link><a href="${document.custom.googleDocUrl}" target="_blank" class="theme-color-1">${msg("banner.google-docs.link")}</a></#assign>
-               <#if document.lockedByUser == user.name>
+            <#assign lockedByLink = userProfileLink(lockUser.userName, lockUser.displayName, 'class="theme-color-1"') >
+            <#if (document.workingCopy.googleDocUrl!"")?length != 0 >
+               <#assign link><a href="${document.workingCopy.googleDocUrl}" target="_blank" class="theme-color-1">${msg("banner.google-docs.link")}</a></#assign>
+               <#if lockUser.userName == user.name>
                   <span class="google-docs-owner">${msg("banner.google-docs-owner", link)}</span>
                <#else>
                   <span class="google-docs-locked">${msg("banner.google-docs-locked", lockedByLink, link)}</span>
                </#if>
             <#else>
-               <#if document.lockedByUser == user.name>
-                  <#assign status><#if document.actionSet == "lockOwner">lock-owner<#else>editing</#if></#assign>
+               <#if lockUser.userName == user.name>
+                  <#assign status><#if node.isLocked>lock-owner<#else>editing</#if></#assign>
                   <span class="${status}">${msg("banner." + status)}</span>
                <#else>
                   <span class="locked">${msg("banner.locked", lockedByLink)}</span>
@@ -81,8 +86,10 @@
 
          <!-- Modified & Social -->
          <div>
-            <#assign modifierLink = userProfileLink(document.modifiedByUser, document.modifiedBy, 'class="theme-color-1"') >
-            ${msg("label.modified-by-user-on-date", modifierLink, xmldate(document.modifiedOn)?string(msg("date-format.defaultFTL")))}
+            <#assign modifyUser = node.properties["cm:modifier"]>
+            <#assign modifyDate = node.properties["cm:modified"]>
+            <#assign modifierLink = userProfileLink(modifyUser.userName, modifyUser.displayName, 'class="theme-color-1"') >
+            ${msg("label.modified-by-user-on-date", modifierLink, xmldate(modifyDate.iso8601)?string(msg("date-format.defaultFTL")))}
             <#if showLikes == "true">
             <span id="${el}-like" class="item item-separator"></span>
             </#if>
@@ -103,7 +110,7 @@
          <!-- Download Button -->
          <span class="yui-button yui-link-button onDownloadDocumentClick">
             <span class="first-child">
-               <a href="${url.context}/proxy/alfresco/${document.contentUrl?js_string}?a=true" tabindex="0">${msg("button.download")}</a>
+               <a href="${url.context}/proxy/alfresco/${node.contentURL?js_string}?a=true" tabindex="0">${msg("button.download")}</a>
             </span>
          </span>
 

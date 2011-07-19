@@ -75,12 +75,9 @@
             myOptions.dataWebScript = dataWebScripts[obj.mode];
          }
          
-         if (typeof obj.workingMode !== "undefined")
-         {
-            myOptions.viewMode = (obj.workingMode == Alfresco.doclib.MODE_SITE) ? Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE : Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY;
-            // Actions module
-            this.modules.actions = new Alfresco.module.DoclibActions(obj.workingMode);
-         }
+         myOptions.viewMode = Alfresco.util.isValueSet(this.options.siteId, true) ? Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE : Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY;
+         // Actions module
+         this.modules.actions = new Alfresco.module.DoclibActions();
 
          return Alfresco.module.DoclibCopyMoveTo.superclass.setOptions.call(this, YAHOO.lang.merge(myOptions, obj));
       },
@@ -158,7 +155,7 @@
          }
          for (i = 0, j = files.length; i < j; i++)
          {
-            multipleFiles.push(files[i].nodeRef);
+            multipleFiles.push(files[i].node.nodeRef);
          }
          
          // Success callback function

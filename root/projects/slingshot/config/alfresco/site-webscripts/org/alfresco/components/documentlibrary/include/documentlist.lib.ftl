@@ -152,23 +152,12 @@
       </div>
    </div>
 
-   <!-- Action Sets -->
+   <!-- Action Set "More" template -->
    <div style="display:none">
-      <!-- Action Set "More..." container -->
       <div id="${id}-moreActions">
-         <div class="onActionShowMore"><a href="#" class="show-more" title="${msg("actions.more")}"><span>${msg("actions.more")}</span></a></div>
+         <div class="internal-show-more" title="onActionShowMore"><a href="#" class="show-more" title="${msg("actions.more")}"><span>${msg("actions.more")}</span></a></div>
          <div class="more-actions hidden"></div>
       </div>
-
-      <!-- Action Set Templates -->
-<#list actionSets?keys as key>
-   <#assign actionSet = actionSets[key]>
-      <div id="${id}-actionSet-${key}" class="action-set">
-   <#list actionSet as action>
-         <div class="${action.id}"><a rel="${action.permission!""}" href="${action.href}" class="${action.type}" title="${msg(action.label)}"><span>${msg(action.label)}</span></a></div>
-   </#list>
-      </div>
-</#list>
    </div>
 
 </div>

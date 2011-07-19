@@ -251,7 +251,7 @@
                name: "aspects/node/{nodeRef}",
                params:
                {
-                  nodeRef: this.options.file.nodeRef.replace(":/", "")
+                  nodeRef: this.options.file.jsNode.nodeRef.uri
                }
             },
             config:
@@ -470,7 +470,7 @@
          Alfresco.util.Ajax.request(
          {
             method: "GET",
-            url: Alfresco.constants.PROXY_URI + 'slingshot/doclib/aspects/node/' + this.options.file.nodeRef.replace(":/", ""),
+            url: Alfresco.constants.PROXY_URI + 'slingshot/doclib/aspects/node/' + this.options.file.jsNode.nodeRef.uri,
             successCallback: 
             { 
                fn: this._requestAspectDataSuccess, 

@@ -7,10 +7,10 @@
    <actionSets>
       <actionSet id="default">
          <action type="action-link" id="onActionCopyTo" label="menu.selected-items.copy" />
-         <action type="action-link" id="onActionMoveTo" permission="delete" label="menu.selected-items.move" />
-         <action type="action-link" id="onActionDelete" permission="delete" label="menu.selected-items.delete" />
+         <action type="action-link" id="onActionMoveTo" permission="Delete" label="menu.selected-items.move" />
+         <action type="action-link" id="onActionDelete" permission="Delete" label="menu.selected-items.delete" />
          <action type="action-link" id="onActionAssignWorkflow" asset="document" label="menu.selected-items.assign-workflow" />
-         <action type="action-link" id="onActionManagePermissions" permission="permissions" label="menu.selected-items.manage-permissions" />
+         <action type="action-link" id="onActionManagePermissions" permission="ChangePermissions" label="menu.selected-items.manage-permissions" />
       </actionSet>
    </actionSets>
 </toolbar>

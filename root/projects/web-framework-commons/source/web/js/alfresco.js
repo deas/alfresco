@@ -458,6 +458,28 @@ Alfresco.util.assertNotEmpty = function(param, message)
 };
 
 /**
+ * Check a value is neither undefined nor null (returns false).
+ * An empty string returns true unless the disallowEmptyString flag is set.
+ * @method Alfresco.util.isValueSet
+ * @param value {object} Parameter to check
+ * @param disallowEmptyString {boolean} Optional flag to indicate that empty strings are also not allowed.
+ * @static
+ * @return {boolean} Flag indicating whether the value is set or not.
+ */
+Alfresco.util.isValueSet = function(value, disallowEmptyString)
+{
+   if (YAHOO.lang.isUndefined(value) || YAHOO.lang.isNull(value))
+   {
+      return false;
+   }
+   if (YAHOO.lang.isString(value) && value.length === 0 && disallowEmptyString)
+   {
+      return false;
+   }
+   return true;
+};
+
+/**
  * Append multiple parts of a path, ensuring duplicate path separators are removed.
  * Leaves "://" patterns intact so URIs and nodeRefs are safe to pass through.
  *
@@ -482,7 +504,7 @@ Alfresco.util.combinePaths = function()
    path = path.replace(/(^|[^:])\/{2,}/g, "$1/");
 
    // Remove trailing "/" if the last argument didn't end with one
-   if (arguments.length > 0 && arguments[arguments.length - 1].match(/(.)\/$/) === null)
+   if (arguments.length > 0 && !(typeof arguments[arguments.length - 1] === "undefined") && arguments[arguments.length - 1].match(/(.)\/$/) === null)
    {
       path = path.replace(/(.)\/$/g, "$1");
    }
@@ -834,6 +856,10 @@ Alfresco.util.relativeTime = function(from, to)
    if (YAHOO.lang.isString(from))
    {
       from = Alfresco.util.fromISO8601(from);
+   }
+   else if (!(from instanceof Date))
+   {
+      return "";
    }
 
    if (YAHOO.lang.isUndefined(to))
@@ -5148,6 +5174,173 @@ Alfresco.util.Anim = function()
          e.message = "Invalid nodeRef: " + nodeRef;
          throw e;
       }
+   };
+})();
+
+/**
+ * Short QName property names, used by Alfresco.util.Node class
+ */
+Alfresco.constants = YAHOO.lang.merge(Alfresco.constants || {},
+{
+   /* Content model */
+   PROP_NAME: "cm:name",
+   PROP_TITLE: "cm:title",
+   PROP_DESCRIPTION: "cm:description",
+   PROP_CREATED: "cm:created",
+   PROP_CREATOR: "cm:creator",
+   PROP_MODIFIER: "cm:modifier",
+   PROP_MODIFIED: "cm:modified",
+   PROP_CATEGORIES: "cm:categories",
+   PROP_TAGGABLE: "cm:taggable",
+
+   /* Google Docs model */
+   PROP_GOOGLEDOC_URL: "gd:url"
+});
+
+/**
+ * Helper class for managing Nodes.
+ * Provides convenience functions for accessing node properties, aspects, etc.
+ * Requires a JSON structure representing a Node, as returned from appUtils.toJSON()
+ * <pre>
+ *    node: return node as passed-in, or parsed from JSON string
+ *    toJSON: return JSON string representing the node
+ *    storeType, storeId, id: return individual nodeRef parts
+ *    uri: return nodeRef in "uri" format, i.e. without ":/" between storeType and storeId
+ * </pre>
+ *
+ * @class Alfresco.util.Node
+ * @param node JSON string or object representing the node
+ */
+(function()
+{
+   Alfresco.util.Node = function(p_node)
+   {
+      if (YAHOO.lang.isUndefined(p_node) || p_node == null)
+      {
+         return null;
+      }
+      
+      var node = YAHOO.lang.isString(p_node) ? YAHOO.lang.JSON.parse(p_node) : p_node,
+         nodeJSON = YAHOO.lang.isString(p_node) ? p_node : YAHOO.lang.JSON.stringify(p_node);
+
+      var nodeRef = new Alfresco.util.NodeRef(node.nodeRef),
+         properties = node.properties || {},
+         aspects = node.aspects || [],
+         permissions = node.permissions || {},
+         aspectsObj = null,
+         tagsArray = null,
+         tagsObj = null,
+         categoriesArray = null;
+         categoriesObj = null;
+
+      /**
+       * Populates the properties object literal with all "cm:" properties for easy access.
+       * Therefore description can be accessed either as node.properties[Alfresco.constants.PROP_DESCRIPTION]
+       * or, more simply, as node.properties.description
+       */
+      for (var index in properties)
+      {
+         if (properties.hasOwnProperty(index) && index.indexOf("cm:") === 0)
+         {
+            properties[index.substring(3)] = properties[index];
+         }
+      };
+
+      /**
+       * Private functions
+       */
+      
+      var getTags = function Node_getTags()
+      {
+         if (tagsArray === null)
+         {
+            tagsArray = [];
+
+            var prop_taggable = node.properties[Alfresco.constants.PROP_TAGGABLE] || [];
+
+            for (var i = 0, ii = prop_taggable.length; i < ii; i++)
+            {
+               tagsArray.push(prop_taggable[i].name);
+            }
+         }
+         return tagsArray;
+      };
+
+      var getCategories = function Node_getCategories()
+      {
+         if (categoriesArray === null)
+         {
+            categoriesArray = [];
+
+            var prop_categories = node.properties[Alfresco.constants.PROP_CATEGORIES] || [];
+
+            for (var i = 0, ii = prop_categories.length; i < ii; i++)
+            {
+               categoriesArray.push([prop_categories[i].name, prop_categories[i].path]);
+            }
+         }
+         return categoriesArray;
+      };
+      
+      return (
+      {
+         /* Retrieve original object */
+         getNode: function()
+         {
+            return node;
+         },
+         toJSON: function()
+         {
+            return YAHOO.lang.JSON.stringify(node);
+         },
+
+         /* Core node properties */
+         nodeRef: nodeRef,
+         type: node.type,
+         isContainer: node.isContainer,
+         isLink: node.isLink,
+         linkedNode: new Alfresco.util.Node(node.linkedNode),
+         
+         /* Content Nodes */
+         contentURL: node.contentURL,
+         mimetype: node.mimetype,
+         size: node.size,
+         
+         /* Properties */
+         properties: properties,
+         
+         /* Aspects */
+         aspects: aspects,
+         hasAspect: function(aspect)
+         {
+            if (aspectsObj === null)
+            {
+               aspectsObj = Alfresco.util.arrayToObject(this.aspects);
+            }
+            return aspectsObj.hasOwnProperty(aspect);
+         },
+         
+         /* Permissions */
+         permissions: permissions,
+         hasPermission: function(permission)
+         {
+            return permissions.user[permission];
+         },
+         
+         /* Tags */
+         tags: getTags(),
+         hasTag: function(tag)
+         {
+            if (tagsObj === null)
+            {
+               tagsObj = Alfresco.util.arrayToObject(this.tags);
+            }
+            return tagsObj.hasOwnProperty(tag);
+         },
+         
+         /* Categories */
+         categories: getCategories()
+      });
    };
 })();
 

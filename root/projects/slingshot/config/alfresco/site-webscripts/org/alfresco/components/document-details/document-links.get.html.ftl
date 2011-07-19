@@ -1,8 +1,7 @@
 <#if document??>
-   <#if document.custom?? && (document.custom.isWorkingCopy?? || document.custom.hasWorkingCopy??) >
-      <!-- Don't display links since this nodeRef points to a working copy -->
+   <#if document.workingCopy??>
+      <!-- Don't display links since this nodeRef points to one of a working copy pair -->
    <#else>
-
       <#assign el=args.htmlid?html>
       <script type="text/javascript">//<![CDATA[
       new Alfresco.DocumentLinks("${el}").setOptions(

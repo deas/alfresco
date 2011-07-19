@@ -51,100 +51,36 @@
          </sub-components>
       </component>
 
-      <!-- Path -->
+      <!-- Folder Header -->
       <component>
-         <region-id>path</region-id>
+         <region-id>folder-header</region-id>
          <sub-components>
             <sub-component id="default">
                <evaluations>
-                  <!-- if in site: Site folder path -->
+                  <!-- if in site: Site header -->
                   <evaluation id="site">
                      <evaluators>
                         <evaluator type="site.component.evaluator"/>
                      </evaluators>
-                     <url>/components/folder-details/path</url>
+                     <url>/components/folder-details/folder-header</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                        <rootPage>documentlibrary</rootPage>
+                        <rootLabelId>path.documents</rootLabelId>
+                     </properties>
                   </evaluation>
-                  <!-- otherwise: Repository folder path -->
+                  <!-- otherwise: Repo header -->
                   <evaluation id="repo">
-                     <url>/components/folder-details/repo/path</url>
+                     <url>/components/folder-details/folder-header</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                        <rootPage>repository</rootPage>
+                        <rootLabelId>path.repository</rootLabelId>
+                     </properties>
                   </evaluation>
                </evaluations>
             </sub-component>
          </sub-components>
-      </component>
-
-      <!-- Folder Metadata Header -->
-      <component>
-         <region-id>folder-metadata-header</region-id>
-         <url>/components/folder-details/folder-metadata-header</url>
-      </component>
-
-      <!-- Folder Metadata -->
-      <component>
-         <region-id>folder-metadata</region-id>
-         <url>/components/form</url>
-         <properties>
-            <itemKind>node</itemKind>
-            <itemId>{nodeRef}</itemId>
-            <mode>view</mode>
-         </properties>
-      </component>
-
-      <!-- Folder Info -->
-      <component>
-         <region-id>folder-info</region-id>
-         <sub-components>
-            <sub-component id="default">
-               <evaluations>
-                  <!-- if in site: Site folder info -->
-                  <evaluation id="site">
-                     <evaluators>
-                        <evaluator type="site.component.evaluator"/>
-                     </evaluators>
-                     <url>/components/folder-details/folder-info</url>
-                  </evaluation>
-                  <!-- otherwise: Repository folder info -->
-                  <evaluation id="repo">
-                     <url>/components/folder-details/repo/folder-info</url>
-                  </evaluation>
-               </evaluations>
-            </sub-component>
-         </sub-components>
-      </component>
-
-
-      <!-- Actions (common) -->
-      <component>
-         <region-id>actions-common</region-id>
-         <url>/components/documentlibrary/actions-common</url>
-      </component>
-
-      <!-- Folder Actions -->
-      <component>
-         <region-id>folder-actions</region-id>
-         <sub-components>
-            <sub-component id="default">
-               <evaluations>
-                  <!-- if in site: Site folder actions -->
-                  <evaluation id="site">
-                     <evaluators>
-                        <evaluator type="site.component.evaluator"/>
-                     </evaluators>
-                     <url>/components/folder-details/folder-actions</url>
-                  </evaluation>
-                  <!-- otherwise: Repository folder actions -->
-                  <evaluation id="repo">
-                     <url>/components/folder-details/repo/folder-actions</url>
-                  </evaluation>
-               </evaluations>
-            </sub-component>
-         </sub-components>
-      </component>
-
-      <!-- Folder Links -->
-      <component>
-         <region-id>folder-links</region-id>
-         <url>/components/folder-details/folder-links</url>
       </component>
 
       <!-- Comments -->
@@ -155,6 +91,82 @@
             <nodeRef>{nodeRef}</nodeRef>
             <activityType>folder</activityType>
          </properties>
+      </component>
+
+      <!-- Folder Actions (incl commons) -->
+      <component>
+         <region-id>folder-actions</region-id>
+         <url>/components/folder-details/folder-actions</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+      <component>
+         <region-id>actions-common</region-id>
+         <url>/components/documentlibrary/actions-common</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+
+      <!-- Folder Tags -->
+      <component>
+         <region-id>folder-tags</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site tags -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/folder-details/folder-tags</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+
+      <!-- Folder Links -->
+      <component>
+         <region-id>folder-links</region-id>
+         <url>/components/folder-details/folder-links</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+
+      <!-- Folder Metadata -->
+      <component>
+         <region-id>folder-metadata</region-id>
+         <url>/components/folder-details/folder-metadata</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+
+      <!-- Folder Permissions -->
+      <component>
+         <region-id>folder-permissions</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Permissions -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/folder-details/folder-permissions</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
       </component>
 
    </components>

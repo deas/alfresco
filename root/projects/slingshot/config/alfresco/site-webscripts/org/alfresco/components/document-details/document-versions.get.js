@@ -8,10 +8,10 @@ function main()
    var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
    if (documentDetails)
    {
-      model.allowNewVersionUpload = documentDetails.item.permissions.userAccess.edit || false;
-      if (documentDetails.item.custom && documentDetails.item.custom.workingCopyVersion)
+      model.allowNewVersionUpload = documentDetails.item.node.permissions.user["Write"] || false;
+      if (documentDetails.workingCopy && documentDetails.workingCopy.workingCopyVersion)
       {
-         model.workingCopyVersion = documentDetails.item.custom.workingCopyVersion;
+         model.workingCopyVersion = documentDetails.workingCopy.workingCopyVersion;
       }
    }
 }

@@ -211,6 +211,7 @@
          </properties>
       </component>
 
+      <!-- Document Publishing -->
       <component>
          <region-id>document-publishing</region-id>
          <url>/components/document-details/document-publishing</url>

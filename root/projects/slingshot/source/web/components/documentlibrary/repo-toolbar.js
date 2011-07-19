@@ -61,23 +61,6 @@
    YAHOO.lang.augmentObject(Alfresco.RepositoryDocListToolbar.prototype,
    {
       /**
-       * Set multiple initialization options at once.
-       *
-       * @method setOptions
-       * @override
-       * @param obj {object} Object literal specifying a set of options
-       * @return {Alfresco.RepositoryDocListToolbar} returns 'this' for method chaining
-       */
-      setOptions: function RDLTB_setOptions(obj)
-      {
-         return Alfresco.RepositoryDocListToolbar.superclass.setOptions.call(this, YAHOO.lang.merge(
-         {
-            workingMode: Alfresco.doclib.MODE_REPOSITORY
-         }, obj));
-      },
-
-
-      /**
        * YUI WIDGET EVENT HANDLERS
        * Handlers for standard events fired from YUI widgets, e.g. "click"
        */

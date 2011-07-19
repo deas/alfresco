@@ -2,7 +2,7 @@
 
 function setPermissions(documentDetails)
 {
-   var rawPerms = documentDetails.item.permissions.roles,
+   var rawPerms = documentDetails.item.node.permissions.roles,
       permParts,
       group,
       permission;
@@ -57,7 +57,7 @@ function main()
    if (documentDetails)
    {
       setPermissions(documentDetails);
-      model.allowPermissionsUpdate = documentDetails.item.permissions.userAccess.permissions || false;
+      model.allowPermissionsUpdate = documentDetails.item.node.permissions.user["ChangePermissions"] || false;
       model.displayName = documentDetails.item.displayName;
    }
 }

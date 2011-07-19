@@ -46,39 +46,17 @@
       this.name = "Alfresco.DocListCategories";
       Alfresco.util.ComponentManager.reregister(this);
       
+      // Category filterId
+      this.filterId = "category";
+      
       // Register with Filter Manager
-      Alfresco.util.FilterManager.register(this.name, "category");
+      Alfresco.util.FilterManager.register(this.name, this.filterId);
       
       return this;
    };
    
    YAHOO.extend(Alfresco.DocListCategories, Alfresco.DocListTree,
    {
-      /**
-       * Fired by YUI TreeView when a node label is clicked
-       * @method onNodeClicked
-       * @param args.event {HTML Event} the event object
-       * @param args.node {YAHOO.widget.Node} the node clicked
-       * @return allowExpand {boolean} allow or disallow node expansion
-       */
-      onNodeClicked: function DLT_onNodeClicked(args)
-      {
-         var node = args.node;
-         
-         this._updateSelectedNode(node);
-         
-         // Fire the change filter event
-         YAHOO.Bubbling.fire("changeFilter",
-         {
-            filterOwner: this.name,
-            filterId: "category",
-            filterData: node.data.path
-         });
-         
-         // Prevent the tree node from expanding (TODO: user preference?)
-         return false;
-      },
-
       /**
        * PRIVATE FUNCTIONS
        */

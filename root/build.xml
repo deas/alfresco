@@ -789,7 +789,7 @@
       <!-- add all JARs to WEB-INF/lib -->
       <copy todir="${dir.deploy.tomcat.application.slingshot}/WEB-INF/lib" verbose="${copy.verbose}">
          <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="${includes.webscriptframework.libs}" />
+                  includes="${includes.webscriptframework.libs} ${includes.slingshot.libs}" />
          <fileset dir="${dir.project.3rdparty.lib}/optional" 
                  includes="${includes.webscriptframework.libs.optional}" />
          <fileset dir="${dir.project.3rdparty.lib}/commons" 

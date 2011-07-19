@@ -17,7 +17,7 @@ function main()
    var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
    if (documentDetails)
    {
-      model.destination = documentDetails.metadata.parent.nodeRef
+      model.destination = documentDetails.item.parent.nodeRef
       model.workflows = getDocumentWorkflows(model.nodeRef);
    }
 }

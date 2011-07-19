@@ -75,16 +75,6 @@
       options:
       {
          /**
-          * Working mode: Site or Repository.
-          * Affects how actions operate, e.g. actvities are not posted in Repository mode.
-          * 
-          * @property workingMode
-          * @type number
-          * @default Alfresco.doclib.MODE_SITE
-          */
-         workingMode: Alfresco.doclib.MODE_SITE,
-
-         /**
           * Reference to the current document
           *
           * @property nodeRef
@@ -98,7 +88,7 @@
           * @property siteId
           * @type string
           */
-         siteId: "",
+         siteId: null,
          
          /**
           * ContainerId representing root container
@@ -159,10 +149,10 @@
       /**
        * The data for the document
        * 
-       * @property assetData
+       * @property recordData
        * @type object
        */
-      assetData: null,
+      recordData: null,
       
       /**
        * Metadata returned by doclist data webscript
@@ -182,40 +172,6 @@
       currentPath: null,
 
       /**
-       * The urls to be used when creating links in the action cell
-       *
-       * @method getActionUrls
-       * @param recordData {object} Object literal representing the node
-       * @param siteId {string} Optional siteId override for site-based locations
-       * @return {object} Object literal containing URLs to be substituted in action placeholders
-       */
-      getActionUrls: function DocumentActions_getActionUrls(recordData, siteId)
-      {
-         var nodeRef = recordData.nodeRef,
-            custom = recordData.custom || {},
-            siteObj = YAHOO.lang.isString(siteId) ? { site: siteId } : null,
-            fnPageURL = Alfresco.util.bind(function(page)
-            {
-               return Alfresco.util.siteURL(page, siteObj);
-            }, this);
-
-         return (
-         {
-            downloadUrl: Alfresco.constants.PROXY_URI + recordData.contentUrl + "?a=true",
-            viewUrl:  Alfresco.constants.PROXY_URI + recordData.contentUrl + "\" target=\"_blank",
-            viewGoogleDocUrl: custom.googleDocUrl + "\" target=\"_blank",
-            documentDetailsUrl: fnPageURL("document-details?nodeRef=" + nodeRef),
-            editMetadataUrl: fnPageURL("edit-metadata?nodeRef=" + nodeRef),
-            inlineEditUrl: fnPageURL("inline-edit?nodeRef=" + nodeRef),
-            managePermissionsUrl: fnPageURL("manage-permissions?nodeRef=" + nodeRef),
-            manageTranslationsUrl: fnPageURL("manage-translations?nodeRef=" + nodeRef),
-            workingCopyUrl: fnPageURL("document-details?nodeRef=" + (custom.workingCopyNode || nodeRef)),
-            originalUrl: fnPageURL("document-details?nodeRef=" + (custom.workingCopyOriginal || nodeRef)),
-            sourceRepositoryUrl: this.viewInSourceRepositoryURL(recordData) + "\" target=\"_blank"
-         });
-      },
-       
-      /**
        * Event handler called when "onReady"
        *
        * @method: onReady
@@ -225,50 +181,113 @@
          var me = this;
          
          // Asset data 
-         this.assetData = this.options.documentDetails.item;
+         this.recordData = this.options.documentDetails.item;
          this.doclistMetadata = this.options.documentDetails.metadata;
-         this.currentPath = this.assetData.location.path;
+         this.currentPath = this.recordData.location.path;
          
-         // Copy template into active area
-         var assetData = this.assetData,
-            actionsContainer = Dom.get(this.id + "-actionSet"),
-            actionSet = assetData.actionSet,
-            clone = Dom.get(this.id + "-actionSet-" + actionSet).cloneNode(true),
-            downloadUrl = Alfresco.constants.PROXY_URI + assetData.contentUrl + "?a=true",
-            displayName = assetData.displayName;
+         // Populate convenience property
+         this.recordData.jsNode = new Alfresco.util.Node(this.recordData.node);
+
+         var actionTypeMarkup =
+         {
+            "link": '<div class="{id}"><a title="{label}" class="simple-link" href="{href}" {target}><span>{label}</span></a></div>',
+            "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}"><span>{label}</span></a></div>',
+            "javascript": '<div class="{id}" title="{jsfunction}"><a title="{label}" class="action-link" href="#"><span>{label}</span></a></div>'
+         };
+         
+         var fnRenderAction = function DA_renderAction(p_action, p_record)
+         {
+            // Store quick look-up for client-side actions
+            p_record.actionParams[p_action.id] = p_action.params;
+            
+            var markupParams =
+            {
+               "id": p_action.id,
+               "label": me.msg(p_action.label)
+            };
+            
+            // Parameter substitution for each action type
+            if (p_action.type === "link")
+            {
+               if (p_action.params.href)
+               {
+                  markupParams.href = YAHOO.lang.substitute(p_action.params.href, p_record, function DL_renderAction_href(p_key, p_value, p_meta)
+                  {
+                     return Alfresco.util.findValueByDotNotation(p_record, p_key);
+                  });
+                  markupParams.target = p_action.params.target ? "target=\"" + p_action.params.target + "\"" : "";
+               }
+               else
+               {
+                  Alfresco.logger.warn("Action configuration error: Missing 'href' parameter for actionId: ", p_action.id);
+               }
+            }
+            else if (p_action.type === "pagelink")
+            {
+               if (p_action.params.page)
+               {
+                  markupParams.pageUrl = YAHOO.lang.substitute(p_action.params.page, p_record, function DL_renderAction_pageUrl(p_key, p_value, p_meta)
+                  {
+                     return Alfresco.util.findValueByDotNotation(p_record, p_key);
+                  });
+               }
+               else
+               {
+                  Alfresco.logger.warn("Action configuration error: Missing 'page' parameter for actionId: ", p_action.id);
+               }
+            }
+            else if (p_action.type === "javascript")
+            {
+               if (p_action.params["function"])
+               {
+                  markupParams.jsfunction = p_action.params["function"];
+               }
+               else
+               {
+                  Alfresco.logger.warn("Action configuration error: Missing 'function' parameter for actionId: ", p_action.id);
+               }
+            }
+
+            return YAHOO.lang.substitute(actionTypeMarkup[p_action.type], markupParams);
+         };
+         
+         // Retrieve the actionSet for this record
+         var record = this.recordData,
+            node = record.node,
+            actions = record.actions,
+            actionsEl = Dom.get(this.id + "-actionSet"),
+            actionHTML = "",
+            actionsSel;
+
+         record.actionParams = {};
+         for (var i = 0, ii = actions.length; i < ii; i++)
+         {
+            actionHTML += fnRenderAction(actions[i], record);
+         }
 
          // Token replacement
-         clone.innerHTML = YAHOO.lang.substitute(window.unescape(clone.innerHTML), this.getActionUrls(this.assetData));
+         var actionUrls = this.getActionUrls(record);
+         actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, actionUrls);
 
-         // Replace existing actions and assign correct class for icon rendering
-         actionsContainer.innerHTML = clone.innerHTML;
-         Dom.addClass(actionsContainer, assetData.type);
 
+         /**
+          * TODO: Sort this lot out
+          *
+          */
          // Hide actions which have been disallowed through permissions
-         if (assetData.permissions && assetData.permissions.userAccess)
+         if (record.permissions && record.permissions.userAccess)
          {
-            var userAccess = assetData.permissions.userAccess,
-               actionLabels = assetData.actionLabels || {},
-               actions = YAHOO.util.Selector.query("div", actionsContainer),
-               action, actionPermissions, aP, i, ii, j, jj, actionAllowed, aTag, spanTag;
-
-            // Inject special-case permissions
-            if (assetData.mimetype in this.options.inlineEditMimetypes)
-            {
-               userAccess["inline-edit"] = true;
-            }
-            userAccess.portlet = Alfresco.constants.PORTLET;
-
             /*
              * Configure the Online Edit URL and permission if correct conditions are met
              * Browser == MSIE; vtiServer details retrieved; vti module installed; mimetype matches whitelist
              */
+            
             if (YAHOO.env.ua.ie > 0 &&
                this.options.vtiServer && typeof this.options.vtiServer.port == "number" &&
                this.doclistMetadata.onlineEditing &&
-               assetData.mimetype in this.onlineEditMimetypes)
+               record.mimetype in this.onlineEditMimetypes)
             {
-               var loc = assetData.location,
+               var loc = record.location,
                   uri = this.options.vtiServer.host + ":" + this.options.vtiServer.port + "/" + $combine("alfresco", loc.site, loc.container, loc.path, loc.file);
                
                if (!(/^(http|https):\/\//).test(uri))
@@ -276,40 +295,15 @@
                   // VTI server doesn't support HTTPS directly
                   uri = window.location.protocol.replace(/https/i, "http") + "//" + uri;
                }
-               assetData.onlineEditUrl = uri;
-               userAccess["online-edit"] = true;
-            }
-            
-            for (i = 0, ii = actions.length; i < ii; i++)
-            {
-               action = actions[i];
-               actionAllowed = true;
-               aTag = action.firstChild;
-               spanTag = aTag.firstChild;
-
-               if (spanTag && actionLabels[action.className])
-               {
-                  spanTag.innerHTML = $html(actionLabels[action.className]);
-               }
-
-               if (aTag.rel !== "")
-               {
-                  actionPermissions = aTag.rel.split(",");
-                  for (j = 0, jj = actionPermissions.length; j < jj; j++)
-                  {
-                     aP = actionPermissions[j];
-                     // Support "negative" permissions
-                     if ((aP.charAt(0) == "~") ? !!userAccess[aP.substring(1)] : !userAccess[aP])
-                     {
-                        actionAllowed = false;
-                        break;
-                     }
-                  }
-               }
-               Dom.setStyle(action, "display", actionAllowed ? "block" : "none");
+               record.onlineEditUrl = uri;
             }
          }
-         Dom.setStyle(actionsContainer, "visibility", "visible");
+
+         Dom.addClass(actionsEl, "action-set");
+         Dom.setStyle(actionsEl, "visibility", "visible");
+
+         var displayName = record.displayName,
+            downloadUrl = actionUrls.downloadUrl;
          
          // Hook action events
          var fnActionHandler = function DocumentActions_fnActionHandler(layer, args)
@@ -317,20 +311,18 @@
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
-               var action = owner.className;
-               if (typeof me[action] == "function")
+               if (typeof me[owner.title] === "function")
                {
                   args[1].stop = true;
-                  me[action].call(me, me.assetData, owner);
+                  me[owner.title].call(me, me.recordData, owner);
                }
             }
             return true;
          };
-         
          YAHOO.Bubbling.addDefaultAction("action-link", fnActionHandler);
          
          // DocLib Actions module
-         this.modules.actions = new Alfresco.module.DoclibActions(this.options.workingMode);
+         this.modules.actions = new Alfresco.module.DoclibActions();
          
          // Prompt auto-download (after Edit Offline action)?
          if (window.location.hash == "#editOffline")
@@ -425,8 +417,8 @@
                {
                   fn: function DocumentActions_oAEO_success(data)
                   {
-                     this.assetData.nodeRef = data.json.results[0].nodeRef;
-                     window.location = this.getActionUrls(this.assetData).documentDetailsUrl + "#editOffline";
+                     this.recordData.nodeRef = data.json.results[0].nodeRef;
+                     window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#editOffline";
                   },
                   scope: this
                }
@@ -467,8 +459,8 @@
                {
                   fn: function DocumentActions_oACE_success(data)
                   {
-                     this.assetData.nodeRef = data.json.results[0].nodeRef;
-                     window.location = this.getActionUrls(this.assetData).documentDetailsUrl + "#editCancelled";
+                     this.recordData.nodeRef = data.json.results[0].nodeRef;
+                     window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#editCancelled";
                   },
                   scope: this
                }
@@ -541,7 +533,7 @@
                scope: this
             }
          };
-         if (this.options.workingMode == Alfresco.doclib.MODE_SITE)
+         if (Alfresco.util.isValueSet(this.options.siteId, true))
          {
             singleUpdateConfig.siteId = this.options.siteId;
             singleUpdateConfig.containerId = this.options.containerId;
@@ -559,11 +551,11 @@
       {
          // Call the normal callback to post the activity data
          this.onNewVersionUploadComplete.call(this, complete);
-         this.assetData.nodeRef = complete.successful[0].nodeRef;
+         this.recordData.nodeRef = complete.successful[0].nodeRef;
          // Delay page reloading to allow time for async requests to be transmitted
          YAHOO.lang.later(0, this, function()
          {
-            window.location = this.getActionUrls(this.assetData).documentDetailsUrl;
+            window.location = this.getActionUrls(this.recordData).documentDetailsUrl;
          });
       },
 
@@ -596,8 +588,8 @@
                {
                   fn: function DocumentActions_oAEO_success(data)
                   {
-                     this.assetData.nodeRef = data.json.results[0].nodeRef;
-                     window.location = this.getActionUrls(this.assetData).documentDetailsUrl + "#checkoutToGoogleDocs";
+                     this.recordData.nodeRef = data.json.results[0].nodeRef;
+                     window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#checkoutToGoogleDocs";
                   },
                   scope: this
                },
@@ -671,8 +663,8 @@
                {
                   fn: function DocumentActions_oACE_success(data)
                   {
-                     this.assetData.nodeRef = data.json.results[0].nodeRef;
-                     window.location = this.getActionUrls(this.assetData).documentDetailsUrl + "#checkinFromGoogleDocs";
+                     this.recordData.nodeRef = data.json.results[0].nodeRef;
+                     window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#checkinFromGoogleDocs";
                   },
                   scope: this
                },
@@ -712,23 +704,7 @@
             }
          });
       },
-      
-      /**
-       * Social Publishing
-       * 
-       * @method onActionPublish
-       * @param asset {object} Object literal representing the file or folder to be actioned
-       */
-      onActionPublish: function dlA_onActionPublish(asset) {
-         
-         // Call the Social Publishing Module
-         Alfresco.module.getSocialPublishingInstance().show(
-         {
-            nodeRef: asset.nodeRef,
-            filename: asset.fileName
-         }); 
-      },
-      
+
       /**
        * Delete Asset confirmed.
        *
@@ -743,7 +719,7 @@
             fileName = asset.fileName,
             displayName = asset.displayName,
             nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
-            callbackUrl = this.options.workingMode == Alfresco.doclib.MODE_SITE ? "documentlibrary" : "repository",
+            callbackUrl = Alfresco.util.isValueSet(this.options.siteId, true) ? "documentlibrary" : "repository",
             encodedPath = path.length > 1 ? "?path=" + encodeURIComponent(path) : "";
          
          this.modules.actions.genericAction(

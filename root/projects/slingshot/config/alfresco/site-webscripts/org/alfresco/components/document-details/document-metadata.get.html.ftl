@@ -8,7 +8,7 @@
       ${msg("heading")}
       <#if allowMetaDataUpdate>
       <span class="alfresco-twister-actions">
-         <a href="${siteURL("edit-metadata?nodeRef="+nodeRef?js_string)}" class="edit" title="${msg("label.edit")}">&nbsp;</a>
+         <a href="${siteURL("edit-metadata?nodeRef=" + nodeRef?url)}" class="edit" title="${msg("label.edit")}">&nbsp;</a>
       </span>
       </#if>
    </h2>
@@ -20,7 +20,8 @@
 
 <!-- Javascript instance -->
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.DocumentMetadata("${el}").setOptions({
+   new Alfresco.DocumentMetadata("${el}").setOptions(
+   {
       nodeRef: "${nodeRef}",
       site: <#if site??>"${site?js_string}"<#else>null</#if>,
       formId: <#if formId??>"${formId?js_string}"<#else>null</#if>

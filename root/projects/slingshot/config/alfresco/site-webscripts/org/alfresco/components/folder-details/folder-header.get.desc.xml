@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>folder-header</shortname>
+  <description>Folder header used on the folder details page.</description>
+  <url>/components/folder-details/folder-header</url>
+</webscript>

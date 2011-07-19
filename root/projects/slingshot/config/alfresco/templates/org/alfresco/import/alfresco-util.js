@@ -1,3 +1,5 @@
+<import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/documentlibrary/data/surf-doclist.lib.js">
+
 var this_AlfrescoUtil = this;
 
 var AlfrescoUtil =
@@ -124,22 +126,30 @@ var AlfrescoUtil =
 
    getDocumentDetails: function getDocumentDetails(nodeRef, site, defaultValue)
    {
-      var url = '/slingshot/doclib/node/' + nodeRef.replace('://', '/');
+      var url = '/slingshot/doclib2/node/' + nodeRef.replace('://', '/');
       if (!site)
       {
          // Repository mode
          url += "?libraryRoot=" + encodeURIComponent(AlfrescoUtil.getRootNode());
       }
       var result = remote.connect("alfresco").get(url);
-      if (result.status != 200)
+
+      if (result.status == 200)
       {
-         if (defaultValue !== undefined)
+         var obj = eval('(' + result + ')');
+         if (obj && (obj.item || obj.items))
          {
-            return defaultValue;
+            DocList.processResult(obj);
+            return obj;
          }
-         AlfrescoUtil.error(result.status, 'Could not load document details for ' + nodeRef);
       }
-      return eval('(' + result + ')');
+
+      if (defaultValue !== undefined)
+      {
+         return defaultValue;
+      }
+
+      AlfrescoUtil.error(result.status, 'Could not load document details for ' + nodeRef);
    },
 
    getLinkDetailsByPostId: function getLinkDetails(site, container, link, defaultValue)
@@ -542,6 +552,38 @@ var AlfrescoUtil =
          }
       }
       return null;
+   },
+
+   /**
+    * Append multiple parts of a path, ensuring duplicate path separators are removed.
+    * Leaves "://" patterns intact so URIs and nodeRefs are safe to pass through.
+    *
+    * @method Alfresco.util.combinePaths
+    * @param path1 {string} First path
+    * @param path2 {string} Second path
+    * @param ...
+    * @param pathN {string} Nth path
+    * @return {string} A string containing the combined paths
+    * @static
+    */
+   combinePaths: function combinePaths()
+   {
+      var path = "", i, ii;
+      for (i = 0, ii = arguments.length; i < ii; i++)
+      {
+         if (arguments[i] !== null)
+         {
+            path += arguments[i] + (arguments[i] !== "/" ? "/" : "");
+         }
+      }
+      path = path.replace(/(^|[^:])\/{2,}/g, "$1/");
+
+      // Remove trailing "/" if the last argument didn't end with one
+      if (arguments.length > 0 && !(typeof arguments[arguments.length - 1] === "undefined") && arguments[arguments.length - 1].match(/(.)\/$/) === null)
+      {
+         path = path.replace(/(.)\/$/g, "$1");
+      }
+      return path;
    }
 
 };

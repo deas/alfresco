@@ -1806,7 +1806,7 @@
       <!-- add all JAR to WEB-INF/lib -->
       <copy todir="${dir.project.slingshot.assemble}/WEB-INF/lib">
          <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="${includes.webscriptframework.libs}" />
+                  includes="${includes.webscriptframework.libs} ${includes.slingshot.libs}" />
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
                   includes="${includes.webscriptframework.libs.spring-surf}" />
          <fileset dir="${dir.project.3rdparty.lib}/optional" 

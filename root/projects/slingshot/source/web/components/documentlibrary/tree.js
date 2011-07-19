@@ -47,9 +47,12 @@
    Alfresco.DocListTree = function DLT_constructor(htmlId)
    {
       Alfresco.DocListTree.superclass.constructor.call(this, "Alfresco.DocListTree", htmlId, ["treeview", "json"]);
+
+      // Path filterId
+      this.filterId = "path";
       
       // Register with Filter Manager
-      Alfresco.util.FilterManager.register(this.name, "path");
+      Alfresco.util.FilterManager.register(this.name, this.filterId);
       
       // Initialise prototype properties
       this.currentFilter = {};
@@ -362,7 +365,7 @@
             YAHOO.Bubbling.fire("changeFilter",
             {
                filterOwner: this.name,
-               filterId: "path",
+               filterId: this.filterId,
                filterData: node.data.path
             });
          }
@@ -456,7 +459,7 @@
          var obj = args[1];
          if (obj && (obj.file !== null))
          {
-            var node = this.widgets.treeview.getNodeByProperty("nodeRef", obj.file.nodeRef);
+            var node = this.widgets.treeview.getNodeByProperty("nodeRef", obj.file.node.nodeRef);
             if (node !== null)
             {
                // Node found, so rename it

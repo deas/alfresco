@@ -1,13 +1,21 @@
-// calculate if external auth is being used so we generate the appropriate download links
-var conn = remote.connect("alfresco");
-model.externalAuth = conn.getDescriptor().getExternalAuth();
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
 
-// Repository Url
-var repositoryUrl = null,
-   repositoryConfig = config.scoped["DocumentLibrary"]["repository-url"];
-if (repositoryConfig !== null)
+function main()
 {
-   repositoryUrl = repositoryConfig.value;
+   AlfrescoUtil.param('nodeRef');
+   AlfrescoUtil.param('site', null);
+   var folderDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   if (folderDetails)
+   {
+      model.folder = folderDetails.item;
+      var repositoryUrl = AlfrescoUtil.getRepositoryUrl(),
+         webdavUrl = folderDetails.item.webdavUrl;
+
+      if (repositoryUrl && webdavUrl)
+      {
+         model.webdavUrl = AlfrescoUtils.combinePaths(repositoryUrl, webdavUrl);
+      }
+   }
 }
 
-model.repositoryUrl = repositoryUrl;
+main();

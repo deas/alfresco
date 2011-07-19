@@ -1,0 +1,59 @@
+.folder-header h1
+{
+   padding: 0.5em 0 0.2em;
+}
+
+.folder-header .folder-info
+{
+   float: left;
+   width: 78%;
+}
+
+.folder-header .folder-path
+{
+   padding-bottom: 0.5em;
+   padding-left: 0.35em;
+   padding-top: 1em;
+}
+
+.folder-header .folder-path .folder-link
+{
+   background-position: left 50%;
+   background-repeat: no-repeat;
+   padding: 2px 0 2px 20px;
+}
+
+.folder-header .folder-path .folder-open
+{
+   background-image: url(../documentlibrary/images/folder-open-16.png);
+}
+
+.folder-header .folder-path .folder-closed
+{
+   background-image: url(../documentlibrary/images/folder-closed-16.png);
+}
+
+.folder-header .folder-path .separator
+{
+   border: medium none;
+   padding: 0 0.5em;
+}
+
+.folder-header .folder-thumbnail
+{
+   float: left;
+   padding: 0.5em 0.5em 1em 0;
+}
+
+.folder-header .folder-action
+{
+   float: right;
+   width: 20%;
+   text-align: right;
+   padding-top: 4.5em;
+}
+
+.folder-header span.item-social
+{
+   margin-left: 0.8em;
+}

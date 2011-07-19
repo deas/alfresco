@@ -28,7 +28,7 @@
       <!-- Documentlist -->
       <component>
          <region-id>documentlist</region-id>
-         <url>/components/documentlibrary/repo/documentlist</url>
+         <url>/components/documentlibrary/documentlist</url>
          <properties>
             <pagination>true</pagination>
          </properties>

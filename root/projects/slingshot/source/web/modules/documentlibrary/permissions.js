@@ -256,7 +256,7 @@
          files = this.options.files;
          for (var i = 0, j = files.length; i < j; i++)
          {
-            multipleFiles.push(files[i].nodeRef);
+            multipleFiles.push(files[i].node.nodeRef);
          }
          
          // Success callback function

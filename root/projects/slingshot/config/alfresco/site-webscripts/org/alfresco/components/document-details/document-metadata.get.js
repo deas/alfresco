@@ -8,7 +8,7 @@ function main()
    var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
    if (documentDetails)
    {
-      model.allowMetaDataUpdate = documentDetails.item.permissions.userAccess.edit || false;
+      model.allowMetaDataUpdate = documentDetails.item.node.permissions.user["Write"] || false;
    }
 }
 

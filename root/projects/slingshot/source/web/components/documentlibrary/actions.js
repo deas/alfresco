@@ -39,21 +39,63 @@
    Alfresco.doclib.Actions.prototype =
    {
       /**
-       * Asset metadata.
+       * The urls to be used when creating links in the action cell
+       *
+       * @method getActionUrls
+       * @param recordData {object} Object literal representing the node
+       * @param siteId {string} Optional siteId override for site-based locations
+       * @return {object} Object literal containing URLs to be substituted in action placeholders
+       */
+      getActionUrls: function DoclibActions_getActionUrls(record, siteId)
+      {
+         var jsNode = record.jsNode,
+            nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef,
+            strNodeRef = nodeRef.toString(),
+            nodeRefUri = nodeRef.uri,
+            contentUrl = jsNode.contentURL,
+            workingCopy = record.workingCopy || {},
+            siteObj = YAHOO.lang.isString(siteId) ? { site: siteId } : null,
+            fnPageURL = Alfresco.util.bind(function(page)
+            {
+               return Alfresco.util.siteURL(page, siteObj);
+            }, this);
+
+         return (
+         {
+            downloadUrl: $combine(Alfresco.constants.PROXY_URI, contentUrl) + "?a=true",
+            viewUrl:  $combine(Alfresco.constants.PROXY_URI, contentUrl) + "\" target=\"_blank",
+            documentDetailsUrl: fnPageURL("document-details?nodeRef=" + strNodeRef),
+            folderDetailsUrl: fnPageURL("folder-details?nodeRef=" + strNodeRef),
+            editMetadataUrl: fnPageURL("edit-metadata?nodeRef=" + strNodeRef),
+            inlineEditUrl: fnPageURL("inline-edit?nodeRef=" + strNodeRef),
+            managePermissionsUrl: fnPageURL("manage-permissions?nodeRef=" + strNodeRef),
+            manageTranslationsUrl: fnPageURL("manage-translations?nodeRef=" + strNodeRef),
+            workingCopyUrl: fnPageURL("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef)),
+            workingCopySourceUrl: fnPageURL("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef)),
+            viewGoogleDocUrl: workingCopy.googleDocUrl + "\" target=\"_blank",
+            explorerViewUrl: $combine(this.options.repositoryUrl, "/n/showSpaceDetails/", nodeRefUri) + "\" target=\"_blank",
+            sourceRepositoryUrl: this.viewInSourceRepositoryURL(record) + "\" target=\"_blank"
+         });
+      },
+
+      /**
+       * Record metadata.
        *
        * @override
        * @method onActionDetails
-       * @param asset {object} Object literal representing one file or folder to be actioned
+       * @param record {object} Object literal representing one file or folder to be actioned
        */
-      onActionDetails: function dlA_onActionDetails(asset)
+      onActionDetails: function dlA_onActionDetails(record)
       {
-         var scope = this;
+         var scope = this,
+            nodeRef = record.nodeRef,
+            jsNode = record.jsNode;
 
          // Intercept before dialog show
          var doBeforeDialogShow = function dlA_onActionDetails_doBeforeDialogShow(p_form, p_dialog)
          {
             // Dialog title
-            var fileSpan = '<span class="light">' + $html(asset.displayName) + '</span>';
+            var fileSpan = '<span class="light">' + $html(record.displayName) + '</span>';
 
             Alfresco.util.populateHTML(
                [ p_dialog.id + "-dialogTitle", scope.msg("edit-details.title", fileSpan) ]
@@ -64,14 +106,14 @@
             {
                type: "link",
                label: scope.msg("edit-details.label.edit-metadata"),
-               href: $siteURL("edit-metadata?nodeRef=" + asset.nodeRef)
+               href: $siteURL("edit-metadata?nodeRef=" + nodeRef)
             });
          };
 
          var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",
          {
             itemKind: "node",
-            itemId: asset.nodeRef,
+            itemId: nodeRef,
             mode: "edit",
             submitType: "json",
             formId: "doclib-simple-metadata"
@@ -96,20 +138,20 @@
                fn: function dlA_onActionDetails_success(response)
                {
                   // Reload the node's metadata
-                  var nodeRef = asset.custom && asset.custom.isWorkingCopy ? asset.custom.workingCopyOriginal : asset.nodeRef;
                   Alfresco.util.Ajax.request(
                   {
-                     url: Alfresco.constants.PROXY_URI + "slingshot/doclib/node/" + new Alfresco.util.NodeRef(nodeRef).uri,
+                     url: $combine(Alfresco.constants.URL_SERVICECONTEXT, "components/documentlibrary/data/node/", jsNode.nodeRef.uri),
                      successCallback:
                      {
                         fn: function dlA_onActionDetails_refreshSuccess(response)
                         {
-                           var file = response.json.item;
+                           var record = response.json.item,
+                              node = record.node;
 
                            // Fire "renamed" event
-                           YAHOO.Bubbling.fire(asset.type == "folder" ? "folderRenamed" : "fileRenamed",
+                           YAHOO.Bubbling.fire(node.isContainer ? "folderRenamed" : "fileRenamed",
                            {
-                              file: file
+                              file: record
                            });
 
                            // Fire "tagRefresh" event
@@ -153,21 +195,22 @@
       },
 
       /**
-       * Locate folder.
+       * Locate record.
        *
        * @method onActionLocate
-       * @param asset {object} Object literal representing one file or folder to be actioned
+       * @param record {object} Object literal representing one file or folder to be actioned
        */
-      onActionLocate: function dlA_onActionLocate(asset)
+      onActionLocate: function dlA_onActionLocate(record)
       {
-         var path = asset.isFolder ? Alfresco.util.combinePaths("/", asset.location.path.substring(0, asset.location.path.lastIndexOf("/"))) : asset.location.path,
-            file = asset.isLink ? asset.linkedDisplayName : asset.displayName;
+         var jsNode = record.jsNode,
+            path = record.location.path,
+            file = jsNode.isLink ? jsNode.linkedNode.properties.name : record.displayName;
          
-         if (this.options.workingMode === Alfresco.doclib.MODE_SITE && asset.location.site !== this.options.siteId)
+         if (Alfresco.util.isValueSet(this.options.siteId, true) && record.location.site.name !== this.options.siteId)
          {
             window.location = $siteURL("documentlibrary?file=" + encodeURIComponent(file) + "&path=" + encodeURIComponent(path),
             {
-               site: asset.location.site
+               site: record.location.site.name
             });
          }
          else
@@ -184,26 +227,27 @@
       },
 
       /**
-       * Delete asset.
+       * Delete record.
        *
        * @method onActionDelete
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionDelete: function dlA_onActionDelete(asset)
+      onActionDelete: function dlA_onActionDelete(record)
       {
-         var me = this;
+         var me = this,
+            jsNode = record.jsNode;
 
          Alfresco.util.PopupManager.displayPrompt(
          {
-            title: this.msg("actions." + (asset.isFolder ? "folder" : "document") + ".delete"),
-            text: this.msg("message.confirm.delete", asset.displayName),
+            title: this.msg("actions." + (jsNode.isContainer ? "folder" : "document") + ".delete"),
+            text: this.msg("message.confirm.delete", record.displayName),
             buttons: [
             {
                text: this.msg("button.delete"),
                handler: function dlA_onActionDelete_delete()
                {
                   this.destroy();
-                  me._onActionDeleteConfirm.call(me, asset);
+                  me._onActionDeleteConfirm.call(me, record);
                }
             },
             {
@@ -218,19 +262,20 @@
       },
 
       /**
-       * Delete asset confirmed.
+       * Delete record confirmed.
        *
        * @method _onActionDeleteConfirm
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        * @private
        */
-      _onActionDeleteConfirm: function dlA__onActionDeleteConfirm(asset)
+      _onActionDeleteConfirm: function dlA__onActionDeleteConfirm(record)
       {
-         var path = asset.location.path,
-            fileName = asset.fileName,
+         var jsNode = record.jsNode,
+            path = record.location.path,
+            fileName = record.location.file,
             filePath = $combine(path, fileName),
-            displayName = asset.displayName,
-            nodeRef = new Alfresco.util.NodeRef(asset.nodeRef);
+            displayName = record.displayName,
+            nodeRef = jsNode.nodeRef;
 
          this.modules.actions.genericAction(
          {
@@ -250,7 +295,7 @@
                },
                event:
                {
-                  name: asset.isFolder ? "folderDeleted" : "fileDeleted",
+                  name: jsNode.isContainer ? "folderDeleted" : "fileDeleted",
                   obj:
                   {
                      path: filePath
@@ -279,9 +324,9 @@
        * NOTE: Placeholder only, clients MUST implement their own editOffline action
        *
        * @method onActionEditOffline
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionEditOffline: function dlA_onActionEditOffline(asset)
+      onActionEditOffline: function dlA_onActionEditOffline(record)
       {
          Alfresco.logger.error("onActionEditOffline", "Abstract implementation not overridden");
       },
@@ -307,11 +352,11 @@
        * Edit Online.
        *
        * @method onActionEditOnline
-       * @param asset {object} Object literal representing file or folder to be actioned
+       * @param record {object} Object literal representing file or folder to be actioned
        */
-      onActionEditOnline: function dlA_onActionEditOnline(asset)
+      onActionEditOnline: function dlA_onActionEditOnline(record)
       {
-         if (this._launchOnlineEditor(asset))
+         if (this._launchOnlineEditor(record))
          {
             YAHOO.Bubbling.fire("metadataRefresh");
          }
@@ -322,13 +367,14 @@
        * Supports: Microsoft Office 2003, 2007 & 2010.
        *
        * @method Alfresco.util.sharePointOpenDocument
-       * @param asset {object} Object literal representing file or folder to be actioned
+       * @param record {object} Object literal representing file or folder to be actioned
        * @return {boolean} True if the action was completed successfully, false otherwise.
        */
-      _launchOnlineEditor: function dlA__launchOnlineEditor(asset)
+      _launchOnlineEditor: function dlA__launchOnlineEditor(record)
       {
          var controlProgID = "SharePoint.OpenDocuments",
-            mimetype = asset.mimetype,
+            jsNode = record.jsNode,
+            mimetype = jsNode.mimetype,
             appProgID = null,
             activeXControl = null,
             extensionMap =
@@ -341,14 +387,14 @@
                docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             };
 
-         // Try to resolve the asset to an application ProgID; by mimetype first, then file extension.
+         // Try to resolve the record to an application ProgID; by mimetype first, then file extension.
          if (this.onlineEditMimetypes.hasOwnProperty(mimetype))
          {
             appProgID = this.onlineEditMimetypes[mimetype];
          }
          else
          {
-            var extn = Alfresco.util.getFileExtension(asset.location.file);
+            var extn = Alfresco.util.getFileExtension(record.location.file);
             if (extn !== null)
             {
                extn = extn.toLowerCase();
@@ -369,21 +415,21 @@
             try
             {
                activeXControl = new ActiveXObject(controlProgID + ".3");
-               return activeXControl.EditDocument3(window, asset.onlineEditUrl, true, appProgID);
+               return activeXControl.EditDocument3(window, record.onlineEditUrl, true, appProgID);
             }
             catch(e)
             {
                try
                {
                   activeXControl = new ActiveXObject(controlProgID + ".2");
-                  return activeXControl.EditDocument2(window, asset.onlineEditUrl, appProgID);
+                  return activeXControl.EditDocument2(window, record.onlineEditUrl, appProgID);
                }
                catch(e1)
                {
                   try
                   {
                      activeXControl = new ActiveXObject(controlProgID + ".1");
-                     return activeXControl.EditDocument(asset.onlineEditUrl, appProgID);
+                     return activeXControl.EditDocument(record.onlineEditUrl, appProgID);
                   }
                   catch(e2)
                   {
@@ -394,7 +440,7 @@
          }
 
          // No success in launching application via ActiveX control; launch the WebDAV URL anyway
-         return window.open(asset.onlineEditUrl, "_blank");
+         return window.open(record.onlineEditUrl, "_blank");
       },
 
       /**
@@ -402,9 +448,9 @@
        * NOTE: Placeholder only, clients MUST implement their own checkoutToGoogleDocs action
        *
        * @method onActionCheckoutToGoogleDocs
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionCheckoutToGoogleDocs: function dlA_onActionCheckoutToGoogleDocs(asset)
+      onActionCheckoutToGoogleDocs: function dlA_onActionCheckoutToGoogleDocs(record)
       {
          Alfresco.logger.error("onActionCheckoutToGoogleDocs", "Abstract implementation not overridden");
       },
@@ -414,42 +460,22 @@
        * NOTE: Placeholder only, clients MUST implement their own checkinFromGoogleDocs action
        *
        * @method onActionCheckinFromGoogleDocs
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionCheckinFromGoogleDocs: function dlA_onActionCheckinFromGoogleDocs(asset)
+      onActionCheckinFromGoogleDocs: function dlA_onActionCheckinFromGoogleDocs(record)
       {
          Alfresco.logger.error("onActionCheckinFromGoogleDocs", "Abstract implementation not overridden");
-      },
-
-      /**
-       * Rules.
-       *
-       * @method onActionRules
-       * @param assets {object} Object literal representing one or more file(s) or folder(s) to be actioned
-       */
-      onActionRules: function dlA_onActionRules(assets)
-      {
-         if (!this.modules.details)
-         {
-            this.modules.details = new Alfresco.module.DoclibDetails(this.id + "-details");
-         }
-
-         this.modules.details.setOptions(
-         {
-            siteId: this.options.siteId,
-            file: assets
-         }).showDialog();
       },
 
       /**
        * Simple Workflow: Approve.
        *
        * @method onActionSimpleApprove
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionSimpleApprove: function dlA_onActionSimpleApprove(asset)
+      onActionSimpleApprove: function dlA_onActionSimpleApprove(record)
       {
-         var displayName = asset.displayName;
+         var displayName = record.displayName;
 
          this.modules.actions.genericAction(
          {
@@ -476,7 +502,7 @@
                requestContentType: Alfresco.util.Ajax.JSON,
                dataObj:
                {
-                  actionedUponNode: asset.nodeRef,
+                  actionedUponNode: record.nodeRef,
                   actionDefinitionName: "accept-simpleworkflow"
                }
             }
@@ -487,11 +513,11 @@
        * Simple Workflow: Reject.
        *
        * @method onActionSimpleReject
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionSimpleReject: function dlA_onActionSimpleReject(asset)
+      onActionSimpleReject: function dlA_onActionSimpleReject(record)
       {
-         var displayName = asset.displayName;
+         var displayName = record.displayName;
 
          this.modules.actions.genericAction(
          {
@@ -518,7 +544,7 @@
                requestContentType: Alfresco.util.Ajax.JSON,
                dataObj:
                {
-                  actionedUponNode: asset.nodeRef,
+                  actionedUponNode: record.nodeRef,
                   actionDefinitionName: "reject-simpleworkflow"
                }
             }
@@ -529,13 +555,14 @@
        * Upload new version.
        *
        * @method onActionUploadNewVersion
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionUploadNewVersion: function dlA_onActionUploadNewVersion(asset)
+      onActionUploadNewVersion: function dlA_onActionUploadNewVersion(record)
       {
-         var displayName = asset.displayName,
-            nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
-            version = asset.version;
+         var jsNode = record.jsNode,
+            displayName = record.displayName,
+            nodeRef = jsNode.nodeRef,
+            version = record.version;
 
          if (!this.fileUpload)
          {
@@ -552,9 +579,9 @@
             extensions = "*" + displayName.substring(displayName.lastIndexOf("."));
          }
 
-         if (asset.custom && asset.custom.workingCopyVersion)
+         if (record.workingCopy && record.workingCopy.workingCopyVersion)
          {
-            version = asset.custom.workingCopyVersion;
+            version = record.workingCopy.workingCopyVersion;
          }
 
          var singleUpdateConfig =
@@ -575,7 +602,7 @@
                scope: this
             }
          };
-         if (this.options.workingMode == Alfresco.doclib.MODE_SITE)
+         if (Alfresco.util.isValueSet(this.options.siteId, true))
          {
             singleUpdateConfig.siteId = this.options.siteId;
             singleUpdateConfig.containerId = this.options.containerId;
@@ -650,12 +677,11 @@
        * Cancel editing.
        *
        * @method onActionCancelEditing
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionCancelEditing: function dlA_onActionCancelEditing(asset)
+      onActionCancelEditing: function dlA_onActionCancelEditing(record)
       {
-         var displayName = asset.displayName,
-            nodeRef = new Alfresco.util.NodeRef(asset.nodeRef);
+         var displayName = record.displayName;
 
          this.modules.actions.genericAction(
          {
@@ -677,7 +703,7 @@
                name: "cancel-checkout/node/{nodeRef}",
                params:
                {
-                  nodeRef: nodeRef.uri
+                  nodeRef: record.jsNode.nodeRef.uri
                }
             }
          });
@@ -687,22 +713,22 @@
        * Copy single document or folder.
        *
        * @method onActionCopyTo
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionCopyTo: function dlA_onActionCopyTo(asset)
+      onActionCopyTo: function dlA_onActionCopyTo(record)
       {
-         this._copyMoveTo("copy", asset);
+         this._copyMoveTo("copy", record);
       },
 
       /**
        * Move single document or folder.
        *
        * @method onActionMoveTo
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionMoveTo: function dlA_onActionMoveTo(asset)
+      onActionMoveTo: function dlA_onActionMoveTo(record)
       {
-         this._copyMoveTo("move", asset);
+         this._copyMoveTo("move", record);
       },
 
       /**
@@ -710,10 +736,10 @@
        *
        * @method _copyMoveTo
        * @param mode {String} Operation mode: copy|move
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        * @private
        */
-      _copyMoveTo: function dlA__copyMoveTo(mode, asset)
+      _copyMoveTo: function dlA__copyMoveTo(mode, record)
       {
          // Check mode is an allowed one
          if (!mode in
@@ -746,8 +772,7 @@
             siteId: this.options.siteId,
             containerId: this.options.containerId,
             path: this.currentPath,
-            files: asset,
-            workingMode: this.options.workingMode,
+            files: record,
             rootNode: this.options.rootNode,
             parentId: this.doclistMetadata.parent.nodeRef
          }).showDialog();
@@ -757,27 +782,27 @@
        * Assign workflow.
        *
        * @method onActionAssignWorkflow
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionAssignWorkflow: function dlA_onActionAssignWorkflow(asset)
+      onActionAssignWorkflow: function dlA_onActionAssignWorkflow(record)
       {
          var nodeRefs = "",
             destination = null;
 
-         if (YAHOO.lang.isArray(asset))
+         if (YAHOO.lang.isArray(record))
          {
             var sameParent = true;
-            for (var i = 0, il = asset.length; i < il; i++)
+            for (var i = 0, il = record.length; i < il; i++)
             {
-               nodeRefs += (i === 0 ? "" : ",") + asset[i].nodeRef;
+               nodeRefs += (i === 0 ? "" : ",") + record[i].nodeRef;
                if (sameParent && i > 0)
                {
-                  sameParent = asset[i - 1].location.parent.nodeRef == asset[i].location.parent.nodeRef;
+                  sameParent = record[i - 1].parent.nodeRef == record[i].parent.nodeRef;
                }
             }
-            if (sameParent && asset.length > 0)
+            if (sameParent && record.length > 0)
             {
-               destination = asset[i - 1].location.parent.nodeRef;
+               destination = record[i - 1].parent.nodeRef;
             }
             else
             {
@@ -786,8 +811,8 @@
          }
          else
          {
-            nodeRefs = asset.nodeRef;
-            destination = asset.location.parent.nodeRef;
+            nodeRefs = record.nodeRef;
+            destination = record.parent.nodeRef;
          }
          var postBody =
          {
@@ -804,9 +829,9 @@
        * Set permissions on a single document or folder.
        *
        * @method onActionManagePermissions
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionManagePermissions: function dlA_onActionManagePermissions(asset)
+      onActionManagePermissions: function dlA_onActionManagePermissions(record)
       {
          if (!this.modules.permissions)
          {
@@ -818,7 +843,7 @@
             siteId: this.options.siteId,
             containerId: this.options.containerId,
             path: this.currentPath,
-            files: asset
+            files: record
          }).showDialog();
       },
 
@@ -826,9 +851,9 @@
        * Manage aspects.
        *
        * @method onActionManageAspects
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionManageAspects: function dlA_onActionManageAspects(asset)
+      onActionManageAspects: function dlA_onActionManageAspects(record)
       {
          if (!this.modules.aspects)
          {
@@ -837,7 +862,7 @@
 
          this.modules.aspects.setOptions(
          {
-            file: asset
+            file: record
          }).show();
       },
 
@@ -845,14 +870,14 @@
        * Change Type
        *
        * @method onActionChangeType
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionChangeType: function dlA_onActionChangeType(asset)
+      onActionChangeType: function dlA_onActionChangeType(record)
       {
-         var nodeRef = asset.nodeRef,
-            currentType = asset.nodeType,
-            displayName = asset.displayName,
-            actionUrl = Alfresco.constants.PROXY_URI + $combine("slingshot/doclib/type/node", nodeRef.replace(":/", ""));
+         var jsNode = record.jsNode,
+            currentType = jsNode.type,
+            displayName = record.displayName,
+            actionUrl = Alfresco.constants.PROXY_URI + $combine("slingshot/doclib/type/node", jsNode.nodeRef.uri);
 
          var doSetupFormsValidation = function dlA_oACT_doSetupFormsValidation(p_form)
          {
@@ -910,13 +935,12 @@
        * View in source Repository URL helper
        *
        * @method viewInSourceRepositoryURL
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      viewInSourceRepositoryURL: function dlA_viewInSourceRepositoryURL(asset)
+      viewInSourceRepositoryURL: function dlA_viewInSourceRepositoryURL(record)
       {
-         var nodeRef = asset.nodeRef,
-            type = asset.type,
-            repoId = asset.location.repositoryId,
+         var node = record.node,
+            repoId = record.location.repositoryId,
             urlMapping = this.options.replicationUrlMapping,
             siteUrl;
 
@@ -926,27 +950,27 @@
          }
 
          // Generate a URL to the relevant details page
-         siteUrl = Alfresco.util.siteURL(type + "-details?nodeRef=" + nodeRef);
+         siteUrl = this.getActionUrls(record)[node.isContainer ? "folderDetailsUrl" : "documentDetailsUrl"];
          // Strip off this webapp's context as the mapped one might be different
          siteUrl = siteUrl.substring(Alfresco.constants.URL_CONTEXT.length);
 
          return $combine(urlMapping[repoId], "/", siteUrl);
       },
-      
+
       /**
        * Social Publishing
        * 
        * @method onActionPublish
-       * @param asset {object} Object literal representing the file or folder to be actioned
+       * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionPublish: function dlA_onActionPublish(asset) {
-         
+      onActionPublish: function dlA_onActionPublish(record)
+      {
          // Call the Social Publishing Module
          Alfresco.module.getSocialPublishingInstance().show(
          {
-            nodeRef: asset.nodeRef,
-            filename: asset.fileName
-         }); 
+            nodeRef: record.nodeRef,
+            filename: record.fileName
+         });
       }
    };
 })();

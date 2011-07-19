@@ -41,9 +41,9 @@ function main()
    if (documentDetails)
    {
       model.document = documentDetails.item;
+      model.node = documentDetails.item.node;
       model.paths = getPaths(documentDetails, model.rootPage, model.rootLabelId);
-      //model.showComments = (documentDetails.item.permissions.userAccess.create || false).toString();
-      model.showComments = (documentDetails.item.permissions.userAccess.create && model.showComments).toString();
+      model.showComments = (documentDetails.item.node.permissions.user["CreateChildren"] && model.showComments).toString();
    }
 }
 
