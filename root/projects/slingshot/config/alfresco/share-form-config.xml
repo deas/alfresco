@@ -77,6 +77,10 @@
                <show id="exif:yResolution" />
                <show id="exif:resolutionUnit" />
                
+               <!-- cm:indexControl aspect -->
+               <show id="cm:isIndexed" />
+               <show id="cm:isContentIndexed" />
+               
                <!-- cm:geographic aspect -->
                <show id="cm:latitude" />
                <show id="cm:longitude" />

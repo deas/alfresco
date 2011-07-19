@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -780,11 +781,55 @@ public class CoreTracker
 
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
+                   
+
+                    Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
+                    
+                    // check index control
+                    
+                    if(properties.containsKey(ContentModel.PROP_IS_INDEXED))
+                    {
+                        StringPropertyValue pValue = (StringPropertyValue)properties.get(ContentModel.PROP_IS_INDEXED);
+                        if(pValue != null)
+                        {
+                            Boolean isIndexed = Boolean.valueOf(pValue.getValue());
+                            if((isIndexed != null) && (isIndexed.booleanValue() == false))
+                            {
+                                DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
+                                docCmd.id = "LEAF-" + node.getId();
+                                docCmd.fromPending = true;
+                                docCmd.fromCommitted = true;
+                                core.getUpdateHandler().delete(docCmd);
+                                
+                                docCmd = new DeleteUpdateCommand();
+                                docCmd.id = "AUX-" + node.getId();
+                                docCmd.fromPending = true;
+                                docCmd.fromCommitted = true;
+                                core.getUpdateHandler().delete(docCmd);
+                                
+                                return;
+                            }
+                        }
+                    }
+                    
+                    boolean isContentIndexedForNode = true;
+                    if(properties.containsKey(ContentModel.PROP_IS_CONTENT_INDEXED))
+                    {
+                        StringPropertyValue pValue = (StringPropertyValue)properties.get(ContentModel.PROP_IS_CONTENT_INDEXED);
+                        if(pValue != null)
+                        {
+                            Boolean isIndexed = Boolean.valueOf(pValue.getValue());
+                            if((isIndexed != null) && (isIndexed.booleanValue() == false))
+                            {
+                                isContentIndexedForNode = false;
+                            }
+                        }
+                    }
+                    
                     SolrInputDocument doc = new SolrInputDocument();
                     doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + node.getId());
                     doc.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
-
-                    Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
+                    
                     for (QName propertyQname : properties.keySet())
                     {
                         PropertyValue value = properties.get(propertyQname);
@@ -792,7 +837,10 @@ public class CoreTracker
                         {
                             if (value instanceof ContentPropertyValue)
                             {
-                                addContentPropertyToDoc(doc, toClose, toDelete, node, propertyQname, (ContentPropertyValue) value);
+                                if(isContentIndexedForNode)
+                                {
+                                    addContentPropertyToDoc(doc, toClose, toDelete, node, propertyQname, (ContentPropertyValue) value);
+                                }
                             }
                             else if (value instanceof MLTextPropertyValue)
                             {
@@ -805,7 +853,10 @@ public class CoreTracker
                                 {
                                     if (singleValue instanceof ContentPropertyValue)
                                     {
-                                        addContentPropertyToDoc(doc, toClose, toDelete, node, propertyQname, (ContentPropertyValue) singleValue);
+                                        if(isContentIndexedForNode)
+                                        {
+                                            addContentPropertyToDoc(doc, toClose, toDelete, node, propertyQname, (ContentPropertyValue) singleValue);
+                                        }
                                     }
                                     else if (singleValue instanceof MLTextPropertyValue)
                                     {
@@ -896,6 +947,12 @@ public class CoreTracker
             System.out.println(".. deleting");
             DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
             docCmd.id = "LEAF-" + node.getId();
+            docCmd.fromPending = true;
+            docCmd.fromCommitted = true;
+            core.getUpdateHandler().delete(docCmd);
+            
+            docCmd = new DeleteUpdateCommand();
+            docCmd.id = "AUX-" + node.getId();
             docCmd.fromPending = true;
             docCmd.fromCommitted = true;
             core.getUpdateHandler().delete(docCmd);

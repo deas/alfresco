@@ -49,6 +49,7 @@
             <aspect name="gd:googleEditable" />
             <aspect name="cm:geographic" />
             <aspect name="exif:exif" />
+            <aspect name="cm:indexControl" />
          </visible>
 
          <!--
