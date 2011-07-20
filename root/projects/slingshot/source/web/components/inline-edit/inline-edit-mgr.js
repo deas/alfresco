@@ -94,7 +94,7 @@
          cancelButton.addListener("click", this.onCancelButtonClick, null, this);
          
          // add actions for Activity post info
-         this.modules.actions = new Alfresco.module.DoclibActions(this.options.workingMode);
+         this.modules.actions = new Alfresco.module.DoclibActions();
       },
       
       /**
