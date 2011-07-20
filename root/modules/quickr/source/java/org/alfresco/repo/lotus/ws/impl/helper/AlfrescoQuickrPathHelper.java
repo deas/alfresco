@@ -483,14 +483,15 @@ public class AlfrescoQuickrPathHelper extends AbstractLifecycleBean
         {
             return nodeRef;
         }
-
-        if (!nodeService.hasAspect(nodeRef, ContentModel.ASPECT_WORKING_COPY))
+        NodeRef checkedOutNodeRef = checkOutCheckInService.getCheckedOut(nodeRef);
+        if (checkedOutNodeRef == null)
         {
             return nodeRef;
         }
-
-        return (NodeRef) nodeService.getProperty(nodeRef, ContentModel.PROP_COPY_REFERENCE);
-
+        else
+        {
+            return checkedOutNodeRef;
+        }
     }
 
     /**
