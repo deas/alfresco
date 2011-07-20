@@ -50,6 +50,16 @@
             <option value="${filter.type?html}">${msg("filter." + filter.label)}</option>
          </#list>
          </select>
+         <span class="align-left yui-button yui-menu-button" id="${id}-activities">
+            <span class="first-child">
+               <button type="button" tabindex="0"></button>
+            </span>
+         </span>
+         <select id="${id}-activities-menu">
+         <#list filterActivities as filter>
+            <option value="${filter.type?html}">${msg("filter." + filter.label)}</option>
+         </#list>
+         </select>
          <span class="align-left yui-button yui-menu-button" id="${id}-range">
             <span class="first-child">
                <button type="button" tabindex="0"></button>
@@ -60,17 +70,7 @@
             <option value="${filter.type?html}">${msg("filter." + filter.label)}</option>
          </#list>
          </select>
-         <span class="align-left first-child" style="padding-top:5px">${msg("label.filter")}:</span>
-         <span class="align-left yui-button yui-menu-button" id="${id}-activities">
-            <span class="first-child">
-               <button type="button" tabindex="0"></button>
-            </span>
-         </span>
-         <select id="${id}-activities-menu">
-         <#list filterActivities as filter>
-            <option value="${filter.activities?html}">${msg(filter.label)}</option>
-         </#list>
-         </select>
+         <div class="clear"></div>
       </div>
    </div>
    <div id="${id}-activityList" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>></div>

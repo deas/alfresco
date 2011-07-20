@@ -2,7 +2,6 @@
 <template-instance>
    <template-type>org/alfresco/following</template-type>
    <components>
-
       <!-- Title -->
       <component>
          <region-id>title</region-id>

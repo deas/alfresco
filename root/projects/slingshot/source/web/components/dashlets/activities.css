@@ -1,6 +1,6 @@
-.activities .toolbar .activities-filter
+.activities .yui-button
 {
-   line-height: 2em;
+   margin: auto 0;
 }
 
 .activities .empty
