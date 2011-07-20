@@ -251,11 +251,12 @@
       onPublishButtonClick: function SP_onPublishButtonClick()
       {
          // create the JSON object for the POST request.
+         var selectedChannel = Dom.get(this.id + "-channel-select")
          var publishData = 
             {
-               "channelName": Dom.get(this.id + "-channel-select").value,
+               "channelId": selectedChannel.value,
                "publishNodes": [this.showConfig.nodeRef],
-               "statusUpdate" : {}
+               "statusUpdate": {}
             },
             me = this,
             statusUpdateChannels = []
@@ -274,7 +275,7 @@
             publishData.statusUpdate = 
             {
                "message": this.widgets.statusUpdateText.value,
-               "channelNames": statusUpdateChannels
+               "channelIds": statusUpdateChannels
             }
             // If the URL is to be included, add the nodeRef to the statusUpdate obj
             if (this.widgets.statusUpdateURL.checked) {
@@ -288,14 +289,14 @@
             // Build up necessary data and HTML.
             // It looks more complicated than it actually is.
             var fileName = me.showConfig.filename, 
-               channelName = response.config.dataObj.channelName,
+               channelName = selectedChannel.options[selectedChannel.options.selectedIndex].innerHTML,
                docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "site/" + Alfresco.constants.SITE + "/document-details?nodeRef=" + me.showConfig.nodeRef;
                linkText = Alfresco.util.message("socialPublish.confirm.link", me.name, 
                      {
                         "0": fileName
                      }),
                linkHTML = "<a href='" + docDetailsURL + "'>" + linkText + "</a>",
-               channelHTML = "<span class='channel'><img src='http://www.slideshare.net/favicon.ico' />" + channelName + "</span>",
+               channelHTML = "<span class='channel'>" + channelName + "</span>",
                trackingText = Alfresco.util.message("socialPublish.confirm.track", me.name,
                   {
                      "0": linkHTML
@@ -306,7 +307,9 @@
                      "1": channelHTML
                   }),
                balloonHTML = "<div class='publishConfirm'><div class='success'>" + successText + "</div><div class='tracking'>" + trackingText + "</div></div>",
-               balloon = Alfresco.util.createBalloon("template_x002e_documentlist_x002e_documentlibrary-doclistBar",
+               // TODO - this should be more dynamic...
+               balloonElement = Dom.get(Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentList").id);
+               balloon = Alfresco.util.createBalloon(balloonElement,
                {
                   html: balloonHTML,
                   width: "48em"

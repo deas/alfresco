@@ -14,7 +14,7 @@
             <h3 class="channel-header">${msg("socialPublish.dialogue.channel.title")}</h3>
             <select id="${el}-channel-select">
             	<#list publishChannels as publishChannel>
-                  <option value="${publishChannel.name?html}" rel="${publishChannel.channelType.title?html}"><img src="${publishChannel.channelType.icon?html}" width="16" height="16"/>${publishChannel.title?html}</option>
+                  <option value="${publishChannel.id?html}" rel="${publishChannel.channelType.title?html}"><img src="${publishChannel.channelType.icon?html}" width="16" height="16"/>${publishChannel.title?html}</option>
 					</#list>
 				</select>
          </div>
@@ -23,9 +23,6 @@
             
 				<div id="${el}-statusUpdate-count" class="status-count"></div>
 		   	<textarea id="${el}-statusUpdate-text"></textarea>
-				<div id="${el}-statusUpdate-lengths">
-				   <label for="${el}-statusUpdate-text">message lengths</label>	
-				</div>
             <div id="${el}-statusUpdate-includeURL">
                <input type="checkbox" name="includeURL" id="${el}-statusUpdate-checkbox-url" checked="checked" rel="${urlLength}" />
                <label for="${el}-statusUpdate-checkbox-url">${msg("socialPublish.dialogue.statusUpdate.includeURL", urlLength)}</label>
@@ -37,7 +34,7 @@
 					<#list statusUpdateChannels as statusUpdateChannel>
 				      <#assign count = count + 1>
 						<div class="status-channel">
-	   				   <input class="statusUpdate-checkboxes" type="checkbox" name="" value="${statusUpdateChannel.name?html}" id="${el}-statusUpdate-checkbox-channel-${count}"/>
+	   				   <input class="statusUpdate-checkboxes" type="checkbox" name="" value="${statusUpdateChannel.id?html}" id="${el}-statusUpdate-checkbox-channel-${count}"/>
 		     			   <label for="${el}-statusUpdate-checkbox-channel-${count}"><img src="${statusUpdateChannel.channelType.icon?html}" width="16" height="16"/>${statusUpdateChannel.title?html}</label>
 				   	</div>
                </#list>
