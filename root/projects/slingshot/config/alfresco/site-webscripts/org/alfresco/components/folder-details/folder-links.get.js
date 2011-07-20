@@ -13,7 +13,7 @@ function main()
 
       if (repositoryUrl && webdavUrl)
       {
-         model.webdavUrl = AlfrescoUtils.combinePaths(repositoryUrl, webdavUrl);
+         model.webdavUrl = AlfrescoUtil.combinePaths(repositoryUrl, webdavUrl);
       }
    }
 }
