@@ -6,7 +6,7 @@
    <div class="bd">
       <div class="browse-wrapper">
          <div class="center">
-            <div id="${el}-flashuploader-div" class="browse">${msg("label.noFlash")}</div>
+            <div id="${el}-flashuploader-div" class="browse"></div>
             <div class="label">${msg("label.browse")}</div>
          </div>
       </div>

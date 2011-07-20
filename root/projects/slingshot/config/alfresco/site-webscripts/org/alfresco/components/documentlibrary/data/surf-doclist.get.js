@@ -29,6 +29,10 @@ function main()
          json = jsonUtils.toJSONString(obj);
       }
    }
+   else
+   {
+      status.setCode(result.status);
+   }
 
    model.json = json;
 }

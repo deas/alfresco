@@ -429,6 +429,12 @@
                !Alfresco.constants.PORTLET
             ]]></condition>
          </action>
+         
+         <!-- Publish document -->
+         <action id="document-publish" type="javascript" label="actions.document.publish">
+            <param name="function">onActionPublish</param>
+            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspectEvaluator</evaluator>
+         </action>
 
       </actions>
 
@@ -456,6 +462,7 @@
             <action index="270" id="document-delete" />
             <action index="280" id="document-assign-workflow" />
             <action index="290" id="document-cancel-editing" />
+            <action index="300" id="document-publish" />
          </actionGroup>
 
          <actionGroup id="document-details">
@@ -482,6 +489,7 @@
             <action index="300" id="document-manage-repo-permissions" />
             <action index="310" id="document-manage-aspects" />
             <action index="320" id="document-view-in-source-repository" />
+            <action index="330" id="document-publish" />
          </actionGroup>
 
          <actionGroup id="folder-browse">
