@@ -8,7 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/guessencoding-1.0.jar" sourcepath="/3rd Party/src/guessencoding-1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jta.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jug-asl-2.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/xml-apis.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/j2ee/servlet.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jboss/jboss-vfs-2.1.0.GA.jar" sourcepath="/3rd Party/lib/jboss/jboss-vfs-2.1.0.GA-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/hibernate-3.2.6-patched.jar" sourcepath="/3rd Party/src/hibernate-3.2.6-patched-src.zip"/>

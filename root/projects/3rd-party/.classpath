@@ -51,7 +51,6 @@
 	<classpathentry kind="lib" path="lib/jstl-1.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/standard.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-fileupload-1.2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons/commons-pool-1.5.5.jar" sourcepath="src/commons-pool-1.5.5-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-pool-1.5.5-javadoc.jar!/"/>
@@ -102,7 +101,6 @@
 	<classpathentry kind="lib" path="lib/stax-utils-20060502.jar"/>
 	<classpathentry kind="lib" path="lib/wsdl4j-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.4.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/xml-resolver-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jaxws_2.1_spec-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/poi-3.8-beta4-20110701.jar" sourcepath="src/poi-3.8-beta4-20110701.zip"/>
@@ -229,7 +227,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.8.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.8.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-security-core-3.1.0.RC2.jar"/>
-	<classpathentry kind="output" path=""/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.5.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.5.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.5.0-SNAPSHOT.jar"/>
