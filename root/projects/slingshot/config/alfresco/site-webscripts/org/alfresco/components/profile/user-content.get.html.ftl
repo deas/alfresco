@@ -12,30 +12,28 @@
    </#if>
 </#macro>
 
-<#assign el=args.htmlid>
+<#assign el=args.htmlid?html>
 <div id="${el}-body" class="profile">
-   <div id="${el}-readview">
-      <div class="viewcolumn">
-         <div class="header-bar">${msg("label.recentlyAdded")}</div>
-   <#if (numAddedContent > 0)>
-         <ul class="content">
+   <div class="viewcolumn">
+      <div class="header-bar">${msg("label.recentlyAdded")}</div>
+      <#if (numAddedContent > 0)>
+      <ul class="content">
       <#list addedContent as content>
-         <@formatContent content content.createdOn "createdOn" content_index />
+      <@formatContent content content.createdOn "createdOn" content_index />
       </#list>
-         </ul>
-   <#else>
-         <p>${msg("label.noAddedContent")}</p>
-   </#if>
-         <div class="header-bar">${msg("label.recentlyModified")}</div>
-   <#if (numModifiedContent > 0)>
-         <ul class="content">
+      </ul>
+      <#else>
+      <p>${msg("label.noAddedContent")}</p>
+      </#if>
+      <div class="header-bar">${msg("label.recentlyModified")}</div>
+      <#if (numModifiedContent > 0)>
+      <ul class="content">
       <#list modifiedContent as content>
-         <@formatContent content content.modifiedOn "modifiedOn" content_index />
+      <@formatContent content content.modifiedOn "modifiedOn" content_index />
       </#list>
-         </ul>
-   <#else>
-         <p>${msg("label.noModifiedContent")}</p>
-   </#if>                  
-      </div>
+      </ul>
+      <#else>
+      <p>${msg("label.noModifiedContent")}</p>
+      </#if>                  
    </div>
 </div>

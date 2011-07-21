@@ -37,7 +37,11 @@
    <div id="${el}-readview" class="hidden">
       <#if isEditable>
       <div class="editcolumn">
-         <div class="btn-edit"><button id="${el}-button-edit" name="edit">${msg("button.editprofile")}</button></div>
+         <div class="btn-edit">
+            <span class="yui-button yui-push-button" id="${el}-button-edit">
+               <span class="first-child"><button name="edit">${msg("button.editprofile")}</button></span>
+            </span>
+         </div>
       </div>
       <#else>
       <#if follows??>
@@ -45,10 +49,18 @@
          <form id="${htmlid}-follow-form" action="${url.context}/service/components/profile/userprofile-follow" method="post">
          <#if follows>
          <input type="hidden" name="unfollowuser" value="${profile.name?html}"/>
-         <div class="btn-unfollow"><button id="${el}-button-unfollow" name="unfollow">${msg("button.unfollow")}</button></div>
+         <div class="btn-unfollow">
+            <span class="yui-button yui-push-button" id="${el}-button-unfollow">
+               <span class="first-child"><button name="unfollow">${msg("button.unfollow")}</button></span>
+            </span>
+         </div>
          <#else>
          <input type="hidden" name="followuser" value="${profile.name?html}"/>
-         <div class="btn-follow"><button id="${el}-button-follow" name="follow">${msg("button.follow")}</button></div>
+         <div class="btn-follow">
+            <span class="yui-button yui-push-button"  id="${el}-button-follow">
+               <span class="first-child"><button name="follow">${msg("button.follow")}</button></span>
+            </span>
+         </div>
          </#if>
          </form>
       </div>

@@ -19,6 +19,11 @@
    font-size: 116%;
 }
 
+.profile .private
+{
+   float: right;
+}
+
 .profile .editcolumn
 {
    float: right;
@@ -147,9 +152,11 @@
    padding-left: 1.5em;
 }
 
-.profile p {
+.profile p
+{
    margin-left:1.5em;
 }
+
 .profile li p
 {
    line-height: 1.5em;
@@ -181,61 +188,119 @@
    padding-left: 32px;
 }
 
+/* Sites and Content list pages */
 .profile .sites,
-.profile .content
+.profile .content,
+.profile .people
 {
-   margin:0 1.15em;
-   border:1px solid #CBCBCB;
-   border-width:0 1px 1px 1px;
+   margin: 0 1.15em;
+   border: 1px solid #CBCBCB;
+   border-width: 0 1px 1px 1px;
 }
+
 .profile .sites li,
-.profile .content li  
+.profile .content li,
+.profile .people li
 {
-   clear:both;
-   width:100%;
-   overflow:auto;
-   border-top:1px dashed #CBCBCB;
+   clear: both;
+   width: 100%;
+   overflow: auto;
+   border-top: 1px dashed #CBCBCB;
 }
+
 .profile .sites li.first,
-.profile .content li.first 
+.profile .content li.first,
+.profile .people li.first
 {
-   border-top:0;
+   border-top: 0;
 }
+
+.profile .people li div.wrapper
+{
+   padding: 0.8em;
+}
+
+.profile .people li div.meta
+{
+   display: inline-block;
+   vertical-align: top;
+   margin-left: 0.8em;
+}
+
+.profile .people li div.button-wrapper
+{
+   float: right;
+}
+
+.profile .people li div.img-wrapper
+{
+   display: inline-block;
+   width: 64px;
+}
+
+.profile .people li a
+{
+   font-weight: bold;
+   font-size: 108%;
+}
+
+.profile .people .lighter
+{
+   padding-left: 0.3em;
+}
+
+.profile .user-status
+{
+   margin-top: 4px;
+}
+
+.profile .user-info
+{
+   margin-top: 4px;
+}
+
 .profile .sites li a.thmb
 {
-   padding:8px;
+   padding: 8px;
 }
-.profile .content li a.thmb  
+
+.profile .content li a.thmb
 {
-   padding:0.65em;
+   padding: 0.65em;
 }
+
 .profile .sites li a,
-.profile .content li a.thmb 
+.profile .content li a.thmb
 {
-   float:left;
+   float: left;
 }
+
 .profile .sites li p a,
-.profile .content li p a  
+.profile .content li p a
 {
-   font-weight:bold;
-   float:none;
-   font-size:108%;
+   font-weight: bold;
+   float: none;
+   font-size: 108%;
 }
+
 .profile .sites p,
 .profile .content p
 {
-   float:left;
+   float: left;
 }
+
 .profile .sites p
 {
-   margin:1.5em 0;
+   margin: 1.5em 0;
 }
+
 .profile .content p
 {
-   margin:0.5em 0;
+   margin: 0.5em 0;
 }
+
 .profile .sites li p span,
 .profile .content li p span
 {
-  display:block;  
+   display: block;
 }
