@@ -25,9 +25,6 @@
    <!-- SURF: support for custom application configuration overrides -->
    <import resource="classpath*:org/springframework/extensions/surf/override/*-context.xml" />
    
-   <!-- SURF: support for CMIS webscripts -->
-   <import resource="classpath*:org/springframework/extensions/cmis/*-context.xml" />
-   
    <!-- Set up to auto-resolve to url based views -->   	
    <bean id="handlerMappings" parent="webframeworkHandlerMappings">
       <property name="order" value="0" />

@@ -372,4 +372,17 @@
 
    <bean id="slingshot.action.evaluator.locateActionEvaluator" class="org.alfresco.web.evaluator.LocateActionEvaluator" />
 
+
+   <!-- 
+      CMIS beans
+   -->
+   <bean id="cmis.script" class="org.alfresco.web.cmis.SlingshotCMISScriptParameterFactory" init-method="init">
+      <property name="scriptParameterFactoryRegistry" ref="webscripts.web.scriptparameterfactoryregistry" />
+      <property name="configService" ref="web.config" />
+      <property name="connectorService" ref="connector.service" />
+   </bean>
+
+   <bean id="webscript.org.springframework.extensions.cmis.content.get" class="org.springframework.extensions.cmis.CMISContentStreamWebScript" parent="webscript">
+      <property name="ScriptParameterFactory" ref="cmis.script" />
+   </bean>
 </beans>
