@@ -4,6 +4,18 @@
    
       <web-framework>
       
+         <!--  Override the default Spring Surf configuration to use AdvancedComponentImpl
+               instead of ComponentImpl. This will mean that SubComponents are used for
+               rendering rather than Components. This enables Share for greater extensibility -->
+         <object-type>
+             <id>component</id>
+             <version>1.0</version>
+             <name>Component</name>
+             <description>Component</description>
+             <namespace></namespace>
+             <class>org.springframework.extensions.surf.types.AdvancedComponentImpl</class>
+         </object-type>
+         
          <!-- Configure Surf Defaults -->
          <defaults>
             <!-- Service Overrides -->
