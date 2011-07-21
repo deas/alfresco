@@ -1049,11 +1049,11 @@ public class AlfrescoAtomBasedFeedServiceImpl implements AtomBasedFeedService
         }
         else
         {
-            if (nodeService.hasAspect(nodeRef, ContentModel.ASPECT_WORKING_COPY))
+            NodeRef originalNode = checkOutCheckInService.getCheckedOut(nodeRef);
+            if (originalNode != null)
             {
                 String owner = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_WORKING_COPY_OWNER);
                 // Change ID. Now all links will be pointed to the original node.
-                NodeRef originalNode = (NodeRef) nodeService.getProperty(nodeRef, ContentModel.PROP_COPY_REFERENCE);
                 nodeName = (String) nodeService.getProperty(originalNode, ContentModel.PROP_NAME);
 
                 id = originalNode.getId();

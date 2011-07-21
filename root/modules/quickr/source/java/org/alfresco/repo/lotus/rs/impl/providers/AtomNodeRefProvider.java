@@ -38,6 +38,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentReader;
@@ -62,6 +63,7 @@ public class AtomNodeRefProvider implements MessageBodyWriter<NodeRef>
 
     private NodeService nodeService;
     private FileFolderService fileFolderService;
+    private CheckOutCheckInService checkOutCheckInService;
 
     public void setNodeService(NodeService nodeService)
     {
@@ -71,6 +73,11 @@ public class AtomNodeRefProvider implements MessageBodyWriter<NodeRef>
     public void setFileFolderService(FileFolderService fileFolderService)
     {
         this.fileFolderService = fileFolderService;
+    }
+
+    public void setCheckOutCheckInService(CheckOutCheckInService checkOutCheckInService)
+    {
+        this.checkOutCheckInService = checkOutCheckInService;
     }
 
     public void writeTo(NodeRef nodeRef, Class<?> clazz, Type type, Annotation[] a, MediaType mt, MultivaluedMap<String, Object> headers, OutputStream os) throws IOException,
@@ -88,10 +95,10 @@ public class AtomNodeRefProvider implements MessageBodyWriter<NodeRef>
         Date lastModified = (Date) props.get(ContentModel.PROP_MODIFIED);
 
         String fileName = (String) props.get(ContentModel.PROP_NAME);
-        if (nodeService.hasAspect(nodeRef, ContentModel.ASPECT_WORKING_COPY))
+        NodeRef checkedOutNodeRef = checkOutCheckInService.getCheckedOut(nodeRef);
+        if (checkedOutNodeRef != null)
         {
-            NodeRef originalNode = ((NodeRef) nodeService.getProperty(nodeRef, ContentModel.PROP_COPY_REFERENCE));
-            fileName = (String) nodeService.getProperty(originalNode, ContentModel.PROP_NAME);
+            fileName = (String) nodeService.getProperty(checkedOutNodeRef, ContentModel.PROP_NAME);
         }
 
         String documentLanguage = content.getLocale().toString().replace('_', '-');

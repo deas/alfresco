@@ -2041,7 +2041,8 @@ public class AlfrescoDocumentServiceImpl implements DocumentService
         if (!pathHelper.isInRmSite(nodeRef))
         {
             LockType lock = lockService.getLockType(nodeRef);
-            boolean isWorkingCopy = nodeService.hasAspect(nodeRef, ContentModel.ASPECT_WORKING_COPY);
+            NodeRef workingCopyNodeRef = checkOutCheckInService.getCheckedOut(nodeRef);
+            boolean isWorkingCopy = workingCopyNodeRef != null;
 
             if (lock == null && !isWorkingCopy)
             {
@@ -2054,7 +2055,7 @@ public class AlfrescoDocumentServiceImpl implements DocumentService
                 if (isWorkingCopy)
                 {
                     owner = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_WORKING_COPY_OWNER);
-                    nodeRef = (NodeRef) nodeService.getProperty(nodeRef, ContentModel.PROP_COPY_REFERENCE);
+                    nodeRef = workingCopyNodeRef;
                 }
                 else
                 {

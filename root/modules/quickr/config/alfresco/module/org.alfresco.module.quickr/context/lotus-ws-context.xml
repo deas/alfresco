@@ -245,6 +245,7 @@
     <bean id="atomNodeRefProvider" class="org.alfresco.repo.lotus.rs.impl.providers.AtomNodeRefProvider">
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="nodeService" ref="NodeService"/>
+        <property name="checkOutCheckInService" ref="CheckOutCheckInService"/>
     </bean>
 
     <!-- Authentication  interceptor -->
