@@ -219,6 +219,11 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
         else if (fieldName.startsWith("@"))
 
         {
+            if (fieldName.endsWith(".sort"))
+            {
+                return new VerbatimAnalyser(false);
+            }
+            
             for (String contentEnding : AlfrescoSolrDataModel.additionalContentFields.keySet())
             {
                 try
