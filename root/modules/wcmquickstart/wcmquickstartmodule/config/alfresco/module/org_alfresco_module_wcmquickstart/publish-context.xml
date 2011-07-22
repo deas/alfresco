@@ -28,12 +28,24 @@
     <bean id="org_alfresco_module_wcmquickstart_publishingService"
         class="org.alfresco.module.org_alfresco_module_wcmquickstart.publish.PublishServiceImpl">
         <property name="nodeService" ref="NodeService" />
+        <property name="namespaceService" ref="NamespaceService" />
         <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
         <property name="transferService" ref="org_alfresco_module_wcmquickstart_transferService" />
         <property name="pathMapper" ref="org_alfresco_module_wcmquickstart_transferManifestNodeFactory" />
         <property name="nodeCrawlerFactory" ref="NodeCrawlerFactory" />
         <property name="crawlerConfigurer" ref="wqsmodule_publishingCrawlerConfigurer" />
+        <property name="aspectsToExclude" ref="wqsmodule_aspectsNotToPublish" />
     </bean>
+    
+    
+    <bean id="wqsmodule_aspectsNotToPublish" class="java.util.TreeSet">
+      <constructor-arg>
+         <set>
+            <value>fm:discussable</value>
+         </set>
+      </constructor-arg>
+    </bean>
+    
     
     <bean id="wqsmodule_publishingCrawlerConfigurer" 
             class="org.alfresco.module.org_alfresco_module_wcmquickstart.publish.WqsNodeCrawlerConfigurerImpl" />

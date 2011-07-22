@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
@@ -38,6 +39,7 @@ import org.alfresco.service.cmr.transfer.NodeCrawler;
 import org.alfresco.service.cmr.transfer.NodeCrawlerFactory;
 import org.alfresco.service.cmr.transfer.TransferDefinition;
 import org.alfresco.service.cmr.transfer.TransferService2;
+import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 import org.alfresco.util.GUID;
@@ -48,14 +50,22 @@ public class PublishServiceImpl implements PublishService
 {
     private final static Log log = LogFactory.getLog(PublishServiceImpl.class);
     private final static String PUBLISH_QUEUE_NAME = "publishingQueue";
+    private final static Set<String> DEFAULT_ASPECTS_TO_EXCLUDE = new TreeSet<String>();
+    
+    static 
+    {
+        DEFAULT_ASPECTS_TO_EXCLUDE.add("fm:discussable");
+    }
     
     private SiteHelper siteHelper;
     private NodeService nodeService;
     private TransferService2 transferService;
+    private NamespaceService namespaceService;
     private TransferPathMapper pathMapper;
     private NodeCrawlerFactory nodeCrawlerFactory;
     private NodeCrawlerConfigurer crawlerConfigurer;
     private String transferTargetName = "Internal Target";
+    private Set<String> aspectsToExclude = DEFAULT_ASPECTS_TO_EXCLUDE;
 
     public void setSiteHelper(SiteHelper siteHelper)
     {
@@ -90,6 +100,23 @@ public class PublishServiceImpl implements PublishService
     public void setCrawlerConfigurer(NodeCrawlerConfigurer crawlerConfigurer)
     {
         this.crawlerConfigurer = crawlerConfigurer;
+    }
+
+    public void setNamespaceService(NamespaceService namespaceService)
+    {
+        this.namespaceService = namespaceService;
+    }
+
+    public void setAspectsToExclude(Collection<String> aspectsToExclude)
+    {
+        if (aspectsToExclude == null)
+        {
+            this.aspectsToExclude = new TreeSet<String>();
+        }
+        else
+        {
+            this.aspectsToExclude = new TreeSet<String>(aspectsToExclude);
+        }
     }
 
     public void enqueuePublishedNodes(final NodeRef... nodes)
@@ -182,6 +209,13 @@ public class PublishServiceImpl implements PublishService
                     
                     TransferDefinition def = new TransferDefinition();
                     def.setNodes(nodesToTransfer);
+                    Set<QName> aspectQNames = new HashSet<QName>();
+                    for (String aspectToExclude : aspectsToExclude)
+                    {
+                        aspectQNames.add(QName.createQName(aspectToExclude, namespaceService));
+                    }
+                    def.setExcludedAspects(aspectQNames);
+                    
                     transferService.transfer(transferTargetName, def);
     
                     // If we get here then the transfer must have completed. Delete
