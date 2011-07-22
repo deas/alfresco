@@ -4,4 +4,5 @@
   <url>/components/console/replication-jobs</url>
   <family>admin-console</family>
   <family>edition:ENTERPRISE</family>
+  <family>edition:UNKNOWN</family>
 </webscript>
