@@ -19,6 +19,7 @@
 
 package org.alfresco.repo;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -29,6 +30,7 @@ import org.alfresco.webservice.test.AdministrationServiceSystemTest;
 import org.alfresco.webservice.test.AuthenticationServiceSystemTest;
 import org.alfresco.webservice.test.AuthoringServiceSystemTest;
 import org.alfresco.webservice.test.ClassificationServiceSystemTest;
+import org.alfresco.webservice.test.CmisRelationshipSystemTest;
 import org.alfresco.webservice.test.ContentServiceSystemTest;
 import org.alfresco.webservice.test.DictionaryServiceSystemTest;
 import org.alfresco.webservice.test.RepositoryServiceSystemTest;
@@ -69,6 +71,9 @@ public class MiscSystemTestSuite extends TestSuite
         suite.addTestSuite(AccessControlServiceSystemTest.class);
         suite.addTestSuite(DictionaryServiceSystemTest.class);
         suite.addTestSuite(TimeoutSystemTest.class);
+        
+        // cmis
+        suite.addTest(new JUnit4TestAdapter(CmisRelationshipSystemTest.class));
         
         // stop (embedded) Jetty
         suite.addTestSuite(RepoJettyStopTest.class);
