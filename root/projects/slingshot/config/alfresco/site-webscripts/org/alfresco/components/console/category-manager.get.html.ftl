@@ -11,15 +11,13 @@
    
    <!-- List panel -->
    <div id="${el}-list">
+      <div class="yui-u first">
+         <div class="title">${msg("title.category-manager")}</div>
+      </div>
       
-         <div class="yui-u first">
-            <div class="title">${msg("title.category-manager")}</div>
-         </div>
-         
-         <div class="yui-u align-left">
-         	<div id="${el}-category-manager"></div>
-         </div>
-   
+      <div class="yui-u align-left">
+         <div id="${el}-category-manager"></div>
+      </div>
    </div>
- 	
+   
 </div>
