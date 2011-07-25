@@ -149,17 +149,22 @@
                <show id="ws:hostPort" />
                <show id="ws:webAppContext" />
                <show id="ws:siteConfig" />
+               <show id="ws:siteLocales" />
+               <show id="ws:feedbackConfig" />
                <show id="ws:publishTarget" />
             </field-visibility>
             <appearance>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
-               <field id="ws:sectionConfig">
+               <field id="ws:siteConfig">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
-               <field id="ws:renditionConfig">
+               <field id="ws:feedbackConfig">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
+               </field>
+               <field id="ws:siteLocales">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
             </appearance>
          </form>
@@ -172,6 +177,8 @@
                <show id="ws:hostPort" />
                <show id="ws:webAppContext" />
                <show id="ws:siteConfig" />
+               <show id="ws:siteLocales" />
+               <show id="ws:feedbackConfig" />
                <show id="ws:publishTarget" />
             </field-visibility>
             <edit-form template="../documentlibrary/forms/doclib-simple-metadata.ftl" />
@@ -179,10 +186,13 @@
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
-               <field id="ws:sectionConfig">
+               <field id="ws:siteConfig">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
-               <field id="ws:renditionConfig">
+               <field id="ws:siteLocales">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="ws:feedbackConfig">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
             </appearance>

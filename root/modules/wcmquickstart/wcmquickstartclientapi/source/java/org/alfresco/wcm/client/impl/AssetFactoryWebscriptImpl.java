@@ -279,7 +279,7 @@ public class AssetFactoryWebscriptImpl implements AssetFactory
     }
 
     @SuppressWarnings("unchecked")
-    private Asset buildAsset(TreeMap<String, Serializable> props)
+    protected Asset buildAsset(TreeMap<String, Serializable> props)
     {
         AssetImpl asset = new AssetImpl();
         asset.setProperties(props);
@@ -290,7 +290,7 @@ public class AssetFactoryWebscriptImpl implements AssetFactory
         return asset;
     }
 
-    private SearchResult buildSearchResult(TreeMap<String, Serializable> props)
+    protected SearchResult buildSearchResult(TreeMap<String, Serializable> props)
     {
         Asset asset = buildAsset(props);
         Long score = (Long) asset.getProperty("searchScore");

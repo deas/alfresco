@@ -108,7 +108,7 @@
                 </property>
                 <property name="ws:siteLocales">
                     <title>Site Locales</title>
-                    <type>d:locale</type>
+                    <type>d:text</type>
                     <multiple>true</multiple>
                 </property>
             </properties>

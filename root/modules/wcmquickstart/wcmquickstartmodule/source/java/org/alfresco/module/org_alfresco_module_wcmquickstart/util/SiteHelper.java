@@ -211,20 +211,25 @@ public class SiteHelper implements WebSiteModel
     @SuppressWarnings("unchecked")
     private List<Locale> loadWebSiteLocales(NodeRef website)
     {
-        List<Locale> locales = (List<Locale>) nodeService.getProperty(website, PROP_SITE_LOCALES);
-        if (locales == null)
+        List<Locale> results = defaultWebsiteLocales;
+        List<String> languages = (List<String>) nodeService.getProperty(website, PROP_SITE_LOCALES);
+        if (languages != null)
         {
-            locales = defaultWebsiteLocales;
+            results = new ArrayList<Locale>(languages.size());
+            for (String locale : languages)
+            {
+                results.add(new Locale(locale));
+            }
         }
         //Protect against multiple concurrent writes
         synchronized(websiteLocales)
         {
             Map<NodeRef,List<Locale>> newLocaleMap = new HashMap<NodeRef, List<Locale>>(websiteLocales);
-            newLocaleMap.put(website, locales);
+            newLocaleMap.put(website, results);
             //Atomic replacement of old map with new one.
             websiteLocales = newLocaleMap;
         }
-        return locales;
+        return results;
     }
 
     /**

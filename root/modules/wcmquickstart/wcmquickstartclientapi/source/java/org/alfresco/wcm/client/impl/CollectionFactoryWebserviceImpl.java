@@ -159,7 +159,7 @@ public class CollectionFactoryWebserviceImpl implements AssetCollectionFactory
         return result;
     }
 
-    private AssetCollectionImpl buildCollection(String sectionId, TreeMap<String, Serializable> assetCollectionData)
+    protected AssetCollectionImpl buildCollection(String sectionId, TreeMap<String, Serializable> assetCollectionData)
     {
         AssetCollectionImpl collection = new AssetCollectionImpl();
         collection.setProperties(assetCollectionData);
