@@ -30,15 +30,15 @@ public class ACE {
 
 	//	ACE types
 	
-	public final static int Allowed						= 0;
-	public final static int Denied						= 1;
-	public final static int Audit							= 2;
-	public final static int Alarm							= 3;
+	public final static int Allowed				= 0;
+	public final static int Denied				= 1;
+	public final static int Audit				= 2;
+	public final static int Alarm				= 3;
 	public final static int AllowedCompound		= 4;
-	public final static int AllowedObject			= 5;
-	public final static int DeniedObject			= 6;
-	public final static int AuditObject				= 7;
-	public final static int AlarmObject				= 8;
+	public final static int AllowedObject		= 5;
+	public final static int DeniedObject		= 6;
+	public final static int AuditObject			= 7;
+	public final static int AlarmObject			= 8;
 	
 	//	ACE type strings
 	
@@ -46,18 +46,18 @@ public class ACE {
 		
 	//	ACE flags
 	
-	public final static int ObjectInherit				= 0x0001;
-	public final static int ContainerInherit		= 0x0002;
+	public final static int ObjectInherit		= 0x0001;
+	public final static int ContainerInherit	= 0x0002;
 	public final static int NoPropagateInherit	= 0x0004;
-	public final static int InheritOnly					= 0x0008;
-	public final static int Inherited						= 0x0010;
+	public final static int InheritOnly			= 0x0008;
+	public final static int Inherited			= 0x0010;
 	
-	public final static int SuccessfulAccess		= 0x0040;
-	public final static int FailedAccess				= 0x0080;
+	public final static int SuccessfulAccess	= 0x0040;
+	public final static int FailedAccess		= 0x0080;
 	
 	//	ACE full access mask
 	
-	public static final int FullAccess					= 0x001F01FF;
+	public static final int FullAccess			= 0x001F01FF;
 	
 	//	ACE type and flags
 	

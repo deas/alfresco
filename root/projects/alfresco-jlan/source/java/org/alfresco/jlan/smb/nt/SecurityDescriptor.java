@@ -30,34 +30,34 @@ public class SecurityDescriptor {
 
 	//	Get/set security descriptor flags
 	
-	public final static int Owner							= 0x0001;
-	public final static int Group							= 0x0002;
-	public final static int DACL							= 0x0004;
-	public final static int SACL							= 0x0008;
+	public final static int Owner				= 0x0001;
+	public final static int Group				= 0x0002;
+	public final static int DACL				= 0x0004;
+	public final static int SACL				= 0x0008;
 
 	//	Security descriptor control flags
 	
-	public final static int OwnerDefaulted			= 0x0001;
-	public final static int GroupDefaulted			= 0x0002;
-	public final static int DACLPresent					= 0x0004;
-	public final static int DACLDefaulted				= 0x0008;
-	public final static int SACLPresent					= 0x0010;
-	public final static int SACLDefaulted				= 0x0020;
+	public final static int OwnerDefaulted		= 0x0001;
+	public final static int GroupDefaulted		= 0x0002;
+	public final static int DACLPresent			= 0x0004;
+	public final static int DACLDefaulted		= 0x0008;
+	public final static int SACLPresent			= 0x0010;
+	public final static int SACLDefaulted		= 0x0020;
 	public final static int DACLAutoInheritReq	= 0x0100;
 	public final static int SACLAutoInheritReq	= 0x0200;
-	public final static int DACLAutoInherited		= 0x0400;
-	public final static int SACLAutoInherited		= 0x0800;
-	public final static int DACLProtected				= 0x1000;
-	public final static int SACLProtected				= 0x2000;
-	public final static int SelfRelative				= 0x8000;
+	public final static int DACLAutoInherited	= 0x0400;
+	public final static int SACLAutoInherited	= 0x0800;
+	public final static int DACLProtected		= 0x1000;
+	public final static int SACLProtected		= 0x2000;
+	public final static int SelfRelative		= 0x8000;
 
 	//	Object types
 	
-	public final static int	File					= 0;
+	public final static int	File				= 0;
 	public final static int	Directory			= 1;
 	public final static int	NamedPipe			= 2;
-	public final static int	RegistryKey		= 3;
-	public final static int	User					= 4;
+	public final static int	RegistryKey			= 3;
+	public final static int	User				= 4;
 	public final static int	Kernel				= 5;
 
 	//	Object name and type

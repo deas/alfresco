@@ -20,7 +20,7 @@
 package org.alfresco.jlan.smb.nt;
 
 /**
- *
+ * Well Known Reltive Ids Class
  *
  * @author gkspencer
  */
@@ -30,25 +30,25 @@ public class WellKnownRID {
 	//
 	//	Well known users
 	
-	public static final int DomainUserAdmin						= 0x01F4;	//	500
-	public static final int DomainUserGuest						= 0x01F5;	//	501
-	public static final int DomainUserKrbtgt					= 0x01F6;	//	502
+	public static final int DomainUserAdmin					= 0x01F4;	//	500
+	public static final int DomainUserGuest					= 0x01F5;	//	501
+	public static final int DomainUserKrbtgt				= 0x01F6;	//	502
 	
 	//	Well known groups
 	
-	public static final int DomainGroupAdmins					= 0x0200;	//	512
-	public static final int DomainGroupUsers					= 0x0201;	//	513
-	public static final int DomainGroupGuests					= 0x0202;	//	514
+	public static final int DomainGroupAdmins				= 0x0200;	//	512
+	public static final int DomainGroupUsers				= 0x0201;	//	513
+	public static final int DomainGroupGuests				= 0x0202;	//	514
 	public static final int DomainGroupComputers			= 0x0203;	//	515
-	public static final int DomainGroupControllers		= 0x0204;	//	516
+	public static final int DomainGroupControllers			= 0x0204;	//	516
 	public static final int DomainGroupCertAdmins			= 0x0205;	//	517
-	public static final int DomainGroupSchemaAdmins		= 0x0206;	//	518
+	public static final int DomainGroupSchemaAdmins			= 0x0206;	//	518
 	
 	//	Well know aliases
 	
-	public static final int DomainAliasAdmins					= 0x0220;	//	544
-	public static final int DomainAliasUsers					= 0x0221;	//	545
-	public static final int DomainAliasGuests					= 0x0222;	//	546
+	public static final int DomainAliasAdmins				= 0x0220;	//	544
+	public static final int DomainAliasUsers				= 0x0221;	//	545
+	public static final int DomainAliasGuests				= 0x0222;	//	546
 	public static final int DomainAliasPowerUsers			= 0x0223;	//	547
 	public static final int DomainAliasAccountOps			= 0x0224;	//	548
 	public static final int DomainAliasSystemOps			= 0x0225;	//	549

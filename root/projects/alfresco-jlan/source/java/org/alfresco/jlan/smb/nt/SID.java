@@ -32,35 +32,35 @@ public class SID {
   //
   //	Predefined identifier authorites
 
-  public static final int IdentAuthNull				= 0;
-  public static final int IdentAuthWorld			= 1;
-  public static final int IdentAuthLocal			= 2;
+  public static final int IdentAuthNull			= 0;
+  public static final int IdentAuthWorld		= 1;
+  public static final int IdentAuthLocal		= 2;
   public static final int IdentAuthCreator		= 3;
   public static final int IdentAuthNonUnique	= 4;
-  public static final int IdentAuthNT					= 5;
+  public static final int IdentAuthNT			= 5;
   
   //	Predefined sub-authority RIDs
   
-  public static final int SubAuthNull					= 0;
-  public static final int SubAuthWorld				= 0;
-  public static final int SubAuthLocal				= 0;
+  public static final int SubAuthNull			= 0;
+  public static final int SubAuthWorld			= 0;
+  public static final int SubAuthLocal			= 0;
   public static final int SubAuthCreatorOwner	= 0;
   public static final int SubAuthCreatorGroup	= 1;
   
-  public static final int SubAuthNTDialup					= 1;
-  public static final int SubAuthNTNetwork				= 2;
-  public static final int SubAuthNTBatch					= 3;
+  public static final int SubAuthNTDialup			= 1;
+  public static final int SubAuthNTNetwork			= 2;
+  public static final int SubAuthNTBatch			= 3;
   public static final int SubAuthNTInteractive		= 4;
-  public static final int SubAuthNTService				= 6;
-  public static final int SubAuthNTAnonymous			= 7;
-  public static final int SubAuthNTProxy					= 8;
+  public static final int SubAuthNTService			= 6;
+  public static final int SubAuthNTAnonymous		= 7;
+  public static final int SubAuthNTProxy			= 8;
   public static final int SubAuthNTEnterpriseCtrl	= 9;
   public static final int SubAuthNTPrincipalSelf	= 10;
   public static final int SubAuthNTAuthenticated	= 11;
   public static final int SubAuthNTRestrictedCode	= 12;
   public static final int SubAuthNTTerminalServer	= 13;
   public static final int SubAuthNTLocalSystem		= 18;
-  public static final int SubAuthNTNonUnique			= 21;
+  public static final int SubAuthNTNonUnique		= 21;
   public static final int SubAuthNTBuiltinDomain	= 32;
   
   //	Minimum binary size for a SID

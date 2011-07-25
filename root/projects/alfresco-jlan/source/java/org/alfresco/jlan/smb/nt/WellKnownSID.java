@@ -28,7 +28,7 @@ public class WellKnownSID {
 
 	//	Well known security IDs
 	
-	public static final SID SIDEveryone 				= new SID("Everyone", 1,1,0);
+	public static final SID SIDEveryone 			= new SID("Everyone", 1,1,0);
 	public static final SID SIDBuiltinDomain 		= new SID("Builtin", 1,5,32);
 	public static final SID SIDLocalSystem			= new SID("LocalSystem", 1,5,18);
 	
