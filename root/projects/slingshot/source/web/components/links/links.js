@@ -691,7 +691,7 @@
             }
 
          }
-         else if (filterOwner == "Alfresco.LinkTags")
+         else if (filterOwner == "Alfresco.TagFilter")
          {
             title = this.msg("title.bytag", $html(filterData));
          }
@@ -1117,14 +1117,17 @@
 
          // check whether we got a filter or not
          var url = "";
+         var isFirstParam = true;
          if (filterOwner == "Alfresco.LinkFilter")
          {
             url = "?filter=" + filterId;
+            isFirstParam = false;
          }
          else if (filterOwner == "Alfresco.TagFilter")
          {
             url = "?filter=tag";
             params.tag = filterData;
+            isFirstParam = false;
          }
 
          // build the url extension
@@ -1140,8 +1143,7 @@
          {
             urlExt = urlExt.substring(1);
          }
-         return url + "&" + urlExt;
-
+         return url + (isFirstParam ? "?" : "&") + urlExt;
       },
 
       /**

@@ -71,9 +71,36 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                 <compareText text="${component(postgres).parameter(postgres_installation_type_options).value}" logic="equals" value="bundledAndExisting"/>
             </ruleList>
         </addChoiceOptions>
+	<setInstallerVariable name="postgres_windows_user_exists" value="0" />
     </initializationActionList>
+
+    <preInstallationActionList>
+        <setInstallerVariable name="postgres_windows_domain" value="."/>
+	<setInstallerVariableFromRegEx name="postgres_windows_domain" pattern="\\.*" substitution="" text="${postgres_windows_user}">
+	    <ruleList>
+		<compareText logic="contains" text="${postgres_windows_user}" value="\"/>
+	    </ruleList>
+	</setInstallerVariableFromRegEx>
+	<!-- we need serviceaccount without domain details -->
+        <setInstallerVariable name="postgres_windows_wo_domain" value="${postgres_windows_user}">
+	    <ruleList>
+		<compareText logic="does_not_contain" text="${postgres_windows_user}" value="\"/>
+	    </ruleList>
+	</setInstallerVariable>
+	<setInstallerVariableFromRegEx name="postgres_windows_wo_domain" pattern="^.*?\\" substitution="" text="${postgres_windows_user}">
+	    <ruleList>
+		<compareText logic="contains" text="${postgres_windows_user}" value="\"/>
+	    </ruleList>
+	</setInstallerVariableFromRegEx>
+    </preInstallationActionList>
+
     <parameterList>
 <!-- hidden parameter -->
+        <stringParameter name="postgres_windows_user" value="postgres" >
+	    <ruleList>
+		<isTrue value="0" />
+	    </ruleList>
+	</stringParameter>
         <booleanParameter name="postgres_execute_abort_action_list" value="0" ask="0" />
         <stringParameter name="postgres_logminmessage_level" ask="0" default="default" explanation="See postgresql.conf file for valid values. If leave as default we don't modify the default configuration." />
         <stringParameter name="postgres_logminerrorstatement_level" ask="0" default="default" explanation="See postgresql.conf file for valid values. If leave as default we don't modify the default configuration." />
@@ -366,6 +393,73 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
             </postShowPageActionList>
         </passwordParameter>
 
+	<passwordParameter>
+            <name>postgres_windows_password</name>
+	    <title>Postgres service account password</title>
+            <explanation>Please provide a password for the service account (postgres). If this account does not exist, the installer will create it.</explanation>
+            <cliOptionName>postgres_windows_password</cliOptionName>
+            <ask>yes</ask>
+	    <description>Password</description>
+            <descriptionRetype>Re-enter password</descriptionRetype>
+	    <validationActionList>
+                <throwError>
+                    <text>The password specified was incorrect. Please enter the correct password for the postgres Windows user account.</text>
+                    <ruleList>
+			<compareText logic="contains" text="${postgres_windows_user}" value="\"/>
+			<userTest username="${postgres_windows_wo_domain}@${postgres_windows_domain}" logic="exists" />
+			<userTest username="${postgres_windows_wo_domain}@${postgres_windows_domain}" logic="invalid_password" password="${postgres_windows_password}" />
+		    </ruleList>
+		</throwError>
+                <throwError>
+                    <text>The password specified was incorrect. Please enter the correct password for the postgres Windows user account.</text>
+                    <ruleList>
+			<compareText logic="does_not_contain" text="${postgres_windows_user}" value="\"/>
+			<userTest username="${postgres_windows_wo_domain}" logic="exists" />
+			<userTest username="${postgres_windows_wo_domain}" logic="invalid_password" password="${postgres_windows_password}" />
+                    </ruleList>
+                </throwError>
+		<setInstallerVariable>
+		    <name>postgres_windows_user_exists</name>
+		    <value>1</value>
+		    <ruleList>
+			<compareText logic="does_not_contain" text="${postgres_windows_user}" value="\"/>
+			<userTest username="${postgres_windows_wo_domain}" logic="exists" />
+			<userTest username="${postgres_windows_wo_domain}" logic="valid_password" password="${postgres_windows_password}" />
+		    </ruleList>
+		</setInstallerVariable>
+		<setInstallerVariable>
+		    <name>postgres_windows_user_exists</name>
+		    <value>1</value>
+		    <ruleList>
+			<compareText logic="contains" text="${postgres_windows_user}" value="\"/>
+			<userTest username="${postgres_windows_wo_domain}@${postgres_windows_domain}" logic="exists" />
+			<userTest username="${postgres_windows_wo_domain}@${postgres_windows_domain}" logic="valid_password" password="${postgres_windows_password}" />
+		    </ruleList>
+		</setInstallerVariable>
+		<throwError>
+		    <text>Windows 2008 requires that the password meets the following requirements:
+
+- It must be at least six characters long.
+- It must contain uppercase and lowercase characters.
+- It must contain numbers.
+- It must contain at least one of these special characters: @#$%!^&amp;+=
+</text>
+		    <ruleList>
+			<isFalse value="${postgres_windows_user_exists}" />
+			<platformTest type="windows-2008" />
+			<regExMatch>
+			    <logic>does_not_match</logic>
+			    <pattern>^.*(?=.{6,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!^&amp;+=]).*$</pattern>
+			    <text>${postgres_windows_password}</text>
+			</regExMatch>	
+		    </ruleList>
+		</throwError>
+            </validationActionList>
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+        </passwordParameter>
+
         <stringParameter name="shmmax_error_message" value="" ask="0"/>
     </parameterList>
     <readyToInstallActionList>
@@ -464,11 +558,13 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
         <!-- LINUX -->
         <actionGroup>
             <actionList>
-                <deleteFile path="${postgres_data_directory}" />
-                <deleteFile path="${postgres_root_directory}" />
+                <deleteFile path="${postgres_root_directory}">
+                    <ruleList>
+                        <compareText text="${postgres_installation_type}" logic="equals" value="bundled"/>
+                    </ruleList>
+                </deleteFile>
             </actionList>
             <ruleList>
-                <compareText text="${postgres_installation_type}" logic="equals" value="bundled"/>
                 <compareText text="${postgres_execute_abort_action_list}" value="1" logic="equals"/>
                 <platformTest type="linux"/>
             </ruleList>
@@ -908,7 +1004,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 		      <getWindowsACL>
 			  <abortOnError>0</abortOnError>
 			  <showMessageOnError>0</showMessageOnError>
-			  <username>${env(USERNAME)}</username>
+			  <username>${postgres_windows_wo_domain}</username>
 			  <file>${postgres_data_directory}</file>
 			  <grantedPermissions>postgres_grantedPermissions</grantedPermissions>
 			  <deniedPermissions>postgres_deniedPermissions</deniedPermissions>
@@ -918,16 +1014,16 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 		      <logMessage text="Running cacls" />
 		      <runProgram abortOnError="0" showMessageOnError="0" >
 			  <program>cacls</program>
-			  <programArguments>"${postgres_data_directory}" /e /c /t /p ${env(USERNAME)}:c</programArguments>
+			  <programArguments>"${postgres_data_directory}" /e /c /t /p ${postgres_windows_wo_domain}:f</programArguments>
 			  <workingDirectory>${postgres_data_directory}</workingDirectory>
 		      </runProgram>
 		      <logMessage>
-			  <text>cacls "${postgres_data_directory}" /e /c /t /p ${env(USERNAME)}:c"</text>
+			  <text>cacls "${postgres_data_directory}" /e /c /t /p ${postgres_windows_wo_domain}:f"</text>
 		      </logMessage>
 		      <getWindowsACL>
 			  <abortOnError>0</abortOnError>
 			  <showMessageOnError>0</showMessageOnError>
-			  <username>${env(USERNAME)}</username>
+			  <username>${postgres_windows_wo_domain}</username>
 			  <file>${postgres_data_directory}</file>
 			  <grantedPermissions>postgres_grantedPermissions</grantedPermissions>
 			  <deniedPermissions>postgres_deniedPermissions</deniedPermissions>
@@ -939,12 +1035,47 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 			  <abortOnError>0</abortOnError>
 			  <showMessageOnError>0</showMessageOnError>
 			  <files>${postgres_data_directory}</files>
-			  <users>${env(USERNAME)}</users>
+			  <users>${postgres_windows_wo_domain}</users>
+			  <recurseObjects>1</recurseObjects>
+			  <recurseContainers>1</recurseContainers>
+		      </setWindowsACL>
+		      <setWindowsACL>
+			  <abortOnError>0</abortOnError>
+			  <showMessageOnError>0</showMessageOnError>
+			  <files>${postgres_data_directory}</files>
+			  <users>S-1-2-0</users>
+			  <action>allow</action>
+			  <permissions>file_all_access</permissions>
 			  <recurseObjects>1</recurseObjects>
 			  <recurseContainers>1</recurseContainers>
 		      </setWindowsACL>
 		      <logMessage text="postgres_grantedPermissions = ${postgres_grantedPermissions}" />
-		      <logMessage text="postgres_deniedPermissions = ${postgres_deniedPermissions}" />
+		      <logMessage text="postgres_deniedPermissions = ${postgres_deniedPermissions}" />-->
+
+		      <actionGroup>
+			  <actionList>
+			      <logMessage text="Creating Windows user: ${postgres_windows_wo_domain}" />
+			      <addUser>
+				  <username>${postgres_windows_wo_domain}</username>
+				  <password>${postgres_windows_password}</password>
+			      </addUser>
+			      <runProgram>
+				  <abortOnError>0</abortOnError>
+				  <showMessageOnError>0</showMessageOnError>
+				  <program>wmic</program>
+				  <programArguments>useraccount where "Name='${postgres_windows_wo_domain}'" set PasswordExpires=false</programArguments>
+			      </runProgram>
+			  </actionList>
+			  <ruleList>
+			      <isFalse value="${postgres_windows_user_exists}" />
+			  </ruleList>
+		      </actionGroup>
+		      <addWindowsAccountRights abortOnError="0" showMessageOnError="0" account="${postgres_windows_wo_domain}" rights="SeServiceLogonRight" >
+			  <ruleList>
+			      <windowsAccountTest account="${postgres_windows_wo_domain}" rights="SeServiceLogonPrivilege" negate="1" />
+			  </ruleList>
+		      </addWindowsAccountRights>
+
 		      <logMessage text="Initializing database" />
 		      
 		      <showProgressDialog title="Initializing database" >
@@ -973,22 +1104,12 @@ start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgr
 			      </runProgram>
 			      <!-- add -d to debug this action -->
                               <runProgram>
+				  <!--<runAs>${postgres_windows_wo_domain}</runAs>-->
                                   <program>initdb.exe</program>
-                                  <programArguments>-U SYSTEM -E UTF8 -D ${postgres_data_directory.dos.unix}</programArguments>
+                                  <programArguments>-U ${postgres_windows_wo_domain} -E UTF8 -D ${postgres_data_directory.dos.unix}</programArguments>
                                   <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
-                                  <ruleList>
-                                      <compareText logic="equals" text="${installer_root_install}" value="1"/>
-                                  </ruleList>
                               </runProgram>
-                              <runProgram>
-                                  <program>initdb.exe</program>
-                                  <programArguments>-U postgres -E UTF8 -D ${postgres_data_directory.dos.unix}</programArguments>
-                                  <workingDirectory>${postgres_root_directory}/bin</workingDirectory>
-                                  <ruleList>
-                                      <compareText logic="does_not_equal" text="${installer_root_install}" value="1"/>
-                                  </ruleList>
-                              </runProgram>
-                          </actionList>
+			  </actionList>
                       </showProgressDialog>
 		      <logMessage text="${program_stdout}" />
 		      <logMessage text="${program_stderr}" />
@@ -1077,7 +1198,10 @@ start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\initdb.exe -U postgr
                                       <writeFile>
                                           <path>${postgres_root_directory}/bin/registerservice.bat</path>
                                           <text>@echo off
-start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix} -w"</text>
+${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix} -w
+
+sc config ${postgres_unique_service_name} obj= ${postgres_windows_domain}\${postgres_windows_wo_domain} password= "${postgres_windows_password}"
+</text>
                                       </writeFile>
                                       <runProgram>
                                           <program>${postgres_root_directory}/bin/registerservice.bat</program>
@@ -1127,18 +1251,7 @@ start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register 
 
                       <runProgram>
                           <program>${postgres_root_directory}/bin/psql.exe</program>
-                          <programArguments>-U SYSTEM -d postgres -p ${postgres_port} -h ${postgres_hostname} -c "CREATE USER postgres SUPERUSER PASSWORD '${postgres_root_password.password}'"</programArguments>
-                          <ruleList>
-                              <compareText logic="equals" text="${installer_root_install}" value="1"/>
-                          </ruleList>
-                      </runProgram>
-
-                      <runProgram>
-                          <program>${postgres_root_directory}/bin/psql.exe</program>
                           <programArguments>-U postgres -p ${postgres_port} -h ${postgres_hostname} -c "ALTER USER postgres PASSWORD '${postgres_root_password.password}'"</programArguments>
-                          <ruleList>
-                              <compareText logic="does_not_equal" text="${installer_root_install}" value="1"/>
-                          </ruleList>
                       </runProgram>
 
                       <runProgram>

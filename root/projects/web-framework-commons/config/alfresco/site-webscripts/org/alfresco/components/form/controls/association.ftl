@@ -10,7 +10,11 @@
    {
    <#if field.control.params.showTargetLink??>
       showLinkToTarget: ${field.control.params.showTargetLink},
-      targetLinkTemplate: "${url.context}/page/site/${page.url.templateArgs.site!""}/document-details?nodeRef={nodeRef}",
+      <#if page?? && page.url.templateArgs.site??>
+         targetLinkTemplate: "${url.context}/page/site/${page.url.templateArgs.site!""}/document-details?nodeRef={nodeRef}",
+      <#else>
+         targetLinkTemplate: "${url.context}/page/document-details?nodeRef={nodeRef}",
+      </#if>
    </#if>
    <#if field.control.params.allowNavigationToContentChildren??>
       allowNavigationToContentChildren: ${field.control.params.allowNavigationToContentChildren},

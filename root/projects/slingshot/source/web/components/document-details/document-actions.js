@@ -292,8 +292,8 @@
                
                if (!(/^(http|https):\/\//).test(uri))
                {
-                  // VTI server doesn't support HTTPS directly
-                  uri = window.location.protocol.replace(/https/i, "http") + "//" + uri;
+                  // VTI server now supports HTTPS directly http://issues.alfresco.com/jira/browse/DOC-227
+                  uri = window.location.protocol + "//" + uri;
                }
                record.onlineEditUrl = uri;
             }

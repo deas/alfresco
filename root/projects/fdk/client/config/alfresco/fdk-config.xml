@@ -336,6 +336,11 @@
                      <control-param name="compactMode">true</control-param>
                   </control>
                </field>
+               <field id="fdk:contentSingle">
+                  <control>
+                     <control-param name="showTargetLink">true</control-param>
+                  </control>
+               </field>
                <field id="fdk:textMultiple" help="Enter multiple values by separating them with commas" />
             </appearance>
          </form>

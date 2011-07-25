@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * TagLibrary
  * 
@@ -148,6 +148,20 @@
 
          // load link for popular tags
          Event.addListener(this.id + "-load-popular-tags-link", "click", this.onPopularTagsLinkClicked, this, true);
+         var enterKeyListenerA = new YAHOO.util.KeyListener(this.id + "-load-popular-tags-link",
+         {
+            keys: YAHOO.util.KeyListener.KEY.ENTER
+         },
+         {
+            fn: function TagLibrary_enterKeyListener(eventName, event, obj)
+            {
+               me.onPopularTagsLinkClicked(event[1], this);
+               return true;
+            },
+            scope: this,
+            correctScope: true
+         }, "keypress");
+         enterKeyListenerA.enable();
          
          // register the "enter" event on the tag text field to add the tag (otherwise the form gets submitted)
          var enterKeyListener = new YAHOO.util.KeyListener(this.id + "-tag-input-field", 

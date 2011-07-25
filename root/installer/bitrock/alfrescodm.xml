@@ -139,6 +139,15 @@
                 <distributionDirectory origin="${alfresco_extensions_source_directory}/*" allowWildcards="1" />
             </distributionFileList>
         </folder>
+	<folder>
+            <description>Endorsed Files</description>
+            <destination>${tomcat_server_directory}/endorsed</destination>
+            <name>endorsedfiles</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+		<distributionDirectory origin="${alfresco_endorsed_source_directory}/*" allowWildcards="1" />
+	    </distributionFileList>
+	</folder>
         <folder>
             <description>Program Files</description>
             <destination>${alfresco_shared_directory}/alfresco/web-extension</destination>

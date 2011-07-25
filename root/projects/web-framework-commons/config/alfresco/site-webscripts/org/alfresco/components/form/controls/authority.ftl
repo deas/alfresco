@@ -8,10 +8,6 @@
    <@renderPickerJS field "picker" />
    picker.setOptions(
    {
-   <#if field.control.params.showTargetLink??>
-      showLinkToTarget: ${field.control.params.showTargetLink},
-      targetLinkTemplate: "${url.context}/page/site/${page.url.templateArgs.site!""}/document-details?nodeRef={nodeRef}",
-   </#if>
       itemType: "${field.endpointType}",
       multipleSelectMode: ${field.endpointMany?string},
       itemFamily: "authority"

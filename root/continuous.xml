@@ -651,6 +651,10 @@
       <!-- Copy any required common libs -->
       <copy todir="${dir.continuous.assemble.tomcat}/lib"
             file="${dir.project.3rdparty.lib}/devenv/${file.name.jar.postgres.connector}" />
+      <copy todir="${dir.continuous.assemble.tomcat}/endorsed" 
+            file="${dir.project.3rdparty.lib}/${dir.name.xalan}/${file.name.jar.xalan}" />
+      <copy todir="${dir.continuous.assemble.tomcat}/endorsed" 
+            file="${dir.project.3rdparty.lib}/${dir.name.xalan}/${file.name.jar.serializer}" />
 
       <!-- Add config to shared location -->
       <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/extension">

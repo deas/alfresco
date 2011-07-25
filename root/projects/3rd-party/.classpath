@@ -187,7 +187,11 @@
 	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.3-complete.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4.jar" sourcepath="src/mybatis-3.0.4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/mybatis-3.0.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.0.0.CI-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7-SNAPSHOT.jar" sourcepath="src/activiti-engine-5.7-SNAPSHOT-sources.jar"/>
@@ -203,7 +207,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-twitter-1.0.0.RC1.jar" sourcepath="src/spring-social-twitter-1.0.0.RC1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-facebook-1.0.0.RC1.jar" sourcepath="src/spring-social-facebook-1.0.0.RC1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hazelcast/hazelcast-1.9.3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mybatis-spring-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mybatis-spring-1.0.1.jar" sourcepath="src/mybatis-spring-1.0.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.aop-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.asm-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.beans-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.beans-sources-3.0.5.RELEASE.jar"/>

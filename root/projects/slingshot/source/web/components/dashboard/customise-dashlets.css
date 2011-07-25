@@ -120,6 +120,7 @@
    text-align: left;
    border-style: none;
    border-width: 0;
+   overflow: hidden;
 }
 
 .availableDashlet
@@ -179,6 +180,7 @@
    top: -2.2em;
    left: 1em;  
    opacity:1;
+   white-space: nowrap;
    filter:alpha(opacity=100);
 }
 

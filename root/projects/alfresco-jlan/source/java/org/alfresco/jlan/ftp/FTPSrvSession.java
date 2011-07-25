@@ -4640,10 +4640,15 @@ public class FTPSrvSession extends SrvSession implements Runnable {
         keyStore.load(new FileInputStream( ftpConfig.getKeyStorePath()), passphrase);
         trustStore.load(new FileInputStream( ftpConfig.getTrustStorePath()), passphrase);
 
-        KeyManagerFactory keyFactory = KeyManagerFactory.getInstance("SunX509");
+        String defaultAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+
+        KeyManagerFactory keyFactory = KeyManagerFactory.getInstance(defaultAlgorithm);
+        
         keyFactory.init(keyStore, passphrase);
 
-        TrustManagerFactory trustFactory = TrustManagerFactory.getInstance("SunX509");
+        defaultAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+
+        TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(defaultAlgorithm);
         trustFactory.init( trustStore);
 
         m_sslContext = SSLContext.getInstance( engineTyp);

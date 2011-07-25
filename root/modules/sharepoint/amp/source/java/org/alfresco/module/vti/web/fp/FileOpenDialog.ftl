@@ -75,7 +75,7 @@
    
    <#list items as item>
       <#if item.isFolder()>
-         <tr class="recordSetRow"  fileattribute=folder ID="http://${host}${context}/${item.getPath()}" onmousedown="selectrow('http://${host}${context}/${item.getPath()}')">
+         <tr class="recordSetRow"  fileattribute=folder ID="${scheme}://${host}${context}/${item.getPath()}" onmousedown="selectrow('${scheme}://${host}${context}/${item.getPath()}')">
             <td style="padding: 2px; text-align: left"><IMG BORDER=0 ALT="Icon" SRC="${alfContext}/resources/images/icons/space-icon-default-16.gif"></td>
             <td style="text-align: left">${item.getName()}</td>
             <td style="text-align: left">${item.getModifiedBy()}</td>
@@ -83,7 +83,7 @@
             <td style="text-align: left">&nbsp;</td>
          </tr>                
       <#else>
-         <tr class="recordSetRow" fileattribute=file ID="http://${host}${context}/${item.getPath()}" onmousedown="selectrow('http://${host}${context}/${item.getPath()}')">
+         <tr class="recordSetRow" fileattribute=file ID="${scheme}://${host}${context}/${item.getPath()}" onmousedown="selectrow('${scheme}://${host}${context}/${item.getPath()}')">
             <td style="padding: 2px; text-align: left"><IMG BORDER=0 ALT="Icon" SRC="${alfContext}/resources/${DialogUtils.getFileTypeImage(item.getName())}"></td>
             <td style="text-align: left">${item.getName()}</td>
             <td style="text-align: left">${item.getModifiedBy()}</td>

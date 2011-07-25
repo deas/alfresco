@@ -311,7 +311,7 @@
             {
                site: this.options.siteId,
                filterId: "tag",
-               filterOwner: "Alfresco.LinkTags",
+               filterOwner: "Alfresco.TagFilter",
                filterData: obj.tagName
             });
             window.location = url;
