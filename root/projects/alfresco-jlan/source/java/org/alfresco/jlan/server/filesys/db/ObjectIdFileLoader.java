@@ -391,7 +391,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 		// Find, or create, the file state for the file/directory
 
 		FileState fstate = m_stateCache.findFileState(params.getFullPath(), true);
-		fstate.setExpiryTime(System.currentTimeMillis() + getContext().getCacheTimeout());
+		fstate.setExpiryTime(System.currentTimeMillis() + m_stateCache.getFileStateExpireInterval());
 
 		// Check if the file is a directory
 
@@ -555,7 +555,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 				if ( cacheFile.isSequentialOnly())
 					tmo += SequentialFileExpire;
 				else
-					tmo += getContext().getCacheTimeout();
+					tmo += m_stateCache.getFileStateExpireInterval();
 
 				// Set the file state expiry, the local file data will be deleted when the file state expires (if there
 				// are still no references to the file).
@@ -1554,7 +1554,7 @@ public abstract class ObjectIdFileLoader implements FileLoader, BackgroundFileLo
 					// If the file state is not to be deleted reset the file state expiration timer
 
 					if ( expire == false)
-						state.setExpiryTime(System.currentTimeMillis() + getContext().getCacheTimeout());
+						state.setExpiryTime(System.currentTimeMillis() + m_stateCache.getFileStateExpireInterval());
 				}
 				catch (Exception ex) {
 
