@@ -892,7 +892,8 @@ body.yui-skin-hcBlack .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .yui-skin-hcBlack .rules-none a,
 .yui-skin-hcBlack .agendaview a,
 .yui-skin-hcBlack a.previousEvents,
-.yui-skin-hcBlack a.nextEvents
+.yui-skin-hcBlack a.nextEvents,
+.yui-skin-default .channelActions a
 {
    color: #000000;
    text-decoration: underline;

@@ -834,7 +834,8 @@ body.yui-skin-yellowTheme .yui-columnbrowser .yui-carousel-content li.yui-column
 .yui-skin-yellowTheme .rules-none a,
 .yui-skin-yellowTheme .agendaview a,
 .yui-skin-yellowTheme a.previousEvents,
-.yui-skin-yellowTheme a.nextEvents
+.yui-skin-yellowTheme a.nextEvents,
+.yui-skin-default .channelActions a
 {
    color: #F6931C;
 }

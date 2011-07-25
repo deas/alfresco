@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Admin Console Channel Tool</shortname>
+  <description>Administration Console - Channel Tool</description>
+  <url>/components/console/channel</url>
+  <family>admin-console</family>
+</webscript>
