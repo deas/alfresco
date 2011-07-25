@@ -157,7 +157,7 @@
          // If it hasn't load the gui (template) from the server
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.URL_SERVICECONTEXT + "modules/social-publishing?nodeRef=" + this.showConfig.nodeRef + "&siteId=" + Alfresco.constants.SITE + "&htmlid=" + this.id,
+            url: Alfresco.constants.URL_SERVICECONTEXT + "modules/social-publishing?nodeRef=" + this.showConfig.nodeRef + "&htmlid=" + this.id,
             successCallback:
             {
                fn: this.onTemplateLoaded,
@@ -290,7 +290,7 @@
             // It looks more complicated than it actually is.
             var fileName = me.showConfig.filename, 
                channelName = selectedChannel.options[selectedChannel.options.selectedIndex].innerHTML,
-               docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "site/" + Alfresco.constants.SITE + "/document-details?nodeRef=" + me.showConfig.nodeRef;
+               docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "/document-details?nodeRef=" + me.showConfig.nodeRef;
                linkText = Alfresco.util.message("socialPublish.confirm.link", me.name, 
                      {
                         "0": fileName
@@ -321,7 +321,7 @@
          // Make the POST request to the publishing queue
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.PROXY_URI + "api/publishing/" + Alfresco.constants.SITE + "/queue",
+            url: Alfresco.constants.PROXY_URI + "api/publishing/queue",
             method: "POST",
             requestContentType: "application/json",
             responseContentType: "application/json",
@@ -445,7 +445,7 @@
       },
       
       /**
-       * Gets All Publising Channels for current site
+       * Gets All Publising Channels
        * 
        */
       getAllChannels: function SP_getAllChannels()

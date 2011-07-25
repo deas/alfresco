@@ -100,13 +100,7 @@
          {
             dataSource:
             {
-               url: Alfresco.constants.PROXY_URI + "api/publishing/" + Alfresco.constants.SITE + "/events/query",
-               config: {
-                  connMethodPost: true
-               },
-               initialRequest: {
-                  nodeRef: this.options.nodeRef 
-               },
+               url: Alfresco.constants.PROXY_URI + "api/publishing/" + this.options.nodeRef.replace("://", "/") + "/events",
                doBeforeParseData: this.bind(function(oRequest, oFullResponse)
                {
                   // Publish Events are returned in an array, starting with the earliest - we need to most recent first.
@@ -158,6 +152,7 @@
             channelIcon = "http://www.slideshare.net/favicon.ico";
             channelTitle = event.channel.channelType.title,
             channelName = event.channel.title,
+            channelId = event.channel.id,
             statusType = this.msg("publishingHistory.status." + event.status),
             statusTime = Alfresco.util.relativeTime(event.scheduledTime.dateTime),
             statusDisplay = this.msg("publishingHistory.status.display", statusType, statusTime),

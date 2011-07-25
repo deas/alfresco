@@ -2,8 +2,7 @@
 
 function getDocumentChannels(nodeRef)
 {
-   // var result = remote.call("/api/node/" + nodeRef.replace(":/", "") + "/workflow-instances");
-   var result = remote.call("/api/publishing/site/" + encodeURIComponent(args.siteId) + "/channels");
+   var result = remote.call("/api/publishing/channels");
    if (result.status != 200)
    {
       AlfrescoUtil.error(result.status, 'Could not load publishing channels');
