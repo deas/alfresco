@@ -176,6 +176,7 @@ public class AlfrescoHttpClient
 			{
 				throw new AuthenticationException(httpMethod);
 			}
+
 			//"Request " + httpMethod.getPath() + " responded with an error code " + httpMethod.getStatusCode()
 	
 	        return new SecureHttpMethodResponse(httpMethod, Long.valueOf(endTime - startTime), httpMethod.getHostConfiguration(), encryptionUtils);
@@ -261,17 +262,16 @@ public class AlfrescoHttpClient
         	super(method, duration);
         	this.hostConfig = hostConfig;
             this.encryptionUtils = encryptionUtils;
-            
-//    		if(method.getStatusCode() == HttpStatus.SC_OK)
-//    		{
-    			this.decryptedBody = encryptionUtils.decryptResponseBody(method);
-//    		}
 
-    		// authenticate the response
-    		if(!authenticate())
-    		{
-    			throw new AuthenticationException(method);
-    		}
+			if(method.getStatusCode() == HttpStatus.SC_OK)
+			{
+    			this.decryptedBody = encryptionUtils.decryptResponseBody(method);
+				// authenticate the response
+    			if(!authenticate())
+    			{
+    				throw new AuthenticationException(method);
+    			}
+			}
         }
         
         protected boolean authenticate() throws IOException
