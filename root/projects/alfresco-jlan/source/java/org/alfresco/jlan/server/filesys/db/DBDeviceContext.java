@@ -50,18 +50,6 @@ import org.springframework.extensions.config.ConfigElement;
  */
 public class DBDeviceContext extends DiskDeviceContext implements FileStateCacheListener {
 
-	// Default file state cache timeout
-
-	public final static long DEFAULT_CACHETIMEOUT 	= 5 * 60000L; 	// 5 minutes
-	public final static long MIN_CACHETIMEOUT 		= 5000L; 		// 5 seconds
-	public final static long MAX_CACHETIMEOUT 		= 60 * 60000L; 	// 1 hour
-
-	// Default file state cache check interval
-
-	public final static long DEFAULT_CACHECHECK 	= 1 * 60000L; 	// 1 minutes
-	public final static long MIN_CACHECHECK 		= 2000L; 		// 2 seconds
-	public final static long MAX_CACHECHECK 		= 20 * 60000L; 	// 20 minutes
-
 	// Milliseconds per day
 
 	private static final long MillisecondsPerDay = 24L * 60L * 60000L;
@@ -70,11 +58,6 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 
 	private static final long MinimumMaxfileSize = 512 * MemorySize.KILOBYTE;
 
-	// File state cache timeout, in milliseconds
-
-	private long m_cacheTimer = DEFAULT_CACHETIMEOUT;
-	private long m_cacheCheckInterval = DEFAULT_CACHECHECK;
-
 	// NTFS streams enable flag
 
 	private boolean m_ntfsStreams = true;
@@ -82,8 +65,7 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 	// Database interface class
 	//
 	// The database interface implementation may also provide the file loader interface. In this
-	// case
-	// database interface initialization must set the loader class.
+	// case database interface initialization must set the loader class.
 
 	private String m_dbifClass;
 	private DBInterface m_dbInterface;
@@ -108,10 +90,6 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 	// Retention period, milliseconds to add to current date/time value, or -1 to disable
 
 	private long m_retentionPeriod = -1;
-
-	// Required database features
-
-	private int m_dbFeatures;
 
 	// Root directory information
 
@@ -250,69 +228,6 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 			m_loader = (FileLoader) m_dbInterface;
 		}
 
-		// Get the file state cache timer, if specified
-
-		ConfigElement nameVal = args.getChild("CacheTime");
-		if ( nameVal != null) {
-
-			// Convert the cache timeout value
-
-			String cacheTmo = nameVal.getValue();
-
-			if ( cacheTmo != null) {
-
-				// Validate the cache time value
-
-				try {
-
-					// Convert the cache timeout string to a numeric value
-
-					m_cacheTimer = Long.valueOf(cacheTmo).longValue() * 1000L;
-
-					// Check that the value is within the valid range
-
-					if ( m_cacheTimer < MIN_CACHETIMEOUT)
-						m_cacheTimer = MIN_CACHETIMEOUT;
-					else if ( m_cacheTimer > MAX_CACHETIMEOUT)
-						m_cacheTimer = MAX_CACHETIMEOUT;
-				}
-				catch (NumberFormatException ex) {
-				}
-			}
-		}
-
-		// Get the file state cache check interval, if specified
-
-		nameVal = args.getChild("CacheCheckInterval");
-
-		if ( nameVal != null) {
-
-			// Convert the cache check interval
-
-			String cacheCheck = nameVal.getValue();
-
-			if ( cacheCheck != null) {
-
-				// Validate the cache check interval value
-
-				try {
-
-					// Convert the cache check interval string to a numeric value
-
-					m_cacheCheckInterval = Long.valueOf(cacheCheck).longValue() * 1000L;
-
-					// Check that the value is within the valid range
-
-					if ( m_cacheCheckInterval < MIN_CACHECHECK)
-						m_cacheCheckInterval = MIN_CACHECHECK;
-					else if ( m_cacheCheckInterval > MAX_CACHECHECK)
-						m_cacheCheckInterval = MAX_CACHECHECK;
-				}
-				catch (NumberFormatException ex) {
-				}
-			}
-		}
-
 		// Check if debug output is enabled
 
 		if ( args.getChild("Debug") != null)
@@ -344,7 +259,7 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 		
 		// Check if offline files are enabled above a specified size
 
-		nameVal = args.getChild("offlineFileSize");
+		ConfigElement nameVal = args.getChild("offlineFileSize");
 		if ( nameVal != null) {
 			try {
 				m_offlineFileSize = MemorySize.getByteValue(nameVal.getValue());
@@ -608,15 +523,6 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 	}
 
 	/**
-	 * Return the file state cache timeout, in milliseconds
-	 * 
-	 * @return long
-	 */
-	public final long getCacheTimeout() {
-		return m_cacheTimer;
-	}
-
-	/**
 	 * Determine if debug output is enabled
 	 * 
 	 * @return boolean
@@ -786,6 +692,15 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 	}
 
 	/**
+	 * Set the lock/oplock manager
+	 * 
+	 * @param lockManager FileStateLockManager
+	 */
+	protected final void setFileStateLockManager( FileStateLockManager lockManager) {
+		m_lockManager = lockManager;
+	}
+	
+	/**
 	 * File state has expired. The listener can control whether the file state is removed from the
 	 * cache, or not.
 	 * 
@@ -926,14 +841,7 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 		
 		// Create the file state based lock manager
 		
-		m_lockManager = new FileStateLockManager( getStateCache());
-		
-		// Set the default file state cache timeout
-
-		if ( hasStateCache()) {
-			getStateCache().setFileStateExpireInterval( m_cacheTimer);
-			getStateCache().setCheckInterval(Math.max(5000, m_cacheTimer / 4));
-		}
+		setFileStateLockManager( new FileStateLockManager( getStateCache()));
 		
 		// Start the lock manager, use the thread pool if available
 		
@@ -951,7 +859,7 @@ public class DBDeviceContext extends DiskDeviceContext implements FileStateCache
 		
     		// Start the lock manager
     		
-    		m_lockManager.startLockManager( "OplockExpire_" + disk.getName(), threadPool);
+    		getFileStateLockManager().startLockManager( "OplockExpire_" + disk.getName(), threadPool);
 		}
 	}
 	
