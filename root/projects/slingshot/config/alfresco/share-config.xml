@@ -43,6 +43,7 @@
                   <item type="link" id="repository">/console/admin-console/repository</item>
                   <item type="link" id="trashcan">/console/admin-console/trashcan</item>
                   <item type="link" id="users">/console/admin-console/users</item>
+                  <item type="link" id="tag-management">/console/admin-console/tag-management</item>
                   <item type="link" id="more">/console/admin-console/</item>
                </container-group>
             </item>
