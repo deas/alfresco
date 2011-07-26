@@ -37,6 +37,7 @@ import javax.script.CompiledScript;
 
 import org.alfresco.cmis.CMISScope;
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.model.ContentModel;
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.opencmis.mapping.CMISMapping;
@@ -51,6 +52,7 @@ import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryNamespaceComponent;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
+import org.alfresco.repo.dictionary.M2Property;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
@@ -388,9 +390,8 @@ public class AlfrescoSolrDataModel
     private PropertyDefinition getPropertyDefinition(String fieldName)
     {
         QName rawPropertyName = QName.createQName(fieldName.substring(1));
-        QName propertyName = QName.createQName(rawPropertyName.getNamespaceURI(), ISO9075.decode(rawPropertyName.getLocalName()));
-        PropertyDefinition propertyDef = getDictionaryService().getProperty(propertyName);
-        return propertyDef;
+        QName propertyQName = QName.createQName(rawPropertyName.getNamespaceURI(), ISO9075.decode(rawPropertyName.getLocalName()));
+        return getPropertyDefinition(propertyQName);
     }
 
     /**
@@ -1034,11 +1035,6 @@ public class AlfrescoSolrDataModel
      */
     public SortField getSortField(SchemaField field, boolean reverse)
     {
-        // TODO: Set up Thread local for locale ?? May need some SOLR guddeling - extra query component?
-
-        // TODO: TEXT and MLTEXT comparator
-        // best locale match and subsequent localised ordering
-        // cache ordering
         PropertyDefinition propertyDefinition = getPropertyDefinition(field.getName());
         if (propertyDefinition != null)
         {
@@ -1415,5 +1411,27 @@ public class AlfrescoSolrDataModel
     public Analyzer getQueryAnalyser()
     {
         return getSolrLuceneAnalyser();
+    }
+
+    /**
+     * @param propertyQName
+     * @return
+     */
+    public PropertyDefinition getPropertyDefinition(QName propertyQName)
+    {
+        PropertyDefinition propertyDef = getDictionaryService().getProperty(propertyQName);
+        if((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_AUTHOR)))
+        {
+            return new PropertyDefinitionWrapper(propertyDef);
+        }
+        else if((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_CREATOR)))
+        {
+            return new PropertyDefinitionWrapper(propertyDef);
+        }
+        else if((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_MODIFIER)))
+        {
+            return new PropertyDefinitionWrapper(propertyDef);
+        }
+        return propertyDef;
     }
 }

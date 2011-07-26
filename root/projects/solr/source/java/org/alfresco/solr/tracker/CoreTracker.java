@@ -761,6 +761,9 @@ public class CoreTracker
     {
         if (node.getStatus() == SolrApiNodeStatus.UPDATED)
         {
+            System.out.println(".. checking for path change");
+            
+            
             System.out.println(".. updating");
             NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
             nmdp.setFromNodeId(node.getId());
@@ -1025,7 +1028,7 @@ public class CoreTracker
 
     private void addMLTextPropertyToDoc(SolrInputDocument doc, QName propertyQName, MLTextPropertyValue mlTextPropertyValue, AlfrescoSolrDataModel dataModel) throws IOException
     {
-        PropertyDefinition propertyDefinition = dataModel.getDictionaryService().getProperty(propertyQName);
+        PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
         if (propertyDefinition != null)
         {
             StringBuilder sort = new StringBuilder();
@@ -1070,7 +1073,7 @@ public class CoreTracker
     private void addStringPropertyToDoc(SolrInputDocument doc, QName propertyQName, StringPropertyValue stringPropertyValue, AlfrescoSolrDataModel dataModel,
             Map<QName, PropertyValue> properties) throws IOException
     {
-        PropertyDefinition propertyDefinition = dataModel.getDictionaryService().getProperty(propertyQName);
+        PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
         if (propertyDefinition != null)
         {
             if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
