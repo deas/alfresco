@@ -159,13 +159,7 @@
         
         <property name="interceptors">
             <list>
-                <!-- SURF: required interceptors -->
                 <ref bean="requestContextInterceptor"/>
-                <!-- 
-                <ref bean="themeInterceptor"/>
-                <ref bean="previewContextInterceptor"/>
-                -->
-                <!-- Interceptors added to apply application-wide processing to requests. See also surf-config.xml -->
                 <ref bean="cmisSessionInterceptor"/>
                 <ref bean="applicationDataInterceptor"/>
             </list>

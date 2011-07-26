@@ -18,7 +18,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Web Editor"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/freemarker-2.3.18-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.18-patched.zip"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web.servlet-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.web.servlet-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
