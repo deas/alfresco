@@ -193,8 +193,7 @@
       <patternset id="files.tests.intermittent">
          <include name="**/org/alfresco/wcm/WCMTestSuite.java" />
          <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
-         <include name="**/org/alfresco/repo/web/scripts/publishing/PublishingRestApiTest.java" />
-         <include name="**/org/alfresco/repo/publishing/PublishWebContentJbpmTest.java" />
+         <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
       </patternset>
       <patternset id="files.tests">
          <exclude name="**/Base*Test.java" />
@@ -230,7 +229,6 @@
          <include name="**/org/alfresco/repo/model/ModelTestSuite.java" />
          <!-- Publishing Tests -->
          <exclude name="**/org/alfresco/repo/publishing/**/*Test.java" />
-         <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
          <!-- Version Tests -->
          <exclude name="**/org/alfresco/repo/version/**/*Test.java" />
          <include name="**/org/alfresco/repo/version/VersionTestSuite.java" />
