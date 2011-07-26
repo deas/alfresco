@@ -381,7 +381,7 @@ public class DefaultEncryptionUtils implements EncryptionUtils
             Long timestamp = getResponseTimestamp(method);
             if(timestamp == null)
             {
-            	throw new AlfrescoRuntimeException("Missing timestamp on HTTP response");
+            	return false;
             }
             remoteIP = IPUtils.getRealIPAddress(remoteIP);
             return authenticate(expectedMAC, new MACInput(decryptedBody, timestamp.longValue(), remoteIP));
@@ -404,7 +404,7 @@ public class DefaultEncryptionUtils implements EncryptionUtils
             Long timestamp = getTimestamp(req);
             if(timestamp == null)
             {
-            	throw new AlfrescoRuntimeException("Missing timestamp on HTTP request");
+            	return false;
             }
             String ipAddress = IPUtils.getRealIPAddress(req.getRemoteAddr());
             return authenticate(expectedMAC, new MACInput(decryptedBody, timestamp.longValue(), ipAddress));
