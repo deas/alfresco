@@ -120,7 +120,7 @@
       </div>
 
       <div class="yui-g">
-         <!-- Cancel view node button -->
+         <!-- return to search node button -->
          <div class="goback-button">
             <span class="yui-button yui-push-button" id="${el}-goback-button">
                <span class="first-child"><button>${msg("button.goback")}</button></span>

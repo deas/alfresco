@@ -72,7 +72,6 @@
       
       YAHOO.extend(SearchPanelHandler, Alfresco.ConsolePanelHandler,
       {
-
          /**
           * INSTANCE VARIABLES
           */
@@ -102,28 +101,6 @@
                type: "menu",
                menu: parent.id + "-store-menu-select"
             });
-            /*
-            parent.widgets.applyButton = Alfresco.util.createYUIButton(parent, "apply-button", null,
-            {
-               type: "submit"
-            });
-            */
-            
-            // Form definition
-            /*
-            var form = new Alfresco.forms.Form(parent.id + "-options-form");
-            form.setSubmitElements([parent.widgets.applyButton]);
-            form.setSubmitAsJSON(true);
-            form.setAJAXSubmit(true,
-            {
-               successCallback:
-               {
-                  fn: this.onSuccess,
-                  scope: this
-               }
-            });
-            form.init();
-            */
             
             // DataTable and DataSource setup
             parent.widgets.dataSource = new YAHOO.util.DataSource(Alfresco.constants.PROXY_URI + "slingshot/node/search",
