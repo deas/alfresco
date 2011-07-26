@@ -2,6 +2,7 @@
 <script type="text/javascript">//<![CDATA[
    new Alfresco.PeopleFinder("${el}").setOptions(
    {
+      userId: "${user.name?js_string}",
       siteId: "<#if page?exists>${page.url.templateArgs.site!""}<#else>${(args.site!"")?js_string}</#if>",
       minSearchTermLength: ${(args.minSearchTermLength!config.scoped['Search']['search'].getChildValue('min-search-term-length'))?js_string},
       maxSearchResults: ${(args.maxSearchResults!config.scoped['Search']['search'].getChildValue('max-search-results'))?js_string},

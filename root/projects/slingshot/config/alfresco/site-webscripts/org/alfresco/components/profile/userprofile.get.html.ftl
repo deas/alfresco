@@ -1,7 +1,7 @@
 <script type="text/javascript">//<![CDATA[
    var userProfile = new Alfresco.UserProfile("${args.htmlid}").setOptions(
    {
-      userId: "${user.name}",
+      userId: "${user.name?js_string}",
       profile: {
          isEditable: ${isEditable?string},
          name: "<#if profile.name??>${profile.name?js_string}</#if>",

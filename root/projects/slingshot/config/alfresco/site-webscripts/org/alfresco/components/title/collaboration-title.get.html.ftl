@@ -5,7 +5,7 @@
    {
       site: "${page.url.templateArgs.site!""}",
       siteTitle: "${siteTitle?js_string}",
-      user: "${user.name!""}"
+      user: "${(user.name!"")?js_string}"
    }).setMessages(
       ${messages}
    );

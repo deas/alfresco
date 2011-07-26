@@ -82,7 +82,7 @@
       Alfresco.constants.URL_PAGECONTEXT = "${url.context}/page/";
       Alfresco.constants.URL_SERVICECONTEXT = "${url.context}/service/";
       Alfresco.constants.URL_FEEDSERVICECONTEXT = "${url.context}/feedservice/";
-      Alfresco.constants.USERNAME = "${user.name!""}";
+      Alfresco.constants.USERNAME = "${(user.name!"")?js_string}";
       Alfresco.constants.SITE = "<#if page??>${(page.url.templateArgs.site!"")?js_string}</#if>";
       Alfresco.constants.PAGEID = "<#if page??>${(page.url.templateArgs.pageid!"")?js_string}</#if>";
       Alfresco.constants.PORTLET = ${(context.attributes.portletHost!false)?string};

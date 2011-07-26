@@ -15,7 +15,7 @@
                   <div class="user-info">${(user.organization!"")?html}</div>
                   <#if (user.userStatus??)>
                   <div class="user-status">${(user.userStatus!"")?html}
-                     <span class="lighter"> ${user.userStatusRelativeTime?html}<span>
+                     <span class="lighter"> (${user.userStatusRelativeTime?html})<span>
                    </div>
                   </#if>
                </div>

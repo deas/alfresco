@@ -54,6 +54,7 @@
       this.singleSelectedUser = "";
       this.selectedUsers = {};
       this.notAllowed = {};
+      this.following = {};
 
       /**
        * Decoupled event listeners
@@ -143,7 +144,6 @@
           */
          setFocus: false,
 
-
          /**
           * Label to add button .
           *
@@ -166,7 +166,15 @@
           * @property dataWebScript
           * @type string
           */
-         dataWebScript: ""
+         dataWebScript: "",
+         
+         /**
+          * Current userId.
+          * 
+          * @property userId
+          * @type string
+          */
+         userId: ""
       },
 
       /**
@@ -216,6 +224,14 @@
        * @type Boolean
        */
       isSearching: false,
+      
+      /**
+       * Map of the users the current user is following
+       * 
+       * @property following
+       * @type object
+       */
+      following: null,
 
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -227,7 +243,7 @@
       {  
          var me = this;
          
-         // View mode
+         // View mode specific setup
          if (this.options.viewMode == Alfresco.PeopleFinder.VIEW_MODE_COMPACT)
          {
             Dom.addClass(this.id + "-body", "compact");
@@ -237,6 +253,29 @@
          {
             Dom.setStyle(this.id + "-results", "height", "auto");
             Dom.removeClass(this.id + "-help", "hidden");
+            
+            // Kick off ajax request to get the users the current user is following
+            Alfresco.util.Ajax.jsonGet(
+            {
+               url: Alfresco.constants.PROXY_URI + "api/subscriptions/" + encodeURIComponent(this.options.userId) + "/following",
+               successCallback:
+               {
+                  fn: function(response)
+                  {
+                     if (response.json.people)
+                     {
+                        var following = {};
+                        var people = response.json.people;
+                        for (var i=0; i<people.length; i++)
+                        {
+                           following[people[i].userName] = true;
+                        }
+                        me.following = following;
+                     }
+                  },
+                  scope: this
+               }
+            });
          }
          else
          {
@@ -437,24 +476,25 @@
          };
          
          /**
-          * Add button datacell formatter
-          *
-          * @method renderCellAvatar
+          * Actions datacell formatter
+          * 
+          * @method renderCellActions
           * @param elCell {object}
           * @param oRecord {object}
           * @param oColumn {object}
           * @param oData {object|string}
           */
-         var renderCellAddButton = function PeopleFinder_renderCellAddButton(elCell, oRecord, oColumn, oData)
+         var renderCellActions = function PeopleFinder_renderCellActions(elCell, oRecord, oColumn, oData)
          {
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
             Dom.setStyle(elCell.parentNode, "text-align", "right");
             
             var userName = oRecord.getData("userName"),
-               desc = '<span id="' + me.id + '-select-' + userName + '"></span>';
+               desc = '<span id="' + me.id + '-action-' + userName + '"></span>';
             elCell.innerHTML = desc;
             
-            // create button if require - it is not required in the plain people list mode
+            // This component is used as part of the People Search page and various People Picker components
+            // so create the Add button if required - it is not displayed in the full people search list mode.
             if (me.options.viewMode !== Alfresco.PeopleFinder.VIEW_MODE_FULLPAGE)
             {
                var button = new YAHOO.widget.Button(
@@ -462,7 +502,7 @@
                   type: "button",
                   label: (me.options.addButtonLabel ? me.options.addButtonLabel : me.msg("button.add")) + " " + me.options.addButtonSuffix,
                   name: me.id + "-selectbutton-" + userName,
-                  container: me.id + '-select-' + userName,
+                  container: me.id + '-action-' + userName,
                   tabindex: 0,
                   disabled: userName in me.notAllowed,
                   onclick:
@@ -479,6 +519,30 @@
                   me.userSelectButtons[userName].set("disabled", true);
                }
             }
+            // Create the Follow/Unfollow buttons for the people
+            if (me.options.viewMode === Alfresco.PeopleFinder.VIEW_MODE_FULLPAGE &&
+                me.options.userId !== userName)
+            {
+               var following = me.following[userName];
+               var button = new YAHOO.widget.Button(
+               {
+                  type: "button",
+                  label: following ? me.msg("button.unfollow") : me.msg("button.follow"),
+                  name: me.id + "-followbutton-" + userName,
+                  container: me.id + '-action-' + userName,
+                  tabindex: 0
+               });
+               button.set("onclick",
+               {
+                  fn: following ? me.onPersonUnfollow : me.onPersonFollow,
+                  obj:
+                  {
+                     record: oRecord,
+                     button: button
+                  },
+                  scope: me
+               });
+            }
          };
 
          // DataTable column defintions
@@ -486,7 +550,7 @@
          [
             { key: "avatar", label: "Avatar", sortable: false, formatter: renderCellAvatar, width: this.options.viewMode == Alfresco.PeopleFinder.VIEW_MODE_COMPACT ? 36 : 70 },
             { key: "person", label: "Description", sortable: false, formatter: renderCellDescription },
-            { key: "actions", label: "Actions", sortable: false, formatter: renderCellAddButton, width: 80 }
+            { key: "actions", label: "Actions", sortable: false, formatter: renderCellActions, width: 80 }
          ];
 
          // DataTable definition
@@ -552,6 +616,136 @@
             firstName: p_obj.getData("firstName"),
             lastName: p_obj.getData("lastName"),
             email: p_obj.getData("email")
+         });
+      },
+      
+      /**
+       * Follow person button click handler
+       *
+       * @method onPersonFollow
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onPersonFollow: function PeopleFinder_onPersonFollow(event, p_obj)
+      {
+         var userName = p_obj.record.getData("userName");
+         
+         // follow the user - on success, update the button label and bind appropriate event handler
+         
+         // disable the button to prohibit multiple presses before we get a response
+         p_obj.button.set("disabled", true);
+         
+         // execute call to follow the user
+         var me = this;
+         Alfresco.util.Ajax.request(
+         {
+            url: Alfresco.constants.PROXY_URI + "api/subscriptions/" + encodeURIComponent(this.options.userId) + "/follow",
+            method: Alfresco.util.Ajax.POST,
+            dataObj: [userName],
+            requestContentType: Alfresco.util.Ajax.JSON,
+            successCallback:
+            {
+               fn: function(res)
+               {
+                  // on success, update the label and event handler
+                  p_obj.button.set("label", me.msg("button.unfollow"));
+                  p_obj.button.set("onclick",
+                  {
+                     fn: me.onPersonUnfollow,
+                     obj:
+                     {
+                        record: p_obj.record,
+                        button: p_obj.button
+                     },
+                     scope: me
+                  });
+                  // update our following cache
+                  me.following[userName] = true;
+                  // enable the button again
+                  p_obj.button.set("disabled", false);
+               },
+               scope: this
+            },
+            failureCallback:
+            {
+               fn: function(res)
+               {
+                  var json = Alfresco.util.parseJSON(res.serverResponse.responseText);
+                  Alfresco.util.PopupManager.displayPrompt(
+                  {
+                     title: this._msg("message.failure"),
+                     text: json.message
+                  });
+                  // enable the button again
+                  p_obj.button.set("disabled", false);
+               },
+               scope: this
+            }
+         });
+      },
+      
+      /**
+       * Unfollow person button click handler
+       *
+       * @method onPersonUnfollow
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onPersonUnfollow: function PeopleFinder_onPersonUnfollow(event, p_obj)
+      {
+         var userName = p_obj.record.getData("userName");
+         
+         // unfollow the user - on success, update the button label and bind appropriate event handler
+         
+         // disable the button to prohibit multiple presses before we get a response
+         p_obj.button.set("disabled", true);
+         
+         // execute call to follow the user
+         var me = this;
+         Alfresco.util.Ajax.request(
+         {
+            url: Alfresco.constants.PROXY_URI + "api/subscriptions/" + encodeURIComponent(this.options.userId) + "/unfollow",
+            method: Alfresco.util.Ajax.POST,
+            dataObj: [userName],
+            requestContentType: Alfresco.util.Ajax.JSON,
+            successCallback:
+            {
+               fn: function(res)
+               {
+                  // on success, update the label and event handler
+                  p_obj.button.set("label", me.msg("button.follow"));
+                  p_obj.button.set("onclick",
+                  {
+                     fn: me.onPersonFollow,
+                     obj:
+                     {
+                        record: p_obj.record,
+                        button: p_obj.button
+                     },
+                     scope: me
+                  });
+                  // update our following cache
+                  me.following[userName] = false;
+                  // enable the button again
+                  p_obj.button.set("disabled", false);
+               },
+               scope: this
+            },
+            failureCallback:
+            {
+               fn: function(res)
+               {
+                  var json = Alfresco.util.parseJSON(res.serverResponse.responseText);
+                  Alfresco.util.PopupManager.displayPrompt(
+                  {
+                     title: this._msg("message.failure"),
+                     text: json.message
+                  });
+                  // enable the button again
+                  p_obj.button.set("disabled", false);
+               },
+               scope: this
+            }
          });
       },
 
