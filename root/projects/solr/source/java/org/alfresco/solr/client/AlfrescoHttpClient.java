@@ -57,15 +57,29 @@ public class AlfrescoHttpClient
         this.password = password;
         this.encryptionUtils = encryptionService.getEncryptionUtils();
         this.encryptor = encryptionService.getEncryptor();
-    }
-    
-    protected void setupHttpClient()
-    {
+        
         httpClient = new HttpClient();
         httpClient.getParams().setBooleanParameter(HttpClientParams.PREEMPTIVE_AUTHENTICATION, true);
         httpClient.getState().setCredentials(
                 new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
                 new UsernamePasswordCredentials(username, password));
+        HttpClientParams params = httpClient.getParams();
+        params.setBooleanParameter("http.tcp.nodelay", true);
+        params.setBooleanParameter("http.connection.stalecheck", false);
+    }
+    
+    protected void setupHttpClient()
+    {
+//        httpClient = new HttpClient();
+//        httpClient.getParams().setBooleanParameter(HttpClientParams.PREEMPTIVE_AUTHENTICATION, true);
+//        httpClient.getState().setCredentials(
+//                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+//                new UsernamePasswordCredentials(username, password));
+    }
+    
+    protected HttpClient getHttpClient()
+    {
+        return httpClient;
     }
     
     /**
@@ -166,7 +180,8 @@ public class AlfrescoHttpClient
 
         // execute method
         long startTime = System.currentTimeMillis();
-        httpClient.executeMethod(httpMethod);
+        // TODO: Pool, and sent host configuration and state on execution
+        getHttpClient().executeMethod(httpMethod);
         long endTime = System.currentTimeMillis();
 
         if(secureComms)
