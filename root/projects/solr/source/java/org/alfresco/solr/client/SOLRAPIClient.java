@@ -93,9 +93,9 @@ public class SOLRAPIClient extends AlfrescoHttpClient
     public SOLRAPIClient(
             DictionaryService dictionaryService,
             NamespaceDAO namespaceDAO, EncryptionService encryptionService,
-            boolean secureComms, String alfrescoURL, String username, String password)
+            boolean secureComms, String alfrescoURL)
     {
-        super(encryptionService, secureComms, alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/"), username, password);
+        super(encryptionService, secureComms, alfrescoURL + (alfrescoURL.endsWith("/") ? "" : "/"));
         this.dictionaryService = dictionaryService;
         this.namespaceDAO = namespaceDAO;
         this.deserializer = new SOLRDeserializer(namespaceDAO);
@@ -132,7 +132,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         url.append(args);
         
         GetRequest req = new GetRequest(url.toString());
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
 
         if (response.getStatus() != HttpStatus.SC_OK)
         {
@@ -214,7 +214,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         jsonReq.put("aclChangeSetIds", aclChangeSetIdsJSON);
 
         PostRequest req = new PostRequest(url.toString(), jsonReq.toString(), "application/json");
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
 
         if (response.getStatus() != HttpStatus.SC_OK)
         {
@@ -281,7 +281,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         jsonReq.put("aclIds", aclIdsJSON);
 
         PostRequest req = new PostRequest(url.toString(), jsonReq.toString(), "application/json");
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
 
         if (response.getStatus() != HttpStatus.SC_OK)
         {
@@ -346,7 +346,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         url.append(args);
         
         GetRequest req = new GetRequest(url.toString());
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
 
         if(response.getStatus() != HttpStatus.SC_OK)
         {
@@ -446,7 +446,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
 
         PostRequest req = new PostRequest(url.toString(), body.toString(), "application/json");
  
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
 
         if(response.getStatus() != HttpStatus.SC_OK)
         {
@@ -660,7 +660,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         body.put("maxResults", maxResults);
 
         PostRequest req = new PostRequest(url.toString(), body.toString(), "application/json");
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
         
         if(response.getStatus() != HttpStatus.SC_OK)
         {
@@ -804,24 +804,6 @@ public class SOLRAPIClient extends AlfrescoHttpClient
        
         url.append(args);
         
-        
-//        
-//        if(nodeId != null)
-//        {
-//            url.append("/");
-//            url.append(String.valueOf(nodeId));
-//        }
-//        if(propertyName != null)
-//        {
-//            if(url.charAt(url.length() - 1) != '/')
-//            {
-//                url.append("/");
-//            }
-//            // TODO encode
-//            URLCodec encoder = new URLCodec();
-//            url.append(encoder.encode(propertyName.toString(), "UTF-8"));
-//        }
-        
         GetRequest req = new GetRequest(url.toString());
         Map<String, String> headers = new HashMap<String, String>(2);
         
@@ -829,10 +811,10 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
             headers.put("If-Modified-Since", String.valueOf(DateUtil.formatDate(new Date(modifiedSince))));
         }
-//        headers.put("If-None-Match",  String entityTag);
+
         req.setHeaders(headers);
         
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
         
         if(response.getStatus() != Status.STATUS_NOT_MODIFIED && response.getStatus() != Status.STATUS_NO_CONTENT && response.getStatus() != Status.STATUS_OK)
         {
@@ -857,7 +839,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         
         GetRequest req = new GetRequest(url.toString());
 
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
 
         if(response.getStatus() != HttpStatus.SC_OK)
         {
@@ -895,7 +877,7 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         body.put("models", jsonModels);
 
         PostRequest req = new PostRequest(url.toString(), body.toString(), "application/json");
-        Response response = sendRequest(req, username);
+        Response response = sendRequest(req);
 
         if(response.getStatus() != HttpStatus.SC_OK)
         {

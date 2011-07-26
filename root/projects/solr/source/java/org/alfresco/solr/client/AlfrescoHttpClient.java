@@ -17,8 +17,6 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
@@ -38,8 +36,6 @@ public class AlfrescoHttpClient
     private static final Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
 
     protected String url;
-    protected String username;
-    protected String password;
 
     protected boolean secureComms;
 
@@ -49,20 +45,15 @@ public class AlfrescoHttpClient
     private Encryptor encryptor;
     private EncryptionUtils encryptionUtils;
     
-    public AlfrescoHttpClient(EncryptionService encryptionService, boolean secureComms, String alfrescoURL, String username, String password)
+    public AlfrescoHttpClient(EncryptionService encryptionService, boolean secureComms, String alfrescoURL)
     {
     	this.secureComms = secureComms;
         this.url = alfrescoURL;
-        this.username = username;
-        this.password = password;
         this.encryptionUtils = encryptionService.getEncryptionUtils();
         this.encryptor = encryptionService.getEncryptor();
-        
+
         httpClient = new HttpClient();
-        httpClient.getParams().setBooleanParameter(HttpClientParams.PREEMPTIVE_AUTHENTICATION, true);
-        httpClient.getState().setCredentials(
-                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-                new UsernamePasswordCredentials(username, password));
+
         HttpClientParams params = httpClient.getParams();
         params.setBooleanParameter("http.tcp.nodelay", true);
         params.setBooleanParameter("http.connection.stalecheck", false);
@@ -83,17 +74,9 @@ public class AlfrescoHttpClient
     }
     
     /**
-     * Send Request to Test Web Script Server (as admin)
+     * Send Request to the repository
      */
     protected Response sendRequest(Request req) throws AuthenticationException, IOException
-    {
-        return sendRequest(req, null);
-    }
-
-    /**
-     * Send Request
-     */
-    protected Response sendRequest(Request req, String asUser) throws AuthenticationException, IOException
     {
         if (logger.isDebugEnabled())
         {
@@ -102,12 +85,6 @@ public class AlfrescoHttpClient
         }
 
         Response res = sendRemoteRequest(req);
-
-//        if (logger.isDebugEnabled())
-//        {
-//            logger.debug("");
-//            logger.debug("* Response: " + res.getStatus() + " " + req.getMethod() + " " + req.getFullUri() + "\n" + res.getContentAsString());
-//        }
 
         return res;
     }

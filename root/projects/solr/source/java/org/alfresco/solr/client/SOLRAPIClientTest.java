@@ -165,21 +165,21 @@ public class SOLRAPIClientTest extends TestCase
         		"JCEKS", null, "keystore-passwords.properties", 2*1000,
         		"HmacSHA1");
         invalidKeyClient = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
-        		invalidKeyEncryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
+        		invalidKeyEncryptionService, true, "http://127.0.0.1:8080/alfresco/service");
 
         tamperWithEncryptionService = new TamperWithEncryptionService(keyResourceLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
         		"DESede/CBC/PKCS5Padding",
         		"JCEKS", null, "keystore-passwords.properties", 2*1000,
         		"HmacSHA1");
         tamperWithClient = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
-        		tamperWithEncryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
+        		tamperWithEncryptionService, true, "http://127.0.0.1:8080/alfresco/service");
         
         EncryptionService encryptionService = new EncryptionService(keyResourceLoader, "workspace-SpacesStore/conf/.keystore", 
         		"127.0.0.1", "DESede/CBC/PKCS5Padding",
         		"JCEKS", null, "keystore-passwords.properties", 30*1000,
         		"HmacSHA1");
         client = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
-        		encryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
+        		encryptionService, true, "http://127.0.0.1:8080/alfresco/service");
 
         InputStream modelStream = getClass().getClassLoader().getResourceAsStream("org/alfresco/solr/client/testModel.xml");
         testModel = M2Model.createModel(modelStream);

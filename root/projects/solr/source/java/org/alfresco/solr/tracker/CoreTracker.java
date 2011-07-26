@@ -138,10 +138,6 @@ public class CoreTracker
 
     private String url;
 
-    private String user;
-
-    private String password;
-
     private String cron;
 
     private StoreRef storeRef;
@@ -188,14 +184,6 @@ public class CoreTracker
                 else  if (split[0].equals("alfresco.host"))
                 {
                 	alfrescoHost = split[1];
-                }
-                else if (split[0].equals("alfresco.user"))
-                {
-                    user = split[1];
-                }
-                else if (split[0].equals("alfresco.password"))
-                {
-                    password = split[1];
                 }
                 else if (split[0].equals("alfresco.cron"))
                 {
@@ -245,7 +233,7 @@ public class CoreTracker
                 {
                 	macAlgorithm = split[1];
                 }
-                else if (split[0].equals("solr.secureComms.enabled"))
+                else if (split[0].equals("alfresco.secureComms.enabled"))
                 {
                 	secureCommsEnabled = Boolean.valueOf(split[1]);
                 }
@@ -265,7 +253,7 @@ public class CoreTracker
         EncryptionService encryptionService = new EncryptionService(keyResourceLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm,
         		keyStoreType, keyStoreProvider, passwordFileLocation, messageTimeout, macAlgorithm);
         client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(),
-        		encryptionService, secureCommsEnabled, url, user, password);
+        		encryptionService, secureCommsEnabled, url);
 
         JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
         JobDataMap jobDataMap = new JobDataMap();
