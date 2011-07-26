@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -42,8 +41,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
-import org.alfresco.encryption.KeyStoreLoader;
+import org.alfresco.encryption.KeyResourceLoader;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
@@ -156,8 +156,7 @@ public class CoreTracker
     private String cipherAlgorithm;
     private String keyStoreType;
     private String keyStoreProvider;
-    private String keyStorePassword;
-    private String solrKeyPassword;
+    private String passwordFileLocation;
     private String keyStoreLocation;
     private long messageTimeout;
     private String macAlgorithm;
@@ -230,13 +229,9 @@ public class CoreTracker
                 {
                     keyStoreProvider = split[1];
                 }
-                else if (split[0].equals("alfresco.encryption.keystore.password.solr"))
+                else if (split[0].equals("alfresco.encryption.keystore.passwordFileLocation"))
                 {
-                    solrKeyPassword = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.keystore.password"))
-                {
-                	keyStorePassword = split[1];
+                	passwordFileLocation = split[1];
                 }
                 else if (split[0].equals("alfresco.encryption.keystore.location"))
                 {
@@ -261,21 +256,14 @@ public class CoreTracker
             throw new AlfrescoRuntimeException("Error reading alfrecso core config for " + core.getName());
         }
 
-        final SolrResourceLoader loader = core.getSchema().getResourceLoader();
+        SolrResourceLoader loader = core.getSchema().getResourceLoader();
         String id = loader.getInstanceDir();
         AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
 
         // load keystore from the Solr core location
-        KeyStoreLoader keyStoreLoader = new KeyStoreLoader()
-    	{
-			public InputStream getKeyStore(String location)
-					throws FileNotFoundException
-			{
-				return loader.openResource(location);
-			}
-    	};
-        EncryptionService encryptionService = new EncryptionService(keyStoreLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm,
-        		keyStoreType, keyStoreProvider, keyStorePassword, solrKeyPassword, messageTimeout, macAlgorithm);
+        SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
+        EncryptionService encryptionService = new EncryptionService(keyResourceLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm,
+        		keyStoreType, keyStoreProvider, passwordFileLocation, messageTimeout, macAlgorithm);
         client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(),
         		encryptionService, secureCommsEnabled, url, user, password);
 
@@ -961,7 +949,7 @@ public class CoreTracker
             core.getUpdateHandler().delete(docCmd);
         }
     }
-
+    
     private void addContentPropertyToDoc(SolrInputDocument doc, ArrayList<Reader> toClose, ArrayList<File> toDelete, Node node, QName propertyQName,
             ContentPropertyValue contentPropertyValue) throws AuthenticationException, IOException
     {
@@ -2153,5 +2141,33 @@ public class CoreTracker
     private String getModelFileName(M2Model model)
     {
         return model.getName().replace(":", ".")+"."+model.getChecksum(XMLBindingType.DEFAULT)+".xml";
+    }
+    
+    /*
+     * Loads encryption key resources from a SolrResourceLoader
+     */
+    private class SolrKeyResourceLoader implements KeyResourceLoader
+    {
+    	private SolrResourceLoader loader;
+
+    	public SolrKeyResourceLoader(SolrResourceLoader loader)
+    	{
+    		this.loader = loader;
+    	}
+
+    	@Override
+    	public InputStream getKeyStore(String location)
+    			throws FileNotFoundException
+    	{
+    		return loader.openResource(location);
+    	}
+
+    	@Override
+    	public Properties getPasswords(String location) throws IOException
+    	{
+    		Properties p = new Properties();
+    		p.load(loader.openResource(location));
+    		return p;
+    	}
     }
 }

@@ -32,13 +32,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
 import org.alfresco.encryption.DefaultEncryptionUtils;
 import org.alfresco.encryption.KeyProvider;
-import org.alfresco.encryption.KeyStoreLoader;
+import org.alfresco.encryption.KeyResourceLoader;
 import org.alfresco.encryption.MACUtils.MACInput;
 import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.repo.dictionary.M2Model;
@@ -72,6 +73,7 @@ public class SOLRAPIClientTest extends TestCase
 
     private EncryptionService invalidKeyEncryptionService;
     private TamperWithEncryptionService tamperWithEncryptionService;
+
     private SOLRAPIClient client;
     private SOLRAPIClient invalidKeyClient;
     private SOLRAPIClient tamperWithClient;
@@ -155,33 +157,26 @@ public class SOLRAPIClientTest extends TestCase
         NamespaceDAO namespaceDAO = new TestNamespaceDAO();
 
         // Load the key store from the classpath
-        KeyStoreLoader keyStoreLoader = new KeyStoreLoader()
-        {
-        	public InputStream getKeyStore(String location)
-        	throws FileNotFoundException
-        	{
-        		return getClass().getClassLoader().getResourceAsStream(location);
-        	}
-        };
+        ClasspathKeyResourceLoader keyResourceLoader = new ClasspathKeyResourceLoader();
 
         // note small message timeout - 2s
-        invalidKeyEncryptionService = new EncryptionService(keyStoreLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
+        invalidKeyEncryptionService = new EncryptionService(keyResourceLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
         		"DESede/CBC/PKCS5Padding",
-        		"JCEKS", null, "mp6yc0UD9e", "TxHTt0nrwQ", 2*1000,
+        		"JCEKS", null, "keystore-passwords.properties", 2*1000,
         		"HmacSHA1");
         invalidKeyClient = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
         		invalidKeyEncryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
 
-        tamperWithEncryptionService = new TamperWithEncryptionService(keyStoreLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
+        tamperWithEncryptionService = new TamperWithEncryptionService(keyResourceLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
         		"DESede/CBC/PKCS5Padding",
-        		"JCEKS", null, "mp6yc0UD9e", "TxHTt0nrwQ", 2*1000,
+        		"JCEKS", null, "keystore-passwords.properties", 2*1000,
         		"HmacSHA1");
         tamperWithClient = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
         		tamperWithEncryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
         
-        EncryptionService encryptionService = new EncryptionService(keyStoreLoader, "workspace-SpacesStore/conf/.keystore", 
+        EncryptionService encryptionService = new EncryptionService(keyResourceLoader, "workspace-SpacesStore/conf/.keystore", 
         		"127.0.0.1", "DESede/CBC/PKCS5Padding",
-        		"JCEKS", null, "mp6yc0UD9e", "TxHTtOnrwQ", 30*1000,
+        		"JCEKS", null, "keystore-passwords.properties", 30*1000,
         		"HmacSHA1");
         client = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
         		encryptionService, true, "http://127.0.0.1:8080/alfresco/service", "admin", "admin");
@@ -190,6 +185,24 @@ public class SOLRAPIClientTest extends TestCase
         testModel = M2Model.createModel(modelStream);
     }
     
+    private class ClasspathKeyResourceLoader implements KeyResourceLoader
+    {
+		@Override
+    	public InputStream getKeyStore(String location)
+    	throws FileNotFoundException
+    	{
+    		return getClass().getClassLoader().getResourceAsStream(location);
+    	}
+
+		@Override
+		public Properties getPasswords(String location) throws IOException
+		{
+			Properties p = new Properties();
+			p.load(getClass().getClassLoader().getResourceAsStream(location));
+			return p;
+		}
+    }
+
     /**
      * Full testing of ChangeSets, ACLs and Readers
      */
@@ -669,12 +682,12 @@ public class SOLRAPIClientTest extends TestCase
     
     private static class TamperWithEncryptionService extends EncryptionService
     {
-    	TamperWithEncryptionService(KeyStoreLoader keyStoreLoader, String keyStoreLocation, String alfrescoHost,
-    			String cipherAlgorithm, String keyStoreType, String keyStoreProvider, String keyStorePassword, String solrKeyPassword,
+    	TamperWithEncryptionService(KeyResourceLoader keyResourceLoader, String keyStoreLocation, String alfrescoHost,
+    			String cipherAlgorithm, String keyStoreType, String keyStoreProvider, String keyStorePasswordFile,
     			long messageTimeout, String macAlgorithm)
     			{
-    		super(keyStoreLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm, keyStoreType, keyStoreProvider, keyStorePassword,
-    				solrKeyPassword, messageTimeout, macAlgorithm);
+    		super(keyResourceLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm, keyStoreType, keyStoreProvider, keyStorePasswordFile,
+    				messageTimeout, macAlgorithm);
     			}
 
     	@Override

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.encryption;
 
 import java.io.IOException;
@@ -6,6 +24,7 @@ import java.security.Key;
 import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
@@ -29,6 +48,8 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     
     private static final Log logger = LogFactory.getLog(KeyProvider.class);
 
+    private String passwordsFileLocation;
+
     // Will be cleared after initialization
     private Map<String, String> passwords;
     private String location;
@@ -36,7 +57,7 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     private String type;
     private Map<String, Key> keys;
     
-    private KeyStoreLoader keyStoreLoader;
+    private KeyResourceLoader keyResourceLoader;
 
     private final ReadLock readLock;
     private final WriteLock writeLock;
@@ -55,20 +76,25 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     /**
      * Convenience constructor for tests.  Note that {@link #init()} is also called.
      */
-    /* package */ KeystoreKeyProvider(String location, KeyStoreLoader keyStoreLoader, String provider, String type, Map<String, String> passwords)
+    /* package */ KeystoreKeyProvider(String location, KeyResourceLoader keyResourceLoader, String provider, String type, Map<String, String> passwords)
     {
         this();
         setLocation(location);
         setProvider(provider);
         setType(type);
         setPasswords(passwords);
-        setKeyStoreLoader(keyStoreLoader);
+        setKeyResourceLoader(keyResourceLoader);
         init();
     }
 
-    public void setKeyStoreLoader(KeyStoreLoader keyStoreLoader)
+    public void setPasswordsFileLocation(String passwordsFileLocation)
+    {
+    	this.passwordsFileLocation = passwordsFileLocation;
+    }
+
+    public void setKeyResourceLoader(KeyResourceLoader keyResourceLoader)
 	{
-		this.keyStoreLoader = keyStoreLoader;
+		this.keyResourceLoader = keyResourceLoader;
 	}
 
 	public void setLocation(String location)
@@ -95,7 +121,7 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
      * 
      * @param passwords             a map of passwords including <tt>null</tt> values
      */
-    public void setPasswords(Map<String, String> passwords)
+    private void setPasswords(Map<String, String> passwords)
     {
         this.passwords = new HashMap<String, String>(passwords);
     }
@@ -113,11 +139,25 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
         }
     }
     
+    private void loadPasswords() throws IOException
+    {
+    	Properties passwords = keyResourceLoader.getPasswords(passwordsFileLocation);
+        this.passwords = new HashMap<String, String>(passwords.size());
+    	for(String key : passwords.stringPropertyNames())
+    	{
+        	this.passwords.put(key, passwords.getProperty(key));
+    	}
+    }
+
     /**
      * Initializes class; must be done in a write lock.
      */
     private void safeInit()
     {
+        KeyStore ks = null;
+        InputStream is = null;
+        String pwdKeyStore = null;
+
         if (!PropertyCheck.isValidPropertyString(location))
         {
             location = null;
@@ -130,21 +170,24 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
         {
             type = null;
         }
-        
-        PropertyCheck.mandatory(this, "location", location);
-        // Extract the keystore password
-        String pwdKeyStore = passwords.get(KEY_KEYSTORE_PASSWORD);
 
-        // Make sure we choose the default type, if required
-        if (type == null)
-        {
-            type = KeyStore.getDefaultType();
-        }
-        
-        KeyStore ks = null;
-        InputStream is = null;
         try
         {
+	        if(passwordsFileLocation != null)
+	        {
+	        	loadPasswords();
+	        }
+
+	        PropertyCheck.mandatory(this, "location", location);
+	        // Extract the keystore password
+	        pwdKeyStore = passwords.get(KEY_KEYSTORE_PASSWORD);
+	
+	        // Make sure we choose the default type, if required
+	        if (type == null)
+	        {
+	            type = KeyStore.getDefaultType();
+	        }
+
             if (provider == null)
             {
                 ks = KeyStore.getInstance(type);
@@ -154,7 +197,7 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
                 ks = KeyStore.getInstance(type, provider);
             }
             // Load it up
-            is = keyStoreLoader.getKeyStore(location);
+            is = keyResourceLoader.getKeyStore(location);
             if(is == null)
             {
                 throw new IOException("Unable to find keystore file: " + location);
@@ -182,7 +225,10 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
         finally
         {
             pwdKeyStore = null;
-            passwords.remove(KEY_KEYSTORE_PASSWORD);
+            if(passwords != null)
+            {
+            	passwords.remove(KEY_KEYSTORE_PASSWORD);
+            }
             if (is != null)
             {
                 try { is.close(); } catch (Throwable e) {}

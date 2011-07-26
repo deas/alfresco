@@ -18,7 +18,19 @@
  */
 package org.alfresco.encryption;
 
-public class EncryptionTests
-{
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
+/**
+ * Loads key resources (key store and key store passwords) from an arbitrary source e.g. a classpath.
+ * 
+ * @since 4.0
+ * 
+ */
+public interface KeyResourceLoader
+{
+	public InputStream getKeyStore(String location) throws FileNotFoundException;
+	public Properties getPasswords(String location) throws IOException;
 }
