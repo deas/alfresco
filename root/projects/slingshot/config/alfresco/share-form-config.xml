@@ -963,5 +963,36 @@
          </form>
       </forms>
    </config>
+   
+   <!-- Workflow -->
+   <config evaluator="string-compare" condition="Alfresco:Name=WorkflowInformation">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="ActivitiEngineEnabled" />
+               <show id="JBPMEngineEnabled" />
+               <show id="NumberOfWorkflowDefinitionsDeployed" />
+               <show id="NumberOfWorkflowInstances" />
+               <show id="NumberOfTaskInstances" />
+            </field-visibility>
+            <appearance>
+               <set id="engines" appearance="title" label-id="workflow.set.engines"
+                    template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="information" appearance="title" label-id="workflow.set.information"
+                    template="/org/alfresco/components/form/2-column-set.ftl" />
+               
+               <field id="ActivitiEngineEnabled" label-id="workflow.field.enabled.activiti" set="engines">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="JBPMEngineEnabled" label-id="workflow.field.enabled.jbpm" set="engines">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="NumberOfTaskInstances" label-id="workflow.field.number.tasks" set="information" />
+               <field id="NumberOfWorkflowDefinitionsDeployed" label-id="workflow.field.number.definitions" set="information" />
+               <field id="NumberOfWorkflowInstances" label-id="workflow.field.number.workflows" set="information" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
 
 </alfresco-config>

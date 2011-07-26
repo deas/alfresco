@@ -1,17 +1,7 @@
-<!--[if IE]>
-<iframe id="yui-history-iframe" src="${url.context}/res/yui/history/assets/blank.html"></iframe> 
-<![endif]-->
-<input id="yui-history-field" type="hidden" />
+<#import "../generic-form-tool.lib.ftl" as gft>
+<@gft.renderPanel config.script.config "workflow"/>
 
-<div class="workflow">
-   
-   <!-- Tools panel -->
-   <div>
-      <div class="title">${msg("label.activiti.tools")}</div>
-      
-      <div class="row">
-         <a target="_blank" href="${url.context}/proxy/activiti-admin">${msg("link.activiti.admin")}</a>
-      </div>
-   </div>
-
+<div class="workflow-tools">
+   <h1 class="thin dark">${msg("tool.workflow.activiti.tools")}</h1>
+   <a target="_blank" href="${url.context}/proxy/activiti-admin">${msg("tool.workflow.activiti.admin.link")}</a>
 </div>
