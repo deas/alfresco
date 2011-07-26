@@ -2,4 +2,8 @@
    <shortname>Social Publishing</shortname>
    <description>Social Publishing Dialogue, actions and history</description>
    <url>/modules/social-publishing</url>
+	<arg>
+      <shortname>nodeRef</shortname>
+      <description><![CDATA[Reference to the node.]]></description>
+   </arg>
 </webscript>

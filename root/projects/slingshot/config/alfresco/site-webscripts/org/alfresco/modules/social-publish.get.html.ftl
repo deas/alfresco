@@ -14,7 +14,7 @@
             <h3 class="channel-header">${msg("socialPublish.dialogue.channel.title")}</h3>
             <select id="${el}-channel-select">
             	<#list publishChannels as publishChannel>
-                  <option value="${publishChannel.id?html}" rel="${publishChannel.channelType.title?html}"><img src="${publishChannel.channelType.icon?html}" width="16" height="16"/>${publishChannel.title?html}</option>
+                  <option value="${publishChannel.id?html}" rel="${publishChannel.channelType.title?html}"><img src="${publishChannel.channelType.icon?html}/16" width="16" height="16"/>${publishChannel.title?html}</option>
 					</#list>
 				</select>
          </div>
@@ -35,7 +35,7 @@
 				      <#assign count = count + 1>
 						<div class="status-channel">
 	   				   <input class="statusUpdate-checkboxes" type="checkbox" name="" value="${statusUpdateChannel.id?html}" id="${el}-statusUpdate-checkbox-channel-${count}"/>
-		     			   <label for="${el}-statusUpdate-checkbox-channel-${count}"><img src="${statusUpdateChannel.channelType.icon?html}" width="16" height="16"/>${statusUpdateChannel.title?html}</label>
+		     			   <label for="${el}-statusUpdate-checkbox-channel-${count}"><img src="${statusUpdateChannel.channelType.icon?html}/16" width="16" height="16"/>${statusUpdateChannel.title?html}</label>
 				   	</div>
                </#list>
 				</div>

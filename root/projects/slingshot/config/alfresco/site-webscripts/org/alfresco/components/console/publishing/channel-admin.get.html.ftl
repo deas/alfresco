@@ -32,7 +32,7 @@
 				         <#list channelTypes as channelType>
 							<li>
 				            <span>
-				               <a href="#" class="newChannelAction" rel="${channelType.id}" style="background-image:url('${url.context}/proxy/alfresco/${channelType.icon}16');" >
+				               <a href="#" class="newChannelAction" rel="${channelType.id}" style="background-image:url('${url.context}/proxy/alfresco/${channelType.icon}/16');" >
 										${channelType.title}
 									</a>
 								</span>

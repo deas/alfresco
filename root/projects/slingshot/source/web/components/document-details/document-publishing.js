@@ -148,8 +148,7 @@
             nodeName = "",
             nodeLabel = "",
             // TODO: Remove this once test channels actually have icons.
-            //channelIcon = event.channel.channelType.icon,
-            channelIcon = "http://www.slideshare.net/favicon.ico";
+            channelIcon = Alfresco.constants.PROXY_URI + event.channel.channelType.icon + "/32",
             channelTitle = event.channel.channelType.title,
             channelName = event.channel.title,
             channelId = event.channel.id,

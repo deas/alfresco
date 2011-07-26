@@ -2,7 +2,7 @@
 
 function getDocumentChannels(nodeRef)
 {
-   var result = remote.call("/api/publishing/channels");
+   var result = remote.call("/api/publishing/" + nodeRef.replace("://", "/") + "/channels");
    if (result.status != 200)
    {
       AlfrescoUtil.error(result.status, 'Could not load publishing channels');
@@ -12,7 +12,8 @@ function getDocumentChannels(nodeRef)
 
 function main() 
 {
-   channels = getDocumentChannels();
+   AlfrescoUtil.param('nodeRef');
+   channels = getDocumentChannels(model.nodeRef);
    model.urlLength = channels.urlLength;
    model.publishChannels = channels.publishChannels
    model.statusUpdateChannels = channels.statusUpdateChannels
