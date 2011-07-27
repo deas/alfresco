@@ -1,7 +1,4 @@
-﻿msgid "Installer.ReadmeFile.View"
-msgstr "Visualizza il file Readme"
-
-msgid "${product_fullname} OpenOffice Service"
+﻿msgid "${product_fullname} OpenOffice Service"
 msgstr "Servizio OpenOffice ${product_fullname}"
 
 msgid "${product_fullname} Service"
@@ -17,7 +14,7 @@ msgid "Admin Password:"
 msgstr "Password ammin:"
 
 msgid "Advanced - Configures server ports and service properties. Also choose optional components to install."
-msgstr "Avanzato - Configura le proprietà dei servizi e delle porte server.  Inoltre, consente di scegliere i componenti opzionali da installare."
+msgstr "Avanzato - Configura le proprietà dei servizi e delle porte server.\n Inoltre, consente di scegliere i componenti opzionali da installare."
 
 msgid "Alfresco"
 msgstr "Alfresco"
@@ -319,7 +316,7 @@ msgstr "Specificare la directory in cui si trova Tomcat."
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Specificare la directory in cui si trovano i dati binari di psql, pg_restore e vacuumdb"
 
-msgid "Please choose a folder to install ${product_fullname}".
+msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Scegliere una cartella per l'installazione di ${product_fullname}"
 
 msgid "Please, select the encoding type."
@@ -663,3 +660,27 @@ msgstr "applyamps"
 
 msgid "mmtjar"
 msgstr "mmtjar"
+
+msgid "Please provide a password for the service account (postgres). If this account does not exist, the installer will create it."
+msgstr "Per favore fornire una password per il service account (postgres). Se tale account non esiste, l'installer lo creerà."
+
+msgid "The password specified was incorrect. Please enter the correct password for the postgres Windows user account."
+msgstr "La password specificata non è corretta. Per favore inserire la password corretta per l'account utente Windows di postgres."
+
+msgid "README"
+msgstr "README"
+
+msgid "Windows 2008 requires that the password meets the following requirements:\n\n- It must be at least six characters long.\n- It must contain uppercase and lowercase characters.\n- It must contain numbers.\n- It must contain at least one of these special characters: @#$%!^&+=\n"
+msgstr "Windows 2008 richiede che la password soddisfi i seguenti requisiti:\n\n- Deve essere lunga almeno sei caratteri.\n- Deve conternere caratteri minuscoli e maiuscoli.\n- Deve contenere numeri.\n- Deve contenere almeno uno di questi caratteri speciali: @#$%!^&+=\n"
+
+msgid "Postgres service account password"
+msgstr "Password del service account Postgres"
+
+msgid "Deploying Alfresco. Please be patient."
+msgstr "Dispiegamento di Alfresco. Per favore siate pazienti."
+
+msgid "Java is not installed in your Stack. This module requires to have Java installed."
+msgstr "Java non è installato nello Stack. Tale modulo richiede l'installazione di Java."
+
+msgid "The installation directory must be a path containing only letters, numbers and the characters '/', '.', '-' and '_'."
+msgstr "La cartella d'installazione deve essere un percorso contenente solo lettere, numeri e i caratteri '/', '.', '-' e '_'."

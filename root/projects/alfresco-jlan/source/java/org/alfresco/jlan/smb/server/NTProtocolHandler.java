@@ -5746,6 +5746,25 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			int fileSts = disk.fileExists(m_sess, conn, params.getFullPath());
 
+            // Check if the file exists and it is a pseudo file, in which case the file already exists so change a create request to
+            // an open request
+            
+            if ( fileSts == FileStatus.FileExists) {
+                
+                // Check for a pseudo file
+                
+                FileInfo finfo = disk.getFileInformation(m_sess, conn, params.getFullPath());
+                if ( finfo != null && finfo.isPseudoFile())
+                    createDisp = FileAction.NTOpen;
+
+                // Debug
+
+                if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+                    m_sess.debugPrintln("Converted create to open for pseudo file " + params.getFullPath());
+            }
+
+            // Check if the file should be created
+            
 			if ( fileSts == FileStatus.NotExist) {
 
 				// Check if the file should be created if it does not exist

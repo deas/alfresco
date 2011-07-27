@@ -60,7 +60,7 @@ public class MemoryPseudoFile extends PseudoFile {
 
       // Create the file information
 
-      FileInfo fInfo = new FileInfo(getFileName(), m_data != null ? m_data.length : 0, getAttributes());
+      FileInfo fInfo = new PseudoFileInfo(getFileName(), m_data != null ? m_data.length : 0, getAttributes());
 
       // Set the file creation/modification times
 

@@ -128,4 +128,9 @@ public class ISO9075Test extends TestCase
                 .decode("\u0123_x4567_\u8900_xabcd__xefff__xT65A_")));
     }
 
+    public void testJira_ALF_8554()
+    {
+        assertEquals("a_x0020", ISO9075.decode("a_x0020"));
+    }
+
 }

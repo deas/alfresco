@@ -41,16 +41,16 @@ public class FileInfo {
 	//
 	// Set file information flags
 
-	public static final int SetFileSize 		= 0x0001;
+  public static final int SetFileSize				= 0x0001;
 	public static final int SetAllocationSize 	= 0x0002;
-	public static final int SetAttributes 		= 0x0004;
-	public static final int SetModifyDate 		= 0x0008;
-	public static final int SetCreationDate 	= 0x0010;
-	public static final int SetAccessDate 		= 0x0020;
-	public static final int SetChangeDate 		= 0x0040;
-	public static final int SetGid 				= 0x0080;
-	public static final int SetUid 				= 0x0100;
-	public static final int SetMode 			= 0x0200;
+  public static final int SetAttributes			= 0x0004;
+  public static final int SetModifyDate			= 0x0008;
+  public static final int SetCreationDate		= 0x0010;
+  public static final int SetAccessDate			= 0x0020;
+  public static final int SetChangeDate			= 0x0040;
+  public static final int SetGid						= 0x0080;
+  public static final int SetUid						= 0x0100;
+  public static final int SetMode						= 0x0200;
 	public static final int SetDeleteOnClose 	= 0x0400;
 
 	// File name string
@@ -532,6 +532,15 @@ public class FileInfo {
 		return (m_attr & FileAttribute.Archive) != 0 ? true : false;
 	}
 
+  /**
+   * Check if this is a pseudo file
+   * 
+   * @return boolean
+   */
+  public boolean isPseudoFile() {
+      return false;
+  }
+  
 	/**
 	 * Determine if the group id field has been set
 	 * 

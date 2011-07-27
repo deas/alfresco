@@ -242,7 +242,7 @@ public class ISO9075
 
     private static boolean matchesEncodedPattern(String string, int position)
     {
-        return (string.length() >= position + 6)
+        return (string.length() > position + 6)
                 && (string.charAt(position) == '_') && (string.charAt(position + 1) == 'x')
                 && isHexChar(string.charAt(position + 2)) && isHexChar(string.charAt(position + 3))
                 && isHexChar(string.charAt(position + 4)) && isHexChar(string.charAt(position + 5))

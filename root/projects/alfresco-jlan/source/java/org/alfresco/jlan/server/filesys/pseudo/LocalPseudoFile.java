@@ -75,9 +75,10 @@ public class LocalPseudoFile extends PseudoFile {
 
       File localFile = new File(getFilePath());
       if (localFile.exists()) {
+          
         // Create the file information
 
-        FileInfo fInfo = new FileInfo(getFileName(), localFile.length(), getAttributes());
+        FileInfo fInfo = new PseudoFileInfo(getFileName(), localFile.length(), getAttributes());
 
         // Set the file creation/modification times
 
