@@ -1,0 +1,84 @@
+<project name="fb">
+
+	<!-- Set base directory property -->
+	<dirname property="fb.basedir" file="${ant.file.fb}"/>
+	
+	<!-- Import -->
+    <import file="${fb.basedir}/utils.xml" />
+    
+	<!-- Set properties -->
+	<property environment="env" />
+	<property file="${fb.basedir}/build.properties" />
+	
+	<!-- Compile classpath -->
+	<path id="classpath.compile">
+         <fileset dir="alfresco/war/WEB-INF/lib">
+            <include name="**/*.jar" />
+            <!-- Avoid compile-time dependencies against optional components, e.g. log4j -->
+            <exclude name="optional/**" />
+         </fileset>
+      </path>
+	  
+   <!-- **************************************** -->
+   <!-- ** Facebook Alfresco Document Library ** -->
+   <!-- **************************************** -->
+
+   <target name="incremental-fb-doclib"
+           depends="package-fb-doclib" />
+
+   <target name="build-fb-doclib"
+           depends="clean-fb-doclib, incremental-fb-doclib" />
+
+   <target name="clean-fb-doclib"
+           depends="init">
+      <clean projectdir="${dir.module.fb.doclib}" />
+   </target>
+
+   <target name="compile-fb-doclib"
+           depends="init">
+      <compile-java projectdir="${dir.module.fb.doclib}" />
+   </target>
+
+   <target name="package-fb-doclib"
+           depends="package-fb-doclib-war, deploy-webclient-tomcat" />
+
+   <target name="package-fb-doclib-jar"
+           depends="compile-fb-doclib">
+      <mkdir dir="${dir.module.fb.doclib.dist}" />
+      <jar jarfile="${dir.module.fb.doclib.dist}/${file.name.jar.fb.doclib}"
+           basedir="${dir.module.fb.doclib.classes}" />
+   </target>
+
+   <target name="package-fb-doclib-war"
+           depends="package-fb-doclib-extension">
+      <echo>Installing Facebook Alfresco Document Library into WAR...</echo>
+      <install-amp ampfile="${dir.module.fb.doclib.dist}/${file.name.amp.fb.doclib}"
+                   warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
+   </target>
+
+   <target name="package-fb-doclib-extension"
+           depends="init">
+	   <mkdir dir="${dir.module.fb.doclib.dist}" />
+      <zip destfile="${dir.module.fb.doclib.dist}/${file.name.amp.fb.doclib}"
+           update="true">
+         <zipfileset file="${dir.module.fb.doclib.property}/module.properties"/>
+         <zipfileset dir="${dir.module.fb.doclib.config}" prefix="config">
+            <exclude name="**/module.properties"/>
+         </zipfileset>
+      </zip>
+   </target>
+
+   <target name="test-fb-doclib"
+           depends="compile-fb-doclib">
+      <run-tests projectdir="${dir.module.fb.doclib}" />
+   </target>
+
+   <target name="generate-javadocs-fb-doclib"
+           depends="init">
+      <generate-javadocs documenttitle="Facebook Alfresco Document Library Extension"
+                         windowtitle="Knowledge Base"
+                         projectdir="${dir.module.fb.doclib}"/>
+   </target>
+
+   
+</project>

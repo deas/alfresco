@@ -1,0 +1,88 @@
+<project name="office2003" default="deploy" basedir=".">
+
+   <!-- *************************** -->
+   <!-- ** Office Add-in targets ** -->
+   <!-- *************************** -->
+   
+   <target name="distribute-extensions-office2003"
+           description="Creates the Office 2003 Extensions distribution files"
+           depends="distribute-extensions-office2003-word,
+                    distribute-extensions-office2003-excel,
+                    distribute-extensions-office2003-powerpoint,
+                    distribute-extensions-office2003-all" >
+
+      <mkdir dir="${dir.continuous.dist}" />
+
+      <zip destfile="${dir.continuous.dist}/${file.name.dist.extension-office2003-bundle}.zip">
+         <zipfileset file="${dir.continuous.assemble}/${file.name.dist.extension-office2003-word}.zip" />
+         <zipfileset file="${dir.continuous.assemble}/${file.name.dist.extension-office2003-excel}.zip" />
+         <zipfileset file="${dir.continuous.assemble}/${file.name.dist.extension-office2003-powerpoint}.zip" />
+         <zipfileset file="${dir.continuous.assemble}/${file.name.dist.extension-office2003-all}.zip" />
+      </zip>
+   </target>
+   <target name="distribute-extensions-office2003-word"
+           description="Creates the Word 2003 Extensions distribution files"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble}" />
+
+      <zip destfile="${dir.continuous.assemble}/${file.name.dist.extension-office2003-word}.zip">
+         <zipfileset dir="${dir.project.extension.office.word2003}"
+                     includes="readme.rtf,
+                               setup.exe,
+                               AlfrescoWord2003Setup.msi" />
+         <zipfileset dir="${dir.project.extension.office.word2003}/Office2003PIA"
+                     prefix="Office2003PIA"
+                     includes="o2003pia.msi" />
+      </zip>
+   </target>
+
+   <target name="distribute-extensions-office2003-excel"
+           description="Creates the Excel 2003 Extensions distribution files"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble}" />
+
+      <zip destfile="${dir.continuous.assemble}/${file.name.dist.extension-office2003-excel}.zip">
+         <zipfileset dir="${dir.project.extension.office.excel2003}"
+                     includes="readme.rtf,
+                               setup.exe,
+                               AlfrescoExcel2003Setup.msi" />
+         <zipfileset dir="${dir.project.extension.office.excel2003}/Office2003PIA"
+                     prefix="Office2003PIA"
+                     includes="o2003pia.msi" />
+      </zip>
+   </target>
+
+   <target name="distribute-extensions-office2003-powerpoint"
+           description="Creates the PowerPoint 2003 Extensions distribution files"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble}" />
+
+      <zip destfile="${dir.continuous.assemble}/${file.name.dist.extension-office2003-powerpoint}.zip">
+         <zipfileset dir="${dir.project.extension.office.powerpoint2003}"
+                     includes="readme.rtf,
+                               setup.exe,
+                               AlfrescoPowerPoint2003Setup.msi" />
+         <zipfileset dir="${dir.project.extension.office.powerpoint2003}/Office2003PIA"
+                     prefix="Office2003PIA"
+                     includes="o2003pia.msi" />
+      </zip>
+   </target>
+
+   <target name="distribute-extensions-office2003-all"
+           description="Creates the 3-in-1 Office 2003 Extensions distribution files"
+           depends="continuous-init">
+      <mkdir dir="${dir.continuous.assemble}" />
+
+      <zip destfile="${dir.continuous.assemble}/${file.name.dist.extension-office2003-all}.zip">
+         <zipfileset dir="${dir.project.extension.office.all2003}"
+                     includes="readme.rtf,
+                               setup.exe,
+                               AlfrescoOffice2003Setup.msi" />
+         <zipfileset dir="${dir.project.extension.office.all2003}/Office2003PIA"
+                     prefix="Office2003PIA"
+                     includes="o2003pia.msi" />
+      </zip>
+   </target>
+
+
+</project>

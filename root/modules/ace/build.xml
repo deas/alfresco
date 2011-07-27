@@ -1,0 +1,111 @@
+<project name="ace">
+
+	<!-- Set base directory property -->
+	<dirname property="ace.basedir" file="${ant.file.ace}"/>
+	
+	<!-- Import -->
+    <import file="${ace.basedir}/utils.xml" />
+    
+	<!-- Set properties -->
+	<property environment="env" />
+	<property file="${ace.basedir}/build.properties" />
+	
+	<!-- Compile classpath -->
+	<path id="classpath.compile">
+         <fileset dir="alfresco/war/WEB-INF/lib">
+            <include name="**/*.jar" />
+            <!-- Avoid compile-time dependencies against optional components, e.g. log4j -->
+            <exclude name="optional/**" />
+         </fileset>
+      </path>
+	  
+   <!-- ******************************** -->
+   <!-- ** ACE Project                ** -->
+   <!-- ******************************** -->
+
+   <target name="clean-ace"
+           depends="init">
+
+      <!-- Remove the contents of the bin directory -->
+      <delete includeemptydirs="true">
+         <fileset dir="${dir.ace.bin}" includes="**/*"/>
+      </delete>
+
+   </target>
+
+   <target name="incremental-ace"
+           depends="init">
+
+      <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
+
+      <!-- Declare the mxmlc task -->
+      <taskdef name="mxmlc"
+               classname="flex2.ant.MxmlcTask">
+         <classpath refid="classpath.compile"/>
+      </taskdef>
+
+      <!-- Build the ACE application -->
+      <mxmlc file="${dir.ace.src}/${app.ace.mxml}.mxml"
+             output="${dir.ace.bin}/${app.ace.swf}.swf"
+             incremental="true">
+
+         <!-- Load standard build config -->
+         <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml" />
+         
+         <!-- Set the source path -->
+         <source-path path-element="${FLEX_HOME}/frameworks" />
+
+         <!-- Include required SWC's -->
+         <library-path dir="${dir.ace.lib}" append="true">
+              <include name="*.swc"/>
+          </library-path>
+
+         <!-- Include standard Flex SWC's and libraries -->
+         <compiler.library-path dir="${FLEX_HOME}/frameworks" append="true">
+              <include name="libs" />
+              <include name="../bundles/{locale}" />
+          </compiler.library-path>
+
+      </mxmlc>
+      
+      <!-- Copy the config into the bin directory -->
+      <copy todir="${dir.ace.bin}">
+            <fileset file="${dir.ace.src}/ace-config.xml"/>
+      </copy>
+
+      <!-- Copy the static assets into the bin directory -->
+      <copy todir="${dir.ace.bin}/videos">
+            <fileset dir="${dir.ace.src}/videos"/>
+      </copy>
+      <copy todir="${dir.ace.bin}/images">
+            <fileset dir="${dir.ace.src}/images"/>
+      </copy>
+
+   </target>
+   
+   <target name="wrapper-ace"
+           depends="init">
+
+      <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
+
+      <!-- Declare the html-wrapper task -->
+      <taskdef name="html-wrapper"
+               classname="flex2.ant.HtmlWrapperTask">
+         <classpath refid="classpath.compile"/>
+      </taskdef>
+
+      <!-- Generate the html wrapper for the ACE application -->
+      <html-wrapper
+         title="${app.ace.title}"
+         width="100%"
+         height="100%"
+         output="${dir.ace.bin}"
+         swf="${app.ace.swf}"/>
+
+   </target>
+
+   <target name="build-ace"
+           depends="clean-ace, incremental-ace, wrapper-ace"/>
+
+   
+</project>

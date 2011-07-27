@@ -1,0 +1,87 @@
+<project name="kb">
+
+	<!-- Set base directory property -->
+	<dirname property="kb.basedir" file="${ant.file.kb}"/>
+	
+	<!-- Import -->
+    <import file="${kb.basedir}/utils.xml" />
+    
+	<!-- Set properties -->
+	<property environment="env" />
+	<property file="${kb.basedir}/build.properties" />
+	
+	<!-- Compile classpath -->
+	<path id="classpath.compile">
+         <fileset dir="alfresco/war/WEB-INF/lib">
+            <include name="**/*.jar" />
+            <!-- Avoid compile-time dependencies against optional components, e.g. log4j -->
+            <exclude name="optional/**" />
+         </fileset>
+      </path>
+	  
+   <!-- ******************************** -->
+   <!-- ** Knowledge Base Project ** -->
+   <!-- ******************************** -->
+
+   <target name="incremental-kb"
+           depends="package-kb" />
+
+   <target name="build-kb"
+           depends="clean-kb, incremental-kb" />
+
+   <target name="clean-kb"
+           depends="init">
+      <clean projectdir="${dir.module.kb}" />
+   </target>
+
+   <target name="compile-kb"
+           depends="init">
+      <compile-java projectdir="${dir.module.kb}" />
+   </target>
+
+   <target name="package-kb"
+           depends="package-kb-war, deploy-webclient-tomcat" />
+
+   <target name="package-kb-jar"
+           depends="compile-kb">
+      <mkdir dir="${dir.module.kb.dist}" />
+      <jar jarfile="${dir.module.kb.dist}/${file.name.jar.kb}"
+           basedir="${dir.module.kb.classes}" />
+   </target>
+
+   <target name="package-kb-war"
+           depends="package-kb-extension">
+      <echo>Installing knowledge base into WAR...</echo>
+      <install-amp ampfile="${dir.module.kb.dist}/${file.name.amp.kb}"
+                   warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
+   </target>
+
+   <target name="package-kb-extension"
+           depends="package-kb-jar">
+      <zip destfile="${dir.module.kb.dist}/${file.name.amp.kb}"
+           update="true">
+         <zipfileset file="${dir.module.kb.property}/module.properties"/>
+         <zipfileset file="${dir.module.kb.dist}/${file.name.jar.kb}"
+                     prefix="lib"/>
+         <zipfileset file="${dir.module.kb.web}" prefix="web"/>
+         <zipfileset dir="${dir.module.kb.config}"
+                     prefix="config">
+            <exclude name="**/module.properties"/>
+         </zipfileset>
+      </zip>
+   </target>
+
+   <target name="test-kb"
+           depends="compile-kb">
+      <run-tests projectdir="${dir.module.kb}" />
+   </target>
+
+   <target name="generate-javadocs-kb"
+           depends="init">
+      <generate-javadocs documenttitle="Alfresco Knowledge Base Extension"
+                         windowtitle="Knowledge Base"
+                         projectdir="${dir.module.kb}"/>
+   </target>
+
+   
+</project>

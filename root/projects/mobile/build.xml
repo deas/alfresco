@@ -1,0 +1,193 @@
+<project name="mobile" default="deploy" basedir=".">
+
+   <target name="incremental-mobile-tomcat" 
+           description="Performs an incremental build and deployment of the mobile WAR"
+           depends="incremental-core, 
+                    incremental-mobile,
+                    deploy-mobile-tomcat" />
+   
+  <target name="incremental-mobile-tomcat-exploded" 
+          depends="incremental-core, 
+                   package-mobile-jar,
+                   deploy-mobile-tomcat-exploded,
+                   minimize-mobile-deployed-javascript" />
+
+   <target name="clean-mobile-projects" 
+           description="Cleans all projects related to the mobile project" 
+           depends="clean-core,
+                    clean-mobile" />
+   
+   <target name="deploy-mobile-tomcat" depends="init" 
+           description="Deploys the mobile WAR to the application Tomcat server">
+      <delete file="${dir.deploy.tomcat.application}/${file.name.war.mobile}" />
+      <delete dir="${dir.deploy.tomcat.application.mobile}" 
+              includeEmptyDirs="true" quiet="yes" />
+      
+      <!-- copy the mobile WAR file to the application Tomcat deploy folder -->
+      <copy todir="${dir.deploy.tomcat.application}" 
+            file="${dir.project.mobile.dist}/${file.name.war.mobile}" />
+   </target>
+
+   <target name="deploy-mobile-tomcat-exploded" depends="init">
+      <!-- remove the WAR, if necessary -->
+      <delete file="${dir.deploy.tomcat.application}/${file.name.war.mobile}" />
+      
+      <!-- copy all source files -->
+      <copy todir="${dir.deploy.tomcat.application.mobile}" verbose="${copy.verbose}">
+         <fileset dir="${dir.project.mobile.src.web}" />
+      </copy>
+      
+      <!-- copy config files -->
+      <copy todir="${dir.deploy.tomcat.application.mobile}/WEB-INF/classes" verbose="${copy.verbose}">
+         <fileset dir="${dir.project.core.src.java}" includes="log4j.properties" />
+         <fileset dir="${dir.project.mobile.config}" excludes="**/extension/**" />
+      </copy>
+      
+      <!-- add all class files to WEB-INF/classes -->
+      <copy todir="${dir.deploy.tomcat.application.mobile}/WEB-INF/classes" verbose="${copy.verbose}">
+         <fileset dir="${dir.project.core.classes}" />
+         <fileset dir="${dir.project.mobile.classes}" />
+      </copy>
+      
+      <!-- add all JARs to WEB-INF/lib -->
+      <copy todir="${dir.deploy.tomcat.application.mobile}/WEB-INF/lib" verbose="${copy.verbose}">
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="${includes.webscriptframework.libs}" />
+         <fileset dir="${dir.project.3rdparty.lib}/optional" 
+                 includes="${includes.webscriptframework.libs.optional}" />
+         <fileset dir="${dir.project.3rdparty.lib}/commons" 
+                  includes="${includes.webscriptframework.libs.commons}" />
+         <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
+                  includes="${includes.webscriptframework.libs.spring-surf}" />
+         <fileset dir="${dir.project.3rdparty.lib}/abdera"  
+                  includes="${includes.webscriptframework.libs.abdera}" />
+      </copy>
+   </target>
+
+   <target name="minimize-mobile-deployed-javascript" depends="init">
+      <concat destfile="${dir.deploy.tomcat.application.mobile}/js/alf-mobile.js">
+         <fileset dir="${dir.deploy.tomcat.application.mobile}">
+            <include name="**/*.js" />
+            <exclude name="**/alf-mobile.js" />
+            <exclude name="**/*-min.js" />
+            <exclude name="**/WEB-INF/**" />
+         </fileset>
+      </concat>
+
+      <apply executable="java" parallel="false" dest="${dir.deploy.tomcat.application.mobile}/js">
+         <fileset dir="${dir.deploy.tomcat.application.mobile}/js" includes="alf-mobile.js"/>
+         <arg line="-jar"/>
+         <arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
+         <arg line="-o"/>
+         <targetfile/>
+         <srcfile/>
+         <mapper type="glob" from="*.js" to="*-min.js"/>
+      </apply>
+   </target>
+
+
+   <!-- ************************ -->
+   <!-- ** Mobile 3.2 Project ** -->
+   <!-- ************************ -->
+   
+   <target name="incremental-mobile" 
+           depends="package-mobile" />
+   
+   <target name="build-mobile" 
+           depends="clean-mobile, 
+                    incremental-mobile" />
+   
+   <target name="clean-mobile" 
+           depends="init">
+      <clean projectdir="${dir.project.mobile}" />
+   </target>
+   
+   <target name="compile-mobile" 
+           depends="init">
+      <compile-java projectdir="${dir.project.mobile}" />
+   </target>
+   
+   <target name="package-mobile"
+           depends="package-mobile-war" />
+   
+   <target name="package-mobile-jar"
+              depends="compile-mobile">
+      <mkdir dir="${dir.project.mobile.dist}" />
+      <jar jarfile="${dir.project.mobile.dist}/${file.name.jar.mobile}" 
+           basedir="${dir.project.mobile.classes}" />
+   </target>
+
+   <target name="package-mobile-war" 
+           depends="assemble-mobile-war,
+                    minimize-mobile-javascript">
+      <war warfile="${dir.project.mobile.dist}/${file.name.war.mobile}" 
+           webxml="${dir.project.mobile.src.webinf}/web.xml">
+         <fileset dir="${dir.project.mobile.assemble}" />
+      </war>
+   </target>
+
+   <target name="assemble-mobile-war" 
+           depends="package-mobile-jar">
+      <mkdir dir="${dir.project.mobile.assemble}" />
+      
+      <!-- copy all required files -->
+      <copy todir="${dir.project.mobile.assemble}">
+         <fileset dir="${dir.project.mobile.src.web}" excludes="WEB-INF/web.xml" />
+      </copy>
+      
+      <copy todir="${dir.project.mobile.assemble}/WEB-INF/classes">
+         <fileset dir="${dir.project.core.src.java}" includes="log4j.properties" />
+         <fileset dir="${dir.project.mobile.config}" excludes="**/web-extension/**" />
+      </copy>
+      
+      <!-- add all JAR to WEB-INF/lib -->
+      <copy todir="${dir.project.mobile.assemble}/WEB-INF/lib">
+         <fileset dir="${dir.project.3rdparty.lib}" 
+                  includes="${includes.webscriptframework.libs}" />
+         <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
+                  includes="${includes.webscriptframework.libs.spring-surf}" />
+         <fileset dir="${dir.project.3rdparty.lib}/optional" 
+                  includes="${includes.webscriptframework.libs.optional}" />
+         <fileset dir="${dir.project.3rdparty.lib}/commons" 
+                  includes="${includes.webscriptframework.libs.commons}" />
+         <fileset dir="${dir.project.3rdparty.lib}/abdera"  
+                  includes="${includes.webscriptframework.libs.abdera}" />
+         <fileset dir="${dir.project.core.dist}" 
+                  includes="${file.name.jar.core}" />
+         <fileset dir="${dir.project.mobile.dist}" 
+                  includes="${file.name.jar.mobile}" />
+      </copy>
+   </target>
+
+   <target name="minimize-mobile-javascript"
+           depends="init">
+      <echo>Compressing Mobile Javascript...</echo>
+      <concat destfile="${dir.project.mobile.assemble}/js/alf-mobile.js">
+         <fileset dir="${dir.project.mobile.assemble}">
+            <include name="**/*.js" />
+            <exclude name="**/alf-mobile.js" />
+            <exclude name="**/*-min.js" />
+            <exclude name="**/WEB-INF/**" />
+         </fileset>
+      </concat>
+
+      <apply executable="java" parallel="false" dest="${dir.project.mobile.assemble}/js">
+         <fileset dir="${dir.project.mobile.assemble}/js" includes="alf-mobile.js"/>
+         <arg line="-jar"/>
+         <arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
+         <arg line="-o"/>
+         <targetfile/>
+         <srcfile/>
+         <mapper type="glob" from="*.js" to="*-min.js"/>
+      </apply>
+   </target>
+   
+   <target name="generate-javadocs-mobile" 
+           depends="init">
+      <generate-javadocs documenttitle="Alfresco Mobile API ${version.number}" 
+                         windowtitle="Alfresco Mobile" 
+                         projectdir="${dir.project.mobile}"/>
+   </target>
+
+
+</project>

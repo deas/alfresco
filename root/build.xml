@@ -297,63 +297,24 @@
                     incremental-webclient,  
                     incremental-webserviceclient,
                     incremental-slingshot,
-                    incremental-mobile,
                     incremental-webeditor,
                     incremental-webeditor-plugin,
                     incremental-solr" />
 
-   <target name="build-modules"
-           description="Performs a clean build of all modules"
-           depends="clean-modules, incremental-modules" />
-   
-   <target name="incremental-modules"
-           description="Performs an incremental build of all modules"
-           depends="incremental,
-                    package-avmcompare-extension,
-                    package-blog-extension,
-                    package-fb-doclib-extension,
-                    package-php-extension,
-                    package-rm-extension, 
-                    package-truncatemalformedxml-extension,
-                    package-quickr-extension" />
-                    <!-- package-mediawiki-extension, -->
-
    <target name="distribute-amps" 
-           description="Creates the distribution AMP file for all extensions"
-           depends="distribute-core-amps, distribute-non-core-amps" />
-
-   <target name="distribute-non-core-amps" 
-           description="Creates the distribution AMP file for non-core extensions"
-           depends="package-php-extension,
-                    package-mediawiki-extension,
-                    package-fb-doclib-extension,
-                    package-googlegadgets,
-                    package-truncatemalformedxml-extension" >
-      <copy todir="${dir.continuous.dist}">
-         <fileset dir="${dir.module.php.dist}"                  includes="${file.name.amp.php}" />
-         <fileset dir="${dir.module.mediawiki.dist}"            includes="${file.name.amp.mediawiki}" />
-         <fileset dir="${dir.module.truncatemalformedxml.dist}" includes="${file.name.amp.truncatemalformedxml}" />
-         <fileset dir="${dir.module.fb.doclib.dist}"            includes="${file.name.amp.fb.doclib}" />
-         <fileset dir="${dir.module.gg.dist}"                   includes="${file.name.zip.gg}" />
-      </copy>
-   </target>
-
-   <target name="distribute-core-amps" 
            description="Creates the distribution AMP file for core extensions"
            depends="package-spp-extension,
                     package-dod5015-extension,
                     package-dod5015-share-extension, 
                     package-wcmquickstart-extension,
                     package-wcmquickstart-share-extension, 
-                    build-wcmquickstartwebapp-war,
-                    package-quickr-extension" >
+                    build-wcmquickstartwebapp-war">
       
       <!-- Copy AMPs to assembly area for installer -->
       <copy todir="${dir.continuous.assemble}/amps">
          <fileset dir="${dir.module.dod5015.dist}"              includes="${file.name.amp.dod5015}" />
          <fileset dir="${dir.module.dod5015.share.dist}"        includes="${file.name.amp.dod5015.share}" />
          <fileset dir="${dir.module.spp.dist}"           includes="${file.name.amp.spp}" />
-         <fileset dir="${dir.module.quickr.dist}"               includes="${file.name.amp.quickr}" />
          <fileset dir="${dir.module.wcmquickstart.dist}"              includes="${file.name.amp.wcmquickstart}" />
          <fileset dir="${dir.module.wcmquickstart-share.dist}"        includes="${file.name.amp.wcmquickstart-share}" />
       </copy>
@@ -369,10 +330,6 @@
       <zip destfile="${dir.continuous.dist}/${file.name.dist.spp}.zip">
          <fileset dir="${dir.module.spp.dist}"           includes="${file.name.amp.spp}" />
          <fileset file="${dir.module.spp}/README_spp.txt" />
-      </zip>
-      <zip destfile="${dir.continuous.dist}/${file.name.dist.quickr}.zip">
-         <fileset dir="${dir.module.quickr.dist}"               includes="${file.name.amp.quickr}" />
-         <fileset file="${dir.module.quickr}/README_quickr.txt" />
       </zip>
       
 
@@ -402,18 +359,6 @@
                     package-webclient-jar,
                     deploy-webclient-tomcat-exploded" />
    
-   <target name="incremental-mobile-tomcat" 
-           description="Performs an incremental build and deployment of the mobile WAR"
-           depends="incremental-core, 
-                    incremental-mobile,
-                    deploy-mobile-tomcat" />
-   
-  <target name="incremental-mobile-tomcat-exploded" 
-          depends="incremental-core, 
-                   package-mobile-jar,
-                   deploy-mobile-tomcat-exploded,
-                   minimize-mobile-deployed-javascript" />
-
    <target name="incremental-slingshot-tomcat"
            description="Performs an incremental build and deployment of the slingshot WAR"
            depends="package-webframeworkcommons-jar,
@@ -477,7 +422,6 @@
            description="Cleans all projects" 
            depends="clean-webclient-projects,
                     clean-slingshot-projects,
-                    clean-mobile-projects,
                     clean-webeditor-projects,
                     clean-webserviceclient, 
                     clean-solr" />
@@ -511,24 +455,11 @@
                        clean-webeditor,
                        clean-webeditor-customersite-sample" />
                     
-   <target name="clean-mobile-projects" 
-           description="Cleans all projects related to the mobile project" 
-           depends="clean-core,
-                    clean-mobile" />
-   
    <target name="clean-modules"
            description="Cleans all modules"
-           depends="clean-avmcompare,
-                    clean-blog,
-                    clean-fb-doclib,
-                    clean-mediawiki,
-                    clean-php,
-                    clean-rm, 
-                    clean-spp,
-                    clean-truncatemalformedxml,
+           depends="clean-spp,
                     clean-dod5015,
                     clean-dod5015-share,
-                    clean-quickr,
                     clean-wcmquickstart,
                     clean-wcmquickstart-share,
                     clean-wcmquickstart-clientapi,
@@ -560,9 +491,6 @@
               includeEmptyDirs="true" quiet="yes" />
       <delete file="${dir.deploy.tomcat.application}/${file.name.war.webeditor.sample.customersite}" />
       <delete dir="${dir.deploy.tomcat.application.webeditor.sample.customersite}" 
-              includeEmptyDirs="true" quiet="yes" />
-      <delete file="${dir.deploy.tomcat.application}/${file.name.war.mobile}" />
-      <delete dir="${dir.deploy.tomcat.application.mobile}" 
               includeEmptyDirs="true" quiet="yes" />
    </target>
 
@@ -965,75 +893,7 @@
       <minimize-javascript sourcedir="${dir.deploy.tomcat.application.webeditor}" 
                            destdir="${dir.deploy.tomcat.application.webeditor}" />
    </target>
-   
-   <target name="deploy-mobile-tomcat" depends="init" 
-           description="Deploys the mobile WAR to the application Tomcat server">
-      <delete file="${dir.deploy.tomcat.application}/${file.name.war.mobile}" />
-      <delete dir="${dir.deploy.tomcat.application.mobile}" 
-              includeEmptyDirs="true" quiet="yes" />
       
-      <!-- copy the mobile WAR file to the application Tomcat deploy folder -->
-      <copy todir="${dir.deploy.tomcat.application}" 
-            file="${dir.project.mobile.dist}/${file.name.war.mobile}" />
-   </target>
-
-   <target name="deploy-mobile-tomcat-exploded" depends="init">
-      <!-- remove the WAR, if necessary -->
-      <delete file="${dir.deploy.tomcat.application}/${file.name.war.mobile}" />
-      
-      <!-- copy all source files -->
-      <copy todir="${dir.deploy.tomcat.application.mobile}" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.mobile.src.web}" />
-      </copy>
-      
-      <!-- copy config files -->
-      <copy todir="${dir.deploy.tomcat.application.mobile}/WEB-INF/classes" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.core.src.java}" includes="log4j.properties" />
-         <fileset dir="${dir.project.mobile.config}" excludes="**/extension/**" />
-      </copy>
-      
-      <!-- add all class files to WEB-INF/classes -->
-      <copy todir="${dir.deploy.tomcat.application.mobile}/WEB-INF/classes" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.core.classes}" />
-         <fileset dir="${dir.project.mobile.classes}" />
-      </copy>
-      
-      <!-- add all JARs to WEB-INF/lib -->
-      <copy todir="${dir.deploy.tomcat.application.mobile}/WEB-INF/lib" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="${includes.webscriptframework.libs}" />
-         <fileset dir="${dir.project.3rdparty.lib}/optional" 
-                 includes="${includes.webscriptframework.libs.optional}" />
-         <fileset dir="${dir.project.3rdparty.lib}/commons" 
-                  includes="${includes.webscriptframework.libs.commons}" />
-         <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
-                  includes="${includes.webscriptframework.libs.spring-surf}" />
-         <fileset dir="${dir.project.3rdparty.lib}/abdera"  
-                  includes="${includes.webscriptframework.libs.abdera}" />
-      </copy>
-   </target>
-
-   <target name="minimize-mobile-deployed-javascript" depends="init">
-      <concat destfile="${dir.deploy.tomcat.application.mobile}/js/alf-mobile.js">
-         <fileset dir="${dir.deploy.tomcat.application.mobile}">
-            <include name="**/*.js" />
-            <exclude name="**/alf-mobile.js" />
-            <exclude name="**/*-min.js" />
-            <exclude name="**/WEB-INF/**" />
-         </fileset>
-      </concat>
-
-      <apply executable="java" parallel="false" dest="${dir.deploy.tomcat.application.mobile}/js">
-         <fileset dir="${dir.deploy.tomcat.application.mobile}/js" includes="alf-mobile.js"/>
-         <arg line="-jar"/>
-         <arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
-         <arg line="-o"/>
-         <targetfile/>
-         <srcfile/>
-         <mapper type="glob" from="*.js" to="*-min.js"/>
-      </apply>
-   </target>
-   
    <target name="deploy-fdk" depends="deploy-share-fdk, deploy-repo-fdk-exploded" />
    
    <target name="deploy-share-fdk" depends="package-fdk-client">
