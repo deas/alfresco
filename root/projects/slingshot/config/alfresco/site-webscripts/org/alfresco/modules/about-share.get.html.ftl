@@ -16,8 +16,8 @@
 Alfresco Contributors...
 <br/><br/>
 Will Abson<br/>
-Sophie Aubertier</br>
 Igor Blanco</br>
+Sylvain Chambon</br>
 Philippe Dubois<br/>
 Ray Gauss II<br/>
 Dave Gillen<br/>
