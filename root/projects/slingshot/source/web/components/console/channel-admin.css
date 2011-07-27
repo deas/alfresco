@@ -45,6 +45,10 @@ div.channel .channelActions a.reauth {
     border-right: 1px solid #CACACA;
 }
 
+div.channel .channelActions a.permissions {
+	display:block;
+}
+
 div.channel .channelActions a.first {
 	border-left: 1px solid #CACACA;
 }

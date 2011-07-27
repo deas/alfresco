@@ -87,9 +87,27 @@
        * Is the UI waiting for a callback from the Auth Scripts?
        *
        * @property isWaiting
-       * @value {boolean}
+       * @value {Object}
+       *    state: {boolean} - are we waiting?
+       *    callback: {string} - the callback URL.
+       * @method set - sets the state & callback
+       * @method reset - resets the state.
        */
-      isWaiting: false,
+      isWaiting: 
+		{
+			state: false,
+			callback: "",
+			set: function consoleChannels_isWaiting_set(callback) 
+			{
+				this.state = true;
+				this.callback = callback;
+			},
+			reset: function consoleChannels_isWaiting_reset()
+			{
+				this.state = false;
+				this.callback = "";
+			}
+		},
       
       /**
        * Handle to the window created during channel auth.
@@ -130,7 +148,7 @@
                   // Channels List needs combining from list of publish and status update channels.
                   var channelList = [], publishChannels = oFullResponse.data.publishChannels, statusUpdateChannels = oFullResponse.data.statusUpdateChannels;
                   
-                  channelList = publishChannels.concat(statusUpdateChannels, publishChannels, statusUpdateChannels, publishChannels, statusUpdateChannels)
+                  channelList = publishChannels.concat(statusUpdateChannels)
                   return ({
                      "data": channelList
                   });
@@ -177,21 +195,21 @@
       {
          var rel = ' rel="' + channel.id + '"', 
 			   deleteLink = '<a href=# class="channelAction delete" ' + rel + ' title="' + this.msg("channelAdmin.delete.tooltip") + '">' + this.msg("channelAdmin.delete") + '</a>',
-				reauth = "",
-				status = "authorised",
+			   permissionsLink= '<a href="' + Alfresco.constants.URL_PAGECONTEXT + 'manage-permissions?nodeRef=' + channel.id + '" class="channelAction permissions" ' + rel + ' title="' + this.msg("channelAdmin.permissions.tooltip") + '">' + this.msg("channelAdmin.permissions") + '</a>',
+			   reauth = '<a href=# class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>',
+            status = "authorised",
 				title = this.msg("channelAdmin.authorised.tooltip"),
-				image = '<img src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "32" + '" title="' + channel.channelType.title + '"/>'
+				image = '<img src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "/64" + '" title="' + channel.channelType.title + '"/>'
             html = "";
          
 			// Has the channel authorisation failed?
 			if (channel.authorised !== "true" ) 
 			{
-				reauth = '<a href=# class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>';
 				status = "notAuthorised";
 				title = this.msg("channelAdmin.notAuthorised.tooltip")
 			}
 			
-         html += '<div class="channel ' + status + '" title="' + title + '">' + image + '<span class="channelName">' + channel.name + '</span><span class="channelActions">' + reauth + deleteLink + '</span></div>'
+         html += '<div class="channel ' + status + '" title="' + title + '">' + image + '<span class="channelName">' + channel.name + '</span><span class="channelActions">' + permissionsLink + reauth + deleteLink + '</span></div>'
          return html;
       },
       
@@ -205,7 +223,7 @@
       {
          var channelType = event.target.rel, 
 			   newChannelURL = Alfresco.constants.PROXY_URI + "api/publishing/channels", 
-				channelName = this.msg("channelAdmin.new-channel", channelType)
+				channelName = this.newChannelName(channelType);
             params = "?channelType=" + channelType + "&channelName=" + channelName;
          
          Alfresco.util.Ajax.request(
@@ -229,15 +247,69 @@
                scope: this
             }
          });
-         
-         
       },
       
+		/**
+		 * Called when the channel create API call returns successfully, this triggers the start of the authentication process.
+		 * 
+		 * @method authoriseChannel
+		 * @param {Object} response
+		 */
       onCreateChannelSuccess: function consoleChannels_onCreateChannelSuccess(response)
       {
-         var url = response.json.data.authoriseUrl;
-         this.authWindow = window.open(url);
-         this.isWaiting = true;
+         // Begin the authorisation process.
+         this.authoriseChannel(response);
+      },
+      
+      /**
+       * 
+       * Kicks off the authentication process and enables the listener.
+       * 
+       * @method authoriseChannel
+       * @param {Object} authUrl
+       */
+		authoriseChannel: function consoleChannels_authoriseChannel(response)
+		{
+			// Parse the response and retrieve the URL
+         var authUrl = response.json.data.authoriseUrl,
+			   callbackUrl = response.json.data.authCallbackUrl;
+         
+			// Open the auth window & save the handler.
+			this.authWindow = window.open(authUrl);
+			
+			// Let the module know it's waiting for a callback.
+         this.isWaiting.set(callbackUrl);
+		},
+		
+      /**
+       * 
+       * Generates a new, unique, name for the channel
+       * 
+       * @method newChannelName
+       * @property {string} channelType
+       */
+      newChannelName: function newChannelName(channelType)
+      {
+         var elements = Dom.getElementsByClassName("channelName", "span", this.id),
+            name = this.msg("channelAdmin.new-channel", channelType),
+				unique = name,
+				channelNames = [],
+				increment = 0;
+         
+			// Build array of channel names.
+			for (var i = 0; i < elements.length; i++) 
+			{
+				channelNames.push(elements[i].innerHTML);
+			}
+         
+			// Check the array against the current name, and increment until it doesn't exist.
+			while (Alfresco.util.arrayContains(channelNames, unique)) 
+			{
+				++increment;
+				unique = name + " " + increment; 
+			}
+			
+			return unique;
       },
       
 		/**
@@ -248,7 +320,7 @@
 		 * @param {Object} o
 		 * @param {Object} args
 		 */
-      onChannelInteraction: function consoleChannel_onChannelInteraction(o, args)
+      onChannelInteraction: function consoleChannels_onChannelInteraction(o, args)
 		{
 			if (YAHOO.util.Selector.test(o.event.target, 'a.delete'))
 			{
@@ -330,7 +402,9 @@
          {
             text: this.msg("channelAdmin.delete.success")
          });
-			this.refresh;
+			
+			// Reload Channels
+			this.refresh();
 		},
 		
 		/**
@@ -343,7 +417,43 @@
 		 */
 		onReauthChannel: function consoleChannels_onReauthChannel(event, args)
 		{
-			console.log("reauth");
+		   var nodeRef = event.target.rel, 
+			   url = Alfresco.constants.PROXY_URI + "api/publishing/channels/" + nodeRef.replace("://", "/") + "/reauthorise";
+			
+			// Call the Reauth API.
+			Alfresco.util.Ajax.request(
+         {
+            url: url,
+            method: Alfresco.util.Ajax.POST,
+            successCallback: 
+            {
+               fn: this.onReauthSuccess,
+               scope: this
+            },
+            failureCallback: 
+            {
+               fn: function consoleChannels_onReauth_failure(response)
+               {
+                  Alfresco.util.PopupManager.displayMessage(
+                  {
+                     text: this.msg("channelAdmin.failure")
+                  });
+               },
+               scope: this
+            }
+         });
+		},
+		
+		/**
+		 * Called when the Reauthorise API call succeeds
+		 * 
+		 * Triggers the restart of the Authorisation process
+		 * 
+		 */
+		onReauthSuccess: function consoleChannels_onReauthSuccess(response)
+		{
+			// Begin the authorisation process using that URL.
+         this.authoriseChannel(response);
 		},
 		
       /**
@@ -353,22 +463,70 @@
        */
       onStateChanged: function ConsoleChannels_onStateChanged()
       {
-         var hash = window.location.hash;
-         if (hash !== "" && this.isWaiting === true) 
+         // Get the hash, but remove the actual hash sign.
+			var hash = window.location.hash.substring(1),
+			   url = this.isWaiting.callback;
+         if (hash !== "" && this.isWaiting.state) 
          {
-            this.isWaiting = false;
-            if (hash === "complete") 
+            if (hash !== "complete" && url !== "") 
             {
-               this.onAuthComplete();
-            }
-            else 
-            {
-               // submit to authoriseCallback URL & then call onAuthComplete
-               this.onAuthComplete();
-            }
+               this.onAuthCallback(hash, url);
+            } 
+				else 
+				{
+               this.onAuthComplete();	
+				}
          }
       },
       
+		/**
+		 * Triggers a call to the authorise Callback URL, submitting the received token.
+		 * 
+		 * @param {string} hash
+		 * @param {string} url
+		 */
+		onAuthCallback: function consoleChannels_onAuthCallback(token, url)
+		{
+			// Ensure URL Callback is has the same hostname that we've currently got:
+			// (server config files might have a different hostname to the one used in the browser, which breaks the same domain AJAX rules)
+			localUrl = Alfresco.constants.PROXY_URI + url.split(Alfresco.constants.PROXY_URI_RELATIVE)[1]
+			
+			// token needs encoding.
+			var params=token.split("&");
+			for (var i = 0; i < params.length; i++) 
+			{
+				param = params[i].split("=");
+				if (param[1] !== "undefined") 
+				{
+				   param[1] = encodeURIComponent(param[1]);
+				}
+				params[i] = param.join("=");
+			}
+			token = params.join("&");
+			
+			// Submit to authoriseCallback URL
+         Alfresco.util.Ajax.request(
+         {
+            url: localUrl + "?" + encodeURIComponent(token),
+            successCallback: 
+            {
+               fn: this.onAuthComplete,
+               scope: this
+            },
+            failureCallback: 
+            {
+               fn: function consoleChannels_onAuthCallback_failure(response)
+               {
+                  Alfresco.util.PopupManager.displayMessage(
+                  {
+                     text: this.msg("channelAdmin.failure")
+                  });
+               },
+               scope: this
+            }
+         }); 
+		},
+		
       /**
        * Called when a channel has been created and authentication has finished (regardless to outcome)
        *
@@ -376,7 +534,9 @@
        */
       onAuthComplete: function consoleChannels_onAuthComplete()
       {
-         console.log("Authentication Complete");
+         // We're no longer waiting for authentication to complete:
+			this.isWaiting.reset();
+            
 			// reload channels
 			this.refresh();
       },
@@ -387,7 +547,12 @@
 		 */
       refresh: function consoleChannels_refresh()
 		{
-			console.log("refresh");
+			var dataTable = this.widgets.channelDataTable.widgets.dataTable;
+			// Reset the hash.
+			window.location.hash = "";
+			
+			// Reload the dataTable.
+			dataTable.getDataSource().sendRequest('', { success: dataTable.onDataReturnInitializeTable, scope: dataTable });
 		}
    });
 })();
