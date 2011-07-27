@@ -13,18 +13,27 @@
             <div class="contributions-bg"></div>
             <div class="contributions-wrapper">
                <div id="${el}-contributions" class="contributions">
-Alfresco Share Contributors...
+Alfresco Contributors...
 <br/><br/>
 Will Abson<br/>
+Sophie Aubertier</br>
+Igor Blanco</br>
+Philippe Dubois<br/>
 Ray Gauss II<br/>
 Dave Gillen<br/>
 Antti Jokipii<br/>
+Markus Konrad</br>
 Michael Kriske<br/>
 Carina Lansing<br/>
+Sebastian Lorenz</br>
+Marlin Manowski</br>
 Jesper Steen M&oslash;ller<br/>
 Peter Monks<br/>
+Paolo Nacci</br>
+Guillaume Nodet<br/>
 Ian Norton<br/>
 Jan Pfitzner<br/>
+Noel Sharpe</br>
 Alfresco Engineering
 <br/><br/>
 Atol Conseils et D&eacute;veloppements<br/>
@@ -32,6 +41,8 @@ CEC<br/>
 DMC.de<br/>
 IP Tech<br/>
 Optaros<br/>
+Zia Consulting</br>
+Zaizi</br>
                </div>
             </div>
             <div class="copy">&copy; 2005-2011 Alfresco Software Inc. All rights reserved.</div>
