@@ -26,11 +26,12 @@ import java.util.ListIterator;
 
 /**
  * Calls multiple evaluators in turn until either the last one is called
- * or one of the evaluators returns false.
+ * or one of the evaluators returns true. Effectively becomes a logical
+ * OR of the participating evaluators.
  *
  * @author: mikeh
  */
-public class ChainedEvaluator extends BaseActionEvaluator
+public class ChainedMatchOneEvaluator extends BaseActionEvaluator
 {
     private ArrayList<ActionEvaluator> evaluators = null;
 
@@ -57,9 +58,10 @@ public class ChainedEvaluator extends BaseActionEvaluator
 
         if (evaluators != null)
         {
+            result = false;
             ListIterator<ActionEvaluator> evalIter = evaluators.listIterator();
 
-            while (result && evalIter.hasNext())
+            while (!result && evalIter.hasNext())
             {
                 result = evalIter.next().evaluate(jsonObject);
             }

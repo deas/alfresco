@@ -217,22 +217,22 @@
    <!--                                    -->
    <!-- Document Library Action Evaluators -->
    <!--                                    -->
+
+   <!-- class definitions -->
    <bean id="slingshot.action.evaluator.hasAspectEvaluator" class="org.alfresco.web.evaluator.HasAspectEvaluator" />
-
    <bean id="slingshot.action.evaluator.isMimetypeEvaluator" class="org.alfresco.web.evaluator.IsMimetypeEvaluator" />
-   
    <bean id="slingshot.action.evaluator.propertyNotNullEvaluator" class="org.alfresco.web.evaluator.PropertyNotNullEvaluator" />
-
-   <bean id="slingshot.action.evaluator.chainedEvaluator" class="org.alfresco.web.evaluator.ChainedEvaluator" />
-
+   <bean id="slingshot.action.evaluator.chainedMatchAllEvaluator" class="org.alfresco.web.evaluator.ChainedMatchAllEvaluator" />
+   <bean id="slingshot.action.evaluator.chainedMatchOneEvaluator" class="org.alfresco.web.evaluator.ChainedMatchOneEvaluator" />
    <bean id="slingshot.action.evaluator.disableAction" class="org.alfresco.web.evaluator.DisableActionEvaluator" />
-
    <bean id="slingshot.action.evaluator.sitePresetEvaluator" class="org.alfresco.web.evaluator.SitePresetEvaluator" />
-
+   <bean id="slingshot.action.evaluator.siteBasedEvaluator" class="org.alfresco.web.evaluator.SiteBasedEvaluator" />
    <bean id="slingshot.action.evaluator.containerTypeEvaluator" class="org.alfresco.web.evaluator.ContainerTypeEvaluator" />
-
    <bean id="slingshot.action.evaluator.valueEvaluator" class="org.alfresco.web.evaluator.ValueEvaluator" />
 
+   <!-- action evaluators -->
+
+   <!-- Inline Edit -->
    <bean id="slingshot.action.evaluator.inlineEditAspectEvaluator" parent="slingshot.action.evaluator.hasAspectEvaluator">
       <property name="aspects">
          <list>
@@ -249,8 +249,7 @@
          </list>
       </property>
    </bean>
-
-   <bean id="slingshot.action.evaluator.inlineEditEvaluator" parent="slingshot.action.evaluator.chainedEvaluator">
+   <bean id="slingshot.action.evaluator.inlineEditEvaluator" parent="slingshot.action.evaluator.chainedMatchOneEvaluator">
       <property name="evaluators">
          <list>
             <ref bean="slingshot.action.evaluator.inlineEditAspectEvaluator" />
@@ -259,6 +258,7 @@
       </property>
    </bean>
 
+   <!-- Edit Online -->
    <bean id="slingshot.action.evaluator.onlineEditEvaluator" parent="slingshot.action.evaluator.isMimetypeEvaluator">
       <property name="mimetypes">
          <list>
@@ -291,7 +291,7 @@
       <property name="property" value="app:rejectStep"/>
    </bean>
 
-   <bean id="slingshot.action.evaluator.simpleApproveEvaluator" parent="slingshot.action.evaluator.chainedEvaluator">
+   <bean id="slingshot.action.evaluator.simpleApproveEvaluator" parent="slingshot.action.evaluator.chainedMatchAllEvaluator">
       <property name="evaluators">
          <list>
             <ref bean="slingshot.action.evaluator.simpleWorkflowAspectEval" />
@@ -300,7 +300,7 @@
       </property>
    </bean>
 
-   <bean id="slingshot.action.evaluator.simpleRejectEvaluator" parent="slingshot.action.evaluator.chainedEvaluator">
+   <bean id="slingshot.action.evaluator.simpleRejectEvaluator" parent="slingshot.action.evaluator.chainedMatchAllEvaluator">
       <property name="evaluators">
          <list>
             <ref bean="slingshot.action.evaluator.simpleWorkflowAspectEval" />

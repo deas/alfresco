@@ -459,20 +459,20 @@ Alfresco.util.assertNotEmpty = function(param, message)
 
 /**
  * Check a value is neither undefined nor null (returns false).
- * An empty string returns true unless the disallowEmptyString flag is set.
+ * An empty string also returns false unless the allowEmptyString flag is set.
  * @method Alfresco.util.isValueSet
  * @param value {object} Parameter to check
- * @param disallowEmptyString {boolean} Optional flag to indicate that empty strings are also not allowed.
+ * @param allowEmptyString {boolean} Optional flag to indicate that empty strings are valid inputs.
  * @static
  * @return {boolean} Flag indicating whether the value is set or not.
  */
-Alfresco.util.isValueSet = function(value, disallowEmptyString)
+Alfresco.util.isValueSet = function(value, allowEmptyString)
 {
    if (YAHOO.lang.isUndefined(value) || YAHOO.lang.isNull(value))
    {
       return false;
    }
-   if (YAHOO.lang.isString(value) && value.length === 0 && disallowEmptyString)
+   if (YAHOO.lang.isString(value) && value.length === 0 && !!allowEmptyString === false)
    {
       return false;
    }

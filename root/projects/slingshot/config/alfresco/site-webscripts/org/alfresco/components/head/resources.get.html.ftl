@@ -1,17 +1,18 @@
 <#include "../component.head.inc">
-
 <#-- Stylesheets gathered and rendered using @import to workaround IEBug KB262161 -->
 <#assign templateStylesheets = []>
 <#macro link rel type href>
    <#assign templateStylesheets = templateStylesheets + [href]>
 </#macro>
-
-<#-- RESOURCES -->
-
+<#--
+   RESOURCES
+-->
 <@markup id="favicons">
+<#if !PORTLET>
    <!-- Icons -->
    <link rel="shortcut icon" href="${url.context}/res/favicon.ico" type="image/vnd.microsoft.icon" />
    <link rel="icon" href="${url.context}/res/favicon.ico" type="image/vnd.microsoft.icon" />
+</#if>
 </@markup>
 
 <@markup id="yui">
@@ -85,11 +86,11 @@
       Alfresco.constants.USERNAME = "${(user.name!"")?js_string}";
       Alfresco.constants.SITE = "<#if page??>${(page.url.templateArgs.site!"")?js_string}</#if>";
       Alfresco.constants.PAGEID = "<#if page??>${(page.url.templateArgs.pageid!"")?js_string}</#if>";
-      Alfresco.constants.PORTLET = ${(context.attributes.portletHost!false)?string};
+      Alfresco.constants.PORTLET = ${PORTLET?string};
       Alfresco.constants.PORTLET_URL = unescape("${(context.attributes.portletUrl!"")?js_string}");
-      <#if context.attributes.portletHost!false>
+   <#if PORTLET>
       document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${url.context}";
-      </#if>
+   </#if>
    //]]></script>
 </@>
 
@@ -137,15 +138,15 @@
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/presentation.css" />
 </@>
 
+   <#if (templateStylesheets?size > 0)>
    <!-- Common stylesheets gathered to workaround IEBug KB262161 -->
    <style type="text/css" media="screen">
-   <#list templateStylesheets as href>
+      <#list templateStylesheets as href>
       @import "${href}";
-   </#list>
+      </#list>
    </style>
-
+   </#if>
 
 <@markup id="resources">
    <#-- Use this "markup id" to add in a extension's resources -->
 </@>
-

@@ -145,11 +145,11 @@
                      {
                         fn: function dlA_onActionDetails_refreshSuccess(response)
                         {
-                           var record = response.json.item,
-                              node = record.node;
+                           var record = response.json.item
+                           record.jsNode = new Alfresco.util.Node(response.json.item.node);
 
                            // Fire "renamed" event
-                           YAHOO.Bubbling.fire(node.isContainer ? "folderRenamed" : "fileRenamed",
+                           YAHOO.Bubbling.fire(record.node.isContainer ? "folderRenamed" : "fileRenamed",
                            {
                               file: record
                            });
@@ -206,7 +206,7 @@
             path = record.location.path,
             file = jsNode.isLink ? jsNode.linkedNode.properties.name : record.displayName;
          
-         if (Alfresco.util.isValueSet(this.options.siteId, true) && record.location.site.name !== this.options.siteId)
+         if (Alfresco.util.isValueSet(this.options.siteId) && record.location.site.name !== this.options.siteId)
          {
             window.location = $siteURL("documentlibrary?file=" + encodeURIComponent(file) + "&path=" + encodeURIComponent(path),
             {
@@ -602,7 +602,7 @@
                scope: this
             }
          };
-         if (Alfresco.util.isValueSet(this.options.siteId, true))
+         if (Alfresco.util.isValueSet(this.options.siteId))
          {
             singleUpdateConfig.siteId = this.options.siteId;
             singleUpdateConfig.containerId = this.options.containerId;

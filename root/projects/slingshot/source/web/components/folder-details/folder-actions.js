@@ -288,7 +288,7 @@
          var path = asset.location.path,
             displayName = asset.displayName,
             nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
-            callbackUrl = Alfresco.util.isValueSet(this.options.siteId, true) ? "documentlibrary" : "repository",
+            callbackUrl = Alfresco.util.isValueSet(this.options.siteId) ? "documentlibrary" : "repository",
             encodedPath = path.length > 1 ? "?path=" + encodeURIComponent(path) : "";
          
          this.modules.actions.genericAction(

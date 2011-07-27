@@ -23,7 +23,7 @@
 
 .document-versions h2 .edit
 {
-   background-image: url(../documentlibrary/images/upload-new-version-16.png);
+   background-image: url(../documentlibrary/actions/document-upload-new-version-16.png);
 }
 
 .document-versions .version-list h3
@@ -60,7 +60,7 @@
 
 .document-versions .actions a.download
 {
-   background-image: url(../documentlibrary/images/download-16.png);
+   background-image: url(../documentlibrary/actions/document-download-16.png);
 }
 
 .document-versions .actions a.historicProperties

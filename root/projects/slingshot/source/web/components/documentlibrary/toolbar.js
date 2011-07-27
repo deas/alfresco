@@ -626,7 +626,7 @@
             }
 
             // Activities, in Site mode only
-            if (Alfresco.util.isValueSet(this.options.siteId, true))
+            if (Alfresco.util.isValueSet(this.options.siteId))
             {
                var activityData;
                if (successCount > 0)

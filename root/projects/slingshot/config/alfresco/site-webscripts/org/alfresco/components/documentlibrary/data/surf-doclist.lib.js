@@ -30,7 +30,7 @@ var DocList =
 
    processResult: function processResult(doclist)
    {
-      var p_view = (args.view || "browse").toLowerCase(),
+      var p_view = (args.view || "details").toLowerCase(),
          allActions = DocList.getAllActions(), // <-- this can be cached until config is reset
          item, node, actionGroupId, actions, actionTemplate, action, finalActions, i, index,
          workingCopyLabel = doclist.metadata.workingCopyLabel;
@@ -188,6 +188,7 @@ var DocList =
                                  continue;
                               }
 
+                              DocList.fnAddIfNotNull(action, actionConfig.getAttribute("icon"), "icon");
                               DocList.fnAddIfNotNull(action, actionConfig.getAttribute("type"), "type");
                               DocList.fnAddIfNotNull(action, actionConfig.getAttribute("label"), "label");
 
@@ -236,6 +237,7 @@ var DocList =
                   action =
                   {
                      id: actionId,
+                     icon: actionConfig.getAttribute("icon") || actionId,
                      type: actionConfig.getAttribute("type"),
                      label: actionConfig.getAttribute("label")
                   };

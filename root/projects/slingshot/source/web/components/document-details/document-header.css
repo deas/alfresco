@@ -96,7 +96,7 @@
 
 .document-header .document-action .onDownloadDocumentClick a
 {
-   background: transparent url(../documentlibrary/images/download-16.png) no-repeat scroll 12px 4px;
+   background: transparent url(../documentlibrary/actions/document-download-16.png) no-repeat scroll 12px 4px;
    padding-left: 32px;
 }
 

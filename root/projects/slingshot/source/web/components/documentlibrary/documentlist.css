@@ -230,7 +230,7 @@
 .form-container .edit-metadata a,
 .form-container .edit-metadata a:visited
 {
-   background: transparent url(images/edit-metadata-16.png) no-repeat 12px 4px;
+   background: transparent url(actions/document-edit-metadata-16.png) no-repeat 12px 4px;
    padding-left: 32px;
 }
 
@@ -641,191 +641,12 @@ body .doclist tr.yui-dt-highlighted
 
 .doclist .action-set a
 {
-   background-image: url(images/generic-16.png);
+   background-image: url(actions/default-16.png);
 }
 
 .doclist .internal-show-more a
 {
    background-image: url(images/plus-sign-16.png);
-}
-
-.doclist .document-edit-properties a
-{
-   background-image: url(images/details-16.png);
-}
-
-.doclist .folder-edit-properties a
-{
-   background-image: url(images/folder-details-16.png);
-}
-
-.doclist .document-view-details a
-{
-   background-image: url(images/metadata-16.png);
-}
-
-.doclist .folder-view-details a
-{
-   background-image: url(images/folder-metadata-16.png);
-}
-
-.doclist .document-delete a
-{
-   background-image: url(images/remove-16.png);
-}
-
-.doclist .folder-delete a
-{
-   background-image: url(images/folder-delete-16.png);
-}
-
-.doclist .document-download a
-{
-   background-image: url(images/download-16.png);
-}
-
-.doclist .document-view-content a
-{
-   background-image: url(images/view-in-browser-16.png);
-}
-
-.doclist .document-edit-offline a
-{
-   background-image: url(images/edit-16.png);
-}
-
-.doclist .document-edit-online a
-{
-   background-image: url(images/edit-online-16.png);
-}
-
-.doclist .document-cancel-editing a
-{
-   background-image: url(images/cancel-editing-16.png);
-}
-
-.doclist .document-copy-to a
-{
-   background-image: url(images/copy-to-16.png);
-}
-
-.doclist .folder-copy-to a
-{
-   background-image: url(images/folder-copy-to-16.png);
-}
-
-.doclist .document-move-to a
-{
-   background-image: url(images/move-to-16.png);
-}
-
-.doclist .folder-move-to a
-{
-   background-image: url(images/folder-move-to-16.png);
-}
-
-.doclist .document-request-unlock a
-{
-   background-image: url(images/request-unlock-16.png);
-}
-
-.doclist .document-unlock a
-{
-   background-image: url(images/unlock-16.png);
-}
-
-.doclist .document-upload-new-version a
-{
-   background-image: url(images/upload-new-version-16.png);
-}
-
-.doclist .document-assign-workflow a
-{
-   background-image: url(../images/workflow-16.png);
-}
-
-.doclist .document-manage-site-permissions a,
-.doclist .document-manage-repo-permissions a
-{
-   background-image: url(images/permissions-16.png);
-}
-
-.doclist .folder-manage-site-permissions a,
-.doclist .folder-manage-repo-permissions a
-{
-   background-image: url(images/folder-manage-permissions-16.png);
-}
-
-.doclist .document-manage-aspects a
-{
-   background-image: url(images/manage-aspects-16.png);
-}
-
-.doclist .document-change-type a
-{
-   background-image: url(images/change-type-16.png);
-}
-
-.doclist .document-view-original a
-{
-   background-image: url(images/original-doc-16.png);
-}
-
-.doclist .document-view-working-copy a
-{
-   background-image: url(images/working-copy-16.png);
-}
-
-.doclist .document-locate a
-{
-   background-image: url(images/locate-item-16.png);
-}
-
-.doclist .document-inline-edit a
-{
-   background-image: url(images/inline-edit-16.png);
-}
-
-.doclist .view-in-explorer a
-{
-   background-image: url(images/view-alfresco-explorer-16.png);
-}
-
-.doclist .folder-manage-rules a
-{
-   background-image: url(../images/rule-16.png);
-}
-
-.doclist .document-approve a
-{
-   background-image: url(images/simple-workflow-approve-16.png);
-}
-
-.doclist .document-reject a
-{
-   background-image: url(images/simple-workflow-reject-16.png);
-}
-
-/* Google Docs Actions */
-
-.doclist .document-checkin-from-googledocs a
-{
-   background-image: url(images/google-docs-checkin-16.png);
-}
-
-.doclist .document-checkout-to-googledocs a
-{
-   background-image: url(images/google-docs-checkout-16.png);
-}
-
-.doclist .document-googledoc-view a
-{
-   background-image: url(images/view-in-browser-16.png);
-}
-
-.doclist .document-view-in-source-repository a
-{
-   background-image: url(images/view-transferred-original-16.png);
 }
 
 /* Drag and Drop */

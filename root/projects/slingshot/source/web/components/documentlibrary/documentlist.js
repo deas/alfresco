@@ -208,7 +208,7 @@
          jsNode = record.jsNode,
          html;
 
-      if (jsNode.isLink && $isValueSet(scope.options.siteId, true) && record.location.site.name !== scope.options.siteId)
+      if (jsNode.isLink && $isValueSet(scope.options.siteId) && record.location.site.name !== scope.options.siteId)
       {
          if (jsNode.isContainer)
          {
@@ -1141,7 +1141,7 @@
             }
 
             // Version display
-            if ($isValueSet(record.version, true) && !jsNode.isContainer && !jsNode.isLink)
+            if ($isValueSet(record.version) && !jsNode.isContainer && !jsNode.isLink)
             {
                version = '<span class="document-version">' + $html(record.version) + '</span>';
             }
@@ -1169,7 +1169,7 @@
                   bannerLink = Alfresco.DocumentList.generateUserLink(bannerUser);
 
                /* Google Docs Integration */
-               if ($isValueSet(record.workingCopy.googleDocUrl, true))
+               if ($isValueSet(record.workingCopy.googleDocUrl))
                {
                   if (bannerUser.userName === Alfresco.constants.USERNAME)
                   {
@@ -2289,7 +2289,7 @@
                   };
 
                   // Extra parameters depending on current mode
-                  if ($isValueSet(this.options.siteId, true))
+                  if ($isValueSet(this.options.siteId))
                   {
                      multiUploadConfig.siteId = this.options.siteId;
                      multiUploadConfig.containerId = this.options.containerId;
@@ -2597,12 +2597,14 @@
          // Inject the correct action elements into the actionsId element
          if (elActions && elActions.firstChild === null)
          {
-            var actionTypeMarkup =
-            {
-               "link": '<div class="{id}"><a title="{label}" class="simple-link" href="{href}" {target}><span>{label}</span></a></div>',
-               "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}"><span>{label}</span></a></div>',
-               "javascript": '<div class="{id}" title="{jsfunction}"><a title="{label}" class="action-link" href="#"><span>{label}</span></a></div>'
-            };
+            var urlContext = Alfresco.constants.URL_RESCONTEXT + "components/documentlibrary/actions/",
+               iconStyle = 'style="background-image:url(' + urlContext + '{icon}-16.png)" ',
+               actionTypeMarkup =
+               {
+                  "link": '<div class="{id}"><a title="{label}" class="simple-link" href="{href}" ' + iconStyle + '{target}><span>{label}</span></a></div>',
+                  "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}" ' + iconStyle + '><span>{label}</span></a></div>',
+                  "javascript": '<div class="{id}" title="{jsfunction}"><a title="{label}" class="action-link" href="#"' + iconStyle + '><span>{label}</span></a></div>'
+               };
             
             var fnRenderAction = function DL_renderAction(p_action, p_record)
             {
@@ -2612,6 +2614,7 @@
                var markupParams =
                {
                   "id": p_action.id,
+                  "icon": p_action.icon,
                   "label": me.msg(p_action.label)
                };
                
@@ -2675,7 +2678,7 @@
                actionHTML += fnRenderAction(actions[i], record);
             }
 
-            // Token replacement
+            // Token replacement - action Urls
             actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, this.getActionUrls(record));
 
             // Simple or detailed view
@@ -3713,7 +3716,7 @@
       _buildDocListParams: function DL__buildDocListParams(p_obj)
       {
          // Essential defaults
-         var siteMode = $isValueSet(this.options.siteId, true),
+         var siteMode = $isValueSet(this.options.siteId),
             obj =
             {
                path: this.currentPath,
@@ -3752,7 +3755,7 @@
          {
             params += "&filterData=" + encodeURIComponent(obj.filter.filterData);
          }
-
+         
          // Paging parameters
          if (this.options.usePagination)
          {
@@ -3768,8 +3771,8 @@
             params += "&libraryRoot=" + encodeURIComponent(this.options.rootNode.toString());
          }
 
-         // No-cache
-         params += "&noCache=" + new Date().getTime();
+         // View mode and No-cache
+         params += "&view=browse&noCache=" + new Date().getTime();
 
          return params;
       },

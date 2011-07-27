@@ -1,63 +1,33 @@
 <#import "../import/alfresco-common.ftl" as common />
-
 <#--
-Example usage:
-
-<#include "include/alfresco-template.ftl" />
-<@templateHeader>
-   <@script type="text/javascript" src="${url.context}/res/some-file.js"></@script>
-</@>
-
-<@templateBody>
-   <div id="alf-hd">
-      <@region id="header" scope="global"/>
-      <@region id="title" scope="template"/>
-   </div>
-   <div id="bd">
-      <@region id="main" scope="template"/>
-   </div>
-</@>
-
-<@templateFooter>
-   <div id="alf-ft">
-      <@region id="footer" scope="global"/>
-   </div>
-</@>
+   CONSTANTS & HELPERS
 -->
-
-<#-- CONSTANTS & HELPERS -->
-
 <#-- Global flags retrieved from share-config (or share-config-custom) -->
 <#assign DEBUG=(common.globalConfig("client-debug", "false") = "true")>
 <#assign AUTOLOGGING=(common.globalConfig("client-debug-autologging", "false") = "true")>
-
 <#-- allow theme to be specified in url args - helps debugging themes -->
 <#assign theme = (page.url.args.theme!theme)?html />
-
 <#-- Portlet container detection -->
 <#assign PORTLET=(context.attributes.portletHost!false)>
-
-<#-- UTILITY METHODS -->
-
+<#--
+   UTILITY METHODS
+-->
 <#-- Javascript import that brings in minified version in debug mode. -->
 <#macro script type src>
-<!-- template version -->
    <script type="${type}" src="${DEBUG?string(src, src?replace(".js", "-min.js"))}"></script>
 </#macro>
-
 <#-- Stylesheets gathered and rendered using @import to workaround IEBug KB262161 -->
 <#assign templateStylesheets = []>
 <#macro link rel type href>
    <#assign templateStylesheets = templateStylesheets + [href]>
 </#macro>
-
-
-<#-- TEMPLATE MACROS -->
-
+<#--
+   TEMPLATE MACROS
+-->
 <#--
    Template "templateHeader" macro.
    Includes preloaded YUI assets and essential site-wide libraries.
--->                                                                           
+-->
 <#macro templateHeader doctype="strict">
 <#if !PORTLET>
    <#if doctype = "strict">
@@ -70,7 +40,6 @@ Example usage:
    <title><@region id="head-title" scope="global" chromeless="true"/></title>
    <meta http-equiv="X-UA-Compatible" content="Edge" />
 </#if>
-
    <@region id="head-resources" scope="global" chromeless="true"/>
 
    <!-- Template Resources (nested content from < @templateHeader > call) -->
@@ -82,12 +51,14 @@ Example usage:
    <!-- Component Resources (from .get.head.ftl files) -->
    ${head}
 
+   <#if (templateStylesheets?size > 0)>
    <!-- Template & Component Resources' stylesheets gathered to workaround IEBug KB262161 -->
    <style type="text/css" media="screen">
-   <#list templateStylesheets as href>
+      <#list templateStylesheets as href>
       @import "${href}";
-   </#list>
+      </#list>
    </style>
+   </#if>
 
    <@markup id="ieStylesheets">
    <!-- MSIE CSS fix overrides -->
@@ -99,12 +70,10 @@ Example usage:
    <!-- iPad CSS overrides -->
    <link media="only screen and (max-device-width: 1024px)" rel="stylesheet" type="text/css" href="${url.context}/res/css/ipad.css"/>
    </@>
-
 <#if !PORTLET>
 </head>
 </#if>
 </#macro>
-
 
 <#--
    Template "templateBody" macro.
@@ -122,7 +91,6 @@ Example usage:
       <div class="sticky-push"></div>
    </div>
 </#macro>
-
 
 <#--
    Template "templateFooter" macro.
@@ -154,4 +122,3 @@ Example usage:
    @deprecated These files are now brought in for every page from the extendable components/resources.get.html webscript.
 -->
 <#macro templateHtmlEditorAssets></#macro>
-

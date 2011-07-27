@@ -73,27 +73,27 @@
 
 .toolbar .onActionCopyTo
 {
-   background-image: url(images/copy-to-16.png);
+   background-image: url(actions/document-copy-to-16.png);
 }
 
 .toolbar .onActionMoveTo
 {
-   background-image: url(images/move-to-16.png);
+   background-image: url(actions/document-move-to-16.png);
 }
 
 .toolbar .onActionDelete
 {
-   background-image: url(images/remove-16.png);
+   background-image: url(actions/document-delete-16.png);
 }
 
 .toolbar .onActionAssignWorkflow
 {
-   background-image: url(../images/workflow-16.png);
+   background-image: url(actions/document-assign-workflow-16.png);
 }
 
 .toolbar .onActionManagePermissions
 {
-   background-image: url(images/permissions-16.png);
+   background-image: url(actions/document-manage-permissions-16.png);
 }
 
 .toolbar .onActionDeselectAll

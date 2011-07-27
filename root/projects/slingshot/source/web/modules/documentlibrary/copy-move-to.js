@@ -75,7 +75,7 @@
             myOptions.dataWebScript = dataWebScripts[obj.mode];
          }
          
-         myOptions.viewMode = Alfresco.util.isValueSet(this.options.siteId, true) ? Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE : Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY;
+         myOptions.viewMode = Alfresco.util.isValueSet(this.options.siteId) ? Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE : Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY;
          // Actions module
          this.modules.actions = new Alfresco.module.DoclibActions();
 

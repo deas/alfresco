@@ -236,7 +236,7 @@
             <param name="page">folder-details?nodeRef={node.nodeRef}</param>
          </action>
 
-         <!-- Edit document properties -->
+         <!-- Edit properties pop-up -->
          <action id="document-edit-properties" type="javascript" label="actions.document.edit-metadata">
             <param name="function">onActionDetails</param>
             <permissions>
@@ -244,22 +244,22 @@
             </permissions>
          </action>
 
-         <!-- Edit folder properties -->
-         <action id="folder-edit-properties" type="javascript" label="actions.folder.edit-metadata">
-            <param name="function">onActionDetails</param>
+         <!-- Edit properties page -->
+         <action id="document-edit-metadata" type="pagelink" label="actions.document.edit-metadata">
+            <param name="page">edit-metadata?nodeRef={node.nodeRef}</param>
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
          </action>
 
          <!-- Approve simple workflow -->
-         <action id="document-approve" type="javascript" label="{node.actionLabels['approveStep']}">
+         <action id="document-approve" type="javascript" label="{node.properties['app:approveStep']}">
             <param name="function">onActionSimpleApprove</param>
             <evaluator>slingshot.action.evaluator.simpleApproveEvaluator</evaluator> <!-- aspect check, property != null check, action name = property value -->
          </action>
 
          <!-- Reject simple workflow -->
-         <action id="document-reject" type="javascript" label="{node.actionLabels['rejectStep']}">
+         <action id="document-reject" type="javascript" label="{node.properties['app:rejectStep']}">
             <param name="function">onActionSimpleReject</param>
             <evaluator>slingshot.action.evaluator.simpleRejectEvaluator</evaluator> <!-- aspect check, property != null check, action name = property value -->
          </action>
@@ -279,8 +279,8 @@
          </action>
 
          <!-- Inline edit -->
-         <action id="document-inline-edit" type="link" label="actions.document.inline-edit">
-            <param name="href">{inlineEditUrl}</param>
+         <action id="document-inline-edit" type="pagelink" label="actions.document.inline-edit">
+            <param name="page">inline-edit?nodeRef=node.nodeRef</param>
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
@@ -337,19 +337,21 @@
          </action>
 
          <!-- Manage permissions (site roles) -->
-         <action id="document-manage-site-permissions" type="javascript" label="actions.document.manage-permissions">
+         <action id="document-manage-site-permissions" type="javascript" icon="document-manage-permissions" label="actions.document.manage-permissions">
             <param name="function">onActionManagePermissions</param>
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
+            <evaluator>slingshot.action.evaluator.siteBasedEvaluator</evaluator>
          </action>
 
          <!-- Manage permissions (repository roles) -->
-         <action id="document-manage-repo-permissions" type="pagelink" label="actions.document.manage-permissions">
+         <action id="document-manage-repo-permissions" type="pagelink" icon="document-manage-permissions" label="actions.document.manage-permissions">
             <param name="page">manage-permissions?nodeRef={node.nodeRef}</param>
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
+            <evaluator negate="true">slingshot.action.evaluator.siteBasedEvaluator</evaluator>
          </action>
 
          <!-- Manage aspects -->
@@ -414,7 +416,7 @@
          </action>
 
          <!-- View in Google Docs -->
-         <action id="document-googledoc-view" type="link" label="actions.document.view-google-doc">
+         <action id="document-googledoc-view" type="link" icon="document-view-content" label="actions.document.view-google-doc">
             <param name="href">{workingCopy.googleDocUrl}</param>
             <param name="target">_blank</param>
             <evaluator>slingshot.action.evaluator.googleDocsViewEvaluator</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource -->
@@ -468,7 +470,7 @@
          <actionGroup id="document-details">
             <action index="100" id="document-download" />
             <action index="110" id="document-view-content" />
-            <action index="120" id="document-edit-properties" />
+            <action index="120" id="document-edit-metadata" />
             <action index="130" id="document-upload-new-version" />
             <action index="140" id="document-view-original" />
             <action index="150" id="document-view-working-copy" />
@@ -494,26 +496,29 @@
 
          <actionGroup id="folder-browse">
             <action index="100" id="folder-view-details" />
-            <action index="110" id="folder-edit-properties" />
-            <action index="120" id="document-approve" />
-            <action index="130" id="document-reject" />
-            <action index="140" id="document-locate" label="actions.folder.locate" />
-            <action index="150" id="document-copy-to" label="actions.folder.copy-to" />
-            <action index="160" id="document-move-to" label="actions.folder.move-to" />
+            <action index="110" id="document-edit-properties" icon="folder-edit-properties" label="actions.folder.edit-metadata" />
+            <action index="120" id="document-approve" icon="folder-approve" />
+            <action index="130" id="document-reject" icon="folder-reject" />
+            <action index="140" id="document-locate" icon="folder-locate" label="actions.folder.locate" />
+            <action index="150" id="document-copy-to" icon="folder-copy-to" label="actions.folder.copy-to" />
+            <action index="160" id="document-move-to" icon="folder-move-to" label="actions.folder.move-to" />
             <action index="170" id="folder-manage-rules" />
-            <action index="180" id="document-delete" label="actions.folder.delete" />
+            <action index="180" id="document-delete" icon="folder-delete" label="actions.folder.delete" />
+            <action index="190" id="document-manage-site-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
+            <action index="200" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
+            <action index="210" id="document-manage-aspects" label="actions.folder.manage-aspects" />
          </actionGroup>
 
          <actionGroup id="folder-details">
-            <action index="100" id="folder-edit-properties" />
-            <action index="110" id="document-approve" />
-            <action index="120" id="document-reject" />
-            <action index="130" id="document-copy-to" label="actions.folder.copy-to" />
-            <action index="140" id="document-move-to" label="actions.folder.move-to" />
+            <action index="110" id="document-edit-metadata" icon="folder-edit-metadata" label="actions.folder.edit-metadata" />
+            <action index="110" id="document-approve" icon="folder-approve" />
+            <action index="120" id="document-reject" icon="folder-reject" />
+            <action index="130" id="document-copy-to" icon="folder-copy-to" label="actions.folder.copy-to" />
+            <action index="140" id="document-move-to" icon="folder-move-to" label="actions.folder.move-to" />
             <action index="150" id="folder-manage-rules" />
-            <action index="160" id="document-delete" label="actions.folder.delete" />
-            <action index="170" id="document-manage-site-permissions" label="actions.folder.manage-permissions" />
-            <action index="180" id="document-manage-repo-permissions" label="actions.folder.manage-permissions" />
+            <action index="160" id="document-delete" icon="folder-delete" label="actions.folder.delete" />
+            <action index="170" id="document-manage-site-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
+            <action index="180" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="190" id="document-manage-aspects" label="actions.folder.manage-aspects" />
             <action index="200" id="view-in-explorer" />
             <action index="210" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
@@ -532,14 +537,14 @@
 
          <actionGroup id="folder-link-browse">
             <action index="100" id="folder-view-details" />
-            <action index="110" id="document-locate" label="actions.link.locate">
+            <action index="110" id="document-locate" icno="folder-locate" label="actions.link.locate">
                <evaluator />
             </action>
-            <action index="120" id="document-delete" label="actions.link.delete" />
+            <action index="120" id="document-delete" icon="folder-locate" label="actions.link.delete" />
          </actionGroup>
 
          <actionGroup id="folder-link-details">
-            <action index="100" id="document-delete" label="actions.link.delete" />
+            <action index="100" id="document-delete" icon="folder-delete" label="actions.link.delete" />
          </actionGroup>
 
       </actionGroups>

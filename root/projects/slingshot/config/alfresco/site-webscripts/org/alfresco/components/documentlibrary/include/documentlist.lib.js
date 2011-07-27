@@ -37,55 +37,6 @@ var DocumentList =
       return preferences;
    },
 
-   /* Get actions */
-   getActionSets: function getActionSets(preferences)
-   {
-      var actionSets = {};
-
-      if (typeof preferences == "undefined")
-      {
-         preferences = DocumentList.getPreferences();
-      }
-
-      try
-      {
-         // Actions
-         var prefActionSet, actionSet, actionSetId, actionId, defaultOrder,
-            myConfig = new XML(config.script),
-            prefActions = preferences.actions || {};
-
-         for each (var xmlActionSet in myConfig..actionSet)
-         {
-            actionSet = [];
-            actionSetId = xmlActionSet.@id.toString();
-            prefActionSet = prefActions[actionSetId] || {};
-            defaultOrder = 100;
-
-            for each (var xmlAction in xmlActionSet..action)
-            {
-               defaultOrder++;
-               actionId = xmlAction.@id.toString();
-
-               actionSet.push(
-               {
-                  order: prefActionSet[actionId] || defaultOrder,
-                  id: actionId,
-                  type: xmlAction.@type.toString(),
-                  permission: xmlAction.@permission.toString(),
-                  href: xmlAction.@href.toString(),
-                  label: xmlAction.@label.toString()
-               });
-            }
-            actionSets[actionSetId] = actionSet.sort(DocumentList.sortByOrder);
-         }
-      }
-      catch (e)
-      {
-      }
-
-      return actionSets;
-   },
-
    /* Get configuration value */
    getConfigValue: function getConfigValue(configFamily, configName, defaultValue)
    {
@@ -225,7 +176,6 @@ function doclibCommon()
 {
    var preferences = DocumentList.getPreferences();
    model.preferences = preferences;
-   model.actionSets = DocumentList.getActionSets(preferences);
    model.repositoryUrl = DocumentList.getConfigValue("DocumentLibrary", "repository-url", null);
    model.replicationUrlMappingJSON = DocumentList.getReplicationUrlMappingJSON();
    model.vtiServer = DocumentList.getVtiServerJSON();

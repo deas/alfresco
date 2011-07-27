@@ -410,7 +410,7 @@
                       '<a href="' + encodeURI(viewUrl) + '" target="_blank"><img title="' + $html(me.msg("label.viewinbrowser")) +
                       '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/view-in-browser-16.png" width="16" height="16"/></a>' +
                       '<a href="' + encodeURI(viewUrl + "?a=true") + '" style="padding-left:4px" target="_blank"><img title="' + $html(me.msg("label.download")) +
-                      '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/download-16.png" width="16" height="16"/></a>' + 
+                      '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/actions/document-download-16.png" width="16" height="16"/></a>' + 
                       '</div>' + html;
             }
             elCell.innerHTML = html;

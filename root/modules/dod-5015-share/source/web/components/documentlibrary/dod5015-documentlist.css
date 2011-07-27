@@ -3,7 +3,7 @@
  */
 .doclist .onActionEditDetails a
 {
-   background-image: url(images/edit-metadata-16.png);
+   background-image: url(actions/document-edit-metadata-16.png);
 }
 
 .doclist .onActionViewDetails a

@@ -412,8 +412,9 @@
             }
          }
          
-         var defaultRoles = this.options.files[0].permissions.roles;
-         var permissions;
+         var defaultRoles = this.options.files[0].node.permissions.roles,
+            permissions;
+
          for (i = 0, j = defaultRoles.length; i < j; i++)
          {
             permissions = defaultRoles[i].split(";");

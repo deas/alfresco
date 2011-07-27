@@ -1,5 +1,5 @@
 <#--
-   Deprecated: These files are now brought in for every page from the extendable components/resources.get.html webscript.
+   Deprecated: These files are now brought in for every page from the extendable components/head/resources.get.html webscript.
 -->
 <#macro uriTemplates></#macro>
 <#macro helpPages></#macro>
