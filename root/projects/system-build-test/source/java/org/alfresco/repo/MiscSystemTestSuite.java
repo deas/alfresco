@@ -23,6 +23,7 @@ import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.alfresco.repo.cmis.rest.test.CmisRelationshipSystemTest;
 import org.alfresco.repo.web.scripts.activities.SiteActivitySystemTest;
 import org.alfresco.webservice.test.AccessControlServiceSystemTest;
 import org.alfresco.webservice.test.ActionServiceSystemTest;
@@ -30,7 +31,6 @@ import org.alfresco.webservice.test.AdministrationServiceSystemTest;
 import org.alfresco.webservice.test.AuthenticationServiceSystemTest;
 import org.alfresco.webservice.test.AuthoringServiceSystemTest;
 import org.alfresco.webservice.test.ClassificationServiceSystemTest;
-import org.alfresco.webservice.test.CmisRelationshipSystemTest;
 import org.alfresco.webservice.test.ContentServiceSystemTest;
 import org.alfresco.webservice.test.DictionaryServiceSystemTest;
 import org.alfresco.webservice.test.RepositoryServiceSystemTest;
