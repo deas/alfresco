@@ -21,6 +21,7 @@ Sylvain Chambon</br>
 Philippe Dubois<br/>
 Ray Gauss II<br/>
 Dave Gillen<br/>
+Romain Guinot</br>
 Antti Jokipii<br/>
 Markus Konrad</br>
 Michael Kriske<br/>
