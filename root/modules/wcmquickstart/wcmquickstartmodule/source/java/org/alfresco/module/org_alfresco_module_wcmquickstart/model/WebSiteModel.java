@@ -129,4 +129,8 @@ public interface WebSiteModel
 
     // Process details
     public static final String PROCESS_READ_CONTACT = "jbpm$wswf:readContactProcess";
+
+    public static final QName PROP_ORDER_INDEX = QName.createQName(NAMESPACE, "orderIndex");
+    
+    
 }

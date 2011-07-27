@@ -18,6 +18,8 @@
 package org.alfresco.wcm.client.impl;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +30,14 @@ import java.util.concurrent.ConcurrentMap;
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetCollection;
 import org.alfresco.wcm.client.DictionaryService;
+import org.alfresco.wcm.client.Path;
+import org.alfresco.wcm.client.PathResolutionDetails;
 import org.alfresco.wcm.client.Query;
 import org.alfresco.wcm.client.SearchResults;
 import org.alfresco.wcm.client.Section;
 import org.alfresco.wcm.client.Tag;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Base section interface implementation
@@ -41,13 +47,14 @@ import org.alfresco.wcm.client.Tag;
 public class SectionImpl extends ResourceBaseImpl implements Section
 {
     private static final long serialVersionUID = -443446798048387948L;
+    private final static Log log = LogFactory.getLog(SectionImpl.class);
 
     /** Section children */
     private List<Section> sections = new ArrayList<Section>();
 
     /** Sections by name */
     private Map<String, Section> sectionsByName = new TreeMap<String, Section>();
-    
+
     private ConcurrentMap<String, String> assetIdByAssetName = new ConcurrentHashMap<String, String>(89);
 
     /** Top Tags */
@@ -61,6 +68,8 @@ public class SectionImpl extends ResourceBaseImpl implements Section
 
     /** Dictionary service */
     private DictionaryService dictionaryService;
+
+    private Map<String, String> redirects;
 
     /**
      * @see org.alfresco.wcm.client.Section#getSections()
@@ -153,9 +162,51 @@ public class SectionImpl extends ResourceBaseImpl implements Section
         super.setProperties(props);
 
         // Extract the config map for convenience
-        configMap = (Map<String, String>) props.get(PROPERTY_SECTION_CONFIG);
+        configMap = parseConfigProperties((List<String>) props.get(PROPERTY_SECTION_CONFIG));
+        redirects = parseConfigProperties((List<String>) props.get(PROPERTY_REDIRECT_CONFIG));
     }
 
+    /**
+     * Parses section configuration properties from the name value pair string list
+     * into a map.
+     * 
+     * @param configPropertyList
+     * @return Map<String, String> map of types and templates
+     */
+    private Map<String, String> parseConfigProperties(List<String> configPropertyList)
+    {
+        Map<String, String> result = new TreeMap<String, String>();
+        if (configPropertyList != null)
+        {
+            for (String configValue : configPropertyList)
+            {
+                String[] split = configValue.split("=");
+                if (split.length == 2)
+                {
+                    String name = split[0];
+                    String value = split[1];
+                    result.put(name, value);
+                    // We cater for either "cmis:document" or "cm:content"
+                    // interchangeably...
+                    if ("cmis:document".equals(name))
+                    {
+                        result.put("cm:content", value);
+                    }
+                    else if ("cm:content".equals(name))
+                    {
+                        result.put("cmis:document", value);
+                    }
+                }
+                else
+                {
+                    // TODO log
+                }
+            }
+        }
+        return result;
+    }
+
+    
     /**
      * Add child to a section
      * 
@@ -349,5 +400,69 @@ public class SectionImpl extends ResourceBaseImpl implements Section
             }
         }
         return template;
+    }
+
+    @Override
+    public PathResolutionDetails resolvePath(String path)
+    {
+        PathResolutionDetailsImpl details = new PathResolutionDetailsImpl();
+
+        String redirectLocation = checkRedirects(path);
+        if (redirectLocation == null)
+        {
+            // The specified path doesn't match a redirect
+            Asset asset = null;
+
+            Path segmentedPath = new PathImpl(path);
+            String[] sectionPath = segmentedPath.getPathSegments();
+            String resourceName = segmentedPath.getResourceName();
+
+            Section section = getSectionFactory().getSectionFromPathSegments(getId(), sectionPath);
+            if (section != null)
+            {
+                if (resourceName != null && resourceName.length() > 0)
+                {
+                    String decodedResourceName;
+                    try
+                    {
+                        decodedResourceName = URLDecoder.decode(resourceName, "UTF-8");
+                        asset = section.getAsset(decodedResourceName);
+                    }
+                    catch (UnsupportedEncodingException e)
+                    {
+                        // UTF-8 is mandatory, so this won't happen
+                    }
+                    // If not found then try filename from URL just in case the
+                    // name originally included
+                    // + instead of spaces etc.
+                    if (asset == null)
+                    {
+                        asset = section.getAsset(resourceName);
+                    }
+                }
+                else
+                {
+                    asset = section.getIndexPage();
+                }
+            }
+            details.setAsset(asset);
+            details.setSection(section);
+        }
+        else
+        {
+            //This path matched a redirect
+            details.setRedirect(true);
+            details.setRedirectLocation(redirectLocation);
+        }
+        return details;
+    }
+
+    protected String checkRedirects(String path)
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug("Checking for redirect on path " + path + "  Defined redirects are " + redirects);
+        }
+        return redirects.get(path);
     }
 }

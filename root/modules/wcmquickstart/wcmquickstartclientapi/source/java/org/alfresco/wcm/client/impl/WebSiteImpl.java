@@ -22,11 +22,11 @@ import java.util.Map;
 
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.Path;
+import org.alfresco.wcm.client.PathResolutionDetails;
 import org.alfresco.wcm.client.Section;
 import org.alfresco.wcm.client.SectionFactory;
 import org.alfresco.wcm.client.UgcService;
 import org.alfresco.wcm.client.WebSite;
-import org.alfresco.wcm.client.util.UrlUtils;
 
 /**
  * Web Site Implementation
@@ -59,7 +59,6 @@ public class WebSiteImpl implements WebSite
 	
 	private transient SectionFactory sectionFactory;
 	private transient UgcService ugcService;
-	private transient UrlUtils urlUtils;
 
     private String rootSectionId;
 
@@ -144,33 +143,8 @@ public class WebSiteImpl implements WebSite
 	@Override
 	public Asset getAssetByPath(String path)
 	{
-		Asset asset = null;
-		
-		Path segmentedPath = new PathImpl(path); 
-		String[] sectionPath = segmentedPath.getPathSegments();
-		String resourceName = segmentedPath.getResourceName();
-		
-		Section section = sectionFactory.getSectionFromPathSegments(rootSectionId, sectionPath);
-		if (section != null)
-		{
-			if (resourceName != null && resourceName.length() > 0)
-			{
-				String decodedResourceName = urlUtils.decodeResourceName(resourceName); //TODO Having UrlUtils depedency here is not nice.
-				asset = section.getAsset(decodedResourceName);
-				// If not found then try filename from URL just in case the name originally included
-				// + instead of spaces etc.
-				if (asset == null) 
-				{
-					asset = section.getAsset(resourceName);
-				}
-			}
-			else
-			{
-				asset = section.getIndexPage();
-			}
-		}
-		
-		return asset;
+	    PathResolutionDetails resolution = getRootSection().resolvePath(path);
+	    return resolution.getAsset();
 	}
 	
 	/**
@@ -234,10 +208,6 @@ public class WebSiteImpl implements WebSite
 		this.logo = logo;
     }
 	
-	public void setUrlUtils(UrlUtils urlUtils) {
-		this.urlUtils = urlUtils;
-	}	
-
     public void setRootSectionId(String rootSectionId)
     {
         this.rootSectionId = rootSectionId;
@@ -263,5 +233,11 @@ public class WebSiteImpl implements WebSite
             editorial = Boolean.parseBoolean(configMap.get(CONFIG_IS_EDITORIAL));
         }
         return editorial;
+    }
+
+    @Override
+    public PathResolutionDetails resolvePath(String path)
+    {
+        return getRootSection().resolvePath(path);
     }
 }

@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Web Site Interface
  * 
@@ -29,104 +28,114 @@ import java.util.Map;
  */
 public interface WebSite extends Serializable
 {
-	/** Property constants */
-	static final String PROP_HOSTNAME = "ws:hostName";
-	static final String PROP_HOSTPORT = "ws:hostPort";
+    /** Property constants */
+    static final String PROP_HOSTNAME = "ws:hostName";
+    static final String PROP_HOSTPORT = "ws:hostPort";
     static final String PROP_CONTEXT = "ws:webAppContext";
     static final String PROP_SITE_CONFIG = "ws:siteConfig";
-    
+
     static final String CONFIG_IS_EDITORIAL = "isEditorial";
-	
-	/**
-	 * Gets the host name
-	 * 
-	 * @return	String	host name
-	 */
-	String getHostName();
-	
-	/**
-	 * Gets the host port
-	 * 
-	 * @return	int		host port
-	 */
-	int getHostPort();
-	
-	/**
-	 * Gets the web sites root section
-	 * 
-	 * @return	Section		root section
-	 */
-	Section getRootSection();
-	
-	/**
-	 * 
-	 * @param path
-	 * @return
-	 */
-	Asset getAssetByPath(String path);	
-	
-	/**
-	 * Gets the child sections.
-	 * 
-	 * @return	List<Section>	child sections
-	 */
-	List<Section> getSections();
-	
-	/**
-	 * Obtain the identifier of this website
-	 * @return
-	 */
-	String getId();
-	
-	
-	/**
-	 * Get the web site's title
-	 * @return
-	 */
-	String getTitle();
 
-	/**
-	 * Get the web site's title
-	 * @return
-	 */
-	String getDescription();
-	
-	/**
-	 * Get the asset which is the site logo
-	 * @return
-	 */
-	Asset getLogo();
-
-	/** 
-	 * Get the UGC service
-     * @return 
+    /**
+     * Gets the host name
+     * 
+     * @return String host name
      */
-	UgcService getUgcService();
+    String getHostName();
 
-	/** 
-	 * Get a section by path
-	 * @param path
-	 * @return
-	 */
-	Section getSectionByPath(String path);
+    /**
+     * Gets the host port
+     * 
+     * @return int host port
+     */
+    int getHostPort();
 
-	/**
-	 * Get context of the webapp used to deliver this site.
-	 * The context, together with the host name and host port, is used to
-	 * generate absolute URLs for assets in this site when necessary
-	 * @return
-	 */
-	String getContext();
+    /**
+     * Gets the web sites root section
+     * 
+     * @return Section root section
+     */
+    Section getRootSection();
 
-	/**
-	 * Obtain the map of configuration properties set on this website.
-	 * @return
-	 */
+    PathResolutionDetails resolvePath(String path);
+    
+    /**
+     * 
+     * @param path
+     * @return
+     */
+    Asset getAssetByPath(String path);
+
+    /**
+     * Gets the child sections.
+     * 
+     * @return List<Section> child sections
+     */
+    List<Section> getSections();
+
+    /**
+     * Obtain the identifier of this website
+     * 
+     * @return
+     */
+    String getId();
+
+    /**
+     * Get the web site's title
+     * 
+     * @return
+     */
+    String getTitle();
+
+    /**
+     * Get the web site's title
+     * 
+     * @return
+     */
+    String getDescription();
+
+    /**
+     * Get the asset which is the site logo
+     * 
+     * @return
+     */
+    Asset getLogo();
+
+    /**
+     * Get the UGC service
+     * 
+     * @return
+     */
+    UgcService getUgcService();
+
+    /**
+     * Get a section by path
+     * 
+     * @param path
+     * @return
+     */
+    Section getSectionByPath(String path);
+
+    /**
+     * Get context of the webapp used to deliver this site. The context,
+     * together with the host name and host port, is used to generate absolute
+     * URLs for assets in this site when necessary
+     * 
+     * @return
+     */
+    String getContext();
+
+    /**
+     * Obtain the map of configuration properties set on this website.
+     * 
+     * @return
+     */
     Map<String, String> getConfig();
 
     /**
-     * Returns true if this website has been marked as an editorial site. May
-     * be used by templates to enable editorial features on the website.
+     * Returns true if this website has been marked as an editorial site. May be
+     * used by templates to enable editorial features on the website.
+     * 
      * @return
      */
     boolean isEditorialSite();

@@ -30,6 +30,7 @@ public interface Section extends Resource
     /** Section properties */
     static final String PROPERTY_SECTION_CONFIG = "ws:sectionConfig";
     static final String PROPERTY_EXCLUDE_FROM_NAV = "ws:excludeFromNavigation";
+    static final String PROPERTY_REDIRECT_CONFIG = "ws:redirectConfig";
 
     /**
      * Gets the child sections.
@@ -175,4 +176,5 @@ public interface Section extends Resource
 
     AssetCollection getAssetCollection(String name, int resultsToSkip, int maxResults);
 
+    PathResolutionDetails resolvePath(String path);
 }

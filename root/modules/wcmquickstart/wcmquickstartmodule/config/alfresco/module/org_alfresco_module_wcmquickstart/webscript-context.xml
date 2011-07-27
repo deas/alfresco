@@ -29,6 +29,24 @@
        <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
     </bean>
     
+    <bean id="webscript.org.alfresco.module.wcmquickstart.section.get" 
+          class="org.alfresco.module.org_alfresco_module_wcmquickstart.webscript.SectionGet" 
+          parent="webscript">
+       <property name="nodeService" ref="NodeService"/>
+       <property name="searchService" ref="SearchService"/>
+       <property name="assetSerializerFactory" ref="wqsmodule_assetSerializerFactory" />
+       <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
+    </bean>
+    
+    <bean id="webscript.org.alfresco.module.wcmquickstart.section.post" 
+          class="org.alfresco.module.org_alfresco_module_wcmquickstart.webscript.SectionGet" 
+          parent="webscript">
+       <property name="nodeService" ref="NodeService"/>
+       <property name="searchService" ref="SearchService"/>
+       <property name="assetSerializerFactory" ref="wqsmodule_assetSerializerFactory" />
+       <property name="siteHelper" ref="org_alfresco_module_wcmquickstart_siteHelper" />
+    </bean>
+    
     <bean id="webscript.org.alfresco.module.wcmquickstart.assetsearch.get" 
           class="org.alfresco.module.org_alfresco_module_wcmquickstart.webscript.AssetSearch" 
           parent="webscript">

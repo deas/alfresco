@@ -339,7 +339,7 @@ public class AssetFactoryCmisImpl implements AssetFactory
         return renditionMap;
     }
 
-    private AssetImpl buildAsset(QueryResult result)
+    protected AssetImpl buildAsset(QueryResult result)
     {
         AssetImpl asset = new AssetImpl();
         Map<String, Serializable> properties = new TreeMap<String, Serializable>();

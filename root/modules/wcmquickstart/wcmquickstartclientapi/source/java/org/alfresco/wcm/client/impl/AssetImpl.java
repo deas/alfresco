@@ -130,10 +130,17 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
      */
     public void setParentSectionIds(Collection<String> sectionIds)
     {
-        this.parentSectionIds = new ArrayList<String>(sectionIds);
-        if (sectionIds.size() > 0)
+        if (sectionIds != null)
         {
-            setPrimarySectionId(parentSectionIds.get(0));
+            this.parentSectionIds = new ArrayList<String>(sectionIds);
+            if (!sectionIds.isEmpty())
+            {
+                setPrimarySectionId(parentSectionIds.get(0));
+            }
+        }
+        else
+        {
+            parentSectionIds = new ArrayList<String>();
         }
     }
 
@@ -189,7 +196,7 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
         String mimeType = getMimeType();
         if ((mimeType != null) && mimeType.startsWith("text"))
         {
-            template = (String)getProperties().get(PROPERTY_TEMPLATE_NAME);
+            template = (String) getProperties().get(PROPERTY_TEMPLATE_NAME);
             if ((template == null) || template.trim().length() == 0)
             {
                 Section section = getContainingSection();

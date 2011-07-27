@@ -135,6 +135,14 @@
             <title>Web Root</title>
             <description>Web Root Folder</description>
             <parent>ws:section</parent>
+            <properties>
+                <property name="ws:redirectConfig">
+                    <title>Redirect Configuration</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <multiple>true</multiple>
+                </property>
+            </properties>
         </type>
 
         <type name="ws:webassetCollectionFolder">

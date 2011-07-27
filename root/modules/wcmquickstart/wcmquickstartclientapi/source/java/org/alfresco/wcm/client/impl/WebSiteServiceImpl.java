@@ -33,7 +33,6 @@ import org.alfresco.wcm.client.WebSite;
 import org.alfresco.wcm.client.WebSiteService;
 import org.alfresco.wcm.client.impl.cache.SimpleCache;
 import org.alfresco.wcm.client.util.CmisSessionHelper;
-import org.alfresco.wcm.client.util.UrlUtils;
 import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.QueryResult;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -71,7 +70,6 @@ public class WebSiteServiceImpl extends WebSiteService
     private SimpleCache<String, String> formIdCache;
 
     private String logoFilename;
-	private UrlUtils urlUtils;
 
     /**
      * Set the number of seconds after which the web site cache will refresh.
@@ -210,8 +208,6 @@ public class WebSiteServiceImpl extends WebSiteService
             // Find the logo asset id
             Asset logo = assetFactory.getSectionAsset(siteInfo.rootSectionId, logoFilename, true);
             webSite.setLogo(logo);
-            
-            webSite.setUrlUtils(urlUtils);
         }
 
         webSiteCacheRefeshedAt = System.currentTimeMillis();
@@ -310,10 +306,6 @@ public class WebSiteServiceImpl extends WebSiteService
     {
         this.webscriptCaller = webscriptCaller;
     }
-
-    public void setUrlUtils(UrlUtils urlUtils) {
-		this.urlUtils = urlUtils;
-	}    
 
     public void setFormIdCache(SimpleCache<String, String> formIdCache)
     {

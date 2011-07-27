@@ -18,8 +18,8 @@
 package org.alfresco.wcm.client.impl;
 
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -30,12 +30,8 @@ import org.alfresco.wcm.client.DictionaryService;
 import org.alfresco.wcm.client.Section;
 import org.alfresco.wcm.client.SectionFactory;
 import org.alfresco.wcm.client.Tag;
-import org.alfresco.wcm.client.util.CmisSessionHelper;
-import org.alfresco.wcm.client.util.SqlUtils;
-import org.apache.chemistry.opencmis.client.api.ItemIterable;
-import org.apache.chemistry.opencmis.client.api.QueryResult;
-import org.apache.chemistry.opencmis.client.api.Session;
-import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.alfresco.wcm.client.WebSite;
+import org.alfresco.wcm.client.WebSiteService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,26 +40,29 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Chris Lack
  */
-public class SectionFactoryCmisImpl implements SectionFactory
+public class SectionFactoryWebscriptImpl implements SectionFactory
 {
+    private ThreadLocal<List<WebscriptParam>> localParamList = new ThreadLocal<List<WebscriptParam>>()
+    {
+        @Override
+        protected List<WebscriptParam> initialValue()
+        {
+            return new ArrayList<WebscriptParam>();
+        }
+
+        @Override
+        public List<WebscriptParam> get()
+        {
+            List<WebscriptParam> list = super.get();
+            list.clear();
+            return list;
+        }
+
+    };
+
     private static final String PROPERTY_TAG_SUMMARY = "cm:tagScopeSummary";
 
-    private static final String COLUMNS = " f.cmis:objectId, f.cmis:name, t.cm:title, t.cm:description, f.cmis:objectTypeId, "
-            + "f.cmis:parentId, f.ws:sectionConfig, f.ws:excludeFromNavigation, ts.cm:tagScopeSummary ";
-
-    private final static Log log = LogFactory.getLog(SectionFactoryCmisImpl.class);
-
-    private static final String QUERY_SECTION_WITH_CHILDREN = "select " + COLUMNS + ", o.ws:orderIndex as ord "
-            + "from ws:section as f " + "join cm:titled as t on t.cmis:objectId = f.cmis:objectId "
-            + "join ws:ordered as o on o.cmis:objectId = f.cmis:objectId "
-            + "join cm:tagscope as ts on ts.cmis:objectId = f.cmis:objectId "
-            + "where (in_tree(f, {0}) or f.cmis:objectId = {1}) " + "order by ord";
-    /*
-     * private static final String QUERY_COLLECTION_FOLDERS =
-     * "select f.cmis:objectId, f.cmis:parentId "+ "from cmis:folder as f " +
-     * "join ws:webassetCollectionFolder as c on c.cmis:objectId = f.cmis:objectId "
-     * + "where in_tree(f, {0})";
-     */
+    private final static Log log = LogFactory.getLog(SectionFactoryWebscriptImpl.class);
 
     private long sectionsRefreshAfter;
 
@@ -83,6 +82,7 @@ public class SectionFactoryCmisImpl implements SectionFactory
     /** Dictionary service */
     private DictionaryService dictionaryService;
     private CollectionFactory collectionFactory;
+    private WebScriptCaller webscriptCaller;
 
     /**
      * Set the asset factory
@@ -111,6 +111,11 @@ public class SectionFactoryCmisImpl implements SectionFactory
         this.collectionFactory = collectionFactory;
     }
 
+    public void setWebscriptCaller(WebScriptCaller webscriptCaller)
+    {
+        this.webscriptCaller = webscriptCaller;
+    }
+
     /**
      * Create a Section from a QueryResult
      * 
@@ -118,26 +123,16 @@ public class SectionFactoryCmisImpl implements SectionFactory
      *            query result
      * @return Section section object
      */
-    protected SectionDetails buildSection(QueryResult result)
+    @SuppressWarnings("unchecked")
+    protected SectionDetails buildSection(TreeMap<String, Serializable> result)
     {
         SectionDetails sectionDetails = new SectionDetails();
 
         SectionImpl section = new SectionImpl();
 
-        Map<String, Serializable> properties = new TreeMap<String, Serializable>();
-        properties.put(PropertyIds.OBJECT_ID, (String) result.getPropertyValueById(PropertyIds.OBJECT_ID));
-        properties.put(PropertyIds.NAME, (String) result.getPropertyValueById(PropertyIds.NAME));
-        properties.put(Section.PROPERTY_TITLE, (String) result.getPropertyValueById(Section.PROPERTY_TITLE));
-        properties.put(Section.PROPERTY_DESCRIPTION, 
-                (String) result.getPropertyValueById(Section.PROPERTY_DESCRIPTION));
-        properties.put(Section.PROPERTY_EXCLUDE_FROM_NAV, 
-                (Boolean) result.getPropertyValueById(Section.PROPERTY_EXCLUDE_FROM_NAV));
+        section.setProperties(result);
 
-        List<String> configList = result.getPropertyMultivalueById(Section.PROPERTY_SECTION_CONFIG);
-        properties.put(Section.PROPERTY_SECTION_CONFIG, (Serializable) parseSectionConfig(configList));
-
-        section.setProperties(properties);
-        List<String> tagSummary = result.getPropertyMultivalueById(PROPERTY_TAG_SUMMARY);
+        List<String> tagSummary = (List<String>) result.get(PROPERTY_TAG_SUMMARY);
         section.setTags(createTags(tagSummary));
         section.setAssetFactory(assetFactory);
         section.setSectionFactory(this);
@@ -145,12 +140,12 @@ public class SectionFactoryCmisImpl implements SectionFactory
         section.setCollectionFactory(collectionFactory);
 
         sectionDetails.section = section;
-        sectionDetails.objectTypeId = (String) result.getPropertyValueById(PropertyIds.OBJECT_TYPE_ID);
+        sectionDetails.objectTypeId = (String) result.get("type");
 
         // Don't set parent of webroot as it is conceptually the top of the tree
-        if (!sectionDetails.objectTypeId.equals("F:ws:webroot"))
+        if (!sectionDetails.objectTypeId.equals("ws:webroot"))
         {
-            String parentId = (String) result.getPropertyValueById(PropertyIds.PARENT_ID);
+            String parentId = (String) result.get("ws:parentId");
             section.setPrimarySectionId(parentId);
             // TODO keep parent id in SectionDetails too as not accessible from
             // resource. Is this deliberate?
@@ -158,42 +153,6 @@ public class SectionFactoryCmisImpl implements SectionFactory
         }
 
         return sectionDetails;
-    }
-
-    /**
-     * Parses the section configuration from the name value pair string list
-     * into a map.
-     * 
-     * @param sectionConfigList
-     * @return Map<String, String> map of types and templates
-     */
-    private Map<String, String> parseSectionConfig(List<String> sectionConfigList)
-    {
-        Map<String, String> result = new TreeMap<String, String>();
-        for (String configValue : sectionConfigList)
-        {
-            String[] split = configValue.split("=");
-            if (split.length == 2)
-            {
-                String name = split[0];
-                String value = split[1];
-                result.put(name, value);
-                //We cater for either "cmis:document" or "cm:content" interchangeably...
-                if ("cmis:document".equals(name))
-                {
-                    result.put("cm:content", value);
-                }
-                else if ("cm:content".equals(name))
-                {
-                    result.put("cmis:document", value);
-                }
-            }
-            else
-            {
-                // TODO log
-            }
-        }
-        return result;
     }
 
     /**
@@ -221,7 +180,7 @@ public class SectionFactoryCmisImpl implements SectionFactory
                 {
                     tags.add(new TagImpl(nameCountPair[0], Integer.parseInt(nameCountPair[1])));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     log.warn("Ignoring invalid tag summary data: " + tag);
                 }
@@ -295,22 +254,22 @@ public class SectionFactoryCmisImpl implements SectionFactory
      */
     private Section findSectionWithChildren(String topSectionId)
     {
-        Session session = CmisSessionHelper.getSession();
-
-        // Fetch sections
-        String query = MessageFormat.format(QUERY_SECTION_WITH_CHILDREN, SqlUtils.encloseSQLString(topSectionId),
-                SqlUtils.encloseSQLString(topSectionId));
-        log.debug("About to run CMIS query: " + query);
-        ItemIterable<QueryResult> results = session.query(query, false);
+        List<WebscriptParam> params = localParamList.get();
+        params.add(new WebscriptParam("sectionId", topSectionId));
+        params.add(new WebscriptParam("includeChildren", "true"));
+        WebSite currentSite = WebSiteService.getThreadWebSite();
+        if (currentSite != null)
+        {
+            params.add(new WebscriptParam("siteId", currentSite.getId()));
+        }
+        AssetDeserializerXmlImpl deserializer = new AssetDeserializerXmlImpl();
+        webscriptCaller.post("websection", deserializer, params);
+        LinkedList<TreeMap<String, Serializable>> sectionList = deserializer.getAssets();
 
         List<SectionDetails> orderedList = new ArrayList<SectionDetails>();
-        for (QueryResult result : results)
+        for (TreeMap<String, Serializable> result : sectionList)
         {
             SectionDetails sectionDetails = buildSection(result);
-            if (!sectionDetails.objectTypeId.equals("F:ws:webroot")
-                    && !sectionDetails.objectTypeId.equals("F:ws:section"))
-                continue;
-
             orderedList.add(sectionDetails);
             sectionsById.put(sectionDetails.section.getId(), sectionDetails.section);
         }

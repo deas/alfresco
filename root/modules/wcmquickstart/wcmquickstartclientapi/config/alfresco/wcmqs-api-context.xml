@@ -48,11 +48,12 @@
    </bean>
 
    <!--  Section factory -->
-   <bean id="sectionFactory" class="org.alfresco.wcm.client.impl.SectionFactoryCmisImpl">
+   <bean id="sectionFactory" class="org.alfresco.wcm.client.impl.SectionFactoryWebscriptImpl">
       <property name="sectionsRefreshAfter" value="%{wcmqs.api.sectionCacheSeconds}" />
       <property name="assetFactory" ref="assetFactory" />
       <property name="dictionaryService" ref="dictionaryService" />
       <property name="collectionFactory" ref="collectionFactory" />
+      <property name="webscriptCaller" ref="webscriptCaller" />
    </bean>
    
    <!--  Collection factory -->
@@ -124,7 +125,6 @@
    <!-- Service for fetching site data. Implements a cache. -->
    <bean id="webSiteService" class="org.alfresco.wcm.client.impl.WebSiteServiceImpl">
       <property name="webSiteCacheRefreshAfter" value="%{wcmqs.api.websiteCacheSeconds}" />
-      <property name="urlUtils" ref="urlUtils" />
       <property name="sectionFactory" ref="sectionFactory" />
       <property name="assetFactory" ref="assetFactory" />
       <property name="webscriptCaller" ref="webscriptCaller" />

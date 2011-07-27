@@ -101,6 +101,7 @@
                <show id="cm:description" force="true" />
                <show id="ws:sectionConfig" />
                <show id="ws:renditionConfig" />
+               <show id="ws:redirectConfig" />
             </field-visibility>
             <appearance>
                <field id="cm:title">
@@ -110,6 +111,9 @@
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
                <field id="ws:renditionConfig">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl" />
+               </field>
+               <field id="ws:redirectConfig">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
             </appearance>
@@ -121,6 +125,7 @@
                <show id="cm:description" force="true" />
                <show id="ws:sectionConfig" />
                <show id="ws:renditionConfig" />
+               <show id="ws:redirectConfig" />
             </field-visibility>
             <edit-form template="../documentlibrary/forms/doclib-simple-metadata.ftl" />
             <appearance>
@@ -131,6 +136,9 @@
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
                <field id="ws:renditionConfig">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl" />
+               </field>
+               <field id="ws:redirectConfig">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
             </appearance>

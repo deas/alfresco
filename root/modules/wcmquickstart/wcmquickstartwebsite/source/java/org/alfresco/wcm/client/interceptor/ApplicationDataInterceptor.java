@@ -25,7 +25,7 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.alfresco.wcm.client.Asset;
+import org.alfresco.wcm.client.PathResolutionDetails;
 import org.alfresco.wcm.client.Section;
 import org.alfresco.wcm.client.WebSite;
 import org.alfresco.wcm.client.WebSiteService;
@@ -46,7 +46,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 public class ApplicationDataInterceptor extends HandlerInterceptorAdapter
 {
     private static final Log log = LogFactory.getLog(ApplicationDataInterceptor.class);
-    
+
     private WebSiteService webSiteService;
     private ModelDecorator modelDecorator;
     private Set<String> countryCodes = new TreeSet<String>();
@@ -72,14 +72,13 @@ public class ApplicationDataInterceptor extends HandlerInterceptorAdapter
         int serverPort = request.getServerPort();
         String contextPath = request.getContextPath();
         WebSite webSite = webSiteService.getWebSite(serverName, serverPort, contextPath);
-        
+
         if (webSite == null)
         {
-            log.warn("Received request for which no configured website can be found: " + 
-                    serverName + ":" + serverPort);
+            log.warn("Received request for which no configured website can be found: " + serverName + ":" + serverPort);
             throw new PageNotFoundException(serverName + ":" + serverPort);
         }
-            
+
         WebSiteService.setThreadWebSite(webSite);
         requestContext.setValue("webSite", webSite);
         requestContext.setValue("website", webSite);
@@ -87,32 +86,34 @@ public class ApplicationDataInterceptor extends HandlerInterceptorAdapter
         // Get the current asset and section and store them in the surf request
         // context
         String path = request.getPathInfo();
-        Asset asset = webSite.getAssetByPath(path);
-        requestContext.setValue("asset", asset);
-
-        Section section;
-        if (asset != null)
+        PathResolutionDetails resolvedPath = webSite.resolvePath(path);
+        
+        if (resolvedPath.isRedirect())
         {
-            section = asset.getContainingSection();
-        }
-        else
-        {
-            // If asset not found then try just the section
-            section = webSite.getSectionByPath(path);
-            if (section == null)
+            String location = resolvedPath.getRedirectLocation();
+            if (location.startsWith("/"))
             {
-                // Else store the root section for use by the 404 page.
-                section = webSite.getRootSection();
+                location = contextPath + location;
             }
+            response.sendRedirect(location);
+            return false;
+        }
+        
+        requestContext.setValue("asset", resolvedPath.getAsset());
+        Section section = resolvedPath.getSection();
+        if (section == null)
+        {
+            // If we haven't been able to resolve the section then use the root section 
+            section = webSite.getRootSection();
         }
         requestContext.setValue("section", section);
 
         setLocaleFromPath(requestContext, path);
-        
+
         return super.preHandle(request, response, handler);
     }
 
-    private void setLocaleFromPath(RequestContext requestContext, String path)
+    protected void setLocaleFromPath(RequestContext requestContext, String path)
     {
         WebSite webSite = (WebSite) requestContext.getValue("webSite");
         Section rootSection = webSite.getRootSection();
@@ -133,8 +134,9 @@ public class ApplicationDataInterceptor extends HandlerInterceptorAdapter
 
             if ((topLevelPath.length() == 2) && languageCodes.contains(topLevelPath))
             {
+                //We'll shift the root section down to be the "locale root"
+                rootSection = rootSection.getSection(topLevelPath);
                 // Looks like a locale based path, treat as such
-                rootSection = webSite.getSectionByPath("/" + topLevelPath + "/");
                 String language = topLevelPath;
                 Locale locale = null;
 
@@ -150,7 +152,7 @@ public class ApplicationDataInterceptor extends HandlerInterceptorAdapter
         }
         requestContext.setValue("rootSection", rootSection);
     }
-    
+
     /**
      * @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#postHandle(HttpServletRequest,
      *      HttpServletResponse, Object, ModelAndView)
