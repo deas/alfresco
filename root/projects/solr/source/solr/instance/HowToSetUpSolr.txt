@@ -1,5 +1,14 @@
 This directory contains a basic test SOLR install with one core configured to track a local Alfresco instance.
 
+The lib directory contents has to built or copied first.
+In the root directory (../../../../..) compile and copy the jars using:
+
+ant deploy-solr
+
+You will have to do this each time you update.
+
+
+
 Copy 
 
 solr-tomcat-context.xml 
