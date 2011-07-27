@@ -3,7 +3,7 @@
     <description>Web Quick Start</description>
     <detailedDescription>Include Alfresco Web Quick Start.</detailedDescription>
     <canBeEdited>1</canBeEdited>
-    <selected>1</selected>
+    <selected>0</selected>
     <show>1</show>
 
     <parameterList>

@@ -14,6 +14,7 @@
         <setInstallerVariable name="alfresco_licenses_directory" value="${build_project_directory}/alfresco/licenses" />
 	<setInstallerVariable name="alfresco_on_install_settings_directory" value="${build_project_directory}/bitrock" />
         <setInstallerVariable name="alfresco_commands_source_directory" value="${build_project_directory}/alfresco/bin" />
+        <setInstallerVariable name="alfresco_solr_source_directory" value="${build_project_directory}/solr" />
 
 
         <setInstallerVariable name="alfrescowcm_source_directory" value="${build_project_directory}/alfrescowcm" />

@@ -26,6 +26,7 @@
 
 
         <setInstallerVariable name="alfresco_commands_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/commands" />
+        <setInstallerVariable name="alfresco_solr_source_directory" value="${alfresco_svn_rootdir.unix}/projects/solr/source/solr/instance" />
         <setInstallerVariable name="alfresco_amps_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/amps" />
         <setInstallerVariable name="alfresco_sharepoint_source_file" value="${alfresco_amps_source_directory}/${alfresco_edition}-spp-${project.version}.amp" />
         <setInstallerVariable name="alfresco_sharepoint_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock/alfrescosharepoint" />

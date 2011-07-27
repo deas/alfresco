@@ -296,6 +296,21 @@
                 <distributionFile origin="${alfresco_commands_source_directory}/*" allowWildcards="1" />
             </distributionFileList>
         </folder>
+	<folder>
+	    <name>solr</name>
+	    <destination>${alfresco_data_directory}/solr</destination>
+	    <distributionFileList>
+                <distributionFile origin="${alfresco_solr_source_directory}/*" allowWildcards="1" />
+	    </distributionFileList>
+	    <actionList>
+	        <createDirectory path="${tomcat_server_directory}/conf/Catalina" />
+            <createDirectory path="${tomcat_server_directory}/conf/Catalina/localhost" />	    
+        <copyFile>
+            <origin>${alfresco_data_directory}/solr/solr-tomcat-context.xml</origin>
+            <destination>${tomcat_server_directory}/conf/Catalina/localhost/solr.xml</destination>
+        </copyFile>
+	    </actionList>
+	</folder>
     </folderList>
     <postInstallationActionList>
         <actionGroup>
@@ -321,6 +336,44 @@
                 </substitution>
             </substitutionList>
         </substitute>
+		<substitute>
+		    <files>${alfresco_data_directory}/solr/archive-SpacesStore/conf/solrcore.properties</files>
+		    <type>exact</type>
+		    <substitutionList>
+			<substitution>
+			    <pattern>@@ALFRESCO_SOLR_DIR@@</pattern>
+			    <value>${alfresco_data_directory}/solr</value>
+			</substitution>
+			<substitution>
+			    <pattern>localhost:8080</pattern>
+			    <value>localhost:${application_server_port}</value>
+			</substitution>
+		    </substitutionList>
+		</substitute>		
+		<substitute>
+		    <files>${alfresco_data_directory}/solr/workspace-SpacesStore/conf/solrcore.properties</files>
+		    <type>exact</type>
+		    <substitutionList>
+			<substitution>
+			    <pattern>@@ALFRESCO_SOLR_DIR@@</pattern>
+			    <value>${alfresco_data_directory}/solr</value>
+			</substitution>
+			<substitution>
+			    <pattern>localhost:8080</pattern>
+			    <value>localhost:${application_server_port}</value>
+			</substitution>
+		    </substitutionList>
+		</substitute>		
+		<substitute>
+		    <files>${tomcat_server_directory}/conf/Catalina/localhost/solr.xml</files>
+		    <type>exact</type>
+		    <substitutionList>
+			<substitution>
+			    <pattern>@@ALFRESCO_SOLR_DIR@@</pattern>
+			    <value>${alfresco_data_directory}/solr</value>
+			</substitution>
+		    </substitutionList>
+		</substitute>		
     </postInstallationActionList>
     <postUninstallationActionList> 
         <actionGroup>

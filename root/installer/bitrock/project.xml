@@ -2,11 +2,11 @@
     <vendor>Alfresco Software, Inc.</vendor>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <fullName>Alfresco Community Edition Stack</fullName>
+    <readmeFile>README.txt</readmeFile>
     <shortName>alfresco</shortName>
     <version>3.4.b-1</version>
     <installerFilename>${product_shortname}-community-withpostgresql-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
     <licenseFile></licenseFile>
-    <readmeFile>${alfresco_readme_file}</readmeFile>
     <wrapLicenseFileText>1</wrapLicenseFileText>
     <logoImage>images/alfresco_top_right.png</logoImage>
     <splashImage>images/splash.png</splashImage>
@@ -41,34 +41,34 @@
 
     <customLanguageFileList>
 	<language> 
-          <code>en</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-en.po</file>
+	    <code>en</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-en.po</file>
 	</language>
 	<language> 
-          <code>fr</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-fr.po</file>
+	    <code>fr</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-fr.po</file>
 	</language>
 	<language> 
-          <code>es</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-es.po</file>
+	    <code>es</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-es.po</file>
 	</language>
 	<language> 
-          <code>de</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-de.po</file>
+	    <code>de</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-de.po</file>
 	</language>
 	<language> 
-          <code>it</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-it.po</file>
+	    <code>it</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-it.po</file>
 	</language>
 	<language> 
-          <code>ja</code> 
-          <encoding>utf-8</encoding>
-	  <file>${build_project_directory}/lang/alf-ja.po</file>
+	    <code>ja</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-ja.po</file>
 	</language>
     </customLanguageFileList>
 
@@ -77,6 +77,7 @@
         <include file="alfresco-customstack-build-settings.xml" />
         <include file="alfresco-build-settings.xml" />
         <include file="alfresco-functions.xml" />
+        <include file="alfresco-license.xml" />
 
         <include file="alfresco-osx-building-on-windows-patch.xml" />
         <include file="alfresco-linux-x64-building-on-windows-patch.xml" />
@@ -92,6 +93,35 @@
 	<include file="alfresco-postgres-question.xml" />
 
 	<include file="common.xml" />
+	<component>
+	    <name>dummy</name>
+	    <selected>1</selected>
+	    <show>0</show>
+	    <canBeEdited>0</canBeEdited>
+	    <folderList>
+		<folder>
+		    <name>dummy</name>
+		    <destination>${installdir}</destination>
+		    <actionList>
+			<actionGroup>
+			    <actionList>
+				<unzip>
+				    <abortOnError>0</abortOnError>
+				    <showMessageOnError>0</showMessageOnError>
+				    <zipFile>${installdir}/common/share/terminfo.zip</zipFile>
+				    <destinationDirectory>${installdir}/common/share/</destinationDirectory>
+				</unzip>
+				<deleteFile path="${installdir}/common/share/terminfo.zip" />
+			    </actionList>
+			    <ruleList>
+				<platformTest type="unix" />
+				<fileTest path="${installdir}/common/share/terminfo.zip" condition="exists" />
+			    </ruleList>
+			</actionGroup>
+		    </actionList>
+		</folder>
+	    </folderList>
+	</component>
 	<include file="tomcat-java.xml" />
 	<include file="postgres.xml" />
 	<include file="postgres_initdb.xml"/>
@@ -109,17 +139,14 @@
 	<include file="java-properties.xml" />
 	<include file="postgres-properties.xml" />
 	<include file="tomcat-properties.xml" />
-
+	
     	<include file="alfrescodm.xml" />
         <include file="alfresco-apply-amps.xml" />
 
 	<include file="alfrescodm-postgres-database.xml" />
         <!-- AMP extensions -->
-        <include file="alfresco-sharepoint.xml" />
-        <include file="alfresco-records-management.xml" />
+	<include file="alfresco-sharepoint.xml" />
 	<include file="alfresco-wcmqs.xml" />
-	<include file="alfrescowcm.xml" />
-        <include file="alfresco-quickr.xml" />
 	<include file="base-unix-service.xml" />
 
 	<include file="openoffice.xml"/>
@@ -191,26 +218,21 @@
     </postInstallationActionList>
     
     <finalPageActionList>
-	<!--<actionGroup>
-	    <progressText>Launch ${product_fullname} now?</progressText>
+	<setInstallerVariable name="finalpage_start_servers" value="0" show="0" />
+	<setInstallerVariable name="finalpage_show_readme" value="0" show="0" />
+
+	<actionGroup progressText="Installer.ReadmeFile.View">
 	    <actionList>
-		<launchBrowser> 
-		    <url>http://${application_server_domain}:${application_server_port}/alfresco</url>
-		    <ruleList>
-			<compareText text="${installer_ui}" logic="equals" value="gui"/>
-		    </ruleList>
-		</launchBrowser>
+		<setInstallerVariable name="finalpage_show_readme" value="1" />
 	    </actionList>
-	    <ruleList>
-		<compareText text="${application_server_installation_type}" logic="equals" value="bundled" />
-		<compareText text="${installer_ui}" logic="equals" value="gui"/>
-	    </ruleList>
-	</actionGroup>-->
+	</actionGroup>
+
 	<actionGroup>
 	    <progressText>Launch ${product_fullname} Share</progressText>
 	    <actionList>
-		<showProgressDialog title="Starting servers ..." >
+		<actionGroup>
 		    <actionList>
+			<setInstallerVariable name="finalpage_start_servers" value="1" />
 			<runProgram>
 			    <progressText>Starting servers. Please be patient.</progressText>
 			    <program>${installdir}/${ctlscript_unix}</program>
@@ -219,18 +241,6 @@
 				<platformTest type="unix" />
 			    </ruleList>
 			</runProgram>
-			<actionGroup>
-                            <actionList>
-				<foreach values="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20" variables="iteration" progressText="Starting servers. Please be patient">
-                                    <actionList>
-                                        <wait ms="1000" />
-				    </actionList>
-				</foreach>
-			    </actionList>
-                            <ruleList>
-                                <platformTest type="unix" />
-			    </ruleList>
-			</actionGroup>
 			<runProgram>
 			    <progressText>Starting servers. Please be patient.</progressText>
 			    <program>${installdir}/servicerun.bat</program>
@@ -240,8 +250,57 @@
 			    </ruleList>
 			</runProgram>
 		    </actionList>
+		</actionGroup>
+	    </actionList>
+	</actionGroup>
+
+	<actionGroup show="0">
+	    <actionList>
+		<readFile path="${installdir}/README.txt" name="readmeFileText" />
+		<showText text="${readmeFileText}" title="README"/>
+	    </actionList>
+	    <ruleList>
+		<compareValues value1="${finalpage_show_readme}" logic="equals" value2="1" />
+	    </ruleList>
+	</actionGroup>
+
+	<actionGroup show="0">
+	    <actionList>
+		<showProgressDialog title="Starting servers ..." >
+		    <actionList>
+			<waitForPort port="${application_server_port}" timeout="10000" />
+			<findFile baseDirectory="${application_server_directory}/logs" variable="windowsTomcatLogFile" pattern="stderr_*" >
+			    <ruleList>
+				<platformTest type="windows" />
+			    </ruleList>
+			</findFile>
+			<logMessage text="Tomcat log file ${windowsTomcatLogFile}" />
+			<foreach values="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20" variables="iteration" progressText="Deploying Alfresco. Please be patient.">
+			    <actionList>
+				<actionGroup>
+				    <actionList>
+					<wait ms="10000" />
+					<logMessage text="Waiting for 'Server startup' in ${application_server_directory}/logs/catalina.out" />
+				    </actionList>
+				    <ruleList>
+					<platformTest type="unix" />
+					<fileContentTest path="${application_server_directory}/logs/catalina.out" text="Server startup" logic="does_not_contain" />
+				    </ruleList>
+				</actionGroup>
+				<actionGroup>
+				    <actionList>
+					<wait ms="20000" />
+					<logMessage text="Waiting for 'Server startup' in ${windowsTomcatLogFile}" />
+				    </actionList>
+				    <ruleList>
+					<platformTest type="windows" />
+					<fileContentTest path="${windowsTomcatLogFile}" text="Server startup" logic="does_not_contain" />
+				    </ruleList>
+				</actionGroup>
+			    </actionList>
+			</foreach>
+		    </actionList>
 		</showProgressDialog>
-		<waitForPort port="${application_server_port}" timeout="10000" />
 		<launchBrowser> 
 		    <url>http://${application_server_domain}:${application_server_port}/share</url>
 		    <ruleList>
@@ -250,12 +309,13 @@
 		</launchBrowser>
 	    </actionList>
 	    <ruleList>
+		<isTrue value="${finalpage_start_servers}" />
 		<compareText text="${application_server_installation_type}" logic="equals" value="bundled" />
 		<compareText text="${installer_ui}" logic="equals" value="gui"/>
                 <isTrue value="${component(postgres).selected}" />
-                <!--isTrue value="${alfrescopostgresquestion_bundled}" /-->
 	    </ruleList>
 	</actionGroup>
+		
 	<showInfo>
             <text>You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat.</text>
             <ruleList>
@@ -265,9 +325,9 @@
     </finalPageActionList>
     
     <installationAbortedActionList>
-        <deleteFile path="${installdir}/tomcat" >
+	<deleteFile path="${installdir}/tomcat" >
             <ruleList>
-                 <compareText text="${tomcat_execute_abort_action_list}" logic="equals" value="1" />
+                <compareText text="${tomcat_execute_abort_action_list}" logic="equals" value="1" />
             </ruleList>
         </deleteFile>
     </installationAbortedActionList>
@@ -298,12 +358,6 @@
 		    <program>${installdir}/postgresql/scripts/servicerun.bat</program>
 		    <programArguments>STOP</programArguments>
 		</runProgram>
-		<kill>
-            <name>soffice.bin</name>
-            <path>${openoffice_directory.dos.unix}\App\openoffice\program\</path>
-			<abortOnError>0</abortOnError>
-			<showMessageOnError>0</showMessageOnError>
-        </kill>
 		<runProgram>
 		    <progressText>Uninstalling services</progressText>
 		    <program>${installdir}/serviceinstall.bat</program>
@@ -375,8 +429,9 @@
         </actionGroup>
 
         <deleteFile path="${installdir}/tomcat" />
+        <deleteFile path="${installdir}/common/share/terminfo" />
         <deleteFile path="${installdir}/postgresql" />
-        <deleteFile path="${installdir}/properties.ini"/>
+        <deleteFile path="${installdir}/properties.ini" />
         <deleteFile path="${installdir}" >
             <ruleList>
                 <fileTest path="${installdir}" condition="is_empty"/>

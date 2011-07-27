@@ -61,7 +61,12 @@
 	    <origin>${application_server_directory}/webapps/*.war</origin>
 	    <destination>${alfrescoupdate_backup_directory}/webapps</destination>
 	</copyFile>
-	<deleteFile path="${application_server_directory}/webapps/*.war" />
+	<foreach values="share alfresco awe wcmqs" variables="expanded_war" >
+	    <actionList>
+		<deleteFile abortOnError="0" showMessageOnError="0" path="${application_server_directory}/webapps/${expanded_war}" />
+	    </actionList>
+	</foreach>
+	<deleteFile abortOnError="0" showMessageOnError="0" path="${application_server_directory}/webapps/*.war" />
 
 	<!-- Tomcat files -->
 	<copyFile abortOnError="0" showMessageOnError="0" origin="${application_server_directory}/lib" destination="${alfrescoupdate_backup_directory}" />
