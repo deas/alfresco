@@ -44,7 +44,27 @@
    font-size: 77%;
 }
 
-.about-share .padtop
+.about-share .contributions-bg
 {
-   padding-top: 70px;
+   background: url('../components/images/about-gradient.png') no-repeat scroll 0 0;
+   position: absolute;
+   height: 70px;
+   width: 345px;
+   z-index: 1;
+}
+
+.about-share .contributions-wrapper
+{
+   color: #333;
+   font-size: 85%;
+   height: 70px;
+   overflow: hidden;
+}
+
+.about-share .contributions
+{
+   margin-top: 40px;
+   display: none;
+   position: relative;
+   padding-left: 2px;
 }

@@ -51,6 +51,8 @@
 
    YAHOO.extend(Alfresco.module.AboutShare, Alfresco.component.Base,
    {
+      scrollpos: 0,
+      
       /**
        * Shows the About Share dialog to the user.
        *
@@ -100,7 +102,25 @@
          var panelDiv = Dom.getFirstChild(containerDiv);
          this.widgets.panel = Alfresco.util.createYUIPanel(panelDiv, { draggable: false });
          
-         // Show the panel
+         if (YAHOO.env.ua.ie === 0 || YAHOO.env.ua.ie > 7)
+         {
+            Dom.setStyle(this.id + "-contributions", "display", "block");
+            
+            // begin the contributions scroller
+            var me = this;
+            setInterval(function AS_scroller()
+            {
+               var div = Dom.get(me.id + "-contributions");
+               var pos = me.scrollpos++;
+               if (pos > div.clientHeight)
+               {
+                  pos = me.scrollpos = 0;
+               }
+               div.style.top = "-" + pos + "px";
+            },
+            80);
+         }
+         
          this.widgets.panel.show();
       }
    });
