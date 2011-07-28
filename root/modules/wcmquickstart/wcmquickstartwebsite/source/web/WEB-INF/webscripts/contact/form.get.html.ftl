@@ -6,7 +6,7 @@
     <form action="" method="post">
         <fieldset class="blog-comment-fieldset">
             <input type="hidden" name="feedbackType" value="Contact Request"/>          
-            <input type="hidden" name="successPage" value="${url.context}/contact/thankyou.html"/>
+            <input type="hidden" name="successPage" value="thankyou.html"/>
             <input type="hidden" name="formId" value="${formId}"/>                     
             <h3>${msg('comments.write.title')}</h3>
             <#if errors??>
