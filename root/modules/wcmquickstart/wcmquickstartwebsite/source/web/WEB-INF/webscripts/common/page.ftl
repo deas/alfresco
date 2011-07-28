@@ -15,7 +15,7 @@
         <div class="link-menu">
             <ul>                
                 <!--<li><a href="#">${msg('links.accessibility')}</a></li>-->
-                <li><a href="${url.context}/contact/contact.html">${msg('links.contact')}</a></li>
+                <li><a href="${url.context}${rootSection.path}contact/contact.html">${msg('links.contact')}</a></li>
             </ul>
         </div>
         <@region id="top-right" scope="template"/>  

@@ -21,8 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.wcm.client.Asset;
-import org.alfresco.wcm.client.AssetFactory;
-import org.alfresco.wcm.client.WebSite;
+import org.alfresco.wcm.client.Section;
 import org.alfresco.wcm.client.exception.PageNotFoundException;
 import org.alfresco.wcm.client.exception.RepositoryUnavailableException;
 import org.alfresco.wcm.client.interceptor.ModelDecorator;
@@ -53,7 +52,6 @@ public class RepositoryExceptionResolver extends SimpleMappingExceptionResolver
     /** The web framework service registry. */
     private WebFrameworkServiceRegistry webFrameworkServiceRegistry;
 
-    private AssetFactory assetFactory;
     private String errorPageSuffix;
     private ModelDecorator modelDecorator;
 
@@ -84,13 +82,14 @@ public class RepositoryExceptionResolver extends SimpleMappingExceptionResolver
         RequestContext requestContext = ThreadLocalRequestContext.getRequestContext();
         if (requestContext != null)
         {
-            WebSite webSite = (WebSite) requestContext.getValue("webSite");
-            if (webSite != null)
+            Section rootSection = (Section) requestContext.getValue("rootSection");
+            if (rootSection != null)
             {
                 // Determine the error page asset name and fetch it from the
                 // repository
                 String errorPage = statusCode + errorPageSuffix + ".html";
-                Asset errorAsset = assetFactory.getSectionAsset(webSite.getRootSection().getId(), errorPage, true);
+                
+                Asset errorAsset = rootSection.getAsset(errorPage); 
 
                 String template = null;
                 if (errorAsset != null)
@@ -167,11 +166,6 @@ public class RepositoryExceptionResolver extends SimpleMappingExceptionResolver
     public void setErrorPageSuffix(String errorPageSuffix)
     {
         this.errorPageSuffix = errorPageSuffix;
-    }
-
-    public void setAssetFactory(AssetFactory assetFactory)
-    {
-        this.assetFactory = assetFactory;
     }
 
     public void setModelDecorator(ModelDecorator modelDecorator)

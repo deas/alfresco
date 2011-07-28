@@ -120,7 +120,6 @@
 	<bean id="exceptionResolver" class="org.alfresco.wcm.client.exceptionresolver.RepositoryExceptionResolver">
         <property name="serviceRegistry" ref="webframework.service.registry"/>
         <property name="modelDecorator" ref="modelDecorator"/>
-        <property name="assetFactory" ref="assetFactory"/>
         <property name="errorPageSuffix" value="page"/>
         <property name="defaultErrorView" value="500page"/>
 	</bean>
