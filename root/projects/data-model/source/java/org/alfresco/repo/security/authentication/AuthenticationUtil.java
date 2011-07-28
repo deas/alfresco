@@ -160,6 +160,17 @@ public class AuthenticationUtil implements InitializingBean
     }
 
     /**
+     * Authenticate as the Admin user.  The Admin user will be authenticated and all operations
+     * with be run in the context of this Admin user.
+     * 
+     * @return the authentication token
+     */
+    public static Authentication setAdminUserAsFullyAuthenticatedUser()
+    {
+        return setFullyAuthenticatedUser(getAdminUserName());
+    }
+    
+    /**
      * Authenticate as the given user.  The user will be authenticated and all operations
      * with be run in the context of this user.
      * 
