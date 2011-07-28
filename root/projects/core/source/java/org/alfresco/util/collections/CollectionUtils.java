@@ -21,8 +21,12 @@ package org.alfresco.util.collections;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Nick Smith
@@ -164,4 +168,28 @@ public abstract class CollectionUtils
         }
         return null;
     }
+    
+    /**
+     * Returns an immutable Serializable Set containing the values.
+     * @param <T>
+     * @param values
+     * @return
+     */
+    public static <T> Set<T> unmodifiableSet(T... values)
+    {
+        return unmodifiableSet(Arrays.asList(values));
+    }
+    
+    /**
+     * Returns an immutable Serializable Set containing the values.
+     * @param <T>
+     * @param values
+     * @return
+     */
+    public static <T> Set<T> unmodifiableSet(Collection<T> values)
+    {
+        TreeSet<T> set = new TreeSet<T>(values);
+        return Collections.unmodifiableSet(set);
+    }
+    
 }
