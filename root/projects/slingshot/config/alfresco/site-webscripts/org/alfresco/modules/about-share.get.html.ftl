@@ -16,25 +16,25 @@
 Alfresco Contributors...
 <br/><br/>
 Will Abson<br/>
-Igor Blanco</br>
-Sylvain Chambon</br>
+Igor Blanco<br/>
+Sylvain Chambon<br/>
 Philippe Dubois<br/>
 Ray Gauss II<br/>
 Dave Gillen<br/>
-Romain Guinot</br>
+Romain Guinot<br/>
 Antti Jokipii<br/>
-Markus Konrad</br>
+Markus Konrad<br/>
 Michael Kriske<br/>
 Carina Lansing<br/>
-Sebastian Lorenz</br>
-Marlin Manowski</br>
+Sebastian Lorenz<br/>
+Marlin Manowski<br/>
 Jesper Steen M&oslash;ller<br/>
 Peter Monks<br/>
-Paolo Nacci</br>
+Paolo Nacci<br/>
 Guillaume Nodet<br/>
 Ian Norton<br/>
 Jan Pfitzner<br/>
-Noel Sharpe</br>
+Noel Sharpe<br/>
 Alfresco Engineering
 <br/><br/>
 Atol Conseils et D&eacute;veloppements<br/>
@@ -42,8 +42,8 @@ CEC<br/>
 DMC.de<br/>
 IP Tech<br/>
 Optaros<br/>
-Zia Consulting</br>
-Zaizi</br>
+Zia Consulting<br/>
+Zaizi<br/>
                </div>
             </div>
             <div class="copy">&copy; 2005-2011 Alfresco Software Inc. All rights reserved.</div>
