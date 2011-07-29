@@ -78,7 +78,7 @@ public class PseudoFileList {
    * 
    * @param fname String
    * @param caseSensitive boolean
-   * @return PseudoFile
+   * @return PseudoFile or null if it does not exist.
    */
   public final PseudoFile findFile(String fname, boolean caseSensitive) {
 

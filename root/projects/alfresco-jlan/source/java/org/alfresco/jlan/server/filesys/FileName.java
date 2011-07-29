@@ -373,7 +373,7 @@ public final class FileName {
    * Split the path into seperate directory path and file name strings.
    *
    * @param path  Full path string.
-   * @return String[]
+   * @return String[]  String[0] contains the folder String[1] contains the filename
    */
   public static String[] splitPath(String path) {
   	return splitPath(path, DOS_SEPERATOR, null);
@@ -384,7 +384,7 @@ public final class FileName {
 	 *
 	 * @param path  Full path string.
 	 * @param sep   Path seperator character.
-	 * @return String[]
+	 * @return String[] String[0] contains the folder String[1] contains the filename
 	 */
 	public static String[] splitPath(String path, char sep) {
 		return splitPath(path, sep, null);
@@ -396,7 +396,7 @@ public final class FileName {
    * @param path  Full path string.
    * @param sep   Path seperator character.
    * @param list	String list to return values in, or null to allocate
-   * @return String[]
+   * @return String[] 
    */
   public static String[] splitPath(String path, char sep, String[] list) {
 

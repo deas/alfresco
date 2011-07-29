@@ -172,7 +172,14 @@
     
   </target>
   
-  
+	<target name="run-jmeter-ftp-seq" description="Execrute JMeter test plan: FTP sequential">
+	      <antcall target="run-jmeter">
+	         <param name="testname" value="FTP-seq" />
+	         <param name="testdir" value="${basedir}/source/test-resources" />
+	         <param name="baseurl" value="${baseurl.ftp}"/>
+	      </antcall>
+	</target> 
+	
   <target name="run-jmeter-webdav-seq" description="Execute JMeter test plan: WebDAV sequential">
       <antcall target="run-jmeter">
          <param name="testname" value="WebDAV-seq" />
@@ -234,7 +241,11 @@
   <target name="build" description="Compile ...">
     <mkdir dir="${classes.path}" />
     
-    <javac destdir="${classes.path}" classpathref="classpath.ref" srcdir="${source.path}" />
+    <javac destdir="${classes.path}" 
+    	classpathref="classpath.ref" 
+    	srcdir="${source.path}" 
+        debug="true" />
+  	
   </target>
   
   <target name="deploy" depends="jar" description="Build JAR and deploy to JMeter lib/junit ...">

@@ -99,7 +99,10 @@ public abstract class SrvSession {
 	// Request post-processing hook
 	
 	private RequestPostProcessor m_reqPostProcessor;
-	
+
+	// Place for the driver to store state
+	private Object driverState;
+
 	/**
 	 * Class constructor
 	 * 
@@ -557,5 +560,34 @@ public abstract class SrvSession {
 		if ( m_tx == null)
 			return false;
 		return m_tx.get() != null ? true : false;
+	}
+	
+	/**
+	 * Are pseudo files enabled for this session?
+	 * @return
+	 */
+	public boolean isPseudoFilesEnabled()
+	{
+	    return false;
+	}
+	
+	/**
+	 * Get the Driver State.  A place for the content driver to
+	 * store state in the session.
+	 * @return the driver state.
+	 */
+	public Object getDriverState()
+	{
+	    return driverState;
+	}
+	
+	/**
+	 * Set the Driver State.   A place for the content driver to 
+	 * store state in the session.
+	 * @param driverState
+	 */
+	public void setDriverState(Object driverState)
+	{
+	    this.driverState = driverState;
 	}
 }

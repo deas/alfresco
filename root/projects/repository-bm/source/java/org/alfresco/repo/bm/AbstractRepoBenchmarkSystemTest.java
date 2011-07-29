@@ -57,6 +57,7 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
     
     protected String testUserUN = null;
     protected String testUserPW = null;
+    protected String testHostname = "localhost";
     
     protected String testBaseUrl = null;
     protected String testBaseFolderPath = null;
@@ -112,10 +113,17 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
             }
             else
             {
+
                 String val = propertiesMap.get("un");
                 if (val != null)
                 {
                     testUserUN = new String(val);
+                }
+                
+                val = propertiesMap.get("hostname");
+                if (val != null)
+                {
+                    testHostname = new String(val);
                 }
                 
                 val = propertiesMap.get("pwd");
@@ -378,18 +386,25 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
             String documentPath = getTestPath();
             
             InputStream is = getContent(documentPath);
-            
-            byte[] buffer = new byte[1024];
-            while (true)
+            try
             {
-                int count = is.read(buffer);
-                if (count < 0)
+                byte[] buffer = new byte[1024];
+                while (true)
                 {
-                    break;
+                    int count = is.read(buffer);
+                    if (count < 0)
+                    {
+                        break;
+                    }
                 }
             }
-            
-            is.close();
+            finally
+            {
+                if(is != null)
+                {
+                    is.close();
+                }
+            }
             
             if (logger.isDebugEnabled())
             {
@@ -445,7 +460,11 @@ public abstract class AbstractRepoBenchmarkSystemTest extends TestCase
      */
     protected String createDocument(String parentFolderUrl, String name, long len) throws Exception
     {
-        return createDocument(parentFolderUrl, name, getPhantomStream(len), len);
+        InputStream phantom = getPhantomStream(len);
+        
+        String path = createDocument(parentFolderUrl, name, phantom, len);
+        
+        return path;
     }
     
     

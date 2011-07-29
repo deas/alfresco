@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.transaction-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.web-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-net-2.2.jar" sourcepath="/3rd Party/src/commons-net-2.2-src.zip"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

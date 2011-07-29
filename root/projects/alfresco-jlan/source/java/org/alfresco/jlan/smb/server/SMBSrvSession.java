@@ -316,70 +316,76 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 */
 	protected final void cleanupSession() {
 
-		// Debug
+	    // Debug
+	    try
+	    {
 
-		if ( Debug.EnableInfo && hasDebug(DBG_STATE))
-			debugPrintln("Cleanup session, vcircuits=" + m_vcircuits.getCircuitCount() + ", changeNotify="
-					+ getNotifyChangeCount());
+	        if ( Debug.EnableInfo && hasDebug(DBG_STATE))
+	            debugPrintln("Cleanup session, vcircuits=" + m_vcircuits.getCircuitCount() + ", changeNotify="
+	                    + getNotifyChangeCount());
 
-		// Close the virtual circuits
+	        // Close the virtual circuits
 
-		if ( m_vcircuits.getCircuitCount() > 0) {
+	        if ( m_vcircuits.getCircuitCount() > 0) {
 
-			// Enumerate the virtual circuits and close all circuits
+	            // Enumerate the virtual circuits and close all circuits
 
-			Enumeration<Integer> uidEnum = m_vcircuits.enumerateUIDs();
+	            Enumeration<Integer> uidEnum = m_vcircuits.enumerateUIDs();
 
-			while (uidEnum.hasMoreElements()) {
+	            while (uidEnum.hasMoreElements()) {
 
-				// Get the UID for the current circuit
+	                // Get the UID for the current circuit
 
-				Integer uid = uidEnum.nextElement();
+	                Integer uid = uidEnum.nextElement();
 
-				// Close the virtual circuit
+	                // Close the virtual circuit
 
-				VirtualCircuit vc = m_vcircuits.findCircuit(uid);
-				if ( vc != null) {
+	                VirtualCircuit vc = m_vcircuits.findCircuit(uid);
+	                if ( vc != null) {
 
-					// DEBUG
+	                    // DEBUG
 
-					if ( Debug.EnableInfo && hasDebug(DBG_STATE))
-						debugPrintln("  Cleanup vc=" + vc);
+	                    if ( Debug.EnableInfo && hasDebug(DBG_STATE))
+	                        debugPrintln("  Cleanup vc=" + vc);
 
-					vc.closeCircuit(this);
-				}
-			}
+	                    vc.closeCircuit(this);
+	                }
+	            }
 
-			// Clear the virtual circuit list
+	            // Clear the virtual circuit list
 
-			m_vcircuits.clearCircuitList();
-		}
+	            m_vcircuits.clearCircuitList();
+	        }
 
-		// Check if there are active change notification requests
+	        // Check if there are active change notification requests
 
-		if ( m_notifyList != null && m_notifyList.numberOfRequests() > 0) {
+	        if ( m_notifyList != null && m_notifyList.numberOfRequests() > 0) {
 
-			// Remove the notify requests from the associated device context notify list
+	            // Remove the notify requests from the associated device context notify list
 
-			for (int i = 0; i < m_notifyList.numberOfRequests(); i++) {
+	            for (int i = 0; i < m_notifyList.numberOfRequests(); i++) {
 
-				// Get the current change notification request and remove from the global notify
-				// list
+	                // Get the current change notification request and remove from the global notify
+	                // list
 
-				NotifyRequest curReq = m_notifyList.getRequest(i);
-				if ( curReq.getDiskContext().hasChangeHandler())
-					curReq.getDiskContext().getChangeHandler().removeNotifyRequests(this);
-			}
-		}
+	                NotifyRequest curReq = m_notifyList.getRequest(i);
+	                if ( curReq.getDiskContext().hasChangeHandler())
+	                    curReq.getDiskContext().getChangeHandler().removeNotifyRequests(this);
+	            }
+	        }
 
-		// Delete any temporary shares that were created for this session
+	        // Delete any temporary shares that were created for this session
 
-		getSMBServer().deleteTemporaryShares(this);
-		
-		// Commit any outstanding transaction that may have been started during cleanup
-		
-		if ( hasTransaction())
-			endTransaction();
+	        getSMBServer().deleteTemporaryShares(this);
+
+	     
+	    } 
+	    finally 
+	    {
+	        // Commit any outstanding transaction that may have been started during cleanup
+	        if ( hasTransaction())
+	            endTransaction();
+	    }
 	}
 
 	/**
@@ -2074,4 +2080,13 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public boolean useCaseSensitiveSearch() {
 		return false;
 	}
+	
+	/**
+     * Are pseudo files enabled for this session?
+     * @return true
+     */
+    public boolean isPseudoFilesEnabled()
+    {
+        return true;
+    }
 }

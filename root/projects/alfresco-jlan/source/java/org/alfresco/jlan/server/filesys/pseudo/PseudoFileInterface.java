@@ -54,11 +54,13 @@ public interface PseudoFileInterface {
 
   /**
    * Add pseudo files to a folder so that they appear in a folder search
+   * <p>
+   * How to access the pseudo files is implementation specific.
    * 
    * @param sess SrvSession
    * @param tree TreeConnection
    * @param path String
-   * @return int
+   * @return int the number of pseudo files
    */
   public int addPseudoFilesToFolder(SrvSession sess, TreeConnection tree, String path);
 

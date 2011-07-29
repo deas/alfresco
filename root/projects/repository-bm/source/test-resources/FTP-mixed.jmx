@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="FTP - Test Plan - run with % throughput controllers and scheduled duration" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>true</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+          </value>
+        </objProp>
+        <stringProp name="filename">FTP Mixed SWIFT</stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>true</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="GraphVisualizer" testclass="ResultCollector" testname="Graph Results" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>true</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="USERNAME" elementType="Argument">
+            <stringProp name="Argument.name">USERNAME</stringProp>
+            <stringProp name="Argument.value">${__property(username,USERNAME,admin)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PASSWORD" elementType="Argument">
+            <stringProp name="Argument.name">PASSWORD</stringProp>
+            <stringProp name="Argument.value">${__property(password,PASSWORD,admin)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="HOSTNAME" elementType="Argument">
+            <stringProp name="Argument.name">HOSTNAME</stringProp>
+            <stringProp name="Argument.value">${__property(hostname,HOSTNAME,localhost)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="THREADS" elementType="Argument">
+            <stringProp name="Argument.name">THREADS</stringProp>
+            <stringProp name="Argument.value">${__property(threads,THREADS,10)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="LOOPCOUNT" elementType="Argument">
+            <stringProp name="Argument.name">LOOPCOUNT</stringProp>
+            <stringProp name="Argument.value">${__property(loopcount,LOOPCOUNT,500)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="DURATION" elementType="Argument">
+            <stringProp name="Argument.name">DURATION</stringProp>
+            <stringProp name="Argument.value">${__property(duration,DURATION,30)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FOLDER1" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FOLDER1</stringProp>
+            <stringProp name="Argument.value">/S-35d-600f-1Kb/folder-00000/folder-00000/folder-00000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_M1" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_M1</stringProp>
+            <stringProp name="Argument.value">/M-35d-600f-200Kb/folder-00000/folder-00000/folder-00000/file-00010.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_M2" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_M2</stringProp>
+            <stringProp name="Argument.value">/M-35d-600f-200Kb/folder-00000/folder-00000/folder-00001/file-00010.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_M3" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_M3</stringProp>
+            <stringProp name="Argument.value">/M-35d-600f-200Kb/folder-00000/folder-00000/folder-00002/file-00010.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_S1" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_S1</stringProp>
+            <stringProp name="Argument.value">/S-7d-30000f-1Kb/folder-00000/folder-00000/folder-00000/file-00000.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_S2" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_S2</stringProp>
+            <stringProp name="Argument.value">/S-7d-30000f-1Kb/folder-00000/folder-00000/folder-00000/file-09690.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_S3" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_S3</stringProp>
+            <stringProp name="Argument.value">/S-31d-60f-1Kb/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/file-00000.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_M4" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_M4</stringProp>
+            <stringProp name="Argument.value">/M-35d-600f-200Kb/folder-00000/folder-00000/folder-00004/file-00000.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_M5" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_M5</stringProp>
+            <stringProp name="Argument.value">/M-35d-600f-200Kb/folder-00000/folder-00000/folder-00004/file-00015.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_M6" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_M6</stringProp>
+            <stringProp name="Argument.value">/M-35d-600f-200Kb/folder-00000/folder-00000/folder-00005/file-00005.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_S4" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_S4</stringProp>
+            <stringProp name="Argument.value">/S-7d-30000f-1Kb/folder-00000/folder-00000/folder-00000/file-00100.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_S5" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_S5</stringProp>
+            <stringProp name="Argument.value">/S-7d-30000f-1Kb/folder-00000/folder-00000/folder-00002/file-00100.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FILE_S6" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FILE_S6</stringProp>
+            <stringProp name="Argument.value">/S-31d-60f-1Kb/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/folder-00000/file-00004.txt</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FOLDER2" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FOLDER2</stringProp>
+            <stringProp name="Argument.value">/S-35d-600f-1Kb/folder-00000/folder-00000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="BASEFOLDERPATH" elementType="Argument">
+            <stringProp name="Argument.name">BASEFOLDERPATH</stringProp>
+            <stringProp name="Argument.value">${__property(basefolderpath,BASEFOLDERPATH,/testdata)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH_FOLDER3" elementType="Argument">
+            <stringProp name="Argument.name">PATH_FOLDER3</stringProp>
+            <stringProp name="Argument.value">/S-31d-60f-1Kb/folder-00000/folder-00000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="mixed - Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1000</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${THREADS}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1295544280000</longProp>
+        <longProp name="ThreadGroup.end_time">1295544280000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
+        <stringProp name="ThreadGroup.delay">0</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="50% - getChildren - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>50.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="getchildren_small_folder1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER1}</stringProp>
+              <stringProp name="junitsampler.method">testGetChildren</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="getchildren_small_folder2 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER2}</stringProp>
+              <stringProp name="junitsampler.method">testGetChildren</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="getchildren_small_folder3 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER3}</stringProp>
+              <stringProp name="junitsampler.method">testGetChildren</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="10% - contentUpdate_small - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>10.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_small_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S1}</stringProp>
+              <stringProp name="junitsampler.method">testContentUpdate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_small_path2 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S2}</stringProp>
+              <stringProp name="junitsampler.method">testContentUpdate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_small_path3 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S3}</stringProp>
+              <stringProp name="junitsampler.method">testContentUpdate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="5% - contentUpdate_medium - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>5.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_medium_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M4}</stringProp>
+              <stringProp name="junitsampler.method">testContentUpdate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_medium_path2 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M5}</stringProp>
+              <stringProp name="junitsampler.method">testContentUpdate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentupdate_medium_path3 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M6}</stringProp>
+              <stringProp name="junitsampler.method">testContentUpdate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="10% - contentRead - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>10.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_small_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S4}</stringProp>
+              <stringProp name="junitsampler.method">testContentRead</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_small_path2 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S5}</stringProp>
+              <stringProp name="junitsampler.method">testContentRead</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_small_path3 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_S6}</stringProp>
+              <stringProp name="junitsampler.method">testContentRead</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="10% - contentRead_medium - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>10.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_medium_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M1}</stringProp>
+              <stringProp name="junitsampler.method">testContentRead</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_medium_path2 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M2}</stringProp>
+              <stringProp name="junitsampler.method">testContentRead</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="contentread_medium_path3 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FILE_M3}</stringProp>
+              <stringProp name="junitsampler.method">testContentRead</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="5% - documentCreate_small - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>5.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="documentcreate_small_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},len=1024,path=${PATH_FOLDER2}</stringProp>
+              <stringProp name="junitsampler.method">testDocumentCreate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="5% - documentCreate_medium - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>5.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="documentcreate_medium_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},len=204800,path=${PATH_FOLDER2}</stringProp>
+              <stringProp name="junitsampler.method">testDocumentCreate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="3% - folderCreate - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>4.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="foldercreate_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER3}</stringProp>
+              <stringProp name="junitsampler.method">testFolderCreate</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="1% - itemRename - Throughput Controller" enabled="true">
+          <intProp name="ThroughputController.style">1</intProp>
+          <boolProp name="ThroughputController.perThread">false</boolProp>
+          <intProp name="ThroughputController.maxThroughput">1</intProp>
+          <FloatProperty>
+            <name>ThroughputController.percentThroughput</name>
+            <value>1.0</value>
+            <savedValue>0.0</savedValue>
+          </FloatProperty>
+        </ThroughputController>
+        <hashTree>
+          <InterleaveControl guiclass="InterleaveControlGui" testclass="InterleaveControl" testname="Interleave Controller" enabled="true">
+            <intProp name="InterleaveControl.style">1</intProp>
+          </InterleaveControl>
+          <hashTree>
+            <JUnitSampler guiclass="JUnitTestSamplerGui" testclass="JUnitSampler" testname="itemrename_path1 - JUnit Request" enabled="true">
+              <stringProp name="junitSampler.classname">org.alfresco.repo.bm.ftp.RepoBenchmarkFTPSystemTest</stringProp>
+              <stringProp name="junitsampler.constructorstring">un=${USERNAME},pwd=${PASSWORD},hostname=${HOSTNAME},basefolderpath=${BASEFOLDERPATH},threadnum=${__threadNum},path=${PATH_FOLDER3}/{NEW_DOCUMENT_MKR}</stringProp>
+              <stringProp name="junitsampler.method">testItemRename</stringProp>
+              <stringProp name="junitsampler.pkg.filter"></stringProp>
+              <stringProp name="junitsampler.success">Test successful</stringProp>
+              <stringProp name="junitsampler.success.code">1000</stringProp>
+              <stringProp name="junitsampler.failure">Test failed</stringProp>
+              <stringProp name="junitsampler.failure.code">0001</stringProp>
+              <stringProp name="junitsampler.error">An unexpected error occured</stringProp>
+              <stringProp name="junitsampler.error.code">9999</stringProp>
+              <stringProp name="junitsampler.exec.setup">false</stringProp>
+              <stringProp name="junitsampler.append.error">false</stringProp>
+              <stringProp name="junitsampler.append.exception">false</stringProp>
+            </JUnitSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
