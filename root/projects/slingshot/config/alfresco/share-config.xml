@@ -215,6 +215,8 @@
          <workflow name="jbpm$wf:articleapproval"/>
          <workflow name="jbpm$inwf:invitation-nominated"/>
          <workflow name="jbpm$imwf:invitation-moderated"/>
+         <workflow name="activiti$activitiInvitationModerated"/>
+         <workflow name="activiti$activitiInvitationNominated"/>
       </hidden-workflows>
 
       <!-- A list of workflow tasks that are NOT displayed in Share  -->
