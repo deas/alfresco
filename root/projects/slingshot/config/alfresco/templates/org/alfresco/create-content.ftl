@@ -3,9 +3,9 @@
 
 <@templateBody>
    <div id="alf-hd">
-      <@region id=appType + "header" scope="global" />
-      <@region id=appType + doclibType + "title" scope="template" />
-      <@region id=appType + doclibType + "navigation" scope="template" />
+      <@region id="header" scope="global" />
+      <@region id="title" scope="template" />
+      <@region id="navigation" scope="template" />
    </div>
    <div id="bd">
       <div class="share-form">
