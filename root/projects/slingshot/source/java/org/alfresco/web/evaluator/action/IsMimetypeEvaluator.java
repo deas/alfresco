@@ -16,46 +16,54 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.alfresco.web.evaluator;
+package org.alfresco.web.evaluator.action;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
 /**
- * Check whether the node lives in a Site container of one of the listed types
+ * Check whether the node's mimetype is within a configured list
  *
  * @author: mikeh
  */
-public class ContainerTypeEvaluator extends BaseActionEvaluator
+public class IsMimetypeEvaluator extends BaseEvaluator
 {
-    private ArrayList<String> types;
+    private ArrayList<String> mimetypes;
 
     /**
-     * Define the list of types to check for
+     * Define the list of mimetypes for this evaluator
      *
-     * @param types
+     * @param mimetypes
      */
-    public void setTypes(ArrayList<String> types)
+    public void setMimetypes(ArrayList<String> mimetypes)
     {
-        this.types = types;
+        this.mimetypes = mimetypes;
     }
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        if (types.size() == 0)
+        if (mimetypes.size() == 0)
         {
             return false;
         }
-
         try
         {
-            if (!types.contains(getContainerType(jsonObject)))
+            JSONObject node = (JSONObject) jsonObject.get("node");
+            if (node == null)
             {
                 return false;
+            }
+            else
+            {
+                String mimetype = (String) node.get("mimetype");
+                if (mimetype == null || !this.mimetypes.contains(mimetype))
+                {
+                    return false;
+                }
             }
         }
         catch (Exception err)

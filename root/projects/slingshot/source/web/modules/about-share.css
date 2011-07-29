@@ -3,25 +3,27 @@
    display: none;
 }
 
-.about-share .logo-com
+.about-share .logo
 {
    width: 501px;
-   height: 247px;
-   background: url('images/about-bg.png') no-repeat scroll 0 0;
+   height: 249px;
+   background-position: 0 1px;
+   background-repeat: no-repeat;
+}
+
+.about-share .logo-com
+{
+   background-image: url('images/about-bg.png');
 }
 
 .about-share .logo-team
 {
-   width: 501px;
-   height: 247px;
-   background: url('images/about-bg-team.png') no-repeat scroll 0 0;
+   background-image: url('images/about-bg-team.png');
 }
 
 .about-share .logo-ent
 {
-   width: 501px;
-   height: 247px;
-   background: url('images/about-bg-enterprise.png') no-repeat scroll 0 0;
+   background-image: url('images/about-bg-enterprise.png');
 }
 
 .about-share .about
@@ -68,4 +70,44 @@
    display: none;
    position: relative;
    padding-left: 2px;
+}
+
+@-webkit-keyframes appear
+{
+     0% { -webkit-transform: rotateX(270deg); cursor: default; }
+    30% { -webkit-transform: rotateX(410deg); }
+    50% { -webkit-transform: rotateX(320deg); }
+    70% { -webkit-transform: rotateX(390deg); }
+    90% { -webkit-transform: rotateX(355deg); }
+   100% { -webkit-transform: rotateX(360deg); cursor: pointer; }
+}
+
+@-webkit-keyframes spindrop
+{
+     0% { -webkit-transform: rotateZ(0deg); cursor: default; }
+    30% { -webkit-transform: rotateZ(-60deg); }
+    60% { -webkit-transform: rotateZ(-30deg) translate3d(0px, 0px, 0px); opacity: 1; }
+   100% { -webkit-transform: rotateZ(-45deg) translate3d(-1500px, 1500px, 0px); opacity: 0; }
+}
+
+.about-share
+{
+   -webkit-box-shadow: 0 0 16px 4px #444;
+   -moz-box-shadow: 0 0 16px 4px #444;
+   box-shadow: 0 0 16px 4px #444;
+}
+
+.appear
+{
+   -webkit-animation: appear 1.5s ease-in-out;
+   -webkit-transform-origin: 50% top;
+}
+
+.spindrop
+{
+   display: block;
+   position: fixed;
+   -webkit-animation: spindrop 2s ease-in-out;
+   -webkit-transform-origin: right top;
+   -webkit-transition: -webkit-transform 1s ease-out;
 }

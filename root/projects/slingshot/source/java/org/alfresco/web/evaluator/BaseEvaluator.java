@@ -32,16 +32,26 @@ import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import java.util.HashMap;
 
 /**
- * Base class for all action evaluators.
+ * Base class for all UI evaluators.
  *
  * @author: mikeh
  */
-public abstract class BaseActionEvaluator implements ActionEvaluator
+public abstract class BaseEvaluator implements Evaluator
 {
-    private static Log logger = LogFactory.getLog(BaseActionEvaluator.class);
+    private static Log logger = LogFactory.getLog(BaseEvaluator.class);
 
     // optional args from the calling webscript
     private HashMap<String, String> args = null;
+
+    /**
+     * Simple getter for optional webscript args
+     *
+     * @return HashMap args map (may be null)
+     */
+    public final HashMap<String, String> getArgs()
+    {
+        return args;
+    }
 
     /**
      * Optional entry point from Rhino script. Converts JSON String to a JSONObject
@@ -78,15 +88,15 @@ public abstract class BaseActionEvaluator implements ActionEvaluator
         }
         catch (Exception err)
         {
-            throw new AlfrescoRuntimeException("Failed to run action evaluator: " + err.getMessage());
+            throw new AlfrescoRuntimeException("Failed to run UI evaluator: " + err.getMessage());
         }
         return evaluate(jsonObject);
     }
 
     /**
      * Evaluator implementations override this method.
-     * 
-     * @param jsonObject The object the action is for
+     *
+     * @param jsonObject The object the evaluation is for
      * @return boolean indicating evaluator result
      */
     public abstract boolean evaluate(JSONObject jsonObject);
@@ -112,20 +122,10 @@ public abstract class BaseActionEvaluator implements ActionEvaluator
         }
         catch (Exception err)
         {
-            throw new AlfrescoRuntimeException("Exception whilst running action evaluator: " + err.getMessage());
+            throw new AlfrescoRuntimeException("Exception whilst running UI evaluator: " + err.getMessage());
         }
 
         return aspects;
-    }
-
-    /**
-     * Simple getter for optional webscript args
-     *
-     * @return HashMap args map (may be null)
-     */
-    public final HashMap<String, String> getArgs()
-    {
-        return args;
     }
 
     /**
@@ -136,9 +136,9 @@ public abstract class BaseActionEvaluator implements ActionEvaluator
      */
     public final String getArg(String name)
     {
-        if (args != null && args.containsKey(name))
+        if (this.args != null && this.args.containsKey(name))
         {
-            return args.get(name);
+            return this.args.get(name);
         }
         return null;
     }
@@ -168,7 +168,7 @@ public abstract class BaseActionEvaluator implements ActionEvaluator
         }
         catch (Exception err)
         {
-            throw new AlfrescoRuntimeException("Exception whilst running action evaluator: " + err.getMessage());
+            throw new AlfrescoRuntimeException("Exception whilst running UI evaluator: " + err.getMessage());
         }
 
         return property;

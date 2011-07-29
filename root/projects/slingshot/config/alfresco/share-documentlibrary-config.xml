@@ -179,15 +179,10 @@
          Status Indicators
       -->
       <indicators>
-         <indicator id="simple-workflow">
-            <aspect>app:simpleworkflow</aspect>
-            <label>tip.simple-workflow</label>
-            <image>simple-workflow-indicator-16.png</image>
-         </indicator>
-         <indicator id="rulesw">
-            <aspect>rule:rules</aspect>
-            <label>tip.rules</label>
-            <image>rules-indicator-16.png</image>
+         <indicator id="editing">
+            <evaluator>slingshot.status.evaluator.editing</evaluator>
+            <label>tip.editing</label>
+            <image>editing-indicator-16.png</image>
          </indicator>
       </indicators>
    </config>
@@ -255,19 +250,19 @@
          <!-- Approve simple workflow -->
          <action id="document-approve" type="javascript" label="{node.properties['app:approveStep']}">
             <param name="function">onActionSimpleApprove</param>
-            <evaluator>slingshot.action.evaluator.simpleApproveEvaluator</evaluator> <!-- aspect check, property != null check, action name = property value -->
+            <evaluator>slingshot.action.evaluator.simpleApprove</evaluator> <!-- aspect check, property != null check, action name = property value -->
          </action>
 
          <!-- Reject simple workflow -->
          <action id="document-reject" type="javascript" label="{node.properties['app:rejectStep']}">
             <param name="function">onActionSimpleReject</param>
-            <evaluator>slingshot.action.evaluator.simpleRejectEvaluator</evaluator> <!-- aspect check, property != null check, action name = property value -->
+            <evaluator>slingshot.action.evaluator.simpleReject</evaluator> <!-- aspect check, property != null check, action name = property value -->
          </action>
 
          <!-- Locate with path view -->
          <action id="document-locate" type="javascript" label="actions.document.locate">
             <param name="function">onActionLocate</param>
-            <evaluator>slingshot.action.evaluator.locateActionEvaluator</evaluator>
+            <evaluator>slingshot.action.evaluator.locateAction</evaluator>
          </action>
 
          <!-- Upload new version -->
@@ -284,7 +279,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.inlineEditEvaluator</evaluator> <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
+            <evaluator>slingshot.action.evaluator.inlineEdit</evaluator> <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
          </action>
 
          <!-- Edit online -->
@@ -293,7 +288,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.onlineEditEvaluator</evaluator> <!-- vti module check, mimetype check -->
+            <evaluator>slingshot.action.evaluator.onlineEdit</evaluator> <!-- vti module check, mimetype check -->
             <condition type="javascript"><![CDATA[
                YAHOO.env.ua.ie !== 0
             ]]></condition>
@@ -305,13 +300,13 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspectEvaluator</evaluator>
+            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspect</evaluator>
          </action>
 
          <!-- Copy to -->
          <action id="document-copy-to" type="javascript" label="actions.document.copy-to">
             <param name="function">onActionCopyTo</param>
-            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspectEvaluator</evaluator>
+            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspect</evaluator>
          </action>
 
          <!-- Move to -->
@@ -320,7 +315,7 @@
             <permissions>
                <permission allow="true">Delete</permission>
             </permissions>
-            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspectEvaluator</evaluator>
+            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspect</evaluator>
          </action>
 
          <!-- Delete -->
@@ -342,7 +337,7 @@
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.siteBasedEvaluator</evaluator>
+            <evaluator>slingshot.action.evaluator.siteBased</evaluator>
          </action>
 
          <!-- Manage permissions (repository roles) -->
@@ -351,7 +346,7 @@
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
-            <evaluator negate="true">slingshot.action.evaluator.siteBasedEvaluator</evaluator>
+            <evaluator negate="true">slingshot.action.evaluator.siteBased</evaluator>
          </action>
 
          <!-- Manage aspects -->
@@ -365,13 +360,13 @@
          <!-- View original (of a Working Copy pair) -->
          <action id="document-view-original" type="pagelink" label="actions.document.view-original">
             <param name="page">document-details?nodeRef={workingCopy.sourceNodeRef}</param>
-            <evaluator>slingshot.action.evaluator.isWorkingCopyEvaluator</evaluator> <!-- cm:workingcopy aspect -->
+            <evaluator>slingshot.action.evaluator.isWorkingCopy</evaluator> <!-- cm:workingcopy aspect -->
          </action>
 
          <!-- View working copy (of a Working Copy pair) -->
          <action id="document-view-working-copy" type="pagelink" label="actions.document.view-working-copy">
             <param name="page">document-details?nodeRef={workingCopy.workingCopyNodeRef}</param>
-            <evaluator>slingshot.action.evaluator.hasWorkingCopyEvaluator</evaluator> <!-- cm:workingcopy aspect -->
+            <evaluator>slingshot.action.evaluator.hasWorkingCopy</evaluator> <!-- cm:workingcopy aspect -->
          </action>
 
          <!-- Cancel editing (cancel checkout) -->
@@ -380,7 +375,7 @@
             <permissions>
                <permission allow="true">CancelCheckOut</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.isWorkingCopyEvaluator</evaluator>
+            <evaluator>slingshot.action.evaluator.isWorkingCopy</evaluator>
          </action>
 
          <!-- Manage folder rules -->
@@ -406,27 +401,27 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.googleDocsEditableEvaluator</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleEditable -->
+            <evaluator>slingshot.action.evaluator.googleDocsEditable</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleEditable -->
          </action>
 
          <!-- Checkin from Google Docs -->
          <action id="document-checkin-from-googledocs" type="javascript" label="actions.document.checkin-google">
             <param name="function">onActionCheckinFromGoogleDocs</param>
-            <evaluator>slingshot.action.evaluator.googleDocsCheckInEvaluator</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource, cm:workingCopyOwner = currentUser -->
+            <evaluator>slingshot.action.evaluator.googleDocsCheckIn</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource, cm:workingCopyOwner = currentUser -->
          </action>
 
          <!-- View in Google Docs -->
          <action id="document-googledoc-view" type="link" icon="document-view-content" label="actions.document.view-google-doc">
             <param name="href">{workingCopy.googleDocUrl}</param>
             <param name="target">_blank</param>
-            <evaluator>slingshot.action.evaluator.googleDocsViewEvaluator</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource -->
+            <evaluator>slingshot.action.evaluator.googleDocsView</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource -->
          </action>
 
          <!-- Transferred node: View in source repository -->
          <action id="document-view-in-source-repository" type="link" label="actions.document.view-source-repository">
             <param name="href">{sourceRepositoryUrl}</param> <!-- calculated from siteId, item.location.repositoryId, replicationUrlMapping from share-config-custom.xml and node.type -->
             <param name="target">_blank</param>
-            <evaluator>slingshot.action.evaluator.transferredEvaluator</evaluator> <!-- aspect trx:transferred -->
+            <evaluator>slingshot.action.evaluator.transferred</evaluator> <!-- aspect trx:transferred -->
             <condition type="javascript"><![CDATA[
                !Alfresco.constants.PORTLET
             ]]></condition>
@@ -435,7 +430,7 @@
          <!-- Publish document -->
          <action id="document-publish" type="javascript" label="actions.document.publish">
             <param name="function">onActionPublish</param>
-            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspectEvaluator</evaluator>
+            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspect</evaluator>
          </action>
 
       </actions>

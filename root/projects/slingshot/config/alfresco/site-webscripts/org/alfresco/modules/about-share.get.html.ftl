@@ -2,7 +2,7 @@
 <#assign aboutConfig=config.scoped["Edition"]["about"]>
 <div id="${el}-dialog" class="about-share">
    <div class="bd">
-      <div id="${el}-logo" class="${aboutConfig.getChildValue("css-class")!logo-com}">
+      <div id="${el}-logo" class="${aboutConfig.getChildValue("css-class")!logo-com} logo">
          <div class="about">
             <#assign split=serverVersion?index_of(" ")>
             <div class="header">Alfresco ${serverEdition?html} v${serverVersion?substring(0, split)?html}</div>

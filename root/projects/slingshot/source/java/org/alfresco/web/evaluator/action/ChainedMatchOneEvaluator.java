@@ -17,31 +17,38 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.alfresco.web.evaluator;
+package org.alfresco.web.evaluator.action;
 
+import org.alfresco.web.evaluator.BaseEvaluator;
+import org.alfresco.web.evaluator.Evaluator;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.ListIterator;
+
 /**
- * Checks that a property value on a node is not null (and exists)
+ * Calls multiple evaluators in turn until either the last one is called
+ * or one of the evaluators returns true. Effectively becomes a logical
+ * OR of the participating evaluators.
  *
  * @author: mikeh
  */
-public class PropertyNotNullEvaluator extends BaseActionEvaluator
+public class ChainedMatchOneEvaluator extends BaseEvaluator
 {
-    private String property = null;
+    private ArrayList<Evaluator> evaluators = null;
 
     /**
-     * Property name
+     * Evaluators to participate in the evaluation chain
      *
-     * @param name
+     * @param evaluators
      */
-    public void setProperty(String name)
+    public void setEvaluators(ArrayList<Evaluator> evaluators)
     {
-        this.property = name;
+        this.evaluators = evaluators;
     }
 
     /**
-     * Checks that a property value exists and is not null
+     * Run through each given evaluator until we either get to the end or one returns false
      *
      * @param jsonObject The object the action is for
      * @return
@@ -49,12 +56,17 @@ public class PropertyNotNullEvaluator extends BaseActionEvaluator
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        boolean result = false;
+        boolean result = true;
 
-        if (this.property != null)
+        if (evaluators != null)
         {
-            JSONObject value = getProperty(jsonObject, this.property);
-            result = (value != null);
+            result = false;
+            ListIterator<Evaluator> evalIter = evaluators.listIterator();
+
+            while (!result && evalIter.hasNext())
+            {
+                result = evalIter.next().evaluate(jsonObject);
+            }
         }
 
         return result;

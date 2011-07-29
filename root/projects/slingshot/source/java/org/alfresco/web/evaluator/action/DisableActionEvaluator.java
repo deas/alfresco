@@ -16,51 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator;
 
+package org.alfresco.web.evaluator.action;
+
+import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 /**
+ * Convenience evaluator which always returns false
+ * 
  * @author: mikeh
  */
-public class ValueEvaluator extends BaseEvaluator
+public class DisableActionEvaluator extends BaseEvaluator
 {
-    private ValueComparator comparator = null;
-    private String accessor = null;
-
-    /**
-     * Comparator class
-     * 
-     * @param comparator
-     */
-    public void setComparator(ValueComparator comparator)
-    {
-        this.comparator = comparator;
-    }
-
-    /**
-     * Accessor for value to compare against in dot notation format, e.g. "node.properties.cm:name"
-     *
-     * @param accessor
-     */
-    public void setAccessor(String accessor)
-    {
-        this.accessor = accessor;
-    }
-
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        if (comparator == null || accessor == null)
-        {
-            return false;
-        }
-
-        Object nodeValue = getJSONValue(jsonObject, accessor);
-        if (nodeValue != null)
-        {
-            return this.comparator.compare(nodeValue);
-        }
         return false;
     }
 }

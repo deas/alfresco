@@ -17,9 +17,10 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.alfresco.web.evaluator;
+package org.alfresco.web.evaluator.action;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -32,7 +33,7 @@ import org.json.simple.JSONObject;
  *
  * @author: mikeh
  */
-public class GoogleDocsCheckInEvaluator extends BaseActionEvaluator
+public class GoogleDocsCheckInEvaluator extends BaseEvaluator
 {
     @Override
     public boolean evaluate(JSONObject jsonObject)

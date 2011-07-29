@@ -17,8 +17,9 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.alfresco.web.evaluator;
+package org.alfresco.web.evaluator.action;
 
+import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 /**
@@ -26,7 +27,7 @@ import org.json.simple.JSONObject;
  *
  * @author: mikeh
  */
-public class SiteBasedEvaluator extends BaseActionEvaluator
+public class SiteBasedEvaluator extends BaseEvaluator
 {
     @Override
     public boolean evaluate(JSONObject jsonObject)

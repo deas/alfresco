@@ -17,20 +17,47 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.alfresco.web.evaluator;
+package org.alfresco.web.evaluator.action;
 
+import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 /**
- * Convenience evaluator which always returns false
- * 
+ * Checks that a property value on a node is not null (and exists)
+ *
  * @author: mikeh
  */
-public class DisableActionEvaluator extends BaseActionEvaluator
+public class PropertyNotNullEvaluator extends BaseEvaluator
 {
+    private String property = null;
+
+    /**
+     * Property name
+     *
+     * @param name
+     */
+    public void setProperty(String name)
+    {
+        this.property = name;
+    }
+
+    /**
+     * Checks that a property value exists and is not null
+     *
+     * @param jsonObject The object the action is for
+     * @return
+     */
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        return false;
+        boolean result = false;
+
+        if (this.property != null)
+        {
+            JSONObject value = getProperty(jsonObject, this.property);
+            result = (value != null);
+        }
+
+        return result;
     }
 }

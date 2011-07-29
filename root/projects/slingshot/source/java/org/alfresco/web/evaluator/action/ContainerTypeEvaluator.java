@@ -17,43 +17,44 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.alfresco.web.evaluator;
+package org.alfresco.web.evaluator.action;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
 /**
- * Check whether the node lives in a Site of one of the listed presets
+ * Check whether the node lives in a Site container of one of the listed types
  *
  * @author: mikeh
  */
-public class SitePresetEvaluator extends BaseActionEvaluator
+public class ContainerTypeEvaluator extends BaseEvaluator
 {
-    private ArrayList<String> presets;
+    private ArrayList<String> types;
 
     /**
-     * Define the list of presets to check for
+     * Define the list of types to check for
      *
-     * @param presets
+     * @param types
      */
-    public void setPresets(ArrayList<String> presets)
+    public void setTypes(ArrayList<String> types)
     {
-        this.presets = presets;
+        this.types = types;
     }
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        if (presets.size() == 0)
+        if (types.size() == 0)
         {
             return false;
         }
 
         try
         {
-            if (!presets.contains(getSitePreset(jsonObject)))
+            if (!types.contains(getContainerType(jsonObject)))
             {
                 return false;
             }

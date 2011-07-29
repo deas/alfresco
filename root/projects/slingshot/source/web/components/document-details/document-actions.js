@@ -188,12 +188,14 @@
          // Populate convenience property
          this.recordData.jsNode = new Alfresco.util.Node(this.recordData.node);
 
-         var actionTypeMarkup =
-         {
-            "link": '<div class="{id}"><a title="{label}" class="simple-link" href="{href}" {target}><span>{label}</span></a></div>',
-            "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}"><span>{label}</span></a></div>',
-            "javascript": '<div class="{id}" title="{jsfunction}"><a title="{label}" class="action-link" href="#"><span>{label}</span></a></div>'
-         };
+         var urlContext = Alfresco.constants.URL_RESCONTEXT + "components/documentlibrary/actions/",
+            iconStyle = 'style="background-image:url(' + urlContext + '{icon}-16.png)" ',
+            actionTypeMarkup =
+            {
+               "link": '<div class="{id}"><a title="{label}" class="simple-link" href="{href}" ' + iconStyle + '{target}><span>{label}</span></a></div>',
+               "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}" ' + iconStyle + '><span>{label}</span></a></div>',
+               "javascript": '<div class="{id}" title="{jsfunction}"><a title="{label}" class="action-link" href="#"' + iconStyle + '><span>{label}</span></a></div>'
+            };
          
          var fnRenderAction = function DA_renderAction(p_action, p_record)
          {
@@ -203,6 +205,7 @@
             var markupParams =
             {
                "id": p_action.id,
+               "icon": p_action.icon,
                "label": me.msg(p_action.label)
             };
             

@@ -101,9 +101,33 @@
          // The panel is created from the HTML returned in the XHR request, not the container
          var panelDiv = Dom.getFirstChild(containerDiv);
          this.widgets.panel = Alfresco.util.createYUIPanel(panelDiv, { draggable: false });
-         
+
          if (YAHOO.env.ua.ie === 0 || YAHOO.env.ua.ie > 7)
          {
+            if (YAHOO.env.ua.webkit)
+            {
+               Dom.setStyle(document.body, "-webkit-perspective", "800");
+               this.widgets.panel.beforeShowEvent.subscribe(function()
+               {
+                  Dom.addClass(this.element, "appear");
+               });
+
+               this.widgets.panel.hide = function()
+               {
+                  var thisPanel = this;
+                  this.element.addEventListener("webkitAnimationEnd", function()
+                  {
+                     if (Dom.hasClass(this, "spindrop"))
+                     {
+                        thisPanel.cfg.setProperty("visible", false);
+                        Dom.removeClass(this, "appear");
+                        Dom.removeClass(this, "spindrop");
+                     }
+                  }, false);
+                  Dom.addClass(this.element, "spindrop");
+               }
+            }
+
             Dom.setStyle(this.id + "-contributions", "display", "block");
             
             // begin the contributions scroller

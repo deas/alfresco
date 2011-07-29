@@ -16,57 +16,47 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator;
+
+package org.alfresco.web.evaluator.action;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.json.simple.JSONArray;
+import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
 /**
- * Check for the presence of one or more aspects
+ * Check whether the node lives in a Site of one of the listed presets
  *
  * @author: mikeh
  */
-public class HasAspectEvaluator extends BaseActionEvaluator
+public class SitePresetEvaluator extends BaseEvaluator
 {
-    private ArrayList<String> aspects;
+    private ArrayList<String> presets;
 
     /**
-     * Define the list of aspects to check for
+     * Define the list of presets to check for
      *
-     * @param aspects
+     * @param presets
      */
-    public void setAspects(ArrayList<String> aspects)
+    public void setPresets(ArrayList<String> presets)
     {
-        this.aspects = aspects;
+        this.presets = presets;
     }
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        if (aspects.size() == 0)
+        if (presets.size() == 0)
         {
             return false;
         }
 
         try
         {
-            JSONArray nodeAspects = getNodeAspects(jsonObject);
-            if (nodeAspects == null)
+            if (!presets.contains(getSitePreset(jsonObject)))
             {
                 return false;
-            }
-            else
-            {
-                for (String aspect : aspects)
-                {
-                    if (!nodeAspects.contains(aspect))
-                    {
-                        return false;
-                    }
-                }
             }
         }
         catch (Exception err)

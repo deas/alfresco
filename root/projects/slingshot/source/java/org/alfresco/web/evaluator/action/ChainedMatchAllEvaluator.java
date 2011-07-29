@@ -17,8 +17,10 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.alfresco.web.evaluator;
+package org.alfresco.web.evaluator.action;
 
+import org.alfresco.web.evaluator.BaseEvaluator;
+import org.alfresco.web.evaluator.Evaluator;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -26,21 +28,21 @@ import java.util.ListIterator;
 
 /**
  * Calls multiple evaluators in turn until either the last one is called
- * or one of the evaluators returns true. Effectively becomes a logical
- * OR of the participating evaluators.
+ * or one of the evaluators returns false. Effectively becomes a logical
+ * AND of the participating evaluators.
  *
  * @author: mikeh
  */
-public class ChainedMatchOneEvaluator extends BaseActionEvaluator
+public class ChainedMatchAllEvaluator extends BaseEvaluator
 {
-    private ArrayList<ActionEvaluator> evaluators = null;
+    private ArrayList<Evaluator> evaluators = null;
 
     /**
      * Evaluators to participate in the evaluation chain
      *
      * @param evaluators
      */
-    public void setEvaluators(ArrayList<ActionEvaluator> evaluators)
+    public void setEvaluators(ArrayList<Evaluator> evaluators)
     {
         this.evaluators = evaluators;
     }
@@ -58,10 +60,9 @@ public class ChainedMatchOneEvaluator extends BaseActionEvaluator
 
         if (evaluators != null)
         {
-            result = false;
-            ListIterator<ActionEvaluator> evalIter = evaluators.listIterator();
+            ListIterator<Evaluator> evalIter = evaluators.listIterator();
 
-            while (!result && evalIter.hasNext())
+            while (result && evalIter.hasNext())
             {
                 result = evalIter.next().evaluate(jsonObject);
             }

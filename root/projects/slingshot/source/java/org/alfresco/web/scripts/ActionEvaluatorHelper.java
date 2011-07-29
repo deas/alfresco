@@ -18,7 +18,7 @@
  */
 package org.alfresco.web.scripts;
 
-import org.alfresco.web.evaluator.ActionEvaluator;
+import org.alfresco.web.evaluator.Evaluator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -49,23 +49,23 @@ public class ActionEvaluatorHelper extends BaseProcessorExtension implements App
      * Returns an evaluator given it's bean reference
      * 
      * @param evaluatorName     Bean reference of evaluator
-     * @return ActionEvaluator
+     * @return Evaluator
      */
-    public ActionEvaluator getEvaluator(String evaluatorName)
+    public Evaluator getEvaluator(String evaluatorName)
     {
         try
         {
-            ActionEvaluator evaluator = (ActionEvaluator) applicationContext.getBean(evaluatorName);
-            if (evaluator instanceof ActionEvaluator == false)
+            Evaluator evaluator = (Evaluator) applicationContext.getBean(evaluatorName);
+            if (evaluator instanceof Evaluator == false)
             {
-                logger.warn("Bean with id '" + evaluatorName + "' does not implement ActionEvaluator interface.");
+                logger.warn("Bean with id '" + evaluatorName + "' does not implement Evaluator interface.");
                 return null;
             }
             return evaluator;
         }
         catch (Exception e)
         {
-            logger.warn("ActionEvaluator '" + evaluatorName + "' not found.");
+            logger.warn("Evaluator '" + evaluatorName + "' not found.");
         }
         return null;
     }

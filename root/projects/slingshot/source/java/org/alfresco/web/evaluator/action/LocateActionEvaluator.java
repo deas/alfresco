@@ -16,29 +16,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator;
 
+package org.alfresco.web.evaluator.action;
+
+import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 /**
- * Contract supported by all classes that provide dynamic evaluation for a UI action.
- * <p>
- * Evaluators are supplied with a Node instance context object.
- * <p>
- * The evaluator should decide if the action precondition is valid based on the appropriate
- * logic and the properties etc. and return the result.
+ * Evaluator for the Locate document library action.
+ * The action is only valid when the current filter is not "path"
  *
  * @author: mikeh
  */
-public interface ActionEvaluator
+public class LocateActionEvaluator extends BaseEvaluator
 {
-    /**
-     * The evaluator should decide if the action precondition is valid based on the appropriate
-     * logic and the state etc. of the given object and return the result.
-     *
-     * @param jsonObject     The object the action is for
-     *
-     * @return result of whether the action can proceed.
-     */
-    public boolean evaluate(JSONObject jsonObject);
+    @Override
+    public boolean evaluate(JSONObject jsonObject)
+    {
+        String filter = getArg("filter");
+        if (filter instanceof String)
+        {
+            return !(filter.equalsIgnoreCase("path"));
+        }
+
+        return false;
+    }
 }

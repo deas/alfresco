@@ -16,52 +16,57 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator;
+package org.alfresco.web.evaluator.action;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.web.evaluator.BaseEvaluator;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
 /**
- * Check whether the node's mimetype is within a configured list
+ * Check for the presence of one or more aspects
  *
  * @author: mikeh
  */
-public class IsMimetypeEvaluator extends BaseActionEvaluator
+public class HasAspectEvaluator extends BaseEvaluator
 {
-    private ArrayList<String> mimetypes;
+    private ArrayList<String> aspects;
 
     /**
-     * Define the list of mimetypes for this evaluator
+     * Define the list of aspects to check for
      *
-     * @param mimetypes
+     * @param aspects
      */
-    public void setMimetypes(ArrayList<String> mimetypes)
+    public void setAspects(ArrayList<String> aspects)
     {
-        this.mimetypes = mimetypes;
+        this.aspects = aspects;
     }
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        if (mimetypes.size() == 0)
+        if (aspects.size() == 0)
         {
             return false;
         }
+
         try
         {
-            JSONObject node = (JSONObject) jsonObject.get("node");
-            if (node == null)
+            JSONArray nodeAspects = getNodeAspects(jsonObject);
+            if (nodeAspects == null)
             {
                 return false;
             }
             else
             {
-                String mimetype = (String) node.get("mimetype");
-                if (mimetype == null || !this.mimetypes.contains(mimetype))
+                for (String aspect : aspects)
                 {
-                    return false;
+                    if (!nodeAspects.contains(aspect))
+                    {
+                        return false;
+                    }
                 }
             }
         }

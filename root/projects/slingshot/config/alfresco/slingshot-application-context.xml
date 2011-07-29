@@ -215,32 +215,45 @@
    </bean>
 
    <!--                                    -->
+   <!-- Document Library Status Evaluators -->
+   <!--                                    -->
+   <bean id="slingshot.status.evaluator.editing" class="org.alfresco.web.evaluator.status.EditingStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.locked" class="org.alfresco.web.evaluator.status.LockedStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.lockOwner" class="org.alfresco.web.evaluator.status.LockOwnerStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.rules" class="org.alfresco.web.evaluator.status.RulesStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.simpleWorkflow" class="org.alfresco.web.evaluator.status.SimpleWorkflowStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.transferredNode" class="org.alfresco.web.evaluator.status.TransferredNodeStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.googleDocsOwner" class="org.alfresco.web.evaluator.status.GoogleDocsOwnerStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.googleDocsLocked" class="org.alfresco.web.evaluator.status.GoogleDocsLockedStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.activeWorkflow" class="org.alfresco.web.evaluator.status.ActiveWorkflowStatusEvaluator" />
+
+   <!--                                    -->
    <!-- Document Library Action Evaluators -->
    <!--                                    -->
 
    <!-- class definitions -->
-   <bean id="slingshot.action.evaluator.hasAspectEvaluator" class="org.alfresco.web.evaluator.HasAspectEvaluator" />
-   <bean id="slingshot.action.evaluator.isMimetypeEvaluator" class="org.alfresco.web.evaluator.IsMimetypeEvaluator" />
-   <bean id="slingshot.action.evaluator.propertyNotNullEvaluator" class="org.alfresco.web.evaluator.PropertyNotNullEvaluator" />
-   <bean id="slingshot.action.evaluator.chainedMatchAllEvaluator" class="org.alfresco.web.evaluator.ChainedMatchAllEvaluator" />
-   <bean id="slingshot.action.evaluator.chainedMatchOneEvaluator" class="org.alfresco.web.evaluator.ChainedMatchOneEvaluator" />
-   <bean id="slingshot.action.evaluator.disableAction" class="org.alfresco.web.evaluator.DisableActionEvaluator" />
-   <bean id="slingshot.action.evaluator.sitePresetEvaluator" class="org.alfresco.web.evaluator.SitePresetEvaluator" />
-   <bean id="slingshot.action.evaluator.siteBasedEvaluator" class="org.alfresco.web.evaluator.SiteBasedEvaluator" />
-   <bean id="slingshot.action.evaluator.containerTypeEvaluator" class="org.alfresco.web.evaluator.ContainerTypeEvaluator" />
-   <bean id="slingshot.action.evaluator.valueEvaluator" class="org.alfresco.web.evaluator.ValueEvaluator" />
+   <bean id="slingshot.action.evaluator.hasAspect" class="org.alfresco.web.evaluator.action.HasAspectEvaluator" />
+   <bean id="slingshot.action.evaluator.isMimetype" class="org.alfresco.web.evaluator.action.IsMimetypeEvaluator" />
+   <bean id="slingshot.action.evaluator.propertyNotNull" class="org.alfresco.web.evaluator.action.PropertyNotNullEvaluator" />
+   <bean id="slingshot.action.evaluator.chainedMatchAll" class="org.alfresco.web.evaluator.action.ChainedMatchAllEvaluator" />
+   <bean id="slingshot.action.evaluator.chainedMatchOne" class="org.alfresco.web.evaluator.action.ChainedMatchOneEvaluator" />
+   <bean id="slingshot.action.evaluator.disableAction" class="org.alfresco.web.evaluator.action.DisableActionEvaluator" />
+   <bean id="slingshot.action.evaluator.sitePreset" class="org.alfresco.web.evaluator.action.SitePresetEvaluator" />
+   <bean id="slingshot.action.evaluator.siteBased" class="org.alfresco.web.evaluator.action.SiteBasedEvaluator" />
+   <bean id="slingshot.action.evaluator.containerType" class="org.alfresco.web.evaluator.action.ContainerTypeEvaluator" />
+   <bean id="slingshot.action.evaluator.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
 
    <!-- action evaluators -->
 
    <!-- Inline Edit -->
-   <bean id="slingshot.action.evaluator.inlineEditAspectEvaluator" parent="slingshot.action.evaluator.hasAspectEvaluator">
+   <bean id="slingshot.action.evaluator.inlineEditAspect" parent="slingshot.action.evaluator.hasAspect">
       <property name="aspects">
          <list>
             <value>app:inlineeditable</value>
          </list>
       </property>
    </bean>
-   <bean id="slingshot.action.evaluator.inlineEditMimetypeEvaluator" parent="slingshot.action.evaluator.isMimetypeEvaluator">
+   <bean id="slingshot.action.evaluator.inlineEditMimetype" parent="slingshot.action.evaluator.isMimetype">
       <property name="mimetypes">
          <list>
             <value>text/plain</value>
@@ -249,17 +262,17 @@
          </list>
       </property>
    </bean>
-   <bean id="slingshot.action.evaluator.inlineEditEvaluator" parent="slingshot.action.evaluator.chainedMatchOneEvaluator">
+   <bean id="slingshot.action.evaluator.inlineEdit" parent="slingshot.action.evaluator.chainedMatchOne">
       <property name="evaluators">
          <list>
-            <ref bean="slingshot.action.evaluator.inlineEditAspectEvaluator" />
-            <ref bean="slingshot.action.evaluator.inlineEditMimetypeEvaluator" />
+            <ref bean="slingshot.action.evaluator.inlineEditAspect" />
+            <ref bean="slingshot.action.evaluator.inlineEditMimetype" />
          </list>
       </property>
    </bean>
 
    <!-- Edit Online -->
-   <bean id="slingshot.action.evaluator.onlineEditEvaluator" parent="slingshot.action.evaluator.isMimetypeEvaluator">
+   <bean id="slingshot.action.evaluator.onlineEdit" parent="slingshot.action.evaluator.isMimetype">
       <property name="mimetypes">
          <list>
             <value>application/vnd.ms-excel</value>
@@ -275,7 +288,7 @@
    <!--
       Simple Workflow
    -->
-   <bean id="slingshot.action.evaluator.simpleWorkflowAspectEval" parent="slingshot.action.evaluator.hasAspectEvaluator">
+   <bean id="slingshot.action.evaluator.simpleWorkflowAspect" parent="slingshot.action.evaluator.hasAspect">
       <property name="aspects">
          <list>
             <value>app:simpleworkflow</value>
@@ -283,28 +296,28 @@
       </property>
    </bean>
 
-   <bean id="slingshot.action.evaluator.simpleApprovePropertyEval" parent="slingshot.action.evaluator.propertyNotNullEvaluator">
+   <bean id="slingshot.action.evaluator.simpleApproveProperty" parent="slingshot.action.evaluator.propertyNotNull">
       <property name="property" value="app:approveStep"/>
    </bean>
 
-   <bean id="slingshot.action.evaluator.simpleRejectPropertyEval" parent="slingshot.action.evaluator.propertyNotNullEvaluator">
+   <bean id="slingshot.action.evaluator.simpleRejectProperty" parent="slingshot.action.evaluator.propertyNotNull">
       <property name="property" value="app:rejectStep"/>
    </bean>
 
-   <bean id="slingshot.action.evaluator.simpleApproveEvaluator" parent="slingshot.action.evaluator.chainedMatchAllEvaluator">
+   <bean id="slingshot.action.evaluator.simpleApprove" parent="slingshot.action.evaluator.chainedMatchAll">
       <property name="evaluators">
          <list>
-            <ref bean="slingshot.action.evaluator.simpleWorkflowAspectEval" />
-            <ref bean="slingshot.action.evaluator.simpleApprovePropertyEval" />
+            <ref bean="slingshot.action.evaluator.simpleWorkflowAspect" />
+            <ref bean="slingshot.action.evaluator.simpleApproveProperty" />
          </list>
       </property>
    </bean>
 
-   <bean id="slingshot.action.evaluator.simpleRejectEvaluator" parent="slingshot.action.evaluator.chainedMatchAllEvaluator">
+   <bean id="slingshot.action.evaluator.simpleReject" parent="slingshot.action.evaluator.chainedMatchAll">
       <property name="evaluators">
          <list>
-            <ref bean="slingshot.action.evaluator.simpleWorkflowAspectEval" />
-            <ref bean="slingshot.action.evaluator.simpleApprovePropertyEval" />
+            <ref bean="slingshot.action.evaluator.simpleWorkflowAspect" />
+            <ref bean="slingshot.action.evaluator.simpleApproveProperty" />
          </list>
       </property>
    </bean>
@@ -312,7 +325,7 @@
    <!--
       Working Copies
    -->
-   <bean id="slingshot.action.evaluator.isWorkingCopyEvaluator" parent="slingshot.action.evaluator.valueEvaluator">
+   <bean id="slingshot.action.evaluator.isWorkingCopy" parent="slingshot.action.evaluator.value">
       <property name="accessor" value="workingCopy.isWorkingCopy" />
       <property name="comparator">
          <bean class="org.alfresco.web.evaluator.EqualsComparator">
@@ -321,7 +334,7 @@
       </property>
    </bean>
 
-   <bean id="slingshot.action.evaluator.hasWorkingCopyEvaluator" parent="slingshot.action.evaluator.valueEvaluator">
+   <bean id="slingshot.action.evaluator.hasWorkingCopy" parent="slingshot.action.evaluator.value">
       <property name="accessor" value="workingCopy.hasWorkingCopy" />
       <property name="comparator">
          <bean class="org.alfresco.web.evaluator.EqualsComparator">
@@ -330,7 +343,7 @@
       </property>
    </bean>
 
-   <bean id="slingshot.action.evaluator.hasLockableAspectEvaluator" parent="slingshot.action.evaluator.hasAspectEvaluator">
+   <bean id="slingshot.action.evaluator.hasLockableAspect" parent="slingshot.action.evaluator.hasAspect">
       <property name="aspects">
          <list>
             <value>cm:lockable</value>
@@ -341,7 +354,7 @@
    <!--
       Google Docs
    -->
-   <bean id="slingshot.action.evaluator.googleDocsEditableEvaluator" parent="slingshot.action.evaluator.hasAspectEvaluator">
+   <bean id="slingshot.action.evaluator.googleDocsEditable" parent="slingshot.action.evaluator.hasAspect">
       <property name="aspects">
          <list>
             <value>gd:googleEditable</value>
@@ -349,7 +362,7 @@
       </property>
    </bean>
 
-   <bean id="slingshot.action.evaluator.googleDocsViewEvaluator" parent="slingshot.action.evaluator.hasAspectEvaluator">
+   <bean id="slingshot.action.evaluator.googleDocsView" parent="slingshot.action.evaluator.hasAspect">
       <property name="aspects">
          <list>
             <value>gd:googleResource</value>
@@ -357,12 +370,12 @@
       </property>
    </bean>
 
-   <bean id="slingshot.action.evaluator.googleDocsCheckInEvaluator" class="org.alfresco.web.evaluator.GoogleDocsCheckInEvaluator" />
+   <bean id="slingshot.action.evaluator.googleDocsCheckIn" class="org.alfresco.web.evaluator.action.GoogleDocsCheckInEvaluator" />
 
    <!--
       Transferred Nodes
    -->
-   <bean id="slingshot.action.evaluator.transferredEvaluator" parent="slingshot.action.evaluator.hasAspectEvaluator">
+   <bean id="slingshot.action.evaluator.transferred" parent="slingshot.action.evaluator.hasAspect">
       <property name="aspects">
          <list>
             <value>trx:transferred</value>
@@ -370,7 +383,7 @@
       </property>
    </bean>
 
-   <bean id="slingshot.action.evaluator.locateActionEvaluator" class="org.alfresco.web.evaluator.LocateActionEvaluator" />
+   <bean id="slingshot.action.evaluator.locateAction" class="org.alfresco.web.evaluator.action.LocateActionEvaluator" />
 
 
    <!-- 
