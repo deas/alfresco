@@ -475,7 +475,14 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
 
         if (tokenisationMode == IndexTokenisationMode.BOTH)
         {
-            textFieldName = textFieldName + "." + locale + FIELD_SORT_SUFFIX;
+            if (locale.toString().length() == 0)
+            {
+                textFieldName = textFieldName + FIELD_NO_LOCALE_SUFFIX;
+            }
+            else
+            {
+                textFieldName = textFieldName + "." + locale + FIELD_SORT_SUFFIX;
+            }
         }
 
         
@@ -748,6 +755,11 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
 
         if ((tokenisationMode == IndexTokenisationMode.BOTH) && ((analysisMode == AnalysisMode.IDENTIFIER) || (analysisMode == AnalysisMode.LIKE)))
         {
+            if ((null != locale) && (0 == locale.toString().length()))
+            {
+                textFieldName += FIELD_NO_LOCALE_SUFFIX;
+            }
+            else
             {
                 textFieldName = textFieldName + "." + locale + FIELD_SORT_SUFFIX;
             }
