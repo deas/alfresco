@@ -532,6 +532,13 @@
           </fileset>
           <pathelement location="${dir.project.webclient.dist}" />
       </path>
+
+      <property name="tempClasspathAsText" refid="temp.classpath.unit.test" />
+      <echo>temp.classpath.unit.test == ${tempClasspathAsText}</echo>
+
+      <property name="tempClasspathExtensionAsText" refid="temp.classpath.unit.test.extension" />
+      <echo>temp.classpath.unit.test.extension == ${tempClasspathExtensionAsText}</echo>
+      
       <sequential>
          <mkdir dir="${dir.project.system-build-test}/${dir.name.build}/${dir.name.test.results}" />
          <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="${dir.project.system-build-test}" jvm="${env.JAVA_HOME}/bin/java">

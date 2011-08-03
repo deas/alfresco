@@ -191,7 +191,6 @@
          <include name="**/RepositoryStartupTest.java" />
       </patternset>
       <patternset id="files.tests.intermittent">
-         <include name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
          <include name="**/org/alfresco/wcm/WCMTestSuite.java" />
          <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
          <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
@@ -204,7 +203,8 @@
          <exclude name="**/RepositoryStartupTest.java" />
          <exclude name="**/WCMTestSuite.java" />
          <exclude name="**/org/alfresco/repo/web/scripts/publishing/PublishingRestApiTest.java" />
-         <exclude name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
+
+         <include name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
 
          <!-- Exclude tests that require JodConverter/OpenOffice.org as these are hanging the build server -->
          <exclude name="**/*OOoTest.java" />
@@ -1037,6 +1037,7 @@
                     incremental, 
                     test-core,
                     test-datamodel, 
+                    test-system-build-test,
                     test-mbeans,
                     test-deployment, 
                     test-repository, 
@@ -1046,8 +1047,7 @@
                     test-webframeworkcommons, 
                     test-webclient, 
                     test-webserviceclient,
-                    test-dod5015,
-                    test-system-build-test" />
+                    test-dod5015" />
 
    <target name="run-junit-test" 
            description="Runs a single JUnit test. Usage run-test -Dtestcase=[test] -Dprojectdir=[dir] [-Dstoponerror=[yes|no]]"
