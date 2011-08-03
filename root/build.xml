@@ -191,17 +191,20 @@
          <include name="**/RepositoryStartupTest.java" />
       </patternset>
       <patternset id="files.tests.intermittent">
+         <include name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
          <include name="**/org/alfresco/wcm/WCMTestSuite.java" />
          <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
          <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
       </patternset>
       <patternset id="files.tests">
+         <exclude name="**/org/alfresco/enterprise/repo/admin/indexcheck/IndexCheckServiceImplTest.java" />
          <exclude name="**/Base*Test.java" />
          <exclude name="**/Abstract*Test.java" />
          <exclude name="**/*SystemTest.java" />
          <exclude name="**/RepositoryStartupTest.java" />
          <exclude name="**/WCMTestSuite.java" />
          <exclude name="**/org/alfresco/repo/web/scripts/publishing/PublishingRestApiTest.java" />
+         <exclude name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
 
          <!-- Exclude tests that require JodConverter/OpenOffice.org as these are hanging the build server -->
          <exclude name="**/*OOoTest.java" />
@@ -237,7 +240,6 @@
          <include name="**/org/alfresco/repo/workflow/WorkflowTestSuite.java" />
          <!-- WCM Tests -->
          <exclude name="**/org/alfresco/wcm/**/*Test.java" />
-         <include name="**/org/alfresco/wcm/WCMTestSuite.java" />
          <!-- Web Script Tests -->
          <exclude name="**/org/alfresco/repo/web/scripts/**/*Test.java" />
          <include name="**/org/alfresco/repo/web/scripts/WebScriptTestSuite.java" />
@@ -261,7 +263,6 @@
          <!-- embeds: RepoBenchmark*SystemTest -->
          <include name="**/org/alfresco/repo/bm/RepoBenchmarkSystemTestSuite.java" />
          <!-- embeds: SiteActivitySystemTest,WebServiceSuiteSystemTest, ... -->
-         <include name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
          <!-- All other tests -->
          <include name="**/*Test.java" />
       </patternset>
