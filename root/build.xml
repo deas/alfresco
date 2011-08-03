@@ -196,7 +196,6 @@
          <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
       </patternset>
       <patternset id="files.tests">
-         <exclude name="**/org/alfresco/enterprise/repo/admin/indexcheck/IndexCheckServiceImplTest.java" />
          <exclude name="**/Base*Test.java" />
          <exclude name="**/Abstract*Test.java" />
          <exclude name="**/*SystemTest.java" />
