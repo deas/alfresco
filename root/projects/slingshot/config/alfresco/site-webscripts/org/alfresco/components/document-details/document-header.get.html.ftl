@@ -98,7 +98,7 @@
             </#if>
             <#if showComments == "true">
             <span class="item item-separator item-social">
-               <a href="#" name="@commentNode" rel="${nodeRef?js_string}" class="theme-color-1 comment ${el}" title="${msg("comment.document.tip")}" tabindex="0">${msg("comment.document.label")}</a>
+               <a href="#" name="@commentNode" rel="${nodeRef?js_string}" class="theme-color-1 comment ${el}" title="${msg("comment.document.tip")}" tabindex="0">${msg("comment.document.label")}</a><#if commentCount??><span class="comment-count">${commentCount}</span></#if>
             </span>
             </#if>
          </div>

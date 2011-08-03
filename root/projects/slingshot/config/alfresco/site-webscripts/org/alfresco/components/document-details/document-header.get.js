@@ -44,6 +44,8 @@ function main()
       model.node = documentDetails.item.node;
       model.paths = getPaths(documentDetails, model.rootPage, model.rootLabelId);
       model.showComments = (documentDetails.item.node.permissions.user["CreateChildren"] && model.showComments).toString();
+      var count = documentDetails.item.node.properties["fm:commentCount"];
+      model.commentCount = (count != undefined ? count : null);
    }
 }
 

@@ -326,7 +326,12 @@
          url = actionUrls[node.isContainer ? "folderDetailsUrl" : "documentDetailsUrl"] + "#comment",
          i18n = "comment." + (node.isContainer ? "folder." : "document.");
 
-      return '<a href="' + url + '" class="comment" title="' + scope.msg(i18n + "tip") + '" tabindex="0">' + scope.msg(i18n + "label") + '</a>';
+      var html = '<a href="' + url + '" class="comment" title="' + scope.msg(i18n + "tip") + '" tabindex="0">' + scope.msg(i18n + "label") + '</a>';
+      if (record.jsNode.properties["fm:commentCount"] !== undefined)
+      {
+         html += '<span class="comment-count">' + $html(record.jsNode.properties["fm:commentCount"]) + '</span>';
+      }
+      return html;
    };
    
    /**

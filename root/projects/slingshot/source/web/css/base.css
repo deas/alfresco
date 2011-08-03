@@ -1196,6 +1196,14 @@ span.item-social.item-separator,
    background-image: url(../components/images/comment-16.png);
 }
 
+.item-social span.comment-count
+{
+   background-color: #eee;
+   font-size: 93%;
+   margin-left: 0.5em;
+   padding:1px 2px 0;
+}
+
 /* Lightbox */
 
 #lightbox
