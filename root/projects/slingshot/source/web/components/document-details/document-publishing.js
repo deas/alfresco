@@ -154,8 +154,9 @@
             statusType = this.msg("publishingHistory.status." + event.status),
             statusTime = Alfresco.util.relativeTime(event.scheduledTime.dateTime),
             statusDisplay = this.msg("publishingHistory.status.display", statusType, statusTime),
-            statusIcon = Alfresco.constants.URL_RESCONTEXT + "components/document-details/images/status-"+ event.status + ".gif",
-            html = "";
+            statusIcon = Alfresco.constants.URL_RESCONTEXT + "components/document-details/images/status-"+ event.status + ".png",
+            html = "",
+            eventType = "";
             
          // Find the right node in the array of nodes that were published
          for (var i=0; i < event.publishNodes.length; i++) {
@@ -163,7 +164,23 @@
             //see if this published node is the correct one
             if (node.nodeRef === this.options.nodeRef) {
                nodeName = node.name;
-               nodeLabel = node.label || "0.1";
+               nodeLabel = node.version;
+               eventType = this.msg("publishingHistory.event.published", channelName);
+            }
+         }
+         
+         // If we've not found a publish event, check unpublish ones too:
+         if (nodeName !== "") 
+         {   
+            // Loop through unpublish events too:
+            for (var i=0; i < event.unpublishNodes.length; i++) {
+               node = event.unpublishNodes[i];
+               //see if this node is the correct one
+               if (node.nodeRef === this.options.nodeRef) {
+                  nodeName = node.name;
+                  nodeLabel = node.version;
+                  eventType = this.msg("publishingHistory.event.unpublished", channelName);
+               }
             }
          }
          
@@ -182,7 +199,7 @@
             html += '   </span>';
             html += '   <div class="clear"></div>';
             html += '   <div class="channel-details">';
-            html += '      <img src="' + $html(channelIcon) + '" alt="' + $html(channelTitle) + '" title="' + $html(channelTitle) + '"/><span class="channel-name">' + channelName + '<span>';
+            html += '      <img src="' + $html(channelIcon) + '" alt="' + $html(eventType) + '" title="' + $html(eventType) + '"/><span class="channel-name">' + $html(eventType) + '<span>';
             html += '   </div>';
             html += '   <div class="status-details">';
             html += '      <img src="' + $html(statusIcon) + '" alt="' + $html(statusType) + '" title="' + $html(statusType) + '"/><span class="status">' + statusDisplay + '<span>';

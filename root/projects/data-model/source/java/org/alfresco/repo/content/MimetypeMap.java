@@ -75,6 +75,10 @@ public class MimetypeMap implements MimetypeService
     public static final String MIMETYPE_PPT = "application/vnd.ms-powerpoint";
     public static final String MIMETYPE_APP_DWG = "application/dwg";
     public static final String MIMETYPE_IMG_DWG = "image/vnd.dwg";
+    public static final String MIMETYPE_VIDEO_AVI = "video/x-msvideo";
+    public static final String MIMETYPE_VIDEO_QUICKTIME = "video/quicktime";
+    public static final String MIMETYPE_VIDEO_WMV = "video/x-ms-wmv";
+    public static final String MIMETYPE_VIDEO_3GP = "video/3gpp";
     
     // Flash
     public static final String MIMETYPE_FLASH = "application/x-shockwave-flash";
@@ -82,6 +86,7 @@ public class MimetypeMap implements MimetypeService
     public static final String MIMETYPE_APPLICATION_FLA = "application/x-fla";
 
     public static final String MIMETYPE_VIDEO_MPG = "video/mpeg";
+    public static final String MIMETYPE_VIDEO_MP4 = "video/mp4";
 
     public static final String MIMETYPE_IMAGE_GIF = "image/gif";
     public static final String MIMETYPE_IMAGE_JPEG = "image/jpeg";

@@ -33,7 +33,8 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-         Event = YAHOO.util.Event, 
+         Event = YAHOO.util.Event,
+         Selector = YAHOO.util.Selector,
          KeyListener = YAHOO.util.KeyListener;
    
    /**
@@ -102,14 +103,14 @@
       widgets: {},
       
       /**
-       * Property containing the maximum length a status update may be.
-       * This is dictated by the status update channel & where multiple channels are selected, this property will contain the lowest value.
+       * Property containing an object of the status update channels and their limit.
+       * used by this.checkUpdateLength()
        * 
-       * @property maxStatusUpdateLength
-       * @type interger
+       * @property updateLimits
+       * @type object
        * 
        */
-      maxStatusUpdateLength: null,
+      updateLimits: {},
       
       /**
        * Fired by YUILoaderHelper when required component script files have
@@ -126,6 +127,17 @@
          }
       },
 
+      /**
+       * Sets the update limits for later use in checkUpdateLength()
+       */
+      setUpdateLimits: function SP_setUpdateLimits(obj) 
+      {
+         this.updateLimits = obj;
+         
+         // allow chaining
+         return this
+      },
+      
       /**
        * Show can be called multiple times and will display the dialog
        * in different ways depending on the config parameter.
@@ -202,25 +214,45 @@
          // associate the panel with a nodeRef so we know when to refresh or redisplay it:
          this.widgets.panel.nodeRef = this.showConfig.nodeRef;
          
-         // Save a reference to the HTMLElement displaying texts so we can alter the text later
+         this.widgets.selectChannelButton = new YAHOO.widget.Button(this.id + "-channel-select-button",
+         {
+            type: "menu",
+            menu: this.id + "-publishChannel-menu",
+            lazyloadmenu: false
+         });
+         
+         this.widgets.selectStatusUpdateChannels = new YAHOO.widget.Button(this.id + "-statusSelect-button",
+         {
+            type: "menu",
+            menu: this.id + "-statusSelect-menu",
+            lazyloadmenu: false
+         });
+         
+         
+         // Save a reference to HTMLElements
          this.widgets.headerText = Dom.get(this.id + "-header-span");
          this.widgets.cancelButton = Alfresco.util.createYUIButton(this, "cancel-button", this.onCancelButtonClick);
          this.widgets.publishButton = Alfresco.util.createYUIButton(this, "publish-button", this.onPublishButtonClick);
          this.widgets.formContainer = Dom.get(this.id + "-publish-form");
-         
-         // add key listener to update the character count
          this.widgets.statusUpdateText = Dom.get(this.id + "-statusUpdate-text");
          this.widgets.statusUpdateCount = Dom.get(this.id + "-statusUpdate-count");
+         this.widgets.statusUpdateChannelCount = Dom.get(this.id + "-statusUpdate-channel-count");
+         this.widgets.statusUpdateCountURL = Dom.get(this.id + "-statusUpdate-count-urlMessage");
+         this.widgets.statusUpdateCheckboxes = Dom.getElementsByClassName("statusUpdate-checkboxes", "input", this.widgets.formContainer);
+         this.widgets.statusUpdateUrlCheckbox = Dom.get(this.id + "-statusUpdate-checkbox-url");
+         
+         // add key listener to update the character count
          Event.addListener(this.widgets.statusUpdateText, "keydown", this.onStatusUpdateKeypress, {}, this);
          Event.addListener(this.widgets.statusUpdateText, "keyup", this.onStatusUpdateKeypress, {}, this);
          
          // add listener for the status update check box.
-         this.widgets.statusUpdateCheckboxes = Dom.getElementsByClassName("statusUpdate-checkboxes", "input", this.widgets.formContainer);
          Event.addListener(this.widgets.statusUpdateCheckboxes, "click", this.onStatusCheckboxToggle, {}, this);
          
+         // add listener for selection of publish channel:
+         Event.addListener(Dom.get(this.id + "-publishChannel-menu"), "click", this.onSelectPublishChannel, {}, this);
+         
          // add listener for URL check box
-         this.widgets.statusUpdateURL = Dom.get(this.id + "-statusUpdate-checkbox-url");
-         Event.addListener(this.widgets.statusUpdateURL, "click", this.onStatusURLToggle, {}, this);
+         Event.addListener(this.widgets.statusUpdateUrlCheckbox, "click", this.onStatusURLToggle, {}, this);
          
          // Show panel
          this._showPanel();
@@ -251,10 +283,10 @@
       onPublishButtonClick: function SP_onPublishButtonClick()
       {
          // create the JSON object for the POST request.
-         var selectedChannel = Dom.get(this.id + "-channel-select")
-         var publishData = 
+         var selectedChannelId = this.widgets.selectChannelButton.get("value"),
+            publishData = 
             {
-               "channelId": selectedChannel.value,
+               "channelId": selectedChannelId,
                "publishNodes": [this.showConfig.nodeRef],
                "statusUpdate": {}
             },
@@ -278,7 +310,7 @@
                "channelIds": statusUpdateChannels
             }
             // If the URL is to be included, add the nodeRef to the statusUpdate obj
-            if (this.widgets.statusUpdateURL.checked) {
+            if (this.widgets.statusUpdateUrlCheckbox.checked) {
                publishData.statusUpdate.nodeRef = this.showConfig.nodeRef
             }
          };
@@ -289,7 +321,7 @@
             // Build up necessary data and HTML.
             // It looks more complicated than it actually is.
             var fileName = me.showConfig.filename, 
-               channelName = selectedChannel.options[selectedChannel.options.selectedIndex].innerHTML,
+               channelName = this.widgets.selectChannelButton.innerHTML,
                docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "/document-details?nodeRef=" + me.showConfig.nodeRef;
                linkText = Alfresco.util.message("socialPublish.confirm.link", me.name, 
                      {
@@ -349,6 +381,8 @@
        */
       onUnpublishButtonClick: function SP_onUnpublishButtonClick()
       {
+         // TODO...
+         
          // Confirmation dialogue
          
          // Submit the form to the unpublish API.
@@ -371,12 +405,30 @@
        * 
        * @method onStatusCheckboxToggle
        */
-      onStatusCheckboxToggle: function SP_onStatusCheckboxToggle()
+      onStatusCheckboxToggle: function SP_onStatusCheckboxToggle(event)
       {
+         // apply the selected class
+         Alfresco.util.toggleClass(Dom.getAncestorByClassName(Dom.get(event.target), "status-channel"), "selected");
+         this.checkUpdateLength();
          
-         // should the publish button be disabled?
-         console.log("onStatusCheckboxToggle");
+         var selectedChannelsCount = Selector.filter(this.widgets.statusUpdateCheckboxes, ":checked").length 
+         this.widgets.statusUpdateChannelCount.innerHTML = Alfresco.util.message("socialPublish.dialogue.statusUpdate.select.count", this.name,
+         {
+            "0": selectedChannelsCount,
+            "1": this.widgets.statusUpdateCheckboxes.length 
+         });
          
+         if (selectedChannelsCount > 0) {
+            // enable status update boxes:
+            this.widgets.statusUpdateText.removeAttribute("disabled")
+            this.widgets.statusUpdateUrlCheckbox.removeAttribute("disabled")
+         } 
+         else 
+         {
+            // disable status update boxes:
+            Dom.setAttribute(this.widgets.statusUpdateText, "disabled", "disabled");
+            Dom.setAttribute(this.widgets.statusUpdateUrlCheckbox, "disabled", "disabled");
+         }
       },
       
       /**
@@ -386,38 +438,27 @@
        */
       onStatusURLToggle: function SP_onStatusURLToggle() 
       {
-         // Read the URL length
-         var urlLength = parseInt(this.widgets.statusUpdateURL.rel, 10),
-            maxLength = this.maxStatusUpdateLength;
-         
-         // Check maxLength has been set
-         if (maxLength) {
-         
-            // Is the URL now included or excluded?
-            if (this.widgets.statusUpdateURL.checked) 
-            {
-               //it's just been added, so deduct it's length from the maxStatusUpdateLength
-               maxLength = maxLength - urlLength;
-               
-               // Ensure max length isn't negative!
-               if (maxLength < 0) {
-                  maxLength = 0;
-               }
-               
-            } 
-            else 
-            {
-               // The URL has just been removed, increase the allowed length of the message:
-               maxLength = maxLength + urlLength;
-            }
-         
-         }
-         
-         // rerun the checkUpdateLength script.
          this.checkUpdateLength();
-         
-         
-         console.log(this.maxStatusUpdateLength);
+      },
+      
+      /**
+       * Triggered when the user selects a channel from the drop down list of available publishing channels
+       * 
+       * @method onSelectPublishChannel
+       */
+      onSelectPublishChannel: function SP_onSelectPublishChannel(event, obj)
+      {
+         var el;
+         if (Selector.test(event.target, "a.publishChannel")) {
+            el = event.target
+         } 
+         else 
+         {
+            el = Dom.getAncestorByClassName(event.target, "publishChannel")
+         }
+         this.widgets.selectChannelButton.set("label", el.innerHTML);
+         this.widgets.selectChannelButton.set("value", el.rel);
+         event.preventDefault();
       },
       
       /**
@@ -425,22 +466,90 @@
        * 
        * @method checkUpdateLength
        */
-      checkUpdateLength: function checkUpdateLength() 
+      checkUpdateLength: function SP_checkUpdateLength() 
       {
-         var statusUpdate = this.widgets.statusUpdateText.value,
-            maxLength = this.maxStatusUpdateLength;
-      
-         // if a maximum length for the status update has been set, truncate the text to that length.
-         if (this.maxStatusUpdateLength) 
+         var limit = null,
+            count = 0,
+            charsRemaining = 0,
+            checkedUpdateChannels = Selector.filter(this.widgets.statusUpdateCheckboxes, ":checked");
+         // Check to see if there are any status update channels selected
+         if (checkedUpdateChannels.length > 0) 
          {
-            statusUpdate = statusUpdate.substring(0, this.maxStatusUpdateLength);
-         }
-         
-         // update UI message.
-         this.widgets.statusUpdateCount.innerHTML = Alfresco.util.message("socialPublish.dialogue.statusUpdate.used", this.name,
+            // get the minimum length of the selected channels. This is the number to count down from.
+            for (var i = 0; i < checkedUpdateChannels.length; i++) 
+            {
+               var channelLimit = parseInt(Dom.getAttribute(checkedUpdateChannels[i], "rel"), 10);
+               // Check channel limit is greater than zero (zero indicates unlimited) and the count has either not been 
+               // set previously or is set to a higher value (since we're looking for the lowest limit)
+               if (channelLimit > 0 && (channelLimit < limit || limit === null))
+               {
+                  limit = channelLimit
+               }
+            }
+            
+            // check that at least one of the selected channels set a char limit.
+            if (limit !== null) {
+                  
+               // should the URL length be deducted?
+               if (this.widgets.statusUpdateUrlCheckbox.checked) {
+                  // get URL length
+                  var urlLength = parseInt(Dom.getAttribute(this.widgets.statusUpdateUrlCheckbox, "rel"), 10)
+                  // deduct from count
+                  count = count + urlLength;
+                  // let the user know it's been deducted
+                  this.widgets.statusUpdateCountURL.innerHTML = Alfresco.util.message("socialPublish.dialogue.statusUpdate.urlChars", this.name,
+                  {
+                        "0": urlLength
+                  }); 
+               } 
+               else 
+               {
+                  // user doesn't need to know about it.
+                  this.widgets.statusUpdateCountURL.innerHTML = "";
+               }
+               
+               // deduct the current character count
+               count = count + this.widgets.statusUpdateText.value.length;
+               
+               // chars remaining
+               charsRemaining = limit - count;
+               
+               // display the characters remaining:
+               this.widgets.statusUpdateCount.innerHTML = Alfresco.util.message("socialPublish.dialogue.statusUpdate.charsRemaining", this.name,
+               {
+                     "0": charsRemaining
+               });
+               
+               if (charsRemaining < 0) {
+                  if (this.widgets.truncationNotification === null)
+                  {
+                     // TODO: build up list of truncation channels. Refresh balloon with updates to list of truncation channels.
+                     this.widgets.truncationNotification = Alfresco.util.createBalloon(this.widgets.statusUpdateText,
+                     {
+                        html: "Tuncation will occur!",
+                        width: "24em"
+                     });
+                  
+                     this.widgets.truncationNotification.show();
+                  }
+               } else {
+                  if (this.widgets.truncationNotification) {
+                     this.widgets.truncationNotification.hide();
+                  }
+                  this.widgets.truncationNotification = null;
+               }
+            } 
+            else 
+            {
+               // hide count if there's nothing selected.
+               this.widgets.statusUpdateCount.innerHTML = this.widgets.statusUpdateCountURL.innerHTML = "";  
+            }
+         } 
+         else 
          {
-               "0": "<strong>" + statusUpdate.length + "</strong>"
-         });
+            // hide count if there's nothing selected.
+            this.widgets.statusUpdateCount.innerHTML = this.widgets.statusUpdateCountURL.innerHTML = "";
+         }            
          
       },
       

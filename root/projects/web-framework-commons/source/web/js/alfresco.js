@@ -7898,3 +7898,22 @@ Alfresco.util.RENDERLOOPSIZE = 25;
       
    };
 })();
+
+/**
+ * Adds a class if it doesn't exist, and removes it if it does
+ * 
+ * @method Alfresco.util.toggleClass
+ * @param element {HTML Element} The element to change the class of.
+ * @param className {String} Name of the class to look for and remove.
+ */
+Alfresco.util.toggleClass = function(element, className)
+{
+   if (YUIDom.hasClass(element, className))
+   {
+      YUIDom.removeClass(element, className);
+   }
+   else 
+   {
+      YUIDom.addClass(element, className);
+   }
+};

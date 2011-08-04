@@ -26,7 +26,7 @@
                   <span class="first-child"><button>${msg("channelAdmin.button.new")}</button></span>
                </span>
             </div>
-				<div id="${el}-newChannel-menu" class="yuimenu menu-with-icons">
+				<div id="${el}-newChannel-menu" class="yuimenu menu-with-icons" style="visibility: hidden;">
 				   <div class="bd">
 				      <ul id="${el}-channelTypes" class="channelTypes">
 				         <#list channelTypes as channelType>

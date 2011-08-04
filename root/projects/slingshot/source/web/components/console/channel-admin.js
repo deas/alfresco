@@ -127,14 +127,15 @@
          // Call super-class onReady() method
          Alfresco.ConsoleChannels.superclass.onReady.call(this);
          
-         // add event listeners
+
          this.widgets.newChannelButton = new YAHOO.widget.Button(this.id + "-new-button",
 			{
 				type: "menu",
 				menu: this.id + "-newChannel-menu",
 				lazyloadmenu: false
 			}); 
-			
+
+         // add event listeners
 			Event.on(this.id + "-channelTypes", "click", this.onCreateChannel, this, true)
 			Event.on(this.id + "-datatable", 'click', this.onChannelInteraction, this, true);
          // Set up list of channels as data table for ease of updating.

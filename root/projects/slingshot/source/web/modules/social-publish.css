@@ -1,4 +1,8 @@
 /* Controls the look and feel of the Social Publishing Dialogue and Publish History view. */
+.social-publishing form {
+   width:750px;   
+}
+
 .social-publishing .formsection
 {
    padding:10px;
@@ -6,7 +10,20 @@
 
 div.statusUpdate-checkboxes
 {
-   padding-top:10px;
+   border: 1px solid #CACACA;
+   overflow: auto; 
+   clear:right;
+}
+
+div.statusSelect-button 
+{
+   float:right;
+   font-size:90%;
+}
+
+p.statusUpdate-info
+{
+   text-align:left;   
 }
 
 .social-publishing h3 {
@@ -15,22 +32,85 @@ div.statusUpdate-checkboxes
 
 div.status-channel
 {
-   margin:5px;   
+   height: 2.3em;
+   line-height: 2em;
+   margin-bottom: 1px;  
+   text-align:left;
+   background:transparent url('images/tick-off-16.png') no-repeat 5px 5px;
 }
 
-.social-publishing textarea {
-   width:20em;   
+div.status-channel.selected {
+   background-image:url('images/tick-on-16.png');
+   background-color:#DEE9F4;
+}
+
+div.status-channel input 
+{
+   display:none; 
+}
+
+div.status-channel label 
+{
+   display:block;
+   font-size:90%;
+   margin:0;
+   height:2em;
+   overflow:hidden;
+   padding:2px;
+}
+
+div.statusCheckboxes-count 
+{
+   margin-top:5px;
+   text-align:left;
+}
+
+div.status-channel label,
+div.includeURL-container,
+div.statusCheckboxes-count
+{
+   font-size:90%;
 }
 
 div.status-channel img 
 {
-   margin: -2px 4px;
+   margin: -6px 5px -6px 24px;
+   height:20px;
+   width:20px;
+}
+
+.social-publishing textarea 
+{
+   width:100%;   
+}
+
+div.statusUpdate-checkboxes,
+.social-publishing textarea 
+{
+   height:9em;
+   padding:0;
+}
+
+div.social-publishing.yui-panel div.yui-u.update-container {
+   width:68%;   
 }
 
 div.status-count {
-   float:right;    
    font-size:1.2em;
    margin:0.5em 1em;
+   text-align:center;
+}
+
+div.social-publishing.yui-panel div.yui-u.first.statusUpdate-message-container
+{
+   width:70%;
+   text-align:left;
+}
+
+div.social-publishing.yui-panel  div.yui-u.statusUpdate-count-container
+{
+   padding-top:4em;
+   width:25%;
    text-align:center;
 }
 
@@ -57,4 +137,35 @@ div.publishConfirm div.success img {
 div.publishConfirm a {
    display:block;
    color: #FFFFFF;
+}
+
+div.channel-select-button ul.channelTypes
+{
+   padding:0;  
+}
+
+ul.channelTypes .yuimenuitemlabel
+{
+   padding:0;  
+}
+
+a.publishChannel {
+   text-decoration:none;
+   display: block;
+   line-height: 22px;
+   padding:2px;
+}
+
+a.publishChannel img,
+.channel-select-button button img
+{
+   height: 20px;
+   margin: 0 1px -6px;
+   width: 20px;
+}
+
+div.channel-select-button button 
+{
+   outline:none;
+   padding:3px;
 }

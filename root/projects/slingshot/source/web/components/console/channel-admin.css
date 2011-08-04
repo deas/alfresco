@@ -74,6 +74,8 @@ a.newChannelAction {
 	text-decoration:none;
 	background-repeat:no-repeat;
 	padding-left:20px;
+	display: block;
+   line-height: 22px;
 }
 
 .newChannelAction span {

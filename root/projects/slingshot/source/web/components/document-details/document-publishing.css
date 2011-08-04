@@ -85,5 +85,12 @@
    clear: left;
    float: left;
    padding-right: 3px;
-	margin-top: -1px;
+	margin-top: -7px;
+}
+
+
+.document-publishing .status-details img
+{
+	padding-left:10px;
+	padding-top:2px;
 }
