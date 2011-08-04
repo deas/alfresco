@@ -47,7 +47,14 @@
    Alfresco.DocumentActions = function(htmlId)
    {
       Alfresco.DocumentActions.superclass.constructor.call(this, "Alfresco.DocumentActions", htmlId, ["button"]);
+      
+      // Initialise prototype properties
+      this.actionsView = "details";
+
+      // Decoupled event listeners
       YAHOO.Bubbling.on("filesPermissionsUpdated", this.doRefresh, this);
+      YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
+
       return this;
    };
 
@@ -773,6 +780,7 @@
       doRefresh: function DocumentActions_doRefresh()
       {
          YAHOO.Bubbling.unsubscribe("filesPermissionsUpdated", this.doRefresh);
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
          this.refresh('components/document-details/document-actions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' : ''));
       }
    }, true);

@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.alfresco.web.evaluator.action;
+package org.alfresco.web.evaluator.status;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.evaluator.BaseEvaluator;
@@ -25,27 +24,22 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * Checks for the following conditions before the "Check In from Google Docs" action is valid:
+ * "Being edited by you via Google Docs" status indicator evaluator.
+ *
+ * Checks the following conditions are met:
  * <pre>
  *     hasAspect("gd:googleResource")
  *     hasAspect("cm:workingcopy")
  *     property "cm:workingCopyOwner" == (currentUser)
- *      <b>-OR-</b>
- *     hasAspect("cm:checkedOut")
- *     workingCopy.googleDocUrl != null
- *     property "cm:lockOwner" == (currentUser)
  * </pre>
  *
  * @author: mikeh
  */
-public class GoogleDocsCheckInEvaluator extends BaseEvaluator
+public class GoogleDocsEditingEvaluator extends BaseEvaluator
 {
-    private static final String ASPECT_CHECKEDOUT = "cm:checkedOut";
     private static final String ASPECT_GOOGLERESOURCE = "gd:googleResource";
     private static final String ASPECT_WORKINGCOPY = "cm:workingcopy";
-    private static final String PROP_LOCKOWNER = "cm:lockOwner";
     private static final String PROP_WORKINGCOPYOWNER = "cm:workingCopyOwner";
-    private static final String VALUE_GOOGLEDOCURL = "workingCopy.googleDocUrl";
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
@@ -64,18 +58,12 @@ public class GoogleDocsCheckInEvaluator extends BaseEvaluator
                 {
                     return getMatchesCurrentUser(jsonObject, PROP_WORKINGCOPYOWNER);
                 }
-                else if (nodeAspects.contains(ASPECT_CHECKEDOUT) &&
-                        getJSONValue(jsonObject, VALUE_GOOGLEDOCURL) != null)
-                {
-                    return getMatchesCurrentUser(jsonObject, PROP_LOCKOWNER);
-                }
             }
         }
         catch (Exception err)
         {
-            throw new AlfrescoRuntimeException("JSONException whilst running action evaluator: " + err.getMessage());
+            throw new AlfrescoRuntimeException("Failed to run UI evaluator: " + err.getMessage());
         }
-
         return false;
     }
 }

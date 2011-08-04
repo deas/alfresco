@@ -48,7 +48,10 @@
    {
       Alfresco.FolderActions.superclass.constructor.call(this, "Alfresco.FolderActions", htmlId, ["button"]);
       
-      /* Decoupled event listeners */
+      // Initialise prototype properties
+      this.actionsView = "details";
+
+      // Decoupled event listeners
       YAHOO.Bubbling.on("filesPermissionsUpdated", this.doRefresh, this);
       
       return this;

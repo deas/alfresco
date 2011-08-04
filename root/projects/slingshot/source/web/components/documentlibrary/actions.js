@@ -39,6 +39,14 @@
    Alfresco.doclib.Actions.prototype =
    {
       /**
+       * Current actions view type: set by owning class to "browse" or "details".
+       *
+       * @property actionsView
+       * @type string
+       */
+      actionsView: null,
+
+      /**
        * The urls to be used when creating links in the action cell
        *
        * @method getActionUrls
@@ -140,7 +148,7 @@
                   // Reload the node's metadata
                   Alfresco.util.Ajax.request(
                   {
-                     url: $combine(Alfresco.constants.URL_SERVICECONTEXT, "components/documentlibrary/data/node/", jsNode.nodeRef.uri),
+                     url: $combine(Alfresco.constants.URL_SERVICECONTEXT, "components/documentlibrary/data/node/", jsNode.nodeRef.uri) + "?view=" + this.actionsView,
                      successCallback:
                      {
                         fn: function dlA_onActionDetails_refreshSuccess(response)

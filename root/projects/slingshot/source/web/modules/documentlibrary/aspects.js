@@ -593,7 +593,7 @@
              "application/vnd.ms-excel": true,
              "application/vnd.ms-powerpoint": true
           },
-            mimetype = this.options.file.mimetype;
+            mimetype = this.options.file.node.mimetype;
           
           if (!googleDocsAllowed.hasOwnProperty(mimetype))
           {

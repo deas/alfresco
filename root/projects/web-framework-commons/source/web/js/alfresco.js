@@ -5236,13 +5236,23 @@ Alfresco.constants = YAHOO.lang.merge(Alfresco.constants || {},
       /**
        * Populates the properties object literal with all "cm:" properties for easy access.
        * Therefore description can be accessed either as node.properties[Alfresco.constants.PROP_DESCRIPTION]
-       * or, more simply, as node.properties.description
+       * or, more simply, as node.properties.description.
+       *
+       * For properties outside the "cm:" namespace, the ":" character is replaced with an underscore.
+       * These can then be accessed as, for example, node.properties.gd_googleUrl
        */
       for (var index in properties)
       {
-         if (properties.hasOwnProperty(index) && index.indexOf("cm:") === 0)
+         if (properties.hasOwnProperty(index))
          {
-            properties[index.substring(3)] = properties[index];
+            if (index.indexOf("cm:") === 0)
+            {
+               properties[index.substring(3)] = properties[index];
+            }
+            else
+            {
+               properties[index.replace(/:/g, "_")] = properties[index];
+            }
          }
       };
 
@@ -5299,6 +5309,7 @@ Alfresco.constants = YAHOO.lang.merge(Alfresco.constants || {},
          type: node.type,
          isContainer: node.isContainer,
          isLink: node.isLink,
+         isLocked: node.isLocked,
          linkedNode: new Alfresco.util.Node(node.linkedNode),
          
          /* Content Nodes */

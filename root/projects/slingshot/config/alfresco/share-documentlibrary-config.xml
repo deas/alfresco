@@ -179,10 +179,47 @@
          Status Indicators
       -->
       <indicators>
-         <indicator id="editing">
+         <!-- Editing -->
+         <indicator id="editing" index="10">
             <evaluator>slingshot.status.evaluator.editing</evaluator>
-            <label>tip.editing</label>
-            <image>editing-indicator-16.png</image>
+         </indicator>
+         <indicator id="lock-owner" index="10">
+            <evaluator>slingshot.status.evaluator.lockOwner</evaluator>
+         </indicator>
+         <indicator id="locked" index="10">
+            <evaluator>slingshot.status.evaluator.locked</evaluator>
+            <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
+            <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
+         </indicator>
+         <!-- Google Docs Editing -->
+         <indicator id="google-docs-editing" index="10">
+            <evaluator>slingshot.status.evaluator.googleDocsEditing</evaluator>
+            <override>editing</override>
+         </indicator>
+         <indicator id="google-docs-owner" index="10">
+            <evaluator>slingshot.status.evaluator.googleDocsOwner</evaluator>
+            <override>lock-owner</override>
+         </indicator>
+         <indicator id="google-docs-locked" index="10">
+            <evaluator>slingshot.status.evaluator.googleDocsLocked</evaluator>
+            <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
+            <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
+            <override>locked</override>
+         </indicator>
+         <!-- Workflows -->
+         <indicator id="active-workflows" index="20">
+            <evaluator>slingshot.status.evaluator.activeWorkflows</evaluator>
+            <labelParam index="0">{activeWorkflows}</labelParam>
+         </indicator>
+         <indicator id="simple-workflow" index="30">
+            <evaluator>slingshot.status.evaluator.simpleWorkflow</evaluator>
+         </indicator>
+         <!-- Everything Else -->
+         <indicator id="rules" index="40">
+            <evaluator>slingshot.status.evaluator.rules</evaluator>
+         </indicator>
+         <indicator id="transferred-node" index="50">
+            <evaluator>slingshot.status.evaluator.transferredNode</evaluator>
          </indicator>
       </indicators>
    </config>
@@ -408,6 +445,7 @@
          <action id="document-checkin-from-googledocs" type="javascript" label="actions.document.checkin-google">
             <param name="function">onActionCheckinFromGoogleDocs</param>
             <evaluator>slingshot.action.evaluator.googleDocsCheckIn</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource, cm:workingCopyOwner = currentUser -->
+            <override>document-checkout-to-googledocs</override>
          </action>
 
          <!-- View in Google Docs -->
@@ -436,7 +474,7 @@
       </actions>
 
       <actionGroups>
-         <actionGroup id="empty"></actionGroup>
+         <actionGroup id="empty"/>
 
          <actionGroup id="document-browse">
             <action index="100" id="document-download" />

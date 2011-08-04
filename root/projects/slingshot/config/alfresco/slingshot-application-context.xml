@@ -217,15 +217,16 @@
    <!--                                    -->
    <!-- Document Library Status Evaluators -->
    <!--                                    -->
-   <bean id="slingshot.status.evaluator.editing" class="org.alfresco.web.evaluator.status.EditingStatusEvaluator" />
-   <bean id="slingshot.status.evaluator.locked" class="org.alfresco.web.evaluator.status.LockedStatusEvaluator" />
-   <bean id="slingshot.status.evaluator.lockOwner" class="org.alfresco.web.evaluator.status.LockOwnerStatusEvaluator" />
-   <bean id="slingshot.status.evaluator.rules" class="org.alfresco.web.evaluator.status.RulesStatusEvaluator" />
-   <bean id="slingshot.status.evaluator.simpleWorkflow" class="org.alfresco.web.evaluator.status.SimpleWorkflowStatusEvaluator" />
-   <bean id="slingshot.status.evaluator.transferredNode" class="org.alfresco.web.evaluator.status.TransferredNodeStatusEvaluator" />
-   <bean id="slingshot.status.evaluator.googleDocsOwner" class="org.alfresco.web.evaluator.status.GoogleDocsOwnerStatusEvaluator" />
-   <bean id="slingshot.status.evaluator.googleDocsLocked" class="org.alfresco.web.evaluator.status.GoogleDocsLockedStatusEvaluator" />
-   <bean id="slingshot.status.evaluator.activeWorkflow" class="org.alfresco.web.evaluator.status.ActiveWorkflowStatusEvaluator" />
+   <bean id="slingshot.status.evaluator.editing" class="org.alfresco.web.evaluator.status.EditingEvaluator" />
+   <bean id="slingshot.status.evaluator.lockOwner" class="org.alfresco.web.evaluator.status.LockOwnerEvaluator" />
+   <bean id="slingshot.status.evaluator.locked" class="org.alfresco.web.evaluator.status.LockedEvaluator" />
+   <bean id="slingshot.status.evaluator.googleDocsEditing" class="org.alfresco.web.evaluator.status.GoogleDocsEditingEvaluator" />
+   <bean id="slingshot.status.evaluator.googleDocsOwner" class="org.alfresco.web.evaluator.status.GoogleDocsOwnerEvaluator" />
+   <bean id="slingshot.status.evaluator.googleDocsLocked" class="org.alfresco.web.evaluator.status.GoogleDocsLockedEvaluator" />
+   <bean id="slingshot.status.evaluator.activeWorkflows" class="org.alfresco.web.evaluator.status.ActiveWorkflowsEvaluator" />
+   <bean id="slingshot.status.evaluator.simpleWorkflow" class="org.alfresco.web.evaluator.status.SimpleWorkflowEvaluator" />
+   <bean id="slingshot.status.evaluator.rules" class="org.alfresco.web.evaluator.status.RulesEvaluator" />
+   <bean id="slingshot.status.evaluator.transferredNode" class="org.alfresco.web.evaluator.status.TransferredNodeEvaluator" />
 
    <!--                                    -->
    <!-- Document Library Action Evaluators -->

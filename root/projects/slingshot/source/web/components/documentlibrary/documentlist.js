@@ -63,7 +63,9 @@
    {
       Alfresco.DocumentList.superclass.constructor.call(this, "Alfresco.DocumentList", htmlId, ["button", "menu", "container", "datasource", "datatable", "paginator", "json", "history"]);
 
-      // Initialise prototype properties
+      /*
+       * Initialise prototype properties
+       */
       this.currentPath = "";
       this.currentPage = 1;
       this.totalRecords = 0;
@@ -88,6 +90,7 @@
       this.dragAndDropAllowed = true;
       this.dragAndDropEnabled = false;
       this.dragEventRefCount = 0;
+      this.actionsView = "browse";
 
       /**
        * Decoupled event listeners
@@ -144,13 +147,11 @@
     */
    Alfresco.DocumentList.generateFilterMarkup = function DL_generateFilterMarkup(filter)
    {
-      var filterObj = Alfresco.util.cleanBubblingObject(filter),
-         markup = YAHOO.lang.substitute("{filterOwner}|{filterId}|{filterData}|{filterDisplay}", filterObj, function(p_key, p_value, p_meta)
-         {
-            return typeof p_value === "undefined" ? "" : window.escape(p_value);
-         });
-
-      return markup;
+      var filterObj = Alfresco.util.cleanBubblingObject(filter);
+      return YAHOO.lang.substitute("{filterOwner}|{filterId}|{filterData}|{filterDisplay}", filterObj, function(p_key, p_value, p_meta)
+      {
+         return typeof p_value === "undefined" ? "" : window.escape(p_value);
+      });
    };
 
    /**
@@ -327,9 +328,9 @@
          i18n = "comment." + (node.isContainer ? "folder." : "document.");
 
       var html = '<a href="' + url + '" class="comment" title="' + scope.msg(i18n + "tip") + '" tabindex="0">' + scope.msg(i18n + "label") + '</a>';
-      if (record.jsNode.properties["fm:commentCount"] !== undefined)
+      if (node.properties["fm:commentCount"] !== undefined)
       {
-         html += '<span class="comment-count">' + $html(record.jsNode.properties["fm:commentCount"]) + '</span>';
+         html += '<span class="comment-count">' + $html(node.properties["fm:commentCount"]) + '</span>';
       }
       return html;
    };
@@ -978,46 +979,24 @@
 
             var record = oRecord.getData(),
                node = record.jsNode,
-               dataStatus = record.status,
-               status,
-               tip = "",
-               desc = "";
+               indicators = record.indicators,
+               indicator, label, desc = "";
 
-            /**
-             * TODO: Refactor
-             */
-            /*
-            if (dataStatus && dataStatus.length > 0)
+            if (indicators && indicators.length > 0)
             {
-               var statuses = dataStatus.split(",").sort(),
-                  s, SPACE = " ", meta,
-                  i18n, i, ii;
-
-               for (i = 0, ii = statuses.length; i < ii; i++)
+               for (i = 0, ii = indicators.length; i < ii; i++)
                {
-                  status = statuses[i];
-                  meta = "";
-                  s = status.indexOf(SPACE);
-                  if (s > -1)
+                  indicator = indicators[i];
+                  // Note: deliberate bypass of scope.msg() function
+                  label = Alfresco.util.message(indicator.label, scope.name, indicator.labelParams);
+                  label = YAHOO.lang.substitute(label, record, function DL_renderCellStatus_label(p_key, p_value, p_meta)
                   {
-                     meta = status.substring(s + 1);
-                     status = status.substring(0, s);
-                  }
+                     return Alfresco.util.findValueByDotNotation(record, p_key);
+                  });
 
-                  i18n = "tip." + status;
-                  tip = Alfresco.util.message(i18n, scope.name, meta.split("|")); // Note: deliberate bypass of scope.msg() function
-                  desc += '<div class="status"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/' + status + '-indicator-16.png" title="' + tip + '" alt="' + status + '" /></div>';
+                  desc += '<div class="status"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon + '" title="' + label + '" alt="' + indicator.id + '" /></div>';
                }
             }
-
-            // In workflow status
-            status = record.activeWorkflows;
-            if (status && status !== "")
-            {
-               tip = scope.msg("tip.active-workflow", status.split(",").length);
-               desc += '<div class="status"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/workflow-indicator-16.png" title="' + tip + '" alt="' + tip + '" /></div>';
-            }
-            */
 
             elCell.innerHTML = desc;
          };
@@ -1170,7 +1149,7 @@
             // Locked / Working Copy handling
             if ($isValueSet(properties.lockOwner) || $isValueSet(properties.workingCopyOwner))
             {
-               var bannerUser = properties.lockOwner || properties.workingCopyOwner;
+               var bannerUser = properties.lockOwner || properties.workingCopyOwner,
                   bannerLink = Alfresco.DocumentList.generateUserLink(bannerUser);
 
                /* Google Docs Integration */
@@ -1288,7 +1267,7 @@
                }
             }
 
-            if (jsNode.hasPermission("Write"))
+            if (jsNode.hasPermission("Write") && !jsNode.isLocked)
             {
                var fnInsituCallback = function insitu_callback(response, record)
                {
@@ -1888,6 +1867,7 @@
             if (0 < YAHOO.env.ua.ie && YAHOO.env.ua.ie < 7)
             {
                var ie6fix = this.widgets.dataTable.getTableEl().parentNode;
+               //noinspection SillyAssignmentJS
                ie6fix.className = ie6fix.className;
             }
 
@@ -2858,11 +2838,7 @@
                {
                   event:
                   {
-                     name: "changeFilter",
-                     obj:
-                     {
-                        filterId: "editingMe"
-                     }
+                     name: "metadataRefresh"
                   },
                   callback:
                   {
@@ -3777,7 +3753,7 @@
          }
 
          // View mode and No-cache
-         params += "&view=browse&noCache=" + new Date().getTime();
+         params += "&view=" + this.actionsView + "&noCache=" + new Date().getTime();
 
          return params;
       },

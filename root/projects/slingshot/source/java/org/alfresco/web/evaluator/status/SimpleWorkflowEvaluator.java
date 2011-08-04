@@ -24,20 +24,18 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * "Being edited by you" status indicator evaluator.
+ * "Node is participating in a simple workflow" status indicator evaluator.
  *
  * Checks the following conditions are met:
  * <pre>
- *     hasAspect("cm:workingcopy")
- *     cm:workingCopyOwner == (currentUser)
+ *     hasAspect("app:simpleworkflow")
  * </pre>
  *
  * @author: mikeh
  */
-public class EditingStatusEvaluator extends BaseEvaluator
+public class SimpleWorkflowEvaluator extends BaseEvaluator
 {
-    private static final String ASPECT_WORKINGCOPY = "cm:workingcopy";
-    private static final String PROP_WORKINGCOPYOWNER = "cm:workingCopyOwner";
+    private static final String ASPECT_SIMPLEWORKFLOW = "app:simpleworkflow";
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
@@ -51,23 +49,15 @@ public class EditingStatusEvaluator extends BaseEvaluator
             }
             else
             {
-                if (!nodeAspects.contains(ASPECT_WORKINGCOPY))
+                if (nodeAspects.contains(ASPECT_SIMPLEWORKFLOW))
                 {
-                    return false;
-                }
-                JSONObject wcOwner = getProperty(jsonObject, PROP_WORKINGCOPYOWNER);
-                if (wcOwner != null)
-                {
-                    if (wcOwner.get("userName").toString().equalsIgnoreCase(getUserId()))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }
         catch (Exception err)
         {
-            throw new AlfrescoRuntimeException("Failed to run action evaluator: " + err.getMessage());
+            throw new AlfrescoRuntimeException("Failed to run UI evaluator: " + err.getMessage());
         }
         return false;
     }

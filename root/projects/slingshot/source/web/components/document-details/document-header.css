@@ -56,21 +56,26 @@
 
 .document-header .status-banner .editing
 {
-   background-image: url(../documentlibrary/images/editing-indicator-16.png);
+   background-image: url(../documentlibrary/indicators/editing-16.png);
 }
 .document-header .status-banner .lock-owner
 {
-   background-image: url(../documentlibrary/images/lock-owner-indicator-16.png);
+   background-image: url(../documentlibrary/indicators/lock-owner-16.png);
 }
 
 .document-header .status-banner .locked
 {
-   background-image: url(../documentlibrary/images/locked-indicator-16.png);
+   background-image: url(../documentlibrary/indicators/locked-16.png);
 }
 
-.document-header .status-banner .google-docs
+.document-header .status-banner .google-docs-owner
 {
-   background-image: url(../documentlibrary/images/google-docs-indicator-16.png);
+   background-image: url(../documentlibrary/indicators/google-docs-editing-16.png);
+}
+
+.document-header .status-banner .google-docs-locked
+{
+   background-image: url(../documentlibrary/indicators/google-docs-locked-16.png);
 }
 
 .document-header .document-thumbnail

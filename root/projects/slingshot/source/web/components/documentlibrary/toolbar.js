@@ -61,6 +61,7 @@
       this.currentFilter = {};
       this.dynamicControls = [];
       this.doclistMetadata = {};
+      this.actionsView = "browse";
 
       // Decoupled event listeners
       YAHOO.Bubbling.on("filterChanged", this.onFilterChanged, this);

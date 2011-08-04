@@ -1,3 +1,4 @@
+/*global args:true */
 /**
  * Customisable areas
  */
@@ -16,7 +17,7 @@ var DocList_Custom =
       // Default
       return (record.node.isContainer ? "folder-" : "document-") + (record.node.isLink ? "link-" : "") + (view == "details" ? "details" : "browse");
    }
-}
+};
 
 var this_DocList = this;
 
@@ -32,8 +33,15 @@ var DocList =
    {
       var p_view = (args.view || "details").toLowerCase(),
          allActions = DocList.getAllActions(), // <-- this can be cached until config is reset
-         item, node, actionGroupId, actions, actionTemplate, action, finalActions, i, index,
+         allIndicators = DocList.getAllIndicators(), // <-- this can also be cached
+         nodeActions, nodeIndicators,
+         item, node, actionGroupId, actions, actionTemplate, action, finalActions, indicatorTemplate, indicator, i, index,
          workingCopyLabel = doclist.metadata.workingCopyLabel;
+
+      var fnSortByIndex = function fnSortByIndex(item1, item2)
+      {
+         return (item1.index > item2.index) ? 1 : (item1.index < item2.index) ? -1 : 0;
+      };
 
       var fnProcessItem = function processItem(item)
       {
@@ -118,14 +126,49 @@ var DocList =
             nodeActions.push(action);
          }
 
-         var sortByActionIndex = function sortByActionIndex(action1, action2)
-         {
-            return (action1.index > action2.index) ? 1 : (action1.index < action2.index) ? -1 : 0;
-         }
+         // Filter overrides
+         DocList.filterOverrides(nodeActions);
 
          item.actionGroupId = actionGroupId;
-         item.actions = nodeActions.sort(sortByActionIndex);
-         
+         item.actions = nodeActions.sort(fnSortByIndex);
+
+         /**
+          * Status Indicators
+          */
+         nodeIndicators = [];
+         for each (indicatorTemplate in allIndicators)
+         {
+            indicator = DocList.merge(indicatorTemplate, {});
+
+            // Evaluator check
+            if (indicator.evaluators)
+            {
+               var evaluatorCheck = true, index, evaluator;
+               for (index in indicator.evaluators)
+               {
+                  evaluator = indicator.evaluators[index].evaluator;
+                  if (evaluator.evaluate(jsonUtils.toJSONString(item), args) == indicator.evaluators[index].result)
+                  {
+                     evaluatorCheck = false;
+                     break;
+                  }
+               }
+               if (!evaluatorCheck)
+               {
+                  continue;
+               }
+
+               delete indicator.evaluators;
+            }
+
+            nodeIndicators.push(indicator);
+         }
+
+         // Filter overrides
+         DocList.filterOverrides(nodeIndicators);
+
+         item.indicators = nodeIndicators.sort(fnSortByIndex);
+
          return item;
       };
 
@@ -150,7 +193,7 @@ var DocList =
    getGroupActions: function getGroupActions(groupId, allActions)
    {
       var scopedRoot = config.scoped["DocLibActions"]["actionGroups"],
-         groupConfigs, actionGroup, actionConfigs, actionConfig, actionId, actionLabel, action,
+         groupConfigs, actionGroup, actionConfigs, actionConfig, actionId, actionIndex, actionLabel, action,
          actions = {};
 
       try
@@ -193,9 +236,10 @@ var DocList =
                               DocList.fnAddIfNotNull(action, actionConfig.getAttribute("label"), "label");
 
                               DocList.fnAddIfNotNull(action, DocList.getActionParamConfig(actionConfig), "params");
-                              DocList.fnAddIfNotNull(action, DocList.getActionEvaluatorConfig(actionConfig), "evaluators");
+                              DocList.fnAddIfNotNull(action, DocList.getEvaluatorConfig(actionConfig), "evaluators");
                               DocList.fnAddIfNotNull(action, DocList.getActionConditionConfig(actionConfig), "conditions");
                               DocList.fnAddIfNotNull(action, DocList.getActionPermissionConfig(actionConfig), "permissions");
+                              DocList.fnAddIfNotNull(action, DocList.getOverrideConfig(actionConfig), "overrides");
 
                               actions[actionId] = action;
                            }
@@ -243,9 +287,10 @@ var DocList =
                   };
 
                   DocList.fnAddIfNotNull(action, DocList.getActionParamConfig(actionConfig), "params");
-                  DocList.fnAddIfNotNull(action, DocList.getActionEvaluatorConfig(actionConfig), "evaluators");
+                  DocList.fnAddIfNotNull(action, DocList.getEvaluatorConfig(actionConfig), "evaluators");
                   DocList.fnAddIfNotNull(action, DocList.getActionConditionConfig(actionConfig), "conditions");
                   DocList.fnAddIfNotNull(action, DocList.getActionPermissionConfig(actionConfig), "permissions");
+                  DocList.fnAddIfNotNull(action, DocList.getOverrideConfig(actionConfig), "overrides");
 
                   actions[actionId] = action;
                }
@@ -261,13 +306,59 @@ var DocList =
 
    /**
     *
+    * TODO: Config reader
+    *
+    */
+   getAllIndicators: function getAllIndicators()
+   {
+      var scopedRoot = config.scoped["DocumentLibrary"]["indicators"],
+         configs, indicators = {}, indicatorConfig, indicatorId, indicatorIndex, indicator, indicatorParamConfig;
+
+      try
+      {
+         configs = scopedRoot.getChildren("indicator");
+         if (configs)
+         {
+            for (var i = 0; i < configs.size(); i++)
+            {
+               indicatorConfig = configs.get(i);
+               indicatorId = indicatorConfig.getAttribute("id");
+               indicatorIndex = indicatorConfig.getAttribute("index");
+               if (indicatorId)
+               {
+                  indicator =
+                  {
+                     id: indicatorId,
+                     index: indicatorIndex || 0,
+                     icon: indicatorConfig.getAttribute("icon") || (indicatorId + "-16.png"),
+                     label: indicatorConfig.getAttribute("label") || ("status." + indicatorId)
+                  };
+
+                  DocList.fnAddIfNotNull(indicator, DocList.getEvaluatorConfig(indicatorConfig), "evaluators");
+                  DocList.fnAddIfNotNull(indicator, DocList.getLabelParamConfig(indicatorConfig), "labelParams");
+                  DocList.fnAddIfNotNull(indicator, DocList.getOverrideConfig(indicatorConfig), "overrides");
+
+                  indicators[indicatorId] = indicator;
+               }
+            }
+         }
+      }
+      catch(e)
+      {
+      }
+
+      return indicators;
+   },
+
+   /**
+    *
     * TODO: Config readers
     *
     */
-   getActionParamConfig: function getActionParamConfig(actionConfig)
+   getActionParamConfig: function getActionParamConfig(itemConfig)
    {
       var params = {},
-         paramConfig = actionConfig.childrenMap["param"],
+         paramConfig = itemConfig.childrenMap["param"],
          param, name, value;
 
       if (!paramConfig)
@@ -292,11 +383,11 @@ var DocList =
       return params;
    },
 
-   getActionEvaluatorConfig: function getActionEvaluatorConfig(actionConfig)
+   getEvaluatorConfig: function getEvaluatorConfig(itemConfig)
    {
       var evaluators = {},
-         evaluatorConfigs = actionConfig.childrenMap["evaluator"],
-         evaluatorConfig, evaluator, result;
+         evaluatorConfigs = itemConfig.childrenMap["evaluator"],
+         evaluatorConfig, value, evaluator, result;
 
       if (!evaluatorConfigs)
       {
@@ -331,15 +422,15 @@ var DocList =
    /**
     * TODO: Implementation
     */
-   getActionConditionConfig: function getActionConditionConfig(actionConfig)
+   getActionConditionConfig: function getActionConditionConfig(itemConfig)
    {
       return null;
    },
 
-   getActionPermissionConfig: function getActionPermissionConfig(actionConfig)
+   getActionPermissionConfig: function getActionPermissionConfig(itemConfig)
    {
       var permissions = {},
-         permsConfig = actionConfig.childrenMap["permissions"],
+         permsConfig = itemConfig.childrenMap["permissions"],
          perms, permConfig, perm, allow, deny, value, i, j;
 
       if (!permsConfig)
@@ -387,6 +478,91 @@ var DocList =
       return permissions;
    },
 
+   getOverrideConfig: function getOverrideConfig(itemConfig)
+   {
+      var overrides = [],
+         overrideConfig = itemConfig.childrenMap["override"],
+         override, value;
+
+      if (!overrideConfig)
+      {
+         return null;
+      }
+
+      for (var i = 0; i < overrideConfig.size(); i++)
+      {
+         override = overrideConfig.get(i);
+         value = "" + override.value;
+         if (value.length > 0)
+         {
+            overrides.push(value);
+         }
+      }
+
+      return overrides;
+   },
+
+   getLabelParamConfig: function getLabelParamConfig(itemConfig)
+   {
+      var labelParams = [],
+         labelConfig = itemConfig.childrenMap["labelParam"],
+         label, index, value;
+
+      if (!labelConfig)
+      {
+         return null;
+      }
+
+      for (var i = 0; i < labelConfig.size(); i++)
+      {
+         label = labelConfig.get(i);
+         index = label.getAttribute("index");
+         if (index != null)
+         {
+            value = "" + label.value;
+            if (value.length > 0)
+            {
+               labelParams[index] = value;
+            }
+         }
+      }
+
+      return labelParams;
+   },
+
+   filterOverrides: function filterOverrides(p_array)
+   {
+      var fnArrayRemove = function fnArrayRemove(array, from, to)
+      {
+        var rest = array.slice((to || from) + 1 || array.length);
+        array.length = from < 0 ? array.length + from : from;
+        return array.push.apply(array, rest);
+      };
+
+      // Remove any indicators overridden by others
+      var item, override, i, ii, j, jj;
+      for each (item in p_array)
+      {
+         if (item.overrides)
+         {
+            for (i = 0, ii = item.overrides.length; i < ii; i++)
+            {
+               override = item.overrides[i];
+               for (j = 0, jj = p_array.length; j < jj; j++)
+               {
+                  if (p_array[j].id == override)
+                  {
+                     fnArrayRemove(p_array, j);
+                     break;
+                  }
+               }
+            }
+         }
+      }
+
+      return p_array;
+   },
+
    merge: function merge()
    {
       var augmentObject = function augmentObject(r, s)
@@ -395,7 +571,7 @@ var DocList =
          {
              throw new Error("Absorb failed, verify dependencies.");
          }
-         var a=arguments, i, p, overrideList=a[2];
+         var i, p, overrideList=arguments[2];
          for (p in s)
          {
             if (overrideList || !(p in r))
@@ -407,10 +583,10 @@ var DocList =
           return r;
       };
       
-      var o={}, a=arguments, l=a.length, i;
+      var o={}, l=arguments.length, i;
       for (i=0; i<l; i=i+1)
       {
-         augmentObject(o, a[i], true);
+         augmentObject(o, arguments[i], true);
       }
       return o;
    },
@@ -422,5 +598,4 @@ var DocList =
          p_targetObj[p_name] = p_obj;
       }
    }
-
-}
+};

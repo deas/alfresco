@@ -19,8 +19,6 @@
 package org.alfresco.web.evaluator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -38,20 +36,9 @@ import java.util.HashMap;
  */
 public abstract class BaseEvaluator implements Evaluator
 {
-    private static Log logger = LogFactory.getLog(BaseEvaluator.class);
 
     // optional args from the calling webscript
     private HashMap<String, String> args = null;
-
-    /**
-     * Simple getter for optional webscript args
-     *
-     * @return HashMap args map (may be null)
-     */
-    public final HashMap<String, String> getArgs()
-    {
-        return args;
-    }
 
     /**
      * Optional entry point from Rhino script. Converts JSON String to a JSONObject
@@ -60,6 +47,7 @@ public abstract class BaseEvaluator implements Evaluator
      * @param obj JSON String as received from a Rhino script
      * @return boolean indicating evaluator result
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public final boolean evaluate(Object obj)
     {
         return evaluate(obj, null);
@@ -73,9 +61,10 @@ public abstract class BaseEvaluator implements Evaluator
      * @param args URL arguments passed to calling webscript
      * @return boolean indicating evaluator result
      */
+    @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
     public final boolean evaluate(Object obj, HashMap<String, String> args)
     {
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         this.args = args;
 
         try
@@ -100,6 +89,32 @@ public abstract class BaseEvaluator implements Evaluator
      * @return boolean indicating evaluator result
      */
     public abstract boolean evaluate(JSONObject jsonObject);
+
+    /**
+     * Simple getter for optional webscript args
+     *
+     * @return HashMap args map (may be null)
+     */
+    @SuppressWarnings({"UnusedDeclaration"})
+    public final HashMap<String, String> getArgs()
+    {
+        return args;
+    }
+
+    /**
+     * Get webscript argument by name
+     *
+     * @param name Argument name
+     * @return string argument value or null
+     */
+    public final String getArg(String name)
+    {
+        if (this.args != null && this.args.containsKey(name))
+        {
+            return this.args.get(name);
+        }
+        return null;
+    }
 
     /**
      * Retrieve a JSONArray of aspects for a node
@@ -129,24 +144,10 @@ public abstract class BaseEvaluator implements Evaluator
     }
 
     /**
-     * Get webscript argument by name
-     *
-     * @param name Argument name
-     * @return string argument value or null
-     */
-    public final String getArg(String name)
-    {
-        if (this.args != null && this.args.containsKey(name))
-        {
-            return this.args.get(name);
-        }
-        return null;
-    }
-
-    /**
      * Retrieve a JSONArray of aspects for a node
      *
      * @param jsonObject JSONObject containing a "node" object as returned from the ApplicationScriptUtils class.
+     * @param propertyName Name of the property to retrieve
      * @return JSONArray containing aspects on the node
      */
     public final JSONObject getProperty(JSONObject jsonObject, String propertyName)
@@ -282,6 +283,43 @@ public abstract class BaseEvaluator implements Evaluator
         }
 
         return containerType;
+    }
+
+    /**
+     * Get a boolean value indicating whether the node is locked or not
+     *
+     * @param jsonObject JSONObject containing a "node" object as returned from the ApplicationScriptUtils class.
+     * @return True if the node is locked
+     */
+    public final boolean getIsLocked(JSONObject jsonObject)
+    {
+        boolean isLocked = false;
+        JSONObject node = (JSONObject) jsonObject.get("node");
+        if (node != null)
+        {
+            isLocked = ((Boolean) node.get("isLocked"));
+        }
+        return isLocked;
+    }
+
+    /**
+     * Checks whether the current user matches that of a given user property
+     *
+     * @param jsonObject JSONObject containing a "node" object as returned from the ApplicationScriptUtils class.
+     * @param propertyName String containing dotted notation path to value
+     * @return True if the property value matches the current user
+     */
+    public final boolean getMatchesCurrentUser(JSONObject jsonObject, String propertyName)
+    {
+        JSONObject user = getProperty(jsonObject, propertyName);
+        if (user != null)
+        {
+            if (user.get("userName").toString().equalsIgnoreCase(getUserId()))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
