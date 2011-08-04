@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.opencmis.dictionary;
+package org.alfresco.cmis;
 
 import java.io.Serializable;
 
+import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 
@@ -50,7 +51,7 @@ public interface CMISPropertyAccessor
      * @param nodeRef
      * @return
      */
-    // public Serializable getValue(NodeRef nodeRef);
+    public Serializable getValue(NodeRef nodeRef);
 
     /**
      * Set the property value for a node
@@ -66,21 +67,5 @@ public interface CMISPropertyAccessor
      * @param nodeRef
      * @return
      */
-    // public Serializable getValue(AssociationRef assocRef);
-
-    /**
-     * Get the property value for a node or an association
-     * 
-     * @param nodeRef
-     * @return
-     */
-    Serializable getValue(NodeRef nodeRef);
-
-    /**
-     * Get the property value for a node or an association
-     * 
-     * @param nodeInfo
-     * @return
-     */
-    Serializable getValue(CMISNodeInfo nodeInfo);
+    public Serializable getValue(AssociationRef assocRef);
 }

@@ -34,11 +34,11 @@ public interface TypeDefinitionWrapper
     String getTypeId();
 
     BaseTypeId getBaseTypeId();
-    
+
     boolean isBaseType();
 
     QName getAlfrescoName();
-    
+
     QName getAlfrescoClass();
 
     TypeDefinitionWrapper getParent();
@@ -52,6 +52,6 @@ public interface TypeDefinitionWrapper
     PropertyDefintionWrapper getPropertyByQueryName(String queryName);
 
     PropertyDefintionWrapper getPropertyByQName(QName name);
-    
-    Map<Action, CMISActionEvaluator<? extends Object>> getActionEvaluators();
+
+    Map<Action, CMISActionEvaluator> getActionEvaluators();
 }

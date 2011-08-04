@@ -54,5 +54,5 @@ public interface PropertyAccessorMapping
      * 
      * @param scope
      */
-    public Map<Action, CMISActionEvaluator<? extends Object>> getActionEvaluators(BaseTypeId scope);
+    public Map<Action, CMISActionEvaluator> getActionEvaluators(BaseTypeId scope);
 }

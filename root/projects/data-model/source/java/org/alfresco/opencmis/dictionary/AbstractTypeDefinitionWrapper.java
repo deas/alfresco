@@ -89,7 +89,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
 
     protected QName alfrescoName = null;
     protected QName alfrescoClass = null;
-    protected Map<Action, CMISActionEvaluator<? extends Object>> actionEvaluators;
+    protected Map<Action, CMISActionEvaluator> actionEvaluators;
 
     protected Map<String, PropertyDefintionWrapper> propertiesById = new HashMap<String, PropertyDefintionWrapper>();
     protected Map<String, PropertyDefintionWrapper> propertiesByQueryName = new HashMap<String, PropertyDefintionWrapper>();
@@ -157,7 +157,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
     }
 
     @Override
-    public Map<Action, CMISActionEvaluator<? extends Object>> getActionEvaluators()
+    public Map<Action, CMISActionEvaluator> getActionEvaluators()
     {
         return actionEvaluators;
     }
@@ -191,8 +191,8 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
     public abstract void connectParentAndSubTypes(CMISMapping cmisMapping, DictionaryRegistry registry,
             DictionaryService dictionaryService);
 
-    public abstract void resolveInheritance(CMISMapping cmisMapping,
-            DictionaryRegistry registry, DictionaryService dictionaryService);
+    public abstract void resolveInheritance(CMISMapping cmisMapping, DictionaryRegistry registry,
+            DictionaryService dictionaryService);
 
     public void assertComplete()
     {
@@ -221,8 +221,9 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
     /**
      * Adds all property definitions owned by that type.
      */
-    protected void createOwningPropertyDefinitions(CMISMapping cmisMapping, PropertyAccessorMapping propertyAccessorMapping, 
-            PropertyLuceneBuilderMapping luceneBuilderMapping, ClassDefinition cmisClassDef)
+    protected void createOwningPropertyDefinitions(CMISMapping cmisMapping,
+            PropertyAccessorMapping propertyAccessorMapping, PropertyLuceneBuilderMapping luceneBuilderMapping,
+            ClassDefinition cmisClassDef)
     {
         PropertyDefinition<?> propertyDefintion;
 
@@ -254,7 +255,8 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
                     propertyAccessor = propertyAccessorMapping.getPropertyAccessor(propertyId);
                     if (propertyAccessor == null)
                     {
-                        propertyAccessor = propertyAccessorMapping.createDirectPropertyAccessor(propertyId, alfrescoPropDef.getName());
+                        propertyAccessor = propertyAccessorMapping.createDirectPropertyAccessor(propertyId,
+                                alfrescoPropDef.getName());
                     }
                 }
 
@@ -264,10 +266,11 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
                     luceneBuilder = luceneBuilderMapping.getPropertyLuceneBuilder(propertyId);
                     if (luceneBuilder == null)
                     {
-                        luceneBuilder = luceneBuilderMapping.createDirectPropertyLuceneBuilder(alfrescoPropDef.getName());
+                        luceneBuilder = luceneBuilderMapping.createDirectPropertyLuceneBuilder(alfrescoPropDef
+                                .getName());
                     }
                 }
-                
+
                 registerProperty(new BasePropertyDefintionWrapper(propertyDefintion, alfrescoPropDef.getName(), this,
                         propertyAccessor, luceneBuilder));
             }
@@ -444,13 +447,12 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         if (propertyAccessorMapping != null)
         {
             actionEvaluators = propertyAccessorMapping.getActionEvaluators(baseTypeId);
-        }
-        else
+        } else
         {
             actionEvaluators = Collections.emptyMap();
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private <T> T convertValueFromString(String value, PropertyType datatype)
     {

@@ -16,13 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.opencmis;
+package org.alfresco.opencmis.dictionary;
 
-public enum ObjectVariantEnum
+public enum CMISObjectVariant
 {
     INVALID_ID, // not a valid object id
     NOT_EXISTING, // valid id but object doesn't exist
-    NODE, // object is a node
+    NOT_A_CMIS_OBJECT, // object is not mapped to CMIS
+    FOLDER, // object is a folder
+    CURRENT_VERSION, // object is a document (current version)
     VERSION, // object is a version (not updatable)
     PWC, // object is a PWC
     ASSOC, // object is a relationship

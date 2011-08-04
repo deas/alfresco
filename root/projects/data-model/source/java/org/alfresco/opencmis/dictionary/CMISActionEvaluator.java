@@ -20,7 +20,7 @@ package org.alfresco.opencmis.dictionary;
 
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
-public interface CMISActionEvaluator<T>
+public interface CMISActionEvaluator
 {
     /**
      * Gets the CMIS Allowed Action
@@ -35,5 +35,5 @@ public interface CMISActionEvaluator<T>
      * @param object
      * @return
      */
-    public boolean isAllowed(T object);
+    public boolean isAllowed(CMISNodeInfo nodeInfo);
 }
