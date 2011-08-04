@@ -1,4 +1,3 @@
-/*global args:true */
 /**
  * Customisable areas
  */

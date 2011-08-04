@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator.status;
+package org.alfresco.web.evaluator.indicator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.evaluator.BaseEvaluator;
@@ -24,18 +24,20 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * "Folder has rules applied" status indicator evaluator.
+ * "Being edited by you" status indicator evaluator.
  *
  * Checks the following conditions are met:
  * <pre>
- *     hasAspect("rule:rules")
+ *     hasAspect("cm:workingcopy")
+ *     property "cm:workingCopyOwner" == (currentUser)
  * </pre>
  *
  * @author: mikeh
  */
-public class RulesEvaluator extends BaseEvaluator
+public class EditingEvaluator extends BaseEvaluator
 {
-    private static final String ASPECT_RULES = "rule:rules";
+    private static final String ASPECT_WORKINGCOPY = "cm:workingcopy";
+    private static final String PROP_WORKINGCOPYOWNER = "cm:workingCopyOwner";
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
@@ -49,9 +51,9 @@ public class RulesEvaluator extends BaseEvaluator
             }
             else
             {
-                if (nodeAspects.contains(ASPECT_RULES))
+                if (nodeAspects.contains(ASPECT_WORKINGCOPY))
                 {
-                    return true;
+                    return getMatchesCurrentUser(jsonObject, PROP_WORKINGCOPYOWNER);
                 }
             }
         }

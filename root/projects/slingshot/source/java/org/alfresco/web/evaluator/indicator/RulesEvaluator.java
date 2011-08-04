@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator.status;
+package org.alfresco.web.evaluator.indicator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.evaluator.BaseEvaluator;
@@ -24,18 +24,18 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * "Node has been transferred from another Repository" status indicator evaluator.
+ * "Folder has rules applied" status indicator evaluator.
  *
  * Checks the following conditions are met:
  * <pre>
- *     hasAspect("trx:transferred")
+ *     hasAspect("rule:rules")
  * </pre>
  *
  * @author: mikeh
  */
-public class TransferredNodeEvaluator extends BaseEvaluator
+public class RulesEvaluator extends BaseEvaluator
 {
-    private static final String ASPECT_TRANSFERRED = "trx:transferred";
+    private static final String ASPECT_RULES = "rule:rules";
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
@@ -49,7 +49,7 @@ public class TransferredNodeEvaluator extends BaseEvaluator
             }
             else
             {
-                if (nodeAspects.contains(ASPECT_TRANSFERRED))
+                if (nodeAspects.contains(ASPECT_RULES))
                 {
                     return true;
                 }

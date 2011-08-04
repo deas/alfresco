@@ -16,48 +16,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator.status;
+package org.alfresco.web.evaluator.indicator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.evaluator.BaseEvaluator;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * "Being edited by you via Google Docs" status indicator evaluator.
+ * "Active workflows" status indicator evaluator.
  *
  * Checks the following conditions are met:
  * <pre>
- *     hasAspect("gd:googleResource")
- *     hasAspect("cm:workingcopy")
- *     property "cm:workingCopyOwner" == (currentUser)
+ *     activeWorkflows is a number > 0
  * </pre>
  *
  * @author: mikeh
  */
-public class GoogleDocsEditingEvaluator extends BaseEvaluator
+public class ActiveWorkflowsEvaluator extends BaseEvaluator
 {
-    private static final String ASPECT_GOOGLERESOURCE = "gd:googleResource";
-    private static final String ASPECT_WORKINGCOPY = "cm:workingcopy";
-    private static final String PROP_WORKINGCOPYOWNER = "cm:workingCopyOwner";
+    private final String VALUE_ACTIVEWORKFLOWS = "activeWorkflows";
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
         try
         {
-            JSONArray nodeAspects = getNodeAspects(jsonObject);
-            if (nodeAspects == null)
+            Number workflows = (Number) jsonObject.get(VALUE_ACTIVEWORKFLOWS);
+            if (workflows != null && workflows.intValue() > 0)
             {
-                return false;
-            }
-            else
-            {
-                if (nodeAspects.contains(ASPECT_GOOGLERESOURCE) &&
-                        nodeAspects.contains(ASPECT_WORKINGCOPY))
-                {
-                    return getMatchesCurrentUser(jsonObject, PROP_WORKINGCOPYOWNER);
-                }
+                return true;
             }
         }
         catch (Exception err)

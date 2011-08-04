@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator.status;
+package org.alfresco.web.evaluator.indicator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.evaluator.BaseEvaluator;
@@ -24,20 +24,18 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * "Being edited by you" status indicator evaluator.
+ * "Node is participating in a simple workflow" status indicator evaluator.
  *
  * Checks the following conditions are met:
  * <pre>
- *     hasAspect("cm:workingcopy")
- *     property "cm:workingCopyOwner" == (currentUser)
+ *     hasAspect("app:simpleworkflow")
  * </pre>
  *
  * @author: mikeh
  */
-public class EditingEvaluator extends BaseEvaluator
+public class SimpleWorkflowEvaluator extends BaseEvaluator
 {
-    private static final String ASPECT_WORKINGCOPY = "cm:workingcopy";
-    private static final String PROP_WORKINGCOPYOWNER = "cm:workingCopyOwner";
+    private static final String ASPECT_SIMPLEWORKFLOW = "app:simpleworkflow";
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
@@ -51,9 +49,9 @@ public class EditingEvaluator extends BaseEvaluator
             }
             else
             {
-                if (nodeAspects.contains(ASPECT_WORKINGCOPY))
+                if (nodeAspects.contains(ASPECT_SIMPLEWORKFLOW))
                 {
-                    return getMatchesCurrentUser(jsonObject, PROP_WORKINGCOPYOWNER);
+                    return true;
                 }
             }
         }

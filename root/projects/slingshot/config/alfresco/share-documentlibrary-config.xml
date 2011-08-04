@@ -181,45 +181,45 @@
       <indicators>
          <!-- Editing -->
          <indicator id="editing" index="10">
-            <evaluator>slingshot.status.evaluator.editing</evaluator>
+            <evaluator>slingshot.indicator.evaluator.editing</evaluator>
          </indicator>
          <indicator id="lock-owner" index="10">
-            <evaluator>slingshot.status.evaluator.lockOwner</evaluator>
+            <evaluator>slingshot.indicator.evaluator.lockOwner</evaluator>
          </indicator>
          <indicator id="locked" index="10">
-            <evaluator>slingshot.status.evaluator.locked</evaluator>
+            <evaluator>slingshot.indicator.evaluator.locked</evaluator>
             <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
             <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
          </indicator>
          <!-- Google Docs Editing -->
          <indicator id="google-docs-editing" index="10">
-            <evaluator>slingshot.status.evaluator.googleDocsEditing</evaluator>
+            <evaluator>slingshot.indicator.evaluator.googleDocsEditing</evaluator>
             <override>editing</override>
          </indicator>
          <indicator id="google-docs-owner" index="10">
-            <evaluator>slingshot.status.evaluator.googleDocsOwner</evaluator>
+            <evaluator>slingshot.indicator.evaluator.googleDocsOwner</evaluator>
             <override>lock-owner</override>
          </indicator>
          <indicator id="google-docs-locked" index="10">
-            <evaluator>slingshot.status.evaluator.googleDocsLocked</evaluator>
+            <evaluator>slingshot.indicator.evaluator.googleDocsLocked</evaluator>
             <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
             <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
             <override>locked</override>
          </indicator>
          <!-- Workflows -->
          <indicator id="active-workflows" index="20">
-            <evaluator>slingshot.status.evaluator.activeWorkflows</evaluator>
+            <evaluator>slingshot.indicator.evaluator.activeWorkflows</evaluator>
             <labelParam index="0">{activeWorkflows}</labelParam>
          </indicator>
          <indicator id="simple-workflow" index="30">
-            <evaluator>slingshot.status.evaluator.simpleWorkflow</evaluator>
+            <evaluator>slingshot.indicator.evaluator.simpleWorkflow</evaluator>
          </indicator>
          <!-- Everything Else -->
          <indicator id="rules" index="40">
-            <evaluator>slingshot.status.evaluator.rules</evaluator>
+            <evaluator>slingshot.indicator.evaluator.rules</evaluator>
          </indicator>
          <indicator id="transferred-node" index="50">
-            <evaluator>slingshot.status.evaluator.transferredNode</evaluator>
+            <evaluator>slingshot.indicator.evaluator.transferredNode</evaluator>
          </indicator>
       </indicators>
    </config>

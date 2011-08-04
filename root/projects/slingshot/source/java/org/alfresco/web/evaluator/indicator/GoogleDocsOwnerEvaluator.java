@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator.status;
+package org.alfresco.web.evaluator.indicator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.evaluator.BaseEvaluator;
@@ -24,11 +24,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * "Current user has document locked" status indicator evaluator.
+ * "Current user has document locked for Google Docs editing" status indicator evaluator.
  *
  * Checks the following conditions are met:
  * <pre>
- *     node is locked
+ *     hasAspect("gd:googleResource")
  *     NOT hasAspect("trx:transferred")
  *     NOT hasAspect("cm:workingcopy")
  *     property "cm:lockOwner" == (currentUser)
@@ -36,8 +36,9 @@ import org.json.simple.JSONObject;
  *
  * @author: mikeh
  */
-public class LockOwnerEvaluator extends BaseEvaluator
+public class GoogleDocsOwnerEvaluator extends BaseEvaluator
 {
+    private static final String ASPECT_GOOGLERESOURCE = "gd:googleResource";
     private static final String ASPECT_TRANSFERRED = "trx:transferred";
     private static final String ASPECT_WORKINGCOPY = "cm:workingcopy";
     private static final String PROP_LOCKOWNER = "cm:lockOwner";
@@ -56,7 +57,8 @@ public class LockOwnerEvaluator extends BaseEvaluator
                 }
                 else
                 {
-                    if (!nodeAspects.contains(ASPECT_TRANSFERRED) &&
+                    if (nodeAspects.contains(ASPECT_GOOGLERESOURCE) &&
+                            !nodeAspects.contains(ASPECT_TRANSFERRED) &&
                             !nodeAspects.contains(ASPECT_WORKINGCOPY))
                     {
                         return getMatchesCurrentUser(jsonObject, PROP_LOCKOWNER);

@@ -16,35 +16,43 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.evaluator.status;
+package org.alfresco.web.evaluator.indicator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.evaluator.BaseEvaluator;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * "Active workflows" status indicator evaluator.
+ * "Node has been transferred from another Repository" status indicator evaluator.
  *
  * Checks the following conditions are met:
  * <pre>
- *     activeWorkflows is a number > 0
+ *     hasAspect("trx:transferred")
  * </pre>
  *
  * @author: mikeh
  */
-public class ActiveWorkflowsEvaluator extends BaseEvaluator
+public class TransferredNodeEvaluator extends BaseEvaluator
 {
-    private final String VALUE_ACTIVEWORKFLOWS = "activeWorkflows";
+    private static final String ASPECT_TRANSFERRED = "trx:transferred";
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
         try
         {
-            Number workflows = (Number) jsonObject.get(VALUE_ACTIVEWORKFLOWS);
-            if (workflows != null && workflows.intValue() > 0)
+            JSONArray nodeAspects = getNodeAspects(jsonObject);
+            if (nodeAspects == null)
             {
-                return true;
+                return false;
+            }
+            else
+            {
+                if (nodeAspects.contains(ASPECT_TRANSFERRED))
+                {
+                    return true;
+                }
             }
         }
         catch (Exception err)
