@@ -114,7 +114,7 @@
 	      </form>
 	   </div>
 	</div>
-</#if>
 	<script type="text/javascript">//<![CDATA[
 	Alfresco.util.addMessages(${messages}, "Alfresco.module.socialPublishing");
 	//]]></script>
+</#if>

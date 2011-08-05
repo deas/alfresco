@@ -151,18 +151,7 @@
        * }
        */
       show: function SP_show(config)
-      {
-         // Check the widget has been created. If there are no channels, it won't be:
-         if (Dom.get(this.id) === null)
-         {
-            Alfresco.util.PopupManager.displayMessage(
-            {
-               text: Alfresco.util.message("socialPublish.noChannels")
-            });
-            return;
-         }
-         
-         
+      {  
          // Merge the supplied config with default config and check mandatory properties
          this.showConfig = YAHOO.lang.merge(this.defaultShowConfig, config);
          if (this.showConfig.nodeRef === undefined ||
@@ -212,6 +201,18 @@
        */
       onTemplateLoaded: function SP_onTemplateLoaded(response)
       {
+
+
+         // Check the widget has been created. If there are no channels, it won't be:
+         if (response.serverResponse.responseText.indexOf(this.id) === -1)
+         {
+            Alfresco.util.PopupManager.displayMessage(
+            {
+               text: Alfresco.util.message("socialPublish.noChannels")
+            });
+            return;
+         }
+         
 
          // Inject the template from the XHR request into a new DIV element
          var containerDiv = document.createElement("div");
@@ -387,21 +388,6 @@
          
          // Disable the Esc key listener
          this.widgets.escapeListener.disable();
-      },
-
-      
-      /**
-       * Fired when the user clicks the "Unpublish" button on the dialogue
-       * 
-       * @method onUnpublishButtonClick
-       */
-      onUnpublishButtonClick: function SP_onUnpublishButtonClick()
-      {
-         // TODO...
-         
-         // Confirmation dialogue
-         
-         // Submit the form to the unpublish API.
       },
       
       /**
