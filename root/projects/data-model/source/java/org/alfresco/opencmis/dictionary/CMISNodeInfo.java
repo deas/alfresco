@@ -19,6 +19,7 @@
 package org.alfresco.opencmis.dictionary;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -82,4 +83,6 @@ public interface CMISNodeInfo
     boolean containsPropertyValue(String id);
 
     void putPropertyValue(String id, Serializable value);
+
+    List<CMISNodeInfo> getParents();
 }
