@@ -807,4 +807,13 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#isLucene()
+     */
+    @Override
+    protected boolean isLucene()
+    {
+        return true;
+    }
+
 }

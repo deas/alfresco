@@ -55,6 +55,7 @@ import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
@@ -82,6 +83,7 @@ import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
+import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.alfresco.util.TempFileProvider;
 import org.apache.lucene.document.Document;
@@ -737,8 +739,6 @@ public class CoreTracker
     {
         if (node.getStatus() == SolrApiNodeStatus.UPDATED)
         {
-            System.out.println(".. checking for path change");
-            
             
             System.out.println(".. updating");
             NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
@@ -760,7 +760,10 @@ public class CoreTracker
 
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
-                   
+                    System.out.println(".. checking for path change");
+                    // ID and checksum - query and in TX set 
+                    // ID only (exists and does not match)
+                    // updatechildren
 
                     Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
                     
@@ -861,6 +864,7 @@ public class CoreTracker
                         doc.addField(AbstractLuceneQueryParser.FIELD_ASPECT, aspect.toString());
                     }
                     doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
+                    doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
 
                     leafDocCmd.solrDoc = doc;
                     leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
@@ -883,6 +887,37 @@ public class CoreTracker
                     if (owner != null)
                     {
                         aux.addField(AbstractLuceneQueryParser.FIELD_OWNER, owner.getValue());
+                    }
+                    aux.addField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc());
+                    
+                    StringBuilder qNameBuffer = new StringBuilder(64);
+                    StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
+                    StringBuilder assocQNameBuffer = new StringBuilder(64);
+                    if(nodeMetaData.getParentAssocs() != null)
+                    {
+                        for(ChildAssociationRef childAssocRef : nodeMetaData.getParentAssocs())
+                        {
+                            if (qNameBuffer.length() > 0)
+                            {
+                                qNameBuffer.append(";/");
+                                assocTypeQNameBuffer.append(";/");
+                                assocQNameBuffer.append(";/");
+                            }
+                            qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
+                            assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                            assocQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
+                            aux.addField(AbstractLuceneQueryParser.FIELD_PARENT, childAssocRef.getParentRef());
+                            
+                            if(childAssocRef.isPrimary())
+                            {
+                                aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                                aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                                aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+                            }
+                        }
+                        aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
+                        aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCQNAME, assocQNameBuffer.toString());
+                        aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
                     }
 
                     auxDocCmd.solrDoc = aux;

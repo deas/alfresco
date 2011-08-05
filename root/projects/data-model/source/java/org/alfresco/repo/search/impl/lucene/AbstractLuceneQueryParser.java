@@ -145,6 +145,9 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public static final String FIELD_TRANSFORMATION_EXCEPTION_SUFFIX = ".transformationException";
     public static final String FIELD_TRANSFORMATION_TIME_SUFFIX = ".transformationTime";
     public static final String FIELD_TRANSFORMATION_STATUS_SUFFIX = ".transformationStatus";
+    public static final String FIELD_PARENT_ASSOC_CRC = "PARENTASSOCCRC";
+    public static final String FIELD_PRIMARYASSOCQNAME = "PRIMARYASSOCQNAME";
+    public static final String FIELD_ASSOCQNAME = "ASSOCQNAME";
 
     private static Log s_logger = LogFactory.getLog(AbstractLuceneQueryParser.class);
 
@@ -4420,7 +4423,11 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         {
             if (propertyQName.equals(ContentModel.PROP_USER_USERNAME) || propertyQName.equals(ContentModel.PROP_USERNAME) || propertyQName.equals(ContentModel.PROP_AUTHORITY_NAME))
             {
-                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                // nasty work around for solr support for user and group look up as we can not support lowercased identifiers ion the model
+                if(isLucene())
+                {
+                   return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                }
             }
 
             BooleanQuery booleanQuery = new BooleanQuery();
@@ -4470,6 +4477,11 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             }
         }
     }
+
+    /**
+     * @return
+     */
+    protected abstract boolean isLucene();
 
     /**
      * @param field
@@ -4553,7 +4565,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
 //        }
 //    }
 
-    private Query functionQueryBuilder(String expandedFieldName, QName propertyQName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, String queryText,
+    protected Query functionQueryBuilder(String expandedFieldName, QName propertyQName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, String queryText,
             LuceneFunction luceneFunction) throws ParseException
     {
 

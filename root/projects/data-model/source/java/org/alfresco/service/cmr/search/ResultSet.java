@@ -18,6 +18,10 @@
  */
 package org.alfresco.service.cmr.search;
 
+import java.util.List;
+
+import org.alfresco.util.Pair;
+
 
 /**
  * This is the common interface for both row (Alfresco node) and column (CMIS style property or function) based results.
@@ -32,5 +36,6 @@ package org.alfresco.service.cmr.search;
  */
 public interface ResultSet extends ResultSetSPI<ResultSetRow, ResultSetMetaData> // Specific iterator over ResultSetRows
 {
+
 
 }

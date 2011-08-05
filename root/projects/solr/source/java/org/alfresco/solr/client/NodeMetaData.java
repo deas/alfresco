@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
@@ -40,6 +41,10 @@ public class NodeMetaData
     private Map<QName, PropertyValue> properties;
     private Set<QName> aspects;
     private List<Pair<String, QName>> paths;
+    private long parentAssocsCrc;
+    private List<ChildAssociationRef> parentAssocs;
+    private List<ChildAssociationRef> childAssocs;
+    
     public long getId()
     {
         return id;
@@ -100,10 +105,35 @@ public class NodeMetaData
     {
         this.paths = paths;
     }
+    public void setParentAssocsCrc(long parentAssocsCrc)
+    {
+       this.parentAssocsCrc = parentAssocsCrc;
+    }
+    public long getParentAssocsCrc()
+    {
+       return parentAssocsCrc;
+    }
+    public void setParentAssocs(List<ChildAssociationRef> parentAssocs)
+    {
+       this.parentAssocs = parentAssocs;   
+    }
+    public List<ChildAssociationRef> getParentAssocs()
+    {
+       return parentAssocs;   
+    }
+    public void setChildAssocs(List<ChildAssociationRef> childAssocs)
+    {
+       this.childAssocs = childAssocs;   
+    }
+    public List<ChildAssociationRef> getChildAssocs()
+    {
+       return childAssocs;   
+    }
     @Override
     public String toString()
     {
         return "NodeMetaData [id=" + id + ", nodeRef=" + nodeRef + ", type=" + type + ", aclId=" + aclId
                 + ", properties=" + properties + ", aspects=" + aspects + ", paths=" + paths + "]";
     }
+   
 }

@@ -45,7 +45,8 @@ public class NodeMetaDataParameters
     private boolean includeProperties = true;
     private boolean includePaths = true;
     private boolean includeType = true;
-    private boolean includeAssociations = true;
+    private boolean includeChildAssociations = true;
+    private boolean includeParentAssociations = true;
 
     public boolean isIncludeAclId()
     {
@@ -117,14 +118,24 @@ public class NodeMetaDataParameters
         this.includeType = includeType;
     }
 
-    public boolean isIncludeAssociations()
+    public boolean isIncludeChildAssociations()
     {
-        return includeAssociations;
+        return includeChildAssociations;
     }
 
-    public void setIncludeAssociations(boolean includeAssociations)
+    public void setIncludeChildAssociations(boolean includeChildAssociations)
     {
-        this.includeAssociations = includeAssociations;
+        this.includeChildAssociations = includeChildAssociations;
+    }
+    
+    public boolean isIncludeParentAssociations()
+    {
+        return includeParentAssociations;
+    }
+
+    public void setIncludeParentAssociations(boolean includeParentAssociations)
+    {
+        this.includeParentAssociations = includeParentAssociations;
     }
 
     public int getMaxResults()

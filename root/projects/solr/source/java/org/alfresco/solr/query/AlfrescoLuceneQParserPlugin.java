@@ -233,7 +233,8 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
             
             
             AbstractLuceneQueryParser lqp = AlfrescoSolrDataModel.getInstance(id).getLuceneQueryParser(searchParameters, indexReader);
-            return lqp.parse(qstr);
+            Query query = lqp.parse(qstr);
+            return query;
         }
     }
 

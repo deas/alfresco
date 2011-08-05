@@ -146,6 +146,8 @@ public class SearchParameters
     private long maxPermissionCheckTimeMillis = -1;
 
     private String defaultFieldName = "TEXT";
+    
+    private ArrayList<FieldFacet> fieldFacets = new ArrayList<FieldFacet>();
 
     /**
      * Default constructor
@@ -729,6 +731,17 @@ public class SearchParameters
        this.defaultFieldName = defaultFieldName;
     }
 
+    public List<FieldFacet> getFieldFacets()
+    {
+        return fieldFacets;
+    }
+    
+    public void addFieldFacet(FieldFacet fieldFacet)
+    {
+        fieldFacets.add(fieldFacet);
+    }
+    
+    
     @Override
     public String toString()
     {
@@ -739,12 +752,12 @@ public class SearchParameters
                 + ", maxPermissionCheckTimeMillis=" + maxPermissionCheckTimeMillis + ", maxPermissionChecks=" + maxPermissionChecks + ", mlAnalaysisMode=" + mlAnalaysisMode
                 + ", namespace=" + namespace + ", permissionEvaluation=" + permissionEvaluation + ", query=" + query + ", queryParameterDefinitions=" + queryParameterDefinitions
                 + ", queryTemplates=" + queryTemplates + ", skipCount=" + skipCount + ", sortDefinitions=" + sortDefinitions + ", stores=" + stores + ", textAttributes="
-                + textAttributes + "]";
+                + textAttributes + ", fieldFacets=" + fieldFacets + "]";
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
+    
+    
+    
     @Override
     public int hashCode()
     {
@@ -755,6 +768,7 @@ public class SearchParameters
         result = prime * result + ((defaultFTSOperator == null) ? 0 : defaultFTSOperator.hashCode());
         result = prime * result + ((defaultFieldName == null) ? 0 : defaultFieldName.hashCode());
         result = prime * result + (excludeDataInTheCurrentTransaction ? 1231 : 1237);
+        result = prime * result + ((fieldFacets == null) ? 0 : fieldFacets.hashCode());
         result = prime * result + ((language == null) ? 0 : language.hashCode());
         result = prime * result + limit;
         result = prime * result + ((limitBy == null) ? 0 : limitBy.hashCode());
@@ -775,9 +789,6 @@ public class SearchParameters
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj)
     {
@@ -807,6 +818,13 @@ public class SearchParameters
         else if (!defaultFieldName.equals(other.defaultFieldName))
             return false;
         if (excludeDataInTheCurrentTransaction != other.excludeDataInTheCurrentTransaction)
+            return false;
+        if (fieldFacets == null)
+        {
+            if (other.fieldFacets != null)
+                return false;
+        }
+        else if (!fieldFacets.equals(other.fieldFacets))
             return false;
         if (language == null)
         {
@@ -889,7 +907,187 @@ public class SearchParameters
             return false;
         return true;
     }
+
+
+
+
+    public enum FieldFacetSort
+    {
+        COUNT, INDEX;
+    }
     
+    public enum FieldFacetMethod
+    {
+        ENUM, FC;
+    }
+    
+    public static class FieldFacet
+    {
+        String field;
+        String prefix = null;
+        FieldFacetSort sort = FieldFacetSort.COUNT;
+        int limit = 100;
+        int offset = 0;
+        int minCount = 0;
+        boolean countDocsMissingFacetField = false;
+        FieldFacetMethod method = FieldFacetMethod.FC;
+        int enumMethodCacheMinDF = 0;
+        
+        public FieldFacet(String field)
+        {
+            this.field = field;
+        }
+
+        public String getField()
+        {
+            return field;
+        }
+
+        public void setField(String field)
+        {
+            this.field = field;
+        }
+
+        public String getPrefix()
+        {
+            return prefix;
+        }
+
+        public void setPrefix(String prefix)
+        {
+            this.prefix = prefix;
+        }
+
+        public FieldFacetSort getSort()
+        {
+            return sort;
+        }
+
+        public void setSort(FieldFacetSort sort)
+        {
+            this.sort = sort;
+        }
+
+        public int getLimit()
+        {
+            return limit;
+        }
+
+        public void setLimit(int limit)
+        {
+            this.limit = limit;
+        }
+
+        public int getOffset()
+        {
+            return offset;
+        }
+
+        public void setOffset(int offset)
+        {
+            this.offset = offset;
+        }
+
+        public int getMinCount()
+        {
+            return minCount;
+        }
+
+        public void setMinCount(int minCount)
+        {
+            this.minCount = minCount;
+        }
+
+        public boolean isCountDocsMissingFacetField()
+        {
+            return countDocsMissingFacetField;
+        }
+
+        public void setCountDocsMissingFacetField(boolean countDocsMissingFacetField)
+        {
+            this.countDocsMissingFacetField = countDocsMissingFacetField;
+        }
+
+        public FieldFacetMethod getMethod()
+        {
+            return method;
+        }
+
+        public void setMethod(FieldFacetMethod method)
+        {
+            this.method = method;
+        }
+
+        public int getEnumMethodCacheMinDF()
+        {
+            return enumMethodCacheMinDF;
+        }
+
+        public void setEnumMethodCacheMinDF(int enumMethodCacheMinDF)
+        {
+            this.enumMethodCacheMinDF = enumMethodCacheMinDF;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (countDocsMissingFacetField ? 1231 : 1237);
+            result = prime * result + enumMethodCacheMinDF;
+            result = prime * result + ((field == null) ? 0 : field.hashCode());
+            result = prime * result + limit;
+            result = prime * result + ((method == null) ? 0 : method.hashCode());
+            result = prime * result + minCount;
+            result = prime * result + offset;
+            result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+            result = prime * result + ((sort == null) ? 0 : sort.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            FieldFacet other = (FieldFacet) obj;
+            if (countDocsMissingFacetField != other.countDocsMissingFacetField)
+                return false;
+            if (enumMethodCacheMinDF != other.enumMethodCacheMinDF)
+                return false;
+            if (field == null)
+            {
+                if (other.field != null)
+                    return false;
+            }
+            else if (!field.equals(other.field))
+                return false;
+            if (limit != other.limit)
+                return false;
+            if (method != other.method)
+                return false;
+            if (minCount != other.minCount)
+                return false;
+            if (offset != other.offset)
+                return false;
+            if (prefix == null)
+            {
+                if (other.prefix != null)
+                    return false;
+            }
+            else if (!prefix.equals(other.prefix))
+                return false;
+            if (sort != other.sort)
+                return false;
+            return true;
+        }
+        
+        
+    }
     
 
 }

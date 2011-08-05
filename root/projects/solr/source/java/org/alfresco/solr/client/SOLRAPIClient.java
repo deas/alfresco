@@ -640,9 +640,13 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
             body.put("includeProperties", params.isIncludeProperties());
         }
-        if(!params.isIncludeAssociations())
+        if(!params.isIncludeChildAssociations())
         {
-            body.put("includeAssociations", params.isIncludeAssociations());
+            body.put("includeChildAssociations", params.isIncludeChildAssociations());
+        }
+        if(!params.isIncludeParentAssociations())
+        {
+            body.put("includeParentAssociations", params.isIncludeParentAssociations());
         }
         if(!params.isIncludePaths())
         {
@@ -761,7 +765,42 @@ public class SOLRAPIClient extends AlfrescoHttpClient
                 }
                 metaData.setProperties(properties);
             }
+            
+            if(jsonNodeInfo.has("parentAssocsCrc"))
+            {
+                metaData.setParentAssocsCrc(jsonNodeInfo.getLong("parentAssocsCrc"));
+            }
+            
+            if(jsonNodeInfo.has("parentAssocs"))
+            {
+                JSONArray jsonParentAssocs = jsonNodeInfo.getJSONArray("parentAssocs");
+                List<ChildAssociationRef> assocs = new ArrayList<ChildAssociationRef>(jsonParentAssocs.length());
+                for(int j = 0; j < jsonParentAssocs.length(); j++)
+                {
+                    String childAssocRefStr = jsonParentAssocs.getString(j);
+                    ChildAssociationRef childAssociationRef = new ChildAssociationRef(childAssocRefStr);
+                    assocs.add(childAssociationRef);
+                }
+                metaData.setParentAssocs(assocs);
+            }
+            
+            if(jsonNodeInfo.has("childAssocs"))
+            {
+                JSONArray jsonParentAssocs = jsonNodeInfo.getJSONArray("childAssocs");
+                List<ChildAssociationRef> assocs = new ArrayList<ChildAssociationRef>(jsonParentAssocs.length());
+                for(int j = 0; j < jsonParentAssocs.length(); j++)
+                {
+                    String childAssocRefStr = jsonParentAssocs.getString(j);
+                    ChildAssociationRef childAssociationRef = new ChildAssociationRef(childAssocRefStr);
+                    assocs.add(childAssociationRef);
+                }
+                metaData.setChildAssocs(assocs);
+            }
+            
             nodes.add(metaData);
+            
+            
+           
         }
 
         return nodes;

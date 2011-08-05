@@ -144,13 +144,20 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         return new SolrCachingAuthorityQuery(queryText);
     }
 
+    protected Query createParentQuery(String queryText)
+    {
+        Query query = super.createParentQuery(queryText);
+        return new SolrCachingAuxDocQuery(query);
+    }
+
     /**
      * @param arg0
      * @param arg1
      */
     public SolrQueryParser(String arg0, Analyzer arg1)
     {
-        super(arg0, arg1);    }
+        super(arg0, arg1);
+    }
 
     /**
      * @param arg0
@@ -227,41 +234,51 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
     protected void addLocaleSpecificUntokenisedMLOrTextFunction(String expandedFieldName, String queryText, LuceneFunction luceneFunction, BooleanQuery booleanQuery,
             MLAnalysisMode mlAnalysisMode, Locale locale, IndexTokenisationMode tokenisationMode)
     {
-        if (locale.toString().length() == 0)
-        {
-            StringBuilder builder = new StringBuilder(queryText.length() + 10);
-            builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-            Query subQuery = new CaseInsensitiveFieldQuery(new Term(expandedFieldName + ".__.u",  builder.toString()));
-            if (subQuery != null)
-            {
-                booleanQuery.add(subQuery, Occur.SHOULD);
-            }
-            else
-            {
-                booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-            }
-        }
-        else
-        {
-            StringBuilder builder = new StringBuilder(queryText.length() + 10);
-            builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-            Query subQuery = new CaseInsensitiveFieldQuery(new Term(expandedFieldName + ".u",  builder.toString()));
-            if (subQuery != null)
-            {
-                booleanQuery.add(subQuery, Occur.SHOULD);
-            }
-            else
-            {
-                booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-            }
-        }
+
+        StringBuilder builder = new StringBuilder(queryText.length() + 10);
+        builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
+        Query subQuery = new CaseInsensitiveFieldQuery(new Term(getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE), builder.toString()));
+        booleanQuery.add(subQuery, Occur.SHOULD);
 
         if (booleanQuery.getClauses().length == 0)
         {
             booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
         }
     }
-    
+
+    private String getFieldName(String baseFieldName, Locale locale, IndexTokenisationMode actualIndexTokenisationMode, IndexTokenisationMode preferredIndexTokenisationMode)
+    {
+        StringBuilder builder = new StringBuilder(baseFieldName.length() + 5);
+        builder.append(baseFieldName);
+        if (locale.toString().length() == 0)
+        {
+            builder.append(".__");
+        }
+        switch (actualIndexTokenisationMode)
+        {
+        case BOTH:
+            switch (preferredIndexTokenisationMode)
+            {
+            case BOTH:
+                throw new IllegalStateException("Preferred mode can not be BOTH");
+            case FALSE:
+                builder.append(".u");
+                break;
+            case TRUE:
+                // nothing to do
+                break;
+            }
+            break;
+        case FALSE:
+            builder.append(".u");
+            break;
+        case TRUE:
+            // nothing to do
+            break;
+        }
+        return builder.toString();
+    }
+
     /*
      * (non-Javadoc)
      * @see
@@ -274,28 +291,19 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
     protected void addLocaleSpecificUntokenisedTextRangeFunction(String expandedFieldName, String lower, String upper, boolean includeLower, boolean includeUpper,
             LuceneFunction luceneFunction, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale, IndexTokenisationMode tokenisationMode) throws ParseException
     {
-        String field;
-        if (locale.toString().length() > 0)
-        {
-            field = expandedFieldName + ".u";
-        }
-        else
-        {
-            field = expandedFieldName + ".__.u";
-        }
+        String field = getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE);
 
         StringBuilder builder = new StringBuilder();
         builder.append("\u0000").append(locale.toString()).append("\u0000").append(lower);
         String first = getToken(field, builder.toString(), AnalysisMode.IDENTIFIER);
-      
+
         builder = new StringBuilder();
         builder.append("\u0000").append(locale.toString()).append("\u0000").append(upper);
         String last = getToken(field, builder.toString(), AnalysisMode.IDENTIFIER);
 
-        Query query =  new CaseInsensitiveFieldRangeQuery(expandedFieldName, first, last, includeLower, includeUpper);
+        Query query = new CaseInsensitiveFieldRangeQuery(expandedFieldName, first, last, includeLower, includeUpper);
         booleanQuery.add(query, Occur.SHOULD);
-        
-       
+
     }
 
     /*
@@ -313,6 +321,13 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
             Locale locale) throws ParseException
     {
 
+        addMLTextOrTextAttributeQuery(field, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+    }
+
+    private void addMLTextOrTextAttributeQuery(String field, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
+            String expandedFieldName, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale) throws ParseException
+    {
+
         boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
         try
         {
@@ -324,7 +339,8 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
                 default:
                 case DEFAULT:
                 case TOKENISE:
-                    addLocaleSpecificTokenisedMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName);
+                    addLocaleSpecificMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
+                            IndexTokenisationMode.TRUE);
                     break;
                 case IDENTIFIER:
                 case FUZZY:
@@ -332,35 +348,22 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
                 case WILD:
                 case LIKE:
                     setLowercaseExpandedTerms(false);
-                    addLocaleSpecificUntokenisedMLOrTextAttribute(field, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, mlAnalysisMode, locale,
-                            expandedFieldName);
+                    addLocaleSpecificMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
+                            IndexTokenisationMode.FALSE);
 
                     break;
                 }
                 break;
             case FALSE:
                 setLowercaseExpandedTerms(false);
-                addLocaleSpecificUntokenisedMLOrTextAttribute(field, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, mlAnalysisMode, locale,
-                        expandedFieldName);
+                addLocaleSpecificMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
+                        IndexTokenisationMode.FALSE);
                 break;
             case TRUE:
             default:
-                switch (analysisMode)
-                {
-                default:
-                case DEFAULT:
-                case TOKENISE:
-                case IDENTIFIER:
-                    addLocaleSpecificTokenisedMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName);
-                    break;
-                case FUZZY:
-                case PREFIX:
-                case WILD:
-                case LIKE:
-                    addLocaleSpecificUntokenisedMLOrTextAttribute(field, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, mlAnalysisMode, locale,
-                            expandedFieldName);
-                    break;
-                }
+                addLocaleSpecificMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
+                        IndexTokenisationMode.TRUE);
+                break;
             }
         }
         finally
@@ -383,60 +386,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
             String expandedFieldName, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale) throws ParseException
     {
 
-        boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
-        try
-        {
-            switch (tokenisationMode)
-            {
-            case BOTH:
-                switch (analysisMode)
-                {
-                default:
-                case DEFAULT:
-                case TOKENISE:
-                    addLocaleSpecificTokenisedMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName);
-                    break;
-                case IDENTIFIER:
-                case FUZZY:
-                case PREFIX:
-                case WILD:
-                case LIKE:
-                    setLowercaseExpandedTerms(false);
-                    addLocaleSpecificUntokenisedMLOrTextAttribute(field, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, mlAnalysisMode, locale,
-                            expandedFieldName);
-                    break;
-                }
-                break;
-            case FALSE:
-                setLowercaseExpandedTerms(false);
-                addLocaleSpecificUntokenisedMLOrTextAttribute(field, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, mlAnalysisMode, locale,
-                        expandedFieldName);
-                break;
-            case TRUE:
-            default:
-                switch (analysisMode)
-                {
-                case DEFAULT:
-                case TOKENISE:
-                case IDENTIFIER:
-                    addLocaleSpecificTokenisedMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName);
-                    break;
-                case FUZZY:
-                case PREFIX:
-                case WILD:
-                case LIKE:
-                    addLocaleSpecificUntokenisedMLOrTextAttribute(field, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, mlAnalysisMode, locale,
-                            expandedFieldName);
-                    break;
-                }
-                break;
-            }
-        }
-        finally
-        {
-            setLowercaseExpandedTerms(lowercaseExpandedTerms);
-        }
-
+        addMLTextOrTextAttributeQuery(field, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
     }
 
     /**
@@ -451,80 +401,22 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
      * @param textFieldName
      * @throws ParseException
      */
-    private void addLocaleSpecificUntokenisedMLOrTextAttribute(String field, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
-            BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale, String textFieldName) throws ParseException
+    private void addLocaleSpecificMLOrTextAttribute(String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
+            BooleanQuery booleanQuery, Locale locale, String textFieldName, IndexTokenisationMode tokenisationMode, IndexTokenisationMode preferredTokenisationMode)
+            throws ParseException
     {
-        if (locale.toString().length() == 0)
+
+        StringBuilder builder = new StringBuilder(queryText.length() + 10);
+        builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
+        Query subQuery = subQueryBuilder.getQuery(getFieldName(textFieldName, locale, tokenisationMode, preferredTokenisationMode), builder.toString(), analysisMode,
+                luceneFunction);
+        if (subQuery != null)
         {
-            StringBuilder builder = new StringBuilder(queryText.length() + 10);
-            builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-            Query subQuery = subQueryBuilder.getQuery(textFieldName + ".__.u", builder.toString(), analysisMode, luceneFunction);
-            if (subQuery != null)
-            {
-                booleanQuery.add(subQuery, Occur.SHOULD);
-            }
-            else
-            {
-                booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-            }
+            booleanQuery.add(subQuery, Occur.SHOULD);
         }
         else
         {
-            StringBuilder builder = new StringBuilder(queryText.length() + 10);
-            builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-            Query subQuery = subQueryBuilder.getQuery(textFieldName + ".u", builder.toString(), analysisMode, luceneFunction);
-            if (subQuery != null)
-            {
-                booleanQuery.add(subQuery, Occur.SHOULD);
-            }
-            else
-            {
-                booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-            }
-        }
-
-    }
-
-    /**
-     * @param queryText
-     * @param subQueryBuilder
-     * @param analysisMode
-     * @param luceneFunction
-     * @param booleanQuery
-     * @param locale
-     * @param textFieldName
-     * @throws ParseException
-     */
-    private void addLocaleSpecificTokenisedMLOrTextAttribute(String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
-            BooleanQuery booleanQuery, Locale locale, String textFieldName) throws ParseException
-    {
-        if (locale.toString().length() == 0)
-        {
-            StringBuilder builder = new StringBuilder(queryText.length() + 10);
-            builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-            Query subQuery = subQueryBuilder.getQuery(textFieldName + ".__", builder.toString(), analysisMode, luceneFunction);
-            if (subQuery != null)
-            {
-                booleanQuery.add(subQuery, Occur.SHOULD);
-            }
-            else
-            {
-                booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-            }
-        }
-        else
-        {
-            StringBuilder builder = new StringBuilder(queryText.length() + 10);
-            builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-            Query subQuery = subQueryBuilder.getQuery(textFieldName, builder.toString(), analysisMode, luceneFunction);
-            if (subQuery != null)
-            {
-                booleanQuery.add(subQuery, Occur.SHOULD);
-            }
-            else
-            {
-                booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-            }
+            booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
         }
 
     }
@@ -548,10 +440,10 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
             {
             case DEFAULT:
             case TOKENISE:
-                addLocaleSpecificTokenisedTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode);
+                addLocaleSpecificTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.TRUE);
                 break;
             case IDENTIFIER:
-                addLocaleSpecificUntokenisedTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode);
+                addLocaleSpecificTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.FALSE);
                 break;
             case WILD:
             case LIKE:
@@ -562,72 +454,48 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
             }
             break;
         case FALSE:
-            addLocaleSpecificUntokenisedTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode);
-
+            addLocaleSpecificTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.FALSE);
             break;
         case TRUE:
-            addLocaleSpecificTokenisedTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode);
+            addLocaleSpecificTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.TRUE);
             break;
         default:
         }
 
     }
 
-    private void addLocaleSpecificTokenisedTextRange(String expandedFieldName, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
-            Locale locale, AnalysisMode analysisMode) throws ParseException
+    private void addLocaleSpecificTextRange(String expandedFieldName, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
+            Locale locale, AnalysisMode analysisMode, IndexTokenisationMode tokenisationMode, IndexTokenisationMode preferredtokenisationMode) throws ParseException
     {
-        String field;
-        if (locale.toString().length() > 0)
-        {
-            field = expandedFieldName;
-        }
-        else
-        {
-            field = expandedFieldName + ".__";
-        }
-
+        String field = getFieldName(expandedFieldName, locale, tokenisationMode, preferredtokenisationMode);
         StringBuilder builder = new StringBuilder();
         builder.append("\u0000").append(locale.toString()).append("\u0000").append(part1);
         String first = getToken(field, builder.toString(), analysisMode);
-        if(first == null)
+        if ((first == null) && (false == field.endsWith(".u")))
         {
-            first = getToken(field+".u", builder.toString(), analysisMode);
+            first = getToken(field + ".u", builder.toString(), analysisMode);
         }
 
         builder = new StringBuilder();
         builder.append("\u0000").append(locale.toString()).append("\u0000").append(part2);
         String last = getToken(field, builder.toString(), analysisMode);
-        if(last == null)
+        if ((last == null) && (false == field.endsWith(".u")))
         {
-            last = getToken(field+".u", builder.toString(), analysisMode);
+            last = getToken(field + ".u", builder.toString(), analysisMode);
         }
 
         Query query = new TermRangeQuery(field, first, last, includeLower, includeUpper);
         booleanQuery.add(query, Occur.SHOULD);
     }
 
-    private void addLocaleSpecificUntokenisedTextRange(String expandedFieldName, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
-            Locale locale, AnalysisMode analysisMode) throws ParseException
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#isLucene()
+     */
+    @Override
+    protected boolean isLucene()
     {
-        String field;
-        if (locale.toString().length() > 0)
-        {
-            field = expandedFieldName + ".u";
-        }
-        else
-        {
-            field = expandedFieldName + ".__.u";
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("\u0000").append(locale.toString()).append("\u0000").append(part1);
-        String first = getToken(field, builder.toString(), analysisMode);
-      
-        builder = new StringBuilder();
-        builder.append("\u0000").append(locale.toString()).append("\u0000").append(part2);
-        String last = getToken(field, builder.toString(), analysisMode);
-
-        Query query = new TermRangeQuery(field, first, last, includeLower, includeUpper);
-        booleanQuery.add(query, Occur.SHOULD);
+        return false;
     }
+
 }

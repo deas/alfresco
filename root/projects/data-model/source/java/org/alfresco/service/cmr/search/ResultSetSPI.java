@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.util.Pair;
 
 /**
  * This is the common interface for both row (Alfresco node) and column (CMIS style property or function) based results.
@@ -157,4 +158,10 @@ public interface ResultSetSPI<ROW extends ResultSetRow, MD extends ResultSetMeta
      * @return the fetch size
      */
     public int getBulkFetchSize();
+    
+    /**
+     * @param field
+     * @return
+     */
+    public List<Pair<String, Integer>> getFieldFacet(String field);
 }
