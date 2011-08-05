@@ -132,7 +132,7 @@
       _setupDataTable: function ConsoleTagManagement_setupDataTable()
       {
          var me = this;
-
+         
          // DataTable Cell Renderers definitions
          var renderCellTagInfo = function ConsoleTagManagement_onReady_renderCellTagInfo(elCell, oRecord, oColumn, oData)
          {
@@ -147,24 +147,23 @@
             var messageDesc = '<span><a class="theme-color-1" href="' + Alfresco.constants.URL_PAGECONTEXT + 'user/' + encodeURIComponent(tagOwner) + '/profile">' + $html(tagOwner) + '</a></span>';
             elCell.innerHTML = messageDesc;
          };
-          
+         
          var renderCellModificationDate = function ConsoleTagManagement_onReady_renderCellModificationDate(elCell, oRecord, oColumn, oData)
          {
             var modificationDate = oRecord.getData().modified;
-            var messageDesc = '<span class="theme-color-1">' + $date(modificationDate, "dd mmm yyyy HH:MM") + '</span>';
+            var messageDesc = '<span>' + $date(modificationDate, "dd mmm yyyy HH:MM") + '</span>';
             elCell.innerHTML = messageDesc ;
          };
          
          var renderCellActions = function ConsoleTagManagement_onReady_renderCellActions(elCell, oRecord, oColumn, oData)
          {
             var tag = oRecord.getData();
-            var actions = "", editLink, deleteLink, index = oRecord._nCount + 0 ;
-
-            actions += '<a id="' + me.id + '-edit-link-'+index+'" href="#"  class="edit-tag" title="' + me.msg("title.editTag") + '"></a>';         
-            actions += '<a id="' + me.id + '-delete-link-'+index+'" href="#" class="delete-tag" title="' + me.msg("title.deleteTag") + '"></a>';
-            actions += '<span>'
+            var actions = "", editLink, deleteLink, index=oRecord._nCount;
             
-            elCell.innerHTML += actions;
+            actions += '<a id="' + me.id + '-edit-link-'+index+'" href="#" class="edit-tag" title="' + me.msg("title.editTag") + '"></a>';         
+            actions += '<a id="' + me.id + '-delete-link-'+index+'" href="#" class="delete-tag" title="' + me.msg("title.deleteTag") + '"></a>';
+            
+            elCell.innerHTML = actions;
             
             deleteLink=Dom.getChildrenBy(elCell, function(el){
                  return el.id === me.id+"-delete-link-" + index;
@@ -176,9 +175,8 @@
             Event.addListener(deleteLink, 'click', function () {me.onActionDelete(tag.name);}, deleteLink, false);
             Event.addListener(editLink, 'click', function () {me.onActionEdit(tag.name);}, editLink, false);
          };
-
+         
          // DataSource definition
-         //var tagSearchResultsURI = Alfresco.constants.PROXY_URI_RELATIVE + "api/search-tags?selectableType=cm:category&aspect=cm:taggable";         
          var tagSearchResultsURI = YAHOO.lang.substitute(Alfresco.constants.PROXY_URI + "api/tags/{store_type}/{store_id}?details=true",
          {
             store_type : "workspace",
@@ -209,7 +207,7 @@
              { key: "name", label: me.msg("title.tagName"), sortable: false, formatter: renderCellTagInfo,width: 120 },
              { key: "modifiedBy", label: me.msg("title.modifiedBy"), sortable: false, formatter: renderCellTagOwner,width: 150 },
              { key: "modifiedOn", label: me.msg("title.modifiedOn"), sortable: false, formatter: renderCellModificationDate,width: 150 },
-             { key: "action", label: me.msg("title.actions"),sortable: false, formatter: renderCellActions, width: 35 }
+             { key: "action", label: me.msg("title.actions"),sortable: false, formatter: renderCellActions, width: 45 }
          ];
 
          // DataTable definition

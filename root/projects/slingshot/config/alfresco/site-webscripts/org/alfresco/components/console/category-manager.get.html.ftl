@@ -1,6 +1,6 @@
 <#assign el=args.htmlid?html>
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.CategoryManager("${el}").setOptions(
+   new Alfresco.CategoryManager("${args.htmlid?js_string}").setOptions(
    {
       nodeRef: "alfresco://category/root"
    }).setMessages(
