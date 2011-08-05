@@ -994,5 +994,90 @@
          </form>
       </forms>
    </config>
+   
+   <!-- Search (lucene) -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=Search,id1=managed,id2=lucene">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="index.recovery.mode" />
+               <show id="lucene.indexer.contentIndexingEnabled" />
+               <show id="index.tracking.disableInTransactionIndexing" />
+               <show id="dir.indexes" for-mode="view" />
+
+               <show id="dir.indexes.backup" />
+               <show id="index.backup.cronExpression" />
+
+               <show id="fts.indexer.batchSize" />
+               <show id="lucene.maxAtomicTransformationTime" />
+               <show id="index.reindexMissingContent.cronExpression" />
+               <show id="lucene.indexer.maxFieldLength" />
+               <show id="lucene.indexer.mergerMaxMergeDocs" />
+               <show id="lucene.indexer.mergerMergeFactor" />
+            </field-visibility>
+            <appearance>
+               <set id="lucene" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="lucene.backup" appearance="bordered-panel" label-id="lucene.set.backup" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="lucene.advanced" appearance="bordered-panel" label-id="lucene.set.advanced" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="dir.indexes" set="lucene" label-id="lucene.field.dir.indexes" />
+               <field id="index.recovery.mode" set="lucene" label-id="lucene.field.index.recovery.mode">
+                 <control template="/org/alfresco/components/form/controls/selectone.ftl">
+                    <control-param name="options">VALIDATE|VALIDATE,AUTO|AUTO,FULL|FULL</control-param>
+                 </control>
+               </field>
+               <field id="lucene.indexer.contentIndexingEnabled" set="lucene" label-id="lucene.field.lucene.indexer.contentIndexingEnabled" description-id="lucene.field.description.lucene.indexer.contentIndexingEnabled">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+                <field id="index.tracking.disableInTransactionIndexing" set="lucene" label-id="lucene.field.index.tracking.disableInTransactionIndexing" >
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+
+               <field id="dir.indexes.backup" set="lucene.backup" label-id="lucene.backup.field.dir.indexes.backup" />
+               <field id="index.backup.cronExpression" set="lucene.backup" label-id="lucene.backup.field.index.backup.cronExpression" />
+
+               <field id="fts.indexer.batchSize" set="lucene.advanced" label-id="lucene.advanced.field.fts.indexer.batchSize" />
+               <field id="lucene.maxAtomicTransformationTime" set="lucene.advanced" label-id="lucene.advanced.field.lucene.maxAtomicTransformationTime" />
+               <field id="index.reindexMissingContent.cronExpression" set="lucene.advanced" label-id="lucene.advanced.field.index.reindexMissingContent.cronExpression" />
+               <field id="lucene.indexer.maxFieldLength" set="lucene.advanced" label-id="lucene.advanced.field.indexer.maxFieldLength" />
+               <field id="lucene.indexer.mergerMaxMergeDocs" set="lucene.advanced" label-id="lucene.field.indexer.mergerMaxMergeDocs" />
+               <field id="lucene.indexer.mergerMergeFactor" set="lucene.advanced" label-id="lucene.field.indexer.mergerMergeFactor" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- Search (solr) -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=Search,id1=managed,id2=solr">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="solr.base.url" />
+            </field-visibility>
+            <appearance>
+               <set id="solr" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="solr.base.url" set="solr" label-id="solr.field.solr.base.url" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+
+   <!-- Search (manager) -->
+   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=Search,id1=manager">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="sourceBeanName" />
+            </field-visibility>
+            <appearance>
+               <set id="searchmanager" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <field id="sourceBeanName" set="searchmanager" label-id="searchmanager.field.sourceBeanName">
+                 <control template="/org/alfresco/components/form/controls/selectone.ftl">
+                    <control-param name="options">lucene|Lucene,solr|Solr</control-param>
+                 </control>
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
 
 </alfresco-config>
