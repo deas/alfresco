@@ -20,6 +20,7 @@ package org.alfresco.opencmis.dictionary;
 
 import java.io.Serializable;
 
+import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 
@@ -45,14 +46,6 @@ public interface CMISPropertyAccessor
     QName getMappedProperty();
 
     /**
-     * Get the property value for a node or an association
-     * 
-     * @param nodeRef
-     * @return
-     */
-    // public Serializable getValue(NodeRef nodeRef);
-
-    /**
      * Set the property value for a node
      * 
      * @param nodeRef
@@ -61,20 +54,21 @@ public interface CMISPropertyAccessor
     void setValue(NodeRef nodeRef, Serializable value);
 
     /**
-     * Get the property value for an association
-     * 
-     * @param nodeRef
-     * @return
-     */
-    // public Serializable getValue(AssociationRef assocRef);
-
-    /**
-     * Get the property value for a node or an association
+     * Get the property value for a node
      * 
      * @param nodeRef
      * @return
      */
     Serializable getValue(NodeRef nodeRef);
+
+    /**
+     * Get the property value for an association
+     * 
+     * @param nodeRef
+     * @return
+     * @deprecated Alfresco 3.x CMIS implementation
+     */
+    Serializable getValue(AssociationRef assocRef);
 
     /**
      * Get the property value for a node or an association
