@@ -152,6 +152,17 @@
        */
       show: function SP_show(config)
       {
+         // Check the widget has been created. If there are no channels, it won't be:
+         if (Dom.get(this.id) === null)
+         {
+            Alfresco.util.PopupManager.displayMessage(
+            {
+               text: Alfresco.util.message("socialPublish.noChannels")
+            });
+            return;
+         }
+         
+         
          // Merge the supplied config with default config and check mandatory properties
          this.showConfig = YAHOO.lang.merge(this.defaultShowConfig, config);
          if (this.showConfig.nodeRef === undefined ||
@@ -339,8 +350,8 @@
                      "1": channelHTML
                   }),
                balloonHTML = "<div class='publishConfirm'><div class='success'>" + successText + "</div><div class='tracking'>" + trackingText + "</div></div>",
-               // TODO - this should be more dynamic...
-               balloonElement = Dom.get(Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentList").id);
+               doclib = Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentList")
+               balloonElement = (doclib) ? Dom.get(doclib.id) : Dom.getElementsByClassName("document-thumbnail")[0];
                balloon = Alfresco.util.createBalloon(balloonElement,
                {
                   html: balloonHTML,
@@ -348,6 +359,11 @@
                });
             
             balloon.show();
+            // hide the balloon after 10 seconds.
+            YAHOO.lang.later(10000, this, function()
+            {
+               balloon.hide();
+            })
          }
          
          // Make the POST request to the publishing queue

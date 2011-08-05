@@ -882,7 +882,7 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .yui-skin-default .agendaview a,
 .yui-skin-default a.previousEvents,
 .yui-skin-default a.nextEvents,
-.yui-skin-default .channelActions a
+.yui-skin-default div.channels a
 {
    color: #4F94C9;
 }

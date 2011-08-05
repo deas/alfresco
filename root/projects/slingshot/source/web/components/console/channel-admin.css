@@ -1,83 +1,117 @@
-.channels {
-	margin: 16px 10px 10px;
+.channels
+{
+   margin: 16px 10px 10px;
 }
 
-.channels .new-button {
-	text-align:right;
+.channels .new-button
+{
+   text-align: right;
 }
 
-.channels .title {
-	 font-size: 123.1%;
-    font-weight: bold;
-    padding-bottom: 0.5em;
+.channels .title
+{
+   font-size: 123.1%;
+   font-weight: bold;
+   padding-bottom: 0.5em;
 }
 
-div.channel {
-	text-align:center;
+div.channel
+{
+   text-align: center;
 }
 
-div.channel .channelName {
-	color:#333333;
+div.channel .channelName
+{
+   color: #333333;
 }
 
-div.channel .channelActions {
-	display:block;
-	margin: 0 auto;
+div.channel .channelActions
+{
+   display: block;
+   margin: 0 auto;
 }
 
-div.channel.notAuthorised {
-	background: transparent url('images/publishing-failed-status-placeholder-16.png') no-repeat 42px 2px;
+div.channel.notAuthorised
+{
+   background: transparent url('images/publishing-failed-status-placeholder-16.png') no-repeat 42px 2px;
 }
 
-div.channel img {
-	display:block;
-	width:64px;
-	height:64px;
-	margin:2px auto;
+div.channel img
+{
+   display: block;
+   width: 64px;
+   height: 64px;
+   margin: 2px auto;
 }
 
-div.channel .channelActions a {
-	font-size:0.8em;
-	padding:0 4px;
+div.channel .channelActions a
+{
+   font-size: 0.8em;
+   padding: 0 4px;
 }
 
-div.channel .channelActions a.reauth {
-    border-right: 1px solid #CACACA;
+div.channel .channelActions a.reauth
+{
+   border-right: 1px solid #CACACA;
+   border-left: 1px solid #CACACA;
 }
 
-div.channel .channelActions a.permissions {
-	display:block;
+div.channel .channelActions a.first
+{
+   border-left: 1px solid #CACACA;
 }
 
-div.channel .channelActions a.first {
-	border-left: 1px solid #CACACA;
+div.channels tr
+{
+   display: block;
+   float: left;
+   width: 200px;
+   margin-right: 5px;
+	min-height: 10em;
 }
 
-div.channels tr {
-	display:block;
-	float:left;
-	width: 200px;
-	margin-right:5px;
+div.channels tr td
+{
+   border: none !important;
+   display: block;
 }
 
-div.channels tr td {
-	border:none !important;
-	display:block;
+div.channels td.yui-dt-empty
+{
+   width: 600px;
 }
 
-.newChannelAction img {
-	width:16px;
-	height:16px;
+.newChannelAction img
+{
+   width: 16px;
+   height: 16px;
 }
 
-a.newChannelAction {
-	text-decoration:none;
-	background-repeat:no-repeat;
-	padding-left:20px;
-	display: block;
+a.newChannelAction
+{
+   text-decoration: none;
+   background-repeat: no-repeat;
+   background-position: 0 3px;
+   padding-left: 20px;
+   display: block;
    line-height: 22px;
 }
 
-.newChannelAction span {
-	padding-left:2px;
+.newChannelAction span
+{
+   padding-left: 2px;
+}
+
+/* Insitu Editor Styling */
+div.channels form.insitu-edit input
+{
+   margin-right:0;
+   width: 160px;
+	text-align:center;
+}
+
+div.channels span.insitu-edit
+{
+   margin-left: 42px;
+   margin-top: -20px;
 }

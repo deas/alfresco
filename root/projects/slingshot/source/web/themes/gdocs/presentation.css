@@ -940,7 +940,7 @@ body.yui-skin-gdocs .yui-columnbrowser .yui-carousel-content li.yui-columnbrowse
 .yui-skin-gdocs .agendaview a,
 .yui-skin-gdocs a.previousEvents,
 .yui-skin-gdocs a.nextEvents,
-.yui-skin-default .channelActions a
+.yui-skin-default div.channels a
 {
    color: #0600cc;
 }

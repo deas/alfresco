@@ -117,7 +117,7 @@
                ],
                config:
                {
-                  MSG_EMPTY: this.msg("message.noVersions")
+                  MSG_EMPTY: this.msg("message.noPublishing")
                }
             }
          });
@@ -147,17 +147,28 @@
             node = "",
             nodeName = "",
             nodeLabel = "",
-            channelIcon = Alfresco.constants.PROXY_URI + event.channel.channelType.icon + "/32",
-            channelTitle = event.channel.channelType.title,
-            channelName = event.channel.title,
-            channelId = event.channel.id,
             statusType = this.msg("publishingHistory.status." + event.status),
             statusTime = Alfresco.util.relativeTime(event.scheduledTime.dateTime),
             statusDisplay = this.msg("publishingHistory.status.display", statusType, statusTime),
             statusIcon = Alfresco.constants.URL_RESCONTEXT + "components/document-details/images/status-"+ event.status + ".png",
             html = "",
-            eventType = "";
-            
+            canUnpublish = false,
+            eventType = "",
+            channelIcon = "",
+            channelTitle = "",
+            channelName = this.msg("publishingHistory.event.unknownChannel"),
+            channelId = "";
+
+         // tolerate null channel (e.g. if channel has been deleted)
+         if (event.channel)
+         {
+            channelIcon = Alfresco.constants.PROXY_URI + event.channel.channelType.icon + "/32";
+            channelTitle = event.channel.channelType.title;
+            channelName = event.channel.title;
+            channelId = event.channel.id;
+            canUnpublish = event.channel.channelType.canUnpublish;
+         }
+         
          // Find the right node in the array of nodes that were published
          for (var i=0; i < event.publishNodes.length; i++) {
             node = event.publishNodes[i];
@@ -193,13 +204,17 @@
             html += '   <h3 class="thin dark">' + $html(nodeName) +  '</h3>';         
             html += '   <span class="actions">';
             // Files can be unpublished only if the channel supports it AND they have successfully been published
-            if (event.channel.channelType.canUnpublish && event.status === "COMPLETED") {
+            if (canUnpublish && event.status === "COMPLETED") {
                html += '		<a href="#" name=".onUnpublishClick" rel="' + nodeRef + '" class="' + this.id + ' unpublish" title="' + this.msg("publishingHistory.action.unpublish") + '">&nbsp;</a>';
             }
             html += '   </span>';
             html += '   <div class="clear"></div>';
             html += '   <div class="channel-details">';
-            html += '      <img src="' + $html(channelIcon) + '" alt="' + $html(eventType) + '" title="' + $html(eventType) + '"/><span class="channel-name">' + $html(eventType) + '<span>';
+            if (channelIcon !== "")
+            {
+               html += '   <img src="' + $html(channelIcon) + '" alt="' + $html(channelTitle) + '" title="' + $html(channelTitle) + '"/>';
+            }
+            html += '      <span class="channel-name">' + $html(eventType) + '<span>';
             html += '   </div>';
             html += '   <div class="status-details">';
             html += '      <img src="' + $html(statusIcon) + '" alt="' + $html(statusType) + '" title="' + $html(statusType) + '"/><span class="status">' + statusDisplay + '<span>';
@@ -222,6 +237,7 @@
        */
       doRefresh: function DocumentPublishing_doRefresh()
       {
+         console.log("do refresh");
          YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
          // TODO Update this Refreshing URL.
          //this.refresh('components/document-details/document-versions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' :  ''));

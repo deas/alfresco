@@ -19,7 +19,7 @@
          <div class="yui-u first">
             <div class="title">${msg("channelAdmin.title")}</div>
          </div>
-         <div class="yui-u align-right flat-button">
+         <div class="yui-u align-right">
             <!-- New Channel Button -->
             <div class="new-button">
                <span class="yui-button yui-menu-button" id="${el}-new-button">

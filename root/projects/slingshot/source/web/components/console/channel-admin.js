@@ -90,6 +90,7 @@
        * @value {Object}
        *    state: {boolean} - are we waiting?
        *    callback: {string} - the callback URL.
+       *    reauth:  {boolean} - is this a reauthentication request?
        * @method set - sets the state & callback
        * @method reset - resets the state.
        */
@@ -97,15 +98,23 @@
 		{
 			state: false,
 			callback: "",
-			set: function consoleChannels_isWaiting_set(callback) 
+			reauth: false,
+			channelId: "",
+			set: function consoleChannels_isWaiting_set(callback, channelId, reauth) 
 			{
 				this.state = true;
 				this.callback = callback;
+				this.channelId = channelId;
+				if (reauth) 
+				{
+					this.reauth = reauth;
+				}
 			},
 			reset: function consoleChannels_isWaiting_reset()
 			{
 				this.state = false;
-				this.callback = "";
+				this.callback = this.channelId = "";
+				this.reauth = false;
 			}
 		},
       
@@ -116,6 +125,16 @@
        */
       authWindow: null,
       
+		/**
+		 * Contains details for instantiating Insitu editors
+		 * (array generated during cell rendering, editors instantiated after DOM written.)
+		 * 
+		 * @property insituEditors
+		 * @type array
+		 * 
+		 */
+		insituEditors: [],
+		
       /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
@@ -166,12 +185,16 @@
                }],
                config: 
                {
-                  MSG_EMPTY: this.msg("message.noVersions")
+                  MSG_EMPTY: this.msg("channelAdmin.noChannels")
                }
             }
          });
          
-			this.widgets.channelDataTable.widgets.dataTable.subscribe("cellClickEvent", this.onChannelInteraction, this, true); 
+			// Set up Data Table event listeners
+			var dt = this.widgets.channelDataTable.widgets.dataTable;
+			
+			dt.subscribe("cellClickEvent", this.onChannelInteraction, this, true); 
+			dt.subscribe("renderEvent", this.onRenderEvent, this, true);
 			
       },
       
@@ -183,7 +206,7 @@
        */
       renderCellChannel: function consoleChannels_renderCellChannel(elCell, oRecord, oColumn, oData)
       {
-         elCell.innerHTML = this.renderChannel(oRecord.getData());
+         elCell.innerHTML = this.renderChannel(oRecord);
       },
       
       /**
@@ -192,25 +215,61 @@
        * @method renderChannel
        * @param {Object} channel
        */
-      renderChannel: function consoleChannels_renderChannel(channel)
+      renderChannel: function consoleChannels_renderChannel(oRecord)
       {
-         var rel = ' rel="' + channel.id + '"', 
+         var channel = oRecord.getData(), 
+			   rel = ' rel="' + channel.id + '"', 
 			   deleteLink = '<a href=# class="channelAction delete" ' + rel + ' title="' + this.msg("channelAdmin.delete.tooltip") + '">' + this.msg("channelAdmin.delete") + '</a>',
 			   permissionsLink= '<a href="' + Alfresco.constants.URL_PAGECONTEXT + 'manage-permissions?nodeRef=' + channel.id + '" class="channelAction permissions" ' + rel + ' title="' + this.msg("channelAdmin.permissions.tooltip") + '">' + this.msg("channelAdmin.permissions") + '</a>',
 			   reauth = '<a href=# class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>',
             status = "authorised",
 				title = this.msg("channelAdmin.authorised.tooltip"),
-				image = '<img src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "/64" + '" title="' + channel.channelType.title + '"/>'
+				image = '<img src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "/64" + '" title="' + $html(channel.channelType.title) + '"/>',
+				channelNameId = this.id + "-channelName-" + oRecord.getId(),
             html = "";
          
 			// Has the channel authorisation failed?
-			if (channel.authorised !== "true" ) 
+			if (channel.authorised !== true ) 
 			{
 				status = "notAuthorised";
 				title = this.msg("channelAdmin.notAuthorised.tooltip")
 			}
 			
-         html += '<div class="channel ' + status + '" title="' + title + '">' + image + '<span class="channelName">' + channel.name + '</span><span class="channelActions">' + permissionsLink + reauth + deleteLink + '</span></div>'
+         html += '<div class="channel ' + status + '" title="' + title + '" rel="' + channel.id + '">' + image + '<span class="channelName" id="' + channelNameId + '">' + $html(channel.name) + '</span><span class="channelActions">' + permissionsLink + reauth + deleteLink + '</span></div>'
+			
+			// Insitu editors
+         this.insituEditors.push(
+         {
+            context: channelNameId,
+            params:
+            {
+               type: "textBox",
+               nodeRef: channel.id,
+               name: "prop_cm_name",
+               value: channel.name,
+               validations: [
+               {
+                  type: Alfresco.forms.validation.nodeName,
+                  when: "keyup",
+                  message: this.msg("validation-hint.nodeName")
+               },
+               {
+                  type: Alfresco.forms.validation.length,
+                  args: { min: 1, max: 255, crop: true },
+                  when: "keyup",
+                  message: this.msg("validation-hint.length.min.max", 1, 255)
+               }],
+               title: this.msg("channelAdmin.insitu-edit.tooltip"),
+               errorMessage: this.msg("channelAdmin.insitu-edit.failure")
+            },
+            callback:
+            {
+               fn: this.onChannelRename,
+               scope: this,
+               obj: channel
+            }
+         });
+			
          return html;
       },
       
@@ -242,7 +301,7 @@
                {
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: this.msg("channelAdmin.failure")
+                     text: this.msg("channelAdmin.createChannel.failure")
                   });
                },
                scope: this
@@ -259,7 +318,7 @@
       onCreateChannelSuccess: function consoleChannels_onCreateChannelSuccess(response)
       {
          // Begin the authorisation process.
-         this.authoriseChannel(response);
+         this.authoriseChannel(response, false);
       },
       
       /**
@@ -269,17 +328,23 @@
        * @method authoriseChannel
        * @param {Object} authUrl
        */
-		authoriseChannel: function consoleChannels_authoriseChannel(response)
+		authoriseChannel: function consoleChannels_authoriseChannel(response, reauth)
 		{
 			// Parse the response and retrieve the URL
          var authUrl = response.json.data.authoriseUrl,
-			   callbackUrl = response.json.data.authCallbackUrl;
+			   callbackUrl = response.json.data.authCallbackUrl,
+				channelId = response.json.data.channelId,
+				reauth = reauth || false;
          
 			// Open the auth window & save the handler.
 			this.authWindow = window.open(authUrl);
 			
+			if (reauth === false) 
+         {
+			   	
+			}
 			// Let the module know it's waiting for a callback.
-         this.isWaiting.set(callbackUrl);
+         this.isWaiting.set(callbackUrl, channelId, reauth);
 		},
 		
       /**
@@ -331,6 +396,31 @@
 			{
 				this.onReauthChannel(o.event, args);
 			}
+		},
+		
+		/**
+		 * Triggered after the data table has been rendered
+		 * 
+		 * @method onRenderEvent
+		 * @param {Object} o
+		 * @param {Object} args
+		 */
+		onRenderEvent: function consoleChannels_onRenderEvent(o, args)
+		{
+	         // Register insitu editors
+            var iEd;
+            for (i = 0, j = this.insituEditors.length; i < j; i++)
+            {
+               iEd = this.insituEditors[i];
+               Alfresco.util.createInsituEditor(iEd.context, iEd.params, iEd.callback);
+            }
+
+		},
+		
+		onChannelRename: function consoleChannels_onChannelRename(o, args)
+		{
+			// insitu editor handles the form submission, so we just need to refresh the data.
+			this.refresh();
 		},
 		
 		/**
@@ -437,7 +527,7 @@
                {
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: this.msg("channelAdmin.failure")
+                     text: this.msg("channelAdmin.auth.failure")
                   });
                },
                scope: this
@@ -454,7 +544,7 @@
 		onReauthSuccess: function consoleChannels_onReauthSuccess(response)
 		{
 			// Begin the authorisation process using that URL.
-         this.authoriseChannel(response);
+         this.authoriseChannel(response, true);
 		},
 		
       /**
@@ -508,7 +598,7 @@
 			// Submit to authoriseCallback URL
          Alfresco.util.Ajax.request(
          {
-            url: localUrl + "?" + encodeURIComponent(token),
+            url: localUrl + "?" + token,
             successCallback: 
             {
                fn: this.onAuthComplete,
@@ -520,7 +610,7 @@
                {
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: this.msg("channelAdmin.failure")
+                     text: this.msg("channelAdmin.auth.failure")
                   });
                },
                scope: this
@@ -535,9 +625,27 @@
        */
       onAuthComplete: function consoleChannels_onAuthComplete()
       {
-         // We're no longer waiting for authentication to complete:
-			this.isWaiting.reset();
+         // If this wasn't a reauth call, let the user know a new channel has been created:
+			if (!this.isWaiting.reauth) 
+			{
+				var balloon = Alfresco.util.createBalloon(this.id,
+            {
+               text: this.msg("channelAdmin.createChannel.success"),
+					width: "20em"
+            });
             
+            balloon.show();
+            
+				// hide the balloon after 10 seconds.
+            YAHOO.lang.later(10000, this, function()
+            {
+               balloon.hide();
+            })
+			}
+			
+			// We're no longer waiting for authentication to complete:
+         this.isWaiting.reset();
+			   
 			// reload channels
 			this.refresh();
       },
@@ -549,8 +657,12 @@
       refresh: function consoleChannels_refresh()
 		{
 			var dataTable = this.widgets.channelDataTable.widgets.dataTable;
+			
 			// Reset the hash.
 			window.location.hash = "";
+			
+			// Remove the insitu editor referrences (these will be recreated when the table is rerendered)
+			this.insituEditors = [];
 			
 			// Reload the dataTable.
 			dataTable.getDataSource().sendRequest('', { success: dataTable.onDataReturnInitializeTable, scope: dataTable });
