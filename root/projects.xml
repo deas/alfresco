@@ -463,16 +463,11 @@
             basedir="${dir.project.system-build-test.classes}" />
    </target>
    
-   <target name="test-system-build-test" 
+   <target name="test-system-build-test"
            depends="incremental-webclient-depends, incremental-webclient, package-repository-bm, package-webserviceclient, package-system-build-test">
-		   
       <!-- TEMP - use Spring 3.0.5 (instead of Spring 3.0.0) - remove once Spring 3.0.5 moves into 3rd-party -->
       
       <path id="temp.classpath.unit.test">
-         <pathelement location="${user.home}" /> 
-         <fileset dir="${dir.project.system-build-test.lib}">
-            <include name="**/*.jar" />
-         </fileset>
       </path>
       <!-- Add on all the 3rd party libs (except Spring 3.0.0) based on the eclipse project -->
       <!-- Includes libs that are both exported and non-exported -->
@@ -515,6 +510,10 @@
       ]]></script>
       
       <path id="temp.classpath.unit.test.extension">
+         <pathelement location="${user.home}" /> 
+         <fileset dir="${dir.project.system-build-test.lib}">
+            <include name="**/*.jar" />
+         </fileset>
 	  <fileset dir="${dir.project.system-build-test.dist}">
             <include name="**/*.jar" />
           </fileset>
@@ -539,16 +538,37 @@
       <property name="tempClasspathExtensionAsText" refid="temp.classpath.unit.test.extension" />
       <echo>temp.classpath.unit.test.extension == ${tempClasspathExtensionAsText}</echo>
       
+  
       <sequential>
+         <!--
+         The classpath is becoming extremely large, so we're going to create a single JAR file that references all of the
+         necessary libraries from the 3rdParty project in the Class-Path attribute of its manifest file. We then just include
+         this single JAR file on the classpath. We delete this JAR file again after we have run the tests.
+         -->
+         <pathconvert property="test-system-build-classpath" pathsep=" ">
+            <path>
+    	       <path refid="temp.classpath.unit.test" />
+             </path>
+             <mapper>
+                <globmapper from="${dir.project.3rdparty.lib}/*" to="*" handledirsep="yes"/>
+             </mapper>
+         </pathconvert>
+
+         <jar destfile="${dir.project.3rdparty.lib}/manifestclasspath.jar">
+            <manifest>
+               <attribute name="Class-Path" value="${test-system-build-classpath}" />
+            </manifest>
+         </jar>
+
          <mkdir dir="${dir.project.system-build-test}/${dir.name.build}/${dir.name.test.results}" />
          <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="${dir.project.system-build-test}" jvm="${env.JAVA_HOME}/bin/java">
+            <classpath>
+                <path refid="temp.classpath.unit.test.extension" />
+                <pathelement location="${dir.project.3rdparty.lib}/manifestclasspath.jar"/>
+            </classpath>
             <jvmarg value="-server"/>
             <jvmarg value="-XX:MaxPermSize=256M"/>
             <jvmarg value="-Dcom.sun.management.jmxremote"/>
-            <classpath>
-               <path refid="temp.classpath.unit.test"/>
-               <path refid="temp.classpath.unit.test.extension"/>
-            </classpath>
             <formatter type="xml" />
             <batchtest todir="${dir.project.system-build-test}/${dir.name.build}/${dir.name.test.results}">
                <fileset dir="${dir.project.system-build-test}/${dir.name.source}/${dir.name.java}">
@@ -556,6 +576,8 @@
                </fileset>
             </batchtest>
          </junit>
+         
+         <delete file="${dir.project.3rdparty.lib}/manifestclasspath.jar" />
       </sequential>
       
       <!--
