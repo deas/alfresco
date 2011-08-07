@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -190,6 +192,27 @@ public abstract class CollectionUtils
     {
         TreeSet<T> set = new TreeSet<T>(values);
         return Collections.unmodifiableSet(set);
+    }
+
+    /**
+     * @param entries
+     * @param function
+     * @return
+     */
+    public static <F, T> Map<F, T> transformToMap(List<F> values,
+            Function<F, T> transformer)
+    {
+        if(isEmpty(values))
+        {
+            return Collections.emptyMap();
+        }
+        HashMap<F, T> results = new HashMap<F, T>(values.size());
+        for (F value : values)
+        {
+            T result = transformer.apply(value);
+            results.put(value, result);
+        }
+        return results;
     }
     
 }
