@@ -166,6 +166,8 @@
             channelTitle = event.channel.channelType.title;
             channelName = event.channel.title;
             channelId = event.channel.id;
+            
+            // we can only unpublish events if the channel still exists and has a canUnpublish flag set
             canUnpublish = event.channel.channelType.canUnpublish;
          }
          
@@ -226,8 +228,89 @@
          return html;
       },
 
-      onUnpublishClick: function DocumentPublishing_onUnpublishClick(){
-         console.log("unpublishing");
+      /**
+       * Triggered by the unpublish channel action button
+       * makes a remote API call the publishing service and adds an unpublish event for this node to the publishing queue.
+       * 
+       * @method onUnpublishClick
+       */
+      onUnpublishClick: function DocumentPublishing_onUnpublishClick(nodeRef, actionEl){
+         var me = this,
+         // get the channel ID from the dataTable record
+            channelId = this.widgets.alfrescoDataTable.widgets.dataTable.getRecord(actionEl).getData().channel.id
+         
+         Alfresco.util.PopupManager.displayPrompt(
+         {
+            title: me.msg("publishingHistory.unpublish.title"),
+            text: me.msg("publishingHistory.unpublish.confirm"),
+            buttons: [
+            {
+               text: me.msg("button.ok"),
+               handler: function()
+               {
+                  this.destroy();
+                  
+                  var deleteURL = Alfresco.constants.PROXY_URI + "/api/publishing/queue"
+         
+                  Alfresco.util.Ajax.request(
+                  {
+                     url: deleteURL,
+                     method: Alfresco.util.Ajax.POST,
+                     requestContentType: "application/json",
+                     responseContentType: "application/json",
+                     dataObj: 
+                     {
+                        "channelId": channelId,
+                        "unpublishNodes": [nodeRef]
+                     },
+                     successCallback: 
+                     {
+                        fn: me.onDeleteChannelSuccess,
+                        scope: me
+                     },
+                     failureCallback: 
+                     {
+                        fn: function consoleChannels_onDeleteChannel_failure(response)
+                        {
+                           Alfresco.util.PopupManager.displayPrompt(
+                           {
+                              text: me.msg("publishingHistory.unpublish.failure")
+                           });
+                        },
+                        scope: me
+                     }
+                  });
+                  
+               }
+            },
+            {
+               text: me.msg("button.cancel"),
+               handler: function()
+               {
+                  this.destroy();
+               },
+               isDefault: true
+            }]
+         });
+         
+      },
+   
+      /**
+       * 
+       * Called when the Ajax call to the Delete API succeeds. 
+       * 
+       * @method onUnpublishSuccess
+       * @param {Object} response
+       */
+      onUnpublishSuccess: function DocumentPublishing_onUnpublishSuccess(response)
+      {
+         Alfresco.util.PopupManager.displayMessage(
+         {
+            text: this.msg("publishingHistory.unpublish.success")
+         });
+         
+         // Reload Channels
+         this.doRefresh();
       },
       
       /**
