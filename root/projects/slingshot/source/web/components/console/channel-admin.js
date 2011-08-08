@@ -220,8 +220,8 @@
          var channel = oRecord.getData(), 
 			   rel = ' rel="' + channel.id + '"', 
 			   deleteLink = '<a href=# class="channelAction delete" ' + rel + ' title="' + this.msg("channelAdmin.delete.tooltip") + '">' + this.msg("channelAdmin.delete") + '</a>',
-			   permissionsLink= '<a href="' + Alfresco.constants.URL_PAGECONTEXT + 'manage-permissions?nodeRef=' + channel.id + '" class="channelAction permissions" ' + rel + ' title="' + this.msg("channelAdmin.permissions.tooltip") + '">' + this.msg("channelAdmin.permissions") + '</a>',
-			   reauth = '<a href=# class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>',
+			   permissionsLink= '<a href="#" class="channelAction permissions" ' + rel + ' title="' + this.msg("channelAdmin.permissions.tooltip") + '">' + this.msg("channelAdmin.permissions") + '</a>',
+				reauth = '<a href=# class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>',
             status = "authorised",
 				title = this.msg("channelAdmin.authorised.tooltip"),
 				image = '<img src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "/64" + '" title="' + $html(channel.channelType.title) + '"/>',
@@ -392,10 +392,14 @@
 			{
 				this.onDeleteChannel(o.event, args);
 			}
-			else if (YAHOO.util.Selector.test(o.event.target, 'a.reauth')) 
-			{
-				this.onReauthChannel(o.event, args);
-			}
+         else if (YAHOO.util.Selector.test(o.event.target, 'a.reauth')) 
+         {
+            this.onReauthChannel(o.event, args);
+         }
+         else if (YAHOO.util.Selector.test(o.event.target, 'a.permissions')) 
+         {
+            this.onPermissionsClick(o.event, args);
+         }
 		},
 		
 		/**
@@ -417,6 +421,14 @@
 
 		},
 		
+		/**
+		 * 
+		 * Triggered after the channel has been renamed
+		 * 
+		 * @method onChannelRename
+		 * @param {Object} o
+		 * @param {Object} args
+		 */
 		onChannelRename: function consoleChannels_onChannelRename(o, args)
 		{
 			// insitu editor handles the form submission, so we just need to refresh the data.
@@ -547,6 +559,89 @@
          this.authoriseChannel(response, true);
 		},
 		
+		/**
+		 * 
+		 * Triggered when someone clicks on the permissions link
+		 * The fires up the manage permissions webscript and supplies the callback that initialises it.
+		 * 
+		 * @method onPermissionsClick
+		 * @param {Object} event
+		 * @param {Object} args
+		 */
+		onPermissionsClick: function consoleChannels_onPermissionClick(event, args)
+		{
+			var nodeRef = event.target.rel;
+			
+			// Load the Permissions GUI
+         Alfresco.util.Ajax.request(
+         {
+            url: Alfresco.constants.URL_SERVICECONTEXT + "components/manage-permissions/manage-permissions?nodeRef=" + nodeRef + "&htmlid=" + this.id,
+            successCallback:
+            {
+               fn: this.onPermissionsTemplateLoaded,
+               scope: this
+            },
+            failureMessage: Alfresco.util.message("channelAdmin.template.error", this.name),
+            execScripts: true
+         });
+         
+		},
+		
+		/**
+		 * 
+		 * Called on successful load of the permissions management HTML.
+		 * 
+		 * @method onPermissionsTemplateLoaded
+		 * @param {Object} response
+		 */
+		onPermissionsTemplateLoaded: function consoleChannels_onPermissionsTemplateLoaded(response)
+		{
+         
+		   var permissionsEl = Dom.get(this.id + "-managepermissions"),
+			   permissionsContainerEl = Dom.get(this.id + "-body"),
+			   nodeRef = Alfresco.util.ComponentManager.findFirst("Alfresco.component.ManagePermissions").options.nodeRef, 
+			   url = Alfresco.constants.PROXY_URI + 'slingshot/doclib/node/' + nodeRef.uri;
+
+         // Write response to DOM and switch to permissions mode (hiding channels UI):
+         permissionsEl.innerHTML = response.serverResponse.responseText;
+         Dom.addClass(permissionsContainerEl, "managePermissions");
+
+         Alfresco.util.Ajax.jsonGet(
+         {
+            url: url,
+            successCallback: 
+            { 
+               fn: function consoleAdmin_getPermissionsDataSuccess(response)
+					{
+						if (response.json !== undefined)
+			         {
+			            var nodeDetails = response.json.item;
+			            
+			            // Fire event to inform any listening components that the data is ready
+			            YAHOO.Bubbling.fire("nodeDetailsAvailable",
+			            {
+			               nodeDetails: nodeDetails,
+			               metadata: response.json.metadata
+			            });
+			         }
+					}, 
+               scope: this 
+            },
+            failureMessage: "Failed to load data for permission details"
+         });
+			
+			// Override the default behaviour, ready for when the permissions page is done.
+			Alfresco.component.ManagePermissions.prototype._navigateForward = function()
+			{
+            // reverse the displays, so the permissions Div is hidden and channels div is shown
+            Dom.removeClass(permissionsContainerEl, "managePermissions");
+				
+				// empty the permissions container
+            permissionsEl.innerHTML = "";
+			}
+			
+		},
+		
       /**
        * Overrides the onStateChanged to listen for token response
        *
@@ -666,6 +761,22 @@
 			
 			// Reload the dataTable.
 			dataTable.getDataSource().sendRequest('', { success: dataTable.onDataReturnInitializeTable, scope: dataTable });
-		}
+		},
+		
+      /**
+       * Prepares the gui and shows the panel.
+       *
+       * @method _showPanel
+       * @private
+       */
+      _showPanel: function consoleChannels__showPanel()
+      {
+         // Enable the Esc key listener
+         this.widgets.escapeListener.enable();
+         
+         // Show the panel
+         this.widgets.panel.show();
+      }
+		
    });
 })();

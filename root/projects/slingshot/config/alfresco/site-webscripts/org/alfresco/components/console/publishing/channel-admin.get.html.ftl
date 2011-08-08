@@ -19,7 +19,7 @@
          <div class="yui-u first">
             <div class="title">${msg("channelAdmin.title")}</div>
          </div>
-         <div class="yui-u align-right">
+         <div class="yui-u align-right permissions-hide">
             <!-- New Channel Button -->
             <div class="new-button">
                <span class="yui-button yui-menu-button" id="${el}-new-button">
@@ -47,7 +47,7 @@
    </div>
 	
 	
-   <div id="${el}-datatable"></div>
-      
+   <div id="${el}-datatable" class="permissions-hide channellist"></div>
+   <div id="${el}-managepermissions" class="permissions-show"></div>
 
 </div>

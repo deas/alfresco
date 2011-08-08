@@ -61,7 +61,7 @@ div.channel .channelActions a.first
    border-left: 1px solid #CACACA;
 }
 
-div.channels tr
+div.channellist tr
 {
    display: block;
    float: left;
@@ -70,13 +70,13 @@ div.channels tr
 	min-height: 10em;
 }
 
-div.channels tr td
+div.channellist tr td
 {
    border: none !important;
    display: block;
 }
 
-div.channels td.yui-dt-empty
+div.channellist td.yui-dt-empty
 {
    width: 600px;
 }
@@ -103,15 +103,29 @@ a.newChannelAction
 }
 
 /* Insitu Editor Styling */
-div.channels form.insitu-edit input
+div.channellist form.insitu-edit input
 {
    margin-right:0;
    width: 160px;
 	text-align:center;
 }
 
-div.channels span.insitu-edit
+div.channellist span.insitu-edit
 {
    margin-left: 42px;
    margin-top: -20px;
+}
+
+.permissions-show {
+	display:none;
+}
+
+div.channels.managePermissions .permissions-hide 
+{
+	display:none;
+}
+
+div.channels.managePermissions .permissions-show 
+{
+   display:block;
 }

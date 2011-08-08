@@ -371,7 +371,7 @@
          Alfresco.util.Ajax.request(
          {
             url: Alfresco.constants.PROXY_URI + "api/publishing/queue",
-            method: "POST",
+            method: Alfresco.util.Ajax.POST,
             requestContentType: "application/json",
             responseContentType: "application/json",
             dataObj: publishData,
