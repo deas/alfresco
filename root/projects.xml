@@ -563,8 +563,8 @@
          <mkdir dir="${dir.project.system-build-test}/${dir.name.build}/${dir.name.test.results}" />
          <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="${dir.project.system-build-test}" jvm="${env.JAVA_HOME}/bin/java">
             <classpath>
-                <path refid="temp.classpath.unit.test.extension" />
                 <pathelement location="${dir.project.3rdparty.lib}/manifestclasspath.jar"/>
+                <path refid="temp.classpath.unit.test.extension" />
             </classpath>
             <jvmarg value="-server"/>
             <jvmarg value="-XX:MaxPermSize=256M"/>
