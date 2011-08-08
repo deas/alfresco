@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
+import org.alfresco.opencmis.dictionary.CMISNodeInfo;
 import org.alfresco.opencmis.dictionary.PropertyDefintionWrapper;
 import org.alfresco.opencmis.dictionary.TypeDefinitionWrapper;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
@@ -57,6 +58,8 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
 
     private Map<String, Float> scores;
 
+    private Map<NodeRef, CMISNodeInfo> nodeInfos;
+    
     private NodeService nodeService;
 
     private CMISDictionaryService cmisDictionaryService;
@@ -83,6 +86,10 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
         this.scores = scores;
     }
 
+    public void setNodeInfos(Map<NodeRef, CMISNodeInfo> nodeInfos) {
+        this.nodeInfos = nodeInfos;
+    }
+    
     /**
      * @param nodeService
      *            the nodeService to set
@@ -142,7 +149,15 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Serializable getProperty(NodeRef nodeRef, String propertyName)
     {
         PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyAccessor().getValue(nodeRef);
+        
+        CMISNodeInfo nodeInfo = nodeInfos.get(nodeRef);
+        if (nodeInfo == null) 
+        {
+            nodeInfo = propertyDef.getPropertyAccessor().createNodeInfo(nodeRef);
+            nodeInfos.put(nodeRef, nodeInfo);
+        }
+        
+        return propertyDef.getPropertyAccessor().getValue(nodeInfo);
     }
 
     /*

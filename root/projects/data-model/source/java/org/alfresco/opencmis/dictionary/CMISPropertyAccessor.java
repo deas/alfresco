@@ -54,27 +54,20 @@ public interface CMISPropertyAccessor
     void setValue(NodeRef nodeRef, Serializable value);
 
     /**
-     * Get the property value for a node
-     * 
-     * @param nodeRef
-     * @return
-     */
-    Serializable getValue(NodeRef nodeRef);
-
-    /**
-     * Get the property value for an association
-     * 
-     * @param nodeRef
-     * @return
-     * @deprecated Alfresco 3.x CMIS implementation
-     */
-    Serializable getValue(AssociationRef assocRef);
-
-    /**
      * Get the property value for a node or an association
      * 
      * @param nodeInfo
      * @return
      */
     Serializable getValue(CMISNodeInfo nodeInfo);
+
+    /**
+     * Creates a node info object form the given node ref.
+     */
+    CMISNodeInfo createNodeInfo(NodeRef nodeRef);
+
+    /**
+     * Creates a node info object form the given association ref.
+     */
+    CMISNodeInfo createNodeInfo(AssociationRef assocRef);
 }
