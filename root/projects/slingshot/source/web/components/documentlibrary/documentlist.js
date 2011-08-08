@@ -29,7 +29,8 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-      Event = YAHOO.util.Event;
+       Event = YAHOO.util.Event,
+       DDM = YAHOO.util.DragDropMgr;
 
    /**
     * Alfresco Slingshot aliases
@@ -52,6 +53,261 @@
       PREF_SHOW_FOLDERS = PREFERENCES_DOCLIST + ".showFolders",
       PREF_SIMPLE_VIEW = PREFERENCES_DOCLIST + ".simpleView";
 
+   
+   
+   /**
+    * Document Library Drag and Drop object declaration.
+    */
+   Alfresco.DnD = function(id, docLib, sGroup, config) 
+   {
+      Alfresco.DnD.superclass.constructor.call(this, id, sGroup, config);
+      var el = this.getDragEl();
+      Dom.setStyle(el, "opacity", 0.67);
+      this.docLib = docLib;
+   };
+   
+   /**
+    * Extend the default YUI drag and drop proxy object to handle DocumentLibrary move operations.
+    */
+   YAHOO.extend(Alfresco.DnD, YAHOO.util.DDProxy, 
+   {
+      /**
+       * A flag used to indicate whether or not an asynchronous move operation request is in progress.
+       */
+      _inFlight: false,
+      
+      /**
+       * Handles the beginning of a drag operation by setting up the proxy image element.
+       */
+      startDrag: function(x, y) 
+      {
+          var dragEl = this.getDragEl();
+          var clickEl = this.getEl();
+          Dom.setStyle(clickEl, "visibility", "hidden");
+          var proxyImg = document.createElement("img");
+          proxyImg.src = clickEl.src;
+          dragEl.removeChild(dragEl.firstChild);
+          dragEl.appendChild(proxyImg);
+          Dom.setStyle(dragEl, "border", "none");
+      },
+
+      /**
+       * Handles the end of the drag operation. Because the move operation is asynchronous
+       * it is not know if the operation has been a success at the time this function is 
+       * invoked so it uses the _inFlight variable to check whether or not a valid drop
+       * target was used.
+       * 
+       * @param The event object
+       */
+      endDrag: function(e)
+      {
+         if (!this._inFlight)
+         {
+            var srcEl = this.getEl();
+            var proxy = this.getDragEl();
+            this.animateResult(proxy, srcEl);
+         }
+      },
+      
+      /**
+       * Animates an object to move it to the location of a target object. This should typically
+       * be animating the proxy object to return to its source.
+       * 
+       * @param objectToAnimate The object to animate
+       * @param animationTarget The object to create a motion animation to
+       */
+      animateResult: function(objectToAnimate, animationTarget) 
+      {
+          Dom.setStyle(objectToAnimate, "visibility", "");
+          var a = new YAHOO.util.Motion( 
+                objectToAnimate, { 
+                  points: { 
+                      to: Dom.getXY(animationTarget)
+                  }
+              }, 
+              0.2, 
+              YAHOO.util.Easing.easeOut 
+          );
+          var proxyid = objectToAnimate.id;
+          var thisid = this.id;
+
+          a.onComplete.subscribe(function() {
+                  Dom.setStyle(proxyid, "visibility", "hidden");
+                  Dom.setStyle(thisid, "visibility", "");
+              });
+          a.animate();
+      },
+
+      /**
+       * Handles a drop operation by determining whether or not a valid drop has been performed (e.g.
+       * a document or folder onto a folder - NOT a document) and then fires a request to perform
+       * the move operation.
+       * 
+       * @param e The event object
+       * @param id The id of the element that the proxy has been dropped onto
+       */
+      onDragDrop: function(e, id) 
+      {
+          if (DDM.interactionInfo.drop.length === 1) 
+          {
+              var targetRecord = this.docLib.widgets.dataTable.getRecord(Dom.get(id)),
+                  targetNode = targetRecord.getData();
+              
+              if (targetNode.node.isContainer)
+              {
+                 // Indicate that a request is about to be made - this will prevent the endDrag
+                 // function from animating the proxy to return to its source...
+                 this._inFlight = true;
+                 
+                 var toMoveRecord = this.docLib.widgets.dataTable.getRecord(this.getEl()),
+                     webscriptName = "move-to/node/{nodeRef}",
+                     nodeRef = new Alfresco.util.NodeRef(targetNode.nodeRef),
+                     multipleFiles = []; 
+                     multipleFiles.push(this.getEl().id);
+                 
+                 // Success callback function:
+                 // If the operation succeeded then update the tree and refresh the document list.
+                 var fnSuccess = function DLCMT__onOK_success(p_data)
+                 {
+                    this._inFlight = false; // Indicate that a request is no longer "in-flight"
+                    
+                    var result,
+                        successCount = p_data.json.successCount,
+                        failureCount = p_data.json.failureCount;
+
+                    // Did the operation NOT succeed?
+                    if (!p_data.json.overallSuccess)
+                    {
+                       this.animateResult(this.getDragEl(), this.getEl());
+                       Alfresco.util.PopupManager.displayMessage(
+                       {
+                          text: this.docLib.msg("message.failure")
+                       });
+                       return;
+                    }
+
+                    // Refresh the document list...
+                    this.docLib._updateDocList.call(this.docLib);
+                    
+                    // Update the tree if a folder has been moved...
+                    var moved = toMoveRecord.getData();
+                    if (moved.node.isContainer)
+                    {
+                       YAHOO.Bubbling.fire("folderMoved",
+                       {
+                          multiple: true,
+                          nodeRef: moved.nodeRef,
+                          destination: targetNode.location.path + "/" + targetNode.location.file
+                       });
+                    }
+                    
+                    // Display a success message...
+                    Alfresco.util.PopupManager.displayMessage(
+                    {
+                       text: this.docLib.msg("message.success", successCount)
+                    });
+                 };
+
+                 // Failure callback function:
+                 // If the move operation has failed then animate the proxy to return it to the
+                 // location from which it was dragged. Also, post a failure message.
+                 var fnFailure = function DLCMT__onOK_failure(p_data)
+                 {
+                    this._inFlight = false; // Indicate that a request is no longer "in-flight"
+                    this.animateResult(this.getDragEl(), this.getEl());
+                    Alfresco.util.PopupManager.displayMessage(
+                    {
+                       text: this.docLib.msg("message.failure")
+                    });
+                 };
+                 
+                 // Make the request to move the dragged object to the target
+                 this.docLib.modules.actions.genericAction(
+                 {
+                    success:
+                    {
+                       callback:
+                       {
+                          fn: fnSuccess,
+                          scope: this
+                       }
+                    },
+                    failure:
+                    {
+                       callback:
+                       {
+                          fn: fnFailure,
+                          scope: this
+                       }
+                    },
+                    webscript:
+                    {
+                       method: Alfresco.util.Ajax.POST,
+                       name: webscriptName,
+                       params:
+                       {
+                          nodeRef: nodeRef.uri
+                       }
+                    },
+                    wait:
+                    {
+                       message: this.docLib.msg("message.please-wait")
+                    },
+                    config:
+                    {
+                       requestContentType: Alfresco.util.Ajax.JSON,
+                       dataObj:
+                       {
+                          nodeRefs: multipleFiles,
+                          parentId: this.docLib.doclistMetadata.parent.nodeRef
+                       }
+                    }
+                 });
+              }
+              else
+              {
+                 // An attempt was made to drop a document or folder into a document - NOT a folder
+                 this.animateResult(this.getDragEl(), this.getEl());
+              }
+          }
+      },
+      
+      /**
+       * If the element the proxy has been dragged over is a folder, then style class indicating
+       * that it is a viable drop target is added.
+       * 
+       * @param e The event object
+       * @param id The id of the element that the proxy has been dragged over
+       */
+      onDragOver: function(e, id) 
+      {
+          var destEl = Dom.get(id);
+          if (destEl.tagName == "IMG" || destEl.className == "droppable")
+          {
+             this.dragFolderHighlight = Dom.getAncestorByClassName(destEl, "folder");
+             Dom.addClass(this.dragFolderHighlight, "dndFolderHighlight");
+          }
+      },
+      
+      /**
+       * If the element the proxy has been dragged out of is a folder, then style class indicating
+       * that it is a viable drop target is removed.
+       * 
+       * @param e The event object
+       * @param id The id of the element that the proxy has been dragged out of
+       */
+      onDragOut: function(e, id) 
+      {
+         var destEl = Dom.get(id);
+         if (destEl.tagName == "IMG" || destEl.className == "droppable")
+         {
+            this.dragFolderHighlight = Dom.getAncestorByClassName(destEl, "folder");
+            Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
+         }
+      }
+   });
+
+   
    /**
     * DocumentList constructor.
     *
@@ -1028,8 +1284,12 @@
                name = record.displayName,
                isContainer = node.isContainer,
                isLink = node.isLink,
-               extn = name.substring(name.lastIndexOf("."));
+               extn = name.substring(name.lastIndexOf(".")),
+               imgId = node.nodeRef.nodeRef; // DD added
 
+            
+            var containerTarget; // This will only get set if thumbnail represents a container
+            
             if (scope.options.simpleView)
             {
                /**
@@ -1041,12 +1301,13 @@
 
                if (isContainer)
                {
-                  elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
+                  elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
+                  containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
                }
                else
                {
                   var id = scope.id + '-preview-' + oRecord.getId();
-                  elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+                  elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
 
                   // Preview tooltip
                   scope.previewTooltips.push(id);
@@ -1063,13 +1324,18 @@
 
                if (isContainer)
                {
-                  elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
+                  elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
+                  containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
                }
                else
                {
-                  elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(oRecord) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+                  elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img id="' + imgId + '" src="' + Alfresco.DocumentList.generateThumbnailUrl(oRecord) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
                }
             }
+            
+
+            var dnd = new Alfresco.DnD(imgId, scope);
+            
          };
       },
 
