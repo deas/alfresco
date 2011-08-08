@@ -78,6 +78,7 @@
          <url>/components/manage-permissions/manage-permissions</url>
          <properties>
             <pagination>true</pagination>
+            <nodeRef>{nodeRef}</nodeRef>
          </properties>
       </component>
 
