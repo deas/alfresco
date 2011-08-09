@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2005-2010 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.repo.transfer.fsr;
 
 import java.io.BufferedOutputStream;
@@ -7,8 +25,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.SAXParser;
@@ -93,6 +113,8 @@ public class FileTransferReceiver implements TransferReceiver
     private FileTransferInfoDAO fileTransferInfoDAO;
 
     private String fileTransferRootNodeRef;
+
+    private Set<String> setOfNodesBeforeSyncMode;
 
     public void cancel(String transferId) throws TransferException
     {
@@ -989,6 +1011,40 @@ public class FileTransferReceiver implements TransferReceiver
     protected File getSnapshotFile(String transferId)
     {
         return new File(getStagingFolder(transferId), SNAPSHOT_FILE_NAME);
+    }
+
+    /*
+     * Reset the set of nodes that should be used when handling sync=true
+     * This is the initial set of nodes.
+     */
+    public void resetListOfNodesBeforeSyncMode()
+    {
+        this.setOfNodesBeforeSyncMode = new HashSet<String>(500);
+    }
+
+    /*
+     * Build the list of nodes that should be considered when handling sync=true
+     * This set comes from the DB. The set of nodes that will be deleted
+     * in sync mode will be the set build when removing the received nodes
+     * from this set (the one that where in the DB before transfer).
+     */
+    public void updateListOfDescendantsForSyncMode(String nodeRef)
+    {
+        this.setOfNodesBeforeSyncMode.add(nodeRef);
+        // get all children of nodeToModify
+        List<FileTransferInfoEntity> childrenList = this.findFileTransferInfoByParentNodeRef(nodeRef);
+        // iterate on children
+        for (FileTransferInfoEntity curChild : childrenList)
+        {
+            if (this.setOfNodesBeforeSyncMode.contains(curChild.toString()))
+                continue;
+            updateListOfDescendantsForSyncMode(curChild.getNodeRef().toString());
+        }
+    }
+
+    public Set<String> getListOfDescendentsForSyncMode()
+    {
+        return this.setOfNodesBeforeSyncMode;
     }
 
     /**

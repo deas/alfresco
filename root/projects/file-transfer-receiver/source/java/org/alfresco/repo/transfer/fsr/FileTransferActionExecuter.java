@@ -79,7 +79,7 @@ public class FileTransferActionExecuter extends ActionExecuterAbstractBase
             newTarget.setEndpointProtocol("http");
             newTarget.setEndpointHost("localhost");
             newTarget.setEndpointPort(9090);
-            newTarget.setEndpointPath("/ftreceiver/service/api/transfer");
+            newTarget.setEndpointPath("/alfresco-ftr/service/api/transfer");
             newTarget.setName(TARGET_NAME);
             newTarget.setTitle("FTR test title target");
             newTarget.setUsername("phil");

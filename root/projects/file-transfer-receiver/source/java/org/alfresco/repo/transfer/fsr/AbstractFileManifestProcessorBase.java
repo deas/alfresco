@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2005-2010 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.repo.transfer.fsr;
 
 import java.io.File;
@@ -17,13 +35,15 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
     protected static String TEMP_VIRT_ROOT = "T_V_R_1234432123478";
     protected FileTransferReceiver fTReceiver;
     protected String fTransferId;
+    protected boolean isSync;
+
 
     public AbstractFileManifestProcessorBase(TransferReceiver receiver, String transferId)
     {
         super(receiver, transferId);
         this.fTReceiver = (FileTransferReceiver)receiver;
         this.fTransferId = transferId;
-        
+
     }
 
     @Override
@@ -36,8 +56,7 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
     @Override
     protected void processHeader(TransferManifestHeader header)
     {
-        // TODO Auto-generated method stub
-
+        isSync = header.isSync();
     }
 
     @Override

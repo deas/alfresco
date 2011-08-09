@@ -20,7 +20,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
             <property name="driverClassName"><value>org.apache.derby.jdbc.EmbeddedDriver</value></property>
-            <property name="url"><value>jdbc:derby:/home/philippe/DEV_FSR/SNAPSHOTS/FSTR/root/projects/FSR/derbyDB;create=true;user=alfresco;password=alfresco</value></property>
+            <property name="url"><value>jdbc:derby:/home/philippe/DEV_FSR/SNAPSHOTS/FSTR3/FSTR/root/projects/file-transfer-receiver/derbyDB;create=true;user=alfresco;password=alfresco</value></property>
             <property name="poolPreparedStatements"><value>false</value></property>
             <property name="maxActive"><value>5</value></property>
             <property name="maxIdle"><value>5</value></property>

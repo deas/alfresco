@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+
+    <bean id="ftr-action" class="org.alfresco.repo.transfer.fsr.FileTransferActionExecuter" parent="action-executer">
+        <property name="transferService">
+            <ref bean="TransferService2" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+    </bean>
+
+    <bean id="random-ftr-action" class="org.alfresco.repo.transfer.fsr.RandomFileTransferActionExecuter" parent="action-executer">
+        <property name="transferService">
+            <ref bean="TransferService2" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+        <property name="fileFolderService">
+            <ref bean="FileFolderService" />
+        </property>
+    </bean>
+
+    <bean id="delete-ftr-action" class="org.alfresco.repo.transfer.fsr.DeleteFileTransferActionExecuter" parent="action-executer">
+        <property name="transferService">
+            <ref bean="TransferService2" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+        <property name="fileFolderService">
+            <ref bean="FileFolderService" />
+        </property>
+    </bean>
+
+    <bean id="sync-random-ftr-action" class="org.alfresco.repo.transfer.fsr.SyncRandomFileTransferActionExecuter" parent="action-executer">
+        <property name="transferService">
+            <ref bean="TransferService2" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+        <property name="fileFolderService">
+            <ref bean="FileFolderService" />
+        </property>
+    </bean>
+
+
+    <!-- Load the ftr Action Messages -->
+    <bean id="ftr-action-messages" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">
+        <property name="resourceBundles">
+            <list>
+                <value>org.alfresco.repo.transfer.fsr.ftr-action-messages</value>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

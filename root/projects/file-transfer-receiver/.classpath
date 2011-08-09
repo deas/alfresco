@@ -49,7 +49,7 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/ehcache-core-2.0.0.jar" sourcepath="/3rd Party/src/ehcache-core-2.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jug-asl-2.0.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/dom4j-1.6.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Remote API"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Remote API"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

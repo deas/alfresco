@@ -122,14 +122,14 @@
 	</path>
 
 	<target name="clean">
-		<delete>
+		<delete quiet="true" >
 			<fileset dir="${build.dir}" includes="**/*" />
 		</delete>
-		<delete dir="${temp.dir}" />
-		<delete dir="${temp.dir.classes}" />
-		<delete dir="${temp.dir.meta-inf}" />
-		<delete dir="${temp.dir.web-inf}" />
-		<delete file="${package.file}" />
+		<delete quiet="true" dir="${temp.dir}" />
+		<delete quiet="true" dir="${temp.dir.classes}" />
+		<delete quiet="true" dir="${temp.dir.meta-inf}" />
+		<delete quiet="true" dir="${temp.dir.web-inf}" />
+		<delete quiet="true" file="${package.file}" />
 	</target>
 
 	<target name="prepare" depends="clean">
@@ -147,7 +147,7 @@
 		<manifestclasspath jarfile="${jar.file}" property="manifest.classpath">
 		  <classpath refid="launcher.classpath"/>
 		</manifestclasspath>
-		
+
 		<jar destfile="${jar.file}" basedir="${temp.dir.classes}" includes="org/alfresco/repo/transfer/fsr/FileTransferMainEmbedded.class">
 			<manifest>
 				<attribute name="Main-Class" value="org.alfresco.repo.transfer.fsr.FileTransferMainEmbedded" />
@@ -178,7 +178,7 @@
 	<!-- PACKAGE -->
 	<target name="package-action" depends="compile">
 		<copy todir="${temp.dir.alfresco}">
-			<fileset dir="${src.dir}">
+			<fileset dir="${config.dir}">
 				<include name="**/ftr-action-context.xml" />
 			</fileset>
 		</copy>
@@ -190,8 +190,9 @@
 				<include name="**/FileTransferActionExecuter.class" />
 				<include name="**/RandomFileTransferActionExecuter.class" />
 				<include name="**/DeleteFileTransferActionExecuter.class" />
+                <include name="**/SyncRandomFileTransferActionExecuter.class" />
 			</fileset>
-			<fileset dir="${src.dir}">
+			<fileset dir="${src.dir}/java">
 				<include name="**/ftr-action-messages.properties" />
 			</fileset>
 		</jar>

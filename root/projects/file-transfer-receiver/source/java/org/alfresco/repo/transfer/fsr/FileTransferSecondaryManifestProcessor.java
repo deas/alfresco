@@ -1,23 +1,43 @@
+/*
+ * Copyright (C) 2005-2010 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.repo.transfer.fsr;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.transfer.AbstractManifestProcessorBase;
 import org.alfresco.repo.transfer.TransferCommons;
 import org.alfresco.repo.transfer.TransferProcessingException;
 import org.alfresco.repo.transfer.manifest.TransferManifestDeletedNode;
-import org.alfresco.repo.transfer.manifest.TransferManifestHeader;
 import org.alfresco.repo.transfer.manifest.TransferManifestNormalNode;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
-import org.springframework.util.FileCopyUtils;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.FileCopyUtils;
 
 public class FileTransferSecondaryManifestProcessor extends AbstractFileManifestProcessorBase
 {
@@ -25,6 +45,8 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
 
 
     protected List<TransferManifestNormalNode> waitingNodeList;
+
+    protected Set<String> receivedNodes;
 
     public FileTransferSecondaryManifestProcessor(TransferReceiver receiver, String transferId)
     {
@@ -39,7 +61,10 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             log.debug("Processing manigest started");
         }
 
+
         waitingNodeList = new ArrayList<TransferManifestNormalNode>();
+        //reset the set of received nodes.
+        receivedNodes = new HashSet<String>();
     }
 
 
@@ -80,13 +105,68 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
         {
             tvr.delete();
         }
+
+        //if isSyncMode = true the do the implicit delete
+        if(this.isSync)
+        {
+            Set<String> nodesToDeleteInSyncMode = fTReceiver.getListOfDescendentsForSyncMode();
+            System.out.println("nodesToDeleteInSyncMode");dumpSet(nodesToDeleteInSyncMode);
+            System.out.println("this.receivedNodes");dumpSet(this.receivedNodes);
+            nodesToDeleteInSyncMode.removeAll(this.receivedNodes);
+            System.out.println("nodesToDeleteInSyncMode after remove:");dumpSet(nodesToDeleteInSyncMode);
+            //delete all the remaining nodes depth first
+            while(!nodesToDeleteInSyncMode.isEmpty())
+                purgeDepthFirst(nodesToDeleteInSyncMode, nodesToDeleteInSyncMode.toArray()[0].toString());
+        }
     }
 
-    @Override
-    protected void processHeader(TransferManifestHeader header)
-    {
+   protected void dumpSet(Set<String> set)
+   {
+       Iterator<String> i = set.iterator();
+       while(i.hasNext())
+       {
+           String s = i.next();
+           System.out.print(":" + s);
+       }
+   }
 
-    }
+   protected void purgeDepthFirst(Set<String> nodesToDeleteInSyncMode,String nodeRef)
+   {
+
+
+       // get all children of nodeToModify
+       List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(nodeRef.toString());
+       // iterate on children
+       for (FileTransferInfoEntity curChild : childrenList)
+       {
+           purgeDepthFirst(nodesToDeleteInSyncMode,curChild.getNodeRef());
+       }
+
+       //delete node on file system
+       FileTransferInfoEntity deletedNode = fTReceiver.findFileTransferInfoByNodeRef(nodeRef);
+
+       // If null just log and ignore
+       // delete on FS
+       String pathFileOrFolderToBeDeleted = fTReceiver.getDefaultReceivingroot() + deletedNode.getPath()
+               + deletedNode.getContentName();
+
+       File fileOrFolderToBeDeleted = new File(pathFileOrFolderToBeDeleted);
+
+       try
+       {
+           fileOrFolderToBeDeleted.delete();
+       }
+       catch (Exception e)
+       {
+           log.error("Failed to delete :" + pathFileOrFolderToBeDeleted, e);
+           throw new TransferException("Failed to delete node:", e);
+
+       }
+       //delete in the DB
+       fTReceiver.deleteNodeByNodeRef(nodeRef);
+       nodesToDeleteInSyncMode.remove(nodeRef);
+   }
+
 
     @Override
     protected void processNode(TransferManifestNormalNode node) throws TransferProcessingException
@@ -99,6 +179,14 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             log.debug("Starting processing node,content Url:" + this.getContentUrl(node));
             log.debug("Starting processing node,content properties:" + node.getProperties());
         }
+
+        //In sync mode, convention is that if a node is not received then it is an implicit delete
+        if(this.isSync)
+        {
+            String nodeRef = node.getNodeRef().toString();
+            receivedNodes.add(nodeRef);
+        }
+
         // check if the node already exist
         Boolean isNodeNew = fTReceiver.isContentNewOrModified(node.getNodeRef().toString(), null);
         String name = (String) node.getProperties().get(ContentModel.PROP_NAME);

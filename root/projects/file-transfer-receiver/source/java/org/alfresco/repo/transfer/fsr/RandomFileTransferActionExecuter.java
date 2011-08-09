@@ -38,17 +38,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Logger action executer. This action will send over a content node to a File Transfer Receiver.
+ * This action will send over a content node to a File Transfer Receiver.
  *
  * @author Philippe Dubois
  */
 public class RandomFileTransferActionExecuter extends ActionExecuterAbstractBase
 {
     /** The logger */
-    private static Log logger = LogFactory.getLog("org.alfresco.repo.transfer.fsr.FileTransferActionExecuter");
+    private static Log logger = LogFactory.getLog("org.alfresco.repo.transfer.fsr.RandomFileTransferActionExecuter");
 
     /** The name of the action */
-    public static final String NAME = "random_ftr-action";
+    public static final String NAME = "random-ftr-action";
     /** Name of the target */
     public static final String TARGET_NAME = "ftr";
 
@@ -78,7 +78,7 @@ public class RandomFileTransferActionExecuter extends ActionExecuterAbstractBase
             newTarget.setEndpointProtocol("http");
             newTarget.setEndpointHost("localhost");
             newTarget.setEndpointPort(9090);
-            newTarget.setEndpointPath("/ftreceiver/service/api/transfer");
+            newTarget.setEndpointPath("/alfresco-ftr/service/api/transfer");
             newTarget.setName(TARGET_NAME);
             newTarget.setTitle("FTR test title target");
             newTarget.setUsername("phil");

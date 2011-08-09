@@ -299,7 +299,8 @@
                     incremental-slingshot,
                     incremental-webeditor,
                     incremental-webeditor-plugin,
-                    incremental-solr" />
+                    incremental-solr,
+                    incremental-file-transfer-receiver" />
 
    <target name="distribute-amps" 
            description="Creates the distribution AMP file for core extensions"
@@ -424,7 +425,8 @@
                     clean-slingshot-projects,
                     clean-webeditor-projects,
                     clean-webserviceclient, 
-                    clean-solr" />
+                    clean-solr,
+                    clean-file-transfer-receiver" />
                     
    <target name="clean-webclient-projects" 
            description="Cleans all projects related to the webclient project" 

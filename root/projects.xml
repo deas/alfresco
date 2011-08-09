@@ -2809,7 +2809,16 @@
 		<clean projectdir="${dir.project.file-transfer-receiver}" />
 	</target>
 
-	<target name="prepare-file-transfer-receiver" depends="init">
+   <target name="incremental-file-transfer-receiver"
+           depends="package-file-transfer-receiver" />
+      
+   <target name="build-file-transfer-receiver" 
+           depends="clean-file-transfer-receiver, 
+                    incremental-file-transfer-receiver" />
+   
+   <target name="prepare-file-transfer-receiver" 
+      depends="incremental-core, incremental-datamodel, incremental-repository, incremental-remoteapi">
+      
 		<mkdir dir="${dir.project.file-transfer-receiver.classes}" />
 		<mkdir dir="${dir.project.file-transfer-receiver.dist}" />
 		<mkdir dir="${dir.project.file-transfer-receiver.assemble}" />
@@ -2851,6 +2860,7 @@
 
 		<patternset id="ftr.libs.thirdparty.runtime">
 			<include name="commons/commons-logging-1.1.1.jar" />
+         <include name="commons/commons-fileupload-1.2.1.jar" />
 			<include name="spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" />
 			<include name="spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" />
 			<include name="org.springframework.aop-3.0.5.RELEASE.jar" />
