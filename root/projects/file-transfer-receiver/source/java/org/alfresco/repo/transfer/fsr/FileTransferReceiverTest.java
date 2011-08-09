@@ -80,7 +80,7 @@ public class FileTransferReceiverTest extends TestCase
     protected void setUp() throws Exception
     {
 
-        context = new ClassPathXmlApplicationContext("alfresco/extension/fsr-bootstrap-context.xml");
+        context = new ClassPathXmlApplicationContext("alfresco/fsr-bootstrap-context.xml");
 
         rth = (RetryingTransactionHelper) context.getBean("retryingTransactionHelper");
         transactionService = (FileTransferReceiverTransactionServiceImpl) context.getBean("transactionService");
