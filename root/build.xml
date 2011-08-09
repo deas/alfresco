@@ -262,6 +262,7 @@
          <!-- embeds: RepoBenchmark*SystemTest -->
          <include name="**/org/alfresco/repo/bm/RepoBenchmarkSystemTestSuite.java" />
          <!-- embeds: SiteActivitySystemTest,WebServiceSuiteSystemTest, ... -->
+         <exclude name="**/org/alfresco/repo/transfer/fsr/**/*Test.java" />
          <!-- All other tests -->
          <include name="**/*Test.java" />
       </patternset>
