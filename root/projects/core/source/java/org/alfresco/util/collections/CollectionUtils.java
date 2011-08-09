@@ -199,7 +199,7 @@ public abstract class CollectionUtils
      * @param function
      * @return
      */
-    public static <F, T> Map<F, T> transformToMap(List<F> values,
+    public static <F, T> Map<F, T> transformToMap(Collection<F> values,
             Function<F, T> transformer)
     {
         if(isEmpty(values))
