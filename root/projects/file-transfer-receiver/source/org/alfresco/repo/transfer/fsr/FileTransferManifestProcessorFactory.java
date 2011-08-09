@@ -32,13 +32,17 @@ public class FileTransferManifestProcessorFactory implements ManifestProcessorFa
      *
      * @param receiver
      * @param transferId
-     * @return the requsite processor
+     * @return the requisite processor
      */
     public List<TransferManifestProcessor> getCommitProcessors(TransferReceiver receiver, String transferId)
     {
         List<TransferManifestProcessor> processors = new ArrayList<TransferManifestProcessor>();
+
         TransferManifestProcessor processor = new FileTransferPrimaryManifestProcessor(receiver, transferId);
         processors.add(processor);
+        processor = new FileTransferSecondaryManifestProcessor(receiver, transferId);
+        processors.add(processor);
+
         return processors;
     }
 

@@ -1,129 +1,210 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project name="File Transfer Receiver" default="compile" basedir=".">
 
-	<property name="project.dir" value="."/>
+	<property name="project.dir" value="." />
 	<property name="project.name" value="ftreceiver" />
-	<property name="build.dir" value="${project.dir}/build"/>
+	<property name="build.dir" value="${project.dir}/build" />
 	<property name="src.dir" value="${project.dir}/source" />
 	<property name="src.dir.web" value="${src.dir}/web" />
-    <property name="src.dir.alfresco.extension" value="${src.dir}/alfresco/extension" />
+	<property name="src.dir.alfresco.extension" value="${src.dir}/alfresco/extension" />
 	<property name="package.file" value="${project.name}.war" />
 	<property name="tomcat.root" value="${project.dir}/apache-tomcat-7.0.16" />
-    <!-- put everything in a temp folder with the right structure during the build -->
-    <property name="temp.dir" value="${build.dir}/temp" />
-    <property name="temp.dir.web-inf" value="${temp.dir}/WEB-INF" />
-    <property name="temp.dir.lib" value="${temp.dir.web-inf}/lib" />
-    <property name="temp.dir.classes" value="${temp.dir.web-inf}/classes" />
-    <property name="temp.dir.meta-inf" value="${temp.dir}/META-INF" />
+	<!-- put everything in a temp folder with the right structure during the build -->
+	<property name="temp.dir" value="${build.dir}/temp" />
+	<property name="temp.dir.web-inf" value="${temp.dir}/WEB-INF" />
+	<property name="temp.dir.lib" value="${temp.dir.web-inf}/lib" />
+	<property name="temp.dir.classes" value="${temp.dir.web-inf}/classes" />
+	<property name="temp.dir.meta-inf" value="${temp.dir}/META-INF" />
 	<property name="temp.dir.alfresco" value="${temp.dir}/alfresco" />
-    <property name="temp.dir.alfresco.extension" value="${temp.dir}/alfresco/extension" />
+	<property name="temp.dir.alfresco.extension" value="${temp.dir}/alfresco/extension" />
 	<property name="lib.dir" value="lib" />
-    <property name="server.lib.dir" value="../../build/assemble/sdk/lib/server" />
+	<property name="libs.thirdparty.dir" value="../3rd-party/lib" />
+	<property name="libs.repository.dir" value="../repository/build/dist" />
+	<property name="libs.datamodel.dir" value="../data-model/build/dist" />
+	<property name="libs.core.dir" value="../core/build/dist" />
+	<property name="libs.remoteapi.dir" value="../remote-api/build/dist" />
 
 
-   <path id="class.path">
-      <dirset dir="${build.dir}" />
-      <fileset dir="${server.lib.dir}" includes="**/*.jar"/>
-   	  <fileset dir="${project.dir}/lib" includes="**/*.jar"/>
-   </path>
+	<patternset id="libs.thirdparty.buildtime">
+		<include name="commons/commons-logging-1.1.1.jar" />
+		<include name="spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="org.springframework.aop-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.asm-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.beans-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.context-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.context.support-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.core-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.expression-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.jdbc-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.orm-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.transaction-3.0.5.RELEASE.jar" />
+		<include name="json.jar" />
+		<include name="devenv/org.springframework.test-3.0.5.RELEASE.jar" />
+		<include name="junit-4.8.1.jar" />
+		<include name="jta.jar" />
+		<include name="commons/commons-dbcp-1.4-patched.jar" />
+		<include name="mybatis-3.0.4.jar" />
+		<include name="mybatis-spring-1.0.1.jar" />
+		<include name="commons/commons-io-1.4.jar" />
+		<include name="spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="commons/commons-pool-1.5.5.jar" />
+		<include name="aopalliance.jar" />
+		<include name="hibernate-3.2.6-patched.jar" />
+		<include name="ehcache-core-2.0.0.jar" />
+		<include name="jug-asl-2.0.0.jar" />
+		<include name="dom4j-1.6.1.jar" />
+	</patternset>
 
-   <target name="clean" >
-    <delete>
-        <fileset dir="${build.dir}" includes="**/*"/>
-    </delete>
-    <delete dir="${temp.dir}" />
-    <delete dir="${temp.dir.classes}" />
-    <delete dir="${temp.dir.meta-inf}" />
-    <delete dir="${temp.dir.web-inf}" />
-    <delete dir="${temp.dir.alfresco.extension}" />
-    <delete file="${package.file}" />
-   </target>
+	<patternset id="libs.thirdparty.runtime">
+		<include name="commons/commons-logging-1.1.1.jar" />
+		<include name="spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="org.springframework.aop-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.asm-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.beans-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.context-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.context.support-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.core-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.expression-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.jdbc-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.orm-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.transaction-3.0.5.RELEASE.jar" />
+		<include name="json.jar" />
+		<include name="jta.jar" />
+		<include name="commons/commons-dbcp-1.4-patched.jar" />
+		<include name="mybatis-3.0.4.jar" />
+		<include name="mybatis-spring-1.0.1.jar" />
+		<include name="commons/commons-io-1.4.jar" />
+		<include name="spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" />
+		<include name="commons/commons-pool-1.5.5.jar" />
+		<include name="aopalliance.jar" />
+		<include name="hibernate-3.2.6-patched.jar" />
+		<include name="ehcache-core-2.0.0.jar" />
+		<include name="jug-asl-2.0.0.jar" />
+		<include name="dom4j-1.6.1.jar" />
+	</patternset>
 
-   <target name="prepare" depends="clean">
-      <mkdir dir="${build.dir}" />
-   	  <mkdir dir="${temp.dir}" />
-   	  <mkdir dir="${temp.dir.web-inf}" />
-   	  <mkdir dir="${temp.dir.lib}"  />
-   	  <mkdir dir="${temp.dir.classes}" />
-   	  <mkdir dir="${temp.dir.meta-inf}" />
-      <mkdir dir="${temp.dir.alfresco.extension}" />
-   </target>
+	<path id="class.path">
+		<fileset dir="${libs.thirdparty.dir}">
+			<patternset refid="libs.thirdparty.buildtime" />
+		</fileset>
+		<fileset dir="${libs.core.dir}" includes="**/*.jar" />
+		<fileset dir="${libs.repository.dir}" includes="**/*.jar" />
+		<fileset dir="${libs.remoteapi.dir}" includes="**/*.jar" />
+		<fileset dir="${libs.datamodel.dir}" includes="**/*.jar" />
+		<fileset dir="${project.dir}/lib" includes="**/*.jar" />
+	</path>
 
-   <target name="compile" depends="prepare">
-      <javac classpathref="class.path" srcdir="${project.dir}/source" destdir="${temp.dir.classes}" debug="on" />
-   </target>
+	<target name="clean">
+		<delete>
+			<fileset dir="${build.dir}" includes="**/*" />
+		</delete>
+		<delete dir="${temp.dir}" />
+		<delete dir="${temp.dir.classes}" />
+		<delete dir="${temp.dir.meta-inf}" />
+		<delete dir="${temp.dir.web-inf}" />
+		<delete dir="${temp.dir.alfresco.extension}" />
+		<delete file="${package.file}" />
+	</target>
 
-   <!-- PACKAGE -->
-   <target name="package" depends="compile">
-	      <echo>=== PACKAGE ===</echo>
-	      <copy todir="${temp.dir}">
-	        <fileset dir="${src.dir.web}">
-	          <include name="**/*.xml"/>
-	        </fileset>
-	      </copy>
-	      <copy todir="${temp.dir.classes}/alfresco">
-	        <fileset dir="${src.dir.alfresco.extension}">
-	            <include name="**/*.xml"/>
-	        </fileset>
-	      </copy>
-          <copy todir="${temp.dir.classes}/alfresco">
-            <fileset dir="${src.dir.alfresco.extension}">
-                <include name="**/*.xml"/>
-            </fileset>
-          </copy>
-          <copy todir="${temp.dir.lib}" flatten="true" >
-                <fileset dir="${server.lib.dir}" includes="**/*.jar"/>
-                <fileset dir="${project.dir}/lib" includes="**/*.jar"/>
-          </copy>
-          <copy todir="${temp.dir.classes}">
-               <fileset dir="${src.dir}">
-                  <include name="**/*.sql"/>
-               	  <include name="**/*-SqlMap.xml"/>
-               	  <include name="**/FTR-SqlMapConfig.xml"/>
-                  <include name="**/filetransferreceiver.properties"/>
-              </fileset>
-          </copy>
-          <war destfile="${package.file}" webxml="${temp.dir.web-inf}/web.xml" basedir="${temp.dir}" >
-                <lib dir="${lib.dir}" />
-          </war>
-   </target>
+	<target name="prepare" depends="clean">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${temp.dir}" />
+		<mkdir dir="${temp.dir.web-inf}" />
+		<mkdir dir="${temp.dir.lib}" />
+		<mkdir dir="${temp.dir.classes}" />
+		<mkdir dir="${temp.dir.meta-inf}" />
+		<mkdir dir="${temp.dir.alfresco.extension}" />
+	</target>
 
-   <!-- PACKAGE -->
-   <target name="package-action" depends="compile">
-    <copy todir="${temp.dir.alfresco}">
-         <fileset dir="${src.dir}">
-             <include name="**/ftr-action-context.xml"/>
-         </fileset>
-    </copy>
-    <jar destfile="file-transfer-actiontest.jar">
-       <fileset dir="${temp.dir}/alfresco">
-       	    <include name="**/ftr-action-context.xml"/>
-       </fileset>
-       <fileset dir="${temp.dir.classes}">
-            <include name="**/FileTransferActionExecuter.class"/>
-       	    <include name="**/RandomFileTransferActionExecuter.class"/>
-           <include name="**/DeleteFileTransferActionExecuter.class"/>
-       </fileset>
-        <fileset dir="${src.dir}">
-            <include name="**/ftr-action-messages.properties"/>
-        </fileset>
-    </jar>
-   </target>
+	<target name="compile" depends="prepare">
+		<javac classpathref="class.path" srcdir="${project.dir}/source" destdir="${temp.dir.classes}" debug="on" />
+	</target>
+
+	<!-- PACKAGE -->
+	<target name="package" depends="compile">
+		<echo>=== PACKAGE ===</echo>
+		<copy todir="${temp.dir}">
+			<fileset dir="${src.dir.web}">
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir.classes}/alfresco">
+			<fileset dir="${src.dir.alfresco.extension}">
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir.classes}/alfresco">
+			<fileset dir="${src.dir.alfresco.extension}">
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir.lib}" flatten="true">
+			<fileset dir="${libs.thirdparty.dir}">
+				<patternset refid="libs.thirdparty.runtime" />
+			</fileset>
+			<fileset dir="${project.dir}/lib" includes="**/*.jar" />
+			<fileset dir="${libs.core.dir}" includes="**/*.jar" />
+			<fileset dir="${libs.repository.dir}" includes="**/*.jar" />
+			<fileset dir="${libs.remoteapi.dir}" includes="**/*.jar" />
+			<fileset dir="${libs.datamodel.dir}" includes="**/*.jar" />
+		</copy>
+		<copy todir="${temp.dir.classes}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.sql" />
+				<include name="**/*-SqlMap.xml" />
+				<include name="**/FTR-SqlMapConfig.xml" />
+				<include name="**/filetransferreceiver.properties" />
+			</fileset>
+		</copy>
+		<war destfile="${package.file}" webxml="${temp.dir.web-inf}/web.xml" basedir="${temp.dir}">
+			<lib dir="${lib.dir}" />
+		</war>
+	</target>
+
+	<!-- PACKAGE -->
+	<target name="package-action" depends="compile">
+		<copy todir="${temp.dir.alfresco}">
+			<fileset dir="${src.dir}">
+				<include name="**/ftr-action-context.xml" />
+			</fileset>
+		</copy>
+		<jar destfile="file-transfer-actiontest.jar">
+			<fileset dir="${temp.dir}/alfresco">
+				<include name="**/ftr-action-context.xml" />
+			</fileset>
+			<fileset dir="${temp.dir.classes}">
+				<include name="**/FileTransferActionExecuter.class" />
+				<include name="**/RandomFileTransferActionExecuter.class" />
+				<include name="**/DeleteFileTransferActionExecuter.class" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/ftr-action-messages.properties" />
+			</fileset>
+		</jar>
+	</target>
 
 
-   <target name="deploy" depends="package" >
-   	  <delete dir="${tomcat.root}/webapps/ftreceiver" />
-   	  <copy file="${package.file}" tofile="${tomcat.root}/webapps/${package.file}"/>
-   </target>
+	<target name="deploy" depends="package">
+		<delete dir="${tomcat.root}/webapps/ftreceiver" />
+		<copy file="${package.file}" tofile="${tomcat.root}/webapps/${package.file}" />
+	</target>
 
 
-   <target name="checkderby">
-    <java classname="org.apache.derby.tools.sysinfo">
-      <classpath>
-        <pathelement location="${project.dir}/lib/derby.jar" />
-        <pathelement location="${project.dir}/lib/derbytools.jar"/>
-      </classpath>
-    </java>
-   </target>
+	<target name="checkderby">
+		<java classname="org.apache.derby.tools.sysinfo">
+			<classpath>
+				<pathelement location="${project.dir}/lib/derby.jar" />
+				<pathelement location="${project.dir}/lib/derbytools.jar" />
+			</classpath>
+		</java>
+	</target>
 
 </project>
