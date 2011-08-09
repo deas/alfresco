@@ -1568,6 +1568,16 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
       else if ( info.hasSetFlag(FileInfo.SetChangeDate) && info.getChangeDateTime() > MaxTimestampValue)
     	  dbFlags -= FileInfo.SetChangeDate;
               
+      // Check if file attributes are being set
+      
+      if ( info.hasSetFlag(FileInfo.SetAttributes)) {
+
+    	  // Check if this is a folder, make sure the Directory attribute does not get reset
+	  
+		  if ( dbInfo.isDirectory() && (info.getFileAttributes() & FileAttribute.Directory) == 0)
+			  info.setFileAttributes( info.getFileAttributes() + FileAttribute.Directory);
+      }
+      
       //  Update the information flags for the database update
       
       info.setFileInformationFlags( dbFlags);
@@ -1611,7 +1621,7 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         dbInfo.setMode(info.getMode());
       
       if ( info.hasSetFlag(FileInfo.SetAttributes))
-        dbInfo.setFileAttributes(info.getFileAttributes());
+    	  dbInfo.setFileAttributes(info.getFileAttributes());
       
       //  Update the file state
       
