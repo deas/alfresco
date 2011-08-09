@@ -119,6 +119,10 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
         {
             return new VerbatimAnalyser(false);
         }
+        if (fieldName.equals(AbstractLuceneQueryParser.FIELD_LID))
+        {
+            return new VerbatimAnalyser(false);
+        }
         else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_DBID))
         {
             return new LongAnalyser();

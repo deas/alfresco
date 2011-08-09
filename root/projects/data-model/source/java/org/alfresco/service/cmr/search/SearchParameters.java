@@ -925,12 +925,12 @@ public class SearchParameters
     {
         String field;
         String prefix = null;
-        FieldFacetSort sort = FieldFacetSort.COUNT;
+        FieldFacetSort sort = null;
         int limit = 100;
         int offset = 0;
         int minCount = 0;
         boolean countDocsMissingFacetField = false;
-        FieldFacetMethod method = FieldFacetMethod.FC;
+        FieldFacetMethod method = null;
         int enumMethodCacheMinDF = 0;
         
         public FieldFacet(String field)

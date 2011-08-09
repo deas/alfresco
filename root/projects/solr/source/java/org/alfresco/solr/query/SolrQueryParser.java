@@ -29,6 +29,7 @@ import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.lucene.query.CaseInsensitiveFieldQuery;
 import org.alfresco.repo.search.impl.lucene.query.CaseInsensitiveFieldRangeQuery;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.CharStream;
@@ -48,6 +49,19 @@ import com.werken.saxpath.XPathReader;
 public class SolrQueryParser extends AbstractLuceneQueryParser
 {
 
+    @Override
+    protected Query createIdQuery(String queryText)
+    {
+        if(NodeRef.isNodeRef(queryText))
+        {
+            return createNodeRefQuery(FIELD_LID, queryText);
+        }
+        else
+        {
+            return createNodeRefQuery(FIELD_ID, queryText);
+        }
+    }
+    
     @Override
     protected Query createPathQuery(String queryText, boolean withRepeats) throws SAXPathException
     {
@@ -70,7 +84,8 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         handler.setDictionaryService(dictionaryService);
         reader.setXPathHandler(handler);
         reader.parse("//" + queryText);
-        return handler.getQuery();
+        Query query = handler.getQuery();
+        return new SolrCachingAuxDocQuery(query);
     }
 
     protected Query createPrimaryAssocTypeQNameQuery(String queryText) throws SAXPathException
@@ -83,7 +98,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         reader.parse("//" + queryText);
         SolrPathQuery pathQuery = handler.getQuery();
         pathQuery.setPathField(FIELD_PRIMARYASSOCTYPEQNAME);
-        return pathQuery;
+        return new SolrCachingPathQuery(pathQuery);
     }
 
     protected Query createAssocTypeQNameQuery(String queryText) throws SAXPathException
@@ -102,7 +117,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         SolrPathQuery pathQuery = handler.getQuery();
         pathQuery.setPathField(FIELD_ASSOCTYPEQNAME);
 
-        booleanQuery.add(pathQuery, Occur.SHOULD);
+        booleanQuery.add(new SolrCachingPathQuery(pathQuery), Occur.SHOULD);
         booleanQuery.add(createPrimaryAssocTypeQNameQuery(queryText), Occur.SHOULD);
 
         return booleanQuery;

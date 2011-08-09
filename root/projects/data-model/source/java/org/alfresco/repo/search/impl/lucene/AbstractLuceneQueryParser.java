@@ -147,7 +147,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public static final String FIELD_TRANSFORMATION_STATUS_SUFFIX = ".transformationStatus";
     public static final String FIELD_PARENT_ASSOC_CRC = "PARENTASSOCCRC";
     public static final String FIELD_PRIMARYASSOCQNAME = "PRIMARYASSOCQNAME";
-    public static final String FIELD_ASSOCQNAME = "ASSOCQNAME";
+    public static final String FIELD_LID = "LID";
 
     private static Log s_logger = LogFactory.getLog(AbstractLuceneQueryParser.class);
 

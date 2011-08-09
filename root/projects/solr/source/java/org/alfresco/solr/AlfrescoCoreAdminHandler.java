@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.solr.client.AuthenticationException;
@@ -57,7 +58,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 {
     Scheduler scheduler = null;
 
-    HashMap<String, CoreTracker> trackers = new HashMap<String, CoreTracker>();
+    ConcurrentHashMap<String, CoreTracker> trackers = new ConcurrentHashMap<String, CoreTracker>();
 
     /**
      * 
@@ -126,7 +127,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     /**
      * @return the trackers
      */
-    public HashMap<String, CoreTracker> getTrackers()
+    public ConcurrentHashMap<String, CoreTracker> getTrackers()
     {
         return trackers;
     }

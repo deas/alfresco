@@ -152,6 +152,7 @@ public class AlfrescoSolrDataModel
     {
 
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_LID, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TX, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PARENT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_LINKASPECT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
@@ -160,6 +161,7 @@ public class AlfrescoSolrDataModel
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCONTAINER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCATEGORY, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_QNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISROOT, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, Store.YES, Index.ANALYZED, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISNODE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);

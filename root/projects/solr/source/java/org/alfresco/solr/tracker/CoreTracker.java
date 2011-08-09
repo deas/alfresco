@@ -21,9 +21,11 @@ package org.alfresco.solr.tracker;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -98,6 +100,7 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.SolrInputField;
+import org.apache.solr.core.CloseHook;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.schema.BinaryField;
@@ -122,8 +125,10 @@ import org.quartz.Trigger;
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.util.FileCopyUtils;
 
-public class CoreTracker
+public class CoreTracker implements CloseHook
 {
+    private AlfrescoCoreAdminHandler adminHandler;
+    
     private SOLRAPIClient client;
 
     private volatile long lastIndexedCommitTime = 0;
@@ -163,6 +168,7 @@ public class CoreTracker
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
         super();
+        this.adminHandler = adminHandler;
         this.core = core;
 
         try
@@ -277,6 +283,8 @@ public class CoreTracker
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        core.addCloseHook(this);
     }
 
     /**
@@ -402,9 +410,8 @@ public class CoreTracker
                     switch(modelDiff.getType())
                     {
                     case CHANGED:
+                        removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
                         M2Model changedModel = dataModel.getM2Model(modelDiff.getModelName());
-                        File removedFile = new File(alfrescoModelDir, getModelFileName(changedModel));
-                        removedFile.delete();
                         File changedFile = new File(alfrescoModelDir, getModelFileName(changedModel));
                         FileOutputStream cos = new FileOutputStream(changedFile);
                         changedModel.toXML(cos);
@@ -421,7 +428,7 @@ public class CoreTracker
                         nos.close();
                         break;
                     case REMOVED:
-                        // TODO: list and delete by pattern
+                        removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
                         break;
                     }
                 }
@@ -668,6 +675,60 @@ public class CoreTracker
     }
 
     /**
+     * @param alfrescoModelDir
+     * @param modelName
+     */
+    private void removeMatchingModels(File alfrescoModelDir, QName modelName)
+    {
+
+        final String prefix = modelName.toString().replace(":", ".")+".";
+        final String postFix = ".xml";
+        
+        File[] toDelete = alfrescoModelDir.listFiles(new FileFilter()
+        {
+            
+            @Override
+            public boolean accept(File pathname)
+            {
+                if(pathname.isDirectory())
+                {
+                    return false;
+                }
+                String name = pathname.getName();
+                if(false == name.endsWith(postFix))
+                {
+                    return false;
+                }
+                if(false == name.startsWith(prefix))
+                {
+                    return false;
+                }
+                // check is number between 
+                String checksum = name.substring(prefix.length(), name.length() -  postFix.length());
+                try
+                {
+                    Long.parseLong(checksum);
+                    return true;
+                }
+                catch(NumberFormatException nfe)
+                {
+                    return false;
+                }
+            }
+        });
+            
+        if(toDelete != null)
+        {
+            for(File file : toDelete)
+            {
+                file.delete();
+            }
+        }
+         
+        
+    }
+
+    /**
      * @param acl
      * @param readers
      */
@@ -811,6 +872,7 @@ public class CoreTracker
                     SolrInputDocument doc = new SolrInputDocument();
                     doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + node.getId());
                     doc.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
+                    doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeMetaData.getNodeRef());
                     
                     for (QName propertyQname : properties.keySet())
                     {
@@ -892,7 +954,6 @@ public class CoreTracker
                     
                     StringBuilder qNameBuffer = new StringBuilder(64);
                     StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
-                    StringBuilder assocQNameBuffer = new StringBuilder(64);
                     if(nodeMetaData.getParentAssocs() != null)
                     {
                         for(ChildAssociationRef childAssocRef : nodeMetaData.getParentAssocs())
@@ -901,11 +962,9 @@ public class CoreTracker
                             {
                                 qNameBuffer.append(";/");
                                 assocTypeQNameBuffer.append(";/");
-                                assocQNameBuffer.append(";/");
                             }
                             qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
                             assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                            assocQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
                             aux.addField(AbstractLuceneQueryParser.FIELD_PARENT, childAssocRef.getParentRef());
                             
                             if(childAssocRef.isPrimary())
@@ -916,7 +975,6 @@ public class CoreTracker
                             }
                         }
                         aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
-                        aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCQNAME, assocQNameBuffer.toString());
                         aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
                     }
 
@@ -2192,5 +2250,31 @@ public class CoreTracker
     		p.load(loader.openResource(location));
     		return p;
     	}
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.solr.core.CloseHook#close(org.apache.solr.core.SolrCore)
+     */
+    @Override
+    public void close(SolrCore core)
+    {
+        try
+        {
+            adminHandler.getScheduler().deleteJob("CoreTracker-" + core.getName(), "Solr");
+            adminHandler.getTrackers().remove(core.getName());
+            if(adminHandler.getTrackers().size() == 0)
+            {
+                if(!adminHandler.getScheduler().isShutdown())
+                {
+                    adminHandler.getScheduler().shutdown();
+                }
+            }
+        }
+        catch (SchedulerException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
     }
 }
