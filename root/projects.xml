@@ -1480,6 +1480,12 @@
          <fileset file="${dir.project.slingshot.assemble}/yui/menu/menu-min.js" />
          <fileset file="${dir.project.slingshot.assemble}/yui/json/json-min.js" />
          <fileset file="${dir.project.slingshot.assemble}/yui/selector/selector-min.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/datasource/datasource-min.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/autocomplete/autocomplete-min.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/paginator/paginator-min.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/datatable/datatable-min.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/history/history-min.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/treeview/treeview-min.js" />
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
 

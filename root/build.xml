@@ -774,6 +774,12 @@
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/menu/menu-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/json/json-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/selector/selector-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/datasource/datasource-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/autocomplete/autocomplete-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/paginator/paginator-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/datatable/datatable-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/history/history-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/treeview/treeview-min.js" />
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
 
