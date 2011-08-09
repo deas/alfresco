@@ -943,7 +943,7 @@
             {
                viewMode: Alfresco.GroupFinder.VIEW_MODE_COMPACT,
                singleSelectMode: false,
-               wildcardPrefix: true
+               wildcardPrefix: false
             });
          },
          

@@ -1235,7 +1235,7 @@
           */
          _buildSearchParams: function ConsoleGroups_SearchPanelHandler__buildSearchParams(query)
          {
-            var query = "shortNameFilter=*" + encodeURIComponent(query);
+            var query = "shortNameFilter=" + encodeURIComponent(query);
             var showAll = Dom.get(parent.id + "-show-all").checked;
             return showAll ? query : query + "&zone=APP.DEFAULT";
          },
