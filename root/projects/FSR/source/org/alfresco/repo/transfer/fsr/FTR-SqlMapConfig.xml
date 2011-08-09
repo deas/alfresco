@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <typeAliases>
+        <!-- QName -->
+        <typeAlias alias="Namespace" type="org.alfresco.repo.domain.qname.NamespaceEntity"/>
+        <typeAlias alias="QName" type="org.alfresco.repo.domain.qname.QNameEntity"/>
+        <!-- Locks -->
+        <typeAlias alias="LockResource" type="org.alfresco.repo.domain.locks.LockResourceEntity"/>
+        <typeAlias alias="Lock" type="org.alfresco.repo.domain.locks.LockEntity"/>
+        <!-- FileTransferInfo -->
+        <typeAlias alias="FileTransferInfo" type="org.alfresco.repo.transfer.fsr.FileTransferInfoEntity"/>
+    </typeAliases>
+
+    <typeHandlers>
+        <typeHandler javaType="java.io.Serializable" jdbcType="BLOB" handler="org.alfresco.ibatis.SerializableTypeHandler"/>
+    </typeHandlers>
+
+    <mappers>
+        <mapper resource="org/alfresco/repo/transfer/fsr/qname-common-SqlMap.xml"/>
+        <mapper resource="org/alfresco/repo/transfer/fsr/qname-insert-SqlMap.xml"/>
+        <mapper resource="org/alfresco/repo/transfer/fsr/locks-common-SqlMap.xml"/>
+        <mapper resource="org/alfresco/repo/transfer/fsr/locks-insert-SqlMap.xml"/>
+        <mapper resource="org/alfresco/repo/transfer/fsr/filetransferinfo-common-SqlMap.xml"/>
+        <mapper resource="org/alfresco/repo/transfer/fsr/filetransfer-insert-SqlMap.xml"/>
+    </mappers>
+
+
+</configuration>

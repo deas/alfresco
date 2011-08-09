@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+
+    <!--                                   -->
+    <!--      Transfer Service REST API    -->
+    <!--                                   -->
+    <bean id="webscript.transfer.post" class="org.alfresco.repo.web.scripts.transfer.FileTransferWebScript" parent="webscript" >
+        <property name="enabled"><value>true</value></property>
+        <property name="commandProcessors">
+            <map>
+                <entry key="test">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.TestCredentialsCommandProcessor" />
+                </entry>
+                <entry key="begin">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.BeginTransferCommandProcessor">
+                        <property name="receiver" ref="transferReceiver" />
+                    </bean>
+                </entry>
+                <entry key="post-snapshot">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.PostSnapshotCommandProcessor">
+                        <property name="receiver" ref="transferReceiver" />
+                    </bean>
+                </entry>
+                <entry key="post-content">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.PostContentCommandProcessor">
+                        <property name="receiver" ref="transferReceiver" />
+                    </bean>
+                </entry>
+                <entry key="prepare">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.PrepareTransferCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+                <entry key="commit">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.CommitTransferCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+                <entry key="abort">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.AbortTransferCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+               <entry key="messages">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.MessagesTransferCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+               <entry key="status">
+                   <bean class="org.alfresco.repo.web.scripts.transfer.StatusCommandProcessor">
+                      <property name="receiver" ref="transferReceiver" />
+                   </bean>
+                </entry>
+                <entry key="report">
+                    <bean class="org.alfresco.repo.web.scripts.transfer.ReportCommandProcessor">
+                        <property name="receiver" ref="transferReceiver" />
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

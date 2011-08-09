@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="alfresco.filetransferinfo">
+
+    <!--                -->
+    <!-- Result Maps    -->
+    <!--                -->
+
+    <resultMap id="result_FileTransferInfo" type="FileTransferInfo">
+        <result property="id" column="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result property="nodeRef" column="nodeRef" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result property="parent" column="parent" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result property="path" column="path" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result property="contentName" column="contentName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result property="contentUrl" column="contentUrl" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </resultMap>
+
+
+    <!--                -->
+    <!-- Parameter Maps -->
+    <!--                -->
+
+    <parameterMap id="parameter_FileTransferInfoId" type="FileTransferInfo">
+        <parameter property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+    </parameterMap>
+
+    <parameterMap id="parameter_FileTransferInfoNodeRef" type="FileTransferInfo">
+        <parameter property="nodeRef" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </parameterMap>
+
+
+
+
+    <!--                -->
+    <!-- SQL Snippets   -->
+    <!--                -->
+
+    <sql id="insert_FileTransferInfo_AutoIncrement">
+        insert into alf_file_transfer_info (nodeRef, parent, path, contentName, contentUrl)
+        values (#{nodeRef}, #{parent}, #{path}, #{contentName},#{contentUrl})
+    </sql>
+
+
+    <!--                -->
+    <!-- Statements     -->
+    <!--                -->
+
+
+    <select id="select_FileTransferInfoByNodeRef" parameterMap="parameter_FileTransferInfoNodeRef" resultMap="result_FileTransferInfo">
+        select
+            *
+        from
+            alf_file_transfer_info
+        where
+            nodeRef = ?
+    </select>
+
+    <select id="select_FileTransferInfoByParentNodeRef" parameterMap="parameter_FileTransferInfoNodeRef" resultMap="result_FileTransferInfo">
+        select
+            *
+        from
+            alf_file_transfer_info
+        where
+            parent = ?
+    </select>
+
+    <update id="update_FileTransferInfoByNodeRef" parameterType="FileTransferInfo">
+       update
+           alf_file_transfer_info
+       set
+           parent = #{parent},
+           path = #{path},
+           contentName = #{contentName},
+           contentUrl = #{contentUrl}
+       where
+           nodeRef = #{nodeRef}
+    </update>
+
+    <delete id="delete_FileTransferInfoByNodeRef" parameterMap="parameter_FileTransferInfoNodeRef">
+        delete
+        from
+            alf_file_transfer_info
+        where
+            nodeRef = ?
+    </delete>
+
+</mapper>
