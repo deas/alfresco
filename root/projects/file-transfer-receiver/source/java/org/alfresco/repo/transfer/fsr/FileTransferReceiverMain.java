@@ -23,7 +23,7 @@ public class FileTransferReceiverMain
     public static void main(String[] args)
     {
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("fsr-bootstrap-context.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("alfresco/fsr-bootstrap-context.xml");
 
          RetryingTransactionHelper ts =(RetryingTransactionHelper)context.getBean("retryingTransactionHelper");
       FileTransferReceiverTransactionServiceImpl transactionService = (FileTransferReceiverTransactionServiceImpl) context

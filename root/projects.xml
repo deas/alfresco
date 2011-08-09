@@ -2801,4 +2801,172 @@
       <delete file="${dir.project.webclient.src.web}/scripts/ajax/mootools.v1.11-min.js" />
    </target>
    
+   <!-- ************************************ -->
+   <!-- ** File Transfer Receiver Project ** -->
+   <!-- ************************************ -->
+
+	<target name="clean-file-transfer-receiver" depends="init">
+		<clean projectdir="${dir.project.file-transfer-receiver}" />
+	</target>
+
+	<target name="prepare-file-transfer-receiver" depends="init">
+		<mkdir dir="${dir.project.file-transfer-receiver.classes}" />
+		<mkdir dir="${dir.project.file-transfer-receiver.dist}" />
+		<mkdir dir="${dir.project.file-transfer-receiver.assemble}" />
+		<mkdir dir="${dir.project.file-transfer-receiver.assemble}/webapps" />
+
+		<patternset id="ftr.libs.thirdparty.buildtime">
+			<include name="commons/commons-logging-1.1.1.jar" />
+			<include name="spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="org.springframework.aop-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.asm-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.beans-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.context-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.context.support-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.core-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.expression-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.jdbc-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.orm-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.transaction-3.0.5.RELEASE.jar" />
+			<include name="json.jar" />
+			<include name="devenv/org.springframework.test-3.0.5.RELEASE.jar" />
+			<include name="junit-4.8.1.jar" />
+			<include name="jta.jar" />
+			<include name="commons/commons-dbcp-1.4-patched.jar" />
+			<include name="mybatis-3.0.4.jar" />
+			<include name="mybatis-spring-1.0.1.jar" />
+			<include name="commons/commons-io-1.4.jar" />
+			<include name="spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="commons/commons-pool-1.5.5.jar" />
+			<include name="aopalliance.jar" />
+			<include name="hibernate-3.2.6-patched.jar" />
+			<include name="ehcache-core-2.0.0.jar" />
+			<include name="jug-asl-2.0.0.jar" />
+			<include name="dom4j-1.6.1.jar" />
+		</patternset>
+
+		<patternset id="ftr.libs.thirdparty.runtime">
+			<include name="commons/commons-logging-1.1.1.jar" />
+			<include name="spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="org.springframework.aop-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.asm-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.beans-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.context-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.context.support-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.core-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.expression-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.jdbc-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.orm-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.transaction-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.web-3.0.5.RELEASE.jar" />
+			<include name="org.springframework.web.servlet-3.0.5.RELEASE.jar" />
+			<include name="json.jar" />
+			<include name="jta.jar" />
+			<include name="commons/commons-dbcp-1.4-patched.jar" />
+			<include name="mybatis-3.0.4.jar" />
+			<include name="mybatis-spring-1.0.1.jar" />
+			<include name="commons/commons-io-1.4.jar" />
+			<include name="spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" />
+			<include name="commons/commons-pool-1.5.5.jar" />
+			<include name="aopalliance.jar" />
+			<include name="hibernate-3.2.6-patched.jar" />
+			<include name="ehcache-core-2.0.0.jar" />
+			<include name="jug-asl-2.0.0.jar" />
+			<include name="dom4j-1.6.1.jar" />
+			<include name="optional/log4j-1.2.15.jar" />
+			<include name="abdera/abdera-client-0.4.0-incubating.jar" />
+			<include name="abdera/abdera-core-0.4.0-incubating.jar" />
+			<include name="abdera/abdera-extensions-json-0.4.0-incubating.jar" />
+			<include name="abdera/abdera-i18n-0.4.0-incubating.jar" />
+			<include name="abdera/abdera-parser-0.4.0-incubating.jar" />
+			<include name="abdera/axiom-api-1.2.5.jar" />
+			<include name="abdera/axiom-impl-1.2.5.jar" />
+			<include name="jaxen-1.1-beta-8.jar" />
+			<include name="freemarker-2.3.18-patched.jar" />
+			<include name="rhino-js-1.6R7.jar" />
+		</patternset>
+
+		<path id="ftr.classpath">
+			<fileset dir="${dir.project.file-transfer-receiver.lib}" includes="**/*.jar" />
+			<fileset dir="${dir.project.3rdparty.lib}">
+				<patternset refid="ftr.libs.thirdparty.buildtime" />
+			</fileset>
+			<fileset dir="${dir.project.core.dist}" includes="${file.name.jar.core}" />
+			<fileset dir="${dir.project.repository.dist}" includes="${file.name.jar.repository}" />
+			<fileset dir="${dir.project.remoteapi.dist}" includes="${file.name.jar.remoteapi}" />
+			<fileset dir="${dir.project.datamodel.dist}" includes="${file.name.jar.datamodel}" />
+		</path>
+
+		<path id="ftr.launcher.classpath">
+			<fileset dir="${dir.project.file-transfer-receiver.lib}" includes="**/tomcat*.jar" />
+		</path>
+
+	</target>
+
+	<target name="compile-file-transfer-receiver" depends="prepare-file-transfer-receiver">
+		<javac destdir="${dir.project.file-transfer-receiver.classes}" fork="true"
+			srcdir="${dir.project.file-transfer-receiver.javasrc}"
+	                memoryMaximumSize="${mem.size.max}" deprecation="${javac.deprecation}" 
+	                debug="${javac.debug}"  target="${javac.target}" source="${javac.source}" encoding="${javac.encoding}"
+	                classpathref="ftr.classpath" includeAntRuntime="false">
+
+		</javac>
+	</target>
+
+	<target name="package-file-transfer-receiver" depends="compile-file-transfer-receiver">
+		<copy todir="${dir.project.file-transfer-receiver.assemble}/lib" flatten="true">
+			<fileset dir="${dir.project.file-transfer-receiver.lib}" includes="**/tomcat*.jar" />
+		</copy>
+
+		<manifestclasspath jarfile="${dir.project.file-transfer-receiver.assemble}/${file.name.jar.file-transfer-receiver}" 
+			property="ftr.manifest.classpath">
+			<classpath>
+				<fileset dir="${dir.project.file-transfer-receiver.assemble}/lib">
+					<include name="**/*.jar"/>
+				</fileset>		
+			</classpath>
+		</manifestclasspath>
+		
+		<jar destfile="${dir.project.file-transfer-receiver.assemble}/${file.name.jar.file-transfer-receiver}" 
+			basedir="${dir.project.file-transfer-receiver.classes}" 
+			includes="org/alfresco/repo/transfer/fsr/FileTransferMainEmbedded.class">
+			<manifest>
+				<attribute name="Main-Class" value="org.alfresco.repo.transfer.fsr.FileTransferMainEmbedded" />
+	            <attribute name="Class-Path" value="${ftr.manifest.classpath}" />
+			</manifest>
+			
+		</jar>
+		
+		<copy todir="${dir.project.file-transfer-receiver.build}/lib" flatten="true">
+			<fileset dir="${dir.project.3rdparty.lib}">
+				<patternset refid="ftr.libs.thirdparty.runtime" />
+			</fileset>
+		</copy>
+		
+		<war destfile="${dir.project.file-transfer-receiver.assemble}/webapps/${file.name.war.file-transfer-receiver}" 
+			webxml="${dir.project.file-transfer-receiver.websrc}/WEB-INF/web.xml">
+	        <webinf dir="${dir.project.file-transfer-receiver.websrc}/WEB-INF" excludes="web.xml"/>
+			<lib dir="${dir.project.file-transfer-receiver.build}/lib" />
+			<lib dir="${dir.project.file-transfer-receiver.lib}" includes="**/derby*.jar" />
+			<lib dir="${dir.project.core.dist}" includes="${file.name.jar.core}" />
+			<lib dir="${dir.project.repository.dist}" includes="${file.name.jar.repository}" />
+			<lib dir="${dir.project.remoteapi.dist}" includes="${file.name.jar.remoteapi}" />
+			<lib dir="${dir.project.datamodel.dist}" includes="${file.name.jar.datamodel}" />
+			<classes dir="${dir.project.file-transfer-receiver.config}" />
+			<classes dir="${dir.project.file-transfer-receiver.classes}" />
+		</war>
+		
+		<zip destfile="${dir.project.file-transfer-receiver.dist}/${file.name.zip.file-transfer-receiver}"
+			basedir="${dir.project.file-transfer-receiver.assemble}"
+			update="true"
+		/>
+	</target>
 </project>

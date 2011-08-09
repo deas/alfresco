@@ -51,5 +51,5 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/dom4j-1.6.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Remote API"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
-	<classpathentry kind="output" path="build"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -8,6 +8,7 @@
 	<property name="src.dir.web" value="${src.dir}/web" />
 	<property name="src.dir.java" value="${src.dir}/java" />
 	<property name="config.dir" value="${project.dir}/config" />
+	<property name="jar.file" value="${project.name}.jar" />
 	<property name="package.file" value="${project.name}.war" />
 	<property name="tomcat.root" value="${project.dir}/apache-tomcat-7.0.16" />
 	<!-- put everything in a temp folder with the right structure during the build -->
@@ -74,6 +75,8 @@
 		<include name="org.springframework.jdbc-3.0.5.RELEASE.jar" />
 		<include name="org.springframework.orm-3.0.5.RELEASE.jar" />
 		<include name="org.springframework.transaction-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.web-3.0.5.RELEASE.jar" />
+		<include name="org.springframework.web.servlet-3.0.5.RELEASE.jar" />
 		<include name="json.jar" />
 		<include name="jta.jar" />
 		<include name="commons/commons-dbcp-1.4-patched.jar" />
@@ -90,6 +93,17 @@
 		<include name="ehcache-core-2.0.0.jar" />
 		<include name="jug-asl-2.0.0.jar" />
 		<include name="dom4j-1.6.1.jar" />
+		<include name="optional/log4j-1.2.15.jar" />
+		<include name="abdera/abdera-client-0.4.0-incubating.jar" />
+		<include name="abdera/abdera-core-0.4.0-incubating.jar" />
+		<include name="abdera/abdera-extensions-json-0.4.0-incubating.jar" />
+		<include name="abdera/abdera-i18n-0.4.0-incubating.jar" />
+		<include name="abdera/abdera-parser-0.4.0-incubating.jar" />
+		<include name="abdera/axiom-api-1.2.5.jar" />
+		<include name="abdera/axiom-impl-1.2.5.jar" />
+		<include name="jaxen-1.1-beta-8.jar" />
+		<include name="freemarker-2.3.18-patched.jar" />
+		<include name="rhino-js-1.6R7.jar" />
 	</patternset>
 
 	<path id="class.path">
@@ -103,6 +117,10 @@
 		<fileset dir="${project.dir}/lib" includes="**/*.jar" />
 	</path>
 
+	<path id="launcher.classpath">
+		<fileset dir="${lib.dir}" includes="**/tomcat*.jar" />
+	</path>
+
 	<target name="clean">
 		<delete>
 			<fileset dir="${build.dir}" includes="**/*" />
@@ -111,51 +129,49 @@
 		<delete dir="${temp.dir.classes}" />
 		<delete dir="${temp.dir.meta-inf}" />
 		<delete dir="${temp.dir.web-inf}" />
-		<delete dir="${temp.dir.alfresco.extension}" />
 		<delete file="${package.file}" />
 	</target>
 
 	<target name="prepare" depends="clean">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${temp.dir}" />
-		<mkdir dir="${temp.dir.web-inf}" />
-		<mkdir dir="${temp.dir.lib}" />
 		<mkdir dir="${temp.dir.classes}" />
 		<mkdir dir="${temp.dir.meta-inf}" />
-		<mkdir dir="${temp.dir.alfresco.extension}" />
 	</target>
 
 	<target name="compile" depends="prepare">
 		<javac classpathref="class.path" srcdir="${src.dir.java}" destdir="${temp.dir.classes}" debug="on" />
 	</target>
 
-	<!-- PACKAGE -->
 	<target name="package" depends="compile">
-		<echo>=== PACKAGE ===</echo>
-		<copy todir="${temp.dir}">
-			<fileset dir="${src.dir.web}">
-				<include name="**/*.xml" />
-			</fileset>
-		</copy>
+		<manifestclasspath jarfile="${jar.file}" property="manifest.classpath">
+		  <classpath refid="launcher.classpath"/>
+		</manifestclasspath>
+		
+		<jar destfile="${jar.file}" basedir="${temp.dir.classes}" includes="org/alfresco/repo/transfer/fsr/FileTransferMainEmbedded.class">
+			<manifest>
+				<attribute name="Main-Class" value="org.alfresco.repo.transfer.fsr.FileTransferMainEmbedded" />
+	            <attribute name="Class-Path" value="${manifest.classpath}" />
+			</manifest>
+			
+		</jar>
+		
 		<copy todir="${temp.dir.lib}" flatten="true">
 			<fileset dir="${libs.thirdparty.dir}">
 				<patternset refid="libs.thirdparty.runtime" />
 			</fileset>
-			<fileset dir="${project.dir}/lib" includes="**/*.jar" />
-			<fileset dir="${libs.core.dir}" includes="**/*.jar" />
-			<fileset dir="${libs.repository.dir}" includes="**/*.jar" />
-			<fileset dir="${libs.remoteapi.dir}" includes="**/*.jar" />
-			<fileset dir="${libs.datamodel.dir}" includes="**/*.jar" />
 		</copy>
-		<copy todir="${temp.dir.classes}">
-			<fileset dir="${config.dir}">
-				<include name="**/*.sql" />
-				<include name="**/*.xml" />
-				<include name="**/*.properties" />
-			</fileset>
-		</copy>
-		<war destfile="${package.file}" webxml="${temp.dir.web-inf}/web.xml" basedir="${temp.dir}">
-			<lib dir="${lib.dir}" />
+		
+		<war destfile="${package.file}" webxml="${src.dir.web}/WEB-INF/web.xml">
+	        <webinf dir="${src.dir.web}/WEB-INF" excludes="web.xml"/>
+			<lib dir="${temp.dir.lib}" />
+			<lib dir="${project.dir}/lib" includes="**/derby*.jar" />
+			<lib dir="${libs.core.dir}" includes="**/*.jar" />
+			<lib dir="${libs.repository.dir}" includes="**/*.jar" />
+			<lib dir="${libs.remoteapi.dir}" includes="**/*.jar" />
+			<lib dir="${libs.datamodel.dir}" includes="**/*.jar" />
+			<classes dir="${config.dir}" />
+			<classes dir="${temp.dir.classes}" />
 		</war>
 	</target>
 
