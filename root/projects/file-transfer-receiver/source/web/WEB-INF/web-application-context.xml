@@ -11,5 +11,5 @@
         To give final control over the tuning of the custom environment, the custom-web-context.xml file is processed
         last (note: custom-web-context.xml isn't part of the source tree itself).
     -->
-    <import resource="classpath*:alfresco/extension/custom-web-context.xml" />
+    <import resource="classpath*:alfresco/extension/custom-ftr-context.xml" />
 </beans>
