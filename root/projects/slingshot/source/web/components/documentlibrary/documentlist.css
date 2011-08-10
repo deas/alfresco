@@ -532,12 +532,10 @@ body .doclist tr.yui-dt-highlighted
 
 .doclist .documents .detail a.tag-link
 {
-   border-radius: 8px;
-   font-size: 93%;
+   background-color: #DCEAF4;
+   color: #4F94C9;
+   padding: 0.1em 0.3em;
    margin-right: 0.5em;
-   padding: 2px 8px;
-   -moz-border-radius: 8px;
-   -webkit-border-radius: 8px;
 }
 
 /* Actions Rollover */
@@ -758,3 +756,67 @@ body .doclist tr.yui-dt-highlighted
    font-size: 108%;
    margin-top: 10px;
 }
+
+.inlineTagReadOnly
+{
+   background-color: #DCEAF4;
+   color: #4F94C9;
+   padding: 0.1em, 0.3em;
+   margin-right: 0.5em;
+}
+
+.inlineTagEdit
+{
+   border: 1px solid #C5D6E2;
+   font-weight: normal;
+   padding: 0.3em;
+   background-color: white;
+}
+
+.inlineTagEditTag
+{
+   background-color: #EEE;
+   color: #333;;
+   padding: 0.1em 0.3em;
+   margin-right: 0.3em;
+   margin-bottom: 0.3em;
+   display: inline-block;
+}
+
+.inlineTagEditTag img
+{
+   vertical-align: bottom;
+   padding-bottom: 0.2em;
+   margin-left: 0.3em;
+}
+
+.inlineTagEdit input[type="text"]:focus
+{
+   outline: none;
+}
+
+.inlineTagEdit input[type="text"]
+{
+   width: inherit;
+   position: static;
+   border: none;
+}
+
+.inlineTagEditTagSelection
+{
+   vertical-align: bottom;
+   padding-bottom: 0.2em;
+   margin-left: 0.3em;
+}
+
+.inlineTagEditAutoCompleteWrapper
+{
+   padding-bottom:2em;
+   width: 12em;
+} 
+
+.inlineTagEditAutoComplete
+{
+   width: inherit !important;
+}
+

@@ -1410,7 +1410,8 @@
 
             // Insitu editing
             var filenameId = scope.id + '-filename-' + oRecord.getId(),
-               descriptionId = scope.id + '-description-' + oRecord.getId();
+                descriptionId = scope.id + '-description-' + oRecord.getId(),
+                tagsId = scope.id + '-tags-' + oRecord.getId();
 
             // Locked / Working Copy handling
             if ($isValueSet(properties.lockOwner) || $isValueSet(properties.workingCopyOwner))
@@ -1506,8 +1507,8 @@
 
                   /* Tags */
                   var tags = jsNode.tags, tag;
-                  desc += '<div class="detail"><span class="item">';
-                  if (jsNode.hasAspect("cm:taggable"))
+                  desc += '<div class="detail"><span id="' + tagsId + '" class="item">';
+                  if (jsNode.hasAspect("cm:taggable") && tags.length > 0)
                   {
                      for (i = 0, j = tags.length; i < j; i++)
                      {
@@ -1601,6 +1602,29 @@
                   }
                });
             }
+            
+            // Tags Insitu editors (this should be merged into data above when development complete)
+            scope.insituEditors.push(
+            {
+               context: tagsId,
+               params:
+               {
+                  type: "tagEditor",
+                  nodeRef: jsNode.nodeRef.toString(),
+                  name: "prop_cm_taggable",
+                  value: record.node.properties["cm:taggable"],
+                  validations: [],
+                  title: scope.msg("tip.insitu-rename"),
+                  errorMessage: scope.msg("message.insitu-edit.name.failure")
+               },
+               callback:
+               {
+                  fn: fnInsituCallback,
+                  scope: scope,
+                  obj: record
+               }
+            });
+         
 
             elCell.innerHTML = desc;
          };

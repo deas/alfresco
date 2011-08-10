@@ -2485,6 +2485,501 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          this.markupGenerated = true;
       }
    });
+   
+   /**
+    * Alfresco.widget.InsituEditor.tagEditor constructor.
+    *
+    * @param p_params {Object} Instance configuration parameters
+    * @return {Alfresco.widget.InsituEditor.tagEditor} The new tagEditor instance
+    * @constructor
+    */
+   Alfresco.widget.InsituEditor.tagEditor = function(p_params)
+   {
+      Alfresco.widget.InsituEditor.tagEditor.superclass.constructor.call(this, p_params);
+
+      this.balloon = null;
+      this.contextStyle = null;
+      this.keyListener = null;
+      this.markupGenerated = false;
+
+      return this;
+   };
+
+   /*
+    * Alfresco.widget.InsituEditor.tagEditor
+    */
+   YAHOO.extend(Alfresco.widget.InsituEditor.tagEditor, Alfresco.widget.InsituEditor.base,
+   {
+      /**
+       * Balloon UI instance used for error reporting
+       *
+       * @property balloon
+       * @type object
+       */
+      balloon: null,
+
+      /**
+       * Save context elements style CSS property so it can be restored correctly
+       *
+       * @property contextStyle
+       * @type string
+       */
+      contextStyle: null,
+
+      /**
+       * Key Listener for [Escape] to cancel
+       *
+       * @property keyListener
+       * @type YAHOO.util.KeyListener
+       */
+      keyListener: null,
+      
+      /**
+       * A list of the tag node references. This is the data that will be submitted
+       * when the Insitu Editor is saved.
+       * 
+       * @property tagRefs
+       * @type array
+       */
+      tagRefs: null,
+      
+      /**
+       * A hidden input element that contains the only data used by the form when submitted.
+       * The value is updated from the contents of the tagRefs property.
+       * 
+       * @property hiddenInput
+       * @type HTMLElement
+       */
+      hiddenInput: null,
+      
+      /**
+       * An input element used for typing in new tags. Also used as part of a YUI auto-complete
+       * widget to allow selection from previously created tags.
+       * 
+       * @property newTagInput
+       * @type HTMLElement
+       */
+      newTagInput: null,
+      
+      /**
+       * A span element that contains a span element for each tag already
+       * applied to the document.
+       * 
+       * @property currentTags
+       * @type HTMLElement
+       */
+      currentTags: null,
+      
+      /**
+       * Flag tracking whether markup has been generated
+       *
+       * @property markupGenerated
+       * @type boolean
+       */
+      markupGenerated: null,
+
+      /**
+      * Show the editor
+      *
+      * @method doShow
+      * @override
+      */
+      doShow: function InsituEditor_tagEditor_doShow()
+      {
+         this._generateMarkup();
+         if (this.contextStyle === null)
+         {
+            this.contextStyle = Dom.getStyle(this.params.context, "display");
+         }
+         Dom.setStyle(this.params.context, "display", "none");
+         Dom.setStyle(this.editForm, "display", "inline");
+         this.keyListener.enable();
+         this.inputBox.select();
+      },
+
+      /**
+      * Hide the editor
+      *
+      * @method doHide
+      * @param restoreUI {boolean} Whether to restore the UI or rely on the caller to do it
+      * @override
+      */
+      doHide: function InsituEditor_tagEditor_doHide(restoreUI)
+      {
+         this.balloon.hide();
+         this.keyListener.disable();
+         if (restoreUI)
+         {
+            Dom.setStyle(this.editForm, "display", "none");
+            Dom.setStyle(this.params.context, "display", this.contextStyle);
+         }
+      },
+
+      /**
+      * Failure property persistence handler
+      *
+      * @override
+      * @method onPersistFailure
+      * @param response {Object} Server response object literal
+      */
+      onPersistFailure: function InsituEditor_tagEditor_onPersistFailure(response)
+      {
+         Alfresco.widget.InsituEditor.textBox.superclass.onPersistFailure.call(this, response);
+         this.balloon.text(this.params.errorMessage);
+         this.balloon.show();
+      },
+
+      /**
+       * Adds a new span that represents an applied tag. This span contains an icon that can
+       * be clicked on to remove the tag. 
+       * 
+       * @method _addTag
+       * @param value The name of the tag
+       * @param nodeRef The nodeRef of the tag
+       */
+      _addTag: function InsituEditor_tagEditor__addTag(value, nodeRef)
+      {
+         tag = Alfresco.util.encodeHTML(value);
+         var span = document.createElement("span");
+         YUIDom.addClass(span, "inlineTagEditTag");
+         var label = document.createElement("span");
+         label.innerHTML = tag;
+         var removeIcon = document.createElement("img");
+         YUIDom.setAttribute(removeIcon, "src", Alfresco.constants.URL_RESCONTEXT + "components/images/delete-tag-off.png");
+         YUIDom.setAttribute(removeIcon, "width", 16);
+         span.appendChild(label);
+         span.appendChild(removeIcon);
+         this.currentTags.appendChild(span);
+         
+         var _this = this;
+         Event.addListener(removeIcon, "click", function(e)
+         {
+            var index = _this.tagRefs.indexOf(nodeRef);
+            if (index != -1)
+            {
+               _this.tagRefs.splice(index, 1);
+            }
+            YUIDom.setAttribute(_this.hiddenInput, "value", _this.tagRefs);
+            _this.currentTags.removeChild(span);
+         });
+         return span;
+      },
+      
+      /**
+       * Applies a tag to the document being edited. This will add a new span to represent
+       * the applied tag, update the the overall hidden input field that will be submitted
+       * and reset the new tag input field.
+       * 
+       * @method _applyTag
+       * @param value The name of the tag
+       * @param nodeRef The nodeRef of the tag
+       */
+      _applyTag: function InsituEditor_tagEditor__applyTag(tagName, nodeRef)
+      {
+         this._addTag(tagName, nodeRef);
+         this.newTagInput.value = "";
+
+         // Add the nodeRef of the tag into the hidden value field...
+         this.tagRefs.push(nodeRef);
+         YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs);
+         
+         // TODO: Ensure that auto-complete drop-down is hidden
+      },
+      
+      /**
+       * Generates the markup that displays the currently applied tags. This function
+       * can be called once the main markup has been created to allow only tag changes
+       * to be rendered.
+       * 
+       * @method _generateCurrentTagMarkup
+       */
+      _generateCurrentTagMarkup: function InsituEditor_tagEditor__generateCurrentTagMarkup()
+      {
+         // Clear any previously created span tags...
+         if (this.currentTags.hasChildNodes())
+         {
+             while (this.currentTags.childNodes.length >= 1)
+             {
+                this.currentTags.removeChild( this.currentTags.firstChild );
+             }
+         }
+         
+         // Add any previously applied tags to the edit box, updating the array of applied tag nodeRefs as we go...
+         if (this.params.value != undefined)
+         {
+            // Need to check that the value param has been set because if the node did not have
+            // a cm:taggable option then it would be undefined.
+            for (i = 0, j = this.params.value.length; i < j; i++)
+            {
+               this._addTag(this.params.value[i].name, this.params.value[i].nodeRef);
+               this.tagRefs.push(this.params.value[i].nodeRef);
+            }
+         }
+      },
+      
+      /**
+       * Generate mark-up
+       *
+       * @method _generateMarkup
+       * @protected
+       */
+      _generateMarkup: function InsituEditor_tagEditor__generateMarkup()
+      {
+         // Reset the array of persisted tag nodeRefs...
+         this.tagRefs = [];
+         
+         if (this.markupGenerated)
+         {
+            this._generateCurrentTagMarkup();
+            return;
+         }
+         
+         var eAutoCompleteWrapper = document.createElement("span"),
+         eAutoComplete = document.createElement("div"),
+//         eSelectTagImg = new Element(document.createElement("img"),
+//         {
+//            src: Alfresco.constants.URL_RESCONTEXT + "components/images/filetypes/generic-tag-16.png", 
+//            width: 16,
+//            alt: ""
+//         }),
+         eSave = new Element(document.createElement("a"),
+         {
+            href: "#",
+            innerHTML: Alfresco.util.message("button.save")
+         }),
+         eCancel = new Element(document.createElement("a"),
+         {
+            href: "#",
+            innerHTML: Alfresco.util.message("button.cancel")
+         });
+         
+         // Create a hidden input field - the value of this field is what will be used to update the
+         // cm:taggable property of the document when the "Save" button is clicked.
+         this.hiddenInput = document.createElement("input");
+         YUIDom.setAttribute(this.hiddenInput, "type", "hidden");
+         YUIDom.setAttribute(this.hiddenInput, "name", this.params.name);
+         YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs);
+
+         // Create a new input field for entering new tags (this will also allow the user to select tags from
+         // an auto-complete list...
+         this.newTagInput = document.createElement("input");
+         YUIDom.setAttribute(this.newTagInput, "type", "text");
+         
+         // Add the new tag input field and the auto-complete drop-down DIV element to the auto-complete wrapper
+         eAutoCompleteWrapper.appendChild(this.newTagInput);
+         eAutoCompleteWrapper.appendChild(eAutoComplete);
+         
+         // Create a new edit box (this contains all tag spans, as well as the auto-complete enabled input field for 
+         // adding new tags)...
+         var editBox = document.createElement("div");
+         YUIDom.addClass(editBox, "inlineTagEdit"); // This class should make the span look like a text input box
+         this.currentTags = document.createElement("span");
+         editBox.appendChild(this.currentTags);
+         editBox.appendChild(eAutoCompleteWrapper); // Add the auto-complete wrapper (this contains the input field for typing tags) 
+         
+         // Add any previously applied tags to the edit box, updating the array of applied tag nodeRefs as we go...
+         this._generateCurrentTagMarkup();
+         
+         // Add the main edit box to the form (all the tags go in this box)
+         this.elEditForm.appendChild(editBox);
+         
+//         YUIDom.addClass(eSelectTagImg, "inlineTagEditTagSelection"); // Style the tag selection image
+         YUIDom.addClass(eAutoCompleteWrapper, "inlineTagEditAutoCompleteWrapper");
+         YUIDom.addClass(eAutoComplete, "inlineTagEditAutoComplete");
+         this.elEditForm.appendChild(this.hiddenInput);
+//         this.elEditForm.appendChild(eSelectTagImg);
+         this.elEditForm.appendChild(eSave);
+         this.elEditForm.appendChild(eCancel);
+
+         /* ************************************************************************************ 
+          * 
+          * This section of code deals with setting up the auto-complete widget for the new tag 
+          * input field. We need to set up a data source for retrieving the existing tags and
+          * which we will need to filter on the client. 
+          * 
+          **************************************************************************************/
+         var oDS = new YAHOO.util.XHRDataSource(Alfresco.constants.PROXY_URI + "api/forms/picker/category/workspace/SpacesStore/tag:tag-root/children?selectableType=cm:category&searchTerm=&size=100&aspect=cm:taggable&");
+         oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+         // This schema indicates where to find the tag name in the JSON response
+         oDS.responseSchema = 
+         {
+             resultsList : "data.items",
+             fields : ["name", "nodeRef"]
+         }; 
+         var oAC = new YAHOO.widget.AutoComplete(this.newTagInput, eAutoComplete, oDS);
+         oAC.questionMark = false;     // Removes the question mark on the query string (this will be ignored anyway)
+         oAC.applyLocalFilter = true;  // Filter the results on the client
+         oAC.queryDelay = .3           // Throttle requests sent
+         oAC.itemSelectEvent.subscribe(function(type, args)
+         {
+            // If the user clicks on an entry in the list then apply the selected tag
+            var tagName = args[2][0],
+                nodeRef = args[2][1];
+            this._applyTag(tagName, nodeRef);
+            
+         }, this, true);
+         // Update the result filter to remove any results that have already been used...
+         oAC.dataReturnEvent.subscribe(function(type, args)
+         {
+            var results = args[2];
+            for (i = 0, j = results.length; i < j; i++)
+            {
+               var currNodeRef = results[i].nodeRef;
+               
+               var index = this.tagRefs.indexOf(currNodeRef);
+               if (index != -1)
+               {
+                  results.splice(i, 1); // Remove the result because it's already been used
+                  i--;                  // Decrement the index because it's about to get incremented (this avoids skipping an entry)
+                  j--;                  // Decrement the target length, because the arrays got shorter
+               }
+            }
+         }, this, true);
+         
+         
+         /* **************************************************************************************
+          * 
+          * This section of code deals with handling enter keypresses in the new tag input field.
+          * We need to capture ENTER keypresses and prevent the form being submitted, but instead
+          * make a request to create the tag provided and then add it to the hidden variable that
+          * will get submitted when the "Save" link is used.
+          * 
+          ****************************************************************************************/
+         var _this = this;
+         Event.addListener(this.newTagInput, "keypress", function(e)
+         {
+            if (e.keyCode == 13)
+            {
+               Event.stopEvent(e); // Prevent the surrounding form from being submitted
+               
+               var dataObj = { name : this.value },
+                   successCallback = 
+                   { 
+                      fn: function(response)
+                      {
+                         // The tag was successfully created, add it before the new tag entry field
+                         // and reset the entry field...
+                         _this._applyTag(this.value, response.json.nodeRef);
+                      },
+                      scope: this
+                   },
+                   failureCallback = 
+                   {
+                      fn: function(response) 
+                      {
+                         // The tag was not created for some reason
+                         // TODO: Handle error gracefully
+                      },
+                      scope: this
+                   };
+               
+               // Post a request to create a new tag. This will succeed even if the tag already
+               // exists, it will just give us a handy reference to the nodeRef for the tag
+               Alfresco.util.Ajax.jsonRequest(
+               {
+                  method: "POST",
+                  url: Alfresco.constants.PROXY_URI + "api/tag/workspace/SpacesStore",
+                  dataObj: dataObj,
+                  successCallback: successCallback,
+                  failureCallback: failureCallback
+               });
+            }
+         });
+         
+         // This section of code handles deleting configured tags through the use of the backspacce key....
+         var _this = this;
+         Event.addListener(this.newTagInput, "keydown", function(e)
+         {
+            if (e.keyCode == 8 && this.newTagInput.value.length == 0)
+            {
+               // The backspace key was used when there are no more characters to delete
+               // so we need to delete the last tag...
+               if (this.tagRefs.length > 0)
+               {
+                  this.tagRefs.pop();
+                  YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs);
+                  this.currentTags.removeChild(YUIDom.getLastChild(this.currentTags));
+               }
+            }
+         }, this, true);
+         
+         Event.addListener(editBox, "click", function(e)
+         {
+            this.newTagInput.select();
+         }, this, true);
+         
+         
+         Event.addListener(this.newTagInput, "blur", function(e)
+         {
+            if (this.balloon)
+            {
+               this.balloon.hide();
+            }
+         }, this, true);
+
+         eSave.on("click", function(e)
+         {
+            this.form._submitInvoked(e);
+         }, this, true);
+
+         eCancel.on("click", function(e)
+         {
+            Event.stopEvent(e);
+            this.inputBox.value = "";
+            this.doHide(true);
+         }, this, true);
+
+         this.inputBox = this.newTagInput;
+
+         // Key Listener for [Escape] to cancel
+         this.keyListener = new KeyListener(this.inputBox,
+         {
+            keys: [KeyListener.KEY.ESCAPE]
+         },
+         {
+            fn: function(id, keyEvent)
+            {
+               Event.stopEvent(keyEvent[1]);
+               this.inputBox.value = "";
+               this.doHide(true);
+            },
+            scope: this,
+            correctScope: true
+         });
+
+         // Balloon UI for errors
+         this.balloon = Alfresco.util.createBalloon(this.inputBox);
+         this.balloon.onClose.subscribe(function(e)
+         {
+            try
+            {
+               this.inputBox.focus();
+            }
+            catch (e)
+            {
+            }
+         }, this, true);
+
+         // Register validation handlers
+         var vals = this.params.validations;
+         for (var i = 0, ii = vals.length; i < ii; i++)
+         {
+            this.form.addValidation(this.inputBox, vals[i].type, vals[i].args, vals[i].when, vals[i].message);
+         }
+
+         // Override Forms Runtime's error handling
+         var scope = this;
+         this.form.addError = function InsituEditor_tagEditor_addError(msg, field)
+         {
+            scope.balloon.html(msg);
+            scope.balloon.show();
+         };
+
+         // Initialise the form
+         this.form.init();
+         this.markupGenerated = true;
+      }
+   });
 })();
 
 /**

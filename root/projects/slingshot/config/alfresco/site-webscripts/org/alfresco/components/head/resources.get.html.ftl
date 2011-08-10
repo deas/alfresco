@@ -48,6 +48,7 @@
    <script type="text/javascript" src="${url.context}/res/yui/datatable/datatable-debug.js"></script>
    <script type="text/javascript" src="${url.context}/res/yui/history/history-debug.js"></script>
    <script type="text/javascript" src="${url.context}/res/yui/treeview/treeview-debug.js"></script>
+   <script type="text/javascript" src="${url.context}/res/yui/autocomplete/autocomplete-debug.js"></script>
    <script type="text/javascript" src="${url.context}/res/yui/yui-patch.js"></script>
    <script type="text/javascript">//<![CDATA[
       YAHOO.util.Event.throwErrors = true;
