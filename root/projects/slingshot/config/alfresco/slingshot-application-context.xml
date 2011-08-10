@@ -69,6 +69,7 @@
       <property name="interceptors">
          <list>
             <ref bean="requestContextInterceptor"/>
+            <ref bean="userDashboardInterceptor"/>
             <ref bean="editionInterceptor"/>
             <ref bean="themeInterceptor"/>
          </list>
@@ -166,6 +167,7 @@
    
    <!-- Interceptors -->
    <bean id="editionInterceptor" class="org.alfresco.web.site.EditionInterceptor" parent="abstractWebFrameworkInterceptor" />
+   <bean id="userDashboardInterceptor" class="org.alfresco.web.site.UserDashboardInterceptor" parent="abstractWebFrameworkInterceptor" />
    
    <!--                             -->
    <!--  Web Script Implementations -->
@@ -385,7 +387,6 @@
    </bean>
 
    <bean id="slingshot.action.evaluator.locateAction" class="org.alfresco.web.evaluator.action.LocateActionEvaluator" />
-
 
    <!-- 
       CMIS beans
