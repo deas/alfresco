@@ -90,11 +90,11 @@
             <#assign modifyDate = node.properties["cm:modified"]>
             <#assign modifierLink = userProfileLink(modifyUser.userName, modifyUser.displayName, 'class="theme-color-1"') >
             ${msg("label.modified-by-user-on-date", modifierLink, xmldate(modifyDate.iso8601)?string(msg("date-format.defaultFTL")))}
-            <#if showLikes == "true">
-            <span id="${el}-like" class="item item-separator"></span>
-            </#if>
             <#if showFavourite == "true">
             <span id="${el}-favourite" class="item item-separator"></span>
+            </#if>
+            <#if showLikes == "true">
+            <span id="${el}-like" class="item item-separator"></span>
             </#if>
             <#if showComments == "true">
             <span class="item item-separator item-social">

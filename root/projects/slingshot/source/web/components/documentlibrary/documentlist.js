@@ -2837,8 +2837,6 @@
        */
       onEventHighlightRow: function DL_onEventHighlightRow(oArgs)
       {
-         var me = this;
-         
          // Call through to get the row highlighted by YUI
          this.widgets.dataTable.onEventHighlightRow.call(this.widgets.dataTable, oArgs);
 
@@ -2848,72 +2846,6 @@
          // Inject the correct action elements into the actionsId element
          if (elActions && elActions.firstChild === null)
          {
-            var urlContext = Alfresco.constants.URL_RESCONTEXT + "components/documentlibrary/actions/",
-               iconStyle = 'style="background-image:url(' + urlContext + '{icon}-16.png)" ',
-               actionTypeMarkup =
-               {
-                  "link": '<div class="{id}"><a title="{label}" class="simple-link" href="{href}" ' + iconStyle + '{target}><span>{label}</span></a></div>',
-                  "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}" ' + iconStyle + '><span>{label}</span></a></div>',
-                  "javascript": '<div class="{id}" title="{jsfunction}"><a title="{label}" class="action-link" href="#"' + iconStyle + '><span>{label}</span></a></div>'
-               };
-            
-            var fnRenderAction = function DL_renderAction(p_action, p_record)
-            {
-               // Store quick look-up for client-side actions
-               p_record.actionParams[p_action.id] = p_action.params;
-               
-               var markupParams =
-               {
-                  "id": p_action.id,
-                  "icon": p_action.icon,
-                  "label": me.msg(p_action.label)
-               };
-               
-               // Parameter substitution for each action type
-               if (p_action.type === "link")
-               {
-                  if (p_action.params.href)
-                  {
-                     markupParams.href = YAHOO.lang.substitute(p_action.params.href, p_record, function DL_renderAction_href(p_key, p_value, p_meta)
-                     {
-                        return Alfresco.util.findValueByDotNotation(p_record, p_key);
-                     });
-                     markupParams.target = p_action.params.target ? "target=\"" + p_action.params.target + "\"" : "";
-                  }
-                  else
-                  {
-                     Alfresco.logger.warn("Action configuration error: Missing 'href' parameter for actionId: ", p_action.id);
-                  }
-               }
-               else if (p_action.type === "pagelink")
-               {
-                  if (p_action.params.page)
-                  {
-                     markupParams.pageUrl = YAHOO.lang.substitute(p_action.params.page, p_record, function DL_renderAction_pageUrl(p_key, p_value, p_meta)
-                     {
-                        return Alfresco.util.findValueByDotNotation(p_record, p_key);
-                     });
-                  }
-                  else
-                  {
-                     Alfresco.logger.warn("Action configuration error: Missing 'page' parameter for actionId: ", p_action.id);
-                  }
-               }
-               else if (p_action.type === "javascript")
-               {
-                  if (p_action.params["function"])
-                  {
-                     markupParams.jsfunction = p_action.params["function"];
-                  }
-                  else
-                  {
-                     Alfresco.logger.warn("Action configuration error: Missing 'function' parameter for actionId: ", p_action.id);
-                  }
-               }
-
-               return YAHOO.lang.substitute(actionTypeMarkup[p_action.type], markupParams);
-            };
-            
             // Retrieve the actionSet for this record
             var oRecord = this.widgets.dataTable.getRecord(oArgs.target.id),
                record = oRecord.getData(),
@@ -2926,7 +2858,7 @@
             record.actionParams = {};
             for (var i = 0, ii = actions.length; i < ii; i++)
             {
-               actionHTML += fnRenderAction(actions[i], record);
+               actionHTML += this.renderAction(actions[i], record);
             }
 
             // Token replacement - action Urls

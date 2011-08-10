@@ -172,69 +172,6 @@
          // Populate convenience property
          this.recordData.jsNode = new Alfresco.util.Node(this.recordData.node);
          
-         var actionTypeMarkup =
-         {
-            "link": '<div class="{id}"><a title="{label}" class="simple-link" href="{href}" {target}><span>{label}</span></a></div>',
-            "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}"><span>{label}</span></a></div>',
-            "javascript": '<div class="{id}" title="{jsfunction}"><a title="{label}" class="action-link" href="#"><span>{label}</span></a></div>'
-         };
-         
-         var fnRenderAction = function DA_renderAction(p_action, p_record)
-         {
-            // Store quick look-up for client-side actions
-            p_record.actionParams[p_action.id] = p_action.params;
-            
-            var markupParams =
-            {
-               "id": p_action.id,
-               "label": me.msg(p_action.label)
-            };
-            
-            // Parameter substitution for each action type
-            if (p_action.type === "link")
-            {
-               if (p_action.params.href)
-               {
-                  markupParams.href = YAHOO.lang.substitute(p_action.params.href, p_record, function DL_renderAction_href(p_key, p_value, p_meta)
-                  {
-                     return Alfresco.util.findValueByDotNotation(p_record, p_key);
-                  });
-                  markupParams.target = p_action.params.target ? "target=\"" + p_action.params.target + "\"" : "";
-               }
-               else
-               {
-                  Alfresco.logger.warn("Action configuration error: Missing 'href' parameter for actionId: ", p_action.id);
-               }
-            }
-            else if (p_action.type === "pagelink")
-            {
-               if (p_action.params.page)
-               {
-                  markupParams.pageUrl = YAHOO.lang.substitute(p_action.params.page, p_record, function DL_renderAction_pageUrl(p_key, p_value, p_meta)
-                  {
-                     return Alfresco.util.findValueByDotNotation(p_record, p_key);
-                  });
-               }
-               else
-               {
-                  Alfresco.logger.warn("Action configuration error: Missing 'page' parameter for actionId: ", p_action.id);
-               }
-            }
-            else if (p_action.type === "javascript")
-            {
-               if (p_action.params["function"])
-               {
-                  markupParams.jsfunction = p_action.params["function"];
-               }
-               else
-               {
-                  Alfresco.logger.warn("Action configuration error: Missing 'function' parameter for actionId: ", p_action.id);
-               }
-            }
-
-            return YAHOO.lang.substitute(actionTypeMarkup[p_action.type], markupParams);
-         };
-
          // Retrieve the actionSet for this record
          var record = this.recordData,
             node = record.node,
@@ -246,12 +183,11 @@
          record.actionParams = {};
          for (var i = 0, ii = actions.length; i < ii; i++)
          {
-            actionHTML += fnRenderAction(actions[i], record);
+            actionHTML += this.renderAction(actions[i], record);
          }
 
          // Token replacement
-         var actionUrls = this.getActionUrls(record);
-         actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, actionUrls);
+         actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, this.getActionUrls(record));
 
          Dom.addClass(actionsEl, "action-set");
          Dom.setStyle(actionsEl, "visibility", "visible");
