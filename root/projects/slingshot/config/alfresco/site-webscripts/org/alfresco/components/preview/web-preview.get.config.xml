@@ -100,15 +100,15 @@
       <!-- Images in real size (if they didn't have a imgpreview) -->
 
       <condition mimeType="image/jpeg">
-         <plugin>Image</plugin>
+         <plugin srcMaxSize="500000">Image</plugin>
       </condition>
 
       <condition mimeType="image/png">
-         <plugin>Image</plugin>
+         <plugin srcMaxSize="500000">Image</plugin>
       </condition>
 
       <condition mimeType="image/gif">
-         <plugin>Image</plugin>
+         <plugin srcMaxSize="500000">Image</plugin>
       </condition>
 
       <condition mimeType="application/x-shockwave-flash">
