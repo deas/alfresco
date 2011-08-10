@@ -130,7 +130,8 @@
                     distribute-deployment,
                     distribute-webeditor,
                     distribute-wcmqs-extension,
-                    distribute-solr" />
+                    distribute-solr,
+                    distribute-file-transfer-receiver" />
 
    <target name="set-build-number"
            depends="continuous-init, set-build-devbox-number, set-revision-number">
@@ -1507,6 +1508,17 @@
          <fileset dir="${dir.project.fdk.repo.dist}" includes="${file.name.amp.fdk}" />
          <fileset file="${dir.project.fdk}/README_fdk.txt" />
       </zip>
+   </target>
+
+   <!-- ************************************ -->
+   <!-- ** File Transfer Receiver targets ** -->
+   <!-- ************************************ -->
+   
+   <target name="distribute-file-transfer-receiver" depends="set-build-number, continuous-init, incremental-file-transfer-receiver"
+           description="Distributes the File Transfer Receiver (FTR) files">
+      <mkdir dir="${dir.continuous.dist}" />
+      <copy tofile="${dir.continuous.dist}/${file.name.dist.file-transfer-receiver}.zip" 
+         file="${dir.project.file-transfer-receiver.dist}/${file.name.zip.file-transfer-receiver}" />
    </target>
 
 </project>

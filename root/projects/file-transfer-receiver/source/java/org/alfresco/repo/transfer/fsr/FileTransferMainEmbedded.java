@@ -18,9 +18,9 @@
  */
 package org.alfresco.repo.transfer.fsr;
 
-import java.io.File;
-
 import org.apache.catalina.startup.Tomcat;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class FileTransferMainEmbedded
 {
@@ -29,13 +29,9 @@ public class FileTransferMainEmbedded
      */
     public static void main(String[] args) throws Exception
     {
-        String currentDir = new File(".").getCanonicalPath();
-        String webApp = "file-transfer-receiver.war";
-
-        Tomcat tomcat = new Tomcat();
-        tomcat.setBaseDir(currentDir);
-        tomcat.setPort(9090);
-        tomcat.addWebapp("/alfresco-ftr", webApp);
+        ApplicationContext appCtx = new ClassPathXmlApplicationContext("classpath*:file-transfer-receiver-context.xml");
+        Tomcat tomcat = (Tomcat) appCtx.getBean("embeddedTomcat");
+        tomcat.addWebapp("/alfresco-ftr", "file-transfer-receiver.war");
         tomcat.start();
         tomcat.getServer().await();
     }
