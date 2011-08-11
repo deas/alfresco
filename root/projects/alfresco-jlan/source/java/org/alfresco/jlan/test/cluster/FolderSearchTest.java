@@ -30,6 +30,7 @@ import org.alfresco.jlan.client.info.FileInfo;
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.config.InvalidConfigurationException;
 import org.alfresco.jlan.server.filesys.FileAttribute;
+import org.alfresco.jlan.server.filesys.FileName;
 import org.springframework.extensions.config.ConfigElement;
 
 /**
@@ -165,7 +166,7 @@ public class FolderSearchTest extends Test {
 					sess.CreateDirectory( fnameStr.toString());
 				}
 				
-				// Inidicate initialization successful
+				// Indicate initialization successful
 				
 				initOK = true;
 			}
@@ -200,9 +201,20 @@ public class FolderSearchTest extends Test {
 			
 			testLog( log, "FolderSearch Test");
 			
+			// Build the search path
+			
+			String searchPath = "*.*";
+			if ( getPath() != null) {
+				StringBuilder pathStr = new StringBuilder();
+				pathStr.append ( getPath());
+				pathStr.append ( "*.*");
+				
+				searchPath = pathStr.toString();
+			}
+						
 			// Get a full listing from the folder
 			
-			SearchContext search = sess.StartSearch( "*.*", FileAttribute.Directory + FileAttribute.Normal);
+			SearchContext search = sess.StartSearch( searchPath, FileAttribute.Directory + FileAttribute.Normal);
 			if ( search == null)
 				return new BooleanTestResult( false, "Search for *.* failed");
 			
