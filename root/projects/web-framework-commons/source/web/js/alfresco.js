@@ -2602,6 +2602,33 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
       markupGenerated: null,
 
       /**
+       * The YUI auto-complete widget used for entering new tags.
+       * 
+       * @property tagAutoComplete
+       * @type YAHOO.widget.AutoComplete
+       */
+      tagAutoComplete: null,
+      
+      /**
+       * The index of the tag that is currently being edited. This will be
+       * set to -1 if a tag isn't currently being edited.
+       * 
+       * @property _editingTagIndex
+       * @type int
+       */
+      _editingTagIndex: -1,
+
+      /**
+       * Indicates that a tag is primted for deletion. This occurs when the backspace key is used
+       * when there are no characters entered in the newTagInput field. A further use of the backspace
+       * key will result in the tag being deleted.
+       * 
+       * @property _tagPrimedForDelete
+       * @type boolean
+       */
+      _tagPrimedForDelete: false,
+      
+      /**
       * Show the editor
       *
       * @method doShow
@@ -2651,7 +2678,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          this.balloon.text(this.params.errorMessage);
          this.balloon.show();
       },
-
+      
       /**
        * Adds a new span that represents an applied tag. This span contains an icon that can
        * be clicked on to remove the tag. 
@@ -2667,25 +2694,77 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          YUIDom.addClass(span, "inlineTagEditTag");
          var label = document.createElement("span");
          label.innerHTML = tag;
-         var removeIcon = document.createElement("img");
+         var removeIcon = document.createElement("img"),
+             removeIconEdit = document.createElement("img");
          YUIDom.setAttribute(removeIcon, "src", Alfresco.constants.URL_RESCONTEXT + "components/images/delete-tag-off.png");
          YUIDom.setAttribute(removeIcon, "width", 16);
+         YUIDom.setAttribute(removeIconEdit, "src", Alfresco.constants.URL_RESCONTEXT + "components/images/delete-tag-on.png");
+         YUIDom.setAttribute(removeIconEdit, "width", 16);
+         YUIDom.addClass(removeIconEdit, "hidden");
          span.appendChild(label);
          span.appendChild(removeIcon);
-         this.currentTags.appendChild(span);
+         span.appendChild(removeIconEdit);
+         
+         // Make sure we add the tag in the right place...
+         if (YUIDom.isAncestor(this.currentTags, this.newTagInput))
+         {
+            // An existing tag has been edited, so insert it before the input tag...
+            YUIDom.insertBefore(span, this.newTagInput.parentNode);
+         }
+         else
+         {
+            // Add the new tag at the end of the list...
+            this.currentTags.appendChild(span);
+         }
+         this._editingTagIndex = -1; // If we've just added a tag then we're not editing one
+         
+         
+         // Function for deterining the index of a tag...
+         var findTagIndex = function InsituEditor_tagEditor_findTagIndex(tagSpan)
+         {
+            // Get the index of where the span ended up, needed to insert the nodeRef in the correct place...
+            var spanIndex = 0,
+                tmp = tagSpan;
+            while((tmp = tmp.previousSibling) != null)
+            {
+               spanIndex++; 
+            }
+            return spanIndex;
+         }
          
          var _this = this;
-         Event.addListener(removeIcon, "click", function(e)
+
+         // Function for removing a nodeRef from the array of refs...
+         var removeNodeRef = function InsituEditor_tagEditor_removeNodeRef(nodeRef)
          {
-            var index = _this.tagRefs.indexOf(nodeRef);
+            var index = Alfresco.util.arrayIndex(_this.tagRefs, nodeRef);
             if (index != -1)
             {
                _this.tagRefs.splice(index, 1);
             }
-            YUIDom.setAttribute(_this.hiddenInput, "value", _this.tagRefs);
+         }
+         
+         // Handler the user choosing to remove a tag...
+         Event.addListener(removeIcon, "click", function(e)
+         {
+            removeNodeRef(nodeRef);
+            YUIDom.setAttribute(_this.hiddenInput, "value", _this.tagRefs.toString());
             _this.currentTags.removeChild(span);
          });
-         return span;
+         
+         // Handle the user choosing to edit a tag...
+         Event.addListener(label, "click", function(e)
+         {
+            // When the tag label is clicked we need to make it editable. The new tag box needs to
+            // replace the tag span and have it's value set to the tag being edited.
+            YUIDom.insertBefore(_this.newTagInput.parentNode, span);
+            _this.currentTags.removeChild(span);
+            _this.newTagInput.value = value;
+            removeNodeRef(nodeRef);
+            _this._editingTagIndex = findTagIndex(span); // Set the index of the span being edited.
+         });
+         
+         return findTagIndex(span);
       },
       
       /**
@@ -2699,14 +2778,15 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
        */
       _applyTag: function InsituEditor_tagEditor__applyTag(tagName, nodeRef)
       {
-         this._addTag(tagName, nodeRef);
+         var index = this._addTag(tagName, nodeRef);
          this.newTagInput.value = "";
 
          // Add the nodeRef of the tag into the hidden value field...
-         this.tagRefs.push(nodeRef);
-         YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs);
+         this.tagRefs.splice(index, 0, nodeRef);
+         YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs.toString());
          
-         // TODO: Ensure that auto-complete drop-down is hidden
+         // Ensure that auto-complete drop-down is hidden...
+         this.tagAutoComplete.collapseContainer();
       },
       
       /**
@@ -2759,12 +2839,6 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          
          var eAutoCompleteWrapper = document.createElement("span"),
          eAutoComplete = document.createElement("div"),
-//         eSelectTagImg = new Element(document.createElement("img"),
-//         {
-//            src: Alfresco.constants.URL_RESCONTEXT + "components/images/filetypes/generic-tag-16.png", 
-//            width: 16,
-//            alt: ""
-//         }),
          eSave = new Element(document.createElement("a"),
          {
             href: "#",
@@ -2781,8 +2855,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          this.hiddenInput = document.createElement("input");
          YUIDom.setAttribute(this.hiddenInput, "type", "hidden");
          YUIDom.setAttribute(this.hiddenInput, "name", this.params.name);
-         YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs);
-
+         
          // Create a new input field for entering new tags (this will also allow the user to select tags from
          // an auto-complete list...
          this.newTagInput = document.createElement("input");
@@ -2803,14 +2876,15 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          // Add any previously applied tags to the edit box, updating the array of applied tag nodeRefs as we go...
          this._generateCurrentTagMarkup();
          
+         // Set the current tags in the hidden field...
+         YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs.toString());
+         
          // Add the main edit box to the form (all the tags go in this box)
          this.elEditForm.appendChild(editBox);
          
-//         YUIDom.addClass(eSelectTagImg, "inlineTagEditTagSelection"); // Style the tag selection image
          YUIDom.addClass(eAutoCompleteWrapper, "inlineTagEditAutoCompleteWrapper");
          YUIDom.addClass(eAutoComplete, "inlineTagEditAutoComplete");
          this.elEditForm.appendChild(this.hiddenInput);
-//         this.elEditForm.appendChild(eSelectTagImg);
          this.elEditForm.appendChild(eSave);
          this.elEditForm.appendChild(eCancel);
 
@@ -2829,27 +2903,32 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
              resultsList : "data.items",
              fields : ["name", "nodeRef"]
          }; 
-         var oAC = new YAHOO.widget.AutoComplete(this.newTagInput, eAutoComplete, oDS);
-         oAC.questionMark = false;     // Removes the question mark on the query string (this will be ignored anyway)
-         oAC.applyLocalFilter = true;  // Filter the results on the client
-         oAC.queryDelay = .3           // Throttle requests sent
-         oAC.itemSelectEvent.subscribe(function(type, args)
+         this.tagAutoComplete = new YAHOO.widget.AutoComplete(this.newTagInput, eAutoComplete, oDS);
+         this.tagAutoComplete.questionMark = false;     // Removes the question mark on the query string (this will be ignored anyway)
+         this.tagAutoComplete.applyLocalFilter = true;  // Filter the results on the client
+         this.tagAutoComplete.queryDelay = 0.1           // Throttle requests sent
+         this.tagAutoComplete.animSpeed = 0.08;
+         this.tagAutoComplete.itemSelectEvent.subscribe(function(type, args)
          {
             // If the user clicks on an entry in the list then apply the selected tag
             var tagName = args[2][0],
                 nodeRef = args[2][1];
             this._applyTag(tagName, nodeRef);
-            
+            if (YUIDom.isAncestor(this.currentTags, this.newTagInput))
+            {
+               // We must have just finished editing a tag, therefore we need to move
+               // the auto-complete box out of the current tags...
+               YUIDom.insertAfter(this.newTagInput.parentNode, this.currentTags);
+            }
          }, this, true);
          // Update the result filter to remove any results that have already been used...
-         oAC.dataReturnEvent.subscribe(function(type, args)
+         this.tagAutoComplete.dataReturnEvent.subscribe(function(type, args)
          {
             var results = args[2];
             for (i = 0, j = results.length; i < j; i++)
             {
                var currNodeRef = results[i].nodeRef;
-               
-               var index = this.tagRefs.indexOf(currNodeRef);
+               var index = Alfresco.util.arrayIndex(this.tagRefs, currNodeRef);
                if (index != -1)
                {
                   results.splice(i, 1); // Remove the result because it's already been used
@@ -2871,7 +2950,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          var _this = this;
          Event.addListener(this.newTagInput, "keypress", function(e)
          {
-            if (e.keyCode == 13)
+            if (e.keyCode == 13 && this.value.length > 0)
             {
                Event.stopEvent(e); // Prevent the surrounding form from being submitted
                
@@ -2883,15 +2962,22 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
                          // The tag was successfully created, add it before the new tag entry field
                          // and reset the entry field...
                          _this._applyTag(this.value, response.json.nodeRef);
+                         if (YUIDom.isAncestor(_this.currentTags, this))
+                         {
+                            // We must have just finished editing a tag, therefore we need to move
+                            // the auto-complete box out of the current tags...
+                            YUIDom.insertAfter(this.parentNode, _this.currentTags);
+                         }
                       },
                       scope: this
                    },
                    failureCallback = 
                    {
-                      fn: function(response) 
+                      fn: function(response)
                       {
-                         // The tag was not created for some reason
-                         // TODO: Handle error gracefully
+                         // The tag was not created for some reason. There's no need to 
+                         // do any additional action because the validation balloon will 
+                         // still be shown.
                       },
                       scope: this
                    };
@@ -2915,13 +3001,44 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          {
             if (e.keyCode == 8 && this.newTagInput.value.length == 0)
             {
-               // The backspace key was used when there are no more characters to delete
-               // so we need to delete the last tag...
-               if (this.tagRefs.length > 0)
+               if (this._editingTagIndex != -1)
                {
-                  this.tagRefs.pop();
-                  YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs);
-                  this.currentTags.removeChild(YUIDom.getLastChild(this.currentTags));
+                  // If a tag is being edited then we just need to remove the tag and reset the input field
+                  this.tagRefs.splice(this._editingTagIndex, 1); // Remove the nodeRef, the tag span has already been removed
+                  YUIDom.insertAfter(this.newTagInput.parentNode, this.currentTags); // Return the auto-complete elements to their correct position
+               }
+               else if (!this._tagPrimedForDelete && this.currentTags.children.length > 0)
+               {
+                  this._tagPrimedForDelete = true;
+                  var lastTag = YUIDom.getLastChild(this.currentTags);
+                  YUIDom.addClass(lastTag, "inlineTagEditTagPrimed");
+                  YUIDom.addClass(lastTag.children[1], "hidden");
+                  YUIDom.removeClass(lastTag.children[2], "hidden");
+               }
+               else
+               {
+                  // The backspace key was used when there are no more characters to delete
+                  // so we need to delete the last tag...
+                  if (this.tagRefs.length > 0)
+                  {
+                     this.tagRefs.pop();
+                     YUIDom.setAttribute(this.hiddenInput, "value", this.tagRefs.toString());
+                     this.currentTags.removeChild(YUIDom.getLastChild(this.currentTags));
+                  }
+                  this._tagPrimedForDelete = false; // If we've deleted a tag then we're no longer primed for deletion...
+               }
+            }
+            else if (this._tagPrimedForDelete == true)
+            {
+               // If any key other than backspace is pressed and the last tag has been primed for deletion 
+               // then we should put it back to the normal state...
+               this._tagPrimedForDelete = false;
+               if (this.currentTags.children.length > 0)
+               {
+                  var lastTag = YUIDom.getLastChild(this.currentTags);
+                  YUIDom.removeClass(lastTag, "inlineTagEditTagPrimed");
+                  YUIDom.addClass(lastTag.children[2], "hidden");
+                  YUIDom.removeClass(lastTag.children[1], "hidden");
                }
             }
          }, this, true);
@@ -2972,7 +3089,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          });
 
          // Balloon UI for errors
-         this.balloon = Alfresco.util.createBalloon(this.inputBox);
+         this.balloon = Alfresco.util.createBalloon(editBox);
          this.balloon.onClose.subscribe(function(e)
          {
             try

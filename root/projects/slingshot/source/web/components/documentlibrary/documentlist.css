@@ -783,6 +783,13 @@ body .doclist tr.yui-dt-highlighted
    margin-right: 0.3em;
    margin-bottom: 0.3em;
    display: inline-block;
+   cursor: pointer;
+}
+
+.inlineTagEditTagPrimed
+{
+   background-color: #DCEAF4;
+   color: #4F94C9;
 }
 
 .inlineTagEditTag img
@@ -821,4 +828,15 @@ body .doclist tr.yui-dt-highlighted
 {
    width: inherit !important;
 }
+
+.inlineTagEditAutoComplete .yui-ac-content
+{
+   border: 1px solid #C5D6E2 !important;
+}
+
+.inlineTagEditAutoComplete li.yui-ac-highlight
+{
+   background-color: #DCEAF4 !important;
+   color: #515D6B !important;
+} 
 
