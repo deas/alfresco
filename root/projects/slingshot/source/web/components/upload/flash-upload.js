@@ -322,6 +322,8 @@
        * @type HTMLElement
        */
       minorVersion: null,
+      
+      majorVersion: null,
 
       /**
        * HTMLElement of type textarea for version comment
@@ -426,6 +428,8 @@
 
          // Save reference to version radio so we can reset and get its value later
          this.minorVersion = Dom.get(this.id + "-minorVersion-radioButton");
+
+         this.majorVersion = Dom.get(this.id + "-majorVersion-radioButton");
 
          // Save a reference to the HTMLElement displaying version input so we can hide or show it
          this.versionSection = Dom.get(this.id + "-versionSection-div");
@@ -585,6 +589,8 @@
          this.statusText.innerHTML = "&nbsp;";
          this.description.value = "";
          this.minorVersion.checked = true;
+         this.minorVersion.disabled = false;
+         this.majorVersion.disabled = false;
          this.widgets.uploadButton.set("label", this.msg("button.upload"));
          this.widgets.uploadButton.set("disabled", true);
          Dom.removeClass(this.id + "-upload-button", "hidden");
@@ -1058,6 +1064,8 @@
             {
                this.state = this.STATE_UPLOADING;
                this.widgets.uploadButton.set("disabled", true);
+               this.minorVersion.disabled = true;
+               this.majorVersion.disabled = true;
                this.uploader.disable();
                this._updateStatus();
             }
@@ -1562,7 +1570,7 @@
          
          // Flash does not correctly bind to the session cookies during POST
          // so we manually patch the jsessionid directly onto the URL instead
-         url += ";jsessionid=" + YAHOO.util.Cookie.get("JSESSIONID");
+         url += ";jsessionid=" + YAHOO.util.Cookie.get("JSESSIONID") + "?lang=" + Alfresco.constants.JS_LOCALE;
          
          // Find files to upload
          var startedUploads = 0,

@@ -103,6 +103,11 @@ public class FileSystemDeploymentTarget implements Serializable, DeploymentTarge
 	 * @return the metaData directory
 	 */   
 	private String fMetaDataDirectory;
+	
+	/**
+	 * Get the directory in which the temp files are stored
+	 */
+	private String tempDirectory;
 
     
     /**
@@ -165,6 +170,15 @@ public class FileSystemDeploymentTarget implements Serializable, DeploymentTarge
 			logger.info("creating meta data directory:" + meta.toString());
 			meta.mkdirs();
 		}
+		
+	    tempDirectory = fileSystemReceiverService.getDataDirectory() + File.separator + fTargetName;
+        
+	    File temp = new File(tempDirectory);
+	    if (!temp.exists())
+	    {
+	        logger.info("creating new temp location:" + temp.toString());
+	        temp.mkdirs();
+	    }
         
     	metaDataTarget = new Target(fTargetName, fMetaDataDirectory);
     	
@@ -666,7 +680,7 @@ public class FileSystemDeploymentTarget implements Serializable, DeploymentTarge
         
         try
         {
-        	String preLocation = fileSystemReceiverService.getDataDirectory() + File.separator + guid;
+        	String preLocation = tempDirectory + File.separator + guid;
         
         	// Open the destination file
         	OutputStream out = new FileOutputStream(preLocation);

@@ -165,6 +165,8 @@
 			<junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
 				<jvmarg value="-server"/>
 				<jvmarg value="-XX:MaxPermSize=256M"/>
+				<jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
+				<jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
 				<jvmarg value="-Dcom.sun.management.jmxremote"/>
 				<classpath>
 					<path refid="classpath.unit.test"/>
@@ -187,6 +189,8 @@
 			<junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
 				<jvmarg value="-server"/>
 				<jvmarg value="-XX:MaxPermSize=256M"/>
+				<jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
+				<jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
 				<jvmarg value="-Dcom.sun.management.jmxremote"/>
 				<classpath>
 					<path refid="classpath.unit.test"/>
@@ -210,6 +214,8 @@
 				<jvmarg value="-server"/>
 				<jvmarg value="-XX:MaxPermSize=256M"/>
 				<jvmarg value="-Dcom.sun.management.jmxremote"/>
+				<jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
+				<jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
 				<classpath>
 					<path refid="classpath.unit.test"/>
 					<path refid="classpath.unit.test.extension"/>

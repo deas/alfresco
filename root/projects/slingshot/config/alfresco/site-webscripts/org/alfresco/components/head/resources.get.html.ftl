@@ -90,6 +90,7 @@
       Alfresco.constants.PAGEID = "<#if page??>${(page.url.templateArgs.pageid!"")?js_string}</#if>";
       Alfresco.constants.PORTLET = ${PORTLET?string};
       Alfresco.constants.PORTLET_URL = unescape("${(context.attributes.portletUrl!"")?js_string}");
+      Alfresco.constants.JS_LOCALE = "${locale}";
    <#if PORTLET>
       document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${url.context}";
    </#if>

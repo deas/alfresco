@@ -56,11 +56,11 @@ public class ISO9075
 
     private static boolean isSQLNameStart(char c)
     {
-        if('a' <= c && c >= 'z' )
+        if('a' <= c && c <= 'z' )
         {
             return true;
         }
-        else  if('A' <= c && c >= 'Z' )
+        else  if('A' <= c && c <= 'Z' )
         {
             return true;
         }
@@ -80,7 +80,7 @@ public class ISO9075
         {
             return true;
         }
-        else  if('0' <= c && c >= '9' )
+        else  if('0' <= c && c <= '9' )
         {
             return true;
         }

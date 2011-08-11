@@ -132,5 +132,13 @@ public class ISO9075Test extends TestCase
     {
         assertEquals("a_x0020", ISO9075.decode("a_x0020"));
     }
+    
+    public void testEncodeSQL()
+    {
+        assertEquals("vns10:individual_entity", ISO9075.encodeSQL("vns10:individual_entity"));
+        assertEquals("_vns10:individual_entity", ISO9075.encodeSQL("_vns10:individual_entity"));
+        assertEquals("_x0031_vns10:individual_entity", ISO9075.encodeSQL("1vns10:individual_entity"));
+        assertEquals("_x0031_vns10:individual_x002d_entity", ISO9075.encodeSQL("1vns10:individual-entity"));
+    }
 
 }

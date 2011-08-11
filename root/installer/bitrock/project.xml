@@ -79,6 +79,7 @@
         <include file="alfresco-functions.xml" />
         <include file="alfresco-license.xml" />
 
+        <include file="alfresco-linux-building-on-windows-patch.xml" />
         <include file="alfresco-osx-building-on-windows-patch.xml" />
         <include file="alfresco-linux-x64-building-on-windows-patch.xml" />
 

@@ -277,7 +277,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         }
 
         if (logger.isInfoEnabled())
-            logger.info("NTLMAuthenticationFilter initialised.");
+            logger.info("SSOAuthenticationFilter initialised.");
     }
 
     /**
@@ -318,8 +318,9 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             // perform a "silent" init - i.e. no user creation or remote connections
             context = RequestContextUtil.initRequestContext(getApplicationContext(), (HttpServletRequest)sreq, true);
         }
-        catch (RequestContextException ex)
+        catch (Exception ex)
         {
+            logger.error("Error calling initRequestContext", ex);
             throw new ServletException(ex);
         }
 
@@ -560,7 +561,16 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         try
         {
             // In this mode we can only use vaulted credentials. Do not proxy any request headers.
-            Connector conn = connectorService.getConnector(this.endpoint, AuthenticationUtil.getUserId(req), session);
+            String userId = AuthenticationUtil.getUserId(req);
+            
+            // If we are as yet unauthenticated but have external authentication, do the ping check as the external user.
+            // This will either establish the session or throw us out to log in as someone else!
+            if (userId == null)
+            {
+                userId = req.getRemoteUser();
+            }
+
+            Connector conn = connectorService.getConnector(this.endpoint, userId, session);
             ConnectorContext ctx = new ConnectorContext();
             Response remoteRes = conn.call("/touch", ctx);
             if (Status.STATUS_UNAUTHORIZED == remoteRes.getStatus().getCode())
@@ -578,8 +588,13 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                 }
                 else
                 {
+                    // Don't invalidate the session if we've already got external authentication - it may result in us
+                    // having to reauthenticate externally too!
+                    if (req.getRemoteUser() == null)
+                    {
+                        session.invalidate();
+                    }
                     // restart manual login
-                    session.invalidate();
                     redirectToLoginPage(req, res);
                 }
                 return;
