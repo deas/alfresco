@@ -181,47 +181,74 @@
       <indicators>
          <!-- Editing -->
          <indicator id="editing" index="10">
-            <evaluator>slingshot.indicator.evaluator.editing</evaluator>
+            <evaluator>evaluator.doclib.indicator.editing</evaluator>
          </indicator>
          <indicator id="lock-owner" index="10">
-            <evaluator>slingshot.indicator.evaluator.lockOwner</evaluator>
+            <evaluator>evaluator.doclib.indicator.lockOwner</evaluator>
          </indicator>
          <indicator id="locked" index="10">
-            <evaluator>slingshot.indicator.evaluator.locked</evaluator>
+            <evaluator>evaluator.doclib.indicator.locked</evaluator>
             <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
             <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
          </indicator>
          <!-- Google Docs Editing -->
          <indicator id="google-docs-editing" index="10">
-            <evaluator>slingshot.indicator.evaluator.googleDocsEditing</evaluator>
+            <evaluator>evaluator.doclib.indicator.googleDocsEditing</evaluator>
             <override>editing</override>
          </indicator>
          <indicator id="google-docs-owner" index="10">
-            <evaluator>slingshot.indicator.evaluator.googleDocsOwner</evaluator>
+            <evaluator>evaluator.doclib.indicator.googleDocsOwner</evaluator>
             <override>lock-owner</override>
          </indicator>
          <indicator id="google-docs-locked" index="10">
-            <evaluator>slingshot.indicator.evaluator.googleDocsLocked</evaluator>
+            <evaluator>evaluator.doclib.indicator.googleDocsLocked</evaluator>
             <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
             <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
             <override>locked</override>
          </indicator>
          <!-- Workflows -->
          <indicator id="active-workflows" index="20">
-            <evaluator>slingshot.indicator.evaluator.activeWorkflows</evaluator>
+            <evaluator>evaluator.doclib.indicator.activeWorkflows</evaluator>
             <labelParam index="0">{activeWorkflows}</labelParam>
          </indicator>
          <indicator id="simple-workflow" index="30">
-            <evaluator>slingshot.indicator.evaluator.simpleWorkflow</evaluator>
+            <evaluator>evaluator.doclib.indicator.simpleWorkflow</evaluator>
          </indicator>
          <!-- Everything Else -->
          <indicator id="rules" index="40">
-            <evaluator>slingshot.indicator.evaluator.rules</evaluator>
+            <evaluator>evaluator.doclib.indicator.rules</evaluator>
          </indicator>
-         <indicator id="transferred-node" index="50">
-            <evaluator>slingshot.indicator.evaluator.transferredNode</evaluator>
+         <indicator id="exif" index="40">
+            <evaluator>evaluator.doclib.indicator.exifMetadata</evaluator>
+         </indicator>
+         <indicator id="geographic" index="50">
+            <evaluator>evaluator.doclib.indicator.geographicMetadata</evaluator>
+         </indicator>
+         <indicator id="transferred-node" index="60">
+            <evaluator>evaluator.doclib.indicator.transferredNode</evaluator>
          </indicator>
       </indicators>
+
+      <!--
+         Custom Metadata Templates for the Document Library Browse View
+      -->
+      <metadata-templates>
+         <!-- Default (fallback) -->
+         <template id="default">
+            <line index="10">{date}{size}</line>
+            <line index="20">{description}</line>
+            <line index="30">{tags}</line>
+            <line index="40" evaluator="evaluator.doclib.metadata.hasCategories">{categories}</line>
+            <line index="50">{social}</line>
+         </template>
+
+         <!-- Working Copies -->
+         <template id="isWorkingCopy">
+            <evaluator>evaluator.doclib.metadata.isWorkingCopy</evaluator>
+            <line index="10">{date}{size}</line>
+            <line index="20">{description}</line>
+         </template>
+      </metadata-templates>
    </config>
 
    <!-- Repository Library config section -->
@@ -247,6 +274,18 @@
    
    <!-- Document Library Actions config section -->
    <config evaluator="string-compare" condition="DocLibActions">
+      <!--
+         Custom Action dependencies.
+
+         Note: files specified in the "src" attribute resolve relative to the /share/res/ servlet context.
+         <css src="my-custom-action.css" />
+         <js src="my-custom-action.js" />
+      -->
+      <dependencies />
+
+      <!--
+         Action definitions
+      -->
       <actions>
          <!-- Download document -->
          <action id="document-download" type="link" label="actions.document.download">
@@ -287,19 +326,19 @@
          <!-- Approve simple workflow -->
          <action id="document-approve" type="javascript" label="{node.properties['app:approveStep']}">
             <param name="function">onActionSimpleApprove</param>
-            <evaluator>slingshot.action.evaluator.simpleApprove</evaluator> <!-- aspect check, property != null check, action name = property value -->
+            <evaluator>evaluator.doclib.action.simpleApprove</evaluator> <!-- aspect check, property != null check, action name = property value -->
          </action>
 
          <!-- Reject simple workflow -->
          <action id="document-reject" type="javascript" label="{node.properties['app:rejectStep']}">
             <param name="function">onActionSimpleReject</param>
-            <evaluator>slingshot.action.evaluator.simpleReject</evaluator> <!-- aspect check, property != null check, action name = property value -->
+            <evaluator>evaluator.doclib.action.simpleReject</evaluator> <!-- aspect check, property != null check, action name = property value -->
          </action>
 
          <!-- Locate with path view -->
          <action id="document-locate" type="javascript" label="actions.document.locate">
             <param name="function">onActionLocate</param>
-            <evaluator>slingshot.action.evaluator.locateAction</evaluator>
+            <evaluator>evaluator.doclib.action.locateAction</evaluator>
          </action>
 
          <!-- Upload new version -->
@@ -316,7 +355,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.inlineEdit</evaluator> <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
+            <evaluator>evaluator.doclib.action.inlineEdit</evaluator> <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
          </action>
 
          <!-- Edit online -->
@@ -325,10 +364,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.onlineEdit</evaluator> <!-- vti module check, mimetype check -->
-            <condition type="javascript"><![CDATA[
-               YAHOO.env.ua.ie !== 0
-            ]]></condition>
+            <evaluator>evaluator.doclib.action.onlineEdit</evaluator> <!-- vti module check, mimetype check, userAgent check -->
          </action>
 
          <!-- Edit offline -->
@@ -337,13 +373,13 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspect</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.hasLockableAspect</evaluator>
          </action>
 
          <!-- Copy to -->
          <action id="document-copy-to" type="javascript" label="actions.document.copy-to">
             <param name="function">onActionCopyTo</param>
-            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspect</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.hasLockableAspect</evaluator>
          </action>
 
          <!-- Move to -->
@@ -352,7 +388,7 @@
             <permissions>
                <permission allow="true">Delete</permission>
             </permissions>
-            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspect</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.hasLockableAspect</evaluator>
          </action>
 
          <!-- Delete -->
@@ -374,7 +410,7 @@
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.siteBased</evaluator>
+            <evaluator>evaluator.doclib.action.siteBased</evaluator>
          </action>
 
          <!-- Manage permissions (repository roles) -->
@@ -383,7 +419,7 @@
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
-            <evaluator negate="true">slingshot.action.evaluator.siteBased</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.siteBased</evaluator>
          </action>
 
          <!-- Manage aspects -->
@@ -394,16 +430,24 @@
             </permissions>
          </action>
 
+         <!-- Change type -->
+         <action id="document-change-type" type="javascript" label="actions.document.change-type">
+            <param name="function">onActionChangeType</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+         </action>
+
          <!-- View original (of a Working Copy pair) -->
          <action id="document-view-original" type="pagelink" label="actions.document.view-original">
             <param name="page">document-details?nodeRef={workingCopy.sourceNodeRef}</param>
-            <evaluator>slingshot.action.evaluator.isWorkingCopy</evaluator> <!-- cm:workingcopy aspect -->
+            <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator> <!-- cm:workingcopy aspect -->
          </action>
 
          <!-- View working copy (of a Working Copy pair) -->
          <action id="document-view-working-copy" type="pagelink" label="actions.document.view-working-copy">
             <param name="page">document-details?nodeRef={workingCopy.workingCopyNodeRef}</param>
-            <evaluator>slingshot.action.evaluator.hasWorkingCopy</evaluator> <!-- cm:workingcopy aspect -->
+            <evaluator>evaluator.doclib.action.hasWorkingCopy</evaluator> <!-- cm:workingcopy aspect -->
          </action>
 
          <!-- Cancel editing (cancel checkout) -->
@@ -412,7 +456,7 @@
             <permissions>
                <permission allow="true">CancelCheckOut</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.isWorkingCopy</evaluator>
+            <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator>
          </action>
 
          <!-- Manage folder rules -->
@@ -438,28 +482,34 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>slingshot.action.evaluator.googleDocsEditable</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleEditable -->
+            <evaluator>evaluator.doclib.action.googleDocsEditable</evaluator> <!-- gd:googleEditable -->
          </action>
 
          <!-- Checkin from Google Docs -->
          <action id="document-checkin-from-googledocs" type="javascript" label="actions.document.checkin-google">
             <param name="function">onActionCheckinFromGoogleDocs</param>
-            <evaluator>slingshot.action.evaluator.googleDocsCheckIn</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource, cm:workingCopyOwner = currentUser -->
+            <evaluator>evaluator.doclib.action.googleDocsCheckIn</evaluator> <!-- gd:googleResource, cm:workingCopyOwner = currentUser -->
             <override>document-checkout-to-googledocs</override>
          </action>
 
          <!-- View in Google Docs -->
-         <action id="document-googledoc-view" type="link" icon="document-view-content" label="actions.document.view-google-doc">
+         <action id="document-view-googledoc" type="link" icon="document-view-content" label="actions.document.view-google-doc">
             <param name="href">{workingCopy.googleDocUrl}</param>
             <param name="target">_blank</param>
-            <evaluator>slingshot.action.evaluator.googleDocsView</evaluator> <!-- {http://www.alfresco.org/model/googledocs/1.0}googleResource -->
+            <evaluator>evaluator.doclib.action.googleDocsView</evaluator> <!-- gd:googleResource -->
+         </action>
+
+         <!-- View on Google Maps -->
+         <action id="document-view-googlemaps" type="pagelink" label="actions.document.view-google-map">
+            <param name="page">geographic-map?nodeRef={node.nodeRef}</param>
+            <evaluator>evaluator.doclib.action.googleMaps</evaluator> <!-- aspect cm:geographic -->
          </action>
 
          <!-- Transferred node: View in source repository -->
          <action id="document-view-in-source-repository" type="link" label="actions.document.view-source-repository">
             <param name="href">{sourceRepositoryUrl}</param> <!-- calculated from siteId, item.location.repositoryId, replicationUrlMapping from share-config-custom.xml and node.type -->
             <param name="target">_blank</param>
-            <evaluator>slingshot.action.evaluator.transferred</evaluator> <!-- aspect trx:transferred -->
+            <evaluator>evaluator.doclib.action.transferred</evaluator> <!-- aspect trx:transferred -->
             <condition type="javascript"><![CDATA[
                !Alfresco.constants.PORTLET
             ]]></condition>
@@ -468,11 +518,14 @@
          <!-- Publish document -->
          <action id="document-publish" type="javascript" label="actions.document.publish">
             <param name="function">onActionPublish</param>
-            <evaluator negate="true">slingshot.action.evaluator.hasLockableAspect</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.hasLockableAspect</evaluator>
          </action>
 
       </actions>
 
+      <!--
+         Action Group definitions
+      -->
       <actionGroups>
          <actionGroup id="empty"/>
 
@@ -489,7 +542,7 @@
             <action index="190" id="document-inline-edit" />
             <action index="200" id="document-edit-online" />
             <action index="210" id="document-edit-offline" />
-            <action index="220" id="document-googledoc-view" />
+            <action index="220" id="document-view-googledoc" />
             <action index="230" id="document-checkout-to-googledocs" />
             <action index="240" id="document-checkin-from-googledocs" />
             <action index="250" id="document-copy-to" />
@@ -498,6 +551,7 @@
             <action index="280" id="document-assign-workflow" />
             <action index="290" id="document-cancel-editing" />
             <action index="300" id="document-publish" />
+            <action index="310" id="document-view-googlemaps" />
          </actionGroup>
 
          <actionGroup id="document-details">
@@ -512,7 +566,7 @@
             <action index="180" id="document-inline-edit" />
             <action index="190" id="document-edit-online" />
             <action index="200" id="document-edit-offline" />
-            <action index="210" id="document-googledoc-view" />
+            <action index="210" id="document-view-googledoc" />
             <action index="220" id="document-checkout-to-googledocs" />
             <action index="230" id="document-checkin-from-googledocs" />
             <action index="240" id="document-copy-to" />
@@ -523,8 +577,10 @@
             <action index="290" id="document-manage-site-permissions" />
             <action index="300" id="document-manage-repo-permissions" />
             <action index="310" id="document-manage-aspects" />
-            <action index="320" id="document-view-in-source-repository" />
-            <action index="330" id="document-publish" />
+            <action index="320" id="document-change-type" />
+            <action index="330" id="document-view-in-source-repository" />
+            <action index="340" id="document-publish" />
+            <action index="350" id="document-view-googlemaps" />
          </actionGroup>
 
          <actionGroup id="folder-browse">
@@ -543,7 +599,7 @@
          </actionGroup>
 
          <actionGroup id="folder-details">
-            <action index="110" id="document-edit-metadata" icon="folder-edit-metadata" label="actions.folder.edit-metadata" />
+            <action index="100" id="document-edit-metadata" icon="folder-edit-metadata" label="actions.folder.edit-metadata" />
             <action index="110" id="document-approve" icon="folder-approve" />
             <action index="120" id="document-reject" icon="folder-reject" />
             <action index="130" id="document-copy-to" icon="folder-copy-to" label="actions.folder.copy-to" />
@@ -553,8 +609,9 @@
             <action index="170" id="document-manage-site-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="180" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="190" id="document-manage-aspects" label="actions.folder.manage-aspects" />
-            <action index="200" id="view-in-explorer" />
-            <action index="210" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
+            <action index="200" id="document-change-type" label="actions.folder.change-type" />
+            <action index="210" id="view-in-explorer" />
+            <action index="220" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
          </actionGroup>
 
          <actionGroup id="document-link-browse">
@@ -570,10 +627,10 @@
 
          <actionGroup id="folder-link-browse">
             <action index="100" id="folder-view-details" />
-            <action index="110" id="document-locate" icno="folder-locate" label="actions.link.locate">
+            <action index="110" id="document-locate" label="actions.link.locate">
                <evaluator />
             </action>
-            <action index="120" id="document-delete" icon="folder-locate" label="actions.link.delete" />
+            <action index="120" id="document-delete" icon="folder-delete" label="actions.link.delete" />
          </actionGroup>
 
          <actionGroup id="folder-link-details">

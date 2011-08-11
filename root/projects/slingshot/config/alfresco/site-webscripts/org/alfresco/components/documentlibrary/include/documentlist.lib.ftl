@@ -1,3 +1,20 @@
+<#--
+   Configured dependencies.
+   TODO: Temporary code to be removed when config reader implemented.
+-->
+<#if dependencies??>
+   <#if dependencies.css??>
+      <#list dependencies.css as cssFile>
+<link rel="stylesheet" type="text/css" href="${page.url.context}/res${cssFile}" />
+      </#list>
+   </#if>
+   <#if dependencies.js??>
+      <#list dependencies.js as jsFile>
+<script type="text/javascript" src="${page.url.context}/res${jsFile}"></script>
+      </#list>
+   </#if>
+</#if>
+
 <#macro documentlistTemplate>
 <!--[if IE]>
    <iframe id="yui-history-iframe" src="${url.context}/res/yui/history/assets/blank.html"></iframe>
@@ -7,7 +24,9 @@
 <#assign id = args.htmlid?html>
 <div id="${id}-body" class="doclist no-check-bg">
 
-   <#-- TEMPLATES -->
+   <#--
+      INFORMATION TEMPLATES
+   -->
    <div id="${id}-main-template" class="hidden">
       <div>
       </div>
@@ -86,9 +105,11 @@
       <img class="docListOtherOptionsImage docListLinkedInstruction" src="${url.context}/res/components/documentlibrary/images/help-folder-48.png">
       <span class="docListOtherOptionsText"><a class="docListLinkedInstruction"><#-- We don't know the number of hidden subfolders at this point so this needs to be inserted --></a></span>
    </div>
+   <#--
+      END OF INFORMATION TEMPLATES
+   -->
 
-   <#-- END OF TEMPLATES -->
-
+   <#-- Top Bar: Select, Pagination, Sorting & View controls -->
    <div id="${id}-doclistBar" class="yui-gc doclist-bar flat-button no-check-bg">
       <div class="yui-u first">
          <div class="file-select">
@@ -143,8 +164,10 @@
       </div>
    </div>
 
+   <#-- Main Panel: Document List -->
    <div id="${id}-documents" class="documents"></div>
 
+   <#-- Bottom Bar: Paginator -->
    <div id="${id}-doclistBarBottom" class="yui-gc doclist-bar doclist-bar-bottom flat-button">
       <div class="yui-u first">
          <div class="file-select">&nbsp;</div>
@@ -152,12 +175,17 @@
       </div>
    </div>
 
-   <!-- Action Set "More" template -->
-   <div style="display:none">
+   <#--
+      RENDERING TEMPLATES
+   -->
+   <div style="display: none">
+
+      <#-- Action Set "More" template -->
       <div id="${id}-moreActions">
          <div class="internal-show-more" title="onActionShowMore"><a href="#" class="show-more" title="${msg("actions.more")}"><span>${msg("actions.more")}</span></a></div>
          <div class="more-actions hidden"></div>
       </div>
+
    </div>
 
 </div>

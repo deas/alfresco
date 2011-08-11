@@ -1,4 +1,10 @@
 /**
+ *
+ * TODO: Config readers to cache the configuration between requests
+ *
+ */
+
+/**
  * Customisable areas
  */
 var DocList_Custom =
@@ -28,6 +34,12 @@ var DocList =
    PROP_NAME: "cm:name",
    PROP_TITLE: "cm:title",
 
+   /**
+    * Process the response from the Repository webscripts, decorating with appropriate action config.
+    *
+    * @method processResult
+    * @param doclist {Object} JSON response from Repository webscripts
+    */
    processResult: function processResult(doclist)
    {
       var p_view = (args.view || "details").toLowerCase(),
@@ -37,11 +49,17 @@ var DocList =
          item, node, actionGroupId, actions, actionTemplate, action, finalActions, indicatorTemplate, indicator, i, index,
          workingCopyLabel = doclist.metadata.workingCopyLabel;
 
+      /**
+       * Sort actions by index attribute
+       */
       var fnSortByIndex = function fnSortByIndex(item1, item2)
       {
          return (item1.index > item2.index) ? 1 : (item1.index < item2.index) ? -1 : 0;
       };
 
+      /**
+       * Process a repository item (representing a node and associated metadata)
+       */
       var fnProcessItem = function processItem(item)
       {
          node = item.node;
@@ -185,9 +203,12 @@ var DocList =
    },
 
    /**
+    * Get action definitions for a given groupId
     *
-    * TODO: Config reader
-    *
+    * @method getGroupActions
+    * @param groupId {String} The groupId
+    * @param allActions {Object} Object literal containing all actions from config
+    * @return {Object} Object literal containing actions for the given groupId
     */
    getGroupActions: function getGroupActions(groupId, allActions)
    {
@@ -349,11 +370,6 @@ var DocList =
       return indicators;
    },
 
-   /**
-    *
-    * TODO: Config readers
-    *
-    */
    getActionParamConfig: function getActionParamConfig(itemConfig)
    {
       var params = {},

@@ -67,9 +67,7 @@
                   <span class="separator"> &gt; </span>
                </#if>
                <span class="folder-link<#if path_index != 0> folder-open</#if>">
-                  <a href="${siteURL(path.href)}">
-                     ${path.label?html}
-                  </a>
+                  <a href="${siteURL(path.href)}">${path.label?html}</a>
                </span>
             </#list>
          </div>

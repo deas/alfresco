@@ -532,10 +532,12 @@ body .doclist tr.yui-dt-highlighted
 
 .doclist .documents .detail a.tag-link
 {
-   background-color: #DCEAF4;
-   color: #4F94C9;
-   padding: 0.1em 0.3em;
+   border-radius: 8px;
+   font-size: 93%;
    margin-right: 0.5em;
+   padding: 2px 8px;
+   -moz-border-radius: 8px;
+   -webkit-border-radius: 8px;
 }
 
 /* Actions Rollover */

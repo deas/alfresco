@@ -1359,8 +1359,8 @@
           */
          return function DL_renderCellDescription(elCell, oRecord, oColumn, oData)
          {
-            var desc = "", i, j;
-            var record = oRecord.getData(),
+            var desc = "", i, j,
+               record = oRecord.getData(),
                jsNode = record.jsNode,
                properties = jsNode.properties,
                isContainer = jsNode.isContainer,
@@ -1445,46 +1445,32 @@
                }
             }
 
+            /* Title */
             desc += '<h3 class="filename"><span id="' + filenameId + '">'+ Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord);
             desc += $html(record.displayName) + '</a></span>' + titleHTML + version + '</h3>';
 
-            if (scope.options.simpleView)
+            /* Date and Size */
+            desc += '<div class="detail">';
+            desc +=    '<span class="item">' + dateLine + '</span>';
+            if (!jsNode.isContainer && !jsNode.isLink)
             {
-               /**
-                * Simple View
-                */
-               desc += '<div class="detail"><span class="item-simple">' + dateLine + '</span></div>';
+               desc +=    '<span class="item">' + Alfresco.util.formatFileSize(jsNode.size) + '</span>';
             }
-            else
-            {
-               /**
-                * Detailed View
-                */
-               if (record.workingCopy && record.workingCopy.isWorkingCopy)
-               {
-                  /**
-                   * Working Copy
-                   */
-                  desc += '<div class="detail">';
-                  desc +=    '<span class="item">' + dateLine + '</span>';
-                  desc +=    '<span class="item">' + Alfresco.util.formatFileSize(jsNode.size) + '</span>';
-                  desc += '</div>';
-                  desc += '<div class="detail"><span id="' + descriptionId + '" class="item">' + descriptionHTML + '</span></div>';
-               }
-               else
-               {
-                  /**
-                   * Non-Working Copy or Folder
-                   */
-                  desc += '<div class="detail">';
-                  desc +=    '<span class="item">' + dateLine + '</span>';
-                  if (!jsNode.isContainer && !jsNode.isLink)
-                  {
-                     desc +=    '<span class="item">' + Alfresco.util.formatFileSize(jsNode.size) + '</span>';
-                  }
-                  desc += '</div>';
-                  desc += '<div class="detail"><span id="' + descriptionId + '" class="item">' + descriptionHTML + '</span></div>';
+            desc += '</div>';
 
+            /**
+               Detailed View only...
+            */
+            if (!scope.options.simpleView)
+            {
+               /* Description */
+               desc += '<div class="detail"><span id="' + descriptionId + '" class="item">' + descriptionHTML + '</span></div>';
+
+               /**
+                  Non-Working Copies only...
+               */
+               if (!record.workingCopy)
+               {
                   /* Categories */
                   if (jsNode.hasAspect("cm:generalclassifiable"))
                   {

@@ -585,5 +585,4 @@ var AlfrescoUtil =
       }
       return path;
    }
-
 };

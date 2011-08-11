@@ -2277,6 +2277,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
       Alfresco.widget.InsituEditor.textBox.superclass.constructor.call(this, p_params);
 
       this.balloon = null;
+      this.suppressInputBoxFocus = false;
       this.contextStyle = null;
       this.keyListener = null;
       this.markupGenerated = false;
@@ -2302,6 +2303,14 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
        * @type object
        */
       balloon: null,
+
+      /**
+       * Flag to prevent setting focus on the input text box
+       *
+       * @property suppressInputBoxFocus
+       * @type boolean
+       */
+      suppressInputBoxFocus: null,
 
       /**
        * Save context elements style CSS property so it can be restored correctly
@@ -2417,8 +2426,10 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          {
             if (this.balloon)
             {
+               this.suppressInputBoxFocus = true;
                this.balloon.hide();
             }
+            this.suppressInputBoxFocus = false;
          }, this, true);
 
          eSave.on("click", function(e)
@@ -2457,7 +2468,10 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          {
             try
             {
-               this.inputBox.focus();
+               if (!this.suppressInputBoxFocus)
+               {
+                  this.inputBox.focus();
+               }
             }
             catch (e)
             {
@@ -2498,6 +2512,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
       Alfresco.widget.InsituEditor.tagEditor.superclass.constructor.call(this, p_params);
 
       this.balloon = null;
+      this.suppressInputBoxFocus = false;
       this.contextStyle = null;
       this.keyListener = null;
       this.markupGenerated = false;
@@ -2517,6 +2532,14 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
        * @type object
        */
       balloon: null,
+
+      /**
+       * Flag to prevent setting focus on the input text box
+       *
+       * @property suppressInputBoxFocus
+       * @type boolean
+       */
+      suppressInputBoxFocus: null,
 
       /**
        * Save context elements style CSS property so it can be restored correctly
@@ -2908,13 +2931,14 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
             this.newTagInput.select();
          }, this, true);
          
-         
          Event.addListener(this.newTagInput, "blur", function(e)
          {
             if (this.balloon)
             {
+               this.suppressInputBoxFocus = true;
                this.balloon.hide();
             }
+            this.suppressInputBoxFocus = false;
          }, this, true);
 
          eSave.on("click", function(e)
@@ -2953,7 +2977,10 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          {
             try
             {
-               this.inputBox.focus();
+               if (!this.suppressInputBoxFocus)
+               {
+                  this.inputBox.focus();
+               }
             }
             catch (e)
             {
