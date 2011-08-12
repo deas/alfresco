@@ -159,11 +159,21 @@
                  // function from animating the proxy to return to its source...
                  this._inFlight = true;
                  
+                 // Make sure we handle linked folders...
+                 var nodeRef;
+                 if (targetNode.node.isLink)
+                 {
+                    nodeRef = new Alfresco.util.NodeRef(targetNode.node.linkedNode.nodeRef);
+                 }
+                 else
+                 {
+                    nodeRef = new Alfresco.util.NodeRef(targetNode.node.nodeRef)
+                 }
+                 
                  var toMoveRecord = this.docLib.widgets.dataTable.getRecord(this.getEl()),
                      webscriptName = "move-to/node/{nodeRef}",
-                     nodeRef = new Alfresco.util.NodeRef(targetNode.nodeRef),
                      multipleFiles = []; 
-                     multipleFiles.push(this.getEl().id);
+                 multipleFiles.push(this.getEl().id);
                  
                  // Success callback function:
                  // If the operation succeeded then update the tree and refresh the document list.
@@ -181,8 +191,9 @@
                        this.animateResult(this.getDragEl(), this.getEl());
                        Alfresco.util.PopupManager.displayMessage(
                        {
-                          text: this.docLib.msg("message.failure")
+                          text: this.docLib.msg("message.file-dnd-move.failure")
                        });
+                       Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
                        return;
                     }
 
@@ -200,12 +211,6 @@
                           destination: targetNode.location.path + "/" + targetNode.location.file
                        });
                     }
-                    
-                    // Display a success message...
-                    Alfresco.util.PopupManager.displayMessage(
-                    {
-                       text: this.docLib.msg("message.success", successCount)
-                    });
                  };
 
                  // Failure callback function:
@@ -217,8 +222,9 @@
                     this.animateResult(this.getDragEl(), this.getEl());
                     Alfresco.util.PopupManager.displayMessage(
                     {
-                       text: this.docLib.msg("message.failure")
+                       text: this.docLib.msg("message.file-dnd-move.failure")
                     });
+                    Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
                  };
                  
                  // Make the request to move the dragged object to the target
