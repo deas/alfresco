@@ -1593,36 +1593,35 @@
                      obj: record
                   }
                });
+
+               // Tags Insitu editors (this should be merged into data above when development complete)
+               scope.insituEditors.push(
+               {
+                  context: tagsId,
+                  params:
+                  {
+                     type: "tagEditor",
+                     nodeRef: jsNode.nodeRef.toString(),
+                     name: "prop_cm_taggable",
+                     value: record.node.properties["cm:taggable"],
+                     validations: [
+                        {
+                           type: Alfresco.forms.validation.nodeName,
+                           when: "keyup",
+                           message: scope.msg("validation-hint.nodeName")
+                        }
+                     ],
+                     title: scope.msg("tip.insitu-tag"),
+                     errorMessage: scope.msg("message.insitu-edit.tag.failure")
+                  },
+                  callback:
+                  {
+                     fn: fnInsituCallback,
+                     scope: scope,
+                     obj: record
+                  }
+               });
             }
-            
-            // Tags Insitu editors (this should be merged into data above when development complete)
-            scope.insituEditors.push(
-            {
-               context: tagsId,
-               params:
-               {
-                  type: "tagEditor",
-                  nodeRef: jsNode.nodeRef.toString(),
-                  name: "prop_cm_taggable",
-                  value: record.node.properties["cm:taggable"],
-                  validations: [
-                     {
-                        type: Alfresco.forms.validation.nodeName,
-                        when: "keyup",
-                        message: scope.msg("validation-hint.nodeName")
-                     }
-                  ],
-                  title: scope.msg("tip.insitu-tag"),
-                  errorMessage: scope.msg("message.insitu-edit.tag.failure")
-               },
-               callback:
-               {
-                  fn: fnInsituCallback,
-                  scope: scope,
-                  obj: record
-               }
-            });
-         
 
             elCell.innerHTML = desc;
          };
