@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g 2011-07-28 13:00:33
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g 2011-08-12 12:03:25
 
 package org.alfresco.repo.search.impl.parsers;
 
@@ -133,7 +133,7 @@ public class FTSParser extends Parser {
     }
 
     public String[] getTokenNames() { return FTSParser.tokenNames; }
-    public String getGrammarFileName() { return "W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g"; }
+    public String getGrammarFileName() { return "C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g"; }
 
 
         public enum Mode
@@ -300,7 +300,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsQuery"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:351:1: ftsQuery : ftsDisjunction EOF -> ftsDisjunction ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:351:1: ftsQuery : ftsDisjunction EOF -> ftsDisjunction ;
     public final FTSParser.ftsQuery_return ftsQuery() throws RecognitionException {
         FTSParser.ftsQuery_return retval = new FTSParser.ftsQuery_return();
         retval.start = input.LT(1);
@@ -315,8 +315,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_EOF=new RewriteRuleTokenStream(adaptor,"token EOF");
         RewriteRuleSubtreeStream stream_ftsDisjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsDisjunction");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:352:9: ( ftsDisjunction EOF -> ftsDisjunction )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:353:9: ftsDisjunction EOF
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:352:9: ( ftsDisjunction EOF -> ftsDisjunction )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:353:9: ftsDisjunction EOF
             {
             pushFollow(FOLLOW_ftsDisjunction_in_ftsQuery559);
             ftsDisjunction1=ftsDisjunction();
@@ -375,7 +375,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsDisjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:362:1: ftsDisjunction : ({...}? => cmisExplicitDisjunction | {...}? => ftsExplicitDisjunction | {...}? => ftsImplicitDisjunction );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:362:1: ftsDisjunction : ({...}? => cmisExplicitDisjunction | {...}? => ftsExplicitDisjunction | {...}? => ftsImplicitDisjunction );
     public final FTSParser.ftsDisjunction_return ftsDisjunction() throws RecognitionException {
         FTSParser.ftsDisjunction_return retval = new FTSParser.ftsDisjunction_return();
         retval.start = input.LT(1);
@@ -391,12 +391,12 @@ public class FTSParser extends Parser {
 
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:363:9: ({...}? => cmisExplicitDisjunction | {...}? => ftsExplicitDisjunction | {...}? => ftsImplicitDisjunction )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:363:9: ({...}? => cmisExplicitDisjunction | {...}? => ftsExplicitDisjunction | {...}? => ftsImplicitDisjunction )
             int alt1=3;
             alt1 = dfa1.predict(input);
             switch (alt1) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:364:9: {...}? => cmisExplicitDisjunction
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:364:9: {...}? => cmisExplicitDisjunction
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -414,7 +414,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:365:11: {...}? => ftsExplicitDisjunction
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:365:11: {...}? => ftsExplicitDisjunction
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -432,7 +432,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:366:11: {...}? => ftsImplicitDisjunction
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:366:11: {...}? => ftsImplicitDisjunction
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -476,7 +476,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsExplicitDisjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:369:1: ftsExplicitDisjunction : ftsImplicitConjunction ( or ftsImplicitConjunction )* -> ^( DISJUNCTION ( ftsImplicitConjunction )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:369:1: ftsExplicitDisjunction : ftsImplicitConjunction ( or ftsImplicitConjunction )* -> ^( DISJUNCTION ( ftsImplicitConjunction )+ ) ;
     public final FTSParser.ftsExplicitDisjunction_return ftsExplicitDisjunction() throws RecognitionException {
         FTSParser.ftsExplicitDisjunction_return retval = new FTSParser.ftsExplicitDisjunction_return();
         retval.start = input.LT(1);
@@ -493,8 +493,8 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_or=new RewriteRuleSubtreeStream(adaptor,"rule or");
         RewriteRuleSubtreeStream stream_ftsImplicitConjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsImplicitConjunction");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:370:9: ( ftsImplicitConjunction ( or ftsImplicitConjunction )* -> ^( DISJUNCTION ( ftsImplicitConjunction )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:371:9: ftsImplicitConjunction ( or ftsImplicitConjunction )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:370:9: ( ftsImplicitConjunction ( or ftsImplicitConjunction )* -> ^( DISJUNCTION ( ftsImplicitConjunction )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:371:9: ftsImplicitConjunction ( or ftsImplicitConjunction )*
             {
             pushFollow(FOLLOW_ftsImplicitConjunction_in_ftsExplicitDisjunction683);
             ftsImplicitConjunction6=ftsImplicitConjunction();
@@ -502,7 +502,7 @@ public class FTSParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_ftsImplicitConjunction.add(ftsImplicitConjunction6.getTree());
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:371:32: ( or ftsImplicitConjunction )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:371:32: ( or ftsImplicitConjunction )*
             loop2:
             do {
                 int alt2=2;
@@ -515,7 +515,7 @@ public class FTSParser extends Parser {
 
                 switch (alt2) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:371:33: or ftsImplicitConjunction
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:371:33: or ftsImplicitConjunction
             	    {
             	    pushFollow(FOLLOW_or_in_ftsExplicitDisjunction686);
             	    or7=or();
@@ -554,7 +554,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 372:17: -> ^( DISJUNCTION ( ftsImplicitConjunction )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:373:25: ^( DISJUNCTION ( ftsImplicitConjunction )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:373:25: ^( DISJUNCTION ( ftsImplicitConjunction )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(DISJUNCTION, "DISJUNCTION"), root_1);
@@ -601,7 +601,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "cmisExplicitDisjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:376:1: cmisExplicitDisjunction : cmisConjunction ( or cmisConjunction )* -> ^( DISJUNCTION ( cmisConjunction )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:376:1: cmisExplicitDisjunction : cmisConjunction ( or cmisConjunction )* -> ^( DISJUNCTION ( cmisConjunction )+ ) ;
     public final FTSParser.cmisExplicitDisjunction_return cmisExplicitDisjunction() throws RecognitionException {
         FTSParser.cmisExplicitDisjunction_return retval = new FTSParser.cmisExplicitDisjunction_return();
         retval.start = input.LT(1);
@@ -618,8 +618,8 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_cmisConjunction=new RewriteRuleSubtreeStream(adaptor,"rule cmisConjunction");
         RewriteRuleSubtreeStream stream_or=new RewriteRuleSubtreeStream(adaptor,"rule or");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:377:9: ( cmisConjunction ( or cmisConjunction )* -> ^( DISJUNCTION ( cmisConjunction )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:378:9: cmisConjunction ( or cmisConjunction )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:377:9: ( cmisConjunction ( or cmisConjunction )* -> ^( DISJUNCTION ( cmisConjunction )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:378:9: cmisConjunction ( or cmisConjunction )*
             {
             pushFollow(FOLLOW_cmisConjunction_in_cmisExplicitDisjunction772);
             cmisConjunction9=cmisConjunction();
@@ -627,7 +627,7 @@ public class FTSParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_cmisConjunction.add(cmisConjunction9.getTree());
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:378:25: ( or cmisConjunction )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:378:25: ( or cmisConjunction )*
             loop3:
             do {
                 int alt3=2;
@@ -640,7 +640,7 @@ public class FTSParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:378:26: or cmisConjunction
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:378:26: or cmisConjunction
             	    {
             	    pushFollow(FOLLOW_or_in_cmisExplicitDisjunction775);
             	    or10=or();
@@ -679,7 +679,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 379:17: -> ^( DISJUNCTION ( cmisConjunction )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:380:25: ^( DISJUNCTION ( cmisConjunction )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:380:25: ^( DISJUNCTION ( cmisConjunction )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(DISJUNCTION, "DISJUNCTION"), root_1);
@@ -726,7 +726,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsImplicitDisjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:383:1: ftsImplicitDisjunction : ( ( or )? ftsExplicitConjunction )+ -> ^( DISJUNCTION ( ftsExplicitConjunction )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:383:1: ftsImplicitDisjunction : ( ( or )? ftsExplicitConjunction )+ -> ^( DISJUNCTION ( ftsExplicitConjunction )+ ) ;
     public final FTSParser.ftsImplicitDisjunction_return ftsImplicitDisjunction() throws RecognitionException {
         FTSParser.ftsImplicitDisjunction_return retval = new FTSParser.ftsImplicitDisjunction_return();
         retval.start = input.LT(1);
@@ -741,25 +741,42 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_or=new RewriteRuleSubtreeStream(adaptor,"rule or");
         RewriteRuleSubtreeStream stream_ftsExplicitConjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsExplicitConjunction");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:384:9: ( ( ( or )? ftsExplicitConjunction )+ -> ^( DISJUNCTION ( ftsExplicitConjunction )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:9: ( ( or )? ftsExplicitConjunction )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:384:9: ( ( ( or )? ftsExplicitConjunction )+ -> ^( DISJUNCTION ( ftsExplicitConjunction )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:9: ( ( or )? ftsExplicitConjunction )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:9: ( ( or )? ftsExplicitConjunction )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:9: ( ( or )? ftsExplicitConjunction )+
             int cnt5=0;
             loop5:
             do {
                 int alt5=2;
-                alt5 = dfa5.predict(input);
+                int LA5_0 = input.LA(1);
+
+                if ( ((LA5_0>=PLUS && LA5_0<=LPAREN)||LA5_0==PERCENT||(LA5_0>=TILDA && LA5_0<=DECIMAL_INTEGER_LITERAL)||(LA5_0>=EQUALS && LA5_0<=STAR)||(LA5_0>=LSQUARE && LA5_0<=LT)||(LA5_0>=AT && LA5_0<=URI)||(LA5_0>=QUESTION_MARK && LA5_0<=OR)||LA5_0==EXCLAMATION) ) {
+                    alt5=1;
+                }
+
+
                 switch (alt5) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:10: ( or )? ftsExplicitConjunction
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:10: ( or )? ftsExplicitConjunction
             	    {
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:10: ( or )?
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:10: ( or )?
             	    int alt4=2;
-            	    alt4 = dfa4.predict(input);
+            	    int LA4_0 = input.LA(1);
+
+            	    if ( (LA4_0==OR) ) {
+            	        alt4=1;
+            	    }
+            	    else if ( (LA4_0==BAR) ) {
+            	        int LA4_2 = input.LA(2);
+
+            	        if ( (LA4_2==BAR) ) {
+            	            alt4=1;
+            	        }
+            	    }
             	    switch (alt4) {
             	        case 1 :
-            	            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:10: or
+            	            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:385:10: or
             	            {
             	            pushFollow(FOLLOW_or_in_ftsImplicitDisjunction862);
             	            or12=or();
@@ -809,7 +826,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 386:17: -> ^( DISJUNCTION ( ftsExplicitConjunction )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:387:25: ^( DISJUNCTION ( ftsExplicitConjunction )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:387:25: ^( DISJUNCTION ( ftsExplicitConjunction )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(DISJUNCTION, "DISJUNCTION"), root_1);
@@ -856,7 +873,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsExplicitConjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:394:1: ftsExplicitConjunction : ftsPrefixed ( and ftsPrefixed )* -> ^( CONJUNCTION ( ftsPrefixed )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:394:1: ftsExplicitConjunction : ftsPrefixed ( and ftsPrefixed )* -> ^( CONJUNCTION ( ftsPrefixed )+ ) ;
     public final FTSParser.ftsExplicitConjunction_return ftsExplicitConjunction() throws RecognitionException {
         FTSParser.ftsExplicitConjunction_return retval = new FTSParser.ftsExplicitConjunction_return();
         retval.start = input.LT(1);
@@ -873,8 +890,8 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsPrefixed=new RewriteRuleSubtreeStream(adaptor,"rule ftsPrefixed");
         RewriteRuleSubtreeStream stream_and=new RewriteRuleSubtreeStream(adaptor,"rule and");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:395:9: ( ftsPrefixed ( and ftsPrefixed )* -> ^( CONJUNCTION ( ftsPrefixed )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:396:9: ftsPrefixed ( and ftsPrefixed )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:395:9: ( ftsPrefixed ( and ftsPrefixed )* -> ^( CONJUNCTION ( ftsPrefixed )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:396:9: ftsPrefixed ( and ftsPrefixed )*
             {
             pushFollow(FOLLOW_ftsPrefixed_in_ftsExplicitConjunction952);
             ftsPrefixed14=ftsPrefixed();
@@ -882,7 +899,7 @@ public class FTSParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_ftsPrefixed.add(ftsPrefixed14.getTree());
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:396:21: ( and ftsPrefixed )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:396:21: ( and ftsPrefixed )*
             loop6:
             do {
                 int alt6=2;
@@ -895,7 +912,7 @@ public class FTSParser extends Parser {
 
                 switch (alt6) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:396:22: and ftsPrefixed
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:396:22: and ftsPrefixed
             	    {
             	    pushFollow(FOLLOW_and_in_ftsExplicitConjunction955);
             	    and15=and();
@@ -934,7 +951,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 397:17: -> ^( CONJUNCTION ( ftsPrefixed )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:398:25: ^( CONJUNCTION ( ftsPrefixed )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:398:25: ^( CONJUNCTION ( ftsPrefixed )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(CONJUNCTION, "CONJUNCTION"), root_1);
@@ -981,7 +998,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsImplicitConjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:401:1: ftsImplicitConjunction : ( ( and )? ftsPrefixed )+ -> ^( CONJUNCTION ( ftsPrefixed )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:401:1: ftsImplicitConjunction : ( ( and )? ftsPrefixed )+ -> ^( CONJUNCTION ( ftsPrefixed )+ ) ;
     public final FTSParser.ftsImplicitConjunction_return ftsImplicitConjunction() throws RecognitionException {
         FTSParser.ftsImplicitConjunction_return retval = new FTSParser.ftsImplicitConjunction_return();
         retval.start = input.LT(1);
@@ -996,25 +1013,44 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsPrefixed=new RewriteRuleSubtreeStream(adaptor,"rule ftsPrefixed");
         RewriteRuleSubtreeStream stream_and=new RewriteRuleSubtreeStream(adaptor,"rule and");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:402:9: ( ( ( and )? ftsPrefixed )+ -> ^( CONJUNCTION ( ftsPrefixed )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:9: ( ( and )? ftsPrefixed )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:402:9: ( ( ( and )? ftsPrefixed )+ -> ^( CONJUNCTION ( ftsPrefixed )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:9: ( ( and )? ftsPrefixed )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:9: ( ( and )? ftsPrefixed )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:9: ( ( and )? ftsPrefixed )+
             int cnt8=0;
             loop8:
             do {
                 int alt8=2;
-                alt8 = dfa8.predict(input);
+                int LA8_0 = input.LA(1);
+
+                if ( (LA8_0==BAR) ) {
+                    int LA8_2 = input.LA(2);
+
+                    if ( (LA8_2==LPAREN||LA8_2==PERCENT||(LA8_2>=TILDA && LA8_2<=DECIMAL_INTEGER_LITERAL)||(LA8_2>=EQUALS && LA8_2<=STAR)||(LA8_2>=LSQUARE && LA8_2<=LT)||(LA8_2>=AT && LA8_2<=URI)||LA8_2==QUESTION_MARK) ) {
+                        alt8=1;
+                    }
+
+
+                }
+                else if ( (LA8_0==PLUS||(LA8_0>=MINUS && LA8_0<=LPAREN)||LA8_0==PERCENT||(LA8_0>=TILDA && LA8_0<=DECIMAL_INTEGER_LITERAL)||(LA8_0>=EQUALS && LA8_0<=STAR)||(LA8_0>=LSQUARE && LA8_0<=LT)||(LA8_0>=AT && LA8_0<=URI)||LA8_0==QUESTION_MARK||(LA8_0>=AND && LA8_0<=EXCLAMATION)) ) {
+                    alt8=1;
+                }
+
+
                 switch (alt8) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:10: ( and )? ftsPrefixed
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:10: ( and )? ftsPrefixed
             	    {
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:10: ( and )?
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:10: ( and )?
             	    int alt7=2;
-            	    alt7 = dfa7.predict(input);
+            	    int LA7_0 = input.LA(1);
+
+            	    if ( ((LA7_0>=AND && LA7_0<=AMP)) ) {
+            	        alt7=1;
+            	    }
             	    switch (alt7) {
             	        case 1 :
-            	            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:10: and
+            	            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:403:10: and
             	            {
             	            pushFollow(FOLLOW_and_in_ftsImplicitConjunction1042);
             	            and17=and();
@@ -1064,7 +1100,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 404:17: -> ^( CONJUNCTION ( ftsPrefixed )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:405:25: ^( CONJUNCTION ( ftsPrefixed )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:405:25: ^( CONJUNCTION ( ftsPrefixed )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(CONJUNCTION, "CONJUNCTION"), root_1);
@@ -1111,7 +1147,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "cmisConjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:408:1: cmisConjunction : ( cmisPrefixed )+ -> ^( CONJUNCTION ( cmisPrefixed )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:408:1: cmisConjunction : ( cmisPrefixed )+ -> ^( CONJUNCTION ( cmisPrefixed )+ ) ;
     public final FTSParser.cmisConjunction_return cmisConjunction() throws RecognitionException {
         FTSParser.cmisConjunction_return retval = new FTSParser.cmisConjunction_return();
         retval.start = input.LT(1);
@@ -1123,10 +1159,10 @@ public class FTSParser extends Parser {
 
         RewriteRuleSubtreeStream stream_cmisPrefixed=new RewriteRuleSubtreeStream(adaptor,"rule cmisPrefixed");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:409:9: ( ( cmisPrefixed )+ -> ^( CONJUNCTION ( cmisPrefixed )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:410:9: ( cmisPrefixed )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:409:9: ( ( cmisPrefixed )+ -> ^( CONJUNCTION ( cmisPrefixed )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:410:9: ( cmisPrefixed )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:410:9: ( cmisPrefixed )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:410:9: ( cmisPrefixed )+
             int cnt9=0;
             loop9:
             do {
@@ -1140,7 +1176,7 @@ public class FTSParser extends Parser {
 
                 switch (alt9) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:410:9: cmisPrefixed
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:410:9: cmisPrefixed
             	    {
             	    pushFollow(FOLLOW_cmisPrefixed_in_cmisConjunction1129);
             	    cmisPrefixed19=cmisPrefixed();
@@ -1178,7 +1214,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 411:17: -> ^( CONJUNCTION ( cmisPrefixed )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:412:25: ^( CONJUNCTION ( cmisPrefixed )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:412:25: ^( CONJUNCTION ( cmisPrefixed )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(CONJUNCTION, "CONJUNCTION"), root_1);
@@ -1225,7 +1261,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsPrefixed"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:422:1: ftsPrefixed : ( ( not )=> not ftsTest ( boost )? -> ^( NEGATION ftsTest ( boost )? ) | ftsTest ( boost )? -> ^( DEFAULT ftsTest ( boost )? ) | PLUS ftsTest ( boost )? -> ^( MANDATORY ftsTest ( boost )? ) | BAR ftsTest ( boost )? -> ^( OPTIONAL ftsTest ( boost )? ) | MINUS ftsTest ( boost )? -> ^( EXCLUDE ftsTest ( boost )? ) );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:422:1: ftsPrefixed : ( ( not )=> not ftsTest ( boost )? -> ^( NEGATION ftsTest ( boost )? ) | ftsTest ( boost )? -> ^( DEFAULT ftsTest ( boost )? ) | PLUS ftsTest ( boost )? -> ^( MANDATORY ftsTest ( boost )? ) | BAR ftsTest ( boost )? -> ^( OPTIONAL ftsTest ( boost )? ) | MINUS ftsTest ( boost )? -> ^( EXCLUDE ftsTest ( boost )? ) );
     public final FTSParser.ftsPrefixed_return ftsPrefixed() throws RecognitionException {
         FTSParser.ftsPrefixed_return retval = new FTSParser.ftsPrefixed_return();
         retval.start = input.LT(1);
@@ -1268,12 +1304,12 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsTest=new RewriteRuleSubtreeStream(adaptor,"rule ftsTest");
         RewriteRuleSubtreeStream stream_boost=new RewriteRuleSubtreeStream(adaptor,"rule boost");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:423:9: ( ( not )=> not ftsTest ( boost )? -> ^( NEGATION ftsTest ( boost )? ) | ftsTest ( boost )? -> ^( DEFAULT ftsTest ( boost )? ) | PLUS ftsTest ( boost )? -> ^( MANDATORY ftsTest ( boost )? ) | BAR ftsTest ( boost )? -> ^( OPTIONAL ftsTest ( boost )? ) | MINUS ftsTest ( boost )? -> ^( EXCLUDE ftsTest ( boost )? ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:423:9: ( ( not )=> not ftsTest ( boost )? -> ^( NEGATION ftsTest ( boost )? ) | ftsTest ( boost )? -> ^( DEFAULT ftsTest ( boost )? ) | PLUS ftsTest ( boost )? -> ^( MANDATORY ftsTest ( boost )? ) | BAR ftsTest ( boost )? -> ^( OPTIONAL ftsTest ( boost )? ) | MINUS ftsTest ( boost )? -> ^( EXCLUDE ftsTest ( boost )? ) )
             int alt15=5;
             alt15 = dfa15.predict(input);
             switch (alt15) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:9: ( not )=> not ftsTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:9: ( not )=> not ftsTest ( boost )?
                     {
                     pushFollow(FOLLOW_not_in_ftsPrefixed1221);
                     not20=not();
@@ -1287,7 +1323,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsTest.add(ftsTest21.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:30: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:30: ( boost )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -1296,7 +1332,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt10) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:30: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:30: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsPrefixed1225);
                             boost22=boost();
@@ -1313,7 +1349,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: boost, ftsTest
+                    // elements: ftsTest, boost
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1326,13 +1362,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 425:17: -> ^( NEGATION ftsTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:426:25: ^( NEGATION ftsTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:426:25: ^( NEGATION ftsTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(NEGATION, "NEGATION"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:426:44: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:426:44: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -1348,7 +1384,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:427:11: ftsTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:427:11: ftsTest ( boost )?
                     {
                     pushFollow(FOLLOW_ftsTest_in_ftsPrefixed1289);
                     ftsTest23=ftsTest();
@@ -1356,7 +1392,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsTest.add(ftsTest23.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:427:19: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:427:19: ( boost )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -1365,7 +1401,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt11) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:427:19: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:427:19: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsPrefixed1291);
                             boost24=boost();
@@ -1395,13 +1431,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 428:17: -> ^( DEFAULT ftsTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:429:25: ^( DEFAULT ftsTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:429:25: ^( DEFAULT ftsTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(DEFAULT, "DEFAULT"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:429:43: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:429:43: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -1417,7 +1453,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:430:11: PLUS ftsTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:430:11: PLUS ftsTest ( boost )?
                     {
                     PLUS25=(Token)match(input,PLUS,FOLLOW_PLUS_in_ftsPrefixed1355); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_PLUS.add(PLUS25);
@@ -1428,7 +1464,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsTest.add(ftsTest26.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:430:24: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:430:24: ( boost )?
                     int alt12=2;
                     int LA12_0 = input.LA(1);
 
@@ -1437,7 +1473,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt12) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:430:24: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:430:24: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsPrefixed1359);
                             boost27=boost();
@@ -1454,7 +1490,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsTest, boost
+                    // elements: boost, ftsTest
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1467,13 +1503,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 431:17: -> ^( MANDATORY ftsTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:432:25: ^( MANDATORY ftsTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:432:25: ^( MANDATORY ftsTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(MANDATORY, "MANDATORY"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:432:45: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:432:45: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -1489,7 +1525,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:433:11: BAR ftsTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:433:11: BAR ftsTest ( boost )?
                     {
                     BAR28=(Token)match(input,BAR,FOLLOW_BAR_in_ftsPrefixed1423); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_BAR.add(BAR28);
@@ -1500,7 +1536,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsTest.add(ftsTest29.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:433:23: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:433:23: ( boost )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -1509,7 +1545,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt13) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:433:23: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:433:23: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsPrefixed1427);
                             boost30=boost();
@@ -1539,13 +1575,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 434:17: -> ^( OPTIONAL ftsTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:435:25: ^( OPTIONAL ftsTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:435:25: ^( OPTIONAL ftsTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(OPTIONAL, "OPTIONAL"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:435:44: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:435:44: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -1561,7 +1597,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:436:11: MINUS ftsTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:436:11: MINUS ftsTest ( boost )?
                     {
                     MINUS31=(Token)match(input,MINUS,FOLLOW_MINUS_in_ftsPrefixed1491); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_MINUS.add(MINUS31);
@@ -1572,7 +1608,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsTest.add(ftsTest32.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:436:25: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:436:25: ( boost )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -1581,7 +1617,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt14) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:436:25: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:436:25: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsPrefixed1495);
                             boost33=boost();
@@ -1611,13 +1647,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 437:17: -> ^( EXCLUDE ftsTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:438:25: ^( EXCLUDE ftsTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:438:25: ^( EXCLUDE ftsTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(EXCLUDE, "EXCLUDE"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:438:43: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:438:43: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -1659,7 +1695,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "cmisPrefixed"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:441:1: cmisPrefixed : ( cmisTest -> ^( DEFAULT cmisTest ) | MINUS cmisTest -> ^( EXCLUDE cmisTest ) );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:441:1: cmisPrefixed : ( cmisTest -> ^( DEFAULT cmisTest ) | MINUS cmisTest -> ^( EXCLUDE cmisTest ) );
     public final FTSParser.cmisPrefixed_return cmisPrefixed() throws RecognitionException {
         FTSParser.cmisPrefixed_return retval = new FTSParser.cmisPrefixed_return();
         retval.start = input.LT(1);
@@ -1676,7 +1712,7 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_MINUS=new RewriteRuleTokenStream(adaptor,"token MINUS");
         RewriteRuleSubtreeStream stream_cmisTest=new RewriteRuleSubtreeStream(adaptor,"rule cmisTest");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:442:9: ( cmisTest -> ^( DEFAULT cmisTest ) | MINUS cmisTest -> ^( EXCLUDE cmisTest ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:442:9: ( cmisTest -> ^( DEFAULT cmisTest ) | MINUS cmisTest -> ^( EXCLUDE cmisTest ) )
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1695,7 +1731,7 @@ public class FTSParser extends Parser {
             }
             switch (alt16) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:443:9: cmisTest
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:443:9: cmisTest
                     {
                     pushFollow(FOLLOW_cmisTest_in_cmisPrefixed1580);
                     cmisTest34=cmisTest();
@@ -1719,7 +1755,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 444:17: -> ^( DEFAULT cmisTest )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:445:25: ^( DEFAULT cmisTest )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:445:25: ^( DEFAULT cmisTest )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(DEFAULT, "DEFAULT"), root_1);
@@ -1735,7 +1771,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:446:11: MINUS cmisTest
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:446:11: MINUS cmisTest
                     {
                     MINUS35=(Token)match(input,MINUS,FOLLOW_MINUS_in_cmisPrefixed1640); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_MINUS.add(MINUS35);
@@ -1762,7 +1798,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 447:17: -> ^( EXCLUDE cmisTest )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:448:25: ^( EXCLUDE cmisTest )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:448:25: ^( EXCLUDE cmisTest )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(EXCLUDE, "EXCLUDE"), root_1);
@@ -1804,7 +1840,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsTest"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:455:1: ftsTest : ( ( ftsFieldGroupProximity )=> ftsFieldGroupProximity -> ^( PROXIMITY ftsFieldGroupProximity ) | ftsTerm ( ( fuzzy )=> fuzzy )? -> ^( TERM ftsTerm ( fuzzy )? ) | ftsExactTerm ( ( fuzzy )=> fuzzy )? -> ^( EXACT_TERM ftsExactTerm ( fuzzy )? ) | ftsPhrase ( ( slop )=> slop )? -> ^( PHRASE ftsPhrase ( slop )? ) | ftsExactPhrase ( ( slop )=> slop )? -> ^( EXACT_PHRASE ftsExactPhrase ( slop )? ) | ftsTokenisedPhrase ( ( slop )=> slop )? -> ^( PHRASE ftsTokenisedPhrase ( slop )? ) | ftsSynonym ( ( fuzzy )=> fuzzy )? -> ^( SYNONYM ftsSynonym ( fuzzy )? ) | ftsRange -> ^( RANGE ftsRange ) | ftsFieldGroup -> ftsFieldGroup | LPAREN ftsDisjunction RPAREN -> ftsDisjunction | template -> template );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:455:1: ftsTest : ( ( ftsFieldGroupProximity )=> ftsFieldGroupProximity -> ^( PROXIMITY ftsFieldGroupProximity ) | ftsTerm ( ( fuzzy )=> fuzzy )? -> ^( TERM ftsTerm ( fuzzy )? ) | ftsExactTerm ( ( fuzzy )=> fuzzy )? -> ^( EXACT_TERM ftsExactTerm ( fuzzy )? ) | ftsPhrase ( ( slop )=> slop )? -> ^( PHRASE ftsPhrase ( slop )? ) | ftsExactPhrase ( ( slop )=> slop )? -> ^( EXACT_PHRASE ftsExactPhrase ( slop )? ) | ftsTokenisedPhrase ( ( slop )=> slop )? -> ^( PHRASE ftsTokenisedPhrase ( slop )? ) | ftsSynonym ( ( fuzzy )=> fuzzy )? -> ^( SYNONYM ftsSynonym ( fuzzy )? ) | ftsRange -> ^( RANGE ftsRange ) | ftsFieldGroup -> ftsFieldGroup | LPAREN ftsDisjunction RPAREN -> ftsDisjunction | template -> template );
     public final FTSParser.ftsTest_return ftsTest() throws RecognitionException {
         FTSParser.ftsTest_return retval = new FTSParser.ftsTest_return();
         retval.start = input.LT(1);
@@ -1866,12 +1902,12 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_slop=new RewriteRuleSubtreeStream(adaptor,"rule slop");
         RewriteRuleSubtreeStream stream_ftsTokenisedPhrase=new RewriteRuleSubtreeStream(adaptor,"rule ftsTokenisedPhrase");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:456:9: ( ( ftsFieldGroupProximity )=> ftsFieldGroupProximity -> ^( PROXIMITY ftsFieldGroupProximity ) | ftsTerm ( ( fuzzy )=> fuzzy )? -> ^( TERM ftsTerm ( fuzzy )? ) | ftsExactTerm ( ( fuzzy )=> fuzzy )? -> ^( EXACT_TERM ftsExactTerm ( fuzzy )? ) | ftsPhrase ( ( slop )=> slop )? -> ^( PHRASE ftsPhrase ( slop )? ) | ftsExactPhrase ( ( slop )=> slop )? -> ^( EXACT_PHRASE ftsExactPhrase ( slop )? ) | ftsTokenisedPhrase ( ( slop )=> slop )? -> ^( PHRASE ftsTokenisedPhrase ( slop )? ) | ftsSynonym ( ( fuzzy )=> fuzzy )? -> ^( SYNONYM ftsSynonym ( fuzzy )? ) | ftsRange -> ^( RANGE ftsRange ) | ftsFieldGroup -> ftsFieldGroup | LPAREN ftsDisjunction RPAREN -> ftsDisjunction | template -> template )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:456:9: ( ( ftsFieldGroupProximity )=> ftsFieldGroupProximity -> ^( PROXIMITY ftsFieldGroupProximity ) | ftsTerm ( ( fuzzy )=> fuzzy )? -> ^( TERM ftsTerm ( fuzzy )? ) | ftsExactTerm ( ( fuzzy )=> fuzzy )? -> ^( EXACT_TERM ftsExactTerm ( fuzzy )? ) | ftsPhrase ( ( slop )=> slop )? -> ^( PHRASE ftsPhrase ( slop )? ) | ftsExactPhrase ( ( slop )=> slop )? -> ^( EXACT_PHRASE ftsExactPhrase ( slop )? ) | ftsTokenisedPhrase ( ( slop )=> slop )? -> ^( PHRASE ftsTokenisedPhrase ( slop )? ) | ftsSynonym ( ( fuzzy )=> fuzzy )? -> ^( SYNONYM ftsSynonym ( fuzzy )? ) | ftsRange -> ^( RANGE ftsRange ) | ftsFieldGroup -> ftsFieldGroup | LPAREN ftsDisjunction RPAREN -> ftsDisjunction | template -> template )
             int alt23=11;
             alt23 = dfa23.predict(input);
             switch (alt23) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:457:9: ( ftsFieldGroupProximity )=> ftsFieldGroupProximity
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:457:9: ( ftsFieldGroupProximity )=> ftsFieldGroupProximity
                     {
                     pushFollow(FOLLOW_ftsFieldGroupProximity_in_ftsTest1732);
                     ftsFieldGroupProximity37=ftsFieldGroupProximity();
@@ -1895,7 +1931,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 458:17: -> ^( PROXIMITY ftsFieldGroupProximity )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:459:25: ^( PROXIMITY ftsFieldGroupProximity )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:459:25: ^( PROXIMITY ftsFieldGroupProximity )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PROXIMITY, "PROXIMITY"), root_1);
@@ -1911,7 +1947,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:11: ftsTerm ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:11: ftsTerm ( ( fuzzy )=> fuzzy )?
                     {
                     pushFollow(FOLLOW_ftsTerm_in_ftsTest1792);
                     ftsTerm38=ftsTerm();
@@ -1919,12 +1955,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsTerm.add(ftsTerm38.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:19: ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:19: ( ( fuzzy )=> fuzzy )?
                     int alt17=2;
-                    alt17 = dfa17.predict(input);
+                    int LA17_0 = input.LA(1);
+
+                    if ( (LA17_0==TILDA) ) {
+                        int LA17_1 = input.LA(2);
+
+                        if ( (LA17_1==DECIMAL_INTEGER_LITERAL||LA17_1==FLOATING_POINT_LITERAL) ) {
+                            int LA17_3 = input.LA(3);
+
+                            if ( (synpred3_FTS()) ) {
+                                alt17=1;
+                            }
+                        }
+                    }
                     switch (alt17) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:21: ( fuzzy )=> fuzzy
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:21: ( fuzzy )=> fuzzy
                             {
                             pushFollow(FOLLOW_fuzzy_in_ftsTest1802);
                             fuzzy39=fuzzy();
@@ -1954,13 +2002,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 461:17: -> ^( TERM ftsTerm ( fuzzy )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:462:25: ^( TERM ftsTerm ( fuzzy )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:462:25: ^( TERM ftsTerm ( fuzzy )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(TERM, "TERM"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsTerm.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:462:40: ( fuzzy )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:462:40: ( fuzzy )?
                         if ( stream_fuzzy.hasNext() ) {
                             adaptor.addChild(root_1, stream_fuzzy.nextTree());
 
@@ -1976,7 +2024,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:11: ftsExactTerm ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:11: ftsExactTerm ( ( fuzzy )=> fuzzy )?
                     {
                     pushFollow(FOLLOW_ftsExactTerm_in_ftsTest1867);
                     ftsExactTerm40=ftsExactTerm();
@@ -1984,12 +2032,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsExactTerm.add(ftsExactTerm40.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:24: ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:24: ( ( fuzzy )=> fuzzy )?
                     int alt18=2;
-                    alt18 = dfa18.predict(input);
+                    int LA18_0 = input.LA(1);
+
+                    if ( (LA18_0==TILDA) ) {
+                        int LA18_1 = input.LA(2);
+
+                        if ( (LA18_1==DECIMAL_INTEGER_LITERAL||LA18_1==FLOATING_POINT_LITERAL) ) {
+                            int LA18_3 = input.LA(3);
+
+                            if ( (synpred4_FTS()) ) {
+                                alt18=1;
+                            }
+                        }
+                    }
                     switch (alt18) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:26: ( fuzzy )=> fuzzy
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:26: ( fuzzy )=> fuzzy
                             {
                             pushFollow(FOLLOW_fuzzy_in_ftsTest1877);
                             fuzzy41=fuzzy();
@@ -2019,13 +2079,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 464:17: -> ^( EXACT_TERM ftsExactTerm ( fuzzy )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:465:25: ^( EXACT_TERM ftsExactTerm ( fuzzy )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:465:25: ^( EXACT_TERM ftsExactTerm ( fuzzy )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(EXACT_TERM, "EXACT_TERM"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsExactTerm.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:465:51: ( fuzzy )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:465:51: ( fuzzy )?
                         if ( stream_fuzzy.hasNext() ) {
                             adaptor.addChild(root_1, stream_fuzzy.nextTree());
 
@@ -2041,7 +2101,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:11: ftsPhrase ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:11: ftsPhrase ( ( slop )=> slop )?
                     {
                     pushFollow(FOLLOW_ftsPhrase_in_ftsTest1942);
                     ftsPhrase42=ftsPhrase();
@@ -2049,12 +2109,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsPhrase.add(ftsPhrase42.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:21: ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:21: ( ( slop )=> slop )?
                     int alt19=2;
-                    alt19 = dfa19.predict(input);
+                    int LA19_0 = input.LA(1);
+
+                    if ( (LA19_0==TILDA) ) {
+                        int LA19_1 = input.LA(2);
+
+                        if ( (LA19_1==DECIMAL_INTEGER_LITERAL) ) {
+                            int LA19_3 = input.LA(3);
+
+                            if ( (synpred5_FTS()) ) {
+                                alt19=1;
+                            }
+                        }
+                    }
                     switch (alt19) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:23: ( slop )=> slop
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:23: ( slop )=> slop
                             {
                             pushFollow(FOLLOW_slop_in_ftsTest1952);
                             slop43=slop();
@@ -2084,13 +2156,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 467:17: -> ^( PHRASE ftsPhrase ( slop )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:468:25: ^( PHRASE ftsPhrase ( slop )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:468:25: ^( PHRASE ftsPhrase ( slop )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PHRASE, "PHRASE"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsPhrase.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:468:44: ( slop )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:468:44: ( slop )?
                         if ( stream_slop.hasNext() ) {
                             adaptor.addChild(root_1, stream_slop.nextTree());
 
@@ -2106,7 +2178,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:11: ftsExactPhrase ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:11: ftsExactPhrase ( ( slop )=> slop )?
                     {
                     pushFollow(FOLLOW_ftsExactPhrase_in_ftsTest2017);
                     ftsExactPhrase44=ftsExactPhrase();
@@ -2114,12 +2186,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsExactPhrase.add(ftsExactPhrase44.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:26: ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:26: ( ( slop )=> slop )?
                     int alt20=2;
-                    alt20 = dfa20.predict(input);
+                    int LA20_0 = input.LA(1);
+
+                    if ( (LA20_0==TILDA) ) {
+                        int LA20_1 = input.LA(2);
+
+                        if ( (LA20_1==DECIMAL_INTEGER_LITERAL) ) {
+                            int LA20_3 = input.LA(3);
+
+                            if ( (synpred6_FTS()) ) {
+                                alt20=1;
+                            }
+                        }
+                    }
                     switch (alt20) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:28: ( slop )=> slop
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:28: ( slop )=> slop
                             {
                             pushFollow(FOLLOW_slop_in_ftsTest2027);
                             slop45=slop();
@@ -2136,7 +2220,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: slop, ftsExactPhrase
+                    // elements: ftsExactPhrase, slop
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2149,13 +2233,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 470:17: -> ^( EXACT_PHRASE ftsExactPhrase ( slop )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:471:25: ^( EXACT_PHRASE ftsExactPhrase ( slop )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:471:25: ^( EXACT_PHRASE ftsExactPhrase ( slop )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(EXACT_PHRASE, "EXACT_PHRASE"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsExactPhrase.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:471:55: ( slop )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:471:55: ( slop )?
                         if ( stream_slop.hasNext() ) {
                             adaptor.addChild(root_1, stream_slop.nextTree());
 
@@ -2171,7 +2255,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:11: ftsTokenisedPhrase ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:11: ftsTokenisedPhrase ( ( slop )=> slop )?
                     {
                     pushFollow(FOLLOW_ftsTokenisedPhrase_in_ftsTest2092);
                     ftsTokenisedPhrase46=ftsTokenisedPhrase();
@@ -2179,12 +2263,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsTokenisedPhrase.add(ftsTokenisedPhrase46.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:30: ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:30: ( ( slop )=> slop )?
                     int alt21=2;
-                    alt21 = dfa21.predict(input);
+                    int LA21_0 = input.LA(1);
+
+                    if ( (LA21_0==TILDA) ) {
+                        int LA21_1 = input.LA(2);
+
+                        if ( (LA21_1==DECIMAL_INTEGER_LITERAL) ) {
+                            int LA21_3 = input.LA(3);
+
+                            if ( (synpred7_FTS()) ) {
+                                alt21=1;
+                            }
+                        }
+                    }
                     switch (alt21) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:32: ( slop )=> slop
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:32: ( slop )=> slop
                             {
                             pushFollow(FOLLOW_slop_in_ftsTest2102);
                             slop47=slop();
@@ -2201,7 +2297,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: slop, ftsTokenisedPhrase
+                    // elements: ftsTokenisedPhrase, slop
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2214,13 +2310,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 473:17: -> ^( PHRASE ftsTokenisedPhrase ( slop )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:474:25: ^( PHRASE ftsTokenisedPhrase ( slop )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:474:25: ^( PHRASE ftsTokenisedPhrase ( slop )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PHRASE, "PHRASE"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsTokenisedPhrase.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:474:53: ( slop )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:474:53: ( slop )?
                         if ( stream_slop.hasNext() ) {
                             adaptor.addChild(root_1, stream_slop.nextTree());
 
@@ -2236,7 +2332,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:11: ftsSynonym ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:11: ftsSynonym ( ( fuzzy )=> fuzzy )?
                     {
                     pushFollow(FOLLOW_ftsSynonym_in_ftsTest2167);
                     ftsSynonym48=ftsSynonym();
@@ -2244,12 +2340,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsSynonym.add(ftsSynonym48.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:22: ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:22: ( ( fuzzy )=> fuzzy )?
                     int alt22=2;
-                    alt22 = dfa22.predict(input);
+                    int LA22_0 = input.LA(1);
+
+                    if ( (LA22_0==TILDA) ) {
+                        int LA22_1 = input.LA(2);
+
+                        if ( (LA22_1==DECIMAL_INTEGER_LITERAL||LA22_1==FLOATING_POINT_LITERAL) ) {
+                            int LA22_3 = input.LA(3);
+
+                            if ( (synpred8_FTS()) ) {
+                                alt22=1;
+                            }
+                        }
+                    }
                     switch (alt22) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:24: ( fuzzy )=> fuzzy
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:24: ( fuzzy )=> fuzzy
                             {
                             pushFollow(FOLLOW_fuzzy_in_ftsTest2177);
                             fuzzy49=fuzzy();
@@ -2266,7 +2374,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: fuzzy, ftsSynonym
+                    // elements: ftsSynonym, fuzzy
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2279,13 +2387,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 476:17: -> ^( SYNONYM ftsSynonym ( fuzzy )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:477:25: ^( SYNONYM ftsSynonym ( fuzzy )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:477:25: ^( SYNONYM ftsSynonym ( fuzzy )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SYNONYM, "SYNONYM"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsSynonym.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:477:46: ( fuzzy )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:477:46: ( fuzzy )?
                         if ( stream_fuzzy.hasNext() ) {
                             adaptor.addChild(root_1, stream_fuzzy.nextTree());
 
@@ -2301,7 +2409,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:478:11: ftsRange
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:478:11: ftsRange
                     {
                     pushFollow(FOLLOW_ftsRange_in_ftsTest2242);
                     ftsRange50=ftsRange();
@@ -2325,7 +2433,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 479:17: -> ^( RANGE ftsRange )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:480:25: ^( RANGE ftsRange )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:480:25: ^( RANGE ftsRange )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(RANGE, "RANGE"), root_1);
@@ -2341,7 +2449,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:481:11: ftsFieldGroup
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:481:11: ftsFieldGroup
                     {
                     pushFollow(FOLLOW_ftsFieldGroup_in_ftsTest2302);
                     ftsFieldGroup51=ftsFieldGroup();
@@ -2373,7 +2481,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:483:11: LPAREN ftsDisjunction RPAREN
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:483:11: LPAREN ftsDisjunction RPAREN
                     {
                     LPAREN52=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_ftsTest2334); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN52);
@@ -2411,7 +2519,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:485:11: template
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:485:11: template
                     {
                     pushFollow(FOLLOW_template_in_ftsTest2370);
                     template55=template();
@@ -2469,7 +2577,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "cmisTest"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:489:1: cmisTest : ( cmisTerm -> ^( TERM cmisTerm ) | cmisPhrase -> ^( PHRASE cmisPhrase ) );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:489:1: cmisTest : ( cmisTerm -> ^( TERM cmisTerm ) | cmisPhrase -> ^( PHRASE cmisPhrase ) );
     public final FTSParser.cmisTest_return cmisTest() throws RecognitionException {
         FTSParser.cmisTest_return retval = new FTSParser.cmisTest_return();
         retval.start = input.LT(1);
@@ -2484,7 +2592,7 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_cmisPhrase=new RewriteRuleSubtreeStream(adaptor,"rule cmisPhrase");
         RewriteRuleSubtreeStream stream_cmisTerm=new RewriteRuleSubtreeStream(adaptor,"rule cmisTerm");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:490:9: ( cmisTerm -> ^( TERM cmisTerm ) | cmisPhrase -> ^( PHRASE cmisPhrase ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:490:9: ( cmisTerm -> ^( TERM cmisTerm ) | cmisPhrase -> ^( PHRASE cmisPhrase ) )
             int alt24=2;
             int LA24_0 = input.LA(1);
 
@@ -2503,7 +2611,7 @@ public class FTSParser extends Parser {
             }
             switch (alt24) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:491:9: cmisTerm
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:491:9: cmisTerm
                     {
                     pushFollow(FOLLOW_cmisTerm_in_cmisTest2423);
                     cmisTerm56=cmisTerm();
@@ -2527,7 +2635,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 492:17: -> ^( TERM cmisTerm )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:493:25: ^( TERM cmisTerm )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:493:25: ^( TERM cmisTerm )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(TERM, "TERM"), root_1);
@@ -2543,7 +2651,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:494:11: cmisPhrase
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:494:11: cmisPhrase
                     {
                     pushFollow(FOLLOW_cmisPhrase_in_cmisTest2483);
                     cmisPhrase57=cmisPhrase();
@@ -2567,7 +2675,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 495:17: -> ^( PHRASE cmisPhrase )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:496:25: ^( PHRASE cmisPhrase )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:496:25: ^( PHRASE cmisPhrase )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PHRASE, "PHRASE"), root_1);
@@ -2609,7 +2717,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "template"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:499:1: template : ( PERCENT tempReference -> ^( TEMPLATE tempReference ) | PERCENT LPAREN ( tempReference ( COMMA )? )+ RPAREN -> ^( TEMPLATE ( tempReference )+ ) );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:499:1: template : ( PERCENT tempReference -> ^( TEMPLATE tempReference ) | PERCENT LPAREN ( tempReference ( COMMA )? )+ RPAREN -> ^( TEMPLATE ( tempReference )+ ) );
     public final FTSParser.template_return template() throws RecognitionException {
         FTSParser.template_return retval = new FTSParser.template_return();
         retval.start = input.LT(1);
@@ -2637,40 +2745,26 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
         RewriteRuleSubtreeStream stream_tempReference=new RewriteRuleSubtreeStream(adaptor,"rule tempReference");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:500:9: ( PERCENT tempReference -> ^( TEMPLATE tempReference ) | PERCENT LPAREN ( tempReference ( COMMA )? )+ RPAREN -> ^( TEMPLATE ( tempReference )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:500:9: ( PERCENT tempReference -> ^( TEMPLATE tempReference ) | PERCENT LPAREN ( tempReference ( COMMA )? )+ RPAREN -> ^( TEMPLATE ( tempReference )+ ) )
             int alt27=2;
             int LA27_0 = input.LA(1);
 
             if ( (LA27_0==PERCENT) ) {
-                switch ( input.LA(2) ) {
-                case LPAREN:
-                    {
+                int LA27_1 = input.LA(2);
+
+                if ( (LA27_1==LPAREN) ) {
                     alt27=2;
-                    }
-                    break;
-                case AT:
-                    {
+                }
+                else if ( (LA27_1==ID||(LA27_1>=AT && LA27_1<=URI)) ) {
                     alt27=1;
-                    }
-                    break;
-                case ID:
-                    {
-                    alt27=1;
-                    }
-                    break;
-                case URI:
-                    {
-                    alt27=1;
-                    }
-                    break;
-                default:
+                }
+                else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
                         new NoViableAltException("", 27, 1, input);
 
                     throw nvae;
                 }
-
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
@@ -2681,7 +2775,7 @@ public class FTSParser extends Parser {
             }
             switch (alt27) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:501:9: PERCENT tempReference
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:501:9: PERCENT tempReference
                     {
                     PERCENT58=(Token)match(input,PERCENT,FOLLOW_PERCENT_in_template2564); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_PERCENT.add(PERCENT58);
@@ -2708,7 +2802,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 502:17: -> ^( TEMPLATE tempReference )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:503:25: ^( TEMPLATE tempReference )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:503:25: ^( TEMPLATE tempReference )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(TEMPLATE, "TEMPLATE"), root_1);
@@ -2724,7 +2818,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:11: PERCENT LPAREN ( tempReference ( COMMA )? )+ RPAREN
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:11: PERCENT LPAREN ( tempReference ( COMMA )? )+ RPAREN
                     {
                     PERCENT60=(Token)match(input,PERCENT,FOLLOW_PERCENT_in_template2626); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_PERCENT.add(PERCENT60);
@@ -2732,7 +2826,7 @@ public class FTSParser extends Parser {
                     LPAREN61=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_template2628); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN61);
 
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:26: ( tempReference ( COMMA )? )+
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:26: ( tempReference ( COMMA )? )+
                     int cnt26=0;
                     loop26:
                     do {
@@ -2746,7 +2840,7 @@ public class FTSParser extends Parser {
 
                         switch (alt26) {
                     	case 1 :
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:27: tempReference ( COMMA )?
+                    	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:27: tempReference ( COMMA )?
                     	    {
                     	    pushFollow(FOLLOW_tempReference_in_template2631);
                     	    tempReference62=tempReference();
@@ -2754,7 +2848,7 @@ public class FTSParser extends Parser {
                     	    state._fsp--;
                     	    if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) stream_tempReference.add(tempReference62.getTree());
-                    	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:41: ( COMMA )?
+                    	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:41: ( COMMA )?
                     	    int alt25=2;
                     	    int LA25_0 = input.LA(1);
 
@@ -2763,7 +2857,7 @@ public class FTSParser extends Parser {
                     	    }
                     	    switch (alt25) {
                     	        case 1 :
-                    	            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:41: COMMA
+                    	            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:504:41: COMMA
                     	            {
                     	            COMMA63=(Token)match(input,COMMA,FOLLOW_COMMA_in_template2633); if (state.failed) return retval; 
                     	            if ( state.backtracking==0 ) stream_COMMA.add(COMMA63);
@@ -2807,7 +2901,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 505:17: -> ^( TEMPLATE ( tempReference )+ )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:506:25: ^( TEMPLATE ( tempReference )+ )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:506:25: ^( TEMPLATE ( tempReference )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(TEMPLATE, "TEMPLATE"), root_1);
@@ -2856,7 +2950,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "fuzzy"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:509:1: fuzzy : TILDA number -> ^( FUZZY number ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:509:1: fuzzy : TILDA number -> ^( FUZZY number ) ;
     public final FTSParser.fuzzy_return fuzzy() throws RecognitionException {
         FTSParser.fuzzy_return retval = new FTSParser.fuzzy_return();
         retval.start = input.LT(1);
@@ -2871,8 +2965,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_TILDA=new RewriteRuleTokenStream(adaptor,"token TILDA");
         RewriteRuleSubtreeStream stream_number=new RewriteRuleSubtreeStream(adaptor,"rule number");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:510:9: ( TILDA number -> ^( FUZZY number ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:511:9: TILDA number
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:510:9: ( TILDA number -> ^( FUZZY number ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:511:9: TILDA number
             {
             TILDA65=(Token)match(input,TILDA,FOLLOW_TILDA_in_fuzzy2720); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_TILDA.add(TILDA65);
@@ -2899,7 +2993,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 512:17: -> ^( FUZZY number )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:513:25: ^( FUZZY number )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:513:25: ^( FUZZY number )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FUZZY, "FUZZY"), root_1);
@@ -2939,7 +3033,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "slop"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:516:1: slop : TILDA DECIMAL_INTEGER_LITERAL -> ^( FUZZY DECIMAL_INTEGER_LITERAL ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:516:1: slop : TILDA DECIMAL_INTEGER_LITERAL -> ^( FUZZY DECIMAL_INTEGER_LITERAL ) ;
     public final FTSParser.slop_return slop() throws RecognitionException {
         FTSParser.slop_return retval = new FTSParser.slop_return();
         retval.start = input.LT(1);
@@ -2955,8 +3049,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_DECIMAL_INTEGER_LITERAL=new RewriteRuleTokenStream(adaptor,"token DECIMAL_INTEGER_LITERAL");
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:517:9: ( TILDA DECIMAL_INTEGER_LITERAL -> ^( FUZZY DECIMAL_INTEGER_LITERAL ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:518:9: TILDA DECIMAL_INTEGER_LITERAL
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:517:9: ( TILDA DECIMAL_INTEGER_LITERAL -> ^( FUZZY DECIMAL_INTEGER_LITERAL ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:518:9: TILDA DECIMAL_INTEGER_LITERAL
             {
             TILDA67=(Token)match(input,TILDA,FOLLOW_TILDA_in_slop2803); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_TILDA.add(TILDA67);
@@ -2980,7 +3074,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 519:17: -> ^( FUZZY DECIMAL_INTEGER_LITERAL )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:520:25: ^( FUZZY DECIMAL_INTEGER_LITERAL )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:520:25: ^( FUZZY DECIMAL_INTEGER_LITERAL )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FUZZY, "FUZZY"), root_1);
@@ -3020,7 +3114,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "boost"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:523:1: boost : CARAT number -> ^( BOOST number ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:523:1: boost : CARAT number -> ^( BOOST number ) ;
     public final FTSParser.boost_return boost() throws RecognitionException {
         FTSParser.boost_return retval = new FTSParser.boost_return();
         retval.start = input.LT(1);
@@ -3035,8 +3129,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_CARAT=new RewriteRuleTokenStream(adaptor,"token CARAT");
         RewriteRuleSubtreeStream stream_number=new RewriteRuleSubtreeStream(adaptor,"rule number");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:524:9: ( CARAT number -> ^( BOOST number ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:525:9: CARAT number
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:524:9: ( CARAT number -> ^( BOOST number ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:525:9: CARAT number
             {
             CARAT69=(Token)match(input,CARAT,FOLLOW_CARAT_in_boost2886); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_CARAT.add(CARAT69);
@@ -3063,7 +3157,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 526:17: -> ^( BOOST number )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:527:25: ^( BOOST number )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:527:25: ^( BOOST number )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(BOOST, "BOOST"), root_1);
@@ -3103,7 +3197,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsTerm"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:530:1: ftsTerm : ( fieldReference COLON )? ftsWord -> ftsWord ( fieldReference )? ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:530:1: ftsTerm : ( fieldReference COLON )? ftsWord -> ftsWord ( fieldReference )? ;
     public final FTSParser.ftsTerm_return ftsTerm() throws RecognitionException {
         FTSParser.ftsTerm_return retval = new FTSParser.ftsTerm_return();
         retval.start = input.LT(1);
@@ -3121,15 +3215,26 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsWord=new RewriteRuleSubtreeStream(adaptor,"rule ftsWord");
         RewriteRuleSubtreeStream stream_fieldReference=new RewriteRuleSubtreeStream(adaptor,"rule fieldReference");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:531:9: ( ( fieldReference COLON )? ftsWord -> ftsWord ( fieldReference )? )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:532:9: ( fieldReference COLON )? ftsWord
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:531:9: ( ( fieldReference COLON )? ftsWord -> ftsWord ( fieldReference )? )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:532:9: ( fieldReference COLON )? ftsWord
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:532:9: ( fieldReference COLON )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:532:9: ( fieldReference COLON )?
             int alt28=2;
-            alt28 = dfa28.predict(input);
+            int LA28_0 = input.LA(1);
+
+            if ( ((LA28_0>=AT && LA28_0<=URI)) ) {
+                alt28=1;
+            }
+            else if ( (LA28_0==ID) ) {
+                int LA28_2 = input.LA(2);
+
+                if ( (LA28_2==COLON||LA28_2==DOT) ) {
+                    alt28=1;
+                }
+            }
             switch (alt28) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:532:10: fieldReference COLON
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:532:10: fieldReference COLON
                     {
                     pushFollow(FOLLOW_fieldReference_in_ftsTerm2970);
                     fieldReference71=fieldReference();
@@ -3155,7 +3260,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: ftsWord, fieldReference
+            // elements: fieldReference, ftsWord
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3169,7 +3274,7 @@ public class FTSParser extends Parser {
             // 533:17: -> ftsWord ( fieldReference )?
             {
                 adaptor.addChild(root_0, stream_ftsWord.nextTree());
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:533:28: ( fieldReference )?
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:533:28: ( fieldReference )?
                 if ( stream_fieldReference.hasNext() ) {
                     adaptor.addChild(root_0, stream_fieldReference.nextTree());
 
@@ -3206,7 +3311,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "cmisTerm"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:536:1: cmisTerm : ftsWord -> ftsWord ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:536:1: cmisTerm : ftsWord -> ftsWord ;
     public final FTSParser.cmisTerm_return cmisTerm() throws RecognitionException {
         FTSParser.cmisTerm_return retval = new FTSParser.cmisTerm_return();
         retval.start = input.LT(1);
@@ -3218,8 +3323,8 @@ public class FTSParser extends Parser {
 
         RewriteRuleSubtreeStream stream_ftsWord=new RewriteRuleSubtreeStream(adaptor,"rule ftsWord");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:537:9: ( ftsWord -> ftsWord )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:538:9: ftsWord
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:537:9: ( ftsWord -> ftsWord )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:538:9: ftsWord
             {
             pushFollow(FOLLOW_ftsWord_in_cmisTerm3032);
             ftsWord74=ftsWord();
@@ -3275,7 +3380,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsExactTerm"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:542:1: ftsExactTerm : EQUALS ftsTerm -> ftsTerm ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:542:1: ftsExactTerm : EQUALS ftsTerm -> ftsTerm ;
     public final FTSParser.ftsExactTerm_return ftsExactTerm() throws RecognitionException {
         FTSParser.ftsExactTerm_return retval = new FTSParser.ftsExactTerm_return();
         retval.start = input.LT(1);
@@ -3290,8 +3395,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
         RewriteRuleSubtreeStream stream_ftsTerm=new RewriteRuleSubtreeStream(adaptor,"rule ftsTerm");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:543:9: ( EQUALS ftsTerm -> ftsTerm )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:544:9: EQUALS ftsTerm
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:543:9: ( EQUALS ftsTerm -> ftsTerm )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:544:9: EQUALS ftsTerm
             {
             EQUALS75=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_ftsExactTerm3085); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_EQUALS.add(EQUALS75);
@@ -3350,7 +3455,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsPhrase"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:548:1: ftsPhrase : ( fieldReference COLON )? FTSPHRASE -> FTSPHRASE ( fieldReference )? ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:548:1: ftsPhrase : ( fieldReference COLON )? FTSPHRASE -> FTSPHRASE ( fieldReference )? ;
     public final FTSParser.ftsPhrase_return ftsPhrase() throws RecognitionException {
         FTSParser.ftsPhrase_return retval = new FTSParser.ftsPhrase_return();
         retval.start = input.LT(1);
@@ -3368,10 +3473,10 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_FTSPHRASE=new RewriteRuleTokenStream(adaptor,"token FTSPHRASE");
         RewriteRuleSubtreeStream stream_fieldReference=new RewriteRuleSubtreeStream(adaptor,"rule fieldReference");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:549:9: ( ( fieldReference COLON )? FTSPHRASE -> FTSPHRASE ( fieldReference )? )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:550:9: ( fieldReference COLON )? FTSPHRASE
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:549:9: ( ( fieldReference COLON )? FTSPHRASE -> FTSPHRASE ( fieldReference )? )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:550:9: ( fieldReference COLON )? FTSPHRASE
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:550:9: ( fieldReference COLON )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:550:9: ( fieldReference COLON )?
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -3380,7 +3485,7 @@ public class FTSParser extends Parser {
             }
             switch (alt29) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:550:10: fieldReference COLON
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:550:10: fieldReference COLON
                     {
                     pushFollow(FOLLOW_fieldReference_in_ftsPhrase3141);
                     fieldReference77=fieldReference();
@@ -3403,7 +3508,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: fieldReference, FTSPHRASE
+            // elements: FTSPHRASE, fieldReference
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3417,7 +3522,7 @@ public class FTSParser extends Parser {
             // 551:17: -> FTSPHRASE ( fieldReference )?
             {
                 adaptor.addChild(root_0, stream_FTSPHRASE.nextNode());
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:551:30: ( fieldReference )?
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:551:30: ( fieldReference )?
                 if ( stream_fieldReference.hasNext() ) {
                     adaptor.addChild(root_0, stream_fieldReference.nextTree());
 
@@ -3454,7 +3559,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsExactPhrase"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:554:1: ftsExactPhrase : EQUALS ftsPhrase -> ftsPhrase ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:554:1: ftsExactPhrase : EQUALS ftsPhrase -> ftsPhrase ;
     public final FTSParser.ftsExactPhrase_return ftsExactPhrase() throws RecognitionException {
         FTSParser.ftsExactPhrase_return retval = new FTSParser.ftsExactPhrase_return();
         retval.start = input.LT(1);
@@ -3469,8 +3574,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
         RewriteRuleSubtreeStream stream_ftsPhrase=new RewriteRuleSubtreeStream(adaptor,"rule ftsPhrase");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:555:9: ( EQUALS ftsPhrase -> ftsPhrase )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:556:9: EQUALS ftsPhrase
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:555:9: ( EQUALS ftsPhrase -> ftsPhrase )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:556:9: EQUALS ftsPhrase
             {
             EQUALS80=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_ftsExactPhrase3211); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_EQUALS.add(EQUALS80);
@@ -3529,7 +3634,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsTokenisedPhrase"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:560:1: ftsTokenisedPhrase : TILDA ftsPhrase -> ftsPhrase ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:560:1: ftsTokenisedPhrase : TILDA ftsPhrase -> ftsPhrase ;
     public final FTSParser.ftsTokenisedPhrase_return ftsTokenisedPhrase() throws RecognitionException {
         FTSParser.ftsTokenisedPhrase_return retval = new FTSParser.ftsTokenisedPhrase_return();
         retval.start = input.LT(1);
@@ -3544,8 +3649,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_TILDA=new RewriteRuleTokenStream(adaptor,"token TILDA");
         RewriteRuleSubtreeStream stream_ftsPhrase=new RewriteRuleSubtreeStream(adaptor,"rule ftsPhrase");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:561:9: ( TILDA ftsPhrase -> ftsPhrase )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:562:9: TILDA ftsPhrase
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:561:9: ( TILDA ftsPhrase -> ftsPhrase )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:562:9: TILDA ftsPhrase
             {
             TILDA82=(Token)match(input,TILDA,FOLLOW_TILDA_in_ftsTokenisedPhrase3274); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_TILDA.add(TILDA82);
@@ -3604,7 +3709,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "cmisPhrase"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:567:1: cmisPhrase : FTSPHRASE -> FTSPHRASE ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:567:1: cmisPhrase : FTSPHRASE -> FTSPHRASE ;
     public final FTSParser.cmisPhrase_return cmisPhrase() throws RecognitionException {
         FTSParser.cmisPhrase_return retval = new FTSParser.cmisPhrase_return();
         retval.start = input.LT(1);
@@ -3617,8 +3722,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_FTSPHRASE=new RewriteRuleTokenStream(adaptor,"token FTSPHRASE");
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:568:9: ( FTSPHRASE -> FTSPHRASE )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:569:9: FTSPHRASE
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:568:9: ( FTSPHRASE -> FTSPHRASE )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:569:9: FTSPHRASE
             {
             FTSPHRASE84=(Token)match(input,FTSPHRASE,FOLLOW_FTSPHRASE_in_cmisPhrase3330); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_FTSPHRASE.add(FTSPHRASE84);
@@ -3671,7 +3776,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsSynonym"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:573:1: ftsSynonym : TILDA ftsTerm -> ftsTerm ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:573:1: ftsSynonym : TILDA ftsTerm -> ftsTerm ;
     public final FTSParser.ftsSynonym_return ftsSynonym() throws RecognitionException {
         FTSParser.ftsSynonym_return retval = new FTSParser.ftsSynonym_return();
         retval.start = input.LT(1);
@@ -3686,8 +3791,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_TILDA=new RewriteRuleTokenStream(adaptor,"token TILDA");
         RewriteRuleSubtreeStream stream_ftsTerm=new RewriteRuleSubtreeStream(adaptor,"rule ftsTerm");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:574:9: ( TILDA ftsTerm -> ftsTerm )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:575:9: TILDA ftsTerm
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:574:9: ( TILDA ftsTerm -> ftsTerm )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:575:9: TILDA ftsTerm
             {
             TILDA85=(Token)match(input,TILDA,FOLLOW_TILDA_in_ftsSynonym3383); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_TILDA.add(TILDA85);
@@ -3746,7 +3851,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsRange"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:579:1: ftsRange : ( fieldReference COLON )? ftsFieldGroupRange -> ftsFieldGroupRange ( fieldReference )? ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:579:1: ftsRange : ( fieldReference COLON )? ftsFieldGroupRange -> ftsFieldGroupRange ( fieldReference )? ;
     public final FTSParser.ftsRange_return ftsRange() throws RecognitionException {
         FTSParser.ftsRange_return retval = new FTSParser.ftsRange_return();
         retval.start = input.LT(1);
@@ -3764,15 +3869,26 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsFieldGroupRange=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupRange");
         RewriteRuleSubtreeStream stream_fieldReference=new RewriteRuleSubtreeStream(adaptor,"rule fieldReference");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:580:9: ( ( fieldReference COLON )? ftsFieldGroupRange -> ftsFieldGroupRange ( fieldReference )? )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:581:9: ( fieldReference COLON )? ftsFieldGroupRange
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:580:9: ( ( fieldReference COLON )? ftsFieldGroupRange -> ftsFieldGroupRange ( fieldReference )? )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:581:9: ( fieldReference COLON )? ftsFieldGroupRange
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:581:9: ( fieldReference COLON )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:581:9: ( fieldReference COLON )?
             int alt30=2;
-            alt30 = dfa30.predict(input);
+            int LA30_0 = input.LA(1);
+
+            if ( ((LA30_0>=AT && LA30_0<=URI)) ) {
+                alt30=1;
+            }
+            else if ( (LA30_0==ID) ) {
+                int LA30_2 = input.LA(2);
+
+                if ( (LA30_2==COLON||LA30_2==DOT) ) {
+                    alt30=1;
+                }
+            }
             switch (alt30) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:581:10: fieldReference COLON
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:581:10: fieldReference COLON
                     {
                     pushFollow(FOLLOW_fieldReference_in_ftsRange3439);
                     fieldReference87=fieldReference();
@@ -3812,7 +3928,7 @@ public class FTSParser extends Parser {
             // 582:17: -> ftsFieldGroupRange ( fieldReference )?
             {
                 adaptor.addChild(root_0, stream_ftsFieldGroupRange.nextTree());
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:582:39: ( fieldReference )?
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:582:39: ( fieldReference )?
                 if ( stream_fieldReference.hasNext() ) {
                     adaptor.addChild(root_0, stream_fieldReference.nextTree());
 
@@ -3849,7 +3965,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroup"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:585:1: ftsFieldGroup : fieldReference COLON LPAREN ftsFieldGroupDisjunction RPAREN -> ^( FIELD_GROUP fieldReference ftsFieldGroupDisjunction ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:585:1: ftsFieldGroup : fieldReference COLON LPAREN ftsFieldGroupDisjunction RPAREN -> ^( FIELD_GROUP fieldReference ftsFieldGroupDisjunction ) ;
     public final FTSParser.ftsFieldGroup_return ftsFieldGroup() throws RecognitionException {
         FTSParser.ftsFieldGroup_return retval = new FTSParser.ftsFieldGroup_return();
         retval.start = input.LT(1);
@@ -3873,8 +3989,8 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_fieldReference=new RewriteRuleSubtreeStream(adaptor,"rule fieldReference");
         RewriteRuleSubtreeStream stream_ftsFieldGroupDisjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupDisjunction");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:586:9: ( fieldReference COLON LPAREN ftsFieldGroupDisjunction RPAREN -> ^( FIELD_GROUP fieldReference ftsFieldGroupDisjunction ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:587:9: fieldReference COLON LPAREN ftsFieldGroupDisjunction RPAREN
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:586:9: ( fieldReference COLON LPAREN ftsFieldGroupDisjunction RPAREN -> ^( FIELD_GROUP fieldReference ftsFieldGroupDisjunction ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:587:9: fieldReference COLON LPAREN ftsFieldGroupDisjunction RPAREN
             {
             pushFollow(FOLLOW_fieldReference_in_ftsFieldGroup3501);
             fieldReference90=fieldReference();
@@ -3900,7 +4016,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: fieldReference, ftsFieldGroupDisjunction
+            // elements: ftsFieldGroupDisjunction, fieldReference
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3913,7 +4029,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 588:17: -> ^( FIELD_GROUP fieldReference ftsFieldGroupDisjunction )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:589:25: ^( FIELD_GROUP fieldReference ftsFieldGroupDisjunction )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:589:25: ^( FIELD_GROUP fieldReference ftsFieldGroupDisjunction )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_GROUP, "FIELD_GROUP"), root_1);
@@ -3954,7 +4070,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupDisjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:592:1: ftsFieldGroupDisjunction : ({...}? => ftsFieldGroupExplicitDisjunction | {...}? => ftsFieldGroupImplicitDisjunction );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:592:1: ftsFieldGroupDisjunction : ({...}? => ftsFieldGroupExplicitDisjunction | {...}? => ftsFieldGroupImplicitDisjunction );
     public final FTSParser.ftsFieldGroupDisjunction_return ftsFieldGroupDisjunction() throws RecognitionException {
         FTSParser.ftsFieldGroupDisjunction_return retval = new FTSParser.ftsFieldGroupDisjunction_return();
         retval.start = input.LT(1);
@@ -3968,12 +4084,12 @@ public class FTSParser extends Parser {
 
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:593:9: ({...}? => ftsFieldGroupExplicitDisjunction | {...}? => ftsFieldGroupImplicitDisjunction )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:593:9: ({...}? => ftsFieldGroupExplicitDisjunction | {...}? => ftsFieldGroupImplicitDisjunction )
             int alt31=2;
             alt31 = dfa31.predict(input);
             switch (alt31) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:594:9: {...}? => ftsFieldGroupExplicitDisjunction
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:594:9: {...}? => ftsFieldGroupExplicitDisjunction
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3991,7 +4107,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:595:11: {...}? => ftsFieldGroupImplicitDisjunction
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:595:11: {...}? => ftsFieldGroupImplicitDisjunction
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4035,7 +4151,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupExplicitDisjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:598:1: ftsFieldGroupExplicitDisjunction : ftsFieldGroupImplicitConjunction ( or ftsFieldGroupImplicitConjunction )* -> ^( FIELD_DISJUNCTION ( ftsFieldGroupImplicitConjunction )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:598:1: ftsFieldGroupExplicitDisjunction : ftsFieldGroupImplicitConjunction ( or ftsFieldGroupImplicitConjunction )* -> ^( FIELD_DISJUNCTION ( ftsFieldGroupImplicitConjunction )+ ) ;
     public final FTSParser.ftsFieldGroupExplicitDisjunction_return ftsFieldGroupExplicitDisjunction() throws RecognitionException {
         FTSParser.ftsFieldGroupExplicitDisjunction_return retval = new FTSParser.ftsFieldGroupExplicitDisjunction_return();
         retval.start = input.LT(1);
@@ -4052,8 +4168,8 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsFieldGroupImplicitConjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupImplicitConjunction");
         RewriteRuleSubtreeStream stream_or=new RewriteRuleSubtreeStream(adaptor,"rule or");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:599:9: ( ftsFieldGroupImplicitConjunction ( or ftsFieldGroupImplicitConjunction )* -> ^( FIELD_DISJUNCTION ( ftsFieldGroupImplicitConjunction )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:600:9: ftsFieldGroupImplicitConjunction ( or ftsFieldGroupImplicitConjunction )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:599:9: ( ftsFieldGroupImplicitConjunction ( or ftsFieldGroupImplicitConjunction )* -> ^( FIELD_DISJUNCTION ( ftsFieldGroupImplicitConjunction )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:600:9: ftsFieldGroupImplicitConjunction ( or ftsFieldGroupImplicitConjunction )*
             {
             pushFollow(FOLLOW_ftsFieldGroupImplicitConjunction_in_ftsFieldGroupExplicitDisjunction3643);
             ftsFieldGroupImplicitConjunction97=ftsFieldGroupImplicitConjunction();
@@ -4061,7 +4177,7 @@ public class FTSParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_ftsFieldGroupImplicitConjunction.add(ftsFieldGroupImplicitConjunction97.getTree());
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:600:42: ( or ftsFieldGroupImplicitConjunction )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:600:42: ( or ftsFieldGroupImplicitConjunction )*
             loop32:
             do {
                 int alt32=2;
@@ -4074,7 +4190,7 @@ public class FTSParser extends Parser {
 
                 switch (alt32) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:600:43: or ftsFieldGroupImplicitConjunction
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:600:43: or ftsFieldGroupImplicitConjunction
             	    {
             	    pushFollow(FOLLOW_or_in_ftsFieldGroupExplicitDisjunction3646);
             	    or98=or();
@@ -4113,7 +4229,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 601:17: -> ^( FIELD_DISJUNCTION ( ftsFieldGroupImplicitConjunction )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:602:25: ^( FIELD_DISJUNCTION ( ftsFieldGroupImplicitConjunction )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:602:25: ^( FIELD_DISJUNCTION ( ftsFieldGroupImplicitConjunction )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_DISJUNCTION, "FIELD_DISJUNCTION"), root_1);
@@ -4160,7 +4276,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupImplicitDisjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:605:1: ftsFieldGroupImplicitDisjunction : ( ( or )? ftsFieldGroupExplicitConjunction )+ -> ^( FIELD_DISJUNCTION ( ftsFieldGroupExplicitConjunction )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:605:1: ftsFieldGroupImplicitDisjunction : ( ( or )? ftsFieldGroupExplicitConjunction )+ -> ^( FIELD_DISJUNCTION ( ftsFieldGroupExplicitConjunction )+ ) ;
     public final FTSParser.ftsFieldGroupImplicitDisjunction_return ftsFieldGroupImplicitDisjunction() throws RecognitionException {
         FTSParser.ftsFieldGroupImplicitDisjunction_return retval = new FTSParser.ftsFieldGroupImplicitDisjunction_return();
         retval.start = input.LT(1);
@@ -4175,25 +4291,42 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_or=new RewriteRuleSubtreeStream(adaptor,"rule or");
         RewriteRuleSubtreeStream stream_ftsFieldGroupExplicitConjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupExplicitConjunction");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:606:9: ( ( ( or )? ftsFieldGroupExplicitConjunction )+ -> ^( FIELD_DISJUNCTION ( ftsFieldGroupExplicitConjunction )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:9: ( ( or )? ftsFieldGroupExplicitConjunction )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:606:9: ( ( ( or )? ftsFieldGroupExplicitConjunction )+ -> ^( FIELD_DISJUNCTION ( ftsFieldGroupExplicitConjunction )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:9: ( ( or )? ftsFieldGroupExplicitConjunction )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:9: ( ( or )? ftsFieldGroupExplicitConjunction )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:9: ( ( or )? ftsFieldGroupExplicitConjunction )+
             int cnt34=0;
             loop34:
             do {
                 int alt34=2;
-                alt34 = dfa34.predict(input);
+                int LA34_0 = input.LA(1);
+
+                if ( ((LA34_0>=PLUS && LA34_0<=LPAREN)||(LA34_0>=TILDA && LA34_0<=DECIMAL_INTEGER_LITERAL)||(LA34_0>=EQUALS && LA34_0<=STAR)||(LA34_0>=LSQUARE && LA34_0<=LT)||(LA34_0>=QUESTION_MARK && LA34_0<=OR)||LA34_0==EXCLAMATION) ) {
+                    alt34=1;
+                }
+
+
                 switch (alt34) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:10: ( or )? ftsFieldGroupExplicitConjunction
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:10: ( or )? ftsFieldGroupExplicitConjunction
             	    {
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:10: ( or )?
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:10: ( or )?
             	    int alt33=2;
-            	    alt33 = dfa33.predict(input);
+            	    int LA33_0 = input.LA(1);
+
+            	    if ( (LA33_0==OR) ) {
+            	        alt33=1;
+            	    }
+            	    else if ( (LA33_0==BAR) ) {
+            	        int LA33_2 = input.LA(2);
+
+            	        if ( (LA33_2==BAR) ) {
+            	            alt33=1;
+            	        }
+            	    }
             	    switch (alt33) {
             	        case 1 :
-            	            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:10: or
+            	            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:607:10: or
             	            {
             	            pushFollow(FOLLOW_or_in_ftsFieldGroupImplicitDisjunction3733);
             	            or100=or();
@@ -4243,7 +4376,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 608:17: -> ^( FIELD_DISJUNCTION ( ftsFieldGroupExplicitConjunction )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:609:25: ^( FIELD_DISJUNCTION ( ftsFieldGroupExplicitConjunction )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:609:25: ^( FIELD_DISJUNCTION ( ftsFieldGroupExplicitConjunction )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_DISJUNCTION, "FIELD_DISJUNCTION"), root_1);
@@ -4290,7 +4423,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupExplicitConjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:616:1: ftsFieldGroupExplicitConjunction : ftsFieldGroupPrefixed ( and ftsFieldGroupPrefixed )* -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:616:1: ftsFieldGroupExplicitConjunction : ftsFieldGroupPrefixed ( and ftsFieldGroupPrefixed )* -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ ) ;
     public final FTSParser.ftsFieldGroupExplicitConjunction_return ftsFieldGroupExplicitConjunction() throws RecognitionException {
         FTSParser.ftsFieldGroupExplicitConjunction_return retval = new FTSParser.ftsFieldGroupExplicitConjunction_return();
         retval.start = input.LT(1);
@@ -4307,8 +4440,8 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsFieldGroupPrefixed=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupPrefixed");
         RewriteRuleSubtreeStream stream_and=new RewriteRuleSubtreeStream(adaptor,"rule and");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:617:9: ( ftsFieldGroupPrefixed ( and ftsFieldGroupPrefixed )* -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:618:9: ftsFieldGroupPrefixed ( and ftsFieldGroupPrefixed )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:617:9: ( ftsFieldGroupPrefixed ( and ftsFieldGroupPrefixed )* -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:618:9: ftsFieldGroupPrefixed ( and ftsFieldGroupPrefixed )*
             {
             pushFollow(FOLLOW_ftsFieldGroupPrefixed_in_ftsFieldGroupExplicitConjunction3823);
             ftsFieldGroupPrefixed102=ftsFieldGroupPrefixed();
@@ -4316,7 +4449,7 @@ public class FTSParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_ftsFieldGroupPrefixed.add(ftsFieldGroupPrefixed102.getTree());
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:618:31: ( and ftsFieldGroupPrefixed )*
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:618:31: ( and ftsFieldGroupPrefixed )*
             loop35:
             do {
                 int alt35=2;
@@ -4329,7 +4462,7 @@ public class FTSParser extends Parser {
 
                 switch (alt35) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:618:32: and ftsFieldGroupPrefixed
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:618:32: and ftsFieldGroupPrefixed
             	    {
             	    pushFollow(FOLLOW_and_in_ftsFieldGroupExplicitConjunction3826);
             	    and103=and();
@@ -4368,7 +4501,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 619:17: -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:620:25: ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:620:25: ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_CONJUNCTION, "FIELD_CONJUNCTION"), root_1);
@@ -4415,7 +4548,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupImplicitConjunction"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:623:1: ftsFieldGroupImplicitConjunction : ( ( and )? ftsFieldGroupPrefixed )+ -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:623:1: ftsFieldGroupImplicitConjunction : ( ( and )? ftsFieldGroupPrefixed )+ -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ ) ;
     public final FTSParser.ftsFieldGroupImplicitConjunction_return ftsFieldGroupImplicitConjunction() throws RecognitionException {
         FTSParser.ftsFieldGroupImplicitConjunction_return retval = new FTSParser.ftsFieldGroupImplicitConjunction_return();
         retval.start = input.LT(1);
@@ -4430,25 +4563,44 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsFieldGroupPrefixed=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupPrefixed");
         RewriteRuleSubtreeStream stream_and=new RewriteRuleSubtreeStream(adaptor,"rule and");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:624:9: ( ( ( and )? ftsFieldGroupPrefixed )+ -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:9: ( ( and )? ftsFieldGroupPrefixed )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:624:9: ( ( ( and )? ftsFieldGroupPrefixed )+ -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:9: ( ( and )? ftsFieldGroupPrefixed )+
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:9: ( ( and )? ftsFieldGroupPrefixed )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:9: ( ( and )? ftsFieldGroupPrefixed )+
             int cnt37=0;
             loop37:
             do {
                 int alt37=2;
-                alt37 = dfa37.predict(input);
+                int LA37_0 = input.LA(1);
+
+                if ( (LA37_0==BAR) ) {
+                    int LA37_2 = input.LA(2);
+
+                    if ( (LA37_2==LPAREN||(LA37_2>=TILDA && LA37_2<=DECIMAL_INTEGER_LITERAL)||(LA37_2>=EQUALS && LA37_2<=STAR)||(LA37_2>=LSQUARE && LA37_2<=LT)||LA37_2==QUESTION_MARK) ) {
+                        alt37=1;
+                    }
+
+
+                }
+                else if ( (LA37_0==PLUS||(LA37_0>=MINUS && LA37_0<=LPAREN)||(LA37_0>=TILDA && LA37_0<=DECIMAL_INTEGER_LITERAL)||(LA37_0>=EQUALS && LA37_0<=STAR)||(LA37_0>=LSQUARE && LA37_0<=LT)||LA37_0==QUESTION_MARK||(LA37_0>=AND && LA37_0<=EXCLAMATION)) ) {
+                    alt37=1;
+                }
+
+
                 switch (alt37) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:10: ( and )? ftsFieldGroupPrefixed
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:10: ( and )? ftsFieldGroupPrefixed
             	    {
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:10: ( and )?
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:10: ( and )?
             	    int alt36=2;
-            	    alt36 = dfa36.predict(input);
+            	    int LA36_0 = input.LA(1);
+
+            	    if ( ((LA36_0>=AND && LA36_0<=AMP)) ) {
+            	        alt36=1;
+            	    }
             	    switch (alt36) {
             	        case 1 :
-            	            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:10: and
+            	            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:625:10: and
             	            {
             	            pushFollow(FOLLOW_and_in_ftsFieldGroupImplicitConjunction3913);
             	            and105=and();
@@ -4498,7 +4650,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 626:17: -> ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:627:25: ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:627:25: ^( FIELD_CONJUNCTION ( ftsFieldGroupPrefixed )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_CONJUNCTION, "FIELD_CONJUNCTION"), root_1);
@@ -4545,7 +4697,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupPrefixed"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:630:1: ftsFieldGroupPrefixed : ( ( not )=> not ftsFieldGroupTest ( boost )? -> ^( FIELD_NEGATION ftsFieldGroupTest ( boost )? ) | ftsFieldGroupTest ( boost )? -> ^( FIELD_DEFAULT ftsFieldGroupTest ( boost )? ) | PLUS ftsFieldGroupTest ( boost )? -> ^( FIELD_MANDATORY ftsFieldGroupTest ( boost )? ) | BAR ftsFieldGroupTest ( boost )? -> ^( FIELD_OPTIONAL ftsFieldGroupTest ( boost )? ) | MINUS ftsFieldGroupTest ( boost )? -> ^( FIELD_EXCLUDE ftsFieldGroupTest ( boost )? ) );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:630:1: ftsFieldGroupPrefixed : ( ( not )=> not ftsFieldGroupTest ( boost )? -> ^( FIELD_NEGATION ftsFieldGroupTest ( boost )? ) | ftsFieldGroupTest ( boost )? -> ^( FIELD_DEFAULT ftsFieldGroupTest ( boost )? ) | PLUS ftsFieldGroupTest ( boost )? -> ^( FIELD_MANDATORY ftsFieldGroupTest ( boost )? ) | BAR ftsFieldGroupTest ( boost )? -> ^( FIELD_OPTIONAL ftsFieldGroupTest ( boost )? ) | MINUS ftsFieldGroupTest ( boost )? -> ^( FIELD_EXCLUDE ftsFieldGroupTest ( boost )? ) );
     public final FTSParser.ftsFieldGroupPrefixed_return ftsFieldGroupPrefixed() throws RecognitionException {
         FTSParser.ftsFieldGroupPrefixed_return retval = new FTSParser.ftsFieldGroupPrefixed_return();
         retval.start = input.LT(1);
@@ -4588,12 +4740,12 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_boost=new RewriteRuleSubtreeStream(adaptor,"rule boost");
         RewriteRuleSubtreeStream stream_ftsFieldGroupTest=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupTest");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:631:9: ( ( not )=> not ftsFieldGroupTest ( boost )? -> ^( FIELD_NEGATION ftsFieldGroupTest ( boost )? ) | ftsFieldGroupTest ( boost )? -> ^( FIELD_DEFAULT ftsFieldGroupTest ( boost )? ) | PLUS ftsFieldGroupTest ( boost )? -> ^( FIELD_MANDATORY ftsFieldGroupTest ( boost )? ) | BAR ftsFieldGroupTest ( boost )? -> ^( FIELD_OPTIONAL ftsFieldGroupTest ( boost )? ) | MINUS ftsFieldGroupTest ( boost )? -> ^( FIELD_EXCLUDE ftsFieldGroupTest ( boost )? ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:631:9: ( ( not )=> not ftsFieldGroupTest ( boost )? -> ^( FIELD_NEGATION ftsFieldGroupTest ( boost )? ) | ftsFieldGroupTest ( boost )? -> ^( FIELD_DEFAULT ftsFieldGroupTest ( boost )? ) | PLUS ftsFieldGroupTest ( boost )? -> ^( FIELD_MANDATORY ftsFieldGroupTest ( boost )? ) | BAR ftsFieldGroupTest ( boost )? -> ^( FIELD_OPTIONAL ftsFieldGroupTest ( boost )? ) | MINUS ftsFieldGroupTest ( boost )? -> ^( FIELD_EXCLUDE ftsFieldGroupTest ( boost )? ) )
             int alt43=5;
             alt43 = dfa43.predict(input);
             switch (alt43) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:9: ( not )=> not ftsFieldGroupTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:9: ( not )=> not ftsFieldGroupTest ( boost )?
                     {
                     pushFollow(FOLLOW_not_in_ftsFieldGroupPrefixed4006);
                     not107=not();
@@ -4607,7 +4759,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupTest.add(ftsFieldGroupTest108.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:40: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:40: ( boost )?
                     int alt38=2;
                     int LA38_0 = input.LA(1);
 
@@ -4616,7 +4768,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt38) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:40: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:40: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsFieldGroupPrefixed4010);
                             boost109=boost();
@@ -4633,7 +4785,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsFieldGroupTest, boost
+                    // elements: boost, ftsFieldGroupTest
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4646,13 +4798,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 633:17: -> ^( FIELD_NEGATION ftsFieldGroupTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:634:25: ^( FIELD_NEGATION ftsFieldGroupTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:634:25: ^( FIELD_NEGATION ftsFieldGroupTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_NEGATION, "FIELD_NEGATION"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:634:60: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:634:60: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -4668,7 +4820,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:635:11: ftsFieldGroupTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:635:11: ftsFieldGroupTest ( boost )?
                     {
                     pushFollow(FOLLOW_ftsFieldGroupTest_in_ftsFieldGroupPrefixed4074);
                     ftsFieldGroupTest110=ftsFieldGroupTest();
@@ -4676,7 +4828,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupTest.add(ftsFieldGroupTest110.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:635:29: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:635:29: ( boost )?
                     int alt39=2;
                     int LA39_0 = input.LA(1);
 
@@ -4685,7 +4837,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt39) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:635:29: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:635:29: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsFieldGroupPrefixed4076);
                             boost111=boost();
@@ -4702,7 +4854,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsFieldGroupTest, boost
+                    // elements: boost, ftsFieldGroupTest
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4715,13 +4867,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 636:17: -> ^( FIELD_DEFAULT ftsFieldGroupTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:637:25: ^( FIELD_DEFAULT ftsFieldGroupTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:637:25: ^( FIELD_DEFAULT ftsFieldGroupTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_DEFAULT, "FIELD_DEFAULT"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:637:59: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:637:59: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -4737,7 +4889,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:638:11: PLUS ftsFieldGroupTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:638:11: PLUS ftsFieldGroupTest ( boost )?
                     {
                     PLUS112=(Token)match(input,PLUS,FOLLOW_PLUS_in_ftsFieldGroupPrefixed4140); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_PLUS.add(PLUS112);
@@ -4748,7 +4900,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupTest.add(ftsFieldGroupTest113.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:638:34: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:638:34: ( boost )?
                     int alt40=2;
                     int LA40_0 = input.LA(1);
 
@@ -4757,7 +4909,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt40) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:638:34: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:638:34: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsFieldGroupPrefixed4144);
                             boost114=boost();
@@ -4787,13 +4939,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 639:17: -> ^( FIELD_MANDATORY ftsFieldGroupTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:640:25: ^( FIELD_MANDATORY ftsFieldGroupTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:640:25: ^( FIELD_MANDATORY ftsFieldGroupTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_MANDATORY, "FIELD_MANDATORY"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:640:61: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:640:61: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -4809,7 +4961,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:641:11: BAR ftsFieldGroupTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:641:11: BAR ftsFieldGroupTest ( boost )?
                     {
                     BAR115=(Token)match(input,BAR,FOLLOW_BAR_in_ftsFieldGroupPrefixed4208); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_BAR.add(BAR115);
@@ -4820,7 +4972,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupTest.add(ftsFieldGroupTest116.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:641:33: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:641:33: ( boost )?
                     int alt41=2;
                     int LA41_0 = input.LA(1);
 
@@ -4829,7 +4981,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt41) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:641:33: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:641:33: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsFieldGroupPrefixed4212);
                             boost117=boost();
@@ -4859,13 +5011,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 642:17: -> ^( FIELD_OPTIONAL ftsFieldGroupTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:643:25: ^( FIELD_OPTIONAL ftsFieldGroupTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:643:25: ^( FIELD_OPTIONAL ftsFieldGroupTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_OPTIONAL, "FIELD_OPTIONAL"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:643:60: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:643:60: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -4881,7 +5033,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:644:11: MINUS ftsFieldGroupTest ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:644:11: MINUS ftsFieldGroupTest ( boost )?
                     {
                     MINUS118=(Token)match(input,MINUS,FOLLOW_MINUS_in_ftsFieldGroupPrefixed4276); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_MINUS.add(MINUS118);
@@ -4892,7 +5044,7 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupTest.add(ftsFieldGroupTest119.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:644:35: ( boost )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:644:35: ( boost )?
                     int alt42=2;
                     int LA42_0 = input.LA(1);
 
@@ -4901,7 +5053,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt42) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:644:35: boost
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:644:35: boost
                             {
                             pushFollow(FOLLOW_boost_in_ftsFieldGroupPrefixed4280);
                             boost120=boost();
@@ -4931,13 +5083,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 645:17: -> ^( FIELD_EXCLUDE ftsFieldGroupTest ( boost )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:646:25: ^( FIELD_EXCLUDE ftsFieldGroupTest ( boost )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:646:25: ^( FIELD_EXCLUDE ftsFieldGroupTest ( boost )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_EXCLUDE, "FIELD_EXCLUDE"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupTest.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:646:59: ( boost )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:646:59: ( boost )?
                         if ( stream_boost.hasNext() ) {
                             adaptor.addChild(root_1, stream_boost.nextTree());
 
@@ -4979,7 +5131,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupTest"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:649:1: ftsFieldGroupTest : ( ( ftsFieldGroupProximity )=> ftsFieldGroupProximity -> ^( FG_PROXIMITY ftsFieldGroupProximity ) | ftsFieldGroupTerm ( ( fuzzy )=> fuzzy )? -> ^( FG_TERM ftsFieldGroupTerm ( fuzzy )? ) | ftsFieldGroupExactTerm ( ( fuzzy )=> fuzzy )? -> ^( FG_EXACT_TERM ftsFieldGroupExactTerm ( fuzzy )? ) | ftsFieldGroupPhrase ( ( slop )=> slop )? -> ^( FG_PHRASE ftsFieldGroupPhrase ( slop )? ) | ftsFieldGroupExactPhrase ( ( slop )=> slop )? -> ^( FG_EXACT_PHRASE ftsFieldGroupExactPhrase ( slop )? ) | ftsFieldGroupTokenisedPhrase ( ( slop )=> slop )? -> ^( FG_PHRASE ftsFieldGroupTokenisedPhrase ( slop )? ) | ftsFieldGroupSynonym ( ( fuzzy )=> fuzzy )? -> ^( FG_SYNONYM ftsFieldGroupSynonym ( fuzzy )? ) | ftsFieldGroupRange -> ^( FG_RANGE ftsFieldGroupRange ) | LPAREN ftsFieldGroupDisjunction RPAREN -> ftsFieldGroupDisjunction );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:649:1: ftsFieldGroupTest : ( ( ftsFieldGroupProximity )=> ftsFieldGroupProximity -> ^( FG_PROXIMITY ftsFieldGroupProximity ) | ftsFieldGroupTerm ( ( fuzzy )=> fuzzy )? -> ^( FG_TERM ftsFieldGroupTerm ( fuzzy )? ) | ftsFieldGroupExactTerm ( ( fuzzy )=> fuzzy )? -> ^( FG_EXACT_TERM ftsFieldGroupExactTerm ( fuzzy )? ) | ftsFieldGroupPhrase ( ( slop )=> slop )? -> ^( FG_PHRASE ftsFieldGroupPhrase ( slop )? ) | ftsFieldGroupExactPhrase ( ( slop )=> slop )? -> ^( FG_EXACT_PHRASE ftsFieldGroupExactPhrase ( slop )? ) | ftsFieldGroupTokenisedPhrase ( ( slop )=> slop )? -> ^( FG_PHRASE ftsFieldGroupTokenisedPhrase ( slop )? ) | ftsFieldGroupSynonym ( ( fuzzy )=> fuzzy )? -> ^( FG_SYNONYM ftsFieldGroupSynonym ( fuzzy )? ) | ftsFieldGroupRange -> ^( FG_RANGE ftsFieldGroupRange ) | LPAREN ftsFieldGroupDisjunction RPAREN -> ftsFieldGroupDisjunction );
     public final FTSParser.ftsFieldGroupTest_return ftsFieldGroupTest() throws RecognitionException {
         FTSParser.ftsFieldGroupTest_return retval = new FTSParser.ftsFieldGroupTest_return();
         retval.start = input.LT(1);
@@ -5035,12 +5187,12 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_ftsFieldGroupDisjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupDisjunction");
         RewriteRuleSubtreeStream stream_ftsFieldGroupProximity=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupProximity");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:650:9: ( ( ftsFieldGroupProximity )=> ftsFieldGroupProximity -> ^( FG_PROXIMITY ftsFieldGroupProximity ) | ftsFieldGroupTerm ( ( fuzzy )=> fuzzy )? -> ^( FG_TERM ftsFieldGroupTerm ( fuzzy )? ) | ftsFieldGroupExactTerm ( ( fuzzy )=> fuzzy )? -> ^( FG_EXACT_TERM ftsFieldGroupExactTerm ( fuzzy )? ) | ftsFieldGroupPhrase ( ( slop )=> slop )? -> ^( FG_PHRASE ftsFieldGroupPhrase ( slop )? ) | ftsFieldGroupExactPhrase ( ( slop )=> slop )? -> ^( FG_EXACT_PHRASE ftsFieldGroupExactPhrase ( slop )? ) | ftsFieldGroupTokenisedPhrase ( ( slop )=> slop )? -> ^( FG_PHRASE ftsFieldGroupTokenisedPhrase ( slop )? ) | ftsFieldGroupSynonym ( ( fuzzy )=> fuzzy )? -> ^( FG_SYNONYM ftsFieldGroupSynonym ( fuzzy )? ) | ftsFieldGroupRange -> ^( FG_RANGE ftsFieldGroupRange ) | LPAREN ftsFieldGroupDisjunction RPAREN -> ftsFieldGroupDisjunction )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:650:9: ( ( ftsFieldGroupProximity )=> ftsFieldGroupProximity -> ^( FG_PROXIMITY ftsFieldGroupProximity ) | ftsFieldGroupTerm ( ( fuzzy )=> fuzzy )? -> ^( FG_TERM ftsFieldGroupTerm ( fuzzy )? ) | ftsFieldGroupExactTerm ( ( fuzzy )=> fuzzy )? -> ^( FG_EXACT_TERM ftsFieldGroupExactTerm ( fuzzy )? ) | ftsFieldGroupPhrase ( ( slop )=> slop )? -> ^( FG_PHRASE ftsFieldGroupPhrase ( slop )? ) | ftsFieldGroupExactPhrase ( ( slop )=> slop )? -> ^( FG_EXACT_PHRASE ftsFieldGroupExactPhrase ( slop )? ) | ftsFieldGroupTokenisedPhrase ( ( slop )=> slop )? -> ^( FG_PHRASE ftsFieldGroupTokenisedPhrase ( slop )? ) | ftsFieldGroupSynonym ( ( fuzzy )=> fuzzy )? -> ^( FG_SYNONYM ftsFieldGroupSynonym ( fuzzy )? ) | ftsFieldGroupRange -> ^( FG_RANGE ftsFieldGroupRange ) | LPAREN ftsFieldGroupDisjunction RPAREN -> ftsFieldGroupDisjunction )
             int alt50=9;
             alt50 = dfa50.predict(input);
             switch (alt50) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:651:9: ( ftsFieldGroupProximity )=> ftsFieldGroupProximity
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:651:9: ( ftsFieldGroupProximity )=> ftsFieldGroupProximity
                     {
                     pushFollow(FOLLOW_ftsFieldGroupProximity_in_ftsFieldGroupTest4371);
                     ftsFieldGroupProximity121=ftsFieldGroupProximity();
@@ -5064,7 +5216,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 652:17: -> ^( FG_PROXIMITY ftsFieldGroupProximity )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:653:25: ^( FG_PROXIMITY ftsFieldGroupProximity )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:653:25: ^( FG_PROXIMITY ftsFieldGroupProximity )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FG_PROXIMITY, "FG_PROXIMITY"), root_1);
@@ -5080,7 +5232,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:11: ftsFieldGroupTerm ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:11: ftsFieldGroupTerm ( ( fuzzy )=> fuzzy )?
                     {
                     pushFollow(FOLLOW_ftsFieldGroupTerm_in_ftsFieldGroupTest4431);
                     ftsFieldGroupTerm122=ftsFieldGroupTerm();
@@ -5088,12 +5240,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupTerm.add(ftsFieldGroupTerm122.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:29: ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:29: ( ( fuzzy )=> fuzzy )?
                     int alt44=2;
-                    alt44 = dfa44.predict(input);
+                    int LA44_0 = input.LA(1);
+
+                    if ( (LA44_0==TILDA) ) {
+                        int LA44_1 = input.LA(2);
+
+                        if ( (LA44_1==DECIMAL_INTEGER_LITERAL||LA44_1==FLOATING_POINT_LITERAL) ) {
+                            int LA44_3 = input.LA(3);
+
+                            if ( (synpred11_FTS()) ) {
+                                alt44=1;
+                            }
+                        }
+                    }
                     switch (alt44) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:31: ( fuzzy )=> fuzzy
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:31: ( fuzzy )=> fuzzy
                             {
                             pushFollow(FOLLOW_fuzzy_in_ftsFieldGroupTest4441);
                             fuzzy123=fuzzy();
@@ -5123,13 +5287,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 655:17: -> ^( FG_TERM ftsFieldGroupTerm ( fuzzy )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:656:25: ^( FG_TERM ftsFieldGroupTerm ( fuzzy )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:656:25: ^( FG_TERM ftsFieldGroupTerm ( fuzzy )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FG_TERM, "FG_TERM"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupTerm.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:656:53: ( fuzzy )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:656:53: ( fuzzy )?
                         if ( stream_fuzzy.hasNext() ) {
                             adaptor.addChild(root_1, stream_fuzzy.nextTree());
 
@@ -5145,7 +5309,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:11: ftsFieldGroupExactTerm ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:11: ftsFieldGroupExactTerm ( ( fuzzy )=> fuzzy )?
                     {
                     pushFollow(FOLLOW_ftsFieldGroupExactTerm_in_ftsFieldGroupTest4506);
                     ftsFieldGroupExactTerm124=ftsFieldGroupExactTerm();
@@ -5153,12 +5317,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupExactTerm.add(ftsFieldGroupExactTerm124.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:34: ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:34: ( ( fuzzy )=> fuzzy )?
                     int alt45=2;
-                    alt45 = dfa45.predict(input);
+                    int LA45_0 = input.LA(1);
+
+                    if ( (LA45_0==TILDA) ) {
+                        int LA45_1 = input.LA(2);
+
+                        if ( (LA45_1==DECIMAL_INTEGER_LITERAL||LA45_1==FLOATING_POINT_LITERAL) ) {
+                            int LA45_3 = input.LA(3);
+
+                            if ( (synpred12_FTS()) ) {
+                                alt45=1;
+                            }
+                        }
+                    }
                     switch (alt45) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:36: ( fuzzy )=> fuzzy
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:36: ( fuzzy )=> fuzzy
                             {
                             pushFollow(FOLLOW_fuzzy_in_ftsFieldGroupTest4516);
                             fuzzy125=fuzzy();
@@ -5175,7 +5351,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsFieldGroupExactTerm, fuzzy
+                    // elements: fuzzy, ftsFieldGroupExactTerm
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5188,13 +5364,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 658:17: -> ^( FG_EXACT_TERM ftsFieldGroupExactTerm ( fuzzy )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:659:25: ^( FG_EXACT_TERM ftsFieldGroupExactTerm ( fuzzy )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:659:25: ^( FG_EXACT_TERM ftsFieldGroupExactTerm ( fuzzy )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FG_EXACT_TERM, "FG_EXACT_TERM"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupExactTerm.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:659:64: ( fuzzy )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:659:64: ( fuzzy )?
                         if ( stream_fuzzy.hasNext() ) {
                             adaptor.addChild(root_1, stream_fuzzy.nextTree());
 
@@ -5210,7 +5386,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:11: ftsFieldGroupPhrase ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:11: ftsFieldGroupPhrase ( ( slop )=> slop )?
                     {
                     pushFollow(FOLLOW_ftsFieldGroupPhrase_in_ftsFieldGroupTest4581);
                     ftsFieldGroupPhrase126=ftsFieldGroupPhrase();
@@ -5218,12 +5394,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupPhrase.add(ftsFieldGroupPhrase126.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:31: ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:31: ( ( slop )=> slop )?
                     int alt46=2;
-                    alt46 = dfa46.predict(input);
+                    int LA46_0 = input.LA(1);
+
+                    if ( (LA46_0==TILDA) ) {
+                        int LA46_1 = input.LA(2);
+
+                        if ( (LA46_1==DECIMAL_INTEGER_LITERAL) ) {
+                            int LA46_3 = input.LA(3);
+
+                            if ( (synpred13_FTS()) ) {
+                                alt46=1;
+                            }
+                        }
+                    }
                     switch (alt46) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:33: ( slop )=> slop
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:33: ( slop )=> slop
                             {
                             pushFollow(FOLLOW_slop_in_ftsFieldGroupTest4591);
                             slop127=slop();
@@ -5240,7 +5428,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: slop, ftsFieldGroupPhrase
+                    // elements: ftsFieldGroupPhrase, slop
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5253,13 +5441,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 661:17: -> ^( FG_PHRASE ftsFieldGroupPhrase ( slop )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:662:25: ^( FG_PHRASE ftsFieldGroupPhrase ( slop )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:662:25: ^( FG_PHRASE ftsFieldGroupPhrase ( slop )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FG_PHRASE, "FG_PHRASE"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupPhrase.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:662:57: ( slop )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:662:57: ( slop )?
                         if ( stream_slop.hasNext() ) {
                             adaptor.addChild(root_1, stream_slop.nextTree());
 
@@ -5275,7 +5463,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:11: ftsFieldGroupExactPhrase ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:11: ftsFieldGroupExactPhrase ( ( slop )=> slop )?
                     {
                     pushFollow(FOLLOW_ftsFieldGroupExactPhrase_in_ftsFieldGroupTest4656);
                     ftsFieldGroupExactPhrase128=ftsFieldGroupExactPhrase();
@@ -5283,12 +5471,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupExactPhrase.add(ftsFieldGroupExactPhrase128.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:36: ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:36: ( ( slop )=> slop )?
                     int alt47=2;
-                    alt47 = dfa47.predict(input);
+                    int LA47_0 = input.LA(1);
+
+                    if ( (LA47_0==TILDA) ) {
+                        int LA47_1 = input.LA(2);
+
+                        if ( (LA47_1==DECIMAL_INTEGER_LITERAL) ) {
+                            int LA47_3 = input.LA(3);
+
+                            if ( (synpred14_FTS()) ) {
+                                alt47=1;
+                            }
+                        }
+                    }
                     switch (alt47) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:38: ( slop )=> slop
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:38: ( slop )=> slop
                             {
                             pushFollow(FOLLOW_slop_in_ftsFieldGroupTest4666);
                             slop129=slop();
@@ -5305,7 +5505,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ftsFieldGroupExactPhrase, slop
+                    // elements: slop, ftsFieldGroupExactPhrase
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5318,13 +5518,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 664:17: -> ^( FG_EXACT_PHRASE ftsFieldGroupExactPhrase ( slop )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:665:25: ^( FG_EXACT_PHRASE ftsFieldGroupExactPhrase ( slop )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:665:25: ^( FG_EXACT_PHRASE ftsFieldGroupExactPhrase ( slop )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FG_EXACT_PHRASE, "FG_EXACT_PHRASE"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupExactPhrase.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:665:68: ( slop )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:665:68: ( slop )?
                         if ( stream_slop.hasNext() ) {
                             adaptor.addChild(root_1, stream_slop.nextTree());
 
@@ -5340,7 +5540,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:11: ftsFieldGroupTokenisedPhrase ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:11: ftsFieldGroupTokenisedPhrase ( ( slop )=> slop )?
                     {
                     pushFollow(FOLLOW_ftsFieldGroupTokenisedPhrase_in_ftsFieldGroupTest4731);
                     ftsFieldGroupTokenisedPhrase130=ftsFieldGroupTokenisedPhrase();
@@ -5348,12 +5548,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupTokenisedPhrase.add(ftsFieldGroupTokenisedPhrase130.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:40: ( ( slop )=> slop )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:40: ( ( slop )=> slop )?
                     int alt48=2;
-                    alt48 = dfa48.predict(input);
+                    int LA48_0 = input.LA(1);
+
+                    if ( (LA48_0==TILDA) ) {
+                        int LA48_1 = input.LA(2);
+
+                        if ( (LA48_1==DECIMAL_INTEGER_LITERAL) ) {
+                            int LA48_3 = input.LA(3);
+
+                            if ( (synpred15_FTS()) ) {
+                                alt48=1;
+                            }
+                        }
+                    }
                     switch (alt48) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:42: ( slop )=> slop
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:42: ( slop )=> slop
                             {
                             pushFollow(FOLLOW_slop_in_ftsFieldGroupTest4741);
                             slop131=slop();
@@ -5370,7 +5582,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: slop, ftsFieldGroupTokenisedPhrase
+                    // elements: ftsFieldGroupTokenisedPhrase, slop
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5383,13 +5595,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 667:17: -> ^( FG_PHRASE ftsFieldGroupTokenisedPhrase ( slop )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:668:25: ^( FG_PHRASE ftsFieldGroupTokenisedPhrase ( slop )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:668:25: ^( FG_PHRASE ftsFieldGroupTokenisedPhrase ( slop )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FG_PHRASE, "FG_PHRASE"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupTokenisedPhrase.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:668:66: ( slop )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:668:66: ( slop )?
                         if ( stream_slop.hasNext() ) {
                             adaptor.addChild(root_1, stream_slop.nextTree());
 
@@ -5405,7 +5617,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:11: ftsFieldGroupSynonym ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:11: ftsFieldGroupSynonym ( ( fuzzy )=> fuzzy )?
                     {
                     pushFollow(FOLLOW_ftsFieldGroupSynonym_in_ftsFieldGroupTest4806);
                     ftsFieldGroupSynonym132=ftsFieldGroupSynonym();
@@ -5413,12 +5625,24 @@ public class FTSParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_ftsFieldGroupSynonym.add(ftsFieldGroupSynonym132.getTree());
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:32: ( ( fuzzy )=> fuzzy )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:32: ( ( fuzzy )=> fuzzy )?
                     int alt49=2;
-                    alt49 = dfa49.predict(input);
+                    int LA49_0 = input.LA(1);
+
+                    if ( (LA49_0==TILDA) ) {
+                        int LA49_1 = input.LA(2);
+
+                        if ( (LA49_1==DECIMAL_INTEGER_LITERAL||LA49_1==FLOATING_POINT_LITERAL) ) {
+                            int LA49_3 = input.LA(3);
+
+                            if ( (synpred16_FTS()) ) {
+                                alt49=1;
+                            }
+                        }
+                    }
                     switch (alt49) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:34: ( fuzzy )=> fuzzy
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:34: ( fuzzy )=> fuzzy
                             {
                             pushFollow(FOLLOW_fuzzy_in_ftsFieldGroupTest4816);
                             fuzzy133=fuzzy();
@@ -5448,13 +5672,13 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 670:17: -> ^( FG_SYNONYM ftsFieldGroupSynonym ( fuzzy )? )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:671:25: ^( FG_SYNONYM ftsFieldGroupSynonym ( fuzzy )? )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:671:25: ^( FG_SYNONYM ftsFieldGroupSynonym ( fuzzy )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FG_SYNONYM, "FG_SYNONYM"), root_1);
 
                         adaptor.addChild(root_1, stream_ftsFieldGroupSynonym.nextTree());
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:671:59: ( fuzzy )?
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:671:59: ( fuzzy )?
                         if ( stream_fuzzy.hasNext() ) {
                             adaptor.addChild(root_1, stream_fuzzy.nextTree());
 
@@ -5470,7 +5694,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:672:11: ftsFieldGroupRange
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:672:11: ftsFieldGroupRange
                     {
                     pushFollow(FOLLOW_ftsFieldGroupRange_in_ftsFieldGroupTest4881);
                     ftsFieldGroupRange134=ftsFieldGroupRange();
@@ -5494,7 +5718,7 @@ public class FTSParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 673:17: -> ^( FG_RANGE ftsFieldGroupRange )
                     {
-                        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:674:25: ^( FG_RANGE ftsFieldGroupRange )
+                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:674:25: ^( FG_RANGE ftsFieldGroupRange )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FG_RANGE, "FG_RANGE"), root_1);
@@ -5510,7 +5734,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:675:11: LPAREN ftsFieldGroupDisjunction RPAREN
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:675:11: LPAREN ftsFieldGroupDisjunction RPAREN
                     {
                     LPAREN135=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_ftsFieldGroupTest4941); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN135);
@@ -5574,7 +5798,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupTerm"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:679:1: ftsFieldGroupTerm : ftsWord ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:679:1: ftsFieldGroupTerm : ftsWord ;
     public final FTSParser.ftsFieldGroupTerm_return ftsFieldGroupTerm() throws RecognitionException {
         FTSParser.ftsFieldGroupTerm_return retval = new FTSParser.ftsFieldGroupTerm_return();
         retval.start = input.LT(1);
@@ -5586,8 +5810,8 @@ public class FTSParser extends Parser {
 
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:680:9: ( ftsWord )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:681:9: ftsWord
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:680:9: ( ftsWord )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:681:9: ftsWord
             {
             root_0 = (Object)adaptor.nil();
 
@@ -5625,7 +5849,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupExactTerm"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:684:1: ftsFieldGroupExactTerm : EQUALS ftsFieldGroupTerm -> ftsFieldGroupTerm ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:684:1: ftsFieldGroupExactTerm : EQUALS ftsFieldGroupTerm -> ftsFieldGroupTerm ;
     public final FTSParser.ftsFieldGroupExactTerm_return ftsFieldGroupExactTerm() throws RecognitionException {
         FTSParser.ftsFieldGroupExactTerm_return retval = new FTSParser.ftsFieldGroupExactTerm_return();
         retval.start = input.LT(1);
@@ -5640,8 +5864,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
         RewriteRuleSubtreeStream stream_ftsFieldGroupTerm=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupTerm");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:685:9: ( EQUALS ftsFieldGroupTerm -> ftsFieldGroupTerm )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:686:9: EQUALS ftsFieldGroupTerm
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:685:9: ( EQUALS ftsFieldGroupTerm -> ftsFieldGroupTerm )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:686:9: EQUALS ftsFieldGroupTerm
             {
             EQUALS139=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_ftsFieldGroupExactTerm5031); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_EQUALS.add(EQUALS139);
@@ -5700,7 +5924,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupPhrase"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:690:1: ftsFieldGroupPhrase : FTSPHRASE ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:690:1: ftsFieldGroupPhrase : FTSPHRASE ;
     public final FTSParser.ftsFieldGroupPhrase_return ftsFieldGroupPhrase() throws RecognitionException {
         FTSParser.ftsFieldGroupPhrase_return retval = new FTSParser.ftsFieldGroupPhrase_return();
         retval.start = input.LT(1);
@@ -5712,8 +5936,8 @@ public class FTSParser extends Parser {
         Object FTSPHRASE141_tree=null;
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:691:9: ( FTSPHRASE )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:692:9: FTSPHRASE
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:691:9: ( FTSPHRASE )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:692:9: FTSPHRASE
             {
             root_0 = (Object)adaptor.nil();
 
@@ -5750,7 +5974,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupExactPhrase"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:695:1: ftsFieldGroupExactPhrase : EQUALS ftsFieldGroupExactPhrase -> ftsFieldGroupExactPhrase ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:695:1: ftsFieldGroupExactPhrase : EQUALS ftsFieldGroupExactPhrase -> ftsFieldGroupExactPhrase ;
     public final FTSParser.ftsFieldGroupExactPhrase_return ftsFieldGroupExactPhrase() throws RecognitionException {
         FTSParser.ftsFieldGroupExactPhrase_return retval = new FTSParser.ftsFieldGroupExactPhrase_return();
         retval.start = input.LT(1);
@@ -5765,8 +5989,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
         RewriteRuleSubtreeStream stream_ftsFieldGroupExactPhrase=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupExactPhrase");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:696:9: ( EQUALS ftsFieldGroupExactPhrase -> ftsFieldGroupExactPhrase )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:697:9: EQUALS ftsFieldGroupExactPhrase
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:696:9: ( EQUALS ftsFieldGroupExactPhrase -> ftsFieldGroupExactPhrase )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:697:9: EQUALS ftsFieldGroupExactPhrase
             {
             EQUALS142=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_ftsFieldGroupExactPhrase5127); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_EQUALS.add(EQUALS142);
@@ -5825,7 +6049,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupTokenisedPhrase"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:701:1: ftsFieldGroupTokenisedPhrase : TILDA ftsFieldGroupExactPhrase -> ftsFieldGroupExactPhrase ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:701:1: ftsFieldGroupTokenisedPhrase : TILDA ftsFieldGroupExactPhrase -> ftsFieldGroupExactPhrase ;
     public final FTSParser.ftsFieldGroupTokenisedPhrase_return ftsFieldGroupTokenisedPhrase() throws RecognitionException {
         FTSParser.ftsFieldGroupTokenisedPhrase_return retval = new FTSParser.ftsFieldGroupTokenisedPhrase_return();
         retval.start = input.LT(1);
@@ -5840,8 +6064,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_TILDA=new RewriteRuleTokenStream(adaptor,"token TILDA");
         RewriteRuleSubtreeStream stream_ftsFieldGroupExactPhrase=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupExactPhrase");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:702:9: ( TILDA ftsFieldGroupExactPhrase -> ftsFieldGroupExactPhrase )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:703:9: TILDA ftsFieldGroupExactPhrase
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:702:9: ( TILDA ftsFieldGroupExactPhrase -> ftsFieldGroupExactPhrase )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:703:9: TILDA ftsFieldGroupExactPhrase
             {
             TILDA144=(Token)match(input,TILDA,FOLLOW_TILDA_in_ftsFieldGroupTokenisedPhrase5190); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_TILDA.add(TILDA144);
@@ -5900,7 +6124,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupSynonym"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:707:1: ftsFieldGroupSynonym : TILDA ftsFieldGroupTerm -> ftsFieldGroupTerm ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:707:1: ftsFieldGroupSynonym : TILDA ftsFieldGroupTerm -> ftsFieldGroupTerm ;
     public final FTSParser.ftsFieldGroupSynonym_return ftsFieldGroupSynonym() throws RecognitionException {
         FTSParser.ftsFieldGroupSynonym_return retval = new FTSParser.ftsFieldGroupSynonym_return();
         retval.start = input.LT(1);
@@ -5915,8 +6139,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_TILDA=new RewriteRuleTokenStream(adaptor,"token TILDA");
         RewriteRuleSubtreeStream stream_ftsFieldGroupTerm=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupTerm");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:708:9: ( TILDA ftsFieldGroupTerm -> ftsFieldGroupTerm )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:709:9: TILDA ftsFieldGroupTerm
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:708:9: ( TILDA ftsFieldGroupTerm -> ftsFieldGroupTerm )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:709:9: TILDA ftsFieldGroupTerm
             {
             TILDA146=(Token)match(input,TILDA,FOLLOW_TILDA_in_ftsFieldGroupSynonym5245); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_TILDA.add(TILDA146);
@@ -5975,7 +6199,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupProximity"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:713:1: ftsFieldGroupProximity : ftsFieldGroupProximityTerm ( ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm )+ -> ftsFieldGroupProximityTerm ( proximityGroup ftsFieldGroupProximityTerm )+ ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:713:1: ftsFieldGroupProximity : ftsFieldGroupProximityTerm ( ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm )+ -> ftsFieldGroupProximityTerm ( proximityGroup ftsFieldGroupProximityTerm )+ ;
     public final FTSParser.ftsFieldGroupProximity_return ftsFieldGroupProximity() throws RecognitionException {
         FTSParser.ftsFieldGroupProximity_return retval = new FTSParser.ftsFieldGroupProximity_return();
         retval.start = input.LT(1);
@@ -5992,8 +6216,8 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_proximityGroup=new RewriteRuleSubtreeStream(adaptor,"rule proximityGroup");
         RewriteRuleSubtreeStream stream_ftsFieldGroupProximityTerm=new RewriteRuleSubtreeStream(adaptor,"rule ftsFieldGroupProximityTerm");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:714:9: ( ftsFieldGroupProximityTerm ( ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm )+ -> ftsFieldGroupProximityTerm ( proximityGroup ftsFieldGroupProximityTerm )+ )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:9: ftsFieldGroupProximityTerm ( ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:714:9: ( ftsFieldGroupProximityTerm ( ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm )+ -> ftsFieldGroupProximityTerm ( proximityGroup ftsFieldGroupProximityTerm )+ )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:9: ftsFieldGroupProximityTerm ( ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm )+
             {
             pushFollow(FOLLOW_ftsFieldGroupProximityTerm_in_ftsFieldGroupProximity5300);
             ftsFieldGroupProximityTerm148=ftsFieldGroupProximityTerm();
@@ -6001,7 +6225,7 @@ public class FTSParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_ftsFieldGroupProximityTerm.add(ftsFieldGroupProximityTerm148.getTree());
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:36: ( ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm )+
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:36: ( ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm )+
             int cnt51=0;
             loop51:
             do {
@@ -6009,7 +6233,7 @@ public class FTSParser extends Parser {
                 alt51 = dfa51.predict(input);
                 switch (alt51) {
             	case 1 :
-            	    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:38: ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm
+            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:38: ( proximityGroup )=> proximityGroup ftsFieldGroupProximityTerm
             	    {
             	    pushFollow(FOLLOW_proximityGroup_in_ftsFieldGroupProximity5310);
             	    proximityGroup149=proximityGroup();
@@ -6040,7 +6264,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: proximityGroup, ftsFieldGroupProximityTerm, ftsFieldGroupProximityTerm
+            // elements: ftsFieldGroupProximityTerm, ftsFieldGroupProximityTerm, proximityGroup
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6054,16 +6278,16 @@ public class FTSParser extends Parser {
             // 716:17: -> ftsFieldGroupProximityTerm ( proximityGroup ftsFieldGroupProximityTerm )+
             {
                 adaptor.addChild(root_0, stream_ftsFieldGroupProximityTerm.nextTree());
-                if ( !(stream_proximityGroup.hasNext()||stream_ftsFieldGroupProximityTerm.hasNext()) ) {
+                if ( !(stream_ftsFieldGroupProximityTerm.hasNext()||stream_proximityGroup.hasNext()) ) {
                     throw new RewriteEarlyExitException();
                 }
-                while ( stream_proximityGroup.hasNext()||stream_ftsFieldGroupProximityTerm.hasNext() ) {
+                while ( stream_ftsFieldGroupProximityTerm.hasNext()||stream_proximityGroup.hasNext() ) {
                     adaptor.addChild(root_0, stream_proximityGroup.nextTree());
                     adaptor.addChild(root_0, stream_ftsFieldGroupProximityTerm.nextTree());
 
                 }
-                stream_proximityGroup.reset();
                 stream_ftsFieldGroupProximityTerm.reset();
+                stream_proximityGroup.reset();
 
             }
 
@@ -6095,7 +6319,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupProximityTerm"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:719:1: ftsFieldGroupProximityTerm : ( ID | FTSWORD | FTSPRE | FTSWILD | NOT | TO | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:719:1: ftsFieldGroupProximityTerm : ( ID | FTSWORD | FTSPRE | FTSWILD | NOT | TO | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL );
     public final FTSParser.ftsFieldGroupProximityTerm_return ftsFieldGroupProximityTerm() throws RecognitionException {
         FTSParser.ftsFieldGroupProximityTerm_return retval = new FTSParser.ftsFieldGroupProximityTerm_return();
         retval.start = input.LT(1);
@@ -6107,8 +6331,8 @@ public class FTSParser extends Parser {
         Object set151_tree=null;
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:720:9: ( ID | FTSWORD | FTSPRE | FTSWILD | NOT | TO | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:720:9: ( ID | FTSWORD | FTSPRE | FTSWILD | NOT | TO | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -6152,7 +6376,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "proximityGroup"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:731:1: proximityGroup : STAR ( LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN )? -> ^( PROXIMITY ( DECIMAL_INTEGER_LITERAL )? ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:731:1: proximityGroup : STAR ( LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN )? -> ^( PROXIMITY ( DECIMAL_INTEGER_LITERAL )? ) ;
     public final FTSParser.proximityGroup_return proximityGroup() throws RecognitionException {
         FTSParser.proximityGroup_return retval = new FTSParser.proximityGroup_return();
         retval.start = input.LT(1);
@@ -6174,13 +6398,13 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:732:9: ( STAR ( LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN )? -> ^( PROXIMITY ( DECIMAL_INTEGER_LITERAL )? ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:9: STAR ( LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:732:9: ( STAR ( LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN )? -> ^( PROXIMITY ( DECIMAL_INTEGER_LITERAL )? ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:9: STAR ( LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN )?
             {
             STAR152=(Token)match(input,STAR,FOLLOW_STAR_in_proximityGroup5491); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_STAR.add(STAR152);
 
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:14: ( LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:14: ( LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN )?
             int alt53=2;
             int LA53_0 = input.LA(1);
 
@@ -6189,12 +6413,12 @@ public class FTSParser extends Parser {
             }
             switch (alt53) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:15: LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:15: LPAREN ( DECIMAL_INTEGER_LITERAL )? RPAREN
                     {
                     LPAREN153=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_proximityGroup5494); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN153);
 
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:22: ( DECIMAL_INTEGER_LITERAL )?
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:22: ( DECIMAL_INTEGER_LITERAL )?
                     int alt52=2;
                     int LA52_0 = input.LA(1);
 
@@ -6203,7 +6427,7 @@ public class FTSParser extends Parser {
                     }
                     switch (alt52) {
                         case 1 :
-                            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:22: DECIMAL_INTEGER_LITERAL
+                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:733:22: DECIMAL_INTEGER_LITERAL
                             {
                             DECIMAL_INTEGER_LITERAL154=(Token)match(input,DECIMAL_INTEGER_LITERAL,FOLLOW_DECIMAL_INTEGER_LITERAL_in_proximityGroup5496); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_DECIMAL_INTEGER_LITERAL.add(DECIMAL_INTEGER_LITERAL154);
@@ -6239,12 +6463,12 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 734:17: -> ^( PROXIMITY ( DECIMAL_INTEGER_LITERAL )? )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:735:25: ^( PROXIMITY ( DECIMAL_INTEGER_LITERAL )? )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:735:25: ^( PROXIMITY ( DECIMAL_INTEGER_LITERAL )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PROXIMITY, "PROXIMITY"), root_1);
 
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:735:37: ( DECIMAL_INTEGER_LITERAL )?
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:735:37: ( DECIMAL_INTEGER_LITERAL )?
                 if ( stream_DECIMAL_INTEGER_LITERAL.hasNext() ) {
                     adaptor.addChild(root_1, stream_DECIMAL_INTEGER_LITERAL.nextNode());
 
@@ -6284,7 +6508,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsFieldGroupRange"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:738:1: ftsFieldGroupRange : ( ftsRangeWord DOTDOT ftsRangeWord -> INCLUSIVE ftsRangeWord ftsRangeWord INCLUSIVE | range_left ftsRangeWord TO ftsRangeWord range_right -> range_left ftsRangeWord ftsRangeWord range_right );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:738:1: ftsFieldGroupRange : ( ftsRangeWord DOTDOT ftsRangeWord -> INCLUSIVE ftsRangeWord ftsRangeWord INCLUSIVE | range_left ftsRangeWord TO ftsRangeWord range_right -> range_left ftsRangeWord ftsRangeWord range_right );
     public final FTSParser.ftsFieldGroupRange_return ftsFieldGroupRange() throws RecognitionException {
         FTSParser.ftsFieldGroupRange_return retval = new FTSParser.ftsFieldGroupRange_return();
         retval.start = input.LT(1);
@@ -6314,7 +6538,7 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_range_right=new RewriteRuleSubtreeStream(adaptor,"rule range_right");
         RewriteRuleSubtreeStream stream_ftsRangeWord=new RewriteRuleSubtreeStream(adaptor,"rule ftsRangeWord");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:739:9: ( ftsRangeWord DOTDOT ftsRangeWord -> INCLUSIVE ftsRangeWord ftsRangeWord INCLUSIVE | range_left ftsRangeWord TO ftsRangeWord range_right -> range_left ftsRangeWord ftsRangeWord range_right )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:739:9: ( ftsRangeWord DOTDOT ftsRangeWord -> INCLUSIVE ftsRangeWord ftsRangeWord INCLUSIVE | range_left ftsRangeWord TO ftsRangeWord range_right -> range_left ftsRangeWord ftsRangeWord range_right )
             int alt54=2;
             int LA54_0 = input.LA(1);
 
@@ -6333,7 +6557,7 @@ public class FTSParser extends Parser {
             }
             switch (alt54) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:740:9: ftsRangeWord DOTDOT ftsRangeWord
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:740:9: ftsRangeWord DOTDOT ftsRangeWord
                     {
                     pushFollow(FOLLOW_ftsRangeWord_in_ftsFieldGroupRange5583);
                     ftsRangeWord156=ftsRangeWord();
@@ -6377,7 +6601,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:742:11: range_left ftsRangeWord TO ftsRangeWord range_right
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:742:11: range_left ftsRangeWord TO ftsRangeWord range_right
                     {
                     pushFollow(FOLLOW_range_left_in_ftsFieldGroupRange5625);
                     range_left159=range_left();
@@ -6409,7 +6633,7 @@ public class FTSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: range_right, range_left, ftsRangeWord, ftsRangeWord
+                    // elements: range_right, ftsRangeWord, range_left, ftsRangeWord
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -6459,7 +6683,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "range_left"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:746:1: range_left : ( LSQUARE -> INCLUSIVE | LT -> EXCLUSIVE );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:746:1: range_left : ( LSQUARE -> INCLUSIVE | LT -> EXCLUSIVE );
     public final FTSParser.range_left_return range_left() throws RecognitionException {
         FTSParser.range_left_return retval = new FTSParser.range_left_return();
         retval.start = input.LT(1);
@@ -6475,7 +6699,7 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_LSQUARE=new RewriteRuleTokenStream(adaptor,"token LSQUARE");
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:747:9: ( LSQUARE -> INCLUSIVE | LT -> EXCLUSIVE )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:747:9: ( LSQUARE -> INCLUSIVE | LT -> EXCLUSIVE )
             int alt55=2;
             int LA55_0 = input.LA(1);
 
@@ -6494,7 +6718,7 @@ public class FTSParser extends Parser {
             }
             switch (alt55) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:748:9: LSQUARE
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:748:9: LSQUARE
                     {
                     LSQUARE164=(Token)match(input,LSQUARE,FOLLOW_LSQUARE_in_range_left5692); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LSQUARE.add(LSQUARE164);
@@ -6523,7 +6747,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:750:11: LT
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:750:11: LT
                     {
                     LT165=(Token)match(input,LT,FOLLOW_LT_in_range_left5724); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LT.add(LT165);
@@ -6578,7 +6802,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "range_right"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:754:1: range_right : ( RSQUARE -> INCLUSIVE | GT -> EXCLUSIVE );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:754:1: range_right : ( RSQUARE -> INCLUSIVE | GT -> EXCLUSIVE );
     public final FTSParser.range_right_return range_right() throws RecognitionException {
         FTSParser.range_right_return retval = new FTSParser.range_right_return();
         retval.start = input.LT(1);
@@ -6594,7 +6818,7 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_RSQUARE=new RewriteRuleTokenStream(adaptor,"token RSQUARE");
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:755:9: ( RSQUARE -> INCLUSIVE | GT -> EXCLUSIVE )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:755:9: ( RSQUARE -> INCLUSIVE | GT -> EXCLUSIVE )
             int alt56=2;
             int LA56_0 = input.LA(1);
 
@@ -6613,7 +6837,7 @@ public class FTSParser extends Parser {
             }
             switch (alt56) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:756:9: RSQUARE
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:756:9: RSQUARE
                     {
                     RSQUARE166=(Token)match(input,RSQUARE,FOLLOW_RSQUARE_in_range_right5777); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_RSQUARE.add(RSQUARE166);
@@ -6642,7 +6866,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:758:11: GT
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:758:11: GT
                     {
                     GT167=(Token)match(input,GT,FOLLOW_GT_in_range_right5809); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_GT.add(GT167);
@@ -6697,7 +6921,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "fieldReference"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:764:1: fieldReference : ( AT )? ( prefix | uri )? identifier -> ^( FIELD_REF identifier ( prefix )? ( uri )? ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:764:1: fieldReference : ( AT )? ( prefix | uri )? identifier -> ^( FIELD_REF identifier ( prefix )? ( uri )? ) ;
     public final FTSParser.fieldReference_return fieldReference() throws RecognitionException {
         FTSParser.fieldReference_return retval = new FTSParser.fieldReference_return();
         retval.start = input.LT(1);
@@ -6718,10 +6942,10 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_uri=new RewriteRuleSubtreeStream(adaptor,"rule uri");
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:765:9: ( ( AT )? ( prefix | uri )? identifier -> ^( FIELD_REF identifier ( prefix )? ( uri )? ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:766:9: ( AT )? ( prefix | uri )? identifier
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:765:9: ( ( AT )? ( prefix | uri )? identifier -> ^( FIELD_REF identifier ( prefix )? ( uri )? ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:766:9: ( AT )? ( prefix | uri )? identifier
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:766:9: ( AT )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:766:9: ( AT )?
             int alt57=2;
             int LA57_0 = input.LA(1);
 
@@ -6730,7 +6954,7 @@ public class FTSParser extends Parser {
             }
             switch (alt57) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:766:9: AT
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:766:9: AT
                     {
                     AT168=(Token)match(input,AT,FOLLOW_AT_in_fieldReference5865); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_AT.add(AT168);
@@ -6741,12 +6965,50 @@ public class FTSParser extends Parser {
 
             }
 
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:767:9: ( prefix | uri )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:767:9: ( prefix | uri )?
             int alt58=3;
-            alt58 = dfa58.predict(input);
+            int LA58_0 = input.LA(1);
+
+            if ( (LA58_0==ID) ) {
+                int LA58_1 = input.LA(2);
+
+                if ( (LA58_1==DOT) ) {
+                    int LA58_3 = input.LA(3);
+
+                    if ( (LA58_3==ID) ) {
+                        int LA58_5 = input.LA(4);
+
+                        if ( (LA58_5==COLON) ) {
+                            int LA58_4 = input.LA(5);
+
+                            if ( (LA58_4==ID) ) {
+                                int LA58_7 = input.LA(6);
+
+                                if ( (LA58_7==COLON||LA58_7==DOT) ) {
+                                    alt58=1;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if ( (LA58_1==COLON) ) {
+                    int LA58_4 = input.LA(3);
+
+                    if ( (LA58_4==ID) ) {
+                        int LA58_7 = input.LA(4);
+
+                        if ( (LA58_7==COLON||LA58_7==DOT) ) {
+                            alt58=1;
+                        }
+                    }
+                }
+            }
+            else if ( (LA58_0==URI) ) {
+                alt58=2;
+            }
             switch (alt58) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:768:17: prefix
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:768:17: prefix
                     {
                     pushFollow(FOLLOW_prefix_in_fieldReference5894);
                     prefix169=prefix();
@@ -6758,7 +7020,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:769:19: uri
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:769:19: uri
                     {
                     pushFollow(FOLLOW_uri_in_fieldReference5914);
                     uri170=uri();
@@ -6781,7 +7043,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: prefix, uri, identifier
+            // elements: identifier, uri, prefix
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6794,19 +7056,19 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 772:17: -> ^( FIELD_REF identifier ( prefix )? ( uri )? )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:773:25: ^( FIELD_REF identifier ( prefix )? ( uri )? )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:773:25: ^( FIELD_REF identifier ( prefix )? ( uri )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_REF, "FIELD_REF"), root_1);
 
                 adaptor.addChild(root_1, stream_identifier.nextTree());
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:773:48: ( prefix )?
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:773:48: ( prefix )?
                 if ( stream_prefix.hasNext() ) {
                     adaptor.addChild(root_1, stream_prefix.nextTree());
 
                 }
                 stream_prefix.reset();
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:773:56: ( uri )?
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:773:56: ( uri )?
                 if ( stream_uri.hasNext() ) {
                     adaptor.addChild(root_1, stream_uri.nextTree());
 
@@ -6846,7 +7108,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "tempReference"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:776:1: tempReference : ( AT )? ( prefix | uri )? identifier -> ^( FIELD_REF identifier ( prefix )? ( uri )? ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:776:1: tempReference : ( AT )? ( prefix | uri )? identifier -> ^( FIELD_REF identifier ( prefix )? ( uri )? ) ;
     public final FTSParser.tempReference_return tempReference() throws RecognitionException {
         FTSParser.tempReference_return retval = new FTSParser.tempReference_return();
         retval.start = input.LT(1);
@@ -6867,10 +7129,10 @@ public class FTSParser extends Parser {
         RewriteRuleSubtreeStream stream_uri=new RewriteRuleSubtreeStream(adaptor,"rule uri");
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:777:9: ( ( AT )? ( prefix | uri )? identifier -> ^( FIELD_REF identifier ( prefix )? ( uri )? ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:778:9: ( AT )? ( prefix | uri )? identifier
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:777:9: ( ( AT )? ( prefix | uri )? identifier -> ^( FIELD_REF identifier ( prefix )? ( uri )? ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:778:9: ( AT )? ( prefix | uri )? identifier
             {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:778:9: ( AT )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:778:9: ( AT )?
             int alt59=2;
             int LA59_0 = input.LA(1);
 
@@ -6879,7 +7141,7 @@ public class FTSParser extends Parser {
             }
             switch (alt59) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:778:9: AT
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:778:9: AT
                     {
                     AT172=(Token)match(input,AT,FOLLOW_AT_in_tempReference6022); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_AT.add(AT172);
@@ -6890,12 +7152,34 @@ public class FTSParser extends Parser {
 
             }
 
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:779:9: ( prefix | uri )?
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:779:9: ( prefix | uri )?
             int alt60=3;
-            alt60 = dfa60.predict(input);
+            int LA60_0 = input.LA(1);
+
+            if ( (LA60_0==ID) ) {
+                int LA60_1 = input.LA(2);
+
+                if ( (LA60_1==DOT) ) {
+                    int LA60_3 = input.LA(3);
+
+                    if ( (LA60_3==ID) ) {
+                        int LA60_6 = input.LA(4);
+
+                        if ( (LA60_6==COLON) ) {
+                            alt60=1;
+                        }
+                    }
+                }
+                else if ( (LA60_1==COLON) ) {
+                    alt60=1;
+                }
+            }
+            else if ( (LA60_0==URI) ) {
+                alt60=2;
+            }
             switch (alt60) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:780:17: prefix
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:780:17: prefix
                     {
                     pushFollow(FOLLOW_prefix_in_tempReference6051);
                     prefix173=prefix();
@@ -6907,7 +7191,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:781:19: uri
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:781:19: uri
                     {
                     pushFollow(FOLLOW_uri_in_tempReference6071);
                     uri174=uri();
@@ -6930,7 +7214,7 @@ public class FTSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: identifier, uri, prefix
+            // elements: uri, prefix, identifier
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6943,19 +7227,19 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 784:17: -> ^( FIELD_REF identifier ( prefix )? ( uri )? )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:785:25: ^( FIELD_REF identifier ( prefix )? ( uri )? )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:785:25: ^( FIELD_REF identifier ( prefix )? ( uri )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD_REF, "FIELD_REF"), root_1);
 
                 adaptor.addChild(root_1, stream_identifier.nextTree());
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:785:48: ( prefix )?
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:785:48: ( prefix )?
                 if ( stream_prefix.hasNext() ) {
                     adaptor.addChild(root_1, stream_prefix.nextTree());
 
                 }
                 stream_prefix.reset();
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:785:56: ( uri )?
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:785:56: ( uri )?
                 if ( stream_uri.hasNext() ) {
                     adaptor.addChild(root_1, stream_uri.nextTree());
 
@@ -6995,7 +7279,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "prefix"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:788:1: prefix : identifier COLON -> ^( PREFIX identifier ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:788:1: prefix : identifier COLON -> ^( PREFIX identifier ) ;
     public final FTSParser.prefix_return prefix() throws RecognitionException {
         FTSParser.prefix_return retval = new FTSParser.prefix_return();
         retval.start = input.LT(1);
@@ -7010,8 +7294,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:789:9: ( identifier COLON -> ^( PREFIX identifier ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:790:9: identifier COLON
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:789:9: ( identifier COLON -> ^( PREFIX identifier ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:790:9: identifier COLON
             {
             pushFollow(FOLLOW_identifier_in_prefix6179);
             identifier176=identifier();
@@ -7038,7 +7322,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 791:17: -> ^( PREFIX identifier )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:792:25: ^( PREFIX identifier )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:792:25: ^( PREFIX identifier )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PREFIX, "PREFIX"), root_1);
@@ -7078,7 +7362,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "uri"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:795:1: uri : URI -> ^( NAME_SPACE URI ) ;
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:795:1: uri : URI -> ^( NAME_SPACE URI ) ;
     public final FTSParser.uri_return uri() throws RecognitionException {
         FTSParser.uri_return retval = new FTSParser.uri_return();
         retval.start = input.LT(1);
@@ -7091,8 +7375,8 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_URI=new RewriteRuleTokenStream(adaptor,"token URI");
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:796:9: ( URI -> ^( NAME_SPACE URI ) )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:797:9: URI
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:796:9: ( URI -> ^( NAME_SPACE URI ) )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:797:9: URI
             {
             URI178=(Token)match(input,URI,FOLLOW_URI_in_uri6262); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_URI.add(URI178);
@@ -7113,7 +7397,7 @@ public class FTSParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 798:17: -> ^( NAME_SPACE URI )
             {
-                // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:799:25: ^( NAME_SPACE URI )
+                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:799:25: ^( NAME_SPACE URI )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(NAME_SPACE, "NAME_SPACE"), root_1);
@@ -7153,7 +7437,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "identifier"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:802:1: identifier : ( ID -> ID | id1= ID DOT id2= ID ->);
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:802:1: identifier : ( ID -> ID | id1= ID DOT id2= ID ->);
     public final FTSParser.identifier_return identifier() throws RecognitionException {
         FTSParser.identifier_return retval = new FTSParser.identifier_return();
         retval.start = input.LT(1);
@@ -7173,12 +7457,37 @@ public class FTSParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:803:9: ( ID -> ID | id1= ID DOT id2= ID ->)
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:803:9: ( ID -> ID | id1= ID DOT id2= ID ->)
             int alt61=2;
-            alt61 = dfa61.predict(input);
+            int LA61_0 = input.LA(1);
+
+            if ( (LA61_0==ID) ) {
+                int LA61_1 = input.LA(2);
+
+                if ( (LA61_1==DOT) ) {
+                    alt61=2;
+                }
+                else if ( (LA61_1==EOF||(LA61_1>=PLUS && LA61_1<=STAR)||(LA61_1>=LSQUARE && LA61_1<=LT)||(LA61_1>=AT && LA61_1<=URI)||(LA61_1>=QUESTION_MARK && LA61_1<=EXCLAMATION)) ) {
+                    alt61=1;
+                }
+                else {
+                    if (state.backtracking>0) {state.failed=true; return retval;}
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 61, 1, input);
+
+                    throw nvae;
+                }
+            }
+            else {
+                if (state.backtracking>0) {state.failed=true; return retval;}
+                NoViableAltException nvae =
+                    new NoViableAltException("", 61, 0, input);
+
+                throw nvae;
+            }
             switch (alt61) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:804:9: ID
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:804:9: ID
                     {
                     ID179=(Token)match(input,ID,FOLLOW_ID_in_identifier6343); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(ID179);
@@ -7207,7 +7516,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:807:11: id1= ID DOT id2= ID
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:807:11: id1= ID DOT id2= ID
                     {
                     id1=(Token)match(input,ID,FOLLOW_ID_in_identifier6401); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(id1);
@@ -7268,7 +7577,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsWord"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:811:1: ftsWord : ( ID | FTSWORD | FTSPRE | FTSWILD | NOT | TO | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL | STAR | QUESTION_MARK );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:811:1: ftsWord : ( ID | FTSWORD | FTSPRE | FTSWILD | NOT | TO | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL | STAR | QUESTION_MARK );
     public final FTSParser.ftsWord_return ftsWord() throws RecognitionException {
         FTSParser.ftsWord_return retval = new FTSParser.ftsWord_return();
         retval.start = input.LT(1);
@@ -7280,8 +7589,8 @@ public class FTSParser extends Parser {
         Object set181_tree=null;
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:812:9: ( ID | FTSWORD | FTSPRE | FTSWILD | NOT | TO | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL | STAR | QUESTION_MARK )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:812:9: ( ID | FTSWORD | FTSPRE | FTSWILD | NOT | TO | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL | STAR | QUESTION_MARK )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -7325,7 +7634,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "number"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:825:1: number : ( DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:825:1: number : ( DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL );
     public final FTSParser.number_return number() throws RecognitionException {
         FTSParser.number_return retval = new FTSParser.number_return();
         retval.start = input.LT(1);
@@ -7337,8 +7646,8 @@ public class FTSParser extends Parser {
         Object set182_tree=null;
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:826:9: ( DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:826:9: ( DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -7382,7 +7691,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "ftsRangeWord"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:831:1: ftsRangeWord : ( ID | FTSWORD | FTSPRE | FTSWILD | FTSPHRASE | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:831:1: ftsRangeWord : ( ID | FTSWORD | FTSPRE | FTSWILD | FTSPHRASE | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL );
     public final FTSParser.ftsRangeWord_return ftsRangeWord() throws RecognitionException {
         FTSParser.ftsRangeWord_return retval = new FTSParser.ftsRangeWord_return();
         retval.start = input.LT(1);
@@ -7394,8 +7703,8 @@ public class FTSParser extends Parser {
         Object set183_tree=null;
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:832:9: ( ID | FTSWORD | FTSPRE | FTSWILD | FTSPHRASE | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:832:9: ( ID | FTSWORD | FTSPRE | FTSWILD | FTSPHRASE | DECIMAL_INTEGER_LITERAL | FLOATING_POINT_LITERAL )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -7439,7 +7748,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "or"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:844:1: or : ( OR | BAR BAR );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:844:1: or : ( OR | BAR BAR );
     public final FTSParser.or_return or() throws RecognitionException {
         FTSParser.or_return retval = new FTSParser.or_return();
         retval.start = input.LT(1);
@@ -7455,7 +7764,7 @@ public class FTSParser extends Parser {
         Object BAR186_tree=null;
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:845:9: ( OR | BAR BAR )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:845:9: ( OR | BAR BAR )
             int alt62=2;
             int LA62_0 = input.LA(1);
 
@@ -7474,7 +7783,7 @@ public class FTSParser extends Parser {
             }
             switch (alt62) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:846:9: OR
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:846:9: OR
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -7487,7 +7796,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:847:11: BAR BAR
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:847:11: BAR BAR
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -7531,7 +7840,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "and"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:850:1: and : ( AND | AMP AMP );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:850:1: and : ( AND | AMP AMP );
     public final FTSParser.and_return and() throws RecognitionException {
         FTSParser.and_return retval = new FTSParser.and_return();
         retval.start = input.LT(1);
@@ -7547,7 +7856,7 @@ public class FTSParser extends Parser {
         Object AMP189_tree=null;
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:851:9: ( AND | AMP AMP )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:851:9: ( AND | AMP AMP )
             int alt63=2;
             int LA63_0 = input.LA(1);
 
@@ -7566,7 +7875,7 @@ public class FTSParser extends Parser {
             }
             switch (alt63) {
                 case 1 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:852:9: AND
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:852:9: AND
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -7579,7 +7888,7 @@ public class FTSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:853:11: AMP AMP
+                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:853:11: AMP AMP
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -7623,7 +7932,7 @@ public class FTSParser extends Parser {
     };
 
     // $ANTLR start "not"
-    // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:856:1: not : ( NOT | EXCLAMATION );
+    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:856:1: not : ( NOT | EXCLAMATION );
     public final FTSParser.not_return not() throws RecognitionException {
         FTSParser.not_return retval = new FTSParser.not_return();
         retval.start = input.LT(1);
@@ -7635,8 +7944,8 @@ public class FTSParser extends Parser {
         Object set190_tree=null;
 
         try {
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:857:9: ( NOT | EXCLAMATION )
-            // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:857:9: ( NOT | EXCLAMATION )
+            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -7676,8 +7985,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred1_FTS
     public final void synpred1_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:9: ( not )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:10: not
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:9: ( not )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:424:10: not
         {
         pushFollow(FOLLOW_not_in_synpred1_FTS1216);
         not();
@@ -7691,8 +8000,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred2_FTS
     public final void synpred2_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:457:9: ( ftsFieldGroupProximity )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:457:10: ftsFieldGroupProximity
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:457:9: ( ftsFieldGroupProximity )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:457:10: ftsFieldGroupProximity
         {
         pushFollow(FOLLOW_ftsFieldGroupProximity_in_synpred2_FTS1727);
         ftsFieldGroupProximity();
@@ -7706,8 +8015,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred3_FTS
     public final void synpred3_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:21: ( fuzzy )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:22: fuzzy
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:21: ( fuzzy )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:460:22: fuzzy
         {
         pushFollow(FOLLOW_fuzzy_in_synpred3_FTS1797);
         fuzzy();
@@ -7721,8 +8030,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred4_FTS
     public final void synpred4_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:26: ( fuzzy )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:27: fuzzy
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:26: ( fuzzy )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:463:27: fuzzy
         {
         pushFollow(FOLLOW_fuzzy_in_synpred4_FTS1872);
         fuzzy();
@@ -7736,8 +8045,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred5_FTS
     public final void synpred5_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:23: ( slop )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:24: slop
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:23: ( slop )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:466:24: slop
         {
         pushFollow(FOLLOW_slop_in_synpred5_FTS1947);
         slop();
@@ -7751,8 +8060,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred6_FTS
     public final void synpred6_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:28: ( slop )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:29: slop
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:28: ( slop )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:469:29: slop
         {
         pushFollow(FOLLOW_slop_in_synpred6_FTS2022);
         slop();
@@ -7766,8 +8075,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred7_FTS
     public final void synpred7_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:32: ( slop )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:33: slop
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:32: ( slop )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:472:33: slop
         {
         pushFollow(FOLLOW_slop_in_synpred7_FTS2097);
         slop();
@@ -7781,8 +8090,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred8_FTS
     public final void synpred8_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:24: ( fuzzy )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:25: fuzzy
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:24: ( fuzzy )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:475:25: fuzzy
         {
         pushFollow(FOLLOW_fuzzy_in_synpred8_FTS2172);
         fuzzy();
@@ -7796,8 +8105,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred9_FTS
     public final void synpred9_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:9: ( not )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:10: not
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:9: ( not )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:632:10: not
         {
         pushFollow(FOLLOW_not_in_synpred9_FTS4001);
         not();
@@ -7811,8 +8120,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred10_FTS
     public final void synpred10_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:651:9: ( ftsFieldGroupProximity )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:651:10: ftsFieldGroupProximity
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:651:9: ( ftsFieldGroupProximity )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:651:10: ftsFieldGroupProximity
         {
         pushFollow(FOLLOW_ftsFieldGroupProximity_in_synpred10_FTS4366);
         ftsFieldGroupProximity();
@@ -7826,8 +8135,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred11_FTS
     public final void synpred11_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:31: ( fuzzy )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:32: fuzzy
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:31: ( fuzzy )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:654:32: fuzzy
         {
         pushFollow(FOLLOW_fuzzy_in_synpred11_FTS4436);
         fuzzy();
@@ -7841,8 +8150,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred12_FTS
     public final void synpred12_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:36: ( fuzzy )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:37: fuzzy
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:36: ( fuzzy )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:657:37: fuzzy
         {
         pushFollow(FOLLOW_fuzzy_in_synpred12_FTS4511);
         fuzzy();
@@ -7856,8 +8165,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred13_FTS
     public final void synpred13_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:33: ( slop )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:34: slop
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:33: ( slop )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:660:34: slop
         {
         pushFollow(FOLLOW_slop_in_synpred13_FTS4586);
         slop();
@@ -7871,8 +8180,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred14_FTS
     public final void synpred14_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:38: ( slop )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:39: slop
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:38: ( slop )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:663:39: slop
         {
         pushFollow(FOLLOW_slop_in_synpred14_FTS4661);
         slop();
@@ -7886,8 +8195,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred15_FTS
     public final void synpred15_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:42: ( slop )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:43: slop
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:42: ( slop )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:666:43: slop
         {
         pushFollow(FOLLOW_slop_in_synpred15_FTS4736);
         slop();
@@ -7901,8 +8210,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred16_FTS
     public final void synpred16_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:34: ( fuzzy )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:35: fuzzy
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:34: ( fuzzy )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:669:35: fuzzy
         {
         pushFollow(FOLLOW_fuzzy_in_synpred16_FTS4811);
         fuzzy();
@@ -7916,8 +8225,8 @@ public class FTSParser extends Parser {
 
     // $ANTLR start synpred17_FTS
     public final void synpred17_FTS_fragment() throws RecognitionException {   
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:38: ( proximityGroup )
-        // W:\\alfresco\\BRANCHES\\DEV\\V3.4-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:39: proximityGroup
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:38: ( proximityGroup )
+        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\FTS.g:715:39: proximityGroup
         {
         pushFollow(FOLLOW_proximityGroup_in_synpred17_FTS5305);
         proximityGroup();
@@ -8172,37 +8481,12 @@ public class FTSParser extends Parser {
 
 
     protected DFA1 dfa1 = new DFA1(this);
-    protected DFA5 dfa5 = new DFA5(this);
-    protected DFA4 dfa4 = new DFA4(this);
-    protected DFA8 dfa8 = new DFA8(this);
-    protected DFA7 dfa7 = new DFA7(this);
     protected DFA15 dfa15 = new DFA15(this);
     protected DFA23 dfa23 = new DFA23(this);
-    protected DFA17 dfa17 = new DFA17(this);
-    protected DFA18 dfa18 = new DFA18(this);
-    protected DFA19 dfa19 = new DFA19(this);
-    protected DFA20 dfa20 = new DFA20(this);
-    protected DFA21 dfa21 = new DFA21(this);
-    protected DFA22 dfa22 = new DFA22(this);
-    protected DFA28 dfa28 = new DFA28(this);
-    protected DFA30 dfa30 = new DFA30(this);
     protected DFA31 dfa31 = new DFA31(this);
-    protected DFA34 dfa34 = new DFA34(this);
-    protected DFA33 dfa33 = new DFA33(this);
-    protected DFA37 dfa37 = new DFA37(this);
-    protected DFA36 dfa36 = new DFA36(this);
     protected DFA43 dfa43 = new DFA43(this);
     protected DFA50 dfa50 = new DFA50(this);
-    protected DFA44 dfa44 = new DFA44(this);
-    protected DFA45 dfa45 = new DFA45(this);
-    protected DFA46 dfa46 = new DFA46(this);
-    protected DFA47 dfa47 = new DFA47(this);
-    protected DFA48 dfa48 = new DFA48(this);
-    protected DFA49 dfa49 = new DFA49(this);
     protected DFA51 dfa51 = new DFA51(this);
-    protected DFA58 dfa58 = new DFA58(this);
-    protected DFA60 dfa60 = new DFA60(this);
-    protected DFA61 dfa61 = new DFA61(this);
     static final String DFA1_eotS =
         "\27\uffff";
     static final String DFA1_eofS =
@@ -8212,14 +8496,14 @@ public class FTSParser extends Parser {
     static final String DFA1_maxS =
         "\1\114\3\0\2\uffff\17\0\2\uffff";
     static final String DFA1_acceptS =
-        "\4\uffff\2\2\17\uffff\1\3\1\1";
+        "\4\uffff\1\2\20\uffff\1\3\1\1";
     static final String DFA1_specialS =
         "\1\0\1\1\1\2\1\3\2\uffff\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
         "\14\1\15\1\16\1\17\1\20\1\21\1\22\2\uffff}>";
     static final String[] DFA1_transitionS = {
             "\1\23\1\24\1\3\1\21\1\uffff\1\22\1\uffff\1\15\1\12\2\uffff"+
             "\1\14\1\2\1\6\3\12\1\1\1\16\1\12\1\10\1\uffff\1\17\1\20\2\uffff"+
-            "\1\11\1\13\1\uffff\1\10\1\25\1\4\1\5\1\7",
+            "\1\11\1\13\1\uffff\1\10\1\25\2\4\1\7",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -8293,9 +8577,7 @@ public class FTSParser extends Parser {
 
                         else if ( (LA1_0==MINUS) && (((getMode() == Mode.DEFAULT_DISJUNCTION)||(getMode() == Mode.CMIS)||(getMode() == Mode.DEFAULT_CONJUNCTION)))) {s = 3;}
 
-                        else if ( (LA1_0==AND) && ((getMode() == Mode.DEFAULT_CONJUNCTION))) {s = 4;}
-
-                        else if ( (LA1_0==AMP) && ((getMode() == Mode.DEFAULT_CONJUNCTION))) {s = 5;}
+                        else if ( ((LA1_0>=AND && LA1_0<=AMP)) && ((getMode() == Mode.DEFAULT_CONJUNCTION))) {s = 4;}
 
                         else if ( (LA1_0==ID) && (((getMode() == Mode.DEFAULT_DISJUNCTION)||(getMode() == Mode.CMIS)||(getMode() == Mode.DEFAULT_CONJUNCTION)))) {s = 6;}
 
@@ -8342,7 +8624,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( ((getMode() == Mode.CMIS)) ) {s = 22;}
 
-                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8359,7 +8641,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( ((getMode() == Mode.CMIS)) ) {s = 22;}
 
-                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8376,7 +8658,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( ((getMode() == Mode.CMIS)) ) {s = 22;}
 
-                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8393,7 +8675,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( ((getMode() == Mode.CMIS)) ) {s = 22;}
 
-                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8408,7 +8690,7 @@ public class FTSParser extends Parser {
                         int index1_7 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8425,7 +8707,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( ((getMode() == Mode.CMIS)) ) {s = 22;}
 
-                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8440,7 +8722,7 @@ public class FTSParser extends Parser {
                         int index1_9 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8457,7 +8739,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( ((getMode() == Mode.CMIS)) ) {s = 22;}
 
-                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8472,7 +8754,7 @@ public class FTSParser extends Parser {
                         int index1_11 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8487,7 +8769,7 @@ public class FTSParser extends Parser {
                         int index1_12 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8502,7 +8784,7 @@ public class FTSParser extends Parser {
                         int index1_13 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8519,7 +8801,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( ((getMode() == Mode.CMIS)) ) {s = 22;}
 
-                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        else if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8534,7 +8816,7 @@ public class FTSParser extends Parser {
                         int index1_15 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8549,7 +8831,7 @@ public class FTSParser extends Parser {
                         int index1_16 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8564,7 +8846,7 @@ public class FTSParser extends Parser {
                         int index1_17 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8579,7 +8861,7 @@ public class FTSParser extends Parser {
                         int index1_18 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8594,7 +8876,7 @@ public class FTSParser extends Parser {
                         int index1_19 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8609,7 +8891,7 @@ public class FTSParser extends Parser {
                         int index1_20 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 5;}
+                        if ( ((getMode() == Mode.DEFAULT_CONJUNCTION)) ) {s = 4;}
 
                         else if ( ((getMode() == Mode.DEFAULT_DISJUNCTION)) ) {s = 21;}
 
@@ -8625,325 +8907,6 @@ public class FTSParser extends Parser {
             throw nvae;
         }
     }
-    static final String DFA5_eotS =
-        "\26\uffff";
-    static final String DFA5_eofS =
-        "\1\1\25\uffff";
-    static final String DFA5_minS =
-        "\1\53\25\uffff";
-    static final String DFA5_maxS =
-        "\1\114\25\uffff";
-    static final String DFA5_acceptS =
-        "\1\uffff\2\2\23\1";
-    static final String DFA5_specialS =
-        "\26\uffff}>";
-    static final String[] DFA5_transitionS = {
-            "\1\24\1\4\1\25\1\22\1\2\1\23\1\uffff\1\16\1\11\2\uffff\1\14"+
-            "\1\15\1\7\3\11\1\5\1\17\1\11\1\13\1\uffff\1\20\1\21\2\uffff"+
-            "\1\10\1\12\1\uffff\1\13\1\3\2\uffff\1\6",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA5_eot = DFA.unpackEncodedString(DFA5_eotS);
-    static final short[] DFA5_eof = DFA.unpackEncodedString(DFA5_eofS);
-    static final char[] DFA5_min = DFA.unpackEncodedStringToUnsignedChars(DFA5_minS);
-    static final char[] DFA5_max = DFA.unpackEncodedStringToUnsignedChars(DFA5_maxS);
-    static final short[] DFA5_accept = DFA.unpackEncodedString(DFA5_acceptS);
-    static final short[] DFA5_special = DFA.unpackEncodedString(DFA5_specialS);
-    static final short[][] DFA5_transition;
-
-    static {
-        int numStates = DFA5_transitionS.length;
-        DFA5_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA5_transition[i] = DFA.unpackEncodedString(DFA5_transitionS[i]);
-        }
-    }
-
-    class DFA5 extends DFA {
-
-        public DFA5(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 5;
-            this.eot = DFA5_eot;
-            this.eof = DFA5_eof;
-            this.min = DFA5_min;
-            this.max = DFA5_max;
-            this.accept = DFA5_accept;
-            this.special = DFA5_special;
-            this.transition = DFA5_transition;
-        }
-        public String getDescription() {
-            return "()+ loopback of 385:9: ( ( or )? ftsExplicitConjunction )+";
-        }
-    }
-    static final String DFA4_eotS =
-        "\42\uffff";
-    static final String DFA4_eofS =
-        "\42\uffff";
-    static final String DFA4_minS =
-        "\1\53\1\uffff\1\54\37\uffff";
-    static final String DFA4_maxS =
-        "\1\114\1\uffff\1\110\37\uffff";
-    static final String DFA4_acceptS =
-        "\1\uffff\1\1\1\uffff\21\2\1\1\15\2";
-    static final String DFA4_specialS =
-        "\42\uffff}>";
-    static final String[] DFA4_transitionS = {
-            "\1\22\1\2\1\23\1\20\1\uffff\1\21\1\uffff\1\14\1\7\2\uffff\1"+
-            "\12\1\13\1\5\3\7\1\3\1\15\1\7\1\11\1\uffff\1\16\1\17\2\uffff"+
-            "\1\6\1\10\1\uffff\1\11\1\1\2\uffff\1\4",
-            "",
-            "\1\24\1\uffff\1\40\1\uffff\1\41\1\uffff\1\34\1\27\2\uffff"+
-            "\1\32\1\33\1\25\3\27\2\35\1\27\1\31\1\uffff\1\36\1\37\2\uffff"+
-            "\1\26\1\30\1\uffff\1\31",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA4_eot = DFA.unpackEncodedString(DFA4_eotS);
-    static final short[] DFA4_eof = DFA.unpackEncodedString(DFA4_eofS);
-    static final char[] DFA4_min = DFA.unpackEncodedStringToUnsignedChars(DFA4_minS);
-    static final char[] DFA4_max = DFA.unpackEncodedStringToUnsignedChars(DFA4_maxS);
-    static final short[] DFA4_accept = DFA.unpackEncodedString(DFA4_acceptS);
-    static final short[] DFA4_special = DFA.unpackEncodedString(DFA4_specialS);
-    static final short[][] DFA4_transition;
-
-    static {
-        int numStates = DFA4_transitionS.length;
-        DFA4_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA4_transition[i] = DFA.unpackEncodedString(DFA4_transitionS[i]);
-        }
-    }
-
-    class DFA4 extends DFA {
-
-        public DFA4(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 4;
-            this.eot = DFA4_eot;
-            this.eof = DFA4_eof;
-            this.min = DFA4_min;
-            this.max = DFA4_max;
-            this.accept = DFA4_accept;
-            this.special = DFA4_special;
-            this.transition = DFA4_transition;
-        }
-        public String getDescription() {
-            return "385:10: ( or )?";
-        }
-    }
-    static final String DFA8_eotS =
-        "\46\uffff";
-    static final String DFA8_eofS =
-        "\1\3\45\uffff";
-    static final String DFA8_minS =
-        "\1\53\1\uffff\1\54\43\uffff";
-    static final String DFA8_maxS =
-        "\1\114\1\uffff\1\110\43\uffff";
-    static final String DFA8_acceptS =
-        "\1\uffff\1\2\1\uffff\2\2\23\1\1\2\15\1";
-    static final String DFA8_specialS =
-        "\46\uffff}>";
-    static final String[] DFA8_transitionS = {
-            "\1\26\1\2\1\27\1\24\1\4\1\25\1\uffff\1\20\1\13\2\uffff\1\16"+
-            "\1\17\1\11\3\13\1\7\1\21\1\13\1\15\1\uffff\1\22\1\23\2\uffff"+
-            "\1\12\1\14\1\uffff\1\15\1\1\1\5\1\6\1\10",
-            "",
-            "\1\30\1\uffff\1\44\1\uffff\1\45\1\uffff\1\40\1\33\2\uffff"+
-            "\1\36\1\37\1\31\3\33\2\41\1\33\1\35\1\uffff\1\42\1\43\2\uffff"+
-            "\1\32\1\34\1\uffff\1\35",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA8_eot = DFA.unpackEncodedString(DFA8_eotS);
-    static final short[] DFA8_eof = DFA.unpackEncodedString(DFA8_eofS);
-    static final char[] DFA8_min = DFA.unpackEncodedStringToUnsignedChars(DFA8_minS);
-    static final char[] DFA8_max = DFA.unpackEncodedStringToUnsignedChars(DFA8_maxS);
-    static final short[] DFA8_accept = DFA.unpackEncodedString(DFA8_acceptS);
-    static final short[] DFA8_special = DFA.unpackEncodedString(DFA8_specialS);
-    static final short[][] DFA8_transition;
-
-    static {
-        int numStates = DFA8_transitionS.length;
-        DFA8_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA8_transition[i] = DFA.unpackEncodedString(DFA8_transitionS[i]);
-        }
-    }
-
-    class DFA8 extends DFA {
-
-        public DFA8(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 8;
-            this.eot = DFA8_eot;
-            this.eof = DFA8_eof;
-            this.min = DFA8_min;
-            this.max = DFA8_max;
-            this.accept = DFA8_accept;
-            this.special = DFA8_special;
-            this.transition = DFA8_transition;
-        }
-        public String getDescription() {
-            return "()+ loopback of 403:9: ( ( and )? ftsPrefixed )+";
-        }
-    }
-    static final String DFA7_eotS =
-        "\25\uffff";
-    static final String DFA7_eofS =
-        "\25\uffff";
-    static final String DFA7_minS =
-        "\1\53\24\uffff";
-    static final String DFA7_maxS =
-        "\1\114\24\uffff";
-    static final String DFA7_acceptS =
-        "\1\uffff\2\1\22\2";
-    static final String DFA7_specialS =
-        "\25\uffff}>";
-    static final String[] DFA7_transitionS = {
-            "\1\22\1\23\1\24\1\20\1\uffff\1\21\1\uffff\1\14\1\7\2\uffff"+
-            "\1\12\1\13\1\5\3\7\1\3\1\15\1\7\1\11\1\uffff\1\16\1\17\2\uffff"+
-            "\1\6\1\10\1\uffff\1\11\1\uffff\1\1\1\2\1\4",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA7_eot = DFA.unpackEncodedString(DFA7_eotS);
-    static final short[] DFA7_eof = DFA.unpackEncodedString(DFA7_eofS);
-    static final char[] DFA7_min = DFA.unpackEncodedStringToUnsignedChars(DFA7_minS);
-    static final char[] DFA7_max = DFA.unpackEncodedStringToUnsignedChars(DFA7_maxS);
-    static final short[] DFA7_accept = DFA.unpackEncodedString(DFA7_acceptS);
-    static final short[] DFA7_special = DFA.unpackEncodedString(DFA7_specialS);
-    static final short[][] DFA7_transition;
-
-    static {
-        int numStates = DFA7_transitionS.length;
-        DFA7_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA7_transition[i] = DFA.unpackEncodedString(DFA7_transitionS[i]);
-        }
-    }
-
-    class DFA7 extends DFA {
-
-        public DFA7(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 7;
-            this.eot = DFA7_eot;
-            this.eof = DFA7_eof;
-            this.min = DFA7_min;
-            this.max = DFA7_max;
-            this.accept = DFA7_accept;
-            this.special = DFA7_special;
-            this.transition = DFA7_transition;
-        }
-        public String getDescription() {
-            return "403:10: ( and )?";
-        }
-    }
     static final String DFA15_eotS =
         "\23\uffff";
     static final String DFA15_eofS =
@@ -8953,13 +8916,12 @@ public class FTSParser extends Parser {
     static final String DFA15_maxS =
         "\1\114\1\0\21\uffff";
     static final String DFA15_acceptS =
-        "\2\uffff\1\1\15\2\1\3\1\4\1\5";
+        "\2\uffff\1\1\1\2\14\uffff\1\3\1\4\1\5";
     static final String DFA15_specialS =
         "\1\0\1\1\21\uffff}>";
     static final String[] DFA15_transitionS = {
-            "\1\20\1\21\1\22\1\16\1\uffff\1\17\1\uffff\1\12\1\5\2\uffff"+
-            "\1\10\1\11\1\3\3\5\1\1\1\13\1\5\1\7\1\uffff\1\14\1\15\2\uffff"+
-            "\1\4\1\6\1\uffff\1\7\3\uffff\1\2",
+            "\1\20\1\21\1\22\1\3\1\uffff\1\3\1\uffff\2\3\2\uffff\6\3\1\1"+
+            "\3\3\1\uffff\2\3\2\uffff\2\3\1\uffff\1\3\3\uffff\1\2",
             "\1\uffff",
             "",
             "",
@@ -9027,31 +8989,7 @@ public class FTSParser extends Parser {
 
                         else if ( (LA15_0==EXCLAMATION) && (synpred1_FTS())) {s = 2;}
 
-                        else if ( (LA15_0==ID) ) {s = 3;}
-
-                        else if ( (LA15_0==AT) ) {s = 4;}
-
-                        else if ( (LA15_0==DECIMAL_INTEGER_LITERAL||(LA15_0>=FTSWORD && LA15_0<=FTSWILD)||LA15_0==FLOATING_POINT_LITERAL) ) {s = 5;}
-
-                        else if ( (LA15_0==URI) ) {s = 6;}
-
-                        else if ( (LA15_0==STAR||LA15_0==QUESTION_MARK) ) {s = 7;}
-
-                        else if ( (LA15_0==EQUALS) ) {s = 8;}
-
-                        else if ( (LA15_0==FTSPHRASE) ) {s = 9;}
-
-                        else if ( (LA15_0==TILDA) ) {s = 10;}
-
-                        else if ( (LA15_0==TO) ) {s = 11;}
-
-                        else if ( (LA15_0==LSQUARE) ) {s = 12;}
-
-                        else if ( (LA15_0==LT) ) {s = 13;}
-
-                        else if ( (LA15_0==LPAREN) ) {s = 14;}
-
-                        else if ( (LA15_0==PERCENT) ) {s = 15;}
+                        else if ( (LA15_0==LPAREN||LA15_0==PERCENT||(LA15_0>=TILDA && LA15_0<=DECIMAL_INTEGER_LITERAL)||(LA15_0>=EQUALS && LA15_0<=FTSWILD)||(LA15_0>=TO && LA15_0<=STAR)||(LA15_0>=LSQUARE && LA15_0<=LT)||(LA15_0>=AT && LA15_0<=URI)||LA15_0==QUESTION_MARK) ) {s = 3;}
 
                         else if ( (LA15_0==PLUS) ) {s = 16;}
 
@@ -9072,7 +9010,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( (synpred1_FTS()) ) {s = 2;}
 
-                        else if ( (true) ) {s = 15;}
+                        else if ( (true) ) {s = 3;}
 
                          
                         input.seek(index15_1);
@@ -9087,264 +9025,107 @@ public class FTSParser extends Parser {
         }
     }
     static final String DFA23_eotS =
-        "\u00c1\uffff";
+        "\76\uffff";
     static final String DFA23_eofS =
-        "\1\uffff\1\25\1\uffff\1\25\3\uffff\1\65\1\uffff\1\25\5\uffff\1"+
-        "\25\35\uffff\1\144\34\uffff\1\u0080\16\uffff\2\25\123\uffff\1\144"+
-        "\3\uffff\1\u0080\2\uffff\1\25\13\uffff";
+        "\1\uffff\1\5\1\uffff\1\5\3\uffff\1\27\1\uffff\1\5\4\uffff\1\5\4"+
+        "\uffff\1\25\5\uffff\1\34\12\uffff\2\5\16\uffff\1\25\3\uffff\1\34"+
+        "\2\uffff\1\5\2\uffff";
     static final String DFA23_minS =
-        "\1\56\1\53\1\70\1\53\1\70\1\uffff\1\63\1\53\1\63\1\53\4\uffff\1"+
-        "\70\1\53\1\56\31\uffff\2\65\1\70\1\53\1\70\32\uffff\1\70\1\53\1"+
-        "\70\2\uffff\1\65\1\53\1\0\4\uffff\3\0\1\uffff\2\53\1\70\1\56\1\65"+
-        "\1\70\1\63\30\uffff\2\65\1\70\1\63\30\uffff\1\65\1\53\26\uffff\2"+
-        "\65\1\53\1\70\1\63\1\65\1\53\1\70\1\63\1\53\10\uffff\2\65\1\uffff";
+        "\1\56\1\53\1\70\1\53\1\70\1\uffff\1\63\1\53\1\63\1\53\3\uffff\1"+
+        "\70\1\53\1\56\2\65\1\70\1\53\1\70\3\uffff\1\70\1\53\1\70\2\uffff"+
+        "\1\65\1\53\4\0\1\uffff\2\53\1\70\1\56\1\65\1\70\1\63\2\65\1\70\1"+
+        "\63\1\65\1\53\1\uffff\2\65\1\53\1\70\1\63\1\65\1\53\1\70\1\63\1"+
+        "\53\2\65";
     static final String DFA23_maxS =
-        "\1\110\1\114\1\106\1\114\1\70\1\uffff\1\110\1\114\1\110\1\114\4"+
-        "\uffff\1\70\1\114\1\110\31\uffff\2\107\1\106\1\114\1\70\32\uffff"+
-        "\1\106\1\114\1\70\2\uffff\1\65\1\114\1\0\4\uffff\3\0\1\uffff\2\114"+
-        "\1\70\1\110\1\107\1\70\1\110\30\uffff\2\107\1\70\1\110\30\uffff"+
-        "\1\107\1\114\26\uffff\2\65\1\114\1\70\1\110\1\65\1\114\1\70\1\110"+
-        "\1\114\10\uffff\2\65\1\uffff";
+        "\1\110\1\114\1\106\1\114\1\70\1\uffff\1\110\1\114\1\110\1\114\3"+
+        "\uffff\1\70\1\114\1\110\2\107\1\106\1\114\1\70\3\uffff\1\106\1\114"+
+        "\1\70\2\uffff\1\65\1\114\4\0\1\uffff\2\114\1\70\1\110\1\107\1\70"+
+        "\1\110\2\107\1\70\1\110\1\107\1\114\1\uffff\2\65\1\114\1\70\1\110"+
+        "\1\65\1\114\1\70\1\110\1\114\2\65";
     static final String DFA23_acceptS =
-        "\5\uffff\1\2\4\uffff\2\10\1\12\1\13\3\uffff\30\2\1\10\5\uffff\1"+
-        "\3\1\5\30\4\3\uffff\1\6\1\7\3\uffff\4\2\3\uffff\1\11\7\uffff\30"+
-        "\3\4\uffff\30\7\2\uffff\1\1\25\2\12\uffff\10\2\2\uffff\1\2";
+        "\5\uffff\1\2\4\uffff\1\10\1\12\1\13\10\uffff\1\3\1\5\1\4\3\uffff"+
+        "\1\6\1\7\6\uffff\1\11\15\uffff\1\1\14\uffff";
     static final String DFA23_specialS =
-        "\117\uffff\1\0\1\3\4\uffff\1\1\1\4\1\2\151\uffff}>";
+        "\36\uffff\1\0\1\2\1\3\1\1\1\4\33\uffff}>";
     static final String[] DFA23_transitionS = {
-            "\1\14\1\uffff\1\15\1\uffff\1\10\1\3\2\uffff\1\6\1\7\1\1\3\3"+
-            "\2\11\1\3\1\5\1\uffff\1\12\1\13\2\uffff\1\2\1\4\1\uffff\1\5",
-            "\1\47\1\30\1\50\1\45\1\26\1\46\1\uffff\1\21\1\35\1\22\1\20"+
-            "\1\40\1\41\1\33\3\35\1\31\1\42\1\35\1\17\1\51\1\43\1\44\2\uffff"+
-            "\1\34\1\36\1\16\1\37\1\27\1\23\1\24\1\32",
-            "\1\52\15\uffff\1\4",
-            "\1\47\1\30\1\50\1\45\1\26\1\46\1\uffff\1\21\1\35\1\22\1\uffff"+
-            "\1\40\1\41\1\33\3\35\1\31\1\42\1\35\1\17\1\51\1\43\1\44\2\uffff"+
-            "\1\34\1\36\1\uffff\1\37\1\27\1\23\1\24\1\32",
+            "\1\13\1\uffff\1\14\1\uffff\1\10\1\3\2\uffff\1\6\1\7\1\1\3\3"+
+            "\2\11\1\3\1\5\1\uffff\2\12\2\uffff\1\2\1\4\1\uffff\1\5",
+            "\6\5\1\uffff\3\5\1\17\11\5\1\16\1\12\2\5\2\uffff\2\5\1\15"+
+            "\5\5",
+            "\1\20\15\uffff\1\4",
+            "\6\5\1\uffff\3\5\1\uffff\11\5\1\16\1\12\2\5\2\uffff\2\5\1"+
+            "\uffff\5\5",
+            "\1\21",
+            "",
+            "\1\25\3\uffff\1\26\1\23\7\25\5\uffff\1\22\1\24\1\uffff\1\25",
+            "\6\27\1\uffff\3\27\1\uffff\12\27\1\12\2\27\2\uffff\2\27\1"+
+            "\uffff\5\27",
+            "\1\34\3\uffff\1\33\1\31\7\34\5\uffff\1\30\1\32\1\uffff\1\34",
+            "\6\5\1\uffff\3\5\1\uffff\11\5\1\16\1\uffff\2\5\2\uffff\2\5"+
+            "\1\uffff\5\5",
+            "",
+            "",
+            "",
+            "\1\35",
+            "\3\5\1\36\2\5\1\uffff\1\5\1\41\1\5\1\uffff\2\5\1\40\3\41\1"+
+            "\37\1\42\1\41\1\5\1\uffff\2\5\2\uffff\2\5\1\uffff\5\5",
+            "\1\43\4\uffff\1\45\3\uffff\1\7\1\44\3\45\2\5\1\45\1\5\1\uffff"+
+            "\2\12\5\uffff\1\5",
+            "\1\17\21\uffff\1\15",
+            "\1\47\21\uffff\1\46",
+            "\1\50\15\uffff\1\24",
+            "\6\25\1\uffff\3\25\1\52\12\25\1\uffff\2\25\2\uffff\2\25\1"+
+            "\51\5\25",
             "\1\53",
             "",
-            "\1\57\3\uffff\1\60\1\55\7\57\5\uffff\1\54\1\56\1\uffff\1\57",
-            "\1\107\1\70\1\110\1\105\1\66\1\106\1\uffff\1\61\1\75\1\62"+
-            "\1\uffff\1\100\1\101\1\73\3\75\1\71\1\102\1\75\1\77\1\51\1\103"+
-            "\1\104\2\uffff\1\74\1\76\1\uffff\1\77\1\67\1\63\1\64\1\72",
-            "\1\115\3\uffff\1\114\1\112\7\115\5\uffff\1\111\1\113\1\uffff"+
-            "\1\115",
-            "\1\47\1\30\1\50\1\45\1\26\1\46\1\uffff\1\21\1\35\1\22\1\uffff"+
-            "\1\40\1\41\1\33\3\35\1\31\1\42\1\35\1\17\1\uffff\1\43\1\44\2"+
-            "\uffff\1\34\1\36\1\uffff\1\37\1\27\1\23\1\24\1\32",
             "",
             "",
+            "\1\54\15\uffff\1\32",
+            "\6\34\1\uffff\3\34\1\56\12\34\1\uffff\2\34\2\uffff\2\34\1"+
+            "\55\5\34",
+            "\1\57",
             "",
             "",
-            "\1\116",
-            "\1\47\1\30\1\50\1\117\1\26\1\46\1\uffff\1\121\1\126\1\122"+
-            "\1\uffff\1\40\1\41\1\125\3\126\1\120\1\127\1\126\1\37\1\uffff"+
-            "\1\43\1\44\2\uffff\1\34\1\36\1\uffff\1\37\1\27\1\123\1\124\1"+
-            "\32",
-            "\1\130\4\uffff\1\132\3\uffff\1\7\1\131\3\132\2\5\1\132\1\5"+
-            "\1\uffff\1\12\1\13\5\uffff\1\5",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\20\21\uffff\1\16",
-            "\1\134\21\uffff\1\133",
-            "\1\135\15\uffff\1\56",
-            "\1\166\1\147\1\167\1\164\1\145\1\165\1\uffff\1\140\1\154\1"+
-            "\141\1\137\1\157\1\160\1\152\3\154\1\150\1\161\1\154\1\156\1"+
-            "\uffff\1\162\1\163\2\uffff\1\153\1\155\1\136\1\156\1\146\1\142"+
-            "\1\143\1\151",
-            "\1\170",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\171\15\uffff\1\113",
-            "\1\u0092\1\u0083\1\u0093\1\u0090\1\u0081\1\u0091\1\uffff\1"+
-            "\174\1\u0088\1\175\1\173\1\u008b\1\u008c\1\u0086\3\u0088\1\u0084"+
-            "\1\u008d\1\u0088\1\u008a\1\uffff\1\u008e\1\u008f\2\uffff\1\u0087"+
-            "\1\u0089\1\172\1\u008a\1\u0082\1\176\1\177\1\u0085",
-            "\1\u0094",
-            "",
-            "",
-            "\1\20",
-            "\1\u00a9\1\u00aa\1\u0099\1\u00a7\1\u0096\1\u00a8\1\uffff\1"+
-            "\u00a3\1\u0095\2\uffff\1\u00a2\1\u0098\1\u009c\3\u00a0\1\u0097"+
-            "\1\u00a4\1\u00a0\1\u009e\1\uffff\1\u00a5\1\u00a6\2\uffff\1\u009f"+
-            "\1\u00a1\1\uffff\1\u009e\1\u00ab\1\u009a\1\u009b\1\u009d",
+            "\1\17",
+            "\4\5\1\61\1\5\1\uffff\1\5\1\60\2\uffff\12\5\1\uffff\2\5\2"+
+            "\uffff\2\5\1\uffff\5\5",
             "\1\uffff",
-            "",
-            "",
-            "",
-            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "",
-            "\1\47\1\30\1\50\1\45\1\26\1\46\1\uffff\1\21\1\35\1\22\1\134"+
-            "\1\40\1\41\1\33\3\35\1\31\1\42\1\35\1\37\1\51\1\43\1\44\2\uffff"+
-            "\1\34\1\36\1\133\1\37\1\27\1\23\1\24\1\32",
-            "\1\47\1\30\1\50\1\45\1\26\1\46\1\uffff\1\21\1\35\1\22\1\uffff"+
-            "\1\40\1\41\1\33\3\35\1\31\1\42\1\35\1\37\1\51\1\43\1\44\2\uffff"+
-            "\1\34\1\36\1\uffff\1\37\1\27\1\23\1\24\1\32",
-            "\1\u00ac",
-            "\1\130\4\uffff\1\132\3\uffff\1\7\4\132\2\5\1\132\1\5\1\uffff"+
-            "\1\12\1\13\5\uffff\1\5",
-            "\1\137\21\uffff\1\136",
-            "\1\u00ad",
-            "\1\57\3\uffff\1\60\1\u00ae\7\57\10\uffff\1\57",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\u00b0\21\uffff\1\u00af",
-            "\1\173\21\uffff\1\172",
-            "\1\u00b1",
-            "\1\115\3\uffff\1\114\1\u00b2\7\115\10\uffff\1\115",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\u00b4\21\uffff\1\u00b3",
-            "\1\u00a9\1\u00b7\1\u0099\1\u00a7\1\u00b5\1\u00a8\1\uffff\1"+
-            "\u00b9\1\u00a0\1\u00ba\1\uffff\1\u00a2\1\u0098\1\u009c\3\u00a0"+
-            "\1\u0097\1\u00a4\1\u00a0\1\u00b8\1\u00bd\1\u00a5\1\u00a6\2\uffff"+
-            "\1\u009f\1\u00a1\1\uffff\1\u009e\1\u00b6\1\u00bb\1\u00bc\1\u009d",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\134",
-            "\1\137",
-            "\1\166\1\147\1\167\1\164\1\145\1\165\1\uffff\1\140\1\154\1"+
-            "\141\1\u00b0\1\157\1\160\1\152\3\154\1\150\1\161\1\154\1\156"+
-            "\1\uffff\1\162\1\163\2\uffff\1\153\1\155\1\u00af\1\156\1\146"+
-            "\1\142\1\143\1\151",
-            "\1\u00be",
-            "\1\57\3\uffff\1\60\10\57\10\uffff\1\57",
-            "\1\173",
-            "\1\u0092\1\u0083\1\u0093\1\u0090\1\u0081\1\u0091\1\uffff\1"+
-            "\174\1\u0088\1\175\1\u00b4\1\u008b\1\u008c\1\u0086\3\u0088\1"+
-            "\u0084\1\u008d\1\u0088\1\u008a\1\uffff\1\u008e\1\u008f\2\uffff"+
-            "\1\u0087\1\u0089\1\u00b3\1\u008a\1\u0082\1\176\1\177\1\u0085",
-            "\1\u00bf",
-            "\1\115\3\uffff\1\114\10\115\10\uffff\1\115",
-            "\1\47\1\30\1\50\1\45\1\26\1\46\1\uffff\1\u00c0\1\126\1\122"+
-            "\1\uffff\1\40\1\41\1\125\3\126\1\120\1\127\1\126\1\37\1\uffff"+
-            "\1\43\1\44\2\uffff\1\34\1\36\1\uffff\1\37\1\27\1\123\1\124\1"+
-            "\32",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\u00b0",
-            "\1\u00b4",
-            ""
+            "\6\5\1\uffff\3\5\1\47\12\5\1\12\2\5\2\uffff\2\5\1\46\5\5",
+            "\6\5\1\uffff\3\5\1\uffff\12\5\1\12\2\5\2\uffff\2\5\1\uffff"+
+            "\5\5",
+            "\1\62",
+            "\1\43\4\uffff\1\45\3\uffff\1\7\4\45\2\5\1\45\1\5\1\uffff\2"+
+            "\12\5\uffff\1\5",
+            "\1\52\21\uffff\1\51",
+            "\1\63",
+            "\1\25\3\uffff\1\26\1\64\7\25\10\uffff\1\25",
+            "\1\66\21\uffff\1\65",
+            "\1\56\21\uffff\1\55",
+            "\1\67",
+            "\1\34\3\uffff\1\33\1\70\7\34\10\uffff\1\34",
+            "\1\72\21\uffff\1\71",
+            "\4\5\1\73\1\5\1\uffff\3\5\1\uffff\15\5\2\uffff\2\5\1\uffff"+
+            "\5\5",
+            "",
+            "\1\47",
+            "\1\52",
+            "\6\25\1\uffff\3\25\1\66\12\25\1\uffff\2\25\2\uffff\2\25\1"+
+            "\65\5\25",
+            "\1\74",
+            "\1\25\3\uffff\1\26\10\25\10\uffff\1\25",
+            "\1\56",
+            "\6\34\1\uffff\3\34\1\72\12\34\1\uffff\2\34\2\uffff\2\34\1"+
+            "\71\5\34",
+            "\1\75",
+            "\1\34\3\uffff\1\33\10\34\10\uffff\1\34",
+            "\6\5\1\uffff\1\5\1\41\1\5\1\uffff\2\5\1\40\3\41\1\37\1\42"+
+            "\1\41\1\5\1\uffff\2\5\2\uffff\2\5\1\uffff\5\5",
+            "\1\66",
+            "\1\72"
     };
 
     static final short[] DFA23_eot = DFA.unpackEncodedString(DFA23_eotS);
@@ -9384,120 +9165,80 @@ public class FTSParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA23_79 = input.LA(1);
+                        int LA23_30 = input.LA(1);
 
                          
-                        int index23_79 = input.index();
+                        int index23_30 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA23_79==DECIMAL_INTEGER_LITERAL) ) {s = 149;}
+                        if ( (LA23_30==DECIMAL_INTEGER_LITERAL) ) {s = 48;}
 
-                        else if ( (LA23_79==RPAREN) && (synpred2_FTS())) {s = 150;}
+                        else if ( (LA23_30==RPAREN) && (synpred2_FTS())) {s = 49;}
 
-                        else if ( (LA23_79==NOT) ) {s = 151;}
-
-                        else if ( (LA23_79==FTSPHRASE) ) {s = 152;}
-
-                        else if ( (LA23_79==MINUS) ) {s = 153;}
-
-                        else if ( (LA23_79==AND) ) {s = 154;}
-
-                        else if ( (LA23_79==AMP) ) {s = 155;}
-
-                        else if ( (LA23_79==ID) ) {s = 156;}
-
-                        else if ( (LA23_79==EXCLAMATION) ) {s = 157;}
-
-                        else if ( (LA23_79==STAR||LA23_79==QUESTION_MARK) ) {s = 158;}
-
-                        else if ( (LA23_79==AT) ) {s = 159;}
-
-                        else if ( ((LA23_79>=FTSWORD && LA23_79<=FTSWILD)||LA23_79==FLOATING_POINT_LITERAL) ) {s = 160;}
-
-                        else if ( (LA23_79==URI) ) {s = 161;}
-
-                        else if ( (LA23_79==EQUALS) ) {s = 162;}
-
-                        else if ( (LA23_79==TILDA) ) {s = 163;}
-
-                        else if ( (LA23_79==TO) ) {s = 164;}
-
-                        else if ( (LA23_79==LSQUARE) ) {s = 165;}
-
-                        else if ( (LA23_79==LT) ) {s = 166;}
-
-                        else if ( (LA23_79==LPAREN) ) {s = 167;}
-
-                        else if ( (LA23_79==PERCENT) ) {s = 168;}
-
-                        else if ( (LA23_79==PLUS) ) {s = 169;}
-
-                        else if ( (LA23_79==BAR) ) {s = 170;}
-
-                        else if ( (LA23_79==OR) ) {s = 171;}
+                        else if ( ((LA23_30>=PLUS && LA23_30<=LPAREN)||LA23_30==PERCENT||LA23_30==TILDA||(LA23_30>=EQUALS && LA23_30<=STAR)||(LA23_30>=LSQUARE && LA23_30<=LT)||(LA23_30>=AT && LA23_30<=URI)||(LA23_30>=QUESTION_MARK && LA23_30<=EXCLAMATION)) ) {s = 5;}
 
                          
-                        input.seek(index23_79);
+                        input.seek(index23_30);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA23_85 = input.LA(1);
+                        int LA23_33 = input.LA(1);
 
                          
-                        int index23_85 = input.index();
+                        int index23_33 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred2_FTS()) ) {s = 150;}
+                        if ( (synpred2_FTS()) ) {s = 49;}
 
-                        else if ( (true) ) {s = 171;}
+                        else if ( (true) ) {s = 5;}
 
                          
-                        input.seek(index23_85);
+                        input.seek(index23_33);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA23_87 = input.LA(1);
+                        int LA23_31 = input.LA(1);
 
                          
-                        int index23_87 = input.index();
+                        int index23_31 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred2_FTS()) ) {s = 150;}
+                        if ( (synpred2_FTS()) ) {s = 49;}
 
-                        else if ( (true) ) {s = 171;}
+                        else if ( (true) ) {s = 5;}
 
                          
-                        input.seek(index23_87);
+                        input.seek(index23_31);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA23_80 = input.LA(1);
+                        int LA23_32 = input.LA(1);
 
                          
-                        int index23_80 = input.index();
+                        int index23_32 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred2_FTS()) ) {s = 150;}
+                        if ( (synpred2_FTS()) ) {s = 49;}
 
-                        else if ( (true) ) {s = 171;}
+                        else if ( (true) ) {s = 5;}
 
                          
-                        input.seek(index23_80);
+                        input.seek(index23_32);
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
-                        int LA23_86 = input.LA(1);
+                        int LA23_34 = input.LA(1);
 
                          
-                        int index23_86 = input.index();
+                        int index23_34 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred2_FTS()) ) {s = 150;}
+                        if ( (synpred2_FTS()) ) {s = 49;}
 
-                        else if ( (true) ) {s = 171;}
+                        else if ( (true) ) {s = 5;}
 
                          
-                        input.seek(index23_86);
+                        input.seek(index23_34);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -9506,797 +9247,6 @@ public class FTSParser extends Parser {
                 new NoViableAltException(getDescription(), 23, _s, input);
             error(nvae);
             throw nvae;
-        }
-    }
-    static final String DFA17_eotS =
-        "\40\uffff";
-    static final String DFA17_eofS =
-        "\1\5\37\uffff";
-    static final String DFA17_minS =
-        "\1\53\1\63\27\uffff\1\0\6\uffff";
-    static final String DFA17_maxS =
-        "\1\114\1\110\27\uffff\1\0\6\uffff";
-    static final String DFA17_acceptS =
-        "\2\uffff\27\2\1\uffff\5\2\1\1";
-    static final String DFA17_specialS =
-        "\31\uffff\1\0\6\uffff}>";
-    static final String[] DFA17_transitionS = {
-            "\1\27\1\10\1\30\1\25\1\6\1\26\1\uffff\1\1\1\15\1\2\1\uffff"+
-            "\1\20\1\21\1\13\3\15\1\11\1\22\1\15\1\17\1\uffff\1\23\1\24\2"+
-            "\uffff\1\14\1\16\1\uffff\1\17\1\7\1\3\1\4\1\12",
-            "\1\31\3\uffff\1\35\1\33\5\36\1\31\1\36\5\uffff\1\32\1\34\1"+
-            "\uffff\1\36",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA17_eot = DFA.unpackEncodedString(DFA17_eotS);
-    static final short[] DFA17_eof = DFA.unpackEncodedString(DFA17_eofS);
-    static final char[] DFA17_min = DFA.unpackEncodedStringToUnsignedChars(DFA17_minS);
-    static final char[] DFA17_max = DFA.unpackEncodedStringToUnsignedChars(DFA17_maxS);
-    static final short[] DFA17_accept = DFA.unpackEncodedString(DFA17_acceptS);
-    static final short[] DFA17_special = DFA.unpackEncodedString(DFA17_specialS);
-    static final short[][] DFA17_transition;
-
-    static {
-        int numStates = DFA17_transitionS.length;
-        DFA17_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA17_transition[i] = DFA.unpackEncodedString(DFA17_transitionS[i]);
-        }
-    }
-
-    class DFA17 extends DFA {
-
-        public DFA17(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 17;
-            this.eot = DFA17_eot;
-            this.eof = DFA17_eof;
-            this.min = DFA17_min;
-            this.max = DFA17_max;
-            this.accept = DFA17_accept;
-            this.special = DFA17_special;
-            this.transition = DFA17_transition;
-        }
-        public String getDescription() {
-            return "460:19: ( ( fuzzy )=> fuzzy )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA17_25 = input.LA(1);
-
-                         
-                        int index17_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred3_FTS()) ) {s = 31;}
-
-                        else if ( (true) ) {s = 30;}
-
-                         
-                        input.seek(index17_25);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 17, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA18_eotS =
-        "\40\uffff";
-    static final String DFA18_eofS =
-        "\1\5\37\uffff";
-    static final String DFA18_minS =
-        "\1\53\1\63\27\uffff\1\0\6\uffff";
-    static final String DFA18_maxS =
-        "\1\114\1\110\27\uffff\1\0\6\uffff";
-    static final String DFA18_acceptS =
-        "\2\uffff\27\2\1\uffff\5\2\1\1";
-    static final String DFA18_specialS =
-        "\31\uffff\1\0\6\uffff}>";
-    static final String[] DFA18_transitionS = {
-            "\1\27\1\10\1\30\1\25\1\6\1\26\1\uffff\1\1\1\15\1\2\1\uffff"+
-            "\1\20\1\21\1\13\3\15\1\11\1\22\1\15\1\17\1\uffff\1\23\1\24\2"+
-            "\uffff\1\14\1\16\1\uffff\1\17\1\7\1\3\1\4\1\12",
-            "\1\31\3\uffff\1\35\1\33\5\36\1\31\1\36\5\uffff\1\32\1\34\1"+
-            "\uffff\1\36",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA18_eot = DFA.unpackEncodedString(DFA18_eotS);
-    static final short[] DFA18_eof = DFA.unpackEncodedString(DFA18_eofS);
-    static final char[] DFA18_min = DFA.unpackEncodedStringToUnsignedChars(DFA18_minS);
-    static final char[] DFA18_max = DFA.unpackEncodedStringToUnsignedChars(DFA18_maxS);
-    static final short[] DFA18_accept = DFA.unpackEncodedString(DFA18_acceptS);
-    static final short[] DFA18_special = DFA.unpackEncodedString(DFA18_specialS);
-    static final short[][] DFA18_transition;
-
-    static {
-        int numStates = DFA18_transitionS.length;
-        DFA18_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA18_transition[i] = DFA.unpackEncodedString(DFA18_transitionS[i]);
-        }
-    }
-
-    class DFA18 extends DFA {
-
-        public DFA18(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 18;
-            this.eot = DFA18_eot;
-            this.eof = DFA18_eof;
-            this.min = DFA18_min;
-            this.max = DFA18_max;
-            this.accept = DFA18_accept;
-            this.special = DFA18_special;
-            this.transition = DFA18_transition;
-        }
-        public String getDescription() {
-            return "463:24: ( ( fuzzy )=> fuzzy )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA18_25 = input.LA(1);
-
-                         
-                        int index18_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred4_FTS()) ) {s = 31;}
-
-                        else if ( (true) ) {s = 30;}
-
-                         
-                        input.seek(index18_25);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 18, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA19_eotS =
-        "\40\uffff";
-    static final String DFA19_eofS =
-        "\1\5\37\uffff";
-    static final String DFA19_minS =
-        "\1\53\1\63\27\uffff\1\0\6\uffff";
-    static final String DFA19_maxS =
-        "\1\114\1\110\27\uffff\1\0\6\uffff";
-    static final String DFA19_acceptS =
-        "\2\uffff\27\2\1\uffff\5\2\1\1";
-    static final String DFA19_specialS =
-        "\31\uffff\1\0\6\uffff}>";
-    static final String[] DFA19_transitionS = {
-            "\1\27\1\10\1\30\1\25\1\6\1\26\1\uffff\1\1\1\15\1\2\1\uffff"+
-            "\1\20\1\21\1\13\3\15\1\11\1\22\1\15\1\17\1\uffff\1\23\1\24\2"+
-            "\uffff\1\14\1\16\1\uffff\1\17\1\7\1\3\1\4\1\12",
-            "\1\31\3\uffff\1\35\1\33\7\36\5\uffff\1\32\1\34\1\uffff\1\36",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA19_eot = DFA.unpackEncodedString(DFA19_eotS);
-    static final short[] DFA19_eof = DFA.unpackEncodedString(DFA19_eofS);
-    static final char[] DFA19_min = DFA.unpackEncodedStringToUnsignedChars(DFA19_minS);
-    static final char[] DFA19_max = DFA.unpackEncodedStringToUnsignedChars(DFA19_maxS);
-    static final short[] DFA19_accept = DFA.unpackEncodedString(DFA19_acceptS);
-    static final short[] DFA19_special = DFA.unpackEncodedString(DFA19_specialS);
-    static final short[][] DFA19_transition;
-
-    static {
-        int numStates = DFA19_transitionS.length;
-        DFA19_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA19_transition[i] = DFA.unpackEncodedString(DFA19_transitionS[i]);
-        }
-    }
-
-    class DFA19 extends DFA {
-
-        public DFA19(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 19;
-            this.eot = DFA19_eot;
-            this.eof = DFA19_eof;
-            this.min = DFA19_min;
-            this.max = DFA19_max;
-            this.accept = DFA19_accept;
-            this.special = DFA19_special;
-            this.transition = DFA19_transition;
-        }
-        public String getDescription() {
-            return "466:21: ( ( slop )=> slop )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA19_25 = input.LA(1);
-
-                         
-                        int index19_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred5_FTS()) ) {s = 31;}
-
-                        else if ( (true) ) {s = 30;}
-
-                         
-                        input.seek(index19_25);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 19, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA20_eotS =
-        "\40\uffff";
-    static final String DFA20_eofS =
-        "\1\5\37\uffff";
-    static final String DFA20_minS =
-        "\1\53\1\63\27\uffff\1\0\6\uffff";
-    static final String DFA20_maxS =
-        "\1\114\1\110\27\uffff\1\0\6\uffff";
-    static final String DFA20_acceptS =
-        "\2\uffff\27\2\1\uffff\5\2\1\1";
-    static final String DFA20_specialS =
-        "\31\uffff\1\0\6\uffff}>";
-    static final String[] DFA20_transitionS = {
-            "\1\27\1\10\1\30\1\25\1\6\1\26\1\uffff\1\1\1\15\1\2\1\uffff"+
-            "\1\20\1\21\1\13\3\15\1\11\1\22\1\15\1\17\1\uffff\1\23\1\24\2"+
-            "\uffff\1\14\1\16\1\uffff\1\17\1\7\1\3\1\4\1\12",
-            "\1\31\3\uffff\1\35\1\33\7\36\5\uffff\1\32\1\34\1\uffff\1\36",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA20_eot = DFA.unpackEncodedString(DFA20_eotS);
-    static final short[] DFA20_eof = DFA.unpackEncodedString(DFA20_eofS);
-    static final char[] DFA20_min = DFA.unpackEncodedStringToUnsignedChars(DFA20_minS);
-    static final char[] DFA20_max = DFA.unpackEncodedStringToUnsignedChars(DFA20_maxS);
-    static final short[] DFA20_accept = DFA.unpackEncodedString(DFA20_acceptS);
-    static final short[] DFA20_special = DFA.unpackEncodedString(DFA20_specialS);
-    static final short[][] DFA20_transition;
-
-    static {
-        int numStates = DFA20_transitionS.length;
-        DFA20_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA20_transition[i] = DFA.unpackEncodedString(DFA20_transitionS[i]);
-        }
-    }
-
-    class DFA20 extends DFA {
-
-        public DFA20(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 20;
-            this.eot = DFA20_eot;
-            this.eof = DFA20_eof;
-            this.min = DFA20_min;
-            this.max = DFA20_max;
-            this.accept = DFA20_accept;
-            this.special = DFA20_special;
-            this.transition = DFA20_transition;
-        }
-        public String getDescription() {
-            return "469:26: ( ( slop )=> slop )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA20_25 = input.LA(1);
-
-                         
-                        int index20_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred6_FTS()) ) {s = 31;}
-
-                        else if ( (true) ) {s = 30;}
-
-                         
-                        input.seek(index20_25);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 20, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA21_eotS =
-        "\40\uffff";
-    static final String DFA21_eofS =
-        "\1\5\37\uffff";
-    static final String DFA21_minS =
-        "\1\53\1\63\27\uffff\1\0\6\uffff";
-    static final String DFA21_maxS =
-        "\1\114\1\110\27\uffff\1\0\6\uffff";
-    static final String DFA21_acceptS =
-        "\2\uffff\27\2\1\uffff\5\2\1\1";
-    static final String DFA21_specialS =
-        "\31\uffff\1\0\6\uffff}>";
-    static final String[] DFA21_transitionS = {
-            "\1\27\1\10\1\30\1\25\1\6\1\26\1\uffff\1\1\1\15\1\2\1\uffff"+
-            "\1\20\1\21\1\13\3\15\1\11\1\22\1\15\1\17\1\uffff\1\23\1\24\2"+
-            "\uffff\1\14\1\16\1\uffff\1\17\1\7\1\3\1\4\1\12",
-            "\1\31\3\uffff\1\35\1\33\7\36\5\uffff\1\32\1\34\1\uffff\1\36",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA21_eot = DFA.unpackEncodedString(DFA21_eotS);
-    static final short[] DFA21_eof = DFA.unpackEncodedString(DFA21_eofS);
-    static final char[] DFA21_min = DFA.unpackEncodedStringToUnsignedChars(DFA21_minS);
-    static final char[] DFA21_max = DFA.unpackEncodedStringToUnsignedChars(DFA21_maxS);
-    static final short[] DFA21_accept = DFA.unpackEncodedString(DFA21_acceptS);
-    static final short[] DFA21_special = DFA.unpackEncodedString(DFA21_specialS);
-    static final short[][] DFA21_transition;
-
-    static {
-        int numStates = DFA21_transitionS.length;
-        DFA21_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA21_transition[i] = DFA.unpackEncodedString(DFA21_transitionS[i]);
-        }
-    }
-
-    class DFA21 extends DFA {
-
-        public DFA21(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 21;
-            this.eot = DFA21_eot;
-            this.eof = DFA21_eof;
-            this.min = DFA21_min;
-            this.max = DFA21_max;
-            this.accept = DFA21_accept;
-            this.special = DFA21_special;
-            this.transition = DFA21_transition;
-        }
-        public String getDescription() {
-            return "472:30: ( ( slop )=> slop )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA21_25 = input.LA(1);
-
-                         
-                        int index21_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_FTS()) ) {s = 31;}
-
-                        else if ( (true) ) {s = 30;}
-
-                         
-                        input.seek(index21_25);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 21, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA22_eotS =
-        "\40\uffff";
-    static final String DFA22_eofS =
-        "\1\5\37\uffff";
-    static final String DFA22_minS =
-        "\1\53\1\63\27\uffff\1\0\6\uffff";
-    static final String DFA22_maxS =
-        "\1\114\1\110\27\uffff\1\0\6\uffff";
-    static final String DFA22_acceptS =
-        "\2\uffff\27\2\1\uffff\5\2\1\1";
-    static final String DFA22_specialS =
-        "\31\uffff\1\0\6\uffff}>";
-    static final String[] DFA22_transitionS = {
-            "\1\27\1\10\1\30\1\25\1\6\1\26\1\uffff\1\1\1\15\1\2\1\uffff"+
-            "\1\20\1\21\1\13\3\15\1\11\1\22\1\15\1\17\1\uffff\1\23\1\24\2"+
-            "\uffff\1\14\1\16\1\uffff\1\17\1\7\1\3\1\4\1\12",
-            "\1\31\3\uffff\1\35\1\33\5\36\1\31\1\36\5\uffff\1\32\1\34\1"+
-            "\uffff\1\36",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA22_eot = DFA.unpackEncodedString(DFA22_eotS);
-    static final short[] DFA22_eof = DFA.unpackEncodedString(DFA22_eofS);
-    static final char[] DFA22_min = DFA.unpackEncodedStringToUnsignedChars(DFA22_minS);
-    static final char[] DFA22_max = DFA.unpackEncodedStringToUnsignedChars(DFA22_maxS);
-    static final short[] DFA22_accept = DFA.unpackEncodedString(DFA22_acceptS);
-    static final short[] DFA22_special = DFA.unpackEncodedString(DFA22_specialS);
-    static final short[][] DFA22_transition;
-
-    static {
-        int numStates = DFA22_transitionS.length;
-        DFA22_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA22_transition[i] = DFA.unpackEncodedString(DFA22_transitionS[i]);
-        }
-    }
-
-    class DFA22 extends DFA {
-
-        public DFA22(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 22;
-            this.eot = DFA22_eot;
-            this.eof = DFA22_eof;
-            this.min = DFA22_min;
-            this.max = DFA22_max;
-            this.accept = DFA22_accept;
-            this.special = DFA22_special;
-            this.transition = DFA22_transition;
-        }
-        public String getDescription() {
-            return "475:22: ( ( fuzzy )=> fuzzy )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA22_25 = input.LA(1);
-
-                         
-                        int index22_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8_FTS()) ) {s = 31;}
-
-                        else if ( (true) ) {s = 30;}
-
-                         
-                        input.seek(index22_25);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 22, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA28_eotS =
-        "\37\uffff";
-    static final String DFA28_eofS =
-        "\2\uffff\1\13\34\uffff";
-    static final String DFA28_minS =
-        "\1\63\1\uffff\1\53\34\uffff";
-    static final String DFA28_maxS =
-        "\1\110\1\uffff\1\114\34\uffff";
-    static final String DFA28_acceptS =
-        "\1\uffff\1\1\1\uffff\1\1\1\2\2\1\30\2";
-    static final String DFA28_specialS =
-        "\37\uffff}>";
-    static final String[] DFA28_transitionS = {
-            "\1\4\4\uffff\1\2\7\4\5\uffff\1\1\1\3\1\uffff\1\4",
-            "",
-            "\1\35\1\16\1\36\1\33\1\14\1\34\1\uffff\1\7\1\23\1\10\1\6\1"+
-            "\26\1\27\1\21\3\23\1\17\1\30\1\23\1\25\1\uffff\1\31\1\32\2\uffff"+
-            "\1\22\1\24\1\5\1\25\1\15\1\11\1\12\1\20",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA28_eot = DFA.unpackEncodedString(DFA28_eotS);
-    static final short[] DFA28_eof = DFA.unpackEncodedString(DFA28_eofS);
-    static final char[] DFA28_min = DFA.unpackEncodedStringToUnsignedChars(DFA28_minS);
-    static final char[] DFA28_max = DFA.unpackEncodedStringToUnsignedChars(DFA28_maxS);
-    static final short[] DFA28_accept = DFA.unpackEncodedString(DFA28_acceptS);
-    static final short[] DFA28_special = DFA.unpackEncodedString(DFA28_specialS);
-    static final short[][] DFA28_transition;
-
-    static {
-        int numStates = DFA28_transitionS.length;
-        DFA28_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA28_transition[i] = DFA.unpackEncodedString(DFA28_transitionS[i]);
-        }
-    }
-
-    class DFA28 extends DFA {
-
-        public DFA28(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 28;
-            this.eot = DFA28_eot;
-            this.eof = DFA28_eof;
-            this.min = DFA28_min;
-            this.max = DFA28_max;
-            this.accept = DFA28_accept;
-            this.special = DFA28_special;
-            this.transition = DFA28_transition;
-        }
-        public String getDescription() {
-            return "532:9: ( fieldReference COLON )?";
-        }
-    }
-    static final String DFA30_eotS =
-        "\12\uffff";
-    static final String DFA30_eofS =
-        "\12\uffff";
-    static final String DFA30_minS =
-        "\1\63\1\uffff\1\65\7\uffff";
-    static final String DFA30_maxS =
-        "\1\106\1\uffff\1\107\7\uffff";
-    static final String DFA30_acceptS =
-        "\1\uffff\1\1\1\uffff\1\1\3\2\2\1\1\2";
-    static final String DFA30_specialS =
-        "\12\uffff}>";
-    static final String[] DFA30_transitionS = {
-            "\1\4\3\uffff\1\4\1\2\3\4\2\uffff\1\4\2\uffff\1\5\1\6\2\uffff"+
-            "\1\1\1\3",
-            "",
-            "\1\10\12\uffff\1\11\6\uffff\1\7",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA30_eot = DFA.unpackEncodedString(DFA30_eotS);
-    static final short[] DFA30_eof = DFA.unpackEncodedString(DFA30_eofS);
-    static final char[] DFA30_min = DFA.unpackEncodedStringToUnsignedChars(DFA30_minS);
-    static final char[] DFA30_max = DFA.unpackEncodedStringToUnsignedChars(DFA30_maxS);
-    static final short[] DFA30_accept = DFA.unpackEncodedString(DFA30_acceptS);
-    static final short[] DFA30_special = DFA.unpackEncodedString(DFA30_specialS);
-    static final short[][] DFA30_transition;
-
-    static {
-        int numStates = DFA30_transitionS.length;
-        DFA30_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA30_transition[i] = DFA.unpackEncodedString(DFA30_transitionS[i]);
-        }
-    }
-
-    class DFA30 extends DFA {
-
-        public DFA30(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 30;
-            this.eot = DFA30_eot;
-            this.eof = DFA30_eof;
-            this.min = DFA30_min;
-            this.max = DFA30_max;
-            this.accept = DFA30_accept;
-            this.special = DFA30_special;
-            this.transition = DFA30_transition;
-        }
-        public String getDescription() {
-            return "581:9: ( fieldReference COLON )?";
         }
     }
     static final String DFA31_eotS =
@@ -10308,14 +9258,13 @@ public class FTSParser extends Parser {
     static final String DFA31_maxS =
         "\1\114\2\uffff\16\0\1\uffff";
     static final String DFA31_acceptS =
-        "\1\uffff\2\1\16\uffff\1\2";
+        "\1\uffff\1\1\17\uffff\1\2";
     static final String DFA31_specialS =
         "\1\0\2\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
         "\14\1\15\1\16\1\uffff}>";
     static final String[] DFA31_transitionS = {
             "\1\16\1\17\1\20\1\15\3\uffff\1\11\1\5\2\uffff\1\7\1\10\4\5"+
-            "\1\3\1\12\1\5\1\6\1\uffff\1\13\1\14\5\uffff\1\6\1\21\1\1\1\2"+
-            "\1\4",
+            "\1\3\1\12\1\5\1\6\1\uffff\1\13\1\14\5\uffff\1\6\1\21\2\1\1\4",
             "",
             "",
             "\1\uffff",
@@ -10378,9 +9327,7 @@ public class FTSParser extends Parser {
                         int index31_0 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA31_0==AND) && ((defaultFieldConjunction() == true))) {s = 1;}
-
-                        else if ( (LA31_0==AMP) && ((defaultFieldConjunction() == true))) {s = 2;}
+                        if ( ((LA31_0>=AND && LA31_0<=AMP)) && ((defaultFieldConjunction() == true))) {s = 1;}
 
                         else if ( (LA31_0==NOT) && (((defaultFieldConjunction() == false)||(defaultFieldConjunction() == true)))) {s = 3;}
 
@@ -10423,7 +9370,7 @@ public class FTSParser extends Parser {
                         int index31_3 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10438,7 +9385,7 @@ public class FTSParser extends Parser {
                         int index31_4 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10453,7 +9400,7 @@ public class FTSParser extends Parser {
                         int index31_5 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10468,7 +9415,7 @@ public class FTSParser extends Parser {
                         int index31_6 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10483,7 +9430,7 @@ public class FTSParser extends Parser {
                         int index31_7 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10498,7 +9445,7 @@ public class FTSParser extends Parser {
                         int index31_8 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10513,7 +9460,7 @@ public class FTSParser extends Parser {
                         int index31_9 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10528,7 +9475,7 @@ public class FTSParser extends Parser {
                         int index31_10 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10543,7 +9490,7 @@ public class FTSParser extends Parser {
                         int index31_11 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10558,7 +9505,7 @@ public class FTSParser extends Parser {
                         int index31_12 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10573,7 +9520,7 @@ public class FTSParser extends Parser {
                         int index31_13 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10588,7 +9535,7 @@ public class FTSParser extends Parser {
                         int index31_14 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10603,7 +9550,7 @@ public class FTSParser extends Parser {
                         int index31_15 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10618,7 +9565,7 @@ public class FTSParser extends Parser {
                         int index31_16 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((defaultFieldConjunction() == true)) ) {s = 2;}
+                        if ( ((defaultFieldConjunction() == true)) ) {s = 1;}
 
                         else if ( ((defaultFieldConjunction() == false)) ) {s = 17;}
 
@@ -10634,297 +9581,6 @@ public class FTSParser extends Parser {
             throw nvae;
         }
     }
-    static final String DFA34_eotS =
-        "\21\uffff";
-    static final String DFA34_eofS =
-        "\21\uffff";
-    static final String DFA34_minS =
-        "\1\53\20\uffff";
-    static final String DFA34_maxS =
-        "\1\114\20\uffff";
-    static final String DFA34_acceptS =
-        "\1\uffff\1\2\17\1";
-    static final String DFA34_specialS =
-        "\21\uffff}>";
-    static final String[] DFA34_transitionS = {
-            "\1\17\1\3\1\20\1\16\1\1\2\uffff\1\12\1\6\2\uffff\1\10\1\11"+
-            "\4\6\1\4\1\13\1\6\1\7\1\uffff\1\14\1\15\5\uffff\1\7\1\2\2\uffff"+
-            "\1\5",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA34_eot = DFA.unpackEncodedString(DFA34_eotS);
-    static final short[] DFA34_eof = DFA.unpackEncodedString(DFA34_eofS);
-    static final char[] DFA34_min = DFA.unpackEncodedStringToUnsignedChars(DFA34_minS);
-    static final char[] DFA34_max = DFA.unpackEncodedStringToUnsignedChars(DFA34_maxS);
-    static final short[] DFA34_accept = DFA.unpackEncodedString(DFA34_acceptS);
-    static final short[] DFA34_special = DFA.unpackEncodedString(DFA34_specialS);
-    static final short[][] DFA34_transition;
-
-    static {
-        int numStates = DFA34_transitionS.length;
-        DFA34_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA34_transition[i] = DFA.unpackEncodedString(DFA34_transitionS[i]);
-        }
-    }
-
-    class DFA34 extends DFA {
-
-        public DFA34(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 34;
-            this.eot = DFA34_eot;
-            this.eof = DFA34_eof;
-            this.min = DFA34_min;
-            this.max = DFA34_max;
-            this.accept = DFA34_accept;
-            this.special = DFA34_special;
-            this.transition = DFA34_transition;
-        }
-        public String getDescription() {
-            return "()+ loopback of 607:9: ( ( or )? ftsFieldGroupExplicitConjunction )+";
-        }
-    }
-    static final String DFA33_eotS =
-        "\32\uffff";
-    static final String DFA33_eofS =
-        "\32\uffff";
-    static final String DFA33_minS =
-        "\1\53\1\uffff\1\54\27\uffff";
-    static final String DFA33_maxS =
-        "\1\114\1\uffff\1\110\27\uffff";
-    static final String DFA33_acceptS =
-        "\1\uffff\1\1\1\uffff\15\2\1\1\11\2";
-    static final String DFA33_specialS =
-        "\32\uffff}>";
-    static final String[] DFA33_transitionS = {
-            "\1\16\1\2\1\17\1\15\3\uffff\1\11\1\5\2\uffff\1\7\1\10\4\5\1"+
-            "\3\1\12\1\5\1\6\1\uffff\1\13\1\14\5\uffff\1\6\1\1\2\uffff\1"+
-            "\4",
-            "",
-            "\1\20\1\uffff\1\31\3\uffff\1\25\1\21\2\uffff\1\23\1\24\4\21"+
-            "\2\26\1\21\1\22\1\uffff\1\27\1\30\5\uffff\1\22",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA33_eot = DFA.unpackEncodedString(DFA33_eotS);
-    static final short[] DFA33_eof = DFA.unpackEncodedString(DFA33_eofS);
-    static final char[] DFA33_min = DFA.unpackEncodedStringToUnsignedChars(DFA33_minS);
-    static final char[] DFA33_max = DFA.unpackEncodedStringToUnsignedChars(DFA33_maxS);
-    static final short[] DFA33_accept = DFA.unpackEncodedString(DFA33_acceptS);
-    static final short[] DFA33_special = DFA.unpackEncodedString(DFA33_specialS);
-    static final short[][] DFA33_transition;
-
-    static {
-        int numStates = DFA33_transitionS.length;
-        DFA33_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA33_transition[i] = DFA.unpackEncodedString(DFA33_transitionS[i]);
-        }
-    }
-
-    class DFA33 extends DFA {
-
-        public DFA33(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 33;
-            this.eot = DFA33_eot;
-            this.eof = DFA33_eof;
-            this.min = DFA33_min;
-            this.max = DFA33_max;
-            this.accept = DFA33_accept;
-            this.special = DFA33_special;
-            this.transition = DFA33_transition;
-        }
-        public String getDescription() {
-            return "607:10: ( or )?";
-        }
-    }
-    static final String DFA37_eotS =
-        "\35\uffff";
-    static final String DFA37_eofS =
-        "\35\uffff";
-    static final String DFA37_minS =
-        "\1\53\1\uffff\1\54\32\uffff";
-    static final String DFA37_maxS =
-        "\1\114\1\uffff\1\110\32\uffff";
-    static final String DFA37_acceptS =
-        "\1\uffff\1\2\1\uffff\1\2\17\1\1\2\11\1";
-    static final String DFA37_specialS =
-        "\35\uffff}>";
-    static final String[] DFA37_transitionS = {
-            "\1\21\1\2\1\22\1\20\1\3\2\uffff\1\14\1\10\2\uffff\1\12\1\13"+
-            "\4\10\1\6\1\15\1\10\1\11\1\uffff\1\16\1\17\5\uffff\1\11\1\1"+
-            "\1\4\1\5\1\7",
-            "",
-            "\1\23\1\uffff\1\34\3\uffff\1\30\1\24\2\uffff\1\26\1\27\4\24"+
-            "\2\31\1\24\1\25\1\uffff\1\32\1\33\5\uffff\1\25",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA37_eot = DFA.unpackEncodedString(DFA37_eotS);
-    static final short[] DFA37_eof = DFA.unpackEncodedString(DFA37_eofS);
-    static final char[] DFA37_min = DFA.unpackEncodedStringToUnsignedChars(DFA37_minS);
-    static final char[] DFA37_max = DFA.unpackEncodedStringToUnsignedChars(DFA37_maxS);
-    static final short[] DFA37_accept = DFA.unpackEncodedString(DFA37_acceptS);
-    static final short[] DFA37_special = DFA.unpackEncodedString(DFA37_specialS);
-    static final short[][] DFA37_transition;
-
-    static {
-        int numStates = DFA37_transitionS.length;
-        DFA37_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA37_transition[i] = DFA.unpackEncodedString(DFA37_transitionS[i]);
-        }
-    }
-
-    class DFA37 extends DFA {
-
-        public DFA37(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 37;
-            this.eot = DFA37_eot;
-            this.eof = DFA37_eof;
-            this.min = DFA37_min;
-            this.max = DFA37_max;
-            this.accept = DFA37_accept;
-            this.special = DFA37_special;
-            this.transition = DFA37_transition;
-        }
-        public String getDescription() {
-            return "()+ loopback of 625:9: ( ( and )? ftsFieldGroupPrefixed )+";
-        }
-    }
-    static final String DFA36_eotS =
-        "\21\uffff";
-    static final String DFA36_eofS =
-        "\21\uffff";
-    static final String DFA36_minS =
-        "\1\53\20\uffff";
-    static final String DFA36_maxS =
-        "\1\114\20\uffff";
-    static final String DFA36_acceptS =
-        "\1\uffff\2\1\16\2";
-    static final String DFA36_specialS =
-        "\21\uffff}>";
-    static final String[] DFA36_transitionS = {
-            "\1\16\1\17\1\20\1\15\3\uffff\1\11\1\5\2\uffff\1\7\1\10\4\5"+
-            "\1\3\1\12\1\5\1\6\1\uffff\1\13\1\14\5\uffff\1\6\1\uffff\1\1"+
-            "\1\2\1\4",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA36_eot = DFA.unpackEncodedString(DFA36_eotS);
-    static final short[] DFA36_eof = DFA.unpackEncodedString(DFA36_eofS);
-    static final char[] DFA36_min = DFA.unpackEncodedStringToUnsignedChars(DFA36_minS);
-    static final char[] DFA36_max = DFA.unpackEncodedStringToUnsignedChars(DFA36_maxS);
-    static final short[] DFA36_accept = DFA.unpackEncodedString(DFA36_acceptS);
-    static final short[] DFA36_special = DFA.unpackEncodedString(DFA36_specialS);
-    static final short[][] DFA36_transition;
-
-    static {
-        int numStates = DFA36_transitionS.length;
-        DFA36_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA36_transition[i] = DFA.unpackEncodedString(DFA36_transitionS[i]);
-        }
-    }
-
-    class DFA36 extends DFA {
-
-        public DFA36(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 36;
-            this.eot = DFA36_eot;
-            this.eof = DFA36_eof;
-            this.min = DFA36_min;
-            this.max = DFA36_max;
-            this.accept = DFA36_accept;
-            this.special = DFA36_special;
-            this.transition = DFA36_transition;
-        }
-        public String getDescription() {
-            return "625:10: ( and )?";
-        }
-    }
     static final String DFA43_eotS =
         "\17\uffff";
     static final String DFA43_eofS =
@@ -10934,12 +9590,12 @@ public class FTSParser extends Parser {
     static final String DFA43_maxS =
         "\1\114\1\0\15\uffff";
     static final String DFA43_acceptS =
-        "\2\uffff\1\1\11\2\1\3\1\4\1\5";
+        "\2\uffff\1\1\1\2\10\uffff\1\3\1\4\1\5";
     static final String DFA43_specialS =
         "\1\0\1\1\15\uffff}>";
     static final String[] DFA43_transitionS = {
-            "\1\14\1\15\1\16\1\13\3\uffff\1\7\1\3\2\uffff\1\5\1\6\4\3\1"+
-            "\1\1\10\1\3\1\4\1\uffff\1\11\1\12\5\uffff\1\4\3\uffff\1\2",
+            "\1\14\1\15\1\16\1\3\3\uffff\2\3\2\uffff\6\3\1\1\3\3\1\uffff"+
+            "\2\3\5\uffff\1\3\3\uffff\1\2",
             "\1\uffff",
             "",
             "",
@@ -11003,23 +9659,7 @@ public class FTSParser extends Parser {
 
                         else if ( (LA43_0==EXCLAMATION) && (synpred9_FTS())) {s = 2;}
 
-                        else if ( (LA43_0==DECIMAL_INTEGER_LITERAL||(LA43_0>=ID && LA43_0<=FTSWILD)||LA43_0==FLOATING_POINT_LITERAL) ) {s = 3;}
-
-                        else if ( (LA43_0==STAR||LA43_0==QUESTION_MARK) ) {s = 4;}
-
-                        else if ( (LA43_0==EQUALS) ) {s = 5;}
-
-                        else if ( (LA43_0==FTSPHRASE) ) {s = 6;}
-
-                        else if ( (LA43_0==TILDA) ) {s = 7;}
-
-                        else if ( (LA43_0==TO) ) {s = 8;}
-
-                        else if ( (LA43_0==LSQUARE) ) {s = 9;}
-
-                        else if ( (LA43_0==LT) ) {s = 10;}
-
-                        else if ( (LA43_0==LPAREN) ) {s = 11;}
+                        else if ( (LA43_0==LPAREN||(LA43_0>=TILDA && LA43_0<=DECIMAL_INTEGER_LITERAL)||(LA43_0>=EQUALS && LA43_0<=FTSWILD)||(LA43_0>=TO && LA43_0<=STAR)||(LA43_0>=LSQUARE && LA43_0<=LT)||LA43_0==QUESTION_MARK) ) {s = 3;}
 
                         else if ( (LA43_0==PLUS) ) {s = 12;}
 
@@ -11040,7 +9680,7 @@ public class FTSParser extends Parser {
                         s = -1;
                         if ( (synpred9_FTS()) ) {s = 2;}
 
-                        else if ( (true) ) {s = 11;}
+                        else if ( (true) ) {s = 3;}
 
                          
                         input.seek(index43_1);
@@ -11055,127 +9695,47 @@ public class FTSParser extends Parser {
         }
     }
     static final String DFA50_eotS =
-        "\133\uffff";
+        "\26\uffff";
     static final String DFA50_eofS =
-        "\133\uffff";
+        "\26\uffff";
     static final String DFA50_minS =
-        "\1\56\1\53\1\uffff\1\63\1\53\1\63\1\53\3\uffff\1\53\53\uffff\1"+
-        "\53\1\0\4\uffff\2\0\1\53\22\uffff\1\53\11\uffff";
+        "\1\56\1\53\1\uffff\1\63\1\53\1\63\1\53\2\uffff\1\53\5\uffff\1\53"+
+        "\3\0\1\53\1\uffff\1\53";
     static final String DFA50_maxS =
-        "\1\110\1\114\1\uffff\1\110\1\114\1\110\1\114\3\uffff\1\114\53\uffff"+
-        "\1\114\1\0\4\uffff\2\0\1\114\22\uffff\1\114\11\uffff";
+        "\1\110\1\114\1\uffff\1\110\1\114\1\110\1\114\2\uffff\1\114\5\uffff"+
+        "\1\114\3\0\1\114\1\uffff\1\114";
     static final String DFA50_acceptS =
-        "\2\uffff\1\2\4\uffff\2\10\1\11\1\uffff\23\2\1\10\1\3\1\5\23\4\1"+
-        "\6\1\7\2\uffff\4\2\3\uffff\1\1\21\2\1\uffff\11\2";
+        "\2\uffff\1\2\4\uffff\1\10\1\11\1\uffff\1\3\1\5\1\4\1\6\1\7\5\uffff"+
+        "\1\1\1\uffff";
     static final String DFA50_specialS =
-        "\66\uffff\1\0\1\2\4\uffff\1\3\1\1\35\uffff}>";
+        "\17\uffff\1\2\1\0\1\1\1\3\3\uffff}>";
     static final String[] DFA50_transitionS = {
-            "\1\11\3\uffff\1\5\1\1\2\uffff\1\3\1\4\4\1\2\6\1\1\1\2\1\uffff"+
-            "\1\7\1\10\5\uffff\1\2",
-            "\1\34\1\21\1\35\1\33\1\17\2\uffff\1\13\1\24\1\14\1\uffff\1"+
-            "\26\1\27\4\24\1\22\1\30\1\24\1\12\1\36\1\31\1\32\5\uffff\1\25"+
-            "\1\20\1\15\1\16\1\23",
+            "\1\10\3\uffff\1\5\1\1\2\uffff\1\3\1\4\4\1\2\6\1\1\1\2\1\uffff"+
+            "\2\7\5\uffff\1\2",
+            "\5\2\2\uffff\3\2\1\uffff\11\2\1\11\1\7\2\2\5\uffff\5\2",
             "",
-            "\1\37\2\uffff\1\40\1\uffff\10\37\10\uffff\1\37",
-            "\1\62\1\47\1\63\1\61\1\45\2\uffff\1\41\1\52\1\42\1\uffff\1"+
-            "\54\1\55\4\52\1\50\1\56\1\52\1\53\1\36\1\57\1\60\5\uffff\1\53"+
-            "\1\46\1\43\1\44\1\51",
-            "\1\65\2\uffff\1\64\1\uffff\10\65\10\uffff\1\65",
-            "\1\34\1\21\1\35\1\33\1\17\2\uffff\1\13\1\24\1\14\1\uffff\1"+
-            "\26\1\27\4\24\1\22\1\30\1\24\1\12\1\uffff\1\31\1\32\5\uffff"+
-            "\1\25\1\20\1\15\1\16\1\23",
+            "\1\12\2\uffff\1\13\1\uffff\10\12\10\uffff\1\12",
+            "\5\14\2\uffff\3\14\1\uffff\12\14\1\7\2\14\5\uffff\5\14",
+            "\1\16\2\uffff\1\15\1\uffff\10\16\10\uffff\1\16",
+            "\5\2\2\uffff\3\2\1\uffff\11\2\1\11\1\uffff\2\2\5\uffff\5\2",
             "",
             "",
-            "",
-            "\1\34\1\21\1\35\1\66\1\17\2\uffff\1\70\1\74\1\71\1\uffff\1"+
-            "\26\1\27\4\74\1\67\1\75\1\74\1\25\1\uffff\1\31\1\32\5\uffff"+
-            "\1\25\1\20\1\72\1\73\1\23",
+            "\3\2\1\17\1\2\2\uffff\1\2\1\21\1\2\1\uffff\2\2\4\21\1\20\1"+
+            "\22\1\21\1\2\1\uffff\2\2\5\uffff\5\2",
             "",
             "",
             "",
             "",
             "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\115\1\116\1\117\1\114\1\77\2\uffff\1\110\1\76\2\uffff\1"+
-            "\106\1\107\4\104\1\102\1\111\1\104\1\105\1\uffff\1\112\1\113"+
-            "\5\uffff\1\105\1\120\1\100\1\101\1\103",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
+            "\4\2\1\24\2\uffff\1\2\1\23\2\uffff\12\2\1\uffff\2\2\5\uffff"+
+            "\5\2",
             "\1\uffff",
             "\1\uffff",
-            "\1\115\1\126\1\117\1\114\1\121\2\uffff\1\123\1\104\1\124\1"+
-            "\uffff\1\106\1\107\4\104\1\102\1\111\1\104\1\122\1\131\1\112"+
-            "\1\113\5\uffff\1\105\1\125\1\127\1\130\1\103",
+            "\1\uffff",
+            "\4\2\1\25\2\uffff\3\2\1\uffff\15\2\5\uffff\5\2",
             "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\34\1\21\1\35\1\33\1\17\2\uffff\1\132\1\74\1\71\1\uffff"+
-            "\1\26\1\27\4\74\1\67\1\75\1\74\1\25\1\uffff\1\31\1\32\5\uffff"+
-            "\1\25\1\20\1\72\1\73\1\23",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
+            "\5\2\2\uffff\1\2\1\21\1\2\1\uffff\2\2\4\21\1\20\1\22\1\21"+
+            "\1\2\1\uffff\2\2\5\uffff\5\2"
     };
 
     static final short[] DFA50_eot = DFA.unpackEncodedString(DFA50_eotS);
@@ -11215,97 +9775,65 @@ public class FTSParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA50_54 = input.LA(1);
+                        int LA50_16 = input.LA(1);
 
                          
-                        int index50_54 = input.index();
+                        int index50_16 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA50_54==DECIMAL_INTEGER_LITERAL) ) {s = 62;}
+                        if ( (synpred10_FTS()) ) {s = 20;}
 
-                        else if ( (LA50_54==RPAREN) && (synpred10_FTS())) {s = 63;}
-
-                        else if ( (LA50_54==AND) ) {s = 64;}
-
-                        else if ( (LA50_54==AMP) ) {s = 65;}
-
-                        else if ( (LA50_54==NOT) ) {s = 66;}
-
-                        else if ( (LA50_54==EXCLAMATION) ) {s = 67;}
-
-                        else if ( ((LA50_54>=ID && LA50_54<=FTSWILD)||LA50_54==FLOATING_POINT_LITERAL) ) {s = 68;}
-
-                        else if ( (LA50_54==STAR||LA50_54==QUESTION_MARK) ) {s = 69;}
-
-                        else if ( (LA50_54==EQUALS) ) {s = 70;}
-
-                        else if ( (LA50_54==FTSPHRASE) ) {s = 71;}
-
-                        else if ( (LA50_54==TILDA) ) {s = 72;}
-
-                        else if ( (LA50_54==TO) ) {s = 73;}
-
-                        else if ( (LA50_54==LSQUARE) ) {s = 74;}
-
-                        else if ( (LA50_54==LT) ) {s = 75;}
-
-                        else if ( (LA50_54==LPAREN) ) {s = 76;}
-
-                        else if ( (LA50_54==PLUS) ) {s = 77;}
-
-                        else if ( (LA50_54==BAR) ) {s = 78;}
-
-                        else if ( (LA50_54==MINUS) ) {s = 79;}
-
-                        else if ( (LA50_54==OR) ) {s = 80;}
+                        else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index50_54);
+                        input.seek(index50_16);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA50_61 = input.LA(1);
+                        int LA50_17 = input.LA(1);
 
                          
-                        int index50_61 = input.index();
+                        int index50_17 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred10_FTS()) ) {s = 63;}
+                        if ( (synpred10_FTS()) ) {s = 20;}
 
-                        else if ( (true) ) {s = 80;}
+                        else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index50_61);
+                        input.seek(index50_17);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA50_55 = input.LA(1);
+                        int LA50_15 = input.LA(1);
 
                          
-                        int index50_55 = input.index();
+                        int index50_15 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred10_FTS()) ) {s = 63;}
+                        if ( (LA50_15==DECIMAL_INTEGER_LITERAL) ) {s = 19;}
 
-                        else if ( (true) ) {s = 80;}
+                        else if ( (LA50_15==RPAREN) && (synpred10_FTS())) {s = 20;}
+
+                        else if ( ((LA50_15>=PLUS && LA50_15<=LPAREN)||LA50_15==TILDA||(LA50_15>=EQUALS && LA50_15<=STAR)||(LA50_15>=LSQUARE && LA50_15<=LT)||(LA50_15>=QUESTION_MARK && LA50_15<=EXCLAMATION)) ) {s = 2;}
 
                          
-                        input.seek(index50_55);
+                        input.seek(index50_15);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA50_60 = input.LA(1);
+                        int LA50_18 = input.LA(1);
 
                          
-                        int index50_60 = input.index();
+                        int index50_18 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred10_FTS()) ) {s = 63;}
+                        if ( (synpred10_FTS()) ) {s = 20;}
 
-                        else if ( (true) ) {s = 80;}
+                        else if ( (true) ) {s = 2;}
 
                          
-                        input.seek(index50_60);
+                        input.seek(index50_18);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -11316,701 +9844,36 @@ public class FTSParser extends Parser {
             throw nvae;
         }
     }
-    static final String DFA44_eotS =
-        "\30\uffff";
-    static final String DFA44_eofS =
-        "\30\uffff";
-    static final String DFA44_minS =
-        "\1\53\1\63\22\uffff\1\0\3\uffff";
-    static final String DFA44_maxS =
-        "\1\114\1\110\22\uffff\1\0\3\uffff";
-    static final String DFA44_acceptS =
-        "\2\uffff\22\2\1\uffff\2\2\1\1";
-    static final String DFA44_specialS =
-        "\24\uffff\1\0\3\uffff}>";
-    static final String[] DFA44_transitionS = {
-            "\1\22\1\7\1\23\1\21\1\5\2\uffff\1\1\1\12\1\2\1\uffff\1\14\1"+
-            "\15\4\12\1\10\1\16\1\12\1\13\1\uffff\1\17\1\20\5\uffff\1\13"+
-            "\1\6\1\3\1\4\1\11",
-            "\1\24\2\uffff\1\25\1\uffff\6\26\1\24\1\26\10\uffff\1\26",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA44_eot = DFA.unpackEncodedString(DFA44_eotS);
-    static final short[] DFA44_eof = DFA.unpackEncodedString(DFA44_eofS);
-    static final char[] DFA44_min = DFA.unpackEncodedStringToUnsignedChars(DFA44_minS);
-    static final char[] DFA44_max = DFA.unpackEncodedStringToUnsignedChars(DFA44_maxS);
-    static final short[] DFA44_accept = DFA.unpackEncodedString(DFA44_acceptS);
-    static final short[] DFA44_special = DFA.unpackEncodedString(DFA44_specialS);
-    static final short[][] DFA44_transition;
-
-    static {
-        int numStates = DFA44_transitionS.length;
-        DFA44_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA44_transition[i] = DFA.unpackEncodedString(DFA44_transitionS[i]);
-        }
-    }
-
-    class DFA44 extends DFA {
-
-        public DFA44(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 44;
-            this.eot = DFA44_eot;
-            this.eof = DFA44_eof;
-            this.min = DFA44_min;
-            this.max = DFA44_max;
-            this.accept = DFA44_accept;
-            this.special = DFA44_special;
-            this.transition = DFA44_transition;
-        }
-        public String getDescription() {
-            return "654:29: ( ( fuzzy )=> fuzzy )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA44_20 = input.LA(1);
-
-                         
-                        int index44_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred11_FTS()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 22;}
-
-                         
-                        input.seek(index44_20);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 44, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA45_eotS =
-        "\30\uffff";
-    static final String DFA45_eofS =
-        "\30\uffff";
-    static final String DFA45_minS =
-        "\1\53\1\63\22\uffff\1\0\3\uffff";
-    static final String DFA45_maxS =
-        "\1\114\1\110\22\uffff\1\0\3\uffff";
-    static final String DFA45_acceptS =
-        "\2\uffff\22\2\1\uffff\2\2\1\1";
-    static final String DFA45_specialS =
-        "\24\uffff\1\0\3\uffff}>";
-    static final String[] DFA45_transitionS = {
-            "\1\22\1\7\1\23\1\21\1\5\2\uffff\1\1\1\12\1\2\1\uffff\1\14\1"+
-            "\15\4\12\1\10\1\16\1\12\1\13\1\uffff\1\17\1\20\5\uffff\1\13"+
-            "\1\6\1\3\1\4\1\11",
-            "\1\24\2\uffff\1\25\1\uffff\6\26\1\24\1\26\10\uffff\1\26",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA45_eot = DFA.unpackEncodedString(DFA45_eotS);
-    static final short[] DFA45_eof = DFA.unpackEncodedString(DFA45_eofS);
-    static final char[] DFA45_min = DFA.unpackEncodedStringToUnsignedChars(DFA45_minS);
-    static final char[] DFA45_max = DFA.unpackEncodedStringToUnsignedChars(DFA45_maxS);
-    static final short[] DFA45_accept = DFA.unpackEncodedString(DFA45_acceptS);
-    static final short[] DFA45_special = DFA.unpackEncodedString(DFA45_specialS);
-    static final short[][] DFA45_transition;
-
-    static {
-        int numStates = DFA45_transitionS.length;
-        DFA45_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA45_transition[i] = DFA.unpackEncodedString(DFA45_transitionS[i]);
-        }
-    }
-
-    class DFA45 extends DFA {
-
-        public DFA45(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 45;
-            this.eot = DFA45_eot;
-            this.eof = DFA45_eof;
-            this.min = DFA45_min;
-            this.max = DFA45_max;
-            this.accept = DFA45_accept;
-            this.special = DFA45_special;
-            this.transition = DFA45_transition;
-        }
-        public String getDescription() {
-            return "657:34: ( ( fuzzy )=> fuzzy )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA45_20 = input.LA(1);
-
-                         
-                        int index45_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred12_FTS()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 22;}
-
-                         
-                        input.seek(index45_20);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 45, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA46_eotS =
-        "\30\uffff";
-    static final String DFA46_eofS =
-        "\30\uffff";
-    static final String DFA46_minS =
-        "\1\53\1\63\22\uffff\1\0\3\uffff";
-    static final String DFA46_maxS =
-        "\1\114\1\110\22\uffff\1\0\3\uffff";
-    static final String DFA46_acceptS =
-        "\2\uffff\22\2\1\uffff\2\2\1\1";
-    static final String DFA46_specialS =
-        "\24\uffff\1\0\3\uffff}>";
-    static final String[] DFA46_transitionS = {
-            "\1\22\1\7\1\23\1\21\1\5\2\uffff\1\1\1\12\1\2\1\uffff\1\14\1"+
-            "\15\4\12\1\10\1\16\1\12\1\13\1\uffff\1\17\1\20\5\uffff\1\13"+
-            "\1\6\1\3\1\4\1\11",
-            "\1\24\2\uffff\1\25\1\uffff\10\26\10\uffff\1\26",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA46_eot = DFA.unpackEncodedString(DFA46_eotS);
-    static final short[] DFA46_eof = DFA.unpackEncodedString(DFA46_eofS);
-    static final char[] DFA46_min = DFA.unpackEncodedStringToUnsignedChars(DFA46_minS);
-    static final char[] DFA46_max = DFA.unpackEncodedStringToUnsignedChars(DFA46_maxS);
-    static final short[] DFA46_accept = DFA.unpackEncodedString(DFA46_acceptS);
-    static final short[] DFA46_special = DFA.unpackEncodedString(DFA46_specialS);
-    static final short[][] DFA46_transition;
-
-    static {
-        int numStates = DFA46_transitionS.length;
-        DFA46_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA46_transition[i] = DFA.unpackEncodedString(DFA46_transitionS[i]);
-        }
-    }
-
-    class DFA46 extends DFA {
-
-        public DFA46(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 46;
-            this.eot = DFA46_eot;
-            this.eof = DFA46_eof;
-            this.min = DFA46_min;
-            this.max = DFA46_max;
-            this.accept = DFA46_accept;
-            this.special = DFA46_special;
-            this.transition = DFA46_transition;
-        }
-        public String getDescription() {
-            return "660:31: ( ( slop )=> slop )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA46_20 = input.LA(1);
-
-                         
-                        int index46_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred13_FTS()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 22;}
-
-                         
-                        input.seek(index46_20);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 46, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA47_eotS =
-        "\30\uffff";
-    static final String DFA47_eofS =
-        "\30\uffff";
-    static final String DFA47_minS =
-        "\1\53\1\63\22\uffff\1\0\3\uffff";
-    static final String DFA47_maxS =
-        "\1\114\1\110\22\uffff\1\0\3\uffff";
-    static final String DFA47_acceptS =
-        "\2\uffff\22\2\1\uffff\2\2\1\1";
-    static final String DFA47_specialS =
-        "\24\uffff\1\0\3\uffff}>";
-    static final String[] DFA47_transitionS = {
-            "\1\22\1\7\1\23\1\21\1\5\2\uffff\1\1\1\12\1\2\1\uffff\1\14\1"+
-            "\15\4\12\1\10\1\16\1\12\1\13\1\uffff\1\17\1\20\5\uffff\1\13"+
-            "\1\6\1\3\1\4\1\11",
-            "\1\24\2\uffff\1\25\1\uffff\10\26\10\uffff\1\26",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA47_eot = DFA.unpackEncodedString(DFA47_eotS);
-    static final short[] DFA47_eof = DFA.unpackEncodedString(DFA47_eofS);
-    static final char[] DFA47_min = DFA.unpackEncodedStringToUnsignedChars(DFA47_minS);
-    static final char[] DFA47_max = DFA.unpackEncodedStringToUnsignedChars(DFA47_maxS);
-    static final short[] DFA47_accept = DFA.unpackEncodedString(DFA47_acceptS);
-    static final short[] DFA47_special = DFA.unpackEncodedString(DFA47_specialS);
-    static final short[][] DFA47_transition;
-
-    static {
-        int numStates = DFA47_transitionS.length;
-        DFA47_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA47_transition[i] = DFA.unpackEncodedString(DFA47_transitionS[i]);
-        }
-    }
-
-    class DFA47 extends DFA {
-
-        public DFA47(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 47;
-            this.eot = DFA47_eot;
-            this.eof = DFA47_eof;
-            this.min = DFA47_min;
-            this.max = DFA47_max;
-            this.accept = DFA47_accept;
-            this.special = DFA47_special;
-            this.transition = DFA47_transition;
-        }
-        public String getDescription() {
-            return "663:36: ( ( slop )=> slop )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA47_20 = input.LA(1);
-
-                         
-                        int index47_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred14_FTS()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 22;}
-
-                         
-                        input.seek(index47_20);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 47, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA48_eotS =
-        "\30\uffff";
-    static final String DFA48_eofS =
-        "\30\uffff";
-    static final String DFA48_minS =
-        "\1\53\1\63\22\uffff\1\0\3\uffff";
-    static final String DFA48_maxS =
-        "\1\114\1\110\22\uffff\1\0\3\uffff";
-    static final String DFA48_acceptS =
-        "\2\uffff\22\2\1\uffff\2\2\1\1";
-    static final String DFA48_specialS =
-        "\24\uffff\1\0\3\uffff}>";
-    static final String[] DFA48_transitionS = {
-            "\1\22\1\7\1\23\1\21\1\5\2\uffff\1\1\1\12\1\2\1\uffff\1\14\1"+
-            "\15\4\12\1\10\1\16\1\12\1\13\1\uffff\1\17\1\20\5\uffff\1\13"+
-            "\1\6\1\3\1\4\1\11",
-            "\1\24\2\uffff\1\25\1\uffff\10\26\10\uffff\1\26",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA48_eot = DFA.unpackEncodedString(DFA48_eotS);
-    static final short[] DFA48_eof = DFA.unpackEncodedString(DFA48_eofS);
-    static final char[] DFA48_min = DFA.unpackEncodedStringToUnsignedChars(DFA48_minS);
-    static final char[] DFA48_max = DFA.unpackEncodedStringToUnsignedChars(DFA48_maxS);
-    static final short[] DFA48_accept = DFA.unpackEncodedString(DFA48_acceptS);
-    static final short[] DFA48_special = DFA.unpackEncodedString(DFA48_specialS);
-    static final short[][] DFA48_transition;
-
-    static {
-        int numStates = DFA48_transitionS.length;
-        DFA48_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA48_transition[i] = DFA.unpackEncodedString(DFA48_transitionS[i]);
-        }
-    }
-
-    class DFA48 extends DFA {
-
-        public DFA48(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 48;
-            this.eot = DFA48_eot;
-            this.eof = DFA48_eof;
-            this.min = DFA48_min;
-            this.max = DFA48_max;
-            this.accept = DFA48_accept;
-            this.special = DFA48_special;
-            this.transition = DFA48_transition;
-        }
-        public String getDescription() {
-            return "666:40: ( ( slop )=> slop )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA48_20 = input.LA(1);
-
-                         
-                        int index48_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred15_FTS()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 22;}
-
-                         
-                        input.seek(index48_20);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 48, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-    static final String DFA49_eotS =
-        "\30\uffff";
-    static final String DFA49_eofS =
-        "\30\uffff";
-    static final String DFA49_minS =
-        "\1\53\1\63\22\uffff\1\0\3\uffff";
-    static final String DFA49_maxS =
-        "\1\114\1\110\22\uffff\1\0\3\uffff";
-    static final String DFA49_acceptS =
-        "\2\uffff\22\2\1\uffff\2\2\1\1";
-    static final String DFA49_specialS =
-        "\24\uffff\1\0\3\uffff}>";
-    static final String[] DFA49_transitionS = {
-            "\1\22\1\7\1\23\1\21\1\5\2\uffff\1\1\1\12\1\2\1\uffff\1\14\1"+
-            "\15\4\12\1\10\1\16\1\12\1\13\1\uffff\1\17\1\20\5\uffff\1\13"+
-            "\1\6\1\3\1\4\1\11",
-            "\1\24\2\uffff\1\25\1\uffff\6\26\1\24\1\26\10\uffff\1\26",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA49_eot = DFA.unpackEncodedString(DFA49_eotS);
-    static final short[] DFA49_eof = DFA.unpackEncodedString(DFA49_eofS);
-    static final char[] DFA49_min = DFA.unpackEncodedStringToUnsignedChars(DFA49_minS);
-    static final char[] DFA49_max = DFA.unpackEncodedStringToUnsignedChars(DFA49_maxS);
-    static final short[] DFA49_accept = DFA.unpackEncodedString(DFA49_acceptS);
-    static final short[] DFA49_special = DFA.unpackEncodedString(DFA49_specialS);
-    static final short[][] DFA49_transition;
-
-    static {
-        int numStates = DFA49_transitionS.length;
-        DFA49_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA49_transition[i] = DFA.unpackEncodedString(DFA49_transitionS[i]);
-        }
-    }
-
-    class DFA49 extends DFA {
-
-        public DFA49(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 49;
-            this.eot = DFA49_eot;
-            this.eof = DFA49_eof;
-            this.min = DFA49_min;
-            this.max = DFA49_max;
-            this.accept = DFA49_accept;
-            this.special = DFA49_special;
-            this.transition = DFA49_transition;
-        }
-        public String getDescription() {
-            return "669:32: ( ( fuzzy )=> fuzzy )?";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA49_20 = input.LA(1);
-
-                         
-                        int index49_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred16_FTS()) ) {s = 23;}
-
-                        else if ( (true) ) {s = 22;}
-
-                         
-                        input.seek(index49_20);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 49, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
     static final String DFA51_eotS =
-        "\105\uffff";
+        "\14\uffff";
     static final String DFA51_eofS =
-        "\1\4\15\uffff\1\36\57\uffff\1\36\6\uffff";
+        "\1\1\1\uffff\1\1\10\uffff\1\1";
     static final String DFA51_minS =
-        "\1\53\15\uffff\1\53\20\uffff\4\0\1\53\12\uffff\1\53\17\uffff\1"+
-        "\53\6\uffff";
+        "\1\53\1\uffff\1\53\4\0\1\53\1\uffff\1\53\1\uffff\1\53";
     static final String DFA51_maxS =
-        "\1\114\15\uffff\1\114\20\uffff\4\0\1\114\12\uffff\1\114\17\uffff"+
-        "\1\114\6\uffff";
+        "\1\114\1\uffff\1\114\4\0\1\114\1\uffff\1\114\1\uffff\1\114";
     static final String DFA51_acceptS =
-        "\1\uffff\15\2\1\uffff\20\2\5\uffff\1\1\11\2\1\uffff\14\2\1\1\2"+
-        "\2\1\uffff\6\2";
+        "\1\uffff\1\2\6\uffff\1\1\1\uffff\1\1\1\uffff";
     static final String DFA51_specialS =
-        "\37\uffff\1\2\1\0\1\1\1\4\1\3\41\uffff}>";
+        "\3\uffff\1\0\1\1\1\4\1\3\1\2\4\uffff}>";
     static final String[] DFA51_transitionS = {
-            "\1\27\1\7\1\30\1\25\1\5\1\26\1\uffff\1\21\1\14\1\1\1\uffff"+
-            "\1\17\1\20\1\12\3\14\1\10\1\22\1\14\1\16\1\uffff\1\23\1\24\2"+
-            "\uffff\1\13\1\15\1\uffff\1\31\1\6\1\2\1\3\1\11",
+            "\6\1\1\uffff\3\1\1\uffff\11\1\1\2\1\uffff\2\1\2\uffff\2\1\1"+
+            "\uffff\5\1",
             "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\27\1\7\1\30\1\43\1\5\1\26\1\uffff\1\32\1\41\1\33\1\uffff"+
-            "\1\17\1\20\1\40\3\41\1\37\1\42\1\41\1\31\1\uffff\1\23\1\24\2"+
-            "\uffff\1\13\1\15\1\uffff\1\31\1\6\1\34\1\35\1\11",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
+            "\3\1\1\7\2\1\1\uffff\1\1\1\5\1\1\1\uffff\2\1\1\4\3\5\1\3\1"+
+            "\6\1\5\1\1\1\uffff\2\1\2\uffff\2\1\1\uffff\5\1",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\1\67\1\70\1\47\1\65\1\73\1\66\1\uffff\1\61\1\56\2\uffff\1"+
-            "\60\1\46\1\52\3\72\1\45\1\62\1\72\1\54\1\uffff\1\63\1\64\2\uffff"+
-            "\1\55\1\57\1\uffff\1\54\1\71\1\50\1\51\1\53",
+            "\4\1\1\12\1\1\1\uffff\1\1\1\11\2\uffff\12\1\1\uffff\2\1\2"+
+            "\uffff\2\1\1\uffff\5\1",
             "",
+            "\4\1\1\13\1\1\1\uffff\3\1\1\uffff\15\1\2\uffff\2\1\1\uffff"+
+            "\5\1",
             "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\67\1\75\1\47\1\65\1\76\1\66\1\uffff\1\100\1\72\1\101\1"+
-            "\uffff\1\60\1\46\1\52\3\72\1\45\1\62\1\72\1\77\1\104\1\63\1"+
-            "\64\2\uffff\1\55\1\57\1\uffff\1\54\1\74\1\102\1\103\1\53",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\27\1\7\1\30\1\25\1\5\1\26\1\uffff\1\21\1\41\1\33\1\uffff"+
-            "\1\17\1\20\1\40\3\41\1\37\1\42\1\41\1\31\1\uffff\1\23\1\24\2"+
-            "\uffff\1\13\1\15\1\uffff\1\31\1\6\1\34\1\35\1\11",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
+            "\6\1\1\uffff\1\1\1\5\1\1\1\uffff\2\1\1\4\3\5\1\3\1\6\1\5\1"+
+            "\1\1\uffff\2\1\2\uffff\2\1\1\uffff\5\1"
     };
 
     static final short[] DFA51_eot = DFA.unpackEncodedString(DFA51_eotS);
@@ -12050,120 +9913,80 @@ public class FTSParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA51_32 = input.LA(1);
+                        int LA51_3 = input.LA(1);
 
                          
-                        int index51_32 = input.index();
+                        int index51_3 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred17_FTS()) ) {s = 36;}
+                        if ( (synpred17_FTS()) ) {s = 8;}
 
-                        else if ( (true) ) {s = 30;}
+                        else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index51_32);
+                        input.seek(index51_3);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA51_33 = input.LA(1);
+                        int LA51_4 = input.LA(1);
 
                          
-                        int index51_33 = input.index();
+                        int index51_4 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred17_FTS()) ) {s = 36;}
+                        if ( (synpred17_FTS()) ) {s = 8;}
 
-                        else if ( (true) ) {s = 30;}
+                        else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index51_33);
+                        input.seek(index51_4);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA51_31 = input.LA(1);
+                        int LA51_7 = input.LA(1);
 
                          
-                        int index51_31 = input.index();
+                        int index51_7 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred17_FTS()) ) {s = 36;}
+                        if ( ((LA51_7>=PLUS && LA51_7<=LPAREN)||LA51_7==PERCENT||LA51_7==TILDA||(LA51_7>=EQUALS && LA51_7<=STAR)||(LA51_7>=LSQUARE && LA51_7<=LT)||(LA51_7>=AT && LA51_7<=URI)||(LA51_7>=QUESTION_MARK && LA51_7<=EXCLAMATION)) ) {s = 1;}
 
-                        else if ( (true) ) {s = 30;}
+                        else if ( (LA51_7==DECIMAL_INTEGER_LITERAL) ) {s = 9;}
+
+                        else if ( (LA51_7==RPAREN) && (synpred17_FTS())) {s = 10;}
 
                          
-                        input.seek(index51_31);
+                        input.seek(index51_7);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA51_35 = input.LA(1);
+                        int LA51_6 = input.LA(1);
 
                          
-                        int index51_35 = input.index();
+                        int index51_6 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA51_35==NOT) ) {s = 37;}
+                        if ( (synpred17_FTS()) ) {s = 8;}
 
-                        else if ( (LA51_35==FTSPHRASE) ) {s = 38;}
-
-                        else if ( (LA51_35==MINUS) ) {s = 39;}
-
-                        else if ( (LA51_35==AND) ) {s = 40;}
-
-                        else if ( (LA51_35==AMP) ) {s = 41;}
-
-                        else if ( (LA51_35==ID) ) {s = 42;}
-
-                        else if ( (LA51_35==EXCLAMATION) ) {s = 43;}
-
-                        else if ( (LA51_35==STAR||LA51_35==QUESTION_MARK) ) {s = 44;}
-
-                        else if ( (LA51_35==AT) ) {s = 45;}
-
-                        else if ( (LA51_35==DECIMAL_INTEGER_LITERAL) ) {s = 46;}
-
-                        else if ( (LA51_35==URI) ) {s = 47;}
-
-                        else if ( (LA51_35==EQUALS) ) {s = 48;}
-
-                        else if ( (LA51_35==TILDA) ) {s = 49;}
-
-                        else if ( (LA51_35==TO) ) {s = 50;}
-
-                        else if ( (LA51_35==LSQUARE) ) {s = 51;}
-
-                        else if ( (LA51_35==LT) ) {s = 52;}
-
-                        else if ( (LA51_35==LPAREN) ) {s = 53;}
-
-                        else if ( (LA51_35==PERCENT) ) {s = 54;}
-
-                        else if ( (LA51_35==PLUS) ) {s = 55;}
-
-                        else if ( (LA51_35==BAR) ) {s = 56;}
-
-                        else if ( (LA51_35==OR) ) {s = 57;}
-
-                        else if ( ((LA51_35>=FTSWORD && LA51_35<=FTSWILD)||LA51_35==FLOATING_POINT_LITERAL) ) {s = 58;}
-
-                        else if ( (LA51_35==RPAREN) && (synpred17_FTS())) {s = 59;}
+                        else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index51_35);
+                        input.seek(index51_6);
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
-                        int LA51_34 = input.LA(1);
+                        int LA51_5 = input.LA(1);
 
                          
-                        int index51_34 = input.index();
+                        int index51_5 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred17_FTS()) ) {s = 36;}
+                        if ( (synpred17_FTS()) ) {s = 8;}
 
-                        else if ( (true) ) {s = 30;}
+                        else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index51_34);
+                        input.seek(index51_5);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -12172,259 +9995,6 @@ public class FTSParser extends Parser {
                 new NoViableAltException(getDescription(), 51, _s, input);
             error(nvae);
             throw nvae;
-        }
-    }
-    static final String DFA58_eotS =
-        "\50\uffff";
-    static final String DFA58_eofS =
-        "\7\uffff\1\23\40\uffff";
-    static final String DFA58_minS =
-        "\1\70\1\65\1\uffff\1\70\1\56\1\65\1\uffff\1\53\40\uffff";
-    static final String DFA58_maxS =
-        "\1\106\1\107\1\uffff\1\70\1\110\1\65\1\uffff\1\114\40\uffff";
-    static final String DFA58_acceptS =
-        "\2\uffff\1\2\3\uffff\1\3\1\uffff\5\3\2\1\31\3";
-    static final String DFA58_specialS =
-        "\50\uffff}>";
-    static final String[] DFA58_transitionS = {
-            "\1\1\15\uffff\1\2",
-            "\1\4\21\uffff\1\3",
-            "",
-            "\1\5",
-            "\1\6\4\uffff\1\10\3\uffff\1\11\1\7\3\10\2\12\1\10\1\12\1\uffff"+
-            "\1\13\1\14\5\uffff\1\12",
-            "\1\4",
-            "",
-            "\1\45\1\26\1\46\1\43\1\24\1\44\1\uffff\1\17\1\33\1\20\1\16"+
-            "\1\36\1\37\1\31\3\33\1\27\1\40\1\33\1\35\1\47\1\41\1\42\2\uffff"+
-            "\1\32\1\34\1\15\1\35\1\25\1\21\1\22\1\30",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA58_eot = DFA.unpackEncodedString(DFA58_eotS);
-    static final short[] DFA58_eof = DFA.unpackEncodedString(DFA58_eofS);
-    static final char[] DFA58_min = DFA.unpackEncodedStringToUnsignedChars(DFA58_minS);
-    static final char[] DFA58_max = DFA.unpackEncodedStringToUnsignedChars(DFA58_maxS);
-    static final short[] DFA58_accept = DFA.unpackEncodedString(DFA58_acceptS);
-    static final short[] DFA58_special = DFA.unpackEncodedString(DFA58_specialS);
-    static final short[][] DFA58_transition;
-
-    static {
-        int numStates = DFA58_transitionS.length;
-        DFA58_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA58_transition[i] = DFA.unpackEncodedString(DFA58_transitionS[i]);
-        }
-    }
-
-    class DFA58 extends DFA {
-
-        public DFA58(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 58;
-            this.eot = DFA58_eot;
-            this.eof = DFA58_eof;
-            this.min = DFA58_min;
-            this.max = DFA58_max;
-            this.accept = DFA58_accept;
-            this.special = DFA58_special;
-            this.transition = DFA58_transition;
-        }
-        public String getDescription() {
-            return "767:9: ( prefix | uri )?";
-        }
-    }
-    static final String DFA60_eotS =
-        "\37\uffff";
-    static final String DFA60_eofS =
-        "\1\uffff\1\10\34\uffff\1\10";
-    static final String DFA60_minS =
-        "\1\70\1\53\1\uffff\1\70\32\uffff\1\53";
-    static final String DFA60_maxS =
-        "\1\106\1\114\1\uffff\1\70\32\uffff\1\114";
-    static final String DFA60_acceptS =
-        "\2\uffff\1\2\1\uffff\1\1\31\3\1\uffff";
-    static final String DFA60_specialS =
-        "\37\uffff}>";
-    static final String[] DFA60_transitionS = {
-            "\1\1\15\uffff\1\2",
-            "\1\33\1\13\1\34\1\31\1\11\1\32\1\35\1\25\1\20\1\5\1\4\1\23"+
-            "\1\24\1\16\3\20\1\14\1\26\1\20\1\22\1\uffff\1\27\1\30\2\uffff"+
-            "\1\17\1\21\1\3\1\22\1\12\1\6\1\7\1\15",
-            "",
-            "\1\36",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\33\1\13\1\34\1\31\1\11\1\32\1\35\1\25\1\20\1\5\1\4\1\23"+
-            "\1\24\1\16\3\20\1\14\1\26\1\20\1\22\1\uffff\1\27\1\30\2\uffff"+
-            "\1\17\1\21\1\uffff\1\22\1\12\1\6\1\7\1\15"
-    };
-
-    static final short[] DFA60_eot = DFA.unpackEncodedString(DFA60_eotS);
-    static final short[] DFA60_eof = DFA.unpackEncodedString(DFA60_eofS);
-    static final char[] DFA60_min = DFA.unpackEncodedStringToUnsignedChars(DFA60_minS);
-    static final char[] DFA60_max = DFA.unpackEncodedStringToUnsignedChars(DFA60_maxS);
-    static final short[] DFA60_accept = DFA.unpackEncodedString(DFA60_acceptS);
-    static final short[] DFA60_special = DFA.unpackEncodedString(DFA60_specialS);
-    static final short[][] DFA60_transition;
-
-    static {
-        int numStates = DFA60_transitionS.length;
-        DFA60_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA60_transition[i] = DFA.unpackEncodedString(DFA60_transitionS[i]);
-        }
-    }
-
-    class DFA60 extends DFA {
-
-        public DFA60(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 60;
-            this.eot = DFA60_eot;
-            this.eof = DFA60_eof;
-            this.min = DFA60_min;
-            this.max = DFA60_max;
-            this.accept = DFA60_accept;
-            this.special = DFA60_special;
-            this.transition = DFA60_transition;
-        }
-        public String getDescription() {
-            return "779:9: ( prefix | uri )?";
-        }
-    }
-    static final String DFA61_eotS =
-        "\35\uffff";
-    static final String DFA61_eofS =
-        "\1\uffff\1\7\33\uffff";
-    static final String DFA61_minS =
-        "\1\70\1\53\33\uffff";
-    static final String DFA61_maxS =
-        "\1\70\1\114\33\uffff";
-    static final String DFA61_acceptS =
-        "\2\uffff\1\2\32\1";
-    static final String DFA61_specialS =
-        "\35\uffff}>";
-    static final String[] DFA61_transitionS = {
-            "\1\1",
-            "\1\32\1\12\1\33\1\30\1\10\1\31\1\34\1\24\1\17\1\4\1\3\1\22"+
-            "\1\23\1\15\3\17\1\13\1\25\1\17\1\21\1\uffff\1\26\1\27\2\uffff"+
-            "\1\16\1\20\1\2\1\21\1\11\1\5\1\6\1\14",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA61_eot = DFA.unpackEncodedString(DFA61_eotS);
-    static final short[] DFA61_eof = DFA.unpackEncodedString(DFA61_eofS);
-    static final char[] DFA61_min = DFA.unpackEncodedStringToUnsignedChars(DFA61_minS);
-    static final char[] DFA61_max = DFA.unpackEncodedStringToUnsignedChars(DFA61_maxS);
-    static final short[] DFA61_accept = DFA.unpackEncodedString(DFA61_acceptS);
-    static final short[] DFA61_special = DFA.unpackEncodedString(DFA61_specialS);
-    static final short[][] DFA61_transition;
-
-    static {
-        int numStates = DFA61_transitionS.length;
-        DFA61_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA61_transition[i] = DFA.unpackEncodedString(DFA61_transitionS[i]);
-        }
-    }
-
-    class DFA61 extends DFA {
-
-        public DFA61(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 61;
-            this.eot = DFA61_eot;
-            this.eof = DFA61_eof;
-            this.min = DFA61_min;
-            this.max = DFA61_max;
-            this.accept = DFA61_accept;
-            this.special = DFA61_special;
-            this.transition = DFA61_transition;
-        }
-        public String getDescription() {
-            return "802:1: identifier : ( ID -> ID | id1= ID DOT id2= ID ->);";
         }
     }
  
