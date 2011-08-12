@@ -266,6 +266,13 @@
    margin-left: 0.3em;
 }
 
+/* Category control related classes */
+.form-container .subcats-option
+{
+   padding-top: 0.5em;
+   padding-left: 0.3em;
+}
+
 /* Set appearance classes */
 
 .set

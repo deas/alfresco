@@ -41,7 +41,13 @@
          <#if field.disabled == false>
             <input type="hidden" id="${fieldHtmlId}" name="${field.name}" value="${field.value?html}" />
             <div id="${controlId}-itemGroupActions" class="show-picker inlineable"></div>
-         
+            
+            <#if field.control.params.showSubCategoriesOption?? && field.control.params.showSubCategoriesOption == "true">
+               <div class="subcats-option">
+                  <input type="checkbox" name="${field.name}_usesubcats" value="true" checked="true" />&nbsp;${msg("form.control.category.include.subcats")}
+               </div>
+            </#if>
+            
             <@renderPickerHTML controlId />
          </#if>
       </div>
