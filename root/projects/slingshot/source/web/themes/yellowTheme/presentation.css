@@ -169,6 +169,7 @@ label,
 }
 
 .yui-skin-yellowTheme .yui-panel .hd,
+.yui-skin-yellowTheme .yui-panel .form-buttons,
 .yui-skin-yellowTheme .yui-panel .bdft,
 .yui-skin-yellowTheme .yui-panel .ft
 {
@@ -186,10 +187,16 @@ label,
    border-bottom: 1px solid #C5C7C6;
 }
 
+.yui-skin-yellowTheme .yui-panel .form-buttons,
 .yui-skin-yellowTheme .yui-panel .bdft
 {
    font-size: 100%;
    border-top: 1px solid #C5C7C6;
+}
+
+.yui-skin-yellowTheme .yui-panel div.form-fields
+{
+   border-bottom: none;
 }
 
 .yui-skin-yellowTheme .yui-panel .ft

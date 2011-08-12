@@ -1080,4 +1080,53 @@
       </forms>
    </config>
 
+   <!-- Transform Repo Action -->
+   <config evaluator="string-compare" condition="transform">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="mime-type" />
+               <show id="destination-folder" />
+            </field-visibility>
+            <appearance>
+               <field id="mime-type" label="Required Format" />
+               <field id="destination-folder" label="Destination" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+  
+   <!-- Transform Image Repo Action -->
+   <config evaluator="string-compare" condition="transform-image">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="mime-type" />
+               <show id="convert-command" />
+               <show id="destination-folder" />
+            </field-visibility>
+            <appearance>
+               <field id="mime-type" label="Required Format">
+                  <control template="/org/alfresco/components/form/controls/selectone.ftl">
+                    <control-param name="options">image/gif|GIF Image,image/jpeg|JPEG Image,image/png|PNG Image</control-param>
+                 </control>
+               </field>
+               <field id="convert-command" label="Options" />
+               <field id="destination-folder" label="Destination" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+  
+   <!-- Execute Script Repo Action -->
+   <config evaluator="string-compare" condition="script">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="script-ref" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+
 </alfresco-config>

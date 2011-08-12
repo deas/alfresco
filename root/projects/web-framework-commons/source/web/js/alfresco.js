@@ -392,6 +392,20 @@ Alfresco.util.findValueByDotNotation = function(obj, propertyPath, defaultValue)
  * @return {boolean} True if arr contains el
  * @static
  */
+Alfresco.util.findInArray = function(arr, value, attr)
+{
+   var index = Alfresco.util.arrayIndex(arr, value, attr);
+   return index !== -1 ? arr[index] : null;
+};
+
+/**
+ * Check if an array contains an object
+ * @method Alfresco.util.arrayContains
+ * @param arr {array} Array to convert to object
+ * @param el {object} The element to be searched for in the array
+ * @return {boolean} True if arr contains el
+ * @static
+ */
 Alfresco.util.arrayContains = function(arr, el)
 {
    return Alfresco.util.arrayIndex(arr, el) !== -1;
@@ -422,20 +436,28 @@ Alfresco.util.arrayRemove = function(arr, el)
  *
  * @method Alfresco.util.arrayIndex
  * @param arr {array} Array to search in
- * @param el {object} The element to find the index for in the array
+ * @param value {object} The element to find the index for in the array
+ * @param attr {string} (Optional) If provided, valu ewill be compared to an attribute inside the object, instead of compared to the object itself.
  * @return {integer} -1 if not found, other wise the index
  * @static
  */
-Alfresco.util.arrayIndex = function(arr, el)
+Alfresco.util.arrayIndex = function(arr, value, attr)
 {
    if (arr)
    {
       for (var i = 0, ii = arr.length; i < ii; i++)
       {
-          if (arr[i] == el)
-          {
-             return i;
-          }
+         if (attr)
+         {
+            if (arr[i] && arr[i][attr] == value)
+            {
+               return i;
+            }
+         }
+         else if (arr[i] == value)
+         {
+            return i;
+         }
       }
    }
    return -1;
@@ -4801,6 +4823,135 @@ Alfresco.util.PopupManager = function()
          }
          
          return prompt;
+      },
+
+      /**
+       * Displays a form inside a dialog
+       *
+       * @method displayForm
+       * @param config
+       * @param config.title {String} The dialog title
+       * @param config.properties {Object} An object literal with the form properties
+       * @param config.success {Object} A callback object literal used on form success
+       * @param config.successMessage {String} A submit success message
+       * @param config.failure {Object} A callback object literal used on form failure
+       * @param config.failureMessage {String} A submit failure message
+       */
+      displayForm: function displayForm(config)
+      {
+         // Use the htmlid to make sure we respond to events from the correct form instance
+         var htmlid = config.properties.htmlid || Alfresco.util.generateDomId();
+         config.properties.htmlid = htmlid;
+
+         // Display form webscript in a dialog
+         var panel = this.displayWebscript({
+            title: config.title,
+            url: Alfresco.constants.URL_SERVICECONTEXT + "components/form",
+            properties: YAHOO.lang.merge({
+               submitType: "json",
+               showCaption: false,
+               formUI: true,
+               showCancelButton: true
+            }, config.properties)
+         });
+
+         // Adjust form to work in dialog
+         YAHOO.Bubbling.on("formContentReady", function PopupManager_displayForm_onFormContentReady(layer, args)
+         {
+            if (Alfresco.util.hasEventInterest(htmlid + "-form", args))
+            {
+               // Change the default 'Submit' label to be 'Ok'
+               var submitButton = args[1].buttons.submit;
+               submitButton.set("label", Alfresco.util.message("label.ok"));
+
+               // Close dialog when cancel button is clicked
+               var cancelButton = args[1].buttons.cancel;
+               if (cancelButton)
+               {
+                  cancelButton.addListener("click", this.panel.destroy, this.panel, true);
+               }
+            }
+         }, {
+            panel: panel,
+            config: config
+         });
+
+         // When form is submitted make sure we hide the dialog after a successful submit and display a message when it fails.
+         YAHOO.Bubbling.on("beforeFormRuntimeInit", function PopupManager_displayForm_onBeforeFormRuntimeInit(layer, args)
+         {
+            if (Alfresco.util.hasEventInterest(htmlid + "-form", args))
+            {
+               args[1].runtime.setAJAXSubmit(true,
+               {
+                  successCallback:
+                  {
+                     fn: function PopupMananger_displayForm_formSuccess(response)
+                     {
+                        this.panel.destroy();
+                        if (this.config.success && YAHOO.lang.isFunction(this.config.success.fn))
+                        {
+                           this.config.success.fn.call(this.config.success.scope || {}, response, this.config.success.obj)
+                        }
+                     },
+                     scope: this
+                  },
+                  successMessage: this.config.successMessage,
+                  failureCallback: this.config.success,
+                  failureMessage: this.config.failureMessage
+               });
+            }
+         }, {
+            panel: panel,
+            config: config
+         });
+      },
+
+      /**
+       * Displays a webscript inside a dialog
+       *
+       * @method displayWebscript
+       * @param config
+       * @param config.title {String} The dialog title
+       * @param config.method {String} (Optional) Defaults to "GET"
+       * @param config.url {String} THe url to the webscript to load
+       * @param config.properties {Object} An object literal with the webscript parameters
+       */
+      displayWebscript: function displayWebscript(config)
+      {
+         // Help creating a htmlid if none has been provided
+         config.properties.htmlid = config.properties.htmlid || Alfresco.util.generateDomId();
+
+         var p = new YAHOO.widget.Panel(config.properties.htmlid + "-panel", {
+            visible:false,
+            modal: true,
+            constraintoviewport: true,
+            fixedcenter: "contained"
+         });
+
+         // Load the form for the specific workflow
+         Alfresco.util.Ajax.request(
+         {
+            method: config.method || Alfresco.util.Ajax.GET,
+            url: config.url,
+            dataObj: config.properties,
+            successCallback:
+            {
+               fn: function StartWorkflow_onWorkflowFormLoaded(response, config)
+               {
+                  // Instantiate a Panel from script
+                  p.setHeader(config.title);
+                  p.setBody(response.serverResponse.responseText);
+                  p.render(document.body);
+                  p.show();
+               },
+               scope: this,
+               obj: config
+            },
+            failureMessage: Alfresco.util.message("message.failure"),
+            scope: this,
+            execScripts: true
+         });
+         return p;
       }
    });
 }();

@@ -206,6 +206,7 @@ body.yui-skin-hcBlack .dashlet .body a:hover
 }
 
 .yui-skin-hcBlack .yui-panel .hd,
+.yui-skin-hcBlack .yui-panel .form-buttons,
 .yui-skin-hcBlack .yui-panel .bdft,
 .yui-skin-hcBlack .yui-panel .ft
 {
@@ -223,10 +224,16 @@ body.yui-skin-hcBlack .dashlet .body a:hover
    border-bottom: 1px solid #C4C5C5;
 }
 
+.yui-skin-hcBlack .yui-panel .form-buttons,
 .yui-skin-hcBlack .yui-panel .bdft
 {
    font-size: 100%;
    border-top: 1px solid #C4C5C5;
+}
+
+.yui-skin-hcBlack .yui-panel div.form-fields
+{
+   border-bottom: none;
 }
 
 .yui-skin-hcBlack .yui-panel .ft

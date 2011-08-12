@@ -196,6 +196,7 @@ label,
 }
 
 .yui-skin-default .yui-panel .hd,
+.yui-skin-default .yui-panel .form-buttons,
 .yui-skin-default .yui-panel .bdft,
 .yui-skin-default .yui-panel .ft
 {
@@ -213,10 +214,16 @@ label,
    border-bottom: 1px solid #C4C5C5;
 }
 
+.yui-skin-default .yui-panel .form-buttons,
 .yui-skin-default .yui-panel .bdft
 {
    font-size: 100%;
    border-top: 1px solid #C4C5C5;
+}
+
+.yui-skin-default .yui-panel div.form-fields
+{
+   border-bottom: none;
 }
 
 .yui-skin-default .yui-panel .ft

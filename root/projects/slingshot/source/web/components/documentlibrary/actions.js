@@ -165,6 +165,41 @@
          });
       },
 
+
+      /**
+       * Helper for actions of type "javascript" to get the node's action descriptor with params resolved (unless resolve is set to false).
+       *
+       * @method getAction
+       * @param record {object} Object literal representing one file or folder to be actioned
+       * @param owner {HTMLElement} The action html element
+       * @param resolve {Boolean} (Optional) Set to false if the action param's {} shouldn't get resolved
+       */
+      getAction: function getAction(record, owner, resolve)
+      {
+         var actionId = owner.getAttribute("class"),
+            action = Alfresco.util.findInArray(record.actions, actionId, "id") || {},
+            node = record;
+         if (YAHOO.lang.isBoolean(resolve) && !resolve)
+         {
+            // Return action without resolved parameters
+            return action;
+         }
+         else
+         {
+            // Resolve action's parameters before returning them
+            action = Alfresco.util.deepCopy(action);
+            var params = action.params || {};
+            for (var key in params)
+            {
+               params[key] = YAHOO.lang.substitute(params[key], node, function getActionParams_substitute(p_key, p_value, p_meta)
+               {
+                  return Alfresco.util.findValueByDotNotation(node, p_key);
+               });
+            }
+            return action;
+         }
+      },
+
       /**
        * Record metadata.
        *
@@ -555,28 +590,38 @@
       },
 
       /**
-       * Simple Workflow: Approve.
+       * Simple Repo Action.
        *
-       * @method onActionSimpleApprove
+       * Accepts the following <param> declarations from the <action> config:
+       *
+       * action - The name of  the repo action (i.e. extract-metadata)
+       * success - The name of the callback function
+       * successMessage - The msg key to use when the repo action succeded (i.e. message.extract-metadata.success)
+       * failure - The name of the callback function
+       * failureMessage - The msg key to use when the repo action failed (i.e. message.extract-metadata.failure)
+       *
+       * @method onActionSimpleRepoAction
        * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionSimpleApprove: function dlA_onActionSimpleApprove(record)
+      onActionSimpleRepoAction: function dlA_onActionSimpleRepoAction(record, owner)
       {
-         var displayName = record.displayName;
+         // Get action params
+         var params = this.getAction(record, owner).params,
+            displayName = record.displayName;
 
-         this.modules.actions.genericAction(
-         {
+         // Prepare genericAction config
+         var config = {
             success:
             {
                event:
                {
-                  name: "metadataRefresh"
-               },
-               message: this.msg("message.simple-workflow.approved", displayName)
+                  name: "metadataRefresh",
+                  obj: record
+               }
             },
             failure:
             {
-               message: this.msg("message.simple-workflow.failure", displayName)
+               message: this.msg(params.failureMessage, displayName)
             },
             webscript:
             {
@@ -590,52 +635,115 @@
                dataObj:
                {
                   actionedUponNode: record.nodeRef,
-                  actionDefinitionName: "accept-simpleworkflow"
+                  actionDefinitionName: params.action
                }
             }
-         });
+         };
+
+         // Add configured success callbacks and messages if provided
+         if (YAHOO.lang.isFunction(this[params.success]))
+         {
+            config.success.callback = {
+               fn: this[params.success],
+               obj: record,
+               scope: this
+            };
+         }
+         if (params.successMessage)
+         {
+            config.success.message = this.msg(params.successMessage, displayName);
+         }
+
+         // Acd configured failure callback and message if provided
+         if (YAHOO.lang.isFunction(this[params.failure]))
+         {
+            config.failure.callback = {
+               fn: this[params.failure],
+               obj: record,
+               scope: this
+            };
+         }
+         if (params.failureMessage)
+         {
+            config.failure.message = this.msg(params.failureMessage, displayName);
+         }
+
+         // Execute the repo action
+         this.modules.actions.genericAction(config);
       },
 
       /**
-       * Simple Workflow: Reject.
+       * Form Dialog Action.
        *
-       * @method onActionSimpleReject
+       * Accepts <param name=""></param> declarations in share config xml for the following names:
+       * success - The name of the callback function
+       * successMessage - The msg key to use when the repo action succeded (i.e. message.extract-metadata.success)
+       * failure - The name of the callback function
+       * failureMessage - The msg key to use when the repo action failed (i.e. message.extract-metadata.failure)
+       * ...and any other parameter mathing the properties for GET /service/components/form webscript
+       * I.e itemid, itemkind, mode etc...
+       *
+       * @method onActionFormDialog
        * @param record {object} Object literal representing the file or folder to be actioned
        */
-      onActionSimpleReject: function dlA_onActionSimpleReject(record)
+      onActionFormDialog: function dlA_onActionFormDialog(record, owner)
       {
-         var displayName = record.displayName;
+         // Get action & params and start create the config for displayForm
+         var action = this.getAction(record, owner),
+            params = action.params,
+            config = { title: this.msg(action.label) };
 
-         this.modules.actions.genericAction(
-         {
-            success:
+         // Make sure we don't pass the function as a form parameter
+         delete params["function"];
+
+         // Add configured success callback
+         var success = params["success"];
+         delete params["success"];
+         config.success = {
+            fn: function(response, obj)
             {
-               event:
+               // Invoke callback if configured and available
+               if (YAHOO.lang.isFunction(this[success]))
                {
-                  name: "metadataRefresh"
-               },
-               message: this.msg("message.simple-workflow.rejected", displayName)
-            },
-            failure:
-            {
-               message: this.msg("message.simple-workflow.failure", displayName)
-            },
-            webscript:
-            {
-               method: Alfresco.util.Ajax.POST,
-               stem: Alfresco.constants.PROXY_URI + "api/",
-               name: "actionQueue"
-            },
-            config:
-            {
-               requestContentType: Alfresco.util.Ajax.JSON,
-               dataObj:
-               {
-                  actionedUponNode: record.nodeRef,
-                  actionDefinitionName: "reject-simpleworkflow"
+                  this[success].call(this, response, obj);
                }
-            }
-         });
+
+               // Fire metadataRefresh so other components may update themselves
+               YAHOO.Bubbling.fire("metadataRefresh", obj);
+            },
+            obj: record,
+            scope: this
+         };
+
+         // Add configure success message
+         if (params.successMessage)
+         {
+            config.successMessage = this.msg(params.successMessage);
+            delete params["successMessage"];
+         }
+
+         // Add configured failure callback
+         if (YAHOO.lang.isFunction(this[params.failure]))
+         {
+            config.failure = {
+               fn: this[params.failure],
+               obj: record,
+               scope: this
+            };
+            delete params["failure"];
+         }
+         // Add configure success message
+         if (params.failureMessage)
+         {
+            config.failureMessage = this.msg(params.failureMessage);
+            delete params["failureMessage"];
+         }
+
+         // Use the remaining properties as form properties
+         config.properties = params;
+
+         // Finally display form as dialog
+         Alfresco.util.PopupManager.displayForm(config);
       },
 
       /**

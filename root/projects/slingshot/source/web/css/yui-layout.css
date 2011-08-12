@@ -17,6 +17,7 @@
 
 .alfresco-share .yui-panel .bd div.yui-gd,
 .alfresco-share .yui-panel .bd div.yui-u,
+.alfresco-share .yui-panel .bd div.form-buttons,
 .alfresco-share .yui-panel .bd div.bdft
 {
    padding: 0.3em 0.3em 0.3em 0;
@@ -39,6 +40,7 @@
 
 .alfresco-share .yui-panel .hd,
 .alfresco-share .yui-panel .bdft,
+.alfresco-share .yui-panel .bd div.form-buttons,
 .alfresco-share .yui-panel .ft
 {
    text-align: center;

@@ -192,6 +192,7 @@ label,
 }
 
 .yui-skin-gdocs .yui-panel .hd,
+.yui-skin-gdocs .yui-panel .form-buttons,
 .yui-skin-gdocs .yui-panel .bdft,
 .yui-skin-gdocs .yui-panel .ft
 {
@@ -209,10 +210,16 @@ label,
    border-bottom: 1px solid #C5C7C6;
 }
 
+.yui-skin-gdocs .yui-panel .form-buttons,
 .yui-skin-gdocs .yui-panel .bdft
 {
    font-size: 100%;
    border-top: 1px solid #C5C7C6;
+}
+
+.yui-skin-gdocs .yui-panel div.form-fields
+{
+   border-bottom: none;
 }
 
 .yui-skin-gdocs .yui-panel .ft

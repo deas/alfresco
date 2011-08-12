@@ -56,6 +56,7 @@
       this.formsRuntime = null;
       
       /* Decoupled event listeners */
+      this.eventGroup = htmlId;
       YAHOO.Bubbling.on("metadataRefresh", this.onFormRefresh, this);
       YAHOO.Bubbling.on("mandatoryControlValueUpdated", this.onMandatoryControlValueUpdated, this);
       YAHOO.Bubbling.on("registerValidationHandler", this.onRegisterValidationHandler, this);
@@ -262,6 +263,7 @@
             // fire event to inform any listening components that the form is about to be initialised
             YAHOO.Bubbling.fire("beforeFormRuntimeInit", 
             {
+               eventGroup: this.eventGroup,
                component: this,
                runtime: this.formsRuntime 
             });
@@ -271,6 +273,7 @@
             // fire event to inform any listening components that the form has finished initialising
             YAHOO.Bubbling.fire("afterFormRuntimeInit",
             {
+               eventGroup: this.eventGroup,
                component: this,
                runtime: this.formsRuntime 
             });
