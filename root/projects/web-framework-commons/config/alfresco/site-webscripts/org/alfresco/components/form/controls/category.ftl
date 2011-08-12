@@ -10,7 +10,7 @@
    {
       itemType: "cm:category",
       multipleSelectMode: ${(field.control.params.multipleSelectMode!true)?string},
-      parentNodeRef: "alfresco://category/root",
+      parentNodeRef: "${field.control.params.parentNodeRef!"alfresco://category/root"}",
       itemFamily: "category",
       maintainAddedRemovedItems: false,
       params: "${field.control.params.params!""}",
