@@ -124,6 +124,7 @@
                         Dom.removeClass(this, "spindrop");
                      }
                   }, false);
+                  Dom.setStyle(document.body, "-webkit-perspective", null);
                   Dom.addClass(this.element, "spindrop");
                }
             }

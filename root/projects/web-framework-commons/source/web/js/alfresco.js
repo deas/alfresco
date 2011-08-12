@@ -1626,7 +1626,7 @@ Alfresco.util.createYUIPanel = function(p_el, p_params, p_custom)
       custom =
       {
          render: true,
-         type: YAHOO.widget.Panel
+         type: YAHOO.widget.Dialog
       };
    
    // Any extra/overridden constructor parameters?
