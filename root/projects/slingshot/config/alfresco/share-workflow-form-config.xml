@@ -20,6 +20,7 @@
                <show id="bpm:assignee" />
                <show id="packageItems" />
                <show id="wf:notifyMe" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
@@ -40,6 +41,7 @@
                <field id="bpm:assignee" label-id="workflow.field.assign_to" set="assignee" />
                <field id="packageItems" set="items" />
                <field id="wf:notifyMe" set="other" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -57,6 +59,7 @@
                <show id="bpm:assignee" />
                <show id="packageItems" />
                <show id="wf:notifyMe" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
@@ -77,6 +80,7 @@
                <field id="bpm:assignee" label-id="workflow.field.assign_to" set="assignee" />
                <field id="packageItems" set="items" />
                <field id="wf:notifyMe" set="other" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -92,12 +96,14 @@
                <show id="bpm:workflowPriority" />
                <show id="bpm:assignee" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -110,6 +116,7 @@
                </field>
                <field id="bpm:assignee" label-id="workflow.field.reviewer" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -125,12 +132,14 @@
                <show id="bpm:workflowPriority" />
                <show id="bpm:assignee" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -143,6 +152,7 @@
                </field>
                <field id="bpm:assignee" label-id="workflow.field.reviewer" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -158,12 +168,14 @@
                <show id="bpm:workflowPriority" />
                <show id="bpm:groupAssignee" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -177,6 +189,7 @@
                <field id="bpm:groupAssignee" label-id="workflow.field.review_group" set="assignee" />
                <field id="wf:requiredApprovePercent" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -193,12 +206,14 @@
                <show id="bpm:groupAssignee" />
                <show id="wf:requiredApprovePercent" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -212,6 +227,7 @@
                <field id="bpm:groupAssignee" label-id="workflow.field.review_group" set="assignee" />
                <field id="wf:requiredApprovePercent" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -227,12 +243,14 @@
                <show id="bpm:assignees" />
                <show id="wf:requiredApprovePercent" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignees" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -246,6 +264,7 @@
                <field id="wf:requiredApprovePercent" set="assignee" />
                <field id="bpm:assignees" label-id="workflow.field.reviewers" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -261,12 +280,14 @@
                <show id="bpm:assignees" />
                <show id="wf:requiredApprovePercent" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignees" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -280,6 +301,7 @@
                <field id="wf:requiredApprovePercent" set="assignee" />
                <field id="bpm:assignees" label-id="workflow.field.reviewers" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -295,12 +317,14 @@
                <show id="bpm:groupAssignee" />
                <show id="wf:requiredApprovePercent" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -314,6 +338,7 @@
                <field id="wf:requiredApprovePercent" set="assignee" />
                <field id="bpm:groupAssignee" label-id="workflow.field.review_group" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -329,12 +354,14 @@
                <show id="bpm:groupAssignee" />
                <show id="wf:requiredApprovePercent" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -348,6 +375,7 @@
                <field id="wf:requiredApprovePercent" set="assignee" />
                <field id="bpm:groupAssignee" label-id="workflow.field.review_group" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -363,12 +391,14 @@
                <show id="bpm:workflowPriority" />
                <show id="bpm:assignee" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -381,6 +411,7 @@
                </field>
                <field id="bpm:assignee" label-id="workflow.field.reviewer" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -395,12 +426,14 @@
                <show id="bpm:workflowPriority" />
                <show id="bpm:assignee" />
                <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
                <set id="info" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
                
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
@@ -413,6 +446,7 @@
                </field>
                <field id="bpm:assignee" label-id="workflow.field.reviewer" set="assignee" />
                <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
@@ -429,6 +463,7 @@
                <show id="bpm:assignee" />
                <show id="packageItems" />
                <show id="wf:notifyMe" />
+               <show id="bpm:sendEMailNotifications" />
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.general" />
@@ -448,7 +483,8 @@
                </field>
                <field id="bpm:assignee" label-id="workflow.field.assign_to" set="assignee" />
                <field id="packageItems" set="items" />
-               <field id="wf:notifyMe" set="other" />
+               <field id="wf:notifyMe" set="other" />               
+               <field id="bpm:sendEMailNotifications" set="other" />
             </appearance>
          </form>
       </forms>
