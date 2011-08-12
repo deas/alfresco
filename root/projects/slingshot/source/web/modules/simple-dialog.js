@@ -395,7 +395,7 @@
          {
             fn: function(id, keyEvent)
             {
-               this.dialog.hide();
+               this.hide();
             },
             scope: this,
             correctScope: true
@@ -416,9 +416,11 @@
        */
       hide: function AmSD_hide()
       {
-         this.dialog.hide();
+         if (this.dialog)
+         {
+            this.dialog.hide();
+         }
       },
-
 
       /**
        * Hide the dialog, removing the caret-fix patch
@@ -592,7 +594,7 @@
        */
       onCancel: function AmSD_onCancel(e, p_obj)
       {
-         this.dialog.hide();
+         this.hide();
       },
 
       /**
@@ -603,7 +605,7 @@
        */
       onSuccess: function AmSD_onSuccess(response)
       {
-         this.dialog.hide();
+         this.hide();
 
          if (!response)
          {

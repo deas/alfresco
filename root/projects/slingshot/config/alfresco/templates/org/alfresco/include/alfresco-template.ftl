@@ -38,7 +38,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <title><@region id="head-title" scope="global" chromeless="true"/></title>
-   <meta http-equiv="X-UA-Compatible" content="Edge" />
+   <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 </#if>
    <@region id="head-resources" scope="global" chromeless="true"/>
 
