@@ -123,6 +123,16 @@
    padding: 4px;
 }
 
+.datagrid .yui-dt-col-nodeRef
+{
+   width: 24px;
+}
+
+.datagrid .yui-dt-col-actions
+{
+   width: 86px;
+}
+
 .datagrid .yui-dt-col-actions .yui-dt-liner
 {
    padding: 3px;

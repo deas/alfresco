@@ -955,6 +955,12 @@
             return true;
          };
 
+         // Override default function so the "Loading..." message is suppressed
+         this.widgets.dataTable.doBeforeSortColumn = function DataGrid_doBeforeSortColumn(oColumn, sSortDir)
+         {
+            return true;
+         }
+
          // File checked handler
          this.widgets.dataTable.subscribe("checkboxClickEvent", function(e)
          { 
