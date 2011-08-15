@@ -213,6 +213,10 @@
          <!-- Hide all WCM related workflows -->
          <workflow name="jbpm$wcmwf:*"/>
          <workflow name="jbpm$wf:articleapproval"/>
+         <!-- Hide publishing workflows -->
+         <workflow name="activiti$activitiPublishWebContent"/>
+         <workflow name="jbpm$publishWebContent"/>
+         <!-- Hide invitation workflows -->
          <workflow name="jbpm$inwf:invitation-nominated"/>
          <workflow name="jbpm$imwf:invitation-moderated"/>
          <workflow name="activiti$activitiInvitationModerated"/>
