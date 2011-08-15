@@ -84,8 +84,8 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         handler.setDictionaryService(dictionaryService);
         reader.setXPathHandler(handler);
         reader.parse("//" + queryText);
-        Query query = handler.getQuery();
-        return new SolrCachingAuxDocQuery(query);
+        SolrPathQuery pathQuery = handler.getQuery();
+        return new SolrCachingPathQuery(pathQuery);
     }
 
     protected Query createPrimaryAssocTypeQNameQuery(String queryText) throws SAXPathException
