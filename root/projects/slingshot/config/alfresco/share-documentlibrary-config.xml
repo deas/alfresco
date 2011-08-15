@@ -643,11 +643,6 @@
             <action index="330" id="document-view-in-source-repository" />
             <action index="340" id="document-publish" />
             <action index="350" id="document-view-googlemaps" />
-            <action index="340" id="document-extract-metadata" />
-            <action index="350" id="document-increment-counter" />
-            <action index="360" id="document-transform" />
-            <action index="370" id="document-transform-image" />
-            <action index="380" id="document-execute-script" />
          </actionGroup>
 
          <actionGroup id="folder-browse">
