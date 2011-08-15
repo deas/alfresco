@@ -195,6 +195,14 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
         {
             return new PathAnalyser();
         }
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME))
+        {
+            return new PathAnalyser();
+        }
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC))
+        {
+            return new LongAnalyser();
+        }
         else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISNODE))
         {
             return new VerbatimAnalyser(false);

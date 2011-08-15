@@ -179,6 +179,8 @@ public class AlfrescoSolrDataModel
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_READER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_OWNER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
 
         addAdditionalContentField(".size", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".locale", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);

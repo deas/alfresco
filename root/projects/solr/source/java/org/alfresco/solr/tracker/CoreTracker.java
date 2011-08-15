@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.alfresco.encryption.KeyResourceLoader;
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -54,10 +55,13 @@ import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
+import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
+import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
@@ -94,6 +98,8 @@ import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.OpenBitSet;
@@ -128,7 +134,7 @@ import org.springframework.util.FileCopyUtils;
 public class CoreTracker implements CloseHook
 {
     private AlfrescoCoreAdminHandler adminHandler;
-    
+
     private SOLRAPIClient client;
 
     private volatile long lastIndexedCommitTime = 0;
@@ -157,12 +163,19 @@ public class CoreTracker implements CloseHook
 
     // encryption properties
     private String cipherAlgorithm;
+
     private String keyStoreType;
+
     private String keyStoreProvider;
+
     private String passwordFileLocation;
+
     private String keyStoreLocation;
+
     private long messageTimeout;
+
     private String macAlgorithm;
+
     private boolean secureCommsEnabled = true;
 
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
@@ -189,9 +202,9 @@ public class CoreTracker implements CloseHook
                 {
                     url = split[1];
                 }
-                else  if (split[0].equals("alfresco.host"))
+                else if (split[0].equals("alfresco.host"))
                 {
-                	alfrescoHost = split[1];
+                    alfrescoHost = split[1];
                 }
                 else if (split[0].equals("alfresco.cron"))
                 {
@@ -227,23 +240,23 @@ public class CoreTracker implements CloseHook
                 }
                 else if (split[0].equals("alfresco.encryption.keystore.passwordFileLocation"))
                 {
-                	passwordFileLocation = split[1];
+                    passwordFileLocation = split[1];
                 }
                 else if (split[0].equals("alfresco.encryption.keystore.location"))
                 {
-                	keyStoreLocation = split[1];
+                    keyStoreLocation = split[1];
                 }
                 else if (split[0].equals("alfresco.encryption.messageTimeout"))
                 {
-                	messageTimeout = Long.parseLong(split[1]);
+                    messageTimeout = Long.parseLong(split[1]);
                 }
                 else if (split[0].equals("alfresco.encryption.macAlgorithm"))
                 {
-                	macAlgorithm = split[1];
+                    macAlgorithm = split[1];
                 }
                 else if (split[0].equals("alfresco.secureComms.enabled"))
                 {
-                	secureCommsEnabled = Boolean.valueOf(split[1]);
+                    secureCommsEnabled = Boolean.valueOf(split[1]);
                 }
             }
         }
@@ -258,10 +271,9 @@ public class CoreTracker implements CloseHook
 
         // load keystore from the Solr core location
         SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
-        EncryptionService encryptionService = new EncryptionService(keyResourceLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm,
-        		keyStoreType, keyStoreProvider, passwordFileLocation, messageTimeout, macAlgorithm);
-        client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(),
-        		encryptionService, secureCommsEnabled, url);
+        EncryptionService encryptionService = new EncryptionService(keyResourceLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm, keyStoreType, keyStoreProvider,
+                passwordFileLocation, messageTimeout, macAlgorithm);
+        client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(), encryptionService, secureCommsEnabled, url);
 
         JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
         JobDataMap jobDataMap = new JobDataMap();
@@ -283,7 +295,7 @@ public class CoreTracker implements CloseHook
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         core.addCloseHook(this);
     }
 
@@ -366,13 +378,13 @@ public class CoreTracker implements CloseHook
 
                 // track models
                 // reflect changes changes and update on disk copy
-               
+
                 List<AlfrescoModelDiff> modelDiffs = client.getModelsDiff(dataModel.getAlfrescoModels());
                 HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
-                
+
                 for (AlfrescoModelDiff modelDiff : modelDiffs)
                 {
-                    switch(modelDiff.getType())
+                    switch (modelDiff.getType())
                     {
                     case CHANGED:
                         AlfrescoModel changedModel = client.getModel(modelDiff.getModelName());
@@ -392,22 +404,22 @@ public class CoreTracker implements CloseHook
                         break;
                     }
                 }
-               
+
                 HashSet<String> loadedModels = new HashSet<String>();
                 for (M2Model model : modelMap.values())
                 {
                     loadModel(modelMap, loadedModels, model, dataModel);
                 }
                 dataModel.afterInitModels();
-                
+
                 File alfrescoModelDir = new File(id, "alfrescoModels");
-                if(!alfrescoModelDir.exists())
+                if (!alfrescoModelDir.exists())
                 {
                     alfrescoModelDir.mkdir();
                 }
                 for (AlfrescoModelDiff modelDiff : modelDiffs)
                 {
-                    switch(modelDiff.getType())
+                    switch (modelDiff.getType())
                     {
                     case CHANGED:
                         removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
@@ -432,7 +444,7 @@ public class CoreTracker implements CloseHook
                         break;
                     }
                 }
-                
+
                 // Track Acls up to end point
                 long aclLoopStartingCommitTime;
                 List<AclChangeSet> aclChangeSets;
@@ -564,8 +576,6 @@ public class CoreTracker implements CloseHook
                             }
                             else
                             {
-                                indexTransaction(dataModel, info);
-
                                 GetNodesParameters gnp = new GetNodesParameters();
                                 ArrayList<Long> txs = new ArrayList<Long>();
                                 txs.add(info.getId());
@@ -577,9 +587,11 @@ public class CoreTracker implements CloseHook
                                 {
                                     docCount++;
                                     System.out.println(node);
-                                    indexNode(dataModel, node);
+                                    indexNode(dataModel, node, solrIndexSearcher);
 
                                 }
+
+                                indexTransaction(dataModel, info);
 
                                 if (info.getCommitTimeMs() > lastIndexedCommitTime)
                                 {
@@ -681,51 +693,50 @@ public class CoreTracker implements CloseHook
     private void removeMatchingModels(File alfrescoModelDir, QName modelName)
     {
 
-        final String prefix = modelName.toString().replace(":", ".")+".";
+        final String prefix = modelName.toString().replace(":", ".") + ".";
         final String postFix = ".xml";
-        
+
         File[] toDelete = alfrescoModelDir.listFiles(new FileFilter()
         {
-            
+
             @Override
             public boolean accept(File pathname)
             {
-                if(pathname.isDirectory())
+                if (pathname.isDirectory())
                 {
                     return false;
                 }
                 String name = pathname.getName();
-                if(false == name.endsWith(postFix))
+                if (false == name.endsWith(postFix))
                 {
                     return false;
                 }
-                if(false == name.startsWith(prefix))
+                if (false == name.startsWith(prefix))
                 {
                     return false;
                 }
-                // check is number between 
-                String checksum = name.substring(prefix.length(), name.length() -  postFix.length());
+                // check is number between
+                String checksum = name.substring(prefix.length(), name.length() - postFix.length());
                 try
                 {
                     Long.parseLong(checksum);
                     return true;
                 }
-                catch(NumberFormatException nfe)
+                catch (NumberFormatException nfe)
                 {
                     return false;
                 }
             }
         });
-            
-        if(toDelete != null)
+
+        if (toDelete != null)
         {
-            for(File file : toDelete)
+            for (File file : toDelete)
             {
                 file.delete();
             }
         }
-         
-        
+
     }
 
     /**
@@ -796,11 +807,11 @@ public class CoreTracker implements CloseHook
      * @param node
      * @throws IOException
      */
-    private void indexNode(AlfrescoSolrDataModel dataModel, Node node) throws IOException
+    private void indexNode(AlfrescoSolrDataModel dataModel, Node node, SolrIndexSearcher solrIndexSearcher) throws IOException
     {
         if (node.getStatus() == SolrApiNodeStatus.UPDATED)
         {
-            
+
             System.out.println(".. updating");
             NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
             nmdp.setFromNodeId(node.getId());
@@ -821,59 +832,80 @@ public class CoreTracker implements CloseHook
 
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
-                    System.out.println(".. checking for path change");
-                    // ID and checksum - query and in TX set 
-                    // ID only (exists and does not match)
-                    // updatechildren
+                    if (mayHaveChildren(dataModel, nodeMetaData))
+                    {
+                        System.out.println(".. checking for path change");
+                        BooleanQuery bQuery = new BooleanQuery();
+                        bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))), Occur.MUST);
+                        bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, NumericEncoder.encode(nodeMetaData.getParentAssocsCrc()))), Occur.MUST);
+                        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
+                        if (docSet.size() > 0)
+                        {
+                            //System.out.println("... found aux match");
+                        }
+                        else
+                        {
+                            docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))));
+                            if (docSet.size() > 0)
+                            {
+                                //System.out.println("... cascade updating aux doc");
+                                updateDescendantAuxDocs(dataModel, nodeMetaData);
+                            }
+                            else
+                            {
+                                //System.out.println("... no aux doc");
+                            }
+                        }
+                    }
 
                     Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
-                    
+
                     // check index control
-                    
-                    if(properties.containsKey(ContentModel.PROP_IS_INDEXED))
+
+                    if (properties.containsKey(ContentModel.PROP_IS_INDEXED))
                     {
-                        StringPropertyValue pValue = (StringPropertyValue)properties.get(ContentModel.PROP_IS_INDEXED);
-                        if(pValue != null)
+                        StringPropertyValue pValue = (StringPropertyValue) properties.get(ContentModel.PROP_IS_INDEXED);
+                        if (pValue != null)
                         {
                             Boolean isIndexed = Boolean.valueOf(pValue.getValue());
-                            if((isIndexed != null) && (isIndexed.booleanValue() == false))
+                            if ((isIndexed != null) && (isIndexed.booleanValue() == false))
                             {
                                 DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
                                 docCmd.id = "LEAF-" + node.getId();
                                 docCmd.fromPending = true;
                                 docCmd.fromCommitted = true;
                                 core.getUpdateHandler().delete(docCmd);
-                                
+
                                 docCmd = new DeleteUpdateCommand();
                                 docCmd.id = "AUX-" + node.getId();
                                 docCmd.fromPending = true;
                                 docCmd.fromCommitted = true;
                                 core.getUpdateHandler().delete(docCmd);
-                                
+
                                 return;
                             }
                         }
                     }
-                    
+
                     boolean isContentIndexedForNode = true;
-                    if(properties.containsKey(ContentModel.PROP_IS_CONTENT_INDEXED))
+                    if (properties.containsKey(ContentModel.PROP_IS_CONTENT_INDEXED))
                     {
-                        StringPropertyValue pValue = (StringPropertyValue)properties.get(ContentModel.PROP_IS_CONTENT_INDEXED);
-                        if(pValue != null)
+                        StringPropertyValue pValue = (StringPropertyValue) properties.get(ContentModel.PROP_IS_CONTENT_INDEXED);
+                        if (pValue != null)
                         {
                             Boolean isIndexed = Boolean.valueOf(pValue.getValue());
-                            if((isIndexed != null) && (isIndexed.booleanValue() == false))
+                            if ((isIndexed != null) && (isIndexed.booleanValue() == false))
                             {
                                 isContentIndexedForNode = false;
                             }
                         }
                     }
-                    
+
                     SolrInputDocument doc = new SolrInputDocument();
                     doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + node.getId());
                     doc.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
                     doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeMetaData.getNodeRef());
-                    
+
                     for (QName propertyQname : properties.keySet())
                     {
                         PropertyValue value = properties.get(propertyQname);
@@ -881,7 +913,7 @@ public class CoreTracker implements CloseHook
                         {
                             if (value instanceof ContentPropertyValue)
                             {
-                                if(isContentIndexedForNode)
+                                if (isContentIndexedForNode)
                                 {
                                     addContentPropertyToDoc(doc, toClose, toDelete, node, propertyQname, (ContentPropertyValue) value);
                                 }
@@ -897,7 +929,7 @@ public class CoreTracker implements CloseHook
                                 {
                                     if (singleValue instanceof ContentPropertyValue)
                                     {
-                                        if(isContentIndexedForNode)
+                                        if (isContentIndexedForNode)
                                         {
                                             addContentPropertyToDoc(doc, toClose, toDelete, node, propertyQname, (ContentPropertyValue) singleValue);
                                         }
@@ -931,53 +963,7 @@ public class CoreTracker implements CloseHook
                     leafDocCmd.solrDoc = doc;
                     leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
-                    SolrInputDocument aux = new SolrInputDocument();
-                    aux.addField(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + node.getId());
-                    aux.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
-                    aux.addField(AbstractLuceneQueryParser.FIELD_ACLID, nodeMetaData.getAclId());
-
-                    for (Pair<String, QName> path : nodeMetaData.getPaths())
-                    {
-                        aux.addField(AbstractLuceneQueryParser.FIELD_PATH, path.getFirst());
-                    }
-
-                    StringPropertyValue owner = (StringPropertyValue) properties.get(ContentModel.PROP_OWNER);
-                    if (owner == null)
-                    {
-                        owner = (StringPropertyValue) properties.get(ContentModel.PROP_CREATOR);
-                    }
-                    if (owner != null)
-                    {
-                        aux.addField(AbstractLuceneQueryParser.FIELD_OWNER, owner.getValue());
-                    }
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc());
-                    
-                    StringBuilder qNameBuffer = new StringBuilder(64);
-                    StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
-                    if(nodeMetaData.getParentAssocs() != null)
-                    {
-                        for(ChildAssociationRef childAssocRef : nodeMetaData.getParentAssocs())
-                        {
-                            if (qNameBuffer.length() > 0)
-                            {
-                                qNameBuffer.append(";/");
-                                assocTypeQNameBuffer.append(";/");
-                            }
-                            qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
-                            assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                            aux.addField(AbstractLuceneQueryParser.FIELD_PARENT, childAssocRef.getParentRef());
-                            
-                            if(childAssocRef.isPrimary())
-                            {
-                                aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
-                                aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                                aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
-                            }
-                        }
-                        aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
-                        aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
-                    }
-
+                    SolrInputDocument aux = createAuxDoc(nodeMetaData);
                     auxDocCmd.solrDoc = aux;
                     auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
@@ -1022,7 +1008,7 @@ public class CoreTracker implements CloseHook
             docCmd.fromPending = true;
             docCmd.fromCommitted = true;
             core.getUpdateHandler().delete(docCmd);
-            
+
             docCmd = new DeleteUpdateCommand();
             docCmd.id = "AUX-" + node.getId();
             docCmd.fromPending = true;
@@ -1030,7 +1016,117 @@ public class CoreTracker implements CloseHook
             core.getUpdateHandler().delete(docCmd);
         }
     }
-    
+
+    private void updateDescendantAuxDocs(AlfrescoSolrDataModel dataModel, NodeMetaData parentNodeMetaData) throws AuthenticationException, IOException, JSONException
+    {
+        if (parentNodeMetaData.getChildIds() != null)
+        {
+            for (Long childId : parentNodeMetaData.getChildIds())
+            {
+                NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
+                nmdp.setFromNodeId(childId);
+                nmdp.setToNodeId(childId);
+                nmdp.setIncludeAclId(true);
+                nmdp.setIncludeAspects(true);
+                nmdp.setIncludeChildAssociations(false);
+                nmdp.setIncludeChildIds(true);
+                nmdp.setIncludeNodeRef(false);
+                nmdp.setIncludeOwner(true);
+                nmdp.setIncludeParentAssociations(true);
+                nmdp.setIncludePaths(true);
+                nmdp.setIncludeProperties(false);
+                nmdp.setIncludeType(true);
+                List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
+
+                for (NodeMetaData nodeMetaData : nodeMetaDatas)
+                {
+                    if (mayHaveChildren(dataModel, nodeMetaData))
+                    {
+                        updateDescendantAuxDocs(dataModel, nodeMetaData);
+                    }
+                    
+                    SolrInputDocument aux = createAuxDoc(nodeMetaData);
+                    AddUpdateCommand auxDocCmd = new AddUpdateCommand();
+                    auxDocCmd.overwriteCommitted = true;
+                    auxDocCmd.overwritePending = true;
+                    auxDocCmd.solrDoc = aux;
+                    auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+
+                    core.getUpdateHandler().addDoc(auxDocCmd);
+                }
+            
+            }
+        }
+      
+        
+    }
+
+    private SolrInputDocument createAuxDoc(NodeMetaData nodeMetaData)
+    {
+        SolrInputDocument aux = new SolrInputDocument();
+        aux.addField(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + nodeMetaData.getId());
+        aux.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
+        aux.addField(AbstractLuceneQueryParser.FIELD_ACLID, nodeMetaData.getAclId());
+
+        for (Pair<String, QName> path : nodeMetaData.getPaths())
+        {
+            aux.addField(AbstractLuceneQueryParser.FIELD_PATH, path.getFirst());
+        }
+
+        if (nodeMetaData.getOwner() != null)
+        {
+            aux.addField(AbstractLuceneQueryParser.FIELD_OWNER, nodeMetaData.getOwner());
+        }
+        aux.addField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc());
+
+        StringBuilder qNameBuffer = new StringBuilder(64);
+        StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
+        if (nodeMetaData.getParentAssocs() != null)
+        {
+            for (ChildAssociationRef childAssocRef : nodeMetaData.getParentAssocs())
+            {
+                if (qNameBuffer.length() > 0)
+                {
+                    qNameBuffer.append(";/");
+                    assocTypeQNameBuffer.append(";/");
+                }
+                qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
+                assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                aux.addField(AbstractLuceneQueryParser.FIELD_PARENT, childAssocRef.getParentRef());
+
+                if (childAssocRef.isPrimary())
+                {
+                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+                }
+            }
+            aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
+            aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
+        }
+        return aux;
+    }
+
+    private boolean mayHaveChildren(AlfrescoSolrDataModel dataModel, NodeMetaData nodeMetaData)
+    {
+        // 1) Does the type support children?
+        TypeDefinition nodeTypeDef = dataModel.getDictionaryService().getType(nodeMetaData.getType());
+        if ((nodeTypeDef != null) && (nodeTypeDef.getChildAssociations().size() > 0))
+        {
+            return true;
+        }
+        // 2) Do any of the applied aspects support children?
+        for (QName aspect : nodeMetaData.getAspects())
+        {
+            AspectDefinition aspectDef = dataModel.getDictionaryService().getAspect(aspect);
+            if ((aspectDef != null) && (aspectDef.getChildAssociations().size() > 0))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void addContentPropertyToDoc(SolrInputDocument doc, ArrayList<Reader> toClose, ArrayList<File> toDelete, Node node, QName propertyQName,
             ContentPropertyValue contentPropertyValue) throws AuthenticationException, IOException
     {
@@ -1202,8 +1298,8 @@ public class CoreTracker implements CloseHook
      * @throws IOException
      * @throws JSONException
      */
-    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime)
-    throws AuthenticationException, IOException, JSONException
+    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws AuthenticationException, IOException,
+            JSONException
     {
 
         IndexHealthReport indexHealthReport = new IndexHealthReport();
@@ -1854,12 +1950,12 @@ public class CoreTracker implements CloseHook
         }
         return out;
     }
-    
+
     public NodeReport checkNodeCommon(NodeReport nodeReport)
     {
         // In Index
 
-    	long dbid = nodeReport.getDbid();
+        long dbid = nodeReport.getDbid();
 
         try
         {
@@ -1948,7 +2044,7 @@ public class CoreTracker implements CloseHook
         nodeReport.setDbTx(node.getTxnId());
 
         checkNodeCommon(nodeReport);
-        
+
         return nodeReport;
     }
 
@@ -2025,7 +2121,7 @@ public class CoreTracker implements CloseHook
         }
         catch (AuthenticationException e)
         {
-        	throw new AlfrescoRuntimeException("Failed to get nodes", e);
+            throw new AlfrescoRuntimeException("Failed to get nodes", e);
         }
     }
 
@@ -2059,7 +2155,7 @@ public class CoreTracker implements CloseHook
         }
         catch (AuthenticationException e)
         {
-        	throw new AlfrescoRuntimeException("Failed to get nodes", e);
+            throw new AlfrescoRuntimeException("Failed to get nodes", e);
         }
     }
 
@@ -2090,7 +2186,7 @@ public class CoreTracker implements CloseHook
         }
         catch (AuthenticationException e)
         {
-        	throw new AlfrescoRuntimeException("Failed to get acls", e);
+            throw new AlfrescoRuntimeException("Failed to get acls", e);
         }
     }
 
@@ -2146,7 +2242,7 @@ public class CoreTracker implements CloseHook
                 for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
                 {
                     int doc = it.nextDoc();
-                    
+
                     Document document = solrIndexSearcher.doc(doc);
                     Fieldable fieldable = document.getFieldable("ID");
                     if (fieldable != null)
@@ -2177,7 +2273,7 @@ public class CoreTracker implements CloseHook
                             long acltxid = Long.parseLong(value);
                             aclReport.setIndexAclTx(acltxid);
                         }
-                     
+
                     }
                 }
 
@@ -2195,8 +2291,7 @@ public class CoreTracker implements CloseHook
 
         return aclReport;
     }
-   
-    
+
     private void loadModel(Map<String, M2Model> modelMap, HashSet<String> loadedModels, M2Model model, AlfrescoSolrDataModel dataModel)
     {
         String modelName = model.getName();
@@ -2215,44 +2310,44 @@ public class CoreTracker implements CloseHook
 
             dataModel.putModel(model);
             loadedModels.add(modelName);
-            System.out.println("Loading model "+model.getName());
+            System.out.println("Loading model " + model.getName());
         }
     }
-    
+
     private String getModelFileName(M2Model model)
     {
-        return model.getName().replace(":", ".")+"."+model.getChecksum(XMLBindingType.DEFAULT)+".xml";
+        return model.getName().replace(":", ".") + "." + model.getChecksum(XMLBindingType.DEFAULT) + ".xml";
     }
-    
+
     /*
      * Loads encryption key resources from a SolrResourceLoader
      */
     private class SolrKeyResourceLoader implements KeyResourceLoader
     {
-    	private SolrResourceLoader loader;
+        private SolrResourceLoader loader;
 
-    	public SolrKeyResourceLoader(SolrResourceLoader loader)
-    	{
-    		this.loader = loader;
-    	}
+        public SolrKeyResourceLoader(SolrResourceLoader loader)
+        {
+            this.loader = loader;
+        }
 
-    	@Override
-    	public InputStream getKeyStore(String location)
-    			throws FileNotFoundException
-    	{
-    		return loader.openResource(location);
-    	}
+        @Override
+        public InputStream getKeyStore(String location) throws FileNotFoundException
+        {
+            return loader.openResource(location);
+        }
 
-    	@Override
-    	public Properties getPasswords(String location) throws IOException
-    	{
-    		Properties p = new Properties();
-    		p.load(loader.openResource(location));
-    		return p;
-    	}
+        @Override
+        public Properties getPasswords(String location) throws IOException
+        {
+            Properties p = new Properties();
+            p.load(loader.openResource(location));
+            return p;
+        }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.apache.solr.core.CloseHook#close(org.apache.solr.core.SolrCore)
      */
     @Override
@@ -2262,9 +2357,9 @@ public class CoreTracker implements CloseHook
         {
             adminHandler.getScheduler().deleteJob("CoreTracker-" + core.getName(), "Solr");
             adminHandler.getTrackers().remove(core.getName());
-            if(adminHandler.getTrackers().size() == 0)
+            if (adminHandler.getTrackers().size() == 0)
             {
-                if(!adminHandler.getScheduler().isShutdown())
+                if (!adminHandler.getScheduler().isShutdown())
                 {
                     adminHandler.getScheduler().shutdown();
                 }
@@ -2275,6 +2370,6 @@ public class CoreTracker implements CloseHook
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
     }
 }

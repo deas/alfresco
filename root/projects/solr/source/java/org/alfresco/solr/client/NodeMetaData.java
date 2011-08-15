@@ -44,6 +44,8 @@ public class NodeMetaData
     private long parentAssocsCrc;
     private List<ChildAssociationRef> parentAssocs;
     private List<ChildAssociationRef> childAssocs;
+    private List<Long> childIds;
+    private String owner;
     
     public long getId()
     {
@@ -129,11 +131,30 @@ public class NodeMetaData
     {
        return childAssocs;   
     }
+    public List<Long> getChildIds()
+    {
+        return childIds;
+    }
+    public void setChildIds(List<Long> childIds)
+    {
+        this.childIds = childIds;
+    }
+    
+    public String getOwner()
+    {
+        return owner;
+    }
+    public void setOwner(String owner)
+    {
+        this.owner = owner;
+    }
+    
     @Override
     public String toString()
     {
-        return "NodeMetaData [id=" + id + ", nodeRef=" + nodeRef + ", type=" + type + ", aclId=" + aclId
-                + ", properties=" + properties + ", aspects=" + aspects + ", paths=" + paths + "]";
+        return "NodeMetaData [id="
+                + id + ", nodeRef=" + nodeRef + ", type=" + type + ", aclId=" + aclId + ", properties=" + properties + ", aspects=" + aspects + ", paths=" + paths
+                + ", parentAssocsCrc=" + parentAssocsCrc + ", parentAssocs=" + parentAssocs + ", childAssocs=" + childAssocs + ", childIds=" + childIds + ", owner=" + owner + "]";
     }
    
 }

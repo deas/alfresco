@@ -648,6 +648,10 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
             body.put("includeParentAssociations", params.isIncludeParentAssociations());
         }
+        if(!params.isIncludeChildIds())
+        {
+            body.put("includeChildIds", params.isIncludeChildIds());
+        }
         if(!params.isIncludePaths())
         {
             body.put("includePaths", params.isIncludePaths());
@@ -797,10 +801,27 @@ public class SOLRAPIClient extends AlfrescoHttpClient
                 metaData.setChildAssocs(assocs);
             }
             
+            if(jsonNodeInfo.has("childIds"))
+            {
+                JSONArray jsonChildIds = jsonNodeInfo.getJSONArray("childIds");
+                List<Long> childIds = new ArrayList<Long>(jsonChildIds.length());
+                for(int j = 0; j < jsonChildIds.length(); j++)
+                {
+                    Long childId = jsonChildIds.getLong(j);
+                    childIds.add(childId);
+                }
+                metaData.setChildIds(childIds);
+            }
+            
+            if(jsonNodeInfo.has("owner"))
+            {
+                metaData.setOwner(jsonNodeInfo.getString("owner"));
+            }
+           
+            
             nodes.add(metaData);
             
-            
-           
+         
         }
 
         return nodes;
