@@ -147,9 +147,7 @@
             node = "",
             nodeName = "",
             nodeLabel = "",
-            statusType = this.msg("publishingHistory.status." + event.status),
             statusTime = Alfresco.util.relativeTime(event.scheduledTime.dateTime),
-            statusDisplay = this.msg("publishingHistory.status.display", statusType, statusTime),
             statusIcon = Alfresco.constants.URL_RESCONTEXT + "components/document-details/images/status-"+ event.status + ".png",
             html = "",
             canUnpublish = false,
@@ -178,12 +176,12 @@
             if (node.nodeRef === this.options.nodeRef) {
                nodeName = node.name;
                nodeLabel = node.version;
-               eventType = this.msg("publishingHistory.event.published", channelName);
+               eventType = "publish";
             }
          }
          
          // If we've not found a publish event, check unpublish ones too:
-         if (nodeName !== "") 
+         if (nodeName === "") 
          {   
             // Loop through unpublish events too:
             for (var i=0; i < event.unpublishNodes.length; i++) {
@@ -192,10 +190,14 @@
                if (node.nodeRef === this.options.nodeRef) {
                   nodeName = node.name;
                   nodeLabel = node.version;
-                  eventType = this.msg("publishingHistory.event.unpublished", channelName);
+                  eventType = "unpublish";
                }
             }
          }
+         
+         // set status message, depending on event type:
+         var statusType = this.msg("publishingHistory.status." + eventType + "." + event.status),
+            statusDisplay = this.msg("publishingHistory.status.display", statusType, statusTime);
          
          // Check we have a matching node, then render the HTML for it.
          if (nodeName !== "") {
@@ -206,7 +208,7 @@
             html += '   <h3 class="thin dark">' + $html(nodeName) +  '</h3>';         
             html += '   <span class="actions">';
             // Files can be unpublished only if the channel supports it AND they have successfully been published
-            if (canUnpublish && event.status === "COMPLETED") {
+            if (canUnpublish && event.status === "COMPLETED" && eventType === "publish") {
                html += '		<a href="#" name=".onUnpublishClick" rel="' + nodeRef + '" class="' + this.id + ' unpublish" title="' + this.msg("publishingHistory.action.unpublish") + '">&nbsp;</a>';
             }
             html += '   </span>';
@@ -216,7 +218,7 @@
             {
                html += '   <img src="' + $html(channelIcon) + '" alt="' + $html(channelTitle) + '" title="' + $html(channelTitle) + '"/>';
             }
-            html += '      <span class="channel-name">' + $html(eventType) + '<span>';
+            html += '      <span class="channel-name">' + $html(channelName) + '<span>';
             html += '   </div>';
             html += '   <div class="status-details">';
             html += '      <img src="' + $html(statusIcon) + '" alt="' + $html(statusType) + '" title="' + $html(statusType) + '"/><span class="status">' + statusDisplay + '<span>';
@@ -265,7 +267,7 @@
                      },
                      successCallback: 
                      {
-                        fn: me.onDeleteChannelSuccess,
+                        fn: me.onUnpublishSuccess,
                         scope: me
                      },
                      failureCallback: 
@@ -320,10 +322,10 @@
        */
       doRefresh: function DocumentPublishing_doRefresh()
       {
-         console.log("do refresh");
-         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
-         // TODO Update this Refreshing URL.
-         //this.refresh('components/document-details/document-versions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' :  ''));
+         var dataTable = this.widgets.alfrescoDataTable.widgets.dataTable
+         
+         // reload the datatable.
+         dataTable.getDataSource().sendRequest('', { success: dataTable.onDataReturnInitializeTable, scope: dataTable });
       }
    });
 })();

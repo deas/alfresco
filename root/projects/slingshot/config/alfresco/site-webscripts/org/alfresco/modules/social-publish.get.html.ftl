@@ -27,7 +27,7 @@
 	                     <li>
 	                        <span>
 	                           <a href="#" class="publishChannel" rel="${publishChannel.id?html}">
-	                           	<img src="${url.context}/proxy/alfresco/${publishChannel.channelType.icon?html}/32" alt="${publishChannel.title?html}" />
+	                           	<img src="${url.context}/proxy/alfresco/${publishChannel.channelType.icon?html}/20" alt="${publishChannel.title?html}" />
 	                              <span>
 	                              	${publishChannel.title?html}
 											</span>
@@ -41,7 +41,7 @@
 					
 					
 	         </div>
-	         <#if (statusUpdateChannels?size > 0) > 
+	         <#if (statusUpdateChannels?size > 0) >
 					<div id="${el}-statusUpdate-div" class="formsection">
 		            <h3 class="channel-header">${msg("socialPublish.dialogue.statusUpdate.title")}</h3>
 						<div class="yui-gd">
@@ -56,16 +56,16 @@
 				               <div id="${el}-statusSelect-menu" class="yuimenu menu-with-icons" style="visibility: hidden; position:absolute;">
 				                  <div class="bd">
 				                     <ul id="${el}-statusSelectActions" class="statusSelectActions">
-				                        <li>
+				                        <li id="${el}-statusSelectActionAll">
 				                           <span>
-				                              <a href="#" class="statusSelectAction" id="${el}-statusSelectActionAll">
+				                              <a href="#" class="statusSelectAction">
 				                                 ${msg("socialPublish.button.select.all")}
 				                              </a>
 				                           </span>
 				                        </li>
-				                        <li>
+				                        <li id="${el}-statusSelectActionNone">
 				                           <span>
-				                              <a href="#" class="statusSelectActions" id="${el}-statusSelectActionNone">
+				                              <a href="#" class="statusSelectActions">
 				                                 ${msg("socialPublish.button.select.none")}
 				                              </a>
 				                           </span>
@@ -80,8 +80,8 @@
 		                     <#list statusUpdateChannels as statusUpdateChannel>
 		                        <#assign count = count + 1>
 		                        <div class="status-channel">
-		                           <input class="statusUpdate-checkboxes" type="checkbox" name="" value="${statusUpdateChannel.id?html}" id="${el}-statusUpdate-checkbox-channel-${count}" relTODO="${statusUpdateChannel.channelType.maxStatusLength?html}" rel="140"/>
-		                           <label title="${statusUpdateChannel.title?html}" for="${el}-statusUpdate-checkbox-channel-${count}"><img src="${url.context}/proxy/alfresco/${statusUpdateChannel.channelType.icon?html}/32" width="20" height="20"/>${statusUpdateChannel.title?html}</label>
+		                           <input class="statusUpdate-checkboxes" type="checkbox" name="${statusUpdateChannel.channelType.title?html}" value="${statusUpdateChannel.id?html}" id="${el}-statusUpdate-checkbox-channel-${count}" rel="${statusUpdateChannel.channelType.maxStatusLength?html}"/>
+		                           <label title="${statusUpdateChannel.title?html}" for="${el}-statusUpdate-checkbox-channel-${count}"><img src="${url.context}/proxy/alfresco/${statusUpdateChannel.channelType.icon?html}/20" width="20" height="20"/>${statusUpdateChannel.title?html}</label>
 		                        </div>
 		                     </#list>
 		                  </div>
@@ -99,6 +99,7 @@
 									</div>
 									<div class="yui-u statusUpdate-count-container">
 										<div id="${el}-statusUpdate-count" class="status-count"></div>
+										<div id="${el}-statusUpdate-countMessage" class="status-count-message"></div>
 										<div id="${el}-statusUpdate-count-urlMessage" class="statusUpdate-count-urlMessage"></div>
 		                     </div>
 								</div>

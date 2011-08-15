@@ -1,5 +1,6 @@
 /* Controls the look and feel of the Social Publishing Dialogue and Publish History view. */
-.social-publishing form {
+.social-publishing form 
+{
    width:750px;   
 }
 
@@ -26,7 +27,8 @@ p.statusUpdate-info
    text-align:left;   
 }
 
-.social-publishing h3 {
+.social-publishing h3 
+{
    margin:5px 0;
 }
 
@@ -39,7 +41,8 @@ div.status-channel
    background:transparent url('images/tick-off-16.png') no-repeat 5px 5px;
 }
 
-div.status-channel.selected {
+div.status-channel.selected 
+{
    background-image:url('images/tick-on-16.png');
    background-color:#DEE9F4;
 }
@@ -67,7 +70,8 @@ div.statusCheckboxes-count
 
 div.status-channel label,
 div.includeURL-container,
-div.statusCheckboxes-count
+div.statusCheckboxes-count,
+div.statusUpdate-count-urlMessage
 {
    font-size:90%;
 }
@@ -91,13 +95,24 @@ div.statusUpdate-checkboxes,
    padding:0;
 }
 
-div.social-publishing.yui-panel div.yui-u.update-container {
+div.social-publishing.yui-panel div.yui-u.update-container 
+{
    width:68%;   
 }
 
+div.warning .status-count,
+div.warning .status-count-message 
+{
+   color:red;  
+}
+
+div.statusUpdate-count-urlMessage 
+{
+   margin-top:0.5em;
+}
+
 div.status-count {
-   font-size:1.2em;
-   margin:0.5em 1em;
+   font-size:1.8em;
    text-align:center;
 }
 
@@ -109,32 +124,34 @@ div.social-publishing.yui-panel div.yui-u.first.statusUpdate-message-container
 
 div.social-publishing.yui-panel  div.yui-u.statusUpdate-count-container
 {
-   padding-top:4em;
+   padding:50px 20px 0 0;
    width:25%;
    text-align:center;
+   margin-left:0;
 }
 
-div.status-count strong {
-   display: block;
-}
-
-.social-publishing input {
+.social-publishing input 
+{
    margin-top: 5px;
 }
 
-.social-publishing-header {
+.social-publishing-header
+{
    padding-right:25px;
 }
 
-div.publishConfirm div.success {
+div.publishConfirm div.success 
+{
    padding-bottom:10px;
 }
 
-div.publishConfirm div.success img {
+div.publishConfirm div.success img 
+{
    padding:0 6px;   
 }
 
-div.publishConfirm a {
+div.publishConfirm a 
+{
    display:block;
    color: #FFFFFF;
 }
@@ -149,7 +166,8 @@ ul.channelTypes .yuimenuitemlabel
    padding:0;  
 }
 
-a.publishChannel {
+a.publishChannel 
+{
    text-decoration:none;
    display: block;
    line-height: 22px;

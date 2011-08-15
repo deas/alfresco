@@ -23,6 +23,13 @@ div.channel
 div.channel .channelName
 {
    color: #333333;
+	margin-left: -22px;
+	padding: 2px 0 2px 22px;
+}
+
+.channelName:hover
+{
+	background-color:#E4E4E4;
 }
 
 div.channel .channelActions
@@ -65,8 +72,8 @@ div.channellist tr
 {
    display: block;
    float: left;
-   width: 200px;
-   margin-right: 5px;
+   width: 180px;
+   margin-left: 25px;
 	min-height: 10em;
 }
 
@@ -108,12 +115,12 @@ div.channellist form.insitu-edit input
    margin-right:0;
    width: 160px;
 	text-align:center;
+	margin-top:2px;
 }
 
 div.channellist span.insitu-edit
 {
-   margin-left: 42px;
-   margin-top: -20px;
+   margin-top: 0px;
 }
 
 .permissions-show {

@@ -212,7 +212,6 @@
             });
             return;
          }
-         
 
          // Inject the template from the XHR request into a new DIV element
          var containerDiv = document.createElement("div");
@@ -248,6 +247,7 @@
          this.widgets.formContainer = Dom.get(this.id + "-publish-form");
          this.widgets.statusUpdateText = Dom.get(this.id + "-statusUpdate-text");
          this.widgets.statusUpdateCount = Dom.get(this.id + "-statusUpdate-count");
+         this.widgets.statusUpdateCountMsg = Dom.get(this.id + "-statusUpdate-countMessage");
          this.widgets.statusUpdateChannelCount = Dom.get(this.id + "-statusUpdate-channel-count");
          this.widgets.statusUpdateCountURL = Dom.get(this.id + "-statusUpdate-count-urlMessage");
          this.widgets.statusUpdateCheckboxes = Dom.getElementsByClassName("statusUpdate-checkboxes", "input", this.widgets.formContainer);
@@ -262,6 +262,10 @@
          
          // add listener for selection of publish channel:
          Event.addListener(Dom.get(this.id + "-publishChannel-menu"), "click", this.onSelectPublishChannel, {}, this);
+         
+         // add listeners for multi select options for Status Updates
+         Event.addListener(Dom.get(this.id + "-statusSelectActionAll"), "click", this.onSelectAllStatusChannels, {}, this);
+         Event.addListener(Dom.get(this.id + "-statusSelectActionNone"), "click", this.onSelectNoStatusChannels, {}, this);
          
          // add listener for URL check box
          Event.addListener(this.widgets.statusUpdateUrlCheckbox, "click", this.onStatusURLToggle, {}, this);
@@ -280,11 +284,7 @@
        */
       onCancelButtonClick: function SP_onCancelButtonClick()
       {
-         // Hide the panel
-         this.widgets.panel.hide();
-         
-         // Disable the Esc key listener
-         this.widgets.escapeListener.disable();
+         this.closeDialogue();
       },
       
       /**
@@ -330,11 +330,17 @@
          // Define success and failure functions inline so they have closeure access to local vars.
          var success = function SP_onPublishSuccess(response)
          {
+            // Check to see if there is a DocumentPublishing module that needs refreshing
+            var DocPubComponent = Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentPublishing")
+            if (DocPubComponent !== null) {
+               DocPubComponent.doRefresh();
+            }
+            
             // Build up necessary data and HTML.
             // It looks more complicated than it actually is.
             var fileName = me.showConfig.filename, 
-               channelName = this.widgets.selectChannelButton.innerHTML,
-               docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "/document-details?nodeRef=" + me.showConfig.nodeRef;
+               channelName = this.widgets.selectChannelButton.getAttributeConfig("label").value,
+               docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "document-details?nodeRef=" + me.showConfig.nodeRef;
                linkText = Alfresco.util.message("socialPublish.confirm.link", me.name, 
                      {
                         "0": fileName
@@ -383,11 +389,26 @@
             failureMessage: Alfresco.util.message("socialPublish.confirm.failure", this.name)
          });
          
+         this.closeDialogue();
+      },
+      
+      /**
+       * 
+       * Closes the fialogue and tidys up any loose ends
+       * 
+       * @method closeDialogue
+       */
+      closeDialogue: function SP_closeDialogue(){
+         
+         // hide the truncation message
+         this.resetTruncationMsg();
+         
          // Hide the panel
          this.widgets.panel.hide();
          
          // Disable the Esc key listener
-         this.widgets.escapeListener.disable();
+         this.widgets.escapeListener.disable(); 
+         
       },
       
       /**
@@ -411,8 +432,56 @@
       {
          // apply the selected class
          Alfresco.util.toggleClass(Dom.getAncestorByClassName(Dom.get(event.target), "status-channel"), "selected");
+
+         // trigger onSelected function
+         this.onSelectedStatusChannelChange();
+      },
+      
+      /**
+       * 
+       * Triggered when the "All" open is selected from the select dropdown list on the status update channels
+       * 
+       * @method onSelectAllStatusChannels
+       */
+      onSelectAllStatusChannels: function SP_onSelectAllStatusChannels(event){
+         for (var i in this.widgets.statusUpdateCheckboxes){
+            var el = this.widgets.statusUpdateCheckboxes[i]
+            el.checked = true;
+            Dom.addClass(Dom.getAncestorByClassName(el, "status-channel"), "selected");
+         }
+         this.onSelectedStatusChannelChange();
+         event.preventDefault();
+      },
+
+      /**
+       * 
+       * Triggered when the "None" open is selected from the select dropdown list on the status update channels
+       * 
+       * @method onSelectNoStatusChannels
+       */
+      onSelectNoStatusChannels: function SP_onSelectNoStatusChannels(event){
+         for (var i in this.widgets.statusUpdateCheckboxes){
+            var el = this.widgets.statusUpdateCheckboxes[i]
+            el.checked = false;
+            Dom.removeClass(Dom.getAncestorByClassName(el, "status-channel"), "selected");
+         }
+         this.onSelectedStatusChannelChange();
+         event.preventDefault();
+      },
+      
+      /**
+       * called everytime a change is made to the list of selected status channels.
+       * 
+       * @method onSelectedStatusChannelChange
+       */
+      onSelectedStatusChannelChange: function SP_onSelectedStatusChannelChange(){
+         // Reset the Truncation Message (this will be shown again by checkUpdateLength if required)
+         this.resetTruncationMsg();
+         
+         // Update Character Count
          this.checkUpdateLength();
          
+         // Update selected channel count
          var selectedChannelsCount = Selector.filter(this.widgets.statusUpdateCheckboxes, ":checked").length 
          this.widgets.statusUpdateChannelCount.innerHTML = Alfresco.util.message("socialPublish.dialogue.statusUpdate.select.count", this.name,
          {
@@ -420,6 +489,7 @@
             "1": this.widgets.statusUpdateCheckboxes.length 
          });
          
+         // Enable or disable the status update boxes.
          if (selectedChannelsCount > 0) {
             // enable status update boxes:
             this.widgets.statusUpdateText.removeAttribute("disabled")
@@ -430,7 +500,7 @@
             // disable status update boxes:
             Dom.setAttribute(this.widgets.statusUpdateText, "disabled", "disabled");
             Dom.setAttribute(this.widgets.statusUpdateUrlCheckbox, "disabled", "disabled");
-         }
+         }         
       },
       
       /**
@@ -473,23 +543,35 @@
          var limit = null,
             count = 0,
             charsRemaining = 0,
-            checkedUpdateChannels = Selector.filter(this.widgets.statusUpdateCheckboxes, ":checked");
+            checkedUpdateChannels = Selector.filter(this.widgets.statusUpdateCheckboxes, ":checked"),
+            channelTypeLimits = {}; // Used for trunctation message
+         
          // Check to see if there are any status update channels selected
          if (checkedUpdateChannels.length > 0) 
          {
             // get the minimum length of the selected channels. This is the number to count down from.
             for (var i = 0; i < checkedUpdateChannels.length; i++) 
             {
-               var channelLimit = parseInt(Dom.getAttribute(checkedUpdateChannels[i], "rel"), 10);
+               var channelLimit = parseInt(Dom.getAttribute(checkedUpdateChannels[i], "rel"), 10),
+                  channelType = Dom.getAttribute(checkedUpdateChannels[i], "name");
+               
                // Check channel limit is greater than zero (zero indicates unlimited) and the count has either not been 
                // set previously or is set to a higher value (since we're looking for the lowest limit)
                if (channelLimit > 0 && (channelLimit < limit || limit === null))
                {
                   limit = channelLimit
                }
+
+               // Build up an array of channel types and channel limits - used for truncation messaging later.
+               // If the channel Limit hasn't already been added to the array and isn't zero, add it.
+               if (channelTypeLimits[channelType] === undefined && channelLimit !== 0) 
+               {
+                  channelTypeLimits[channelType] = channelLimit;
+               }
+               
             }
             
-            // check that at least one of the selected channels set a char limit.
+            // check that at least one of the selected channels set a limit.
             if (limit !== null) {
                   
                // should the URL length be deducted?
@@ -513,7 +595,7 @@
                // deduct the current character count
                count = count + this.widgets.statusUpdateText.value.length;
                
-               // chars remaining
+               // calculate number of characters remaining
                charsRemaining = limit - count;
                
                // display the characters remaining:
@@ -522,23 +604,34 @@
                      "0": charsRemaining
                });
                
+               // display the help message:
+               this.widgets.statusUpdateCountMsg.innerHTML = Alfresco.util.message("socialPublish.dialogue.statusUpdate.countMessage", this.name)
+               
+               // If the message is too long, display a warning that truncation will occur.
                if (charsRemaining < 0) {
-                  if (this.widgets.truncationNotification === null)
-                  {
-                     // TODO: build up list of truncation channels. Refresh balloon with updates to list of truncation channels.
-                     this.widgets.truncationNotification = Alfresco.util.createBalloon(this.widgets.statusUpdateText,
-                     {
-                        html: "Tuncation will occur!",
-                        width: "24em"
-                     });
                   
-                     this.widgets.truncationNotification.show();
+                  // Add a warning style to the container:
+                  Dom.addClass(Dom.getAncestorByClassName(this.widgets.statusUpdateCount, "statusUpdate-count-container", "div"), "warning");
+                  
+                  var truncationChannels=[];
+                  
+                  // Compare count with length of each channel's limit and build a list of channels that will be truncated.
+                  for (var i in channelTypeLimits){
+                     if (parseInt(channelTypeLimits[i],10) < count) {
+                        truncationChannels.push(i);
+                     }
                   }
+                  
+                  this.showTruncationMsg(truncationChannels)
+                  
                } else {
-                  if (this.widgets.truncationNotification) {
-                     this.widgets.truncationNotification.hide();
-                  }
-                  this.widgets.truncationNotification = null;
+                  
+                  // hide and reset the truncation message
+                  this.resetTruncationMsg();
+                  
+                  // remove the warning style from the count:
+                  Dom.removeClass(Dom.getAncestorByClassName(this.widgets.statusUpdateCount, "statusUpdate-count-container", "div"), "warning");
+                  
                }
             } 
             else 
@@ -550,28 +643,57 @@
          else 
          {
             // hide count if there's nothing selected.
-            this.widgets.statusUpdateCount.innerHTML = this.widgets.statusUpdateCountURL.innerHTML = "";
+            this.widgets.statusUpdateCount.innerHTML = this.widgets.statusUpdateCountURL.innerHTML = this.widgets.statusUpdateCountMsg = "";
          }            
          
       },
       
       /**
-       * Gets All Publising Channels
        * 
+       * Shows the truncation message
+       * 
+       * @method showTruncation
+       * @param truncationChannels {array} - list of names of channels that will be truncated 
        */
-      getAllChannels: function SP_getAllChannels()
+      showTruncationMsg: function SP_showTruncationMsg(truncationChannels)
       {
-         // AJAX call to channels Remote API
+         // check that there hasn't already been a truncation notification, or that the truncation channels have changed since last notification
+         if (this.widgets.truncationNotification === null || this.widgets.truncationNotification.truncationChannels.length !== truncationChannels.length)
+         {
+            // Ensure previous messages have been reset (so we don't overlap them):
+            this.resetTruncationMsg();
+            
+            // Single or plural channel truncation?
+            var msgType = (truncationChannels.length > 1) ? "plural" : "singular";
+            
+            this.widgets.truncationNotification = Alfresco.util.createBalloon(this.widgets.statusUpdateText,
+            {
+               text:Alfresco.util.message("socialPublish.dialogue.statusUpdate.truncationMessage." + msgType, this.name,
+               {
+                  "0": truncationChannels.join(", ")
+               }), 
+               width: "24em"
+            });
+            
+            // Store a reference to the channels this message refers to
+            this.widgets.truncationNotification.truncationChannels = truncationChannels;
+            
+            this.widgets.truncationNotification.show();
+         }
       },
       
       /**
-       * Triggered when getAllChannels returns successfully 
+       * 
+       * Resets the truncation message
+       * 
+       * @method resetTruncationMsg
        */
-      onChannelsLoaded: function SP_onChannelsLoaded(response)
+      resetTruncationMsg: function SP_resetTruncationMsg()
       {
-         //parse the response to retrieve an array of mime-types.
-         
-         //parse the response to reteieve an array of content-types.
+         if (this.widgets.truncationNotification) {
+            this.widgets.truncationNotification.hide();
+         }
+         this.widgets.truncationNotification = null;   
       },
       
       /**

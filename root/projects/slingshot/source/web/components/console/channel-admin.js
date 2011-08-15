@@ -235,7 +235,7 @@
 				title = this.msg("channelAdmin.notAuthorised.tooltip")
 			}
 			
-         html += '<div class="channel ' + status + '" title="' + title + '" rel="' + channel.id + '">' + image + '<span class="channelName" id="' + channelNameId + '">' + $html(channel.name) + '</span><span class="channelActions">' + permissionsLink + reauth + deleteLink + '</span></div>'
+         html += '<div class="channel ' + status + '" title="' + title + '" rel="' + channel.id + '">' + image + '<div class="channelName" id="' + channelNameId + '">' + $html(channel.name) + '</div><span class="channelActions">' + permissionsLink + reauth + deleteLink + '</span></div>'
 			
 			// Insitu editors
          this.insituEditors.push(
@@ -356,7 +356,7 @@
        */
       newChannelName: function newChannelName(channelType)
       {
-         var elements = Dom.getElementsByClassName("channelName", "span", this.id),
+         var elements = Dom.getElementsByClassName("channelName", "div", this.id),
             name = this.msg("channelAdmin.new-channel", channelType),
 				unique = name,
 				channelNames = [],
@@ -401,7 +401,7 @@
             this.onPermissionsClick(o.event, args);
          }
 		},
-		
+
 		/**
 		 * Triggered after the data table has been rendered
 		 * 
