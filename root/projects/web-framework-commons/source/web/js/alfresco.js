@@ -1607,7 +1607,7 @@ Alfresco.util.createTwister.collapsed = "";
  *    render {boolean} By default the new Panel will be rendered to document.body. Set to false to prevent this.
  *    type {object} Use to override YAHOO.widget.Panel default type, e.g. YAHOO.widget.Dialog
  * </pre>
- * @return {YAHOO.widget.Panel|flags.type} New Panel instance
+ * @return {YAHOO.widget.Dialog|flags.type} New Panel instance
  * @static
  */
 Alfresco.util.createYUIPanel = function(p_el, p_params, p_custom)
@@ -4424,7 +4424,7 @@ Alfresco.util.PopupManager = function()
        * }
        * @param parent {HTMLElement} (optional) Parent element in which to render prompt. Defaults to document.body if not provided
        */
-      displayMessage: function(config, parent)
+      displayMessage: function PopupManager_displayMessage(config, parent)
       {
          var parent = parent || document.body;
          // Merge the users config with the default config and check mandatory properties
@@ -4485,7 +4485,7 @@ Alfresco.util.PopupManager = function()
        *
        * @method _delayPopupHide
        */
-      _delayPopupHide: function()
+      _delayPopupHide: function PopupManager__delayPopupHide()
       {         
          YAHOO.lang.later(this.displayTime, this, function()
          {
@@ -4549,7 +4549,7 @@ Alfresco.util.PopupManager = function()
        * }
        * @param parent {HTMLElement} (optional) Parent element in which to render prompt. Defaults to document.body if not provided
        */
-      displayPrompt: function(config, parent)
+      displayPrompt: function PopupManager_displayPrompt(config, parent)
       {
          var parent = parent || document.body;
          if (this.defaultDisplayPromptConfig.buttons[0].text === null)
@@ -4672,7 +4672,7 @@ Alfresco.util.PopupManager = function()
        * }
        * @return {YAHOO.widget.SimpleDialog} The dialog widget
        */
-      getUserInput: function(config)
+      getUserInput: function PopupManager_getUserInput(config)
       {
          if (this.defaultGetUserInputConfig.buttons[0].text === null)
          {
@@ -4711,6 +4711,7 @@ Alfresco.util.PopupManager = function()
          // Generate the HTML mark-up if not overridden
          var html = c.html,
             id = Alfresco.util.generateDomId();
+
          if (html === null)
          {
             html = "";
@@ -4838,17 +4839,19 @@ Alfresco.util.PopupManager = function()
        * @param config.failure {Object} A callback object literal used on form failure
        * @param config.failureMessage {String} A submit failure message
        */
-      displayForm: function displayForm(config)
+      displayForm: function PopupManager_displayForm(config)
       {
          // Use the htmlid to make sure we respond to events from the correct form instance
          var htmlid = config.properties.htmlid || Alfresco.util.generateDomId();
          config.properties.htmlid = htmlid;
 
          // Display form webscript in a dialog
-         var panel = this.displayWebscript({
+         var panel = this.displayWebscript(
+         {
             title: config.title,
             url: Alfresco.constants.URL_SERVICECONTEXT + "components/form",
-            properties: YAHOO.lang.merge({
+            properties: YAHOO.lang.merge(
+            {
                submitType: "json",
                showCaption: false,
                formUI: true,
@@ -4872,7 +4875,8 @@ Alfresco.util.PopupManager = function()
                   cancelButton.addListener("click", this.panel.destroy, this.panel, true);
                }
             }
-         }, {
+         },
+         {
             panel: panel,
             config: config
          });
@@ -4901,7 +4905,8 @@ Alfresco.util.PopupManager = function()
                   failureMessage: this.config.failureMessage
                });
             }
-         }, {
+         },
+         {
             panel: panel,
             config: config
          });
@@ -4917,16 +4922,18 @@ Alfresco.util.PopupManager = function()
        * @param config.url {String} THe url to the webscript to load
        * @param config.properties {Object} An object literal with the webscript parameters
        */
-      displayWebscript: function displayWebscript(config)
+      displayWebscript: function PopupManager_displayWebscript(config)
       {
          // Help creating a htmlid if none has been provided
          config.properties.htmlid = config.properties.htmlid || Alfresco.util.generateDomId();
 
-         var p = new YAHOO.widget.Panel(config.properties.htmlid + "-panel", {
+         var p = new YAHOO.widget.Dialog(config.properties.htmlid + "-panel",
+         {
             visible:false,
             modal: true,
             constraintoviewport: true,
-            fixedcenter: "contained"
+            fixedcenter: "contained",
+            postmethod: "none"
          });
 
          // Load the form for the specific workflow
@@ -4937,7 +4944,7 @@ Alfresco.util.PopupManager = function()
             dataObj: config.properties,
             successCallback:
             {
-               fn: function StartWorkflow_onWorkflowFormLoaded(response, config)
+               fn: function PopupManager_displayWebscript_successCallback(response, config)
                {
                   // Instantiate a Panel from script
                   p.setHeader(config.title);

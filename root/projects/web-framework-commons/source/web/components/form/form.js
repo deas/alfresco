@@ -41,22 +41,15 @@
     */
    Alfresco.FormUI = function FormUI_consructor(htmlId, parentId)
    {
-      this.name = "Alfresco.FormUI";
-      this.id = htmlId;
-      this.parentId = parentId;
-      
-      /* Register this component */
-      Alfresco.util.ComponentManager.register(this);
-      
-      /* Load YUI Components */
-      Alfresco.util.YUILoaderHelper.require(["button", "menu", "container"], this.onComponentsLoaded, this);
+      Alfresco.FormUI.superclass.constructor.call(this, "Alfresco.FormUI", htmlId, ["button", "menu", "container"]);
 
       // Initialise prototype properties
+      this.parentId = parentId;
       this.buttons = {};
       this.formsRuntime = null;
+      this.eventGroup = htmlId;
       
       /* Decoupled event listeners */
-      this.eventGroup = htmlId;
       YAHOO.Bubbling.on("metadataRefresh", this.onFormRefresh, this);
       YAHOO.Bubbling.on("mandatoryControlValueUpdated", this.onMandatoryControlValueUpdated, this);
       YAHOO.Bubbling.on("registerValidationHandler", this.onRegisterValidationHandler, this);
@@ -65,7 +58,10 @@
       return this;
    };
 
-   Alfresco.FormUI.prototype =
+   /**
+    * Extend from Base component
+    */
+   YAHOO.extend(Alfresco.FormUI, Alfresco.component.Base,
    {
       /**
        * Object container for initialization options
@@ -134,43 +130,6 @@
        */
       formsRuntime: null, 
       
-      /**
-       * Set messages for this component.
-       *
-       * @method setMessages
-       * @param obj {object} Object literal specifying a set of messages
-       * @return {Alfresco.Search} returns 'this' for method chaining
-       */
-      setMessages: function FormUI_setMessages(obj)
-      {
-         Alfresco.util.addMessages(obj, this.name);
-         return this;
-      },
-
-      /**
-       * Set multiple initialization options at once.
-       *
-       * @method setOptions
-       * @param obj {object} Object literal specifying a set of options
-       * @return {Alfresco.Search} returns 'this' for method chaining
-       */
-      setOptions: function FormUI_setOptions(obj)
-      {
-         this.options = YAHOO.lang.merge(this.options, obj);
-         return this;
-      },
-
-      /**
-       * Fired by YUILoaderHelper when required component script files have
-       * been loaded into the browser.
-       *
-       * @method onComponentsLoaded
-       */
-      onComponentsLoaded: function FormUI_onComponentsLoaded()
-      {
-         Event.onContentReady(this.id, this.onReady, this, true);
-      },
-
       /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
@@ -348,7 +307,9 @@
             {
                var fnFormLoaded = function(response, p_formUI)
                {
-                  Dom.get(p_formUI.parentId).innerHTML = response.serverResponse.responseText;
+                  Alfresco.util.populateHTML(
+                     [ p_formUI.parentId, response.serverResponse.responseText ]
+                  );
                };
                
                var data =
@@ -389,7 +350,10 @@
       {
          // the value of a mandatory control on the page (usually represented by a hidden field)
          // has been updated, force the forms runtime to check if form state is still valid
-         this.formsRuntime.updateSubmitElements();
+         if (this.formsRuntime)
+         {
+            this.formsRuntime.updateSubmitElements();
+         }
       },
       
       /**
@@ -401,15 +365,18 @@
        */
       onRegisterValidationHandler: function FormUI_onRegisterValidationHandler(layer, args)
       {
-         // extract the validation arguments
-         var validation = args[1];
-         
-         // check the minimim required data is provided
-         if (validation && validation.fieldId && validation.handler)
+         if (this.formsRuntime)
          {
-            // register with the forms runtime instance
-            this.formsRuntime.addValidation(validation.fieldId, validation.handler, validation.args, 
-                  validation.when, validation.message);
+            // extract the validation arguments
+            var validation = args[1];
+            
+            // check the minimim required data is provided
+            if (validation && validation.fieldId && validation.handler)
+            {
+               // register with the forms runtime instance
+               this.formsRuntime.addValidation(validation.fieldId, validation.handler, validation.args, 
+                     validation.when, validation.message);
+            }
          }
       },
       
@@ -430,21 +397,8 @@
          {
             this.formsRuntime.addSubmitElement(submitElement);
          }
-      },
-      
-      /**
-       * Gets a custom message
-       *
-       * @method _msg
-       * @param messageId {string} The messageId to retrieve
-       * @return {string} The custom message
-       * @private
-       */
-      _msg: function FormUI__msg(messageId)
-      {
-         return Alfresco.util.message.call(this, messageId, "Alfresco.FormUI", Array.prototype.slice.call(arguments).slice(1));
       }
-   };
+   });
 })();
 
 

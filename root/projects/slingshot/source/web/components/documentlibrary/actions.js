@@ -177,9 +177,9 @@
       getAction: function getAction(record, owner, resolve)
       {
          var actionId = owner.getAttribute("class"),
-            action = Alfresco.util.findInArray(record.actions, actionId, "id") || {},
-            node = record;
-         if (YAHOO.lang.isBoolean(resolve) && !resolve)
+            action = Alfresco.util.findInArray(record.actions, actionId, "id") || {};
+
+         if (resolve === false)
          {
             // Return action without resolved parameters
             return action;
@@ -191,9 +191,9 @@
             var params = action.params || {};
             for (var key in params)
             {
-               params[key] = YAHOO.lang.substitute(params[key], node, function getActionParams_substitute(p_key, p_value, p_meta)
+               params[key] = YAHOO.lang.substitute(params[key], record, function getActionParams_substitute(p_key, p_value, p_meta)
                {
-                  return Alfresco.util.findValueByDotNotation(node, p_key);
+                  return Alfresco.util.findValueByDotNotation(record, p_key);
                });
             }
             return action;
@@ -610,7 +610,8 @@
             displayName = record.displayName;
 
          // Prepare genericAction config
-         var config = {
+         var config =
+         {
             success:
             {
                event:
@@ -643,7 +644,8 @@
          // Add configured success callbacks and messages if provided
          if (YAHOO.lang.isFunction(this[params.success]))
          {
-            config.success.callback = {
+            config.success.callback =
+            {
                fn: this[params.success],
                obj: record,
                scope: this
@@ -657,7 +659,8 @@
          // Acd configured failure callback and message if provided
          if (YAHOO.lang.isFunction(this[params.failure]))
          {
-            config.failure.callback = {
+            config.failure.callback =
+            {
                fn: this[params.failure],
                obj: record,
                scope: this
@@ -681,7 +684,7 @@
        * failure - The name of the callback function
        * failureMessage - The msg key to use when the repo action failed (i.e. message.extract-metadata.failure)
        * ...and any other parameter mathing the properties for GET /service/components/form webscript
-       * I.e itemid, itemkind, mode etc...
+       * i.e itemid, itemkind, mode etc...
        *
        * @method onActionFormDialog
        * @param record {object} Object literal representing the file or folder to be actioned
@@ -691,7 +694,11 @@
          // Get action & params and start create the config for displayForm
          var action = this.getAction(record, owner),
             params = action.params,
-            config = { title: this.msg(action.label) };
+            config =
+            {
+               title: this.msg(action.label)
+            },
+            displayName = record.displayName;
 
          // Make sure we don't pass the function as a form parameter
          delete params["function"];
@@ -699,7 +706,8 @@
          // Add configured success callback
          var success = params["success"];
          delete params["success"];
-         config.success = {
+         config.success =
+         {
             fn: function(response, obj)
             {
                // Invoke callback if configured and available
@@ -718,14 +726,15 @@
          // Add configure success message
          if (params.successMessage)
          {
-            config.successMessage = this.msg(params.successMessage);
+            config.successMessage = this.msg(params.successMessage, displayName);
             delete params["successMessage"];
          }
 
          // Add configured failure callback
          if (YAHOO.lang.isFunction(this[params.failure]))
          {
-            config.failure = {
+            config.failure =
+            {
                fn: this[params.failure],
                obj: record,
                scope: this
@@ -735,7 +744,7 @@
          // Add configure success message
          if (params.failureMessage)
          {
-            config.failureMessage = this.msg(params.failureMessage);
+            config.failureMessage = this.msg(params.failureMessage, displayName);
             delete params["failureMessage"];
          }
 

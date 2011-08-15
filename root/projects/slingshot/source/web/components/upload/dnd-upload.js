@@ -322,7 +322,7 @@
        * Contains the upload gui
        *
        * @property panel
-       * @type YAHOO.widget.Panel
+       * @type YAHOO.widget.Dialog
        */
       panel: null,
 
