@@ -50,6 +50,39 @@
    YAHOO.extend(Alfresco.CollaborationTitle, Alfresco.component.Base,
    {
       /**
+       * Object container for initialization options
+       *
+       * @property options
+       * @type object
+       */
+      options:
+      {
+         /**
+          * The current user
+          *
+          * @property user
+          * @type string
+          */
+         user: null,
+
+         /**
+          * The current site
+          *
+          * @property site
+          * @type string
+          */
+         site: null,
+
+         /**
+          * The current site's title
+          *
+          * @property siteTitle
+          * @type string
+          */
+         siteTitle: null
+      },
+
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Initial History Manager event registration
        *
@@ -106,7 +139,7 @@
                            buttons:
                            [
                               {
-                                 text: this.msg("button.ok"),
+                                 text: me.msg("button.ok"),
                                  handler: function leaveSite_onOk()
                                  {
                                     me.leaveSite();
@@ -114,7 +147,7 @@
                                  }
                               },
                               {
-                                 text: this.msg("button.cancel"),
+                                 text: me.msg("button.cancel"),
                                  handler: function leaveSite_onCancel()
                                  {
                                     this.destroy();
@@ -137,19 +170,16 @@
        */
       joinSite: function CollaborationTitle_joinSite()
       {
-         var site = this.options.site,
-            user = this.options.user;
-
          // Call site service to join current user to current site
          Alfresco.util.Ajax.jsonPut(
          {
-            url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(site) + "/memberships",
+            url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(this.options.site) + "/memberships",
             dataObj:
             {
                role: "SiteConsumer",
                person:
                {
-                  userName: user
+                  userName: this.options.user
                }
             },
             successCallback:
@@ -164,7 +194,7 @@
             failureCallback:
             {
                fn: this._failureCallback,
-               obj: this.msg("message.join-failure", user, site),
+               obj: this.msg("message.join-failure", this.options.user, this.options.siteTitle),
                scope: this
             }
          });
@@ -172,7 +202,7 @@
          // Let the user know something is happening
          this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
          {
-            text: this.msg("message.joining", user, site),
+            text: this.msg("message.joining", this.options.user, this.options.siteTitle),
             spanClass: "wait",
             displayTime: 0
          });
@@ -185,16 +215,13 @@
        */
       requestJoinSite: function CollaborationTitle_requestJoinSite()
       {
-         var site = this.options.site,
-            user = this.options.user;
-
          Alfresco.util.Ajax.jsonPost(
          {
-            url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(site) + "/invitations",
+            url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(this.options.site) + "/invitations",
             dataObj:
             {
                invitationType: "MODERATED",
-               inviteeUserName: user,
+               inviteeUserName: this.options.user,
                inviteeComments: "",
                inviteeRoleName: "SiteConsumer"
             },
@@ -206,7 +233,7 @@
             failureCallback:
             {
                fn: this._failureCallback,
-               obj: this.msg("message.request-join-failure", user, site),
+               obj: this.msg("message.request-join-failure", this.options.user, this.options.siteTitle),
                scope: this
             }
          });
@@ -214,7 +241,7 @@
          // Let the user know something is happening
          this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
          {
-            text: this.msg("message.request-joining", user, site),
+            text: this.msg("message.request-joining", this.options.user, this.options.siteTitle),
             spanClass: "wait",
             displayTime: 0
          });
@@ -234,13 +261,10 @@
             this.widgets.feedbackMessage = null;
          }
 
-         var site = this.options.site,
-            user = this.options.user;
-
          Alfresco.util.PopupManager.displayPrompt(
          {
             title: this.msg("message.success"),
-            text: this.msg("message.request-join-success", user, site),
+            text: this.msg("message.request-join-success", this.options.user, this.options.siteTitle),
             buttons: [
             {
                text: this.msg("button.ok"),
@@ -262,13 +286,10 @@
        */
       leaveSite: function CollaborationTitle_leaveSite()
       {
-         var site = this.options.site,
-            user = this.options.user;
-
          // Call site service to remove user from this site
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(site) + "/memberships/" + encodeURIComponent(user),
+            url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(this.options.site) + "/memberships/" + encodeURIComponent(this.options.user),
             method: "DELETE",
             successCallback:
             {
@@ -282,7 +303,7 @@
             failureCallback:
             {
                fn: this._failureCallback,
-               obj: this.msg("message.leave-failure", user, site),
+               obj: this.msg("message.leave-failure", this.options.user, this.options.siteTitle),
                scope: this
             }
          });
@@ -290,7 +311,7 @@
          // Let the user know something is happening
          this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
          {
-            text: this.msg("message.leaving", user, site),
+            text: this.msg("message.leaving", this.options.user, this.options.siteTitle),
             spanClass: "wait",
             displayTime: 0
          });
