@@ -21,6 +21,7 @@ package org.alfresco.module.vti.handler.alfresco;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -887,7 +888,8 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
             DocumentStatus documentStatus = DocumentStatus.NORMAL; // default status for new document
 
             curDocumentFileInfo = getPathHelper().resolvePathFileInfo(parentFileInfo, documentName);
-            if (curDocumentFileInfo != null)
+            boolean docExisted = curDocumentFileInfo != null;
+            if (docExisted)
             {
                 documentStatus = getDocumentHelper().getDocumentStatus(curDocumentFileInfo.getNodeRef());
 
@@ -931,14 +933,19 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
             }
 
             NodeRef curDocumentNodeRef = curDocumentFileInfo.getNodeRef();
+            Map<String, Serializable> versionProps = Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR);
 
-            if (getNodeService().hasAspect(curDocumentNodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
+            // If document already exist but is not versionable, we must version it so it is not lost.
+            // The first version must be 1.0 rather than 0.1.
+            if (docExisted)
             {
-                // adds 'versionable' aspect and saves current version
-                versionService.createVersion(curDocumentNodeRef, null);
-                // creates new version to save new changes and avoid creating initial version when transaction is committed
-                versionService.createVersion(curDocumentNodeRef, null);
+                if (getNodeService().hasAspect(curDocumentNodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
+                {
+                    versionService.createVersion(curDocumentNodeRef, versionProps);
+                }
+                versionProps = Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MINOR);
             }
+            
 
             if (getNodeService().hasAspect(curDocumentNodeRef, ContentModel.ASPECT_AUTHOR) == false)
             {
@@ -950,6 +957,9 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
             String mimetype = getMimetypeService().guessMimetype(documentName);
             writer.setMimetype(mimetype);
             writer.putContent(document.getInputStream());
+
+            // Create new version (from SPP) after content is written.
+            versionService.createVersion(curDocumentNodeRef, versionProps);
 
             tx.commit();
         }

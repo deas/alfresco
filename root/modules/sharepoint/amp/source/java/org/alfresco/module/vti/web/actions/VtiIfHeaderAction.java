@@ -21,6 +21,7 @@ package org.alfresco.module.vti.web.actions;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.web.VtiAction;
 import org.alfresco.module.vti.web.fp.PropfindMethod;
+import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.ContentData;
@@ -45,6 +47,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.version.VersionService;
+import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -264,7 +267,7 @@ public class VtiIfHeaderAction extends HttpServlet implements VtiAction
             if (nodeService.hasAspect(nodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
             {
                 // adds 'versionable' aspect and saves current version
-                versionService.createVersion(nodeRef, null);
+                versionService.createVersion(nodeRef, Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR));
             }
 
             // original document writer
