@@ -1621,7 +1621,8 @@ Alfresco.util.createYUIPanel = function(p_el, p_params, p_custom)
          draggable: true,
          fixedcenter: YAHOO.env.ua.mobile === null ? "contained" : false,
          close: true,
-         visible: false
+         visible: false,
+         postmethod: "none"
       },
       custom =
       {
