@@ -41,6 +41,7 @@
 
       // Initialise prototype properties
       this.rolePickers = {};
+      this.hiddenRoles = [];
 
       return this;
    };
@@ -95,6 +96,14 @@
        * @type object
        */
       rolePickers: null,
+
+      /**
+       * Object container for storing roles that picker doesn't show
+       * 
+       * @property hiddenRoles
+       * @type array of objects
+       */
+      hiddenRoles: null,
 
       /**
        * Container element for template in DOM.
@@ -418,12 +427,20 @@
          for (i = 0, j = defaultRoles.length; i < j; i++)
          {
             permissions = defaultRoles[i].split(";");
-            if (permissions[2] in this.options.roles)
+            if (permissions[1] in this.rolePickers && permissions[2] in this.options.roles)
             {
                this.rolePickers[permissions[1]].set("name", permissions[2]);
                this.rolePickers[permissions[1]].set("label", this.msg("role." + permissions[2]));
             }
-         }
+            else
+            {
+               this.hiddenRoles.push(
+               {
+                  user:permissions[1],
+                  role:permissions[2]
+               });
+            }
+          }
 
          // Register the ESC key to close the dialog
          var escapeListener = new YAHOO.util.KeyListener(document,
@@ -487,7 +504,17 @@
                }
             }
          }
-         
+
+         // Set hiddenRoles to avoid removing them from node
+         for (var i = 0, j = this.hiddenRoles.length; i < j; i++)
+         {
+            params.push(
+            {
+               group: this.hiddenRoles[i].user,
+               role: this.hiddenRoles[i].role
+            });
+         }
+
          return params;
       }
    });
