@@ -473,9 +473,9 @@
          for (var i = 0; i < data.length; i++) 
          {
             var ev = data[i];
-            var date = fromISO8601(ev.when);
-            var endDate = fromISO8601(ev.endDate);
-            if (comparisonFn(date, endDate)) 
+            var date = fromISO8601(ev.startAt.iso8601);
+            var endDate = fromISO8601(ev.endAt.iso8601);
+            if (comparisonFn(date, endDate))
             {
                var datum = {};
                datum.desc = ev.description || '';
@@ -484,15 +484,15 @@
                datum.description = ev.description;
                datum.isoutlook = ev.isoutlook == "true" ? "isoutlook" : "";
                datum.contEl = 'div';
-               datum.from = dateFormat(date, dateFormat.masks.isoDate) + 'T' + ev.start;
-               datum.to = dateFormat(endDate, dateFormat.masks.isoDate) + 'T' + ev.end;
-               datum.uri = '/calendar/event/' + this.options.siteId + '/' + ev.name + '?date=' + dateFormat(date, dateFormat.masks.isoDate);
+               datum.from = ev.startAt.iso8601;
+               datum.to = ev.endAt.iso8601;
+               datum.uri = '/calendar/event/' + this.options.siteId + '/' + ev.name + '?date=' + ev.startAt.iso8601;
                datum.hidden = '';
                datum.allday = '';
-               datum.isMultiDay = (datum.from.split("T")[0] !== datum.to.split("T")[0]);
-               datum.isAllDay = (ev.start === "00:00" && ev.end === "00:00");
+               datum.isMultiDay = (!Alfresco.CalendarHelper.isSameDay(date, endDate));
+               datum.isAllDay = (ev.allday == "true") ? true : false;
                datum.el = 'div';
-               datum.duration = Alfresco.CalendarHelper.getDuration(fromISO8601(datum.from), fromISO8601(datum.to));
+               datum.duration = Alfresco.CalendarHelper.getDuration(date, endDate);
                var days = datum.duration.match(/([0-9]+)D/);
                if (days && days[1]) 
                {
@@ -500,8 +500,8 @@
                }
                
                datum.key = datum.from.split(":")[0] + ':00';
-               datum.start = ev.start;
-               datum.end = ev.end;
+               datum.start = dateFormat(date, "HH:MM");
+               datum.end = dateFormat(endDate, "HH:MM");
                datum.tags = ev.tags;
                events.push(datum);
             }

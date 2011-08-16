@@ -39,10 +39,8 @@ var CalendarScriptHelper = (function()
    {
       var convertedEvent = {};
       convertedEvent.location = event.where;
-      eventDate.setHours(new String(event.start).split(':')[0]);
       convertedEvent.dtstart = toISOString(eventDate).split('+')[0];
       convertedEvent.dtstartText = zeroPad(eventDate.getHours()) + ':' + zeroPad(eventDate.getMinutes());
-      eventDate.setHours(new String(event.end).split(':')[0]);
       convertedEvent.dtend = toISOString(endDate).split('+')[0];
       convertedEvent.dtendText = zeroPad(endDate.getHours()) + ':' + zeroPad(endDate.getMinutes());
       convertedEvent.summary = event.title;
@@ -53,7 +51,7 @@ var CalendarScriptHelper = (function()
       convertedEvent.tags = event.tags;
       convertedEvent.duration = event.duration;
       
-      if (event.start === event.end) 
+      if (event.startAt.iso8601 === event.endAt.iso8601)
       {
          convertedEvent.allday = true;
       }
@@ -286,7 +284,7 @@ var CalendarScriptHelper = (function()
 		
       getView: function()
       {
-         return context.properties.filteredView;
+         return "month";
       },
       
 		/**
@@ -396,7 +394,7 @@ var CalendarScriptHelper = (function()
          
          return viewArgs;
       },
-      
+
       /**
        * Initialises data used to render the month view
        *
@@ -462,11 +460,11 @@ var CalendarScriptHelper = (function()
          {
             for (var i = 0; i < events.length; i++) 
             {
-               var eventDate = new Date();
-               var endDate = new Date();
-               var ev = events[i];
-               eventDate.setTime(fromISOString(ev.when));
-               endDate.setTime(fromISOString(ev.endDate));
+
+               var ev = events[i],
+                  eventDate = fromISOString(ev.startAt.iso8601),
+                  endDate = fromISOString(ev.endAt.iso8601);
+
                // Check event should be shown within the month displayed:
                //  - event starts BEFORE or during the month: eventStart < monthEnd, AND
                //  - event ends during OR after the month eventEnd > monthStart
@@ -474,7 +472,7 @@ var CalendarScriptHelper = (function()
                {
                   var icalEvent = convertToIcalFormat(ev, eventDate, endDate);
                   var eventMonth = eventDate.getMonth(); 
-                  var key = 'ev_';//the key is used by the FTL template to determin when the event should first be displayed 
+                  var key = 'ev_';//the key is used by the FTL template to determine when the event should first be displayed
                   if (eventMonth === d.getMonth()) // does the event start in this month?
                   {
                      key += eventDate.getDate(); // if so the key is the event's start date
@@ -498,7 +496,7 @@ var CalendarScriptHelper = (function()
          
          // the number of additional days required from next month to make up a full week
          var additionalDaysNextMonth = 0;
-         // if the number of days fits the display exactly, we don't need to add an extra week,
+         // if the number of days fits the display exactly, we do not need to add an extra week,
          if ((numPreviousAndCurrentMonthDays % 7) !== 0) 
          {
             additionalDaysNextMonth = 7 - (numPreviousAndCurrentMonthDays % 7);

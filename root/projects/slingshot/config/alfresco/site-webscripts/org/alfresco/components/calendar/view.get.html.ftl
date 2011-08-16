@@ -64,7 +64,7 @@
                                              - <span class="dtend" title="${event.dtend}">${event.dtendText}</span></p>                                
                                              <span class="location">${event.location?html}</span>
                                              <span class="duration" title="${event.duration}">1h</span>
-                                             <span class="category" >${event.tags?html}</span> 
+                                             <span class="category" ><#list event.tags as tag>"${tag?html}"<#if tag_has_next>,</#if></#list></span>
                                         </div>
                                     </div>
                                     <#assign numAllDayEvents = numAllDayEvents + 1>
@@ -87,7 +87,7 @@
                                                - <span class="dtend" title="${event.dtend}">${event.dtendText}</span></p>                                
                                                <span class="location">${event.location?html}</span>
                                                <span class="duration" title="${event.duration}">${event.duration}</span>
-                                               <span class="category" >${event.tags?html}</span>
+                                             <span class="category" ><#list event.tags as tag>"${tag?html}"<#if tag_has_next>,</#if></#list></span>
                                              </li>
                                          <#assign numEvents=numEvents + 1>    
                                  </#if>
