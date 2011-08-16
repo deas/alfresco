@@ -192,8 +192,8 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.0.0.CI-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7-SNAPSHOT.jar" sourcepath="src/activiti-engine-5.7-SNAPSHOT-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.7-SNAPSHOT.jar" sourcepath="src/activiti-spring-5.7-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7.jar" sourcepath="src/activiti-engine-5.7-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.7.jar" sourcepath="src/activiti-spring-5.7-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-youtube-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-client-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-core-1.0.jar"/>
