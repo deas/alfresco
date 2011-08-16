@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementServiceImpl;
 import org.alfresco.module.org_alfresco_module_dod5015.model.DOD5015Model;
 import org.alfresco.module.org_alfresco_module_dod5015.test.util.BaseRMTestCase;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -151,15 +150,15 @@ public class RecordsManagementServiceImplTest extends BaseRMTestCase
             @Override
             public NodeRef run()
             {
-                List<NodeRef> roots = rmService.getRecordsManagementRoots(storeRef);
-                assertNotNull(roots);
-                assertTrue(roots.size() != 0);
-                assertTrue(roots.contains(rmRootContainer));
+//                List<NodeRef> roots = rmService.getRecordsManagementRoots(storeRef);
+//                assertNotNull(roots);
+//                assertTrue(roots.size() != 0);
+//                assertTrue(roots.contains(rmRootContainer));
+//                
+//                RecordsManagementServiceImpl temp = (RecordsManagementServiceImpl)applicationContext.getBean("recordsManagementService");
+//                temp.setDefaultStoreRef(storeRef);
                 
-                RecordsManagementServiceImpl temp = (RecordsManagementServiceImpl)applicationContext.getBean("recordsManagementService");
-                temp.setDefaultStoreRef(storeRef);
-                
-                roots = rmService.getRecordsManagementRoots();
+                List<NodeRef> roots = rmService.getRecordsManagementRoots();
                 assertNotNull(roots);
                 assertTrue(roots.size() != 0);
                 assertTrue(roots.contains(rmRootContainer)); 

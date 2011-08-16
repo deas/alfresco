@@ -34,6 +34,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementCustomModel;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
+import org.alfresco.repo.domain.node.NodeDAO;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
@@ -44,11 +45,10 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.Period;
 import org.alfresco.service.cmr.repository.StoreRef;
-import org.alfresco.service.cmr.search.ResultSet;
-import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
+import org.alfresco.util.Pair;
 import org.alfresco.util.ParameterCheck;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -66,6 +66,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                                                      RecordsManagementPolicies.OnRemoveReference
 {
     /** Store that the RM roots are contained within */
+    @Deprecated
     private StoreRef defaultStoreRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
 
     /** Service registry */
@@ -76,6 +77,9 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     
     /** Node service */
     private NodeService nodeService;
+    
+    /** Node DAO */
+    private NodeDAO nodeDAO;
 
     /** Policy component */
     private PolicyComponent policyComponent;
@@ -128,6 +132,16 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     }
 
     /**
+     * Set the node DAO object
+     * 
+     * @param nodeDAO   node DAO
+     */
+    public void setNodeDAO(NodeDAO nodeDAO)
+    {
+        this.nodeDAO = nodeDAO;
+    }
+    
+    /**
      * Set records management action service
      * 
      * @param rmActionService   records management action service
@@ -141,6 +155,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
      * Sets the default RM store reference
      * @param defaultStoreRef    store reference
      */
+    @Deprecated
     public void setDefaultStoreRef(StoreRef defaultStoreRef) 
     {
         this.defaultStoreRef = defaultStoreRef;
@@ -519,29 +534,28 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getRecordsManagementRoots(org.alfresco.service.cmr.repository.StoreRef)
      */
-    public List<NodeRef> getRecordsManagementRoots(StoreRef storeRef)
-    {
-        List<NodeRef> result = null;
-        SearchService searchService = (SearchService)applicationContext.getBean("searchService");        
-        String query = "ASPECT:\"" + ASPECT_RECORDS_MANAGEMENT_ROOT + "\"";        
-        ResultSet resultSet = searchService.query(storeRef, SearchService.LANGUAGE_LUCENE, query);
-        try
-        {
-            result = resultSet.getNodeRefs();
-        }
-        finally
-        {
-            resultSet.close();
-        }
-        return result;
-    }
-    
-    /**
-     * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService#getRecordsManagementRoots()
-     */
     public List<NodeRef> getRecordsManagementRoots()
     {
-        return getRecordsManagementRoots(defaultStoreRef);
+        final List<NodeRef> results = new ArrayList<NodeRef>();
+        Set<QName> aspects = new HashSet<QName>(1);
+        aspects.add(RecordsManagementModel.ASPECT_RECORDS_MANAGEMENT_ROOT);
+        nodeDAO.getNodesWithAspects(aspects, Long.MIN_VALUE, Long.MAX_VALUE, new NodeDAO.NodeRefQueryCallback()
+        {            
+            @Override
+            public boolean handle(Pair<Long, NodeRef> nodePair)
+            {
+                results.add(nodePair.getSecond());
+                return true;
+            }
+        });
+        return results;
+    }
+    
+    @Override
+    @Deprecated
+    public List<NodeRef> getRecordsManagementRoots(StoreRef storeRef)
+    {
+        return getRecordsManagementRoots();
     }
     
     /**

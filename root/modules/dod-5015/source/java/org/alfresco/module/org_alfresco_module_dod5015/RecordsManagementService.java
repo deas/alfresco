@@ -112,6 +112,7 @@ public interface RecordsManagementService
      * @param  storeRef         store reference
      * @return List<NodeRef>    list of record management root nodes
      */
+    @Deprecated
     List<NodeRef> getRecordsManagementRoots(StoreRef storeRef);
     
     // TODO NodeRef getRecordsManagementRootById(String id);

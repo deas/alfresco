@@ -21,6 +21,7 @@
         <property name="rmActionService" ref="recordsManagementActionService"/>
         <property name="nodeService" ref="nodeService"/>
         <property name="policyComponent" ref="policyComponent"/>
+        <property name="nodeDAO" ref="nodeDAO"/>
     </bean>
     
     <bean id="RecordsManagementService" class="org.springframework.aop.framework.ProxyFactoryBean">
