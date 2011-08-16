@@ -1,20 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
- *
- * This file is part of Alfresco
- *
- * Alfresco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Alfresco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright (C) 2010-2011 Share Extras Contributors.
  *
  */
 
@@ -23,6 +8,7 @@
  * 
  * @namespace Alfresco
  * @class Alfresco.ConsoleNodeBrowser
+ * @author wabson
  */
 (function()
 {
@@ -65,13 +51,14 @@
       // NOTE: the panel registered first is considered the "default" view and is displayed first
       
       /* Search Panel Handler */
-      SearchPanelHandler = function SearchPanelHandler_constructor()
+      SearchPanelHandler = function ConsoleNodeBrowser_SearchPanelHandler_constructor()
       {
          SearchPanelHandler.superclass.constructor.call(this, "search");
       };
       
       YAHOO.extend(SearchPanelHandler, Alfresco.ConsolePanelHandler,
       {
+
          /**
           * INSTANCE VARIABLES
           */
@@ -93,14 +80,64 @@
           *
           * @method onLoad
           */
-         onLoad: function onLoad()
+         onLoad: function ConsoleNodeBrowser_SearchPanelHandler_onLoad()
          {
-            // Buttons
+             // selectedMenuItemChange handler to make menu buttons act like select lists
+             // shared by store menu and language menu
+             var onSelectedMenuItemChange = function (event) {
+                 var oMenuItem = event.newValue;
+                 this.set("label", (oMenuItem.cfg.getProperty("text")));
+                 this.set("value", (oMenuItem.cfg.getProperty("text")));
+                 return;
+            };
+            
+            var onMenuClick = function (p_sType, p_aArgs) {
+                var oEvent = p_aArgs[0],    //  DOM event
+                    oMenuItem = p_aArgs[1]; //  MenuItem instance that was the target of the event
+                
+                if (oMenuItem)
+                {
+                    this.set("label", (oMenuItem.cfg.getProperty("text")));
+                    this.set("value", (oMenuItem.cfg.getProperty("text")));
+                }
+            };
+            
+            var onMenuRender = function (type, args, button) {
+                button.set("selectedMenuItem", this.getItem(0));
+            };
+            
+            // Search button
             parent.widgets.searchButton = Alfresco.util.createYUIButton(parent, "search-button", parent.onSearchClick);
-            parent.widgets.nodeMenuButton = new YAHOO.widget.Button(parent.id + "-store-menu-button", { 
-               type: "menu",
-               menu: parent.id + "-store-menu-select"
+            
+            // Store menu button
+            Alfresco.util.Ajax.request({
+                url: Alfresco.constants.PROXY_URI + "slingshot/node/stores",
+                successCallback:
+                {
+                   fn: function(p_obj) {
+                       var stores = p_obj.json.stores;
+                       parent.widgets.storeMenuButton = new YAHOO.widget.Button(parent.id + "-store-menu-button", { 
+                           type: "menu",
+                           menu: stores,
+                           lazyloadmenu: false
+                        });
+                       parent.widgets.storeMenuButton.set("value", parent.store);
+                       parent.widgets.storeMenuButton.set("label", parent.store);
+                       parent.widgets.storeMenuButton.on("selectedMenuItemChange", onSelectedMenuItemChange);
+                   },
+                   scope: this
+                },
+                failureMessage: parent._msg("message.getstores-failure")
             });
+            
+            // Query language button
+            parent.widgets.langMenuButton = new YAHOO.widget.Button(parent.id + "-lang-menu-button", { 
+                type: "menu",
+                menu: parent.id + "-lang-menu-select"
+             });
+            parent.widgets.langMenuButton.on("selectedMenuItemChange", onSelectedMenuItemChange);
+            parent.widgets.langMenuButton.set("value", parent.searchLanguage);
+            parent.widgets.langMenuButton.set("label", parent.searchLanguage);
             
             // DataTable and DataSource setup
             parent.widgets.dataSource = new YAHOO.util.DataSource(Alfresco.constants.PROXY_URI + "slingshot/node/search",
@@ -174,16 +211,27 @@
             }, "keydown").enable();
          },
          
-         onShow: function onShow()
+         onShow: function ConsoleNodeBrowser_SearchPanelHandler_onShow()
          {
             Dom.get(parent.id + "-search-text").focus();
          },
          
-         onUpdate: function onUpdate()
+         onUpdate: function ConsoleNodeBrowser_SearchPanelHandler_onUpdate()
          {
             // update the text field - as this event could come from bookmark, navigation or a search button click
             var searchTermElem = Dom.get(parent.id + "-search-text");
             searchTermElem.value = parent.searchTerm;
+            
+            // Update language menu
+            parent.widgets.langMenuButton.set("value", parent.searchLanguage);
+            parent.widgets.langMenuButton.set("label", parent.searchLanguage);
+            
+            // Update language menu
+            if (parent.widgets.storeMenuButton)
+            {
+                parent.widgets.storeMenuButton.set("value", parent.store);
+                parent.widgets.storeMenuButton.set("label", parent.store);
+            }
             
             // check search length again as we may have got here via history navigation
             if (!this.isSearching && parent.searchTerm !== undefined && parent.searchTerm.length >= parent.options.minSearchTermLength)
@@ -201,14 +249,14 @@
                // Empty results table
                parent.widgets.dataTable.deleteRows(0, parent.widgets.dataTable.getRecordSet().getLength());
                
-               var successHandler = function ConsoleUsers__ps_successHandler(sRequest, oResponse, oPayload)
+               var successHandler = function ConsoleNodeBrowser_SearchPanelHandler_onUpdate_successHandler(sRequest, oResponse, oPayload)
                {
                   me._enableSearchUI();                  
                   me._setDefaultDataTableErrors(parent.widgets.dataTable);
                   parent.widgets.dataTable.onDataReturnInitializeTable.call(parent.widgets.dataTable, sRequest, oResponse, oPayload);
                };
                
-               var failureHandler = function ConsoleUsers__ps_failureHandler(sRequest, oResponse)
+               var failureHandler = function ConsoleNodeBrowser_SearchPanelHandler_onUpdate_failureHandler(sRequest, oResponse)
                {
                   me._enableSearchUI();
                   if (oResponse.status == 401)
@@ -233,7 +281,7 @@
                };
 
                // Send the query to the server
-               parent.widgets.dataSource.sendRequest(me._buildSearchParams(parent.searchTerm, parent.searchLanguage),
+               parent.widgets.dataSource.sendRequest(me._buildSearchParams(parent.searchTerm, parent.searchLanguage, parent.store),
                {
                   success: successHandler,
                   failure: failureHandler,
@@ -270,7 +318,7 @@
           * @method _enableSearchUI
           * @private
           */
-         _enableSearchUI: function _enableSearchUI()
+         _enableSearchUI: function ConsoleNodeBrowser_SearchPanelHandler_enableSearchUI()
          {
             // Enable search button and close the wait feedback message if present
             if (this.widgets.feedbackMessage && this.widgets.feedbackMessage.cfg.getProperty("visible"))
@@ -287,7 +335,7 @@
           * @method _setupDataTable
           * @private
           */
-         _setupDataTable: function _setupDataTable()
+         _setupDataTable: function ConsoleNodeBrowser_SearchPanelHandler_setupDataTable()
          {
             /**
              * DataTable Cell Renderers
@@ -303,6 +351,46 @@
             {
                elCell.innerHTML = $html(oData);
             };
+
+            /**
+             * Qname renderer
+             *
+             * @method renderQName
+             */
+            var renderQName = function renderQName(elCell, oRecord, oColumn, oData)
+            {
+                elCell.innerHTML = $html(oData[parent._qnamePropertyName()]);
+            }
+
+            /**
+             * Parent Qname path renderer
+             *
+             * @method renderParentPath
+             */
+            var renderParentPath = function renderParentPath(elCell, oRecord, oColumn, oData)
+            {
+                if (oData != "")
+                {
+                    var path = oData[parent._qnamePropertyName()];
+                    // Remove last part
+                    var index = parent.options.shortQNames ? path.lastIndexOf("/") : path.lastIndexOf("/{");
+                    path = index != -1 ? path.substring(0, index) : path;
+                    elCell.innerHTML = $html(path);
+                }
+            }
+
+            /**
+             * Node name renderer
+             *
+             * @method renderNodeName
+             */
+            var renderNodeName = function renderNodeName(elCell, oRecord, oColumn, oData)
+            {
+                if (oData != "")
+                {
+                    renderNodeLink(elCell, oRecord, oColumn, $html(oData[parent._qnamePropertyName()]));
+                }
+            }
             
             /**
              * Node name custom datacell formatter
@@ -331,8 +419,8 @@
             // DataTable column defintions
             var columnDefinitions =
             [
-               { key: "name", label: parent._msg("label.name"), sortable: true, formatter: renderNodeLink },
-               { key: "parentPath", label: parent._msg("label.parent_path"), sortable: true, formatter: renderCellSafeHTML },
+               { key: "name", label: parent._msg("label.name"), sortable: true, formatter: renderNodeName },
+               { key: "qnamePath", label: parent._msg("label.parent_path"), sortable: true, formatter: renderParentPath },
                { key: "nodeRef", label: parent._msg("label.node-ref"), sortable: true, formatter: renderNodeLink }
             ];
             
@@ -358,10 +446,10 @@
           * @param dataTable {object} Instance of the DataTable
           * @private
           */
-         _setDefaultDataTableErrors: function _setDefaultDataTableErrors(dataTable)
+         _setDefaultDataTableErrors: function ConsoleNodeBrowser_SearchPanelHandler_setDefaultDataTableErrors(dataTable)
          {
-            dataTable.set("MSG_EMPTY", parent._msg("message.empty", "Alfresco.ConsoleUsers"));
-            dataTable.set("MSG_ERROR", parent._msg("message.error", "Alfresco.ConsoleUsers"));
+            dataTable.set("MSG_EMPTY", parent._msg("message.datatable.empty"));
+            dataTable.set("MSG_ERROR", parent._msg("message.datatable.error"));
          },
          
          /**
@@ -369,12 +457,14 @@
           *
           * @method _buildSearchParams
           * @param searchTerm {string} User search term
+          * @param store {string} Store name
           * @private
           */
-         _buildSearchParams: function _buildSearchParams(searchTerm, searchLanguage)
+         _buildSearchParams: function ConsoleNodeBrowser_SearchPanelHandler_buildSearchParams(searchTerm, searchLanguage, store)
          {
             return "?q=" + encodeURIComponent(searchTerm) + 
-               "&lang=" + searchLanguage + 
+               "&lang=" + encodeURIComponent(searchLanguage) + 
+               "&store=" + encodeURIComponent(store) + 
                "&maxResults=" + parent.options.maxSearchResults;
          },
          
@@ -385,7 +475,7 @@
           * @param messageId {string} The messageId to display
           * @private
           */
-         _setResultsMessage: function _setResultsMessage(messageId, arg1, arg2)
+         _setResultsMessage: function ConsoleNodeBrowser_SearchPanelHandler_setResultsMessage(messageId, arg1, arg2)
          {
             var resultsDiv = Dom.get(parent.id + "-search-bar");
             resultsDiv.innerHTML = parent._msg(messageId, arg1, arg2);
@@ -397,7 +487,7 @@
           * @method onSuccess
           * @param response {object} Server response object
           */
-         onSuccess: function OptionsPanel_onSuccess(response)
+         onSuccess: function ConsoleNodeBrowser_SearchPanelHandler_onSuccess(response)
          {
             if (response && response.json)
             {
@@ -426,14 +516,14 @@
       new SearchPanelHandler();
       
       /* View Panel Handler */
-      ViewPanelHandler = function ViewPanelHandler_constructor()
+      ViewPanelHandler = function ConsoleNodeBrowser_ViewPanelHandler_constructor()
       {
          ViewPanelHandler.superclass.constructor.call(this, "view");
       };
       
       YAHOO.extend(ViewPanelHandler, Alfresco.ConsolePanelHandler,
       {
-         onLoad: function onLoad()
+         onLoad: function ConsoleNodeBrowser_ViewPanelHandler_onLoad()
          {
             // Buttons
             parent.widgets.gobackButton = Alfresco.util.createYUIButton(parent, "goback-button", parent.onGoBackClick);
@@ -441,7 +531,7 @@
             parent.widgets.edituserButton = Alfresco.util.createYUIButton(parent, "edituser-button", parent.onEditUserClick);
          },
          
-         onBeforeShow: function onBeforeShow()
+         onBeforeShow: function ConsoleNodeBrowser_ViewPanelHandler_onBeforeShow()
          {
             // Hide the main panel area before it is displayed - so we don't show
             // old data to the user before the Update() method paints the results
@@ -449,177 +539,274 @@
             Dom.setStyle(parent.id + "-view-main", "visibility", "hidden");
          },
          
-         onShow: function onShow()
+         onShow: function ConsoleNodeBrowser_ViewPanelHandler_onShow()
          {
             window.scrollTo(0, 0);
          },
          
-         onUpdate: function onUpdate()
+         onUpdate: function ConsoleNodeBrowser_ViewPanelHandler_onUpdate()
          {
             window.scrollTo(0, 0);
-            var success = function(res)
-            {
-               var fnSetter = function(id, val)
-               {
-                  Dom.get(parent.id + id).innerHTML = val ? $html(val) : "";
-               };
-               
-               var node = YAHOO.lang.JSON.parse(res.serverResponse.responseText),
-                  nodeRef = node.nodeRef;
-               
-               /**
-                * Node link custom datacell formatter
-                *
-                * @method renderName
-                */
-               var renderNodeLink = function renderNodeLink(elCell, oRecord, oColumn, oData)
-               {
-                  // Create view userlink
-                  var viewNodeLink = document.createElement("a");
-                  YAHOO.util.Dom.setAttribute(viewNodeLink, "href", "#");
-                  viewNodeLink.innerHTML = $html(oData);
-
-                  // fire the 'viewUserClick' event when the selected user in the list has changed
-                  YAHOO.util.Event.addListener(viewNodeLink, "click", function(e)
-                  {
-                     YAHOO.util.Event.preventDefault(e);
-                     YAHOO.Bubbling.fire('viewNodeClick',
-                     {
-                        nodeRef: oRecord.getData("nodeRef")
-                     });
-                  }, null, parent);
-                  elCell.appendChild(viewNodeLink);
-               };
-               
-               /**
-                * Property value custom datacell formatter
-                *
-                * @method renderPropertyValue
-                */
-               var renderPropertyValue = function renderPropertyValue(elCell, oRecord, oColumn, oData)
-               {
-                  if (oRecord.getData("type") == "d:content")
-                  {
-                     // Create new link
-                     var contentLink = document.createElement("a");
-                     contentLink.innerHTML = $html(oData);
-                     YAHOO.util.Dom.setAttribute(contentLink, "href", Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.replace("://", "/") + "/content");
-                     elCell.appendChild(contentLink);
-                  }
-                  else
-                  {
-                     elCell.innerHTML = $html(oData);
-                  }
-               };
-
-               Dom.get(parent.id + "-view-title").innerHTML = node.name;
-               
-               // About section fields
-               fnSetter("-view-node-ref", node.nodeRef);
-               fnSetter("-view-node-path", node.qnamePath);
-               fnSetter("-view-node-type", node.type);
-
-               Dom.get(parent.id + "-view-node-parent").innerHTML = "";
-               // Add parent noderef link
-               if (node.parent !== null)
-               {
-                  var nodeLink = document.createElement("a");
-                  Dom.setAttribute(nodeLink, "href", "#");
-                  nodeLink.innerHTML = $html(node.parentNodeRef);
-                  YAHOO.util.Event.addListener(nodeLink, "click", function(e)
-                  {
-                     YAHOO.util.Event.preventDefault(e);
-                     YAHOO.Bubbling.fire('viewNodeClick',
-                     {
-                        nodeRef: node.parentNodeRef
-                     });
-                  }, null, parent);
-                  Dom.get(parent.id + "-view-node-parent").appendChild(nodeLink);
-               }
-               
-               var propsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-properties", 
-                  [
-                     { key: "name", label: parent.msg("label.properties-name") },
-                     { key: "type", label: parent.msg("label.properties-type") },
-                     { key: "value", label: parent.msg("label.properties-value"), formatter: renderPropertyValue }
-                  ], 
-                  new YAHOO.util.LocalDataSource(node.properties)
-               );
-               
-               var aspects = "";
-               for ( var i = 0; i < node.aspects.length; i++)
-               {
-                  aspects += (i != 0 ? "<br />" : "") + $html(node.aspects[i]);
-               }
-               Dom.get(parent.id + "-view-node-aspects").innerHTML = aspects;
-               
-               var childrenDT = new YAHOO.widget.DataTable(parent.id + "-view-node-children", 
-                  [
-                     { key: "name", label: parent.msg("label.children-name"), formatter: renderNodeLink },
-                     { key: "type", label: parent.msg("label.children-type") },
-                     { key: "nodeRef", label: parent.msg("label.children-node-ref"), formatter: renderNodeLink },
-                     { key: "assocType", label: parent.msg("label.children-assoc-type") }
-                  ], 
-                  new YAHOO.util.LocalDataSource(node.children)
-               );
-
-               var parentsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-parents", 
-                   [
-                     { key: "name", label: parent.msg("label.parents-name"), formatter: renderNodeLink },
-                     { key: "type", label: parent.msg("label.parents-type") },
-                     { key: "nodeRef", label: parent.msg("label.parents-node-ref"), formatter: renderNodeLink },
-                     { key: "assocType", label: parent.msg("label.parents-assoc-type") }
-                  ], 
-                  new YAHOO.util.LocalDataSource(node.parents)
-               );
-
-               var assocsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-assocs", 
-                  [
-                     { key: "name", label: parent.msg("label.assocs-name"), formatter: renderNodeLink },
-                     { key: "type", label: parent.msg("label.assocs-type") },
-                     { key: "nodeRef", label: parent.msg("label.assocs-node-ref"), formatter: renderNodeLink },
-                     { key: "assocType", label: parent.msg("label.assocs-assoc-type") }
-                  ], 
-                  new YAHOO.util.LocalDataSource(node.assocs)
-               );
-               
-               var sourceAssocsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-source-assocs", 
-                  [
-                     { key: "name", label: parent.msg("label.source-assocs-name"), formatter: renderNodeLink },
-                     { key: "type", label: parent.msg("label.source-assocs-type") },
-                     { key: "nodeRef", label: parent.msg("label.source-assocs-node-ref"), formatter: renderNodeLink },
-                     { key: "assocType", label: parent.msg("label.source-assocs-assoc-type") }
-                  ], 
-                  new YAHOO.util.LocalDataSource(node.sourceAssocs)
-               );
-               
-               var permissionsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-permissions", 
-                  [
-                     { key: "permission", label: parent.msg("label.permissions-permission") },
-                     { key: "authority", label: parent.msg("label.permissions-authority") },
-                     { key: "rel", label: parent.msg("label.permissions-access") }
-                  ], 
-                  new YAHOO.util.LocalDataSource(node.permissions.entries)
-               );
-               fnSetter("-view-node-inherits-permissions", "" + node.permissions.inherit);
-               fnSetter("-view-node-owner", node.permissions.owner);
-               
-               // Make main panel area visible
-               Dom.setStyle(parent.id + "-view-main", "visibility", "visible");
-            };
             
-            // make an ajax call to get user details
+            // Use a XHR call to get node data
             Alfresco.util.Ajax.request(
             {
                url: Alfresco.constants.PROXY_URI + "slingshot/node/" + parent.currentNodeRef.replace("://", "/"),
                method: Alfresco.util.Ajax.GET,
                successCallback:
                {
-                  fn: success,
+                  fn: this.onDataLoad,
                   scope: parent
                },
                failureMessage: parent._msg("message.getnode-failure", $html(parent.currentUserId))   
             });
+         },
+
+         /**
+          * Node data loaded successfully. Sets up YUI DataTable instances and other UI elements.
+          *
+          * @method onDataLoad
+          * @param p_obj {object} Result object, defining serverResponse and json objects
+          */
+         onDataLoad: function ConsoleNodeBrowser_ViewPanelHandler_onDataLoad(p_obj)
+         {
+             var me = this, node = p_obj.json, nodeRef = node.nodeRef;
+             
+             var fnSetter = function(id, val)
+             {
+                Dom.get(parent.id + id).innerHTML = val ? $html(val) : "";
+             };
+
+             /**
+              * Node link custom datacell formatter
+              *
+              * @method renderName
+              */
+             var renderNodeLink = function renderNodeLink(elCell, oRecord, oColumn, oData, oParams)
+             {
+                oParams = oParams || {};
+                var viewNodeLink = document.createElement("a");
+                YAHOO.util.Dom.setAttribute(viewNodeLink, "href", "#");
+                viewNodeLink.innerHTML = $html(oData);
+
+                // fire the 'viewNodeClick' event when the selected node in the list has changed
+                YAHOO.util.Event.addListener(viewNodeLink, "click", function(e)
+                {
+                   YAHOO.util.Event.preventDefault(e);
+                   YAHOO.Bubbling.fire('viewNodeClick',
+                   {
+                      nodeRef: oParams.nodeRef || oRecord.getData("nodeRef")
+                   });
+                }, null, parent);
+                elCell.appendChild(viewNodeLink);
+             };
+
+             /**
+              * QName custom formatter
+              *
+              * @method renderQName
+              */
+             var renderQName = function renderQName(elCell, oRecord, oColumn, oData)
+             {
+                elCell.innerHTML = $html(oData[parent._qnamePropertyName()]);
+             };
+
+             /**
+              * Child name formatter
+              *
+              * @method renderChildName
+              */
+             var renderChildName = function renderChildName(elCell, oRecord, oColumn, oData)
+             {
+                 renderNodeLink(elCell, oRecord, oColumn, oData[parent._qnamePropertyName()]);
+             };
+
+             /**
+              * Assoc nodeRef formatter
+              *
+              * @method renderSourceNodeRef
+              */
+             var renderAssocNodeRef = function renderChildName(elCell, oRecord, oColumn, oData)
+             {
+                 renderNodeLink(elCell, oRecord, oColumn, oData, { nodeRef: oData });
+             };
+             
+             /**
+              * Property value custom datacell formatter
+              *
+              * @method renderPropertyValue
+              */
+             var renderPropertyValue = function renderPropertyValue(elCell, oRecord, oColumn, oData)
+             {
+                var renderValue = function(val, el)
+                {
+                    if (val.isNullValue)
+                    {
+                        Dom.addClass(el, "node-value-label");
+                        el.innerHTML = parent.msg("label.node-value-null");
+                    }
+                    else
+                    {
+                        if (val.dataType == "{http://www.alfresco.org/model/dictionary/1.0}content")
+                        {
+                           // Create new link
+                           var html = "<a ";
+                           html += "href=\"" + Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.replace("://", "/") + "/content" + "\">";
+                           html += $html(val.value);
+                           html += "</a>";
+                           // Create new link
+                           var contentLink = document.createElement("a");
+                           contentLink.innerHTML = $html(val.value);
+                           YAHOO.util.Dom.setAttribute(contentLink, "href", Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.replace("://", "/") + "/content;" + oRecord.getData("name").prefixedName);
+                           el.appendChild(contentLink);
+                        }
+                        else if (val.dataType == "{http://www.alfresco.org/model/dictionary/1.0}noderef")
+                        {
+                            renderNodeLink(el, oRecord, oColumn, val.value, { nodeRef: val.value });
+                        }
+                        else
+                        {
+                            el.innerHTML = $html(val.value);
+                        }
+                    }
+                };
+
+                if (oRecord.getData("multiple") == false)
+                {
+                    renderValue(oData[0], elCell.appendChild(document.createElement("div"), elCell));
+                }
+                else
+                {
+                    var labelEl = elCell.appendChild(document.createElement("div"), elCell);
+                    Dom.addClass(labelEl, "node-value-label");
+                    labelEl.innerHTML = parent.msg("label.node-value-collection");
+                    for (var i = 0; i < oData.length; i++)
+                    {
+                        renderValue(oData[i], elCell.appendChild(document.createElement("div"), elCell));
+                    }
+                }
+                
+             };
+
+             Dom.get(parent.id + "-view-title").innerHTML = node.name[parent._qnamePropertyName()];
+             
+             // About section fields
+             fnSetter("-view-node-ref", node.nodeRef);
+             fnSetter("-view-node-path", node.qnamePath[parent._qnamePropertyName()]);
+             fnSetter("-view-node-type", node.type[parent._qnamePropertyName()]);
+
+             Dom.get(parent.id + "-view-node-parent").innerHTML = "";
+             // Add parent noderef link
+             if (node.parent !== null)
+             {
+                var nodeLink = document.createElement("a");
+                Dom.setAttribute(nodeLink, "href", "#");
+                nodeLink.innerHTML = $html(node.parentNodeRef);
+                YAHOO.util.Event.addListener(nodeLink, "click", function(e)
+                {
+                   YAHOO.util.Event.preventDefault(e);
+                   YAHOO.Bubbling.fire('viewNodeClick',
+                   {
+                      nodeRef: node.parentNodeRef
+                   });
+                }, null, parent);
+                Dom.get(parent.id + "-view-node-parent").appendChild(nodeLink);
+             }
+
+             var dtConfig = {
+                     MSG_EMPTY: parent._msg("message.datatable.empty"),
+                     MSG_ERROR: parent._msg("message.datatable.error")
+             };
+
+             var propsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-properties", 
+                [
+                   { key: "name", label: parent.msg("label.properties-name"), formatter: renderQName },
+                   { key: "type", label: parent.msg("label.properties-type"), formatter: renderQName },
+                   { key: "values", label: parent.msg("label.properties-value"), formatter: renderPropertyValue },
+                   { key: "residual", label: parent.msg("label.properties-residual") }
+                ], 
+                new YAHOO.util.LocalDataSource(node.properties),
+                dtConfig
+             );
+             
+             var aspects = "";
+             for ( var i = 0; i < node.aspects.length; i++)
+             {
+                aspects += (i != 0 ? "<br />" : "") + $html(node.aspects[i][parent._qnamePropertyName()]);
+             }
+             Dom.get(parent.id + "-view-node-aspects").innerHTML = aspects;
+             
+             var childrenDT = new YAHOO.widget.DataTable(parent.id + "-view-node-children", 
+                [
+                   { key: "name", label: parent.msg("label.children-name"), formatter: renderChildName },
+                   { key: "type", label: parent.msg("label.children-type"), formatter: renderQName },
+                   { key: "nodeRef", label: parent.msg("label.children-node-ref"), formatter: renderNodeLink },
+                   { key: "primary", label: parent.msg("label.children-primary") },
+                   { key: "assocType", label: parent.msg("label.children-assoc-type"), formatter: renderQName },
+                   { key: "index", label: parent.msg("label.children-index") }
+                ], 
+                new YAHOO.util.LocalDataSource(node.children),
+                dtConfig
+             );
+             
+             var parentsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-parents", 
+                 [
+                   { key: "name", label: parent.msg("label.parents-name"), formatter: renderChildName },
+                   { key: "type", label: parent.msg("label.parents-type"), formatter: renderQName },
+                   { key: "nodeRef", label: parent.msg("label.parents-node-ref"), formatter: renderNodeLink },
+                   { key: "primary", label: parent.msg("label.parents-primary") },
+                   { key: "assocType", label: parent.msg("label.parents-assoc-type"), formatter: renderQName }
+                   
+                ], 
+                new YAHOO.util.LocalDataSource(node.parents),
+                dtConfig
+             );
+
+             var assocsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-assocs", 
+                [
+                   { key: "assocType", label: parent.msg("label.assocs-assoc-type"), formatter: renderQName },
+                   { key: "targetRef", label: parent.msg("label.assocs-node-ref"), formatter: renderAssocNodeRef },
+                   { key: "type", label: parent.msg("label.assocs-type"), formatter: renderQName }
+                ], 
+                new YAHOO.util.LocalDataSource(node.assocs),
+                dtConfig
+             );
+             
+             var sourceAssocsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-source-assocs", 
+                [
+                   { key: "assocType", label: parent.msg("label.source-assocs-assoc-type"), formatter: renderQName },
+                   { key: "sourceRef", label: parent.msg("label.source-assocs-node-ref"), formatter: renderAssocNodeRef },
+                   { key: "type", label: parent.msg("label.source-assocs-type"), formatter: renderQName }
+                ], 
+                new YAHOO.util.LocalDataSource(node.sourceAssocs),
+                dtConfig
+             );
+
+             var permissionsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-permissions", 
+                [
+                   { key: "permission", label: parent.msg("label.permissions-permission") },
+                   { key: "authority", label: parent.msg("label.permissions-authority") },
+                   { key: "rel", label: parent.msg("label.permissions-access") }
+                ], 
+                new YAHOO.util.LocalDataSource(node.permissions.entries),
+                dtConfig
+             );
+             
+             var storePermissionsDT = new YAHOO.widget.DataTable(parent.id + "-view-node-store-permissions", 
+                [
+                   { key: "permission", label: parent.msg("label.permissions-store-permission") },
+                   { key: "authority", label: parent.msg("label.permissions-authority") },
+                   { key: "rel", label: parent.msg("label.permissions-access") }
+                ], 
+                new YAHOO.util.LocalDataSource(node.permissions.masks),
+                dtConfig
+             );
+             
+             fnSetter("-view-node-inherits-permissions", "" + node.permissions.inherit);
+             fnSetter("-view-node-owner", node.permissions.owner);
+             
+             // Make main panel area visible
+             Dom.setStyle(parent.id + "-view-main", "visibility", "visible");
          },
          
          /**
@@ -629,11 +816,12 @@
           * @param e {object} DomEvent
           * @param args {array} Event parameters (depends on event type)
           */
-         onNodeClick: function ConsoleUsers_onNodeClick(e, args)
+         onNodeClick: function ConsoleNodeBrowser_ViewPanelHandler_onNodeClick(e, args)
          {
             var nodeRef = args[1].nodeRef;
             this.refreshUIState({"panel": "view", "nodeRef": nodeRef});
          }
+         
       });
       new ViewPanelHandler();
       
@@ -666,7 +854,16 @@
           * @type int
           * @default 100
           */
-         maxSearchResults: 100
+         maxSearchResults: 100,
+
+         /**
+          * Whether to use short QNames when displaying node information
+          * 
+          * @property shortQNames
+          * @type boolean
+          * @default true
+          */
+         shortQNames: true
       },
       
       /**
@@ -678,12 +875,20 @@
       currentNodeRef: "",
       
       /**
+       * Name of the store to search against
+       * 
+       * @property store
+       * @type string
+       */
+      store: "workspace://SpacesStore",
+      
+      /**
        * Current search term, obtained from form input field.
        * 
        * @property searchTerm
        * @type string
        */
-      searchTerm: undefined,
+      searchTerm: "PATH:\"/\"",
       
       /**
        * Current search language, obtained from drop-down.
@@ -728,7 +933,7 @@
        * @param e {object} DomEvent
        * @param args {array} Event parameters (depends on event type)
        */
-      onStateChanged: function ConsoleUsers_onStateChanged(e, args)
+      onStateChanged: function ConsoleNodeBrowser_onStateChanged(e, args)
       {
          var state = this.decodeHistoryState(args[1].state);
          
@@ -743,6 +948,14 @@
             // keep track of the last search performed
             var searchTerm = state.search;
             this.searchTerm = searchTerm;
+            
+            // keep track of search language
+            var searchLanguage = state.lang;
+            this.searchLanguage = searchLanguage;
+            
+            // keep track of store name
+            var store = state.store;
+            this.store = store;
             
             this.updateCurrentPanel();
          }
@@ -763,10 +976,16 @@
        * @param e {object} DomEvent
        * @param args {array} Event parameters (depends on event type)
        */
-      onSearchClick: function ConsoleUsers_onSearchClick(e, args)
+      onSearchClick: function ConsoleNodeBrowser_onSearchClick(e, args)
       {
          var searchTermElem = Dom.get(this.id + "-search-text");
          var searchTerm = YAHOO.lang.trim(searchTermElem.value);
+         
+         // Search language
+         var searchLanguage = this.widgets.langMenuButton.get("value");
+         
+         // Search language
+         var store = this.widgets.storeMenuButton.get("value");
          
          // inform the user if the search term entered is too small
          if (searchTerm.length < this.options.minSearchTermLength)
@@ -778,7 +997,7 @@
             return;
          }
          
-         this.refreshUIState({"search": searchTerm});
+         this.refreshUIState({"search": searchTerm, "lang": searchLanguage, "store": store});
       },
       
       /**
@@ -788,7 +1007,7 @@
        * @param e {object} DomEvent
        * @param args {array} Event parameters (depends on event type)
        */
-      onViewNodeClick: function ConsoleUsers_onViewNodeClick(e, args)
+      onViewNodeClick: function ConsoleNodeBrowser_onViewNodeClick(e, args)
       {
          var nodeRef = args[1].nodeRef;
          this.refreshUIState({"panel": "view", "nodeRef": nodeRef});
@@ -801,7 +1020,7 @@
        * @param e {object} DomEvent
        * @param args {array} Event parameters (depends on event type)
        */
-      onGoBackClick: function ConsoleUsers_onGoBackClick(e, args)
+      onGoBackClick: function ConsoleNodeBrowser_onGoBackClick(e, args)
       {
          this.refreshUIState({"panel": "search"});
       },
@@ -814,7 +1033,7 @@
        * @param obj {object} state object
        * @private
        */
-      encodeHistoryState: function ConsoleUsers_encodeHistoryState(obj)
+      encodeHistoryState: function ConsoleNodeBrowser_encodeHistoryState(obj)
       {
          // wrap up current state values
          var stateObj = {};
@@ -829,6 +1048,14 @@
          if (this.searchTerm !== undefined)
          {
             stateObj.search = this.searchTerm;
+         }
+         if (this.searchLanguage !== undefined)
+         {
+            stateObj.lang = this.searchLanguage;
+         }
+         if (this.store !== undefined)
+         {
+            stateObj.store = this.store;
          }
          
          // convert to encoded url history state - overwriting with any supplied values
@@ -853,6 +1080,22 @@
             }
             state += "search=" + encodeURIComponent(obj.search !== undefined ? obj.search : stateObj.search);
          }
+         if (obj.lang !== undefined || stateObj.lang !== undefined)
+         {
+            if (state.length !== 0)
+            {
+               state += "&";
+            }
+            state += "lang=" + encodeURIComponent(obj.lang !== undefined ? obj.lang : stateObj.lang);
+         }
+         if (obj.store !== undefined || stateObj.store !== undefined)
+         {
+            if (state.length !== 0)
+            {
+               state += "&";
+            }
+            state += "store=" + encodeURIComponent(obj.store !== undefined ? obj.store : stateObj.store);
+         }
          return state;
       },
       
@@ -867,6 +1110,18 @@
       _msg: function ConsoleNodeBrowser__msg(messageId)
       {
          return Alfresco.util.message.call(this, messageId, "Alfresco.ConsoleNodeBrowser", Array.prototype.slice.call(arguments).slice(1));
+      },
+      
+      /**
+       * Returns the qname property name to use for display purposes, based on shortQNames setting
+       *
+       * @method _qnamePropertyName
+       * @return {string} The name of the property to display from QName objects
+       * @private
+       */
+      _qnamePropertyName: function ConsoleNodeBrowser__qnamePropertyName()
+      {
+         return this.options.shortQNames == true ? "prefixedName": "name";
       }
    });
 })();

@@ -36,16 +36,26 @@
    padding: 0.4em;
 }
 
-.node-browser .search-button
+.node-browser .yui-button
+{
+   vertical-align: middle;
+}
+
+/*.node-browser .search-button
 {
    margin-top: -2.0em;
-   padding-left: 41em;
-}
+   padding-left: 49em;
+}*/
 
 .node-browser .search-text input
 {
    padding: 3px;
-   width: 40em;
+   width: 50em;
+}
+
+.node-browser .search-text
+{
+	margin-top: 0.8em;
 }
 
 .node-browser .search-main
@@ -173,4 +183,9 @@
 .node-browser .node-permissions-info .field-value
 {
    margin-left: 8em;
+}
+
+.node-browser .node-value-label
+{
+	font-style: italic;
 }
