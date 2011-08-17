@@ -112,6 +112,16 @@
       padding: 22px 4px 5px;
    }
 }
+/* Firefox 6+ bug fix */
+@-moz-document regexp(".*")
+{
+   .header .app-items span.yui-button span.first-child button
+   {
+      margin-bottom: -1px;
+      padding: 18px 4px 0;
+   }
+}
+
 
 .header .app-items div.yuimenu div.bd ul li.yuimenuitem span.yuimenuitemlabel
 {
