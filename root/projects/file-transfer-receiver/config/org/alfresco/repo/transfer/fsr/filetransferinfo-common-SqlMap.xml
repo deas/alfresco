@@ -17,6 +17,13 @@
         <result property="contentUrl" column="contentUrl" jdbcType="VARCHAR" javaType="java.lang.String"/>
     </resultMap>
 
+    <resultMap id="result_FileTransferNodeRename" type="FileTransferNodeRename">
+        <result property="id" column="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result property="renamedNodeRef" column="renamedNodeRef" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result property="transferId" column="transferId" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result property="newName" column="newName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </resultMap>
+
 
     <!--                -->
     <!-- Parameter Maps -->
@@ -30,6 +37,13 @@
         <parameter property="nodeRef" jdbcType="VARCHAR" javaType="java.lang.String"/>
     </parameterMap>
 
+    <parameterMap id="parameter_FileTransferNodeRenameTransferId" type="FileTransferNodeRename">
+        <parameter property="transferId" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </parameterMap>
+
+    <!-- parameterMap id="parameter_FileTransferNodeRenameTransferId" type="FileTransferNodeRename">
+        <parameter property="transferId" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </parameterMap -->
 
 
 
@@ -40,6 +54,11 @@
     <sql id="insert_FileTransferInfo_AutoIncrement">
         insert into alf_file_transfer_info (nodeRef, parent, path, contentName, contentUrl)
         values (#{nodeRef}, #{parent}, #{path}, #{contentName},#{contentUrl})
+    </sql>
+
+    <sql id="insert_FileTransferNodeRename_AutoIncrement">
+        insert into alf_node_rename_info (renamedNodeRef, transferId, newName)
+        values (#{renamedNodeRef}, #{transferId}, #{newName})
     </sql>
 
 
@@ -85,5 +104,22 @@
         where
             nodeRef = ?
     </delete>
+
+    <delete id="delete_FileTransferNodeRenameByTransferId" parameterMap="parameter_FileTransferNodeRenameTransferId">
+        delete
+        from
+            alf_node_rename_info
+        where
+            transferId = ?
+    </delete>
+
+    <select id="select_FileTransferRenameByTransferId" parameterMap="parameter_FileTransferNodeRenameTransferId" resultMap="result_FileTransferNodeRename">
+        select
+            *
+        from
+            alf_node_rename_info
+        where
+            transferId = ?
+    </select>
 
 </mapper>

@@ -20,18 +20,27 @@ package org.alfresco.repo.transfer.fsr;
 
 import java.util.List;
 
-
-
 public interface FileTransferInfoDAO
 {
-   FileTransferInfoEntity createFileTransferInfo(String nodeRef, String parent, String path, String content_name, String contentUrl );
+    FileTransferInfoEntity createFileTransferInfo(
+            String nodeRef,
+            String parent,
+            String path,
+            String content_name,
+            String contentUrl);
 
-   FileTransferInfoEntity findFileTransferInfoByNodeRef(String nodeRef);
+    FileTransferInfoEntity findFileTransferInfoByNodeRef(String nodeRef);
 
-   List<FileTransferInfoEntity> findFileTransferInfoByParentNodeRef(String nodeRef);
+    List<FileTransferInfoEntity> findFileTransferInfoByParentNodeRef(String nodeRef);
 
-   void updateFileTransferInfoByNodeRef(FileTransferInfoEntity modifiedEntity);
+    void updateFileTransferInfoByNodeRef(FileTransferInfoEntity modifiedEntity);
 
-   void deleteFileTransferInfoByNodeRef(String nodeRef);
+    void deleteFileTransferInfoByNodeRef(String nodeRef);
+
+    public FileTransferNodeRenameEntity createFileTransferNodeRenameEntity(String noderef, String transferId, String newName);
+
+    public void deleteFileTransferNodeRenameByTransferId(String transferId);
+
+    List<FileTransferNodeRenameEntity> findFileTransferNodeRenameEntityByTransferId(String transferId);
 
 }

@@ -11,6 +11,8 @@
         <typeAlias alias="Lock" type="org.alfresco.repo.domain.locks.LockEntity"/>
         <!-- FileTransferInfo -->
         <typeAlias alias="FileTransferInfo" type="org.alfresco.repo.transfer.fsr.FileTransferInfoEntity"/>
+        <!-- FileTransferInfo -->
+        <typeAlias alias="FileTransferNodeRename" type="org.alfresco.repo.transfer.fsr.FileTransferNodeRenameEntity"/>
     </typeAliases>
 
     <typeHandlers>

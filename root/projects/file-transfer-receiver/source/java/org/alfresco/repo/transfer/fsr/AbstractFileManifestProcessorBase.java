@@ -19,20 +19,24 @@
 package org.alfresco.repo.transfer.fsr;
 
 import java.io.File;
+import java.util.List;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.transfer.TransferProcessingException;
 import org.alfresco.repo.transfer.manifest.TransferManifestDeletedNode;
 import org.alfresco.repo.transfer.manifest.TransferManifestHeader;
 import org.alfresco.repo.transfer.manifest.TransferManifestNormalNode;
+import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.FileCopyUtils;
 
 public abstract class AbstractFileManifestProcessorBase extends org.alfresco.repo.transfer.AbstractManifestProcessorBase
 {
     private final static Log log = LogFactory.getLog(AbstractFileManifestProcessorBase.class);
-    protected static String TEMP_VIRT_ROOT = "T_V_R_1234432123478";
+    protected String TEMP_VIRT_ROOT = "T_V_R_1234432123478";
     protected FileTransferReceiver fTReceiver;
     protected String fTransferId;
     protected boolean isSync;
@@ -43,6 +47,7 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
         super(receiver, transferId);
         this.fTReceiver = (FileTransferReceiver)receiver;
         this.fTransferId = transferId;
+        TEMP_VIRT_ROOT = transferId;
 
     }
 
@@ -108,6 +113,77 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
             }
         }
         return tempFolder;
+    }
+
+    protected void moveFileOrFolderOnFileSytem(String oldPath, String oldName, String newPath, String newName)
+    {
+        // Method 1 using rename does not seem to work
+        // move the node on the receiving file system
+        // File (or directory) to be moved
+        File fileToBeMoved = new File(fTReceiver.getDefaultReceivingroot() + oldPath + oldName);
+        // Destination directory
+        File newDirLocation = new File(fTReceiver.getDefaultReceivingroot() + newPath);
+        // Move file to new directory
+        boolean success = fileToBeMoved.renameTo(new File(newDirLocation, newName));
+        if (!success)
+        {
+            log.error("Unable to move:" + oldPath + oldName + " to " + newPath + newName);
+            // operation failed, maybe use Method 2
+            // probably failing if the source and the destination are not on the same volume/partition
+            // to be tested
+            throw new TransferException("MSG_ERROR_WHILE_MOVING_FILE_OR_FOLDER");
+
+        }
+    }
+
+    protected void adjustPathInSubtreeInDB(FileTransferInfoEntity nodeToModify, String containingPath)
+    {
+        // get all children of nodeToModify
+        List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(nodeToModify
+                .getNodeRef());
+        // iterate on children
+        // remark probably a global update would be better here
+        for (FileTransferInfoEntity curChild : childrenList)
+        {
+            // adjust path
+            curChild.setPath(containingPath);
+            fTReceiver.updateFileTransferInfoByNodeRef(curChild);
+        }
+
+        // call recursively for all children adjustPathInSubtreeInDB(FileTransferInfoEntity nodeToModify, String
+        // adjusted containingPAth)
+        for (FileTransferInfoEntity curChild : childrenList)
+        {
+            adjustPathInSubtreeInDB(curChild, containingPath + curChild.getContentName() + "/");
+        }
+
+    }
+
+    protected void putFileContent(File receivedFile, File receivedContent)
+    {
+        try
+        {
+            if (!receivedFile.exists())
+                receivedFile.createNewFile();
+            FileCopyUtils.copy(receivedContent, receivedFile);
+        }
+        catch (Exception ex)
+        {
+            log.error("Unable to put file content in " + receivedFile.getPath() + "/" + receivedFile.getName());
+            throw new TransferException("MSG_ERROR_WHILE_STAGING_CONTENT", ex);
+        }
+    }
+
+    protected String getContentUrl(TransferManifestNormalNode node)
+    {
+        ContentData contentData = (ContentData) node.getProperties().get(ContentModel.PROP_CONTENT);
+
+        String contentUrl = "";
+        if (contentData != null)
+        {
+            contentUrl = contentData.getContentUrl();
+        }
+        return contentUrl;
     }
 
 }

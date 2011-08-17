@@ -43,7 +43,6 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
 {
     private final static Log log = LogFactory.getLog(FileTransferSecondaryManifestProcessor.class);
 
-
     protected List<TransferManifestNormalNode> waitingNodeList;
 
     protected Set<String> receivedNodes;
@@ -61,12 +60,10 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             log.debug("Processing manigest started");
         }
 
-
         waitingNodeList = new ArrayList<TransferManifestNormalNode>();
-        //reset the set of received nodes.
+        // reset the set of received nodes.
         receivedNodes = new HashSet<String>();
     }
-
 
     protected void deleteSubtreeInDB(String parent)
     {
@@ -106,67 +103,97 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             tvr.delete();
         }
 
-        //if isSyncMode = true the do the implicit delete
-        if(this.isSync)
+        // if isSyncMode = true the do the implicit delete
+        if (this.isSync)
         {
             Set<String> nodesToDeleteInSyncMode = fTReceiver.getListOfDescendentsForSyncMode();
-            System.out.println("nodesToDeleteInSyncMode");dumpSet(nodesToDeleteInSyncMode);
-            System.out.println("this.receivedNodes");dumpSet(this.receivedNodes);
+            if (log.isDebugEnabled())
+            {
+                log.debug("nodesToDeleteInSyncMode...");
+                dumpSet(nodesToDeleteInSyncMode);
+                log.debug("this.receivedNodes...");
+                dumpSet(this.receivedNodes);
+            }
+
             nodesToDeleteInSyncMode.removeAll(this.receivedNodes);
-            System.out.println("nodesToDeleteInSyncMode after remove:");dumpSet(nodesToDeleteInSyncMode);
-            //delete all the remaining nodes depth first
-            while(!nodesToDeleteInSyncMode.isEmpty())
+
+            if (log.isDebugEnabled())
+                {
+                log.debug("nodesToDeleteInSyncMode after remove:");
+                dumpSet(nodesToDeleteInSyncMode);
+            }
+
+            // delete all the remaining nodes depth first
+            while (!nodesToDeleteInSyncMode.isEmpty())
                 purgeDepthFirst(nodesToDeleteInSyncMode, nodesToDeleteInSyncMode.toArray()[0].toString());
+        }
+
+        // Give the nodes their final name
+        List<FileTransferNodeRenameEntity> cadidatedFoFinalRename = fTReceiver
+                .findFileTransferNodeRenameEntityByTransferId(this.fTransferId);
+        for (FileTransferNodeRenameEntity fileTransferNodeRenameEntiy : cadidatedFoFinalRename)
+        {
+            String newName = fileTransferNodeRenameEntiy.getNewName();
+            FileTransferInfoEntity fileTransferInfoEntiy = fTReceiver
+                    .findFileTransferInfoByNodeRef(fileTransferNodeRenameEntiy.getRenamedNodeRef());
+            String oldName = fileTransferInfoEntiy.getContentName();
+            fileTransferInfoEntiy.setContentName(newName);
+            // update DB
+            fTReceiver.updateFileTransferInfoByNodeRef(fileTransferInfoEntiy);
+            // update the name on file system using the old name
+            String nodePath = fileTransferInfoEntiy.getPath();
+            moveFileOrFolderOnFileSytem(nodePath + "/", oldName, nodePath + "/", newName);
+            adjustPathInSubtreeInDB(fileTransferInfoEntiy, nodePath + "/" + newName + "/");
+        }
+        // delete all the info of about the renamed node in the DB
+        fTReceiver.deleteFileTransferNodeRenameByTransferId(this.fTransferId);
+    }
+
+    protected void dumpSet(Set<String> set)
+    {
+        Iterator<String> i = set.iterator();
+        while (i.hasNext())
+        {
+            String s = i.next();
+            log.debug(":" + s);
         }
     }
 
-   protected void dumpSet(Set<String> set)
-   {
-       Iterator<String> i = set.iterator();
-       while(i.hasNext())
-       {
-           String s = i.next();
-           System.out.print(":" + s);
-       }
-   }
+    protected void purgeDepthFirst(Set<String> nodesToDeleteInSyncMode, String nodeRef)
+    {
 
-   protected void purgeDepthFirst(Set<String> nodesToDeleteInSyncMode,String nodeRef)
-   {
+        // get all children of nodeToModify
+        List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(nodeRef.toString());
+        // iterate on children
+        for (FileTransferInfoEntity curChild : childrenList)
+        {
+            purgeDepthFirst(nodesToDeleteInSyncMode, curChild.getNodeRef());
+        }
 
+        // delete node on file system
+        FileTransferInfoEntity deletedNode = fTReceiver.findFileTransferInfoByNodeRef(nodeRef);
 
-       // get all children of nodeToModify
-       List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(nodeRef.toString());
-       // iterate on children
-       for (FileTransferInfoEntity curChild : childrenList)
-       {
-           purgeDepthFirst(nodesToDeleteInSyncMode,curChild.getNodeRef());
-       }
+        // If null just log and ignore
+        // delete on FS
+        String pathFileOrFolderToBeDeleted = fTReceiver.getDefaultReceivingroot() + deletedNode.getPath()
+                + deletedNode.getContentName();
 
-       //delete node on file system
-       FileTransferInfoEntity deletedNode = fTReceiver.findFileTransferInfoByNodeRef(nodeRef);
+        File fileOrFolderToBeDeleted = new File(pathFileOrFolderToBeDeleted);
 
-       // If null just log and ignore
-       // delete on FS
-       String pathFileOrFolderToBeDeleted = fTReceiver.getDefaultReceivingroot() + deletedNode.getPath()
-               + deletedNode.getContentName();
+        try
+        {
+            fileOrFolderToBeDeleted.delete();
+        }
+        catch (Exception e)
+        {
+            log.error("Failed to delete :" + pathFileOrFolderToBeDeleted, e);
+            throw new TransferException("Failed to delete node:", e);
 
-       File fileOrFolderToBeDeleted = new File(pathFileOrFolderToBeDeleted);
-
-       try
-       {
-           fileOrFolderToBeDeleted.delete();
-       }
-       catch (Exception e)
-       {
-           log.error("Failed to delete :" + pathFileOrFolderToBeDeleted, e);
-           throw new TransferException("Failed to delete node:", e);
-
-       }
-       //delete in the DB
-       fTReceiver.deleteNodeByNodeRef(nodeRef);
-       nodesToDeleteInSyncMode.remove(nodeRef);
-   }
-
+        }
+        // delete in the DB
+        fTReceiver.deleteNodeByNodeRef(nodeRef);
+        nodesToDeleteInSyncMode.remove(nodeRef);
+    }
 
     @Override
     protected void processNode(TransferManifestNormalNode node) throws TransferProcessingException
@@ -180,359 +207,199 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             log.debug("Starting processing node,content properties:" + node.getProperties());
         }
 
-        //In sync mode, convention is that if a node is not received then it is an implicit delete
-        if(this.isSync)
+        // In sync mode, convention is that if a node is not received then it is an implicit delete
+        if (this.isSync)
         {
             String nodeRef = node.getNodeRef().toString();
             receivedNodes.add(nodeRef);
         }
 
-        // check if the node already exist
-        Boolean isNodeNew = fTReceiver.isContentNewOrModified(node.getNodeRef().toString(), null);
         String name = (String) node.getProperties().get(ContentModel.PROP_NAME);
 
-        if (isNodeNew)
+        // this is not new node
+        if (log.isDebugEnabled())
+        {
+            log.debug("This node is NOT new:" + node.toString());
+        }
+        // not a new node, it can be a move of a folder or a content
+        // it can be a content modification or a rename of folder or content
+        // check if we receive a file or a folder
+        QName nodeType = node.getType();
+        FileTransferInfoEntity nodeToModify = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef().toString());
+        Boolean isFolder = ContentModel.TYPE_FOLDER.equals(nodeType);
+        if (!isFolder)
         {
             if (log.isDebugEnabled())
             {
-                log.debug("Node is new:" + node.toString());
+                log.debug("Tis is content:" + node.toString());
             }
-            String parentOfNode = node.getPrimaryParentAssoc().getParentRef().toString();
+            // check if content has changed
+            Boolean isContentModified = fTReceiver.isContentNewOrModified(node.getNodeRef().toString(), this
+                    .getContentUrl(node));
 
-            boolean isNodeUnderRoot = parentOfNode.equals(fTReceiver.getFileTransferRootNodeFileFileSystem());
-            FileTransferInfoEntity parentFileTransferInfoEntity = null;
-            String parentPath = "/";
-            if (!isNodeUnderRoot)
+            if (isContentModified)
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Node is NOT under root:" + node.toString());
+                    log.debug("Content URL was mofified:" + name);
                 }
-                // try to get the ancestor of the node in the DB
-                parentFileTransferInfoEntity = fTReceiver.findFileTransferInfoByNodeRef(parentOfNode);
-
-                if (parentFileTransferInfoEntity == null)
+                File receivedFile = new File(fTReceiver.getDefaultReceivingroot() + nodeToModify.getPath()
+                        + nodeToModify.getContentName());
+                String contentKey = TransferCommons.URLToPartName(this.getContentUrl(node));
+                File receivedContent = fTReceiver.getContents().get(contentKey);
+                if (receivedContent == null)
                 {
-                    parentPath = "/" + TEMP_VIRT_ROOT + "/";
                     if (log.isDebugEnabled())
                     {
-                        log.debug("Node is temporarilly adopted by TEMP_VIRT_ROOT:" + node.toString());
-                        log.debug("ParentPath is temporarilly adopted by TEMP_VIRT_ROOT:" + parentPath);
+                        log.debug("Error content not there:" + fTReceiver.getDefaultReceivingroot()
+                                + nodeToModify.getPath() + nodeToModify.getContentName());
+                        log.debug("Key is:" + contentKey);
                     }
+                    throw new TransferException("MSG_ERROR_CONTENT_NOT_THERE:" + contentKey);
+                }
 
+                this.putFileContent(receivedFile, receivedContent);
+                // update DB
+                nodeToModify.setContentUrl(getContentUrl(node));
+                fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
+            }
+
+            // Check if the node was moved
+            String parentOfNode = node.getPrimaryParentAssoc().getParentRef().toString();
+            if (!parentOfNode.equals(nodeToModify.getParent()))
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
+                    log.debug("Node is moved, node Id:" + nodeToModify.getId());
+                    log.debug("Node is moved, old parent :" + nodeToModify.getParent());
+                    log.debug("Node is moved, new parent :" + parentOfNode);
+                    log.debug("Node is moved, old path :" + nodeToModify.getPath());
+                }
+                // retrieve the new parent
+                FileTransferInfoEntity newParentEntity = fTReceiver.findFileTransferInfoByNodeRef(parentOfNode);
+
+                // adjust the parent node
+                nodeToModify.setParent(parentOfNode);
+                if (newParentEntity != null)
+                {
+                    // adjust the path because parent already exist
+                    String newPath = newParentEntity.getPath() + newParentEntity.getContentName() + "/";
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Node is moved, new path :" + newPath);
+                    }
+                    String oldPath = nodeToModify.getPath();
+                    nodeToModify.setPath(newPath);
+                    moveFileOrFolderOnFileSytem(oldPath, nodeToModify.getContentName(), newPath, nodeToModify
+                            .getContentName());
                 }
                 else
                 {
-                    parentPath = parentFileTransferInfoEntity.getPath() + parentFileTransferInfoEntity.getContentName()
-                            + "/";
+                    // it could be a node directly under root
+                    // should be moved under the root?
+                    boolean isNodeUnderRoot = parentOfNode.equals(fTReceiver.getFileTransferRootNodeFileFileSystem());
                     if (log.isDebugEnabled())
                     {
-                        log.debug("ParentPath exist:" + node.toString());
-                        log.debug("ParentPAth is:" + parentPath);
+                        log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
                     }
-
+                    name = nodeToModify.getContentName();
+                    if (isNodeUnderRoot)
+                    {
+                        // adjust the path
+                        String newPath = "/";
+                        String oldPath = nodeToModify.getPath();
+                        nodeToModify.setPath(newPath);
+                        moveFileOrFolderOnFileSytem(oldPath, name, newPath, name);
+                        // use the new name because maybe it was renamed just before
+                        adjustPathInSubtreeInDB(nodeToModify, newPath + name + "/");
+                        fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
+                    }
                 }
-
-            }
-
-            // check if we receive a file or a folder
-            QName nodeType = node.getType();
-
-            Boolean isFolder = ContentModel.TYPE_FOLDER.equals(nodeType);
-            getOrCreateFolderIfNotExist(fTReceiver.getDefaultReceivingroot());
-            if (!isFolder)
-            {
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Tis is content:" + node.toString());
-                }
-                String contentKey = TransferCommons.URLToPartName(this.getContentUrl(node));
-                File receivedContent = fTReceiver.getContents().get(contentKey);
-                // this is content
-                // create the file with the name
-                File receivedFile = new File(fTReceiver.getDefaultReceivingroot() + parentPath + name);
-                this.putFileContent(receivedFile, receivedContent);
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Content created:" + fTReceiver.getDefaultReceivingroot() + parentPath + name);
-                }
-            }
-            else
-            {
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Tis is a folder:" + node.toString());
-                }
-                // we have received a folder, create it
-                File receivedFolder = new File(fTReceiver.getDefaultReceivingroot() + parentPath + name);
-                receivedFolder.mkdir();
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Folder created:" + fTReceiver.getDefaultReceivingroot() + parentPath + name);
-                }
-            }
-            String contentUrl = this.getContentUrl(node);
-            // create the node in the DB here
-            fTReceiver.createNodeInDB(node.getNodeRef().toString(), parentOfNode, parentPath, name, contentUrl);
-            if (log.isDebugEnabled())
-            {
-                log.debug("Node created in DB:" + node.getNodeRef().toString());
-                log.debug("Child of:" + parentOfNode);
-                log.debug("Parent path:" + parentPath);
-                log.debug("Node name:" + name);
-                log.debug("Content URL:" + contentUrl);
-            }
-            // get the nodes for adoption and adopt here
-            // get all children of nodeToModify
-            List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(node
-                    .getNodeRef().toString());
-            // iterate on children
-            // move and adjust path in DB
-            for (FileTransferInfoEntity curChild : childrenList)
-            {
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Moving on filse system:" + curChild.getPath() + curChild.getContentName());
-                    log.debug("Moving to:" + parentPath + name + "/" + curChild.getContentName());
-                }
-                // adjust location on file system for the direct child
-                moveFileOrFolderOnFileSytem(curChild.getPath(), curChild.getContentName(), parentPath + name + "/",
-                        curChild.getContentName());
-            }
-            FileTransferInfoEntity newlyCreatednode = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef()
-                    .toString());
-            // adjust path in DB
-            adjustPathInSubtreeInDB(newlyCreatednode, parentPath + name + "/");
-            if (log.isDebugEnabled())
-            {
-                log.debug("adjustPathInSubtreeInDB:" + newlyCreatednode);
-                log.debug("Move to:" + parentPath + name + "/");
+                fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
             }
 
         }
         else
-        {   // this is not new node
+        {
+            // this is folder modified
             if (log.isDebugEnabled())
             {
-                log.debug("This node is NOT new:" + node.toString());
+                log.debug("This is folder:" + node.toString());
             }
-            // not a new node, it can be a move of a folder or a content
-            // it can be a content modification or a rename of folder or content
-            // check if we receive a file or a folder
-            QName nodeType = node.getType();
-            FileTransferInfoEntity nodeToModify = fTReceiver
-                    .findFileTransferInfoByNodeRef(node.getNodeRef().toString());
-            Boolean isFolder = ContentModel.TYPE_FOLDER.equals(nodeType);
-            if (!isFolder)
+            // Maybe parent was also modified then we have to do the move on FS and update the
+            // full subtree in the DB
+            String parentOfNode = node.getPrimaryParentAssoc().getParentRef().toString();
+            if (!parentOfNode.equals(nodeToModify.getParent()))
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Tis is content:" + node.toString());
+                    log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
+                    log.debug("Node is moved, node Id:" + nodeToModify.getId());
+                    log.debug("Node is moved, old parent :" + nodeToModify.getParent());
+                    log.debug("Node is moved, new parent :" + parentOfNode);
+                    log.debug("Node is moved, old path :" + nodeToModify.getPath());
                 }
-                // check if content has changed
-                Boolean isContentModified = fTReceiver.isContentNewOrModified(node.getNodeRef().toString(), this
-                        .getContentUrl(node));
-
-                if (isContentModified)
+                // if the new parent is a descendant of the new received node then
+                // it can not be treated now,keep it for later
+                if (isDescendant(parentOfNode, node.getNodeRef().toString()))
                 {
-                    if (log.isDebugEnabled())
-                    {
-                        log.debug("Content URL was mofified:" + name);
-                    }
-                    File receivedFile = new File(fTReceiver.getDefaultReceivingroot() + nodeToModify.getPath()
-                            + nodeToModify.getContentName());
-                    String contentKey = TransferCommons.URLToPartName(this.getContentUrl(node));
-                    File receivedContent = fTReceiver.getContents().get(contentKey);
-                    if (receivedContent == null)
-                    {
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug("Error content not there:" + fTReceiver.getDefaultReceivingroot()
-                                    + nodeToModify.getPath() + nodeToModify.getContentName());
-                            log.debug("Key is:" + contentKey);
-                        }
-                        throw new TransferException("MSG_ERROR_CONTENT_NOT_THERE:" + contentKey);
-                    }
+                    // keep the untreated node in a list to handle it later
+                    waitingNodeList.add(node);
 
-                    this.putFileContent(receivedFile, receivedContent);
-                    // update DB
-                    nodeToModify.setContentUrl(getContentUrl(node));
-                    fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
                 }
-
-                // maybe the name of the node has changed
-                if (!nodeToModify.getContentName().equals(name))
+                else
                 {
-                    if (log.isDebugEnabled())
-                    {
-                        log.debug("Node name has changed, nodeFef:" + nodeToModify.getNodeRef());
-                        log.debug("Node name has changed, node Id:" + nodeToModify.getId());
-                        log.debug("Node name has changed, old node name :" + nodeToModify.getContentName());
-                        log.debug("Node name has changed, new node name :" + name);
-                    }
-                    String oldName = nodeToModify.getContentName();
-                    // set the new name and update
-                    nodeToModify.setContentName(name);
-                    fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
-
-                    // Impact File system
-                    moveFileOrFolderOnFileSytem(nodeToModify.getPath(), oldName, nodeToModify.getPath(), name);
-                }
-
-                // Check if the node was moved
-                String parentOfNode = node.getPrimaryParentAssoc().getParentRef().toString();
-                if (!parentOfNode.equals(nodeToModify.getParent()))
-                {
-                    if (log.isDebugEnabled())
-                    {
-                        log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
-                        log.debug("Node is moved, node Id:" + nodeToModify.getId());
-                        log.debug("Node is moved, old parent :" + nodeToModify.getParent());
-                        log.debug("Node is moved, new parent :" + parentOfNode);
-                        log.debug("Node is moved, old path :" + nodeToModify.getPath());
-                    }
                     // retrieve the new parent
                     FileTransferInfoEntity newParentEntity = fTReceiver.findFileTransferInfoByNodeRef(parentOfNode);
-
                     // adjust the parent node
                     nodeToModify.setParent(parentOfNode);
                     if (newParentEntity != null)
                     {
-                        // adjust the path because parent already exist
+                        // adjust the path
                         String newPath = newParentEntity.getPath() + newParentEntity.getContentName() + "/";
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug("Node is moved, new path :" + newPath);
-                        }
                         String oldPath = nodeToModify.getPath();
                         nodeToModify.setPath(newPath);
-                        moveFileOrFolderOnFileSytem(oldPath, nodeToModify.getContentName(), newPath, name);
+                        moveFileOrFolderOnFileSytem(oldPath, nodeToModify.getContentName(), newPath, nodeToModify
+                                .getContentName());
+                        // use the new name because maybe it was renamed just before
+                        adjustPathInSubtreeInDB(nodeToModify, newPath + nodeToModify.getContentName() + "/");
                     }
                     else
                     {
-                        //it could be a node directly under root
-                        //should be moved under the root?
-                        boolean isNodeUnderRoot = parentOfNode.equals(fTReceiver.getFileTransferRootNodeFileFileSystem());
+                        /** **************************************************************************** */
+                        /* Some test here to handle the "root" case if parent does not exist in the DB */
+                        /** **************************************************************************** */
+                        boolean isNodeUnderRoot = parentOfNode.equals(fTReceiver
+                                .getFileTransferRootNodeFileFileSystem());
                         if (log.isDebugEnabled())
                         {
                             log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
                         }
-                        name = nodeToModify.getContentName();
-                        if(isNodeUnderRoot)
+                        if (isNodeUnderRoot)
                         {
                             // adjust the path
                             String newPath = "/";
                             String oldPath = nodeToModify.getPath();
                             nodeToModify.setPath(newPath);
-                            moveFileOrFolderOnFileSytem(oldPath, name, newPath, name);
+                            moveFileOrFolderOnFileSytem(oldPath, nodeToModify.getContentName(), newPath, nodeToModify
+                                    .getContentName());
                             // use the new name because maybe it was renamed just before
-                            adjustPathInSubtreeInDB(nodeToModify, newPath + name + "/");
-                            fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
-                        }
-                    }
-                    fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
-                }
-
-            }
-            else
-            {
-                // this is folder modified
-                if (log.isDebugEnabled())
-                {
-                    log.debug("This is folder:" + node.toString());
-                }
-                // this is a folder and maybe the folder was moved or renamed
-                // maybe the name of the node has changed
-                String oldName = nodeToModify.getContentName();
-                if (!oldName.equals(name))
-                {
-                    if (log.isDebugEnabled())
-                    {
-                        log.debug("Node is renamed, nodeFef:" + nodeToModify.getNodeRef());
-                        log.debug("Node is renamed, node Id:" + nodeToModify.getId());
-                        log.debug("Node is renamed, old parent :" + nodeToModify.getParent());
-                        log.debug("Node is moved, old path :" + nodeToModify.getPath());
-                    }
-                    // set the new name and update
-                    nodeToModify.setContentName(name);
-                    // impact DB
-                    fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
-                    moveFileOrFolderOnFileSytem(nodeToModify.getPath(), oldName, nodeToModify.getPath(), name);
-                    adjustPathInSubtreeInDB(nodeToModify, nodeToModify.getPath() + name + "/");
-                }
-
-                // Maybe parent was also modified then we have to do the move on FS and update the
-                // full subtree in the DB
-                String parentOfNode = node.getPrimaryParentAssoc().getParentRef().toString();
-                if (!parentOfNode.equals(nodeToModify.getParent()))
-                {
-                    if (log.isDebugEnabled())
-                    {
-                        log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
-                        log.debug("Node is moved, node Id:" + nodeToModify.getId());
-                        log.debug("Node is moved, old parent :" + nodeToModify.getParent());
-                        log.debug("Node is moved, new parent :" + parentOfNode);
-                        log.debug("Node is moved, old path :" + nodeToModify.getPath());
-                    }
-                    // if the new parent is a descendant of the new received node then
-                    // it can not be treated now,keep it for later
-                    if (isDescendant(parentOfNode, node.getNodeRef().toString()))
-                    {
-                        // keep the untreated node in a list to handle it later
-                        waitingNodeList.add(node);
-
-                    }
-                    else
-                    {
-                        // retrieve the new parent
-                        FileTransferInfoEntity newParentEntity = fTReceiver.findFileTransferInfoByNodeRef(parentOfNode);
-                        // adjust the parent node
-                        nodeToModify.setParent(parentOfNode);
-                        if (newParentEntity != null)
-                        {
-                            // adjust the path
-                            String newPath = newParentEntity.getPath() + newParentEntity.getContentName() + "/";
-                            String oldPath = nodeToModify.getPath();
-                            nodeToModify.setPath(newPath);
-                            moveFileOrFolderOnFileSytem(oldPath, name, newPath, name);
-                            // use the new name because maybe it was renamed just before
-                            adjustPathInSubtreeInDB(nodeToModify, newPath + name + "/");
+                            adjustPathInSubtreeInDB(nodeToModify, newPath + nodeToModify.getContentName() + "/");
                         }
                         else
                         {
-                            /** **************************************************************************** */
-                            /* Some test here to handle the "root" case if parent does not exist in the DB */
-                            /** **************************************************************************** */
-                            boolean isNodeUnderRoot = parentOfNode.equals(fTReceiver.getFileTransferRootNodeFileFileSystem());
-                            if (log.isDebugEnabled())
-                            {
-                                log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
-                            }
-                            if(isNodeUnderRoot)
-                            {
-                                // adjust the path
-                                String newPath = "/";
-                                String oldPath = nodeToModify.getPath();
-                                nodeToModify.setPath(newPath);
-                                moveFileOrFolderOnFileSytem(oldPath, name, newPath, name);
-                                // use the new name because maybe it was renamed just before
-                                adjustPathInSubtreeInDB(nodeToModify, newPath + name + "/");
-                            }
-                            else
-                            {
-                                //throw new TransferException("MSG_NO_PARENT_FOUND:" + nodeToModify);
-                            }
                             // throw new TransferException("MSG_NO_PARENT_FOUND:" + nodeToModify);
                         }
-                        /** **************************************************************************** */
-                        /* Some test here to handle the "root" case if parent does not exist in the DB */
-                        /** **************************************************************************** */
-                        fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
-                        // check if some waiting nodes can be handle now
-                        HandleWaitingNodes();
+                        // throw new TransferException("MSG_NO_PARENT_FOUND:" + nodeToModify);
                     }
+                    /** **************************************************************************** */
+                    /* Some test here to handle the "root" case if parent does not exist in the DB */
+                    /** **************************************************************************** */
+                    fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
+                    // check if some waiting nodes can be handle now
+                    HandleWaitingNodes();
                 }
-
             }
         }
     }
@@ -553,7 +420,8 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
                             .toString());
                     // now this node can be handled
                     // retrieve the new parent
-                    FileTransferInfoEntity newParentEntity = fTReceiver.findFileTransferInfoByNodeRef(parentparentOfNode);
+                    FileTransferInfoEntity newParentEntity = fTReceiver
+                            .findFileTransferInfoByNodeRef(parentparentOfNode);
                     // adjust the parent node
                     nodeToModify.setParent(parentparentOfNode);
                     if (newParentEntity != null)
@@ -572,14 +440,15 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
                     }
                     else
                     {
-                        //should be moved under the root?
-                        boolean isNodeUnderRoot = parentparentOfNode.equals(fTReceiver.getFileTransferRootNodeFileFileSystem());
+                        // should be moved under the root?
+                        boolean isNodeUnderRoot = parentparentOfNode.equals(fTReceiver
+                                .getFileTransferRootNodeFileFileSystem());
                         if (log.isDebugEnabled())
                         {
                             log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
                         }
                         String name = nodeToModify.getContentName();
-                        if(isNodeUnderRoot)
+                        if (isNodeUnderRoot)
                         {
                             // adjust the path
                             String newPath = "/";
@@ -598,7 +467,7 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
                     }
                 }
             }
-            if(toBeRemoved.isEmpty())
+            if (toBeRemoved.isEmpty())
                 break;
             waitingNodeList.removeAll(toBeRemoved);
         }
@@ -628,91 +497,6 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
         }
     }
 
-    protected void moveFileOrFolderOnFileSytem(String oldPath, String oldName, String newPath, String newName)
-    {
-        // Method 1 using rename does not seem to work
-        // move the node on the receiving file system
-        // File (or directory) to be moved
-        File fileToBeMoved = new File(fTReceiver.getDefaultReceivingroot() + oldPath + oldName);
-        // Destination directory
-        File newDirLocation = new File(fTReceiver.getDefaultReceivingroot() + newPath);
-        // Move file to new directory
-        boolean success = fileToBeMoved.renameTo(new File(newDirLocation, newName));
-        if (!success)
-        {
-            log.error("Unable to move:" + oldPath + oldName + " to " + newPath + newName);
-            // operation failed, maybe use Method 2
-            // probably failing if the source and the destination are not on the same volume/partition
-            // to be tested
-            throw new TransferException("MSG_ERROR_WHILE_MOVING_FILE_OR_FOLDER");
-
-        }
-        // Method 2 using copy/delete
-        // File fileToMove = new File(fTReceiver.getDefaultReceivingroot() + oldPath + nodeToModify.getContentName());
-        // File fileToMoveTarget = new File(fTReceiver.getDefaultReceivingroot() + newPath + name);
-        // try
-        // {
-        // fileToMoveTarget.createNewFile();
-        // FileCopyUtils.copy(fileToMove, fileToMoveTarget);
-        // }
-        // catch (IOException e)
-        // {
-        // throw new TransferException("MSG_ERROR_WHILE_MOVING_FILE", e);
-        // }
-        // //delete old file
-        // fileToMove.delete();
-    }
-
-    protected void adjustPathInSubtreeInDB(FileTransferInfoEntity nodeToModify, String containingPath)
-    {
-        // get all children of nodeToModify
-        List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(nodeToModify
-                .getNodeRef());
-        // iterate on children
-        // remark probably a global update would be better here
-        for (FileTransferInfoEntity curChild : childrenList)
-        {
-            // adjust path
-            curChild.setPath(containingPath);
-            fTReceiver.updateFileTransferInfoByNodeRef(curChild);
-        }
-
-        // call recursively for all children adjustPathInSubtreeInDB(FileTransferInfoEntity nodeToModify, String
-        // adjusted containingPAth)
-        for (FileTransferInfoEntity curChild : childrenList)
-        {
-            adjustPathInSubtreeInDB(curChild, containingPath + curChild.getContentName() + "/");
-        }
-
-    }
-
-    protected void putFileContent(File receivedFile, File receivedContent)
-    {
-        try
-        {
-            if (!receivedFile.exists())
-                receivedFile.createNewFile();
-            FileCopyUtils.copy(receivedContent, receivedFile);
-        }
-        catch (Exception ex)
-        {
-            log.error("Unable to put file content in " + receivedFile.getPath() + "/" + receivedFile.getName());
-            throw new TransferException("MSG_ERROR_WHILE_STAGING_CONTENT", ex);
-        }
-    }
-
-    protected String getContentUrl(TransferManifestNormalNode node)
-    {
-        ContentData contentData = (ContentData) node.getProperties().get(ContentModel.PROP_CONTENT);
-
-        String contentUrl = "";
-        if (contentData != null)
-        {
-            contentUrl = contentData.getContentUrl();
-        }
-        return contentUrl;
-    }
-
     protected void recursiveDeleteInDB(String nodeRef)
     {
         fTReceiver.deleteNodeByNodeRef(nodeRef.toString());
@@ -732,7 +516,7 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
         FileTransferInfoEntity deletedNode = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef().toString());
 
         // If null just log and ignore
-        // delte on FS
+        // delete on FS
         String pathFileOrFolderToBeDeleted = fTReceiver.getDefaultReceivingroot() + deletedNode.getPath()
                 + deletedNode.getContentName();
 

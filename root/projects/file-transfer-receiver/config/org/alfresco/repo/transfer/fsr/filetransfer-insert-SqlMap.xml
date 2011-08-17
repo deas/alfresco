@@ -8,5 +8,9 @@
         <include refid="alfresco.filetransferinfo.insert_FileTransferInfo_AutoIncrement"/>
     </insert>
 
+    <insert id="insert_FileTransferNodeRename" parameterType="FileTransferNodeRename" useGeneratedKeys="true" keyProperty="id">
+        <include refid="alfresco.filetransferinfo.insert_FileTransferNodeRename_AutoIncrement"/>
+    </insert>
+
 
 </mapper>

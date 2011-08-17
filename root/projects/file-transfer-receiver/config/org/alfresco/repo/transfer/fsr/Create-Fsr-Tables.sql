@@ -52,3 +52,13 @@ CREATE TABLE alf_file_transfer_info (
 
 CREATE INDEX idx_parent ON alf_file_transfer_info ( parent );
 
+CREATE TABLE alf_node_rename_info (
+  id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  renamedNodeRef VARCHAR(80) NOT NULL,
+  transferId VARCHAR(80) NOT NULL,
+  newName VARCHAR(255) NOT NULL,
+  CONSTRAINT idx_renamed_nodeRef UNIQUE (renamedNodeRef)
+);
+
+CREATE INDEX idx_transfer_id ON alf_node_rename_info ( transferId );
+

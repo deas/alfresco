@@ -40,7 +40,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class FileTransferReceiverRequisiteManifestProcessor extends AbstractManifestProcessorBase
 {
-    private static String TEMP_VIRTUAL_ROOT = "t_v_r_1223321445643";
     private TransferRequsiteWriter out;
     private FileTransferReceiver fileTransferReceiver;
 

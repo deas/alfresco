@@ -1027,6 +1027,7 @@ public class FileTransferReceiver implements TransferReceiver
      * This set comes from the DB. The set of nodes that will be deleted
      * in sync mode will be the set build when removing the received nodes
      * from this set (the one that where in the DB before transfer).
+     * We create here the full set of nodes before transfer.
      */
     public void updateListOfDescendantsForSyncMode(String nodeRef)
     {
@@ -1041,6 +1042,72 @@ public class FileTransferReceiver implements TransferReceiver
             updateListOfDescendantsForSyncMode(curChild.getNodeRef().toString());
         }
     }
+
+    /**
+     * When a node is received and if new or parent modified then put aside the final name
+     *
+     * @param nodeRef
+     * @param newName
+     */
+    public void createNodeRenameEntity(String nodeRef, String transferId, String newName)
+    {
+        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
+
+        final String localNodeRef = nodeRef;
+        final String localTransferId = transferId;
+        final String localNewName = newName;
+
+
+        txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
+            {
+                public Void execute() throws Throwable
+                {
+                    fileTransferInfoDAO.createFileTransferNodeRenameEntity(localNodeRef,localTransferId,localNewName);
+
+                    return null;
+
+                }
+            }, false, false);
+    }
+
+    public void deleteFileTransferNodeRenameByTransferId(String transferId)
+    {
+        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
+
+        final String localTransferId = transferId;
+
+        txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
+            {
+                public Void execute() throws Throwable
+                {
+                    fileTransferInfoDAO.deleteFileTransferNodeRenameByTransferId(localTransferId);
+
+                    return null;
+                }
+            }, false, false);
+    }
+
+    public List<FileTransferNodeRenameEntity> findFileTransferNodeRenameEntityByTransferId(String transferId)
+    {
+        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
+
+        final String localtransferId = transferId;
+
+        List<FileTransferNodeRenameEntity> fileTransferInfoEntityList = txHelper.doInTransaction(
+                new RetryingTransactionHelper.RetryingTransactionCallback<List<FileTransferNodeRenameEntity>>()
+                    {
+                        public List<FileTransferNodeRenameEntity> execute() throws Throwable
+                        {
+                            List<FileTransferNodeRenameEntity> fileTransferInfoEntityList = fileTransferInfoDAO.findFileTransferNodeRenameEntityByTransferId(localtransferId);
+
+                            return fileTransferInfoEntityList;
+
+                        }
+                    }, true, false);
+        return fileTransferInfoEntityList;
+    }
+
+
 
     public Set<String> getListOfDescendentsForSyncMode()
     {

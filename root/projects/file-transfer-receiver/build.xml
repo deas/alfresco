@@ -2,7 +2,7 @@
 <project name="File Transfer Receiver" default="compile" basedir=".">
 
 	<property name="project.dir" value="." />
-	<property name="project.name" value="ftreceiver" />
+	<property name="project.name" value="file-transfer-receiver" />
 	<property name="build.dir" value="${project.dir}/build" />
 	<property name="src.dir" value="${project.dir}/source" />
 	<property name="src.dir.web" value="${src.dir}/web" />
@@ -10,7 +10,7 @@
 	<property name="config.dir" value="${project.dir}/config" />
 	<property name="jar.file" value="${project.name}.jar" />
 	<property name="package.file" value="${project.name}.war" />
-	<property name="tomcat.root" value="${project.dir}/apache-tomcat-7.0.16" />
+	<property name="tomcat.root" value="${project.dir}" />
 	<!-- put everything in a temp folder with the right structure during the build -->
 	<property name="temp.dir" value="${build.dir}/temp" />
 	<property name="temp.dir.web-inf" value="${temp.dir}/WEB-INF" />
@@ -153,15 +153,15 @@
 				<attribute name="Main-Class" value="org.alfresco.repo.transfer.fsr.FileTransferMainEmbedded" />
 	            <attribute name="Class-Path" value="${manifest.classpath}" />
 			</manifest>
-			
+
 		</jar>
-		
+
 		<copy todir="${temp.dir.lib}" flatten="true">
 			<fileset dir="${libs.thirdparty.dir}">
 				<patternset refid="libs.thirdparty.runtime" />
 			</fileset>
 		</copy>
-		
+
 		<war destfile="${package.file}" webxml="${src.dir.web}/WEB-INF/web.xml">
 	        <webinf dir="${src.dir.web}/WEB-INF" excludes="web.xml"/>
 			<lib dir="${temp.dir.lib}" />
@@ -200,8 +200,16 @@
 
 
 	<target name="deploy" depends="package">
-		<delete dir="${tomcat.root}/webapps/ftreceiver" />
+		<delete dir="${tomcat.root}/webapps" quiet="true" />
+        <mkdir dir="${tomcat.root}/webapps" />
 		<copy file="${package.file}" tofile="${tomcat.root}/webapps/${package.file}" />
+	</target>
+
+	<target name="deploy-reinit" depends="deploy">
+        <delete dir="${project.dir}/derbyDB" quiet="true" />
+        <delete dir="${project.dir}/file-transfer-receiver" quiet="true" />
+        <delete file="${project.dir}/alfresco.log" quiet="true" />
+        <delete file="${project.dir}/derby.log" quiet="true" />
 	</target>
 
 
