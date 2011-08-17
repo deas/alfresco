@@ -284,7 +284,7 @@ var CalendarScriptHelper = (function()
 		
       getView: function()
       {
-         return "month";
+         return context.properties.filteredView;
       },
       
 		/**
