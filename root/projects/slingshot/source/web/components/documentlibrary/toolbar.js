@@ -139,7 +139,16 @@
           * @type boolean
           * @default false
           */
-         googleDocsEnabled: false
+         googleDocsEnabled: false,
+
+         /**
+          * Decides it the title shall be displayed next to the name if it contains a value that is different from the name
+          *
+          * @property useTitle
+          * @type boolean
+          * @default true
+          */
+         useTitle: true
       },
       
       /**
@@ -216,6 +225,10 @@
             disabled: true,
             value: "CreateChildren"
          });
+         // Make sure we load sub menu lazily with data on each click
+         var templateNodesMenu = this.widgets.createContent.getMenu().getSubmenus()[0];
+         templateNodesMenu.subscribe("beforeShow", this.onCreateByTemplateNodeBeforeShow, this, true);
+         templateNodesMenu.subscribe("click", this.onCreateByTemplateNodeClick, this, true);
          this.dynamicControls.push(this.widgets.createContent);
 
          // New Folder button: user needs "create" access
@@ -292,7 +305,7 @@
        */
 
       /**
-       * Create Content menu click handler
+       * Create Content menu click handler for create content menu items (not create by template node menu items)
        *
        * @method onCreateContent
        * @param sType {string} Event type, e.g. "click"
@@ -303,19 +316,109 @@
       {
          var eventTarget = aArgs[1],
             anchor = eventTarget.element.getElementsByTagName("a")[0];
-         
-         if (anchor && anchor.nodeName == "A")
+
+         // Make sure a create content menu item was clicked (not a template node)
+         if (eventTarget.parent === this.widgets.createContent.getMenu() && anchor && anchor.nodeName == "A")
          {
             anchor.href = YAHOO.lang.substitute(anchor.href,
             {
                nodeRef: this.doclistMetadata.parent.nodeRef
             });
-            
+
             // Portlet fix: parameter might be encoded
             if (anchor.href.indexOf("%7BnodeRef%7D") !== -1)
             {
                anchor.href = anchor.href.replace("%7BnodeRef%7D", encodeURIComponent(this.doclistMetadata.parent.nodeRef));
             }
+         }
+      },
+
+      onCreateByTemplateNodeBeforeShow: function()
+      {
+         // Display loading message
+         var templateNodesMenu = this.widgets.createContent.getMenu().getSubmenus()[0];
+         templateNodesMenu.clearContent();
+         templateNodesMenu.addItem(this.msg("label.loading"));
+         templateNodesMenu.render();
+
+         // Load template nodes
+         Alfresco.util.Ajax.jsonGet(
+         {
+            url: Alfresco.constants.PROXY_URI + "slingshot/doclib/node-templates",
+            successCallback:
+            {
+               fn: function(response, menu)
+               {
+                  var nodes = response.json.data,
+                     menuItems = [],
+                     name;
+                  for (var i = 0, il = nodes.length; i < il; i++)
+                  {
+                     node = nodes[i];
+                     name = $html(node.name);
+                     if (node.title && node.title !== node.name && this.options.useTitle)
+                     {
+                        name += '<span class="title">(' + $html(node.title) + ')</span>';
+                     }
+                     menuItems.push(
+                     {
+                        text: '<span title="' + $html(node.description) + '">' + name +'</span>',
+                        value: node
+                     });
+                  }
+                  if (menuItems.length == 0)
+                  {
+                     menuItems.push(this.msg("label.empty"));
+                  }
+                  templateNodesMenu.clearContent();
+                  templateNodesMenu.addItems(menuItems);
+                  templateNodesMenu.render();
+               },
+               scope: this
+            }
+         });
+      },
+
+      /**
+       * Create Content Template Node sub menu click handler
+       *
+       * @method onCreateContentTemplateNode
+       * @param sType {string} Event type, e.g. "click"
+       * @param aArgs {array} Arguments array, [0] = DomEvent, [1] = EventTarget
+       * @param p_obj {object} Object passed back from subscribe method
+       */
+      onCreateByTemplateNodeClick: function DLTB_onCreateContentTemplateNode(sType, aArgs, p_obj)
+      {
+         // Create content based on a template
+         var node = aArgs[1].value,
+            destination = this.doclistMetadata.parent.nodeRef;
+
+         // If node is undefined the loading or empty menu items were clicked
+         if (node)
+         {
+            Alfresco.util.Ajax.jsonPost(
+            {
+               url: Alfresco.constants.PROXY_URI + "slingshot/doclib/node-templates",
+               dataObj:
+               {
+                  sourceNodeRef: node.nodeRef,
+                  parentNodeRef: destination
+               },
+               successCallback:
+               {
+                  fn: function ()
+                  {
+                     // Make sure we get other components to update themselves to show the new content
+                     YAHOO.Bubbling.fire("nodeCreated",
+                     {
+                        name: node.name,
+                        parentNodeRef: destination
+                     });
+                  }
+               },
+               successMessage: this.msg("message.create-content-by-template-node.success", node.name),
+               failureMessage: this.msg("message.create-content-by-template-node.failure", node.name)
+            });
          }
       },
 

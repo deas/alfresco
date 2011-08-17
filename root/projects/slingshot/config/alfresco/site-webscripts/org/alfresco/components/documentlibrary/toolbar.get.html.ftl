@@ -6,7 +6,8 @@
    {
       siteId: "${page.url.templateArgs.site!""}",
       hideNavBar: ${(preferences.hideNavBar!false)?string},
-      googleDocsEnabled: ${(googleDocsEnabled!false)?string}
+      googleDocsEnabled: ${(googleDocsEnabled!false)?string},
+      useTitle: ${((args.useTitle!config.scoped["DocumentLibrary"]["use-title"])!"true")?js_string}
    }).setMessages(
       ${messages}
    );

@@ -21,6 +21,12 @@
                         <li><a href="${siteURL(href)}" rel="${content.permission!""}"><span class="${content.icon}-file">${msg(content.label)}</span></a></li>
                      </#list>
                      </ul>
+                     <ul>
+                        <li>
+                           <span>${msg("menu.create-content.by-template-node")}</span>
+                           <div class="yuimenu"><div class="bd"><ul></ul></div></div>
+                        </li>
+                     </ul>
                   </div>
                </div>
             </div>

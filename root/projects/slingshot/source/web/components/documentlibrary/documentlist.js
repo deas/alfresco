@@ -366,6 +366,7 @@
       YAHOO.Bubbling.on("changeFilter", this.onChangeFilter, this);
       YAHOO.Bubbling.on("filterChanged", this.onFilterChanged, this);
       YAHOO.Bubbling.on("folderCreated", this.onDocListRefresh, this);
+      YAHOO.Bubbling.on("nodeCreated", this.onDocListRefresh, this);
       YAHOO.Bubbling.on("folderRenamed", this.onFileRenamed, this);
       YAHOO.Bubbling.on("highlightFile", this.onHighlightFile, this);
       // File actions which may be part of a multi-file action set

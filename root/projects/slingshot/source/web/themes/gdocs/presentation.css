@@ -694,13 +694,17 @@ body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem-selected
 }
 
 body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel,
-body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel a
+body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel a,
+body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem-selected div .yuimenuitemlabel,
+body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem-selected div .yuimenuitemlabel a
 {
    color: #0600cc;
 }
 
 body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel,
-body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel a
+body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel a,
+body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem-selected div ul li.yuimenuitem-selected .yuimenuitemlabel,
+body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem-selected div ul li.yuimenuitem-selected .yuimenuitemlabel a
 {
    color: #FFF;
 }
