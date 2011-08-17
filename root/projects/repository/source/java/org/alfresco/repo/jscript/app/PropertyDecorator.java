@@ -16,21 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.alfresco.repo.jscript.app;
 
-package org.alfresco.web.evaluator;
-
-import org.json.simple.JSONObject;
+import org.alfresco.service.cmr.repository.NodeRef;
+import java.io.Serializable;
 
 /**
- * Convenience evaluator which always returns false
- * 
- * @author: mikeh
+ * Interface for property decorators used by ApplicationScriptUtils.toJSON()
+ *
+ * @author Mike Hatfield
  */
-public class AlwaysFalseEvaluator extends BaseEvaluator
+public interface PropertyDecorator
 {
-    @Override
-    public boolean evaluate(JSONObject jsonObject)
-    {
-        return false;
-    }
+    Serializable decorate(NodeRef nodeRef, String propertyName, Serializable value);
 }

@@ -16,17 +16,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.repo.jscript.app;
-
-import org.alfresco.service.cmr.repository.NodeRef;
-import java.io.Serializable;
+package org.alfresco.web.evaluator;
 
 /**
- * Interface for property decorators used by ApplicationScriptUtils.toJSON()
- *
- * @author Mike Hatfield
+ * @author: mikeh
  */
-public interface JSONPropertyDecorator
+public class NullValueComparator implements Comparator
 {
-    Serializable decorate(NodeRef nodeRef, String propertyName, Serializable value);
+    private String value = null;
+
+    /**
+     * Setter for static string value to compare to
+     *
+     * @param value
+     */
+    public void setValue(String value)
+    {
+        this.value = value;
+    }
+
+    @Override
+    public boolean compare(Object nodeValue)
+    {
+        boolean match = this.value.equalsIgnoreCase("true");
+        return match == (nodeValue == null);
+    }
 }

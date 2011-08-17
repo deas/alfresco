@@ -47,7 +47,9 @@ var DocList =
          allIndicators = DocList.getAllIndicators(), // <-- this can also be cached
          nodeActions, nodeIndicators,
          item, node, actionGroupId, actions, actionTemplate, action, finalActions, indicatorTemplate, indicator, i, index,
-         workingCopyLabel = doclist.metadata.workingCopyLabel;
+         metadata = doclist.metadata,
+         jsonMetadata = jsonUtils.toJSONString(metadata),
+         workingCopyLabel = metadata.workingCopyLabel;
 
       /**
        * Sort actions by index attribute
@@ -126,7 +128,7 @@ var DocList =
                for (index in action.evaluators)
                {
                   evaluator = action.evaluators[index].evaluator;
-                  if (evaluator.evaluate(jsonUtils.toJSONString(item), args) == action.evaluators[index].result)
+                  if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) == action.evaluators[index].result)
                   {
                      evaluatorCheck = false;
                      break;
@@ -164,7 +166,7 @@ var DocList =
                for (index in indicator.evaluators)
                {
                   evaluator = indicator.evaluators[index].evaluator;
-                  if (evaluator.evaluate(jsonUtils.toJSONString(item), args) == indicator.evaluators[index].result)
+                  if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) == indicator.evaluators[index].result)
                   {
                      evaluatorCheck = false;
                      break;

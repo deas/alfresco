@@ -16,46 +16,49 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.alfresco.web.evaluator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Check whether the node lives in a Site of one of the listed presets
+ * Check a browser userAgent string against a supplied regular expression
  *
  * @author: mikeh
  */
-public class SitePresetEvaluator extends BaseEvaluator
+public class IsBrowserEvaluator extends BaseEvaluator
 {
-    private ArrayList<String> presets;
+    private String regex;
 
     /**
-     * Define the list of presets to check for
+     * Define the regular expression to test against
      *
-     * @param presets
+     * @param regex
      */
-    public void setPresets(ArrayList<String> presets)
+    public void setRegex(String regex)
     {
-        this.presets = presets;
+        this.regex = regex;
     }
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        if (presets.size() == 0)
+        if (regex == null)
         {
             return false;
         }
 
         try
         {
-            if (!presets.contains(getSitePreset(jsonObject)))
+            String userAgent = getHeader("user-agent");
+            if (userAgent != null)
             {
-                return false;
+                Pattern p = Pattern.compile(this.regex);
+                Matcher m = p.matcher(userAgent);
+                return m.find();
             }
         }
         catch (Exception err)
@@ -63,6 +66,6 @@ public class SitePresetEvaluator extends BaseEvaluator
             throw new AlfrescoRuntimeException("Failed to run action evaluator: " + err.getMessage());
         }
 
-        return true;
+        return false;
     }
 }

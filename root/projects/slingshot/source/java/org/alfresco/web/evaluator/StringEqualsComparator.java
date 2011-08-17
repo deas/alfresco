@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.alfresco.web.evaluator;
 
 /**
+ * Compares a node value against an optionally case-insensitive value
+ *
  * @author: mikeh
  */
-public class EqualsComparator implements ValueComparator
+public class StringEqualsComparator implements Comparator
 {
     private Boolean caseInsensitive = true;
     private String value = null;
@@ -50,6 +51,11 @@ public class EqualsComparator implements ValueComparator
     @Override
     public boolean compare(Object nodeValue)
     {
+        if (nodeValue == null)
+        {
+            return false;
+        }
+        
         if (caseInsensitive)
         {
             return nodeValue.toString().equalsIgnoreCase(this.value);

@@ -19,7 +19,6 @@
 
 package org.alfresco.web.evaluator;
 
-import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 /**
@@ -44,6 +43,7 @@ public class PropertyNotNullEvaluator extends BaseEvaluator
     /**
      * Checks that a property value exists and is not null
      *
+     *
      * @param jsonObject The object the action is for
      * @return
      */
@@ -54,7 +54,7 @@ public class PropertyNotNullEvaluator extends BaseEvaluator
 
         if (this.property != null)
         {
-            JSONObject value = getProperty(jsonObject, this.property);
+            Object value = getProperty(jsonObject, this.property);
             result = (value != null);
         }
 

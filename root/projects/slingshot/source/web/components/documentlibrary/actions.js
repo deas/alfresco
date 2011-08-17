@@ -77,7 +77,7 @@
          {
             "id": p_action.id,
             "icon": p_action.icon,
-            "label": this.msg(p_action.label)
+            "label": Alfresco.util.substituteDotNotation(this.msg(p_action.label), p_record)
          };
          
          // Parameter substitution for each action type
@@ -85,10 +85,13 @@
          {
             if (p_action.params.href)
             {
+               /*
                markupParams.href = YAHOO.lang.substitute(p_action.params.href, p_record, function DL_renderAction_href(p_key, p_value, p_meta)
                {
                   return Alfresco.util.findValueByDotNotation(p_record, p_key);
                });
+               */
+               markupParams.href = Alfresco.util.substituteDotNotation(p_action.params.href, p_record);
                markupParams.target = p_action.params.target ? "target=\"" + p_action.params.target + "\"" : "";
             }
             else
@@ -100,10 +103,13 @@
          {
             if (p_action.params.page)
             {
+               /*
                markupParams.pageUrl = YAHOO.lang.substitute(p_action.params.page, p_record, function DL_renderAction_pageUrl(p_key, p_value, p_meta)
                {
                   return Alfresco.util.findValueByDotNotation(p_record, p_key);
                });
+               */
+               markupParams.pageUrl = Alfresco.util.substituteDotNotation(p_action.params.page, p_record);
             }
             else
             {
@@ -496,6 +502,7 @@
       {
          var controlProgID = "SharePoint.OpenDocuments",
             jsNode = record.jsNode,
+            loc = record.location,
             mimetype = jsNode.mimetype,
             appProgID = null,
             activeXControl = null,
@@ -533,6 +540,21 @@
 
          if (appProgID !== null)
          {
+            // Ensure we have the record's onlineEditUrl populated
+            if (!Alfresco.util.isValueSet(record.onlineEditUrl))
+            {
+               var onlineEditUrl = this.doclistMetadata.custom.vtiServer.host + ":" +
+                     this.doclistMetadata.custom.vtiServer.port + "/" +
+                     $combine("alfresco", loc.site.name, loc.container.name, loc.path, loc.file);
+
+               if (!(/^(http|https):\/\//).test(onlineEditUrl))
+               {
+                  // VTI server now supports HTTPS directly http://issues.alfresco.com/jira/browse/DOC-227
+                  onlineEditUrl = window.location.protocol + "//" + onlineEditUrl;
+               }
+               record.onlineEditUrl = onlineEditUrl;
+            }
+
             // Try each version of the SharePoint control in turn, newest first
             try
             {
@@ -848,7 +870,7 @@
                {
                   fileCount: success,
                   path: this.currentPath,
-                  parentNodeRef : this.doclistMetadata.parent.nodeRef
+                  parentNodeRef: this.doclistMetadata.parent.nodeRef
                };
                this.modules.actions.postActivity(this.options.siteId, "files-" + uploadType, "documentlibrary", activityData);
             }

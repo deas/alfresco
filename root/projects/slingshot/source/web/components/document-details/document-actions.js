@@ -121,14 +121,6 @@
          },
 
          /**
-          * SharePoint (Vti) Server Details
-          *
-          * @property vtiServer
-          * @type object
-          */
-         vtiServer: {},
-
-         /**
           * Replication URL Mapping details
           *
           * @property replicationUrlMapping
@@ -212,34 +204,6 @@
          // Token replacement (actionUrls is re-used further down)
          var actionUrls = this.getActionUrls(record);
          actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, actionUrls);
-
-         /**
-          * TODO: Sort this lot out re: action "conditions"
-          */
-         // Hide actions which have been disallowed through permissions
-         if (record.permissions && record.permissions.userAccess)
-         {
-            /*
-             * Configure the Online Edit URL and permission if correct conditions are met
-             * Browser == MSIE; vtiServer details retrieved; vti module installed; mimetype matches whitelist
-             */
-            
-            if (YAHOO.env.ua.ie > 0 &&
-               this.options.vtiServer && typeof this.options.vtiServer.port == "number" &&
-               this.doclistMetadata.onlineEditing &&
-               record.mimetype in this.onlineEditMimetypes)
-            {
-               var loc = record.location,
-                  uri = this.options.vtiServer.host + ":" + this.options.vtiServer.port + "/" + $combine("alfresco", loc.site, loc.container, loc.path, loc.file);
-               
-               if (!(/^(http|https):\/\//).test(uri))
-               {
-                  // VTI server now supports HTTPS directly http://issues.alfresco.com/jira/browse/DOC-227
-                  uri = window.location.protocol + "//" + uri;
-               }
-               record.onlineEditUrl = uri;
-            }
-         }
 
          Dom.addClass(actionsEl, "action-set");
          Dom.setStyle(actionsEl, "visibility", "visible");

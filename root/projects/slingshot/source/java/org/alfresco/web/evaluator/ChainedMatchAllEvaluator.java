@@ -19,8 +19,6 @@
 
 package org.alfresco.web.evaluator;
 
-import org.alfresco.web.evaluator.BaseEvaluator;
-import org.alfresco.web.evaluator.Evaluator;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -50,6 +48,7 @@ public class ChainedMatchAllEvaluator extends BaseEvaluator
     /**
      * Run through each given evaluator until we either get to the end or one returns false
      *
+     *
      * @param jsonObject The object the action is for
      * @return
      */
@@ -64,7 +63,10 @@ public class ChainedMatchAllEvaluator extends BaseEvaluator
 
             while (result && evalIter.hasNext())
             {
-                result = evalIter.next().evaluate(jsonObject);
+                BaseEvaluator evaluator = (BaseEvaluator)evalIter.next();
+                evaluator.args = this.args;
+                evaluator.metadata = this.metadata;
+                result = evaluator.evaluate(jsonObject);
             }
         }
 

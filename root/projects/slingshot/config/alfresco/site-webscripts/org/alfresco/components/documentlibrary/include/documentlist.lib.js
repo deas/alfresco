@@ -82,20 +82,6 @@ var DocumentList =
       return jsonUtils.toJSONString(mapping);
    },
 
-   /* Vti (SharePoint Protocol) server */
-   getVtiServerJSON: function getVtiServerJSON()
-   {
-      var vtiServerJSON = "{}";
-
-      result = remote.call("/api/vti/serverDetails");
-      if (result.status == 200 && result != "")
-      {
-         vtiServerJSON = result;
-      }
-
-      return vtiServerJSON;
-   },
-
    /* Sort Options */
    getSortOptions: function getSortOptions()
    {
@@ -230,7 +216,6 @@ function doclibCommon()
    model.preferences = preferences;
    model.repositoryUrl = DocumentList.getConfigValue("DocumentLibrary", "repository-url", null);
    model.replicationUrlMappingJSON = DocumentList.getReplicationUrlMappingJSON();
-   model.vtiServer = DocumentList.getVtiServerJSON();
    model.rootNode = DocumentList.getConfigValue("RepositoryLibrary", "root-node", "alfresco://company/home");
    model.sortOptions = DocumentList.getSortOptions();
    model.useTitle = DocumentList.getConfigValue("DocumentLibrary", "use-title", null);

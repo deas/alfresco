@@ -25,7 +25,7 @@ import org.json.simple.JSONObject;
  */
 public class ValueEvaluator extends BaseEvaluator
 {
-    private ValueComparator comparator = null;
+    private Comparator comparator = null;
     private String accessor = null;
 
     /**
@@ -33,7 +33,7 @@ public class ValueEvaluator extends BaseEvaluator
      * 
      * @param comparator
      */
-    public void setComparator(ValueComparator comparator)
+    public void setComparator(Comparator comparator)
     {
         this.comparator = comparator;
     }
@@ -57,10 +57,6 @@ public class ValueEvaluator extends BaseEvaluator
         }
 
         Object nodeValue = getJSONValue(jsonObject, accessor);
-        if (nodeValue != null)
-        {
-            return this.comparator.compare(nodeValue);
-        }
-        return false;
+        return this.comparator.compare(nodeValue);
     }
 }

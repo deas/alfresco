@@ -36,8 +36,7 @@ public interface Evaluator
      * The evaluator should decide if the precondition is valid based on the appropriate
      * logic and the state etc. of the given object and return the result.
      *
-     * @param jsonObject     The object the evaluation is for
-     *
+     * @param jsonObject     The record the evaluation is for
      * @return result of whether the evaluation succeeded or failed.
      */
     public boolean evaluate(JSONObject jsonObject);

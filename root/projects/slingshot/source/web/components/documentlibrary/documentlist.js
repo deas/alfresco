@@ -771,14 +771,6 @@
          },
 
          /**
-          * SharePoint (Vti) Server Details
-          *
-          * @property vtiServer
-          * @type object
-          */
-         vtiServer: {},
-
-         /**
           * Replication URL Mapping details
           *
           * @property replicationUrlMapping
@@ -1252,10 +1244,13 @@
                   indicator = indicators[i];
                   // Note: deliberate bypass of scope.msg() function
                   label = Alfresco.util.message(indicator.label, scope.name, indicator.labelParams);
+                  /*
                   label = YAHOO.lang.substitute(label, record, function DL_renderCellStatus_label(p_key, p_value, p_meta)
                   {
                      return Alfresco.util.findValueByDotNotation(record, p_key);
                   });
+                  */
+                  label = Alfresco.util.substituteDotNotation(label, record);
 
                   desc += '<div class="status"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon + '" title="' + label + '" alt="' + indicator.id + '" /></div>';
                }
@@ -1537,7 +1532,9 @@
 
                   Alfresco.util.Ajax.request(
                   {
-                     url: Alfresco.constants.URL_SERVICECONTEXT + "components/documentlibrary/data/node/" + nodeRef.uri + "?filter=" + encodeURIComponent(this.currentFilter.filterId),
+                     url: Alfresco.constants.URL_SERVICECONTEXT + "components/documentlibrary/data/node/" + nodeRef.uri +
+                           "?filter=" + encodeURIComponent(this.currentFilter.filterId) +
+                           "&view=" + this.actionsView + "&noCache=" + new Date().getTime(),
                      successCallback:
                      {
                         fn: function insitu_callback_refreshSuccess(response)
@@ -1667,24 +1664,6 @@
             Dom.addClass(elCell.parentNode, oRecord.getData("type"));
 
             elCell.innerHTML = '<div id="' + scope.id + '-actions-' + oRecord.getId() + '" class="hidden"></div>';
-
-            var record = oRecord.getData();
-
-            /**
-             * Configure the Online Edit URL if enabled for this mimetype
-             */
-            if (scope.doclistMetadata.onlineEditing && (record.mimetype in scope.onlineEditMimetypes))
-            {
-               var loc = record.location,
-                  uri = scope.options.vtiServer.host + ":" + scope.options.vtiServer.port + "/" + $combine("alfresco", loc.site.name, loc.container.name, loc.path, loc.file);
-
-               if (!(/^(http|https):\/\//).test(uri))
-               {
-                  // VTI server now supports HTTPS directly http://issues.alfresco.com/jira/browse/DOC-227
-                  uri = window.location.protocol + "//" + uri;
-               }
-               oRecord.setData("onlineEditUrl", uri);
-            }
          };
       },
 
@@ -1832,12 +1811,6 @@
             {
                metadata: me.doclistMetadata
             });
-
-            // Reset onlineEdit flag if correct conditions not met
-            if ((YAHOO.env.ua.ie === 0) || (me.options.vtiServer && typeof me.options.vtiServer.port !== "number"))
-            {
-               me.doclistMetadata.onlineEditing = false;
-            }
 
             // Check for parent node - won't be one for multi-parent queries (e.g. tags)
             var permissions = null;

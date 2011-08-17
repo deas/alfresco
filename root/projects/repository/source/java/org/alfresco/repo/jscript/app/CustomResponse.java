@@ -17,22 +17,19 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.alfresco.web.evaluator;
+package org.alfresco.repo.jscript.app;
+
+import java.io.Serializable;
 
 /**
- * Contract supported by all classes that provide a comparison service for the ValueEvaluator class.
- * <p>
- * The comparator is free to inject (via Spring config) whatever criteria are needed to decide on the outcome.
+ * Interface for custom properties used by SlingshotDocLibCustomResponse
  *
  * @author: mikeh
  */
-public interface ValueComparator
+public interface CustomResponse
 {
     /**
-     * Run the compare logic and return the result.
-     *
-     * @param nodeValue Object the node's value to compare
-     * @return true for a successful result, false otherwise
+     * Populates the DocLib webscript response with custom metadata
      */
-    public boolean compare(Object nodeValue);
+    Serializable populate();
 }

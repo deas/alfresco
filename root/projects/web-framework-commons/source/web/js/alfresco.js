@@ -385,6 +385,22 @@ Alfresco.util.findValueByDotNotation = function(obj, propertyPath, defaultValue)
 };
 
 /**
+ * Substitutes placeholder dotted notation values in strings given an object containing those properties
+ *
+ * @method Alfresco.util.substituteDotNotation
+ * @param str {string} string containing dot notated property placeholders
+ * @param obj {object} JavaScript object
+ * @return {string} String with populated placeholders
+ */
+Alfresco.util.substituteDotNotation = function(str, obj)
+{
+   return YAHOO.lang.substitute(str, {}, function substituteDotNotation_substitute(p_key, p_value, p_meta)
+   {
+      return Alfresco.util.findValueByDotNotation(obj, p_key);
+   });
+}
+
+/**
  * Check if an array contains an object
  * @method Alfresco.util.arrayContains
  * @param arr {array} Array to convert to object
@@ -3575,8 +3591,15 @@ Alfresco.util.renderUriTemplate = function(template, obj, absolute)
       }
    }
 
-   var uri = YAHOO.lang.substitute(template, obj),
+   var uri = template,
       regExp = /^(http|https):\/\//;
+
+   /**
+    * NOTE: YAHOO.lang.substitute is currently somewhat broken in YUI 2.9.0
+    * Specifically, strings are no longer recursively substituted, even with the new "recurse"
+    * flag set to "true". See http://yuilibrary.com/projects/yui2/ticket/2529100
+    */
+   while (uri !== (uri = YAHOO.lang.substitute(uri, obj))){}
 
    if (!regExp.test(uri))
    {

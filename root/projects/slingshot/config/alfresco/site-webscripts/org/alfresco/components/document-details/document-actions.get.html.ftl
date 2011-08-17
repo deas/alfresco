@@ -6,7 +6,6 @@
          nodeRef: "${nodeRef?js_string}",
          siteId: <#if site??>"${site?js_string}"<#else>null</#if>,
          containerId: "${container?js_string}",
-         vtiServer: ${vtiServer},
          replicationUrlMapping: ${replicationUrlMappingJSON!"{}"},
          documentDetails: ${documentDetailsJSON},
          repositoryBrowsing: ${(rootNode??)?string}

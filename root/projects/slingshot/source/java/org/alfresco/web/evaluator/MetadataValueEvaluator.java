@@ -16,53 +16,49 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.alfresco.web.evaluator;
 
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-
 /**
- * Check whether the node lives in a Site of one of the listed presets
+ * Tests metadata values against configured values using comparators
  *
  * @author: mikeh
  */
-public class SitePresetEvaluator extends BaseEvaluator
+public class MetadataValueEvaluator extends BaseEvaluator
 {
-    private ArrayList<String> presets;
+    private Comparator comparator = null;
+    private String accessor = null;
 
     /**
-     * Define the list of presets to check for
+     * Comparator class
      *
-     * @param presets
+     * @param comparator
      */
-    public void setPresets(ArrayList<String> presets)
+    public void setComparator(Comparator comparator)
     {
-        this.presets = presets;
+        this.comparator = comparator;
+    }
+
+    /**
+     * Accessor for value to compare against in dot notation format, e.g. "custom.vtiServer"
+     *
+     * @param accessor
+     */
+    public void setAccessor(String accessor)
+    {
+        this.accessor = accessor;
     }
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
-        if (presets.size() == 0)
+        if (comparator == null || accessor == null)
         {
             return false;
         }
 
-        try
-        {
-            if (!presets.contains(getSitePreset(jsonObject)))
-            {
-                return false;
-            }
-        }
-        catch (Exception err)
-        {
-            throw new AlfrescoRuntimeException("Failed to run action evaluator: " + err.getMessage());
-        }
-
-        return true;
+        Object metaValue = getJSONValue(getMetadata(), accessor);
+        return this.comparator.compare(metaValue);
     }
 }

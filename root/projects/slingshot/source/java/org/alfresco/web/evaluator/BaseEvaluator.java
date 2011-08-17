@@ -36,40 +36,56 @@ import java.util.HashMap;
  */
 public abstract class BaseEvaluator implements Evaluator
 {
+    private static final String PORTLET_HOST = "portletHost";
 
     // optional args from the calling webscript
-    private HashMap<String, String> args = null;
+    protected HashMap<String, String> args = null;
+    // metadata from the webscript response
+    protected JSONObject metadata = null;
 
     /**
      * Optional entry point from Rhino script. Converts JSON String to a JSONObject
      * and calls the overridable evaluate() method.
      *
-     * @param obj JSON String as received from a Rhino script
+     * @param record JSON String representing the record wrapping the node as received from a Rhino script
      * @return boolean indicating evaluator result
      */
-    @SuppressWarnings({"UnusedDeclaration"})
-    public final boolean evaluate(Object obj)
+    public final boolean evaluate(Object record)
     {
-        return evaluate(obj, null);
+        return evaluate(record, null, null);
+    }
+
+    /**
+     * Optional entry point from Rhino script. Converts JSON String to a JSONObject
+     * and calls the overridable evaluate() method.
+     *
+     * @param record JSON String representing the record wrapping the node as received from a Rhino script
+     * @param metadata JSON String containing metadata which may be relevant to the evaluation
+     * @return boolean indicating evaluator result
+     */
+    public final boolean evaluate(Object record, Object metadata)
+    {
+        return evaluate(record, metadata, null);
     }
 
     /**
      * Main entry point from Rhino script. Converts JSON String to a JSONObject
      * and calls the overridable evaluate() method.
      *
-     * @param obj JSON String as received from a Rhino script
+     * @param record JSON String as received from a Rhino script
      * @param args URL arguments passed to calling webscript
      * @return boolean indicating evaluator result
      */
-    @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
-    public final boolean evaluate(Object obj, HashMap<String, String> args)
+    @SuppressWarnings({"WeakerAccess"})
+    public final boolean evaluate(Object record, Object metadata, HashMap<String, String> args)
     {
         JSONObject jsonObject;
         this.args = args;
 
         try
         {
-            jsonObject = (JSONObject)JSONValue.parseWithException((String)obj);
+            jsonObject = (JSONObject)JSONValue.parseWithException((String)record);
+            this.metadata = (JSONObject)JSONValue.parseWithException((String)metadata);
         }
         catch (ParseException perr)
         {
@@ -83,7 +99,7 @@ public abstract class BaseEvaluator implements Evaluator
     }
 
     /**
-     * Evaluator implementations override this method.
+     * Evaluator implementations abstract method.
      *
      * @param jsonObject The object the evaluation is for
      * @return boolean indicating evaluator result
@@ -114,6 +130,44 @@ public abstract class BaseEvaluator implements Evaluator
             return this.args.get(name);
         }
         return null;
+    }
+
+    /**
+     * Get metadata
+     *
+     * @return JSONObject metadata
+     */
+    public final JSONObject getMetadata()
+    {
+        return this.metadata;
+    }
+
+    /**
+     * Get request header value
+     *
+     * @param name Header name to retrieve
+     * @return string value or null
+     */
+    public final String getHeader(String name)
+    {
+        String header = null;
+        if (name != null)
+        {
+            final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
+            header = rc.getHeader(name);
+        }
+        return header;
+    }
+
+    /**
+     * Get flag indicating portlet or standalone mode
+     *
+     * @return boolean true for portlet mode, false otherwise
+     */
+    public final boolean getIsPortlet()
+    {
+        final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
+        return rc.getAttribute(PORTLET_HOST) != null;
     }
 
     /**
@@ -148,11 +202,11 @@ public abstract class BaseEvaluator implements Evaluator
      *
      * @param jsonObject JSONObject containing a "node" object as returned from the ApplicationScriptUtils class.
      * @param propertyName Name of the property to retrieve
-     * @return JSONArray containing aspects on the node
+     * @return Object property value
      */
-    public final JSONObject getProperty(JSONObject jsonObject, String propertyName)
+    public final Object getProperty(JSONObject jsonObject, String propertyName)
     {
-        JSONObject property = null;
+        Object property = null;
 
         try
         {
@@ -163,7 +217,7 @@ public abstract class BaseEvaluator implements Evaluator
                 JSONObject properties = (JSONObject) node.get("properties");
                 if (properties != null)
                 {
-                    property = (JSONObject) properties.get(propertyName);
+                    property = properties.get(propertyName);
                 }
             }
         }
@@ -311,13 +365,20 @@ public abstract class BaseEvaluator implements Evaluator
      */
     public final boolean getMatchesCurrentUser(JSONObject jsonObject, String propertyName)
     {
-        JSONObject user = getProperty(jsonObject, propertyName);
-        if (user != null)
+        try
         {
-            if (user.get("userName").toString().equalsIgnoreCase(getUserId()))
+            JSONObject user = (JSONObject)getProperty(jsonObject, propertyName);
+            if (user != null)
             {
-                return true;
+                if (user.get("userName").toString().equalsIgnoreCase(getUserId()))
+                {
+                    return true;
+                }
             }
+        }
+        catch (Exception err)
+        {
+            throw new AlfrescoRuntimeException("Exception whilst matching current user: " + err.getMessage());
         }
         return false;
     }
@@ -332,23 +393,23 @@ public abstract class BaseEvaluator implements Evaluator
     public final Object getJSONValue(JSONObject jsonObject, String accessor)
     {
         String[] keys = accessor.split("\\.");
-        Object obj = jsonObject;
+        Object record = jsonObject;
 
         for (String key : keys)
         {
-            if (obj instanceof JSONObject)
+            if (record instanceof JSONObject)
             {
-                obj = ((JSONObject)obj).get(key);
+                record = ((JSONObject)record).get(key);
             }
-            else if (obj instanceof JSONArray)
+            else if (record instanceof JSONArray)
             {
-                obj = ((JSONArray)obj).get(Integer.parseInt(key));
+                record = ((JSONArray)record).get(Integer.parseInt(key));
             }
             else
             {
                 return null;
             }
         }
-        return obj;
+        return record;
     }
 }

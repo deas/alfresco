@@ -19,18 +19,20 @@
 
 package org.alfresco.web.evaluator;
 
-import org.json.simple.JSONObject;
-
 /**
- * Convenience evaluator which always returns false
- * 
+ * Contract supported by all classes that provide a comparison service for the ValueEvaluator class.
+ * <p>
+ * The comparator is free to inject (via Spring config) whatever criteria are needed to decide on the outcome.
+ *
  * @author: mikeh
  */
-public class AlwaysFalseEvaluator extends BaseEvaluator
+public interface Comparator
 {
-    @Override
-    public boolean evaluate(JSONObject jsonObject)
-    {
-        return false;
-    }
+    /**
+     * Run the compare logic and return the result.
+     *
+     * @param nodeValue Object the node's value to compare
+     * @return true for a successful result, false otherwise
+     */
+    public boolean compare(Object nodeValue);
 }

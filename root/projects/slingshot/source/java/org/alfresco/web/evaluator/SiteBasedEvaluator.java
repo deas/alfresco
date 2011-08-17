@@ -19,7 +19,6 @@
 
 package org.alfresco.web.evaluator;
 
-import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONObject;
 
 /**

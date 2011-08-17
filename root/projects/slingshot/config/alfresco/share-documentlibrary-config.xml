@@ -324,7 +324,7 @@
          </action>
 
          <!-- Approve simple workflow -->
-         <action id="document-approve" type="javascript" label="{node.properties['app:approveStep']}">
+         <action id="document-approve" type="javascript" label="{jsNode.properties.app_approveStep}">
             <param name="function">onSimpleRepoAction</param>
             <!-- Additional parameters for onRepoAction function  -->
             <param name="action">accept-simpleworkflow</param>
@@ -334,7 +334,7 @@
          </action>
 
          <!-- Reject simple workflow -->
-         <action id="document-reject" type="javascript" label="{node.properties['app:rejectStep']}">
+         <action id="document-reject" type="javascript" label="{jsNode.properties.app_rejectStep}">
             <param name="function">onActionSimpleRepoAction</param>
             <!-- Additional parameters for onRepoAction function  -->
             <param name="action">reject-simpleworkflow</param>
@@ -413,7 +413,7 @@
 
          <!-- Inline edit -->
          <action id="document-inline-edit" type="pagelink" label="actions.document.inline-edit">
-            <param name="page">inline-edit?nodeRef=node.nodeRef</param>
+            <param name="page">inline-edit?nodeRef={node.nodeRef}</param>
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>

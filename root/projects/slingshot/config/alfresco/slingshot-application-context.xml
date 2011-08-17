@@ -254,7 +254,7 @@
    <bean id="evaluator.doclib.metadata.isWorkingCopy" parent="evaluator.doclib.metadata.value">
       <property name="accessor" value="workingCopy.isWorkingCopy" />
       <property name="comparator">
-         <bean class="org.alfresco.web.evaluator.EqualsComparator">
+         <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
             <property name="value" value="true" />
          </bean>
       </property>
@@ -282,6 +282,8 @@
    <bean id="evaluator.doclib.action.siteBased" class="org.alfresco.web.evaluator.SiteBasedEvaluator" />
    <bean id="evaluator.doclib.action.containerType" class="org.alfresco.web.evaluator.ContainerTypeEvaluator" />
    <bean id="evaluator.doclib.action.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
+   <bean id="evaluator.doclib.action.metadataValue" class="org.alfresco.web.evaluator.MetadataValueEvaluator" />
+   <bean id="evaluator.doclib.action.isBrowser" class="org.alfresco.web.evaluator.IsBrowserEvaluator" />
 
    <!-- Inline Edit -->
    <bean id="evaluator.doclib.action.inlineEditAspect" parent="evaluator.doclib.action.hasAspect">
@@ -310,7 +312,18 @@
    </bean>
 
    <!-- Edit Online -->
-   <bean id="evaluator.doclib.action.onlineEdit" parent="evaluator.doclib.action.isMimetype">
+   <bean id="evaluator.doclib.action.onlineEditVtiServer" parent="evaluator.doclib.action.metadataValue">
+      <property name="accessor" value="custom.vtiServer.host" />
+      <property name="comparator">
+         <bean class="org.alfresco.web.evaluator.NullValueComparator">
+            <property name="value" value="false" />
+         </bean>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.onlineEditBrowser" parent="evaluator.doclib.action.isBrowser">
+      <property name="regex" value="MSIE\s([^;]*)(?!.*Opera.*)" />
+   </bean>
+   <bean id="evaluator.doclib.action.onlineEditMimetype" parent="evaluator.doclib.action.isMimetype">
       <property name="mimetypes">
          <list>
             <value>application/vnd.ms-excel</value>
@@ -319,6 +332,15 @@
             <value>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</value>
             <value>application/vnd.openxmlformats-officedocument.presentationml.presentation</value>
             <value>application/vnd.openxmlformats-officedocument.wordprocessingml.document</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.onlineEdit" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.onlineEditVtiServer" />
+            <ref bean="evaluator.doclib.action.onlineEditMimetype" />
+            <ref bean="evaluator.doclib.action.onlineEditBrowser" />
          </list>
       </property>
    </bean>
@@ -366,7 +388,7 @@
    <bean id="evaluator.doclib.action.isWorkingCopy" parent="evaluator.doclib.action.value">
       <property name="accessor" value="workingCopy.isWorkingCopy" />
       <property name="comparator">
-         <bean class="org.alfresco.web.evaluator.EqualsComparator">
+         <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
             <property name="value" value="true" />
          </bean>
       </property>
@@ -375,7 +397,7 @@
    <bean id="evaluator.doclib.action.hasWorkingCopy" parent="evaluator.doclib.action.value">
       <property name="accessor" value="workingCopy.hasWorkingCopy" />
       <property name="comparator">
-         <bean class="org.alfresco.web.evaluator.EqualsComparator">
+         <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
             <property name="value" value="true" />
          </bean>
       </property>

@@ -13,7 +13,6 @@
       showFolders: ${(preferences.showFolders!true)?string},
       simpleView: ${(preferences.simpleView!false)?string},
       highlightFile: "${(page.url.args["file"]!"")?js_string}",
-      vtiServer: ${vtiServer},
       replicationUrlMapping: ${replicationUrlMappingJSON!"{}"},
       repositoryBrowsing: ${(rootNode??)?string},
       useTitle: ${(useTitle!true)?string},

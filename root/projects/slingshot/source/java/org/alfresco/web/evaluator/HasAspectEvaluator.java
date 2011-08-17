@@ -19,7 +19,6 @@
 package org.alfresco.web.evaluator;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.web.evaluator.BaseEvaluator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
