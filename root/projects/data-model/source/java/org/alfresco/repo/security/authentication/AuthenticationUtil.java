@@ -548,6 +548,11 @@ public class AuthenticationUtil implements InitializingBean
         }
     }
     
+    public static <R> R runAsSystem(RunAsWork<R> runAsWork)
+    {
+        return runAs(runAsWork, getSystemUserName());
+    }
+    
     static class ThreadLocalStack extends ThreadLocal<Stack<Authentication>> {
 
         /* (non-Javadoc)

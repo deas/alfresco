@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -215,4 +216,29 @@ public abstract class CollectionUtils
         return results;
     }
     
+    public static <K, V> Map<K, V> filterKeys(Map<K, V> map, Function<? super K, ? extends Boolean> filter)
+    {
+        Map<K, V> results = new HashMap<K, V>();
+        Set<Entry<K, V>> entries = map.entrySet();
+        for (Entry<K, V> entry : entries)
+        {
+            K key = entry.getKey();
+            if(filter.apply(key))
+            {
+                results.put(key, entry.getValue());
+            }
+        }
+        return results;
+    }
+    
+    public static <T> Filter<T> containsFilter(final Collection<T> values)
+    {
+        return new Filter<T>()
+        {
+            public Boolean apply(T value)
+            {
+                return values.contains(value);
+            }
+        };
+    }
 }
