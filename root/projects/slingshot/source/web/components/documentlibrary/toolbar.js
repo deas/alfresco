@@ -1077,11 +1077,16 @@
          if (this.modules.docList)
          {
             var files = this.modules.docList.getSelectedFiles(), fileTypes = [], file,
-               userAccess = {}, fileAccess, index,
+               fileType, userAccess = {}, fileAccess, index,
                menuItems = this.widgets.selectedItems.getMenu().getItems(), menuItem,
                actionPermissions, typeGroups, typesSupported, disabled,
                i, ii, j, jj;
             
+            var fnFileType = function fnFileType(file)
+            {
+               return (file.isContainer ? "folder" : "document");
+            };
+
             // Check each file for user permissions
             for (i = 0, ii = files.length; i < ii; i++)
             {
@@ -1098,10 +1103,11 @@
                }
                
                // Make a note of all selected file types Using a hybrid array/object so we can use both array.length and "x in object"
-               if (!(file.type in fileTypes))
+               fileType = fnFileType(file);
+               if (!(fileType in fileTypes))
                {
-                  fileTypes[file.type] = true;
-                  fileTypes.push(file.type);
+                  fileTypes[fileType] = true;
+                  fileTypes.push(fileType);
                }
             }
 
