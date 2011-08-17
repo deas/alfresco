@@ -1037,6 +1037,7 @@ public class FileTransferReceiverTest extends TestCase
         byte[] dummyContent = "This is some dummy content.".getBytes("UTF-8");
 
         node.setType(ContentModel.TYPE_CONTENT);
+        node.setAncestorType(ContentModel.TYPE_CONTENT);
 
         /**
          * Get guest home
@@ -1071,6 +1072,7 @@ public class FileTransferReceiverTest extends TestCase
         node.setNodeRef(nodeRef);
         node.setUuid(uuid);
         node.setType(ContentModel.TYPE_FOLDER);
+        node.setAncestorType(ContentModel.TYPE_FOLDER);
 
         /**
          * Get guest home

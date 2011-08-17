@@ -27,6 +27,7 @@ import org.alfresco.repo.transfer.manifest.TransferManifestDeletedNode;
 import org.alfresco.repo.transfer.manifest.TransferManifestHeader;
 import org.alfresco.repo.transfer.manifest.TransferManifestNormalNode;
 import org.alfresco.service.cmr.repository.ContentData;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.apache.commons.logging.Log;
@@ -36,7 +37,7 @@ import org.springframework.util.FileCopyUtils;
 public abstract class AbstractFileManifestProcessorBase extends org.alfresco.repo.transfer.AbstractManifestProcessorBase
 {
     private final static Log log = LogFactory.getLog(AbstractFileManifestProcessorBase.class);
-    protected String TEMP_VIRT_ROOT = "T_V_R_1234432123478";
+    protected String TEMP_VIRT_ROOT;
     protected FileTransferReceiver fTReceiver;
     protected String fTransferId;
     protected boolean isSync;
@@ -47,7 +48,8 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
         super(receiver, transferId);
         this.fTReceiver = (FileTransferReceiver)receiver;
         this.fTransferId = transferId;
-        TEMP_VIRT_ROOT = transferId;
+        NodeRef node = new NodeRef(transferId);
+        TEMP_VIRT_ROOT = node.getId();
 
     }
 

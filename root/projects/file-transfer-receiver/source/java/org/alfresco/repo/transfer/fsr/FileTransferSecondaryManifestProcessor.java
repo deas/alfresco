@@ -103,6 +103,13 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             tvr.delete();
         }
 
+        // delete staging folder if exist
+        File stagingFolder = fTReceiver.getStagingFolder(this.fTransferId);
+        if (stagingFolder.exists())
+        {
+            stagingFolder.delete();
+        }
+
         // if isSyncMode = true the do the implicit delete
         if (this.isSync)
         {
@@ -118,7 +125,7 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             nodesToDeleteInSyncMode.removeAll(this.receivedNodes);
 
             if (log.isDebugEnabled())
-                {
+            {
                 log.debug("nodesToDeleteInSyncMode after remove:");
                 dumpSet(nodesToDeleteInSyncMode);
             }
@@ -224,7 +231,7 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
         // not a new node, it can be a move of a folder or a content
         // it can be a content modification or a rename of folder or content
         // check if we receive a file or a folder
-        QName nodeType = node.getType();
+        QName nodeType = node.getAncestorType();
         FileTransferInfoEntity nodeToModify = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef().toString());
         Boolean isFolder = ContentModel.TYPE_FOLDER.equals(nodeType);
         if (!isFolder)

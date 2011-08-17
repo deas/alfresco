@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * original name will be kept in a separate table (alf_table_to_be_renamed). The nodes (on file system) will only take
  * their final at the end of FileTransferSecondaryManifestProcessor. For existing node we will act on, they will be also
  * be renamed. They will be renamed using counter in order to minimise the path length on the file system.
- *
+ * 
  * @author philippe
  */
 public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestProcessorBase
@@ -176,13 +176,13 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
                 }
 
             }
-            //node is new
+            // node is new
             String name = (String) node.getProperties().get(ContentModel.PROP_NAME);
             String newTemporaryTechnicalName = "F" + this.renamingCounter + "-ren";
             this.fTReceiver.createNodeRenameEntity(node.getNodeRef().toString(), this.fTransferId, name);
             this.renamingCounter++;
             // check if we receive a file or a folder
-            QName nodeType = node.getType();
+            QName nodeType = node.getAncestorType();
 
             Boolean isFolder = ContentModel.TYPE_FOLDER.equals(nodeType);
             getOrCreateFolderIfNotExist(fTReceiver.getDefaultReceivingroot());
@@ -195,14 +195,15 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
                 String contentKey = TransferCommons.URLToPartName(this.getContentUrl(node));
                 File receivedContent = fTReceiver.getContents().get(contentKey);
 
-
                 // this is content
                 // create the file with the name
-                File receivedFile = new File(fTReceiver.getDefaultReceivingroot() + parentPath + newTemporaryTechnicalName);
+                File receivedFile = new File(fTReceiver.getDefaultReceivingroot() + parentPath
+                        + newTemporaryTechnicalName);
                 this.putFileContent(receivedFile, receivedContent);
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Content created:" + fTReceiver.getDefaultReceivingroot() + parentPath + newTemporaryTechnicalName);
+                    log.debug("Content created:" + fTReceiver.getDefaultReceivingroot() + parentPath
+                            + newTemporaryTechnicalName);
                 }
             }
             else
@@ -212,16 +213,19 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
                     log.debug("Tis is a folder:" + node.toString());
                 }
                 // we have received a folder, create it
-                File receivedFolder = new File(fTReceiver.getDefaultReceivingroot() + parentPath + newTemporaryTechnicalName);
+                File receivedFolder = new File(fTReceiver.getDefaultReceivingroot() + parentPath
+                        + newTemporaryTechnicalName);
                 receivedFolder.mkdir();
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Folder created:" + fTReceiver.getDefaultReceivingroot() + parentPath + newTemporaryTechnicalName);
+                    log.debug("Folder created:" + fTReceiver.getDefaultReceivingroot() + parentPath
+                            + newTemporaryTechnicalName);
                 }
             }
             String contentUrl = this.getContentUrl(node);
             // create the node in the DB here
-            fTReceiver.createNodeInDB(node.getNodeRef().toString(), parentOfNode, parentPath, newTemporaryTechnicalName, contentUrl);
+            fTReceiver.createNodeInDB(node.getNodeRef().toString(), parentOfNode, parentPath,
+                    newTemporaryTechnicalName, contentUrl);
             if (log.isDebugEnabled())
             {
                 log.debug("Node created in DB:" + node.getNodeRef().toString());
@@ -244,8 +248,8 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
                     log.debug("Moving to:" + parentPath + newTemporaryTechnicalName + "/" + curChild.getContentName());
                 }
                 // adjust location on file system for the direct child
-                moveFileOrFolderOnFileSytem(curChild.getPath(), curChild.getContentName(), parentPath + newTemporaryTechnicalName + "/",
-                        curChild.getContentName());
+                moveFileOrFolderOnFileSytem(curChild.getPath(), curChild.getContentName(), parentPath
+                        + newTemporaryTechnicalName + "/", curChild.getContentName());
             }
             FileTransferInfoEntity newlyCreatednode = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef()
                     .toString());
