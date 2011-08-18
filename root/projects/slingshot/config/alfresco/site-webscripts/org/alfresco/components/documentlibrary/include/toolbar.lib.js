@@ -123,6 +123,21 @@ function getCreateContent(myConfig)
    model.createContent = createContent;
 }
 
+/* Repository Browser root */
+function getRepositoryBrowserRoot()
+{
+   // Repository Library root node
+   var rootNode = "alfresco://company/home",
+      repoConfig = config.scoped["RepositoryLibrary"]["root-node"];
+
+   if (repoConfig !== null)
+   {
+      rootNode = repoConfig.value;
+   }
+
+   model.rootNode = rootNode;
+}
+
 /**
  * Main entrypoint for component webscript logic
  *
@@ -135,6 +150,7 @@ function main()
    getPreferences();
    getActionSet(myConfig);
    getCreateContent(myConfig);
+   getRepositoryBrowserRoot();
 }
 
 main();

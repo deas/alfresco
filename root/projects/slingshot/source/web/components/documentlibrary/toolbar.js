@@ -142,6 +142,14 @@
          googleDocsEnabled: false,
 
          /**
+          * Whether the Repo Browser is in use or not
+          *
+          * @property repositoryBrowsing
+          * @type boolean
+          */
+         repositoryBrowsing: true,
+
+         /**
           * Decides it the title shall be displayed next to the name if it contains a value that is different from the name
           *
           * @property useTitle
@@ -333,7 +341,12 @@
          }
       },
 
-      onCreateByTemplateNodeBeforeShow: function()
+      /**
+       * Create Content Template Node menu beforeShow handler
+       *
+       * @method onCreateByTemplateNodeBeforeShow
+       */
+      onCreateByTemplateNodeBeforeShow: function DLTB_onCreateByTemplateNodeBeforeShow()
       {
          // Display loading message
          var templateNodesMenu = this.widgets.createContent.getMenu().getSubmenus()[0];
@@ -564,7 +577,6 @@
       onFileUploadWithTooltip: function DLTB_onFileUploadWithTooltip(e, p_obj)
       {
          this.onFileUpload(e, p_obj);
-         
       },
       
       /**

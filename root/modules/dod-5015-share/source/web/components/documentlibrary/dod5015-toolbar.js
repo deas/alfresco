@@ -236,7 +236,10 @@
          if (obj && obj.metadata)
          {
             var p = obj.metadata.parent;
-            this.folderDetailsUrl = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/" + p.type + "-details?nodeRef=" + p.nodeRef;
+            if (p.type !== "fileplan")
+            {
+               this.folderDetailsUrl = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/" + p.type + "-details?nodeRef=" + p.nodeRef;
+            }
          }
       },
 

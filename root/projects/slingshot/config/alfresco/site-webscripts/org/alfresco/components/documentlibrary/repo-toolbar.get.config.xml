@@ -1,14 +1,14 @@
 <toolbar>
    <createContent>
-      <content mimetype="text/plain" icon="plain-text" label="menu.create-content.text" />
-      <content mimetype="text/html" icon="html" label="menu.create-content.html" />
-      <content mimetype="text/xml" icon="xml" label="menu.create-content.xml" />
+      <content mimetype="text/plain" icon="plain-text" label="menu.create-content.text" itemid="cm:content"/>
+      <content mimetype="text/html" icon="html" label="menu.create-content.html" itemid="cm:content"/>
+      <content mimetype="text/xml" icon="xml" label="menu.create-content.xml" itemid="cm:content"/>
    </createContent>
    <actionSets>
       <actionSet id="default">
          <action type="action-link" id="onActionCopyTo" label="menu.selected-items.copy" />
-         <action type="action-link" id="onActionMoveTo" permission="delete" label="menu.selected-items.move" />
-         <action type="action-link" id="onActionDelete" permission="delete" label="menu.selected-items.delete" />
+         <action type="action-link" id="onActionMoveTo" permission="Delete" label="menu.selected-items.move" />
+         <action type="action-link" id="onActionDelete" permission="Delete" label="menu.selected-items.delete" />
          <action type="action-link" id="onActionAssignWorkflow" asset="document" label="menu.selected-items.assign-workflow" />
       </actionSet>
    </actionSets>
