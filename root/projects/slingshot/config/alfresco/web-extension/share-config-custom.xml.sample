@@ -152,6 +152,29 @@
       </file-upload>
    </config>
 
+
+   <!-- Custom DocLibActions config section -->
+   <config evaluator="string-compare" condition="DocLibActions">
+      <actionGroups>
+         <actionGroup id="document-browse">
+
+            <!-- Simple Repo Actions -->
+            <!--
+            <action index="340" id="document-extract-metadata" />
+            <action index="350" id="document-increment-counter" />
+            -->
+
+            <!-- Dialog Repo Actions -->
+            <!--
+            <action index="360" id="document-transform" />
+            <action index="370" id="document-transform-image" />
+            <action index="380" id="document-execute-script" />
+            -->
+
+         </actionGroup>
+      </actionGroups>
+   </config>
+
    <!-- Global folder picker config section -->
    <config evaluator="string-compare" condition="GlobalFolder">
       <siteTree>

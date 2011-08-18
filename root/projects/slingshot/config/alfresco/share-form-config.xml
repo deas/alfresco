@@ -1089,8 +1089,8 @@
                <show id="destination-folder" />
             </field-visibility>
             <appearance>
-               <field id="mime-type" label="Required Format" />
-               <field id="destination-folder" label="Destination" />
+               <field id="mime-type" label-id="transform.field.mime-type" />
+               <field id="destination-folder" label-id="transform.field.destination-folder" />
             </appearance>
          </form>
       </forms>
@@ -1106,27 +1106,30 @@
                <show id="destination-folder" />
             </field-visibility>
             <appearance>
-               <field id="mime-type" label="Required Format">
+               <field id="mime-type" label-id="transform-image.field.mime-type">
                   <control template="/org/alfresco/components/form/controls/selectone.ftl">
                     <control-param name="options">image/gif|GIF Image,image/jpeg|JPEG Image,image/png|PNG Image</control-param>
                  </control>
                </field>
-               <field id="convert-command" label="Options" />
-               <field id="destination-folder" label="Destination" />
+               <field id="convert-command" label-id="transform-image.field.convert-command" />
+               <field id="destination-folder" label-id="transform-image.field.destination-folder" />
             </appearance>
          </form>
       </forms>
    </config>
   
    <!-- Execute Script Repo Action -->
-   <config evaluator="string-compare" condition="script">
-      <forms>
-         <form>
-            <field-visibility>
-               <show id="script-ref" />
-            </field-visibility>
-         </form>
-      </forms>
-   </config>
+   <config evaluator="string-compare" condition="script">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="script-ref" />
+            </field-visibility>
+            <appearance>
+               <field id="script-ref" label-id="script.field.script-ref"/>
+            </appearance>
+         </form>
+      </forms>
+   </config>
 
 </alfresco-config>
