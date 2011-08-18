@@ -225,7 +225,7 @@
             <input class="crud-input" id="${el}-create-firstname" type="text" maxlength="256" />
          </div>
          <div class="field-row">
-            <span class="crud-label">${msg("label.lastname")}:&nbsp;*</span>
+            <span class="crud-label">${msg("label.lastname")}:</span>
          </div>
          <div class="field-row">
             <input class="crud-input" id="${el}-create-lastname" type="text" maxlength="256" />
