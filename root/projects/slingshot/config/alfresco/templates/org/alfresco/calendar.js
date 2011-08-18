@@ -12,9 +12,9 @@ var filteredView = function()
    var view = escape(page.url.args["view"]);
    if (typeof(model.enabledViews) != "undefined" && !model.enabledViews[view]) 
    {
-      return model.defaultView
+      return model.defaultView;
    }
-   return view
-}()
+   return view;
+}();
 
-context.setValue("filteredView",filteredView);
+context.setValue("filteredView", filteredView);

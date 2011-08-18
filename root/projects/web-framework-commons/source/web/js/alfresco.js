@@ -5440,10 +5440,17 @@ Alfresco.util.Ajax = function()
             serverResponse.responseText = result[0];
 
             // Use setTimeout to execute the script. Note scope will always be "window"
-            window.setTimeout(result[1], 0);
-
-            // Delay-call the PostExec function to continue response processing after the setTimeout above
-            YAHOO.lang.later(0, this, this._successHandlerPostExec, serverResponse);
+            var scripts = result[1];
+            if (YAHOO.lang.trim(scripts).length > 0)
+            {
+               window.setTimeout(scripts, 0);
+               // Delay-call the PostExec function to continue response processing after the setTimeout above
+               YAHOO.lang.later(0, this, this._successHandlerPostExec, serverResponse);
+            }
+            else
+            {
+               this._successHandlerPostExec(serverResponse);
+            }
          }
          else
          {
