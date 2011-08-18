@@ -22,13 +22,13 @@ import java.io.File;
 import java.util.List;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.transfer.TransferFatalException;
 import org.alfresco.repo.transfer.TransferProcessingException;
 import org.alfresco.repo.transfer.manifest.TransferManifestDeletedNode;
 import org.alfresco.repo.transfer.manifest.TransferManifestHeader;
 import org.alfresco.repo.transfer.manifest.TransferManifestNormalNode;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -111,7 +111,7 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
             {
                 tempFolder = null;
                 log.error("Failed to create temp folder:" + path);
-                throw new TransferException("MSG_FAILED_TO_CREATE_STAGING_FOLDER");
+                throw new TransferFatalException("MSG_FAILED_TO_CREATE_STAGING_FOLDER");
             }
         }
         return tempFolder;
@@ -133,7 +133,7 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
             // operation failed, maybe use Method 2
             // probably failing if the source and the destination are not on the same volume/partition
             // to be tested
-            throw new TransferException("MSG_ERROR_WHILE_MOVING_FILE_OR_FOLDER");
+            throw new TransferFatalException("MSG_ERROR_WHILE_MOVING_FILE_OR_FOLDER");
 
         }
     }
@@ -172,7 +172,7 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
         catch (Exception ex)
         {
             log.error("Unable to put file content in " + receivedFile.getPath() + "/" + receivedFile.getName());
-            throw new TransferException("MSG_ERROR_WHILE_STAGING_CONTENT", ex);
+            throw new TransferFatalException("MSG_ERROR_WHILE_STAGING_CONTENT", ex);
         }
     }
 
