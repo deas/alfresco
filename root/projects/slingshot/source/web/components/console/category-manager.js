@@ -895,6 +895,7 @@
          {
             return;
          }
+         obj.disabled = true;
          Event.stopEvent(e);
 
          Alfresco.logger.debug("onIconClick", e);
