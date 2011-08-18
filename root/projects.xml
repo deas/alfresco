@@ -1905,6 +1905,8 @@
                   includes="${file.name.jar.webframeworkcommons}" />
          <fileset dir="${dir.project.jlan.dist}" 
                   includes="${file.name.jar.jlan}" />
+         <fileset dir="${dir.project.jlan}/hazelcast" 
+                  includes="hazelcast-1.9.3.1.jar"/>
       </copy>
    </target>
 
