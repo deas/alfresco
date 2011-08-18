@@ -194,20 +194,34 @@
             {
                // Display as path
                this._getParamDef(configDef, "destination-folder")._type = "path";
+
+               // Use special text if we are making a deep copy
+               if (ruleConfig.parameterValues && ruleConfig.parameterValues["deep-copy"])
+               {
+                  configDef._customMessageKey = "customise.copy.deep.text";
+               }
+
                return configDef;
             },
             edit: function(configDef, ruleConfig, configEl)
             {
-               // Hide all parameters since we are using a cusotm ui but set default values
+               // Hide parameters since we are using a custom ui
                this._hideParameters(configDef.parameterDefinitions);
 
                // Make parameter renderer create a "Destination" button that displays an destination folder browser
-               configDef.parameterDefinitions.push({
+               configDef.parameterDefinitions.splice(0,0,
+               {
                   type: "arca:destination-dialog-button",
                   displayLabel: this.msg("label.to"),
                   _buttonLabel: this.msg("button.select-folder"),
                   _destinationParam: "destination-folder"
                });
+
+               // Make deep-copy visible and make the display label be placed as a unit
+               var deepCopy = this._getParamDef(configDef, "deep-copy");
+               deepCopy._type = null;
+               deepCopy._displayLabelToRight = true;
+               deepCopy._hideColon = true;
                return configDef;
             }
          },

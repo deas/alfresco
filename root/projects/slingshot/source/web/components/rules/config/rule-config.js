@@ -987,7 +987,7 @@
                         if (paramDef.displayLabel)
                         {
                            // Display a label left to the parameter if displayLabel is present
-                           this._createLabel(paramDef.displayLabel + (paramDef._hideColon ? "" : ":"), controlEl);
+                           this._createLabel(paramDef.displayLabel + (paramDef._hideColon ? "" : ":"), controlEl, paramDef._displayLabelToRight);
                         }
                         if (paramDef._unit) {
                            // Display a text span to the right of the parameter if unit is present
@@ -1366,16 +1366,7 @@
             },
             edit: function (containerEl, configDef, paramDef, ruleConfig, value)
             {
-               return this._createSelect(containerEl, configDef, paramDef, [
-                  {
-                     value: "true",
-                     displayLabel: this.msg("label.yes")
-                  },
-                  {
-                     value: "false",
-                     displayLabel: this.msg("label.no")
-                  }
-               ], value);
+               return this._createCheckbox(containerEl, configDef, paramDef, null, value);
             }
          },
 
@@ -1503,7 +1494,7 @@
          return el;
       },
 
-      _createLabel: function (text, forEl)
+      _createLabel: function (text, forEl, alignToRight)
       {
          if (text && forEl)
          {
@@ -1511,7 +1502,14 @@
                   labelEl = document.createElement("label");
             labelEl.setAttribute("for", id);
             labelEl.appendChild(document.createTextNode(text));
-            forEl.parentNode.insertBefore(labelEl, forEl);
+            if (alignToRight)
+            {
+               forEl.parentNode.appendChild(labelEl);
+            }
+            else
+            {
+               forEl.parentNode.insertBefore(labelEl, forEl);
+            }
             return labelEl;
          }
       },
@@ -1567,6 +1565,29 @@
                }
             }
             return selectEl;
+         }
+      },
+
+      _createCheckbox: function (containerEl, configDef, paramDef, constraintOptions, value)
+      {
+         if (paramDef._type == "hidden")
+         {
+            return this._createInputOfType(containerEl, configDef, paramDef, [], value, "hidden");
+         }
+         else
+         {
+            var checkBoxEl = document.createElement("input");
+            checkBoxEl.type = "checkbox";
+            checkBoxEl.value = "";
+            checkBoxEl.setAttribute("name", "-");
+            checkBoxEl.setAttribute("title", paramDef.displayLabel ? paramDef.displayLabel : paramDef.name);
+            checkBoxEl.setAttribute("param", paramDef.name);
+            if (containerEl)
+            {
+               containerEl.appendChild(checkBoxEl);
+            }
+            checkBoxEl.checked = YAHOO.lang.isBoolean(value) ? value : false;
+            return checkBoxEl;
          }
       },
 
@@ -2015,15 +2036,11 @@
                return values;
             }
          }
-         else if (tagName == "checkbox" || tagName == "radio")
+         else if (tagName == "input" && (el.type == "checkbox" || el.type == "radio"))
          {
-            if (el.value)
+            if (!el.value || el.value.length == 0)
             {
-               return el.checked ? el.value : null;
-            }
-            else
-            {
-               return el.checked ? true : false;
+               return el.checked ? "true" : "false";
             }
          }
          return el.value && el.value.length > 0 ? el.value : null;

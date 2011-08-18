@@ -12,7 +12,7 @@
         <namespace uri="http://www.alfresco.org/model/recordsmanagement/1.0" prefix="rma"/>
     </namespaces>
     
-    <permissionSet expose="select" type="rma:filePlanComponent">
+    <permissionSet expose="selected" type="rma:filePlanComponent">
         <permissionGroup name="User" allowFullControl="false" expose="true">
             <includePermissionGroup type="rma:filePlanComponent" permissionGroup="DeclareRecords"/>
             <includePermissionGroup type="rma:filePlanComponent" permissionGroup="ViewRecords"/>

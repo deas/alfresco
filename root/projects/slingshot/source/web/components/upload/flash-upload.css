@@ -250,6 +250,8 @@
 {
    text-align: center;
    height: 40px;
+   position: relative;
+   top: 7px;
 }
 
 .flash-upload .fileUpload-filelist-table tbody .col-right
@@ -260,8 +262,6 @@
 
 .flash-upload .fileupload-fileButton-span
 {
-   position: relative;
-   top: 7px;
 }
 
 .flash-upload .fileupload-fileButton-span button
