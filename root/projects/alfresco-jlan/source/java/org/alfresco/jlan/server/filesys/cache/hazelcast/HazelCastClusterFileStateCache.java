@@ -43,6 +43,7 @@ import org.alfresco.jlan.server.config.ServerConfiguration;
 import org.alfresco.jlan.server.filesys.AccessDeniedException;
 import org.alfresco.jlan.server.filesys.ExistingOpLockException;
 import org.alfresco.jlan.server.filesys.FileAccessToken;
+import org.alfresco.jlan.server.filesys.FileExistsException;
 import org.alfresco.jlan.server.filesys.FileName;
 import org.alfresco.jlan.server.filesys.FileOpenParams;
 import org.alfresco.jlan.server.filesys.FileSharingException;
@@ -1803,9 +1804,10 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 	 * @return FileAccessToken
 	 * @exception FileSharingException
 	 * @exception AccessDeniedException
+	 * @exception FileExistsException
 	 */
 	public FileAccessToken grantFileAccess( FileOpenParams params, FileState fstate, int fileSts)
-		throws FileSharingException, AccessDeniedException {
+		throws FileSharingException, AccessDeniedException, FileExistsException {
 	
 		// DEBUG
 		

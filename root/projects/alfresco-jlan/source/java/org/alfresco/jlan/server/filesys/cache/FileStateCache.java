@@ -38,6 +38,8 @@ import org.alfresco.jlan.server.filesys.AccessDeniedException;
 import org.alfresco.jlan.server.filesys.DiskSharedDevice;
 import org.alfresco.jlan.server.filesys.ExistingOpLockException;
 import org.alfresco.jlan.server.filesys.FileAccessToken;
+import org.alfresco.jlan.server.filesys.FileAction;
+import org.alfresco.jlan.server.filesys.FileExistsException;
 import org.alfresco.jlan.server.filesys.FileOpenParams;
 import org.alfresco.jlan.server.filesys.FileSharingException;
 import org.alfresco.jlan.server.filesys.FileStatus;
@@ -608,9 +610,10 @@ public abstract class FileStateCache {
 	 * @return Object
 	 * @exception FileSharingException
 	 * @exception AccessDeniedException
+	 * @exception FileExistsException
 	 */
 	public FileAccessToken grantFileAccess( FileOpenParams params, FileState fstate, int fileSts)
-		throws FileSharingException, AccessDeniedException {
+		throws FileSharingException, AccessDeniedException, FileExistsException {
 		
 		synchronized ( fstate) {
 			
@@ -621,6 +624,11 @@ public abstract class FileStateCache {
 			
 			if ( fstate.getOpenCount() > 0) {
 				
+				// Check if the open action indicates a new file create
+				
+				if ( params.getOpenAction() == FileAction.NTCreate)
+					throw new FileExistsException( params.getFullPath());
+					
 				// Check for impersonation security level from the original process that opened the file
 				
 				if ( params.getSecurityLevel() == WinNT.SecurityImpersonation && params.getProcessId() == fstate.getProcessId())
@@ -654,11 +662,12 @@ public abstract class FileStateCache {
 				
 				// Check if the required sharing mode is allowed by the current file open
 				
-				else if ( fstate.getSharedAccess() != params.getSharedAccess()) {
+				else if ((fstate.getSharedAccess() & params.getSharedAccess()) != params.getSharedAccess()) {
 					nosharing = true;
 					noshrReason = "Sharing mode mismatch";
 					
-					Debug.println("Local share mode=0x" + Integer.toHexString(fstate.getSharedAccess()) + ", params share mode=0x" + Integer.toHexString(params.getSharedAccess()));
+		    		if ( Debug.EnableDbg && hasDebug())
+		    			Debug.println("Local share mode=0x" + Integer.toHexString(fstate.getSharedAccess()) + ", params share mode=0x" + Integer.toHexString(params.getSharedAccess()));
 				}
 				
 				// Check if the caller wants exclusive access to the file

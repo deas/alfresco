@@ -22,6 +22,8 @@ package org.alfresco.jlan.server.filesys.cache.hazelcast;
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.filesys.ExistingOpLockException;
 import org.alfresco.jlan.server.filesys.FileAccessToken;
+import org.alfresco.jlan.server.filesys.FileAction;
+import org.alfresco.jlan.server.filesys.FileExistsException;
 import org.alfresco.jlan.server.filesys.FileSharingException;
 import org.alfresco.jlan.server.filesys.FileStatus;
 import org.alfresco.jlan.server.filesys.cache.FileState;
@@ -106,6 +108,11 @@ public class GrantFileAccessTask extends RemoteStateTask<FileAccessToken> {
 				Debug.println( "File already open by " + curPrimaryOwner + ", pid=" + fState.getProcessId() + 
 								", sharingMode=" + SharingMode.getSharingModeAsString( fState.getSharedAccess()));
 				
+			// Check if the open action indicates a new file create
+			
+			if ( m_params.getOpenAction() == FileAction.NTCreate)
+				throw new FileExistsException();
+				
 			// Check for impersonation security level from the original process that opened the file
 			
 			if ( m_params.getSecurityLevel() == WinNT.SecurityImpersonation && m_params.getProcessId() == fState.getProcessId() &&
@@ -139,7 +146,7 @@ public class GrantFileAccessTask extends RemoteStateTask<FileAccessToken> {
 			
 			// Check if the required sharing mode is allowed by the current file open
 			
-			else if ( fState.getSharedAccess() != m_params.getSharedAccess()) {
+			else if ((fState.getSharedAccess() & m_params.getSharedAccess()) != m_params.getSharedAccess()) {
 				nosharing = true;
 				noshrReason = "Sharing mode mismatch";
 				
