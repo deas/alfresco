@@ -1,0 +1,18 @@
+/* Resets header tags for portlet mode */
+
+.sticky-wrapper h1,
+.sticky-wrapper h2,
+.sticky-wrapper h3,
+.sticky-wrapper h4,
+.sticky-wrapper h5,
+.sticky-wrapper h6,
+.yui-panel-container h1,
+.yui-panel-container h2,
+.yui-panel-container h3,
+.yui-panel-container h4,
+.yui-panel-container h5,
+.yui-panel-container h6
+{
+   margin: 0;
+   padding: 0;
+}

@@ -73,13 +73,15 @@ blockquote
    display: none !important;
 }
 
-p
+.alfresco-share .sticky-wrapper p,
+.yui-panel-container p
 {
    padding-top: 3px;
    padding-bottom: 3px;
 }
 
-hr
+.alfresco-share .sticky-wrapper hr,
+.yui-panel-container hr
 {
    height: 1px;
    margin-top: 5px;
@@ -421,13 +423,28 @@ span.navigation-separator-alt
    visibility: hidden;
 }
 
-select,
-input[type="text"],
-input[type="password"],
-textarea
+.sticky-wrapper select,
+.sticky-wrapper input[type="text"],
+.sticky-wrapper input[type="password"],
+.sticky-wrapper textarea,
+.yui-panel-container select,
+.yui-panel-container input[type="text"],
+.yui-panel-container input[type="password"],
+.yui-panel-container textarea
 {
    padding: 2px;
    width: 15em;
+}
+
+.form-field input[type="text"]
+{
+   width: 30em;
+}
+
+input[type="text"].date-entry,
+input[type="text"].crud-input-quota
+{
+   width: 6em;
 }
 
 select.wide,
@@ -781,7 +798,7 @@ div.dashlet div.hdr
 .alfresco-twister
 {
    cursor: pointer;
-   padding-left: 1em;
+   padding-left: 1em !important;
 }
 
 .alfresco-twister .alfresco-twister-actions

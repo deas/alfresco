@@ -40,11 +40,11 @@
          {
             if (q === "path")
             {
-               hash += "&" + "filter=" + escape("path|" + qs[q]);
+               hash += "&" + "filter=" + encodeURIComponent("path|" + qs[q]);
             }
             else
             {
-               hash += "&" + escape(q) + "=" + escape(qs[q]);
+               hash += "&" + encodeURIComponent(q) + "=" + encodeURIComponent(qs[q]);
                if (q === "filter")
                {
                   // Check for filterData in QueryString for the "filter" case

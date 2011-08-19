@@ -1,35 +1,41 @@
 /* Site-wide Styles */
 
-body
+.sticky-wrapper,
+.sticky-footer
 {
    font-family: Arial, sans-serif;
    font-size: 81%;
    color: #666666;
 }
 
-a,
-a:visited,
-a:hover
+.sticky-wrapper a,
+.yui-panel-container a,
+.sticky-wrapper a:visited,
+.yui-panel-container a:visited,
+.sticky-wrapper a:hover,
+.yui-panel-container a:hover
 {
    color: #000;
    text-decoration: none;
 }
 
-a:hover
+.sticky-wrapper a:hover,
+.yui-panel-container a:hover
 {
    text-decoration: underline;
 }
 
-h1
+.sticky-wrapper h1,
+.yui-panel-container h1
 {
    font-family: Helvetica, Arial, sans-serif;
    font-size: 140%;
    font-weight: normal;
 }
 
-h2
+.sticky-wrapper h2,
+.yui-panel-container h2
 {
-   font-weight: bold;
    font-size: 123.1%;
 }
 
@@ -46,13 +52,14 @@ h2 .lighter
    color: #c7dbeb;
 }
 
-h3
+.sticky-wrapper h3,
+.yui-panel-container h3
 {
-   font-weight: bold;
    font-size: 108%;
 }
 
-h4
+.sticky-wrapper h4,
+.yui-panel-container h4
 {
    font-weight: bold;
 }
@@ -65,13 +72,13 @@ h4 .lighter
    color: #a2a2a2;
 }
 
-hr
+.sticky-wrapper hr
 {
    color: #E4E4E4;
    background-color: #E4E4E4;
 }
 
-label,
+.sticky-wrapper label,
 .share-form .viewmode-label
 {
    color: #606060;
@@ -151,6 +158,13 @@ label,
 .dashlet .body
 {
    background-color: #FFF;
+}
+
+.dashlet .welcome-body a,
+.dashlet .welcome-body a:visited,
+.dashlet .welcome-body a:hover
+{
+   color: #f6931c;
 }
 
 .dashlet .detail-list-item
@@ -404,12 +418,12 @@ span.navigation-separator-alt
    margin-right: 5px;
 }
 
-strong
+.sticky-wrapper strong
 {
    font-weight: bold;
 }
 
-em
+.sticky-wrapper em
 {
    font-style: italic;
 }
@@ -433,10 +447,14 @@ em
    background: #fff7c9;
 }
 
-select,
-input[type="text"],
-input[type="password"],
-textarea,
+.sticky-wrapper input[type="text"],
+.sticky-wrapper input[type="password"],
+.sticky-wrapper textarea,
+.sticky-wrapper select,
+.yui-panel-container input[type="text"],
+.yui-panel-container input[type="password"],
+.yui-panel-container textarea,
+.yui-panel-container select,
 .form-element-border,
 .share-form .yui-dt table
 {

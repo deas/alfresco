@@ -181,3 +181,28 @@
 {
    border-top: medium none;
 }
+
+/* ALF-9960 fix, after removing reset-fonts-grids.css we should add classes below */
+.sticky-wrapper h6
+{
+   font-size: 100%;
+   font-weight: normal;
+}
+
+.sticky-wrapper li
+{
+   list-style: none;
+}
+
+.sticky-wrapper fieldset,
+.sticky-wrapper img
+{
+   border: 0;
+}
+
+.sticky-wrapper fieldset,
+.sticky-wrapper ul
+{
+   margin: 0;
+   padding: 0;
+}

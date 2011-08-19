@@ -1,13 +1,14 @@
-body
+.login-panel
 {
    text-align: left;
 }
 
-input
+.login-panel input
 {
    border: 1px solid #C5D6E2;
    padding: 2px;
    font-weight: normal;
+   font:99% arial,helvetica,clean,sans-serif;
 }
 
 .alfresco-share .sticky-wrapper
@@ -36,6 +37,13 @@ input
    font-weight: bold;
    color: #515354;
    visibility: hidden;
+}
+
+.login-panel fieldset
+{
+   border: 0;
+   margin: 0;
+   padding: 0;
 }
 
 .login-button

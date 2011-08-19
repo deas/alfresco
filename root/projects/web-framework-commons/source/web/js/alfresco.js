@@ -3616,7 +3616,7 @@ Alfresco.util.renderUriTemplate = function(template, obj, absolute)
          uri = Alfresco.util.combinePaths("/", uri.substring(Alfresco.constants.URL_CONTEXT.length));
       }
 
-      uri = Alfresco.constants.PORTLET_URL.replace("$$scriptUrl$$", encodeURIComponent(decodeURIComponent(uri)));
+      uri = Alfresco.constants.PORTLET_URL.replace("$$scriptUrl$$", encodeURIComponent(decodeURIComponent(uri.replace(/%25/g, "%2525").replace(/%26/g, "%252526"))));
    }
 
    // Absolute URI needs current protocol and host

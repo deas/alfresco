@@ -2160,7 +2160,7 @@
             {
                YAHOO.Bubbling.fire("highlightFile",
                {
-                  fileName: this.options.highlightFile
+                  fileName: unescape(this.options.highlightFile)
                });
             }
             else if (this.listUpdated)
@@ -3920,7 +3920,7 @@
                type: encodeURIComponent(obj.type),
                site: encodeURIComponent(obj.site),
                container: encodeURIComponent(obj.container),
-               path: $combine("/", Alfresco.util.encodeURIPath(obj.path))
+               path: $combine("/", Alfresco.util.encodeURIPath(obj.path).replace(/%25/g,"%2525"))
             });
 
          // Filter parameters

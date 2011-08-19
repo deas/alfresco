@@ -17,7 +17,7 @@
 
 <@markup id="yui">
    <!-- YUI -->
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/yui/reset-fonts-grids/reset-fonts-grids.css" />
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/yui-fonts-grids.css" />
    <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/yui/columnbrowser/assets/columnbrowser.css" />
    <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/yui/columnbrowser/assets/skins/default/columnbrowser-skin.css" />
    <#if theme = 'default'>
@@ -99,6 +99,9 @@
 
 <@markup id="alfrescoResources">
    <!-- Alfresco web framework common resources -->
+<#if PORTLET>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/portlet.css" />
+</#if>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/base.css" />
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/yui-layout.css" />
    <@script type="text/javascript" src="${url.context}/res/js/flash/AC_OETags.js"></@script>
