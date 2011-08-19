@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g 2011-08-12 12:03:22
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g 2011-08-18 15:13:15
 
     package org.alfresco.repo.search.impl.parsers;
     import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
@@ -127,7 +127,7 @@ public class CMISParser extends Parser {
     }
 
     public String[] getTokenNames() { return CMISParser.tokenNames; }
-    public String getGrammarFileName() { return "C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g"; }
+    public String getGrammarFileName() { return "W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g"; }
 
 
         private Stack<String> paraphrases = new Stack<String>();
@@ -280,7 +280,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "query"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:279:1: query : SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:279:1: query : SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? ) ;
     public final CMISParser.query_return query() throws RecognitionException {
         CMISParser.query_return retval = new CMISParser.query_return();
         retval.start = input.LT(1);
@@ -310,8 +310,8 @@ public class CMISParser extends Parser {
             paraphrases.push("in query"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:294:9: ( SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:9: SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:294:9: ( SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:9: SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF
             {
             SELECT1=(Token)match(input,SELECT,FOLLOW_SELECT_in_query415); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_SELECT.add(SELECT1);
@@ -328,7 +328,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_fromClause.add(fromClause3.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:38: ( whereClause )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:38: ( whereClause )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -337,7 +337,7 @@ public class CMISParser extends Parser {
             }
             switch (alt1) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:38: whereClause
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:38: whereClause
                     {
                     pushFollow(FOLLOW_whereClause_in_query421);
                     whereClause4=whereClause();
@@ -351,7 +351,7 @@ public class CMISParser extends Parser {
 
             }
 
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:51: ( orderByClause )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:51: ( orderByClause )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -360,7 +360,7 @@ public class CMISParser extends Parser {
             }
             switch (alt2) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:51: orderByClause
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:51: orderByClause
                     {
                     pushFollow(FOLLOW_orderByClause_in_query424);
                     orderByClause5=orderByClause();
@@ -393,20 +393,20 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 296:17: -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:25: ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:25: ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(QUERY, "QUERY"), root_1);
 
                 adaptor.addChild(root_1, stream_selectList.nextTree());
                 adaptor.addChild(root_1, stream_fromClause.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:55: ( whereClause )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:55: ( whereClause )?
                 if ( stream_whereClause.hasNext() ) {
                     adaptor.addChild(root_1, stream_whereClause.nextTree());
 
                 }
                 stream_whereClause.reset();
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:68: ( orderByClause )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:68: ( orderByClause )?
                 if ( stream_orderByClause.hasNext() ) {
                     adaptor.addChild(root_1, stream_orderByClause.nextTree());
 
@@ -451,7 +451,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "selectList"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:300:1: selectList : ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:300:1: selectList : ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) );
     public final CMISParser.selectList_return selectList() throws RecognitionException {
         CMISParser.selectList_return retval = new CMISParser.selectList_return();
         retval.start = input.LT(1);
@@ -474,35 +474,12 @@ public class CMISParser extends Parser {
             paraphrases.push("in select list"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:309:9: ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:309:9: ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) )
             int alt4=2;
-            int LA4_0 = input.LA(1);
-
-            if ( (LA4_0==STAR) ) {
-                alt4=1;
-            }
-            else if ( (LA4_0==ID) ) {
-                alt4=2;
-            }
-            else if ( (LA4_0==DOUBLE_QUOTE) && ((strict == false))) {
-                alt4=2;
-            }
-            else if ( (LA4_0==SCORE) ) {
-                alt4=2;
-            }
-            else if ( (LA4_0==SELECT||LA4_0==AS||(LA4_0>=FROM && LA4_0<=ON)||(LA4_0>=WHERE && LA4_0<=NOT)||(LA4_0>=IN && LA4_0<=DESC)||(LA4_0>=TRUE && LA4_0<=TIMESTAMP)) && ((strict == false))) {
-                alt4=2;
-            }
-            else {
-                if (state.backtracking>0) {state.failed=true; return retval;}
-                NoViableAltException nvae =
-                    new NoViableAltException("", 4, 0, input);
-
-                throw nvae;
-            }
+            alt4 = dfa4.predict(input);
             switch (alt4) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:310:9: STAR
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:310:9: STAR
                     {
                     STAR7=(Token)match(input,STAR,FOLLOW_STAR_in_selectList526); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_STAR.add(STAR7);
@@ -523,7 +500,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 311:17: -> ^( ALL_COLUMNS )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:312:25: ^( ALL_COLUMNS )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:312:25: ^( ALL_COLUMNS )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(ALL_COLUMNS, "ALL_COLUMNS"), root_1);
@@ -537,7 +514,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:11: selectSubList ( COMMA selectSubList )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:11: selectSubList ( COMMA selectSubList )*
                     {
                     pushFollow(FOLLOW_selectSubList_in_selectList584);
                     selectSubList8=selectSubList();
@@ -545,7 +522,7 @@ public class CMISParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_selectSubList.add(selectSubList8.getTree());
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:25: ( COMMA selectSubList )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:25: ( COMMA selectSubList )*
                     loop3:
                     do {
                         int alt3=2;
@@ -558,7 +535,7 @@ public class CMISParser extends Parser {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:26: COMMA selectSubList
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:26: COMMA selectSubList
                     	    {
                     	    COMMA9=(Token)match(input,COMMA,FOLLOW_COMMA_in_selectList587); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA9);
@@ -594,7 +571,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 314:17: -> ^( COLUMNS ( selectSubList )+ )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:315:25: ^( COLUMNS ( selectSubList )+ )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:315:25: ^( COLUMNS ( selectSubList )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(COLUMNS, "COLUMNS"), root_1);
@@ -648,7 +625,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "selectSubList"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:318:1: selectSubList : ( valueExpression ( ( AS )? columnName )? -> ^( COLUMN valueExpression ( columnName )? ) | qualifier DOTSTAR -> ^( ALL_COLUMNS qualifier ) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:318:1: selectSubList : ( valueExpression ( ( AS )? columnName )? -> ^( COLUMN valueExpression ( columnName )? ) | qualifier DOTSTAR -> ^( ALL_COLUMNS qualifier ) );
     public final CMISParser.selectSubList_return selectSubList() throws RecognitionException {
         CMISParser.selectSubList_return retval = new CMISParser.selectSubList_return();
         retval.start = input.LT(1);
@@ -672,12 +649,12 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_columnName=new RewriteRuleSubtreeStream(adaptor,"rule columnName");
         RewriteRuleSubtreeStream stream_qualifier=new RewriteRuleSubtreeStream(adaptor,"rule qualifier");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:319:9: ( valueExpression ( ( AS )? columnName )? -> ^( COLUMN valueExpression ( columnName )? ) | qualifier DOTSTAR -> ^( ALL_COLUMNS qualifier ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:319:9: ( valueExpression ( ( AS )? columnName )? -> ^( COLUMN valueExpression ( columnName )? ) | qualifier DOTSTAR -> ^( ALL_COLUMNS qualifier ) )
             int alt7=2;
             alt7 = dfa7.predict(input);
             switch (alt7) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:9: valueExpression ( ( AS )? columnName )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:9: valueExpression ( ( AS )? columnName )?
                     {
                     pushFollow(FOLLOW_valueExpression_in_selectSubList673);
                     valueExpression11=valueExpression();
@@ -685,11 +662,14 @@ public class CMISParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_valueExpression.add(valueExpression11.getTree());
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:25: ( ( AS )? columnName )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:25: ( ( AS )? columnName )?
                     int alt6=2;
                     int LA6_0 = input.LA(1);
 
-                    if ( (LA6_0==AS||LA6_0==ID) ) {
+                    if ( (LA6_0==AS) ) {
+                        alt6=1;
+                    }
+                    else if ( (LA6_0==ID) ) {
                         alt6=1;
                     }
                     else if ( (LA6_0==DOUBLE_QUOTE) && ((strict == false))) {
@@ -697,9 +677,9 @@ public class CMISParser extends Parser {
                     }
                     switch (alt6) {
                         case 1 :
-                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: ( AS )? columnName
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: ( AS )? columnName
                             {
-                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: ( AS )?
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: ( AS )?
                             int alt5=2;
                             int LA5_0 = input.LA(1);
 
@@ -708,7 +688,7 @@ public class CMISParser extends Parser {
                             }
                             switch (alt5) {
                                 case 1 :
-                                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: AS
+                                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: AS
                                     {
                                     AS12=(Token)match(input,AS,FOLLOW_AS_in_selectSubList676); if (state.failed) return retval; 
                                     if ( state.backtracking==0 ) stream_AS.add(AS12);
@@ -747,13 +727,13 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 321:17: -> ^( COLUMN valueExpression ( columnName )? )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:322:25: ^( COLUMN valueExpression ( columnName )? )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:322:25: ^( COLUMN valueExpression ( columnName )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(COLUMN, "COLUMN"), root_1);
 
                         adaptor.addChild(root_1, stream_valueExpression.nextTree());
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:322:50: ( columnName )?
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:322:50: ( columnName )?
                         if ( stream_columnName.hasNext() ) {
                             adaptor.addChild(root_1, stream_columnName.nextTree());
 
@@ -769,7 +749,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:323:11: qualifier DOTSTAR
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:323:11: qualifier DOTSTAR
                     {
                     pushFollow(FOLLOW_qualifier_in_selectSubList744);
                     qualifier14=qualifier();
@@ -796,7 +776,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 324:17: -> ^( ALL_COLUMNS qualifier )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:325:25: ^( ALL_COLUMNS qualifier )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:325:25: ^( ALL_COLUMNS qualifier )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(ALL_COLUMNS, "ALL_COLUMNS"), root_1);
@@ -838,7 +818,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "valueExpression"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:328:1: valueExpression : ( columnReference -> columnReference | valueFunction -> valueFunction );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:328:1: valueExpression : ( columnReference -> columnReference | valueFunction -> valueFunction );
     public final CMISParser.valueExpression_return valueExpression() throws RecognitionException {
         CMISParser.valueExpression_return retval = new CMISParser.valueExpression_return();
         retval.start = input.LT(1);
@@ -856,46 +836,12 @@ public class CMISParser extends Parser {
             paraphrases.push("in value expression"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:337:9: ( columnReference -> columnReference | valueFunction -> valueFunction )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:337:9: ( columnReference -> columnReference | valueFunction -> valueFunction )
             int alt8=2;
-            int LA8_0 = input.LA(1);
-
-            if ( (LA8_0==ID) ) {
-                int LA8_1 = input.LA(2);
-
-                if ( ((LA8_1>=COMMA && LA8_1<=AS)||LA8_1==DOT||LA8_1==FROM||LA8_1==EQUALS||(LA8_1>=NOTEQUALS && LA8_1<=GREATERTHANOREQUALS)||(LA8_1>=ID && LA8_1<=DOUBLE_QUOTE)) ) {
-                    alt8=1;
-                }
-                else if ( (LA8_1==LPAREN) && ((strict == false))) {
-                    alt8=2;
-                }
-                else {
-                    if (state.backtracking>0) {state.failed=true; return retval;}
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 8, 1, input);
-
-                    throw nvae;
-                }
-            }
-            else if ( (LA8_0==DOUBLE_QUOTE) && ((strict == false))) {
-                alt8=1;
-            }
-            else if ( (LA8_0==SCORE) ) {
-                alt8=2;
-            }
-            else if ( (LA8_0==SELECT||LA8_0==AS||(LA8_0>=FROM && LA8_0<=ON)||(LA8_0>=WHERE && LA8_0<=NOT)||(LA8_0>=IN && LA8_0<=DESC)||(LA8_0>=TRUE && LA8_0<=TIMESTAMP)) && ((strict == false))) {
-                alt8=2;
-            }
-            else {
-                if (state.backtracking>0) {state.failed=true; return retval;}
-                NoViableAltException nvae =
-                    new NoViableAltException("", 8, 0, input);
-
-                throw nvae;
-            }
+            alt8 = dfa8.predict(input);
             switch (alt8) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:338:9: columnReference
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:338:9: columnReference
                     {
                     pushFollow(FOLLOW_columnReference_in_valueExpression837);
                     columnReference16=columnReference();
@@ -927,7 +873,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:340:11: valueFunction
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:340:11: valueFunction
                     {
                     pushFollow(FOLLOW_valueFunction_in_valueExpression869);
                     valueFunction17=valueFunction();
@@ -990,7 +936,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "columnReference"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:344:1: columnReference : ( qualifier DOT )? columnName -> ^( COLUMN_REF columnName ( qualifier )? ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:344:1: columnReference : ( qualifier DOT )? columnName -> ^( COLUMN_REF columnName ( qualifier )? ) ;
     public final CMISParser.columnReference_return columnReference() throws RecognitionException {
         CMISParser.columnReference_return retval = new CMISParser.columnReference_return();
         retval.start = input.LT(1);
@@ -1011,15 +957,15 @@ public class CMISParser extends Parser {
             paraphrases.push("in column reference"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:353:9: ( ( qualifier DOT )? columnName -> ^( COLUMN_REF columnName ( qualifier )? ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:9: ( qualifier DOT )? columnName
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:353:9: ( ( qualifier DOT )? columnName -> ^( COLUMN_REF columnName ( qualifier )? ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:9: ( qualifier DOT )? columnName
             {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:9: ( qualifier DOT )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:9: ( qualifier DOT )?
             int alt9=2;
             alt9 = dfa9.predict(input);
             switch (alt9) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:10: qualifier DOT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:10: qualifier DOT
                     {
                     pushFollow(FOLLOW_qualifier_in_columnReference933);
                     qualifier18=qualifier();
@@ -1058,13 +1004,13 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 355:17: -> ^( COLUMN_REF columnName ( qualifier )? )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:356:25: ^( COLUMN_REF columnName ( qualifier )? )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:356:25: ^( COLUMN_REF columnName ( qualifier )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(COLUMN_REF, "COLUMN_REF"), root_1);
 
                 adaptor.addChild(root_1, stream_columnName.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:356:49: ( qualifier )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:356:49: ( qualifier )?
                 if ( stream_qualifier.hasNext() ) {
                     adaptor.addChild(root_1, stream_qualifier.nextTree());
 
@@ -1109,7 +1055,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "valueFunction"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:359:1: valueFunction : (cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN ) | {...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN ) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:359:1: valueFunction : (cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN ) | {...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN ) );
     public final CMISParser.valueFunction_return valueFunction() throws RecognitionException {
         CMISParser.valueFunction_return retval = new CMISParser.valueFunction_return();
         retval.start = input.LT(1);
@@ -1142,12 +1088,12 @@ public class CMISParser extends Parser {
             paraphrases.push("in function"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:368:9: (cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN ) | {...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:368:9: (cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN ) | {...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN ) )
             int alt12=2;
             alt12 = dfa12.predict(input);
             switch (alt12) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:9: cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:9: cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN
                     {
                     pushFollow(FOLLOW_cmisFunction_in_valueFunction1035);
                     cmisFunctionName=cmisFunction();
@@ -1158,29 +1104,14 @@ public class CMISParser extends Parser {
                     LPAREN21=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_valueFunction1037); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN21);
 
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:46: ( functionArgument )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:46: ( functionArgument )*
                     loop10:
                     do {
                         int alt10=2;
-                        int LA10_0 = input.LA(1);
-
-                        if ( (LA10_0==ID) ) {
-                            alt10=1;
-                        }
-                        else if ( (LA10_0==DOUBLE_QUOTE) && ((strict == false))) {
-                            alt10=1;
-                        }
-                        else if ( (LA10_0==QUOTED_STRING||(LA10_0>=FLOATING_POINT_LITERAL && LA10_0<=TIMESTAMP)) ) {
-                            alt10=1;
-                        }
-                        else if ( (LA10_0==COLON) && ((strict == false))) {
-                            alt10=1;
-                        }
-
-
+                        alt10 = dfa10.predict(input);
                         switch (alt10) {
                     	case 1 :
-                    	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:46: functionArgument
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:46: functionArgument
                     	    {
                     	    pushFollow(FOLLOW_functionArgument_in_valueFunction1039);
                     	    functionArgument22=functionArgument();
@@ -1217,14 +1148,14 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 370:17: -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:371:25: ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:371:25: ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FUNCTION, "FUNCTION"), root_1);
 
                         adaptor.addChild(root_1, stream_cmisFunctionName.nextTree());
                         adaptor.addChild(root_1, stream_LPAREN.nextNode());
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:371:61: ( functionArgument )*
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:371:61: ( functionArgument )*
                         while ( stream_functionArgument.hasNext() ) {
                             adaptor.addChild(root_1, stream_functionArgument.nextTree());
 
@@ -1241,7 +1172,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:11: {...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:11: {...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN
                     {
                     if ( !((strict == false)) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -1256,29 +1187,14 @@ public class CMISParser extends Parser {
                     LPAREN24=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_valueFunction1117); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN24);
 
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:64: ( functionArgument )*
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:64: ( functionArgument )*
                     loop11:
                     do {
                         int alt11=2;
-                        int LA11_0 = input.LA(1);
-
-                        if ( (LA11_0==ID) ) {
-                            alt11=1;
-                        }
-                        else if ( (LA11_0==DOUBLE_QUOTE) && ((strict == false))) {
-                            alt11=1;
-                        }
-                        else if ( (LA11_0==QUOTED_STRING||(LA11_0>=FLOATING_POINT_LITERAL && LA11_0<=TIMESTAMP)) ) {
-                            alt11=1;
-                        }
-                        else if ( (LA11_0==COLON) && ((strict == false))) {
-                            alt11=1;
-                        }
-
-
+                        alt11 = dfa11.predict(input);
                         switch (alt11) {
                     	case 1 :
-                    	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:64: functionArgument
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:64: functionArgument
                     	    {
                     	    pushFollow(FOLLOW_functionArgument_in_valueFunction1119);
                     	    functionArgument25=functionArgument();
@@ -1315,14 +1231,14 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 373:17: -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:374:25: ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:374:25: ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FUNCTION, "FUNCTION"), root_1);
 
                         adaptor.addChild(root_1, stream_functionName.nextTree());
                         adaptor.addChild(root_1, stream_LPAREN.nextNode());
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:374:57: ( functionArgument )*
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:374:57: ( functionArgument )*
                         while ( stream_functionArgument.hasNext() ) {
                             adaptor.addChild(root_1, stream_functionArgument.nextTree());
 
@@ -1370,7 +1286,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "functionArgument"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:377:1: functionArgument : ( qualifier DOT columnName -> ^( COLUMN_REF columnName qualifier ) | identifier | literalOrParameterName );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:377:1: functionArgument : ( qualifier DOT columnName -> ^( COLUMN_REF columnName qualifier ) | identifier | literalOrParameterName );
     public final CMISParser.functionArgument_return functionArgument() throws RecognitionException {
         CMISParser.functionArgument_return retval = new CMISParser.functionArgument_return();
         retval.start = input.LT(1);
@@ -1392,12 +1308,12 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_columnName=new RewriteRuleSubtreeStream(adaptor,"rule columnName");
         RewriteRuleSubtreeStream stream_qualifier=new RewriteRuleSubtreeStream(adaptor,"rule qualifier");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:378:9: ( qualifier DOT columnName -> ^( COLUMN_REF columnName qualifier ) | identifier | literalOrParameterName )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:378:9: ( qualifier DOT columnName -> ^( COLUMN_REF columnName qualifier ) | identifier | literalOrParameterName )
             int alt13=3;
             alt13 = dfa13.predict(input);
             switch (alt13) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:379:9: qualifier DOT columnName
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:379:9: qualifier DOT columnName
                     {
                     pushFollow(FOLLOW_qualifier_in_functionArgument1211);
                     qualifier27=qualifier();
@@ -1430,7 +1346,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 380:17: -> ^( COLUMN_REF columnName qualifier )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:381:25: ^( COLUMN_REF columnName qualifier )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:381:25: ^( COLUMN_REF columnName qualifier )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(COLUMN_REF, "COLUMN_REF"), root_1);
@@ -1447,7 +1363,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:382:11: identifier
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:382:11: identifier
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1461,7 +1377,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:383:11: literalOrParameterName
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:383:11: literalOrParameterName
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1501,7 +1417,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "qualifier"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:386:1: qualifier : ( ( tableName )=> tableName -> tableName | correlationName -> correlationName );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:386:1: qualifier : ( ( tableName )=> tableName -> tableName | correlationName -> correlationName );
     public final CMISParser.qualifier_return qualifier() throws RecognitionException {
         CMISParser.qualifier_return retval = new CMISParser.qualifier_return();
         retval.start = input.LT(1);
@@ -1516,12 +1432,12 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_correlationName=new RewriteRuleSubtreeStream(adaptor,"rule correlationName");
         RewriteRuleSubtreeStream stream_tableName=new RewriteRuleSubtreeStream(adaptor,"rule tableName");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:387:9: ( ( tableName )=> tableName -> tableName | correlationName -> correlationName )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:387:9: ( ( tableName )=> tableName -> tableName | correlationName -> correlationName )
             int alt14=2;
             alt14 = dfa14.predict(input);
             switch (alt14) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:9: ( tableName )=> tableName
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:9: ( tableName )=> tableName
                     {
                     pushFollow(FOLLOW_tableName_in_qualifier1328);
                     tableName32=tableName();
@@ -1553,7 +1469,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:390:11: correlationName
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:390:11: correlationName
                     {
                     pushFollow(FOLLOW_correlationName_in_qualifier1360);
                     correlationName33=correlationName();
@@ -1611,7 +1527,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "fromClause"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:394:1: fromClause : FROM tableReference -> tableReference ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:394:1: fromClause : FROM tableReference -> tableReference ;
     public final CMISParser.fromClause_return fromClause() throws RecognitionException {
         CMISParser.fromClause_return retval = new CMISParser.fromClause_return();
         retval.start = input.LT(1);
@@ -1629,8 +1545,8 @@ public class CMISParser extends Parser {
             paraphrases.push("in fromClause"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:403:9: ( FROM tableReference -> tableReference )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:404:9: FROM tableReference
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:403:9: ( FROM tableReference -> tableReference )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:404:9: FROM tableReference
             {
             FROM34=(Token)match(input,FROM,FOLLOW_FROM_in_fromClause1423); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_FROM.add(FROM34);
@@ -1694,7 +1610,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "tableReference"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:408:1: tableReference : singleTable ( joinedTable )* -> ^( SOURCE singleTable ( joinedTable )* ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:408:1: tableReference : singleTable ( joinedTable )* -> ^( SOURCE singleTable ( joinedTable )* ) ;
     public final CMISParser.tableReference_return tableReference() throws RecognitionException {
         CMISParser.tableReference_return retval = new CMISParser.tableReference_return();
         retval.start = input.LT(1);
@@ -1712,8 +1628,8 @@ public class CMISParser extends Parser {
             paraphrases.push("in tableReference"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:417:9: ( singleTable ( joinedTable )* -> ^( SOURCE singleTable ( joinedTable )* ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:9: singleTable ( joinedTable )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:417:9: ( singleTable ( joinedTable )* -> ^( SOURCE singleTable ( joinedTable )* ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:9: singleTable ( joinedTable )*
             {
             pushFollow(FOLLOW_singleTable_in_tableReference1488);
             singleTable36=singleTable();
@@ -1721,7 +1637,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_singleTable.add(singleTable36.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:21: ( joinedTable )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:21: ( joinedTable )*
             loop15:
             do {
                 int alt15=2;
@@ -1734,7 +1650,7 @@ public class CMISParser extends Parser {
 
                 switch (alt15) {
             	case 1 :
-            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:21: joinedTable
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:21: joinedTable
             	    {
             	    pushFollow(FOLLOW_joinedTable_in_tableReference1490);
             	    joinedTable37=joinedTable();
@@ -1767,13 +1683,13 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 419:17: -> ^( SOURCE singleTable ( joinedTable )* )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:420:25: ^( SOURCE singleTable ( joinedTable )* )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:420:25: ^( SOURCE singleTable ( joinedTable )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SOURCE, "SOURCE"), root_1);
 
                 adaptor.addChild(root_1, stream_singleTable.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:420:46: ( joinedTable )*
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:420:46: ( joinedTable )*
                 while ( stream_joinedTable.hasNext() ) {
                     adaptor.addChild(root_1, stream_joinedTable.nextTree());
 
@@ -1818,7 +1734,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "singleTable"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:427:1: singleTable : ( simpleTable -> simpleTable | complexTable -> ^( TABLE complexTable ) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:427:1: singleTable : ( simpleTable -> simpleTable | complexTable -> ^( TABLE complexTable ) );
     public final CMISParser.singleTable_return singleTable() throws RecognitionException {
         CMISParser.singleTable_return retval = new CMISParser.singleTable_return();
         retval.start = input.LT(1);
@@ -1836,7 +1752,7 @@ public class CMISParser extends Parser {
             paraphrases.push("in singleTable"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:436:9: ( simpleTable -> simpleTable | complexTable -> ^( TABLE complexTable ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:436:9: ( simpleTable -> simpleTable | complexTable -> ^( TABLE complexTable ) )
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1858,7 +1774,7 @@ public class CMISParser extends Parser {
             }
             switch (alt16) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:437:9: simpleTable
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:437:9: simpleTable
                     {
                     pushFollow(FOLLOW_simpleTable_in_singleTable1588);
                     simpleTable38=simpleTable();
@@ -1890,7 +1806,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:439:11: complexTable
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:439:11: complexTable
                     {
                     pushFollow(FOLLOW_complexTable_in_singleTable1620);
                     complexTable39=complexTable();
@@ -1914,7 +1830,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 440:17: -> ^( TABLE complexTable )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:441:25: ^( TABLE complexTable )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:441:25: ^( TABLE complexTable )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(TABLE, "TABLE"), root_1);
@@ -1961,7 +1877,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "simpleTable"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:444:1: simpleTable : tableName ( ( AS )? correlationName )? -> ^( TABLE_REF tableName ( correlationName )? ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:444:1: simpleTable : tableName ( ( AS )? correlationName )? -> ^( TABLE_REF tableName ( correlationName )? ) ;
     public final CMISParser.simpleTable_return simpleTable() throws RecognitionException {
         CMISParser.simpleTable_return retval = new CMISParser.simpleTable_return();
         retval.start = input.LT(1);
@@ -1982,8 +1898,8 @@ public class CMISParser extends Parser {
             paraphrases.push("in simpleTable"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:453:9: ( tableName ( ( AS )? correlationName )? -> ^( TABLE_REF tableName ( correlationName )? ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:9: tableName ( ( AS )? correlationName )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:453:9: ( tableName ( ( AS )? correlationName )? -> ^( TABLE_REF tableName ( correlationName )? ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:9: tableName ( ( AS )? correlationName )?
             {
             pushFollow(FOLLOW_tableName_in_simpleTable1711);
             tableName40=tableName();
@@ -1991,21 +1907,14 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_tableName.add(tableName40.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:19: ( ( AS )? correlationName )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:19: ( ( AS )? correlationName )?
             int alt18=2;
-            int LA18_0 = input.LA(1);
-
-            if ( (LA18_0==AS||LA18_0==ID) ) {
-                alt18=1;
-            }
-            else if ( (LA18_0==DOUBLE_QUOTE) && ((strict == false))) {
-                alt18=1;
-            }
+            alt18 = dfa18.predict(input);
             switch (alt18) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: ( AS )? correlationName
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: ( AS )? correlationName
                     {
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: ( AS )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: ( AS )?
                     int alt17=2;
                     int LA17_0 = input.LA(1);
 
@@ -2014,7 +1923,7 @@ public class CMISParser extends Parser {
                     }
                     switch (alt17) {
                         case 1 :
-                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: AS
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: AS
                             {
                             AS41=(Token)match(input,AS,FOLLOW_AS_in_simpleTable1714); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_AS.add(AS41);
@@ -2053,13 +1962,13 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 455:17: -> ^( TABLE_REF tableName ( correlationName )? )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:456:25: ^( TABLE_REF tableName ( correlationName )? )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:456:25: ^( TABLE_REF tableName ( correlationName )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(TABLE_REF, "TABLE_REF"), root_1);
 
                 adaptor.addChild(root_1, stream_tableName.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:456:47: ( correlationName )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:456:47: ( correlationName )?
                 if ( stream_correlationName.hasNext() ) {
                     adaptor.addChild(root_1, stream_correlationName.nextTree());
 
@@ -2104,7 +2013,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "joinedTable"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:459:1: joinedTable : ( joinType )? JOIN tableReference joinSpecification -> ^( JOIN tableReference ( joinType )? joinSpecification ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:459:1: joinedTable : ( joinType )? JOIN tableReference joinSpecification -> ^( JOIN tableReference ( joinType )? joinSpecification ) ;
     public final CMISParser.joinedTable_return joinedTable() throws RecognitionException {
         CMISParser.joinedTable_return retval = new CMISParser.joinedTable_return();
         retval.start = input.LT(1);
@@ -2128,10 +2037,10 @@ public class CMISParser extends Parser {
             paraphrases.push("in joinedTable"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:468:9: ( ( joinType )? JOIN tableReference joinSpecification -> ^( JOIN tableReference ( joinType )? joinSpecification ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: ( joinType )? JOIN tableReference joinSpecification
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:468:9: ( ( joinType )? JOIN tableReference joinSpecification -> ^( JOIN tableReference ( joinType )? joinSpecification ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: ( joinType )? JOIN tableReference joinSpecification
             {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: ( joinType )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: ( joinType )?
             int alt19=2;
             int LA19_0 = input.LA(1);
 
@@ -2140,7 +2049,7 @@ public class CMISParser extends Parser {
             }
             switch (alt19) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: joinType
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: joinType
                     {
                     pushFollow(FOLLOW_joinType_in_joinedTable1813);
                     joinType43=joinType();
@@ -2185,13 +2094,13 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 470:17: -> ^( JOIN tableReference ( joinType )? joinSpecification )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:471:25: ^( JOIN tableReference ( joinType )? joinSpecification )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:471:25: ^( JOIN tableReference ( joinType )? joinSpecification )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_JOIN.nextNode(), root_1);
 
                 adaptor.addChild(root_1, stream_tableReference.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:471:47: ( joinType )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:471:47: ( joinType )?
                 if ( stream_joinType.hasNext() ) {
                     adaptor.addChild(root_1, stream_joinType.nextTree());
 
@@ -2237,7 +2146,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "complexTable"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:474:1: complexTable : ( ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN -> ^( SOURCE singleTable ( joinedTable )+ ) | LPAREN complexTable RPAREN -> complexTable );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:474:1: complexTable : ( ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN -> ^( SOURCE singleTable ( joinedTable )+ ) | LPAREN complexTable RPAREN -> complexTable );
     public final CMISParser.complexTable_return complexTable() throws RecognitionException {
         CMISParser.complexTable_return retval = new CMISParser.complexTable_return();
         retval.start = input.LT(1);
@@ -2268,7 +2177,7 @@ public class CMISParser extends Parser {
             paraphrases.push("in complexTable"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:483:9: ( ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN -> ^( SOURCE singleTable ( joinedTable )+ ) | LPAREN complexTable RPAREN -> complexTable )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:483:9: ( ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN -> ^( SOURCE singleTable ( joinedTable )+ ) | LPAREN complexTable RPAREN -> complexTable )
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -2298,7 +2207,7 @@ public class CMISParser extends Parser {
             }
             switch (alt21) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:9: ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:9: ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN
                     {
                     LPAREN47=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_complexTable1929); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN47);
@@ -2309,7 +2218,7 @@ public class CMISParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_singleTable.add(singleTable48.getTree());
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:72: ( joinedTable )+
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:72: ( joinedTable )+
                     int cnt20=0;
                     loop20:
                     do {
@@ -2323,7 +2232,7 @@ public class CMISParser extends Parser {
 
                         switch (alt20) {
                     	case 1 :
-                    	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:72: joinedTable
+                    	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:72: joinedTable
                     	    {
                     	    pushFollow(FOLLOW_joinedTable_in_complexTable1933);
                     	    joinedTable49=joinedTable();
@@ -2364,7 +2273,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 485:17: -> ^( SOURCE singleTable ( joinedTable )+ )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:486:25: ^( SOURCE singleTable ( joinedTable )+ )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:486:25: ^( SOURCE singleTable ( joinedTable )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SOURCE, "SOURCE"), root_1);
@@ -2388,7 +2297,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:487:11: LPAREN complexTable RPAREN
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:487:11: LPAREN complexTable RPAREN
                     {
                     LPAREN51=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_complexTable1999); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN51);
@@ -2457,7 +2366,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "joinType"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:491:1: joinType : ( INNER -> INNER | LEFT ( OUTER )? -> LEFT );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:491:1: joinType : ( INNER -> INNER | LEFT ( OUTER )? -> LEFT );
     public final CMISParser.joinType_return joinType() throws RecognitionException {
         CMISParser.joinType_return retval = new CMISParser.joinType_return();
         retval.start = input.LT(1);
@@ -2476,7 +2385,7 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_LEFT=new RewriteRuleTokenStream(adaptor,"token LEFT");
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:492:9: ( INNER -> INNER | LEFT ( OUTER )? -> LEFT )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:492:9: ( INNER -> INNER | LEFT ( OUTER )? -> LEFT )
             int alt23=2;
             int LA23_0 = input.LA(1);
 
@@ -2495,7 +2404,7 @@ public class CMISParser extends Parser {
             }
             switch (alt23) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:493:9: INNER
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:493:9: INNER
                     {
                     INNER54=(Token)match(input,INNER,FOLLOW_INNER_in_joinType2056); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_INNER.add(INNER54);
@@ -2524,12 +2433,12 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:11: LEFT ( OUTER )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:11: LEFT ( OUTER )?
                     {
                     LEFT55=(Token)match(input,LEFT,FOLLOW_LEFT_in_joinType2088); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LEFT.add(LEFT55);
 
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:16: ( OUTER )?
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:16: ( OUTER )?
                     int alt22=2;
                     int LA22_0 = input.LA(1);
 
@@ -2538,7 +2447,7 @@ public class CMISParser extends Parser {
                     }
                     switch (alt22) {
                         case 1 :
-                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:16: OUTER
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:16: OUTER
                             {
                             OUTER56=(Token)match(input,OUTER,FOLLOW_OUTER_in_joinType2090); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_OUTER.add(OUTER56);
@@ -2599,7 +2508,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "joinSpecification"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:499:1: joinSpecification : ON lhs= columnReference EQUALS rhs= columnReference -> ^( ON $lhs EQUALS $rhs) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:499:1: joinSpecification : ON lhs= columnReference EQUALS rhs= columnReference -> ^( ON $lhs EQUALS $rhs) ;
     public final CMISParser.joinSpecification_return joinSpecification() throws RecognitionException {
         CMISParser.joinSpecification_return retval = new CMISParser.joinSpecification_return();
         retval.start = input.LT(1);
@@ -2622,8 +2531,8 @@ public class CMISParser extends Parser {
             paraphrases.push("in join condition"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:508:9: ( ON lhs= columnReference EQUALS rhs= columnReference -> ^( ON $lhs EQUALS $rhs) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:509:9: ON lhs= columnReference EQUALS rhs= columnReference
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:508:9: ( ON lhs= columnReference EQUALS rhs= columnReference -> ^( ON $lhs EQUALS $rhs) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:509:9: ON lhs= columnReference EQUALS rhs= columnReference
             {
             ON57=(Token)match(input,ON,FOLLOW_ON_in_joinSpecification2154); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ON.add(ON57);
@@ -2661,7 +2570,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 510:17: -> ^( ON $lhs EQUALS $rhs)
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:511:25: ^( ON $lhs EQUALS $rhs)
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:511:25: ^( ON $lhs EQUALS $rhs)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_ON.nextNode(), root_1);
@@ -2708,7 +2617,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "whereClause"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:518:1: whereClause : WHERE searchOrCondition -> searchOrCondition ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:518:1: whereClause : WHERE searchOrCondition -> searchOrCondition ;
     public final CMISParser.whereClause_return whereClause() throws RecognitionException {
         CMISParser.whereClause_return retval = new CMISParser.whereClause_return();
         retval.start = input.LT(1);
@@ -2726,8 +2635,8 @@ public class CMISParser extends Parser {
             paraphrases.push("in where"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:527:9: ( WHERE searchOrCondition -> searchOrCondition )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:528:9: WHERE searchOrCondition
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:527:9: ( WHERE searchOrCondition -> searchOrCondition )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:528:9: WHERE searchOrCondition
             {
             WHERE59=(Token)match(input,WHERE,FOLLOW_WHERE_in_whereClause2264); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_WHERE.add(WHERE59);
@@ -2791,7 +2700,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "searchOrCondition"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:532:1: searchOrCondition : searchAndCondition ( OR searchAndCondition )* -> ^( DISJUNCTION ( searchAndCondition )+ ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:532:1: searchOrCondition : searchAndCondition ( OR searchAndCondition )* -> ^( DISJUNCTION ( searchAndCondition )+ ) ;
     public final CMISParser.searchOrCondition_return searchOrCondition() throws RecognitionException {
         CMISParser.searchOrCondition_return retval = new CMISParser.searchOrCondition_return();
         retval.start = input.LT(1);
@@ -2808,8 +2717,8 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_OR=new RewriteRuleTokenStream(adaptor,"token OR");
         RewriteRuleSubtreeStream stream_searchAndCondition=new RewriteRuleSubtreeStream(adaptor,"rule searchAndCondition");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:536:9: ( searchAndCondition ( OR searchAndCondition )* -> ^( DISJUNCTION ( searchAndCondition )+ ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:9: searchAndCondition ( OR searchAndCondition )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:536:9: ( searchAndCondition ( OR searchAndCondition )* -> ^( DISJUNCTION ( searchAndCondition )+ ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:9: searchAndCondition ( OR searchAndCondition )*
             {
             pushFollow(FOLLOW_searchAndCondition_in_searchOrCondition2321);
             searchAndCondition61=searchAndCondition();
@@ -2817,7 +2726,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_searchAndCondition.add(searchAndCondition61.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:28: ( OR searchAndCondition )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:28: ( OR searchAndCondition )*
             loop24:
             do {
                 int alt24=2;
@@ -2830,7 +2739,7 @@ public class CMISParser extends Parser {
 
                 switch (alt24) {
             	case 1 :
-            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:29: OR searchAndCondition
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:29: OR searchAndCondition
             	    {
             	    OR62=(Token)match(input,OR,FOLLOW_OR_in_searchOrCondition2324); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_OR.add(OR62);
@@ -2866,7 +2775,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 538:17: -> ^( DISJUNCTION ( searchAndCondition )+ )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:539:25: ^( DISJUNCTION ( searchAndCondition )+ )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:539:25: ^( DISJUNCTION ( searchAndCondition )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(DISJUNCTION, "DISJUNCTION"), root_1);
@@ -2913,7 +2822,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "searchAndCondition"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:542:1: searchAndCondition : searchNotCondition ( AND searchNotCondition )* -> ^( CONJUNCTION ( searchNotCondition )+ ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:542:1: searchAndCondition : searchNotCondition ( AND searchNotCondition )* -> ^( CONJUNCTION ( searchNotCondition )+ ) ;
     public final CMISParser.searchAndCondition_return searchAndCondition() throws RecognitionException {
         CMISParser.searchAndCondition_return retval = new CMISParser.searchAndCondition_return();
         retval.start = input.LT(1);
@@ -2930,8 +2839,8 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_AND=new RewriteRuleTokenStream(adaptor,"token AND");
         RewriteRuleSubtreeStream stream_searchNotCondition=new RewriteRuleSubtreeStream(adaptor,"rule searchNotCondition");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:546:9: ( searchNotCondition ( AND searchNotCondition )* -> ^( CONJUNCTION ( searchNotCondition )+ ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:9: searchNotCondition ( AND searchNotCondition )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:546:9: ( searchNotCondition ( AND searchNotCondition )* -> ^( CONJUNCTION ( searchNotCondition )+ ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:9: searchNotCondition ( AND searchNotCondition )*
             {
             pushFollow(FOLLOW_searchNotCondition_in_searchAndCondition2412);
             searchNotCondition64=searchNotCondition();
@@ -2939,7 +2848,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_searchNotCondition.add(searchNotCondition64.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:28: ( AND searchNotCondition )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:28: ( AND searchNotCondition )*
             loop25:
             do {
                 int alt25=2;
@@ -2952,7 +2861,7 @@ public class CMISParser extends Parser {
 
                 switch (alt25) {
             	case 1 :
-            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:29: AND searchNotCondition
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:29: AND searchNotCondition
             	    {
             	    AND65=(Token)match(input,AND,FOLLOW_AND_in_searchAndCondition2415); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_AND.add(AND65);
@@ -2988,7 +2897,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 548:17: -> ^( CONJUNCTION ( searchNotCondition )+ )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:549:25: ^( CONJUNCTION ( searchNotCondition )+ )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:549:25: ^( CONJUNCTION ( searchNotCondition )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(CONJUNCTION, "CONJUNCTION"), root_1);
@@ -3035,7 +2944,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "searchNotCondition"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:552:1: searchNotCondition : ( NOT searchTest -> ^( NEGATION searchTest ) | searchTest -> searchTest );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:552:1: searchNotCondition : ( NOT searchTest -> ^( NEGATION searchTest ) | searchTest -> searchTest );
     public final CMISParser.searchNotCondition_return searchNotCondition() throws RecognitionException {
         CMISParser.searchNotCondition_return retval = new CMISParser.searchNotCondition_return();
         retval.start = input.LT(1);
@@ -3052,12 +2961,12 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_NOT=new RewriteRuleTokenStream(adaptor,"token NOT");
         RewriteRuleSubtreeStream stream_searchTest=new RewriteRuleSubtreeStream(adaptor,"rule searchTest");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:553:9: ( NOT searchTest -> ^( NEGATION searchTest ) | searchTest -> searchTest )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:553:9: ( NOT searchTest -> ^( NEGATION searchTest ) | searchTest -> searchTest )
             int alt26=2;
             alt26 = dfa26.predict(input);
             switch (alt26) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:554:9: NOT searchTest
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:554:9: NOT searchTest
                     {
                     NOT67=(Token)match(input,NOT,FOLLOW_NOT_in_searchNotCondition2501); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_NOT.add(NOT67);
@@ -3084,7 +2993,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 555:17: -> ^( NEGATION searchTest )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:556:25: ^( NEGATION searchTest )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:556:25: ^( NEGATION searchTest )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(NEGATION, "NEGATION"), root_1);
@@ -3100,7 +3009,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:557:11: searchTest
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:557:11: searchTest
                     {
                     pushFollow(FOLLOW_searchTest_in_searchNotCondition2563);
                     searchTest69=searchTest();
@@ -3158,7 +3067,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "searchTest"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:561:1: searchTest : ( predicate -> predicate | LPAREN searchOrCondition RPAREN -> searchOrCondition );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:561:1: searchTest : ( predicate -> predicate | LPAREN searchOrCondition RPAREN -> searchOrCondition );
     public final CMISParser.searchTest_return searchTest() throws RecognitionException {
         CMISParser.searchTest_return retval = new CMISParser.searchTest_return();
         retval.start = input.LT(1);
@@ -3179,12 +3088,12 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_predicate=new RewriteRuleSubtreeStream(adaptor,"rule predicate");
         RewriteRuleSubtreeStream stream_searchOrCondition=new RewriteRuleSubtreeStream(adaptor,"rule searchOrCondition");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:562:9: ( predicate -> predicate | LPAREN searchOrCondition RPAREN -> searchOrCondition )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:562:9: ( predicate -> predicate | LPAREN searchOrCondition RPAREN -> searchOrCondition )
             int alt27=2;
             alt27 = dfa27.predict(input);
             switch (alt27) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:563:9: predicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:563:9: predicate
                     {
                     pushFollow(FOLLOW_predicate_in_searchTest2616);
                     predicate70=predicate();
@@ -3216,7 +3125,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:565:11: LPAREN searchOrCondition RPAREN
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:565:11: LPAREN searchOrCondition RPAREN
                     {
                     LPAREN71=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_searchTest2648); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN71);
@@ -3280,7 +3189,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "predicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:569:1: predicate : ( comparisonPredicate | inPredicate | likePredicate | nullPredicate | quantifiedComparisonPredicate | quantifiedInPredicate | textSearchPredicate | folderPredicate );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:569:1: predicate : ( comparisonPredicate | inPredicate | likePredicate | nullPredicate | quantifiedComparisonPredicate | quantifiedInPredicate | textSearchPredicate | folderPredicate );
     public final CMISParser.predicate_return predicate() throws RecognitionException {
         CMISParser.predicate_return retval = new CMISParser.predicate_return();
         retval.start = input.LT(1);
@@ -3306,12 +3215,12 @@ public class CMISParser extends Parser {
 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:570:9: ( comparisonPredicate | inPredicate | likePredicate | nullPredicate | quantifiedComparisonPredicate | quantifiedInPredicate | textSearchPredicate | folderPredicate )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:570:9: ( comparisonPredicate | inPredicate | likePredicate | nullPredicate | quantifiedComparisonPredicate | quantifiedInPredicate | textSearchPredicate | folderPredicate )
             int alt28=8;
             alt28 = dfa28.predict(input);
             switch (alt28) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:571:9: comparisonPredicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:571:9: comparisonPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3325,7 +3234,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:572:11: inPredicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:572:11: inPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3339,7 +3248,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:573:11: likePredicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:573:11: likePredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3353,7 +3262,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:574:11: nullPredicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:574:11: nullPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3367,7 +3276,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:575:11: quantifiedComparisonPredicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:575:11: quantifiedComparisonPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3381,7 +3290,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:576:11: quantifiedInPredicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:576:11: quantifiedInPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3395,7 +3304,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:577:11: textSearchPredicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:577:11: textSearchPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3409,7 +3318,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:578:11: folderPredicate
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:578:11: folderPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3449,7 +3358,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "comparisonPredicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:581:1: comparisonPredicate : valueExpression compOp literalOrParameterName -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:581:1: comparisonPredicate : valueExpression compOp literalOrParameterName -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName ) ;
     public final CMISParser.comparisonPredicate_return comparisonPredicate() throws RecognitionException {
         CMISParser.comparisonPredicate_return retval = new CMISParser.comparisonPredicate_return();
         retval.start = input.LT(1);
@@ -3467,8 +3376,8 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_compOp=new RewriteRuleSubtreeStream(adaptor,"rule compOp");
         RewriteRuleSubtreeStream stream_literalOrParameterName=new RewriteRuleSubtreeStream(adaptor,"rule literalOrParameterName");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:582:9: ( valueExpression compOp literalOrParameterName -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:583:9: valueExpression compOp literalOrParameterName
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:582:9: ( valueExpression compOp literalOrParameterName -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:583:9: valueExpression compOp literalOrParameterName
             {
             pushFollow(FOLLOW_valueExpression_in_comparisonPredicate2822);
             valueExpression82=valueExpression();
@@ -3504,7 +3413,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 584:17: -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:585:25: ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:585:25: ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_COMPARISON, "PRED_COMPARISON"), root_1);
@@ -3547,7 +3456,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "compOp"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:588:1: compOp : ( EQUALS | NOTEQUALS | LESSTHAN | GREATERTHAN | LESSTHANOREQUALS | GREATERTHANOREQUALS );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:588:1: compOp : ( EQUALS | NOTEQUALS | LESSTHAN | GREATERTHAN | LESSTHANOREQUALS | GREATERTHANOREQUALS );
     public final CMISParser.compOp_return compOp() throws RecognitionException {
         CMISParser.compOp_return retval = new CMISParser.compOp_return();
         retval.start = input.LT(1);
@@ -3559,8 +3468,8 @@ public class CMISParser extends Parser {
         Object set85_tree=null;
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:589:9: ( EQUALS | NOTEQUALS | LESSTHAN | GREATERTHAN | LESSTHANOREQUALS | GREATERTHANOREQUALS )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:589:9: ( EQUALS | NOTEQUALS | LESSTHAN | GREATERTHAN | LESSTHANOREQUALS | GREATERTHANOREQUALS )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -3604,7 +3513,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "literalOrParameterName"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:598:1: literalOrParameterName : ( literal | {...}? => parameterName );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:598:1: literalOrParameterName : ( literal | {...}? => parameterName );
     public final CMISParser.literalOrParameterName_return literalOrParameterName() throws RecognitionException {
         CMISParser.literalOrParameterName_return retval = new CMISParser.literalOrParameterName_return();
         retval.start = input.LT(1);
@@ -3618,11 +3527,26 @@ public class CMISParser extends Parser {
 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:599:9: ( literal | {...}? => parameterName )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:599:9: ( literal | {...}? => parameterName )
             int alt29=2;
             int LA29_0 = input.LA(1);
 
-            if ( (LA29_0==QUOTED_STRING||(LA29_0>=FLOATING_POINT_LITERAL && LA29_0<=TIMESTAMP)) ) {
+            if ( (LA29_0==FLOATING_POINT_LITERAL) ) {
+                alt29=1;
+            }
+            else if ( (LA29_0==DECIMAL_INTEGER_LITERAL) ) {
+                alt29=1;
+            }
+            else if ( (LA29_0==QUOTED_STRING) ) {
+                alt29=1;
+            }
+            else if ( (LA29_0==TRUE) ) {
+                alt29=1;
+            }
+            else if ( (LA29_0==FALSE) ) {
+                alt29=1;
+            }
+            else if ( (LA29_0==TIMESTAMP) ) {
                 alt29=1;
             }
             else if ( (LA29_0==COLON) && ((strict == false))) {
@@ -3637,7 +3561,7 @@ public class CMISParser extends Parser {
             }
             switch (alt29) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:600:9: literal
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:600:9: literal
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3651,7 +3575,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:601:11: {...}? => parameterName
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:601:11: {...}? => parameterName
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3695,7 +3619,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "literal"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:604:1: literal : ( signedNumericLiteral | characterStringLiteral | booleanLiteral | datetimeLiteral );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:604:1: literal : ( signedNumericLiteral | characterStringLiteral | booleanLiteral | datetimeLiteral );
     public final CMISParser.literal_return literal() throws RecognitionException {
         CMISParser.literal_return retval = new CMISParser.literal_return();
         retval.start = input.LT(1);
@@ -3713,7 +3637,7 @@ public class CMISParser extends Parser {
 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:605:9: ( signedNumericLiteral | characterStringLiteral | booleanLiteral | datetimeLiteral )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:605:9: ( signedNumericLiteral | characterStringLiteral | booleanLiteral | datetimeLiteral )
             int alt30=4;
             switch ( input.LA(1) ) {
             case FLOATING_POINT_LITERAL:
@@ -3748,7 +3672,7 @@ public class CMISParser extends Parser {
 
             switch (alt30) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:606:9: signedNumericLiteral
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:606:9: signedNumericLiteral
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3762,7 +3686,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:607:11: characterStringLiteral
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:607:11: characterStringLiteral
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3776,7 +3700,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:608:11: booleanLiteral
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:608:11: booleanLiteral
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3790,7 +3714,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:609:11: datetimeLiteral
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:609:11: datetimeLiteral
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -3830,7 +3754,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "inPredicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:612:1: inPredicate : columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:612:1: inPredicate : columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? ) ;
     public final CMISParser.inPredicate_return inPredicate() throws RecognitionException {
         CMISParser.inPredicate_return retval = new CMISParser.inPredicate_return();
         retval.start = input.LT(1);
@@ -3857,8 +3781,8 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         RewriteRuleSubtreeStream stream_inValueList=new RewriteRuleSubtreeStream(adaptor,"rule inValueList");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:613:9: ( columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:9: columnReference ( NOT )? IN LPAREN inValueList RPAREN
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:613:9: ( columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:9: columnReference ( NOT )? IN LPAREN inValueList RPAREN
             {
             pushFollow(FOLLOW_columnReference_in_inPredicate3123);
             columnReference92=columnReference();
@@ -3866,7 +3790,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_columnReference.add(columnReference92.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:25: ( NOT )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:25: ( NOT )?
             int alt31=2;
             int LA31_0 = input.LA(1);
 
@@ -3875,7 +3799,7 @@ public class CMISParser extends Parser {
             }
             switch (alt31) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:25: NOT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:25: NOT
                     {
                     NOT93=(Token)match(input,NOT,FOLLOW_NOT_in_inPredicate3125); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_NOT.add(NOT93);
@@ -3917,7 +3841,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 615:17: -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:616:25: ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:616:25: ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_IN, "PRED_IN"), root_1);
@@ -3925,7 +3849,7 @@ public class CMISParser extends Parser {
                 adaptor.addChild(root_1, (Object)adaptor.create(SINGLE_VALUED_PROPERTY, "SINGLE_VALUED_PROPERTY"));
                 adaptor.addChild(root_1, stream_columnReference.nextTree());
                 adaptor.addChild(root_1, stream_inValueList.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:616:86: ( NOT )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:616:86: ( NOT )?
                 if ( stream_NOT.hasNext() ) {
                     adaptor.addChild(root_1, stream_NOT.nextNode());
 
@@ -3965,7 +3889,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "inValueList"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:619:1: inValueList : literalOrParameterName ( COMMA literalOrParameterName )* -> ^( LIST ( literalOrParameterName )+ ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:619:1: inValueList : literalOrParameterName ( COMMA literalOrParameterName )* -> ^( LIST ( literalOrParameterName )+ ) ;
     public final CMISParser.inValueList_return inValueList() throws RecognitionException {
         CMISParser.inValueList_return retval = new CMISParser.inValueList_return();
         retval.start = input.LT(1);
@@ -3982,8 +3906,8 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleSubtreeStream stream_literalOrParameterName=new RewriteRuleSubtreeStream(adaptor,"rule literalOrParameterName");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:620:9: ( literalOrParameterName ( COMMA literalOrParameterName )* -> ^( LIST ( literalOrParameterName )+ ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:9: literalOrParameterName ( COMMA literalOrParameterName )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:620:9: ( literalOrParameterName ( COMMA literalOrParameterName )* -> ^( LIST ( literalOrParameterName )+ ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:9: literalOrParameterName ( COMMA literalOrParameterName )*
             {
             pushFollow(FOLLOW_literalOrParameterName_in_inValueList3222);
             literalOrParameterName98=literalOrParameterName();
@@ -3991,7 +3915,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_literalOrParameterName.add(literalOrParameterName98.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:32: ( COMMA literalOrParameterName )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:32: ( COMMA literalOrParameterName )*
             loop32:
             do {
                 int alt32=2;
@@ -4004,7 +3928,7 @@ public class CMISParser extends Parser {
 
                 switch (alt32) {
             	case 1 :
-            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:33: COMMA literalOrParameterName
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:33: COMMA literalOrParameterName
             	    {
             	    COMMA99=(Token)match(input,COMMA,FOLLOW_COMMA_in_inValueList3225); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA99);
@@ -4040,7 +3964,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 622:17: -> ^( LIST ( literalOrParameterName )+ )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:623:25: ^( LIST ( literalOrParameterName )+ )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:623:25: ^( LIST ( literalOrParameterName )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(LIST, "LIST"), root_1);
@@ -4087,7 +4011,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "likePredicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:626:1: likePredicate : columnReference ( NOT )? LIKE characterStringLiteral -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:626:1: likePredicate : columnReference ( NOT )? LIKE characterStringLiteral -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? ) ;
     public final CMISParser.likePredicate_return likePredicate() throws RecognitionException {
         CMISParser.likePredicate_return retval = new CMISParser.likePredicate_return();
         retval.start = input.LT(1);
@@ -4108,8 +4032,8 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         RewriteRuleSubtreeStream stream_characterStringLiteral=new RewriteRuleSubtreeStream(adaptor,"rule characterStringLiteral");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:627:9: ( columnReference ( NOT )? LIKE characterStringLiteral -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:9: columnReference ( NOT )? LIKE characterStringLiteral
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:627:9: ( columnReference ( NOT )? LIKE characterStringLiteral -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:9: columnReference ( NOT )? LIKE characterStringLiteral
             {
             pushFollow(FOLLOW_columnReference_in_likePredicate3311);
             columnReference101=columnReference();
@@ -4117,7 +4041,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_columnReference.add(columnReference101.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:25: ( NOT )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:25: ( NOT )?
             int alt33=2;
             int LA33_0 = input.LA(1);
 
@@ -4126,7 +4050,7 @@ public class CMISParser extends Parser {
             }
             switch (alt33) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:25: NOT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:25: NOT
                     {
                     NOT102=(Token)match(input,NOT,FOLLOW_NOT_in_likePredicate3313); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_NOT.add(NOT102);
@@ -4162,14 +4086,14 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 629:17: -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:630:25: ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:630:25: ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_LIKE, "PRED_LIKE"), root_1);
 
                 adaptor.addChild(root_1, stream_columnReference.nextTree());
                 adaptor.addChild(root_1, stream_characterStringLiteral.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:630:76: ( NOT )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:630:76: ( NOT )?
                 if ( stream_NOT.hasNext() ) {
                     adaptor.addChild(root_1, stream_NOT.nextNode());
 
@@ -4209,7 +4133,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "nullPredicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:633:1: nullPredicate : ( columnReference IS NULL -> ^( PRED_EXISTS columnReference NOT ) | columnReference IS NOT NULL -> ^( PRED_EXISTS columnReference ) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:633:1: nullPredicate : ( columnReference IS NULL -> ^( PRED_EXISTS columnReference NOT ) | columnReference IS NOT NULL -> ^( PRED_EXISTS columnReference ) );
     public final CMISParser.nullPredicate_return nullPredicate() throws RecognitionException {
         CMISParser.nullPredicate_return retval = new CMISParser.nullPredicate_return();
         retval.start = input.LT(1);
@@ -4236,12 +4160,12 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_NULL=new RewriteRuleTokenStream(adaptor,"token NULL");
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:634:9: ( columnReference IS NULL -> ^( PRED_EXISTS columnReference NOT ) | columnReference IS NOT NULL -> ^( PRED_EXISTS columnReference ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:634:9: ( columnReference IS NULL -> ^( PRED_EXISTS columnReference NOT ) | columnReference IS NOT NULL -> ^( PRED_EXISTS columnReference ) )
             int alt34=2;
             alt34 = dfa34.predict(input);
             switch (alt34) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:635:9: columnReference IS NULL
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:635:9: columnReference IS NULL
                     {
                     pushFollow(FOLLOW_columnReference_in_nullPredicate3404);
                     columnReference105=columnReference();
@@ -4271,7 +4195,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 636:17: -> ^( PRED_EXISTS columnReference NOT )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:637:25: ^( PRED_EXISTS columnReference NOT )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:637:25: ^( PRED_EXISTS columnReference NOT )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_EXISTS, "PRED_EXISTS"), root_1);
@@ -4288,7 +4212,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:638:11: columnReference IS NOT NULL
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:638:11: columnReference IS NOT NULL
                     {
                     pushFollow(FOLLOW_columnReference_in_nullPredicate3470);
                     columnReference108=columnReference();
@@ -4321,7 +4245,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 639:17: -> ^( PRED_EXISTS columnReference )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:640:25: ^( PRED_EXISTS columnReference )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:640:25: ^( PRED_EXISTS columnReference )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_EXISTS, "PRED_EXISTS"), root_1);
@@ -4363,7 +4287,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "quantifiedComparisonPredicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:643:1: quantifiedComparisonPredicate : literalOrParameterName compOp ANY columnReference -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:643:1: quantifiedComparisonPredicate : literalOrParameterName compOp ANY columnReference -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference ) ;
     public final CMISParser.quantifiedComparisonPredicate_return quantifiedComparisonPredicate() throws RecognitionException {
         CMISParser.quantifiedComparisonPredicate_return retval = new CMISParser.quantifiedComparisonPredicate_return();
         retval.start = input.LT(1);
@@ -4384,8 +4308,8 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_compOp=new RewriteRuleSubtreeStream(adaptor,"rule compOp");
         RewriteRuleSubtreeStream stream_literalOrParameterName=new RewriteRuleSubtreeStream(adaptor,"rule literalOrParameterName");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:644:9: ( literalOrParameterName compOp ANY columnReference -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:645:9: literalOrParameterName compOp ANY columnReference
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:644:9: ( literalOrParameterName compOp ANY columnReference -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:645:9: literalOrParameterName compOp ANY columnReference
             {
             pushFollow(FOLLOW_literalOrParameterName_in_quantifiedComparisonPredicate3557);
             literalOrParameterName112=literalOrParameterName();
@@ -4424,7 +4348,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 646:17: -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:647:25: ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:647:25: ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_COMPARISON, "PRED_COMPARISON"), root_1);
@@ -4467,7 +4391,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "quantifiedInPredicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:650:1: quantifiedInPredicate : ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN ANY columnReference inValueList ( NOT )? ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:650:1: quantifiedInPredicate : ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN ANY columnReference inValueList ( NOT )? ) ;
     public final CMISParser.quantifiedInPredicate_return quantifiedInPredicate() throws RecognitionException {
         CMISParser.quantifiedInPredicate_return retval = new CMISParser.quantifiedInPredicate_return();
         retval.start = input.LT(1);
@@ -4497,8 +4421,8 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         RewriteRuleSubtreeStream stream_inValueList=new RewriteRuleSubtreeStream(adaptor,"rule inValueList");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:651:9: ( ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN ANY columnReference inValueList ( NOT )? ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:9: ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:651:9: ( ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN ANY columnReference inValueList ( NOT )? ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:9: ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN
             {
             ANY116=(Token)match(input,ANY,FOLLOW_ANY_in_quantifiedInPredicate3650); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ANY.add(ANY116);
@@ -4509,7 +4433,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_columnReference.add(columnReference117.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:29: ( NOT )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:29: ( NOT )?
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -4518,7 +4442,7 @@ public class CMISParser extends Parser {
             }
             switch (alt35) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:29: NOT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:29: NOT
                     {
                     NOT118=(Token)match(input,NOT,FOLLOW_NOT_in_quantifiedInPredicate3654); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_NOT.add(NOT118);
@@ -4560,7 +4484,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 653:17: -> ^( PRED_IN ANY columnReference inValueList ( NOT )? )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:654:25: ^( PRED_IN ANY columnReference inValueList ( NOT )? )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:654:25: ^( PRED_IN ANY columnReference inValueList ( NOT )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_IN, "PRED_IN"), root_1);
@@ -4568,7 +4492,7 @@ public class CMISParser extends Parser {
                 adaptor.addChild(root_1, stream_ANY.nextNode());
                 adaptor.addChild(root_1, stream_columnReference.nextTree());
                 adaptor.addChild(root_1, stream_inValueList.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:654:67: ( NOT )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:654:67: ( NOT )?
                 if ( stream_NOT.hasNext() ) {
                     adaptor.addChild(root_1, stream_NOT.nextNode());
 
@@ -4608,7 +4532,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "textSearchPredicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:657:1: textSearchPredicate : CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN -> ^( PRED_FTS textSearchExpression ( qualifier )? ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:657:1: textSearchPredicate : CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN -> ^( PRED_FTS textSearchExpression ( qualifier )? ) ;
     public final CMISParser.textSearchPredicate_return textSearchPredicate() throws RecognitionException {
         CMISParser.textSearchPredicate_return retval = new CMISParser.textSearchPredicate_return();
         retval.start = input.LT(1);
@@ -4635,8 +4559,8 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_qualifier=new RewriteRuleSubtreeStream(adaptor,"rule qualifier");
         RewriteRuleSubtreeStream stream_textSearchExpression=new RewriteRuleSubtreeStream(adaptor,"rule textSearchExpression");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:658:9: ( CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN -> ^( PRED_FTS textSearchExpression ( qualifier )? ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:9: CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:658:9: ( CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN -> ^( PRED_FTS textSearchExpression ( qualifier )? ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:9: CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN
             {
             CONTAINS123=(Token)match(input,CONTAINS,FOLLOW_CONTAINS_in_textSearchPredicate3751); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_CONTAINS.add(CONTAINS123);
@@ -4644,7 +4568,7 @@ public class CMISParser extends Parser {
             LPAREN124=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_textSearchPredicate3753); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN124);
 
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:25: ( qualifier COMMA )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:25: ( qualifier COMMA )?
             int alt36=2;
             int LA36_0 = input.LA(1);
 
@@ -4656,7 +4580,7 @@ public class CMISParser extends Parser {
             }
             switch (alt36) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:26: qualifier COMMA
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:26: qualifier COMMA
                     {
                     pushFollow(FOLLOW_qualifier_in_textSearchPredicate3756);
                     qualifier125=qualifier();
@@ -4698,13 +4622,13 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 660:17: -> ^( PRED_FTS textSearchExpression ( qualifier )? )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:661:25: ^( PRED_FTS textSearchExpression ( qualifier )? )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:661:25: ^( PRED_FTS textSearchExpression ( qualifier )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_FTS, "PRED_FTS"), root_1);
 
                 adaptor.addChild(root_1, stream_textSearchExpression.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:661:57: ( qualifier )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:661:57: ( qualifier )?
                 if ( stream_qualifier.hasNext() ) {
                     adaptor.addChild(root_1, stream_qualifier.nextTree());
 
@@ -4744,7 +4668,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "folderPredicate"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:664:1: folderPredicate : ( IN_FOLDER folderPredicateArgs -> ^( PRED_CHILD folderPredicateArgs ) | IN_TREE folderPredicateArgs -> ^( PRED_DESCENDANT folderPredicateArgs ) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:664:1: folderPredicate : ( IN_FOLDER folderPredicateArgs -> ^( PRED_CHILD folderPredicateArgs ) | IN_TREE folderPredicateArgs -> ^( PRED_DESCENDANT folderPredicateArgs ) );
     public final CMISParser.folderPredicate_return folderPredicate() throws RecognitionException {
         CMISParser.folderPredicate_return retval = new CMISParser.folderPredicate_return();
         retval.start = input.LT(1);
@@ -4764,7 +4688,7 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_IN_FOLDER=new RewriteRuleTokenStream(adaptor,"token IN_FOLDER");
         RewriteRuleSubtreeStream stream_folderPredicateArgs=new RewriteRuleSubtreeStream(adaptor,"rule folderPredicateArgs");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:665:9: ( IN_FOLDER folderPredicateArgs -> ^( PRED_CHILD folderPredicateArgs ) | IN_TREE folderPredicateArgs -> ^( PRED_DESCENDANT folderPredicateArgs ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:665:9: ( IN_FOLDER folderPredicateArgs -> ^( PRED_CHILD folderPredicateArgs ) | IN_TREE folderPredicateArgs -> ^( PRED_DESCENDANT folderPredicateArgs ) )
             int alt37=2;
             int LA37_0 = input.LA(1);
 
@@ -4783,7 +4707,7 @@ public class CMISParser extends Parser {
             }
             switch (alt37) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:666:9: IN_FOLDER folderPredicateArgs
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:666:9: IN_FOLDER folderPredicateArgs
                     {
                     IN_FOLDER129=(Token)match(input,IN_FOLDER,FOLLOW_IN_FOLDER_in_folderPredicate3848); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IN_FOLDER.add(IN_FOLDER129);
@@ -4810,7 +4734,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 667:17: -> ^( PRED_CHILD folderPredicateArgs )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:668:25: ^( PRED_CHILD folderPredicateArgs )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:668:25: ^( PRED_CHILD folderPredicateArgs )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_CHILD, "PRED_CHILD"), root_1);
@@ -4826,7 +4750,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:669:11: IN_TREE folderPredicateArgs
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:669:11: IN_TREE folderPredicateArgs
                     {
                     IN_TREE131=(Token)match(input,IN_TREE,FOLLOW_IN_TREE_in_folderPredicate3910); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IN_TREE.add(IN_TREE131);
@@ -4853,7 +4777,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 670:17: -> ^( PRED_DESCENDANT folderPredicateArgs )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:671:25: ^( PRED_DESCENDANT folderPredicateArgs )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:671:25: ^( PRED_DESCENDANT folderPredicateArgs )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PRED_DESCENDANT, "PRED_DESCENDANT"), root_1);
@@ -4895,7 +4819,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "folderPredicateArgs"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:674:1: folderPredicateArgs : LPAREN ( qualifier COMMA )? folderId RPAREN -> folderId ( qualifier )? ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:674:1: folderPredicateArgs : LPAREN ( qualifier COMMA )? folderId RPAREN -> folderId ( qualifier )? ;
     public final CMISParser.folderPredicateArgs_return folderPredicateArgs() throws RecognitionException {
         CMISParser.folderPredicateArgs_return retval = new CMISParser.folderPredicateArgs_return();
         retval.start = input.LT(1);
@@ -4919,13 +4843,13 @@ public class CMISParser extends Parser {
         RewriteRuleSubtreeStream stream_qualifier=new RewriteRuleSubtreeStream(adaptor,"rule qualifier");
         RewriteRuleSubtreeStream stream_folderId=new RewriteRuleSubtreeStream(adaptor,"rule folderId");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:675:9: ( LPAREN ( qualifier COMMA )? folderId RPAREN -> folderId ( qualifier )? )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:9: LPAREN ( qualifier COMMA )? folderId RPAREN
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:675:9: ( LPAREN ( qualifier COMMA )? folderId RPAREN -> folderId ( qualifier )? )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:9: LPAREN ( qualifier COMMA )? folderId RPAREN
             {
             LPAREN133=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_folderPredicateArgs3993); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN133);
 
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:16: ( qualifier COMMA )?
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:16: ( qualifier COMMA )?
             int alt38=2;
             int LA38_0 = input.LA(1);
 
@@ -4937,7 +4861,7 @@ public class CMISParser extends Parser {
             }
             switch (alt38) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:17: qualifier COMMA
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:17: qualifier COMMA
                     {
                     pushFollow(FOLLOW_qualifier_in_folderPredicateArgs3996);
                     qualifier134=qualifier();
@@ -4980,7 +4904,7 @@ public class CMISParser extends Parser {
             // 677:17: -> folderId ( qualifier )?
             {
                 adaptor.addChild(root_0, stream_folderId.nextTree());
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:677:29: ( qualifier )?
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:677:29: ( qualifier )?
                 if ( stream_qualifier.hasNext() ) {
                     adaptor.addChild(root_0, stream_qualifier.nextTree());
 
@@ -5017,7 +4941,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "orderByClause"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:680:1: orderByClause : ORDER BY sortSpecification ( COMMA sortSpecification )* -> ^( ORDER ( sortSpecification )+ ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:680:1: orderByClause : ORDER BY sortSpecification ( COMMA sortSpecification )* -> ^( ORDER ( sortSpecification )+ ) ;
     public final CMISParser.orderByClause_return orderByClause() throws RecognitionException {
         CMISParser.orderByClause_return retval = new CMISParser.orderByClause_return();
         retval.start = input.LT(1);
@@ -5043,8 +4967,8 @@ public class CMISParser extends Parser {
             paraphrases.push("in order by"); 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:689:9: ( ORDER BY sortSpecification ( COMMA sortSpecification )* -> ^( ORDER ( sortSpecification )+ ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:9: ORDER BY sortSpecification ( COMMA sortSpecification )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:689:9: ( ORDER BY sortSpecification ( COMMA sortSpecification )* -> ^( ORDER ( sortSpecification )+ ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:9: ORDER BY sortSpecification ( COMMA sortSpecification )*
             {
             ORDER138=(Token)match(input,ORDER,FOLLOW_ORDER_in_orderByClause4070); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ORDER.add(ORDER138);
@@ -5058,7 +4982,7 @@ public class CMISParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_sortSpecification.add(sortSpecification140.getTree());
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:36: ( COMMA sortSpecification )*
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:36: ( COMMA sortSpecification )*
             loop39:
             do {
                 int alt39=2;
@@ -5071,7 +4995,7 @@ public class CMISParser extends Parser {
 
                 switch (alt39) {
             	case 1 :
-            	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:37: COMMA sortSpecification
+            	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:37: COMMA sortSpecification
             	    {
             	    COMMA141=(Token)match(input,COMMA,FOLLOW_COMMA_in_orderByClause4077); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA141);
@@ -5107,7 +5031,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 691:17: -> ^( ORDER ( sortSpecification )+ )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:692:25: ^( ORDER ( sortSpecification )+ )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:692:25: ^( ORDER ( sortSpecification )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_ORDER.nextNode(), root_1);
@@ -5159,7 +5083,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "sortSpecification"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:695:1: sortSpecification : ( columnReference -> ^( SORT_SPECIFICATION columnReference ASC ) | columnReference (by= ASC | by= DESC ) -> ^( SORT_SPECIFICATION columnReference $by) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:695:1: sortSpecification : ( columnReference -> ^( SORT_SPECIFICATION columnReference ASC ) | columnReference (by= ASC | by= DESC ) -> ^( SORT_SPECIFICATION columnReference $by) );
     public final CMISParser.sortSpecification_return sortSpecification() throws RecognitionException {
         CMISParser.sortSpecification_return retval = new CMISParser.sortSpecification_return();
         retval.start = input.LT(1);
@@ -5177,12 +5101,12 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_DESC=new RewriteRuleTokenStream(adaptor,"token DESC");
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:696:9: ( columnReference -> ^( SORT_SPECIFICATION columnReference ASC ) | columnReference (by= ASC | by= DESC ) -> ^( SORT_SPECIFICATION columnReference $by) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:696:9: ( columnReference -> ^( SORT_SPECIFICATION columnReference ASC ) | columnReference (by= ASC | by= DESC ) -> ^( SORT_SPECIFICATION columnReference $by) )
             int alt41=2;
             alt41 = dfa41.predict(input);
             switch (alt41) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:697:9: columnReference
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:697:9: columnReference
                     {
                     pushFollow(FOLLOW_columnReference_in_sortSpecification4163);
                     columnReference143=columnReference();
@@ -5206,7 +5130,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 698:17: -> ^( SORT_SPECIFICATION columnReference ASC )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:699:25: ^( SORT_SPECIFICATION columnReference ASC )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:699:25: ^( SORT_SPECIFICATION columnReference ASC )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SORT_SPECIFICATION, "SORT_SPECIFICATION"), root_1);
@@ -5223,7 +5147,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:700:11: columnReference (by= ASC | by= DESC )
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:700:11: columnReference (by= ASC | by= DESC )
                     {
                     pushFollow(FOLLOW_columnReference_in_sortSpecification4225);
                     columnReference144=columnReference();
@@ -5231,7 +5155,7 @@ public class CMISParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_columnReference.add(columnReference144.getTree());
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:701:9: (by= ASC | by= DESC )
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:701:9: (by= ASC | by= DESC )
                     int alt40=2;
                     int LA40_0 = input.LA(1);
 
@@ -5250,7 +5174,7 @@ public class CMISParser extends Parser {
                     }
                     switch (alt40) {
                         case 1 :
-                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:702:17: by= ASC
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:702:17: by= ASC
                             {
                             by=(Token)match(input,ASC,FOLLOW_ASC_in_sortSpecification4255); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASC.add(by);
@@ -5259,7 +5183,7 @@ public class CMISParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:703:19: by= DESC
+                            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:703:19: by= DESC
                             {
                             by=(Token)match(input,DESC,FOLLOW_DESC_in_sortSpecification4277); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_DESC.add(by);
@@ -5287,7 +5211,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 705:17: -> ^( SORT_SPECIFICATION columnReference $by)
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:706:25: ^( SORT_SPECIFICATION columnReference $by)
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:706:25: ^( SORT_SPECIFICATION columnReference $by)
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SORT_SPECIFICATION, "SORT_SPECIFICATION"), root_1);
@@ -5330,7 +5254,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "correlationName"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:709:1: correlationName : identifier ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:709:1: correlationName : identifier ;
     public final CMISParser.correlationName_return correlationName() throws RecognitionException {
         CMISParser.correlationName_return retval = new CMISParser.correlationName_return();
         retval.start = input.LT(1);
@@ -5342,8 +5266,8 @@ public class CMISParser extends Parser {
 
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:710:9: ( identifier )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:711:9: identifier
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:710:9: ( identifier )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:711:9: identifier
             {
             root_0 = (Object)adaptor.nil();
 
@@ -5381,7 +5305,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "tableName"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:719:1: tableName : identifier -> identifier ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:719:1: tableName : identifier -> identifier ;
     public final CMISParser.tableName_return tableName() throws RecognitionException {
         CMISParser.tableName_return retval = new CMISParser.tableName_return();
         retval.start = input.LT(1);
@@ -5393,8 +5317,8 @@ public class CMISParser extends Parser {
 
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:720:9: ( identifier -> identifier )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:721:9: identifier
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:720:9: ( identifier -> identifier )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:721:9: identifier
             {
             pushFollow(FOLLOW_identifier_in_tableName4407);
             identifier146=identifier();
@@ -5450,7 +5374,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "columnName"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:725:1: columnName : identifier -> identifier ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:725:1: columnName : identifier -> identifier ;
     public final CMISParser.columnName_return columnName() throws RecognitionException {
         CMISParser.columnName_return retval = new CMISParser.columnName_return();
         retval.start = input.LT(1);
@@ -5462,8 +5386,8 @@ public class CMISParser extends Parser {
 
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:726:9: ( identifier -> identifier )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:727:9: identifier
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:726:9: ( identifier -> identifier )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:727:9: identifier
             {
             pushFollow(FOLLOW_identifier_in_columnName4460);
             identifier147=identifier();
@@ -5519,7 +5443,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "parameterName"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:731:1: parameterName : COLON identifier -> ^( PARAMETER identifier ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:731:1: parameterName : COLON identifier -> ^( PARAMETER identifier ) ;
     public final CMISParser.parameterName_return parameterName() throws RecognitionException {
         CMISParser.parameterName_return retval = new CMISParser.parameterName_return();
         retval.start = input.LT(1);
@@ -5534,8 +5458,8 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:732:9: ( COLON identifier -> ^( PARAMETER identifier ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:733:9: COLON identifier
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:732:9: ( COLON identifier -> ^( PARAMETER identifier ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:733:9: COLON identifier
             {
             COLON148=(Token)match(input,COLON,FOLLOW_COLON_in_parameterName4513); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_COLON.add(COLON148);
@@ -5562,7 +5486,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 734:17: -> ^( PARAMETER identifier )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:735:25: ^( PARAMETER identifier )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:735:25: ^( PARAMETER identifier )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PARAMETER, "PARAMETER"), root_1);
@@ -5602,7 +5526,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "folderId"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:738:1: folderId : characterStringLiteral -> characterStringLiteral ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:738:1: folderId : characterStringLiteral -> characterStringLiteral ;
     public final CMISParser.folderId_return folderId() throws RecognitionException {
         CMISParser.folderId_return retval = new CMISParser.folderId_return();
         retval.start = input.LT(1);
@@ -5614,8 +5538,8 @@ public class CMISParser extends Parser {
 
         RewriteRuleSubtreeStream stream_characterStringLiteral=new RewriteRuleSubtreeStream(adaptor,"rule characterStringLiteral");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:739:9: ( characterStringLiteral -> characterStringLiteral )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:740:9: characterStringLiteral
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:739:9: ( characterStringLiteral -> characterStringLiteral )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:740:9: characterStringLiteral
             {
             pushFollow(FOLLOW_characterStringLiteral_in_folderId4596);
             characterStringLiteral150=characterStringLiteral();
@@ -5671,7 +5595,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "textSearchExpression"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:744:1: textSearchExpression : QUOTED_STRING ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:744:1: textSearchExpression : QUOTED_STRING ;
     public final CMISParser.textSearchExpression_return textSearchExpression() throws RecognitionException {
         CMISParser.textSearchExpression_return retval = new CMISParser.textSearchExpression_return();
         retval.start = input.LT(1);
@@ -5683,8 +5607,8 @@ public class CMISParser extends Parser {
         Object QUOTED_STRING151_tree=null;
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:745:9: ( QUOTED_STRING )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:746:9: QUOTED_STRING
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:745:9: ( QUOTED_STRING )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:746:9: QUOTED_STRING
             {
             root_0 = (Object)adaptor.nil();
 
@@ -5721,7 +5645,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "identifier"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:749:1: identifier : ( ID -> ID | {...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE -> ^( keyWordOrId ) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:749:1: identifier : ( ID -> ID | {...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE -> ^( keyWordOrId ) );
     public final CMISParser.identifier_return identifier() throws RecognitionException {
         CMISParser.identifier_return retval = new CMISParser.identifier_return();
         retval.start = input.LT(1);
@@ -5741,7 +5665,7 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_DOUBLE_QUOTE=new RewriteRuleTokenStream(adaptor,"token DOUBLE_QUOTE");
         RewriteRuleSubtreeStream stream_keyWordOrId=new RewriteRuleSubtreeStream(adaptor,"rule keyWordOrId");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:750:9: ( ID -> ID | {...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE -> ^( keyWordOrId ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:750:9: ( ID -> ID | {...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE -> ^( keyWordOrId ) )
             int alt42=2;
             int LA42_0 = input.LA(1);
 
@@ -5760,7 +5684,7 @@ public class CMISParser extends Parser {
             }
             switch (alt42) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:751:9: ID
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:751:9: ID
                     {
                     ID152=(Token)match(input,ID,FOLLOW_ID_in_identifier4682); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(ID152);
@@ -5789,7 +5713,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:753:11: {...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:753:11: {...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE
                     {
                     if ( !((strict == false)) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -5823,7 +5747,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 754:17: -> ^( keyWordOrId )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:755:25: ^( keyWordOrId )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:755:25: ^( keyWordOrId )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(stream_keyWordOrId.nextNode(), root_1);
@@ -5863,7 +5787,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "signedNumericLiteral"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:758:1: signedNumericLiteral : ( FLOATING_POINT_LITERAL -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL ) | integerLiteral -> integerLiteral );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:758:1: signedNumericLiteral : ( FLOATING_POINT_LITERAL -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL ) | integerLiteral -> integerLiteral );
     public final CMISParser.signedNumericLiteral_return signedNumericLiteral() throws RecognitionException {
         CMISParser.signedNumericLiteral_return retval = new CMISParser.signedNumericLiteral_return();
         retval.start = input.LT(1);
@@ -5878,7 +5802,7 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_FLOATING_POINT_LITERAL=new RewriteRuleTokenStream(adaptor,"token FLOATING_POINT_LITERAL");
         RewriteRuleSubtreeStream stream_integerLiteral=new RewriteRuleSubtreeStream(adaptor,"rule integerLiteral");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:759:9: ( FLOATING_POINT_LITERAL -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL ) | integerLiteral -> integerLiteral )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:759:9: ( FLOATING_POINT_LITERAL -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL ) | integerLiteral -> integerLiteral )
             int alt43=2;
             int LA43_0 = input.LA(1);
 
@@ -5897,7 +5821,7 @@ public class CMISParser extends Parser {
             }
             switch (alt43) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:760:9: FLOATING_POINT_LITERAL
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:760:9: FLOATING_POINT_LITERAL
                     {
                     FLOATING_POINT_LITERAL156=(Token)match(input,FLOATING_POINT_LITERAL,FOLLOW_FLOATING_POINT_LITERAL_in_signedNumericLiteral4800); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_FLOATING_POINT_LITERAL.add(FLOATING_POINT_LITERAL156);
@@ -5918,7 +5842,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 761:17: -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:762:25: ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:762:25: ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(NUMERIC_LITERAL, "NUMERIC_LITERAL"), root_1);
@@ -5934,7 +5858,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:763:11: integerLiteral
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:763:11: integerLiteral
                     {
                     pushFollow(FOLLOW_integerLiteral_in_signedNumericLiteral4860);
                     integerLiteral157=integerLiteral();
@@ -5992,7 +5916,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "integerLiteral"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:767:1: integerLiteral : DECIMAL_INTEGER_LITERAL -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:767:1: integerLiteral : DECIMAL_INTEGER_LITERAL -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL ) ;
     public final CMISParser.integerLiteral_return integerLiteral() throws RecognitionException {
         CMISParser.integerLiteral_return retval = new CMISParser.integerLiteral_return();
         retval.start = input.LT(1);
@@ -6005,8 +5929,8 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_DECIMAL_INTEGER_LITERAL=new RewriteRuleTokenStream(adaptor,"token DECIMAL_INTEGER_LITERAL");
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:768:9: ( DECIMAL_INTEGER_LITERAL -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:769:9: DECIMAL_INTEGER_LITERAL
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:768:9: ( DECIMAL_INTEGER_LITERAL -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:769:9: DECIMAL_INTEGER_LITERAL
             {
             DECIMAL_INTEGER_LITERAL158=(Token)match(input,DECIMAL_INTEGER_LITERAL,FOLLOW_DECIMAL_INTEGER_LITERAL_in_integerLiteral4913); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_DECIMAL_INTEGER_LITERAL.add(DECIMAL_INTEGER_LITERAL158);
@@ -6027,7 +5951,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 770:17: -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:771:25: ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:771:25: ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(NUMERIC_LITERAL, "NUMERIC_LITERAL"), root_1);
@@ -6067,7 +5991,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "booleanLiteral"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:774:1: booleanLiteral : ( TRUE -> ^( BOOLEAN_LITERAL TRUE ) | FALSE -> ^( BOOLEAN_LITERAL FALSE ) );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:774:1: booleanLiteral : ( TRUE -> ^( BOOLEAN_LITERAL TRUE ) | FALSE -> ^( BOOLEAN_LITERAL FALSE ) );
     public final CMISParser.booleanLiteral_return booleanLiteral() throws RecognitionException {
         CMISParser.booleanLiteral_return retval = new CMISParser.booleanLiteral_return();
         retval.start = input.LT(1);
@@ -6083,7 +6007,7 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_TRUE=new RewriteRuleTokenStream(adaptor,"token TRUE");
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:775:9: ( TRUE -> ^( BOOLEAN_LITERAL TRUE ) | FALSE -> ^( BOOLEAN_LITERAL FALSE ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:775:9: ( TRUE -> ^( BOOLEAN_LITERAL TRUE ) | FALSE -> ^( BOOLEAN_LITERAL FALSE ) )
             int alt44=2;
             int LA44_0 = input.LA(1);
 
@@ -6102,7 +6026,7 @@ public class CMISParser extends Parser {
             }
             switch (alt44) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:776:9: TRUE
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:776:9: TRUE
                     {
                     TRUE159=(Token)match(input,TRUE,FOLLOW_TRUE_in_booleanLiteral4994); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_TRUE.add(TRUE159);
@@ -6123,7 +6047,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 777:17: -> ^( BOOLEAN_LITERAL TRUE )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:778:25: ^( BOOLEAN_LITERAL TRUE )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:778:25: ^( BOOLEAN_LITERAL TRUE )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(BOOLEAN_LITERAL, "BOOLEAN_LITERAL"), root_1);
@@ -6139,7 +6063,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:779:11: FALSE
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:779:11: FALSE
                     {
                     FALSE160=(Token)match(input,FALSE,FOLLOW_FALSE_in_booleanLiteral5054); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_FALSE.add(FALSE160);
@@ -6160,7 +6084,7 @@ public class CMISParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 780:17: -> ^( BOOLEAN_LITERAL FALSE )
                     {
-                        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:781:25: ^( BOOLEAN_LITERAL FALSE )
+                        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:781:25: ^( BOOLEAN_LITERAL FALSE )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(BOOLEAN_LITERAL, "BOOLEAN_LITERAL"), root_1);
@@ -6202,7 +6126,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "datetimeLiteral"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:784:1: datetimeLiteral : TIMESTAMP QUOTED_STRING -> ^( DATETIME_LITERAL QUOTED_STRING ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:784:1: datetimeLiteral : TIMESTAMP QUOTED_STRING -> ^( DATETIME_LITERAL QUOTED_STRING ) ;
     public final CMISParser.datetimeLiteral_return datetimeLiteral() throws RecognitionException {
         CMISParser.datetimeLiteral_return retval = new CMISParser.datetimeLiteral_return();
         retval.start = input.LT(1);
@@ -6218,8 +6142,8 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_TIMESTAMP=new RewriteRuleTokenStream(adaptor,"token TIMESTAMP");
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:785:9: ( TIMESTAMP QUOTED_STRING -> ^( DATETIME_LITERAL QUOTED_STRING ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:786:9: TIMESTAMP QUOTED_STRING
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:785:9: ( TIMESTAMP QUOTED_STRING -> ^( DATETIME_LITERAL QUOTED_STRING ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:786:9: TIMESTAMP QUOTED_STRING
             {
             TIMESTAMP161=(Token)match(input,TIMESTAMP,FOLLOW_TIMESTAMP_in_datetimeLiteral5135); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_TIMESTAMP.add(TIMESTAMP161);
@@ -6243,7 +6167,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 787:17: -> ^( DATETIME_LITERAL QUOTED_STRING )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:788:25: ^( DATETIME_LITERAL QUOTED_STRING )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:788:25: ^( DATETIME_LITERAL QUOTED_STRING )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(DATETIME_LITERAL, "DATETIME_LITERAL"), root_1);
@@ -6283,7 +6207,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "characterStringLiteral"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:791:1: characterStringLiteral : QUOTED_STRING -> ^( STRING_LITERAL QUOTED_STRING ) ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:791:1: characterStringLiteral : QUOTED_STRING -> ^( STRING_LITERAL QUOTED_STRING ) ;
     public final CMISParser.characterStringLiteral_return characterStringLiteral() throws RecognitionException {
         CMISParser.characterStringLiteral_return retval = new CMISParser.characterStringLiteral_return();
         retval.start = input.LT(1);
@@ -6296,8 +6220,8 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_QUOTED_STRING=new RewriteRuleTokenStream(adaptor,"token QUOTED_STRING");
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:792:9: ( QUOTED_STRING -> ^( STRING_LITERAL QUOTED_STRING ) )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:793:9: QUOTED_STRING
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:792:9: ( QUOTED_STRING -> ^( STRING_LITERAL QUOTED_STRING ) )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:793:9: QUOTED_STRING
             {
             QUOTED_STRING163=(Token)match(input,QUOTED_STRING,FOLLOW_QUOTED_STRING_in_characterStringLiteral5218); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_QUOTED_STRING.add(QUOTED_STRING163);
@@ -6318,7 +6242,7 @@ public class CMISParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 794:17: -> ^( STRING_LITERAL QUOTED_STRING )
             {
-                // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:795:25: ^( STRING_LITERAL QUOTED_STRING )
+                // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:795:25: ^( STRING_LITERAL QUOTED_STRING )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(STRING_LITERAL, "STRING_LITERAL"), root_1);
@@ -6358,7 +6282,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "keyWord"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:798:1: keyWord : ( SELECT | AS | FROM | JOIN | INNER | LEFT | OUTER | ON | WHERE | OR | AND | NOT | IN | LIKE | IS | NULL | ANY | CONTAINS | IN_FOLDER | IN_TREE | ORDER | BY | ASC | DESC | TIMESTAMP | TRUE | FALSE | cmisFunction );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:798:1: keyWord : ( SELECT | AS | FROM | JOIN | INNER | LEFT | OUTER | ON | WHERE | OR | AND | NOT | IN | LIKE | IS | NULL | ANY | CONTAINS | IN_FOLDER | IN_TREE | ORDER | BY | ASC | DESC | TIMESTAMP | TRUE | FALSE | cmisFunction );
     public final CMISParser.keyWord_return keyWord() throws RecognitionException {
         CMISParser.keyWord_return retval = new CMISParser.keyWord_return();
         retval.start = input.LT(1);
@@ -6424,7 +6348,7 @@ public class CMISParser extends Parser {
         Object FALSE190_tree=null;
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:799:9: ( SELECT | AS | FROM | JOIN | INNER | LEFT | OUTER | ON | WHERE | OR | AND | NOT | IN | LIKE | IS | NULL | ANY | CONTAINS | IN_FOLDER | IN_TREE | ORDER | BY | ASC | DESC | TIMESTAMP | TRUE | FALSE | cmisFunction )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:799:9: ( SELECT | AS | FROM | JOIN | INNER | LEFT | OUTER | ON | WHERE | OR | AND | NOT | IN | LIKE | IS | NULL | ANY | CONTAINS | IN_FOLDER | IN_TREE | ORDER | BY | ASC | DESC | TIMESTAMP | TRUE | FALSE | cmisFunction )
             int alt45=28;
             switch ( input.LA(1) ) {
             case SELECT:
@@ -6577,7 +6501,7 @@ public class CMISParser extends Parser {
 
             switch (alt45) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:800:9: SELECT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:800:9: SELECT
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6590,7 +6514,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:801:11: AS
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:801:11: AS
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6603,7 +6527,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:802:11: FROM
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:802:11: FROM
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6616,7 +6540,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:803:11: JOIN
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:803:11: JOIN
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6629,7 +6553,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:804:11: INNER
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:804:11: INNER
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6642,7 +6566,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:805:11: LEFT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:805:11: LEFT
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6655,7 +6579,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:806:11: OUTER
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:806:11: OUTER
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6668,7 +6592,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:807:11: ON
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:807:11: ON
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6681,7 +6605,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:808:11: WHERE
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:808:11: WHERE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6694,7 +6618,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:809:11: OR
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:809:11: OR
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6707,7 +6631,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:810:11: AND
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:810:11: AND
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6720,7 +6644,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 12 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:811:11: NOT
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:811:11: NOT
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6733,7 +6657,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 13 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:812:11: IN
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:812:11: IN
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6746,7 +6670,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 14 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:813:11: LIKE
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:813:11: LIKE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6759,7 +6683,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 15 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:814:11: IS
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:814:11: IS
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6772,7 +6696,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 16 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:815:11: NULL
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:815:11: NULL
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6785,7 +6709,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 17 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:816:11: ANY
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:816:11: ANY
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6798,7 +6722,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 18 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:817:11: CONTAINS
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:817:11: CONTAINS
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6811,7 +6735,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 19 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:818:11: IN_FOLDER
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:818:11: IN_FOLDER
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6824,7 +6748,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 20 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:819:11: IN_TREE
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:819:11: IN_TREE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6837,7 +6761,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 21 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:820:11: ORDER
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:820:11: ORDER
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6850,7 +6774,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 22 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:821:11: BY
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:821:11: BY
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6863,7 +6787,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 23 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:822:11: ASC
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:822:11: ASC
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6876,7 +6800,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 24 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:823:11: DESC
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:823:11: DESC
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6889,7 +6813,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 25 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:824:11: TIMESTAMP
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:824:11: TIMESTAMP
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6902,7 +6826,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 26 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:825:11: TRUE
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:825:11: TRUE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6915,7 +6839,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 27 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:826:11: FALSE
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:826:11: FALSE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6928,7 +6852,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 28 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:827:11: cmisFunction
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:827:11: cmisFunction
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -6968,7 +6892,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "cmisFunction"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:830:1: cmisFunction : SCORE -> SCORE ;
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:830:1: cmisFunction : SCORE -> SCORE ;
     public final CMISParser.cmisFunction_return cmisFunction() throws RecognitionException {
         CMISParser.cmisFunction_return retval = new CMISParser.cmisFunction_return();
         retval.start = input.LT(1);
@@ -6981,8 +6905,8 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_SCORE=new RewriteRuleTokenStream(adaptor,"token SCORE");
 
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:831:9: ( SCORE -> SCORE )
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:832:9: SCORE
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:831:9: ( SCORE -> SCORE )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:832:9: SCORE
             {
             SCORE192=(Token)match(input,SCORE,FOLLOW_SCORE_in_cmisFunction5656); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_SCORE.add(SCORE192);
@@ -7035,7 +6959,7 @@ public class CMISParser extends Parser {
     };
 
     // $ANTLR start "keyWordOrId"
-    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:836:1: keyWordOrId : ( keyWord -> keyWord | ID -> ID );
+    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:836:1: keyWordOrId : ( keyWord -> keyWord | ID -> ID );
     public final CMISParser.keyWordOrId_return keyWordOrId() throws RecognitionException {
         CMISParser.keyWordOrId_return retval = new CMISParser.keyWordOrId_return();
         retval.start = input.LT(1);
@@ -7050,7 +6974,7 @@ public class CMISParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleSubtreeStream stream_keyWord=new RewriteRuleSubtreeStream(adaptor,"rule keyWord");
         try {
-            // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:837:9: ( keyWord -> keyWord | ID -> ID )
+            // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:837:9: ( keyWord -> keyWord | ID -> ID )
             int alt46=2;
             int LA46_0 = input.LA(1);
 
@@ -7069,7 +6993,7 @@ public class CMISParser extends Parser {
             }
             switch (alt46) {
                 case 1 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:838:9: keyWord
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:838:9: keyWord
                     {
                     pushFollow(FOLLOW_keyWord_in_keyWordOrId5709);
                     keyWord193=keyWord();
@@ -7101,7 +7025,7 @@ public class CMISParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:840:11: ID
+                    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:840:11: ID
                     {
                     ID194=(Token)match(input,ID,FOLLOW_ID_in_keyWordOrId5741); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(ID194);
@@ -7152,8 +7076,8 @@ public class CMISParser extends Parser {
 
     // $ANTLR start synpred1_CMIS
     public final void synpred1_CMIS_fragment() throws RecognitionException {   
-        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:9: ( tableName )
-        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:10: tableName
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:9: ( tableName )
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:10: tableName
         {
         pushFollow(FOLLOW_tableName_in_synpred1_CMIS1323);
         tableName();
@@ -7167,8 +7091,8 @@ public class CMISParser extends Parser {
 
     // $ANTLR start synpred2_CMIS
     public final void synpred2_CMIS_fragment() throws RecognitionException {   
-        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:9: ( LPAREN singleTable ( joinedTable )+ RPAREN )
-        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:10: LPAREN singleTable ( joinedTable )+ RPAREN
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:9: ( LPAREN singleTable ( joinedTable )+ RPAREN )
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:10: LPAREN singleTable ( joinedTable )+ RPAREN
         {
         match(input,LPAREN,FOLLOW_LPAREN_in_synpred2_CMIS1917); if (state.failed) return ;
         pushFollow(FOLLOW_singleTable_in_synpred2_CMIS1919);
@@ -7176,7 +7100,7 @@ public class CMISParser extends Parser {
 
         state._fsp--;
         if (state.failed) return ;
-        // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:29: ( joinedTable )+
+        // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:29: ( joinedTable )+
         int cnt47=0;
         loop47:
         do {
@@ -7190,7 +7114,7 @@ public class CMISParser extends Parser {
 
             switch (alt47) {
         	case 1 :
-        	    // C:\\workspaces\\HEAD\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:29: joinedTable
+        	    // W:\\alfresco\\HEAD\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:29: joinedTable
         	    {
         	    pushFollow(FOLLOW_joinedTable_in_synpred2_CMIS1921);
         	    joinedTable();
@@ -7249,73 +7173,284 @@ public class CMISParser extends Parser {
     }
 
 
+    protected DFA4 dfa4 = new DFA4(this);
     protected DFA7 dfa7 = new DFA7(this);
+    protected DFA8 dfa8 = new DFA8(this);
     protected DFA9 dfa9 = new DFA9(this);
     protected DFA12 dfa12 = new DFA12(this);
+    protected DFA10 dfa10 = new DFA10(this);
+    protected DFA11 dfa11 = new DFA11(this);
     protected DFA13 dfa13 = new DFA13(this);
     protected DFA14 dfa14 = new DFA14(this);
+    protected DFA18 dfa18 = new DFA18(this);
     protected DFA26 dfa26 = new DFA26(this);
     protected DFA27 dfa27 = new DFA27(this);
     protected DFA28 dfa28 = new DFA28(this);
     protected DFA34 dfa34 = new DFA34(this);
     protected DFA41 dfa41 = new DFA41(this);
+    static final String DFA4_eotS =
+        "\40\uffff";
+    static final String DFA4_eofS =
+        "\40\uffff";
+    static final String DFA4_minS =
+        "\1\40\37\uffff";
+    static final String DFA4_maxS =
+        "\1\115\37\uffff";
+    static final String DFA4_acceptS =
+        "\1\uffff\1\1\36\2";
+    static final String DFA4_specialS =
+        "\1\0\37\uffff}>";
+    static final String[] DFA4_transitionS = {
+            "\1\5\1\1\1\uffff\1\6\4\uffff\1\7\1\10\1\11\1\12\1\13\1\14\1"+
+            "\uffff\1\15\1\16\1\17\1\20\5\uffff\1\21\1\22\1\23\1\24\1\25"+
+            "\1\26\1\27\1\30\1\31\1\32\1\33\1\34\2\uffff\1\2\1\3\2\uffff"+
+            "\1\36\1\37\1\35\1\4",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+    };
+
+    static final short[] DFA4_eot = DFA.unpackEncodedString(DFA4_eotS);
+    static final short[] DFA4_eof = DFA.unpackEncodedString(DFA4_eofS);
+    static final char[] DFA4_min = DFA.unpackEncodedStringToUnsignedChars(DFA4_minS);
+    static final char[] DFA4_max = DFA.unpackEncodedStringToUnsignedChars(DFA4_maxS);
+    static final short[] DFA4_accept = DFA.unpackEncodedString(DFA4_acceptS);
+    static final short[] DFA4_special = DFA.unpackEncodedString(DFA4_specialS);
+    static final short[][] DFA4_transition;
+
+    static {
+        int numStates = DFA4_transitionS.length;
+        DFA4_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA4_transition[i] = DFA.unpackEncodedString(DFA4_transitionS[i]);
+        }
+    }
+
+    class DFA4 extends DFA {
+
+        public DFA4(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 4;
+            this.eot = DFA4_eot;
+            this.eof = DFA4_eof;
+            this.min = DFA4_min;
+            this.max = DFA4_max;
+            this.accept = DFA4_accept;
+            this.special = DFA4_special;
+            this.transition = DFA4_transition;
+        }
+        public String getDescription() {
+            return "300:1: selectList : ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) );";
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA4_0 = input.LA(1);
+
+                         
+                        int index4_0 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA4_0==STAR) ) {s = 1;}
+
+                        else if ( (LA4_0==ID) ) {s = 2;}
+
+                        else if ( (LA4_0==DOUBLE_QUOTE) && ((strict == false))) {s = 3;}
+
+                        else if ( (LA4_0==SCORE) ) {s = 4;}
+
+                        else if ( (LA4_0==SELECT) && ((strict == false))) {s = 5;}
+
+                        else if ( (LA4_0==AS) && ((strict == false))) {s = 6;}
+
+                        else if ( (LA4_0==FROM) && ((strict == false))) {s = 7;}
+
+                        else if ( (LA4_0==JOIN) && ((strict == false))) {s = 8;}
+
+                        else if ( (LA4_0==INNER) && ((strict == false))) {s = 9;}
+
+                        else if ( (LA4_0==LEFT) && ((strict == false))) {s = 10;}
+
+                        else if ( (LA4_0==OUTER) && ((strict == false))) {s = 11;}
+
+                        else if ( (LA4_0==ON) && ((strict == false))) {s = 12;}
+
+                        else if ( (LA4_0==WHERE) && ((strict == false))) {s = 13;}
+
+                        else if ( (LA4_0==OR) && ((strict == false))) {s = 14;}
+
+                        else if ( (LA4_0==AND) && ((strict == false))) {s = 15;}
+
+                        else if ( (LA4_0==NOT) && ((strict == false))) {s = 16;}
+
+                        else if ( (LA4_0==IN) && ((strict == false))) {s = 17;}
+
+                        else if ( (LA4_0==LIKE) && ((strict == false))) {s = 18;}
+
+                        else if ( (LA4_0==IS) && ((strict == false))) {s = 19;}
+
+                        else if ( (LA4_0==NULL) && ((strict == false))) {s = 20;}
+
+                        else if ( (LA4_0==ANY) && ((strict == false))) {s = 21;}
+
+                        else if ( (LA4_0==CONTAINS) && ((strict == false))) {s = 22;}
+
+                        else if ( (LA4_0==IN_FOLDER) && ((strict == false))) {s = 23;}
+
+                        else if ( (LA4_0==IN_TREE) && ((strict == false))) {s = 24;}
+
+                        else if ( (LA4_0==ORDER) && ((strict == false))) {s = 25;}
+
+                        else if ( (LA4_0==BY) && ((strict == false))) {s = 26;}
+
+                        else if ( (LA4_0==ASC) && ((strict == false))) {s = 27;}
+
+                        else if ( (LA4_0==DESC) && ((strict == false))) {s = 28;}
+
+                        else if ( (LA4_0==TIMESTAMP) && ((strict == false))) {s = 29;}
+
+                        else if ( (LA4_0==TRUE) && ((strict == false))) {s = 30;}
+
+                        else if ( (LA4_0==FALSE) && ((strict == false))) {s = 31;}
+
+                         
+                        input.seek(index4_0);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 4, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
     static final String DFA7_eotS =
-        "\47\uffff";
+        "\114\uffff";
     static final String DFA7_eofS =
-        "\47\uffff";
+        "\114\uffff";
     static final String DFA7_minS =
-        "\1\40\1\42\1\40\5\uffff\35\107\1\42\1\uffff";
+        "\1\40\1\42\1\40\44\uffff\35\107\1\42\7\uffff";
     static final String DFA7_maxS =
-        "\1\115\1\107\1\115\5\uffff\36\107\1\uffff";
+        "\1\115\1\107\1\115\44\uffff\36\107\7\uffff";
     static final String DFA7_acceptS =
-        "\3\uffff\4\1\1\2\36\uffff\1\2";
+        "\3\uffff\43\1\1\2\36\uffff\6\1\1\2";
     static final String DFA7_specialS =
-        "\1\40\1\34\1\5\5\uffff\1\17\1\13\1\37\1\32\1\27\1\21\1\14\1\11"+
-        "\1\3\1\33\1\30\1\22\1\20\1\12\1\4\1\24\1\26\1\36\1\2\1\7\1\16\1"+
-        "\23\1\25\1\31\1\35\1\6\1\15\1\10\1\1\1\0\1\uffff}>";
+        "\1\40\1\15\1\2\44\uffff\1\27\1\25\1\17\1\14\1\13\1\10\1\6\1\5\1"+
+        "\1\1\36\1\34\1\31\1\30\1\24\1\22\1\11\1\12\1\16\1\0\1\3\1\7\1\32"+
+        "\1\33\1\35\1\37\1\23\1\26\1\4\1\21\1\20\7\uffff}>";
     static final String[] DFA7_transitionS = {
-            "\1\4\2\uffff\1\4\4\uffff\6\4\1\uffff\4\4\5\uffff\14\4\2\uffff"+
-            "\1\1\1\2\2\uffff\3\4\1\3",
-            "\2\5\1\7\1\5\1\6\1\uffff\1\5\35\uffff\2\5",
-            "\1\10\2\uffff\1\11\4\uffff\1\12\1\13\1\14\1\15\1\16\1\17\1"+
-            "\uffff\1\20\1\21\1\22\1\23\5\uffff\1\24\1\25\1\26\1\27\1\30"+
-            "\1\31\1\32\1\33\1\34\1\35\1\36\1\37\2\uffff\1\44\3\uffff\1\41"+
-            "\1\42\1\40\1\43",
+            "\1\4\2\uffff\1\5\4\uffff\1\6\1\7\1\10\1\11\1\12\1\13\1\uffff"+
+            "\1\14\1\15\1\16\1\17\5\uffff\1\20\1\21\1\22\1\23\1\24\1\25\1"+
+            "\26\1\27\1\30\1\31\1\32\1\33\2\uffff\1\1\1\2\2\uffff\1\35\1"+
+            "\36\1\34\1\3",
+            "\1\43\1\40\1\46\1\37\1\45\1\uffff\1\44\35\uffff\1\41\1\42",
+            "\1\47\2\uffff\1\50\4\uffff\1\51\1\52\1\53\1\54\1\55\1\56\1"+
+            "\uffff\1\57\1\60\1\61\1\62\5\uffff\1\63\1\64\1\65\1\66\1\67"+
+            "\1\70\1\71\1\72\1\73\1\74\1\75\1\76\2\uffff\1\103\3\uffff\1"+
+            "\100\1\101\1\77\1\102",
             "",
             "",
             "",
             "",
             "",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\2\6\1\46\1\6\2\uffff\1\6\35\uffff\2\6",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\104",
+            "\1\111\1\106\1\113\1\105\2\uffff\1\112\35\uffff\1\107\1\110",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             ""
     };
 
@@ -7356,481 +7491,501 @@ public class CMISParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA7_37 = input.LA(1);
+                        int LA7_57 = input.LA(1);
 
                          
-                        int index7_37 = input.index();
+                        int index7_57 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((LA7_37>=COMMA && LA7_37<=AS)||LA7_37==DOT||LA7_37==FROM||(LA7_37>=ID && LA7_37<=DOUBLE_QUOTE)) && ((strict == false))) {s = 6;}
-
-                        else if ( (LA7_37==DOTSTAR) && ((strict == false))) {s = 38;}
+                        if ( (LA7_57==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_37);
+                        input.seek(index7_57);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA7_36 = input.LA(1);
+                        int LA7_47 = input.LA(1);
 
                          
-                        int index7_36 = input.index();
+                        int index7_47 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_36==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_47==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_36);
+                        input.seek(index7_47);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA7_26 = input.LA(1);
-
-                         
-                        int index7_26 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_26==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_26);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA7_16 = input.LA(1);
-
-                         
-                        int index7_16 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_16==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_16);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA7_22 = input.LA(1);
-
-                         
-                        int index7_22 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_22==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_22);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
                         int LA7_2 = input.LA(1);
 
                          
                         int index7_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_2==SELECT) && ((strict == false))) {s = 8;}
+                        if ( (LA7_2==SELECT) && ((strict == false))) {s = 39;}
 
-                        else if ( (LA7_2==AS) && ((strict == false))) {s = 9;}
+                        else if ( (LA7_2==AS) && ((strict == false))) {s = 40;}
 
-                        else if ( (LA7_2==FROM) && ((strict == false))) {s = 10;}
+                        else if ( (LA7_2==FROM) && ((strict == false))) {s = 41;}
 
-                        else if ( (LA7_2==JOIN) && ((strict == false))) {s = 11;}
+                        else if ( (LA7_2==JOIN) && ((strict == false))) {s = 42;}
 
-                        else if ( (LA7_2==INNER) && ((strict == false))) {s = 12;}
+                        else if ( (LA7_2==INNER) && ((strict == false))) {s = 43;}
 
-                        else if ( (LA7_2==LEFT) && ((strict == false))) {s = 13;}
+                        else if ( (LA7_2==LEFT) && ((strict == false))) {s = 44;}
 
-                        else if ( (LA7_2==OUTER) && ((strict == false))) {s = 14;}
+                        else if ( (LA7_2==OUTER) && ((strict == false))) {s = 45;}
 
-                        else if ( (LA7_2==ON) && ((strict == false))) {s = 15;}
+                        else if ( (LA7_2==ON) && ((strict == false))) {s = 46;}
 
-                        else if ( (LA7_2==WHERE) && ((strict == false))) {s = 16;}
+                        else if ( (LA7_2==WHERE) && ((strict == false))) {s = 47;}
 
-                        else if ( (LA7_2==OR) && ((strict == false))) {s = 17;}
+                        else if ( (LA7_2==OR) && ((strict == false))) {s = 48;}
 
-                        else if ( (LA7_2==AND) && ((strict == false))) {s = 18;}
+                        else if ( (LA7_2==AND) && ((strict == false))) {s = 49;}
 
-                        else if ( (LA7_2==NOT) && ((strict == false))) {s = 19;}
+                        else if ( (LA7_2==NOT) && ((strict == false))) {s = 50;}
 
-                        else if ( (LA7_2==IN) && ((strict == false))) {s = 20;}
+                        else if ( (LA7_2==IN) && ((strict == false))) {s = 51;}
 
-                        else if ( (LA7_2==LIKE) && ((strict == false))) {s = 21;}
+                        else if ( (LA7_2==LIKE) && ((strict == false))) {s = 52;}
 
-                        else if ( (LA7_2==IS) && ((strict == false))) {s = 22;}
+                        else if ( (LA7_2==IS) && ((strict == false))) {s = 53;}
 
-                        else if ( (LA7_2==NULL) && ((strict == false))) {s = 23;}
+                        else if ( (LA7_2==NULL) && ((strict == false))) {s = 54;}
 
-                        else if ( (LA7_2==ANY) && ((strict == false))) {s = 24;}
+                        else if ( (LA7_2==ANY) && ((strict == false))) {s = 55;}
 
-                        else if ( (LA7_2==CONTAINS) && ((strict == false))) {s = 25;}
+                        else if ( (LA7_2==CONTAINS) && ((strict == false))) {s = 56;}
 
-                        else if ( (LA7_2==IN_FOLDER) && ((strict == false))) {s = 26;}
+                        else if ( (LA7_2==IN_FOLDER) && ((strict == false))) {s = 57;}
 
-                        else if ( (LA7_2==IN_TREE) && ((strict == false))) {s = 27;}
+                        else if ( (LA7_2==IN_TREE) && ((strict == false))) {s = 58;}
 
-                        else if ( (LA7_2==ORDER) && ((strict == false))) {s = 28;}
+                        else if ( (LA7_2==ORDER) && ((strict == false))) {s = 59;}
 
-                        else if ( (LA7_2==BY) && ((strict == false))) {s = 29;}
+                        else if ( (LA7_2==BY) && ((strict == false))) {s = 60;}
 
-                        else if ( (LA7_2==ASC) && ((strict == false))) {s = 30;}
+                        else if ( (LA7_2==ASC) && ((strict == false))) {s = 61;}
 
-                        else if ( (LA7_2==DESC) && ((strict == false))) {s = 31;}
+                        else if ( (LA7_2==DESC) && ((strict == false))) {s = 62;}
 
-                        else if ( (LA7_2==TIMESTAMP) && ((strict == false))) {s = 32;}
+                        else if ( (LA7_2==TIMESTAMP) && ((strict == false))) {s = 63;}
 
-                        else if ( (LA7_2==TRUE) && ((strict == false))) {s = 33;}
+                        else if ( (LA7_2==TRUE) && ((strict == false))) {s = 64;}
 
-                        else if ( (LA7_2==FALSE) && ((strict == false))) {s = 34;}
+                        else if ( (LA7_2==FALSE) && ((strict == false))) {s = 65;}
 
-                        else if ( (LA7_2==SCORE) && ((strict == false))) {s = 35;}
+                        else if ( (LA7_2==SCORE) && ((strict == false))) {s = 66;}
 
-                        else if ( (LA7_2==ID) && ((strict == false))) {s = 36;}
+                        else if ( (LA7_2==ID) && ((strict == false))) {s = 67;}
 
                          
                         input.seek(index7_2);
                         if ( s>=0 ) return s;
                         break;
-                    case 6 : 
-                        int LA7_33 = input.LA(1);
+                    case 3 : 
+                        int LA7_58 = input.LA(1);
 
                          
-                        int index7_33 = input.index();
+                        int index7_58 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_33==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_58==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_33);
+                        input.seek(index7_58);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA7_66 = input.LA(1);
+
+                         
+                        int index7_66 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_66==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_66);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA7_46 = input.LA(1);
+
+                         
+                        int index7_46 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_46==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_46);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA7_45 = input.LA(1);
+
+                         
+                        int index7_45 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_45==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_45);
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
-                        int LA7_27 = input.LA(1);
+                        int LA7_59 = input.LA(1);
 
                          
-                        int index7_27 = input.index();
+                        int index7_59 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_27==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_59==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_27);
+                        input.seek(index7_59);
                         if ( s>=0 ) return s;
                         break;
                     case 8 : 
-                        int LA7_35 = input.LA(1);
+                        int LA7_44 = input.LA(1);
 
                          
-                        int index7_35 = input.index();
+                        int index7_44 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_35==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_44==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_35);
+                        input.seek(index7_44);
                         if ( s>=0 ) return s;
                         break;
                     case 9 : 
-                        int LA7_15 = input.LA(1);
+                        int LA7_54 = input.LA(1);
 
                          
-                        int index7_15 = input.index();
+                        int index7_54 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_15==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_54==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_15);
+                        input.seek(index7_54);
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
-                        int LA7_21 = input.LA(1);
+                        int LA7_55 = input.LA(1);
 
                          
-                        int index7_21 = input.index();
+                        int index7_55 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_21==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_55==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_21);
+                        input.seek(index7_55);
                         if ( s>=0 ) return s;
                         break;
                     case 11 : 
-                        int LA7_9 = input.LA(1);
+                        int LA7_43 = input.LA(1);
 
                          
-                        int index7_9 = input.index();
+                        int index7_43 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_9==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_43==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_9);
+                        input.seek(index7_43);
                         if ( s>=0 ) return s;
                         break;
                     case 12 : 
-                        int LA7_14 = input.LA(1);
+                        int LA7_42 = input.LA(1);
 
                          
-                        int index7_14 = input.index();
+                        int index7_42 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_14==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_42==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_14);
+                        input.seek(index7_42);
                         if ( s>=0 ) return s;
                         break;
                     case 13 : 
-                        int LA7_34 = input.LA(1);
-
-                         
-                        int index7_34 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_34==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_34);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 14 : 
-                        int LA7_28 = input.LA(1);
-
-                         
-                        int index7_28 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_28==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_28);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 15 : 
-                        int LA7_8 = input.LA(1);
-
-                         
-                        int index7_8 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_8==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_8);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 16 : 
-                        int LA7_20 = input.LA(1);
-
-                         
-                        int index7_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_20==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_20);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 17 : 
-                        int LA7_13 = input.LA(1);
-
-                         
-                        int index7_13 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_13==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_13);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 18 : 
-                        int LA7_19 = input.LA(1);
-
-                         
-                        int index7_19 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_19==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_19);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 19 : 
-                        int LA7_29 = input.LA(1);
-
-                         
-                        int index7_29 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_29==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_29);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 20 : 
-                        int LA7_23 = input.LA(1);
-
-                         
-                        int index7_23 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_23==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_23);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 21 : 
-                        int LA7_30 = input.LA(1);
-
-                         
-                        int index7_30 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_30==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_30);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 22 : 
-                        int LA7_24 = input.LA(1);
-
-                         
-                        int index7_24 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_24==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_24);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 23 : 
-                        int LA7_12 = input.LA(1);
-
-                         
-                        int index7_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_12==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 24 : 
-                        int LA7_18 = input.LA(1);
-
-                         
-                        int index7_18 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_18==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_18);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 25 : 
-                        int LA7_31 = input.LA(1);
-
-                         
-                        int index7_31 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_31==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_31);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 26 : 
-                        int LA7_11 = input.LA(1);
-
-                         
-                        int index7_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_11==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 27 : 
-                        int LA7_17 = input.LA(1);
-
-                         
-                        int index7_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA7_17==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index7_17);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 28 : 
                         int LA7_1 = input.LA(1);
 
                          
                         int index7_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((LA7_1>=COMMA && LA7_1<=AS)||LA7_1==DOT||LA7_1==FROM||(LA7_1>=ID && LA7_1<=DOUBLE_QUOTE)) ) {s = 5;}
+                        if ( (LA7_1==DOT) ) {s = 31;}
 
-                        else if ( (LA7_1==LPAREN) && ((strict == false))) {s = 6;}
+                        else if ( (LA7_1==AS) ) {s = 32;}
 
-                        else if ( (LA7_1==DOTSTAR) ) {s = 7;}
+                        else if ( (LA7_1==ID) ) {s = 33;}
+
+                        else if ( (LA7_1==DOUBLE_QUOTE) ) {s = 34;}
+
+                        else if ( (LA7_1==COMMA) ) {s = 35;}
+
+                        else if ( (LA7_1==FROM) ) {s = 36;}
+
+                        else if ( (LA7_1==LPAREN) && ((strict == false))) {s = 37;}
+
+                        else if ( (LA7_1==DOTSTAR) ) {s = 38;}
 
                          
                         input.seek(index7_1);
                         if ( s>=0 ) return s;
                         break;
-                    case 29 : 
-                        int LA7_32 = input.LA(1);
+                    case 14 : 
+                        int LA7_56 = input.LA(1);
 
                          
-                        int index7_32 = input.index();
+                        int index7_56 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_32==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_56==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_32);
+                        input.seek(index7_56);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
+                        int LA7_41 = input.LA(1);
+
+                         
+                        int index7_41 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_41==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_41);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 16 : 
+                        int LA7_68 = input.LA(1);
+
+                         
+                        int index7_68 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_68==DOT) && ((strict == false))) {s = 69;}
+
+                        else if ( (LA7_68==AS) && ((strict == false))) {s = 70;}
+
+                        else if ( (LA7_68==ID) && ((strict == false))) {s = 71;}
+
+                        else if ( (LA7_68==DOUBLE_QUOTE) && ((strict == false))) {s = 72;}
+
+                        else if ( (LA7_68==COMMA) && ((strict == false))) {s = 73;}
+
+                        else if ( (LA7_68==FROM) && ((strict == false))) {s = 74;}
+
+                        else if ( (LA7_68==DOTSTAR) && ((strict == false))) {s = 75;}
+
+                         
+                        input.seek(index7_68);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 17 : 
+                        int LA7_67 = input.LA(1);
+
+                         
+                        int index7_67 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_67==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_67);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 18 : 
+                        int LA7_53 = input.LA(1);
+
+                         
+                        int index7_53 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_53==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_53);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 19 : 
+                        int LA7_64 = input.LA(1);
+
+                         
+                        int index7_64 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_64==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_64);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
+                        int LA7_52 = input.LA(1);
+
+                         
+                        int index7_52 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_52==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_52);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 21 : 
+                        int LA7_40 = input.LA(1);
+
+                         
+                        int index7_40 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_40==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_40);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 22 : 
+                        int LA7_65 = input.LA(1);
+
+                         
+                        int index7_65 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_65==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_65);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 23 : 
+                        int LA7_39 = input.LA(1);
+
+                         
+                        int index7_39 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_39==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_39);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 24 : 
+                        int LA7_51 = input.LA(1);
+
+                         
+                        int index7_51 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_51==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_51);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 25 : 
+                        int LA7_50 = input.LA(1);
+
+                         
+                        int index7_50 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_50==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_50);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 26 : 
+                        int LA7_60 = input.LA(1);
+
+                         
+                        int index7_60 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_60==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_60);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 27 : 
+                        int LA7_61 = input.LA(1);
+
+                         
+                        int index7_61 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_61==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_61);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 28 : 
+                        int LA7_49 = input.LA(1);
+
+                         
+                        int index7_49 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_49==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_49);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 29 : 
+                        int LA7_62 = input.LA(1);
+
+                         
+                        int index7_62 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA7_62==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
+
+                         
+                        input.seek(index7_62);
                         if ( s>=0 ) return s;
                         break;
                     case 30 : 
-                        int LA7_25 = input.LA(1);
+                        int LA7_48 = input.LA(1);
 
                          
-                        int index7_25 = input.index();
+                        int index7_48 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_25==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_48==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_25);
+                        input.seek(index7_48);
                         if ( s>=0 ) return s;
                         break;
                     case 31 : 
-                        int LA7_10 = input.LA(1);
+                        int LA7_63 = input.LA(1);
 
                          
-                        int index7_10 = input.index();
+                        int index7_63 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA7_10==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA7_63==DOUBLE_QUOTE) && ((strict == false))) {s = 68;}
 
                          
-                        input.seek(index7_10);
+                        input.seek(index7_63);
                         if ( s>=0 ) return s;
                         break;
                     case 32 : 
@@ -7846,7 +8001,59 @@ public class CMISParser extends Parser {
 
                         else if ( (LA7_0==SCORE) ) {s = 3;}
 
-                        else if ( (LA7_0==SELECT||LA7_0==AS||(LA7_0>=FROM && LA7_0<=ON)||(LA7_0>=WHERE && LA7_0<=NOT)||(LA7_0>=IN && LA7_0<=DESC)||(LA7_0>=TRUE && LA7_0<=TIMESTAMP)) && ((strict == false))) {s = 4;}
+                        else if ( (LA7_0==SELECT) && ((strict == false))) {s = 4;}
+
+                        else if ( (LA7_0==AS) && ((strict == false))) {s = 5;}
+
+                        else if ( (LA7_0==FROM) && ((strict == false))) {s = 6;}
+
+                        else if ( (LA7_0==JOIN) && ((strict == false))) {s = 7;}
+
+                        else if ( (LA7_0==INNER) && ((strict == false))) {s = 8;}
+
+                        else if ( (LA7_0==LEFT) && ((strict == false))) {s = 9;}
+
+                        else if ( (LA7_0==OUTER) && ((strict == false))) {s = 10;}
+
+                        else if ( (LA7_0==ON) && ((strict == false))) {s = 11;}
+
+                        else if ( (LA7_0==WHERE) && ((strict == false))) {s = 12;}
+
+                        else if ( (LA7_0==OR) && ((strict == false))) {s = 13;}
+
+                        else if ( (LA7_0==AND) && ((strict == false))) {s = 14;}
+
+                        else if ( (LA7_0==NOT) && ((strict == false))) {s = 15;}
+
+                        else if ( (LA7_0==IN) && ((strict == false))) {s = 16;}
+
+                        else if ( (LA7_0==LIKE) && ((strict == false))) {s = 17;}
+
+                        else if ( (LA7_0==IS) && ((strict == false))) {s = 18;}
+
+                        else if ( (LA7_0==NULL) && ((strict == false))) {s = 19;}
+
+                        else if ( (LA7_0==ANY) && ((strict == false))) {s = 20;}
+
+                        else if ( (LA7_0==CONTAINS) && ((strict == false))) {s = 21;}
+
+                        else if ( (LA7_0==IN_FOLDER) && ((strict == false))) {s = 22;}
+
+                        else if ( (LA7_0==IN_TREE) && ((strict == false))) {s = 23;}
+
+                        else if ( (LA7_0==ORDER) && ((strict == false))) {s = 24;}
+
+                        else if ( (LA7_0==BY) && ((strict == false))) {s = 25;}
+
+                        else if ( (LA7_0==ASC) && ((strict == false))) {s = 26;}
+
+                        else if ( (LA7_0==DESC) && ((strict == false))) {s = 27;}
+
+                        else if ( (LA7_0==TIMESTAMP) && ((strict == false))) {s = 28;}
+
+                        else if ( (LA7_0==TRUE) && ((strict == false))) {s = 29;}
+
+                        else if ( (LA7_0==FALSE) && ((strict == false))) {s = 30;}
 
                          
                         input.seek(index7_0);
@@ -7860,61 +8067,307 @@ public class CMISParser extends Parser {
             throw nvae;
         }
     }
+    static final String DFA8_eotS =
+        "\47\uffff";
+    static final String DFA8_eofS =
+        "\47\uffff";
+    static final String DFA8_minS =
+        "\1\40\1\42\45\uffff";
+    static final String DFA8_maxS =
+        "\1\115\1\107\45\uffff";
+    static final String DFA8_acceptS =
+        "\2\uffff\1\1\34\2\7\1\1\2";
+    static final String DFA8_specialS =
+        "\1\1\1\0\45\uffff}>";
+    static final String[] DFA8_transitionS = {
+            "\1\4\2\uffff\1\5\4\uffff\1\6\1\7\1\10\1\11\1\12\1\13\1\uffff"+
+            "\1\14\1\15\1\16\1\17\5\uffff\1\20\1\21\1\22\1\23\1\24\1\25\1"+
+            "\26\1\27\1\30\1\31\1\32\1\33\2\uffff\1\1\1\2\2\uffff\1\35\1"+
+            "\36\1\34\1\3",
+            "\1\43\1\40\1\uffff\1\37\1\46\1\uffff\1\44\5\uffff\1\45\4\uffff"+
+            "\5\45\16\uffff\1\41\1\42",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+    };
+
+    static final short[] DFA8_eot = DFA.unpackEncodedString(DFA8_eotS);
+    static final short[] DFA8_eof = DFA.unpackEncodedString(DFA8_eofS);
+    static final char[] DFA8_min = DFA.unpackEncodedStringToUnsignedChars(DFA8_minS);
+    static final char[] DFA8_max = DFA.unpackEncodedStringToUnsignedChars(DFA8_maxS);
+    static final short[] DFA8_accept = DFA.unpackEncodedString(DFA8_acceptS);
+    static final short[] DFA8_special = DFA.unpackEncodedString(DFA8_specialS);
+    static final short[][] DFA8_transition;
+
+    static {
+        int numStates = DFA8_transitionS.length;
+        DFA8_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA8_transition[i] = DFA.unpackEncodedString(DFA8_transitionS[i]);
+        }
+    }
+
+    class DFA8 extends DFA {
+
+        public DFA8(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 8;
+            this.eot = DFA8_eot;
+            this.eof = DFA8_eof;
+            this.min = DFA8_min;
+            this.max = DFA8_max;
+            this.accept = DFA8_accept;
+            this.special = DFA8_special;
+            this.transition = DFA8_transition;
+        }
+        public String getDescription() {
+            return "328:1: valueExpression : ( columnReference -> columnReference | valueFunction -> valueFunction );";
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA8_1 = input.LA(1);
+
+                         
+                        int index8_1 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA8_1==DOT) ) {s = 31;}
+
+                        else if ( (LA8_1==AS) ) {s = 32;}
+
+                        else if ( (LA8_1==ID) ) {s = 33;}
+
+                        else if ( (LA8_1==DOUBLE_QUOTE) ) {s = 34;}
+
+                        else if ( (LA8_1==COMMA) ) {s = 35;}
+
+                        else if ( (LA8_1==FROM) ) {s = 36;}
+
+                        else if ( (LA8_1==EQUALS||(LA8_1>=NOTEQUALS && LA8_1<=GREATERTHANOREQUALS)) ) {s = 37;}
+
+                        else if ( (LA8_1==LPAREN) && ((strict == false))) {s = 38;}
+
+                         
+                        input.seek(index8_1);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA8_0 = input.LA(1);
+
+                         
+                        int index8_0 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA8_0==ID) ) {s = 1;}
+
+                        else if ( (LA8_0==DOUBLE_QUOTE) && ((strict == false))) {s = 2;}
+
+                        else if ( (LA8_0==SCORE) ) {s = 3;}
+
+                        else if ( (LA8_0==SELECT) && ((strict == false))) {s = 4;}
+
+                        else if ( (LA8_0==AS) && ((strict == false))) {s = 5;}
+
+                        else if ( (LA8_0==FROM) && ((strict == false))) {s = 6;}
+
+                        else if ( (LA8_0==JOIN) && ((strict == false))) {s = 7;}
+
+                        else if ( (LA8_0==INNER) && ((strict == false))) {s = 8;}
+
+                        else if ( (LA8_0==LEFT) && ((strict == false))) {s = 9;}
+
+                        else if ( (LA8_0==OUTER) && ((strict == false))) {s = 10;}
+
+                        else if ( (LA8_0==ON) && ((strict == false))) {s = 11;}
+
+                        else if ( (LA8_0==WHERE) && ((strict == false))) {s = 12;}
+
+                        else if ( (LA8_0==OR) && ((strict == false))) {s = 13;}
+
+                        else if ( (LA8_0==AND) && ((strict == false))) {s = 14;}
+
+                        else if ( (LA8_0==NOT) && ((strict == false))) {s = 15;}
+
+                        else if ( (LA8_0==IN) && ((strict == false))) {s = 16;}
+
+                        else if ( (LA8_0==LIKE) && ((strict == false))) {s = 17;}
+
+                        else if ( (LA8_0==IS) && ((strict == false))) {s = 18;}
+
+                        else if ( (LA8_0==NULL) && ((strict == false))) {s = 19;}
+
+                        else if ( (LA8_0==ANY) && ((strict == false))) {s = 20;}
+
+                        else if ( (LA8_0==CONTAINS) && ((strict == false))) {s = 21;}
+
+                        else if ( (LA8_0==IN_FOLDER) && ((strict == false))) {s = 22;}
+
+                        else if ( (LA8_0==IN_TREE) && ((strict == false))) {s = 23;}
+
+                        else if ( (LA8_0==ORDER) && ((strict == false))) {s = 24;}
+
+                        else if ( (LA8_0==BY) && ((strict == false))) {s = 25;}
+
+                        else if ( (LA8_0==ASC) && ((strict == false))) {s = 26;}
+
+                        else if ( (LA8_0==DESC) && ((strict == false))) {s = 27;}
+
+                        else if ( (LA8_0==TIMESTAMP) && ((strict == false))) {s = 28;}
+
+                        else if ( (LA8_0==TRUE) && ((strict == false))) {s = 29;}
+
+                        else if ( (LA8_0==FALSE) && ((strict == false))) {s = 30;}
+
+                         
+                        input.seek(index8_0);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 8, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
     static final String DFA9_eotS =
-        "\45\uffff";
+        "\121\uffff";
     static final String DFA9_eofS =
-        "\1\uffff\1\4\40\uffff\1\44\2\uffff";
+        "\1\uffff\1\15\66\uffff\1\103\30\uffff";
     static final String DFA9_minS =
-        "\1\106\1\42\1\40\2\uffff\35\107\1\42\2\uffff";
+        "\1\106\1\42\1\40\30\uffff\35\107\1\42\30\uffff";
     static final String DFA9_maxS =
-        "\2\107\1\115\2\uffff\36\107\2\uffff";
+        "\2\107\1\115\30\uffff\36\107\30\uffff";
     static final String DFA9_acceptS =
-        "\3\uffff\1\1\1\2\36\uffff\1\1\1\2";
+        "\3\uffff\1\1\27\2\36\uffff\1\1\27\2";
     static final String DFA9_specialS =
-        "\1\26\1\uffff\1\3\2\uffff\1\30\1\36\1\20\1\21\1\24\1\11\1\15\1"+
-        "\2\1\0\1\5\1\31\1\37\1\33\1\17\1\25\1\4\1\7\1\1\1\14\1\10\1\13\1"+
-        "\23\1\16\1\32\1\35\1\27\1\6\1\22\1\34\1\12\2\uffff}>";
+        "\1\33\1\uffff\1\1\30\uffff\1\15\1\20\1\10\1\11\1\12\1\25\1\27\1"+
+        "\22\1\21\1\23\1\34\1\37\1\35\1\30\1\32\1\2\1\3\1\0\1\6\1\4\1\5\1"+
+        "\13\1\7\1\16\1\17\1\14\1\24\1\31\1\36\1\26\30\uffff}>";
     static final String[] DFA9_transitionS = {
             "\1\1\1\2",
-            "\2\4\1\uffff\1\3\1\uffff\5\4\1\uffff\16\4\5\uffff\1\4\1\uffff"+
-            "\2\4\2\uffff\2\4",
-            "\1\5\2\uffff\1\6\4\uffff\1\7\1\10\1\11\1\12\1\13\1\14\1\uffff"+
-            "\1\15\1\16\1\17\1\20\5\uffff\1\21\1\22\1\23\1\24\1\25\1\26\1"+
-            "\27\1\30\1\31\1\32\1\33\1\34\2\uffff\1\41\3\uffff\1\36\1\37"+
-            "\1\35\1\40",
+            "\1\7\1\4\1\uffff\1\3\1\uffff\1\22\1\10\1\21\1\17\1\20\1\uffff"+
+            "\1\16\1\11\1\13\1\30\1\27\1\23\5\12\1\24\1\25\1\26\5\uffff\1"+
+            "\14\1\uffff\1\31\1\32\2\uffff\1\5\1\6",
+            "\1\33\2\uffff\1\34\4\uffff\1\35\1\36\1\37\1\40\1\41\1\42\1"+
+            "\uffff\1\43\1\44\1\45\1\46\5\uffff\1\47\1\50\1\51\1\52\1\53"+
+            "\1\54\1\55\1\56\1\57\1\60\1\61\1\62\2\uffff\1\67\3\uffff\1\64"+
+            "\1\65\1\63\1\66",
             "",
             "",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\1\42",
-            "\2\44\1\uffff\1\43\1\uffff\5\44\1\uffff\16\44\5\uffff\1\44"+
-            "\1\uffff\2\44\2\uffff\2\44",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\70",
+            "\1\75\1\72\1\uffff\1\71\1\uffff\1\110\1\76\1\107\1\105\1\106"+
+            "\1\uffff\1\104\1\77\1\101\1\116\1\115\1\111\5\100\1\112\1\113"+
+            "\1\114\5\uffff\1\102\1\uffff\1\117\1\120\2\uffff\1\73\1\74",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "",
             ""
     };
@@ -7956,350 +8409,459 @@ public class CMISParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA9_13 = input.LA(1);
+                        int LA9_44 = input.LA(1);
 
                          
-                        int index9_13 = input.index();
+                        int index9_44 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_13==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_44==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_13);
+                        input.seek(index9_44);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA9_22 = input.LA(1);
-
-                         
-                        int index9_22 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_22==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_22);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA9_12 = input.LA(1);
-
-                         
-                        int index9_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_12==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
                         int LA9_2 = input.LA(1);
 
                          
                         int index9_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_2==SELECT) && ((strict == false))) {s = 5;}
+                        if ( (LA9_2==SELECT) && ((strict == false))) {s = 27;}
 
-                        else if ( (LA9_2==AS) && ((strict == false))) {s = 6;}
+                        else if ( (LA9_2==AS) && ((strict == false))) {s = 28;}
 
-                        else if ( (LA9_2==FROM) && ((strict == false))) {s = 7;}
+                        else if ( (LA9_2==FROM) && ((strict == false))) {s = 29;}
 
-                        else if ( (LA9_2==JOIN) && ((strict == false))) {s = 8;}
+                        else if ( (LA9_2==JOIN) && ((strict == false))) {s = 30;}
 
-                        else if ( (LA9_2==INNER) && ((strict == false))) {s = 9;}
+                        else if ( (LA9_2==INNER) && ((strict == false))) {s = 31;}
 
-                        else if ( (LA9_2==LEFT) && ((strict == false))) {s = 10;}
+                        else if ( (LA9_2==LEFT) && ((strict == false))) {s = 32;}
 
-                        else if ( (LA9_2==OUTER) && ((strict == false))) {s = 11;}
+                        else if ( (LA9_2==OUTER) && ((strict == false))) {s = 33;}
 
-                        else if ( (LA9_2==ON) && ((strict == false))) {s = 12;}
+                        else if ( (LA9_2==ON) && ((strict == false))) {s = 34;}
 
-                        else if ( (LA9_2==WHERE) && ((strict == false))) {s = 13;}
+                        else if ( (LA9_2==WHERE) && ((strict == false))) {s = 35;}
 
-                        else if ( (LA9_2==OR) && ((strict == false))) {s = 14;}
+                        else if ( (LA9_2==OR) && ((strict == false))) {s = 36;}
 
-                        else if ( (LA9_2==AND) && ((strict == false))) {s = 15;}
+                        else if ( (LA9_2==AND) && ((strict == false))) {s = 37;}
 
-                        else if ( (LA9_2==NOT) && ((strict == false))) {s = 16;}
+                        else if ( (LA9_2==NOT) && ((strict == false))) {s = 38;}
 
-                        else if ( (LA9_2==IN) && ((strict == false))) {s = 17;}
+                        else if ( (LA9_2==IN) && ((strict == false))) {s = 39;}
 
-                        else if ( (LA9_2==LIKE) && ((strict == false))) {s = 18;}
+                        else if ( (LA9_2==LIKE) && ((strict == false))) {s = 40;}
 
-                        else if ( (LA9_2==IS) && ((strict == false))) {s = 19;}
+                        else if ( (LA9_2==IS) && ((strict == false))) {s = 41;}
 
-                        else if ( (LA9_2==NULL) && ((strict == false))) {s = 20;}
+                        else if ( (LA9_2==NULL) && ((strict == false))) {s = 42;}
 
-                        else if ( (LA9_2==ANY) && ((strict == false))) {s = 21;}
+                        else if ( (LA9_2==ANY) && ((strict == false))) {s = 43;}
 
-                        else if ( (LA9_2==CONTAINS) && ((strict == false))) {s = 22;}
+                        else if ( (LA9_2==CONTAINS) && ((strict == false))) {s = 44;}
 
-                        else if ( (LA9_2==IN_FOLDER) && ((strict == false))) {s = 23;}
+                        else if ( (LA9_2==IN_FOLDER) && ((strict == false))) {s = 45;}
 
-                        else if ( (LA9_2==IN_TREE) && ((strict == false))) {s = 24;}
+                        else if ( (LA9_2==IN_TREE) && ((strict == false))) {s = 46;}
 
-                        else if ( (LA9_2==ORDER) && ((strict == false))) {s = 25;}
+                        else if ( (LA9_2==ORDER) && ((strict == false))) {s = 47;}
 
-                        else if ( (LA9_2==BY) && ((strict == false))) {s = 26;}
+                        else if ( (LA9_2==BY) && ((strict == false))) {s = 48;}
 
-                        else if ( (LA9_2==ASC) && ((strict == false))) {s = 27;}
+                        else if ( (LA9_2==ASC) && ((strict == false))) {s = 49;}
 
-                        else if ( (LA9_2==DESC) && ((strict == false))) {s = 28;}
+                        else if ( (LA9_2==DESC) && ((strict == false))) {s = 50;}
 
-                        else if ( (LA9_2==TIMESTAMP) && ((strict == false))) {s = 29;}
+                        else if ( (LA9_2==TIMESTAMP) && ((strict == false))) {s = 51;}
 
-                        else if ( (LA9_2==TRUE) && ((strict == false))) {s = 30;}
+                        else if ( (LA9_2==TRUE) && ((strict == false))) {s = 52;}
 
-                        else if ( (LA9_2==FALSE) && ((strict == false))) {s = 31;}
+                        else if ( (LA9_2==FALSE) && ((strict == false))) {s = 53;}
 
-                        else if ( (LA9_2==SCORE) && ((strict == false))) {s = 32;}
+                        else if ( (LA9_2==SCORE) && ((strict == false))) {s = 54;}
 
-                        else if ( (LA9_2==ID) && ((strict == false))) {s = 33;}
+                        else if ( (LA9_2==ID) && ((strict == false))) {s = 55;}
 
                          
                         input.seek(index9_2);
                         if ( s>=0 ) return s;
                         break;
-                    case 4 : 
-                        int LA9_20 = input.LA(1);
+                    case 2 : 
+                        int LA9_42 = input.LA(1);
 
                          
-                        int index9_20 = input.index();
+                        int index9_42 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_20==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_42==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_20);
+                        input.seek(index9_42);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA9_43 = input.LA(1);
+
+                         
+                        int index9_43 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_43==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_43);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA9_46 = input.LA(1);
+
+                         
+                        int index9_46 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_46==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_46);
                         if ( s>=0 ) return s;
                         break;
                     case 5 : 
-                        int LA9_14 = input.LA(1);
+                        int LA9_47 = input.LA(1);
 
                          
-                        int index9_14 = input.index();
+                        int index9_47 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_14==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_47==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_14);
+                        input.seek(index9_47);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
+                        int LA9_45 = input.LA(1);
+
+                         
+                        int index9_45 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_45==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_45);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA9_49 = input.LA(1);
+
+                         
+                        int index9_49 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_49==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_49);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA9_29 = input.LA(1);
+
+                         
+                        int index9_29 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_29==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_29);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA9_30 = input.LA(1);
+
+                         
+                        int index9_30 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_30==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_30);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
                         int LA9_31 = input.LA(1);
 
                          
                         int index9_31 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_31==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_31==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
                         input.seek(index9_31);
                         if ( s>=0 ) return s;
                         break;
-                    case 7 : 
-                        int LA9_21 = input.LA(1);
-
-                         
-                        int index9_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_21==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_21);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA9_24 = input.LA(1);
-
-                         
-                        int index9_24 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_24==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_24);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA9_10 = input.LA(1);
-
-                         
-                        int index9_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_10==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA9_34 = input.LA(1);
-
-                         
-                        int index9_34 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_34==DOT) && ((strict == false))) {s = 35;}
-
-                        else if ( (LA9_34==EOF||(LA9_34>=COMMA && LA9_34<=AS)||(LA9_34>=RPAREN && LA9_34<=LEFT)||(LA9_34>=ON && LA9_34<=IS)||LA9_34==ORDER||(LA9_34>=ASC && LA9_34<=DESC)||(LA9_34>=ID && LA9_34<=DOUBLE_QUOTE)) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index9_34);
-                        if ( s>=0 ) return s;
-                        break;
                     case 11 : 
-                        int LA9_25 = input.LA(1);
+                        int LA9_48 = input.LA(1);
 
                          
-                        int index9_25 = input.index();
+                        int index9_48 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_25==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_48==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_25);
+                        input.seek(index9_48);
                         if ( s>=0 ) return s;
                         break;
                     case 12 : 
-                        int LA9_23 = input.LA(1);
+                        int LA9_52 = input.LA(1);
 
                          
-                        int index9_23 = input.index();
+                        int index9_52 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_23==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_52==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_23);
+                        input.seek(index9_52);
                         if ( s>=0 ) return s;
                         break;
                     case 13 : 
-                        int LA9_11 = input.LA(1);
-
-                         
-                        int index9_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_11==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 14 : 
                         int LA9_27 = input.LA(1);
 
                          
                         int index9_27 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_27==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_27==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
                         input.seek(index9_27);
                         if ( s>=0 ) return s;
                         break;
-                    case 15 : 
-                        int LA9_18 = input.LA(1);
+                    case 14 : 
+                        int LA9_50 = input.LA(1);
 
                          
-                        int index9_18 = input.index();
+                        int index9_50 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_18==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_50==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_18);
+                        input.seek(index9_50);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
+                        int LA9_51 = input.LA(1);
+
+                         
+                        int index9_51 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_51==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_51);
                         if ( s>=0 ) return s;
                         break;
                     case 16 : 
-                        int LA9_7 = input.LA(1);
+                        int LA9_28 = input.LA(1);
 
                          
-                        int index9_7 = input.index();
+                        int index9_28 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_7==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_28==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_7);
+                        input.seek(index9_28);
                         if ( s>=0 ) return s;
                         break;
                     case 17 : 
-                        int LA9_8 = input.LA(1);
+                        int LA9_35 = input.LA(1);
 
                          
-                        int index9_8 = input.index();
+                        int index9_35 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_8==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_35==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_8);
+                        input.seek(index9_35);
                         if ( s>=0 ) return s;
                         break;
                     case 18 : 
+                        int LA9_34 = input.LA(1);
+
+                         
+                        int index9_34 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_34==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_34);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 19 : 
+                        int LA9_36 = input.LA(1);
+
+                         
+                        int index9_36 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_36==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_36);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
+                        int LA9_53 = input.LA(1);
+
+                         
+                        int index9_53 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_53==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_53);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 21 : 
                         int LA9_32 = input.LA(1);
 
                          
                         int index9_32 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_32==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_32==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
                         input.seek(index9_32);
                         if ( s>=0 ) return s;
                         break;
-                    case 19 : 
-                        int LA9_26 = input.LA(1);
-
-                         
-                        int index9_26 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_26==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_26);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 20 : 
-                        int LA9_9 = input.LA(1);
-
-                         
-                        int index9_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_9==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 21 : 
-                        int LA9_19 = input.LA(1);
-
-                         
-                        int index9_19 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_19==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_19);
-                        if ( s>=0 ) return s;
-                        break;
                     case 22 : 
+                        int LA9_56 = input.LA(1);
+
+                         
+                        int index9_56 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_56==DOT) && ((strict == false))) {s = 57;}
+
+                        else if ( (LA9_56==AS) && ((strict == false))) {s = 58;}
+
+                        else if ( (LA9_56==ID) && ((strict == false))) {s = 59;}
+
+                        else if ( (LA9_56==DOUBLE_QUOTE) && ((strict == false))) {s = 60;}
+
+                        else if ( (LA9_56==COMMA) && ((strict == false))) {s = 61;}
+
+                        else if ( (LA9_56==FROM) && ((strict == false))) {s = 62;}
+
+                        else if ( (LA9_56==EQUALS) && ((strict == false))) {s = 63;}
+
+                        else if ( ((LA9_56>=NOTEQUALS && LA9_56<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 64;}
+
+                        else if ( (LA9_56==WHERE) && ((strict == false))) {s = 65;}
+
+                        else if ( (LA9_56==ORDER) && ((strict == false))) {s = 66;}
+
+                        else if ( (LA9_56==EOF) && ((strict == false))) {s = 67;}
+
+                        else if ( (LA9_56==ON) && ((strict == false))) {s = 68;}
+
+                        else if ( (LA9_56==INNER) && ((strict == false))) {s = 69;}
+
+                        else if ( (LA9_56==LEFT) && ((strict == false))) {s = 70;}
+
+                        else if ( (LA9_56==JOIN) && ((strict == false))) {s = 71;}
+
+                        else if ( (LA9_56==RPAREN) && ((strict == false))) {s = 72;}
+
+                        else if ( (LA9_56==NOT) && ((strict == false))) {s = 73;}
+
+                        else if ( (LA9_56==IN) && ((strict == false))) {s = 74;}
+
+                        else if ( (LA9_56==LIKE) && ((strict == false))) {s = 75;}
+
+                        else if ( (LA9_56==IS) && ((strict == false))) {s = 76;}
+
+                        else if ( (LA9_56==AND) && ((strict == false))) {s = 77;}
+
+                        else if ( (LA9_56==OR) && ((strict == false))) {s = 78;}
+
+                        else if ( (LA9_56==ASC) && ((strict == false))) {s = 79;}
+
+                        else if ( (LA9_56==DESC) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index9_56);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 23 : 
+                        int LA9_33 = input.LA(1);
+
+                         
+                        int index9_33 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_33==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_33);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 24 : 
+                        int LA9_40 = input.LA(1);
+
+                         
+                        int index9_40 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_40==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_40);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 25 : 
+                        int LA9_54 = input.LA(1);
+
+                         
+                        int index9_54 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_54==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_54);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 26 : 
+                        int LA9_41 = input.LA(1);
+
+                         
+                        int index9_41 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA9_41==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_41);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 27 : 
                         int LA9_0 = input.LA(1);
 
                          
@@ -8314,121 +8876,56 @@ public class CMISParser extends Parser {
                         input.seek(index9_0);
                         if ( s>=0 ) return s;
                         break;
-                    case 23 : 
-                        int LA9_30 = input.LA(1);
-
-                         
-                        int index9_30 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_30==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_30);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 24 : 
-                        int LA9_5 = input.LA(1);
-
-                         
-                        int index9_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_5==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 25 : 
-                        int LA9_15 = input.LA(1);
-
-                         
-                        int index9_15 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_15==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_15);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 26 : 
-                        int LA9_28 = input.LA(1);
-
-                         
-                        int index9_28 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_28==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_28);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 27 : 
-                        int LA9_17 = input.LA(1);
-
-                         
-                        int index9_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA9_17==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
-
-                         
-                        input.seek(index9_17);
-                        if ( s>=0 ) return s;
-                        break;
                     case 28 : 
-                        int LA9_33 = input.LA(1);
+                        int LA9_37 = input.LA(1);
 
                          
-                        int index9_33 = input.index();
+                        int index9_37 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_33==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_37==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_33);
+                        input.seek(index9_37);
                         if ( s>=0 ) return s;
                         break;
                     case 29 : 
-                        int LA9_29 = input.LA(1);
+                        int LA9_39 = input.LA(1);
 
                          
-                        int index9_29 = input.index();
+                        int index9_39 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_29==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_39==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_29);
+                        input.seek(index9_39);
                         if ( s>=0 ) return s;
                         break;
                     case 30 : 
-                        int LA9_6 = input.LA(1);
+                        int LA9_55 = input.LA(1);
 
                          
-                        int index9_6 = input.index();
+                        int index9_55 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_6==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_55==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_6);
+                        input.seek(index9_55);
                         if ( s>=0 ) return s;
                         break;
                     case 31 : 
-                        int LA9_16 = input.LA(1);
+                        int LA9_38 = input.LA(1);
 
                          
-                        int index9_16 = input.index();
+                        int index9_38 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA9_16==DOUBLE_QUOTE) && ((strict == false))) {s = 34;}
+                        if ( (LA9_38==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
 
                          
-                        input.seek(index9_16);
+                        input.seek(index9_38);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -8440,156 +8937,196 @@ public class CMISParser extends Parser {
         }
     }
     static final String DFA12_eotS =
-        "\173\uffff";
+        "\u0096\uffff";
     static final String DFA12_eofS =
-        "\173\uffff";
+        "\u0096\uffff";
     static final String DFA12_minS =
-        "\1\40\1\46\1\uffff\1\47\1\45\1\40\5\47\1\105\1\106\1\0\1\106\1"+
+        "\1\40\1\46\34\uffff\1\47\1\45\1\40\5\47\1\105\1\106\1\0\1\106\1"+
         "\0\35\107\5\0\2\47\1\40\1\uffff\1\47\1\40\1\45\2\0\35\107\1\0\35"+
         "\107\1\0\2\47\2\0";
     static final String DFA12_maxS =
-        "\1\115\1\46\1\uffff\2\114\1\115\5\114\1\105\1\107\1\0\1\107\1\0"+
-        "\35\107\5\0\2\114\1\115\1\uffff\1\114\1\115\1\114\2\0\35\107\1\0"+
-        "\35\107\1\0\2\114\2\0";
+        "\1\115\1\46\34\uffff\2\114\1\115\5\114\1\105\1\107\1\0\1\107\1"+
+        "\0\35\107\5\0\2\114\1\115\1\uffff\1\114\1\115\1\114\2\0\35\107\1"+
+        "\0\35\107\1\0\2\114\2\0";
     static final String DFA12_acceptS =
-        "\2\uffff\1\2\62\uffff\1\1\105\uffff";
+        "\2\uffff\34\2\62\uffff\1\1\105\uffff";
     static final String DFA12_specialS =
-        "\1\15\14\uffff\1\7\1\uffff\1\10\35\uffff\1\6\1\5\1\4\1\3\1\11\7"+
-        "\uffff\1\12\1\13\35\uffff\1\14\35\uffff\1\2\2\uffff\1\1\1\0}>";
+        "\1\15\47\uffff\1\5\1\uffff\1\4\35\uffff\1\6\1\7\1\10\1\11\1\12"+
+        "\7\uffff\1\13\1\14\35\uffff\1\3\35\uffff\1\2\2\uffff\1\1\1\0}>";
     static final String[] DFA12_transitionS = {
-            "\1\2\2\uffff\1\2\4\uffff\6\2\1\uffff\4\2\5\uffff\14\2\2\uffff"+
-            "\1\2\3\uffff\3\2\1\1",
-            "\1\3",
+            "\1\2\2\uffff\1\3\4\uffff\1\4\1\5\1\6\1\7\1\10\1\11\1\uffff"+
+            "\1\12\1\13\1\14\1\15\5\uffff\1\16\1\17\1\20\1\21\1\22\1\23\1"+
+            "\24\1\25\1\26\1\27\1\30\1\31\2\uffff\1\35\3\uffff\1\33\1\34"+
+            "\1\32\1\1",
+            "\1\36",
             "",
-            "\1\15\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\16\1\uffff\1\17\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11"+
-            "\1\12\1\13",
-            "\1\20\2\uffff\1\21\4\uffff\1\22\1\23\1\24\1\25\1\26\1\27\1"+
-            "\uffff\1\30\1\31\1\32\1\33\5\uffff\1\34\1\35\1\36\1\37\1\40"+
-            "\1\41\1\42\1\43\1\44\1\45\1\46\1\47\2\uffff\1\54\3\uffff\1\51"+
-            "\1\52\1\50\1\53",
-            "\1\55\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\56\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\57\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\60\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\61\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\62",
-            "\1\63\1\64",
-            "\1\uffff",
-            "\1\66\1\67",
-            "\1\uffff",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\70",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\71\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\72\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\73\2\uffff\1\74\4\uffff\1\75\1\76\1\77\1\100\1\101\1\102"+
-            "\1\uffff\1\103\1\104\1\105\1\106\5\uffff\1\107\1\110\1\111\1"+
-            "\112\1\113\1\114\1\115\1\116\1\117\1\120\1\121\1\122\2\uffff"+
-            "\1\127\3\uffff\1\124\1\125\1\123\1\126",
             "",
-            "\1\130\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\131\2\uffff\1\132\4\uffff\1\133\1\134\1\135\1\136\1\137"+
-            "\1\140\1\uffff\1\141\1\142\1\143\1\144\5\uffff\1\145\1\146\1"+
-            "\147\1\150\1\151\1\152\1\153\1\154\1\155\1\156\1\157\1\160\2"+
-            "\uffff\1\165\3\uffff\1\162\1\163\1\161\1\164",
-            "\1\16\1\uffff\1\166\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11"+
-            "\1\12\1\13",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\50\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1\46",
+            "\1\51\1\uffff\1\52\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42"+
+            "\1\44\1\45\1\46",
+            "\1\53\2\uffff\1\54\4\uffff\1\55\1\56\1\57\1\60\1\61\1\62\1"+
+            "\uffff\1\63\1\64\1\65\1\66\5\uffff\1\67\1\70\1\71\1\72\1\73"+
+            "\1\74\1\75\1\76\1\77\1\100\1\101\1\102\2\uffff\1\107\3\uffff"+
+            "\1\104\1\105\1\103\1\106",
+            "\1\110\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1"+
+            "\46",
+            "\1\111\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1"+
+            "\46",
+            "\1\112\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1"+
+            "\46",
+            "\1\113\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1"+
+            "\46",
+            "\1\114\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1"+
+            "\46",
+            "\1\115",
+            "\1\116\1\117",
+            "\1\uffff",
+            "\1\121\1\122",
+            "\1\uffff",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
+            "\1\123",
             "\1\uffff",
             "\1\uffff",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
-            "\1\167",
             "\1\uffff",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
-            "\1\170",
             "\1\uffff",
-            "\1\171\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
-            "\1\172\34\uffff\1\14\1\10\1\4\1\5\1\6\1\7\1\11\1\12\1\13",
+            "\1\uffff",
+            "\1\124\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1"+
+            "\46",
+            "\1\125\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1"+
+            "\46",
+            "\1\126\2\uffff\1\127\4\uffff\1\130\1\131\1\132\1\133\1\134"+
+            "\1\135\1\uffff\1\136\1\137\1\140\1\141\5\uffff\1\142\1\143\1"+
+            "\144\1\145\1\146\1\147\1\150\1\151\1\152\1\153\1\154\1\155\2"+
+            "\uffff\1\162\3\uffff\1\157\1\160\1\156\1\161",
+            "",
+            "\1\163\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45\1"+
+            "\46",
+            "\1\164\2\uffff\1\165\4\uffff\1\166\1\167\1\170\1\171\1\172"+
+            "\1\173\1\uffff\1\174\1\175\1\176\1\177\5\uffff\1\u0080\1\u0081"+
+            "\1\u0082\1\u0083\1\u0084\1\u0085\1\u0086\1\u0087\1\u0088\1\u0089"+
+            "\1\u008a\1\u008b\2\uffff\1\u0090\3\uffff\1\u008d\1\u008e\1\u008c"+
+            "\1\u008f",
+            "\1\51\1\uffff\1\u0091\34\uffff\1\47\1\43\1\37\1\40\1\41\1"+
+            "\42\1\44\1\45\1\46",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\u0092",
+            "\1\uffff",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\u0093",
+            "\1\uffff",
+            "\1\u0094\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45"+
+            "\1\46",
+            "\1\u0095\34\uffff\1\47\1\43\1\37\1\40\1\41\1\42\1\44\1\45"+
+            "\1\46",
             "\1\uffff",
             "\1\uffff"
     };
@@ -8631,198 +9168,198 @@ public class CMISParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA12_122 = input.LA(1);
+                        int LA12_149 = input.LA(1);
 
                          
-                        int index12_122 = input.index();
+                        int index12_149 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_122);
+                        input.seek(index12_149);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA12_121 = input.LA(1);
+                        int LA12_148 = input.LA(1);
 
                          
-                        int index12_121 = input.index();
+                        int index12_148 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_121);
+                        input.seek(index12_148);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA12_118 = input.LA(1);
+                        int LA12_145 = input.LA(1);
 
                          
-                        int index12_118 = input.index();
+                        int index12_145 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_118);
+                        input.seek(index12_145);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA12_48 = input.LA(1);
+                        int LA12_115 = input.LA(1);
 
                          
-                        int index12_48 = input.index();
+                        int index12_115 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_48);
+                        input.seek(index12_115);
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
-                        int LA12_47 = input.LA(1);
+                        int LA12_42 = input.LA(1);
 
                          
-                        int index12_47 = input.index();
+                        int index12_42 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_47);
+                        input.seek(index12_42);
                         if ( s>=0 ) return s;
                         break;
                     case 5 : 
-                        int LA12_46 = input.LA(1);
+                        int LA12_40 = input.LA(1);
 
                          
-                        int index12_46 = input.index();
+                        int index12_40 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_46);
+                        input.seek(index12_40);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
-                        int LA12_45 = input.LA(1);
+                        int LA12_72 = input.LA(1);
 
                          
-                        int index12_45 = input.index();
+                        int index12_72 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_45);
+                        input.seek(index12_72);
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
-                        int LA12_13 = input.LA(1);
+                        int LA12_73 = input.LA(1);
 
                          
-                        int index12_13 = input.index();
+                        int index12_73 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_13);
+                        input.seek(index12_73);
                         if ( s>=0 ) return s;
                         break;
                     case 8 : 
-                        int LA12_15 = input.LA(1);
+                        int LA12_74 = input.LA(1);
 
                          
-                        int index12_15 = input.index();
+                        int index12_74 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_15);
+                        input.seek(index12_74);
                         if ( s>=0 ) return s;
                         break;
                     case 9 : 
-                        int LA12_49 = input.LA(1);
+                        int LA12_75 = input.LA(1);
 
                          
-                        int index12_49 = input.index();
+                        int index12_75 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_49);
+                        input.seek(index12_75);
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
-                        int LA12_57 = input.LA(1);
+                        int LA12_76 = input.LA(1);
 
                          
-                        int index12_57 = input.index();
+                        int index12_76 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_57);
+                        input.seek(index12_76);
                         if ( s>=0 ) return s;
                         break;
                     case 11 : 
-                        int LA12_58 = input.LA(1);
+                        int LA12_84 = input.LA(1);
 
                          
-                        int index12_58 = input.index();
+                        int index12_84 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_58);
+                        input.seek(index12_84);
                         if ( s>=0 ) return s;
                         break;
                     case 12 : 
-                        int LA12_88 = input.LA(1);
+                        int LA12_85 = input.LA(1);
 
                          
-                        int index12_88 = input.index();
+                        int index12_85 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (!(((strict == false)))) ) {s = 53;}
+                        if ( (!(((strict == false)))) ) {s = 80;}
 
-                        else if ( ((strict == false)) ) {s = 2;}
+                        else if ( ((strict == false)) ) {s = 29;}
 
                          
-                        input.seek(index12_88);
+                        input.seek(index12_85);
                         if ( s>=0 ) return s;
                         break;
                     case 13 : 
@@ -8834,7 +9371,61 @@ public class CMISParser extends Parser {
                         s = -1;
                         if ( (LA12_0==SCORE) ) {s = 1;}
 
-                        else if ( (LA12_0==SELECT||LA12_0==AS||(LA12_0>=FROM && LA12_0<=ON)||(LA12_0>=WHERE && LA12_0<=NOT)||(LA12_0>=IN && LA12_0<=DESC)||LA12_0==ID||(LA12_0>=TRUE && LA12_0<=TIMESTAMP)) && ((strict == false))) {s = 2;}
+                        else if ( (LA12_0==SELECT) && ((strict == false))) {s = 2;}
+
+                        else if ( (LA12_0==AS) && ((strict == false))) {s = 3;}
+
+                        else if ( (LA12_0==FROM) && ((strict == false))) {s = 4;}
+
+                        else if ( (LA12_0==JOIN) && ((strict == false))) {s = 5;}
+
+                        else if ( (LA12_0==INNER) && ((strict == false))) {s = 6;}
+
+                        else if ( (LA12_0==LEFT) && ((strict == false))) {s = 7;}
+
+                        else if ( (LA12_0==OUTER) && ((strict == false))) {s = 8;}
+
+                        else if ( (LA12_0==ON) && ((strict == false))) {s = 9;}
+
+                        else if ( (LA12_0==WHERE) && ((strict == false))) {s = 10;}
+
+                        else if ( (LA12_0==OR) && ((strict == false))) {s = 11;}
+
+                        else if ( (LA12_0==AND) && ((strict == false))) {s = 12;}
+
+                        else if ( (LA12_0==NOT) && ((strict == false))) {s = 13;}
+
+                        else if ( (LA12_0==IN) && ((strict == false))) {s = 14;}
+
+                        else if ( (LA12_0==LIKE) && ((strict == false))) {s = 15;}
+
+                        else if ( (LA12_0==IS) && ((strict == false))) {s = 16;}
+
+                        else if ( (LA12_0==NULL) && ((strict == false))) {s = 17;}
+
+                        else if ( (LA12_0==ANY) && ((strict == false))) {s = 18;}
+
+                        else if ( (LA12_0==CONTAINS) && ((strict == false))) {s = 19;}
+
+                        else if ( (LA12_0==IN_FOLDER) && ((strict == false))) {s = 20;}
+
+                        else if ( (LA12_0==IN_TREE) && ((strict == false))) {s = 21;}
+
+                        else if ( (LA12_0==ORDER) && ((strict == false))) {s = 22;}
+
+                        else if ( (LA12_0==BY) && ((strict == false))) {s = 23;}
+
+                        else if ( (LA12_0==ASC) && ((strict == false))) {s = 24;}
+
+                        else if ( (LA12_0==DESC) && ((strict == false))) {s = 25;}
+
+                        else if ( (LA12_0==TIMESTAMP) && ((strict == false))) {s = 26;}
+
+                        else if ( (LA12_0==TRUE) && ((strict == false))) {s = 27;}
+
+                        else if ( (LA12_0==FALSE) && ((strict == false))) {s = 28;}
+
+                        else if ( (LA12_0==ID) && ((strict == false))) {s = 29;}
 
                          
                         input.seek(index12_0);
@@ -8848,61 +9439,288 @@ public class CMISParser extends Parser {
             throw nvae;
         }
     }
+    static final String DFA10_eotS =
+        "\13\uffff";
+    static final String DFA10_eofS =
+        "\13\uffff";
+    static final String DFA10_minS =
+        "\1\47\12\uffff";
+    static final String DFA10_maxS =
+        "\1\114\12\uffff";
+    static final String DFA10_acceptS =
+        "\1\uffff\1\2\11\1";
+    static final String DFA10_specialS =
+        "\1\0\12\uffff}>";
+    static final String[] DFA10_transitionS = {
+            "\1\1\34\uffff\1\12\1\6\1\2\1\3\1\4\1\5\1\7\1\10\1\11",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+    };
+
+    static final short[] DFA10_eot = DFA.unpackEncodedString(DFA10_eotS);
+    static final short[] DFA10_eof = DFA.unpackEncodedString(DFA10_eofS);
+    static final char[] DFA10_min = DFA.unpackEncodedStringToUnsignedChars(DFA10_minS);
+    static final char[] DFA10_max = DFA.unpackEncodedStringToUnsignedChars(DFA10_maxS);
+    static final short[] DFA10_accept = DFA.unpackEncodedString(DFA10_acceptS);
+    static final short[] DFA10_special = DFA.unpackEncodedString(DFA10_specialS);
+    static final short[][] DFA10_transition;
+
+    static {
+        int numStates = DFA10_transitionS.length;
+        DFA10_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA10_transition[i] = DFA.unpackEncodedString(DFA10_transitionS[i]);
+        }
+    }
+
+    class DFA10 extends DFA {
+
+        public DFA10(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 10;
+            this.eot = DFA10_eot;
+            this.eof = DFA10_eof;
+            this.min = DFA10_min;
+            this.max = DFA10_max;
+            this.accept = DFA10_accept;
+            this.special = DFA10_special;
+            this.transition = DFA10_transition;
+        }
+        public String getDescription() {
+            return "()* loopback of 369:46: ( functionArgument )*";
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA10_0 = input.LA(1);
+
+                         
+                        int index10_0 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA10_0==RPAREN) ) {s = 1;}
+
+                        else if ( (LA10_0==ID) ) {s = 2;}
+
+                        else if ( (LA10_0==DOUBLE_QUOTE) && ((strict == false))) {s = 3;}
+
+                        else if ( (LA10_0==FLOATING_POINT_LITERAL) ) {s = 4;}
+
+                        else if ( (LA10_0==DECIMAL_INTEGER_LITERAL) ) {s = 5;}
+
+                        else if ( (LA10_0==QUOTED_STRING) ) {s = 6;}
+
+                        else if ( (LA10_0==TRUE) ) {s = 7;}
+
+                        else if ( (LA10_0==FALSE) ) {s = 8;}
+
+                        else if ( (LA10_0==TIMESTAMP) ) {s = 9;}
+
+                        else if ( (LA10_0==COLON) && ((strict == false))) {s = 10;}
+
+                         
+                        input.seek(index10_0);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 10, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
+    static final String DFA11_eotS =
+        "\13\uffff";
+    static final String DFA11_eofS =
+        "\13\uffff";
+    static final String DFA11_minS =
+        "\1\47\12\uffff";
+    static final String DFA11_maxS =
+        "\1\114\12\uffff";
+    static final String DFA11_acceptS =
+        "\1\uffff\1\2\11\1";
+    static final String DFA11_specialS =
+        "\1\0\12\uffff}>";
+    static final String[] DFA11_transitionS = {
+            "\1\1\34\uffff\1\12\1\6\1\2\1\3\1\4\1\5\1\7\1\10\1\11",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+    };
+
+    static final short[] DFA11_eot = DFA.unpackEncodedString(DFA11_eotS);
+    static final short[] DFA11_eof = DFA.unpackEncodedString(DFA11_eofS);
+    static final char[] DFA11_min = DFA.unpackEncodedStringToUnsignedChars(DFA11_minS);
+    static final char[] DFA11_max = DFA.unpackEncodedStringToUnsignedChars(DFA11_maxS);
+    static final short[] DFA11_accept = DFA.unpackEncodedString(DFA11_acceptS);
+    static final short[] DFA11_special = DFA.unpackEncodedString(DFA11_specialS);
+    static final short[][] DFA11_transition;
+
+    static {
+        int numStates = DFA11_transitionS.length;
+        DFA11_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA11_transition[i] = DFA.unpackEncodedString(DFA11_transitionS[i]);
+        }
+    }
+
+    class DFA11 extends DFA {
+
+        public DFA11(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 11;
+            this.eot = DFA11_eot;
+            this.eof = DFA11_eof;
+            this.min = DFA11_min;
+            this.max = DFA11_max;
+            this.accept = DFA11_accept;
+            this.special = DFA11_special;
+            this.transition = DFA11_transition;
+        }
+        public String getDescription() {
+            return "()* loopback of 372:64: ( functionArgument )*";
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA11_0 = input.LA(1);
+
+                         
+                        int index11_0 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA11_0==RPAREN) ) {s = 1;}
+
+                        else if ( (LA11_0==ID) ) {s = 2;}
+
+                        else if ( (LA11_0==DOUBLE_QUOTE) && ((strict == false))) {s = 3;}
+
+                        else if ( (LA11_0==FLOATING_POINT_LITERAL) ) {s = 4;}
+
+                        else if ( (LA11_0==DECIMAL_INTEGER_LITERAL) ) {s = 5;}
+
+                        else if ( (LA11_0==QUOTED_STRING) ) {s = 6;}
+
+                        else if ( (LA11_0==TRUE) ) {s = 7;}
+
+                        else if ( (LA11_0==FALSE) ) {s = 8;}
+
+                        else if ( (LA11_0==TIMESTAMP) ) {s = 9;}
+
+                        else if ( (LA11_0==COLON) && ((strict == false))) {s = 10;}
+
+                         
+                        input.seek(index11_0);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 11, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
     static final String DFA13_eotS =
-        "\47\uffff";
+        "\76\uffff";
     static final String DFA13_eofS =
-        "\47\uffff";
+        "\76\uffff";
     static final String DFA13_minS =
-        "\1\104\1\45\1\40\4\uffff\35\107\1\45\2\uffff";
+        "\1\104\1\45\1\40\22\uffff\35\107\1\45\13\uffff";
     static final String DFA13_maxS =
-        "\2\114\1\115\4\uffff\35\107\1\114\2\uffff";
+        "\2\114\1\115\22\uffff\35\107\1\114\13\uffff";
     static final String DFA13_acceptS =
-        "\3\uffff\2\3\1\1\1\2\36\uffff\1\1\1\2";
+        "\3\uffff\7\3\1\1\12\2\36\uffff\1\1\12\2";
     static final String DFA13_specialS =
-        "\1\15\1\uffff\1\3\4\uffff\1\30\1\36\1\21\1\22\1\25\1\11\1\14\1"+
-        "\2\1\0\1\5\1\31\1\37\1\33\1\17\1\26\1\4\1\7\1\1\1\13\1\10\1\12\1"+
-        "\24\1\16\1\32\1\35\1\27\1\6\1\23\1\34\1\20\2\uffff}>";
+        "\1\7\1\uffff\1\1\22\uffff\1\16\1\21\1\12\1\13\1\14\1\27\1\30\1"+
+        "\24\1\23\1\25\1\34\1\37\1\35\1\31\1\33\1\2\1\3\1\0\1\6\1\4\1\5\1"+
+        "\15\1\10\1\20\1\22\1\17\1\26\1\32\1\36\1\11\13\uffff}>";
     static final String[] DFA13_transitionS = {
-            "\1\4\1\3\1\1\1\2\5\3",
-            "\1\5\1\uffff\1\6\34\uffff\11\6",
-            "\1\7\2\uffff\1\10\4\uffff\1\11\1\12\1\13\1\14\1\15\1\16\1"+
-            "\uffff\1\17\1\20\1\21\1\22\5\uffff\1\23\1\24\1\25\1\26\1\27"+
-            "\1\30\1\31\1\32\1\33\1\34\1\35\1\36\2\uffff\1\43\3\uffff\1\40"+
-            "\1\41\1\37\1\42",
+            "\1\11\1\5\1\1\1\2\1\3\1\4\1\6\1\7\1\10",
+            "\1\12\1\uffff\1\13\34\uffff\1\24\1\20\1\14\1\15\1\16\1\17"+
+            "\1\21\1\22\1\23",
+            "\1\25\2\uffff\1\26\4\uffff\1\27\1\30\1\31\1\32\1\33\1\34\1"+
+            "\uffff\1\35\1\36\1\37\1\40\5\uffff\1\41\1\42\1\43\1\44\1\45"+
+            "\1\46\1\47\1\50\1\51\1\52\1\53\1\54\2\uffff\1\61\3\uffff\1\56"+
+            "\1\57\1\55\1\60",
             "",
             "",
             "",
             "",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\44",
-            "\1\45\1\uffff\1\46\34\uffff\11\46",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\62",
+            "\1\63\1\uffff\1\64\34\uffff\1\75\1\71\1\65\1\66\1\67\1\70"+
+            "\1\72\1\73\1\74",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "",
             ""
     };
@@ -8944,231 +9762,153 @@ public class CMISParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA13_15 = input.LA(1);
+                        int LA13_38 = input.LA(1);
 
                          
-                        int index13_15 = input.index();
+                        int index13_38 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_15==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_38==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
-                        input.seek(index13_15);
+                        input.seek(index13_38);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA13_24 = input.LA(1);
-
-                         
-                        int index13_24 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_24==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_24);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA13_14 = input.LA(1);
-
-                         
-                        int index13_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_14==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
                         int LA13_2 = input.LA(1);
 
                          
                         int index13_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_2==SELECT) && ((strict == false))) {s = 7;}
+                        if ( (LA13_2==SELECT) && ((strict == false))) {s = 21;}
 
-                        else if ( (LA13_2==AS) && ((strict == false))) {s = 8;}
+                        else if ( (LA13_2==AS) && ((strict == false))) {s = 22;}
 
-                        else if ( (LA13_2==FROM) && ((strict == false))) {s = 9;}
+                        else if ( (LA13_2==FROM) && ((strict == false))) {s = 23;}
 
-                        else if ( (LA13_2==JOIN) && ((strict == false))) {s = 10;}
+                        else if ( (LA13_2==JOIN) && ((strict == false))) {s = 24;}
 
-                        else if ( (LA13_2==INNER) && ((strict == false))) {s = 11;}
+                        else if ( (LA13_2==INNER) && ((strict == false))) {s = 25;}
 
-                        else if ( (LA13_2==LEFT) && ((strict == false))) {s = 12;}
+                        else if ( (LA13_2==LEFT) && ((strict == false))) {s = 26;}
 
-                        else if ( (LA13_2==OUTER) && ((strict == false))) {s = 13;}
+                        else if ( (LA13_2==OUTER) && ((strict == false))) {s = 27;}
 
-                        else if ( (LA13_2==ON) && ((strict == false))) {s = 14;}
+                        else if ( (LA13_2==ON) && ((strict == false))) {s = 28;}
 
-                        else if ( (LA13_2==WHERE) && ((strict == false))) {s = 15;}
+                        else if ( (LA13_2==WHERE) && ((strict == false))) {s = 29;}
 
-                        else if ( (LA13_2==OR) && ((strict == false))) {s = 16;}
+                        else if ( (LA13_2==OR) && ((strict == false))) {s = 30;}
 
-                        else if ( (LA13_2==AND) && ((strict == false))) {s = 17;}
+                        else if ( (LA13_2==AND) && ((strict == false))) {s = 31;}
 
-                        else if ( (LA13_2==NOT) && ((strict == false))) {s = 18;}
+                        else if ( (LA13_2==NOT) && ((strict == false))) {s = 32;}
 
-                        else if ( (LA13_2==IN) && ((strict == false))) {s = 19;}
+                        else if ( (LA13_2==IN) && ((strict == false))) {s = 33;}
 
-                        else if ( (LA13_2==LIKE) && ((strict == false))) {s = 20;}
+                        else if ( (LA13_2==LIKE) && ((strict == false))) {s = 34;}
 
-                        else if ( (LA13_2==IS) && ((strict == false))) {s = 21;}
+                        else if ( (LA13_2==IS) && ((strict == false))) {s = 35;}
 
-                        else if ( (LA13_2==NULL) && ((strict == false))) {s = 22;}
+                        else if ( (LA13_2==NULL) && ((strict == false))) {s = 36;}
 
-                        else if ( (LA13_2==ANY) && ((strict == false))) {s = 23;}
+                        else if ( (LA13_2==ANY) && ((strict == false))) {s = 37;}
 
-                        else if ( (LA13_2==CONTAINS) && ((strict == false))) {s = 24;}
+                        else if ( (LA13_2==CONTAINS) && ((strict == false))) {s = 38;}
 
-                        else if ( (LA13_2==IN_FOLDER) && ((strict == false))) {s = 25;}
+                        else if ( (LA13_2==IN_FOLDER) && ((strict == false))) {s = 39;}
 
-                        else if ( (LA13_2==IN_TREE) && ((strict == false))) {s = 26;}
+                        else if ( (LA13_2==IN_TREE) && ((strict == false))) {s = 40;}
 
-                        else if ( (LA13_2==ORDER) && ((strict == false))) {s = 27;}
+                        else if ( (LA13_2==ORDER) && ((strict == false))) {s = 41;}
 
-                        else if ( (LA13_2==BY) && ((strict == false))) {s = 28;}
+                        else if ( (LA13_2==BY) && ((strict == false))) {s = 42;}
 
-                        else if ( (LA13_2==ASC) && ((strict == false))) {s = 29;}
+                        else if ( (LA13_2==ASC) && ((strict == false))) {s = 43;}
 
-                        else if ( (LA13_2==DESC) && ((strict == false))) {s = 30;}
+                        else if ( (LA13_2==DESC) && ((strict == false))) {s = 44;}
 
-                        else if ( (LA13_2==TIMESTAMP) && ((strict == false))) {s = 31;}
+                        else if ( (LA13_2==TIMESTAMP) && ((strict == false))) {s = 45;}
 
-                        else if ( (LA13_2==TRUE) && ((strict == false))) {s = 32;}
+                        else if ( (LA13_2==TRUE) && ((strict == false))) {s = 46;}
 
-                        else if ( (LA13_2==FALSE) && ((strict == false))) {s = 33;}
+                        else if ( (LA13_2==FALSE) && ((strict == false))) {s = 47;}
 
-                        else if ( (LA13_2==SCORE) && ((strict == false))) {s = 34;}
+                        else if ( (LA13_2==SCORE) && ((strict == false))) {s = 48;}
 
-                        else if ( (LA13_2==ID) && ((strict == false))) {s = 35;}
+                        else if ( (LA13_2==ID) && ((strict == false))) {s = 49;}
 
                          
                         input.seek(index13_2);
                         if ( s>=0 ) return s;
                         break;
-                    case 4 : 
-                        int LA13_22 = input.LA(1);
+                    case 2 : 
+                        int LA13_36 = input.LA(1);
 
                          
-                        int index13_22 = input.index();
+                        int index13_36 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_22==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_36==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
-                        input.seek(index13_22);
+                        input.seek(index13_36);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA13_37 = input.LA(1);
+
+                         
+                        int index13_37 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_37==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_37);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA13_40 = input.LA(1);
+
+                         
+                        int index13_40 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_40==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_40);
                         if ( s>=0 ) return s;
                         break;
                     case 5 : 
-                        int LA13_16 = input.LA(1);
+                        int LA13_41 = input.LA(1);
 
                          
-                        int index13_16 = input.index();
+                        int index13_41 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_16==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_41==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
-                        input.seek(index13_16);
+                        input.seek(index13_41);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
-                        int LA13_33 = input.LA(1);
+                        int LA13_39 = input.LA(1);
 
                          
-                        int index13_33 = input.index();
+                        int index13_39 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_33==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_39==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
-                        input.seek(index13_33);
+                        input.seek(index13_39);
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
-                        int LA13_23 = input.LA(1);
-
-                         
-                        int index13_23 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_23==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_23);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA13_26 = input.LA(1);
-
-                         
-                        int index13_26 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_26==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_26);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA13_12 = input.LA(1);
-
-                         
-                        int index13_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_12==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA13_27 = input.LA(1);
-
-                         
-                        int index13_27 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_27==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_27);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 11 : 
-                        int LA13_25 = input.LA(1);
-
-                         
-                        int index13_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_25==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_25);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 12 : 
-                        int LA13_13 = input.LA(1);
-
-                         
-                        int index13_13 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_13==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_13);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 13 : 
                         int LA13_0 = input.LA(1);
 
                          
@@ -9179,92 +9919,198 @@ public class CMISParser extends Parser {
 
                         else if ( (LA13_0==DOUBLE_QUOTE) && ((strict == false))) {s = 2;}
 
-                        else if ( (LA13_0==QUOTED_STRING||(LA13_0>=FLOATING_POINT_LITERAL && LA13_0<=TIMESTAMP)) ) {s = 3;}
+                        else if ( (LA13_0==FLOATING_POINT_LITERAL) ) {s = 3;}
 
-                        else if ( (LA13_0==COLON) && ((strict == false))) {s = 4;}
+                        else if ( (LA13_0==DECIMAL_INTEGER_LITERAL) ) {s = 4;}
+
+                        else if ( (LA13_0==QUOTED_STRING) ) {s = 5;}
+
+                        else if ( (LA13_0==TRUE) ) {s = 6;}
+
+                        else if ( (LA13_0==FALSE) ) {s = 7;}
+
+                        else if ( (LA13_0==TIMESTAMP) ) {s = 8;}
+
+                        else if ( (LA13_0==COLON) && ((strict == false))) {s = 9;}
 
                          
                         input.seek(index13_0);
                         if ( s>=0 ) return s;
                         break;
+                    case 8 : 
+                        int LA13_43 = input.LA(1);
+
+                         
+                        int index13_43 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_43==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_43);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA13_50 = input.LA(1);
+
+                         
+                        int index13_50 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_50==DOT) && ((strict == false))) {s = 51;}
+
+                        else if ( (LA13_50==RPAREN) && ((strict == false))) {s = 52;}
+
+                        else if ( (LA13_50==ID) && ((strict == false))) {s = 53;}
+
+                        else if ( (LA13_50==DOUBLE_QUOTE) && ((strict == false))) {s = 54;}
+
+                        else if ( (LA13_50==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 55;}
+
+                        else if ( (LA13_50==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 56;}
+
+                        else if ( (LA13_50==QUOTED_STRING) && ((strict == false))) {s = 57;}
+
+                        else if ( (LA13_50==TRUE) && ((strict == false))) {s = 58;}
+
+                        else if ( (LA13_50==FALSE) && ((strict == false))) {s = 59;}
+
+                        else if ( (LA13_50==TIMESTAMP) && ((strict == false))) {s = 60;}
+
+                        else if ( (LA13_50==COLON) && ((strict == false))) {s = 61;}
+
+                         
+                        input.seek(index13_50);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA13_23 = input.LA(1);
+
+                         
+                        int index13_23 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_23==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_23);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 11 : 
+                        int LA13_24 = input.LA(1);
+
+                         
+                        int index13_24 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_24==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_24);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 12 : 
+                        int LA13_25 = input.LA(1);
+
+                         
+                        int index13_25 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_25==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_25);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 13 : 
+                        int LA13_42 = input.LA(1);
+
+                         
+                        int index13_42 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_42==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_42);
+                        if ( s>=0 ) return s;
+                        break;
                     case 14 : 
+                        int LA13_21 = input.LA(1);
+
+                         
+                        int index13_21 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_21==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_21);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
+                        int LA13_46 = input.LA(1);
+
+                         
+                        int index13_46 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_46==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_46);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 16 : 
+                        int LA13_44 = input.LA(1);
+
+                         
+                        int index13_44 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_44==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_44);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 17 : 
+                        int LA13_22 = input.LA(1);
+
+                         
+                        int index13_22 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_22==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_22);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 18 : 
+                        int LA13_45 = input.LA(1);
+
+                         
+                        int index13_45 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_45==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_45);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 19 : 
                         int LA13_29 = input.LA(1);
 
                          
                         int index13_29 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_29==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_29==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
                         input.seek(index13_29);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 15 : 
-                        int LA13_20 = input.LA(1);
-
-                         
-                        int index13_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_20==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_20);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 16 : 
-                        int LA13_36 = input.LA(1);
-
-                         
-                        int index13_36 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_36==DOT) && ((strict == false))) {s = 37;}
-
-                        else if ( (LA13_36==RPAREN||(LA13_36>=COLON && LA13_36<=TIMESTAMP)) && ((strict == false))) {s = 38;}
-
-                         
-                        input.seek(index13_36);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 17 : 
-                        int LA13_9 = input.LA(1);
-
-                         
-                        int index13_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_9==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 18 : 
-                        int LA13_10 = input.LA(1);
-
-                         
-                        int index13_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_10==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 19 : 
-                        int LA13_34 = input.LA(1);
-
-                         
-                        int index13_34 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_34==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_34);
                         if ( s>=0 ) return s;
                         break;
                     case 20 : 
@@ -9274,153 +10120,153 @@ public class CMISParser extends Parser {
                         int index13_28 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_28==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_28==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
                         input.seek(index13_28);
                         if ( s>=0 ) return s;
                         break;
                     case 21 : 
-                        int LA13_11 = input.LA(1);
-
-                         
-                        int index13_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_11==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 22 : 
-                        int LA13_21 = input.LA(1);
-
-                         
-                        int index13_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_21==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_21);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 23 : 
-                        int LA13_32 = input.LA(1);
-
-                         
-                        int index13_32 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_32==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_32);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 24 : 
-                        int LA13_7 = input.LA(1);
-
-                         
-                        int index13_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_7==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 25 : 
-                        int LA13_17 = input.LA(1);
-
-                         
-                        int index13_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA13_17==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
-
-                         
-                        input.seek(index13_17);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 26 : 
                         int LA13_30 = input.LA(1);
 
                          
                         int index13_30 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_30==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_30==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
                         input.seek(index13_30);
                         if ( s>=0 ) return s;
                         break;
-                    case 27 : 
-                        int LA13_19 = input.LA(1);
+                    case 22 : 
+                        int LA13_47 = input.LA(1);
 
                          
-                        int index13_19 = input.index();
+                        int index13_47 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_19==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_47==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
-                        input.seek(index13_19);
+                        input.seek(index13_47);
                         if ( s>=0 ) return s;
                         break;
-                    case 28 : 
+                    case 23 : 
+                        int LA13_26 = input.LA(1);
+
+                         
+                        int index13_26 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_26==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_26);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 24 : 
+                        int LA13_27 = input.LA(1);
+
+                         
+                        int index13_27 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_27==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_27);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 25 : 
+                        int LA13_34 = input.LA(1);
+
+                         
+                        int index13_34 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_34==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_34);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 26 : 
+                        int LA13_48 = input.LA(1);
+
+                         
+                        int index13_48 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_48==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_48);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 27 : 
                         int LA13_35 = input.LA(1);
 
                          
                         int index13_35 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_35==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_35==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
                         input.seek(index13_35);
                         if ( s>=0 ) return s;
                         break;
-                    case 29 : 
+                    case 28 : 
                         int LA13_31 = input.LA(1);
 
                          
                         int index13_31 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_31==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_31==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
                         input.seek(index13_31);
                         if ( s>=0 ) return s;
                         break;
-                    case 30 : 
-                        int LA13_8 = input.LA(1);
+                    case 29 : 
+                        int LA13_33 = input.LA(1);
 
                          
-                        int index13_8 = input.index();
+                        int index13_33 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_8==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_33==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
-                        input.seek(index13_8);
+                        input.seek(index13_33);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 30 : 
+                        int LA13_49 = input.LA(1);
+
+                         
+                        int index13_49 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA13_49==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
+
+                         
+                        input.seek(index13_49);
                         if ( s>=0 ) return s;
                         break;
                     case 31 : 
-                        int LA13_18 = input.LA(1);
+                        int LA13_32 = input.LA(1);
 
                          
-                        int index13_18 = input.index();
+                        int index13_32 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA13_18==DOUBLE_QUOTE) && ((strict == false))) {s = 36;}
+                        if ( (LA13_32==DOUBLE_QUOTE) && ((strict == false))) {s = 50;}
 
                          
-                        input.seek(index13_18);
+                        input.seek(index13_32);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -10021,26 +10867,136 @@ public class CMISParser extends Parser {
             throw nvae;
         }
     }
+    static final String DFA18_eotS =
+        "\13\uffff";
+    static final String DFA18_eofS =
+        "\1\11\12\uffff";
+    static final String DFA18_minS =
+        "\1\43\12\uffff";
+    static final String DFA18_maxS =
+        "\1\107\12\uffff";
+    static final String DFA18_acceptS =
+        "\1\uffff\3\1\7\2";
+    static final String DFA18_specialS =
+        "\1\0\12\uffff}>";
+    static final String[] DFA18_transitionS = {
+            "\1\1\5\uffff\1\6\1\4\1\5\1\uffff\1\12\1\uffff\1\7\20\uffff"+
+            "\1\10\5\uffff\1\2\1\3",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+    };
+
+    static final short[] DFA18_eot = DFA.unpackEncodedString(DFA18_eotS);
+    static final short[] DFA18_eof = DFA.unpackEncodedString(DFA18_eofS);
+    static final char[] DFA18_min = DFA.unpackEncodedStringToUnsignedChars(DFA18_minS);
+    static final char[] DFA18_max = DFA.unpackEncodedStringToUnsignedChars(DFA18_maxS);
+    static final short[] DFA18_accept = DFA.unpackEncodedString(DFA18_acceptS);
+    static final short[] DFA18_special = DFA.unpackEncodedString(DFA18_specialS);
+    static final short[][] DFA18_transition;
+
+    static {
+        int numStates = DFA18_transitionS.length;
+        DFA18_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA18_transition[i] = DFA.unpackEncodedString(DFA18_transitionS[i]);
+        }
+    }
+
+    class DFA18 extends DFA {
+
+        public DFA18(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 18;
+            this.eot = DFA18_eot;
+            this.eof = DFA18_eof;
+            this.min = DFA18_min;
+            this.max = DFA18_max;
+            this.accept = DFA18_accept;
+            this.special = DFA18_special;
+            this.transition = DFA18_transition;
+        }
+        public String getDescription() {
+            return "454:19: ( ( AS )? correlationName )?";
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            TokenStream input = (TokenStream)_input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA18_0 = input.LA(1);
+
+                         
+                        int index18_0 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA18_0==AS) ) {s = 1;}
+
+                        else if ( (LA18_0==ID) ) {s = 2;}
+
+                        else if ( (LA18_0==DOUBLE_QUOTE) && ((strict == false))) {s = 3;}
+
+                        else if ( (LA18_0==INNER) ) {s = 4;}
+
+                        else if ( (LA18_0==LEFT) ) {s = 5;}
+
+                        else if ( (LA18_0==JOIN) ) {s = 6;}
+
+                        else if ( (LA18_0==WHERE) ) {s = 7;}
+
+                        else if ( (LA18_0==ORDER) ) {s = 8;}
+
+                        else if ( (LA18_0==EOF) ) {s = 9;}
+
+                        else if ( (LA18_0==ON) ) {s = 10;}
+
+                         
+                        input.seek(index18_0);
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            if (state.backtracking>0) {state.failed=true; return -1;}
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 18, _s, input);
+            error(nvae);
+            throw nvae;
+        }
+    }
     static final String DFA26_eotS =
-        "\167\uffff";
+        "\u00db\uffff";
     static final String DFA26_eofS =
-        "\167\uffff";
+        "\u00db\uffff";
     static final String DFA26_minS =
-        "\2\40\12\uffff\1\40\1\45\1\40\3\46\3\47\1\106\1\uffff\1\106\35"+
-        "\107\2\47\1\40\1\47\1\40\1\45\72\107\2\47";
+        "\2\40\104\uffff\1\40\1\uffff\1\45\1\40\30\uffff\3\46\3\47\1\106"+
+        "\2\uffff\1\106\17\uffff\35\107\1\47\1\uffff\1\47\1\40\1\47\1\40"+
+        "\1\45\72\107\2\47";
     static final String DFA26_maxS =
-        "\2\115\12\uffff\1\115\1\114\1\115\1\105\5\114\1\107\1\uffff\36"+
-        "\107\2\114\1\115\1\114\1\115\1\114\72\107\2\114";
+        "\2\115\104\uffff\1\115\1\uffff\1\114\1\115\30\uffff\1\105\5\114"+
+        "\1\107\2\uffff\1\107\17\uffff\35\107\1\114\1\uffff\1\114\1\115\1"+
+        "\114\1\115\1\114\72\107\2\114";
     static final String DFA26_acceptS =
-        "\2\uffff\11\2\1\1\12\uffff\1\2\140\uffff";
+        "\2\uffff\42\2\42\1\1\uffff\1\1\2\uffff\30\1\7\uffff\1\1\1\2\1\uffff"+
+        "\6\1\11\2\36\uffff\1\1\101\uffff";
     static final String DFA26_specialS =
-        "\1\4\13\uffff\1\7\1\15\2\uffff\1\12\1\13\1\3\1\5\1\1\40\uffff\1"+
-        "\0\1\10\1\uffff\1\2\1\uffff\1\14\72\uffff\1\11\1\6}>";
+        "\1\1\105\uffff\1\7\1\uffff\1\15\32\uffff\1\12\1\13\1\4\1\5\1\3"+
+        "\60\uffff\1\2\1\uffff\1\10\1\uffff\1\0\1\uffff\1\14\72\uffff\1\11"+
+        "\1\6}>";
     static final String[] DFA26_transitionS = {
-            "\1\5\2\uffff\1\5\2\uffff\1\12\1\uffff\6\5\1\uffff\3\5\1\1\5"+
-            "\uffff\4\5\4\6\4\7\1\11\1\10\1\2\1\3\5\10\1\4",
-            "\1\13\2\uffff\1\13\2\uffff\1\14\1\uffff\6\13\1\uffff\4\13"+
-            "\5\uffff\26\13",
+            "\1\5\2\uffff\1\6\2\uffff\1\43\1\uffff\1\7\1\10\1\11\1\12\1"+
+            "\13\1\14\1\uffff\1\15\1\16\1\17\1\1\5\uffff\1\20\1\21\1\22\1"+
+            "\23\1\24\1\25\1\26\1\27\1\30\1\31\1\32\1\33\1\42\1\41\1\2\1"+
+            "\3\1\37\1\40\1\35\1\36\1\34\1\4",
+            "\1\47\2\uffff\1\50\2\uffff\1\106\1\uffff\1\51\1\52\1\53\1"+
+            "\54\1\55\1\56\1\uffff\1\57\1\60\1\61\1\62\5\uffff\1\63\1\64"+
+            "\1\65\1\66\1\67\1\70\1\71\1\72\1\73\1\74\1\75\1\76\1\105\1\104"+
+            "\1\44\1\45\1\102\1\103\1\100\1\101\1\77\1\46",
             "",
             "",
             "",
@@ -10051,124 +11007,245 @@ public class CMISParser extends Parser {
             "",
             "",
             "",
-            "\1\13\2\uffff\1\13\2\uffff\1\13\1\26\6\13\1\uffff\4\13\5\uffff"+
-            "\14\13\1\25\1\24\1\15\1\16\1\22\1\23\1\20\1\21\1\17\1\13",
-            "\1\27\1\13\1\26\6\uffff\1\13\3\uffff\11\13\11\uffff\11\26",
-            "\1\30\2\uffff\1\31\4\uffff\1\32\1\33\1\34\1\35\1\36\1\37\1"+
-            "\uffff\1\40\1\41\1\42\1\43\5\uffff\1\44\1\45\1\46\1\47\1\50"+
-            "\1\51\1\52\1\53\1\54\1\55\1\56\1\57\2\uffff\1\64\3\uffff\1\61"+
-            "\1\62\1\60\1\63",
-            "\1\13\36\uffff\1\65",
-            "\1\13\1\26\6\uffff\1\13\4\uffff\5\13\14\uffff\11\26",
-            "\1\13\1\26\6\uffff\1\13\4\uffff\5\13\14\uffff\11\26",
-            "\1\26\6\uffff\1\13\4\uffff\5\13\14\uffff\11\26",
-            "\1\26\6\uffff\1\13\4\uffff\5\13\14\uffff\11\26",
-            "\1\26\6\uffff\1\13\4\uffff\5\13\14\uffff\11\26",
-            "\1\66\1\67",
             "",
-            "\1\70\1\71",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\72",
-            "\1\26\6\uffff\1\13\4\uffff\5\13\14\uffff\11\26",
-            "\1\26\6\uffff\1\13\4\uffff\5\13\14\uffff\11\26",
-            "\1\73\2\uffff\1\74\4\uffff\1\75\1\76\1\77\1\100\1\101\1\102"+
-            "\1\uffff\1\103\1\104\1\105\1\106\5\uffff\1\107\1\110\1\111\1"+
-            "\112\1\113\1\114\1\115\1\116\1\117\1\120\1\121\1\122\2\uffff"+
-            "\1\127\3\uffff\1\124\1\125\1\123\1\126",
-            "\1\26\6\uffff\1\13\3\uffff\11\13\11\uffff\11\26",
-            "\1\130\2\uffff\1\131\4\uffff\1\132\1\133\1\134\1\135\1\136"+
-            "\1\137\1\uffff\1\140\1\141\1\142\1\143\5\uffff\1\144\1\145\1"+
-            "\146\1\147\1\150\1\151\1\152\1\153\1\154\1\155\1\156\1\157\2"+
-            "\uffff\1\164\3\uffff\1\161\1\162\1\160\1\163",
-            "\1\27\1\uffff\1\26\6\uffff\1\13\3\uffff\11\13\11\uffff\11"+
-            "\26",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\165",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\166",
-            "\1\26\6\uffff\1\13\4\uffff\5\13\14\uffff\11\26",
-            "\1\26\6\uffff\1\13\3\uffff\11\13\11\uffff\11\26"
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\113\2\uffff\1\114\2\uffff\1\151\1\152\1\115\1\116\1\117"+
+            "\1\120\1\121\1\122\1\uffff\1\123\1\124\1\125\1\107\5\uffff\1"+
+            "\126\1\127\1\130\1\131\1\132\1\133\1\134\1\135\1\136\1\137\1"+
+            "\140\1\141\1\150\1\147\1\110\1\111\1\145\1\146\1\143\1\144\1"+
+            "\142\1\112",
+            "",
+            "\1\153\1\155\1\152\6\uffff\1\154\3\uffff\1\156\5\154\1\157"+
+            "\1\160\1\161\11\uffff\1\172\1\166\1\162\1\163\1\164\1\165\1"+
+            "\167\1\170\1\171",
+            "\1\173\2\uffff\1\174\4\uffff\1\175\1\176\1\177\1\u0080\1\u0081"+
+            "\1\u0082\1\uffff\1\u0083\1\u0084\1\u0085\1\u0086\5\uffff\1\u0087"+
+            "\1\u0088\1\u0089\1\u008a\1\u008b\1\u008c\1\u008d\1\u008e\1\u008f"+
+            "\1\u0090\1\u0091\1\u0092\2\uffff\1\u0097\3\uffff\1\u0094\1\u0095"+
+            "\1\u0093\1\u0096",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\155\36\uffff\1\u0098",
+            "\1\155\1\152\6\uffff\1\u0099\4\uffff\5\u0099\14\uffff\1\172"+
+            "\1\166\1\162\1\163\1\164\1\165\1\167\1\170\1\171",
+            "\1\155\1\152\6\uffff\1\u0099\4\uffff\5\u0099\14\uffff\1\172"+
+            "\1\166\1\162\1\163\1\164\1\165\1\167\1\170\1\171",
+            "\1\152\6\uffff\1\u0099\4\uffff\5\u0099\14\uffff\1\172\1\166"+
+            "\1\162\1\163\1\164\1\165\1\167\1\170\1\171",
+            "\1\152\6\uffff\1\u0099\4\uffff\5\u0099\14\uffff\1\172\1\166"+
+            "\1\162\1\163\1\164\1\165\1\167\1\170\1\171",
+            "\1\152\6\uffff\1\u0099\4\uffff\5\u0099\14\uffff\1\172\1\166"+
+            "\1\162\1\163\1\164\1\165\1\167\1\170\1\171",
+            "\1\u009a\1\u009b",
+            "",
+            "",
+            "\1\u009c\1\u009d",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\u009e",
+            "\1\152\6\uffff\1\u0099\4\uffff\5\u0099\14\uffff\1\172\1\166"+
+            "\1\162\1\163\1\164\1\165\1\167\1\170\1\171",
+            "",
+            "\1\152\6\uffff\1\u0099\4\uffff\5\u0099\14\uffff\1\172\1\166"+
+            "\1\162\1\163\1\164\1\165\1\167\1\170\1\171",
+            "\1\u009f\2\uffff\1\u00a0\4\uffff\1\u00a1\1\u00a2\1\u00a3\1"+
+            "\u00a4\1\u00a5\1\u00a6\1\uffff\1\u00a7\1\u00a8\1\u00a9\1\u00aa"+
+            "\5\uffff\1\u00ab\1\u00ac\1\u00ad\1\u00ae\1\u00af\1\u00b0\1\u00b1"+
+            "\1\u00b2\1\u00b3\1\u00b4\1\u00b5\1\u00b6\2\uffff\1\u00bb\3\uffff"+
+            "\1\u00b8\1\u00b9\1\u00b7\1\u00ba",
+            "\1\152\6\uffff\1\154\3\uffff\1\156\5\154\1\157\1\160\1\161"+
+            "\11\uffff\1\172\1\166\1\162\1\163\1\164\1\165\1\167\1\170\1"+
+            "\171",
+            "\1\u00bc\2\uffff\1\u00bd\4\uffff\1\u00be\1\u00bf\1\u00c0\1"+
+            "\u00c1\1\u00c2\1\u00c3\1\uffff\1\u00c4\1\u00c5\1\u00c6\1\u00c7"+
+            "\5\uffff\1\u00c8\1\u00c9\1\u00ca\1\u00cb\1\u00cc\1\u00cd\1\u00ce"+
+            "\1\u00cf\1\u00d0\1\u00d1\1\u00d2\1\u00d3\2\uffff\1\u00d8\3\uffff"+
+            "\1\u00d5\1\u00d6\1\u00d4\1\u00d7",
+            "\1\153\1\uffff\1\152\6\uffff\1\154\3\uffff\1\156\5\154\1\157"+
+            "\1\160\1\161\11\uffff\1\172\1\166\1\162\1\163\1\164\1\165\1"+
+            "\167\1\170\1\171",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00d9",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\u00da",
+            "\1\152\6\uffff\1\u0099\4\uffff\5\u0099\14\uffff\1\172\1\166"+
+            "\1\162\1\163\1\164\1\165\1\167\1\170\1\171",
+            "\1\152\6\uffff\1\154\3\uffff\1\156\5\154\1\157\1\160\1\161"+
+            "\11\uffff\1\172\1\166\1\162\1\163\1\164\1\165\1\167\1\170\1"+
+            "\171"
     };
 
     static final short[] DFA26_eot = DFA.unpackEncodedString(DFA26_eotS);
@@ -10208,66 +11285,47 @@ public class CMISParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA26_53 = input.LA(1);
+                        int LA26_156 = input.LA(1);
 
                          
-                        int index26_53 = input.index();
+                        int index26_156 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_53==EQUALS||(LA26_53>=NOTEQUALS && LA26_53<=GREATERTHANOREQUALS)) ) {s = 11;}
+                        if ( (LA26_156==EQUALS||(LA26_156>=NOTEQUALS && LA26_156<=GREATERTHANOREQUALS)) ) {s = 108;}
 
-                        else if ( (LA26_53==RPAREN||(LA26_53>=COLON && LA26_53<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_156==NOT) ) {s = 110;}
+
+                        else if ( (LA26_156==IN) ) {s = 111;}
+
+                        else if ( (LA26_156==LIKE) ) {s = 112;}
+
+                        else if ( (LA26_156==IS) ) {s = 113;}
+
+                        else if ( (LA26_156==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_156==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_156==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_156==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_156==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_156==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_156==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_156==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_156==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_156==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_53);
+                        input.seek(index26_156);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA26_20 = input.LA(1);
-
-                         
-                        int index26_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA26_20==EQUALS||(LA26_20>=NOTEQUALS && LA26_20<=GREATERTHANOREQUALS)) ) {s = 11;}
-
-                        else if ( (LA26_20==RPAREN||(LA26_20>=COLON && LA26_20<=TIMESTAMP)) && ((strict == false))) {s = 22;}
-
-                         
-                        input.seek(index26_20);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA26_56 = input.LA(1);
-
-                         
-                        int index26_56 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA26_56==EQUALS||(LA26_56>=NOT && LA26_56<=IS)) ) {s = 11;}
-
-                        else if ( (LA26_56==RPAREN||(LA26_56>=COLON && LA26_56<=TIMESTAMP)) && ((strict == false))) {s = 22;}
-
-                         
-                        input.seek(index26_56);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA26_18 = input.LA(1);
-
-                         
-                        int index26_18 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA26_18==EQUALS||(LA26_18>=NOTEQUALS && LA26_18<=GREATERTHANOREQUALS)) ) {s = 11;}
-
-                        else if ( (LA26_18==RPAREN||(LA26_18>=COLON && LA26_18<=TIMESTAMP)) && ((strict == false))) {s = 22;}
-
-                         
-                        input.seek(index26_18);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
                         int LA26_0 = input.LA(1);
 
                          
@@ -10282,177 +11340,550 @@ public class CMISParser extends Parser {
 
                         else if ( (LA26_0==SCORE) ) {s = 4;}
 
-                        else if ( (LA26_0==SELECT||LA26_0==AS||(LA26_0>=FROM && LA26_0<=ON)||(LA26_0>=WHERE && LA26_0<=AND)||(LA26_0>=IN && LA26_0<=NULL)) && ((strict == false))) {s = 5;}
+                        else if ( (LA26_0==SELECT) && ((strict == false))) {s = 5;}
 
-                        else if ( ((LA26_0>=ANY && LA26_0<=IN_TREE)) ) {s = 6;}
+                        else if ( (LA26_0==AS) && ((strict == false))) {s = 6;}
 
-                        else if ( ((LA26_0>=ORDER && LA26_0<=DESC)) && ((strict == false))) {s = 7;}
+                        else if ( (LA26_0==FROM) && ((strict == false))) {s = 7;}
 
-                        else if ( (LA26_0==QUOTED_STRING||(LA26_0>=FLOATING_POINT_LITERAL && LA26_0<=TIMESTAMP)) ) {s = 8;}
+                        else if ( (LA26_0==JOIN) && ((strict == false))) {s = 8;}
 
-                        else if ( (LA26_0==COLON) && ((strict == false))) {s = 9;}
+                        else if ( (LA26_0==INNER) && ((strict == false))) {s = 9;}
 
-                        else if ( (LA26_0==LPAREN) ) {s = 10;}
+                        else if ( (LA26_0==LEFT) && ((strict == false))) {s = 10;}
+
+                        else if ( (LA26_0==OUTER) && ((strict == false))) {s = 11;}
+
+                        else if ( (LA26_0==ON) && ((strict == false))) {s = 12;}
+
+                        else if ( (LA26_0==WHERE) && ((strict == false))) {s = 13;}
+
+                        else if ( (LA26_0==OR) && ((strict == false))) {s = 14;}
+
+                        else if ( (LA26_0==AND) && ((strict == false))) {s = 15;}
+
+                        else if ( (LA26_0==IN) && ((strict == false))) {s = 16;}
+
+                        else if ( (LA26_0==LIKE) && ((strict == false))) {s = 17;}
+
+                        else if ( (LA26_0==IS) && ((strict == false))) {s = 18;}
+
+                        else if ( (LA26_0==NULL) && ((strict == false))) {s = 19;}
+
+                        else if ( (LA26_0==ANY) ) {s = 20;}
+
+                        else if ( (LA26_0==CONTAINS) ) {s = 21;}
+
+                        else if ( (LA26_0==IN_FOLDER) ) {s = 22;}
+
+                        else if ( (LA26_0==IN_TREE) ) {s = 23;}
+
+                        else if ( (LA26_0==ORDER) && ((strict == false))) {s = 24;}
+
+                        else if ( (LA26_0==BY) && ((strict == false))) {s = 25;}
+
+                        else if ( (LA26_0==ASC) && ((strict == false))) {s = 26;}
+
+                        else if ( (LA26_0==DESC) && ((strict == false))) {s = 27;}
+
+                        else if ( (LA26_0==TIMESTAMP) ) {s = 28;}
+
+                        else if ( (LA26_0==TRUE) ) {s = 29;}
+
+                        else if ( (LA26_0==FALSE) ) {s = 30;}
+
+                        else if ( (LA26_0==FLOATING_POINT_LITERAL) ) {s = 31;}
+
+                        else if ( (LA26_0==DECIMAL_INTEGER_LITERAL) ) {s = 32;}
+
+                        else if ( (LA26_0==QUOTED_STRING) ) {s = 33;}
+
+                        else if ( (LA26_0==COLON) && ((strict == false))) {s = 34;}
+
+                        else if ( (LA26_0==LPAREN) ) {s = 35;}
 
                          
                         input.seek(index26_0);
                         if ( s>=0 ) return s;
                         break;
-                    case 5 : 
-                        int LA26_19 = input.LA(1);
+                    case 2 : 
+                        int LA26_152 = input.LA(1);
 
                          
-                        int index26_19 = input.index();
+                        int index26_152 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_19==EQUALS||(LA26_19>=NOTEQUALS && LA26_19<=GREATERTHANOREQUALS)) ) {s = 11;}
+                        if ( (LA26_152==EQUALS||(LA26_152>=NOTEQUALS && LA26_152<=GREATERTHANOREQUALS)) ) {s = 153;}
 
-                        else if ( (LA26_19==RPAREN||(LA26_19>=COLON && LA26_19<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_152==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_152==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_152==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_152==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_152==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_152==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_152==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_152==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_152==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_152==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_19);
+                        input.seek(index26_152);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA26_103 = input.LA(1);
+
+                         
+                        int index26_103 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA26_103==EQUALS||(LA26_103>=NOTEQUALS && LA26_103<=GREATERTHANOREQUALS)) ) {s = 153;}
+
+                        else if ( (LA26_103==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_103==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_103==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_103==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_103==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_103==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_103==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_103==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_103==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_103==COLON) && ((strict == false))) {s = 122;}
+
+                         
+                        input.seek(index26_103);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA26_101 = input.LA(1);
+
+                         
+                        int index26_101 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA26_101==EQUALS||(LA26_101>=NOTEQUALS && LA26_101<=GREATERTHANOREQUALS)) ) {s = 153;}
+
+                        else if ( (LA26_101==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_101==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_101==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_101==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_101==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_101==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_101==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_101==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_101==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_101==COLON) && ((strict == false))) {s = 122;}
+
+                         
+                        input.seek(index26_101);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA26_102 = input.LA(1);
+
+                         
+                        int index26_102 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA26_102==EQUALS||(LA26_102>=NOTEQUALS && LA26_102<=GREATERTHANOREQUALS)) ) {s = 153;}
+
+                        else if ( (LA26_102==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_102==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_102==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_102==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_102==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_102==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_102==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_102==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_102==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_102==COLON) && ((strict == false))) {s = 122;}
+
+                         
+                        input.seek(index26_102);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
-                        int LA26_118 = input.LA(1);
+                        int LA26_218 = input.LA(1);
 
                          
-                        int index26_118 = input.index();
+                        int index26_218 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_118==EQUALS||(LA26_118>=NOT && LA26_118<=IS)) ) {s = 11;}
+                        if ( (LA26_218==EQUALS||(LA26_218>=NOTEQUALS && LA26_218<=GREATERTHANOREQUALS)) ) {s = 108;}
 
-                        else if ( (LA26_118==RPAREN||(LA26_118>=COLON && LA26_118<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_218==NOT) ) {s = 110;}
+
+                        else if ( (LA26_218==IN) ) {s = 111;}
+
+                        else if ( (LA26_218==LIKE) ) {s = 112;}
+
+                        else if ( (LA26_218==IS) ) {s = 113;}
+
+                        else if ( (LA26_218==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_218==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_218==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_218==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_218==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_218==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_218==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_218==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_218==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_218==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_118);
+                        input.seek(index26_218);
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
-                        int LA26_12 = input.LA(1);
+                        int LA26_70 = input.LA(1);
 
                          
-                        int index26_12 = input.index();
+                        int index26_70 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_12==SELECT||LA26_12==AS||LA26_12==LPAREN||(LA26_12>=FROM && LA26_12<=ON)||(LA26_12>=WHERE && LA26_12<=NOT)||(LA26_12>=IN && LA26_12<=DESC)||LA26_12==SCORE) ) {s = 11;}
+                        if ( (LA26_70==NOT) ) {s = 71;}
 
-                        else if ( (LA26_12==ID) ) {s = 13;}
+                        else if ( (LA26_70==ID) ) {s = 72;}
 
-                        else if ( (LA26_12==DOUBLE_QUOTE) ) {s = 14;}
+                        else if ( (LA26_70==DOUBLE_QUOTE) ) {s = 73;}
 
-                        else if ( (LA26_12==TIMESTAMP) ) {s = 15;}
+                        else if ( (LA26_70==SCORE) ) {s = 74;}
 
-                        else if ( (LA26_12==TRUE) ) {s = 16;}
+                        else if ( (LA26_70==SELECT) ) {s = 75;}
 
-                        else if ( (LA26_12==FALSE) ) {s = 17;}
+                        else if ( (LA26_70==AS) ) {s = 76;}
 
-                        else if ( (LA26_12==FLOATING_POINT_LITERAL) ) {s = 18;}
+                        else if ( (LA26_70==FROM) ) {s = 77;}
 
-                        else if ( (LA26_12==DECIMAL_INTEGER_LITERAL) ) {s = 19;}
+                        else if ( (LA26_70==JOIN) ) {s = 78;}
 
-                        else if ( (LA26_12==QUOTED_STRING) ) {s = 20;}
+                        else if ( (LA26_70==INNER) ) {s = 79;}
 
-                        else if ( (LA26_12==COLON) ) {s = 21;}
+                        else if ( (LA26_70==LEFT) ) {s = 80;}
 
-                        else if ( (LA26_12==RPAREN) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_70==OUTER) ) {s = 81;}
+
+                        else if ( (LA26_70==ON) ) {s = 82;}
+
+                        else if ( (LA26_70==WHERE) ) {s = 83;}
+
+                        else if ( (LA26_70==OR) ) {s = 84;}
+
+                        else if ( (LA26_70==AND) ) {s = 85;}
+
+                        else if ( (LA26_70==IN) ) {s = 86;}
+
+                        else if ( (LA26_70==LIKE) ) {s = 87;}
+
+                        else if ( (LA26_70==IS) ) {s = 88;}
+
+                        else if ( (LA26_70==NULL) ) {s = 89;}
+
+                        else if ( (LA26_70==ANY) ) {s = 90;}
+
+                        else if ( (LA26_70==CONTAINS) ) {s = 91;}
+
+                        else if ( (LA26_70==IN_FOLDER) ) {s = 92;}
+
+                        else if ( (LA26_70==IN_TREE) ) {s = 93;}
+
+                        else if ( (LA26_70==ORDER) ) {s = 94;}
+
+                        else if ( (LA26_70==BY) ) {s = 95;}
+
+                        else if ( (LA26_70==ASC) ) {s = 96;}
+
+                        else if ( (LA26_70==DESC) ) {s = 97;}
+
+                        else if ( (LA26_70==TIMESTAMP) ) {s = 98;}
+
+                        else if ( (LA26_70==TRUE) ) {s = 99;}
+
+                        else if ( (LA26_70==FALSE) ) {s = 100;}
+
+                        else if ( (LA26_70==FLOATING_POINT_LITERAL) ) {s = 101;}
+
+                        else if ( (LA26_70==DECIMAL_INTEGER_LITERAL) ) {s = 102;}
+
+                        else if ( (LA26_70==QUOTED_STRING) ) {s = 103;}
+
+                        else if ( (LA26_70==COLON) ) {s = 104;}
+
+                        else if ( (LA26_70==LPAREN) ) {s = 105;}
+
+                        else if ( (LA26_70==RPAREN) && ((strict == false))) {s = 106;}
 
                          
-                        input.seek(index26_12);
+                        input.seek(index26_70);
                         if ( s>=0 ) return s;
                         break;
                     case 8 : 
-                        int LA26_54 = input.LA(1);
+                        int LA26_154 = input.LA(1);
 
                          
-                        int index26_54 = input.index();
+                        int index26_154 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_54==EQUALS||(LA26_54>=NOTEQUALS && LA26_54<=GREATERTHANOREQUALS)) ) {s = 11;}
+                        if ( (LA26_154==EQUALS||(LA26_154>=NOTEQUALS && LA26_154<=GREATERTHANOREQUALS)) ) {s = 153;}
 
-                        else if ( (LA26_54==RPAREN||(LA26_54>=COLON && LA26_54<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_154==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_154==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_154==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_154==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_154==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_154==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_154==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_154==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_154==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_154==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_54);
+                        input.seek(index26_154);
                         if ( s>=0 ) return s;
                         break;
                     case 9 : 
-                        int LA26_117 = input.LA(1);
+                        int LA26_217 = input.LA(1);
 
                          
-                        int index26_117 = input.index();
+                        int index26_217 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_117==EQUALS||(LA26_117>=NOTEQUALS && LA26_117<=GREATERTHANOREQUALS)) ) {s = 11;}
+                        if ( (LA26_217==EQUALS||(LA26_217>=NOTEQUALS && LA26_217<=GREATERTHANOREQUALS)) ) {s = 153;}
 
-                        else if ( (LA26_117==RPAREN||(LA26_117>=COLON && LA26_117<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_217==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_217==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_217==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_217==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_217==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_217==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_217==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_217==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_217==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_217==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_117);
+                        input.seek(index26_217);
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
-                        int LA26_16 = input.LA(1);
+                        int LA26_99 = input.LA(1);
 
                          
-                        int index26_16 = input.index();
+                        int index26_99 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_16==LPAREN||LA26_16==EQUALS||(LA26_16>=NOTEQUALS && LA26_16<=GREATERTHANOREQUALS)) ) {s = 11;}
+                        if ( (LA26_99==LPAREN) ) {s = 109;}
 
-                        else if ( (LA26_16==RPAREN||(LA26_16>=COLON && LA26_16<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_99==EQUALS||(LA26_99>=NOTEQUALS && LA26_99<=GREATERTHANOREQUALS)) ) {s = 153;}
+
+                        else if ( (LA26_99==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_99==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_99==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_99==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_99==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_99==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_99==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_99==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_99==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_99==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_16);
+                        input.seek(index26_99);
                         if ( s>=0 ) return s;
                         break;
                     case 11 : 
-                        int LA26_17 = input.LA(1);
+                        int LA26_100 = input.LA(1);
 
                          
-                        int index26_17 = input.index();
+                        int index26_100 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_17==LPAREN||LA26_17==EQUALS||(LA26_17>=NOTEQUALS && LA26_17<=GREATERTHANOREQUALS)) ) {s = 11;}
+                        if ( (LA26_100==LPAREN) ) {s = 109;}
 
-                        else if ( (LA26_17==RPAREN||(LA26_17>=COLON && LA26_17<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_100==EQUALS||(LA26_100>=NOTEQUALS && LA26_100<=GREATERTHANOREQUALS)) ) {s = 153;}
+
+                        else if ( (LA26_100==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_100==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_100==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_100==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_100==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_100==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_100==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_100==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_100==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_100==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_17);
+                        input.seek(index26_100);
                         if ( s>=0 ) return s;
                         break;
                     case 12 : 
-                        int LA26_58 = input.LA(1);
+                        int LA26_158 = input.LA(1);
 
                          
-                        int index26_58 = input.index();
+                        int index26_158 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_58==DOT) ) {s = 23;}
+                        if ( (LA26_158==DOT) ) {s = 107;}
 
-                        else if ( (LA26_58==EQUALS||(LA26_58>=NOT && LA26_58<=IS)) ) {s = 11;}
+                        else if ( (LA26_158==EQUALS||(LA26_158>=NOTEQUALS && LA26_158<=GREATERTHANOREQUALS)) ) {s = 108;}
 
-                        else if ( (LA26_58==RPAREN||(LA26_58>=COLON && LA26_58<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_158==NOT) ) {s = 110;}
+
+                        else if ( (LA26_158==IN) ) {s = 111;}
+
+                        else if ( (LA26_158==LIKE) ) {s = 112;}
+
+                        else if ( (LA26_158==IS) ) {s = 113;}
+
+                        else if ( (LA26_158==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_158==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_158==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_158==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_158==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_158==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_158==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_158==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_158==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_158==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_58);
+                        input.seek(index26_158);
                         if ( s>=0 ) return s;
                         break;
                     case 13 : 
-                        int LA26_13 = input.LA(1);
+                        int LA26_72 = input.LA(1);
 
                          
-                        int index26_13 = input.index();
+                        int index26_72 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA26_13==DOT) ) {s = 23;}
+                        if ( (LA26_72==DOT) ) {s = 107;}
 
-                        else if ( (LA26_13==LPAREN||LA26_13==EQUALS||(LA26_13>=NOT && LA26_13<=IS)) ) {s = 11;}
+                        else if ( (LA26_72==EQUALS||(LA26_72>=NOTEQUALS && LA26_72<=GREATERTHANOREQUALS)) ) {s = 108;}
 
-                        else if ( (LA26_13==RPAREN||(LA26_13>=COLON && LA26_13<=TIMESTAMP)) && ((strict == false))) {s = 22;}
+                        else if ( (LA26_72==LPAREN) ) {s = 109;}
+
+                        else if ( (LA26_72==NOT) ) {s = 110;}
+
+                        else if ( (LA26_72==IN) ) {s = 111;}
+
+                        else if ( (LA26_72==LIKE) ) {s = 112;}
+
+                        else if ( (LA26_72==IS) ) {s = 113;}
+
+                        else if ( (LA26_72==RPAREN) && ((strict == false))) {s = 106;}
+
+                        else if ( (LA26_72==ID) && ((strict == false))) {s = 114;}
+
+                        else if ( (LA26_72==DOUBLE_QUOTE) && ((strict == false))) {s = 115;}
+
+                        else if ( (LA26_72==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 116;}
+
+                        else if ( (LA26_72==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 117;}
+
+                        else if ( (LA26_72==QUOTED_STRING) && ((strict == false))) {s = 118;}
+
+                        else if ( (LA26_72==TRUE) && ((strict == false))) {s = 119;}
+
+                        else if ( (LA26_72==FALSE) && ((strict == false))) {s = 120;}
+
+                        else if ( (LA26_72==TIMESTAMP) && ((strict == false))) {s = 121;}
+
+                        else if ( (LA26_72==COLON) && ((strict == false))) {s = 122;}
 
                          
-                        input.seek(index26_13);
+                        input.seek(index26_72);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -10464,20 +11895,48 @@ public class CMISParser extends Parser {
         }
     }
     static final String DFA27_eotS =
-        "\12\uffff";
+        "\44\uffff";
     static final String DFA27_eofS =
-        "\12\uffff";
+        "\44\uffff";
     static final String DFA27_minS =
-        "\1\40\11\uffff";
+        "\1\40\43\uffff";
     static final String DFA27_maxS =
-        "\1\115\11\uffff";
+        "\1\115\43\uffff";
     static final String DFA27_acceptS =
-        "\1\uffff\10\1\1\2";
+        "\1\uffff\42\1\1\2";
     static final String DFA27_specialS =
-        "\1\0\11\uffff}>";
+        "\1\0\43\uffff}>";
     static final String[] DFA27_transitionS = {
-            "\1\4\2\uffff\1\4\2\uffff\1\11\1\uffff\6\4\1\uffff\4\4\5\uffff"+
-            "\4\4\4\5\4\6\1\10\1\7\1\1\1\2\5\7\1\3",
+            "\1\4\2\uffff\1\5\2\uffff\1\43\1\uffff\1\6\1\7\1\10\1\11\1\12"+
+            "\1\13\1\uffff\1\14\1\15\1\16\1\17\5\uffff\1\20\1\21\1\22\1\23"+
+            "\1\24\1\25\1\26\1\27\1\30\1\31\1\32\1\33\1\42\1\41\1\1\1\2\1"+
+            "\37\1\40\1\35\1\36\1\34\1\3",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "",
             "",
             "",
@@ -10538,17 +11997,69 @@ public class CMISParser extends Parser {
 
                         else if ( (LA27_0==SCORE) ) {s = 3;}
 
-                        else if ( (LA27_0==SELECT||LA27_0==AS||(LA27_0>=FROM && LA27_0<=ON)||(LA27_0>=WHERE && LA27_0<=NOT)||(LA27_0>=IN && LA27_0<=NULL)) && ((strict == false))) {s = 4;}
+                        else if ( (LA27_0==SELECT) && ((strict == false))) {s = 4;}
 
-                        else if ( ((LA27_0>=ANY && LA27_0<=IN_TREE)) ) {s = 5;}
+                        else if ( (LA27_0==AS) && ((strict == false))) {s = 5;}
 
-                        else if ( ((LA27_0>=ORDER && LA27_0<=DESC)) && ((strict == false))) {s = 6;}
+                        else if ( (LA27_0==FROM) && ((strict == false))) {s = 6;}
 
-                        else if ( (LA27_0==QUOTED_STRING||(LA27_0>=FLOATING_POINT_LITERAL && LA27_0<=TIMESTAMP)) ) {s = 7;}
+                        else if ( (LA27_0==JOIN) && ((strict == false))) {s = 7;}
 
-                        else if ( (LA27_0==COLON) && ((strict == false))) {s = 8;}
+                        else if ( (LA27_0==INNER) && ((strict == false))) {s = 8;}
 
-                        else if ( (LA27_0==LPAREN) ) {s = 9;}
+                        else if ( (LA27_0==LEFT) && ((strict == false))) {s = 9;}
+
+                        else if ( (LA27_0==OUTER) && ((strict == false))) {s = 10;}
+
+                        else if ( (LA27_0==ON) && ((strict == false))) {s = 11;}
+
+                        else if ( (LA27_0==WHERE) && ((strict == false))) {s = 12;}
+
+                        else if ( (LA27_0==OR) && ((strict == false))) {s = 13;}
+
+                        else if ( (LA27_0==AND) && ((strict == false))) {s = 14;}
+
+                        else if ( (LA27_0==NOT) && ((strict == false))) {s = 15;}
+
+                        else if ( (LA27_0==IN) && ((strict == false))) {s = 16;}
+
+                        else if ( (LA27_0==LIKE) && ((strict == false))) {s = 17;}
+
+                        else if ( (LA27_0==IS) && ((strict == false))) {s = 18;}
+
+                        else if ( (LA27_0==NULL) && ((strict == false))) {s = 19;}
+
+                        else if ( (LA27_0==ANY) ) {s = 20;}
+
+                        else if ( (LA27_0==CONTAINS) ) {s = 21;}
+
+                        else if ( (LA27_0==IN_FOLDER) ) {s = 22;}
+
+                        else if ( (LA27_0==IN_TREE) ) {s = 23;}
+
+                        else if ( (LA27_0==ORDER) && ((strict == false))) {s = 24;}
+
+                        else if ( (LA27_0==BY) && ((strict == false))) {s = 25;}
+
+                        else if ( (LA27_0==ASC) && ((strict == false))) {s = 26;}
+
+                        else if ( (LA27_0==DESC) && ((strict == false))) {s = 27;}
+
+                        else if ( (LA27_0==TIMESTAMP) ) {s = 28;}
+
+                        else if ( (LA27_0==TRUE) ) {s = 29;}
+
+                        else if ( (LA27_0==FALSE) ) {s = 30;}
+
+                        else if ( (LA27_0==FLOATING_POINT_LITERAL) ) {s = 31;}
+
+                        else if ( (LA27_0==DECIMAL_INTEGER_LITERAL) ) {s = 32;}
+
+                        else if ( (LA27_0==QUOTED_STRING) ) {s = 33;}
+
+                        else if ( (LA27_0==COLON) && ((strict == false))) {s = 34;}
+
+                        else if ( (LA27_0==LPAREN) ) {s = 35;}
 
                          
                         input.seek(index27_0);
@@ -10563,288 +12074,355 @@ public class CMISParser extends Parser {
         }
     }
     static final String DFA28_eotS =
-        "\u00e5\uffff";
+        "\u0113\uffff";
     static final String DFA28_eofS =
-        "\u0083\uffff\1\145\36\uffff\1\u0084\35\uffff\1\u0084\44\uffff";
+        "\u00a6\uffff\1\u00ec\36\uffff\1\u00f2\36\uffff\1\u00f2\56\uffff";
     static final String DFA28_minS =
-        "\1\40\1\45\1\40\2\uffff\7\46\2\uffff\1\106\2\uffff\1\70\3\uffff"+
-        "\35\107\1\uffff\3\47\1\uffff\1\56\1\40\1\45\1\42\1\40\1\47\1\42"+
-        "\1\40\1\47\1\42\1\40\1\47\35\107\1\106\1\70\4\uffff\35\107\1\47"+
-        "\1\uffff\35\107\1\47\35\107\1\47\2\56\1\40\3\42\35\107\1\56";
+        "\1\40\1\45\1\40\21\uffff\4\46\4\uffff\3\46\4\uffff\1\106\2\uffff"+
+        "\1\70\3\uffff\35\107\2\uffff\3\47\2\uffff\1\56\1\40\1\45\1\42\1"+
+        "\40\1\47\7\uffff\1\42\1\40\1\47\1\42\1\40\1\47\35\107\1\106\1\uffff"+
+        "\1\70\10\uffff\35\107\1\47\1\uffff\35\107\1\47\1\uffff\35\107\1"+
+        "\47\2\56\1\40\1\42\5\uffff\1\42\5\uffff\1\42\35\107\1\56";
     static final String DFA28_maxS =
-        "\1\115\1\72\1\115\2\uffff\1\107\3\46\1\105\2\67\2\uffff\1\107\2"+
-        "\uffff\1\71\3\uffff\35\107\1\uffff\3\114\1\uffff\1\72\1\115\1\72"+
-        "\1\114\1\115\2\114\1\115\2\114\1\115\1\114\36\107\1\71\4\uffff\35"+
-        "\107\1\100\1\uffff\35\107\1\100\35\107\1\100\2\72\1\115\3\114\35"+
-        "\107\1\72";
+        "\1\115\1\72\1\115\21\uffff\1\107\3\46\4\uffff\1\105\2\67\4\uffff"+
+        "\1\107\2\uffff\1\71\3\uffff\35\107\2\uffff\3\114\2\uffff\1\72\1"+
+        "\115\1\72\1\114\1\115\1\114\7\uffff\1\114\1\115\2\114\1\115\1\114"+
+        "\36\107\1\uffff\1\71\10\uffff\35\107\1\100\1\uffff\35\107\1\100"+
+        "\1\uffff\35\107\1\100\2\72\1\115\1\114\5\uffff\1\114\5\uffff\1\114"+
+        "\35\107\1\72";
     static final String DFA28_acceptS =
-        "\3\uffff\2\1\7\uffff\2\5\1\uffff\2\1\1\uffff\1\2\1\3\1\4\35\uffff"+
-        "\1\6\3\uffff\1\5\53\uffff\1\2\1\3\1\4\1\7\36\uffff\1\10\140\uffff";
+        "\3\uffff\21\1\4\uffff\4\1\3\uffff\4\5\1\uffff\2\1\1\uffff\1\2\1"+
+        "\3\1\4\35\uffff\2\6\3\uffff\2\5\6\uffff\7\1\44\uffff\1\1\1\uffff"+
+        "\1\2\1\3\1\4\1\7\4\1\36\uffff\1\10\36\uffff\1\10\42\uffff\5\7\1"+
+        "\uffff\5\10\37\uffff";
     static final String DFA28_specialS =
-        "\1\42\1\102\1\72\2\uffff\1\2\3\uffff\1\51\1\12\1\14\11\uffff\1"+
+        "\1\42\1\102\1\72\21\uffff\1\2\7\uffff\1\51\1\12\1\14\13\uffff\1"+
         "\104\1\112\1\117\1\124\1\106\1\113\1\73\1\75\1\50\1\56\1\34\1\43"+
         "\1\20\1\25\1\10\1\5\1\13\1\0\1\4\1\125\1\121\1\114\1\105\1\76\1"+
-        "\70\1\57\1\47\1\67\1\115\1\uffff\1\120\1\40\1\37\3\uffff\1\123\1"+
-        "\1\1\uffff\1\64\1\27\1\uffff\1\7\1\26\1\uffff\1\6\35\uffff\1\60"+
-        "\1\62\41\uffff\1\122\36\uffff\1\22\35\uffff\1\32\1\uffff\1\53\1"+
-        "\3\1\31\1\24\1\23\1\21\1\17\1\16\1\15\1\44\1\41\1\36\1\35\1\33\1"+
-        "\30\1\55\1\61\1\63\1\45\1\46\1\52\1\54\1\77\1\100\1\101\1\66\1\71"+
-        "\1\74\1\110\1\107\1\111\1\103\1\116\1\11\1\65}>";
+        "\70\1\57\1\47\1\67\1\115\2\uffff\1\120\1\40\1\37\4\uffff\1\123\1"+
+        "\1\1\uffff\1\64\7\uffff\1\27\1\uffff\1\7\1\26\1\uffff\1\6\35\uffff"+
+        "\1\60\1\uffff\1\62\45\uffff\1\122\36\uffff\1\22\36\uffff\1\32\1"+
+        "\uffff\1\53\1\3\1\31\5\uffff\1\24\5\uffff\1\23\1\21\1\17\1\16\1"+
+        "\15\1\44\1\41\1\36\1\35\1\33\1\30\1\55\1\61\1\63\1\45\1\46\1\52"+
+        "\1\54\1\77\1\100\1\101\1\66\1\71\1\74\1\110\1\107\1\111\1\103\1"+
+        "\116\1\11\1\65}>";
     static final String[] DFA28_transitionS = {
-            "\1\4\2\uffff\1\4\4\uffff\6\4\1\uffff\4\4\5\uffff\4\4\1\5\1"+
-            "\6\1\7\1\10\4\4\1\15\1\14\1\1\1\2\2\14\1\12\1\13\1\11\1\3",
-            "\1\16\1\20\7\uffff\1\17\3\uffff\1\21\5\17\1\22\1\23\1\24",
-            "\1\25\2\uffff\1\26\4\uffff\1\27\1\30\1\31\1\32\1\33\1\34\1"+
-            "\uffff\1\35\1\36\1\37\1\40\5\uffff\1\41\1\42\1\43\1\44\1\45"+
-            "\1\46\1\47\1\50\1\51\1\52\1\53\1\54\2\uffff\1\61\3\uffff\1\56"+
-            "\1\57\1\55\1\60",
-            "",
-            "",
-            "\1\20\37\uffff\2\62",
-            "\1\63",
-            "\1\64",
-            "\1\65",
-            "\1\20\36\uffff\1\66",
-            "\1\20\7\uffff\1\66\4\uffff\5\66",
-            "\1\20\7\uffff\1\66\4\uffff\5\66",
-            "",
-            "",
-            "\1\67\1\70",
-            "",
-            "",
-            "\1\22\1\23",
-            "",
-            "",
-            "",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "\1\71",
-            "",
-            "\1\20\34\uffff\1\20\1\74\1\72\1\73\5\20",
-            "\1\20\34\uffff\1\20\1\77\1\75\1\76\5\20",
-            "\1\20\34\uffff\1\20\1\102\1\100\1\101\5\20",
-            "",
-            "\1\17\3\uffff\1\21\5\17\1\22\1\23\1\24",
-            "\1\103\2\uffff\1\104\4\uffff\1\105\1\106\1\107\1\110\1\111"+
-            "\1\112\1\uffff\1\113\1\114\1\115\1\116\5\uffff\1\117\1\120\1"+
-            "\121\1\122\1\123\1\124\1\125\1\126\1\127\1\130\1\131\1\132\2"+
-            "\uffff\1\137\3\uffff\1\134\1\135\1\133\1\136",
-            "\1\140\10\uffff\1\20\3\uffff\1\141\5\20\1\142\1\143\1\144",
-            "\1\145\2\uffff\1\20\1\uffff\1\20\34\uffff\11\20",
-            "\1\146\2\uffff\1\147\4\uffff\1\150\1\151\1\152\1\153\1\154"+
-            "\1\155\1\uffff\1\156\1\157\1\160\1\161\5\uffff\1\162\1\163\1"+
-            "\164\1\165\1\166\1\167\1\170\1\171\1\172\1\173\1\174\1\175\2"+
-            "\uffff\1\u0082\3\uffff\1\177\1\u0080\1\176\1\u0081",
-            "\1\u0083\34\uffff\11\20",
-            "\1\u0084\2\uffff\1\20\1\uffff\1\20\34\uffff\11\20",
-            "\1\u0085\2\uffff\1\u0086\4\uffff\1\u0087\1\u0088\1\u0089\1"+
-            "\u008a\1\u008b\1\u008c\1\uffff\1\u008d\1\u008e\1\u008f\1\u0090"+
-            "\5\uffff\1\u0091\1\u0092\1\u0093\1\u0094\1\u0095\1\u0096\1\u0097"+
-            "\1\u0098\1\u0099\1\u009a\1\u009b\1\u009c\2\uffff\1\u00a1\3\uffff"+
-            "\1\u009e\1\u009f\1\u009d\1\u00a0",
-            "\1\u00a2\34\uffff\11\20",
-            "\1\u0084\2\uffff\1\20\1\uffff\1\20\34\uffff\11\20",
-            "\1\u00a3\2\uffff\1\u00a4\4\uffff\1\u00a5\1\u00a6\1\u00a7\1"+
-            "\u00a8\1\u00a9\1\u00aa\1\uffff\1\u00ab\1\u00ac\1\u00ad\1\u00ae"+
-            "\5\uffff\1\u00af\1\u00b0\1\u00b1\1\u00b2\1\u00b3\1\u00b4\1\u00b5"+
-            "\1\u00b6\1\u00b7\1\u00b8\1\u00b9\1\u00ba\2\uffff\1\u00bf\3\uffff"+
-            "\1\u00bc\1\u00bd\1\u00bb\1\u00be",
-            "\1\u00c0\34\uffff\11\20",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c1",
-            "\1\u00c2\1\u00c3",
-            "\1\142\1\143",
+            "\1\4\2\uffff\1\5\4\uffff\1\6\1\7\1\10\1\11\1\12\1\13\1\uffff"+
+            "\1\14\1\15\1\16\1\17\5\uffff\1\20\1\21\1\22\1\23\1\24\1\25\1"+
+            "\26\1\27\1\30\1\31\1\32\1\33\1\42\1\41\1\1\1\2\1\37\1\40\1\35"+
+            "\1\36\1\34\1\3",
+            "\1\43\1\45\7\uffff\1\44\3\uffff\1\46\5\44\1\47\1\50\1\51",
+            "\1\52\2\uffff\1\53\4\uffff\1\54\1\55\1\56\1\57\1\60\1\61\1"+
+            "\uffff\1\62\1\63\1\64\1\65\5\uffff\1\66\1\67\1\70\1\71\1\72"+
+            "\1\73\1\74\1\75\1\76\1\77\1\100\1\101\2\uffff\1\106\3\uffff"+
+            "\1\103\1\104\1\102\1\105",
             "",
             "",
             "",
             "",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\u00c4",
-            "\1\145\6\uffff\1\20\1\uffff\2\145\1\uffff\5\20\10\uffff\1"+
-            "\145",
             "",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u00c5",
-            "\1\u0084\6\uffff\1\20\1\uffff\2\u0084\1\uffff\5\20\10\uffff"+
-            "\1\u0084",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u00c6",
-            "\1\u0084\6\uffff\1\20\1\uffff\2\u0084\1\uffff\5\20\10\uffff"+
-            "\1\u0084",
-            "\1\17\3\uffff\1\21\5\17\1\22\1\23\1\24",
-            "\1\20\3\uffff\1\141\5\20\1\142\1\143\1\144",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\45\37\uffff\1\107\1\110",
+            "\1\111",
+            "\1\112",
+            "\1\113",
+            "",
+            "",
+            "",
+            "",
+            "\1\45\36\uffff\1\114",
+            "\1\45\7\uffff\1\115\4\uffff\5\115",
+            "\1\45\7\uffff\1\115\4\uffff\5\115",
+            "",
+            "",
+            "",
+            "",
+            "\1\116\1\117",
+            "",
+            "",
+            "\1\47\1\50",
+            "",
+            "",
+            "",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "\1\120",
+            "",
+            "",
+            "\1\132\34\uffff\1\131\1\123\1\121\1\122\1\124\1\125\1\126"+
+            "\1\127\1\130",
+            "\1\132\34\uffff\1\131\1\135\1\133\1\134\1\124\1\125\1\126"+
+            "\1\127\1\130",
+            "\1\132\34\uffff\1\131\1\140\1\136\1\137\1\124\1\125\1\126"+
+            "\1\127\1\130",
+            "",
+            "",
+            "\1\44\3\uffff\1\46\5\44\1\47\1\50\1\51",
+            "\1\141\2\uffff\1\142\4\uffff\1\143\1\144\1\145\1\146\1\147"+
+            "\1\150\1\uffff\1\151\1\152\1\153\1\154\5\uffff\1\155\1\156\1"+
+            "\157\1\160\1\161\1\162\1\163\1\164\1\165\1\166\1\167\1\170\2"+
+            "\uffff\1\175\3\uffff\1\172\1\173\1\171\1\174",
+            "\1\176\10\uffff\1\177\3\uffff\1\u0080\5\177\1\u0081\1\u0082"+
+            "\1\u0083",
+            "\1\u0084\2\uffff\1\u0085\1\uffff\1\132\34\uffff\1\131\1\u0088"+
+            "\1\u0086\1\u0087\1\124\1\125\1\126\1\127\1\130",
+            "\1\u0089\2\uffff\1\u008a\4\uffff\1\u008b\1\u008c\1\u008d\1"+
+            "\u008e\1\u008f\1\u0090\1\uffff\1\u0091\1\u0092\1\u0093\1\u0094"+
+            "\5\uffff\1\u0095\1\u0096\1\u0097\1\u0098\1\u0099\1\u009a\1\u009b"+
+            "\1\u009c\1\u009d\1\u009e\1\u009f\1\u00a0\2\uffff\1\u00a5\3\uffff"+
+            "\1\u00a2\1\u00a3\1\u00a1\1\u00a4",
+            "\1\u00a6\34\uffff\1\131\1\u0088\1\u0086\1\u0087\1\124\1\125"+
+            "\1\126\1\127\1\130",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\u00a7\2\uffff\1\u0085\1\uffff\1\132\34\uffff\1\131\1\u0088"+
+            "\1\u0086\1\u0087\1\124\1\125\1\126\1\127\1\130",
+            "\1\u00a8\2\uffff\1\u00a9\4\uffff\1\u00aa\1\u00ab\1\u00ac\1"+
+            "\u00ad\1\u00ae\1\u00af\1\uffff\1\u00b0\1\u00b1\1\u00b2\1\u00b3"+
+            "\5\uffff\1\u00b4\1\u00b5\1\u00b6\1\u00b7\1\u00b8\1\u00b9\1\u00ba"+
+            "\1\u00bb\1\u00bc\1\u00bd\1\u00be\1\u00bf\2\uffff\1\u00c4\3\uffff"+
+            "\1\u00c1\1\u00c2\1\u00c0\1\u00c3",
+            "\1\u00c5\34\uffff\1\131\1\u0088\1\u0086\1\u0087\1\124\1\125"+
+            "\1\126\1\127\1\130",
+            "\1\u00c6\2\uffff\1\u0085\1\uffff\1\132\34\uffff\1\131\1\u0088"+
+            "\1\u0086\1\u0087\1\124\1\125\1\126\1\127\1\130",
             "\1\u00c7\2\uffff\1\u00c8\4\uffff\1\u00c9\1\u00ca\1\u00cb\1"+
             "\u00cc\1\u00cd\1\u00ce\1\uffff\1\u00cf\1\u00d0\1\u00d1\1\u00d2"+
             "\5\uffff\1\u00d3\1\u00d4\1\u00d5\1\u00d6\1\u00d7\1\u00d8\1\u00d9"+
             "\1\u00da\1\u00db\1\u00dc\1\u00dd\1\u00de\2\uffff\1\u00e3\3\uffff"+
             "\1\u00e0\1\u00e1\1\u00df\1\u00e2",
-            "\1\145\2\uffff\1\20\1\uffff\1\20\34\uffff\11\20",
-            "\1\u0084\2\uffff\1\20\1\uffff\1\20\34\uffff\11\20",
-            "\1\u0084\2\uffff\1\20\1\uffff\1\20\34\uffff\11\20",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\u00e4",
-            "\1\20\3\uffff\1\141\5\20\1\142\1\143\1\144"
+            "\1\u00e4\34\uffff\1\131\1\u0088\1\u0086\1\u0087\1\124\1\125"+
+            "\1\126\1\127\1\130",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e5",
+            "\1\u00e6\1\u00e7",
+            "",
+            "\1\u0081\1\u0082",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00e8",
+            "\1\u00ed\6\uffff\1\177\1\uffff\1\u00ea\1\u00e9\1\uffff\5\177"+
+            "\10\uffff\1\u00eb",
+            "",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00ee",
+            "\1\u00f3\6\uffff\1\177\1\uffff\1\u00f0\1\u00ef\1\uffff\5\177"+
+            "\10\uffff\1\u00f1",
+            "",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f4",
+            "\1\u00f3\6\uffff\1\177\1\uffff\1\u00f0\1\u00ef\1\uffff\5\177"+
+            "\10\uffff\1\u00f1",
+            "\1\44\3\uffff\1\46\5\44\1\47\1\50\1\51",
+            "\1\177\3\uffff\1\u0080\5\177\1\u0081\1\u0082\1\u0083",
+            "\1\u00f5\2\uffff\1\u00f6\4\uffff\1\u00f7\1\u00f8\1\u00f9\1"+
+            "\u00fa\1\u00fb\1\u00fc\1\uffff\1\u00fd\1\u00fe\1\u00ff\1\u0100"+
+            "\5\uffff\1\u0101\1\u0102\1\u0103\1\u0104\1\u0105\1\u0106\1\u0107"+
+            "\1\u0108\1\u0109\1\u010a\1\u010b\1\u010c\2\uffff\1\u0111\3\uffff"+
+            "\1\u010e\1\u010f\1\u010d\1\u0110",
+            "\1\u0084\2\uffff\1\u0085\1\uffff\1\132\34\uffff\1\131\1\u0088"+
+            "\1\u0086\1\u0087\1\124\1\125\1\126\1\127\1\130",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\u00a7\2\uffff\1\u0085\1\uffff\1\132\34\uffff\1\131\1\u0088"+
+            "\1\u0086\1\u0087\1\124\1\125\1\126\1\127\1\130",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\u00c6\2\uffff\1\u0085\1\uffff\1\132\34\uffff\1\131\1\u0088"+
+            "\1\u0086\1\u0087\1\124\1\125\1\126\1\127\1\130",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\u0112",
+            "\1\177\3\uffff\1\u0080\5\177\1\u0081\1\u0082\1\u0083"
     };
 
     static final short[] DFA28_eot = DFA.unpackEncodedString(DFA28_eotS);
@@ -10884,539 +12462,733 @@ public class CMISParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA28_38 = input.LA(1);
+                        int LA28_59 = input.LA(1);
 
                          
-                        int index28_38 = input.index();
+                        int index28_59 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_38==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_59==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_38);
+                        input.seek(index28_59);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
+                        int LA28_81 = input.LA(1);
+
+                         
+                        int index28_81 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_81==COMMA) ) {s = 132;}
+
+                        else if ( (LA28_81==DOT) && ((strict == false))) {s = 133;}
+
+                        else if ( (LA28_81==RPAREN) && ((strict == false))) {s = 90;}
+
+                        else if ( (LA28_81==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_81==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_81==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_81==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_81==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_81==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_81==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_81==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_81==COLON) && ((strict == false))) {s = 89;}
+
+                         
+                        input.seek(index28_81);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA28_20 = input.LA(1);
+
+                         
+                        int index28_20 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_20==LPAREN) && ((strict == false))) {s = 37;}
+
+                        else if ( (LA28_20==ID) ) {s = 71;}
+
+                        else if ( (LA28_20==DOUBLE_QUOTE) ) {s = 72;}
+
+                         
+                        input.seek(index28_20);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA28_231 = input.LA(1);
+
+                         
+                        int index28_231 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_231==SELECT) && ((strict == false))) {s = 245;}
+
+                        else if ( (LA28_231==AS) && ((strict == false))) {s = 246;}
+
+                        else if ( (LA28_231==FROM) && ((strict == false))) {s = 247;}
+
+                        else if ( (LA28_231==JOIN) && ((strict == false))) {s = 248;}
+
+                        else if ( (LA28_231==INNER) && ((strict == false))) {s = 249;}
+
+                        else if ( (LA28_231==LEFT) && ((strict == false))) {s = 250;}
+
+                        else if ( (LA28_231==OUTER) && ((strict == false))) {s = 251;}
+
+                        else if ( (LA28_231==ON) && ((strict == false))) {s = 252;}
+
+                        else if ( (LA28_231==WHERE) && ((strict == false))) {s = 253;}
+
+                        else if ( (LA28_231==OR) && ((strict == false))) {s = 254;}
+
+                        else if ( (LA28_231==AND) && ((strict == false))) {s = 255;}
+
+                        else if ( (LA28_231==NOT) && ((strict == false))) {s = 256;}
+
+                        else if ( (LA28_231==IN) && ((strict == false))) {s = 257;}
+
+                        else if ( (LA28_231==LIKE) && ((strict == false))) {s = 258;}
+
+                        else if ( (LA28_231==IS) && ((strict == false))) {s = 259;}
+
+                        else if ( (LA28_231==NULL) && ((strict == false))) {s = 260;}
+
+                        else if ( (LA28_231==ANY) && ((strict == false))) {s = 261;}
+
+                        else if ( (LA28_231==CONTAINS) && ((strict == false))) {s = 262;}
+
+                        else if ( (LA28_231==IN_FOLDER) && ((strict == false))) {s = 263;}
+
+                        else if ( (LA28_231==IN_TREE) && ((strict == false))) {s = 264;}
+
+                        else if ( (LA28_231==ORDER) && ((strict == false))) {s = 265;}
+
+                        else if ( (LA28_231==BY) && ((strict == false))) {s = 266;}
+
+                        else if ( (LA28_231==ASC) && ((strict == false))) {s = 267;}
+
+                        else if ( (LA28_231==DESC) && ((strict == false))) {s = 268;}
+
+                        else if ( (LA28_231==TIMESTAMP) && ((strict == false))) {s = 269;}
+
+                        else if ( (LA28_231==TRUE) && ((strict == false))) {s = 270;}
+
+                        else if ( (LA28_231==FALSE) && ((strict == false))) {s = 271;}
+
+                        else if ( (LA28_231==SCORE) && ((strict == false))) {s = 272;}
+
+                        else if ( (LA28_231==ID) && ((strict == false))) {s = 273;}
+
+                         
+                        input.seek(index28_231);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA28_60 = input.LA(1);
+
+                         
+                        int index28_60 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_60==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_60);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA28_57 = input.LA(1);
+
+                         
+                        int index28_57 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_57==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_57);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA28_96 = input.LA(1);
+
+                         
+                        int index28_96 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_96==RPAREN) ) {s = 228;}
+
+                        else if ( (LA28_96==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_96==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_96==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_96==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_96==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_96==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_96==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_96==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_96==COLON) && ((strict == false))) {s = 89;}
+
+                         
+                        input.seek(index28_96);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA28_93 = input.LA(1);
+
+                         
+                        int index28_93 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_93==RPAREN) ) {s = 197;}
+
+                        else if ( (LA28_93==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_93==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_93==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_93==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_93==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_93==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_93==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_93==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_93==COLON) && ((strict == false))) {s = 89;}
+
+                         
+                        input.seek(index28_93);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA28_56 = input.LA(1);
+
+                         
+                        int index28_56 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_56==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_56);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA28_273 = input.LA(1);
+
+                         
+                        int index28_273 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_273==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
+
+                         
+                        input.seek(index28_273);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA28_29 = input.LA(1);
+
+                         
+                        int index28_29 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_29==LPAREN) && ((strict == false))) {s = 37;}
+
+                        else if ( (LA28_29==EQUALS||(LA28_29>=NOTEQUALS && LA28_29<=GREATERTHANOREQUALS)) ) {s = 77;}
+
+                         
+                        input.seek(index28_29);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 11 : 
                         int LA28_58 = input.LA(1);
 
                          
                         int index28_58 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_58==COMMA) ) {s = 101;}
-
-                        else if ( (LA28_58==DOT||LA28_58==RPAREN||(LA28_58>=COLON && LA28_58<=TIMESTAMP)) && ((strict == false))) {s = 16;}
+                        if ( (LA28_58==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
                         input.seek(index28_58);
                         if ( s>=0 ) return s;
                         break;
-                    case 2 : 
-                        int LA28_5 = input.LA(1);
-
-                         
-                        int index28_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_5==LPAREN) && ((strict == false))) {s = 16;}
-
-                        else if ( ((LA28_5>=ID && LA28_5<=DOUBLE_QUOTE)) ) {s = 50;}
-
-                         
-                        input.seek(index28_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA28_195 = input.LA(1);
-
-                         
-                        int index28_195 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_195==SELECT) && ((strict == false))) {s = 199;}
-
-                        else if ( (LA28_195==AS) && ((strict == false))) {s = 200;}
-
-                        else if ( (LA28_195==FROM) && ((strict == false))) {s = 201;}
-
-                        else if ( (LA28_195==JOIN) && ((strict == false))) {s = 202;}
-
-                        else if ( (LA28_195==INNER) && ((strict == false))) {s = 203;}
-
-                        else if ( (LA28_195==LEFT) && ((strict == false))) {s = 204;}
-
-                        else if ( (LA28_195==OUTER) && ((strict == false))) {s = 205;}
-
-                        else if ( (LA28_195==ON) && ((strict == false))) {s = 206;}
-
-                        else if ( (LA28_195==WHERE) && ((strict == false))) {s = 207;}
-
-                        else if ( (LA28_195==OR) && ((strict == false))) {s = 208;}
-
-                        else if ( (LA28_195==AND) && ((strict == false))) {s = 209;}
-
-                        else if ( (LA28_195==NOT) && ((strict == false))) {s = 210;}
-
-                        else if ( (LA28_195==IN) && ((strict == false))) {s = 211;}
-
-                        else if ( (LA28_195==LIKE) && ((strict == false))) {s = 212;}
-
-                        else if ( (LA28_195==IS) && ((strict == false))) {s = 213;}
-
-                        else if ( (LA28_195==NULL) && ((strict == false))) {s = 214;}
-
-                        else if ( (LA28_195==ANY) && ((strict == false))) {s = 215;}
-
-                        else if ( (LA28_195==CONTAINS) && ((strict == false))) {s = 216;}
-
-                        else if ( (LA28_195==IN_FOLDER) && ((strict == false))) {s = 217;}
-
-                        else if ( (LA28_195==IN_TREE) && ((strict == false))) {s = 218;}
-
-                        else if ( (LA28_195==ORDER) && ((strict == false))) {s = 219;}
-
-                        else if ( (LA28_195==BY) && ((strict == false))) {s = 220;}
-
-                        else if ( (LA28_195==ASC) && ((strict == false))) {s = 221;}
-
-                        else if ( (LA28_195==DESC) && ((strict == false))) {s = 222;}
-
-                        else if ( (LA28_195==TIMESTAMP) && ((strict == false))) {s = 223;}
-
-                        else if ( (LA28_195==TRUE) && ((strict == false))) {s = 224;}
-
-                        else if ( (LA28_195==FALSE) && ((strict == false))) {s = 225;}
-
-                        else if ( (LA28_195==SCORE) && ((strict == false))) {s = 226;}
-
-                        else if ( (LA28_195==ID) && ((strict == false))) {s = 227;}
-
-                         
-                        input.seek(index28_195);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA28_39 = input.LA(1);
-
-                         
-                        int index28_39 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_39==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_39);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
-                        int LA28_36 = input.LA(1);
-
-                         
-                        int index28_36 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_36==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_36);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
-                        int LA28_66 = input.LA(1);
-
-                         
-                        int index28_66 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_66==RPAREN) ) {s = 192;}
-
-                        else if ( ((LA28_66>=COLON && LA28_66<=TIMESTAMP)) && ((strict == false))) {s = 16;}
-
-                         
-                        input.seek(index28_66);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
-                        int LA28_63 = input.LA(1);
-
-                         
-                        int index28_63 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_63==RPAREN) ) {s = 162;}
-
-                        else if ( ((LA28_63>=COLON && LA28_63<=TIMESTAMP)) && ((strict == false))) {s = 16;}
-
-                         
-                        input.seek(index28_63);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA28_35 = input.LA(1);
-
-                         
-                        int index28_35 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_35==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_35);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA28_227 = input.LA(1);
-
-                         
-                        int index28_227 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_227==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
-
-                         
-                        input.seek(index28_227);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA28_10 = input.LA(1);
-
-                         
-                        int index28_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_10==LPAREN) && ((strict == false))) {s = 16;}
-
-                        else if ( (LA28_10==EQUALS||(LA28_10>=NOTEQUALS && LA28_10<=GREATERTHANOREQUALS)) ) {s = 54;}
-
-                         
-                        input.seek(index28_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 11 : 
-                        int LA28_37 = input.LA(1);
-
-                         
-                        int index28_37 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_37==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_37);
-                        if ( s>=0 ) return s;
-                        break;
                     case 12 : 
-                        int LA28_11 = input.LA(1);
+                        int LA28_30 = input.LA(1);
 
                          
-                        int index28_11 = input.index();
+                        int index28_30 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_11==LPAREN) && ((strict == false))) {s = 16;}
+                        if ( (LA28_30==LPAREN) && ((strict == false))) {s = 37;}
 
-                        else if ( (LA28_11==EQUALS||(LA28_11>=NOTEQUALS && LA28_11<=GREATERTHANOREQUALS)) ) {s = 54;}
+                        else if ( (LA28_30==EQUALS||(LA28_30>=NOTEQUALS && LA28_30<=GREATERTHANOREQUALS)) ) {s = 77;}
 
                          
-                        input.seek(index28_11);
+                        input.seek(index28_30);
                         if ( s>=0 ) return s;
                         break;
                     case 13 : 
-                        int LA28_202 = input.LA(1);
+                        int LA28_248 = input.LA(1);
 
                          
-                        int index28_202 = input.index();
+                        int index28_248 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_202==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_248==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_202);
+                        input.seek(index28_248);
                         if ( s>=0 ) return s;
                         break;
                     case 14 : 
-                        int LA28_201 = input.LA(1);
+                        int LA28_247 = input.LA(1);
 
                          
-                        int index28_201 = input.index();
+                        int index28_247 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_201==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_247==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_201);
+                        input.seek(index28_247);
                         if ( s>=0 ) return s;
                         break;
                     case 15 : 
-                        int LA28_200 = input.LA(1);
+                        int LA28_246 = input.LA(1);
 
                          
-                        int index28_200 = input.index();
+                        int index28_246 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_200==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_246==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_200);
+                        input.seek(index28_246);
                         if ( s>=0 ) return s;
                         break;
                     case 16 : 
-                        int LA28_33 = input.LA(1);
+                        int LA28_54 = input.LA(1);
 
                          
-                        int index28_33 = input.index();
+                        int index28_54 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_33==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_54==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_33);
+                        input.seek(index28_54);
                         if ( s>=0 ) return s;
                         break;
                     case 17 : 
-                        int LA28_199 = input.LA(1);
+                        int LA28_245 = input.LA(1);
 
                          
-                        int index28_199 = input.index();
+                        int index28_245 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_199==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_245==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_199);
+                        input.seek(index28_245);
                         if ( s>=0 ) return s;
                         break;
                     case 18 : 
-                        int LA28_162 = input.LA(1);
-
-                         
-                        int index28_162 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_162==EQUALS||(LA28_162>=NOTEQUALS && LA28_162<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 16;}
-
-                        else if ( (LA28_162==EOF||LA28_162==RPAREN||(LA28_162>=OR && LA28_162<=AND)||LA28_162==ORDER) ) {s = 132;}
-
-                         
-                        input.seek(index28_162);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 19 : 
-                        int LA28_198 = input.LA(1);
-
-                         
-                        int index28_198 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_198==DOT||LA28_198==RPAREN||(LA28_198>=COLON && LA28_198<=TIMESTAMP)) && ((strict == false))) {s = 16;}
-
-                        else if ( (LA28_198==COMMA) ) {s = 132;}
-
-                         
-                        input.seek(index28_198);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 20 : 
                         int LA28_197 = input.LA(1);
 
                          
                         int index28_197 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_197==DOT||LA28_197==RPAREN||(LA28_197>=COLON && LA28_197<=TIMESTAMP)) && ((strict == false))) {s = 16;}
+                        if ( (LA28_197==EQUALS||(LA28_197>=NOTEQUALS && LA28_197<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 127;}
 
-                        else if ( (LA28_197==COMMA) ) {s = 132;}
+                        else if ( (LA28_197==AND) ) {s = 239;}
+
+                        else if ( (LA28_197==OR) ) {s = 240;}
+
+                        else if ( (LA28_197==ORDER) ) {s = 241;}
+
+                        else if ( (LA28_197==EOF) ) {s = 242;}
+
+                        else if ( (LA28_197==RPAREN) ) {s = 243;}
 
                          
                         input.seek(index28_197);
                         if ( s>=0 ) return s;
                         break;
-                    case 21 : 
-                        int LA28_34 = input.LA(1);
+                    case 19 : 
+                        int LA28_244 = input.LA(1);
 
                          
-                        int index28_34 = input.index();
+                        int index28_244 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_34==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_244==DOT) && ((strict == false))) {s = 133;}
+
+                        else if ( (LA28_244==RPAREN) && ((strict == false))) {s = 90;}
+
+                        else if ( (LA28_244==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_244==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_244==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_244==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_244==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_244==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_244==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_244==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_244==COLON) && ((strict == false))) {s = 89;}
+
+                        else if ( (LA28_244==COMMA) ) {s = 198;}
 
                          
-                        input.seek(index28_34);
+                        input.seek(index28_244);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
+                        int LA28_238 = input.LA(1);
+
+                         
+                        int index28_238 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_238==DOT) && ((strict == false))) {s = 133;}
+
+                        else if ( (LA28_238==RPAREN) && ((strict == false))) {s = 90;}
+
+                        else if ( (LA28_238==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_238==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_238==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_238==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_238==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_238==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_238==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_238==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_238==COLON) && ((strict == false))) {s = 89;}
+
+                        else if ( (LA28_238==COMMA) ) {s = 167;}
+
+                         
+                        input.seek(index28_238);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 21 : 
+                        int LA28_55 = input.LA(1);
+
+                         
+                        int index28_55 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_55==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_55);
                         if ( s>=0 ) return s;
                         break;
                     case 22 : 
-                        int LA28_64 = input.LA(1);
+                        int LA28_94 = input.LA(1);
 
                          
-                        int index28_64 = input.index();
+                        int index28_94 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_64==DOT||LA28_64==RPAREN||(LA28_64>=COLON && LA28_64<=TIMESTAMP)) && ((strict == false))) {s = 16;}
+                        if ( (LA28_94==DOT) && ((strict == false))) {s = 133;}
 
-                        else if ( (LA28_64==COMMA) ) {s = 132;}
+                        else if ( (LA28_94==RPAREN) && ((strict == false))) {s = 90;}
+
+                        else if ( (LA28_94==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_94==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_94==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_94==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_94==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_94==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_94==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_94==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_94==COLON) && ((strict == false))) {s = 89;}
+
+                        else if ( (LA28_94==COMMA) ) {s = 198;}
 
                          
-                        input.seek(index28_64);
+                        input.seek(index28_94);
                         if ( s>=0 ) return s;
                         break;
                     case 23 : 
-                        int LA28_61 = input.LA(1);
+                        int LA28_91 = input.LA(1);
 
                          
-                        int index28_61 = input.index();
+                        int index28_91 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_61==DOT||LA28_61==RPAREN||(LA28_61>=COLON && LA28_61<=TIMESTAMP)) && ((strict == false))) {s = 16;}
+                        if ( (LA28_91==DOT) && ((strict == false))) {s = 133;}
 
-                        else if ( (LA28_61==COMMA) ) {s = 132;}
+                        else if ( (LA28_91==RPAREN) && ((strict == false))) {s = 90;}
+
+                        else if ( (LA28_91==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_91==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_91==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_91==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_91==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_91==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_91==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_91==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_91==COLON) && ((strict == false))) {s = 89;}
+
+                        else if ( (LA28_91==COMMA) ) {s = 167;}
 
                          
-                        input.seek(index28_61);
+                        input.seek(index28_91);
                         if ( s>=0 ) return s;
                         break;
                     case 24 : 
-                        int LA28_208 = input.LA(1);
+                        int LA28_254 = input.LA(1);
 
                          
-                        int index28_208 = input.index();
+                        int index28_254 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_208==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_254==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_208);
+                        input.seek(index28_254);
                         if ( s>=0 ) return s;
                         break;
                     case 25 : 
-                        int LA28_196 = input.LA(1);
+                        int LA28_232 = input.LA(1);
 
                          
-                        int index28_196 = input.index();
+                        int index28_232 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_196==COMMA) ) {s = 101;}
+                        if ( (LA28_232==COMMA) ) {s = 132;}
 
-                        else if ( (LA28_196==DOT||LA28_196==RPAREN||(LA28_196>=COLON && LA28_196<=TIMESTAMP)) && ((strict == false))) {s = 16;}
+                        else if ( (LA28_232==DOT) && ((strict == false))) {s = 133;}
+
+                        else if ( (LA28_232==RPAREN) && ((strict == false))) {s = 90;}
+
+                        else if ( (LA28_232==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_232==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_232==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_232==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_232==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_232==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_232==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_232==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_232==COLON) && ((strict == false))) {s = 89;}
 
                          
-                        input.seek(index28_196);
+                        input.seek(index28_232);
                         if ( s>=0 ) return s;
                         break;
                     case 26 : 
-                        int LA28_192 = input.LA(1);
+                        int LA28_228 = input.LA(1);
 
                          
-                        int index28_192 = input.index();
+                        int index28_228 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_192==EQUALS||(LA28_192>=NOTEQUALS && LA28_192<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 16;}
+                        if ( (LA28_228==EQUALS||(LA28_228>=NOTEQUALS && LA28_228<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 127;}
 
-                        else if ( (LA28_192==EOF||LA28_192==RPAREN||(LA28_192>=OR && LA28_192<=AND)||LA28_192==ORDER) ) {s = 132;}
+                        else if ( (LA28_228==AND) ) {s = 239;}
+
+                        else if ( (LA28_228==OR) ) {s = 240;}
+
+                        else if ( (LA28_228==ORDER) ) {s = 241;}
+
+                        else if ( (LA28_228==EOF) ) {s = 242;}
+
+                        else if ( (LA28_228==RPAREN) ) {s = 243;}
 
                          
-                        input.seek(index28_192);
+                        input.seek(index28_228);
                         if ( s>=0 ) return s;
                         break;
                     case 27 : 
-                        int LA28_207 = input.LA(1);
+                        int LA28_253 = input.LA(1);
 
                          
-                        int index28_207 = input.index();
+                        int index28_253 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_207==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_253==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_207);
+                        input.seek(index28_253);
                         if ( s>=0 ) return s;
                         break;
                     case 28 : 
-                        int LA28_31 = input.LA(1);
-
-                         
-                        int index28_31 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_31==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_31);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 29 : 
-                        int LA28_206 = input.LA(1);
-
-                         
-                        int index28_206 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_206==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
-
-                         
-                        input.seek(index28_206);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 30 : 
-                        int LA28_205 = input.LA(1);
-
-                         
-                        int index28_205 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_205==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
-
-                         
-                        input.seek(index28_205);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 31 : 
-                        int LA28_53 = input.LA(1);
-
-                         
-                        int index28_53 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_53==ID) ) {s = 64;}
-
-                        else if ( (LA28_53==DOUBLE_QUOTE) ) {s = 65;}
-
-                        else if ( (LA28_53==RPAREN||LA28_53==COLON||(LA28_53>=FLOATING_POINT_LITERAL && LA28_53<=TIMESTAMP)) && ((strict == false))) {s = 16;}
-
-                        else if ( (LA28_53==QUOTED_STRING) ) {s = 66;}
-
-                         
-                        input.seek(index28_53);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 32 : 
                         int LA28_52 = input.LA(1);
 
                          
                         int index28_52 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_52==ID) ) {s = 61;}
-
-                        else if ( (LA28_52==DOUBLE_QUOTE) ) {s = 62;}
-
-                        else if ( (LA28_52==RPAREN||LA28_52==COLON||(LA28_52>=FLOATING_POINT_LITERAL && LA28_52<=TIMESTAMP)) && ((strict == false))) {s = 16;}
-
-                        else if ( (LA28_52==QUOTED_STRING) ) {s = 63;}
+                        if ( (LA28_52==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
                         input.seek(index28_52);
                         if ( s>=0 ) return s;
                         break;
-                    case 33 : 
-                        int LA28_204 = input.LA(1);
+                    case 29 : 
+                        int LA28_252 = input.LA(1);
 
                          
-                        int index28_204 = input.index();
+                        int index28_252 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_204==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_252==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_204);
+                        input.seek(index28_252);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 30 : 
+                        int LA28_251 = input.LA(1);
+
+                         
+                        int index28_251 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_251==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
+
+                         
+                        input.seek(index28_251);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 31 : 
+                        int LA28_75 = input.LA(1);
+
+                         
+                        int index28_75 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_75==ID) ) {s = 94;}
+
+                        else if ( (LA28_75==DOUBLE_QUOTE) ) {s = 95;}
+
+                        else if ( (LA28_75==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_75==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_75==QUOTED_STRING) ) {s = 96;}
+
+                        else if ( (LA28_75==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_75==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_75==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_75==COLON) && ((strict == false))) {s = 89;}
+
+                        else if ( (LA28_75==RPAREN) && ((strict == false))) {s = 90;}
+
+                         
+                        input.seek(index28_75);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 32 : 
+                        int LA28_74 = input.LA(1);
+
+                         
+                        int index28_74 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_74==ID) ) {s = 91;}
+
+                        else if ( (LA28_74==DOUBLE_QUOTE) ) {s = 92;}
+
+                        else if ( (LA28_74==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_74==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_74==QUOTED_STRING) ) {s = 93;}
+
+                        else if ( (LA28_74==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_74==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_74==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_74==COLON) && ((strict == false))) {s = 89;}
+
+                        else if ( (LA28_74==RPAREN) && ((strict == false))) {s = 90;}
+
+                         
+                        input.seek(index28_74);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 33 : 
+                        int LA28_250 = input.LA(1);
+
+                         
+                        int index28_250 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_250==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
+
+                         
+                        input.seek(index28_250);
                         if ( s>=0 ) return s;
                         break;
                     case 34 : 
@@ -11432,351 +13204,409 @@ public class CMISParser extends Parser {
 
                         else if ( (LA28_0==SCORE) ) {s = 3;}
 
-                        else if ( (LA28_0==SELECT||LA28_0==AS||(LA28_0>=FROM && LA28_0<=ON)||(LA28_0>=WHERE && LA28_0<=NOT)||(LA28_0>=IN && LA28_0<=NULL)||(LA28_0>=ORDER && LA28_0<=DESC)) && ((strict == false))) {s = 4;}
+                        else if ( (LA28_0==SELECT) && ((strict == false))) {s = 4;}
 
-                        else if ( (LA28_0==ANY) ) {s = 5;}
+                        else if ( (LA28_0==AS) && ((strict == false))) {s = 5;}
 
-                        else if ( (LA28_0==CONTAINS) ) {s = 6;}
+                        else if ( (LA28_0==FROM) && ((strict == false))) {s = 6;}
 
-                        else if ( (LA28_0==IN_FOLDER) ) {s = 7;}
+                        else if ( (LA28_0==JOIN) && ((strict == false))) {s = 7;}
 
-                        else if ( (LA28_0==IN_TREE) ) {s = 8;}
+                        else if ( (LA28_0==INNER) && ((strict == false))) {s = 8;}
 
-                        else if ( (LA28_0==TIMESTAMP) ) {s = 9;}
+                        else if ( (LA28_0==LEFT) && ((strict == false))) {s = 9;}
 
-                        else if ( (LA28_0==TRUE) ) {s = 10;}
+                        else if ( (LA28_0==OUTER) && ((strict == false))) {s = 10;}
 
-                        else if ( (LA28_0==FALSE) ) {s = 11;}
+                        else if ( (LA28_0==ON) && ((strict == false))) {s = 11;}
 
-                        else if ( (LA28_0==QUOTED_STRING||(LA28_0>=FLOATING_POINT_LITERAL && LA28_0<=DECIMAL_INTEGER_LITERAL)) ) {s = 12;}
+                        else if ( (LA28_0==WHERE) && ((strict == false))) {s = 12;}
 
-                        else if ( (LA28_0==COLON) && ((strict == false))) {s = 13;}
+                        else if ( (LA28_0==OR) && ((strict == false))) {s = 13;}
+
+                        else if ( (LA28_0==AND) && ((strict == false))) {s = 14;}
+
+                        else if ( (LA28_0==NOT) && ((strict == false))) {s = 15;}
+
+                        else if ( (LA28_0==IN) && ((strict == false))) {s = 16;}
+
+                        else if ( (LA28_0==LIKE) && ((strict == false))) {s = 17;}
+
+                        else if ( (LA28_0==IS) && ((strict == false))) {s = 18;}
+
+                        else if ( (LA28_0==NULL) && ((strict == false))) {s = 19;}
+
+                        else if ( (LA28_0==ANY) ) {s = 20;}
+
+                        else if ( (LA28_0==CONTAINS) ) {s = 21;}
+
+                        else if ( (LA28_0==IN_FOLDER) ) {s = 22;}
+
+                        else if ( (LA28_0==IN_TREE) ) {s = 23;}
+
+                        else if ( (LA28_0==ORDER) && ((strict == false))) {s = 24;}
+
+                        else if ( (LA28_0==BY) && ((strict == false))) {s = 25;}
+
+                        else if ( (LA28_0==ASC) && ((strict == false))) {s = 26;}
+
+                        else if ( (LA28_0==DESC) && ((strict == false))) {s = 27;}
+
+                        else if ( (LA28_0==TIMESTAMP) ) {s = 28;}
+
+                        else if ( (LA28_0==TRUE) ) {s = 29;}
+
+                        else if ( (LA28_0==FALSE) ) {s = 30;}
+
+                        else if ( (LA28_0==FLOATING_POINT_LITERAL) ) {s = 31;}
+
+                        else if ( (LA28_0==DECIMAL_INTEGER_LITERAL) ) {s = 32;}
+
+                        else if ( (LA28_0==QUOTED_STRING) ) {s = 33;}
+
+                        else if ( (LA28_0==COLON) && ((strict == false))) {s = 34;}
 
                          
                         input.seek(index28_0);
                         if ( s>=0 ) return s;
                         break;
                     case 35 : 
-                        int LA28_32 = input.LA(1);
+                        int LA28_53 = input.LA(1);
 
                          
-                        int index28_32 = input.index();
+                        int index28_53 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_32==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_53==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_32);
+                        input.seek(index28_53);
                         if ( s>=0 ) return s;
                         break;
                     case 36 : 
-                        int LA28_203 = input.LA(1);
+                        int LA28_249 = input.LA(1);
 
                          
-                        int index28_203 = input.index();
+                        int index28_249 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_203==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_249==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_203);
+                        input.seek(index28_249);
                         if ( s>=0 ) return s;
                         break;
                     case 37 : 
-                        int LA28_212 = input.LA(1);
+                        int LA28_258 = input.LA(1);
 
                          
-                        int index28_212 = input.index();
+                        int index28_258 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_212==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_258==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_212);
+                        input.seek(index28_258);
                         if ( s>=0 ) return s;
                         break;
                     case 38 : 
-                        int LA28_213 = input.LA(1);
+                        int LA28_259 = input.LA(1);
 
                          
-                        int index28_213 = input.index();
+                        int index28_259 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_213==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_259==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_213);
+                        input.seek(index28_259);
                         if ( s>=0 ) return s;
                         break;
                     case 39 : 
-                        int LA28_47 = input.LA(1);
+                        int LA28_68 = input.LA(1);
 
                          
-                        int index28_47 = input.index();
+                        int index28_68 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_47==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_68==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_47);
+                        input.seek(index28_68);
                         if ( s>=0 ) return s;
                         break;
                     case 40 : 
-                        int LA28_29 = input.LA(1);
+                        int LA28_50 = input.LA(1);
 
                          
-                        int index28_29 = input.index();
+                        int index28_50 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_29==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_50==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_29);
+                        input.seek(index28_50);
                         if ( s>=0 ) return s;
                         break;
                     case 41 : 
-                        int LA28_9 = input.LA(1);
+                        int LA28_28 = input.LA(1);
 
                          
-                        int index28_9 = input.index();
+                        int index28_28 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_9==QUOTED_STRING) ) {s = 54;}
+                        if ( (LA28_28==QUOTED_STRING) ) {s = 76;}
 
-                        else if ( (LA28_9==LPAREN) && ((strict == false))) {s = 16;}
+                        else if ( (LA28_28==LPAREN) && ((strict == false))) {s = 37;}
 
                          
-                        input.seek(index28_9);
+                        input.seek(index28_28);
                         if ( s>=0 ) return s;
                         break;
                     case 42 : 
-                        int LA28_214 = input.LA(1);
+                        int LA28_260 = input.LA(1);
 
                          
-                        int index28_214 = input.index();
+                        int index28_260 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_214==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_260==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_214);
+                        input.seek(index28_260);
                         if ( s>=0 ) return s;
                         break;
                     case 43 : 
-                        int LA28_194 = input.LA(1);
+                        int LA28_230 = input.LA(1);
 
                          
-                        int index28_194 = input.index();
+                        int index28_230 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_194==EQUALS||(LA28_194>=NOTEQUALS && LA28_194<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 16;}
+                        if ( (LA28_230==EQUALS||(LA28_230>=NOTEQUALS && LA28_230<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 127;}
 
-                        else if ( (LA28_194==NOT) && ((strict == false))) {s = 97;}
+                        else if ( (LA28_230==NOT) && ((strict == false))) {s = 128;}
 
-                        else if ( (LA28_194==IN) && ((strict == false))) {s = 98;}
+                        else if ( (LA28_230==IN) && ((strict == false))) {s = 129;}
 
-                        else if ( (LA28_194==LIKE) && ((strict == false))) {s = 99;}
+                        else if ( (LA28_230==LIKE) && ((strict == false))) {s = 130;}
 
-                        else if ( (LA28_194==IS) && ((strict == false))) {s = 100;}
+                        else if ( (LA28_230==IS) && ((strict == false))) {s = 131;}
 
                          
-                        input.seek(index28_194);
+                        input.seek(index28_230);
                         if ( s>=0 ) return s;
                         break;
                     case 44 : 
-                        int LA28_215 = input.LA(1);
+                        int LA28_261 = input.LA(1);
 
                          
-                        int index28_215 = input.index();
+                        int index28_261 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_215==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_261==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_215);
+                        input.seek(index28_261);
                         if ( s>=0 ) return s;
                         break;
                     case 45 : 
-                        int LA28_209 = input.LA(1);
+                        int LA28_255 = input.LA(1);
 
                          
-                        int index28_209 = input.index();
+                        int index28_255 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_209==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_255==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_209);
+                        input.seek(index28_255);
                         if ( s>=0 ) return s;
                         break;
                     case 46 : 
-                        int LA28_30 = input.LA(1);
+                        int LA28_51 = input.LA(1);
 
                          
-                        int index28_30 = input.index();
+                        int index28_51 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_30==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_51==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_30);
+                        input.seek(index28_51);
                         if ( s>=0 ) return s;
                         break;
                     case 47 : 
-                        int LA28_46 = input.LA(1);
+                        int LA28_67 = input.LA(1);
 
                          
-                        int index28_46 = input.index();
+                        int index28_67 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_46==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_67==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_46);
+                        input.seek(index28_67);
                         if ( s>=0 ) return s;
                         break;
                     case 48 : 
-                        int LA28_96 = input.LA(1);
+                        int LA28_126 = input.LA(1);
 
                          
-                        int index28_96 = input.index();
+                        int index28_126 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_96==ID) && ((strict == false))) {s = 194;}
+                        if ( (LA28_126==ID) && ((strict == false))) {s = 230;}
 
-                        else if ( (LA28_96==DOUBLE_QUOTE) && ((strict == false))) {s = 195;}
+                        else if ( (LA28_126==DOUBLE_QUOTE) && ((strict == false))) {s = 231;}
 
                          
-                        input.seek(index28_96);
+                        input.seek(index28_126);
                         if ( s>=0 ) return s;
                         break;
                     case 49 : 
-                        int LA28_210 = input.LA(1);
+                        int LA28_256 = input.LA(1);
 
                          
-                        int index28_210 = input.index();
+                        int index28_256 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_210==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_256==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_210);
+                        input.seek(index28_256);
                         if ( s>=0 ) return s;
                         break;
                     case 50 : 
-                        int LA28_97 = input.LA(1);
+                        int LA28_128 = input.LA(1);
 
                          
-                        int index28_97 = input.index();
+                        int index28_128 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_97==IN) && ((strict == false))) {s = 98;}
+                        if ( (LA28_128==IN) && ((strict == false))) {s = 129;}
 
-                        else if ( (LA28_97==LIKE) && ((strict == false))) {s = 99;}
+                        else if ( (LA28_128==LIKE) && ((strict == false))) {s = 130;}
 
                          
-                        input.seek(index28_97);
+                        input.seek(index28_128);
                         if ( s>=0 ) return s;
                         break;
                     case 51 : 
-                        int LA28_211 = input.LA(1);
+                        int LA28_257 = input.LA(1);
 
                          
-                        int index28_211 = input.index();
+                        int index28_257 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_211==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_257==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_211);
+                        input.seek(index28_257);
                         if ( s>=0 ) return s;
                         break;
                     case 52 : 
-                        int LA28_60 = input.LA(1);
+                        int LA28_83 = input.LA(1);
 
                          
-                        int index28_60 = input.index();
+                        int index28_83 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_60==RPAREN) ) {s = 131;}
+                        if ( (LA28_83==RPAREN) ) {s = 166;}
 
-                        else if ( ((LA28_60>=COLON && LA28_60<=TIMESTAMP)) && ((strict == false))) {s = 16;}
+                        else if ( (LA28_83==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_83==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_83==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_83==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_83==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_83==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_83==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_83==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_83==COLON) && ((strict == false))) {s = 89;}
 
                          
-                        input.seek(index28_60);
+                        input.seek(index28_83);
                         if ( s>=0 ) return s;
                         break;
                     case 53 : 
-                        int LA28_228 = input.LA(1);
+                        int LA28_274 = input.LA(1);
 
                          
-                        int index28_228 = input.index();
+                        int index28_274 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_228==EQUALS||(LA28_228>=NOTEQUALS && LA28_228<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 16;}
+                        if ( (LA28_274==EQUALS||(LA28_274>=NOTEQUALS && LA28_274<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 127;}
 
-                        else if ( (LA28_228==NOT) && ((strict == false))) {s = 97;}
+                        else if ( (LA28_274==NOT) && ((strict == false))) {s = 128;}
 
-                        else if ( (LA28_228==IN) && ((strict == false))) {s = 98;}
+                        else if ( (LA28_274==IN) && ((strict == false))) {s = 129;}
 
-                        else if ( (LA28_228==LIKE) && ((strict == false))) {s = 99;}
+                        else if ( (LA28_274==LIKE) && ((strict == false))) {s = 130;}
 
-                        else if ( (LA28_228==IS) && ((strict == false))) {s = 100;}
+                        else if ( (LA28_274==IS) && ((strict == false))) {s = 131;}
 
                          
-                        input.seek(index28_228);
+                        input.seek(index28_274);
                         if ( s>=0 ) return s;
                         break;
                     case 54 : 
-                        int LA28_219 = input.LA(1);
+                        int LA28_265 = input.LA(1);
 
                          
-                        int index28_219 = input.index();
+                        int index28_265 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_219==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_265==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_219);
+                        input.seek(index28_265);
                         if ( s>=0 ) return s;
                         break;
                     case 55 : 
-                        int LA28_48 = input.LA(1);
+                        int LA28_69 = input.LA(1);
 
                          
-                        int index28_48 = input.index();
+                        int index28_69 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_48==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_69==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_48);
+                        input.seek(index28_69);
                         if ( s>=0 ) return s;
                         break;
                     case 56 : 
-                        int LA28_45 = input.LA(1);
+                        int LA28_66 = input.LA(1);
 
                          
-                        int index28_45 = input.index();
+                        int index28_66 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_45==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_66==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_45);
+                        input.seek(index28_66);
                         if ( s>=0 ) return s;
                         break;
                     case 57 : 
-                        int LA28_220 = input.LA(1);
+                        int LA28_266 = input.LA(1);
 
                          
-                        int index28_220 = input.index();
+                        int index28_266 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_220==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_266==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_220);
+                        input.seek(index28_266);
                         if ( s>=0 ) return s;
                         break;
                     case 58 : 
@@ -11786,157 +13616,157 @@ public class CMISParser extends Parser {
                         int index28_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_2==SELECT) && ((strict == false))) {s = 21;}
+                        if ( (LA28_2==SELECT) && ((strict == false))) {s = 42;}
 
-                        else if ( (LA28_2==AS) && ((strict == false))) {s = 22;}
+                        else if ( (LA28_2==AS) && ((strict == false))) {s = 43;}
 
-                        else if ( (LA28_2==FROM) && ((strict == false))) {s = 23;}
+                        else if ( (LA28_2==FROM) && ((strict == false))) {s = 44;}
 
-                        else if ( (LA28_2==JOIN) && ((strict == false))) {s = 24;}
+                        else if ( (LA28_2==JOIN) && ((strict == false))) {s = 45;}
 
-                        else if ( (LA28_2==INNER) && ((strict == false))) {s = 25;}
+                        else if ( (LA28_2==INNER) && ((strict == false))) {s = 46;}
 
-                        else if ( (LA28_2==LEFT) && ((strict == false))) {s = 26;}
+                        else if ( (LA28_2==LEFT) && ((strict == false))) {s = 47;}
 
-                        else if ( (LA28_2==OUTER) && ((strict == false))) {s = 27;}
+                        else if ( (LA28_2==OUTER) && ((strict == false))) {s = 48;}
 
-                        else if ( (LA28_2==ON) && ((strict == false))) {s = 28;}
+                        else if ( (LA28_2==ON) && ((strict == false))) {s = 49;}
 
-                        else if ( (LA28_2==WHERE) && ((strict == false))) {s = 29;}
+                        else if ( (LA28_2==WHERE) && ((strict == false))) {s = 50;}
 
-                        else if ( (LA28_2==OR) && ((strict == false))) {s = 30;}
+                        else if ( (LA28_2==OR) && ((strict == false))) {s = 51;}
 
-                        else if ( (LA28_2==AND) && ((strict == false))) {s = 31;}
+                        else if ( (LA28_2==AND) && ((strict == false))) {s = 52;}
 
-                        else if ( (LA28_2==NOT) && ((strict == false))) {s = 32;}
+                        else if ( (LA28_2==NOT) && ((strict == false))) {s = 53;}
 
-                        else if ( (LA28_2==IN) && ((strict == false))) {s = 33;}
+                        else if ( (LA28_2==IN) && ((strict == false))) {s = 54;}
 
-                        else if ( (LA28_2==LIKE) && ((strict == false))) {s = 34;}
+                        else if ( (LA28_2==LIKE) && ((strict == false))) {s = 55;}
 
-                        else if ( (LA28_2==IS) && ((strict == false))) {s = 35;}
+                        else if ( (LA28_2==IS) && ((strict == false))) {s = 56;}
 
-                        else if ( (LA28_2==NULL) && ((strict == false))) {s = 36;}
+                        else if ( (LA28_2==NULL) && ((strict == false))) {s = 57;}
 
-                        else if ( (LA28_2==ANY) && ((strict == false))) {s = 37;}
+                        else if ( (LA28_2==ANY) && ((strict == false))) {s = 58;}
 
-                        else if ( (LA28_2==CONTAINS) && ((strict == false))) {s = 38;}
+                        else if ( (LA28_2==CONTAINS) && ((strict == false))) {s = 59;}
 
-                        else if ( (LA28_2==IN_FOLDER) && ((strict == false))) {s = 39;}
+                        else if ( (LA28_2==IN_FOLDER) && ((strict == false))) {s = 60;}
 
-                        else if ( (LA28_2==IN_TREE) && ((strict == false))) {s = 40;}
+                        else if ( (LA28_2==IN_TREE) && ((strict == false))) {s = 61;}
 
-                        else if ( (LA28_2==ORDER) && ((strict == false))) {s = 41;}
+                        else if ( (LA28_2==ORDER) && ((strict == false))) {s = 62;}
 
-                        else if ( (LA28_2==BY) && ((strict == false))) {s = 42;}
+                        else if ( (LA28_2==BY) && ((strict == false))) {s = 63;}
 
-                        else if ( (LA28_2==ASC) && ((strict == false))) {s = 43;}
+                        else if ( (LA28_2==ASC) && ((strict == false))) {s = 64;}
 
-                        else if ( (LA28_2==DESC) && ((strict == false))) {s = 44;}
+                        else if ( (LA28_2==DESC) && ((strict == false))) {s = 65;}
 
-                        else if ( (LA28_2==TIMESTAMP) && ((strict == false))) {s = 45;}
+                        else if ( (LA28_2==TIMESTAMP) && ((strict == false))) {s = 66;}
 
-                        else if ( (LA28_2==TRUE) && ((strict == false))) {s = 46;}
+                        else if ( (LA28_2==TRUE) && ((strict == false))) {s = 67;}
 
-                        else if ( (LA28_2==FALSE) && ((strict == false))) {s = 47;}
+                        else if ( (LA28_2==FALSE) && ((strict == false))) {s = 68;}
 
-                        else if ( (LA28_2==SCORE) && ((strict == false))) {s = 48;}
+                        else if ( (LA28_2==SCORE) && ((strict == false))) {s = 69;}
 
-                        else if ( (LA28_2==ID) && ((strict == false))) {s = 49;}
+                        else if ( (LA28_2==ID) && ((strict == false))) {s = 70;}
 
                          
                         input.seek(index28_2);
                         if ( s>=0 ) return s;
                         break;
                     case 59 : 
-                        int LA28_27 = input.LA(1);
+                        int LA28_48 = input.LA(1);
 
                          
-                        int index28_27 = input.index();
+                        int index28_48 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_27==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_48==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_27);
+                        input.seek(index28_48);
                         if ( s>=0 ) return s;
                         break;
                     case 60 : 
-                        int LA28_221 = input.LA(1);
+                        int LA28_267 = input.LA(1);
 
                          
-                        int index28_221 = input.index();
+                        int index28_267 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_221==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_267==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_221);
+                        input.seek(index28_267);
                         if ( s>=0 ) return s;
                         break;
                     case 61 : 
-                        int LA28_28 = input.LA(1);
+                        int LA28_49 = input.LA(1);
 
                          
-                        int index28_28 = input.index();
+                        int index28_49 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_28==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_49==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_28);
+                        input.seek(index28_49);
                         if ( s>=0 ) return s;
                         break;
                     case 62 : 
-                        int LA28_44 = input.LA(1);
+                        int LA28_65 = input.LA(1);
 
                          
-                        int index28_44 = input.index();
+                        int index28_65 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_44==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_65==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_44);
+                        input.seek(index28_65);
                         if ( s>=0 ) return s;
                         break;
                     case 63 : 
-                        int LA28_216 = input.LA(1);
+                        int LA28_262 = input.LA(1);
 
                          
-                        int index28_216 = input.index();
+                        int index28_262 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_216==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_262==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_216);
+                        input.seek(index28_262);
                         if ( s>=0 ) return s;
                         break;
                     case 64 : 
-                        int LA28_217 = input.LA(1);
+                        int LA28_263 = input.LA(1);
 
                          
-                        int index28_217 = input.index();
+                        int index28_263 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_217==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_263==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_217);
+                        input.seek(index28_263);
                         if ( s>=0 ) return s;
                         break;
                     case 65 : 
-                        int LA28_218 = input.LA(1);
+                        int LA28_264 = input.LA(1);
 
                          
-                        int index28_218 = input.index();
+                        int index28_264 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_218==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_264==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_218);
+                        input.seek(index28_264);
                         if ( s>=0 ) return s;
                         break;
                     case 66 : 
@@ -11946,287 +13776,307 @@ public class CMISParser extends Parser {
                         int index28_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_1==DOT) ) {s = 14;}
+                        if ( (LA28_1==DOT) ) {s = 35;}
 
-                        else if ( (LA28_1==EQUALS||(LA28_1>=NOTEQUALS && LA28_1<=GREATERTHANOREQUALS)) ) {s = 15;}
+                        else if ( (LA28_1==EQUALS||(LA28_1>=NOTEQUALS && LA28_1<=GREATERTHANOREQUALS)) ) {s = 36;}
 
-                        else if ( (LA28_1==LPAREN) && ((strict == false))) {s = 16;}
+                        else if ( (LA28_1==LPAREN) && ((strict == false))) {s = 37;}
 
-                        else if ( (LA28_1==NOT) ) {s = 17;}
+                        else if ( (LA28_1==NOT) ) {s = 38;}
 
-                        else if ( (LA28_1==IN) ) {s = 18;}
+                        else if ( (LA28_1==IN) ) {s = 39;}
 
-                        else if ( (LA28_1==LIKE) ) {s = 19;}
+                        else if ( (LA28_1==LIKE) ) {s = 40;}
 
-                        else if ( (LA28_1==IS) ) {s = 20;}
+                        else if ( (LA28_1==IS) ) {s = 41;}
 
                          
                         input.seek(index28_1);
                         if ( s>=0 ) return s;
                         break;
                     case 67 : 
-                        int LA28_225 = input.LA(1);
+                        int LA28_271 = input.LA(1);
 
                          
-                        int index28_225 = input.index();
+                        int index28_271 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_225==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_271==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_225);
+                        input.seek(index28_271);
                         if ( s>=0 ) return s;
                         break;
                     case 68 : 
-                        int LA28_21 = input.LA(1);
-
-                         
-                        int index28_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_21==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_21);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 69 : 
-                        int LA28_43 = input.LA(1);
-
-                         
-                        int index28_43 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_43==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_43);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 70 : 
-                        int LA28_25 = input.LA(1);
-
-                         
-                        int index28_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_25==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_25);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 71 : 
-                        int LA28_223 = input.LA(1);
-
-                         
-                        int index28_223 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_223==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
-
-                         
-                        input.seek(index28_223);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 72 : 
-                        int LA28_222 = input.LA(1);
-
-                         
-                        int index28_222 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_222==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
-
-                         
-                        input.seek(index28_222);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 73 : 
-                        int LA28_224 = input.LA(1);
-
-                         
-                        int index28_224 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_224==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
-
-                         
-                        input.seek(index28_224);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 74 : 
-                        int LA28_22 = input.LA(1);
-
-                         
-                        int index28_22 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_22==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_22);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 75 : 
-                        int LA28_26 = input.LA(1);
-
-                         
-                        int index28_26 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA28_26==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
-
-                         
-                        input.seek(index28_26);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 76 : 
                         int LA28_42 = input.LA(1);
 
                          
                         int index28_42 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_42==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_42==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
                         input.seek(index28_42);
                         if ( s>=0 ) return s;
                         break;
-                    case 77 : 
-                        int LA28_49 = input.LA(1);
+                    case 69 : 
+                        int LA28_64 = input.LA(1);
 
                          
-                        int index28_49 = input.index();
+                        int index28_64 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_49==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_64==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_49);
+                        input.seek(index28_64);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 70 : 
+                        int LA28_46 = input.LA(1);
+
+                         
+                        int index28_46 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_46==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_46);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 71 : 
+                        int LA28_269 = input.LA(1);
+
+                         
+                        int index28_269 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_269==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
+
+                         
+                        input.seek(index28_269);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 72 : 
+                        int LA28_268 = input.LA(1);
+
+                         
+                        int index28_268 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_268==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
+
+                         
+                        input.seek(index28_268);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 73 : 
+                        int LA28_270 = input.LA(1);
+
+                         
+                        int index28_270 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_270==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
+
+                         
+                        input.seek(index28_270);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 74 : 
+                        int LA28_43 = input.LA(1);
+
+                         
+                        int index28_43 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_43==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_43);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 75 : 
+                        int LA28_47 = input.LA(1);
+
+                         
+                        int index28_47 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_47==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_47);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 76 : 
+                        int LA28_63 = input.LA(1);
+
+                         
+                        int index28_63 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_63==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_63);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 77 : 
+                        int LA28_70 = input.LA(1);
+
+                         
+                        int index28_70 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA28_70==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
+
+                         
+                        input.seek(index28_70);
                         if ( s>=0 ) return s;
                         break;
                     case 78 : 
-                        int LA28_226 = input.LA(1);
+                        int LA28_272 = input.LA(1);
 
                          
-                        int index28_226 = input.index();
+                        int index28_272 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_226==DOUBLE_QUOTE) && ((strict == false))) {s = 228;}
+                        if ( (LA28_272==DOUBLE_QUOTE) && ((strict == false))) {s = 274;}
 
                          
-                        input.seek(index28_226);
+                        input.seek(index28_272);
                         if ( s>=0 ) return s;
                         break;
                     case 79 : 
-                        int LA28_23 = input.LA(1);
+                        int LA28_44 = input.LA(1);
 
                          
-                        int index28_23 = input.index();
+                        int index28_44 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_23==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_44==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_23);
+                        input.seek(index28_44);
                         if ( s>=0 ) return s;
                         break;
                     case 80 : 
-                        int LA28_51 = input.LA(1);
+                        int LA28_73 = input.LA(1);
 
                          
-                        int index28_51 = input.index();
+                        int index28_73 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_51==ID) ) {s = 58;}
+                        if ( (LA28_73==ID) ) {s = 81;}
 
-                        else if ( (LA28_51==DOUBLE_QUOTE) ) {s = 59;}
+                        else if ( (LA28_73==DOUBLE_QUOTE) ) {s = 82;}
 
-                        else if ( (LA28_51==QUOTED_STRING) ) {s = 60;}
+                        else if ( (LA28_73==QUOTED_STRING) ) {s = 83;}
 
-                        else if ( (LA28_51==RPAREN||LA28_51==COLON||(LA28_51>=FLOATING_POINT_LITERAL && LA28_51<=TIMESTAMP)) && ((strict == false))) {s = 16;}
+                        else if ( (LA28_73==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_73==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_73==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_73==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_73==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_73==COLON) && ((strict == false))) {s = 89;}
+
+                        else if ( (LA28_73==RPAREN) && ((strict == false))) {s = 90;}
 
                          
-                        input.seek(index28_51);
+                        input.seek(index28_73);
                         if ( s>=0 ) return s;
                         break;
                     case 81 : 
-                        int LA28_41 = input.LA(1);
+                        int LA28_62 = input.LA(1);
 
                          
-                        int index28_41 = input.index();
+                        int index28_62 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_41==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_62==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_41);
+                        input.seek(index28_62);
                         if ( s>=0 ) return s;
                         break;
                     case 82 : 
-                        int LA28_131 = input.LA(1);
+                        int LA28_166 = input.LA(1);
 
                          
-                        int index28_131 = input.index();
+                        int index28_166 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_131==EOF||LA28_131==RPAREN||(LA28_131>=OR && LA28_131<=AND)||LA28_131==ORDER) ) {s = 101;}
+                        if ( (LA28_166==AND) ) {s = 233;}
 
-                        else if ( (LA28_131==EQUALS||(LA28_131>=NOTEQUALS && LA28_131<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 16;}
+                        else if ( (LA28_166==OR) ) {s = 234;}
+
+                        else if ( (LA28_166==ORDER) ) {s = 235;}
+
+                        else if ( (LA28_166==EOF) ) {s = 236;}
+
+                        else if ( (LA28_166==RPAREN) ) {s = 237;}
+
+                        else if ( (LA28_166==EQUALS||(LA28_166>=NOTEQUALS && LA28_166<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 127;}
 
                          
-                        input.seek(index28_131);
+                        input.seek(index28_166);
                         if ( s>=0 ) return s;
                         break;
                     case 83 : 
-                        int LA28_57 = input.LA(1);
+                        int LA28_80 = input.LA(1);
 
                          
-                        int index28_57 = input.index();
+                        int index28_80 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_57==DOT) && ((strict == false))) {s = 96;}
+                        if ( (LA28_80==DOT) && ((strict == false))) {s = 126;}
 
-                        else if ( (LA28_57==EQUALS||(LA28_57>=NOTEQUALS && LA28_57<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 16;}
+                        else if ( (LA28_80==EQUALS||(LA28_80>=NOTEQUALS && LA28_80<=GREATERTHANOREQUALS)) && ((strict == false))) {s = 127;}
 
-                        else if ( (LA28_57==NOT) && ((strict == false))) {s = 97;}
+                        else if ( (LA28_80==NOT) && ((strict == false))) {s = 128;}
 
-                        else if ( (LA28_57==IN) && ((strict == false))) {s = 98;}
+                        else if ( (LA28_80==IN) && ((strict == false))) {s = 129;}
 
-                        else if ( (LA28_57==LIKE) && ((strict == false))) {s = 99;}
+                        else if ( (LA28_80==LIKE) && ((strict == false))) {s = 130;}
 
-                        else if ( (LA28_57==IS) && ((strict == false))) {s = 100;}
+                        else if ( (LA28_80==IS) && ((strict == false))) {s = 131;}
 
                          
-                        input.seek(index28_57);
+                        input.seek(index28_80);
                         if ( s>=0 ) return s;
                         break;
                     case 84 : 
-                        int LA28_24 = input.LA(1);
+                        int LA28_45 = input.LA(1);
 
                          
-                        int index28_24 = input.index();
+                        int index28_45 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_24==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_45==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_24);
+                        input.seek(index28_45);
                         if ( s>=0 ) return s;
                         break;
                     case 85 : 
-                        int LA28_40 = input.LA(1);
+                        int LA28_61 = input.LA(1);
 
                          
-                        int index28_40 = input.index();
+                        int index28_61 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA28_40==DOUBLE_QUOTE) && ((strict == false))) {s = 57;}
+                        if ( (LA28_61==DOUBLE_QUOTE) && ((strict == false))) {s = 80;}
 
                          
-                        input.seek(index28_40);
+                        input.seek(index28_61);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -13398,110 +15248,110 @@ public class CMISParser extends Parser {
     static final String DFA41_eotS =
         "\153\uffff";
     static final String DFA41_eofS =
-        "\1\uffff\1\4\41\uffff\1\4\1\uffff\1\104\40\uffff\1\111\1\113\42"+
-        "\uffff\1\113";
+        "\1\uffff\1\5\43\uffff\1\5\1\uffff\1\107\42\uffff\1\5\1\107\36\uffff"+
+        "\1\107";
     static final String DFA41_minS =
-        "\1\106\1\42\1\40\1\106\2\uffff\35\107\1\42\1\40\1\42\35\107\1\106"+
-        "\2\uffff\2\42\1\40\4\uffff\35\107\1\42";
+        "\1\106\1\42\1\40\1\106\4\uffff\35\107\1\42\1\40\1\42\35\107\1\106"+
+        "\4\uffff\2\42\1\40\35\107\1\42";
     static final String DFA41_maxS =
-        "\1\107\1\103\1\115\1\107\2\uffff\35\107\1\103\1\115\1\103\36\107"+
-        "\2\uffff\2\103\1\115\4\uffff\35\107\1\103";
+        "\1\107\1\103\1\115\1\107\4\uffff\35\107\1\103\1\115\1\103\36\107"+
+        "\4\uffff\2\103\1\115\35\107\1\103";
     static final String DFA41_acceptS =
-        "\4\uffff\1\1\1\2\76\uffff\1\1\1\2\3\uffff\1\1\1\2\1\1\1\2\36\uffff";
+        "\4\uffff\2\1\2\2\76\uffff\2\1\2\2\41\uffff";
     static final String DFA41_specialS =
-        "\1\43\1\uffff\1\52\3\uffff\1\36\1\26\1\32\1\34\1\47\1\51\1\50\1"+
+        "\1\43\1\uffff\1\52\5\uffff\1\36\1\26\1\32\1\34\1\47\1\51\1\50\1"+
         "\42\1\45\1\72\1\71\1\74\1\60\1\65\1\63\1\7\1\1\1\20\1\24\1\14\1"+
         "\33\1\27\1\31\1\40\1\35\1\46\1\44\1\54\1\70\2\uffff\1\30\35\uffff"+
-        "\1\16\3\uffff\1\37\1\25\4\uffff\1\12\1\15\1\13\1\21\1\17\1\23\1"+
-        "\22\1\2\1\0\1\4\1\3\1\6\1\5\1\11\1\10\1\67\1\66\1\64\1\62\1\61\1"+
-        "\56\1\55\1\53\1\100\1\76\1\75\1\73\1\77\1\57\1\41}>";
+        "\1\16\5\uffff\1\37\1\25\1\12\1\15\1\13\1\21\1\17\1\23\1\22\1\2\1"+
+        "\0\1\4\1\3\1\6\1\5\1\11\1\10\1\67\1\66\1\64\1\62\1\61\1\56\1\55"+
+        "\1\53\1\100\1\76\1\75\1\73\1\77\1\57\1\41}>";
     static final String[] DFA41_transitionS = {
             "\1\1\1\2",
-            "\1\4\2\uffff\1\3\34\uffff\2\5",
-            "\1\6\2\uffff\1\7\4\uffff\1\10\1\11\1\12\1\13\1\14\1\15\1\uffff"+
-            "\1\16\1\17\1\20\1\21\5\uffff\1\22\1\23\1\24\1\25\1\26\1\27\1"+
-            "\30\1\31\1\32\1\33\1\34\1\35\2\uffff\1\42\3\uffff\1\37\1\40"+
-            "\1\36\1\41",
-            "\1\43\1\44",
+            "\1\4\2\uffff\1\3\34\uffff\1\6\1\7",
+            "\1\10\2\uffff\1\11\4\uffff\1\12\1\13\1\14\1\15\1\16\1\17\1"+
+            "\uffff\1\20\1\21\1\22\1\23\5\uffff\1\24\1\25\1\26\1\27\1\30"+
+            "\1\31\1\32\1\33\1\34\1\35\1\36\1\37\2\uffff\1\44\3\uffff\1\41"+
+            "\1\42\1\40\1\43",
+            "\1\45\1\46",
             "",
             "",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\45",
-            "\1\4\37\uffff\2\5",
-            "\1\46\2\uffff\1\47\4\uffff\1\50\1\51\1\52\1\53\1\54\1\55\1"+
-            "\uffff\1\56\1\57\1\60\1\61\5\uffff\1\62\1\63\1\64\1\65\1\66"+
-            "\1\67\1\70\1\71\1\72\1\73\1\74\1\75\2\uffff\1\102\3\uffff\1"+
-            "\77\1\100\1\76\1\101",
-            "\1\104\2\uffff\1\103\34\uffff\2\105",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\106",
-            "\1\107\1\110",
             "",
             "",
-            "\1\4\37\uffff\1\5\1\112",
-            "\1\104\37\uffff\1\105\1\114",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\47",
+            "\1\4\37\uffff\1\6\1\7",
+            "\1\50\2\uffff\1\51\4\uffff\1\52\1\53\1\54\1\55\1\56\1\57\1"+
+            "\uffff\1\60\1\61\1\62\1\63\5\uffff\1\64\1\65\1\66\1\67\1\70"+
+            "\1\71\1\72\1\73\1\74\1\75\1\76\1\77\2\uffff\1\104\3\uffff\1"+
+            "\101\1\102\1\100\1\103",
+            "\1\106\2\uffff\1\105\34\uffff\1\110\1\111",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\112",
+            "\1\113\1\114",
+            "",
+            "",
+            "",
+            "",
+            "\1\4\37\uffff\1\6\1\7",
+            "\1\106\37\uffff\1\110\1\111",
             "\1\115\2\uffff\1\116\4\uffff\1\117\1\120\1\121\1\122\1\123"+
             "\1\124\1\uffff\1\125\1\126\1\127\1\130\5\uffff\1\131\1\132\1"+
             "\133\1\134\1\135\1\136\1\137\1\140\1\141\1\142\1\143\1\144\2"+
             "\uffff\1\151\3\uffff\1\146\1\147\1\145\1\150",
-            "",
-            "",
-            "",
-            "",
             "\1\152",
             "\1\152",
             "\1\152",
@@ -13531,7 +15381,7 @@ public class CMISParser extends Parser {
             "\1\152",
             "\1\152",
             "\1\152",
-            "\1\104\37\uffff\1\105\1\114"
+            "\1\106\37\uffff\1\110\1\111"
     };
 
     static final short[] DFA41_eot = DFA.unpackEncodedString(DFA41_eotS);
@@ -13584,16 +15434,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA41_22 = input.LA(1);
+                        int LA41_24 = input.LA(1);
 
                          
-                        int index41_22 = input.index();
+                        int index41_24 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_22==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_24==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_22);
+                        input.seek(index41_24);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
@@ -13662,16 +15512,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
-                        int LA41_21 = input.LA(1);
+                        int LA41_23 = input.LA(1);
 
                          
-                        int index41_21 = input.index();
+                        int index41_23 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_21==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_23==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_21);
+                        input.seek(index41_23);
                         if ( s>=0 ) return s;
                         break;
                     case 8 : 
@@ -13727,16 +15577,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 12 : 
-                        int LA41_25 = input.LA(1);
+                        int LA41_27 = input.LA(1);
 
                          
-                        int index41_25 = input.index();
+                        int index41_27 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_25==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_27==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_25);
+                        input.seek(index41_27);
                         if ( s>=0 ) return s;
                         break;
                     case 13 : 
@@ -13753,18 +15603,18 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 14 : 
-                        int LA41_67 = input.LA(1);
+                        int LA41_69 = input.LA(1);
 
                          
-                        int index41_67 = input.index();
+                        int index41_69 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_67==ID) && ((strict == false))) {s = 71;}
+                        if ( (LA41_69==ID) && ((strict == false))) {s = 75;}
 
-                        else if ( (LA41_67==DOUBLE_QUOTE) && ((strict == false))) {s = 72;}
+                        else if ( (LA41_69==DOUBLE_QUOTE) && ((strict == false))) {s = 76;}
 
                          
-                        input.seek(index41_67);
+                        input.seek(index41_69);
                         if ( s>=0 ) return s;
                         break;
                     case 15 : 
@@ -13781,16 +15631,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 16 : 
-                        int LA41_23 = input.LA(1);
+                        int LA41_25 = input.LA(1);
 
                          
-                        int index41_23 = input.index();
+                        int index41_25 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_23==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_25==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_23);
+                        input.seek(index41_25);
                         if ( s>=0 ) return s;
                         break;
                     case 17 : 
@@ -13833,238 +15683,242 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 20 : 
-                        int LA41_24 = input.LA(1);
-
-                         
-                        int index41_24 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_24==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index41_24);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 21 : 
-                        int LA41_72 = input.LA(1);
-
-                         
-                        int index41_72 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_72==SELECT) && ((strict == false))) {s = 77;}
-
-                        else if ( (LA41_72==AS) && ((strict == false))) {s = 78;}
-
-                        else if ( (LA41_72==FROM) && ((strict == false))) {s = 79;}
-
-                        else if ( (LA41_72==JOIN) && ((strict == false))) {s = 80;}
-
-                        else if ( (LA41_72==INNER) && ((strict == false))) {s = 81;}
-
-                        else if ( (LA41_72==LEFT) && ((strict == false))) {s = 82;}
-
-                        else if ( (LA41_72==OUTER) && ((strict == false))) {s = 83;}
-
-                        else if ( (LA41_72==ON) && ((strict == false))) {s = 84;}
-
-                        else if ( (LA41_72==WHERE) && ((strict == false))) {s = 85;}
-
-                        else if ( (LA41_72==OR) && ((strict == false))) {s = 86;}
-
-                        else if ( (LA41_72==AND) && ((strict == false))) {s = 87;}
-
-                        else if ( (LA41_72==NOT) && ((strict == false))) {s = 88;}
-
-                        else if ( (LA41_72==IN) && ((strict == false))) {s = 89;}
-
-                        else if ( (LA41_72==LIKE) && ((strict == false))) {s = 90;}
-
-                        else if ( (LA41_72==IS) && ((strict == false))) {s = 91;}
-
-                        else if ( (LA41_72==NULL) && ((strict == false))) {s = 92;}
-
-                        else if ( (LA41_72==ANY) && ((strict == false))) {s = 93;}
-
-                        else if ( (LA41_72==CONTAINS) && ((strict == false))) {s = 94;}
-
-                        else if ( (LA41_72==IN_FOLDER) && ((strict == false))) {s = 95;}
-
-                        else if ( (LA41_72==IN_TREE) && ((strict == false))) {s = 96;}
-
-                        else if ( (LA41_72==ORDER) && ((strict == false))) {s = 97;}
-
-                        else if ( (LA41_72==BY) && ((strict == false))) {s = 98;}
-
-                        else if ( (LA41_72==ASC) && ((strict == false))) {s = 99;}
-
-                        else if ( (LA41_72==DESC) && ((strict == false))) {s = 100;}
-
-                        else if ( (LA41_72==TIMESTAMP) && ((strict == false))) {s = 101;}
-
-                        else if ( (LA41_72==TRUE) && ((strict == false))) {s = 102;}
-
-                        else if ( (LA41_72==FALSE) && ((strict == false))) {s = 103;}
-
-                        else if ( (LA41_72==SCORE) && ((strict == false))) {s = 104;}
-
-                        else if ( (LA41_72==ID) && ((strict == false))) {s = 105;}
-
-                         
-                        input.seek(index41_72);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 22 : 
-                        int LA41_7 = input.LA(1);
-
-                         
-                        int index41_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_7==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index41_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 23 : 
-                        int LA41_27 = input.LA(1);
-
-                         
-                        int index41_27 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_27==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index41_27);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 24 : 
-                        int LA41_37 = input.LA(1);
-
-                         
-                        int index41_37 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_37==DOT) && ((strict == false))) {s = 67;}
-
-                        else if ( (LA41_37==EOF||LA41_37==COMMA) && ((strict == false))) {s = 68;}
-
-                        else if ( ((LA41_37>=ASC && LA41_37<=DESC)) && ((strict == false))) {s = 69;}
-
-                         
-                        input.seek(index41_37);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 25 : 
-                        int LA41_28 = input.LA(1);
-
-                         
-                        int index41_28 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_28==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index41_28);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 26 : 
-                        int LA41_8 = input.LA(1);
-
-                         
-                        int index41_8 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_8==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index41_8);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 27 : 
                         int LA41_26 = input.LA(1);
 
                          
                         int index41_26 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_26==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_26==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
                         input.seek(index41_26);
                         if ( s>=0 ) return s;
                         break;
-                    case 28 : 
+                    case 21 : 
+                        int LA41_76 = input.LA(1);
+
+                         
+                        int index41_76 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_76==SELECT) && ((strict == false))) {s = 77;}
+
+                        else if ( (LA41_76==AS) && ((strict == false))) {s = 78;}
+
+                        else if ( (LA41_76==FROM) && ((strict == false))) {s = 79;}
+
+                        else if ( (LA41_76==JOIN) && ((strict == false))) {s = 80;}
+
+                        else if ( (LA41_76==INNER) && ((strict == false))) {s = 81;}
+
+                        else if ( (LA41_76==LEFT) && ((strict == false))) {s = 82;}
+
+                        else if ( (LA41_76==OUTER) && ((strict == false))) {s = 83;}
+
+                        else if ( (LA41_76==ON) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA41_76==WHERE) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA41_76==OR) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA41_76==AND) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA41_76==NOT) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA41_76==IN) && ((strict == false))) {s = 89;}
+
+                        else if ( (LA41_76==LIKE) && ((strict == false))) {s = 90;}
+
+                        else if ( (LA41_76==IS) && ((strict == false))) {s = 91;}
+
+                        else if ( (LA41_76==NULL) && ((strict == false))) {s = 92;}
+
+                        else if ( (LA41_76==ANY) && ((strict == false))) {s = 93;}
+
+                        else if ( (LA41_76==CONTAINS) && ((strict == false))) {s = 94;}
+
+                        else if ( (LA41_76==IN_FOLDER) && ((strict == false))) {s = 95;}
+
+                        else if ( (LA41_76==IN_TREE) && ((strict == false))) {s = 96;}
+
+                        else if ( (LA41_76==ORDER) && ((strict == false))) {s = 97;}
+
+                        else if ( (LA41_76==BY) && ((strict == false))) {s = 98;}
+
+                        else if ( (LA41_76==ASC) && ((strict == false))) {s = 99;}
+
+                        else if ( (LA41_76==DESC) && ((strict == false))) {s = 100;}
+
+                        else if ( (LA41_76==TIMESTAMP) && ((strict == false))) {s = 101;}
+
+                        else if ( (LA41_76==TRUE) && ((strict == false))) {s = 102;}
+
+                        else if ( (LA41_76==FALSE) && ((strict == false))) {s = 103;}
+
+                        else if ( (LA41_76==SCORE) && ((strict == false))) {s = 104;}
+
+                        else if ( (LA41_76==ID) && ((strict == false))) {s = 105;}
+
+                         
+                        input.seek(index41_76);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 22 : 
                         int LA41_9 = input.LA(1);
 
                          
                         int index41_9 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_9==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_9==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
                         input.seek(index41_9);
                         if ( s>=0 ) return s;
                         break;
-                    case 29 : 
-                        int LA41_30 = input.LA(1);
-
-                         
-                        int index41_30 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_30==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index41_30);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 30 : 
-                        int LA41_6 = input.LA(1);
-
-                         
-                        int index41_6 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_6==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index41_6);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 31 : 
-                        int LA41_71 = input.LA(1);
-
-                         
-                        int index41_71 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_71==COMMA) && ((strict == false))) {s = 68;}
-
-                        else if ( (LA41_71==EOF) && ((strict == false))) {s = 75;}
-
-                        else if ( (LA41_71==ASC) && ((strict == false))) {s = 69;}
-
-                        else if ( (LA41_71==DESC) && ((strict == false))) {s = 76;}
-
-                         
-                        input.seek(index41_71);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 32 : 
+                    case 23 : 
                         int LA41_29 = input.LA(1);
 
                          
                         int index41_29 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_29==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_29==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
                         input.seek(index41_29);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 24 : 
+                        int LA41_39 = input.LA(1);
+
+                         
+                        int index41_39 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_39==DOT) && ((strict == false))) {s = 69;}
+
+                        else if ( (LA41_39==COMMA) && ((strict == false))) {s = 70;}
+
+                        else if ( (LA41_39==EOF) && ((strict == false))) {s = 71;}
+
+                        else if ( (LA41_39==ASC) && ((strict == false))) {s = 72;}
+
+                        else if ( (LA41_39==DESC) && ((strict == false))) {s = 73;}
+
+                         
+                        input.seek(index41_39);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 25 : 
+                        int LA41_30 = input.LA(1);
+
+                         
+                        int index41_30 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_30==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
+
+                         
+                        input.seek(index41_30);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 26 : 
+                        int LA41_10 = input.LA(1);
+
+                         
+                        int index41_10 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_10==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
+
+                         
+                        input.seek(index41_10);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 27 : 
+                        int LA41_28 = input.LA(1);
+
+                         
+                        int index41_28 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_28==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
+
+                         
+                        input.seek(index41_28);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 28 : 
+                        int LA41_11 = input.LA(1);
+
+                         
+                        int index41_11 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_11==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
+
+                         
+                        input.seek(index41_11);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 29 : 
+                        int LA41_32 = input.LA(1);
+
+                         
+                        int index41_32 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_32==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
+
+                         
+                        input.seek(index41_32);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 30 : 
+                        int LA41_8 = input.LA(1);
+
+                         
+                        int index41_8 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_8==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
+
+                         
+                        input.seek(index41_8);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 31 : 
+                        int LA41_75 = input.LA(1);
+
+                         
+                        int index41_75 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_75==COMMA) && ((strict == false))) {s = 70;}
+
+                        else if ( (LA41_75==EOF) && ((strict == false))) {s = 71;}
+
+                        else if ( (LA41_75==ASC) && ((strict == false))) {s = 72;}
+
+                        else if ( (LA41_75==DESC) && ((strict == false))) {s = 73;}
+
+                         
+                        input.seek(index41_75);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 32 : 
+                        int LA41_31 = input.LA(1);
+
+                         
+                        int index41_31 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_31==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
+
+                         
+                        input.seek(index41_31);
                         if ( s>=0 ) return s;
                         break;
                     case 33 : 
@@ -14074,29 +15928,29 @@ public class CMISParser extends Parser {
                         int index41_106 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_106==COMMA) && ((strict == false))) {s = 68;}
+                        if ( (LA41_106==COMMA) && ((strict == false))) {s = 70;}
 
-                        else if ( (LA41_106==EOF) && ((strict == false))) {s = 75;}
+                        else if ( (LA41_106==EOF) && ((strict == false))) {s = 71;}
 
-                        else if ( (LA41_106==ASC) && ((strict == false))) {s = 69;}
+                        else if ( (LA41_106==ASC) && ((strict == false))) {s = 72;}
 
-                        else if ( (LA41_106==DESC) && ((strict == false))) {s = 76;}
+                        else if ( (LA41_106==DESC) && ((strict == false))) {s = 73;}
 
                          
                         input.seek(index41_106);
                         if ( s>=0 ) return s;
                         break;
                     case 34 : 
-                        int LA41_13 = input.LA(1);
+                        int LA41_15 = input.LA(1);
 
                          
-                        int index41_13 = input.index();
+                        int index41_15 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_13==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_15==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_13);
+                        input.seek(index41_15);
                         if ( s>=0 ) return s;
                         break;
                     case 35 : 
@@ -14115,81 +15969,81 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 36 : 
-                        int LA41_32 = input.LA(1);
+                        int LA41_34 = input.LA(1);
 
                          
-                        int index41_32 = input.index();
+                        int index41_34 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_32==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_34==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_32);
+                        input.seek(index41_34);
                         if ( s>=0 ) return s;
                         break;
                     case 37 : 
-                        int LA41_14 = input.LA(1);
+                        int LA41_16 = input.LA(1);
 
                          
-                        int index41_14 = input.index();
+                        int index41_16 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_14==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_16==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_14);
+                        input.seek(index41_16);
                         if ( s>=0 ) return s;
                         break;
                     case 38 : 
-                        int LA41_31 = input.LA(1);
+                        int LA41_33 = input.LA(1);
 
                          
-                        int index41_31 = input.index();
+                        int index41_33 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_31==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_33==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_31);
+                        input.seek(index41_33);
                         if ( s>=0 ) return s;
                         break;
                     case 39 : 
-                        int LA41_10 = input.LA(1);
-
-                         
-                        int index41_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA41_10==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
-
-                         
-                        input.seek(index41_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 40 : 
                         int LA41_12 = input.LA(1);
 
                          
                         int index41_12 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_12==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_12==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
                         input.seek(index41_12);
                         if ( s>=0 ) return s;
                         break;
-                    case 41 : 
-                        int LA41_11 = input.LA(1);
+                    case 40 : 
+                        int LA41_14 = input.LA(1);
 
                          
-                        int index41_11 = input.index();
+                        int index41_14 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_11==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_14==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_11);
+                        input.seek(index41_14);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 41 : 
+                        int LA41_13 = input.LA(1);
+
+                         
+                        int index41_13 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA41_13==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
+
+                         
+                        input.seek(index41_13);
                         if ( s>=0 ) return s;
                         break;
                     case 42 : 
@@ -14199,63 +16053,63 @@ public class CMISParser extends Parser {
                         int index41_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_2==SELECT) && ((strict == false))) {s = 6;}
+                        if ( (LA41_2==SELECT) && ((strict == false))) {s = 8;}
 
-                        else if ( (LA41_2==AS) && ((strict == false))) {s = 7;}
+                        else if ( (LA41_2==AS) && ((strict == false))) {s = 9;}
 
-                        else if ( (LA41_2==FROM) && ((strict == false))) {s = 8;}
+                        else if ( (LA41_2==FROM) && ((strict == false))) {s = 10;}
 
-                        else if ( (LA41_2==JOIN) && ((strict == false))) {s = 9;}
+                        else if ( (LA41_2==JOIN) && ((strict == false))) {s = 11;}
 
-                        else if ( (LA41_2==INNER) && ((strict == false))) {s = 10;}
+                        else if ( (LA41_2==INNER) && ((strict == false))) {s = 12;}
 
-                        else if ( (LA41_2==LEFT) && ((strict == false))) {s = 11;}
+                        else if ( (LA41_2==LEFT) && ((strict == false))) {s = 13;}
 
-                        else if ( (LA41_2==OUTER) && ((strict == false))) {s = 12;}
+                        else if ( (LA41_2==OUTER) && ((strict == false))) {s = 14;}
 
-                        else if ( (LA41_2==ON) && ((strict == false))) {s = 13;}
+                        else if ( (LA41_2==ON) && ((strict == false))) {s = 15;}
 
-                        else if ( (LA41_2==WHERE) && ((strict == false))) {s = 14;}
+                        else if ( (LA41_2==WHERE) && ((strict == false))) {s = 16;}
 
-                        else if ( (LA41_2==OR) && ((strict == false))) {s = 15;}
+                        else if ( (LA41_2==OR) && ((strict == false))) {s = 17;}
 
-                        else if ( (LA41_2==AND) && ((strict == false))) {s = 16;}
+                        else if ( (LA41_2==AND) && ((strict == false))) {s = 18;}
 
-                        else if ( (LA41_2==NOT) && ((strict == false))) {s = 17;}
+                        else if ( (LA41_2==NOT) && ((strict == false))) {s = 19;}
 
-                        else if ( (LA41_2==IN) && ((strict == false))) {s = 18;}
+                        else if ( (LA41_2==IN) && ((strict == false))) {s = 20;}
 
-                        else if ( (LA41_2==LIKE) && ((strict == false))) {s = 19;}
+                        else if ( (LA41_2==LIKE) && ((strict == false))) {s = 21;}
 
-                        else if ( (LA41_2==IS) && ((strict == false))) {s = 20;}
+                        else if ( (LA41_2==IS) && ((strict == false))) {s = 22;}
 
-                        else if ( (LA41_2==NULL) && ((strict == false))) {s = 21;}
+                        else if ( (LA41_2==NULL) && ((strict == false))) {s = 23;}
 
-                        else if ( (LA41_2==ANY) && ((strict == false))) {s = 22;}
+                        else if ( (LA41_2==ANY) && ((strict == false))) {s = 24;}
 
-                        else if ( (LA41_2==CONTAINS) && ((strict == false))) {s = 23;}
+                        else if ( (LA41_2==CONTAINS) && ((strict == false))) {s = 25;}
 
-                        else if ( (LA41_2==IN_FOLDER) && ((strict == false))) {s = 24;}
+                        else if ( (LA41_2==IN_FOLDER) && ((strict == false))) {s = 26;}
 
-                        else if ( (LA41_2==IN_TREE) && ((strict == false))) {s = 25;}
+                        else if ( (LA41_2==IN_TREE) && ((strict == false))) {s = 27;}
 
-                        else if ( (LA41_2==ORDER) && ((strict == false))) {s = 26;}
+                        else if ( (LA41_2==ORDER) && ((strict == false))) {s = 28;}
 
-                        else if ( (LA41_2==BY) && ((strict == false))) {s = 27;}
+                        else if ( (LA41_2==BY) && ((strict == false))) {s = 29;}
 
-                        else if ( (LA41_2==ASC) && ((strict == false))) {s = 28;}
+                        else if ( (LA41_2==ASC) && ((strict == false))) {s = 30;}
 
-                        else if ( (LA41_2==DESC) && ((strict == false))) {s = 29;}
+                        else if ( (LA41_2==DESC) && ((strict == false))) {s = 31;}
 
-                        else if ( (LA41_2==TIMESTAMP) && ((strict == false))) {s = 30;}
+                        else if ( (LA41_2==TIMESTAMP) && ((strict == false))) {s = 32;}
 
-                        else if ( (LA41_2==TRUE) && ((strict == false))) {s = 31;}
+                        else if ( (LA41_2==TRUE) && ((strict == false))) {s = 33;}
 
-                        else if ( (LA41_2==FALSE) && ((strict == false))) {s = 32;}
+                        else if ( (LA41_2==FALSE) && ((strict == false))) {s = 34;}
 
-                        else if ( (LA41_2==SCORE) && ((strict == false))) {s = 33;}
+                        else if ( (LA41_2==SCORE) && ((strict == false))) {s = 35;}
 
-                        else if ( (LA41_2==ID) && ((strict == false))) {s = 34;}
+                        else if ( (LA41_2==ID) && ((strict == false))) {s = 36;}
 
                          
                         input.seek(index41_2);
@@ -14275,16 +16129,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 44 : 
-                        int LA41_33 = input.LA(1);
+                        int LA41_35 = input.LA(1);
 
                          
-                        int index41_33 = input.index();
+                        int index41_35 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_33==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_35==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_33);
+                        input.seek(index41_35);
                         if ( s>=0 ) return s;
                         break;
                     case 45 : 
@@ -14327,16 +16181,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 48 : 
-                        int LA41_18 = input.LA(1);
+                        int LA41_20 = input.LA(1);
 
                          
-                        int index41_18 = input.index();
+                        int index41_20 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_18==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_20==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_18);
+                        input.seek(index41_20);
                         if ( s>=0 ) return s;
                         break;
                     case 49 : 
@@ -14366,16 +16220,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 51 : 
-                        int LA41_20 = input.LA(1);
+                        int LA41_22 = input.LA(1);
 
                          
-                        int index41_20 = input.index();
+                        int index41_22 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_20==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_22==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_20);
+                        input.seek(index41_22);
                         if ( s>=0 ) return s;
                         break;
                     case 52 : 
@@ -14392,16 +16246,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 53 : 
-                        int LA41_19 = input.LA(1);
+                        int LA41_21 = input.LA(1);
 
                          
-                        int index41_19 = input.index();
+                        int index41_21 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_19==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_21==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_19);
+                        input.seek(index41_21);
                         if ( s>=0 ) return s;
                         break;
                     case 54 : 
@@ -14431,42 +16285,42 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 56 : 
-                        int LA41_34 = input.LA(1);
+                        int LA41_36 = input.LA(1);
 
                          
-                        int index41_34 = input.index();
+                        int index41_36 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_34==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_36==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_34);
+                        input.seek(index41_36);
                         if ( s>=0 ) return s;
                         break;
                     case 57 : 
-                        int LA41_16 = input.LA(1);
+                        int LA41_18 = input.LA(1);
 
                          
-                        int index41_16 = input.index();
+                        int index41_18 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_16==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_18==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_16);
+                        input.seek(index41_18);
                         if ( s>=0 ) return s;
                         break;
                     case 58 : 
-                        int LA41_15 = input.LA(1);
+                        int LA41_17 = input.LA(1);
 
                          
-                        int index41_15 = input.index();
+                        int index41_17 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_15==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_17==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_15);
+                        input.seek(index41_17);
                         if ( s>=0 ) return s;
                         break;
                     case 59 : 
@@ -14483,16 +16337,16 @@ public class CMISParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 60 : 
-                        int LA41_17 = input.LA(1);
+                        int LA41_19 = input.LA(1);
 
                          
-                        int index41_17 = input.index();
+                        int index41_19 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA41_17==DOUBLE_QUOTE) && ((strict == false))) {s = 37;}
+                        if ( (LA41_19==DOUBLE_QUOTE) && ((strict == false))) {s = 39;}
 
                          
-                        input.seek(index41_17);
+                        input.seek(index41_19);
                         if ( s>=0 ) return s;
                         break;
                     case 61 : 

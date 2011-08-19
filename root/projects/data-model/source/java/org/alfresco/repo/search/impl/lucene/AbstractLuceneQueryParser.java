@@ -134,7 +134,9 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public static final String FIELD_READER = "READER";
     public static final String FIELD_AUTHORITY = "AUTHORITY";
     public static final String FIELD_TXID = "TXID";
+    public static final String FIELD_INTXID = "INTXID";
     public static final String FIELD_ACLTXID = "ACLTXID";
+    public static final String FIELD_INACLTXID = "INACLTXID";
     public static final String FIELD_TXCOMMITTIME = "TXCOMMITTIME";
     public static final String FIELD_ACLTXCOMMITTIME = "ACLTXCOMMITTIME";
     public static final String FIELD_LINKASPECT = "LINKASPECT";

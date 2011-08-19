@@ -27,6 +27,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.search.Weight;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andy
@@ -34,6 +36,7 @@ import org.apache.lucene.search.Weight;
  */
 public class ContextAwareQuery extends Query
 {
+    protected final static Logger log = LoggerFactory.getLogger(ContextAwareQuery.class);
 
     private Query luceneQuery;
     

@@ -54,6 +54,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -61,6 +63,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
  */
 public class CmisQParserPlugin extends QParserPlugin
 {
+    protected final static Logger log = LoggerFactory.getLogger(CmisQParserPlugin.class);
 
     /*
      * (non-Javadoc)
@@ -209,7 +212,10 @@ public class CmisQParserPlugin extends QParserPlugin
 
             if(json != null)
             {
-                System.out.println(json.toString());
+                if(log.isDebugEnabled())
+                {
+                    log.debug(json.toString());
+                }
             }
             
             if (searchParameters.getQuery() == null)

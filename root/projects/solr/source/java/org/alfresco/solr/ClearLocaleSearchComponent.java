@@ -29,6 +29,8 @@ import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrQueryResponse;
 import org.apache.solr.search.QueryParsing;
 import org.apache.solr.util.SolrPluginUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -37,6 +39,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
  */
 public class ClearLocaleSearchComponent extends SearchComponent
 {
+    protected final static Logger log = LoggerFactory.getLogger(ClearLocaleSearchComponent.class);
 
     /* (non-Javadoc)
      * @see org.apache.solr.handler.component.SearchComponent#getDescription()

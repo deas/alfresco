@@ -111,6 +111,8 @@ import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.Sorting;
 import org.dom4j.io.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -120,6 +122,8 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class AlfrescoSolrDataModel
 {
+    protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrDataModel.class);
+    
     private static HashMap<String, AlfrescoSolrDataModel> models = new HashMap<String, AlfrescoSolrDataModel>();
 
     private static ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -172,7 +176,9 @@ public class AlfrescoSolrDataModel
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_DBID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_INTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_INACLTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
 

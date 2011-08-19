@@ -48,6 +48,7 @@ public class NodeMetaDataParameters
     private boolean includeChildAssociations = true;
     private boolean includeParentAssociations = true;
     private boolean includeChildIds = true;
+    private boolean includeTxnId = true;
 
     public boolean isIncludeAclId()
     {
@@ -218,6 +219,15 @@ public class NodeMetaDataParameters
     {
         this.includeChildIds = includeChildIds;
     }
-    
+
+    public boolean isIncludeTxnId()
+    {
+        return includeTxnId;
+    }
+
+    public void setIncludeTxnId(boolean includeTxnId)
+    {
+        this.includeTxnId = includeTxnId;
+    }
     
 }

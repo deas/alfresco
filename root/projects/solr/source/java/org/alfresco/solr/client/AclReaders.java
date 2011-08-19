@@ -28,12 +28,16 @@ import java.util.List;
 public class AclReaders
 {
     private final long id;
+
     private final List<String> readers;
 
-    public AclReaders(long id, List<String> readers)
+    private final long aclChangeSetId;
+
+    public AclReaders(long id, List<String> readers, long aclChangeSetId)
     {
         this.id = id;
         this.readers = readers;
+        this.aclChangeSetId = aclChangeSetId;
     }
 
     @Override
@@ -47,18 +51,33 @@ public class AclReaders
     {
         final int prime = 31;
         int result = 1;
+        result = prime * result + (int) (aclChangeSetId ^ (aclChangeSetId >>> 32));
         result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + ((readers == null) ? 0 : readers.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj)
     {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
         AclReaders other = (AclReaders) obj;
-        if (id != other.id) return false;
+        if (aclChangeSetId != other.aclChangeSetId)
+            return false;
+        if (id != other.id)
+            return false;
+        if (readers == null)
+        {
+            if (other.readers != null)
+                return false;
+        }
+        else if (!readers.equals(other.readers))
+            return false;
         return true;
     }
 
@@ -71,4 +90,10 @@ public class AclReaders
     {
         return readers;
     }
+
+    public long getAclChangeSetId()
+    {
+        return aclChangeSetId;
+    }
+
 }

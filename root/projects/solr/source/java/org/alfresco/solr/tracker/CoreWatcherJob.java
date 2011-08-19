@@ -23,9 +23,14 @@ import org.apache.solr.core.SolrCore;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CoreWatcherJob implements Job
 {
+    protected final static Logger log = LoggerFactory.getLogger(CoreWatcherJob.class);
+    
+    
     public CoreWatcherJob()
     {
         super();
@@ -47,7 +52,7 @@ public class CoreWatcherJob implements Job
             {
                 if (core.getSolrConfig().getBool("alfresco/track", false))
                 {
-                    System.out.println("Starting to track " + core.getName());
+                    log.info("Starting to track " + core.getName());
                     adminHandler.getTrackers().put(core.getName(), new CoreTracker(adminHandler, core));
                 }
             }

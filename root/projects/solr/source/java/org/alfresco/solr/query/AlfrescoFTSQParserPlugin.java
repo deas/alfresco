@@ -31,6 +31,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchParameters.Operator;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
@@ -45,6 +46,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -52,7 +55,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
  */
 public class AlfrescoFTSQParserPlugin extends QParserPlugin
 {
-
+    protected final static Logger log = LoggerFactory.getLogger(AlfrescoFTSQParserPlugin.class);
     /*
      * (non-Javadoc)
      * @see org.apache.solr.search.QParserPlugin#createParser(java.lang.String,
@@ -202,7 +205,10 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
 
             if(json != null)
             {
-                System.out.println(json.toString());
+                if(log.isDebugEnabled())
+                {
+                    log.debug(json.toString());
+                }
             }
             
             if (searchParameters.getQuery() == null)

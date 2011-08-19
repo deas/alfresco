@@ -52,6 +52,7 @@ import org.alfresco.service.cmr.repository.datatype.TypeConversionException;
 import org.alfresco.service.cmr.repository.datatype.TypeConverter;
 import org.alfresco.service.cmr.repository.datatype.TypeConverter.Converter;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.SetLocaleSearchComponent;
 import org.alfresco.util.ISO8601DateFormat;
 import org.alfresco.util.Pair;
 import org.apache.commons.codec.net.URLCodec;
@@ -63,6 +64,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // TODO error handling, including dealing with a repository that is not responsive (ConnectException in sendRemoteRequest)
 // TODO get text content transform status handling
@@ -73,7 +76,7 @@ import org.json.JSONTokener;
  */
 public class SOLRAPIClient extends AlfrescoHttpClient
 {
-    private static final Log logger = LogFactory.getLog(SOLRAPIClient.class);
+    protected final static Logger log = LoggerFactory.getLogger(SOLRAPIClient.class);
     private static final String GET_ACL_CHANGESETS_URL = "api/solr/aclchangesets";
     private static final String GET_ACLS = "api/solr/acls";
     private static final String GET_ACLS_READERS = "api/solr/aclsReaders";
@@ -150,9 +153,9 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         	response.release();
         }
         
-        if (logger.isDebugEnabled())
+        if (log.isDebugEnabled())
         {
-            logger.debug(json.toString(3));
+            log.debug(json.toString(3));
         }
         
         JSONArray aclChangeSetsJSON = json.getJSONArray("aclChangeSets");
@@ -232,9 +235,9 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         	response.release();
         }
         
-        if (logger.isDebugEnabled())
+        if (log.isDebugEnabled())
         {
-            logger.debug(json.toString(3));
+            log.debug(json.toString(3));
         }
 
         JSONArray aclsJSON = json.getJSONArray("acls");
@@ -299,9 +302,9 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         	response.release();
         }
         
-        if (logger.isDebugEnabled())
+        if (log.isDebugEnabled())
         {
-            logger.debug(json.toString(3));
+            log.debug(json.toString(3));
         }
 
         JSONArray aclsReadersJSON = json.getJSONArray("aclsReaders");
@@ -317,7 +320,8 @@ public class SOLRAPIClient extends AlfrescoHttpClient
                 String readerJSON = readersJSON.getString(j);
                 readers.add(readerJSON);
             }
-            AclReaders aclReaders = new AclReaders(aclId, readers);
+            long aclChangeSetId = aclReadersJSON.getLong("aclChangeSetId");
+            AclReaders aclReaders = new AclReaders(aclId, readers, aclChangeSetId);
             aclsReaders.add(aclReaders);
         }
         // Done
@@ -364,9 +368,9 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         	response.release();
         }
 
-        if (logger.isDebugEnabled())
+        if (log.isDebugEnabled())
         {
-            logger.debug(json.toString(3));
+            log.debug(json.toString(3));
         }
         
         JSONArray jsonTransactions = json.getJSONArray("transactions");
@@ -463,8 +467,11 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
         	response.release();
         }
-
-        json.write(new PrintWriter(System.out));
+        
+        if(log.isDebugEnabled())
+        {
+            log.debug(json.toString());
+        }
 
         JSONArray jsonNodes = json.getJSONArray("nodes");
         List<Node> nodes = new ArrayList<Node>(jsonNodes.length());
@@ -664,6 +671,10 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         {
             body.put("includeNodeRef", params.isIncludeNodeRef());
         }
+        if(!params.isIncludeTxnId())
+        {
+            body.put("includeTxnId", params.isIncludeTxnId());
+        }
 
         body.put("maxResults", maxResults);
 
@@ -686,9 +697,9 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         	response.release();
         }
 
-        if (logger.isDebugEnabled())
+        if (log.isDebugEnabled())
         {
-            logger.debug(json.toString(3));
+            log.debug(json.toString(3));
         }
         
         JSONArray jsonNodes = json.getJSONArray("nodes");
@@ -702,6 +713,11 @@ public class SOLRAPIClient extends AlfrescoHttpClient
             if(jsonNodeInfo.has("id"))
             {
                 metaData.setId(jsonNodeInfo.getLong("id"));
+            }
+            
+            if(jsonNodeInfo.has("txnId"))
+            {
+                metaData.setTxnId(jsonNodeInfo.getLong("txnId"));
             }
             
             if(jsonNodeInfo.has("aclId"))
@@ -955,7 +971,11 @@ public class SOLRAPIClient extends AlfrescoHttpClient
         	response.release();
         }
         
-        json.write(new PrintWriter(System.out));
+        
+        if(log.isDebugEnabled())
+        {
+            log.debug(json.toString());
+        }
         JSONArray jsonDiffs = json.getJSONArray("diffs");
         if(jsonDiffs == null)
         {

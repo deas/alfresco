@@ -25,7 +25,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,7 +43,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.alfresco.encryption.KeyResourceLoader;
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -57,11 +56,10 @@ import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
-import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
@@ -100,6 +98,7 @@ import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.OpenBitSet;
@@ -114,6 +113,7 @@ import org.apache.solr.schema.CopyField;
 import org.apache.solr.schema.DateField;
 import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.schema.SchemaField;
+import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexReader;
@@ -128,11 +128,15 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.util.FileCopyUtils;
 
 public class CoreTracker implements CloseHook
 {
+    protected final static Logger log = LoggerFactory.getLogger(CoreTracker.class);
+
     private AlfrescoCoreAdminHandler adminHandler;
 
     private SOLRAPIClient client;
@@ -177,6 +181,34 @@ public class CoreTracker implements CloseHook
     private String macAlgorithm;
 
     private boolean secureCommsEnabled = true;
+
+    private String id;
+
+    private AlfrescoSolrDataModel dataModel;
+
+    private ConcurrentLinkedQueue<Long> transactionsToReindex = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> transactionsToIndex = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> transactionsToPurge = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> aclChangeSetsToReindex = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> aclChangeSetsToIndex = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> aclChangeSetsToPurge = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> nodesToReindex = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> nodesToIndex = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> nodesToPurge = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> aclsToReindex = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> aclsToIndex = new ConcurrentLinkedQueue<Long>();
+
+    private ConcurrentLinkedQueue<Long> aclsToPurge = new ConcurrentLinkedQueue<Long>();
 
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
@@ -266,8 +298,8 @@ public class CoreTracker implements CloseHook
         }
 
         SolrResourceLoader loader = core.getSchema().getResourceLoader();
-        String id = loader.getInstanceDir();
-        AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
+        id = loader.getInstanceDir();
+        dataModel = AlfrescoSolrDataModel.getInstance(id);
 
         // load keystore from the Solr core location
         SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
@@ -316,352 +348,40 @@ public class CoreTracker implements CloseHook
         this.check = check;
     }
 
-    public void track()
+    public void updateIndex()
     {
-        System.out.println("... tracking " + core.getName());
-
-        String id = core.getSchema().getResourceLoader().getInstanceDir();
-
-        AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
 
         synchronized (this)
         {
             if (running)
             {
-                System.out.println("... tracker for " + core.getName() + " is already running");
+                log.info("... update for " + core.getName() + " is already running");
                 return;
             }
             else
             {
+                log.info("... updating " + core.getName());
                 running = true;
             }
         }
-
-        // track
         try
         {
-            RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
+            purgeAclChangeSets();
+            purgeAcls();
+            purgeTransactions();
+            purgeNodes();
 
-            boolean indexing = false;
-            boolean aclIndexing = false;
-            try
-            {
-                SolrIndexSearcher solrIndexSearcher = refCounted.get();
-                SolrIndexReader reader = solrIndexSearcher.getReader();
+            reindexAclChangeSets();
+            reindexAcls();
+            reindexTransactions();
+            reindexNodes();
 
-                if (lastIndexedCommitTime == 0)
-                {
-                    lastIndexedCommitTime = getLastTransactionCommitTime(reader);
-                }
+            indexAclChangeSets();
+            indexAcls();
+            indexTransactions();
+            indexNodes();
 
-                long startTime = System.currentTimeMillis();
-                long timeToStopIndexing = startTime - lag;
-                long timeBeforeWhichThereCanBeNoHoles = startTime - holeRetention;
-                long timeBeforeWhichThereCanBeNoHolesInIndex = lastIndexedCommitTime - holeRetention;
-                long lastGoodTxCommitTimeInIndex = getLastTxCommitTimeBeforeHoles(reader, timeBeforeWhichThereCanBeNoHolesInIndex);
-
-                if (lastIndexedIdBeforeHoles == -1)
-                {
-                    lastIndexedIdBeforeHoles = getLargestTxIdByCommitTime(reader, lastGoodTxCommitTimeInIndex);
-                }
-                else
-                {
-                    long currentBestFromIndex = getLargestTxIdByCommitTime(reader, lastGoodTxCommitTimeInIndex);
-                    if (currentBestFromIndex > lastIndexedIdBeforeHoles)
-                    {
-                        lastIndexedIdBeforeHoles = currentBestFromIndex;
-                    }
-                }
-
-                long lastTxCommitTime = lastGoodTxCommitTimeInIndex;
-                long aclLastCommitTime = lastGoodTxCommitTimeInIndex;
-
-                // track models
-                // reflect changes changes and update on disk copy
-
-                List<AlfrescoModelDiff> modelDiffs = client.getModelsDiff(dataModel.getAlfrescoModels());
-                HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
-
-                for (AlfrescoModelDiff modelDiff : modelDiffs)
-                {
-                    switch (modelDiff.getType())
-                    {
-                    case CHANGED:
-                        AlfrescoModel changedModel = client.getModel(modelDiff.getModelName());
-                        for (M2Namespace namespace : changedModel.getModel().getNamespaces())
-                        {
-                            modelMap.put(namespace.getUri(), changedModel.getModel());
-                        }
-                        break;
-                    case NEW:
-                        AlfrescoModel newModel = client.getModel(modelDiff.getModelName());
-                        for (M2Namespace namespace : newModel.getModel().getNamespaces())
-                        {
-                            modelMap.put(namespace.getUri(), newModel.getModel());
-                        }
-                        break;
-                    case REMOVED:
-                        break;
-                    }
-                }
-
-                HashSet<String> loadedModels = new HashSet<String>();
-                for (M2Model model : modelMap.values())
-                {
-                    loadModel(modelMap, loadedModels, model, dataModel);
-                }
-                dataModel.afterInitModels();
-
-                File alfrescoModelDir = new File(id, "alfrescoModels");
-                if (!alfrescoModelDir.exists())
-                {
-                    alfrescoModelDir.mkdir();
-                }
-                for (AlfrescoModelDiff modelDiff : modelDiffs)
-                {
-                    switch (modelDiff.getType())
-                    {
-                    case CHANGED:
-                        removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
-                        M2Model changedModel = dataModel.getM2Model(modelDiff.getModelName());
-                        File changedFile = new File(alfrescoModelDir, getModelFileName(changedModel));
-                        FileOutputStream cos = new FileOutputStream(changedFile);
-                        changedModel.toXML(cos);
-                        cos.flush();
-                        cos.close();
-                        break;
-                    case NEW:
-                        M2Model newModel = dataModel.getM2Model(modelDiff.getModelName());
-                        // add on file
-                        File newFile = new File(alfrescoModelDir, getModelFileName(newModel));
-                        FileOutputStream nos = new FileOutputStream(newFile);
-                        newModel.toXML(nos);
-                        nos.flush();
-                        nos.close();
-                        break;
-                    case REMOVED:
-                        removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
-                        break;
-                    }
-                }
-
-                // Track Acls up to end point
-                long aclLoopStartingCommitTime;
-                List<AclChangeSet> aclChangeSets;
-                boolean aclsUpToDate = false;
-                do
-                {
-                    aclLoopStartingCommitTime = aclLastCommitTime;
-                    aclChangeSets = client.getAclChangeSets(aclLastCommitTime, null, 2000);
-
-                    System.out.println("Scanning Acl change sets ...");
-                    if (aclChangeSets.size() > 0)
-                    {
-                        System.out.println(".... from " + aclChangeSets.get(0));
-                        System.out.println(".... to " + aclChangeSets.get(aclChangeSets.size() - 1));
-                    }
-                    else
-                    {
-                        System.out.println(".... non found after lastTxCommitTime " + aclLastCommitTime);
-                    }
-
-                    for (AclChangeSet changeSet : aclChangeSets)
-                    {
-                        if (!aclIndexing)
-                        {
-                            String target = NumericEncoder.encode(changeSet.getId());
-                            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
-                            Term term = termEnum.term();
-                            termEnum.close();
-                            if (term == null)
-                            {
-                                aclIndexing = true;
-                            }
-                            else
-                            {
-                                if (target.equals(term.text()))
-                                {
-                                    aclLastCommitTime = changeSet.getCommitTimeMs();
-                                }
-                                else
-                                {
-                                    aclIndexing = true;
-                                }
-                            }
-                        }
-
-                        if (aclIndexing)
-                        {
-                            // Make sure we do not go ahead of where we started - we will check the holes here
-                            // correctly next time
-                            if (changeSet.getCommitTimeMs() > timeToStopIndexing)
-                            {
-                                aclsUpToDate = true;
-                            }
-                            else
-                            {
-                                indexAclTransaction(dataModel, changeSet);
-                                List<Acl> acls = client.getAcls(Collections.singletonList(changeSet), null, Integer.MAX_VALUE);
-                                for (Acl acl : acls)
-                                {
-                                    List<AclReaders> readers = client.getAclReaders(Collections.singletonList(acl));
-                                    indexAcl(dataModel, readers);
-                                }
-
-                                aclLastCommitTime = changeSet.getCommitTimeMs();
-                            }
-                        }
-                    }
-                }
-                while ((aclChangeSets.size() > 0) && (aclsUpToDate == false) && (aclLoopStartingCommitTime < aclLastCommitTime));
-
-                if (aclIndexing)
-                {
-                    core.getUpdateHandler().commit(new CommitUpdateCommand(false));
-                }
-
-                boolean upToDate = false;
-                ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
-                List<Transaction> transactions;
-                long loopStartingCommitTime;
-                do
-                {
-                    int docCount = 0;
-
-                    loopStartingCommitTime = lastTxCommitTime;
-                    transactions = client.getTransactions(lastTxCommitTime, null, 2000);
-                    System.out.println("Scanning transactions ...");
-                    if (transactions.size() > 0)
-                    {
-                        System.out.println(".... from " + transactions.get(0));
-                        System.out.println(".... to " + transactions.get(transactions.size() - 1));
-                    }
-                    else
-                    {
-                        System.out.println(".... non found after lastTxCommitTime " + lastTxCommitTime);
-                    }
-                    for (Transaction info : transactions)
-                    {
-
-                        if (!indexing)
-                        {
-                            String target = NumericEncoder.encode(info.getId());
-                            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
-                            Term term = termEnum.term();
-                            termEnum.close();
-                            if (term == null)
-                            {
-                                indexing = true;
-                            }
-                            else
-                            {
-                                if (target.equals(term.text()))
-                                {
-                                    lastTxCommitTime = info.getCommitTimeMs();
-                                }
-                                else
-                                {
-                                    indexing = true;
-                                }
-                            }
-                        }
-
-                        if (indexing)
-                        {
-                            // Make sure we do not go ahead of where we started - we will check the holes here
-                            // correctly next time
-                            if (info.getCommitTimeMs() > timeToStopIndexing)
-                            {
-                                upToDate = true;
-                            }
-                            else
-                            {
-                                GetNodesParameters gnp = new GetNodesParameters();
-                                ArrayList<Long> txs = new ArrayList<Long>();
-                                txs.add(info.getId());
-                                gnp.setTransactionIds(txs);
-                                gnp.setStoreProtocol(storeRef.getProtocol());
-                                gnp.setStoreIdentifier(storeRef.getIdentifier());
-                                List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
-                                for (Node node : nodes)
-                                {
-                                    docCount++;
-                                    System.out.println(node);
-                                    indexNode(dataModel, node, solrIndexSearcher);
-
-                                }
-
-                                indexTransaction(dataModel, info);
-
-                                if (info.getCommitTimeMs() > lastIndexedCommitTime)
-                                {
-                                    lastIndexedCommitTime = info.getCommitTimeMs();
-                                }
-
-                                lastTxCommitTime = info.getCommitTimeMs();
-                            }
-                        }
-                        // could batch commit here
-                        if (docCount > batchCount)
-                        {
-                            core.getUpdateHandler().commit(new CommitUpdateCommand(false));
-                            docCount = 0;
-                        }
-                    }
-                    // reorder and find first last before hole
-
-                    if (transactionsOrderedById.size() < 10000)
-                    {
-                        transactionsOrderedById.addAll(transactions);
-                        Collections.sort(transactionsOrderedById, new Comparator<Transaction>()
-                        {
-
-                            @Override
-                            public int compare(Transaction o1, Transaction o2)
-                            {
-                                return (int) (o1.getId() - o2.getId());
-                            }
-                        });
-
-                        ArrayList<Transaction> newTransactionsOrderedById = new ArrayList<Transaction>(10000);
-                        for (Transaction info : transactions)
-                        {
-                            if (info.getCommitTimeMs() < timeBeforeWhichThereCanBeNoHoles)
-                            {
-                                lastIndexedIdBeforeHoles = info.getId();
-                            }
-                            else
-                            {
-                                if (info.getId() == (lastIndexedIdBeforeHoles + 1))
-                                {
-                                    lastIndexedIdBeforeHoles = info.getId();
-                                }
-                                else
-                                {
-                                    newTransactionsOrderedById.add(info);
-                                }
-                            }
-                        }
-                        transactionsOrderedById = newTransactionsOrderedById;
-                    }
-                }
-                while ((transactions.size() > 0) && (upToDate == false) && (loopStartingCommitTime < lastTxCommitTime));
-            }
-            finally
-            {
-                refCounted.decref();
-            }
-            if (indexing)
-            {
-                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
-            }
-
-            // check index state
-
-            if (check)
-            {
-                checkIndex(null, null, null, null, null, null);
-            }
+            trackRepository();
         }
         catch (IOException e1)
         {
@@ -683,7 +403,966 @@ public class CoreTracker implements CloseHook
             running = false;
             check = false;
         }
+    }
 
+    public void indexAclChangeSets() throws AuthenticationException, IOException, JSONException
+    {
+        boolean requiresCommit = false;
+        while (aclChangeSetsToIndex.peek() != null)
+        {
+            Long aclChangeSetId = aclChangeSetsToIndex.poll();
+            if (aclChangeSetId != null)
+            {
+                List<AclChangeSet> aclChangeSets = client.getAclChangeSets(0L, aclChangeSetId, 1);
+                if ((aclChangeSets.size() > 0) && aclChangeSetId.equals(aclChangeSets.get(0).getId()))
+                {
+                    AclChangeSet changeSet = aclChangeSets.get(0);
+                    List<Acl> acls = client.getAcls(Collections.singletonList(changeSet), null, Integer.MAX_VALUE);
+                    for (Acl acl : acls)
+                    {
+                        List<AclReaders> readers = client.getAclReaders(Collections.singletonList(acl));
+                        indexAcl(readers, false);
+                    }
+                    indexAclTransaction(changeSet, false);
+                    requiresCommit = true;
+                }
+            }
+        }
+        if(requiresCommit)
+        {
+            core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+        }
+    }
+
+    public void indexAcls() throws AuthenticationException, IOException, JSONException
+    {
+        boolean requiresCommit = false;
+        while (aclsToIndex.peek() != null)
+        {
+            Long aclId = aclsToIndex.poll();
+            if (aclId != null)
+            {
+                Acl acl = new Acl(0, aclId);
+                List<AclReaders> readers = client.getAclReaders(Collections.singletonList(acl));
+                indexAcl(readers, false);
+                requiresCommit = true;
+            }
+        }
+        if(requiresCommit)
+        {
+            core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+        }
+    }
+
+    public void reindexAclChangeSets() throws AuthenticationException, IOException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            boolean requiresCommit = false;
+            while (aclChangeSetsToReindex.peek() != null)
+            {
+                Long aclChangeSetId = aclChangeSetsToReindex.poll();
+                if (aclChangeSetId != null)
+                {
+                    deleteByAclChangeSetId(solrIndexSearcher, aclChangeSetId);
+
+                    List<AclChangeSet> aclChangeSets = client.getAclChangeSets(0L, aclChangeSetId, 1);
+                    if ((aclChangeSets.size() > 0) && aclChangeSetId.equals(aclChangeSets.get(0).getId()))
+                    {
+                        AclChangeSet changeSet = aclChangeSets.get(0);
+                        List<Acl> acls = client.getAcls(Collections.singletonList(changeSet), null, Integer.MAX_VALUE);
+                        for (Acl acl : acls)
+                        {
+                            List<AclReaders> readers = client.getAclReaders(Collections.singletonList(acl));
+                            indexAcl(readers, true);
+                        }
+                        indexAclTransaction(changeSet, true);
+                        requiresCommit = true;
+                    }
+                }
+            }
+            if(requiresCommit)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+    }
+
+    public void reindexAcls() throws AuthenticationException, IOException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            boolean requiresCommit = false;
+            while (aclsToReindex.peek() != null)
+            {
+                Long aclId = aclsToReindex.poll();
+                if (aclId != null)
+                {
+                    deleteByAclId(solrIndexSearcher, aclId);
+
+                    Acl acl = new Acl(0, aclId);
+                    List<AclReaders> readers = client.getAclReaders(Collections.singletonList(acl));
+                    indexAcl(readers, true);
+                    requiresCommit = true;
+                }
+            }
+            if(requiresCommit)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+    }
+
+    public void purgeAclChangeSets() throws AuthenticationException, IOException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            boolean requiresCommit = false;
+            while (aclChangeSetsToPurge.peek() != null)
+            {
+                Long aclChangeSetId = aclChangeSetsToPurge.poll();
+                if (aclChangeSetId != null)
+                {
+                    deleteByAclChangeSetId(solrIndexSearcher, aclChangeSetId);
+                    requiresCommit = true;
+                }
+            }
+            if(requiresCommit)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+    }
+
+    public void purgeAcls() throws AuthenticationException, IOException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            boolean requiresCommit = false;
+            while (aclsToPurge.peek() != null)
+            {
+                Long aclId = aclsToPurge.poll();
+                if (aclId != null)
+                {
+                    deleteByAclId(solrIndexSearcher, aclId);
+                    requiresCommit = true;
+                }
+            }
+            if(requiresCommit)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+    }
+
+    public void deleteByAclChangeSetId(SolrIndexSearcher solrIndexSearcher, Long aclChangeSetId) throws IOException
+    {
+
+        Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_INACLTXID, NumericEncoder.encode(aclChangeSetId)));
+        deleteByQuery(solrIndexSearcher, query);
+    }
+
+    public void deleteByAclId(SolrIndexSearcher solrIndexSearcher, Long aclId) throws IOException
+    {
+
+        Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_ACLID, NumericEncoder.encode(aclId)));
+        deleteByQuery(solrIndexSearcher, query);
+    }
+
+    private void deleteByQuery(SolrIndexSearcher solrIndexSearcher, Query query) throws IOException
+    {
+        HashSet<String> idsToDelete = new HashSet<String>();
+
+        DocSet docSet = solrIndexSearcher.getDocSet(query);
+        if (docSet instanceof BitDocSet)
+        {
+            BitDocSet source = (BitDocSet) docSet;
+            OpenBitSet openBitSet = source.getBits();
+            int current = -1;
+            while ((current = openBitSet.nextSetBit(current + 1)) != -1)
+            {
+                Document doc = solrIndexSearcher.doc(current, Collections.singleton(AbstractLuceneQueryParser.FIELD_ID));
+                Fieldable fieldable = doc.getFieldable(AbstractLuceneQueryParser.FIELD_ID);
+                if (fieldable != null)
+                {
+                    idsToDelete.add(fieldable.stringValue());
+                }
+
+            }
+        }
+        else
+        {
+            for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+            {
+                Document doc = solrIndexSearcher.doc(it.nextDoc(), Collections.singleton(AbstractLuceneQueryParser.FIELD_ID));
+                Fieldable fieldable = doc.getFieldable(AbstractLuceneQueryParser.FIELD_ID);
+                if (fieldable != null)
+                {
+                    idsToDelete.add(fieldable.stringValue());
+                }
+            }
+        }
+
+        for (String idToDelete : idsToDelete)
+        {
+            DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
+            docCmd.id = idToDelete;
+            docCmd.fromPending = true;
+            docCmd.fromCommitted = true;
+            core.getUpdateHandler().delete(docCmd);
+        }
+
+    }
+
+    // TX
+
+    public void addTransactionToReindex(Long transactionToReindex)
+    {
+        transactionsToReindex.offer(transactionToReindex);
+    }
+
+    public void addTransactionToIndex(Long transactionToIndex)
+    {
+        transactionsToIndex.offer(transactionToIndex);
+    }
+
+    public void addTransactionToPurge(Long transactionToPurge)
+    {
+        transactionsToPurge.offer(transactionToPurge);
+    }
+
+    // Node
+
+    public void addNodeToReindex(Long nodeToReindex)
+    {
+        nodesToReindex.offer(nodeToReindex);
+    }
+
+    public void addNodeToIndex(Long nodeToIndex)
+    {
+        nodesToIndex.offer(nodeToIndex);
+    }
+
+    public void addNodeToPurge(Long nodeToPurge)
+    {
+        nodesToPurge.offer(nodeToPurge);
+    }
+
+    // ACL change sets
+
+    public void addAclChangeSetToReindex(Long aclChangeSetToReindex)
+    {
+        aclChangeSetsToReindex.offer(aclChangeSetToReindex);
+    }
+
+    public void addAclChangeSetToIndex(Long aclChangeSetToIndex)
+    {
+        aclChangeSetsToIndex.offer(aclChangeSetToIndex);
+    }
+
+    public void addAclChangeSetToPurge(Long aclChangeSetToPurge)
+    {
+        aclChangeSetsToPurge.offer(aclChangeSetToPurge);
+    }
+
+    // ACLs
+
+    public void addAclToReindex(Long aclToReindex)
+    {
+        aclsToReindex.offer(aclToReindex);
+    }
+
+    public void addAclToIndex(Long aclToIndex)
+    {
+        aclsToIndex.offer(aclToIndex);
+    }
+
+    public void addAclToPurge(Long aclToPurge)
+    {
+        aclsToPurge.offer(aclToPurge);
+    }
+
+    private void reindexTransactions() throws IOException, AuthenticationException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            int docCount = 0;
+            boolean requiresCommit = false;
+            while (transactionsToReindex.peek() != null)
+            {
+                Long transactionId = transactionsToReindex.poll();
+                if (transactionId != null)
+                {
+                    // make sure it is cleaned out so we do not miss deletes
+                    deleteByTransactionId(solrIndexSearcher, transactionId);
+
+                    List<Transaction> transactions = client.getTransactions(0L, transactionId, 0);
+                    if ((transactions.size() > 0) && (transactionId.equals(transactions.get(0).getId())))
+                    {
+                        Transaction info = transactions.get(0);
+
+                        GetNodesParameters gnp = new GetNodesParameters();
+                        ArrayList<Long> txs = new ArrayList<Long>();
+                        txs.add(info.getId());
+                        gnp.setTransactionIds(txs);
+                        gnp.setStoreProtocol(storeRef.getProtocol());
+                        gnp.setStoreIdentifier(storeRef.getIdentifier());
+                        List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
+                        for (Node node : nodes)
+                        {
+                            docCount++;
+                            if (log.isDebugEnabled())
+                            {
+                                log.debug(node.toString());
+                            }
+                            indexNode(node, solrIndexSearcher, true);
+
+                        }
+
+                        // Index the transaction doc after the node - if this is not found then a reindex will be
+                        // done.
+                        indexTransaction(info, true);
+                        requiresCommit = true;
+
+                    }
+                }
+
+                if (docCount > batchCount)
+                {
+                    core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                    docCount = 0;
+                    requiresCommit = false;
+                }
+            }
+            if (requiresCommit || ( docCount > 0))
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+    }
+
+    private void reindexNodes() throws IOException, AuthenticationException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            boolean requiresCommit = false;
+            while (nodesToReindex.peek() != null)
+            {
+                Long nodeId = nodesToReindex.poll();
+                if (nodeId != null)
+                {
+                    // make sure it is cleaned out so we do not miss deletes
+                    deleteByNodeId(solrIndexSearcher, nodeId);
+
+                    Node node = new Node();
+                    node.setId(nodeId);
+                    node.setStatus(SolrApiNodeStatus.UNKNOWN);
+
+                    indexNode(node, solrIndexSearcher, true);
+                    requiresCommit = true;
+                }
+
+            }
+
+            if(requiresCommit)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+    }
+    
+    private void indexNodes() throws IOException, AuthenticationException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            boolean requiresCommit = false;
+            while (nodesToIndex.peek() != null)
+            {
+                Long nodeId = nodesToIndex.poll();
+                if (nodeId != null)
+                {
+                    Node node = new Node();
+                    node.setId(nodeId);
+                    node.setStatus(SolrApiNodeStatus.UNKNOWN);
+
+                    indexNode(node, solrIndexSearcher, false);
+                    requiresCommit = true;
+                }
+
+            }
+
+            if(requiresCommit)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+    }
+
+    private void indexTransactions() throws IOException, AuthenticationException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            int docCount = 0;
+            boolean requiresCommit = false;
+            while (transactionsToIndex.peek() != null)
+            {
+                Long transactionId = transactionsToIndex.poll();
+                if (transactionId != null)
+                {
+                    List<Transaction> transactions = client.getTransactions(0L, transactionId, 0);
+                    if ((transactions.size() > 0) && (transactionId.equals(transactions.get(0).getId())))
+                    {
+                        Transaction info = transactions.get(0);
+
+                        GetNodesParameters gnp = new GetNodesParameters();
+                        ArrayList<Long> txs = new ArrayList<Long>();
+                        txs.add(info.getId());
+                        gnp.setTransactionIds(txs);
+                        gnp.setStoreProtocol(storeRef.getProtocol());
+                        gnp.setStoreIdentifier(storeRef.getIdentifier());
+                        List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
+                        for (Node node : nodes)
+                        {
+                            docCount++;
+                            if (log.isDebugEnabled())
+                            {
+                                log.debug(node.toString());
+                            }
+                            indexNode(node, solrIndexSearcher, false);
+
+                        }
+
+                        // Index the transaction doc after the node - if this is not found then a reindex will be
+                        // done.
+                        indexTransaction(info, false);
+                        requiresCommit = true;
+
+                    }
+                }
+
+                if (docCount > batchCount)
+                {
+                    core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                    docCount = 0;
+                    requiresCommit = false;
+                }
+            }
+            if (requiresCommit || (docCount > 0))
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+    }
+
+    private void purgeTransactions() throws IOException, AuthenticationException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            boolean requiresCommit = false;
+            while (transactionsToPurge.peek() != null)
+            {
+                Long transactionId = transactionsToPurge.poll();
+                if (transactionId != null)
+                {
+                    // make sure it is cleaned out so we do not miss deletes
+                    deleteByTransactionId(solrIndexSearcher, transactionId);
+                    requiresCommit = true;
+                }
+            }
+            if(requiresCommit)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+    }
+
+    private void purgeNodes() throws IOException, AuthenticationException, JSONException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            boolean requiresCommit = false;
+            while (nodesToPurge.peek() != null)
+            {
+                Long nodeId = nodesToPurge.poll();
+                if (nodeId != null)
+                {
+                    // make sure it is cleaned out so we do not miss deletes
+                    deleteByNodeId(solrIndexSearcher, nodeId);
+                    requiresCommit = true;
+                }
+            }
+            if(requiresCommit)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+    }
+
+    private void deleteByTransactionId(SolrIndexSearcher solrIndexSearcher, Long transactionId) throws IOException
+    {
+        Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_INTXID, NumericEncoder.encode(transactionId)));
+        deleteByQuery(solrIndexSearcher, query);
+    }
+
+    private void deleteByNodeId(SolrIndexSearcher solrIndexSearcher, Long nodeId) throws IOException
+    {
+        Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeId)));
+        deleteByQuery(solrIndexSearcher, query);
+    }
+
+    public void trackRepository() throws IOException, AuthenticationException, JSONException
+    {
+
+        boolean indexing = false;
+        boolean aclIndexing = false;
+
+        trackModels();
+
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            SolrIndexReader reader = solrIndexSearcher.getReader();
+
+            if (lastIndexedCommitTime == 0)
+            {
+                lastIndexedCommitTime = getLastTransactionCommitTime(reader);
+            }
+
+            long startTime = System.currentTimeMillis();
+            long timeToStopIndexing = startTime - lag;
+            long timeBeforeWhichThereCanBeNoHoles = startTime - holeRetention;
+            long timeBeforeWhichThereCanBeNoHolesInIndex = lastIndexedCommitTime - holeRetention;
+            long lastGoodTxCommitTimeInIndex = getLastTxCommitTimeBeforeHoles(reader, timeBeforeWhichThereCanBeNoHolesInIndex);
+
+            if (lastIndexedIdBeforeHoles == -1)
+            {
+                lastIndexedIdBeforeHoles = getLargestTxIdByCommitTime(reader, lastGoodTxCommitTimeInIndex);
+            }
+            else
+            {
+                long currentBestFromIndex = getLargestTxIdByCommitTime(reader, lastGoodTxCommitTimeInIndex);
+                if (currentBestFromIndex > lastIndexedIdBeforeHoles)
+                {
+                    lastIndexedIdBeforeHoles = currentBestFromIndex;
+                }
+            }
+
+            long lastTxCommitTime = lastGoodTxCommitTimeInIndex;
+            long aclLastCommitTime = lastGoodTxCommitTimeInIndex;
+
+            // Track Acls up to end point
+            long aclLoopStartingCommitTime;
+            List<AclChangeSet> aclChangeSets;
+            boolean aclsUpToDate = false;
+            do
+            {
+                aclLoopStartingCommitTime = aclLastCommitTime;
+                aclChangeSets = client.getAclChangeSets(aclLastCommitTime, null, 2000);
+
+                log.info("Scanning Acl change sets ...");
+                if (aclChangeSets.size() > 0)
+                {
+                    log.info(".... from " + aclChangeSets.get(0));
+                    log.info(".... to " + aclChangeSets.get(aclChangeSets.size() - 1));
+                }
+                else
+                {
+                    log.info(".... non found after lastTxCommitTime " + aclLastCommitTime);
+                }
+
+                for (AclChangeSet changeSet : aclChangeSets)
+                {
+                    if (!aclIndexing)
+                    {
+                        String target = NumericEncoder.encode(changeSet.getId());
+                        TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
+                        Term term = termEnum.term();
+                        termEnum.close();
+                        if (term == null)
+                        {
+                            aclIndexing = true;
+                        }
+                        else
+                        {
+                            if (target.equals(term.text()))
+                            {
+                                aclLastCommitTime = changeSet.getCommitTimeMs();
+                            }
+                            else
+                            {
+                                aclIndexing = true;
+                            }
+                        }
+                    }
+
+                    if (aclIndexing)
+                    {
+                        // Make sure we do not go ahead of where we started - we will check the holes here
+                        // correctly next time
+                        if (changeSet.getCommitTimeMs() > timeToStopIndexing)
+                        {
+                            aclsUpToDate = true;
+                        }
+                        else
+                        {
+                            List<Acl> acls = client.getAcls(Collections.singletonList(changeSet), null, Integer.MAX_VALUE);
+                            for (Acl acl : acls)
+                            {
+                                List<AclReaders> readers = client.getAclReaders(Collections.singletonList(acl));
+                                indexAcl(readers, true);
+                            }
+
+                            indexAclTransaction(changeSet, true);
+                            aclLastCommitTime = changeSet.getCommitTimeMs();
+                        }
+                    }
+                }
+            }
+            while ((aclChangeSets.size() > 0) && (aclsUpToDate == false) && (aclLoopStartingCommitTime < aclLastCommitTime));
+
+            if (aclIndexing)
+            {
+                core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            }
+
+            boolean upToDate = false;
+            ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
+            List<Transaction> transactions;
+            long loopStartingCommitTime;
+            do
+            {
+                int docCount = 0;
+
+                loopStartingCommitTime = lastTxCommitTime;
+                transactions = client.getTransactions(lastTxCommitTime, null, 2000);
+                log.info("Scanning transactions ...");
+                if (transactions.size() > 0)
+                {
+                    log.info(".... from " + transactions.get(0));
+                    log.info(".... to " + transactions.get(transactions.size() - 1));
+                }
+                else
+                {
+                    log.info(".... non found after lastTxCommitTime " + lastTxCommitTime);
+                }
+                for (Transaction info : transactions)
+                {
+
+                    if (!indexing)
+                    {
+                        String target = NumericEncoder.encode(info.getId());
+                        TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
+                        Term term = termEnum.term();
+                        termEnum.close();
+                        if (term == null)
+                        {
+                            indexing = true;
+                        }
+                        else
+                        {
+                            if (target.equals(term.text()))
+                            {
+                                lastTxCommitTime = info.getCommitTimeMs();
+                            }
+                            else
+                            {
+                                indexing = true;
+                            }
+                        }
+                    }
+
+                    if (indexing)
+                    {
+                        // Make sure we do not go ahead of where we started - we will check the holes here
+                        // correctly next time
+                        if (info.getCommitTimeMs() > timeToStopIndexing)
+                        {
+                            upToDate = true;
+                        }
+                        else
+                        {
+                            GetNodesParameters gnp = new GetNodesParameters();
+                            ArrayList<Long> txs = new ArrayList<Long>();
+                            txs.add(info.getId());
+                            gnp.setTransactionIds(txs);
+                            gnp.setStoreProtocol(storeRef.getProtocol());
+                            gnp.setStoreIdentifier(storeRef.getIdentifier());
+                            List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
+                            for (Node node : nodes)
+                            {
+                                docCount++;
+                                if (log.isDebugEnabled())
+                                {
+                                    log.debug(node.toString());
+                                }
+                                indexNode(node, solrIndexSearcher, true);
+
+                            }
+
+                            // Index the transaction doc after the node - if this is not found then a reindex will be
+                            // done.
+                            indexTransaction(info, true);
+
+                            if (info.getCommitTimeMs() > lastIndexedCommitTime)
+                            {
+                                lastIndexedCommitTime = info.getCommitTimeMs();
+                            }
+
+                            lastTxCommitTime = info.getCommitTimeMs();
+                        }
+                    }
+                    // could batch commit here
+                    if (docCount > batchCount)
+                    {
+                        core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                        docCount = 0;
+                    }
+                }
+                // reorder and find first last before hole
+
+                if (transactionsOrderedById.size() < 10000)
+                {
+                    transactionsOrderedById.addAll(transactions);
+                    Collections.sort(transactionsOrderedById, new Comparator<Transaction>()
+                    {
+
+                        @Override
+                        public int compare(Transaction o1, Transaction o2)
+                        {
+                            return (int) (o1.getId() - o2.getId());
+                        }
+                    });
+
+                    ArrayList<Transaction> newTransactionsOrderedById = new ArrayList<Transaction>(10000);
+                    for (Transaction info : transactions)
+                    {
+                        if (info.getCommitTimeMs() < timeBeforeWhichThereCanBeNoHoles)
+                        {
+                            lastIndexedIdBeforeHoles = info.getId();
+                        }
+                        else
+                        {
+                            if (info.getId() == (lastIndexedIdBeforeHoles + 1))
+                            {
+                                lastIndexedIdBeforeHoles = info.getId();
+                            }
+                            else
+                            {
+                                newTransactionsOrderedById.add(info);
+                            }
+                        }
+                    }
+                    transactionsOrderedById = newTransactionsOrderedById;
+                }
+            }
+            while ((transactions.size() > 0) && (upToDate == false) && (loopStartingCommitTime < lastTxCommitTime));
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+        if (indexing)
+        {
+            core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+        }
+
+        // check index state
+
+        if (check)
+        {
+            checkIndex(null, null, null, null, null, null);
+        }
+
+    }
+
+    private void trackModels() throws AuthenticationException, IOException, JSONException, FileNotFoundException
+    {
+        // track models
+        // reflect changes changes and update on disk copy
+
+        List<AlfrescoModelDiff> modelDiffs = client.getModelsDiff(dataModel.getAlfrescoModels());
+        HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
+
+        for (AlfrescoModelDiff modelDiff : modelDiffs)
+        {
+            switch (modelDiff.getType())
+            {
+            case CHANGED:
+                AlfrescoModel changedModel = client.getModel(modelDiff.getModelName());
+                for (M2Namespace namespace : changedModel.getModel().getNamespaces())
+                {
+                    modelMap.put(namespace.getUri(), changedModel.getModel());
+                }
+                break;
+            case NEW:
+                AlfrescoModel newModel = client.getModel(modelDiff.getModelName());
+                for (M2Namespace namespace : newModel.getModel().getNamespaces())
+                {
+                    modelMap.put(namespace.getUri(), newModel.getModel());
+                }
+                break;
+            case REMOVED:
+                break;
+            }
+        }
+
+        HashSet<String> loadedModels = new HashSet<String>();
+        for (M2Model model : modelMap.values())
+        {
+            loadModel(modelMap, loadedModels, model, dataModel);
+        }
+        dataModel.afterInitModels();
+
+        File alfrescoModelDir = new File(id, "alfrescoModels");
+        if (!alfrescoModelDir.exists())
+        {
+            alfrescoModelDir.mkdir();
+        }
+        for (AlfrescoModelDiff modelDiff : modelDiffs)
+        {
+            switch (modelDiff.getType())
+            {
+            case CHANGED:
+                removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
+                M2Model changedModel = dataModel.getM2Model(modelDiff.getModelName());
+                File changedFile = new File(alfrescoModelDir, getModelFileName(changedModel));
+                FileOutputStream cos = new FileOutputStream(changedFile);
+                changedModel.toXML(cos);
+                cos.flush();
+                cos.close();
+                break;
+            case NEW:
+                M2Model newModel = dataModel.getM2Model(modelDiff.getModelName());
+                // add on file
+                File newFile = new File(alfrescoModelDir, getModelFileName(newModel));
+                FileOutputStream nos = new FileOutputStream(newFile);
+                newModel.toXML(nos);
+                nos.flush();
+                nos.close();
+                break;
+            case REMOVED:
+                removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
+                break;
+            }
+        }
     }
 
     /**
@@ -743,17 +1422,18 @@ public class CoreTracker implements CloseHook
      * @param acl
      * @param readers
      */
-    private void indexAcl(AlfrescoSolrDataModel dataModel, List<AclReaders> aclReaderList) throws IOException
+    private void indexAcl(List<AclReaders> aclReaderList, boolean overwrite) throws IOException
     {
 
         for (AclReaders aclReaders : aclReaderList)
         {
             AddUpdateCommand cmd = new AddUpdateCommand();
-            cmd.overwriteCommitted = true;
-            cmd.overwritePending = true;
+            cmd.overwriteCommitted = overwrite;
+            cmd.overwritePending = overwrite;
             SolrInputDocument input = new SolrInputDocument();
             input.addField(AbstractLuceneQueryParser.FIELD_ID, "ACL-" + aclReaders.getId());
             input.addField(AbstractLuceneQueryParser.FIELD_ACLID, aclReaders.getId());
+            input.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, aclReaders.getAclChangeSetId());
             for (String reader : aclReaders.getReaders())
             {
                 input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
@@ -769,14 +1449,15 @@ public class CoreTracker implements CloseHook
      * @param info
      * @throws IOException
      */
-    private void indexTransaction(AlfrescoSolrDataModel dataModel, Transaction info) throws IOException
+    private void indexTransaction(Transaction info, boolean overwrite) throws IOException
     {
         AddUpdateCommand cmd = new AddUpdateCommand();
-        cmd.overwriteCommitted = true;
-        cmd.overwritePending = true;
+        cmd.overwriteCommitted = overwrite;
+        cmd.overwritePending = overwrite;
         SolrInputDocument input = new SolrInputDocument();
         input.addField(AbstractLuceneQueryParser.FIELD_ID, "TX-" + info.getId());
         input.addField(AbstractLuceneQueryParser.FIELD_TXID, info.getId());
+        input.addField(AbstractLuceneQueryParser.FIELD_INTXID, info.getId());
         input.addField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
         cmd.solrDoc = input;
         cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
@@ -788,14 +1469,15 @@ public class CoreTracker implements CloseHook
      * @param info
      * @throws IOException
      */
-    private void indexAclTransaction(AlfrescoSolrDataModel dataModel, AclChangeSet changeSet) throws IOException
+    private void indexAclTransaction(AclChangeSet changeSet, boolean overwrite) throws IOException
     {
         AddUpdateCommand cmd = new AddUpdateCommand();
-        cmd.overwriteCommitted = true;
-        cmd.overwritePending = true;
+        cmd.overwriteCommitted = overwrite;
+        cmd.overwritePending = overwrite;
         SolrInputDocument input = new SolrInputDocument();
         input.addField(AbstractLuceneQueryParser.FIELD_ID, "ACLTX-" + changeSet.getId());
         input.addField(AbstractLuceneQueryParser.FIELD_ACLTXID, changeSet.getId());
+        input.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, changeSet.getId());
         input.addField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
         cmd.solrDoc = input;
         cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
@@ -807,12 +1489,28 @@ public class CoreTracker implements CloseHook
      * @param node
      * @throws IOException
      */
-    private void indexNode(AlfrescoSolrDataModel dataModel, Node node, SolrIndexSearcher solrIndexSearcher) throws IOException
+    private void indexNode(Node node, SolrIndexSearcher solrIndexSearcher, boolean overwrite) throws IOException
     {
-        if (node.getStatus() == SolrApiNodeStatus.UPDATED)
+        if ((node.getStatus() == SolrApiNodeStatus.DELETED) || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
+        {
+            log.debug(".. deleting");
+            DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
+            docCmd.id = "LEAF-" + node.getId();
+            docCmd.fromPending = true;
+            docCmd.fromCommitted = true;
+            core.getUpdateHandler().delete(docCmd);
+
+            docCmd = new DeleteUpdateCommand();
+            docCmd.id = "AUX-" + node.getId();
+            docCmd.fromPending = true;
+            docCmd.fromCommitted = true;
+            core.getUpdateHandler().delete(docCmd);
+        }
+        
+        if ((node.getStatus() == SolrApiNodeStatus.UPDATED)  || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
         {
 
-            System.out.println(".. updating");
+            log.info(".. updating");
             NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
             nmdp.setFromNodeId(node.getId());
             nmdp.setToNodeId(node.getId());
@@ -821,39 +1519,39 @@ public class CoreTracker implements CloseHook
                 List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
 
                 AddUpdateCommand leafDocCmd = new AddUpdateCommand();
-                leafDocCmd.overwriteCommitted = true;
-                leafDocCmd.overwritePending = true;
+                leafDocCmd.overwriteCommitted = overwrite;
+                leafDocCmd.overwritePending = overwrite;
                 AddUpdateCommand auxDocCmd = new AddUpdateCommand();
-                auxDocCmd.overwriteCommitted = true;
-                auxDocCmd.overwritePending = true;
+                auxDocCmd.overwriteCommitted = overwrite;
+                auxDocCmd.overwritePending = overwrite;
 
                 ArrayList<Reader> toClose = new ArrayList<Reader>();
                 ArrayList<File> toDelete = new ArrayList<File>();
 
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
-                    if (mayHaveChildren(dataModel, nodeMetaData))
+                    if (mayHaveChildren(nodeMetaData))
                     {
-                        System.out.println(".. checking for path change");
+                        log.info(".. checking for path change");
                         BooleanQuery bQuery = new BooleanQuery();
                         bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))), Occur.MUST);
                         bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, NumericEncoder.encode(nodeMetaData.getParentAssocsCrc()))), Occur.MUST);
                         DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
                         if (docSet.size() > 0)
                         {
-                            //System.out.println("... found aux match");
+                            log.debug("... found aux match");
                         }
                         else
                         {
                             docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))));
                             if (docSet.size() > 0)
                             {
-                                //System.out.println("... cascade updating aux doc");
-                                updateDescendantAuxDocs(dataModel, nodeMetaData);
+                                log.debug("... cascade updating aux doc");
+                                updateDescendantAuxDocs(nodeMetaData, overwrite);
                             }
                             else
                             {
-                                //System.out.println("... no aux doc");
+                                log.debug("... no aux doc");
                             }
                         }
                     }
@@ -902,9 +1600,10 @@ public class CoreTracker implements CloseHook
                     }
 
                     SolrInputDocument doc = new SolrInputDocument();
-                    doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + node.getId());
-                    doc.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
+                    doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + nodeMetaData.getId());
+                    doc.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
                     doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeMetaData.getNodeRef());
+                    doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, nodeMetaData.getTxnId());
 
                     for (QName propertyQname : properties.keySet())
                     {
@@ -915,12 +1614,12 @@ public class CoreTracker implements CloseHook
                             {
                                 if (isContentIndexedForNode)
                                 {
-                                    addContentPropertyToDoc(doc, toClose, toDelete, node, propertyQname, (ContentPropertyValue) value);
+                                    addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) value);
                                 }
                             }
                             else if (value instanceof MLTextPropertyValue)
                             {
-                                addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value, dataModel);
+                                addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value);
                             }
                             else if (value instanceof MultiPropertyValue)
                             {
@@ -931,23 +1630,23 @@ public class CoreTracker implements CloseHook
                                     {
                                         if (isContentIndexedForNode)
                                         {
-                                            addContentPropertyToDoc(doc, toClose, toDelete, node, propertyQname, (ContentPropertyValue) singleValue);
+                                            addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) singleValue);
                                         }
                                     }
                                     else if (singleValue instanceof MLTextPropertyValue)
                                     {
-                                        addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) singleValue, dataModel);
+                                        addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) singleValue);
 
                                     }
                                     else if (singleValue instanceof StringPropertyValue)
                                     {
-                                        addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) singleValue, dataModel, properties);
+                                        addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) singleValue, properties);
                                     }
                                 }
                             }
                             else if (value instanceof StringPropertyValue)
                             {
-                                addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) value, dataModel, properties);
+                                addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) value, properties);
                             }
 
                         }
@@ -992,32 +1691,17 @@ public class CoreTracker implements CloseHook
             }
             catch (JSONException e)
             {
-                System.out.println(e.getStackTrace());
+                log.warn(e.getStackTrace().toString());
             }
-            catch (AuthenticationException e1)
+            catch (AuthenticationException e)
             {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                log.warn(e.getStackTrace().toString());
             }
         }
-        else if (node.getStatus() == SolrApiNodeStatus.DELETED)
-        {
-            System.out.println(".. deleting");
-            DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
-            docCmd.id = "LEAF-" + node.getId();
-            docCmd.fromPending = true;
-            docCmd.fromCommitted = true;
-            core.getUpdateHandler().delete(docCmd);
-
-            docCmd = new DeleteUpdateCommand();
-            docCmd.id = "AUX-" + node.getId();
-            docCmd.fromPending = true;
-            docCmd.fromCommitted = true;
-            core.getUpdateHandler().delete(docCmd);
-        }
+        
     }
 
-    private void updateDescendantAuxDocs(AlfrescoSolrDataModel dataModel, NodeMetaData parentNodeMetaData) throws AuthenticationException, IOException, JSONException
+    private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite) throws AuthenticationException, IOException, JSONException
     {
         if (parentNodeMetaData.getChildIds() != null)
         {
@@ -1036,29 +1720,29 @@ public class CoreTracker implements CloseHook
                 nmdp.setIncludePaths(true);
                 nmdp.setIncludeProperties(false);
                 nmdp.setIncludeType(true);
+                nmdp.setIncludeTxnId(true);
                 List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
 
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
-                    if (mayHaveChildren(dataModel, nodeMetaData))
+                    if (mayHaveChildren(nodeMetaData))
                     {
-                        updateDescendantAuxDocs(dataModel, nodeMetaData);
+                        updateDescendantAuxDocs(nodeMetaData, overwrite);
                     }
-                    
+
                     SolrInputDocument aux = createAuxDoc(nodeMetaData);
                     AddUpdateCommand auxDocCmd = new AddUpdateCommand();
-                    auxDocCmd.overwriteCommitted = true;
-                    auxDocCmd.overwritePending = true;
+                    auxDocCmd.overwriteCommitted = overwrite;
+                    auxDocCmd.overwritePending = overwrite;
                     auxDocCmd.solrDoc = aux;
                     auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
                     core.getUpdateHandler().addDoc(auxDocCmd);
                 }
-            
+
             }
         }
-      
-        
+
     }
 
     private SolrInputDocument createAuxDoc(NodeMetaData nodeMetaData)
@@ -1067,6 +1751,7 @@ public class CoreTracker implements CloseHook
         aux.addField(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + nodeMetaData.getId());
         aux.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
         aux.addField(AbstractLuceneQueryParser.FIELD_ACLID, nodeMetaData.getAclId());
+        aux.addField(AbstractLuceneQueryParser.FIELD_INTXID, nodeMetaData.getTxnId());
 
         for (Pair<String, QName> path : nodeMetaData.getPaths())
         {
@@ -1107,7 +1792,7 @@ public class CoreTracker implements CloseHook
         return aux;
     }
 
-    private boolean mayHaveChildren(AlfrescoSolrDataModel dataModel, NodeMetaData nodeMetaData)
+    private boolean mayHaveChildren(NodeMetaData nodeMetaData)
     {
         // 1) Does the type support children?
         TypeDefinition nodeTypeDef = dataModel.getDictionaryService().getType(nodeMetaData.getType());
@@ -1127,7 +1812,7 @@ public class CoreTracker implements CloseHook
         return false;
     }
 
-    private void addContentPropertyToDoc(SolrInputDocument doc, ArrayList<Reader> toClose, ArrayList<File> toDelete, Node node, QName propertyQName,
+    private void addContentPropertyToDoc(SolrInputDocument doc, ArrayList<Reader> toClose, ArrayList<File> toDelete, NodeMetaData nodeMetaData, QName propertyQName,
             ContentPropertyValue contentPropertyValue) throws AuthenticationException, IOException
     {
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
@@ -1135,7 +1820,7 @@ public class CoreTracker implements CloseHook
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".contentDataId", contentPropertyValue.getId());
-        GetTextContentResponse response = client.getTextContent(node.getId(), propertyQName, null);
+        GetTextContentResponse response = client.getTextContent(nodeMetaData.getId(), propertyQName, null);
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getRequestDuration());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationException", response.getTransformException());
@@ -1191,7 +1876,7 @@ public class CoreTracker implements CloseHook
         }
     }
 
-    private void addMLTextPropertyToDoc(SolrInputDocument doc, QName propertyQName, MLTextPropertyValue mlTextPropertyValue, AlfrescoSolrDataModel dataModel) throws IOException
+    private void addMLTextPropertyToDoc(SolrInputDocument doc, QName propertyQName, MLTextPropertyValue mlTextPropertyValue) throws IOException
     {
         PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
         if (propertyDefinition != null)
@@ -1235,8 +1920,8 @@ public class CoreTracker implements CloseHook
 
     }
 
-    private void addStringPropertyToDoc(SolrInputDocument doc, QName propertyQName, StringPropertyValue stringPropertyValue, AlfrescoSolrDataModel dataModel,
-            Map<QName, PropertyValue> properties) throws IOException
+    private void addStringPropertyToDoc(SolrInputDocument doc, QName propertyQName, StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties)
+            throws IOException
     {
         PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
         if (propertyDefinition != null)
@@ -1429,198 +2114,134 @@ public class CoreTracker implements CloseHook
             // Index TX Count
             if (minTxId != null)
             {
+                TermDocs termDocs = null;
+                int count = 0;
                 for (long i = minTxId; i <= maxTxId; i++)
                 {
+                    int docCount = 0;
                     String target = NumericEncoder.encode(i);
-                    TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
-                    Term term = termEnum.term();
-                    termEnum.close();
-                    if (term == null)
+                    Term term = new Term(AbstractLuceneQueryParser.FIELD_TXID, target);
+                    if (termDocs == null)
+                    {
+                        termDocs = reader.termDocs(term);
+                    }
+                    else
+                    {
+                        termDocs.seek(term);
+                    }
+                    while (termDocs.next())
+                    {
+                        int doc = termDocs.doc();
+                        if (!reader.isDeleted(doc))
+                        {
+                            docCount++;
+                        }
+                    }
+
+                    if (docCount == 0)
                     {
                         if (txIdsInDb.get(i))
                         {
                             indexHealthReport.setMissingTxFromIndex(i);
                         }
                     }
-                    else
+                    else if (docCount == 1)
                     {
-                        if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
+                        txIdsInIndex.set(i);
+                        if (!txIdsInDb.get(i))
                         {
-                            if (target.equals(term.text()))
-                            {
-                                if (txIdsInIndex.get(i))
-                                {
-                                    indexHealthReport.setDuplicatedTxInIndex(i);
-                                }
-                                else
-                                {
-                                    txIdsInIndex.set(i);
-                                }
-
-                                if (!txIdsInDb.get(i))
-                                {
-                                    indexHealthReport.setTxInIndexButNotInDb(i);
-                                }
-                            }
-                            else
-                            {
-                                if (txIdsInDb.get(i))
-                                {
-                                    indexHealthReport.setMissingTxFromIndex(i);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (txIdsInDb.get(i))
-                            {
-                                indexHealthReport.setMissingTxFromIndex(i);
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            indexHealthReport.setUniqueTransactionDocsInIndex(txIdsInIndex.cardinality());
-
-            // count terms and check for duplicates
-            int count = 0;
-            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, ""));
-            do
-            {
-                Term term = termEnum.term();
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
-                {
-                    long txid = NumericEncoder.decodeLong(term.text());
-                    if ((minTxId != null) && (txid >= minTxId) && (txid <= maxTxId))
-                    {
-                        int docCount = 0;
-                        TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_TXID, term.text()));
-                        while (termDocs.next())
-                        {
-                            if (!reader.isDeleted(termDocs.doc()))
-                            {
-                                docCount++;
-                            }
-                        }
-                        if (docCount > 1)
-                        {
-                            indexHealthReport.setDuplicatedTxInIndex(txid);
+                            indexHealthReport.setTxInIndexButNotInDb(i);
                         }
                         count++;
                     }
-                }
-                else
-                {
-                    break;
-                }
-            }
-            while (termEnum.next());
-            termEnum.close();
+                    else if (docCount > 1)
+                    {
+                        indexHealthReport.setDuplicatedTxInIndex(i);
+                        if (!txIdsInDb.get(i))
+                        {
+                            indexHealthReport.setTxInIndexButNotInDb(i);
+                        }
+                        count++;
+                    }
 
-            indexHealthReport.setTransactionDocsInIndex(count);
+                }
+                if (termDocs != null)
+                {
+                    termDocs.close();
+                }
+
+                indexHealthReport.setUniqueTransactionDocsInIndex(txIdsInIndex.cardinality());
+                indexHealthReport.setTransactionDocsInIndex(count);
+            }
 
             // ACL TX
 
             if (minAclTxId != null)
             {
+                TermDocs termDocs = null;
+                int count = 0;
                 for (long i = minAclTxId; i <= maxTxId; i++)
                 {
+                    int docCount = 0;
                     String target = NumericEncoder.encode(i);
-                    termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
-                    Term term = termEnum.term();
-                    termEnum.close();
-                    if (term == null)
+                    Term term = new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target);
+                    if (termDocs == null)
+                    {
+                        termDocs = reader.termDocs(term);
+                    }
+                    else
+                    {
+                        termDocs.seek(term);
+                    }
+                    while (termDocs.next())
+                    {
+                        int doc = termDocs.doc();
+                        if (!reader.isDeleted(doc))
+                        {
+                            docCount++;
+                        }
+                    }
+
+                    if (docCount == 0)
                     {
                         if (aclTxIdsInDb.get(i))
                         {
                             indexHealthReport.setMissingAclTxFromIndex(i);
                         }
                     }
-                    else
+                    else if (docCount == 1)
                     {
-                        if (term.field().equals(AbstractLuceneQueryParser.FIELD_ACLTXID))
+                        aclTxIdsInIndex.set(i);
+                        if (!aclTxIdsInDb.get(i))
                         {
-                            if (target.equals(term.text()))
-                            {
-                                if (aclTxIdsInIndex.get(i))
-                                {
-                                    indexHealthReport.setDuplicatedAclTxInIndex(i);
-                                }
-                                else
-                                {
-                                    aclTxIdsInIndex.set(i);
-                                }
-
-                                if (!aclTxIdsInDb.get(i))
-                                {
-                                    indexHealthReport.setAclTxInIndexButNotInDb(i);
-                                }
-                            }
-                            else
-                            {
-                                if (aclTxIdsInDb.get(i))
-                                {
-                                    indexHealthReport.setMissingAclTxFromIndex(i);
-                                }
-                            }
+                            indexHealthReport.setAclTxInIndexButNotInDb(i);
                         }
-                        else
-                        {
-                            if (aclTxIdsInDb.get(i))
-                            {
-                                indexHealthReport.setMissingAclTxFromIndex(i);
-                            }
-                        }
-                    }
-
-                }
-            }
-            indexHealthReport.setUniqueAclTransactionDocsInIndex(aclTxIdsInIndex.cardinality());
-
-            // count terms and check for duplicates
-            count = 0;
-            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, ""));
-            do
-            {
-                Term term = termEnum.term();
-                long txid = NumericEncoder.decodeLong(term.text());
-                if ((minAclTxId != null) && (txid >= minAclTxId) && (txid <= maxAclTxId))
-                {
-                    if (term.field().equals(AbstractLuceneQueryParser.FIELD_ACLTXID))
-                    {
-                        int docCount = 0;
-                        TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, term.text()));
-                        while (termDocs.next())
-                        {
-                            if (!reader.isDeleted(termDocs.doc()))
-                            {
-                                docCount++;
-                            }
-                        }
-                        if (docCount > 1)
-                        {
-                            indexHealthReport.setDuplicatedAclTxInIndex(txid);
-                        }
-
                         count++;
                     }
-                }
-                else
-                {
-                    break;
-                }
-            }
-            while (termEnum.next());
-            termEnum.close();
+                    else if (docCount > 1)
+                    {
+                        indexHealthReport.setDuplicatedAclTxInIndex(i);
+                        if (!aclTxIdsInDb.get(i))
+                        {
+                            indexHealthReport.setAclTxInIndexButNotInDb(i);
+                        }
+                        count++;
+                    }
 
-            indexHealthReport.setAclTransactionDocsInIndex(count);
+                }
+                if (termDocs != null)
+                {
+                    termDocs.close();
+                }
+
+                indexHealthReport.setUniqueAclTransactionDocsInIndex(aclTxIdsInIndex.cardinality());
+                indexHealthReport.setAclTransactionDocsInIndex(count);
+            }
 
             // LEAF
 
             int leafCount = 0;
-            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "LEAF-"));
+            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "LEAF-"));
             do
             {
                 Term term = termEnum.term();
@@ -2310,7 +2931,7 @@ public class CoreTracker implements CloseHook
 
             dataModel.putModel(model);
             loadedModels.add(modelName);
-            System.out.println("Loading model " + model.getName());
+            log.info("Loading model " + model.getName());
         }
     }
 

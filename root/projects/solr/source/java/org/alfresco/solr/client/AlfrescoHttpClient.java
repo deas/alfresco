@@ -17,6 +17,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
@@ -52,7 +53,8 @@ public class AlfrescoHttpClient
         this.encryptionUtils = encryptionService.getEncryptionUtils();
         this.encryptor = encryptionService.getEncryptor();
 
-        httpClient = new HttpClient();
+        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+        httpClient = new HttpClient(connectionManager);
 
         HttpClientParams params = httpClient.getParams();
         params.setBooleanParameter("http.tcp.nodelay", true);

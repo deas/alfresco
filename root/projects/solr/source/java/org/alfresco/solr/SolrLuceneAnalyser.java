@@ -41,6 +41,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -54,7 +56,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
 public class SolrLuceneAnalyser extends AbstractAnalyzer
 {
 
-    private static Log s_logger = LogFactory.getLog(SolrLuceneAnalyser.class);
+    protected final static Logger log = LoggerFactory.getLogger(SolrLuceneAnalyser.class);
 
     // Dictinary service to look up analyser classes by data type and locale.
     private DictionaryService dictionaryService;
@@ -131,7 +133,15 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
         {
             return new LongAnalyser();
         }
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_INTXID))
+        {
+            return new LongAnalyser();
+        }
         else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ACLTXID))
+        {
+            return new LongAnalyser();
+        }
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_INACLTXID))
         {
             return new LongAnalyser();
         }
@@ -472,9 +482,9 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
         {
             Class<?> clazz = Class.forName(analyserClassName);
             Analyzer analyser = (Analyzer) clazz.newInstance();
-            if (s_logger.isDebugEnabled())
+            if (log.isDebugEnabled())
             {
-                s_logger.debug("Loaded " + analyserClassName + " for type " + property.getName());
+                log.debug("Loaded " + analyserClassName + " for type " + property.getName());
             }
             return analyser;
         }
@@ -499,9 +509,9 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
         {
             Class<?> clazz = Class.forName(analyserClassName);
             Analyzer analyser = (Analyzer) clazz.newInstance();
-            if (s_logger.isDebugEnabled())
+            if (log.isDebugEnabled())
             {
-                s_logger.debug("Loaded " + analyserClassName + " for type " + dataTypeDef.getName());
+                log.debug("Loaded " + analyserClassName + " for type " + dataTypeDef.getName());
             }
             return analyser;
         }

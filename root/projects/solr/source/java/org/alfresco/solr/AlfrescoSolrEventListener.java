@@ -639,8 +639,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         }
                         catch (IndexOutOfBoundsException e)
                         {
-                            System.out.println("  " + ownerIdManager);
-                            System.out.println("  looking for " + currentOwnerLookUp.owner);
+                            log.warn("  " + ownerIdManager);
+                            log.warn("  looking for " + currentOwnerLookUp.owner);
                             throw e;
                         }
                         currentOwnerLookUp = next;
@@ -659,8 +659,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     catch (IndexOutOfBoundsException e)
                     {
-                        System.out.println("  " + ownerIdManager);
-                        System.out.println("  looking for " + currentOwnerLookUp.owner);
+                        log.warn("  " + ownerIdManager);
+                        log.warn("  looking for " + currentOwnerLookUp.owner);
                         throw e;
                     }
                 }
@@ -676,8 +676,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             }
             catch (IndexOutOfBoundsException e)
             {
-                System.out.println("  " + ownerIdManager);
-                System.out.println("  looking for " + currentOwnerLookUp.owner);
+                log.warn("  " + ownerIdManager);
+                log.warn("  looking for " + currentOwnerLookUp.owner);
                 throw e;
             }
         }

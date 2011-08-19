@@ -20,6 +20,7 @@ package org.alfresco.solr;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,12 +28,16 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.solr.client.AuthenticationException;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.tracker.CoreTracker;
 import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.util.CachingDateFormat;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.params.CoreAdminParams;
 import org.apache.solr.common.params.SolrParams;
@@ -50,12 +55,16 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andy
  */
 public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 {
+    protected final static Logger log = LoggerFactory.getLogger(AlfrescoCoreAdminHandler.class);
+    
     Scheduler scheduler = null;
 
     ConcurrentHashMap<String, CoreTracker> trackers = new ConcurrentHashMap<String, CoreTracker>();
@@ -141,10 +150,21 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             String a = params.get(CoreAdminParams.ACTION);
             if (a.equalsIgnoreCase("CHECK"))
             {
-                CoreTracker tracker = trackers.get(cname);
-                if (tracker != null)
+                if (cname != null)
                 {
-                    tracker.setCheck(true);
+                    CoreTracker tracker = trackers.get(cname);
+                    if (tracker != null)
+                    {
+                        tracker.setCheck(true);
+                    }
+                }
+                else
+                {
+                    for (String trackerName : trackers.keySet())
+                    {
+                        CoreTracker tracker = trackers.get(trackerName);
+                        tracker.setCheck(true);
+                    }
                 }
                 return false;
             }
@@ -404,6 +424,224 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
                 return false;
             }
+            else if (a.equalsIgnoreCase("PURGE"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    if (params.get("txid") != null)
+                    {
+                        Long txid = Long.valueOf(params.get("txid"));
+                        tracker.addTransactionToPurge(txid);
+                    }
+                    if (params.get("acltxid") != null)
+                    {
+                        Long acltxid = Long.valueOf(params.get("acltxid"));
+                        tracker.addAclChangeSetToPurge(acltxid);
+                    }
+                    if (params.get("nodeid") != null)
+                    {
+                        Long nodeid = Long.valueOf(params.get("nodeid"));
+                        tracker.addNodeToPurge(nodeid);
+                    }
+                    if (params.get("aclid") != null)
+                    {
+                        Long aclid = Long.valueOf(params.get("aclid"));
+                        tracker.addAclToPurge(aclid);
+                    }
+
+                }
+                else
+                {
+                    for (String coreName : trackers.keySet())
+                    {
+                        CoreTracker tracker = trackers.get(coreName);
+                        if (params.get("txid") != null)
+                        {
+                            Long txid = Long.valueOf(params.get("txid"));
+                            tracker.addTransactionToPurge(txid);
+                        }
+                        if (params.get("acltxid") != null)
+                        {
+                            Long acltxid = Long.valueOf(params.get("acltxid"));
+                            tracker.addAclChangeSetToPurge(acltxid);
+                        }
+                        if (params.get("nodeid") != null)
+                        {
+                            Long nodeid = Long.valueOf(params.get("nodeid"));
+                            tracker.addNodeToPurge(nodeid);
+                        }
+                        if (params.get("aclid") != null)
+                        {
+                            Long aclid = Long.valueOf(params.get("aclid"));
+                            tracker.addAclToPurge(aclid);
+                        }
+                    }
+                }
+                return false;
+            }
+            else if (a.equalsIgnoreCase("REINDEX"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    if (params.get("txid") != null)
+                    {
+                        Long txid = Long.valueOf(params.get("txid"));
+                        tracker.addTransactionToReindex(txid);
+                    }
+                    if (params.get("acltxid") != null)
+                    {
+                        Long acltxid = Long.valueOf(params.get("acltxid"));
+                        tracker.addAclChangeSetToReindex(acltxid);
+                    }
+                    if (params.get("nodeid") != null)
+                    {
+                        Long nodeid = Long.valueOf(params.get("nodeid"));
+                        tracker.addNodeToReindex(nodeid);
+                    }
+                    if (params.get("aclid") != null)
+                    {
+                        Long aclid = Long.valueOf(params.get("aclid"));
+                        tracker.addAclToReindex(aclid);
+                    }
+
+                }
+                else
+                {
+                    for (String coreName : trackers.keySet())
+                    {
+                        CoreTracker tracker = trackers.get(coreName);
+                        if (params.get("txid") != null)
+                        {
+                            Long txid = Long.valueOf(params.get("txid"));
+                            tracker.addTransactionToReindex(txid);
+                        }
+                        if (params.get("acltxid") != null)
+                        {
+                            Long acltxid = Long.valueOf(params.get("acltxid"));
+                            tracker.addAclChangeSetToReindex(acltxid);
+                        }
+                        if (params.get("nodeid") != null)
+                        {
+                            Long nodeid = Long.valueOf(params.get("nodeid"));
+                            tracker.addNodeToReindex(nodeid);
+                        }
+                        if (params.get("aclid") != null)
+                        {
+                            Long aclid = Long.valueOf(params.get("aclid"));
+                            tracker.addAclToReindex(aclid);
+                        }
+                    }
+                }
+                return false;
+            }
+            else if (a.equalsIgnoreCase("INDEX"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    if (params.get("txid") != null)
+                    {
+                        Long txid = Long.valueOf(params.get("txid"));
+                        tracker.addTransactionToIndex(txid);
+                    }
+                    if (params.get("acltxid") != null)
+                    {
+                        Long acltxid = Long.valueOf(params.get("acltxid"));
+                        tracker.addAclChangeSetToIndex(acltxid);
+                    }
+                    if (params.get("nodeid") != null)
+                    {
+                        Long nodeid = Long.valueOf(params.get("nodeid"));
+                        tracker.addNodeToIndex(nodeid);
+                    }
+                    if (params.get("aclid") != null)
+                    {
+                        Long aclid = Long.valueOf(params.get("aclid"));
+                        tracker.addAclToIndex(aclid);
+                    }
+
+                }
+                else
+                {
+                    for (String coreName : trackers.keySet())
+                    {
+                        CoreTracker tracker = trackers.get(coreName);
+                        if (params.get("txid") != null)
+                        {
+                            Long txid = Long.valueOf(params.get("txid"));
+                            tracker.addTransactionToIndex(txid);
+                        }
+                        if (params.get("acltxid") != null)
+                        {
+                            Long acltxid = Long.valueOf(params.get("acltxid"));
+                            tracker.addAclChangeSetToIndex(acltxid);
+                        }
+                        if (params.get("nodeid") != null)
+                        {
+                            Long nodeid = Long.valueOf(params.get("nodeid"));
+                            tracker.addNodeToIndex(nodeid);
+                        }
+                        if (params.get("aclid") != null)
+                        {
+                            Long aclid = Long.valueOf(params.get("aclid"));
+                            tracker.addAclToIndex(aclid);
+                        }
+                    }
+                }
+                return false;
+            }
+            else if (a.equalsIgnoreCase("FIX"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    IndexHealthReport indexHealthReport = tracker.checkIndex(null, null, null, null, null, null);
+                    OpenBitSet toReindex = indexHealthReport.getTxInIndexButNotInDb();
+                    toReindex.or(indexHealthReport.getDuplicatedTxInIndex());
+                    toReindex.or(indexHealthReport.getMissingTxFromIndex());
+                    long current = -1;
+                    while ((current = toReindex.nextSetBit(current + 1)) != -1)
+                    {
+                        tracker.addTransactionToReindex(current);
+                    }
+                    toReindex = indexHealthReport.getAclTxInIndexButNotInDb();
+                    toReindex.or(indexHealthReport.getDuplicatedAclTxInIndex());
+                    toReindex.or(indexHealthReport.getMissingAclTxFromIndex());
+                    current = -1;
+                    while ((current = toReindex.nextSetBit(current + 1)) != -1)
+                    {
+                        tracker.addAclChangeSetToReindex(current);
+                    }
+
+                }
+                else
+                {
+                    for (String coreName : trackers.keySet())
+                    {
+                        CoreTracker tracker = trackers.get(coreName);
+                        IndexHealthReport indexHealthReport = tracker.checkIndex(null, null, null, null, null, null);
+                        OpenBitSet toReindex = indexHealthReport.getTxInIndexButNotInDb();
+                        toReindex.or(indexHealthReport.getDuplicatedTxInIndex());
+                        toReindex.or(indexHealthReport.getMissingTxFromIndex());
+                        long current = -1;
+                        while ((current = toReindex.nextSetBit(current + 1)) != -1)
+                        {
+                            tracker.addTransactionToReindex(current);
+                        }
+                        toReindex = indexHealthReport.getAclTxInIndexButNotInDb();
+                        toReindex.or(indexHealthReport.getDuplicatedAclTxInIndex());
+                        toReindex.or(indexHealthReport.getMissingAclTxFromIndex());
+                        current = -1;
+                        while ((current = toReindex.nextSetBit(current + 1)) != -1)
+                        {
+                            tracker.addAclChangeSetToReindex(current);
+                        }
+                    }
+                }
+                return false;
+            }
             else
             {
                 return super.handleCustomAction(req, rsp);
@@ -424,15 +662,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> nodes = new SimpleOrderedMap<Object>();
         // add node reports ....
         List<Long> dbAclIds = tracker.getAclsForDbAclTransaction(acltxid);
-        for(Long aclid : dbAclIds)
+        for (Long aclid : dbAclIds)
         {
-            nodes.add("ACLID "+aclid, buildAclReport(tracker, aclid));
+            nodes.add("ACLID " + aclid, buildAclReport(tracker, aclid));
         }
         nr.add("aclTxDbAclCount", dbAclIds.size());
         nr.add("nodes", nodes);
         return nr;
     }
-    
+
     private NamedList<Object> buildAclReport(CoreTracker tracker, Long aclid) throws IOException, JSONException
     {
         AclReport aclReport = tracker.checkAcl(aclid);
@@ -444,7 +682,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
             nr.add("Acl tx in Index", aclReport.getIndexAclTx());
         }
-      
+
         return nr;
     }
 
@@ -456,16 +694,16 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> nodes = new SimpleOrderedMap<Object>();
         // add node reports ....
         List<Node> dbNodes = tracker.getFullNodesForDbTransaction(txid);
-        for(Node node : dbNodes)
+        for (Node node : dbNodes)
         {
-            nodes.add("DBID "+node.getId(), buildNodeReport(tracker, node));
+            nodes.add("DBID " + node.getId(), buildNodeReport(tracker, node));
         }
 
         nr.add("txDbNodeCount", dbNodes.size());
         nr.add("nodes", nodes);
         return nr;
     }
-    
+
     private NamedList<Object> buildNodeReport(CoreTracker tracker, Node node) throws IOException, JSONException
     {
         NodeReport nodeReport = tracker.checkNode(node);
@@ -486,7 +724,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
         return nr;
     }
-    
+
     private NamedList<Object> buildNodeReport(CoreTracker tracker, Long dbid) throws IOException, JSONException
     {
         NodeReport nodeReport = tracker.checkNode(dbid);

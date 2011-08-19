@@ -51,6 +51,8 @@ import org.apache.solr.schema.FieldType;
 import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.QParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -63,6 +65,8 @@ import org.w3c.dom.NodeList;
  */
 public class AlfrescoDataType extends FieldType
 {
+    protected final static Logger log = LoggerFactory.getLogger(AlfrescoDataType.class);
+    
     private String id;
 
     @Override

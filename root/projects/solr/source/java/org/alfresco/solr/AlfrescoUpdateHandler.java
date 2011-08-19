@@ -57,6 +57,8 @@ import org.apache.solr.update.MergeIndexesCommand;
 import org.apache.solr.update.RollbackUpdateCommand;
 import org.apache.solr.update.UpdateHandler;
 import org.apache.solr.util.RefCounted;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>DirectUpdateHandler2</code> implements an UpdateHandler where documents are added directly to the main Lucene
@@ -125,7 +127,7 @@ import org.apache.solr.util.RefCounted;
 
 public class AlfrescoUpdateHandler extends UpdateHandler
 {
-
+    protected final static Logger log = LoggerFactory.getLogger(AlfrescoUpdateHandler.class);
     // stats
     AtomicLong addCommands = new AtomicLong();
 
@@ -449,12 +451,12 @@ public class AlfrescoUpdateHandler extends UpdateHandler
             }
             else if(cmd.id.startsWith("TX-"))
             {
-                Long txid = Long.valueOf(cmd.id.substring(4));
+                Long txid = Long.valueOf(cmd.id.substring(3));
                 deletedTx.put(txid, txid);
             }
             else if(cmd.id.startsWith("ACLTX-"))
             {
-                Long txid = Long.valueOf(cmd.id.substring(4));
+                Long txid = Long.valueOf(cmd.id.substring(6));
                 deletedAclTx.put(txid, txid);
             }
             
