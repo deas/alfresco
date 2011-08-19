@@ -25,9 +25,12 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -106,6 +109,12 @@ public class AlfrescoDataType extends FieldType
     @Override
     protected void init(IndexSchema schema, Map<String, String> args)
     {
+        // Hack to set the default loggin level down ...
+        for(Enumeration<String> loggerNames = LogManager.getLogManager().getLoggerNames(); loggerNames.hasMoreElements(); /**/)
+        {
+            LogManager.getLogManager().getLogger(loggerNames.nextElement()).setLevel(Level.WARNING);
+        }
+        
         HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
         id = schema.getResourceLoader().getInstanceDir();
 
