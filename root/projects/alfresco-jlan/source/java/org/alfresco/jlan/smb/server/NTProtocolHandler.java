@@ -5754,13 +5754,14 @@ public class NTProtocolHandler extends CoreProtocolHandler {
                 // Check for a pseudo file
                 
                 FileInfo finfo = disk.getFileInformation(m_sess, conn, params.getFullPath());
-                if ( finfo != null && finfo.isPseudoFile())
+                if ( finfo != null && finfo.isPseudoFile()) {
                     createDisp = FileAction.NTOpen;
 
-                // Debug
-
-                if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-                    m_sess.debugPrintln("Converted create to open for pseudo file " + params.getFullPath());
+	                // Debug
+	
+	                if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+	                    m_sess.debugPrintln("Converted create to open for pseudo file " + params.getFullPath());
+                }
             }
 
             // Check if the file should be created
