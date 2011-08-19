@@ -843,6 +843,11 @@ public class FileOpenParams {
 	 */
 	private final void parseFileName(String fileName) {
 		
+		// Make sure path is relative to the root
+		
+		if ( fileName != null && fileName.startsWith( FileName.DOS_SEPERATOR_STR) == false)
+			fileName = FileName.DOS_SEPERATOR_STR + fileName;
+
 		//	Check if the file name contains a stream name
 		
 		int pos = fileName.indexOf(StreamSeparator);
