@@ -970,26 +970,32 @@
          <form>
             <field-visibility>
                <show id="ActivitiEngineEnabled" />
+               <show id="NumberOfActivitiTaskInstances" />
+               <show id="NumberOfActivitiWorkflowDefinitionsDeployed" />
+               <show id="NumberOfActivitiWorkflowInstances" />
                <show id="JBPMEngineEnabled" />
-               <show id="NumberOfWorkflowDefinitionsDeployed" />
-               <show id="NumberOfWorkflowInstances" />
-               <show id="NumberOfTaskInstances" />
+               <show id="NumberOfJBPMTaskInstances" />
+               <show id="NumberOfJBPMWorkflowDefinitionsDeployed" />
+               <show id="NumberOfJBPMWorkflowInstances" />
             </field-visibility>
             <appearance>
-               <set id="engines" appearance="title" label-id="workflow.set.engines"
+               <set id="activiti" appearance="title" label-id="workflow.set.engine.activiti"
                     template="/org/alfresco/components/form/2-column-set.ftl" />
-               <set id="information" appearance="title" label-id="workflow.set.information"
+               <set id="jbpm" appearance="title" label-id="workflow.set.engine.jbpm"
                     template="/org/alfresco/components/form/2-column-set.ftl" />
                
-               <field id="ActivitiEngineEnabled" label-id="workflow.field.enabled.activiti" set="engines">
+               <field id="ActivitiEngineEnabled" label-id="workflow.field.enabled.activiti" set="activiti">
                   <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>
-               <field id="JBPMEngineEnabled" label-id="workflow.field.enabled.jbpm" set="engines">
+               <field id="JBPMEngineEnabled" label-id="workflow.field.enabled.jbpm" set="jbpm">
                   <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>
-               <field id="NumberOfTaskInstances" label-id="workflow.field.number.tasks" set="information" />
-               <field id="NumberOfWorkflowDefinitionsDeployed" label-id="workflow.field.number.definitions" set="information" />
-               <field id="NumberOfWorkflowInstances" label-id="workflow.field.number.workflows" set="information" />
+               <field id="NumberOfActivitiTaskInstances" label-id="workflow.field.number.tasks" set="activiti" />
+               <field id="NumberOfActivitiWorkflowDefinitionsDeployed" label-id="workflow.field.number.definitions" set="activiti" />
+               <field id="NumberOfActivitiWorkflowInstances" label-id="workflow.field.number.workflows" set="activiti" />
+               <field id="NumberOfJBPMTaskInstances" label-id="workflow.field.number.tasks" set="jbpm" />
+               <field id="NumberOfJBPMWorkflowDefinitionsDeployed" label-id="workflow.field.number.definitions" set="jbpm" />
+               <field id="NumberOfJBPMWorkflowInstances" label-id="workflow.field.number.workflows" set="jbpm" />
             </appearance>
          </form>
       </forms>
