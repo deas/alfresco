@@ -34,8 +34,7 @@
    /**
     * Alfresco Slingshot aliases
     */
-    var $html = Alfresco.util.encodeHTML,
-       $combine = Alfresco.util.combinePaths;
+    var $combine = Alfresco.util.combinePaths;
 
    /**
     * DocumentList TreeView constructor.
@@ -876,7 +875,7 @@
       {
          return new YAHOO.widget.TextNode(
          {
-            label: $html(p_oData.name),
+            label: p_oData.name,
             path: p_oData.path,
             nodeRef: p_oData.nodeRef,
             description: p_oData.description

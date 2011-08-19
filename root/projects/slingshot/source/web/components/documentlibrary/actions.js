@@ -109,7 +109,7 @@
                   return Alfresco.util.findValueByDotNotation(p_record, p_key);
                });
                */
-               markupParams.pageUrl = Alfresco.util.substituteDotNotation(p_action.params.page, p_record);
+               markupParams.pageUrl = $siteURL(Alfresco.util.substituteDotNotation(p_action.params.page, p_record));
             }
             else
             {

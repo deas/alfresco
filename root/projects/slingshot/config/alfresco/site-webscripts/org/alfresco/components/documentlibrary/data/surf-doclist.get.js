@@ -13,7 +13,7 @@ function main()
    {
       for (arg in args)
       {
-         argsArray.push(arg + "=" + encodeURIComponent(args[arg]));
+         argsArray.push(arg + "=" + encodeURIComponent(args[arg].replace(/%25/g,"%2525")));
       }
       
       dataUrl += "?" + argsArray.join("&");
