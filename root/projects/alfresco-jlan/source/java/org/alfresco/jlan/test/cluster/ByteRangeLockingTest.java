@@ -29,6 +29,7 @@ import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.filesys.AccessMode;
 import org.alfresco.jlan.server.filesys.FileAction;
 import org.alfresco.jlan.server.filesys.FileAttribute;
+import org.alfresco.jlan.server.filesys.FileName;
 import org.alfresco.jlan.smb.SMBException;
 import org.alfresco.jlan.smb.SMBStatus;
 import org.alfresco.jlan.smb.SharingMode;
@@ -80,7 +81,7 @@ public class ByteRangeLockingTest extends Test {
 					Debug.println( "Creating file " + testFileName + " via " + sess.getServer());
 				
 				CIFSDiskSession cifsSess = (CIFSDiskSession) sess;
-				CIFSFile testFile = cifsSess.NTCreate( "\\" + testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal,
+				CIFSFile testFile = cifsSess.NTCreate( testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal,
    						SharingMode.READWRITEDELETE, FileAction.NTOverwriteIf, 0, 0);
 
 				if ( testFile != null) {
@@ -153,7 +154,7 @@ public class ByteRangeLockingTest extends Test {
 				
 				// Open existing file
 				
-				lockFile = cifsSess.NTCreate( "\\" + testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal,
+				lockFile = cifsSess.NTCreate( testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal,
 					       						SharingMode.READWRITE, FileAction.NTOpen, 0, 0);
 
 				// Lock/unlock a range of bytes

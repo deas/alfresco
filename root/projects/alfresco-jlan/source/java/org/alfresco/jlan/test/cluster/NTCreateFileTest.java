@@ -96,7 +96,7 @@ public class NTCreateFileTest extends Test {
 				
 				try {
 					testLog( log, "Creating file " + testFileName + " via " + sess.getServer());
-					SMBFile testFile = cifsSess.NTCreate( "\\" + testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal,
+					SMBFile testFile = cifsSess.NTCreate( testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal,
        						SharingMode.READ, FileAction.NTCreate, 0, 0);
 
 					if ( testFile != null)

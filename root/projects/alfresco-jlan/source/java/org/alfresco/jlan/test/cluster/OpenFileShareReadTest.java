@@ -138,7 +138,7 @@ public class OpenFileShareReadTest extends Test {
 				
 				// Open existing file allowing read access to others
 				
-				openFile = cifsSess.NTCreate( "\\" + testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal,
+				openFile = cifsSess.NTCreate( testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal,
 					       						SharingMode.READ, FileAction.NTOpen, 0, 0);
 				
 				// If we got the file then hold it open for a short while
@@ -196,7 +196,7 @@ public class OpenFileShareReadTest extends Test {
 
 					// Open the file for read-only access
 
-					readFile = cifsSess.NTCreate( "\\" + testFileName, AccessMode.NTRead, FileAttribute.NTNormal,
+					readFile = cifsSess.NTCreate( testFileName, AccessMode.NTRead, FileAttribute.NTNormal,
        												SharingMode.READ, FileAction.NTOpen, 0, 0);
 					
 					// Check if we opened the file

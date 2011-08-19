@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.alfresco.jlan.client.DiskSession;
 import org.alfresco.jlan.client.SessionFactory;
+import org.alfresco.jlan.client.SessionSettings;
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.smb.PCShare;
 
@@ -145,7 +146,11 @@ public class ClusterTest {
 				// Connect to the remote server
 				
 				share = new PCShare( m_server.getName(), m_server.getShareName(), m_server.getUserName(), m_server.getPassword());
-				sess = SessionFactory.OpenDisk( share);
+				
+				SessionSettings sessSettings = new SessionSettings();
+				sessSettings.setVirtualCircuit( m_id);
+				
+				sess = SessionFactory.OpenDisk( share, sessSettings);
 				
 				// Set the working directory
 				

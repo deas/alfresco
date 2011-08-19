@@ -167,6 +167,9 @@ public abstract class Test {
 		
 		StringBuilder fName = new StringBuilder();
 		
+		if ( getPath() != null)
+			fName.append( getPath());
+		
 		fName.append( getName());
 		fName.append( "_");
 		fName.append( iter);
@@ -185,6 +188,9 @@ public abstract class Test {
 	public final String getPerThreadFileName( int threadId, int iter) {
 		
 		StringBuilder fName = new StringBuilder();
+		
+		if ( getPath() != null)
+			fName.append( getPath());
 		
 		fName.append( getName());
 		fName.append( "_");
@@ -207,6 +213,9 @@ public abstract class Test {
 		
 		StringBuilder fName = new StringBuilder();
 		
+		if ( getPath() != null)
+			fName.append( getPath());
+		
 		fName.append( getName());
 		fName.append( "_");
 		fName.append( iter);
@@ -224,6 +233,9 @@ public abstract class Test {
 	public final String getPerThreadFolderName( int threadId, int iter) {
 		
 		StringBuilder fName = new StringBuilder();
+
+		if ( getPath() != null)
+			fName.append( getPath());
 		
 		fName.append( getName());
 		fName.append( "_");
@@ -245,6 +257,9 @@ public abstract class Test {
 	public final String getUniqueFileName( int threadId, int iter, DiskSession sess) {
 		
 		StringBuilder fName = new StringBuilder();
+		
+		if ( getPath() != null)
+			fName.append( getPath());
 		
 		fName.append( getName());
 		fName.append( "_");
@@ -269,6 +284,9 @@ public abstract class Test {
 	public final String getUniqueFolderName( int threadId, int iter, DiskSession sess) {
 		
 		StringBuilder fName = new StringBuilder();
+		
+		if ( getPath() != null)
+			fName.append( getPath());
 		
 		fName.append( getName());
 		fName.append( "_");
