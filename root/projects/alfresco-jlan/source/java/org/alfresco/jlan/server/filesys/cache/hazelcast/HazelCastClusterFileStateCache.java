@@ -235,7 +235,7 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 				throw new InvalidConfigurationException( "Empty cluster name");
 		}
 		else
-			throw new InvalidConfigurationException( "Cluster map name not specified");
+			throw new InvalidConfigurationException( "Cluster name not specified");
 		
 		// Check if the cluster topic name has been specfied
 

@@ -395,8 +395,10 @@ public class LocalOpLockDetails implements OpLockDetails {
 		str.append(OpLock.getTypeAsString( getLockType()));
 		str.append(",");
 		str.append(getPath());
-		str.append(",Owner=");
-		str.append(getOwnerSession().getUniqueId());
+		if(getOwnerSession() != null) {
+		    str.append(",Owner=");
+		    str.append(getOwnerSession().getUniqueId());
+		}
 		str.append(",PID=");
 		str.append(getOwnerPID());
 		str.append(",UID=");
