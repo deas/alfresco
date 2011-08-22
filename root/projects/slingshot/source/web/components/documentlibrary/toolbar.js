@@ -350,46 +350,49 @@
       {
          // Display loading message
          var templateNodesMenu = this.widgets.createContent.getMenu().getSubmenus()[0];
-         templateNodesMenu.clearContent();
-         templateNodesMenu.addItem(this.msg("label.loading"));
-         templateNodesMenu.render();
-
-         // Load template nodes
-         Alfresco.util.Ajax.jsonGet(
+         if (templateNodesMenu.getItems().length == 0)
          {
-            url: Alfresco.constants.PROXY_URI + "slingshot/doclib/node-templates",
-            successCallback:
+            templateNodesMenu.clearContent();
+            templateNodesMenu.addItem(this.msg("label.loading"));
+            templateNodesMenu.render();
+
+            // Load template nodes
+            Alfresco.util.Ajax.jsonGet(
             {
-               fn: function(response, menu)
+               url: Alfresco.constants.PROXY_URI + "slingshot/doclib/node-templates",
+               successCallback:
                {
-                  var nodes = response.json.data,
-                     menuItems = [],
-                     name;
-                  for (var i = 0, il = nodes.length; i < il; i++)
+                  fn: function(response, menu)
                   {
-                     node = nodes[i];
-                     name = $html(node.name);
-                     if (node.title && node.title !== node.name && this.options.useTitle)
+                     var nodes = response.json.data,
+                        menuItems = [],
+                        name;
+                     for (var i = 0, il = nodes.length; i < il; i++)
                      {
-                        name += '<span class="title">(' + $html(node.title) + ')</span>';
+                        node = nodes[i];
+                        name = $html(node.name);
+                        if (node.title && node.title !== node.name && this.options.useTitle)
+                        {
+                           name += '<span class="title">(' + $html(node.title) + ')</span>';
+                        }
+                        menuItems.push(
+                        {
+                           text: '<span title="' + $html(node.description) + '">' + name +'</span>',
+                           value: node
+                        });
                      }
-                     menuItems.push(
+                     if (menuItems.length == 0)
                      {
-                        text: '<span title="' + $html(node.description) + '">' + name +'</span>',
-                        value: node
-                     });
-                  }
-                  if (menuItems.length == 0)
-                  {
-                     menuItems.push(this.msg("label.empty"));
-                  }
-                  templateNodesMenu.clearContent();
-                  templateNodesMenu.addItems(menuItems);
-                  templateNodesMenu.render();
-               },
-               scope: this
-            }
-         });
+                        menuItems.push(this.msg("label.empty"));
+                     }
+                     templateNodesMenu.clearContent();
+                     templateNodesMenu.addItems(menuItems);
+                     templateNodesMenu.render();
+                  },
+                  scope: this
+               }
+            });
+         }
       },
 
       /**
@@ -419,13 +422,14 @@
                },
                successCallback:
                {
-                  fn: function ()
+                  fn: function (response)
                   {
                      // Make sure we get other components to update themselves to show the new content
                      YAHOO.Bubbling.fire("nodeCreated",
                      {
                         name: node.name,
-                        parentNodeRef: destination
+                        parentNodeRef: destination,
+                        highlightFile: response.json.name
                      });
                   }
                },
