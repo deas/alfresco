@@ -198,7 +198,7 @@
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
-               var action = owner.className;
+               var action = owner.title;
                if (typeof me[action] == "function")
                {
                   args[1].stop = true;
