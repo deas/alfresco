@@ -13,7 +13,6 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/hibernate-3.2.6-patched.jar" sourcepath="/3rd Party/src/hibernate-3.2.6-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jaxb-xjc-2.1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/optional/log4j-1.2.15.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-4.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-core-1.0.0.CI-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/mybatis-3.0.4.jar"/>
@@ -37,5 +36,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

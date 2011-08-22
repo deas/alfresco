@@ -12,7 +12,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/3rd Party/lib/ehcache-core-2.0.0.jar" sourcepath="/3rd Party/src/ehcache-core-2.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/json.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-4.6.jar" sourcepath="/3rd Party/src/junit-4.6-src.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/slf4j-api-1.5.11.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/slf4j-log4j12-1.5.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/optional/log4j-1.2.15.jar"/>
@@ -35,5 +34,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.expression-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
