@@ -19,7 +19,11 @@
 package org.alfresco.repo.transfer.fsr;
 
 import java.util.List;
-
+/**
+ *
+ * @author philippe
+ *
+ */
 public interface FileTransferInfoDAO
 {
     FileTransferInfoEntity createFileTransferInfo(

@@ -49,10 +49,8 @@ import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferProgress;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.alfresco.service.cmr.transfer.TransferVersion;
-import org.alfresco.service.descriptor.Descriptor;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
-import org.alfresco.repo.transaction.AlfrescoTransactionSupport;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.apache.commons.logging.Log;
@@ -104,7 +102,7 @@ public class FileTransferReceiver implements TransferReceiver
 
     private String defaultReceivingroot;
 
-    private ManifestProcessorFactory manifestProcessorFactory;
+    private FileTransferManifestProcessorFactory manifestProcessorFactory;
 
     private Map<String, File> contents = new ConcurrentHashMap<String, File>();
 
@@ -116,10 +114,11 @@ public class FileTransferReceiver implements TransferReceiver
 
     private Set<String> setOfNodesBeforeSyncMode;
 
+
+
     public void cancel(String transferId) throws TransferException
     {
         // TODO Auto-generated method stub
-
     }
 
     public void commit(String transferId) throws TransferException
@@ -578,10 +577,6 @@ public class FileTransferReceiver implements TransferReceiver
                                     getTempFolder(transferId);
                                     getStagingFolder(transferId);
 
-                                    // TransferServicePolicies.OnStartInboundTransferPolicy onStartPolicy =
-                                    // onStartInboundTransferDelegate.get(TransferModel.TYPE_TRANSFER_RECORD);
-                                    // onStartPolicy.onStartInboundTransfer(transferId);
-
                                     return transferId;
                                 }
                             }, false, true);
@@ -601,6 +596,10 @@ public class FileTransferReceiver implements TransferReceiver
             locks.put(transferId, lock);
             log.info("transfer started:" + transferId);
             lock.enableLockTimeout();
+
+            manifestProcessorFactory.startTransfer(transferId, fromRepositoryId, fromVersion);
+
+
             return transferId;
 
         }
@@ -610,6 +609,9 @@ public class FileTransferReceiver implements TransferReceiver
             // lock is already taken.
             throw new TransferException("MSG_TRANSFER_LOCK_UNAVAILABLE");
         }
+
+
+
     }
 
     public void setJobLockService(JobLockService jobLockService)
@@ -1193,7 +1195,7 @@ public class FileTransferReceiver implements TransferReceiver
 
     public void setManifestProcessorFactory(ManifestProcessorFactory manifestProcessorFactory)
     {
-        this.manifestProcessorFactory = manifestProcessorFactory;
+        this.manifestProcessorFactory = (FileTransferManifestProcessorFactory)manifestProcessorFactory;
     }
 
     public void setProgressMonitor(TransferProgressMonitor progressMonitor)

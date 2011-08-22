@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * original name will be kept in a separate table (alf_table_to_be_renamed). The nodes (on file system) will only take
  * their final at the end of FileTransferSecondaryManifestProcessor. For existing node we will act on, they will be also
  * be renamed. They will be renamed using counter in order to minimise the path length on the file system.
- * 
+ *
  * @author philippe
  */
 public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestProcessorBase
@@ -45,6 +45,7 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
 
     // counter usesed to rename nodes temporarily in order to avoid
     private long renamingCounter = 0;
+
 
     public FileTransferPrimaryManifestProcessor(TransferReceiver receiver, String transferId)
     {
@@ -275,5 +276,6 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
     {
 
     }
+    
 
 }

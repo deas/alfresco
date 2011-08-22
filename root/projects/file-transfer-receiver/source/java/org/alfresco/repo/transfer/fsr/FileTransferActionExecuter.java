@@ -44,7 +44,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Logger action executer. This action will send over a content node to a File Transfer Receiver.
+ * This action will send over a content node to a File Transfer Receiver.
+ * Only for test purpose
  *
  * @author Philippe Dubois
  */

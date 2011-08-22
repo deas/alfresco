@@ -33,7 +33,11 @@ import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.FileCopyUtils;
-
+/**
+ * Common methods for file FileTransferPrimaryProcessor and FileTransferSecondaryProcessor
+ * @author philippe
+ *
+ */
 public abstract class AbstractFileManifestProcessorBase extends org.alfresco.repo.transfer.AbstractManifestProcessorBase
 {
     private final static Log log = LogFactory.getLog(AbstractFileManifestProcessorBase.class);

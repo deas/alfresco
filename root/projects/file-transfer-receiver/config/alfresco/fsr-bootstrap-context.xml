@@ -187,6 +187,9 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     </bean>
 
     <bean id="fTransferManifestProcessorFactory" class="org.alfresco.repo.transfer.fsr.FileTransferManifestProcessorFactory">
+        <property name="hook">
+            <ref bean="fileTransferHook" />
+        </property>
     </bean>
 
     <bean id="transferProgressMonitor"
@@ -195,7 +198,9 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
             <bean class="org.alfresco.repo.transfer.fsr.FileTransferProgressMonitor">
             </bean>
         </property>
+    </bean>
 
+    <bean id="fileTransferHook" class="org.alfresco.repo.transfer.fsr.FileTransferHookDummy">
     </bean>
 
 </beans>
