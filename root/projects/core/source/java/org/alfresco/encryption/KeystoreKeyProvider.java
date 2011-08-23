@@ -36,7 +36,6 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     private static final Log logger = LogFactory.getLog(KeystoreKeyProvider.class);
 
     private KeyStoreParameters keyStoreParameters;
-    //private AlfrescoKeyStoreFactory keyStoreFactory;
     private KeyResourceLoader keyResourceLoader;
     private AlfrescoKeyStore keyStore;
 
