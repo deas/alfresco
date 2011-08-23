@@ -1820,24 +1820,27 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             }
             WildcardTermEnum wcte = new WildcardTermEnum(indexReader, searchTerm);
 
-            while (!wcte.endEnum())
+            do
             {
                 Term current = wcte.term();
-                if ((current.text() != null) && (current.text().length() > 0) && (current.text().charAt(0) == '{'))
+                if(current != null)
                 {
-                    if ((searchTerm != null) && (searchTerm.text().length() > 0) && (searchTerm.text().charAt(0) == '{'))
+                    if ((current.text() != null) && (current.text().length() > 0) && (current.text().charAt(0) == '{'))
+                    {
+                        if ((searchTerm != null) && (searchTerm.text().length() > 0) && (searchTerm.text().charAt(0) == '{'))
+                        {
+                            terms.add(current);
+                        }
+                        // If not, we cod not add so wildcards do not match the locale prefix
+                    }
+                    else
                     {
                         terms.add(current);
                     }
-                    // If not, we cod not add so wildcards do not match the locale prefix
                 }
-                else
-                {
-                    terms.add(current);
-                }
-
-                wcte.next();
             }
+            while(wcte.next());
+            
         }
         catch (IOException e)
         {
