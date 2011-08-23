@@ -19,6 +19,7 @@
 package org.alfresco.encryption;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,20 +40,35 @@ public class SpringKeyResourceLoader implements KeyResourceLoader
      * {@inheritDoc}
      */
     @Override
-	public InputStream getKeyStore(String location) throws FileNotFoundException
+	public InputStream getKeyStore(String keyStoreLocation)
 	{
-		return new BufferedInputStream(new FileInputStream(ResourceUtils.getFile(location)));
+    	try
+    	{
+    		File f = ResourceUtils.getFile(keyStoreLocation);
+    		return new BufferedInputStream(new FileInputStream(f));
+    	}
+    	catch(FileNotFoundException e)
+    	{
+    		return null;
+    	}
 	}
 
     /**
      * {@inheritDoc}
      */
     @Override
-	public Properties getPasswords(String location) throws IOException, FileNotFoundException
+	public Properties loadKeyMetaData(String keyMetaDataFileLocation) throws IOException
 	{
-    	Properties p = new Properties();
-    	p.load(new BufferedInputStream(new FileInputStream(ResourceUtils.getFile(location))));
-    	return p;
+    	try
+    	{
+	    	Properties p = new Properties();
+	    	p.load(new BufferedInputStream(new FileInputStream(ResourceUtils.getFile(keyMetaDataFileLocation))));
+	    	return p;
+    	}
+    	catch(FileNotFoundException e)
+    	{
+    		return null;
+    	}
 	}
 
 }

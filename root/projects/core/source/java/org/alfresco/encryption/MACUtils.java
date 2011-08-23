@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -91,31 +90,11 @@ public class MACUtils
 		return bos.toByteArray(); 		
 	}
 
-	protected InputStream constructMessage(InputStream message, long timestamp, String ipAddress) throws IOException, UnsupportedEncodingException
-	{
-		List<InputStream> inputStreams = new ArrayList<InputStream>();
-
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream(bytes);
-		out.writeUTF(ipAddress);
-		out.writeByte(SEPARATOR);
-		out.writeLong(timestamp);
-		inputStreams.add(new ByteArrayInputStream(bytes.toByteArray()));
-
-		if(message != null)
-		{
-			inputStreams.add(message);
-		}
-
-		return new MessageInputStream(inputStreams);
-	}
-	
 	public byte[] generateMAC(String keyAlias, MACInput macInput)
 	{
     	try
     	{
-    		InputStream messageStream = (macInput.getMessage() != null ? macInput.getMessage() : null);
-    		InputStream fullMessage = constructMessage(messageStream, macInput.getTimestamp(), macInput.getIpAddress());
+    		InputStream fullMessage = macInput.getMACInput();
 
     		if(logger.isDebugEnabled())
     		{
@@ -214,6 +193,25 @@ public class MACUtils
 		public String getIpAddress()
 		{
 			return ipAddress;
+		}
+
+		public InputStream getMACInput() throws IOException
+		{
+			List<InputStream> inputStreams = new ArrayList<InputStream>();
+
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			DataOutputStream out = new DataOutputStream(bytes);
+			out.writeUTF(ipAddress);
+			out.writeByte(SEPARATOR);
+			out.writeLong(timestamp);
+			inputStreams.add(new ByteArrayInputStream(bytes.toByteArray()));
+
+			if(message != null)
+			{
+				inputStreams.add(message);
+			}
+
+			return new MessageInputStream(inputStreams);
 		}
 		
 		public String toString()

@@ -23,7 +23,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,11 +41,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.alfresco.encryption.KeyResourceLoader;
+import org.alfresco.encryption.KeyStoreParameters;
+import org.alfresco.encryption.ssl.SSLEncryptionParameters;
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.httpclient.AlfrescoHttpClient;
+import org.alfresco.httpclient.AuthenticationException;
+import org.alfresco.httpclient.HttpClientFactory;
+import org.alfresco.httpclient.HttpClientFactory.SecureCommsType;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
@@ -72,9 +75,7 @@ import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclReaders;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.client.AlfrescoModelDiff;
-import org.alfresco.solr.client.AuthenticationException;
 import org.alfresco.solr.client.ContentPropertyValue;
-import org.alfresco.solr.client.EncryptionService;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.MLTextPropertyValue;
 import org.alfresco.solr.client.MultiPropertyValue;
@@ -85,6 +86,7 @@ import org.alfresco.solr.client.NodeMetaDataParameters;
 import org.alfresco.solr.client.PropertyValue;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
+import org.alfresco.solr.client.SolrKeyResourceLoader;
 import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.util.ISO9075;
@@ -153,7 +155,9 @@ public class CoreTracker implements CloseHook
 
     private String alfrescoHost;
 
-    private String url;
+    private int alfrescoPort;
+
+    private int alfrescoPortSSL;
 
     private String cron;
 
@@ -165,23 +169,40 @@ public class CoreTracker implements CloseHook
 
     private long batchCount;
 
-    // encryption properties
+    // encryption related parameters
+    private String secureCommsType; // "none", "https"
+
     private String cipherAlgorithm;
 
-    private String keyStoreType;
+	private String keyStoreType;
 
-    private String keyStoreProvider;
+	private String keyStoreProvider;
 
-    private String passwordFileLocation;
+	private String passwordFileLocation;
 
-    private String keyStoreLocation;
+	private String keyStoreLocation;
 
-    private long messageTimeout;
+	private Long messageTimeout;
 
-    private String macAlgorithm;
+	private String macAlgorithm;
 
-    private boolean secureCommsEnabled = true;
+	// ssl
+	private String sslKeyStoreType;
 
+	private String sslKeyStoreProvider;
+
+	private String sslKeyStoreLocation;
+
+	private String sslKeyStorePasswordFileLocation;
+
+	private String sslTrustStoreType;
+
+	private String sslTrustStoreProvider;
+
+	private String sslTrustStoreLocation;
+
+	private String sslTrustStorePasswordFileLocation;
+	
     private String id;
 
     private AlfrescoSolrDataModel dataModel;
@@ -230,13 +251,17 @@ public class CoreTracker implements CloseHook
                 {
                     return;
                 }
-                if (split[0].equals("alfresco.url"))
+                if (split[0].equals("alfresco.host"))
                 {
-                    url = split[1];
+                	alfrescoHost = split[1];
                 }
-                else if (split[0].equals("alfresco.host"))
+                else  if (split[0].equals("alfresco.port"))
                 {
-                    alfrescoHost = split[1];
+                	alfrescoPort = Integer.parseInt(split[1]);
+                }
+                else  if (split[0].equals("alfresco.port.ssl"))
+                {
+                	alfrescoPortSSL = Integer.parseInt(split[1]);
                 }
                 else if (split[0].equals("alfresco.cron"))
                 {
@@ -264,11 +289,11 @@ public class CoreTracker implements CloseHook
                 }
                 else if (split[0].equals("alfresco.encryption.keystore.type"))
                 {
-                    keyStoreType = split[1];
+                	keyStoreType = split[1];
                 }
                 else if (split[0].equals("alfresco.encryption.keystore.provider"))
                 {
-                    keyStoreProvider = split[1];
+                	keyStoreProvider = split[1];
                 }
                 else if (split[0].equals("alfresco.encryption.keystore.passwordFileLocation"))
                 {
@@ -278,6 +303,38 @@ public class CoreTracker implements CloseHook
                 {
                     keyStoreLocation = split[1];
                 }
+                else if (split[0].equals("alfresco.encryption.ssl.keystore.type"))
+                {
+                	sslKeyStoreType = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.ssl.keystore.provider"))
+                {
+                	sslKeyStoreProvider = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.ssl.keystore.location"))
+                {
+                	sslKeyStoreLocation = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.ssl.keystore.passwordFileLocation"))
+                {
+                    sslKeyStorePasswordFileLocation = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.ssl.truststore.type"))
+                {
+                	sslTrustStoreType = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.ssl.truststore.provider"))
+                {
+                	sslTrustStoreProvider = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.ssl.truststore.location"))
+                {
+                	sslTrustStoreLocation = split[1];
+                }
+                else if (split[0].equals("alfresco.encryption.ssl.truststore.passwordFileLocation"))
+                {
+                    sslTrustStorePasswordFileLocation = split[1];
+                }
                 else if (split[0].equals("alfresco.encryption.messageTimeout"))
                 {
                     messageTimeout = Long.parseLong(split[1]);
@@ -286,9 +343,9 @@ public class CoreTracker implements CloseHook
                 {
                     macAlgorithm = split[1];
                 }
-                else if (split[0].equals("alfresco.secureComms.enabled"))
+                else if (split[0].equals("alfresco.secureComms"))
                 {
-                    secureCommsEnabled = Boolean.valueOf(split[1]);
+                	secureCommsType = split[1];
                 }
             }
         }
@@ -301,11 +358,7 @@ public class CoreTracker implements CloseHook
         id = loader.getInstanceDir();
         dataModel = AlfrescoSolrDataModel.getInstance(id);
 
-        // load keystore from the Solr core location
-        SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
-        EncryptionService encryptionService = new EncryptionService(keyResourceLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm, keyStoreType, keyStoreProvider,
-                passwordFileLocation, messageTimeout, macAlgorithm);
-        client = new SOLRAPIClient(dataModel.getDictionaryService(), dataModel.getNamespaceDAO(), encryptionService, secureCommsEnabled, url);
+        client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(), dataModel.getNamespaceDAO());
 
         JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
         JobDataMap jobDataMap = new JobDataMap();
@@ -329,6 +382,21 @@ public class CoreTracker implements CloseHook
         }
 
         core.addCloseHook(this);
+    }
+
+    protected AlfrescoHttpClient getRepoClient(SolrResourceLoader loader)
+    {
+		KeyStoreParameters keyStoreParameters = new KeyStoreParameters(sslKeyStoreType, sslKeyStoreProvider, sslKeyStorePasswordFileLocation, sslKeyStoreLocation);
+		KeyStoreParameters trustStoreParameters = new KeyStoreParameters(sslTrustStoreType, sslTrustStoreProvider, sslTrustStorePasswordFileLocation, sslTrustStoreLocation);
+		SSLEncryptionParameters sslEncryptionParameters = new SSLEncryptionParameters(keyStoreParameters, trustStoreParameters);
+        SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
+
+        HttpClientFactory httpClientFactory = new HttpClientFactory(SecureCommsType.getType(secureCommsType),
+    		sslEncryptionParameters, keyResourceLoader, null, null);
+        // TODO need to make port configurable depending on secure comms, or just make redirects
+        // work
+        AlfrescoHttpClient repoClient = httpClientFactory.getRepoClient(alfrescoHost, alfrescoPortSSL);
+        return repoClient;
     }
 
     /**
@@ -1293,7 +1361,7 @@ public class CoreTracker implements CloseHook
 
     }
 
-    private void trackModels() throws AuthenticationException, IOException, JSONException, FileNotFoundException
+    private void trackModels() throws AuthenticationException, IOException, JSONException
     {
         // track models
         // reflect changes changes and update on disk copy
@@ -1822,20 +1890,31 @@ public class CoreTracker implements CloseHook
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".contentDataId", contentPropertyValue.getId());
         GetTextContentResponse response = client.getTextContent(nodeMetaData.getId(), propertyQName, null);
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getRequestDuration());
+        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getTransformDuration());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationException", response.getTransformException());
 
         InputStreamReader isr = null;
         InputStream ris = response.getContent();
+    	File temp = null;
+        try
+        {
+	        if (ris != null)
+	        {
+	            // Get and copy content
+	            temp = TempFileProvider.createTempFile("solr", "content");
+	            toDelete.add(temp);
+	            OutputStream os = new BufferedOutputStream(new FileOutputStream(temp));
+	            FileCopyUtils.copy(ris, os);
+        	}
+        }
+        finally
+        {
+        	// release the response only when the content has been read
+        	response.release();
+        }
 
         if (ris != null)
         {
-            // Get and copy content
-            File temp = TempFileProvider.createTempFile("solr", "content");
-            toDelete.add(temp);
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(temp));
-            FileCopyUtils.copy(ris, os);
-
             // Localised
             ris = new BufferedInputStream(new FileInputStream(temp));
 
@@ -2941,33 +3020,6 @@ public class CoreTracker implements CloseHook
     }
 
     /*
-     * Loads encryption key resources from a SolrResourceLoader
-     */
-    private class SolrKeyResourceLoader implements KeyResourceLoader
-    {
-        private SolrResourceLoader loader;
-
-        public SolrKeyResourceLoader(SolrResourceLoader loader)
-        {
-            this.loader = loader;
-        }
-
-        @Override
-        public InputStream getKeyStore(String location) throws FileNotFoundException
-        {
-            return loader.openResource(location);
-        }
-
-        @Override
-        public Properties getPasswords(String location) throws IOException
-        {
-            Properties p = new Properties();
-            p.load(loader.openResource(location));
-            return p;
-        }
-    }
-
-    /*
      * (non-Javadoc)
      * @see org.apache.solr.core.CloseHook#close(org.apache.solr.core.SolrCore)
      */
@@ -2993,4 +3045,5 @@ public class CoreTracker implements CloseHook
         }
 
     }
+
 }

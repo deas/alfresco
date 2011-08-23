@@ -20,23 +20,18 @@ package org.alfresco.solr;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
-import org.alfresco.solr.client.AuthenticationException;
+import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.tracker.CoreTracker;
 import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.util.CachingDateFormat;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.params.CoreAdminParams;
@@ -64,7 +59,7 @@ import org.slf4j.LoggerFactory;
 public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 {
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoCoreAdminHandler.class);
-    
+
     Scheduler scheduler = null;
 
     ConcurrentHashMap<String, CoreTracker> trackers = new ConcurrentHashMap<String, CoreTracker>();

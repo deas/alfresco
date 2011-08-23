@@ -40,7 +40,11 @@ import junit.framework.TestCase;
 import org.alfresco.encryption.DefaultEncryptionUtils;
 import org.alfresco.encryption.KeyProvider;
 import org.alfresco.encryption.KeyResourceLoader;
+import org.alfresco.encryption.KeyStoreParameters;
 import org.alfresco.encryption.MACUtils.MACInput;
+import org.alfresco.httpclient.AuthenticationException;
+import org.alfresco.httpclient.EncryptionService;
+import org.alfresco.httpclient.MD5EncryptionParameters;
 import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
@@ -62,6 +66,8 @@ import org.json.JSONException;
  * Tests {@link SOLRAPIClient}
  * 
  * Note: need to make sure that source/solr/instance is on the run classpath.
+ * 
+ * Note: doesn't currently work, need to change to use SSL.
  * 
  * @since 4.0
  */
@@ -160,26 +166,31 @@ public class SOLRAPIClientTest extends TestCase
         ClasspathKeyResourceLoader keyResourceLoader = new ClasspathKeyResourceLoader();
 
         // note small message timeout - 2s
-        invalidKeyEncryptionService = new EncryptionService(keyResourceLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
-        		"DESede/CBC/PKCS5Padding",
-        		"JCEKS", null, "keystore-passwords.properties", 2*1000,
-        		"HmacSHA1");
-        invalidKeyClient = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
-        		invalidKeyEncryptionService, true, "http://127.0.0.1:8080/alfresco/service");
+        KeyStoreParameters keyStoreParameters = new KeyStoreParameters("JCEKS", null,
+        		"keystore-passwords.properties", "org/alfresco/solr/client/.keystore");
+        MD5EncryptionParameters encryptionParameters = new MD5EncryptionParameters("DESede/CBC/PKCS5Padding", Long.valueOf(2*1000), "HmacSHA1");
 
-        tamperWithEncryptionService = new TamperWithEncryptionService(keyResourceLoader, "org/alfresco/solr/client/.keystore", "127.0.0.1",
-        		"DESede/CBC/PKCS5Padding",
-        		"JCEKS", null, "keystore-passwords.properties", 2*1000,
-        		"HmacSHA1");
-        tamperWithClient = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
-        		tamperWithEncryptionService, true, "http://127.0.0.1:8080/alfresco/service");
-        
-        EncryptionService encryptionService = new EncryptionService(keyResourceLoader, "workspace-SpacesStore/conf/.keystore", 
-        		"127.0.0.1", "DESede/CBC/PKCS5Padding",
-        		"JCEKS", null, "keystore-passwords.properties", 30*1000,
-        		"HmacSHA1");
-        client = new SOLRAPIClient(model.getDictionaryService(), namespaceDAO,
-        		encryptionService, true, "http://127.0.0.1:8080/alfresco/service");
+    	//MD5HttpClientFactory httpClientFactory = new MD5HttpClientFactory();
+//        HttpClientFactory httpClientFactory = new HttpClientFactory(SecureComm);
+//
+//        invalidKeyEncryptionService = new EncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
+//        AlfrescoHttpClient repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, invalidKeyEncryptionService);
+//        //SecureHttpClient repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, invalidKeyEncryptionService);
+//        invalidKeyClient = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
+//
+//        keyStoreParameters.setLocation("org/alfresco/solr/client/.keystore");
+//        tamperWithEncryptionService = new TamperWithEncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
+//        repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, tamperWithEncryptionService);
+////        repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, tamperWithEncryptionService);
+//        tamperWithClient = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
+//        
+//        encryptionParameters.setMessageTimeout(30*1000);
+//        keyStoreParameters.setLocation("workspace-SpacesStore/conf/.keystore");
+//        EncryptionService encryptionService = new EncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
+//        repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, encryptionService);
+        //repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, encryptionService);
+//        client = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
+        client = new SOLRAPIClient(null, model.getDictionaryService(), namespaceDAO);
 
         InputStream modelStream = getClass().getClassLoader().getResourceAsStream("org/alfresco/solr/client/testModel.xml");
         testModel = M2Model.createModel(modelStream);
@@ -195,7 +206,7 @@ public class SOLRAPIClientTest extends TestCase
     	}
 
 		@Override
-		public Properties getPasswords(String location) throws IOException
+		public Properties loadKeyMetaData(String location) throws IOException
 		{
 			Properties p = new Properties();
 			p.load(getClass().getClassLoader().getResourceAsStream(location));
@@ -682,13 +693,11 @@ public class SOLRAPIClientTest extends TestCase
     
     private static class TamperWithEncryptionService extends EncryptionService
     {
-    	TamperWithEncryptionService(KeyResourceLoader keyResourceLoader, String keyStoreLocation, String alfrescoHost,
-    			String cipherAlgorithm, String keyStoreType, String keyStoreProvider, String keyStorePasswordFile,
-    			long messageTimeout, String macAlgorithm)
-    			{
-    		super(keyResourceLoader, keyStoreLocation, alfrescoHost, cipherAlgorithm, keyStoreType, keyStoreProvider, keyStorePasswordFile,
-    				messageTimeout, macAlgorithm);
-    			}
+    	TamperWithEncryptionService(String alfrescoHost, int alfrescoPort, KeyResourceLoader keyResourceLoader,
+    			KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters)
+    	{
+    		super(alfrescoHost, alfrescoPort, keyResourceLoader, keyStoreParameters, encryptionParameters);
+    	}
 
     	@Override
     	protected void setupEncryptionUtils()
@@ -697,7 +706,7 @@ public class SOLRAPIClientTest extends TestCase
     		TestEncryptionUtils testEncryptionUtils = (TestEncryptionUtils)encryptionUtils;
     		testEncryptionUtils.setEncryptor(getEncryptor());
     		testEncryptionUtils.setMacUtils(getMacUtils());
-    		testEncryptionUtils.setMessageTimeout(messageTimeout);
+    		testEncryptionUtils.setMessageTimeout(encryptionParameters.getMessageTimeout());
     		testEncryptionUtils.setRemoteIP(alfrescoHost);
     	}
     	

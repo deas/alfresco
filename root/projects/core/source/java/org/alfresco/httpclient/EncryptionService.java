@@ -1,4 +1,4 @@
-package org.alfresco.solr.client;
+package org.alfresco.httpclient;
 
 import org.alfresco.encryption.DefaultEncryptionUtils;
 import org.alfresco.encryption.DefaultEncryptor;
@@ -6,6 +6,7 @@ import org.alfresco.encryption.EncryptionUtils;
 import org.alfresco.encryption.Encryptor;
 import org.alfresco.encryption.KeyProvider;
 import org.alfresco.encryption.KeyResourceLoader;
+import org.alfresco.encryption.KeyStoreParameters;
 import org.alfresco.encryption.KeystoreKeyProvider;
 import org.alfresco.encryption.MACUtils;
 
@@ -17,37 +18,33 @@ import org.alfresco.encryption.MACUtils;
  */
 public class EncryptionService
 {
-	protected String alfrescoHost;
-	protected String cipherAlgorithm;
-	protected String keyStoreType;
-	protected String keyStoreProvider;
-	protected String keyStoreLocation;
-	protected String passwordsFileLocation;
-	protected String macAlgorithm;
-
-	protected long messageTimeout; // ms
+	protected KeyStoreParameters keyStoreParameters;
+	protected MD5EncryptionParameters encryptionParameters;
 
 	protected KeyResourceLoader keyResourceLoader;
 	
+	protected String alfrescoHost;
+	protected int alfrescoPort;
+
 	protected KeystoreKeyProvider keyProvider;
 	protected DefaultEncryptor encryptor;
 	protected MACUtils macUtils;
 	protected DefaultEncryptionUtils encryptionUtils;
 	
-	public EncryptionService(KeyResourceLoader keyResourceLoader, String keyStoreLocation, String alfrescoHost,
-			String cipherAlgorithm, String keyStoreType, String keyStoreProvider, String passwordsFileLocation,
-			long messageTimeout, String macAlgorithm)
+	public EncryptionService(String alfrescoHost, int alfrescoPort, KeyResourceLoader keyResourceLoader,
+			KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters)
 	{
+		this.keyStoreParameters = keyStoreParameters;
+		this.encryptionParameters = encryptionParameters;
 		this.alfrescoHost = alfrescoHost;
-		this.cipherAlgorithm = cipherAlgorithm;
-		this.keyStoreType = keyStoreType;
-		this.keyStoreProvider = keyStoreProvider;
-		this.passwordsFileLocation = passwordsFileLocation;
+		this.alfrescoHost = alfrescoHost;
 		this.keyResourceLoader = keyResourceLoader;
-		this.keyStoreLocation = keyStoreLocation;
-		this.messageTimeout = messageTimeout;
-		this.macAlgorithm = macAlgorithm;
 		setup();
+	}
+	
+	public MD5EncryptionParameters getEncryptionParameters()
+	{
+		return encryptionParameters;
 	}
 
 	public KeyProvider getKeyProvider()
@@ -83,33 +80,34 @@ public class EncryptionService
 		encryptionUtils = new DefaultEncryptionUtils();
 		encryptionUtils.setEncryptor(getEncryptor());
 		encryptionUtils.setMacUtils(getMacUtils());
-		encryptionUtils.setMessageTimeout(messageTimeout);
+		encryptionUtils.setMessageTimeout(encryptionParameters.getMessageTimeout());
 		encryptionUtils.setRemoteIP(alfrescoHost);
 	}
 	
     protected void setupKeyProvider()
     {
-        keyProvider = new KeystoreKeyProvider();
-    	keyProvider.setLocation(keyStoreLocation);
-    	keyProvider.setKeyResourceLoader(keyResourceLoader);
-    	keyProvider.setPasswordsFileLocation(passwordsFileLocation);
-    	keyProvider.setProvider(keyStoreProvider);
-    	keyProvider.setType(keyStoreType);
-    	keyProvider.init();
+        keyProvider = new KeystoreKeyProvider(keyStoreParameters, keyResourceLoader);
+        //KeyStoreManager keyStoreManager = new KeyStoreManager(encryptionParameters, keyResourceLoader);
+//    	keyProvider.setLocation(encryptionParameters.getKeyStoreLocation());
+//    	keyProvider.setKeyResourceLoader(keyResourceLoader);
+//    	keyProvider.setPasswordsFileLocation(encryptionParameters.getPasswordFileLocation());
+//    	keyProvider.setProvider(encryptionParameters.getKeyStoreProvider());
+//    	keyProvider.setType(encryptionParameters.getKeyStoreType());
+//    	keyProvider.init();
     }
     
     protected void setupMacUtils()
     {
     	macUtils = new MACUtils();
     	macUtils.setKeyProvider(getKeyProvider());
-    	macUtils.setMacAlgorithm(macAlgorithm);
+    	macUtils.setMacAlgorithm(encryptionParameters.getMacAlgorithm());
     }
     
     protected void setupEncryptor()
     {
     	encryptor = new DefaultEncryptor();
     	encryptor.setKeyProvider(getKeyProvider());
-    	encryptor.setCipherAlgorithm(cipherAlgorithm);
+    	encryptor.setCipherAlgorithm(encryptionParameters.getCipherAlgorithm());
     	encryptor.init();
     }
 

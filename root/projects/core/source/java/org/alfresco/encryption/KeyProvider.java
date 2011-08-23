@@ -29,11 +29,12 @@ public interface KeyProvider
 {
     // TODO: Allow the aliases to be configured i.e. include an alias mapper
     /**
-     * Constant representing the keystore alias for keys to encrypt/decrype node metadata
+     * Constant representing the keystore alias for keys to encrypt/decrypt node metadata
      */
     public static final String ALIAS_METADATA = "metadata";
+
     /**
-     * Constant representing the keystore alias for keys to encrypt/decrype SOLR transfer data
+     * Constant representing the keystore alias for keys to encrypt/decrypt SOLR transfer data
      */
     public static final String ALIAS_SOLR = "solr";
     

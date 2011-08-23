@@ -1,4 +1,4 @@
-package org.alfresco.solr.client;
+package org.alfresco.httpclient;
 
 import org.apache.commons.httpclient.HttpMethod;
 

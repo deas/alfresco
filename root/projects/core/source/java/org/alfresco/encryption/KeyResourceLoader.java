@@ -24,13 +24,30 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Loads key resources (key store and key store passwords) from an arbitrary source e.g. a classpath.
+ * Manages key resources (key store and key store passwords)
  * 
  * @since 4.0
  * 
  */
 public interface KeyResourceLoader
 {
-	public InputStream getKeyStore(String location) throws FileNotFoundException;
-	public Properties getPasswords(String location) throws IOException;
+	/**
+	 * Loads and returns an InputStream of the key store at the configured location.
+	 * If the file cannot be found this method returns null.
+	 * 
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public InputStream getKeyStore(String keyStoreLocation) throws FileNotFoundException;
+    
+	/**
+	 * Loads passwords from the configured passwords file location.
+	 * 
+	 * Note that the passwords are not cached locally.
+	 * If the file cannot be found this method returns null.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public Properties loadKeyMetaData(String keyMetaDataFileLocation) throws IOException, FileNotFoundException;
 }

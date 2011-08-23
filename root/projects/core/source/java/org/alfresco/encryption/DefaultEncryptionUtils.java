@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.encryption.MACUtils.MACInput;
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.util.EqualsHelper;
 import org.alfresco.util.IPUtils;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
@@ -462,18 +461,12 @@ public class DefaultEncryptionUtils implements EncryptionUtils
         setTimestamp(httpResponse, responseTimestamp);
     }
 
-    protected boolean validateRemoteIP(String remoteIP)
-    {
-    	return EqualsHelper.nullSafeEquals(remoteIP, getRemoteIP());
-    }
-    
     protected boolean authenticate(byte[] expectedMAC, MACInput macInput)
     {
     	// check the MAC and, if valid, check that the timestamp is under the threshold and that the remote IP is
     	// the expected IP
 		boolean authorized = macUtils.validateMAC(KeyProvider.ALIAS_SOLR, expectedMAC, macInput) &&
-			validateTimestamp(macInput.getTimestamp()) &&
-			validateRemoteIP(macInput.getIpAddress());
+			validateTimestamp(macInput.getTimestamp());
         return authorized;
     }
     

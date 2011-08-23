@@ -50,14 +50,14 @@ public abstract class AbstractEncryptor implements Encryptor
     protected String cipherProvider;
 
     private KeyProvider keyProvider;
-    
+
     /**
      * Constructs with defaults
      */
     protected AbstractEncryptor()
     {
     }
-    
+
     /**
      * @param keyProvider               provides encryption keys based on aliases
      */
@@ -71,7 +71,6 @@ public abstract class AbstractEncryptor implements Encryptor
         PropertyCheck.mandatory(this, "keyProvider", keyProvider);
     }
 
-    @Override
     public Cipher getCipher(String keyAlias, AlgorithmParameters params, int mode)
     {
         // Get the encryption key
@@ -327,4 +326,12 @@ public abstract class AbstractEncryptor implements Encryptor
     	}
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean available(String keyAlias)
+    {
+    	return keyProvider.getKey(KeyProvider.ALIAS_METADATA) != null;
+    }
 }

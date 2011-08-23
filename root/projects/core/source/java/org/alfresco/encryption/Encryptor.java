@@ -23,10 +23,7 @@ import java.io.Serializable;
 import java.security.AlgorithmParameters;
 import java.security.InvalidKeyException;
 
-import javax.crypto.Cipher;
-
 import org.alfresco.util.Pair;
-
 
 /**
  * Interface providing methods to encrypt and decrypt data. 
@@ -35,17 +32,6 @@ import org.alfresco.util.Pair;
  */
 public interface Encryptor
 {
-    /**
-     * Get the basic cipher that must be used for the given use-case
-     * 
-     * @param keyAlias              the encryption key alias
-     * @param params                the parameters for the encryption or decryption
-     * @param mode                  the encryption mode
-     * @return                      the cipher to use or <tt>null</tt> if there is no
-     *                              key associated with the key alias
-     */
-    Cipher getCipher(String keyAlias, AlgorithmParameters params, int mode);
-    
     /**
      * Encrypt some bytes
      * 
@@ -127,5 +113,12 @@ public interface Encryptor
      * @return the decoded cipher algorithmParameters
      */
     AlgorithmParameters decodeAlgorithmParameters(byte[] encoded);
-
+    
+    /**
+     * Is the given keyAlias available for encryption and decryption?
+     *  
+     * @param keyAlias
+     * @return true if the keyAlias is available, false otherwise
+     */
+    boolean available(String keyAlias);
 }

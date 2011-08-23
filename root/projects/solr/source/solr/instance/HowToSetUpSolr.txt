@@ -39,6 +39,72 @@ and possibly how often you want to update
 The other defaults should be OK.
 
 
+
+SSL Setup (for Tomcat)
+~~~~~~~~~~~~~~~~~~~~~~
+
+Repository-Solr communications are protected by SSl with mutual authentication out of the box.
+
+This assumes that the keystore files are stored in alf_data. Place the keystore files from the directory repository/config/alfresco/keystore in the $ALF_DATA/keystore directory
+
+Repository Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add this to the tomcat-users.xml file where the repository is deployed (this allows Solr to SSL authenticate with the Repository):
+
+  <user username="CN=Alfresco Repository Client, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB" roles="repoclient" password="null"/>
+
+Configure an SSL connector by adding this to the Tomcat server.xml file where the repo is deployed:
+  
+    <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
+               maxThreads="150" scheme="https" keystoreFile="../../data/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
+ secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
+               clientAuth="false" sslProtocol="TLS" />  
+
+Add dir.keystore=${dir.root}/keystore to your alfresco-global.properties file.
+
+Solr Configuration
+~~~~~~~~~~~~~~~~~~
+
+Add this to the tomcat-users.xml file where solr is deployed (this allows the Repository to SSL authenticate with Solr):
+
+  <user username="CN=Alfresco Repository, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB" roles="repository" password="null"/>
+
+Configure an SSL connector by adding this to the Tomcat server.xml file where solr is deployed:
+  
+    <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
+               maxThreads="150" scheme="https" keystoreFile="../../data/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
+ secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
+               clientAuth="false" sslProtocol="TLS" /> 
+
+
+Ensure that the repository property 'solr.port' in alfresco-global.properties is set to the Solr Tomcat SSL port (SSL redirect don't work yet).
+Ensure that the Solr property 'alfresco.port.ssl' is set to the Repository Tomcat SSL port in the solrcore.properties for _each_ Solr core.
+
+Troubleshooting
+~~~~~~~~~~~~~~~
+
+Note: if you get something like this on the Tomcat console (and are finding that Solr search and/or the Solr tracking is not working):
+
+    Aug 22, 2011 8:19:21 PM org.apache.tomcat.util.net.jsse.JSSESupport handShake
+    WARNING: SSL server initiated renegotiation is disabled, closing connection
+
+it indicates that one side of the SSL connection is trying to re-negotiate the SSL connection. This form of negotiation was found to 
+be susceptible to man-in-the-middle attacks and it was disabled in the Java JSEE stack until a fix could be applied. See here:
+http://www.oracle.com/technetwork/java/javase/documentation/tlsreadme2-176330.html. See also:
+
+o http://www.gremwell.com/enabling_ssl_tls_renegotiation_in_java
+o http://tomcat.apache.org/tomcat-6.0-doc/config/http.html
+
+If your version of Java does not have the fix (which my Mac version doesn't seem to), you will need to re-enabled re-negotiation by performing the following steps:
+
+(i) Add -Dsun.security.ssl.allowUnsafeRenegotiation=true to JAVA_OPTS
+(ii) Add 'allowUnsafeLegacyRenegotiation="true"' to the Tomcat SSL connector
+
+End Solr Configuration
+~~~~~~~~~~~~~~~~~~~~~~
+
+
 Please delete the SOLR data dir everytime you update this distribution directory as it may invalidate the state of the index :-)
 
 
