@@ -45,8 +45,12 @@ var DocList =
       var p_view = (args.view || "details").toLowerCase(),
          allActions = DocList.getAllActions(), // <-- this can be cached until config is reset
          allIndicators = DocList.getAllIndicators(), // <-- this can also be cached
+         allTemplates = DocList.getAllMetadataTemplates(), // <-- this too
          nodeActions, nodeIndicators,
-         item, node, actionGroupId, actions, actionTemplate, action, finalActions, indicatorTemplate, indicator, i, index,
+         item, node, actionGroupId, actions, actionTemplate, action, finalActions,
+         indicatorTemplate, indicator,
+         metadataTemplate, template,
+         i, index,
          metadata = doclist.metadata,
          jsonMetadata = jsonUtils.toJSONString(metadata),
          workingCopyLabel = metadata.workingCopyLabel;
@@ -64,6 +68,8 @@ var DocList =
        */
       var fnProcessItem = function processItem(item)
       {
+         var permissionCheck, evaluatorQualified, index, evaluator, i;
+
          node = item.node;
          
          // If this node shares a common parent, then copy a reference to the common parent into this item
@@ -90,12 +96,14 @@ var DocList =
             }
          }
 
+
          /**
           * Actions
           */
-         actionGroupId = DocList_Custom.calculateActionGroupId(item, p_view);
-         actions = DocList.getGroupActions(actionGroupId, allActions);
-         nodeActions = [];
+
+         var actionGroupId = DocList_Custom.calculateActionGroupId(item, p_view),
+            actions = DocList.getGroupActions(actionGroupId, allActions),
+            nodeActions = [];
 
          for each (actionTemplate in actions)
          {
@@ -104,56 +112,66 @@ var DocList =
             // Permission Check
             if (action.permissions)
             {
-               var permissionCheck = true;
+               permissionCheck = true;
                for (index in action.permissions)
                {
                   if (action.permissions[index] != node.permissions.user[index])
                   {
+                     // No need to check any more for this action
                      permissionCheck = false;
                      break;
                   }
                }
                if (!permissionCheck)
                {
+                  // Permission check failed - skip to next action
                   continue;
                }
 
+               // Remove permissions from response
                delete action.permissions;
             }
 
             // Evaluator check
             if (action.evaluators)
             {
-               var evaluatorCheck = true, index, evaluator;
+               evaluatorQualified = true;
                for (index in action.evaluators)
                {
                   evaluator = action.evaluators[index].evaluator;
-                  if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) == action.evaluators[index].result)
+                  if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != action.evaluators[index].qualify)
                   {
-                     evaluatorCheck = false;
+                     // No need to run any more evaluators for this action
+                     evaluatorQualified = false;
                      break;
                   }
                }
-               if (!evaluatorCheck)
+               if (!evaluatorQualified)
                {
+                  // Evaluators didn't qualify - skip to next action
                   continue;
                }
 
+               // Remove evaluators from response
                delete action.evaluators;
             }
 
+            // Permission(s) and evaluator(s) passed; action is valid
             nodeActions.push(action);
          }
 
-         // Filter overrides
+         // Filter out any actions overridden by the presence of other actions
          DocList.filterOverrides(nodeActions);
 
+         // Add actionGroupId and final, sorted action list to the item
          item.actionGroupId = actionGroupId;
          item.actions = nodeActions.sort(fnSortByIndex);
+
 
          /**
           * Status Indicators
           */
+
          nodeIndicators = [];
          for each (indicatorTemplate in allIndicators)
          {
@@ -162,31 +180,95 @@ var DocList =
             // Evaluator check
             if (indicator.evaluators)
             {
-               var evaluatorCheck = true, index, evaluator;
+               evaluatorQualified = true;
                for (index in indicator.evaluators)
                {
                   evaluator = indicator.evaluators[index].evaluator;
-                  if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) == indicator.evaluators[index].result)
+                  if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != indicator.evaluators[index].qualify)
                   {
-                     evaluatorCheck = false;
+                     // No need to run any more evaluators for this indicator
+                     evaluatorQualified = false;
                      break;
                   }
                }
-               if (!evaluatorCheck)
+               if (!evaluatorQualified)
                {
+                  // Evaluators didn't qualify - skip to next indicator
                   continue;
                }
 
+               // Remove evaluators from response
                delete indicator.evaluators;
             }
 
+            // Evaluator(s) passed; indicator is valid
             nodeIndicators.push(indicator);
          }
 
-         // Filter overrides
+         // Filter out any overridden indicators
          DocList.filterOverrides(nodeIndicators);
 
+         // Add final, sorted indicator list to the item
          item.indicators = nodeIndicators.sort(fnSortByIndex);
+
+
+         /**
+          * Metadata Template
+          */
+
+         nodeTemplate = DocList.merge(allTemplates["default"], {});
+         for each (metadataTemplate in allTemplates)
+         {
+            if (metadataTemplate.id != "default")
+            {
+               template = DocList.merge(metadataTemplate, {});
+
+               // Evaluator check
+               if (template.evaluators)
+               {
+                  evaluatorQualified = true;
+                  for (index in template.evaluators)
+                  {
+                     evaluator = template.evaluators[index].evaluator;
+                     if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != template.evaluators[index].qualify)
+                     {
+                        // No need to run any more evaluators for this template
+                        evaluatorQualified = false;
+                        break;
+                     }
+                  }
+                  if (!evaluatorQualified)
+                  {
+                     // Evaluators didn't qualify - try next template
+                     continue;
+                  }
+
+                  // Remove evaluators from response
+                  delete template.evaluators;
+
+                  // Found a suitable template
+                  nodeTemplate = template;
+                  break;
+               }
+            }
+         }
+         // Check for evaluators in each line
+         for (i = 0; i < nodeTemplate.lines.length; i++)
+         {
+            line = nodeTemplate.lines[i];
+            if (line.evaluator)
+            {
+               if (!line.evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args))
+               {
+                  // Remove this display line for this item
+                  DocList.arrayRemove(nodeTemplate.lines, i);
+               }
+            }
+            // Remove evaluator from the response
+            delete line.evaluator;
+         }
+         nodeTemplate.lines.sort(fnSortByIndex);
+         item.metadataTemplate = nodeTemplate;
 
          return item;
       };
@@ -259,7 +341,6 @@ var DocList =
 
                               DocList.fnAddIfNotNull(action, DocList.getActionParamConfig(actionConfig), "params");
                               DocList.fnAddIfNotNull(action, DocList.getEvaluatorConfig(actionConfig), "evaluators");
-                              DocList.fnAddIfNotNull(action, DocList.getActionConditionConfig(actionConfig), "conditions");
                               DocList.fnAddIfNotNull(action, DocList.getActionPermissionConfig(actionConfig), "permissions");
                               DocList.fnAddIfNotNull(action, DocList.getOverrideConfig(actionConfig), "overrides");
 
@@ -310,7 +391,6 @@ var DocList =
 
                   DocList.fnAddIfNotNull(action, DocList.getActionParamConfig(actionConfig), "params");
                   DocList.fnAddIfNotNull(action, DocList.getEvaluatorConfig(actionConfig), "evaluators");
-                  DocList.fnAddIfNotNull(action, DocList.getActionConditionConfig(actionConfig), "conditions");
                   DocList.fnAddIfNotNull(action, DocList.getActionPermissionConfig(actionConfig), "permissions");
                   DocList.fnAddIfNotNull(action, DocList.getOverrideConfig(actionConfig), "overrides");
 
@@ -419,14 +499,14 @@ var DocList =
             value = "" + evaluatorConfig.value;
             if (value.length > 0)
             {
-               result = evaluatorConfig.getAttribute("negate") == "true";
+               qualify = !(evaluatorConfig.getAttribute("negate") == "true");
                evaluator = evaluatorHelper.getEvaluator(value);
                if (evaluator != null)
                {
                   evaluators[value] =
                   {
                      evaluator: evaluator,
-                     result: result
+                     qualify: qualify
                   };
                }
             }
@@ -434,14 +514,6 @@ var DocList =
       }
 
       return evaluators;
-   },
-
-   /**
-    * TODO: Implementation
-    */
-   getActionConditionConfig: function getActionConditionConfig(itemConfig)
-   {
-      return null;
    },
 
    getActionPermissionConfig: function getActionPermissionConfig(itemConfig)
@@ -547,15 +619,86 @@ var DocList =
       return labelParams;
    },
 
+   getAllMetadataTemplates: function getAllMetadataTemplates()
+   {
+      var scopedRoot = config.scoped["DocumentLibrary"]["metadata-templates"],
+         configs, templates = {}, templateConfig, templateId, templateIndex, template, templateParamConfig;
+
+      try
+      {
+         configs = scopedRoot.getChildren("template");
+         if (configs)
+         {
+            for (var i = 0; i < configs.size(); i++)
+            {
+               templateConfig = configs.get(i);
+               templateId = templateConfig.getAttribute("id");
+               if (templateId)
+               {
+                  template =
+                  {
+                     id: templateId
+                  };
+
+                  DocList.fnAddIfNotNull(template, DocList.getEvaluatorConfig(templateConfig), "evaluators");
+                  DocList.fnAddIfNotNull(template, DocList.getTemplateLineConfig(templateConfig), "lines");
+
+                  templates[templateId] = template;
+               }
+            }
+         }
+      }
+      catch(e)
+      {
+      }
+
+      return templates;
+   },
+
+   getTemplateLineConfig: function getTemplateLineConfig(templateConfig)
+   {
+      var templateLines = [],
+         lineConfig = templateConfig.childrenMap["line"],
+         line, index, evaluator, value;
+
+      if (!lineConfig)
+      {
+         return null;
+      }
+
+      for (var i = 0; i < lineConfig.size(); i++)
+      {
+         line = lineConfig.get(i);
+         index = line.getAttribute("index");
+         evaluator = line.getAttribute("evaluator");
+         if (index != null)
+         {
+            value = "" + line.value;
+            if (value.length > 0)
+            {
+               templateLines.push(
+               {
+                  index: index,
+                  template: value,
+                  evaluator: evaluatorHelper.getEvaluator(evaluator)
+               });
+            }
+         }
+      }
+
+      for (var j = 0; j < templateLines.length; j++ )
+      {
+         if (typeof templateLines[j] == "undefined")
+         {
+            DocList.arrayRemove(templateLines, j--);
+         }
+      }
+
+      return templateLines;
+   },
+
    filterOverrides: function filterOverrides(p_array)
    {
-      var fnArrayRemove = function fnArrayRemove(array, from, to)
-      {
-        var rest = array.slice((to || from) + 1 || array.length);
-        array.length = from < 0 ? array.length + from : from;
-        return array.push.apply(array, rest);
-      };
-
       // Remove any indicators overridden by others
       var item, override, i, ii, j, jj;
       for each (item in p_array)
@@ -565,11 +708,11 @@ var DocList =
             for (i = 0, ii = item.overrides.length; i < ii; i++)
             {
                override = item.overrides[i];
-               for (j = 0, jj = p_array.length; j < jj; j++)
+               for (j = 0; j < p_array.length; j++)
                {
                   if (p_array[j].id == override)
                   {
-                     fnArrayRemove(p_array, j);
+                     DocList.arrayRemove(p_array, j);
                      break;
                   }
                }
@@ -606,6 +749,13 @@ var DocList =
          augmentObject(o, arguments[i], true);
       }
       return o;
+   },
+
+   arrayRemove: function arrayRemove(array, from, to)
+   {
+     var rest = array.slice((to || from) + 1 || array.length);
+     array.length = from < 0 ? array.length + from : from;
+     return array.push.apply(array, rest);
    },
 
    fnAddIfNotNull: function fnAddIfNotNull(p_targetObj, p_obj, p_name)

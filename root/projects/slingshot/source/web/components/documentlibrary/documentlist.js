@@ -52,7 +52,6 @@
       PREF_SORT_FIELD = PREFERENCES_DOCLIST + ".sortField",
       PREF_SHOW_FOLDERS = PREFERENCES_DOCLIST + ".showFolders",
       PREF_SIMPLE_VIEW = PREFERENCES_DOCLIST + ".simpleView";
-
    
    
    /**
@@ -167,7 +166,7 @@
                  }
                  else
                  {
-                    nodeRef = new Alfresco.util.NodeRef(targetNode.node.nodeRef)
+                    nodeRef = new Alfresco.util.NodeRef(targetNode.node.nodeRef);
                  }
                  
                  var toMoveRecord = this.docLib.widgets.dataTable.getRecord(this.getEl()),
@@ -353,6 +352,7 @@
       this.dragAndDropEnabled = false;
       this.dragEventRefCount = 0;
       this.actionsView = "browse";
+      this.renderers = {};
 
       /**
        * Decoupled event listeners
@@ -369,6 +369,7 @@
       YAHOO.Bubbling.on("nodeCreated", this.onDocListRefresh, this);
       YAHOO.Bubbling.on("folderRenamed", this.onFileRenamed, this);
       YAHOO.Bubbling.on("highlightFile", this.onHighlightFile, this);
+      YAHOO.Bubbling.on("registerRenderer", this.onRegisterRenderer, this);
       // File actions which may be part of a multi-file action set
       YAHOO.Bubbling.on("fileCopied", this.onFileAction, this);
       YAHOO.Bubbling.on("fileDeleted", this.onFileAction, this);
@@ -453,7 +454,7 @@
     * Generate URL for a file- or folder-link that may be located within a different Site
     *
     * @method generateFileFolderLinkMarkup
-    * @param oRecord {YAHOO.widget.Record} Item record
+    * @param record {object} Item record
     * @return {string} Mark-up for use in node attribute
     * <pre>
     *       Folders: Navigate into the folder (ajax)
@@ -466,10 +467,9 @@
     *       Links to documents: Navigate to the details page within the site (page)
     * </pre>
     */
-   Alfresco.DocumentList.generateFileFolderLinkMarkup = function DL_generateFileFolderLinkMarkup(scope, oRecord)
+   Alfresco.DocumentList.generateFileFolderLinkMarkup = function DL_generateFileFolderLinkMarkup(scope, record)
    {
-      var record = oRecord.getData(),
-         jsNode = record.jsNode,
+      var jsNode = record.jsNode,
          html;
 
       if (jsNode.isLink && $isValueSet(scope.options.siteId) && record.location.site.name !== scope.options.siteId)
@@ -505,13 +505,12 @@
     * Generate URL to thumbnail image
     *
     * @method generateThumbnailUrl
-    * @param oRecord {YAHOO.widget.Record} File record
+    * @param record {object} File record
     * @return {string} URL to thumbnail
     */
-   Alfresco.DocumentList.generateThumbnailUrl = function DL_generateThumbnailUrl(oRecord)
+   Alfresco.DocumentList.generateThumbnailUrl = function DL_generateThumbnailUrl(record)
    {
-      var record = oRecord.getData(),
-         jsNode = record.jsNode,
+      var jsNode = record.jsNode,
          nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef;
 
       return Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/doclib?c=queue&ph=true";
@@ -522,13 +521,12 @@
     *
     * @method generateFavourite
     * @param scope {object} DocumentLibrary instance
-    * @param oRecord {YAHOO.widget.Record} File record
+    * @param record {object} File record
     * @return {string} HTML mark-up for Favourite UI
     */
-   Alfresco.DocumentList.generateFavourite = function DL_generateFavourite(scope, oRecord)
+   Alfresco.DocumentList.generateFavourite = function DL_generateFavourite(scope, record)
    {
-      var record = oRecord.getData(),
-         jsNode = record.jsNode,
+      var jsNode = record.jsNode,
          i18n = "favourite." + (jsNode.isContainer ? "folder." : "document."),
          html = "";
 
@@ -549,13 +547,12 @@
     *
     * @method generateLikes
     * @param scope {object} DocumentLibrary instance
-    * @param oRecord {YAHOO.widget.Record} File record
+    * @param record {object} File record
     * @return {string} HTML mark-up for Likes UI
     */
-   Alfresco.DocumentList.generateLikes = function DL_generateLikes(scope, oRecord)
+   Alfresco.DocumentList.generateLikes = function DL_generateLikes(scope, record)
    {
-      var record = oRecord.getData(),
-         node = record.node,
+      var node = record.node,
          likes = record.likes,
          i18n = "like." + (node.isContainer ? "folder." : "document."),
          html = "";
@@ -579,13 +576,12 @@
     *
     * @method generateComments
     * @param scope {object} DocumentLibrary instance
-    * @param oRecord {YAHOO.widget.Record} File record
+    * @param record {object} File record
     * @return {string} HTML mark-up for Comments UI
     */
-   Alfresco.DocumentList.generateComments = function DL_generateComments(scope, oRecord)
+   Alfresco.DocumentList.generateComments = function DL_generateComments(scope, record)
    {
-      var record = oRecord.getData(),
-         node = record.node,
+      var node = record.node,
          actionUrls = scope.getActionUrls(record),
          url = actionUrls[node.isContainer ? "folderDetailsUrl" : "documentDetailsUrl"] + "#comment",
          i18n = "comment." + (node.isContainer ? "folder." : "document.");
@@ -609,6 +605,7 @@
    {
       return $userProfile(oUser.userName, YAHOO.lang.trim(oUser.firstName + " " + oUser.lastName));
    };
+
 
    /**
     * Augment prototype with main class implementation, ensuring overwrite is enabled
@@ -969,6 +966,15 @@
       dragFolderHighlight: null,
 
       /**
+       * Registered metadata renderers.
+       * Register new renderers via registerRenderer() or "registerRenderer" bubbling event
+       *
+       * @property renderers
+       * @type object
+       */
+      renderers: null,
+
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Initial History Manager event registration
        *
@@ -981,6 +987,9 @@
 
          // Detect whether or not HTML5 drag and drop is supported...
          this.dragAndDropEnabled = this.dragAndDropAllowed && ('draggable' in document.createElement('span')) && YAHOO.env.ua.mobile === null;
+
+         // Set-up default metadata renderers
+         this._setupMetadataRenderers();
 
          // Set-up YUI History Managers
          this._setupHistoryManagers();
@@ -1077,9 +1086,10 @@
          this.widgets.previewTooltip.contextTriggerEvent.subscribe(function(type, args)
          {
             var context = args[0],
-               oRecord = me.widgets.dataTable.getRecord(context.id);
+               oRecord = me.widgets.dataTable.getRecord(context.id),
+               record = oRecord.getData();
 
-            this.cfg.setProperty("text", '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(oRecord) + '" />');
+            this.cfg.setProperty("text", '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" />');
          });
 
          // Hook action events
@@ -1174,6 +1184,50 @@
          }
       },
 
+      /**
+       * Insitu Editor callback function
+       *
+       * @method _insituCallback
+       * @protected
+       * @param response {object} AJAX response
+       * @param record {YAHOO.widget.Record} Record for the item being edited
+       */
+      _insituCallback: function DL__insituCallback(response, record)
+      {
+         // Reload the node's metadata
+         var jsNode = record.jsNode,
+            nodeRef = jsNode.nodeRef;
+
+         Alfresco.util.Ajax.request(
+         {
+            url: Alfresco.constants.URL_SERVICECONTEXT + "components/documentlibrary/data/node/" + nodeRef.uri +
+                  "?filter=" + encodeURIComponent(this.currentFilter.filterId) +
+                  "&view=" + this.actionsView + "&noCache=" + new Date().getTime(),
+            successCallback:
+            {
+               fn: function DL_insituCallback_refreshSuccess(response)
+               {
+                  response.json.item.jsNode = new Alfresco.util.Node(response.json.item.node);
+                  YAHOO.Bubbling.fire(jsNode.isContainer ? "folderRenamed" : "fileRenamed",
+                  {
+                     file: response.json.item
+                  });
+                  // Prevent hide call which briefly shows stale data
+                  return false;
+               },
+               scope: this
+            },
+            failureCallback:
+            {
+               fn: function DL_insituCallback_refreshFailure(response)
+               {
+                  // No-op for now
+               },
+               scope: this
+            }
+         });
+      },
+
 
       /**
        * DataTable Cell Renderers
@@ -1239,7 +1293,7 @@
 
             if (indicators && indicators.length > 0)
             {
-               for (i = 0, ii = indicators.length; i < ii; i++)
+               for (var i = 0, ii = indicators.length; i < ii; i++)
                {
                   indicator = indicators[i];
                   // Note: deliberate bypass of scope.msg() function
@@ -1303,13 +1357,13 @@
 
                if (isContainer)
                {
-                  elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
+                  elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
                   containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
                }
                else
                {
                   var id = scope.id + '-preview-' + oRecord.getId();
-                  elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+                  elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
 
                   // Preview tooltip
                   scope.previewTooltips.push(id);
@@ -1326,12 +1380,12 @@
 
                if (isContainer)
                {
-                  elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
+                  elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
                   containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
                }
                else
                {
-                  elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord) + '<img id="' + imgId + '" src="' + Alfresco.DocumentList.generateThumbnailUrl(oRecord) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+                  elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
                }
             }
             
@@ -1370,9 +1424,6 @@
                title = "",
                titleHTML = "",
                version = "",
-               description = "",
-               descriptionHTML = '<span class="faded">' + scope.msg("details.description.none") + '</span>',
-               dateLine = "",
                canComment = jsNode.permissions.user.CreateChildren;
 
             if (jsNode.isLink)
@@ -1386,34 +1437,11 @@
                titleHTML = '<span class="title">(' + $html(properties.title) + ')</span>';
             }
 
-            // Description non-blank?
-            if (properties.description && properties.description !== "")
-            {
-               descriptionHTML = $links($html(properties.description));
-            }
-
             // Version display
             if ($isValueSet(record.version) && !jsNode.isContainer && !jsNode.isLink)
             {
                version = '<span class="document-version">' + $html(record.version) + '</span>';
             }
-
-            // Date line
-            var dateI18N = "modified", dateProperty = properties.modified.iso8601;
-            if (record.workingCopy && record.workingCopy.isWorkingCopy)
-            {
-               dateI18N = "editing-started";
-            }
-            else if (dateProperty === properties.created.iso8601)
-            {
-               dateI18N = "created";
-            }
-            dateLine = scope.msg("details." + dateI18N + "-by", $relTime(dateProperty), Alfresco.DocumentList.generateUserLink(properties.modifier));
-
-            // Insitu editing
-            var filenameId = scope.id + '-filename-' + oRecord.getId(),
-                descriptionId = scope.id + '-description-' + oRecord.getId(),
-                tagsId = scope.id + '-tags-' + oRecord.getId();
 
             // Locked / Working Copy handling
             if ($isValueSet(properties.lockOwner) || $isValueSet(properties.workingCopyOwner))
@@ -1447,119 +1475,10 @@
                }
             }
 
-            /* Title */
-            desc += '<h3 class="filename"><span id="' + filenameId + '">'+ Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, oRecord);
-            desc += $html(record.displayName) + '</a></span>' + titleHTML + version + '</h3>';
-
-            /* Date and Size */
-            desc += '<div class="detail">';
-            desc +=    '<span class="item">' + dateLine + '</span>';
-            if (!jsNode.isContainer && !jsNode.isLink)
-            {
-               desc +=    '<span class="item">' + Alfresco.util.formatFileSize(jsNode.size) + '</span>';
-            }
-            desc += '</div>';
-
-            /**
-               Detailed View only...
-            */
-            if (!scope.options.simpleView)
-            {
-               /* Description */
-               desc += '<div class="detail"><span id="' + descriptionId + '" class="item">' + descriptionHTML + '</span></div>';
-
-               /**
-                  Non-Working Copies only...
-               */
-               if (!record.workingCopy)
-               {
-                  /* Categories */
-                  if (jsNode.hasAspect("cm:generalclassifiable"))
-                  {
-                     var categories = jsNode.categories, category;
-                     desc += '<div class="detail"><span class="category-item item">&nbsp;</span><span class="item">';
-                     if (categories.length > 0)
-                     {
-                        for (i = 0, j = categories.length; i < j; i++)
-                        {
-                           category = categories[i];
-                           desc += '<span class="category"><a href="#" class="filter-change" rel="' + Alfresco.DocumentList.generateCategoryMarkup(category) + '">' + $html(category[0]) + '</a></span>' + (j - i > 1 ? ", " : "");
-                        }
-                     }
-                     else
-                     {
-                        desc += '<span class="faded">' + scope.msg("details.categories.none") + '</span>';
-                     }
-                     desc += '</span></div>';
-                  }
-
-                  /* Tags */
-                  var tags = jsNode.tags, tag;
-                  desc += '<div class="detail"><span id="' + tagsId + '" class="item">';
-                  if (jsNode.hasAspect("cm:taggable") && tags.length > 0)
-                  {
-                     for (i = 0, j = tags.length; i < j; i++)
-                     {
-                        tag = $html(tags[i]);
-                        desc += '<span class="tag"><a href="#" class="tag-link" rel="' + tag + '">' + tag + '</a></span>';
-                     }
-                  }
-                  else
-                  {
-                     desc += '<span class="faded">' + scope.msg("details.tags.none") + '</span>';
-                  }
-                  desc += '</span></div>';
-
-                  /* Favourite / Likes / Comments */
-                  desc += '<div class="detail detail-social">';
-                  desc +=    '<span class="item item-social">' + Alfresco.DocumentList.generateFavourite(scope, oRecord) + '</span>';
-                  desc +=    '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateLikes(scope, oRecord) + '</span>';
-                  if (canComment)
-                  {
-                     desc +=    '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateComments(scope, oRecord) + '</span>';
-                  }
-                  desc += '</div>';
-               }
-            }
-
+            // Insitu editing for title (filename)
+            var filenameId = Alfresco.util.generateDomId();
             if (jsNode.hasPermission("Write") && !jsNode.isLocked)
             {
-               var fnInsituCallback = function insitu_callback(response, record)
-               {
-                  // Reload the node's metadata
-                  var jsNode = record.jsNode,
-                     nodeRef = jsNode.nodeRef;
-
-                  Alfresco.util.Ajax.request(
-                  {
-                     url: Alfresco.constants.URL_SERVICECONTEXT + "components/documentlibrary/data/node/" + nodeRef.uri +
-                           "?filter=" + encodeURIComponent(this.currentFilter.filterId) +
-                           "&view=" + this.actionsView + "&noCache=" + new Date().getTime(),
-                     successCallback:
-                     {
-                        fn: function insitu_callback_refreshSuccess(response)
-                        {
-                           response.json.item.jsNode = new Alfresco.util.Node(response.json.item.node);
-                           YAHOO.Bubbling.fire(jsNode.isContainer ? "folderRenamed" : "fileRenamed",
-                           {
-                              file: response.json.item
-                           });
-                           // Prevent hide call which briefly shows stale data
-                           return false;
-                        },
-                        scope: this
-                     },
-                     failureCallback:
-                     {
-                        fn: function insitu_callback_refreshFailure(response)
-                        {
-                        },
-                        scope: this
-                     }
-                  });
-               };
-
-               // Insitu editors
                scope.insituEditors.push(
                {
                   context: filenameId,
@@ -1569,6 +1488,19 @@
                      nodeRef: jsNode.nodeRef.toString(),
                      name: "prop_cm_name",
                      value: record.fileName,
+                     fnSelect: function fnSelect(elInput, value)
+                     {
+                        // If the file has an extension, omit it from the edit selection
+                        var extnPos = value.lastIndexOf(Alfresco.util.getFileExtension(value)) - 1;
+                        if (extnPos > 0)
+                        {
+                           Alfresco.util.selectText(elInput, 0, extnPos);
+                        }
+                        else
+                        {
+                           elInput.select();
+                        }
+                     },
                      validations: [
                      {
                         type: Alfresco.forms.validation.nodeName,
@@ -1586,39 +1518,44 @@
                   },
                   callback:
                   {
-                     fn: fnInsituCallback,
+                     fn: this._insituCallback,
                      scope: scope,
                      obj: record
                   }
                });
+            }
 
-               // Tags Insitu editors (this should be merged into data above when development complete)
-               scope.insituEditors.push(
+            /* Title */
+            desc += '<h3 class="filename"><span id="' + filenameId + '">'+ Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
+            desc += $html(record.displayName) + '</a></span>' + titleHTML + version + '</h3>';
+
+            /**
+             *  Detailed View only: render using metadata template
+             */
+            if (!scope.options.simpleView)
+            {
+               var metadataTemplate = record.metadataTemplate;
+
+               if (metadataTemplate && YAHOO.lang.isArray(metadataTemplate.lines))
                {
-                  context: tagsId,
-                  params:
+                  var fnRenderTemplate = function fnRenderTemplate_substitute(p_key, p_value, p_meta)
                   {
-                     type: "tagEditor",
-                     nodeRef: jsNode.nodeRef.toString(),
-                     name: "prop_cm_taggable",
-                     value: record.node.properties["cm:taggable"],
-                     validations: [
-                        {
-                           type: Alfresco.forms.validation.nodeName,
-                           when: "keyup",
-                           message: scope.msg("validation-hint.nodeName")
-                        }
-                     ],
-                     title: scope.msg("tip.insitu-tag"),
-                     errorMessage: scope.msg("message.insitu-edit.tag.failure")
-                  },
-                  callback:
+                     if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
+                     {
+                        return scope.renderers[p_key].call(scope, record);
+                     }
+                  };
+
+                  var html;
+                  for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
                   {
-                     fn: fnInsituCallback,
-                     scope: scope,
-                     obj: record
+                     html = YAHOO.lang.substitute(metadataTemplate.lines[i].template, scope.renderers, fnRenderTemplate);
+                     if ($isValueSet(html))
+                     {
+                        desc += '<div class="detail">' + html + '</div>';
+                     }
                   }
-               });
+               }
             }
 
             elCell.innerHTML = desc;
@@ -1665,6 +1602,216 @@
 
             elCell.innerHTML = '<div id="' + scope.id + '-actions-' + oRecord.getId() + '" class="hidden"></div>';
          };
+      },
+
+      /**
+       * Register a metadata renderer via Bubbling event
+       *
+       * @method onRegisterRenderer
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (property name, rendering function)
+       */
+      onRegisterRenderer: function DL_onRegisterRenderer(layer, args)
+      {
+         var obj = args[1];
+         if (obj && $isValueSet(obj.propertyName) && $isValueSet(obj.renderer))
+         {
+            this.registerRenderer(obj.propertyName, obj.renderer);
+         }
+      },
+
+      /**
+       * Register a metadata renderer
+       *
+       * @method registerRenderer
+       * @param propertyName {string} Property name to attach this renderer to
+       * @param renderer {function} Rendering function
+       * @return {boolean} Success status of registration
+       */
+      registerRenderer: function DL_registerRenderer(propertyName, renderer)
+      {
+         if ($isValueSet(propertyName) && $isValueSet(renderer))
+         {
+            this.renderers[propertyName] = renderer;
+            return true;
+         }
+         return false;
+      },
+
+      /**
+       * Configure standard metadata renderers
+       *
+       * @method _setupMetadataRenderers
+       */
+      _setupMetadataRenderers: function DL__setupMetadataRenderers()
+      {
+         /**
+          * Date
+          */
+         this.registerRenderer("date", function(record)
+         {
+            var jsNode = record.jsNode,
+               properties = jsNode.properties,
+               html = "";
+
+            var dateI18N = "modified", dateProperty = properties.modified.iso8601;
+            if (record.workingCopy && record.workingCopy.isWorkingCopy)
+            {
+               dateI18N = "editing-started";
+            }
+            else if (dateProperty === properties.created.iso8601)
+            {
+               dateI18N = "created";
+            }
+            html = '<span class="item">' + this.msg("details." + dateI18N + "-by", $relTime(dateProperty), Alfresco.DocumentList.generateUserLink(properties.modifier)) + '</span>';
+
+            return html;
+         });
+
+         /**
+          * File size
+          */
+         this.registerRenderer("size", function(record)
+         {
+            var jsNode = record.jsNode,
+               properties = jsNode.properties,
+               html = "";
+
+            if (!jsNode.isContainer && !jsNode.isLink)
+            {
+               html = '<span class="item">' + Alfresco.util.formatFileSize(jsNode.size) + '</span>';
+            }
+
+            return html;
+         });
+
+         /**
+          * Description
+          */
+         this.registerRenderer("description", function(record)
+         {
+            var jsNode = record.jsNode,
+               properties = jsNode.properties,
+               id = Alfresco.util.generateDomId(),
+               html = '<span id="' + id + '" class="faded">' + this.msg("details.description.none") + '</span>';
+
+            // Description non-blank?
+            if (properties.description && properties.description !== "")
+            {
+               html = '<span id="' + id + '" class="item">' + $links($html(properties.description)) + '</span>';
+            }
+
+            return html;
+         });
+
+         /**
+          * Tags
+          */
+         this.registerRenderer("tags", function(record)
+         {
+            var jsNode = record.jsNode,
+               properties = jsNode.properties,
+               id = Alfresco.util.generateDomId(),
+               html = "";
+
+            var tags = jsNode.tags, tag;
+            if (jsNode.hasAspect("cm:taggable") && tags.length > 0)
+            {
+               for (var i = 0, j = tags.length; i < j; i++)
+               {
+                  tag = $html(tags[i]);
+                  html += '<span class="tag"><a href="#" class="tag-link" rel="' + tag + '">' + tag + '</a></span>';
+               }
+            }
+            else
+            {
+               html += '<span class="faded">' + this.msg("details.tags.none") + '</span>';
+            }
+
+            if (jsNode.hasPermission("Write") && !jsNode.isLocked)
+            {
+               // Add the tags insitu editor
+               this.insituEditors.push(
+               {
+                  context: id,
+                  params:
+                  {
+                     type: "tagEditor",
+                     nodeRef: jsNode.nodeRef.toString(),
+                     name: "prop_cm_taggable",
+                     value: record.node.properties["cm:taggable"],
+                     validations: [
+                        {
+                           type: Alfresco.forms.validation.nodeName,
+                           when: "keyup",
+                           message: this.msg("validation-hint.nodeName")
+                        }
+                     ],
+                     title: this.msg("tip.insitu-tag"),
+                     errorMessage: this.msg("message.insitu-edit.tag.failure")
+                  },
+                  callback:
+                  {
+                     fn: this._insituCallback,
+                     scope: this,
+                     obj: record
+                  }
+               });
+            }
+
+            return '<span id="' + id + '" class="item">' + html + '</span>';
+         });
+
+         /**
+          * Categories
+          */
+         this.registerRenderer("categories", function(record)
+         {
+            var jsNode = record.jsNode,
+               properties = jsNode.properties,
+               html = "";
+
+            if (jsNode.hasAspect("cm:generalclassifiable"))
+            {
+               var categories = jsNode.categories, category;
+               html += '<span class="category-item item">&nbsp;</span><span class="item">';
+               if (categories.length > 0)
+               {
+                  for (var i = 0, j = categories.length; i < j; i++)
+                  {
+                     category = categories[i];
+                     html += '<span class="category"><a href="#" class="filter-change" rel="' + Alfresco.DocumentList.generateCategoryMarkup(category) + '">' + $html(category[0]) + '</a></span>' + (j - i > 1 ? ", " : "");
+                  }
+               }
+               else
+               {
+                  html += '<span class="faded">' + this.msg("details.categories.none") + '</span>';
+               }
+               html += '</span>';
+            }
+
+            return html;
+         });
+
+         /**
+          * Social
+          */
+         this.registerRenderer("social", function(record)
+         {
+            var jsNode = record.jsNode,
+               properties = jsNode.properties,
+               html = "";
+            
+            /* Favourite / Likes / Comments */
+            html += '<span class="item item-social">' + Alfresco.DocumentList.generateFavourite(this, record) + '</span>';
+            html += '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateLikes(this, record) + '</span>';
+            if (jsNode.permissions.user.CreateChildren)
+            {
+               html += '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateComments(this, record) + '</span>';
+            }
+
+            return html;
+         });
       },
 
       /**
@@ -2160,7 +2307,7 @@
             {
                YAHOO.Bubbling.fire("highlightFile",
                {
-                  fileName: unescape(this.options.highlightFile)
+                  fileName: window.unescape(this.options.highlightFile)
                });
             }
             else if (this.listUpdated)
@@ -3444,7 +3591,7 @@
       onHighlightFile: function DL_onHighlightFile(layer, args)
       {
          var obj = args[1];
-         if ((obj !== null) && (obj.fileName !== null))
+         if ((obj !== null) && ($isValueSet(obj.fileName)))
          {
             Alfresco.logger.debug("DL_onHighlightFile: ", obj.fileName);
             var recordFound = this._findRecordByParameter(obj.fileName, "displayName");

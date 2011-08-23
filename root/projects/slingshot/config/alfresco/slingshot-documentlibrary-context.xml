@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+   
+   <!--                                    -->
+   <!-- Document Library Status Evaluators -->
+   <!--                                    -->
+
+   <bean id="evaluator.doclib.indicator.editing" class="org.alfresco.web.evaluator.doclib.indicator.EditingEvaluator" />
+   <bean id="evaluator.doclib.indicator.lockOwner" class="org.alfresco.web.evaluator.doclib.indicator.LockOwnerEvaluator" />
+   <bean id="evaluator.doclib.indicator.locked" class="org.alfresco.web.evaluator.doclib.indicator.LockedEvaluator" />
+   <bean id="evaluator.doclib.indicator.googleDocsEditing" class="org.alfresco.web.evaluator.doclib.indicator.GoogleDocsEditingEvaluator" />
+   <bean id="evaluator.doclib.indicator.googleDocsOwner" class="org.alfresco.web.evaluator.doclib.indicator.GoogleDocsOwnerEvaluator" />
+   <bean id="evaluator.doclib.indicator.googleDocsLocked" class="org.alfresco.web.evaluator.doclib.indicator.GoogleDocsLockedEvaluator" />
+   <bean id="evaluator.doclib.indicator.activeWorkflows" class="org.alfresco.web.evaluator.doclib.indicator.ActiveWorkflowsEvaluator" />
+   <bean id="evaluator.doclib.indicator.simpleWorkflow" class="org.alfresco.web.evaluator.doclib.indicator.SimpleWorkflowEvaluator" />
+   <bean id="evaluator.doclib.indicator.rules" class="org.alfresco.web.evaluator.doclib.indicator.RulesEvaluator" />
+   <bean id="evaluator.doclib.indicator.exifMetadata" class="org.alfresco.web.evaluator.HasAspectEvaluator">
+      <property name="aspects">
+         <list>
+            <value>exif:exif</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.indicator.geographicMetadata" class="org.alfresco.web.evaluator.HasAspectEvaluator">
+      <property name="aspects">
+         <list>
+            <value>cm:geographic</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.indicator.transferredNode" class="org.alfresco.web.evaluator.doclib.indicator.TransferredNodeEvaluator" />
+
+
+   <!--                                     -->
+   <!-- Document Custom Metadata Evaluators -->
+   <!--                                     -->
+
+   <bean id="evaluator.doclib.metadata.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
+   <bean id="evaluator.doclib.metadata.hasAspect" class="org.alfresco.web.evaluator.HasAspectEvaluator" />
+
+   <!-- Display Template: Working Copy -->
+   <bean id="evaluator.doclib.metadata.isWorkingCopy" parent="evaluator.doclib.metadata.value">
+      <property name="accessor" value="workingCopy.isWorkingCopy" />
+      <property name="comparator">
+         <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
+            <property name="value" value="true" />
+         </bean>
+      </property>
+   </bean>
+
+   <!-- Property: Categories -->
+   <bean id="evaluator.doclib.metadata.hasCategories" parent="evaluator.doclib.metadata.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>cm:generalclassifiable</value>
+         </list>
+      </property>
+   </bean>
+
+
+   <!--                                    -->
+   <!-- Document Library Action Evaluators -->
+   <!--                                    -->
+
+   <bean id="evaluator.doclib.action.hasAspect" class="org.alfresco.web.evaluator.HasAspectEvaluator" />
+   <bean id="evaluator.doclib.action.isMimetype" class="org.alfresco.web.evaluator.IsMimetypeEvaluator" />
+   <bean id="evaluator.doclib.action.propertyNotNull" class="org.alfresco.web.evaluator.PropertyNotNullEvaluator" />
+   <bean id="evaluator.doclib.action.chainedMatchAll" class="org.alfresco.web.evaluator.ChainedMatchAllEvaluator" />
+   <bean id="evaluator.doclib.action.chainedMatchOne" class="org.alfresco.web.evaluator.ChainedMatchOneEvaluator" />
+   <bean id="evaluator.doclib.action.disableAction" class="org.alfresco.web.evaluator.AlwaysFalseEvaluator" />
+   <bean id="evaluator.doclib.action.sitePreset" class="org.alfresco.web.evaluator.SitePresetEvaluator" />
+   <bean id="evaluator.doclib.action.siteBased" class="org.alfresco.web.evaluator.SiteBasedEvaluator" />
+   <bean id="evaluator.doclib.action.containerType" class="org.alfresco.web.evaluator.ContainerTypeEvaluator" />
+   <bean id="evaluator.doclib.action.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
+   <bean id="evaluator.doclib.action.metadataValue" class="org.alfresco.web.evaluator.MetadataValueEvaluator" />
+   <bean id="evaluator.doclib.action.isBrowser" class="org.alfresco.web.evaluator.IsBrowserEvaluator" />
+
+   <!-- Inline Edit -->
+   <bean id="evaluator.doclib.action.inlineEditAspect" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>app:inlineeditable</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.inlineEditMimetype" parent="evaluator.doclib.action.isMimetype">
+      <property name="mimetypes">
+         <list>
+            <value>text/plain</value>
+            <value>text/html</value>
+            <value>text/xml</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.inlineEdit" parent="evaluator.doclib.action.chainedMatchOne">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.inlineEditAspect" />
+            <ref bean="evaluator.doclib.action.inlineEditMimetype" />
+         </list>
+      </property>
+   </bean>
+
+   <!-- Edit Online -->
+   <bean id="evaluator.doclib.action.onlineEditVtiServer" parent="evaluator.doclib.action.metadataValue">
+      <property name="accessor" value="custom.vtiServer.host" />
+      <property name="comparator">
+         <bean class="org.alfresco.web.evaluator.NullValueComparator">
+            <property name="value" value="false" />
+         </bean>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.onlineEditBrowser" parent="evaluator.doclib.action.isBrowser">
+      <property name="regex" value="MSIE\s([^;]*)(?!.*Opera.*)" />
+   </bean>
+   <bean id="evaluator.doclib.action.onlineEditMimetype" parent="evaluator.doclib.action.isMimetype">
+      <property name="mimetypes">
+         <list>
+            <value>application/vnd.ms-excel</value>
+            <value>application/vnd.ms-powerpoint</value>
+            <value>application/msword</value>
+            <value>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</value>
+            <value>application/vnd.openxmlformats-officedocument.presentationml.presentation</value>
+            <value>application/vnd.openxmlformats-officedocument.wordprocessingml.document</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.onlineEdit" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.onlineEditVtiServer" />
+            <ref bean="evaluator.doclib.action.onlineEditMimetype" />
+            <ref bean="evaluator.doclib.action.onlineEditBrowser" />
+         </list>
+      </property>
+   </bean>
+
+   <!--
+      Simple Workflow
+   -->
+   <bean id="evaluator.doclib.action.simpleWorkflowAspect" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>app:simpleworkflow</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.simpleApproveProperty" parent="evaluator.doclib.action.propertyNotNull">
+      <property name="property" value="app:approveStep"/>
+   </bean>
+
+   <bean id="evaluator.doclib.action.simpleRejectProperty" parent="evaluator.doclib.action.propertyNotNull">
+      <property name="property" value="app:rejectStep"/>
+   </bean>
+
+   <bean id="evaluator.doclib.action.simpleApprove" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.simpleWorkflowAspect" />
+            <ref bean="evaluator.doclib.action.simpleApproveProperty" />
+         </list>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.simpleReject" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.simpleWorkflowAspect" />
+            <ref bean="evaluator.doclib.action.simpleApproveProperty" />
+         </list>
+      </property>
+   </bean>
+
+   <!--
+      Working Copies
+   -->
+   <bean id="evaluator.doclib.action.isWorkingCopy" parent="evaluator.doclib.action.value">
+      <property name="accessor" value="workingCopy.isWorkingCopy" />
+      <property name="comparator">
+         <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
+            <property name="value" value="true" />
+         </bean>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.hasWorkingCopy" parent="evaluator.doclib.action.value">
+      <property name="accessor" value="workingCopy.hasWorkingCopy" />
+      <property name="comparator">
+         <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
+            <property name="value" value="true" />
+         </bean>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.hasLockableAspect" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>cm:lockable</value>
+         </list>
+      </property>
+   </bean>
+
+   <!--
+      Google Docs
+   -->
+   <bean id="evaluator.doclib.action.googleDocsEditable" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>gd:googleEditable</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.googleDocsView" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>gd:googleResource</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.googleDocsCheckIn" class="org.alfresco.web.evaluator.doclib.action.GoogleDocsCheckInEvaluator" />
+
+   <!--
+      Google Maps
+   -->
+   <bean id="evaluator.doclib.action.googleMaps" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>cm:geographic</value>
+         </list>
+      </property>
+   </bean>
+
+   <!--
+      Transferred Nodes
+   -->
+   <bean id="evaluator.doclib.action.transferred" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>trx:transferred</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.locateAction" class="org.alfresco.web.evaluator.doclib.action.LocateActionEvaluator" />
+
+</beans>

@@ -43,13 +43,6 @@ input
    font:99% arial,helvetica,clean,sans-serif;
 }
 
-.login-panel fieldset
-{
-   border: 0;
-   margin: 0;
-   padding: 0;
-}
-
 .login-button
 {
    background-color: #f0f0f0;

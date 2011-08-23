@@ -1036,20 +1036,45 @@ Alfresco.util.insertAtCursor = function(el, txt)
    if (document.selection)
    {
       el.focus();
-      var sel = document.selection.createRange();
-      sel.text = txt;
+      document.selection.createRange().text = txt;
    }
    else if (el.selectionStart || el.selectionStart == '0')
    {
-      var startPos = el.selectionStart;
-      var endPos = el.selectionEnd;
-      el.value = el.value.substring(0, startPos) + txt + el.value.substring(endPos, el.value.length);
+      el.value = el.value.substring(0, el.selectionStart) + txt + el.value.substring(el.selectionEnd, el.value.length);
    }
    else
    {
       el.value += txt;
    }
    el.focus();
+};
+
+/**
+ * Selects text in the input field.
+ *
+ * @method selectText
+ * @param elTextbox {HTMLElement} Text input box element in which to select text.
+ * @param nStart {Number} Starting index of text string to select.
+ * @param nEnd {Number} Ending index of text selection.
+ */
+Alfresco.util.selectText = function(elTextbox, nStart, nEnd)
+{
+   if (elTextbox.setSelectionRange)
+   {
+      elTextbox.setSelectionRange(nStart, nEnd);
+   }
+   else if (elTextbox.createTextRange)
+   {
+      // For IE
+      var oTextRange = elTextbox.createTextRange();
+      oTextRange.moveStart("character", nStart);
+      oTextRange.moveEnd("character", nEnd-elTextbox.value.length);
+      oTextRange.select();
+   }
+   else
+   {
+      elTextbox.select();
+   }
 };
 
 /**
@@ -2391,7 +2416,14 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          Dom.setStyle(this.params.context, "display", "none");
          Dom.setStyle(this.editForm, "display", "inline");
          this.keyListener.enable();
-         this.inputBox.select();
+         if (typeof this.params.fnSelect === "function")
+         {
+            this.params.fnSelect(this.inputBox, this.params.value);
+         }
+         else
+         {
+            this.inputBox.select();
+         }
       },
 
       /**
