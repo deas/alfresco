@@ -41,7 +41,7 @@
    /**
     * CategoryManager constructor.
     * 
-    * @param {String} htmlId The HTML id üof the parent element
+    * @param {String} htmlId The HTML id of the parent element
     * @return {Alfresco.CategoryManager} The new CategoryManager instance
     * @constructor
     */
@@ -763,7 +763,13 @@
          }
          Event.stopEvent(e);
 
-         Alfresco.logger.debug("onIconClick", e);
+         obj.disabled = true;
+         
+         if (Alfresco.logger.isDebugEnabled())
+         {
+            Alfresco.logger.debug("onIconClick", e);
+         }
+         
          Alfresco.util.PopupManager.getUserInput(
          {
              title: Alfresco.util.message("tool.category-manager.add-category"),
@@ -898,7 +904,11 @@
          obj.disabled = true;
          Event.stopEvent(e);
 
-         Alfresco.logger.debug("onIconClick", e);
+         if (Alfresco.logger.isDebugEnabled())
+         {
+            Alfresco.logger.debug("onIconClick", e);
+         }
+         
          url = obj._buildDeleteNodeUrl(obj.params.nodeRef);
          
          var treeNode = obj.params.context;
