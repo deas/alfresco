@@ -211,16 +211,17 @@
 
 .search .keywords-box
 {
-   background-color: #F5FFF2;
-   margin-left: 1.5em;
-   border: 1px solid #C2C2C2;
-   padding: 1em;
    width: 800px;
 }
 
 .search .keywords-box .terms
 {
    width: 60em;
+}
+
+.search .keywords-box .set
+{
+   padding-bottom: 1em;
 }
 
 /* Forms list button and menu styles */

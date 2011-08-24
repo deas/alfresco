@@ -55,10 +55,18 @@
       </div>
    </div>
    
-   <#-- keywords entry box -->
-   <div class="keywords-box">
-      <div>${msg("label.keywords")}:</div>
-      <input type="text" class="terms" name="${el}-search-text" id="${el}-search-text" value="${(page.url.args["st"]!"")?html}" maxlength="1024" />
+   <#-- keywords entry box - DIV structure mirrors a generated Form to collect the correct styles -->
+   <div class="forms-container keywords-box">
+      <div class="share-form">
+         <div class="form-container">
+            <div class="form-fields">
+               <div class="set">
+                  <div>${msg("label.keywords")}:</div>
+                  <input type="text" class="terms" name="${el}-search-text" id="${el}-search-text" value="${(page.url.args["st"]!"")?html}" maxlength="1024" />
+               </div>
+            </div>
+         </div>
+      </div>
    </div>
    
    <#-- container for forms retrieved via ajax -->
