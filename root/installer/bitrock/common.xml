@@ -106,7 +106,6 @@ Copyrighted by BitRock
             <name>common</name>
             <distributionFileList>
                 <distributionFile origin="${common_distribution_folder}"/>
-                <distributionFile origin="${common_distribution_folder}2"/>
             </distributionFileList>
             <shouldPackRuleList>
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows" />

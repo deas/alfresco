@@ -36,7 +36,6 @@
         
         <setInstallerVariable name="component(baseparamdir).parameter(installdir).title" value="Installation Folder" />
         <setInstallerVariable name="component(baseparamdir).parameter(installdir).explanation" value="${'${tr('Please choose a folder to install ${product_fullname}')}'}" />
-        <setInstallerVariable name="project.readmeFile" value="README.txt" />
     </preBuildActionList>
 
     <initializationActionList>
@@ -429,9 +428,9 @@
 	    </ruleList>
 	</choiceParameter>
     </parameterList>
+
     <readyToInstallActionList>
         <setInstallerVariable name="postgres_data_directory" value="${alfresco_data_directory}/postgresql" />
-        <!-- <setInstallerVariable name="postgres_data_directory" value="${postgres_root_directory}/data" /> -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_startup).value" value="${alfrescocustomstack_services_startup}" />

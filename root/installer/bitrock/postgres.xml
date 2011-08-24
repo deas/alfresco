@@ -442,7 +442,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                 <runProgram>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
-                    <program>net</program>
+                    <program>sc</program>
                     <programArguments>stop ${postgres_unique_service_name}</programArguments>
                 </runProgram>
                 <runProgram>

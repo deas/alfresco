@@ -18,6 +18,10 @@
                             <value>${installdir}</value>
                         </substitution>
 		        <substitution>
+                            <pattern>@@ALFRESCO_SOLR_DIR@@</pattern>
+                            <value>${alfresco_data_directory}/solr</value>
+                        </substitution>
+ 		        <substitution>
                             <pattern>@@BITROCK_ALFRESCO_LICENSE_DIR@@</pattern>
                             <value>${installdir.unix}</value>
                             <ruleList>
@@ -161,6 +165,10 @@
                         <substitution>
                             <pattern>@@BITROCK_DB_NAME@@</pattern>
                             <value>${alfresco_database_name}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_ALFRESCO_ADMIN_USERNAME@@</pattern>
+                            <value>${alfresco_admin_username}</value>
                         </substitution>
                         <substitution>
                             <pattern>@@BITROCK_ALFRESCO_ADMIN_PASSWORD@@</pattern>

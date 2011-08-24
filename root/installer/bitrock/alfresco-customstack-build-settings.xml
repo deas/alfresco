@@ -15,7 +15,8 @@
         <setInstallerVariable name="alfresco_war_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble/web-server/webapps" />
         <setInstallerVariable name="alfresco_extras_source_directory" value="${alfresco_svn_rootdir.unix}/projects/installer" />
         <setInstallerVariable name="alfresco_licenses_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/licenses" />
-        <setInstallerVariable name="project.readmeFile" value="${alfresco_svn_rootdir.unix}/installer/bitrock/README.txt" />
+        <!--setInstallerVariable name="project.readmeFile" value="${alfresco_svn_rootdir.unix}/installer/bitrock/README.txt" /-->
+        <setInstallerVariable name="alfresco_readme_source_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock" />
         <setInstallerVariable name="alfresco_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock" />
 
         <setInstallerVariable name="alfrescowcm_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble" />
@@ -42,6 +43,13 @@
         <setInstallerVariable name="alfresco_awe_war_source_file" value="${alfresco_svn_rootdir.unix}/build/assemble/awe.war" />
         <setInstallerVariable name="alfresco_awe_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartwebsite/config/alfresco" />
         <setInstallerVariable name="alfresco_wcmqs_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartclientapi/config/alfresco" />
+
+        <!-- Binaries -->
+        <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java-1.6_22" />
+        <setInstallerVariable name="swftools_distribution_folder" value="${binaries_folder}/swftools-0.9.1" />
+        <setInstallerVariable name="tomcat_distribution_folder" value="${binaries_folder}/apache-tomcat-6.0.29" />
+
+
         <!-- END ALFRESCO BUILD SYSTEM-->
         </actionList>
         <ruleList>

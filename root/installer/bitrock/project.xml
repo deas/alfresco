@@ -2,7 +2,7 @@
     <vendor>Alfresco Software, Inc.</vendor>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <fullName>Alfresco Community Edition Stack</fullName>
-    <readmeFile>README.txt</readmeFile>
+    <!--readmeFile>README.txt</readmeFile-->
     <shortName>alfresco</shortName>
     <version>3.4.b-1</version>
     <installerFilename>${product_shortname}-community-withpostgresql-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
@@ -142,6 +142,7 @@
 	<include file="tomcat-properties.xml" />
 	
     	<include file="alfrescodm.xml" />
+    	<include file="alfresco-solr.xml" />
         <include file="alfresco-apply-amps.xml" />
 
 	<include file="alfrescodm-postgres-database.xml" />
@@ -222,7 +223,7 @@
 	<setInstallerVariable name="finalpage_start_servers" value="0" show="0" />
 	<setInstallerVariable name="finalpage_show_readme" value="0" show="0" />
 
-	<actionGroup progressText="Installer.ReadmeFile.View">
+	<actionGroup progressText="${msg(Installer.ReadmeFile.View)}">
 	    <actionList>
 		<setInstallerVariable name="finalpage_show_readme" value="1" />
 	    </actionList>
@@ -257,7 +258,7 @@
 
 	<actionGroup show="0">
 	    <actionList>
-		<readFile path="${installdir}/README.txt" name="readmeFileText" />
+		<readFile path="${installdir}/${alfresco_readme_filename}" name="readmeFileText" />
 		<showText text="${readmeFileText}" title="README"/>
 	    </actionList>
 	    <ruleList>

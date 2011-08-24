@@ -5,25 +5,21 @@
     <show>0</show>
     <selected>1</selected>
     <parameterList>
-        <directoryParameter>
-            <ask>0</ask>
-            <default>${installdir}</default>
-            <description>README destination</description>
-            <name>base_readme_installation_directory</name>
-        </directoryParameter>
+        <stringParameter name="alfresco_readme_filename" value="README.txt" ask="0" />
+        <directoryParameter ask="0" name="alfresco_readme_source_directory" value="${build_project_directory}" />
     </parameterList>
     <folderList>
         <folder>
             <description>README File</description>
-            <destination>${base_readme_installation_directory}</destination>
+            <destination>${installdir}</destination>
             <name>readmelogfile</name>
             <distributionFileList>
-                <distributionFile origin="${build_project_directory}/${project.readmeFile}"/>
+                <distributionFile origin="${alfresco_readme_source_directory}/${alfresco_readme_filename}"/>
             </distributionFileList>
         </folder>
     </folderList>
     <postInstallationActionList>
-        <dos2unix files="${base_readme_installation_directory}/${project.readmeFile}">
+        <dos2unix files="${installdir}/${alfresco_readme_filename}">
             <ruleList>
                 <platformTest type="unix"/>
             </ruleList>
