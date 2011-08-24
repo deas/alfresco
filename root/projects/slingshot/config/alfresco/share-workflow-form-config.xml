@@ -1294,6 +1294,32 @@
       </forms>
    </config>
    
+   <config evaluator="task-type" condition="inwf:activitiInvitePendingTask">
+      <forms>
+         <form>
+            <view-form template="/org/alfresco/components/form/invite-task-form.ftl" />
+            <edit-form template="/org/alfresco/components/form/invite-task-form.ftl" />
+            <field-visibility>
+               <show id="inwf:resourceTitle" />
+               <show id="inwf:resourceDescription" />
+               <show id="inwf:inviteeRole" />
+               <show id="bpm:priority" />
+               <show id="bpm:comment" />
+               <show id="inwf:inviteOutcome" />
+            </field-visibility>
+            <appearance>
+               <set id="response" appearance="title" label-id="workflow.set.response" />
+               <field id="bpm:comment" label-id="workflow.field.comment" set="response">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl" />
+               </field>
+               <field id="inwf:inviteOutcome" label-id="workflow.field.outcome" set="response">
+                  <control template="/org/alfresco/components/form/controls/workflow/activiti-transitions.ftl" />
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
    <config evaluator="task-type" condition="inwf:acceptInviteTask">
       <forms>
          <form>
@@ -1346,6 +1372,31 @@
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
                <field id="transitions" set="response" />
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
+   <config evaluator="task-type" condition="imwf:activitiModeratedInvitationReviewTask">
+      <forms>
+         <form>
+            <view-form template="/org/alfresco/components/form/invite-request-task-form.ftl" />
+            <edit-form template="/org/alfresco/components/form/invite-request-task-form.ftl" />
+            <field-visibility>
+               <show id="imwf:inviteeUserName" />
+               <show id="imwf:resourceName" />
+               <show id="bpm:priority" />
+               <show id="bpm:comment" />
+               <show id="imwf:reviewOutcome" />
+            </field-visibility>
+            <appearance>
+               <set id="response" appearance="title" label-id="workflow.set.response" />
+               <field id="bpm:comment" label-id="workflow.field.comment" set="response">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl" />
+               </field>
+               <field id="imwf:reviewOutcome" label-id="workflow.field.outcome" set="response">
+                  <control template="/org/alfresco/components/form/controls/workflow/activiti-transitions.ftl" />
+               </field>
             </appearance>
          </form>
       </forms>
