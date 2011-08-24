@@ -52,28 +52,34 @@ function getActionSet(myConfig)
    model.actionSet = actionSet;
 }
 
-function getCreateContent(myConfig)
+function getCreateContent()
 {
-   // New Content
-   var xmlCreateContent = myConfig.createContent,
-      createContent = [];
-   
-   if (xmlCreateContent != null)
+   var createContent = [];
+
+   // Create content config items
+   var createContentConfig = config.scoped["DocumentLibrary"]["create-content"];
+   if (createContentConfig !== null)
    {
-      for each (var xmlContent in xmlCreateContent.content)
+      var contentConfigs = createContentConfig.getChildren("content");
+      if (contentConfigs)
       {
-         createContent.push(
+         var attr;
+         for (var i = 0; i < contentConfigs.size(); i++)
          {
-            mimetype: xmlContent.@mimetype.toString(),
-            icon: xmlContent.@icon.toString(),
-            permission: xmlContent.@permission.toString(),
-            itemid: xmlContent.@itemid.toString() || "cm:content",
-            formid: xmlContent.@formid.toString(),
-            label: xmlContent.@label.toString()
-         });
+            attr = contentConfigs.get(i).attributes;
+            createContent.push(
+            {
+               mimetype: attr["mimetype"] ? attr["mimetype"].toString() : null,
+               icon: attr["icon"] ? attr["icon"].toString() : attr["id"] ? attr["id"].toString() : "generic",
+               permission: attr["permission"] ? attr["permission"].toString() : null,
+               itemid: attr["itemid"] ? attr["itemid"].toString() : null,
+               formid: attr["formid"] ? attr["formid"].toString() : null,
+               label: attr["label"] ? attr["label"].toString() : attr["id"] ? "create-content." + attr["id"].toString() : null
+            });
+         }
       }
    }
-   
+
    // Google Docs enabled?
    var googleDocsEnabled = false,
       googleDocsConfig = config.scoped["DocumentLibrary"]["google-docs"];
@@ -118,9 +124,14 @@ function getCreateContent(myConfig)
          }
       }
    }
-   
+
+   // Create content by template
+   var createContentByTemplateConfig = config.scoped["DocumentLibrary"]["create-content-by-template"];
+   createContentByTemplateEnabled = createContentByTemplateConfig !== null ? createContentByTemplateConfig.value.toString() == "true" : false;
+
    model.googleDocsEnabled = googleDocsEnabled;
    model.createContent = createContent;
+   model.createContentByTemplateEnabled = createContentByTemplateEnabled;
 }
 
 /* Repository Browser root */

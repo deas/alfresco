@@ -1,9 +1,5 @@
 <toolbar>
-   <createContent>
-      <content mimetype="text/plain" icon="plain-text" label="menu.create-content.text" itemid="cm:content"/>
-      <content mimetype="text/html" icon="html" label="menu.create-content.html" itemid="cm:content"/>
-      <content mimetype="text/xml" icon="xml" label="menu.create-content.xml" itemid="cm:content"/>
-   </createContent>
+   <!-- The create content menu can be configured in share-documentlibrary-config.xml -->
    <actionSets>
       <actionSet id="default">
          <action type="action-link" id="onActionCopyTo" label="menu.selected-items.copy" />

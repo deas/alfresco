@@ -17,16 +17,18 @@
                   <div class="bd">
                      <ul>
                      <#list createContent as content>
-                        <#assign href>create-content?mimeType=${content.mimetype?html}&amp;destination={nodeRef}&amp;itemId=${content.itemid}<#if (content.formid!"") != "">&amp;formId=${content.formid?html}</#if></#assign>
-                        <li><a href="${siteURL(href)}" rel="${content.permission!""}"><span class="${content.icon}-file">${msg(content.label)}</span></a></li>
+                        <#assign href>create-content?destination={nodeRef}&amp;itemId=${content.itemid}<#if (content.mimeType!"") != "">&amp;mimeType=${content.mimetype?html}</#if><#if (content.formid!"") != "">&amp;formId=${content.formid?html}</#if></#assign>
+                        <li><a href="${siteURL(href)}" rel="${content.permission!""}"><span style="background-image:url(${url.context}/res/components/images/filetypes/${content.icon}-file-16.png)" class="${content.icon}-file">${msg(content.label!"")}</span></a></li>
                      </#list>
                      </ul>
+                     <#if createContentByTemplateEnabled>
                      <ul>
                         <li>
                            <span>${msg("menu.create-content.by-template-node")}</span>
                            <div class="yuimenu"><div class="bd"><ul></ul></div></div>
                         </li>
                      </ul>
+                     </#if>
                   </div>
                </div>
             </div>

@@ -249,6 +249,18 @@
             <line index="20">{description}</line>
          </template>
       </metadata-templates>
+
+      <!--
+         Create Content menu items
+      -->
+      <create-content>
+         <content id="plain-text" mimetype="text/plain" label="create-content.text" itemid="cm:content" icon="text"/>
+         <content id="html" mimetype="text/html"  label="create-content.html" itemid="cm:content"/>
+         <content id="xml" mimetype="text/xml" label="create-content.xml" itemid="cm:content"/>
+      </create-content>
+
+      <create-content-by-template>true</create-content-by-template>
+
    </config>
 
    <!-- Repository Library config section -->

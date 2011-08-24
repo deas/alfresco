@@ -234,9 +234,13 @@
             value: "CreateChildren"
          });
          // Make sure we load sub menu lazily with data on each click
-         var templateNodesMenu = this.widgets.createContent.getMenu().getSubmenus()[0];
-         templateNodesMenu.subscribe("beforeShow", this.onCreateByTemplateNodeBeforeShow, this, true);
-         templateNodesMenu.subscribe("click", this.onCreateByTemplateNodeClick, this, true);
+         var templateNodesMenus = this.widgets.createContent.getMenu().getSubmenus(),
+            templateNodesMenu = templateNodesMenus.length > 0 ? templateNodesMenus[0] : null;
+         if (templateNodesMenu)
+         {
+            templateNodesMenu.subscribe("beforeShow", this.onCreateByTemplateNodeBeforeShow, this, true);
+            templateNodesMenu.subscribe("click", this.onCreateByTemplateNodeClick, this, true);
+         }
          this.dynamicControls.push(this.widgets.createContent);
 
          // New Folder button: user needs "create" access
