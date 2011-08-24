@@ -139,6 +139,18 @@ Alfresco.util.createImageEditor = function(id, options)
             gutter.toggle.call(gutter);
          }
       });
+      
+      // Add a button for link selection
+      ed.addButton('alfresco-linklibrary',
+      {
+         title: Alfresco.util.message("linklib.tooltip"),
+         onclick: function(ev)
+         {
+            // When the button is clicked, launch the picker...
+            documentPicker.onShowPicker();
+         }
+      });
+      
       YAHOO.Bubbling.on('alfresco-imagelibClick', function(ev, args)
       {
          if (args && args[1].img)
@@ -148,10 +160,64 @@ Alfresco.util.createImageEditor = function(id, options)
          }
          gutter.toggle();
       });
+      
+      // Handle document selection in the picker...
+      YAHOO.Bubbling.on('onDocumentsSelected', function(eventName, payload)
+      {
+         if (payload && payload[1].items)
+         {
+            // Iterate over the list of selected documents and links for them...
+            for (var i = 0, j = payload[1].items.length; i < j; i++)
+            {
+               // Construct the link, the title of the document will be the label...
+               var selectedItem = payload[1].items[i],
+                   nodeRef = selectedItem.nodeRef,
+                   label = selectedItem.name;
+               var link = Alfresco.util.siteURL("document-details?nodeRef=" + nodeRef);
+               var html = '<a href="' + link + '">' + label + '</a> ';
+               
+               // Insert the link into the editor...
+               ed.execCommand('mceInsertContent', false, html);
+               
+               // Clear the selections...
+               documentPicker.resetSelection();
+            }
+         }
+      });
    };
    var editor = new Alfresco.util.RichEditor(Alfresco.constants.HTML_EDITOR, id, options);
    var gutter = new Alfresco.gutter(editor);
-
+   
+   // Construct a new document picker... we need to know the nodeRef of the document library
+   // of the site that we are viewing. Make an async request to retrieve this information
+   // using the the siteId and when the call returns, construct a new DocumentPicker using the
+   // DocLib nodeRef as the starting point for document selection...
+   var documentPicker;
+   var getDocLibNodeRefUrl = Alfresco.constants.PROXY_URI + "slingshot/doclib/container/" + options.siteId + "/documentlibrary";
+   Alfresco.util.Ajax.jsonGet(
+   {
+      url: getDocLibNodeRefUrl,
+      successCallback:
+      {
+         fn: function(response)
+         {
+            var nodeRef = response.json.container.nodeRef;
+            documentPicker = new Alfresco.module.DocumentPicker(id + '-docPicker', Alfresco.ObjectRenderer);
+            documentPicker.setOptions(
+            {
+               displayMode: "items",
+               itemFamily: "node",
+               itemType: "cm:content",
+               multipleSelectMode: true,
+               parentNodeRef: nodeRef,
+               restrictParentNavigationToDocLib: true
+            });
+            documentPicker.onComponentsLoaded(); // Need to force the component loaded call to ensure setup gets completed.
+         },
+         scope: this
+      }
+   });
+   
    Event.onAvailable('image_results', function()
    {
       Event.on('image_results', 'mousedown', function(ev)
@@ -214,6 +280,5 @@ Alfresco.util.createImageEditor = function(id, options)
          }
       });
    });
-
    return editor;
 };
