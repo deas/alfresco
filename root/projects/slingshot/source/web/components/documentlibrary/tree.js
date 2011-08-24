@@ -64,6 +64,7 @@
       YAHOO.Bubbling.on("folderMoved", this.onFolderMoved, this);
       YAHOO.Bubbling.on("folderRenamed", this.onFolderRenamed, this);
       YAHOO.Bubbling.on("filterChanged", this.onFilterChanged, this);
+      YAHOO.Bubbling.on("dropTargetOwnerRequest", this.onDropTargetOwnerRequest, this);
 
       return this;
    };
@@ -298,6 +299,27 @@
       },
 
       /**
+       * Handles "dropTargetOwnerRequest" by determining whether or not the target belongs to the TreeView
+       * widget, and if it does determines it's nodeRef and uses the callback function with it.
+       * 
+       * @method onDropTargetOwnerRequest
+       * @property layer The name of the event
+       * @property args The event payload
+       */
+      onDropTargetOwnerRequest: function DLT_onDropTargetOwnerRequest(layer, args)
+      {
+         if (args && args[1] && args[1].elementId)
+         {
+            var node = this.widgets.treeview.getNodeByElement(Dom.get(args[1].elementId));
+            if (node != null)
+            {
+               var nodeRef = node.data.nodeRef;
+               args[1].callback.call(args[1].scope, nodeRef);
+            }
+         }
+      },
+      
+      /**
        * Fired by YUI TreeView when a node has finished expanding
        * @method onExpandComplete
        * @param oNode {YAHOO.widget.Node} the node recently expanded
@@ -306,6 +328,7 @@
       {
          // Make sure the tree's Dom has been updated
          this.widgets.treeview.render();
+         
          // Redrawing the tree will clear the highlight
          if (this.isFilterOwner)
          {
@@ -338,6 +361,16 @@
                }
             ]);
             this.initialFilter = null;
+         }
+         else
+         {
+            // Finished expanding, can now safely set DND targets...
+            var rootEl = this.widgets.treeview.getEl();
+            var dndTargets = Dom.getElementsByClassName("ygtvcell", "td", rootEl);
+            for (var i = 0, j = dndTargets.length; i < j; i++)
+            {
+               new YAHOO.util.DDTarget(dndTargets[i]);
+            }
          }
       },
 
@@ -701,7 +734,7 @@
          // Render tree with this one top-level node
          tree.render();
       },
-
+      
       /**
        * @method _sortNodeChildren
        * @param node {object} Parent node

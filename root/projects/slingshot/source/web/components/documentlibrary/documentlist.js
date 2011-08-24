@@ -78,7 +78,7 @@
       /**
        * Handles the beginning of a drag operation by setting up the proxy image element.
        */
-      startDrag: function(x, y) 
+      startDrag: function DL_DND_startDrag(x, y) 
       {
           var dragEl = this.getDragEl();
           var clickEl = this.getEl();
@@ -98,7 +98,7 @@
        * 
        * @param The event object
        */
-      endDrag: function(e)
+      endDrag: function DL_DND_endDrag(e)
       {
          if (!this._inFlight)
          {
@@ -115,7 +115,7 @@
        * @param objectToAnimate The object to animate
        * @param animationTarget The object to create a motion animation to
        */
-      animateResult: function(objectToAnimate, animationTarget) 
+      animateResult: function DL_DND_animateResult(objectToAnimate, animationTarget) 
       {
           Dom.setStyle(objectToAnimate, "visibility", "");
           var a = new YAHOO.util.Motion( 
@@ -145,136 +145,238 @@
        * @param e The event object
        * @param id The id of the element that the proxy has been dropped onto
        */
-      onDragDrop: function(e, id) 
+      onDragDrop: function DL_DND_onDragDrop(e, id) 
       {
           if (DDM.interactionInfo.drop.length === 1) 
           {
-              var targetRecord = this.docLib.widgets.dataTable.getRecord(Dom.get(id)),
-                  targetNode = targetRecord.getData();
-              
-              if (targetNode.node.isContainer)
-              {
-                 // Indicate that a request is about to be made - this will prevent the endDrag
-                 // function from animating the proxy to return to its source...
-                 this._inFlight = true;
-                 
-                 // Make sure we handle linked folders...
-                 var nodeRef;
-                 if (targetNode.node.isLink)
-                 {
-                    nodeRef = new Alfresco.util.NodeRef(targetNode.node.linkedNode.nodeRef);
-                 }
-                 else
-                 {
-                    nodeRef = new Alfresco.util.NodeRef(targetNode.node.nodeRef);
-                 }
-                 
-                 var toMoveRecord = this.docLib.widgets.dataTable.getRecord(this.getEl()),
-                     webscriptName = "move-to/node/{nodeRef}",
-                     multipleFiles = []; 
-                 multipleFiles.push(this.getEl().id);
-                 
-                 // Success callback function:
-                 // If the operation succeeded then update the tree and refresh the document list.
-                 var fnSuccess = function DLCMT__onOK_success(p_data)
-                 {
-                    this._inFlight = false; // Indicate that a request is no longer "in-flight"
-                    
-                    var result,
-                        successCount = p_data.json.successCount,
-                        failureCount = p_data.json.failureCount;
-
-                    // Did the operation NOT succeed?
-                    if (!p_data.json.overallSuccess)
-                    {
-                       this.animateResult(this.getDragEl(), this.getEl());
-                       Alfresco.util.PopupManager.displayMessage(
-                       {
-                          text: this.docLib.msg("message.file-dnd-move.failure")
-                       });
-                       Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
-                       return;
-                    }
-
-                    // Refresh the document list...
-                    this.docLib._updateDocList.call(this.docLib);
-                    
-                    // Update the tree if a folder has been moved...
-                    var moved = toMoveRecord.getData();
-                    if (moved.node.isContainer)
-                    {
-                       YAHOO.Bubbling.fire("folderMoved",
-                       {
-                          multiple: true,
-                          nodeRef: moved.nodeRef,
-                          destination: targetNode.location.path + "/" + targetNode.location.file
-                       });
-                    }
-                 };
-
-                 // Failure callback function:
-                 // If the move operation has failed then animate the proxy to return it to the
-                 // location from which it was dragged. Also, post a failure message.
-                 var fnFailure = function DLCMT__onOK_failure(p_data)
-                 {
-                    this._inFlight = false; // Indicate that a request is no longer "in-flight"
-                    this.animateResult(this.getDragEl(), this.getEl());
-                    Alfresco.util.PopupManager.displayMessage(
-                    {
-                       text: this.docLib.msg("message.file-dnd-move.failure")
-                    });
-                    Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
-                 };
-                 
-                 // Make the request to move the dragged object to the target
-                 this.docLib.modules.actions.genericAction(
-                 {
-                    success:
-                    {
-                       callback:
-                       {
-                          fn: fnSuccess,
-                          scope: this
-                       }
-                    },
-                    failure:
-                    {
-                       callback:
-                       {
-                          fn: fnFailure,
-                          scope: this
-                       }
-                    },
-                    webscript:
-                    {
-                       method: Alfresco.util.Ajax.POST,
-                       name: webscriptName,
-                       params:
-                       {
-                          nodeRef: nodeRef.uri
-                       }
-                    },
-                    wait:
-                    {
-                       message: this.docLib.msg("message.please-wait")
-                    },
-                    config:
-                    {
-                       requestContentType: Alfresco.util.Ajax.JSON,
-                       dataObj:
-                       {
-                          nodeRefs: multipleFiles,
-                          parentId: this.docLib.doclistMetadata.parent.nodeRef
-                       }
-                    }
-                 });
-              }
-              else
-              {
-                 // An attempt was made to drop a document or folder into a document - NOT a folder
-                 this.animateResult(this.getDragEl(), this.getEl());
-              }
+             // See if the element exists within the table, if not...
+             // Fire an event requesting ownership...
+             // If a response is forthcoming...
+             
+             var dropTarget = Dom.get(id);
+             
+             if (Dom.isAncestor(this.docLib.widgets.dataTable.getContainerEl(), dropTarget))
+             {
+                // If the drop target is contained within the data table then process "normally"...
+                var targetRecord = this.docLib.widgets.dataTable.getRecord(Dom.get(id)),
+                targetNode = targetRecord.getData();
+            
+                if (targetNode.node.isContainer)
+                {
+                   // Indicate that a request is about to be made - this will prevent the endDrag
+                   // function from animating the proxy to return to its source...
+                   this._inFlight = true;
+                  
+                   // Make sure we handle linked folders...
+                   var nodeRef;
+                   if (targetNode.node.isLink)
+                   {
+                      nodeRef = new Alfresco.util.NodeRef(targetNode.node.linkedNode.nodeRef);
+                   }
+                   else
+                   {
+                      nodeRef = new Alfresco.util.NodeRef(targetNode.node.nodeRef);
+                   }
+                   
+                   // Move the document/folder...
+                   this._performMove(nodeRef);
+                }
+             }
+             else
+             {
+                // Fire an event requesting the owner of the drop target...
+                var payload = 
+                {
+                   elementId: id,
+                   callback: this.onDropTargetOwnerCallBack,
+                   scope: this
+                }
+                this._inFlight = true;
+                YAHOO.Bubbling.fire("dropTargetOwnerRequest", payload);
+                this._setFailureTimeout();
+             }
           }
+      },
+      
+      /**
+       * Moves the document or folder associated with the drag proxy to the nodeRef supplied. This 
+       * method is either called when dropping onto the DocumentList directly or onto any other 
+       * valid drop target that can process "dropTargetOwnerRequest" events.
+       * 
+       * @method _performMove
+       * @property nodeRef The nodeRef onto which the proxy should be moved.
+       */
+      _performMove: function DL_DND__performMove(nodeRef)
+      {
+         // Set variables required for move...
+         var toMoveRecord = this.docLib.widgets.dataTable.getRecord(this.getEl()),
+             webscriptName = "move-to/node/{nodeRef}",
+             multipleFiles = []; 
+      
+         multipleFiles.push(this.getEl().id);
+         
+         // Success callback function:
+         // If the operation succeeded then update the tree and refresh the document list.
+         var fnSuccess = function DLCMT__onOK_success(p_data)
+         {
+            this._inFlight = false; // Indicate that a request is no longer "in-flight"
+            
+            var result,
+                successCount = p_data.json.successCount,
+                failureCount = p_data.json.failureCount;
+
+            // Did the operation NOT succeed?
+            if (!p_data.json.overallSuccess)
+            {
+               this.animateResult(this.getDragEl(), this.getEl());
+               Alfresco.util.PopupManager.displayMessage(
+               {
+                  text: this.docLib.msg("message.file-dnd-move.failure")
+               });
+               Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
+               return;
+            }
+
+            // Refresh the document list...
+            this.docLib._updateDocList.call(this.docLib);
+           
+            // Update the tree if a folder has been moved...
+            var moved = toMoveRecord.getData();
+            if (moved.node.isContainer)
+            {
+               YAHOO.Bubbling.fire("folderMoved",
+               {
+                  multiple: true,
+                  nodeRef: moved.nodeRef,
+                  destination: targetNode.location.path + "/" + targetNode.location.file
+               });
+            }
+         };
+
+         // Failure callback function:
+         // If the move operation has failed then animate the proxy to return it to the
+         // location from which it was dragged. Also, post a failure message.
+         var fnFailure = function DLCMT__onOK_failure(p_data)
+         {
+            this._inFlight = false; // Indicate that a request is no longer "in-flight"
+            this.animateResult(this.getDragEl(), this.getEl());
+            Alfresco.util.PopupManager.displayMessage(
+            {
+               text: this.docLib.msg("message.file-dnd-move.failure")
+            });
+            Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
+         };
+         
+         // Make the request to move the dragged object to the target
+         this.docLib.modules.actions.genericAction(
+         {
+            success:
+            {
+               callback:
+               {
+                  fn: fnSuccess,
+                  scope: this
+               }
+            },
+            failure:
+            {
+               callback:
+               {
+                  fn: fnFailure,
+                  scope: this
+               }
+            },
+            webscript:
+            {
+               method: Alfresco.util.Ajax.POST,
+               name: webscriptName,
+               params:
+               {
+                  nodeRef: nodeRef.uri
+               }
+            },
+            wait:
+            {
+               message: this.docLib.msg("message.please-wait")
+            },
+            config:
+            {
+               requestContentType: Alfresco.util.Ajax.JSON,
+               dataObj:
+               {
+                  nodeRefs: multipleFiles,
+                  parentId: this.docLib.doclistMetadata.parent.nodeRef
+               }
+            }
+         });
+      },
+      
+      /**
+       * The id of the current window timeout. This should only be non-null if a proxy has been
+       * dropped onto a valid drop target that was NOT part of the DocumentList DataTable widget.
+       * This id is used to clear the current timeout associated with a drop if the target owner
+       * responds with the node ref.
+       * 
+       * @property _currTimeoutId
+       * @type int
+       */
+      _currTimeoutId: null,
+      
+      /**
+       * Callback function that is included in the payload of the "dropTargetOwnerRequest" event.
+       * This can then be used by a subscriber to the event that claims ownership of the target to
+       * generate the move using the associated nodeRef.
+       * 
+       * @method onDropTargetOwnerCallBack
+       * @property nodeRef The nodeRef to move the dragged object to.
+       */
+      onDropTargetOwnerCallBack: function DL_DND_onDropTargetOwnerCallBack(nodeRef)
+      {
+         // Clear the timeout that was set...
+         this._clearTimeout();
+         
+         // Move the document/folder...
+         var node = new Alfresco.util.NodeRef(nodeRef);
+         this._performMove(node);
+      },
+      
+      /**
+       * Clears the timeout that is set when a proxy is dropped onto a valid drop target that is 
+       * NOT part of the DocumentList DataTable widget. This clears the timeout, resets the timeout
+       * id to null and removes the inflight status of the drop operation.
+       * 
+       * @method _clearTimeout
+       */
+      _clearTimeout: function DL_DND__clearTimeout()
+      {
+         if (this._currTimeoutId != null)
+         {
+            window.clearTimeout(this._currTimeoutId);
+            this._currTimeoutId = null;
+            this._inFlight = false;
+         }
+      },
+      
+      /**
+       * Creates a timeout for handling drops onto valid drop targets that are NOT part of the
+       * DocumentList DataTable widget. This method is called after firing a "dropTargetOwnerRequest"
+       * to wait for the owner of the target to respond with the nodeRef associated with the target.
+       * If a response is not sent then a failure will be registered.
+       * 
+       * @method _setFailureTimeout
+       */
+      _setFailureTimeout: function DL_DND__setFailureTimeout()
+      {
+         // Clear any previous timeout...
+         this._clearTimeout();
+         var _this = this;
+         this._currTimeoutId = window.setTimeout(function()
+         {
+            // An attempt was made to drop a document or folder into a document - NOT a folder
+            _this.animateResult(_this.getDragEl(), _this.getEl());
+            _this._inFlight = false
+            _this._currTimeoutId = null;
+         }, 500);
       },
       
       /**
@@ -284,7 +386,7 @@
        * @param e The event object
        * @param id The id of the element that the proxy has been dragged over
        */
-      onDragOver: function(e, id) 
+      onDragOver: function DL_DND_onDragOver(e, id) 
       {
           var destEl = Dom.get(id);
           if (destEl.tagName == "IMG" || destEl.className == "droppable")
@@ -301,7 +403,7 @@
        * @param e The event object
        * @param id The id of the element that the proxy has been dragged out of
        */
-      onDragOut: function(e, id) 
+      onDragOut: function DL_DND_onDragOut(e, id) 
       {
          var destEl = Dom.get(id);
          if (destEl.tagName == "IMG" || destEl.className == "droppable")
