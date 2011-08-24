@@ -1094,7 +1094,7 @@
       </junit>
    </target>
 
-   <!-- Run a junit test without the irritatingly dumb junit task output in memory buffering -->
+   <!-- Run a junit test without the junit task output in memory buffering -->
    <target name="run-test" 
            description="Runs a single JUnit test bypassing the junit task. Usage run-test -Dtestcase=[test] -Dprojectdir=[dir]"
            depends="init">

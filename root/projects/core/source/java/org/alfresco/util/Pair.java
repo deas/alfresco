@@ -65,7 +65,7 @@ public final class Pair<F, S> implements Serializable
      * Get the first member of the tuple.
      * @return The first member.
      */
-    public F getFirst()
+    public final F getFirst()
     {
         return first;
     }
@@ -74,17 +74,17 @@ public final class Pair<F, S> implements Serializable
      * Get the second member of the tuple.
      * @return The second member.
      */
-    public S getSecond()
+    public final S getSecond()
     {
         return second;
     }
     
-    public void setFirst(F first)
+    public final void setFirst(F first)
     {
         this.first = first;
     }
     
-    public void setSecond(S second)
+    public final void setSecond(S second)
     {
         this.second = second;
     }
