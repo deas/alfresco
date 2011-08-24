@@ -154,7 +154,7 @@ public class LocalOpLockDetails implements OpLockDetails {
 	 * 
 	 * @return SMBSrvSession 
 	 */
-	public final SMBSrvSession getOwnerSession() {
+	public SMBSrvSession getOwnerSession() {
 		return m_ownerSess;
 	}
 	
@@ -335,7 +335,7 @@ public class LocalOpLockDetails implements OpLockDetails {
 		if ( getOwnerSession() == null || hasOplockBreakFailed())
 			return;
 		
-		// Alocate a packet for the oplock break request to be sent on the owner client session
+		// Allocate a packet for the oplock break request to be sent on the owner client session
 	
 		SMBSrvPacket opBreakPkt = new SMBSrvPacket( 128);
 		
@@ -395,10 +395,11 @@ public class LocalOpLockDetails implements OpLockDetails {
 		str.append(OpLock.getTypeAsString( getLockType()));
 		str.append(",");
 		str.append(getPath());
-		if(getOwnerSession() != null) {
-		    str.append(",Owner=");
+	    str.append(",Owner=");
+		if(getOwnerSession() != null)
 		    str.append(getOwnerSession().getUniqueId());
-		}
+		else
+			str.append("NULL");
 		str.append(",PID=");
 		str.append(getOwnerPID());
 		str.append(",UID=");

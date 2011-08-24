@@ -463,10 +463,6 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     if ( dbCtx.getDBInterface().isOnline() == false)
       throw new DiskOfflineException( "Database is offline");
     
-    //  Set the session in the file open parameters
-    
-    params.setSession( sess);
-    
     // Check if this is a stream create
     
     FileState fstate = getFileState(params.getPath(), dbCtx, true);
@@ -1140,10 +1136,6 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     
     if ( dbCtx.getDBInterface().isOnline() == false)
       throw new DiskOfflineException( "Database is offline");
-    
-    //  Set the session if the file open parameters
-    
-    params.setSession( sess);
     
     //  Get, or create, the file state
     

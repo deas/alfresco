@@ -5720,6 +5720,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		
 		params.setNTCreateFlags( flags);
 		params.setTreeId( treeId);
+		params.setSession( m_sess);
 
 		// Debug
 
