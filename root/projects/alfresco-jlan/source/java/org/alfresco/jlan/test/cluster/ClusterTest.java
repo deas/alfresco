@@ -147,10 +147,17 @@ public class ClusterTest {
 				
 				share = new PCShare( m_server.getName(), m_server.getShareName(), m_server.getUserName(), m_server.getPassword());
 				
+				// Give each session a different virtual circuit id, this allows the test to be run against a Windows file
+				// server without the file server closing sessions down
+				
 				SessionSettings sessSettings = new SessionSettings();
 				sessSettings.setVirtualCircuit( m_id);
 				
 				sess = SessionFactory.OpenDisk( share, sessSettings);
+				
+				// Give each thread a unique process id
+				
+				sess.setProcessId( m_id);
 				
 				// Set the working directory
 				

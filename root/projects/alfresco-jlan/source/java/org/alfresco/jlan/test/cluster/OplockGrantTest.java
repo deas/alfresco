@@ -166,7 +166,7 @@ public class OplockGrantTest extends Test {
 			
 			OplockBreakHandler oplockHandler = new OplockBreakHandler( log);
 			CIFSDiskSession cifsSess = (CIFSDiskSession) sess;
-			CIFSFile oplockFile = cifsSess.NTCreateWithOplock( "\\" + testFileName, WinNT.RequestBatchOplock + WinNT.RequestExclusiveOplock, oplockHandler, AccessMode.NTReadWrite, FileAttribute.NTNormal,
+			CIFSFile oplockFile = cifsSess.NTCreateWithOplock( testFileName, WinNT.RequestBatchOplock + WinNT.RequestExclusiveOplock, oplockHandler, AccessMode.NTReadWrite, FileAttribute.NTNormal,
 														       SharingMode.READWRITEDELETE, FileAction.NTOverwriteIf, 0, 0);
 
 			testLog( log, "Oplock granted, type=" + OpLock.getTypeAsString( oplockFile.getOplockType()) + " on server " + sess.getServer());

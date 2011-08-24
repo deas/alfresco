@@ -147,7 +147,7 @@ public class OpenFileShareReadTest extends Test {
 					
 					// DEBUG
 					
-					testLog ( log, "Opened file " + testFileName + " with no shared access allowed");
+					testLog ( log, "Opened file " + testFileName + " with shared read access allowed");
 					
 					// Hold the file open for a short while, other threads should fail to open the file
 					
@@ -171,6 +171,16 @@ public class OpenFileShareReadTest extends Test {
 					// DEBUG
 					
 					testLog ( log, "Open failed with access denied error (expected)");
+					
+					// Indicate that the file should be opened for read access
+					
+					openForRead = true;
+				}
+				else if ( ex.getErrorClass() == SMBStatus.NTErr && ex.getErrorCode() == SMBStatus.NTSharingViolation) {
+					
+					// DEBUG
+					
+					testLog ( log, "Open failed with sharing violation error (expected)");
 					
 					// Indicate that the file should be opened for read access
 					
@@ -207,7 +217,7 @@ public class OpenFileShareReadTest extends Test {
 						
 						testLog ( log, "Opened file " + testFileName + " for read-only access");
 						
-						// Clsoe the file
+						// Close the file
 						
 						readFile.Close();
 						
@@ -235,6 +245,17 @@ public class OpenFileShareReadTest extends Test {
 					
 					result = new ExceptionTestResult( ex);
 				}
+			}
+			else if ( result == null) {
+				
+				// DEBUG
+				
+				String msg = "Failed to get shared read exception on file open";
+				testLog( log, msg);
+				
+				// Did not get the first open or an exception for the second open
+				
+				result = new BooleanTestResult( false, msg);
 			}
 			
 			// Finished
