@@ -652,6 +652,7 @@
          <fileset dir="${dir.project.3rdparty.lib}/abdera" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/gdata-1.45.0" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/spring-social" includes="*.jar"/>
+         <fileset dir="${dir.project.3rdparty.lib}/hazelcast" includes="*.jar"/>
       </copy>
       
       <!-- copy webservices files -->
