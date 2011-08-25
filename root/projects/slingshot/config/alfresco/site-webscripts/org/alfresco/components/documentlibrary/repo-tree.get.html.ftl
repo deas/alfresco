@@ -9,7 +9,8 @@
    {
       rootNode: "${rootNode!"null"}",
       evaluateChildFolders: ${evaluateChildFolders!"false"},
-      maximumFolderCount: ${maximumFolderCount!"-1"}
+      maximumFolderCount: ${maximumFolderCount!"-1"},
+      setDropTargets: true
    }).setMessages(
       ${messages}
    );

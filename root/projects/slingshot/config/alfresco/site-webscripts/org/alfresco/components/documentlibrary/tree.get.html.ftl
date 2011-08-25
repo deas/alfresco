@@ -10,7 +10,8 @@
       siteId: "${page.url.templateArgs.site!""}",
       containerId: "${template.properties.container!"documentLibrary"}",
       evaluateChildFolders: ${evaluateChildFolders!"true"},
-      maximumFolderCount: ${maximumFolderCount!"-1"}
+      maximumFolderCount: ${maximumFolderCount!"-1"},
+      setDropTargets: true
    }).setMessages(
       ${messages}
    );

@@ -109,7 +109,17 @@
           * @type int
           * @default -1
           */
-         maximumFolderCount: -1
+         maximumFolderCount: -1,
+         
+         /**
+          * Indicates whether or not to set each tree node as a YUI Drag and Drop
+          * target.
+          * 
+          * @property setDropTargets
+          * @type boolean
+          * @default false
+          */
+         setDropTargets: false
       },
       
       /**
@@ -379,11 +389,14 @@
        */
       _applyDropTargets: function DLT__applyDropTargets()
       {
-         var rootEl = this.widgets.treeview.getEl();
-         var dndTargets = Dom.getElementsByClassName("ygtvcell", "td", rootEl);
-         for (var i = 0, j = dndTargets.length; i < j; i++)
+         if (this.options.setDropTargets)
          {
-            new YAHOO.util.DDTarget(dndTargets[i]);
+            var rootEl = this.widgets.treeview.getEl();
+            var dndTargets = Dom.getElementsByClassName("ygtvcell", "td", rootEl);
+            for (var i = 0, j = dndTargets.length; i < j; i++)
+            {
+               new YAHOO.util.DDTarget(dndTargets[i]);
+            }
          }
       },
          
