@@ -317,6 +317,17 @@
                 <isTrue value="${component(postgres).selected}" />
 	    </ruleList>
 	</actionGroup>
+
+        <actionGroup progressText="Show next steps" >
+            <actionList>
+		<launchBrowser> 
+		    <url>http://www.alfresco.com/resources/documentation/getting-started/${alfresco_edition}</url>
+		</launchBrowser>
+            </actionList>
+	    <ruleList>
+	        <compareText text="${installer_ui}" logic="equals" value="gui"/>
+	    </ruleList>
+        </actionGroup>
 		
 	<showInfo>
             <text>You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat.</text>

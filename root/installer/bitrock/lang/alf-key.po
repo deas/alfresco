@@ -175,8 +175,8 @@ msgstr "Quickr Server:"
 msgid "SWFTOOLS installation directory"
 msgstr "SWFTOOLS installation directory"
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
+msgid "This release was packaged to run on J2SE ${java_min_version}. Please install a compatible Java version and try again."
+msgstr "This release was packaged to run on J2SE ${java_min_version}. Please install a compatible Java version and try again."
 
 msgid "Verify"
 msgstr "Verify"
@@ -589,8 +589,8 @@ msgstr "Libraries Files"
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Please choose a folder to install ${product_fullname}"
 
-msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
-msgstr "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
+msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
+msgstr "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
 
 msgid "Unable to connect to database ${mysql_hostname}:${mysql_port}. Please check that the parameters are correct and your MySQL configuration accepts TCP/IP connections."
 msgstr "Unable to connect to database ${mysql_hostname}:${mysql_port}. Please check that the parameters are correct and your MySQL configuration accepts TCP/IP connections."
@@ -601,8 +601,8 @@ msgstr "I wish to use an existing Tomcat"
 msgid "Installing MySQL as a Windows service with name ${mysql_unique_service_name}"
 msgstr "Installing MySQL as a Windows service with name ${mysql_unique_service_name}"
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
+msgid "This release was packaged to run on J2SE ${java_min_version} or later. Please install a compatible Java version and try again."
+msgstr "This release was packaged to run on J2SE ${java_min_version} or later. Please install a compatible Java version and try again."
 
 msgid "Parameters"
 msgstr "Parameters"
@@ -693,3 +693,6 @@ msgstr "Please enter the port that the Openoffice Server will listen to by defau
 
 msgid "Tomcat Server Port and Tomcat Shutdown Port cannot be the same port. Please select another Tomcat Shutdown Port."
 msgstr "Tomcat Server Port and Tomcat Shutdown Port cannot be the same port. Please select another Tomcat Shutdown Port."
+
+msgid "Show next steps"
+msgstr "Show next steps"

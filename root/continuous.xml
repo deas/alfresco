@@ -735,7 +735,6 @@
             <tarfileset dir="${dir.continuous.dist}/${file.name.dist.installer.osx}"
                         prefix="${file.name.dist.installer.osx}" mode="755"/>
         </tar>
-        <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.installer.osx}" />
     </target>
     
     <target name="osx-deployment-installer">
@@ -748,7 +747,6 @@
             <tarfileset dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}"
                         prefix="${file.name.dist.deployment.osx}" mode="755"/>
         </tar>
-        <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}" />
     </target>
     
     <target name="osx-upgrade-installer">
@@ -761,7 +759,6 @@
             <tarfileset dir="${dir.continuous.dist}/${file.name.dist.upgrade.osx}"
                         prefix="${file.name.dist.upgrade.osx}" mode="755"/>
         </tar>
-        <delete quiet="yes" dir="${dir.continuous.dist}/${file.name.dist.upgrade.osx}" />
     </target>
     
     <target name="linux-64-bit-installer">
@@ -815,6 +812,7 @@
    <!-- Build installers in parallel -->
    <target name="distribute-installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
+           <echo>file.name.codeline=${file.name.codeline}</echo>
         <parallel threadCount="2">
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
