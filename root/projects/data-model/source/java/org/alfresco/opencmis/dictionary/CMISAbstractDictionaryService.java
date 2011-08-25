@@ -137,8 +137,8 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         Map<String, TypeDefinitionWrapper> typeDefsByQueryName = new HashMap<String, TypeDefinitionWrapper>();
         List<TypeDefinitionWrapper> baseTypes = new ArrayList<TypeDefinitionWrapper>();
 
-        Map<String, PropertyDefintionWrapper> propDefbyPropId = new HashMap<String, PropertyDefintionWrapper>();
-        Map<String, PropertyDefintionWrapper> propDefbyQueryName = new HashMap<String, PropertyDefintionWrapper>();
+        Map<String, PropertyDefinitionWrapper> propDefbyPropId = new HashMap<String, PropertyDefinitionWrapper>();
+        Map<String, PropertyDefinitionWrapper> propDefbyQueryName = new HashMap<String, PropertyDefinitionWrapper>();
 
         /**
          * Register type definition.
@@ -184,7 +184,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
          */
         public void registerPropertyDefinitions(AbstractTypeDefinitionWrapper typeDef)
         {
-            for (PropertyDefintionWrapper propDef : typeDef.getProperties())
+            for (PropertyDefinitionWrapper propDef : typeDef.getProperties())
             {
                 if (propDef.getPropertyDefinition().isInherited())
                 {
@@ -295,13 +295,13 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         return cmisMapping.getAlfrescoClass(name);
     }
 
-    public PropertyDefintionWrapper findProperty(String propId)
+    public PropertyDefinitionWrapper findProperty(String propId)
     {
         return getRegistry().propDefbyPropId.get(propId);
     }
 
     @Override
-    public PropertyDefintionWrapper findPropertyByQueryName(String queryName)
+    public PropertyDefinitionWrapper findPropertyByQueryName(String queryName)
     {
         return getRegistry().propDefbyQueryName.get(queryName);
     }

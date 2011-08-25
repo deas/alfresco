@@ -61,7 +61,7 @@ public class ObjectTypeIdLuceneBuilder extends AbstractLuceneBuilder
     @Override
     public String getLuceneFieldName()
     {
-        return "TYPE";
+        return "EXACTTYPE";
     }
 
     private String getValueAsString(Serializable value)
@@ -81,7 +81,7 @@ public class ObjectTypeIdLuceneBuilder extends AbstractLuceneBuilder
         String stringValue = getValueAsString(value);
         TypeDefinitionWrapper type = cmisDictionaryService.findType(stringValue);
         return lqp
-                .getFieldQuery(field, type.getAlfrescoName().toString(), AnalysisMode.IDENTIFIER, luceneFunction);
+                .getFieldQuery(field, type.getAlfrescoClass().toString(), AnalysisMode.IDENTIFIER, luceneFunction);
     }
 
     @Override

@@ -23,7 +23,7 @@ import java.io.Serializable;
 import org.alfresco.service.namespace.QName;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 
-public class BasePropertyDefintionWrapper implements PropertyDefintionWrapper, Serializable
+public class BasePropertyDefintionWrapper implements PropertyDefinitionWrapper, Serializable
 {
     private static final long serialVersionUID = 1L;
 

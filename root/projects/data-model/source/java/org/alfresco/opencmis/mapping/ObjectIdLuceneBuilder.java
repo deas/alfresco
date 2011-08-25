@@ -21,6 +21,7 @@ package org.alfresco.opencmis.mapping;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
@@ -72,12 +73,37 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode,
-            LuceneFunction luceneFunction) throws ParseException
+    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
         String field = getLuceneFieldName();
         String stringValue = getValueAsString(value);
-        return lqp.getFieldQuery(field, stringValue, AnalysisMode.IDENTIFIER, luceneFunction);
+        String[] split = stringValue.split(";");
+        if(split.length == 1)
+        {
+            return lqp.getFieldQuery(field, stringValue, AnalysisMode.IDENTIFIER, luceneFunction);
+        }
+        else
+        {
+            if(split[1].equalsIgnoreCase("PWC"))
+            {
+                return new TermQuery(new Term("NO_TOKENS", "__"));
+            }
+            
+            BooleanQuery query = new BooleanQuery();
+            BooleanQuery part1 = new BooleanQuery();
+            part1.add(lqp.getFieldQuery(field, split[0], AnalysisMode.IDENTIFIER, luceneFunction), Occur.MUST);
+            part1.add(lqp.getFieldQuery("@"+ContentModel.PROP_VERSION_LABEL.toString(), split[1], AnalysisMode.IDENTIFIER, luceneFunction), Occur.MUST);
+            query.add(part1, Occur.SHOULD);
+            
+            if(split[1].equals("1.0"))
+            {
+                BooleanQuery part2 = new BooleanQuery();
+                part2.add(lqp.getFieldQuery(field, split[0], AnalysisMode.IDENTIFIER, luceneFunction), Occur.MUST);
+                part2.add(lqp.getFieldQuery(AbstractLuceneQueryParser.FIELD_ASPECT, ContentModel.ASPECT_VERSIONABLE.toString(), AnalysisMode.IDENTIFIER, luceneFunction), Occur.MUST_NOT);
+                query.add(part2, Occur.SHOULD);
+            }
+            return query;
+        }
     }
 
     @Override
@@ -108,10 +134,8 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, Collection<Serializable> values, Boolean not, PredicateMode mode)
-            throws ParseException
+    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, Collection<Serializable> values, Boolean not, PredicateMode mode) throws ParseException
     {
-        String field = getLuceneFieldName();
 
         // Check type conversion
 
@@ -124,21 +148,28 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
             if (not)
             {
                 return new MatchAllDocsQuery();
-            } else
+            }
+            else
             {
                 return new TermQuery(new Term("NO_TOKENS", "__"));
             }
-        } else if (asStrings.size() == 1)
+        }
+        else if (asStrings.size() == 1)
         {
             String value = asStrings.iterator().next();
             if (not)
             {
-                return lqp.getDoesNotMatchFieldQuery(field, value, AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
-            } else
-            {
-                return lqp.getFieldQuery(field, value, AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
+                BooleanQuery booleanQuery = new BooleanQuery();
+                booleanQuery.add(new MatchAllDocsQuery(), Occur.MUST);
+                booleanQuery.add(buildLuceneEquality(lqp, value, mode, LuceneFunction.FIELD), Occur.MUST_NOT);
+                return booleanQuery;
             }
-        } else
+            else
+            {
+                return buildLuceneEquality(lqp, value, mode, LuceneFunction.FIELD);
+            }
+        }
+        else
         {
             BooleanQuery booleanQuery = new BooleanQuery();
             if (not)
@@ -147,11 +178,12 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
             }
             for (String value : asStrings)
             {
-                Query any = lqp.getFieldQuery(field, value, AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
+                Query any = buildLuceneEquality(lqp, value, mode, LuceneFunction.FIELD);
                 if (not)
                 {
                     booleanQuery.add(any, Occur.MUST_NOT);
-                } else
+                }
+                else
                 {
                     booleanQuery.add(any, Occur.SHOULD);
                 }
@@ -161,12 +193,12 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode,
-            LuceneFunction luceneFunction) throws ParseException
+    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
-        String field = getLuceneFieldName();
-        String stringValue = getValueAsString(value);
-        return lqp.getDoesNotMatchFieldQuery(field, stringValue, AnalysisMode.IDENTIFIER, luceneFunction);
+        BooleanQuery booleanQuery = new BooleanQuery();
+        booleanQuery.add(new MatchAllDocsQuery(), Occur.MUST);
+        booleanQuery.add(buildLuceneEquality(lqp, value, mode, LuceneFunction.FIELD), Occur.MUST_NOT);
+        return booleanQuery;
     }
 
     @Override

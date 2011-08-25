@@ -77,7 +77,7 @@ public abstract class ShadowTypeDefinitionWrapper extends AbstractTypeDefinition
 
         if (parent != null)
         {
-            for (PropertyDefintionWrapper propDef : parent.getProperties())
+            for (PropertyDefinitionWrapper propDef : parent.getProperties())
             {
                 if (propertiesById.containsKey(propDef.getPropertyId()))
                 {

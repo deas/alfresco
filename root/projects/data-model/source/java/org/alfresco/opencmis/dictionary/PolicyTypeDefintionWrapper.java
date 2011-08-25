@@ -28,6 +28,7 @@ import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PolicyTypeDefinitionImpl;
@@ -54,11 +55,11 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
 
         if (BaseTypeId.CMIS_POLICY.value().equals(typeId))
         {
-            typeDef.setQueryName(typeId);
+            typeDef.setQueryName(ISO9075.encodeSQL(typeId));
             typeDef.setParentTypeId(null);
         } else
         {
-            typeDef.setQueryName(cmisMapping.buildPrefixEncodedString(alfrescoName));
+            typeDef.setQueryName(ISO9075.encodeSQL(cmisMapping.buildPrefixEncodedString(alfrescoName)));
             QName parentQName = cmisMapping.getCmisType(cmisClassDef.getParentName());
             if (parentQName == null)
             {
@@ -160,7 +161,7 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
 
         if (parent != null)
         {
-            for (PropertyDefintionWrapper propDef : parent.getProperties())
+            for (PropertyDefinitionWrapper propDef : parent.getProperties())
             {
                 if (propertiesById.containsKey(propDef.getPropertyId()))
                 {

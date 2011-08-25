@@ -22,6 +22,7 @@ import org.alfresco.opencmis.CMISUtils;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.ContentStreamAllowed;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.DocumentTypeDefinitionImpl;
@@ -48,11 +49,11 @@ public class DocumentTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
 
         if (BaseTypeId.CMIS_DOCUMENT.value().equals(typeId))
         {
-            typeDef.setQueryName(typeId);
+            typeDef.setQueryName(ISO9075.encodeSQL(typeId));
             typeDef.setParentTypeId(null);
         } else
         {
-            typeDef.setQueryName(cmisMapping.buildPrefixEncodedString(alfrescoName));
+            typeDef.setQueryName(ISO9075.encodeSQL(cmisMapping.buildPrefixEncodedString(alfrescoName)));
             QName parentQName = cmisMapping.getCmisType(cmisClassDef.getParentName());
             if (cmisMapping.isValidCmisDocument(parentQName))
             {

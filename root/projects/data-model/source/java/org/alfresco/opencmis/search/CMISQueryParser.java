@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
-import org.alfresco.opencmis.dictionary.PropertyDefintionWrapper;
+import org.alfresco.opencmis.dictionary.PropertyDefinitionWrapper;
 import org.alfresco.opencmis.dictionary.TypeDefinitionWrapper;
 import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.repo.search.impl.parsers.CMISLexer;
@@ -566,7 +566,7 @@ public class CMISQueryParser
                 throw new QueryModelException("Unsupported predicate mode " + mode);
             }
 
-            PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(propertyName);
+            PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(propertyName);
             if (propDef.getPropertyDefinition().getPropertyType() == PropertyType.BOOLEAN)
             {
                 throw new QueryModelException("In is not supported for properties of type Boolean");
@@ -638,7 +638,7 @@ public class CMISQueryParser
 
             // limit support for ID and Boolean
 
-            PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(propertyName);
+            PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(propertyName);
             if (propDef.getPropertyDefinition().getPropertyType() == PropertyType.ID)
             {
                 if (function.getName().equals(Equals.NAME) || function.getName().equals(NotEquals.NAME))
@@ -696,7 +696,7 @@ public class CMISQueryParser
                 }
             }
 
-            PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(cmisPropertyName);
+            PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(cmisPropertyName);
             if (propDef.getPropertyDefinition().getPropertyType() != PropertyType.STRING)
             {
                 throw new CmisInvalidArgumentException("LIKE is only supported against String types" + cmisPropertyName);
@@ -789,7 +789,7 @@ public class CMISQueryParser
                                 throw new CmisInvalidArgumentException("Type unsupported in CMIS queries: "
                                         + selector.getAlias());
                             }
-                            PropertyDefintionWrapper propDef = cmisDictionaryService
+                            PropertyDefinitionWrapper propDef = cmisDictionaryService
                                     .findPropertyByQueryName(columnName);
                             if (propDef == null)
                             {
@@ -864,7 +864,7 @@ public class CMISQueryParser
                             throw new CmisInvalidArgumentException("Type unsupported in CMIS queries: "
                                     + selector.getAlias());
                         }
-                        PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(columnName);
+                        PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(columnName);
                         if (propDef == null)
                         {
                             throw new CmisInvalidArgumentException("Invalid column for "
@@ -939,8 +939,8 @@ public class CMISQueryParser
                 {
                     throw new CmisInvalidArgumentException("Type unsupported in CMIS queries: " + selector.getAlias());
                 }
-                Collection<PropertyDefintionWrapper> propDefs = typeDef.getProperties();
-                for (PropertyDefintionWrapper definition : propDefs)
+                Collection<PropertyDefinitionWrapper> propDefs = typeDef.getProperties();
+                for (PropertyDefinitionWrapper definition : propDefs)
                 {
                     Function function = factory.getFunction(PropertyAccessor.NAME);
                     Argument arg = factory.createPropertyArgument(PropertyAccessor.ARG_PROPERTY, definition
@@ -984,8 +984,8 @@ public class CMISQueryParser
                         throw new CmisInvalidArgumentException("Type unsupported in CMIS queries: "
                                 + selector.getAlias());
                     }
-                    Collection<PropertyDefintionWrapper> propDefs = typeDef.getProperties();
-                    for (PropertyDefintionWrapper definition : propDefs)
+                    Collection<PropertyDefinitionWrapper> propDefs = typeDef.getProperties();
+                    for (PropertyDefinitionWrapper definition : propDefs)
                     {
                         Function function = factory.getFunction(PropertyAccessor.NAME);
                         Argument arg = factory.createPropertyArgument(PropertyAccessor.ARG_PROPERTY, definition
@@ -1030,7 +1030,7 @@ public class CMISQueryParser
                             throw new CmisInvalidArgumentException("Type unsupported in CMIS queries: "
                                     + selector.getAlias());
                         }
-                        PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(columnName);
+                        PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(columnName);
                         if (propDef == null)
                         {
                             throw new CmisInvalidArgumentException("Invalid column for "
@@ -1196,7 +1196,7 @@ public class CMISQueryParser
                 return arg;
             } else
             {
-                PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(id);
+                PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(id);
                 if (propDef == null || !propDef.getPropertyDefinition().isQueryable())
                 {
                     throw new CmisInvalidArgumentException("Column refers to unqueryable property "
@@ -1552,7 +1552,7 @@ public class CMISQueryParser
             }
         }
 
-        PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(cmisPropertyName);
+        PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(cmisPropertyName);
         if (propDef == null)
         {
             throw new CmisInvalidArgumentException("Unknown column/property " + cmisPropertyName);

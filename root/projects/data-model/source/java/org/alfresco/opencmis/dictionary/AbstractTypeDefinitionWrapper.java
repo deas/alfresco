@@ -50,6 +50,7 @@ import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.ISO9075;
 import org.apache.chemistry.abdera.ext.utils.ISO8601DateFormat;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.definitions.Choice;
@@ -91,9 +92,9 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
     protected QName alfrescoClass = null;
     protected Map<Action, CMISActionEvaluator> actionEvaluators;
 
-    protected Map<String, PropertyDefintionWrapper> propertiesById = new HashMap<String, PropertyDefintionWrapper>();
-    protected Map<String, PropertyDefintionWrapper> propertiesByQueryName = new HashMap<String, PropertyDefintionWrapper>();
-    protected Map<QName, PropertyDefintionWrapper> propertiesByQName = new HashMap<QName, PropertyDefintionWrapper>();
+    protected Map<String, PropertyDefinitionWrapper> propertiesById = new HashMap<String, PropertyDefinitionWrapper>();
+    protected Map<String, PropertyDefinitionWrapper> propertiesByQueryName = new HashMap<String, PropertyDefinitionWrapper>();
+    protected Map<QName, PropertyDefinitionWrapper> propertiesByQName = new HashMap<QName, PropertyDefinitionWrapper>();
 
     // interface
 
@@ -163,25 +164,25 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
     }
 
     @Override
-    public Collection<PropertyDefintionWrapper> getProperties()
+    public Collection<PropertyDefinitionWrapper> getProperties()
     {
         return propertiesById.values();
     }
 
     @Override
-    public PropertyDefintionWrapper getPropertyById(String propertyId)
+    public PropertyDefinitionWrapper getPropertyById(String propertyId)
     {
         return propertiesById.get(propertyId);
     }
 
     @Override
-    public PropertyDefintionWrapper getPropertyByQueryName(String queryName)
+    public PropertyDefinitionWrapper getPropertyByQueryName(String queryName)
     {
         return propertiesByQueryName.get(queryName);
     }
 
     @Override
-    public PropertyDefintionWrapper getPropertyByQName(QName name)
+    public PropertyDefinitionWrapper getPropertyByQName(QName name)
     {
         return propertiesByQName.get(name);
     }
@@ -280,7 +281,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
     /**
      * Registers a property definition with this type
      */
-    protected void registerProperty(PropertyDefintionWrapper propDefWrapper)
+    protected void registerProperty(PropertyDefinitionWrapper propDefWrapper)
     {
         if (propDefWrapper == null)
         {
@@ -365,7 +366,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         addDefaultValue(propDef.getDefaultValue(), result);
 
         // query and order
-        result.setQueryName(cmisMapping.buildPrefixEncodedString(alfrescoPropName));
+        result.setQueryName(ISO9075.encodeSQL(cmisMapping.buildPrefixEncodedString(alfrescoPropName)));
         result.setIsQueryable(propDef.isIndexed());
         result.setIsOrderable(false);
 

@@ -20,11 +20,12 @@ package org.alfresco.opencmis.search;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISNodeInfo;
-import org.alfresco.opencmis.dictionary.PropertyDefintionWrapper;
+import org.alfresco.opencmis.dictionary.PropertyDefinitionWrapper;
 import org.alfresco.opencmis.dictionary.TypeDefinitionWrapper;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
@@ -35,6 +36,7 @@ import org.alfresco.repo.search.impl.querymodel.QueryModelException;
 import org.alfresco.repo.search.impl.querymodel.Selector;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Lower;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Upper;
+import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -49,6 +51,8 @@ import org.apache.lucene.search.Query;
  */
 public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
 {
+    private static HashSet<String> EXPOSED_FIELDS = new HashSet<String>();
+    
     public static BaseTypeId[] STRICT_SCOPES = new BaseTypeId[] { BaseTypeId.CMIS_DOCUMENT, BaseTypeId.CMIS_FOLDER };
 
     public static BaseTypeId[] ALFRESCO_SCOPES = new BaseTypeId[] { BaseTypeId.CMIS_DOCUMENT, BaseTypeId.CMIS_FOLDER,
@@ -68,6 +72,55 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
 
     private Float score;
 
+    static
+    {
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_PATH);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_TEXT);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ID);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ISROOT);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ISNODE);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_TX);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_PARENT);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_QNAME);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_CLASS);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_TYPE);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_EXACTTYPE);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ASPECT);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_EXACTASPECT);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ALL);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ISUNSET);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ISNULL);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ISNOTNULL);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_FTSSTATUS);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_DBID);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_TAG);
+        
+        
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.ANY.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.ASSOC_REF.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.BOOLEAN.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.CATEGORY.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.CHILD_ASSOC_REF.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.CONTENT.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.DATE.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.DATETIME.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.DOUBLE.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.FLOAT.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.INT.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.LOCALE.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.LONG.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.MLTEXT.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.NODE_REF.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.PATH.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.PERIOD.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.QNAME.getLocalName());
+        EXPOSED_FIELDS.add("d:"+DataTypeDefinition.TEXT.getLocalName());
+    }
+
+    
     /**
      * @param nodeRefs
      *            the nodeRefs to set
@@ -148,7 +201,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      */
     public Serializable getProperty(NodeRef nodeRef, String propertyName)
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         
         CMISNodeInfo nodeInfo = nodeInfos.get(nodeRef);
         if (nodeInfo == null) 
@@ -192,7 +245,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
             PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneEquality(lqp, value, mode, luceneFunction);
     }
 
@@ -205,7 +258,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      */
     public Query buildLuceneExists(AbstractLuceneQueryParser lqp, String propertyName, Boolean not) throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneExists(lqp, not);
     }
 
@@ -221,7 +274,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Query buildLuceneGreaterThan(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
             PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneGreaterThan(lqp, value, mode, luceneFunction);
     }
 
@@ -237,7 +290,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Query buildLuceneGreaterThanOrEquals(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
             PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneGreaterThanOrEquals(lqp, value, mode, luceneFunction);
     }
 
@@ -253,7 +306,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Query buildLuceneIn(AbstractLuceneQueryParser lqp, String propertyName, Collection<Serializable> values,
             Boolean not, PredicateMode mode) throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneIn(lqp, values, not, mode);
     }
 
@@ -269,7 +322,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
             PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneInequality(lqp, value, mode, luceneFunction);
     }
 
@@ -285,7 +338,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Query buildLuceneLessThan(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
             PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneLessThan(lqp, value, mode, luceneFunction);
     }
 
@@ -301,7 +354,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Query buildLuceneLessThanOrEquals(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
             PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneLessThanOrEquals(lqp, value, mode, luceneFunction);
     }
 
@@ -316,7 +369,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public Query buildLuceneLike(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, Boolean not)
             throws ParseException
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().buildLuceneLike(lqp, value, not);
     }
 
@@ -328,7 +381,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      */
     public String getLuceneSortField(AbstractLuceneQueryParser lqp, String propertyName)
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         return propertyDef.getPropertyLuceneBuilder().getLuceneSortField(lqp);
     }
 
@@ -339,7 +392,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
 
     public boolean isOrderable(String fieldName)
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(fieldName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(fieldName);
         if (propertyDef == null)
         {
             return false;
@@ -351,7 +404,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
 
     public boolean isQueryable(String fieldName)
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(fieldName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(fieldName);
         if (propertyDef == null)
         {
             return true;
@@ -363,7 +416,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
 
     public String getLuceneFieldName(String propertyName)
     {
-        PropertyDefintionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
         if (propertyDef != null)
         {
             return propertyDef.getPropertyLuceneBuilder().getLuceneFieldName();
@@ -403,10 +456,17 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      */
     public void checkFieldApplies(Selector selector, String propertyName)
     {
-        PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(propertyName);
+        PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(propertyName);
         if (propDef == null)
         {
-            throw new CmisInvalidArgumentException("Unknown column/property " + propertyName);
+            if (EXPOSED_FIELDS.contains(propertyName))
+            {
+                return;
+            }
+            else
+            {
+                throw new CmisInvalidArgumentException("Unknown column/property " + propertyName);
+            }
         }
 
         TypeDefinitionWrapper typeDef = cmisDictionaryService.findTypeForClass(selector.getType(), validScopes);
@@ -433,7 +493,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      */
     public boolean isMultiValued(String propertyName)
     {
-        PropertyDefintionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(propertyName);
+        PropertyDefinitionWrapper propDef = cmisDictionaryService.findPropertyByQueryName(propertyName);
         if (propDef == null)
         {
             throw new CmisInvalidArgumentException("Unknown column/property " + propertyName);

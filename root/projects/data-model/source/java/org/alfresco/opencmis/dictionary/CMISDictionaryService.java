@@ -53,9 +53,9 @@ public interface CMISDictionaryService
 
     TypeDefinitionWrapper findAssocType(QName clazz);
 
-    PropertyDefintionWrapper findProperty(String propId);
+    PropertyDefinitionWrapper findProperty(String propId);
 
-    PropertyDefintionWrapper findPropertyByQueryName(String queryName);
+    PropertyDefinitionWrapper findPropertyByQueryName(String queryName);
 
     /**
      * Find a type by its query name

@@ -28,6 +28,7 @@ import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.RelationshipTypeDefinitionImpl;
@@ -54,12 +55,12 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
 
         if (BaseTypeId.CMIS_RELATIONSHIP.value().equals(typeId))
         {
-            typeDef.setQueryName(typeId);
+            typeDef.setQueryName(ISO9075.encodeSQL(typeId));
             typeDef.setParentTypeId(null);
             typeDef.setIsCreatable(false);
         } else
         {
-            typeDef.setQueryName(cmisMapping.buildPrefixEncodedString(alfrescoName));
+            typeDef.setQueryName(ISO9075.encodeSQL(cmisMapping.buildPrefixEncodedString(alfrescoName)));
             typeDef.setParentTypeId(BaseTypeId.CMIS_RELATIONSHIP.value());
             typeDef.setIsCreatable(true);
         }
@@ -164,7 +165,7 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
 
         if (parent != null)
         {
-            for (PropertyDefintionWrapper propDef : parent.getProperties())
+            for (PropertyDefinitionWrapper propDef : parent.getProperties())
             {
                 org.alfresco.service.cmr.dictionary.PropertyDefinition alfrescoPropDef = dictionaryService.getProperty(
                         propDef.getOwningType().getAlfrescoName(), propDef.getAlfrescoName());

@@ -45,13 +45,13 @@ public interface TypeDefinitionWrapper
 
     List<TypeDefinitionWrapper> getChildren();
 
-    Collection<PropertyDefintionWrapper> getProperties();
+    Collection<PropertyDefinitionWrapper> getProperties();
 
-    PropertyDefintionWrapper getPropertyById(String propertyId);
+    PropertyDefinitionWrapper getPropertyById(String propertyId);
 
-    PropertyDefintionWrapper getPropertyByQueryName(String queryName);
+    PropertyDefinitionWrapper getPropertyByQueryName(String queryName);
 
-    PropertyDefintionWrapper getPropertyByQName(QName name);
+    PropertyDefinitionWrapper getPropertyByQName(QName name);
 
     Map<Action, CMISActionEvaluator> getActionEvaluators();
 }

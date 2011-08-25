@@ -21,7 +21,7 @@ package org.alfresco.opencmis.dictionary;
 import org.alfresco.service.namespace.QName;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 
-public interface PropertyDefintionWrapper
+public interface PropertyDefinitionWrapper
 {
     PropertyDefinition<?> getPropertyDefinition();
 
