@@ -19,6 +19,9 @@
 package org.alfresco.encryption;
 
 import java.security.Key;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,15 +42,18 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     private KeyResourceLoader keyResourceLoader;
     private AlfrescoKeyStore keyStore;
 
+    private final WriteLock writeLock;
+
     /**
      * Constructs the provider with required defaults
      */
     public KeystoreKeyProvider()
     {
+        ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        writeLock = lock.writeLock();
     }
 
 	/**
-     * For testing.
      * 
      * @param encryptionParameters
      * @param keyResourceLoader
@@ -57,7 +63,7 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     	this();
     	this.setKeyStoreParameters(keyStoreParameters);
     	this.keyResourceLoader = keyResourceLoader;
-        init();
+    	init();
     }
 
 	public void setKeyStoreParameters(KeyStoreParameters setKeyStoreParameters)
@@ -69,11 +75,27 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
 	{
 		this.keyResourceLoader = keyResourceLoader;
 	}
-
-    // TODO move locking from CachingKeyStore to here
+    
     public void init()
     {
-        this.keyStore = new CachingKeyStore(keyStoreParameters, keyResourceLoader);
+        writeLock.lock();
+        try
+        {
+            safeInit();
+        }
+        finally
+        {
+            writeLock.unlock();
+        }
+    }
+    
+    public void safeInit()
+    {
+        this.keyStore = new AlfrescoKeyStoreImpl(keyStoreParameters, keyResourceLoader);
+//        if(!this.keyStore.exists())
+//        {
+//			throw new MissingKeyStoreException("Backup key store is not defined");
+//        }
     }
 
     /**

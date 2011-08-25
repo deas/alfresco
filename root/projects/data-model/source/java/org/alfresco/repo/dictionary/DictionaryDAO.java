@@ -145,6 +145,15 @@ public interface DictionaryDAO extends ModelQuery
     public Collection<PropertyDefinition> getProperties(QName modelName, QName dataType);
      
     /**
+     * Get all properties for all models of the given data type. 
+     * 
+     * @param modelName
+     * @param dataType
+     * @return
+     */
+    public Collection<PropertyDefinition> getPropertiesOfDataType(QName dataType);
+    
+    /**
      * @param model the model to retrieve namespaces for
      * @return the namespaces of the model
      */

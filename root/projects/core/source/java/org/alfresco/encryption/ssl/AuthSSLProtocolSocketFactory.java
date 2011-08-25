@@ -24,10 +24,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.KeyManager;
@@ -35,7 +32,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 
-import org.alfresco.encryption.CachingKeyStore;
+import org.alfresco.encryption.AlfrescoKeyStoreImpl;
 import org.alfresco.encryption.KeyResourceLoader;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.httpclient.ConnectTimeoutException;
@@ -82,14 +79,10 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
 	/** Log object for this class. */
 	private static final Log logger = LogFactory.getLog(AuthSSLProtocolSocketFactory.class);
 
-	private SSLEncryptionParameters parameters;
-
-//	private String keyStorePassword = null;
-//	private String trustStorePassword = null;
 	private SSLContext sslcontext = null;
 
-	private CachingKeyStore keyStoreManager = null;
-	private CachingKeyStore trustStoreManager = null;
+	private AlfrescoKeyStoreImpl keyStore = null;
+	private AlfrescoKeyStoreImpl trustStore = null;
 
 	/**
 	 * Constructor for AuthSSLProtocolSocketFactory. Either a keystore or truststore file
@@ -101,152 +94,24 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
 	public AuthSSLProtocolSocketFactory(SSLEncryptionParameters parameters, KeyResourceLoader keyResourceLoader)
 	{
 		super();
-		this.keyStoreManager = new CachingKeyStore(parameters.getKeyStoreParameters(),  keyResourceLoader);
-		this.trustStoreManager = new CachingKeyStore(parameters.getTrustStoreParameters(), keyResourceLoader);
-		this.parameters = parameters;
+		this.keyStore = new AlfrescoKeyStoreImpl(parameters.getKeyStoreParameters(),  keyResourceLoader);
+		this.trustStore = new AlfrescoKeyStoreImpl(parameters.getTrustStoreParameters(), keyResourceLoader);
 	}
 
-//	private void clearPasswords()
-//	{
-//		keyStorePassword = null;
-//		trustStorePassword = null;
-//	}
-
-//	private void loadPasswords() throws IOException
-//	{
-//		Properties passwords = keyResourceLoader.getPasswords(parameters.getPasswordFileLocation());
-//		keyStorePassword = passwords.getProperty("ssl.keystore");
-//		trustStorePassword = passwords.getProperty("ssl.truststore");
-//	}
-//
-//	private KeyStore createKeyStore(String location, String type, final String password) 
-//	throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException
-//	{
-//		if(parameters.getSSLKeyStoreLocation() == null)
-//		{
-//			throw new IllegalArgumentException("Keystore url may not be null");
-//		}
-//		logger.debug("Initializing key store");
-//		KeyStore keystore = KeyStore.getInstance(type);
-//		InputStream is = null;
-//		try
-//		{
-//			is = keyResourceLoader.getKeyStore(location);
-//			keystore.load(is, password != null ? password.toCharArray(): null);
-//		}
-//		finally
-//		{
-//			if(is != null)
-//			{
-//				is.close();
-//			}
-//		}
-//		return keystore;
-//	}
-
-//	private static KeyManager[] createKeyManagers(final KeyStore keystore, final String password)
-//	throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException 
-//	{
-//		if(keystore == null)
-//		{
-//			throw new IllegalArgumentException("Keystore may not be null");
-//		}
-//		logger.debug("Initializing key manager");
-//		KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-//		kmfactory.init(keystore, password != null ? password.toCharArray(): null);
-//		return kmfactory.getKeyManagers(); 
-//	}
-
-//	private static TrustManager[] createTrustManagers(final KeyStore keystore)
-//	throws KeyStoreException, NoSuchAlgorithmException
-//	{ 
-//		if (keystore == null)
-//		{
-//			throw new IllegalArgumentException("Keystore may not be null");
-//		}
-//		logger.debug("Initializing trust manager");
-//		TrustManagerFactory tmfactory = TrustManagerFactory.getInstance(
-//				TrustManagerFactory.getDefaultAlgorithm());
-//		tmfactory.init(keystore);
-//		//        TrustManager[] trustmanagers = tmfactory.getTrustManagers();
-//		//        for (int i = 0; i < trustmanagers.length; i++) {
-//		//            if (trustmanagers[i] instanceof X509TrustManager) {
-//		//                trustmanagers[i] = new AuthSSLX509TrustManager(
-//		//                    (X509TrustManager)trustmanagers[i]); 
-//		//            }
-//		//        }
-//		//        return trustmanagers;
-//		return tmfactory.getTrustManagers();
-//	}
-
-	private SSLContext createSSLContext() throws NoSuchAlgorithmException, KeyStoreException, AuthSSLInitializationError, GeneralSecurityException,
-	IOException
+	private SSLContext createSSLContext()
 	{
+		KeyManager[] keymanagers = keyStore.createKeyManagers();;
+		TrustManager[] trustmanagers = trustStore.createTrustManagers();
+
 		try
 		{
-			KeyManager[] keymanagers = null;
-			TrustManager[] trustmanagers = null;
-
-			//KeyStore keystore = keyStoreManager.getKeyStore();
-//			if(logger.isDebugEnabled())
-//			{
-//				Enumeration<String> aliases = keystore.aliases();
-//				while(aliases.hasMoreElements())
-//				{
-//					String alias = (String)aliases.nextElement();                        
-//					Certificate[] certs = keystore.getCertificateChain(alias);
-//					if(certs != null)
-//					{
-//						logger.debug("Certificate chain '" + alias + "':");
-//						for(int c = 0; c < certs.length; c++)
-//						{
-//							if(certs[c] instanceof X509Certificate)
-//							{
-//								X509Certificate cert = (X509Certificate)certs[c];
-//								logger.debug(" Certificate " + (c + 1) + ":");
-//								logger.debug("  Subject DN: " + cert.getSubjectDN());
-//								logger.debug("  Signature Algorithm: " + cert.getSigAlgName());
-//								logger.debug("  Valid from: " + cert.getNotBefore() );
-//								logger.debug("  Valid until: " + cert.getNotAfter());
-//								logger.debug("  Issuer: " + cert.getIssuerDN());
-//							}
-//						}
-//					}
-//				}
-//			}
-			
-			keymanagers = keyStoreManager.createKeyManagers();
-
-			//KeyStore truststore = trustStoreManager.getKeyStore();
-//			if(logger.isDebugEnabled())
-//			{
-//				Enumeration<String> aliases = truststore.aliases();
-//				while(aliases.hasMoreElements())
-//				{
-//					String alias = (String)aliases.nextElement();
-//					logger.debug("Trusted certificate '" + alias + "':");
-//					Certificate trustedcert = truststore.getCertificate(alias);
-//					if(trustedcert != null && trustedcert instanceof X509Certificate)
-//					{
-//						X509Certificate cert = (X509Certificate)trustedcert;
-//						logger.debug("  Subject DN: " + cert.getSubjectDN());
-//						logger.debug("  Signature Algorithm: " + cert.getSigAlgName());
-//						logger.debug("  Valid from: " + cert.getNotBefore() );
-//						logger.debug("  Valid until: " + cert.getNotAfter());
-//						logger.debug("  Issuer: " + cert.getIssuerDN());
-//					}
-//				}
-//			}
-//			trustmanagers = createTrustManagers(truststore);
-			trustmanagers = trustStoreManager.createTrustManagers();
-
 			SSLContext sslcontext = SSLContext.getInstance("TLS");
 			sslcontext.init(keymanagers, trustmanagers, null);
 			return sslcontext;
 		}
-		finally
+		catch(Throwable e)
 		{
-//			clearPasswords();
+			throw new AlfrescoRuntimeException("Unable to create SSL context", e);
 		}
 	}
 

@@ -18,12 +18,8 @@
  */
 package org.alfresco.encryption;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.Key;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.util.Set;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
@@ -43,6 +39,8 @@ public interface AlfrescoKeyStore
 	public KeyStoreParameters getkeyStoreParameters();
     public boolean exists();
     public Key getKey(String keyAlias);
-	public KeyManager[] createKeyManagers() throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException, FileNotFoundException, IOException;
-	public TrustManager[] createTrustManagers() throws KeyStoreException, NoSuchAlgorithmException;
+    public Set<String> getKeyAliases();
+	public KeyManager[] createKeyManagers();
+	public TrustManager[] createTrustManagers();
+	public void create();
 }

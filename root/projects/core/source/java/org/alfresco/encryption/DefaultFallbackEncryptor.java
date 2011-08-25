@@ -28,21 +28,23 @@ import org.alfresco.util.Pair;
 
 // TODO for decryption, ensure that we catch invalidkeyexception rather than AlfrescoRuntimeException
 /**
+ * The fallback encryptor provides a fallback mechanism for decryption, first using the default
+ * encryption keys and, if they fail (perhaps because they have been changed), falling back
+ * to a backup set of keys.
+ * 
+ * Note that encryption will be performed only using the default encryption keys.
+ * 
  * @since 4.0
  */
-public class DefaultFallbackEncryptor implements FallbackEncryptor
+public class DefaultFallbackEncryptor implements Encryptor
 {
 	private Encryptor fallback;
 	private Encryptor main;
 
-	public void setFallback(Encryptor fallback)
-	{
-		this.fallback = fallback;
-	}
-
-	public void setMain(Encryptor main)
+	public DefaultFallbackEncryptor(Encryptor main, Encryptor fallback)
 	{
 		this.main = main;
+		this.fallback = fallback;
 	}
 
     /**
@@ -72,7 +74,7 @@ public class DefaultFallbackEncryptor implements FallbackEncryptor
 		{
 			ret = main.decrypt(keyAlias, params, input);
 		}
-		catch(AlfrescoRuntimeException e)
+		catch(Throwable e)
 		{
 			ret = fallback.decrypt(keyAlias, params, input);
 		}
@@ -95,7 +97,7 @@ public class DefaultFallbackEncryptor implements FallbackEncryptor
 		{
 			ret = main.decrypt(keyAlias, params, in);
 		}
-		catch(AlfrescoRuntimeException e)
+		catch(Throwable e)
 		{
 			ret = fallback.decrypt(keyAlias, params, in);
 		}
@@ -130,7 +132,7 @@ public class DefaultFallbackEncryptor implements FallbackEncryptor
 		{
 			ret = main.decryptObject(keyAlias, params, input);
 		}
-		catch(AlfrescoRuntimeException e)
+		catch(Throwable e)
 		{
 			ret = fallback.decryptObject(keyAlias, params, input);
 		}
@@ -165,7 +167,7 @@ public class DefaultFallbackEncryptor implements FallbackEncryptor
 		{
 			ret = main.unsealObject(keyAlias, input);
 		}
-		catch(AlfrescoRuntimeException e)
+		catch(Throwable e)
 		{
 			ret = fallback.unsealObject(keyAlias, input);
 		}
@@ -207,9 +209,9 @@ public class DefaultFallbackEncryptor implements FallbackEncryptor
     /**
      * {@inheritDoc}
      */
-    @Override
-	public boolean isFallbackAvailable()
-	{
-		return fallback.available(KeyProvider.ALIAS_METADATA);
-	}
+//    @Override
+//	public boolean isFallbackAvailable()
+//	{
+//		return fallback.available(KeyProvider.ALIAS_METADATA);
+//	}
 }

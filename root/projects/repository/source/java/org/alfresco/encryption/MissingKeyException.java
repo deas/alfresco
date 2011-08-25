@@ -18,7 +18,24 @@
  */
 package org.alfresco.encryption;
 
-public class EncryptionTests
+/**
+ * 
+ * @since 4.0
+ *
+ */
+public class MissingKeyException extends Exception
 {
+	private static final long serialVersionUID = -7843412242954504581L;
 
+	private String keyAlias;
+
+	public MissingKeyException(String keyAlias)
+	{
+		this.keyAlias = keyAlias;
+	}
+	
+	public String getKeyAlias()
+	{
+		return keyAlias;
+	}
 }

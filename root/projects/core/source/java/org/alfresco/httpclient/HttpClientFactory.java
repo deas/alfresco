@@ -84,19 +84,41 @@ public class HttpClientFactory
     private KeyStoreParameters keyStoreParameters;
     private MD5EncryptionParameters encryptionParameters;
 
+    private String host;
+    private int port;
+    private int sslPort;
+
     public HttpClientFactory()
     {
     }
 
     public HttpClientFactory(SecureCommsType secureCommsType, SSLEncryptionParameters sslEncryptionParameters, KeyResourceLoader keyResourceLoader,
-    		KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters)
+    		KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters, String host, int port, int sslPort)
     {
     	this.secureCommsType = secureCommsType;
     	this.sslEncryptionParameters = sslEncryptionParameters;
     	this.keyResourceLoader = keyResourceLoader;
     	this.keyStoreParameters = keyStoreParameters;
     	this.encryptionParameters = encryptionParameters;
+    	this.host = host;
+    	this.port = port;
+    	this.sslPort = sslPort;
     }
+
+	public void setHost(String host)
+	{
+		this.host = host;
+	}
+
+	public void setPort(int port)
+	{
+		this.port = port;
+	}
+
+	public void setSslPort(int sslPort)
+	{
+		this.sslPort = sslPort;
+	}
 
 	public boolean isSSL()
 	{
@@ -146,31 +168,32 @@ public class HttpClientFactory
         return httpClient;
 	}
 	
-	protected HttpClient getHttpsClient(String host, int port)
+	protected HttpClient getHttpsClient()
 	{
-		HttpClient httpClient = constructHttpClient(host, port);
+		HttpClient httpClient = constructHttpClient(host, sslPort);
     	ProtocolSocketFactory socketFactory = new AuthSSLProtocolSocketFactory(sslEncryptionParameters, keyResourceLoader);
-        Protocol myhttps = new Protocol("https", socketFactory, port);
+        Protocol myhttps = new Protocol("https", socketFactory, sslPort);
 		Protocol.registerProtocol("https", myhttps);
-        httpClient.getHostConfiguration().setHost(host, port, myhttps);
+        httpClient.getHostConfiguration().setHost(host, sslPort, myhttps);
         return httpClient;
 	}
 	
-	protected HttpClient getDefaultHttpClient(String host, int port)
+	protected HttpClient getDefaultHttpClient()
 	{
 		HttpClient httpClient = constructHttpClient(host, port);
+        httpClient.getHostConfiguration().setHost(host, port);
         return httpClient;
 	}
 	
-	protected AlfrescoHttpClient getAlfrescoHttpsClient(String host, int port)
+	protected AlfrescoHttpClient getAlfrescoHttpsClient()
 	{
-        AlfrescoHttpClient repoClient = new HttpsClient(getHttpClient(host, port));
+        AlfrescoHttpClient repoClient = new HttpsClient(getHttpsClient());
         return repoClient;
 	}
 
-    protected AlfrescoHttpClient getAlfrescoHttpClient(String host, int port)
+    protected AlfrescoHttpClient getAlfrescoHttpClient()
 	{
-        AlfrescoHttpClient repoClient = new DefaultHttpClient(getHttpClient(host, port));
+        AlfrescoHttpClient repoClient = new DefaultHttpClient(getDefaultHttpClient());
         return repoClient;
 	}
     
@@ -183,7 +206,7 @@ public class HttpClientFactory
 	
     protected AlfrescoHttpClient getAlfrescoMD5HttpClient(String host, int port)
 	{
-        AlfrescoHttpClient repoClient = new SecureHttpClient(getHttpClient(host, port), keyResourceLoader, host, port,
+        AlfrescoHttpClient repoClient = new SecureHttpClient(getDefaultHttpClient(), keyResourceLoader, host, port,
         		keyStoreParameters, encryptionParameters);
         return repoClient;
 	}
@@ -198,7 +221,7 @@ public class HttpClientFactory
      */
     protected AlfrescoHttpClient getAlfrescoMD5HttpClient(String host, int port, EncryptionService encryptionService)
 	{
-        AlfrescoHttpClient repoClient = new SecureHttpClient(getHttpClient(host, port), encryptionService);
+        AlfrescoHttpClient repoClient = new SecureHttpClient(getDefaultHttpClient(), encryptionService);
         return repoClient;
 	}
 	
@@ -208,11 +231,11 @@ public class HttpClientFactory
 
         if(secureCommsType == SecureCommsType.HTTPS)
         {
-        	repoClient = getAlfrescoHttpsClient(host, port);
+        	repoClient = getAlfrescoHttpsClient();
         }
         else if(secureCommsType == SecureCommsType.NONE)
         {
-        	repoClient = getAlfrescoHttpClient(host, port);
+        	repoClient = getAlfrescoHttpClient();
         }
         else
         {
@@ -222,17 +245,17 @@ public class HttpClientFactory
         return repoClient;
     }
 	
-	public HttpClient getHttpClient(String host, int port)
+	public HttpClient getHttpClient()
     {
         HttpClient httpClient = null;
 
         if(secureCommsType == SecureCommsType.HTTPS)
         {
-        	httpClient = getHttpsClient(host, port);
+        	httpClient = getHttpsClient();
         }
         else if(secureCommsType == SecureCommsType.NONE)
         {
-        	httpClient = getDefaultHttpClient(host, port);
+        	httpClient = getDefaultHttpClient();
         }
         else
         {
@@ -253,7 +276,7 @@ public class HttpClientFactory
 	// TODO put ssl keystore inside jar file instead of on the filesystem?
 	class HttpsClient extends AbstractHttpClient
 	{
-	    public HttpsClient(HttpClient httpClient/*, String alfrescoHost, int alfrescoPort*/)
+	    public HttpsClient(HttpClient httpClient)
 	    {
 	    	super(httpClient);
 	    }

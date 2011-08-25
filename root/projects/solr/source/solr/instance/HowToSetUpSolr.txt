@@ -43,7 +43,7 @@ The other defaults should be OK.
 SSL Setup (for Tomcat)
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Repository-Solr communications are protected by SSl with mutual authentication out of the box.
+Repository-Solr communications are protected by SSL with mutual authentication out of the box.
 
 This assumes that the keystore files are stored in alf_data. Place the keystore files from the directory repository/config/alfresco/keystore in the $ALF_DATA/keystore directory
 

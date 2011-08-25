@@ -25,7 +25,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.AlgorithmParameters;
-import java.security.InvalidKeyException;
 import java.security.Key;
 
 import javax.crypto.Cipher;
@@ -242,7 +241,7 @@ public abstract class AbstractEncryptor implements Encryptor
     }
 
     @Override
-    public Serializable unsealObject(String keyAlias, Serializable input) throws InvalidKeyException
+    public Serializable unsealObject(String keyAlias, Serializable input)// throws InvalidKeyException
     {
         if (input == null)
         {
@@ -267,11 +266,6 @@ public abstract class AbstractEncryptor implements Encryptor
             Serializable output = (Serializable) sealedInput.getObject(key);
             // Done
             return output;
-        }
-        catch(InvalidKeyException e)
-        {
-        	// explicitly throw this so that client code can detect and handle itself
-        	throw e;
         }
         catch (Exception e)
         {
@@ -315,7 +309,7 @@ public abstract class AbstractEncryptor implements Encryptor
         	}
 	        else
 	        {
-	        	p = AlgorithmParameters.getInstance(/*getCipherAlgorithm()*/algorithm);
+	        	p = AlgorithmParameters.getInstance(algorithm);
 	        }
 	        p.init(encoded);
 	        return p;

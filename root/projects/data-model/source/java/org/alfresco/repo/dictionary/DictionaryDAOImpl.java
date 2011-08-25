@@ -24,9 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -49,7 +47,6 @@ import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.StringUtils;
 
 
 /**
@@ -940,6 +937,11 @@ public class DictionaryDAOImpl implements DictionaryDAO
      */
     public Collection<PropertyDefinition> getProperties(QName modelName, QName dataType)
     {
+    	if(dataType == null)
+    	{
+    		throw new IllegalArgumentException("dataType cannot be null");
+    	}
+
         HashSet<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
 
         Collection<PropertyDefinition> props = getProperties(modelName);
@@ -951,6 +953,23 @@ public class DictionaryDAOImpl implements DictionaryDAO
             }
         }
         return properties;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.repo.dictionary.DictionaryDAO#getProperties(org.alfresco.service.namespace.QName, org.alfresco.service.namespace.QName)
+     */
+    public Collection<PropertyDefinition> getPropertiesOfDataType(QName dataType)
+    {
+    	Collection<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
+
+    	Collection<QName> modelNames = getModels();
+    	for(QName modelName : modelNames)
+    	{
+    		properties.addAll(getProperties(modelName, dataType));
+    	}
+
+    	return properties;
     }
 
     /*

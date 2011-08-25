@@ -392,7 +392,7 @@ public class CoreTracker implements CloseHook
         SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
 
         HttpClientFactory httpClientFactory = new HttpClientFactory(SecureCommsType.getType(secureCommsType),
-    		sslEncryptionParameters, keyResourceLoader, null, null);
+    		sslEncryptionParameters, keyResourceLoader, null, null, alfrescoHost, alfrescoPort, alfrescoPortSSL);
         // TODO need to make port configurable depending on secure comms, or just make redirects
         // work
         AlfrescoHttpClient repoClient = httpClientFactory.getRepoClient(alfrescoHost, alfrescoPortSSL);

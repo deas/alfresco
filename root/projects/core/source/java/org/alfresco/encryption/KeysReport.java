@@ -18,21 +18,33 @@
  */
 package org.alfresco.encryption;
 
+import java.util.List;
+
 /**
- * A fallback encryptor provides a fallback mechanism for decryption, first using the default
- * encryption keys and, if they fail (perhaps because they have been changed), falling back
- * to a backup set of keys.
- * 
- * Note that encryption will be performed only using the default encryption keys.
+ * A report on which keys have changed and which keys have not changed.
  * 
  * @since 4.0
+ *
  */
-public interface FallbackEncryptor extends Encryptor
+public class KeysReport
 {
-	/**
-	 * Is the backup keystore available in order to fall back to?
-	 * 
-	 * @return
-	 */
-//	public boolean isFallbackAvailable();
+	private List<String> keysChanged;
+	private List<String> keysUnchanged;
+	
+	public KeysReport(List<String> keysChanged, List<String> keysUnchanged)
+	{
+		super();
+		this.keysChanged = keysChanged;
+		this.keysUnchanged = keysUnchanged;
+	}
+
+	public List<String> getKeysChanged()
+	{
+		return keysChanged;
+	}
+
+	public List<String> getKeysUnchanged()
+	{
+		return keysUnchanged;
+	}
 }
