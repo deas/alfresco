@@ -71,6 +71,7 @@
       YAHOO.Bubbling.on("userAccess", this.onUserAccess, this);
       YAHOO.Bubbling.on("doclistMetadata", this.onDoclistMetadata, this);
       YAHOO.Bubbling.on("showFileUploadDialog", this.onFileUpload, this);
+      YAHOO.Bubbling.on("dropTargetOwnerRequest", this.onDropTargetOwnerRequest, this);
 
       return this;
    };
@@ -1214,6 +1215,52 @@
          }
       },
       
+      /**
+       * Handles "dropTargetOwnerRequest" by determining whether or not the target belongs to the breacrumb
+       * trail, and if it does determines it's path and uses it with the container nodeRef on the callback 
+       * function.
+       * 
+       * @method onDropTargetOwnerRequest
+       * @property layer The name of the event
+       * @property args The event payload
+       */
+      onDropTargetOwnerRequest: function DLT_onDropTargetOwnerRequest(layer, args)
+      {
+         if (args && args[1] && args[1].elementId)
+         {
+            var crumb = Dom.get(args[1].elementId);
+            var trail = Dom.get(this.id + "-breadcrumb");
+            if (Dom.isAncestor(trail, crumb))
+            {
+               // The current element is part of the breadcrumb trail. 
+               // Calculate the path by working out its index within the breadcrumb trail
+               // and then apply that to the path (remembering to compensate for the SPAN
+               // elements that just contain the ">" separators !
+               var targetPath = "";
+               var paths = this.currentPath.split("/");
+               for (var i = 0, j = trail.children.length; i < j; i++)
+               {
+                  if (i % 2 == 0)
+                  {
+                     // Only use the current index if it's even (odd indexes indicate
+                     // the SPAN containing the ">" separator character...
+                     targetPath = targetPath + "/" + paths[i/2];
+                  }
+                  
+                  // If we've reached the target element then break out of the loop...
+                  if (crumb == trail.children[i])
+                  {
+                     break;
+                  }
+               }
+               
+               // Use the callback method with a nodeRef built from the the container nodeRef
+               // concatonated with the constructed path...
+               var nodeRef = this.doclistMetadata.container + targetPath;
+               args[1].callback.call(args[1].scope, nodeRef, targetPath);
+            }
+         }
+      },
    
       /**
        * PRIVATE FUNCTIONS
@@ -1315,6 +1362,13 @@
                   className: "separator"
                }));
             }
+         }
+         
+         var rootEl = Dom.get(this.id + "-breadcrumb");
+         var dndTargets = Dom.getElementsByClassName("crumb", "div", rootEl);
+         for (var i = 0, j = dndTargets.length; i < j; i++)
+         {
+            new YAHOO.util.DDTarget(dndTargets[i]);
          }
       },
 
