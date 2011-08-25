@@ -737,6 +737,32 @@ Alfresco.util.getFileExtension = function(filePath)
 };
 
 /**
+ * Returns the windows scroll position that later can be used for i.e. window.scrollTo.
+ *
+ * @method Alfresco.util.getScrollPosition
+ * @return {Array} An array with the x & y position of the scrollbars
+ * @static
+ */
+Alfresco.util.getScrollPosition = function()
+{
+   if (YAHOO.env.ua.ie > 0)
+   {
+      if (document.compatMode && document.compatMode != "BackCompat")
+      {
+         return [ document.documentElement.scrollLeft, document.documentElement.scrollTop ];
+      }
+      else
+      {
+         return [ document.body.scrollLeft, document.body.scrollTop ];
+      }
+   }
+   else
+   {
+      return [ window.scrollX, window.scrollY ];
+   }
+};
+
+/**
  * Formats a Freemarker datetime into more UI-friendly format
  *
  * @method Alfresco.util.formatDate

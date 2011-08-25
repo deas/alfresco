@@ -957,7 +957,8 @@
 
       // Property to remember the element that the proxy was dropped on.
       this.droppedOnEl= null;
-
+      // Property to remember the scroll position when the drag start
+      this.originalScrollPosition = null;
       this.isOver = false;
 
       // Save a reference to the component.
@@ -977,6 +978,9 @@
        */
       startDrag: function DD_DP_startDrag(x, y)
       {
+         // Save the scroll position when the drag started
+         this.originalScrollPosition = Alfresco.util.getScrollPosition();
+
          // A new drag operation has started, make sure the droppedOnEl is reset.
          this.droppedOnEl = null;
 
@@ -1099,6 +1103,19 @@
 
          // Show the proxy element and animate it towards the shadow.
          Dom.setStyle(proxy, "visibility", "");
+         Dom.setStyle(this.srcShadow, "display", "");
+         var xy = Dom.getXY(this.srcShadow);
+         Dom.setStyle(this.srcShadow, "display", "none");
+
+         if (xy)
+         {
+            var a = new YAHOO.util.Motion(proxy,
+            {
+               points:
+               {
+                  to: xy
+               }
+            }, 0.3, YAHOO.util.Easing.easeOut);
 
          // Hide proxy
          Dom.setStyle(proxy, "visibility", "hidden");
@@ -1403,7 +1420,11 @@
        */
       onInvalidDrop: function DD_DP_onInvalidDrop()
       {
-         this.dndComponent.shadow.parentNode.scrollIntoView();
+         // Make sure we restore the scrollbars as they were when the scroll started
+         if (this.originalScrollPosition)
+         {
+            window.scrollTo(this.originalScrollPosition[0], this.originalScrollPosition[1]);
+         }
       }
 
    });
