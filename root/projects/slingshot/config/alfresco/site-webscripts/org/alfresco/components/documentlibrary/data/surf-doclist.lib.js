@@ -252,22 +252,27 @@ var DocList =
                }
             }
          }
+
          // Check for evaluators in each line
-         for (i = 0; i < nodeTemplate.lines.length; i++)
+         var lines = [];
+         for each (line in nodeTemplate.lines)
          {
-            line = nodeTemplate.lines[i];
-            if (line.evaluator)
+            if (line == null)
             {
-               if (!line.evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args))
-               {
-                  // Remove this display line for this item
-                  DocList.arrayRemove(nodeTemplate.lines, i);
-               }
+               continue;
             }
-            // Remove evaluator from the response
-            delete line.evaluator;
+
+            if (!line.evaluator || line.evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args))
+            {
+               // Add display line for this item
+               lines.push(
+               {
+                  index: line.index,
+                  template: line.template
+               });
+            }
          }
-         nodeTemplate.lines.sort(fnSortByIndex);
+         nodeTemplate.lines = lines.sort(fnSortByIndex);
          item.metadataTemplate = nodeTemplate;
 
          return item;
@@ -635,15 +640,16 @@ var DocList =
                templateId = templateConfig.getAttribute("id");
                if (templateId)
                {
-                  template =
+                  template = templates[templateId] ||
                   {
                      id: templateId
                   };
 
                   DocList.fnAddIfNotNull(template, DocList.getEvaluatorConfig(templateConfig), "evaluators");
-                  DocList.fnAddIfNotNull(template, DocList.getTemplateLineConfig(templateConfig), "lines");
+                  // Lines are a special case: we need to merge instead of replace to allow for custom overrides by id
+                  template.lines = DocList.merge(template.lines || {}, DocList.getTemplateLineConfig(templateConfig));
 
-                  templates[templateId] = template;
+                  templates[templateId] = DocList.merge({}, template);
                }
             }
          }
@@ -657,9 +663,9 @@ var DocList =
 
    getTemplateLineConfig: function getTemplateLineConfig(templateConfig)
    {
-      var templateLines = [],
+      var templateLines = {},
          lineConfig = templateConfig.childrenMap["line"],
-         line, index, evaluator, value;
+         line, id, index, evaluator;
 
       if (!lineConfig)
       {
@@ -669,28 +675,24 @@ var DocList =
       for (var i = 0; i < lineConfig.size(); i++)
       {
          line = lineConfig.get(i);
+         id = line.getAttribute("id");
          index = line.getAttribute("index");
          evaluator = line.getAttribute("evaluator");
-         if (index != null)
+         if (id != null)
          {
-            value = "" + line.value;
-            if (value.length > 0)
+            if (line.value == null)
             {
-               templateLines.push(
-               {
-                  index: index,
-                  template: value,
-                  evaluator: evaluatorHelper.getEvaluator(evaluator)
-               });
+               templateLines[id] = null;
             }
-         }
-      }
-
-      for (var j = 0; j < templateLines.length; j++ )
-      {
-         if (typeof templateLines[j] == "undefined")
-         {
-            DocList.arrayRemove(templateLines, j--);
+            else
+            {
+               templateLines[id] =
+               {
+                  index: index || 0,
+                  template: line.value,
+                  evaluator: evaluatorHelper.getEvaluator(evaluator)
+               };
+            }
          }
       }
 

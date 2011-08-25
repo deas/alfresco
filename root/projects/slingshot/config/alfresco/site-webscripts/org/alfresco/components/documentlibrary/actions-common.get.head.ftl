@@ -12,6 +12,8 @@
 <#else>
    <script type="text/javascript" src="${page.url.context}/res/js/documentlibrary-actions-min.js"></script>
 </#if>
+<#-- Common actions styles -->
+<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/components/documentlibrary/actions.css" />
 <#-- Global Folder Picker (req'd by Copy/Move To) -->
 <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/documentlibrary/global-folder.css" />
 <#-- People Finder Assets (req'd by Assign Workflow)  -->

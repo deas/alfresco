@@ -3,12 +3,6 @@
 *
 {
    margin: 0;
-   -moz-transition-property: border,color,opacity;
-   -moz-transition-duration: 0.2s;
-   -moz-transition-timing-function: ease-in-out;
-   -webkit-transition-property: border,color,opacity;
-   -webkit-transition-duration: 0.2s;
-   -webkit-transition-timing-function: ease-in-out;
 }
 
 html, body

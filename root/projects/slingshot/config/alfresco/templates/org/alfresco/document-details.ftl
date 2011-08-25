@@ -38,7 +38,7 @@
       <@region id="flash-upload" scope="template"/>
       <@region id="file-upload" scope="template"/>
    </div>
-
+   <@region id="doclib-custom" scope="template"/>
 </@>
 
 <@templateFooter>

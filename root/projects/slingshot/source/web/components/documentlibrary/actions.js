@@ -139,7 +139,7 @@
        * @param siteId {string} Optional siteId override for site-based locations
        * @return {object} Object literal containing URLs to be substituted in action placeholders
        */
-      getActionUrls: function DoclibActions_getActionUrls(record, siteId)
+      getActionUrls: function dlA_getActionUrls(record, siteId)
       {
          var jsNode = record.jsNode,
             nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef,
@@ -180,7 +180,7 @@
        * @param owner {HTMLElement} The action html element
        * @param resolve {Boolean} (Optional) Set to false if the action param's {} shouldn't get resolved
        */
-      getAction: function getAction(record, owner, resolve)
+      getAction: function dlA_getAction(record, owner, resolve)
       {
          var actionId = owner.getAttribute("class"),
             action = Alfresco.util.findInArray(record.actions, actionId, "id") || {};
@@ -204,6 +204,46 @@
             }
             return action;
          }
+      },
+
+      /**
+       * Tries to get a common parent nodeRef for an action that requires one.
+       *
+       * @method getParentNodeRef
+       * @param record {object} Object literal representing one file or folder to be actioned
+       * @return {string|null} Parent nodeRef or null
+       */
+      getParentNodeRef: function dlA_getParentNodeRef(record)
+      {
+         var nodeRef = null;
+
+         if (YAHOO.lang.isArray(record))
+         {
+            try
+            {
+               nodeRef = this.doclistMetadata.parent.nodeRef;
+            }
+            catch (e)
+            {
+               nodeRef = null;
+            }
+
+            if (nodeRef === null)
+            {
+               for (var i = 1, j = record.length, sameParent = true; i < j && sameParent; i++)
+               {
+                  sameParent = (record[i].parent.nodeRef == record[i - 1].parent.nodeRef)
+               }
+
+               nodeRef = sameParent ? record[0].parent.nodeRef : this.doclistMetadata.container;
+            }
+         }
+         else
+         {
+            nodeRef = record.parent.nodeRef;
+         }
+
+         return nodeRef;
       },
 
       /**
@@ -1000,7 +1040,7 @@
             path: this.currentPath,
             files: record,
             rootNode: this.options.rootNode,
-            parentId: this.doclistMetadata.parent.nodeRef
+            parentId: this.getParentNodeRef(record)
          }).showDialog();
       },
 
@@ -1013,32 +1053,18 @@
       onActionAssignWorkflow: function dlA_onActionAssignWorkflow(record)
       {
          var nodeRefs = "",
-            destination = null;
+            destination = this.getParentNodeRef(record);
 
-         if (YAHOO.lang.isArray(record))
+         if (YAHOO.lang.isArray(asset))
          {
-            var sameParent = true;
-            for (var i = 0, il = record.length; i < il; i++)
+            for (var i = 0, il = asset.length; i < il; i++)
             {
-               nodeRefs += (i === 0 ? "" : ",") + record[i].nodeRef;
-               if (sameParent && i > 0)
-               {
-                  sameParent = record[i - 1].parent.nodeRef == record[i].parent.nodeRef;
-               }
-            }
-            if (sameParent && record.length > 0)
-            {
-               destination = record[i - 1].parent.nodeRef;
-            }
-            else
-            {
-               destination = this.doclistMetadata.container;
+               nodeRefs += (i === 0 ? "" : ",") + asset[i].nodeRef;
             }
          }
          else
          {
-            nodeRefs = record.nodeRef;
-            destination = record.parent.nodeRef;
+            nodeRefs = asset.nodeRef;
          }
          var postBody =
          {

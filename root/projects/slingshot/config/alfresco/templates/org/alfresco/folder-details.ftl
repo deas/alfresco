@@ -28,7 +28,7 @@
          </div>
       </div>
    </div>
-   
+   <@region id="doclib-custom" scope="template"/>
 </@>
 
 <@templateFooter>

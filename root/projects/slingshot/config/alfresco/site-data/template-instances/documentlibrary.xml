@@ -80,5 +80,11 @@
          <url>/components/upload/dnd-upload</url>
       </component>
 
+      <!-- Custom Code -->
+      <component>
+         <region-id>doclib-custom</region-id>
+         <url>/components/documentlibrary/doclib-custom</url>
+      </component>
+
    </components>
 </template-instance>

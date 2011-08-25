@@ -235,18 +235,18 @@
       <metadata-templates>
          <!-- Default (fallback) -->
          <template id="default">
-            <line index="10">{date}{size}</line>
-            <line index="20">{description}</line>
-            <line index="30">{tags}</line>
-            <line index="40" evaluator="evaluator.doclib.metadata.hasCategories">{categories}</line>
-            <line index="50">{social}</line>
+            <line index="10" id="date">{date}{size}</line>
+            <line index="20" id="description">{description}</line>
+            <line index="30" id="tags">{tags}</line>
+            <line index="40" id="categories" evaluator="evaluator.doclib.metadata.hasCategories">{categories}</line>
+            <line index="50" id="social">{social}</line>
          </template>
 
          <!-- Working Copies -->
          <template id="isWorkingCopy">
             <evaluator>evaluator.doclib.metadata.isWorkingCopy</evaluator>
-            <line index="10">{date}{size}</line>
-            <line index="20">{description}</line>
+            <line index="10" id="date">{date}{size}</line>
+            <line index="20" id="description">{description}</line>
          </template>
       </metadata-templates>
 
@@ -283,17 +283,21 @@
          <maximum-folder-count>500</maximum-folder-count>
       </tree>
    </config>
-   
-   <!-- Document Library Actions config section -->
-   <config evaluator="string-compare" condition="DocLibActions">
+
+   <!-- Document Library Custom Code config section -->
+   <config evaluator="string-compare" condition="DocLibCustom">
       <!--
-         Custom Action dependencies.
+         Custom Code dependencies.
 
          Note: files specified in the "src" attribute resolve relative to the /share/res/ servlet context.
          <css src="my-custom-action.css" />
          <js src="my-custom-action.js" />
       -->
       <dependencies />
+   </config>
+   
+   <!-- Document Library Actions config section -->
+   <config evaluator="string-compare" condition="DocLibActions">
 
       <!--
          Action definitions

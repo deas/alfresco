@@ -470,13 +470,18 @@ body .doclist tr.yui-dt-highlighted
    color: #aaa;
 }
 
+.doclist .documents .detail em
+{
+   font-style: normal;
+}
+
 .doclist .documents .detail span.item
 {
    float: left;
    margin-right: 1.6em;
 }
 
-.doclist .documents .detail-social span.item
+.doclist .documents .detail:last span.item
 {
    line-height: 1.2em;
    margin-right: 0.8em;
@@ -507,7 +512,7 @@ body .doclist tr.yui-dt-highlighted
 
 /* Social tagging customisations */
 
-.doclist .documents .detail-social a.comment
+.doclist .documents .detail a.comment
 {
    background-image: url(../images/comment-16.png);
 }
@@ -548,33 +553,6 @@ body .doclist tr.yui-dt-highlighted
 }
 
 /* Actions */
-
-.doclist .action-set div
-{
-   display: block;
-   margin: 0;
-}
-
-.doclist a.action-link,
-.doclist a.simple-link,
-.doclist a.show-more
-{
-   background-position: 4px 1px;
-   background-repeat: no-repeat;
-   border: 1px solid transparent;
-   display: block;
-   min-height: 16px;
-   padding: 2px 0 2px 24px;
-}
-
-.doclist .action-set a:active,
-.doclist .action-set a:hover,
-.doclist .action-set .highlighted
-{
-   background-color: #fff;
-   border: 1px solid #2b6eb5;
-   text-decoration: none;
-}
 
 .doclist div.more-actions
 {

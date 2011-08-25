@@ -36,6 +36,7 @@
       <@region id="file-upload" scope="template" />
       <@region id="dnd-upload" scope="template" />
    </div>
+   <@region id="doclib-custom" scope="template"/>
 </@>
 
 <@templateFooter>

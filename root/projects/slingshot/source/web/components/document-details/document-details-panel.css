@@ -13,5 +13,5 @@
 .document-details-panel .form-container .form-fields
 {
    border-bottom: none;
-   padding-bottom: 0;
+   padding: 1em 1em 0;
 }

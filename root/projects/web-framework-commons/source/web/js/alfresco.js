@@ -1415,6 +1415,41 @@ Alfresco.util.populateHTML = function()
 };
 
 /**
+ * Checks whether the current browser supports a given CSS property.
+ * The property should be passed in canonical form and without vendor prefix
+ * e.g. "TextShadow"
+ *
+ * @method hasCssProperty
+ * @param property {string} CSS property to test
+ * @return {boolean} True if the browser appears to support the property
+ */
+Alfresco.util.hasCssProperty = function(property)
+{
+   if (Alfresco.util.hasCssProperty.div.style.hasOwnProperty(property))
+   {
+      return true;
+   }
+
+   // Ensure first character is uppercase
+   property = property.replace(/^[a-z]/, function(val)
+   {
+      return val.toUpperCase();
+   });
+
+   var len = Alfresco.util.hasCssProperty.vendors.length;
+   while(len--)
+   {
+      if (Alfresco.util.hasCssProperty.div.style.hasOwnProperty(vendors[len] + property))
+      {
+         return true;
+      }
+   }
+   return false;
+};
+Alfresco.util.hasCssProperty.div = document.createElement("div");
+Alfresco.util.hasCssProperty.vendors = ["Khtml", "O", "ms", "Moz", "Webkit"];
+
+/**
  * Wrapper to create a YUI Button with common attributes.
  * All supplied object parameters are passed to the button constructor
  * e.g. Alfresco.util.createYUIButton(this, "OK", this.onOK, {type: "submit"});

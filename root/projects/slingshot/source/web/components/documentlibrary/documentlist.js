@@ -1621,7 +1621,7 @@
                   },
                   callback:
                   {
-                     fn: this._insituCallback,
+                     fn: scope._insituCallback,
                      scope: scope,
                      obj: record
                   }
@@ -1643,10 +1643,20 @@
                {
                   var fnRenderTemplate = function fnRenderTemplate_substitute(p_key, p_value, p_meta)
                   {
+                     var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
+                        value = "";
+                        
+                     // render value from properties or custom renderer
                      if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
                      {
-                        return scope.renderers[p_key].call(scope, record);
+                        value = scope.renderers[p_key].call(scope, record, label);
                      }
+                     else
+                     {
+                        value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
+                     }
+
+                     return value;
                   };
 
                   var html;
@@ -1721,6 +1731,10 @@
          {
             this.registerRenderer(obj.propertyName, obj.renderer);
          }
+         else
+         {
+            Alfresco.logger.error("DL_onRegisterRenderer: Custom renderer registion invalid: " + obj);
+         }
       },
 
       /**
@@ -1751,7 +1765,7 @@
          /**
           * Date
           */
-         this.registerRenderer("date", function(record)
+         this.registerRenderer("date", function(record, label)
          {
             var jsNode = record.jsNode,
                properties = jsNode.properties,
@@ -1766,7 +1780,8 @@
             {
                dateI18N = "created";
             }
-            html = '<span class="item">' + this.msg("details." + dateI18N + "-by", $relTime(dateProperty), Alfresco.DocumentList.generateUserLink(properties.modifier)) + '</span>';
+
+            html = '<span class="item">' + label + this.msg("details." + dateI18N + "-by", $relTime(dateProperty), Alfresco.DocumentList.generateUserLink(properties.modifier)) + '</span>';
 
             return html;
          });
@@ -1774,7 +1789,7 @@
          /**
           * File size
           */
-         this.registerRenderer("size", function(record)
+         this.registerRenderer("size", function(record, label)
          {
             var jsNode = record.jsNode,
                properties = jsNode.properties,
@@ -1782,7 +1797,7 @@
 
             if (!jsNode.isContainer && !jsNode.isLink)
             {
-               html = '<span class="item">' + Alfresco.util.formatFileSize(jsNode.size) + '</span>';
+               html += '<span class="item">' + label + Alfresco.util.formatFileSize(jsNode.size) + '</span>';
             }
 
             return html;
@@ -1791,17 +1806,17 @@
          /**
           * Description
           */
-         this.registerRenderer("description", function(record)
+         this.registerRenderer("description", function(record, label)
          {
             var jsNode = record.jsNode,
                properties = jsNode.properties,
                id = Alfresco.util.generateDomId(),
-               html = '<span id="' + id + '" class="faded">' + this.msg("details.description.none") + '</span>';
+               html = '<span id="' + id + '" class="faded">' + label + this.msg("details.description.none") + '</span>';
 
             // Description non-blank?
             if (properties.description && properties.description !== "")
             {
-               html = '<span id="' + id + '" class="item">' + $links($html(properties.description)) + '</span>';
+               html = '<span id="' + id + '" class="item">' + label + $links($html(properties.description)) + '</span>';
             }
 
             return html;
@@ -1810,7 +1825,7 @@
          /**
           * Tags
           */
-         this.registerRenderer("tags", function(record)
+         this.registerRenderer("tags", function(record, label)
          {
             var jsNode = record.jsNode,
                properties = jsNode.properties,
@@ -1828,7 +1843,7 @@
             }
             else
             {
-               html += '<span class="faded">' + this.msg("details.tags.none") + '</span>';
+               html += '<span class="faded">' + label + this.msg("details.tags.none") + '</span>';
             }
 
             if (jsNode.hasPermission("Write") && !jsNode.isLocked)
@@ -1862,13 +1877,13 @@
                });
             }
 
-            return '<span id="' + id + '" class="item">' + html + '</span>';
+            return '<span id="' + id + '" class="item">' + label + html + '</span>';
          });
 
          /**
           * Categories
           */
-         this.registerRenderer("categories", function(record)
+         this.registerRenderer("categories", function(record, label)
          {
             var jsNode = record.jsNode,
                properties = jsNode.properties,
@@ -1877,7 +1892,7 @@
             if (jsNode.hasAspect("cm:generalclassifiable"))
             {
                var categories = jsNode.categories, category;
-               html += '<span class="category-item item">&nbsp;</span><span class="item">';
+               html += '<span class="category-item item">&nbsp;</span><span class="item">' + label;
                if (categories.length > 0)
                {
                   for (var i = 0, j = categories.length; i < j; i++)
@@ -1888,7 +1903,7 @@
                }
                else
                {
-                  html += '<span class="faded">' + this.msg("details.categories.none") + '</span>';
+                  html += '<span class="faded">' + label + this.msg("details.categories.none") + '</span>';
                }
                html += '</span>';
             }
