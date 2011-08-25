@@ -459,12 +459,6 @@ body .doclist tr.yui-dt-highlighted
    padding-left: 20px;
 }
 
-.doclist .documents .detail-social
-{
-   padding-bottom: 0;
-   padding-top: 0.4em;
-}
-
 .doclist .documents .detail .faded
 {
    color: #aaa;
@@ -481,10 +475,11 @@ body .doclist tr.yui-dt-highlighted
    margin-right: 1.6em;
 }
 
-.doclist .documents .detail:last span.item
+.doclist .documents .detail span.item-social
 {
    line-height: 1.2em;
    margin-right: 0.8em;
+   margin-top: 0.4em;
 }
 
 .doclist .documents .detail span.item-simple
