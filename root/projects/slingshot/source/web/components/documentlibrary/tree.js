@@ -314,7 +314,8 @@
             if (node != null)
             {
                var nodeRef = node.data.nodeRef;
-               args[1].callback.call(args[1].scope, nodeRef);
+               var path = node.data.path;
+               args[1].callback.call(args[1].scope, nodeRef, path);
             }
          }
       },
@@ -365,15 +366,27 @@
          else
          {
             // Finished expanding, can now safely set DND targets...
-            var rootEl = this.widgets.treeview.getEl();
-            var dndTargets = Dom.getElementsByClassName("ygtvcell", "td", rootEl);
-            for (var i = 0, j = dndTargets.length; i < j; i++)
-            {
-               new YAHOO.util.DDTarget(dndTargets[i]);
-            }
+            this._applyDropTargets();
          }
       },
 
+      /**
+       * Creates the drag and drop targets within the tree. The targets get removed
+       * each time that the tree is refreshed in anyway, so it is imperative that they
+       * get reset when required.
+       * 
+       * @method _applyDropTargets
+       */
+      _applyDropTargets: function DLT__applyDropTargets()
+      {
+         var rootEl = this.widgets.treeview.getEl();
+         var dndTargets = Dom.getElementsByClassName("ygtvcell", "td", rootEl);
+         for (var i = 0, j = dndTargets.length; i < j; i++)
+         {
+            new YAHOO.util.DDTarget(dndTargets[i]);
+         }
+      },
+         
       /**
        * Fired by YUI TreeView when a node label is clicked
        * @method onNodeClicked
@@ -501,6 +514,9 @@
                this._showHighlight(true);
             }
          }
+         
+         // Make sure that the drag and drop targets are correctly set...
+         this._applyDropTargets();
       },
 
       /**
@@ -538,6 +554,9 @@
                this._showHighlight(true);
             }
          }
+         
+         // Make sure that the drag and drop targets are correctly set...
+         this._applyDropTargets();
       },
 
       /**
@@ -557,6 +576,10 @@
                this._sortNodeChildren(parentNode);
             }
          }
+         
+         // Make sure that the drag and drop targets are correctly set...
+         this._applyDropTargets();
+
       },
 
       /**
@@ -599,6 +622,9 @@
                this._showHighlight(true);
             }
          }
+         
+         // Make sure that the drag and drop targets are correctly set...
+         this._applyDropTargets();
       },
 
       /**
@@ -658,6 +684,9 @@
                }
             }
          }
+         
+         // Make sure that the drag and drop targets are correctly set...
+         this._applyDropTargets();
       },
 
       /**

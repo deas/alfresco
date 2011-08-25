@@ -179,7 +179,7 @@
                    }
                    
                    // Move the document/folder...
-                   this._performMove(nodeRef);
+                   this._performMove(nodeRef, targetNode.location.path + "/" + targetNode.location.file);
                 }
              }
              else
@@ -206,7 +206,7 @@
        * @method _performMove
        * @property nodeRef The nodeRef onto which the proxy should be moved.
        */
-      _performMove: function DL_DND__performMove(nodeRef)
+      _performMove: function DL_DND__performMove(nodeRef, path)
       {
          // Set variables required for move...
          var toMoveRecord = this.docLib.widgets.dataTable.getRecord(this.getEl()),
@@ -248,10 +248,11 @@
                {
                   multiple: true,
                   nodeRef: moved.nodeRef,
-                  destination: targetNode.location.path + "/" + targetNode.location.file
+                  destination: path
                });
             }
          };
+         // destination: targetNode.location.path + "/" + targetNode.location.file
 
          // Failure callback function:
          // If the move operation has failed then animate the proxy to return it to the
@@ -330,14 +331,14 @@
        * @method onDropTargetOwnerCallBack
        * @property nodeRef The nodeRef to move the dragged object to.
        */
-      onDropTargetOwnerCallBack: function DL_DND_onDropTargetOwnerCallBack(nodeRef)
+      onDropTargetOwnerCallBack: function DL_DND_onDropTargetOwnerCallBack(nodeRef, path)
       {
          // Clear the timeout that was set...
          this._clearTimeout();
          
          // Move the document/folder...
          var node = new Alfresco.util.NodeRef(nodeRef);
-         this._performMove(node);
+         this._performMove(node, path);
       },
       
       /**
