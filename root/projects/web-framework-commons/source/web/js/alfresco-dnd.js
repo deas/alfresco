@@ -1101,22 +1101,6 @@
           * We will decide later if its an add or move that has been performed.
           */
 
-         // Show the proxy element and animate it towards the shadow.
-         Dom.setStyle(proxy, "visibility", "");
-         Dom.setStyle(this.srcShadow, "display", "");
-         var xy = Dom.getXY(this.srcShadow);
-         Dom.setStyle(this.srcShadow, "display", "none");
-
-         if (xy)
-         {
-            var a = new YAHOO.util.Motion(proxy,
-            {
-               points:
-               {
-                  to: xy
-               }
-            }, 0.3, YAHOO.util.Easing.easeOut);
-
          // Hide proxy
          Dom.setStyle(proxy, "visibility", "hidden");
 
