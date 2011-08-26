@@ -4,7 +4,7 @@ function main()
 {
    AlfrescoUtil.param('nodeRef');
    AlfrescoUtil.param('site', null);
-   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
       model.document = documentDetails.item;

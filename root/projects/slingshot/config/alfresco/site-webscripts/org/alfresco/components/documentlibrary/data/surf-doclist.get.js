@@ -25,7 +25,12 @@ function main()
       var obj = eval('(' + result + ')');
       if (obj && (obj.item || obj.items))
       {
-         DocList.processResult(obj);
+         DocList.processResult(obj,
+         {
+            actions: true,
+            indicators: true,
+            metadataTemplate: true
+         });
          json = jsonUtils.toJSONString(obj);
       }
    }

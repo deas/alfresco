@@ -22,7 +22,7 @@ function main()
 {
    AlfrescoUtil.param('nodeRef');
    AlfrescoUtil.param('site', null);
-   var folderDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   var folderDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site);
    if (folderDetails)
    {
       model.tags = FolderTags.getTags(folderDetails.item);

@@ -37,7 +37,7 @@ function main()
    AlfrescoUtil.param("showFavourite", "true");
    AlfrescoUtil.param("showLikes", "true");
    AlfrescoUtil.param("showComments", "true");
-   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
       model.document = documentDetails.item;

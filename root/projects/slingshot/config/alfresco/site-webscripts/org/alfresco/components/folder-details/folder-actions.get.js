@@ -7,7 +7,10 @@ function main()
    AlfrescoUtil.param('site', null);
    AlfrescoUtil.param('container', 'documentLibrary');
 
-   var folderDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   var folderDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site,
+   {
+      actions: true
+   });
    if (folderDetails)
    {
       model.folderDetailsJSON = jsonUtils.toJSONString(folderDetails);

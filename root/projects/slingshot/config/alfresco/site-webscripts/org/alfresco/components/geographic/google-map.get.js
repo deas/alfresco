@@ -7,7 +7,7 @@ function main()
    AlfrescoUtil.param('site', null);
    AlfrescoUtil.param('container', 'documentLibrary');
 
-   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
       var properties = documentDetails.item.node.properties,

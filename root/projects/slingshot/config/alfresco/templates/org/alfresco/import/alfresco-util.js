@@ -124,7 +124,7 @@ var AlfrescoUtil =
       return rootNode;
    },
 
-   getDocumentDetails: function getDocumentDetails(nodeRef, site, defaultValue)
+   getDocumentDetails: function getDocumentDetails(nodeRef, site, options)
    {
       var url = '/slingshot/doclib2/node/' + nodeRef.replace('://', '/');
       if (!site)
@@ -136,20 +136,15 @@ var AlfrescoUtil =
 
       if (result.status == 200)
       {
-         var obj = eval('(' + result + ')');
-         if (obj && (obj.item || obj.items))
+         var details = eval('(' + result + ')');
+         if (details && (details.item || details.items))
          {
-            DocList.processResult(obj);
-            return obj;
+            DocList.processResult(details, options);
+            return details;
          }
       }
 
-      if (defaultValue !== undefined)
-      {
-         return defaultValue;
-      }
-
-      AlfrescoUtil.error(result.status, 'Could not load document details for ' + nodeRef);
+      return null;
    },
 
    getLinkDetailsByPostId: function getLinkDetails(site, container, link, defaultValue)

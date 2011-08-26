@@ -19,8 +19,13 @@ var DocList_Custom =
     */
    calculateActionGroupId: function calculateActionGroupId(record, view)
    {
-      // Default
-      return (record.node.isContainer ? "folder-" : "document-") + (record.node.isLink ? "link-" : "") + (view == "details" ? "details" : "browse");
+      // Default calculation
+      var actionGroupId = (record.node.isContainer ? "folder-" : "document-") + (record.node.isLink ? "link-" : "") + (view == "details" ? "details" : "browse");
+
+      if (logger.isLoggingEnabled())
+         logger.log("[SURF-DOCLIST] ActionGroupId = '" + actionGroupId + "' for nodeRef " + record.node.nodeRef);
+
+      return actionGroupId;
    }
 };
 
@@ -39,8 +44,14 @@ var DocList =
     *
     * @method processResult
     * @param doclist {Object} JSON response from Repository webscripts
+    * @param options {Object} Determines optional processing steps
+    * <pre>
+    *    actions: true|false           // Calculate list of viable actions
+    *    indicators: true|false        // Calculate indicator icon visilibity
+    *    metadataTemplate: true|false  // Calculate metadata view template (browse view)
+    * </pre>
     */
-   processResult: function processResult(doclist)
+   processResult: function processResult(doclist, options)
    {
       var p_view = (args.view || "details").toLowerCase(),
          allActions = DocList.getAllActions(), // <-- this can be cached until config is reset
@@ -63,6 +74,14 @@ var DocList =
          return (item1.index > item2.index) ? 1 : (item1.index < item2.index) ? -1 : 0;
       };
 
+      // Processing options
+      options = DocList.merge(
+      {
+         actions: false,
+         indicators: false,
+         metadataTemplate: false
+      }, options || {});
+
       /**
        * Process a repository item (representing a node and associated metadata)
        */
@@ -81,6 +100,7 @@ var DocList =
          /**
           * Calculated convenience properties
           */
+
          item.nodeRef = node.nodeRef;
          item.fileName = node.properties[DocList.PROP_NAME];
          if (node.isLink)
@@ -96,184 +116,190 @@ var DocList =
             }
          }
 
-
          /**
           * Actions
           */
 
-         var actionGroupId = DocList_Custom.calculateActionGroupId(item, p_view),
-            actions = DocList.getGroupActions(actionGroupId, allActions),
-            nodeActions = [];
-
-         for each (actionTemplate in actions)
+         if (options.actions)
          {
-            action = DocList.merge(actionTemplate, {});
+            var actionGroupId = DocList_Custom.calculateActionGroupId(item, p_view),
+               actions = DocList.getGroupActions(actionGroupId, allActions),
+               nodeActions = [];
 
-            // Permission Check
-            if (action.permissions)
+            for each (actionTemplate in actions)
             {
-               permissionCheck = true;
-               for (index in action.permissions)
+               action = DocList.merge(actionTemplate, {});
+
+               // Permission Check
+               if (action.permissions)
                {
-                  if (action.permissions[index] != node.permissions.user[index])
+                  permissionCheck = true;
+                  for (index in action.permissions)
                   {
-                     // No need to check any more for this action
-                     permissionCheck = false;
-                     break;
+                     if (action.permissions[index] != node.permissions.user[index])
+                     {
+                        // No need to check any more for this action
+                        permissionCheck = false;
+                        break;
+                     }
                   }
-               }
-               if (!permissionCheck)
-               {
-                  // Permission check failed - skip to next action
-                  continue;
-               }
-
-               // Remove permissions from response
-               delete action.permissions;
-            }
-
-            // Evaluator check
-            if (action.evaluators)
-            {
-               evaluatorQualified = true;
-               for (index in action.evaluators)
-               {
-                  evaluator = action.evaluators[index].evaluator;
-                  if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != action.evaluators[index].qualify)
+                  if (!permissionCheck)
                   {
-                     // No need to run any more evaluators for this action
-                     evaluatorQualified = false;
-                     break;
+                     // Permission check failed - skip to next action
+                     continue;
                   }
+
+                  // Remove permissions from response
+                  delete action.permissions;
                }
-               if (!evaluatorQualified)
-               {
-                  // Evaluators didn't qualify - skip to next action
-                  continue;
-               }
-
-               // Remove evaluators from response
-               delete action.evaluators;
-            }
-
-            // Permission(s) and evaluator(s) passed; action is valid
-            nodeActions.push(action);
-         }
-
-         // Filter out any actions overridden by the presence of other actions
-         DocList.filterOverrides(nodeActions);
-
-         // Add actionGroupId and final, sorted action list to the item
-         item.actionGroupId = actionGroupId;
-         item.actions = nodeActions.sort(fnSortByIndex);
-
-
-         /**
-          * Status Indicators
-          */
-
-         nodeIndicators = [];
-         for each (indicatorTemplate in allIndicators)
-         {
-            indicator = DocList.merge(indicatorTemplate, {});
-
-            // Evaluator check
-            if (indicator.evaluators)
-            {
-               evaluatorQualified = true;
-               for (index in indicator.evaluators)
-               {
-                  evaluator = indicator.evaluators[index].evaluator;
-                  if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != indicator.evaluators[index].qualify)
-                  {
-                     // No need to run any more evaluators for this indicator
-                     evaluatorQualified = false;
-                     break;
-                  }
-               }
-               if (!evaluatorQualified)
-               {
-                  // Evaluators didn't qualify - skip to next indicator
-                  continue;
-               }
-
-               // Remove evaluators from response
-               delete indicator.evaluators;
-            }
-
-            // Evaluator(s) passed; indicator is valid
-            nodeIndicators.push(indicator);
-         }
-
-         // Filter out any overridden indicators
-         DocList.filterOverrides(nodeIndicators);
-
-         // Add final, sorted indicator list to the item
-         item.indicators = nodeIndicators.sort(fnSortByIndex);
-
-
-         /**
-          * Metadata Template
-          */
-
-         nodeTemplate = DocList.merge(allTemplates["default"], {});
-         for each (metadataTemplate in allTemplates)
-         {
-            if (metadataTemplate.id != "default")
-            {
-               template = DocList.merge(metadataTemplate, {});
 
                // Evaluator check
-               if (template.evaluators)
+               if (action.evaluators)
                {
                   evaluatorQualified = true;
-                  for (index in template.evaluators)
+                  for (index in action.evaluators)
                   {
-                     evaluator = template.evaluators[index].evaluator;
-                     if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != template.evaluators[index].qualify)
+                     evaluator = action.evaluators[index].evaluator;
+                     if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != action.evaluators[index].qualify)
                      {
-                        // No need to run any more evaluators for this template
+                        // No need to run any more evaluators for this action
                         evaluatorQualified = false;
                         break;
                      }
                   }
                   if (!evaluatorQualified)
                   {
-                     // Evaluators didn't qualify - try next template
+                     // Evaluators didn't qualify - skip to next action
                      continue;
                   }
 
                   // Remove evaluators from response
-                  delete template.evaluators;
+                  delete action.evaluators;
+               }
 
-                  // Found a suitable template
-                  nodeTemplate = template;
-                  break;
+               // Permission(s) and evaluator(s) passed; action is valid
+               nodeActions.push(action);
+            }
+
+            // Filter out any actions overridden by the presence of other actions
+            DocList.filterOverrides(nodeActions);
+
+            // Add actionGroupId and final, sorted action list to the item
+            item.actionGroupId = actionGroupId;
+            item.actions = nodeActions.sort(fnSortByIndex);
+         }
+
+         /**
+          * Status Indicators
+          */
+
+         if (options.indicators)
+         {
+            nodeIndicators = [];
+            for each (indicatorTemplate in allIndicators)
+            {
+               indicator = DocList.merge(indicatorTemplate, {});
+
+               // Evaluator check
+               if (indicator.evaluators)
+               {
+                  evaluatorQualified = true;
+                  for (index in indicator.evaluators)
+                  {
+                     evaluator = indicator.evaluators[index].evaluator;
+                     if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != indicator.evaluators[index].qualify)
+                     {
+                        // No need to run any more evaluators for this indicator
+                        evaluatorQualified = false;
+                        break;
+                     }
+                  }
+                  if (!evaluatorQualified)
+                  {
+                     // Evaluators didn't qualify - skip to next indicator
+                     continue;
+                  }
+
+                  // Remove evaluators from response
+                  delete indicator.evaluators;
+               }
+
+               // Evaluator(s) passed; indicator is valid
+               nodeIndicators.push(indicator);
+            }
+
+            // Filter out any overridden indicators
+            DocList.filterOverrides(nodeIndicators);
+
+            // Add final, sorted indicator list to the item
+            item.indicators = nodeIndicators.sort(fnSortByIndex);
+         }
+
+         /**
+          * Metadata Template
+          */
+
+         if (options.metadataTemplate)
+         {
+            nodeTemplate = DocList.merge(allTemplates["default"], {});
+            for each (metadataTemplate in allTemplates)
+            {
+               if (metadataTemplate.id != "default")
+               {
+                  template = DocList.merge(metadataTemplate, {});
+
+                  // Evaluator check
+                  if (template.evaluators)
+                  {
+                     evaluatorQualified = true;
+                     for (index in template.evaluators)
+                     {
+                        evaluator = template.evaluators[index].evaluator;
+                        if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != template.evaluators[index].qualify)
+                        {
+                           // No need to run any more evaluators for this template
+                           evaluatorQualified = false;
+                           break;
+                        }
+                     }
+                     if (!evaluatorQualified)
+                     {
+                        // Evaluators didn't qualify - try next template
+                        continue;
+                     }
+
+                     // Remove evaluators from response
+                     delete template.evaluators;
+
+                     // Found a suitable template
+                     nodeTemplate = template;
+                     break;
+                  }
                }
             }
-         }
 
-         // Check for evaluators in each line
-         var lines = [];
-         for each (line in nodeTemplate.lines)
-         {
-            if (line == null)
+            // Check for evaluators in each line
+            var lines = [];
+            for each (line in nodeTemplate.lines)
             {
-               continue;
-            }
-
-            if (!line.evaluator || line.evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args))
-            {
-               // Add display line for this item
-               lines.push(
+               if (line == null)
                {
-                  index: line.index,
-                  template: line.template
-               });
+                  continue;
+               }
+
+               if (!line.evaluator || line.evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args))
+               {
+                  // Add display line for this item
+                  lines.push(
+                  {
+                     index: line.index,
+                     template: line.template
+                  });
+               }
             }
+            nodeTemplate.lines = lines.sort(fnSortByIndex);
+            item.metadataTemplate = nodeTemplate;
          }
-         nodeTemplate.lines = lines.sort(fnSortByIndex);
-         item.metadataTemplate = nodeTemplate;
 
          return item;
       };
@@ -335,7 +361,7 @@ var DocList =
                               if (typeof action == "undefined")
                               {
                                  if (logger.isLoggingEnabled())
-                                    logger.log("[SURF-DOCLIST] Action definition not found: " + actionId);
+                                    logger.warn("[SURF-DOCLIST] Action definition not found: " + actionId);
 
                                  continue;
                               }
@@ -514,6 +540,11 @@ var DocList =
                      qualify: qualify
                   };
                }
+               else
+               {
+                  if (logger.isLoggingEnabled())
+                     logger.warn("[SURF-DOCLIST] Bad evaluator config: " + jsonUtils.toJSONString(itemConfig));
+               }
             }
          }
       }
@@ -689,9 +720,12 @@ var DocList =
                templateLines[id] =
                {
                   index: index || 0,
-                  template: line.value,
-                  evaluator: evaluatorHelper.getEvaluator(evaluator)
+                  template: line.value
                };
+               if (evaluator != null)
+               {
+                  templateLines[id].evaluator = evaluatorHelper.getEvaluator(evaluator);
+               }
             }
          }
       }

@@ -40,7 +40,7 @@ function main()
    AlfrescoUtil.param("showFavourite", "true");
    AlfrescoUtil.param("showLikes", "true");
    AlfrescoUtil.param("showComments", "false");
-   var folderDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site, null);
+   var folderDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site);
    if (folderDetails)
    {
       model.folder = folderDetails.item;
