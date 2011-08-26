@@ -43,4 +43,5 @@ public interface AlfrescoKeyStore
 	public KeyManager[] createKeyManagers();
 	public TrustManager[] createTrustManagers();
 	public void create();
+    public void reload();
 }

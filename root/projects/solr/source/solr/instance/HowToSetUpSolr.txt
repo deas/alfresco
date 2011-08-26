@@ -43,17 +43,59 @@ The other defaults should be OK.
 SSL Setup (for Tomcat)
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Repository-Solr communications are protected by SSL with mutual authentication out of the box.
+Repository-Solr communications are protected by SSL with mutual authentication out of the box. Both the repository and Solr have their own private/public RSA key pair,
+signed by an Alfresco Certificate Authority.
 
-This assumes that the keystore files are stored in alf_data. Place the keystore files from the directory repository/config/alfresco/keystore in the $ALF_DATA/keystore directory
+It is assumed that the keystore files are stored in alf_data. Place the keystore files from the directory repository/config/alfresco/keystore in the $ALF_DATA/keystore directory
 
-Repository Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~
+There are two configurations that are relevant in terms of configuration:
 
-Add this to the tomcat-users.xml file where the repository is deployed (this allows Solr to SSL authenticate with the Repository):
+1) The repository and Solr running in the same Tomcat instance
+2) The repository and Solr running in different Tomcat instances
+
+These are documented separately below.
+
+Separate Tomcat Instances Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Repository Configuration
+   ~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Add this to the tomcat-users.xml file where the repository is deployed (this allows Solr to SSL authenticate with the Repository):
+
+      <user username="CN=Alfresco Repository Client, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB" roles="repoclient" password="null"/>
+
+   Configure an SSL connector by adding this to the Tomcat server.xml file where the repo is deployed:
+  
+      <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
+               maxThreads="150" scheme="https" keystoreFile="../../data/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
+               secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
+               clientAuth="false" sslProtocol="TLS" />  
+
+   Add dir.keystore=${dir.root}/keystore to your alfresco-global.properties file.
+
+   Solr Configuration
+   ~~~~~~~~~~~~~~~~~~
+
+   Add this to the tomcat-users.xml file where solr is deployed (this allows the Repository to SSL authenticate with Solr):
+
+      <user username="CN=Alfresco Repository, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB" roles="repository" password="null"/>
+
+   Configure an SSL connector by adding this to the Tomcat server.xml file where solr is deployed:
+  
+      <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
+               maxThreads="150" scheme="https" keystoreFile="../../data/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
+               secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
+               clientAuth="false" sslProtocol="TLS" /> 
+
+Single Tomcat Instance Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add these entries to the tomcat-users.xml file where the repository is deployed (this allows Solr to SSL authenticate with the Repository):
 
   <user username="CN=Alfresco Repository Client, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB" roles="repoclient" password="null"/>
-
+  <user username="CN=Alfresco Repository, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB" roles="repository" password="null"/>
+  
 Configure an SSL connector by adding this to the Tomcat server.xml file where the repo is deployed:
   
     <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
@@ -63,22 +105,9 @@ Configure an SSL connector by adding this to the Tomcat server.xml file where th
 
 Add dir.keystore=${dir.root}/keystore to your alfresco-global.properties file.
 
-Solr Configuration
-~~~~~~~~~~~~~~~~~~
+               
 
-Add this to the tomcat-users.xml file where solr is deployed (this allows the Repository to SSL authenticate with Solr):
-
-  <user username="CN=Alfresco Repository, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB" roles="repository" password="null"/>
-
-Configure an SSL connector by adding this to the Tomcat server.xml file where solr is deployed:
-  
-    <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
-               maxThreads="150" scheme="https" keystoreFile="../../data/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
- secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
-               clientAuth="false" sslProtocol="TLS" /> 
-
-
-Ensure that the repository property 'solr.port' in alfresco-global.properties is set to the Solr Tomcat SSL port (SSL redirect don't work yet).
+Ensure that the repository property 'solr.port' in alfresco-global.properties is set to the Solr Tomcat SSL port (SSL redirects don't work yet).
 Ensure that the Solr property 'alfresco.port.ssl' is set to the Repository Tomcat SSL port in the solrcore.properties for _each_ Solr core.
 
 Troubleshooting

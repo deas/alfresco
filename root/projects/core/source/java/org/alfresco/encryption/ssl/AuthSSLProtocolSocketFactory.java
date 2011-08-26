@@ -88,8 +88,8 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
 	 * Constructor for AuthSSLProtocolSocketFactory. Either a keystore or truststore file
 	 * must be given. Otherwise SSL context initialization error will result.
 	 * 
-	 * @param keyResourceManager manages key resources.
 	 * @param parameters SSL parameters to use.
+	 * @param keyResourceLoader loads key resources from an arbitrary source e.g. classpath
 	 */
 	public AuthSSLProtocolSocketFactory(SSLEncryptionParameters parameters, KeyResourceLoader keyResourceLoader)
 	{

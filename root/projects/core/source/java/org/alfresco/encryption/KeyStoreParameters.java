@@ -85,13 +85,13 @@ public class KeyStoreParameters
 		this.location = location;
 	}
 	
-	protected boolean isSet(String property)
-	{
-		return (property != null && !property.equals(""));
-	}
-
-	public boolean isDefined()
-	{
-		return(isSet(keyMetaDataFileLocation) && isSet(location) && isSet(type) && isSet(provider));
-	}
+//	protected boolean isSet(String property)
+//	{
+//		return (property != null && !property.equals(""));
+//	}
+//
+//	public boolean isDefined()
+//	{
+//		return(isSet(keyMetaDataFileLocation) && isSet(location) && isSet(type) && isSet(provider));
+//	}
 }

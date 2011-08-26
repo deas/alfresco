@@ -26,7 +26,6 @@ import java.security.InvalidKeyException;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.util.Pair;
 
-// TODO for decryption, ensure that we catch invalidkeyexception rather than AlfrescoRuntimeException
 /**
  * The fallback encryptor provides a fallback mechanism for decryption, first using the default
  * encryption keys and, if they fail (perhaps because they have been changed), falling back
@@ -41,13 +40,28 @@ public class DefaultFallbackEncryptor implements Encryptor
 	private Encryptor fallback;
 	private Encryptor main;
 
+	public DefaultFallbackEncryptor()
+	{
+	}
+
 	public DefaultFallbackEncryptor(Encryptor main, Encryptor fallback)
 	{
+		this();
 		this.main = main;
 		this.fallback = fallback;
 	}
+	
+    public void setFallback(Encryptor fallback)
+	{
+		this.fallback = fallback;
+	}
 
-    /**
+	public void setMain(Encryptor main)
+	{
+		this.main = main;
+	}
+
+	/**
      * {@inheritDoc}
      */
     @Override
@@ -205,13 +219,4 @@ public class DefaultFallbackEncryptor implements Encryptor
 		// always available
 		return true;
 	}
-
-    /**
-     * {@inheritDoc}
-     */
-//    @Override
-//	public boolean isFallbackAvailable()
-//	{
-//		return fallback.available(KeyProvider.ALIAS_METADATA);
-//	}
 }

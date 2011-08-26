@@ -19,17 +19,14 @@
 package org.alfresco.encryption;
 
 import java.security.Key;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * 
- * Provides the system-wide secret key for symmetric database encryption from a key store
- * in the filesystem.
+ * Provides system-wide secret keys for symmetric database encryption from a key store
+ * in the filesystem. Just wraps a key store.
  * 
  * @author Derek Hulley
  * @since 4.0
@@ -38,64 +35,41 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
 {
     private static final Log logger = LogFactory.getLog(KeystoreKeyProvider.class);
 
-    private KeyStoreParameters keyStoreParameters;
-    private KeyResourceLoader keyResourceLoader;
     private AlfrescoKeyStore keyStore;
-
-    private final WriteLock writeLock;
 
     /**
      * Constructs the provider with required defaults
      */
     public KeystoreKeyProvider()
     {
-        ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-        writeLock = lock.writeLock();
     }
 
+    public KeystoreKeyProvider(KeyStoreParameters keyStoreParameters, KeyResourceLoader keyResourceLoader)
+    {
+    	this();
+    	this.keyStore = new AlfrescoKeyStoreImpl(keyStoreParameters, keyResourceLoader);
+    	init();
+    }
+    
 	/**
      * 
      * @param encryptionParameters
      * @param keyResourceLoader
      */
-    public KeystoreKeyProvider(KeyStoreParameters keyStoreParameters, KeyResourceLoader keyResourceLoader)
+    public KeystoreKeyProvider(AlfrescoKeyStore keyStore)
     {
     	this();
-    	this.setKeyStoreParameters(keyStoreParameters);
-    	this.keyResourceLoader = keyResourceLoader;
+    	this.keyStore = keyStore;
     	init();
     }
-
-	public void setKeyStoreParameters(KeyStoreParameters setKeyStoreParameters)
+    
+    public void setKeyStore(AlfrescoKeyStore keyStore)
 	{
-		this.keyStoreParameters = setKeyStoreParameters;
+		this.keyStore = keyStore;
 	}
 
-    public void setKeyResourceLoader(KeyResourceLoader keyResourceLoader)
-	{
-		this.keyResourceLoader = keyResourceLoader;
-	}
-    
-    public void init()
+	public void init()
     {
-        writeLock.lock();
-        try
-        {
-            safeInit();
-        }
-        finally
-        {
-            writeLock.unlock();
-        }
-    }
-    
-    public void safeInit()
-    {
-        this.keyStore = new AlfrescoKeyStoreImpl(keyStoreParameters, keyResourceLoader);
-//        if(!this.keyStore.exists())
-//        {
-//			throw new MissingKeyStoreException("Backup key store is not defined");
-//        }
     }
 
     /**
