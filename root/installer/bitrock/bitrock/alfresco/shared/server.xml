@@ -92,7 +92,7 @@
     <Connector port="@@BITROCK_SOLR_PORT@@" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
                maxThreads="150" scheme="https" keystoreFile="@@ALFRESCO_DATA_DIR@@/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
  secure="true" connectionTimeout="240000" truststoreFile="@@ALFRESCO_DATA_DIR@@/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
-               clientAuth="false" sslProtocol="TLS" />  
+               clientAuth="false" sslProtocol="TLS" allowUnsafeLegacyRenegotiation="true" />  
 
     <!-- An Engine represents the entry point (within Catalina) that processes
          every request.  The Engine implementation for Tomcat stand alone

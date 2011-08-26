@@ -55,7 +55,15 @@
 		</substitution>
 	    </substitutionList>
 	</substitute>		
+	<substitute>
+	    <files>${tomcat_server_directory}/scripts/ctl.sh</files>
+	    <type>exact</type>
+	    <substitutionList>
+	        <substitution>
+		    <pattern>-Dcom.sun.management.jmxremote</pattern>
+		    <value>-Dcom.sun.management.jmxremote -Dsun.security.ssl.allowUnsafeRenegotiation=true</value>
+		</substitution>
+	    </substitutionList>
+	</substitute>		
     </postInstallationActionList>
 </component>
-
-
