@@ -812,9 +812,8 @@
    <!-- Build installers in parallel -->
    <target name="distribute-installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
-           <echo>file.name.codeline=${file.name.codeline}</echo>
         <parallel threadCount="2">
-            <antcall target="windows-32-bit-installer"/>
+            <!-- <antcall target="windows-32-bit-installer"/> -->
             <antcall target="windows-64-bit-installer"/>
             <antcall target="windows-deployment-installer"/>
             <antcall target="osx-installer"/>

@@ -18,6 +18,10 @@
                             <value>${installdir}</value>
                         </substitution>
 		        <substitution>
+                            <pattern>@@ALFRESCO_DATA_DIR@@</pattern>
+                            <value>${alfresco_data_directory}</value>
+                        </substitution>
+		        <substitution>
                             <pattern>@@ALFRESCO_SOLR_DIR@@</pattern>
                             <value>${alfresco_data_directory}/solr</value>
                         </substitution>
@@ -191,8 +195,24 @@
                             <value>${application_server_port}</value>
                         </substitution>
                         <substitution>
+                            <pattern>@@BITROCK_TOMCAT_SSL_PORT@@</pattern>
+                            <value>${tomcat_server_ssl_port}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_TOMCAT_SHUTDOWN_PORT@@</pattern>
+                            <value>${tomcat_server_shutdown_port}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_TOMCAT_AJP_PORT@@</pattern>
+                            <value>${tomcat_server_ajp_port}</value>
+                        </substitution>
+                        <substitution>
                             <pattern>@@BITROCK_TOMCAT_HOST@@</pattern>
                             <value>${application_server_domain}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_SOLR_PORT@@</pattern>
+                            <value>8443</value>
                         </substitution>
                         <substitution>
                             <pattern>@@BITROCK_SHAREPOINT_PORT@@</pattern>
