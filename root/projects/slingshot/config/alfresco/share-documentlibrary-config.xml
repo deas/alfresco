@@ -549,9 +549,7 @@
          <action id="view-in-explorer" type="link" label="actions.folder.explorer-view">
             <param name="href">{explorerViewUrl}</param>
             <param name="target">_blank</param>
-            <condition type="javascript"><![CDATA[
-               Config.repositoryUrl.length > 0 && !Alfresco.constants.PORTLET
-            ]]></condition>
+            <evaluator>evaluator.doclib.action.viewInExplorer</evaluator> <!-- repository-url config set, not in portlet mode -->
          </action>
 
          <!-- Checkout to Google Docs -->
@@ -587,10 +585,7 @@
          <action id="document-view-in-source-repository" type="link" label="actions.document.view-source-repository">
             <param name="href">{sourceRepositoryUrl}</param> <!-- calculated from siteId, item.location.repositoryId, replicationUrlMapping from share-config-custom.xml and node.type -->
             <param name="target">_blank</param>
-            <evaluator>evaluator.doclib.action.transferred</evaluator> <!-- aspect trx:transferred -->
-            <condition type="javascript"><![CDATA[
-               !Alfresco.constants.PORTLET
-            ]]></condition>
+            <evaluator>evaluator.doclib.action.transferred</evaluator> <!-- aspect trx:transferred, not portlet mode -->
          </action>
          
          <!-- Publish document -->

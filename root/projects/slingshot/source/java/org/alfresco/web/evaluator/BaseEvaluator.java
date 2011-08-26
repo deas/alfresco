@@ -42,6 +42,16 @@ public abstract class BaseEvaluator implements Evaluator
     protected HashMap<String, String> args = null;
     // metadata from the webscript response
     protected JSONObject metadata = null;
+    // negate output flag
+    protected boolean negateOutput = false;
+
+    /**
+     * Sets optional negateOutput flag which applies when one of the main entry points is used
+     */
+    public void setNegateOutput(boolean negateOutput)
+    {
+        this.negateOutput = negateOutput;
+    }
 
     /**
      * Optional entry point from Rhino script. Converts JSON String to a JSONObject
@@ -95,7 +105,7 @@ public abstract class BaseEvaluator implements Evaluator
         {
             throw new AlfrescoRuntimeException("Failed to run UI evaluator: " + err.getMessage());
         }
-        return evaluate(jsonObject);
+        return (this.negateOutput ^ evaluate(jsonObject));
     }
 
     /**

@@ -76,6 +76,10 @@
    <bean id="evaluator.doclib.action.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
    <bean id="evaluator.doclib.action.metadataValue" class="org.alfresco.web.evaluator.MetadataValueEvaluator" />
    <bean id="evaluator.doclib.action.isBrowser" class="org.alfresco.web.evaluator.IsBrowserEvaluator" />
+   <bean id="evaluator.doclib.action.isPortlet" class="org.alfresco.web.evaluator.IsPortletModeEvaluator" />
+   <bean id="evaluator.doclib.action.notPortlet" parent="evaluator.doclib.action.isPortlet">
+      <property name="negateOutput" value="true" />
+   </bean>
 
    <!-- Inline Edit -->
    <bean id="evaluator.doclib.action.inlineEditAspect" parent="evaluator.doclib.action.hasAspect">
@@ -204,6 +208,13 @@
    </bean>
 
    <!--
+      View in Explorer
+   -->
+   <bean id="evaluator.doclib.action.viewInExplorer" class="org.alfresco.web.evaluator.doclib.action.ViewInExplorerEvaluator">
+      <property name="configService" ref="web.config" />
+   </bean>
+
+   <!--
       Google Docs
    -->
    <bean id="evaluator.doclib.action.googleDocsEditable" parent="evaluator.doclib.action.hasAspect">
@@ -238,10 +249,18 @@
    <!--
       Transferred Nodes
    -->
-   <bean id="evaluator.doclib.action.transferred" parent="evaluator.doclib.action.hasAspect">
+   <bean id="evaluator.doclib.action.transferredAspect" parent="evaluator.doclib.action.hasAspect">
       <property name="aspects">
          <list>
             <value>trx:transferred</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.transferred" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.transferredAspect" />
+            <ref bean="evaluator.doclib.action.notPortlet" />
          </list>
       </property>
    </bean>
