@@ -4,11 +4,12 @@
          <id>Alfresco DOD5015 Records Management</id>
 
          <!-- Base evaluator that decides if any of the component bindings should be used at all -->
-         <evaluator>site.module.evaluator</evaluator>
-         <evaluatorProperties>
-            <sites>.*</sites>
-            <sitePresets>rm-site-dashboard</sitePresets>
-         </evaluatorProperties>
+         <evaluator type="site.module.evaluator">
+	         <params>
+	            <sites>.*</sites>
+	            <sitePresets>rm-site-dashboard</sitePresets>
+	         </params>
+         </evaluator>
 
          <!-- Apply the following component bindings when the base evaluator above passes -->
          <components>

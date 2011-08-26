@@ -4,10 +4,11 @@
          <id>Alfresco Portlet Extension</id>
 
          <!-- Base evaluator that decides if any of the component bindings should be used at all -->
-         <evaluator>portlet.module.evaluator</evaluator>
-         <evaluatorProperties>
-            <portletUrls>.*</portletUrls>
-         </evaluatorProperties>
+         <evaluator type="portlet.module.evaluator">
+	         <params>
+	            <portletUrls>.*</portletUrls>
+	         </params>
+         </evaluator>
 
          <components>
 
