@@ -939,7 +939,8 @@ public class DictionaryDAOImpl implements DictionaryDAO
     {
     	if(dataType == null)
     	{
-    		throw new IllegalArgumentException("dataType cannot be null");
+    		throw new IllegalArgumentException(
+    				"Unable to fetch properties for " + modelName + "  : dataType must not be null");
     	}
 
         HashSet<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
