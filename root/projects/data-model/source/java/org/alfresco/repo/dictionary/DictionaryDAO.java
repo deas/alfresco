@@ -138,9 +138,9 @@ public interface DictionaryDAO extends ModelQuery
      * Get all properties for the model and that are of the given data type.
      * If dataType is null then the all properties will be returned. 
      * 
-     * @param modelName
-     * @param dataType
-     * @return
+     * @param modelName             the name of the model
+     * @param dataType              <tt>null</tt> to get all properties
+     * @return                      the properties associated with the model
      */
     public Collection<PropertyDefinition> getProperties(QName modelName, QName dataType);
      

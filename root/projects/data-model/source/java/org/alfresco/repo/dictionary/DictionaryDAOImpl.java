@@ -507,10 +507,8 @@ public class DictionaryDAOImpl implements DictionaryDAO
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.ModelQuery#getDataType(java.lang.Class)
-     */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    @Override
     public DataTypeDefinition getDataType(Class javaClass)
     {
         String tenantDomain = tenantService.getCurrentUserDomain();
@@ -931,18 +929,9 @@ public class DictionaryDAOImpl implements DictionaryDAO
         return model.getProperties();
     }
     
-    /*
-     * (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.DictionaryDAO#getProperties(org.alfresco.service.namespace.QName, org.alfresco.service.namespace.QName)
-     */
+    @Override
     public Collection<PropertyDefinition> getProperties(QName modelName, QName dataType)
     {
-    	if(dataType == null)
-    	{
-    		throw new IllegalArgumentException(
-    				"Unable to fetch properties for " + modelName + "  : dataType must not be null");
-    	}
-
         HashSet<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
 
         Collection<PropertyDefinition> props = getProperties(modelName);
