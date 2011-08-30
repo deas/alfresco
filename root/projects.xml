@@ -2947,6 +2947,7 @@
             <include name="org.springframework.expression-3.0.5.RELEASE.jar" />
             <include name="commons/commons-logging-1.1.1.jar" />
             <include name="optional/log4j-1.2.15.jar" />
+            <include name="aopalliance.jar" />
          </fileset>
       </copy>
 
