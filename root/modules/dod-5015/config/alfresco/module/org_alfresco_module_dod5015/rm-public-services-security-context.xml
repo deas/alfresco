@@ -905,25 +905,27 @@
         <property name="objectDefinitionSource">
             <value>
                 <![CDATA[ 
-                org.alfresco.service.cmr.security.PersonService.getPerson=ACL_ALLOW,AFTER_ACL_NODE.sys:base.ReadProperties 
-                org.alfresco.service.cmr.security.PersonService.personExists=ACL_ALLOW 
+                org.alfresco.service.cmr.security.PersonService.getPerson=ACL_ALLOW,AFTER_ACL_NODE.sys:base.ReadProperties
+                org.alfresco.service.cmr.security.PersonService.personExists=ACL_ALLOW
                 org.alfresco.service.cmr.security.PersonService.createMissingPeople=ACL_ALLOW
-                org.alfresco.service.cmr.security.PersonService.setCreateMissingPeople=ACL_METHOD.ROLE_ADMINISTRATOR 
-                org.alfresco.service.cmr.security.PersonService.getMutableProperties=ACL_ALLOW 
-                org.alfresco.service.cmr.security.PersonService.setPersonProperties=ACL_METHOD.ROLE_ADMINISTRATOR 
+                org.alfresco.service.cmr.security.PersonService.setCreateMissingPeople=ACL_METHOD.ROLE_ADMINISTRATOR
+                org.alfresco.service.cmr.security.PersonService.getMutableProperties=ACL_ALLOW
+                org.alfresco.service.cmr.security.PersonService.setPersonProperties=ACL_METHOD.ROLE_ADMINISTRATOR
                 org.alfresco.service.cmr.security.PersonService.isMutable=ACL_ALLOW
-                org.alfresco.service.cmr.security.PersonService.createPerson=ACL_METHOD.ROLE_ADMINISTRATOR 
-                org.alfresco.service.cmr.security.PersonService.deletePerson=ACL_METHOD.ROLE_ADMINISTRATOR 
-                org.alfresco.service.cmr.security.PersonService.getAllPeople=ACL_ALLOW 
+                org.alfresco.service.cmr.security.PersonService.createPerson=ACL_METHOD.ROLE_ADMINISTRATOR
+                org.alfresco.service.cmr.security.PersonService.deletePerson=ACL_METHOD.ROLE_ADMINISTRATOR
+                org.alfresco.service.cmr.security.PersonService.notifyPerson=ACL_METHOD.ROLE_ADMINISTRATOR
+                org.alfresco.service.cmr.security.PersonService.getAllPeople=ACL_ALLOW
+                org.alfresco.service.cmr.security.PersonService.getPeople=ACL_ALLOW
                 org.alfresco.service.cmr.security.PersonService.getPeopleFilteredByProperty=ACL_ALLOW
-                org.alfresco.service.cmr.security.PersonService.getPeopleContainer=ACL_ALLOW 
-                org.alfresco.service.cmr.security.PersonService.getUserNamesAreCaseSensitive=ACL_ALLOW 
-                org.alfresco.service.cmr.security.PersonService.getUserIdentifier=ACL_ALLOW 
-                org.alfresco.service.cmr.security.PersonService.*=ACL_DENY,RM_DENY 
+                org.alfresco.service.cmr.security.PersonService.getPeopleContainer=ACL_ALLOW
+                org.alfresco.service.cmr.security.PersonService.getUserNamesAreCaseSensitive=ACL_ALLOW
+                org.alfresco.service.cmr.security.PersonService.getUserIdentifier=ACL_ALLOW
+                org.alfresco.service.cmr.security.PersonService.*=ACL_DENY
                 ]]>
             </value>
         </property>
-    </bean>
+    </bean>       
     
     <!-- ==================== -->
     <!-- The Template Service -->

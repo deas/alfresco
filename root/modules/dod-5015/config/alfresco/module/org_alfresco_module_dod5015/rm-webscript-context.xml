@@ -20,10 +20,17 @@
     <bean id="webscript.org.alfresco.rma.dodcustomtypes.get" class="org.alfresco.module.org_alfresco_module_dod5015.script.DodCustomTypesGet" parent="webscript">
         <property name="dictionaryService" ref="DictionaryService"/>
     </bean>
+    
+    <bean id="webscript.org.alfresco.rma.customisable.get" class="org.alfresco.module.org_alfresco_module_dod5015.script.CustomisableGet" parent="webscript">
+        <property name="recordsManagementAdminService" ref="RecordsManagementAdminService"/>
+        <property name="namespaceService" ref="NamespaceService"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+    </bean>
 
     <!-- REST impl for GET Custom Property Definitions -->
     <bean id="webscript.org.alfresco.rma.custompropdefinitions.get" class="org.alfresco.module.org_alfresco_module_dod5015.script.CustomPropertyDefinitionsGet" parent="webscript">
         <property name="recordsManagementAdminService" ref="RecordsManagementAdminService"/>
+        <property name="namespaceService" ref="NamespaceService"/>
     </bean>
 
     <!-- REST impl for PUT Custom Property Definitions -->

@@ -23,10 +23,9 @@
                <div class="list-header theme-bg-color-4">${msg("label.list-title")}</div>
                <div class="object-list">
                   <ul id="${el}-object-list">
-                     <li id="${el}-recordSeries" class="recordSeries theme-bg-color-2" title="${msg("label.recordseries")}">${msg("label.recordseries")}</li>
-                     <li id="${el}-recordCategory" class="recordCategory theme-bg-color-2" title="${msg("label.recordcategory")}">${msg("label.recordcategory")}</li>
-                     <li id="${el}-recordFolder" class="recordFolder theme-bg-color-2" title="${msg("label.recordfolder")}">${msg("label.recordfolder")}</li>
-                     <li id="${el}-record" class="record theme-bg-color-2" title="${msg("label.record")}">${msg("label.record")}</li>
+                    <#list customisable as custom>
+                       <li id="${el}-${custom.name}" class="customisable theme-bg-color-2" title="${custom.title}">${custom.title}</li>                    
+                    </#list>
                   </ul>
                </div>
             </div>

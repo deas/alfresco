@@ -17,6 +17,16 @@ function main()
    }
    model.constraints = constraints;
    
+   
+   // retrieve the customisable aspects and types
+   var customisable = [];
+   var res2 = conn.get("/api/rma/admin/customisable");
+   if (res2.status == 200)
+   {
+	   customisable = eval('(' + res2 + ')').data;
+   }
+   model.customisable = customisable;
+   
    // test user capabilities - can they access Custom Metadata?
    model.hasAccess = hasCapability(conn, "CreateModifyDestroyFileplanTypes");
 }

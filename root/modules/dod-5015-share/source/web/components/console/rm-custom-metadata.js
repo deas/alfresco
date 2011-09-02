@@ -134,14 +134,20 @@
                this.onUpdate();
             };
             var listEls = Dom.getChildren(Dom.get(parent.id + "-object-list"));
+            var firstListItemId;
             for (var i=0; i<listEls.length; i++)
             {
+               if (i == 0)
+               {
+            	   firstListItemId = listEls[i].id;
+               }
+               
                var el = new Element(listEls[i]);
                el.addListener("click", onClickListObject, listEls[i].id, this);
             }
             
             // set initially selected object - fake the event call so handler code is invoked
-            onClickListObject.call(this, null, parent.id + "-recordSeries");
+            onClickListObject.call(this, null, firstListItemId);
          },
          
          /**

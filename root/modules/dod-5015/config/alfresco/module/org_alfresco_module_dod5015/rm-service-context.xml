@@ -535,6 +535,7 @@
         	<list>
         		<value>rma:recordFolder</value>
         		<value>rma:record</value>
+        		<value>rma:physicalRecordLocation</value>
         	</list>
         </property>
     </bean>

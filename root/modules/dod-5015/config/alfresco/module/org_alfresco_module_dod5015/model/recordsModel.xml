@@ -247,10 +247,34 @@
       <type name="rma:nonElectronicDocument">
 
          <title>Non-Electronic Document</title>
-         <parent>cm:content</parent>
+         <parent>cm:content</parent>         
          <archive>false</archive>
+         <properties>
+            <property name="rma:physicalSize">
+               <title>Document Physical Size</title>
+               <type>d:text</type>
+               <mandatory>true</mandatory>
+               <index enabled="true">
+		          <atomic>true</atomic>
+		          <stored>false</stored>
+		          <tokenised>false</tokenised>
+		       </index>
+            </property>
+            <property name="rma:numberOfCopies">
+               <title>Number Of Copies</title>
+               <type>d:int</type>               
+               <mandatory>false</mandatory>
+               <default>1</default>
+               <index enabled="true">
+		          <atomic>true</atomic>
+		          <stored>false</stored>
+		          <tokenised>false</tokenised>
+		       </index>
+            </property>
+         </properties>
          <mandatory-aspects>
             <aspect>rma:filePlanComponent</aspect>
+            <aspect>rma:physicalRecordLocation</aspect>
          </mandatory-aspects>
       </type>
 
@@ -729,7 +753,6 @@
 
       <aspect name="rma:commonRecordDetails">
         <properties>
-
             <property name="rma:location">
                <title>Location</title>
                <type>d:text</type>
@@ -745,6 +768,56 @@
         <mandatory-aspects>
             <aspect>rma:filePlanComponent</aspect>
         </mandatory-aspects>
+      </aspect>
+      
+      <aspect name="rma:physicalRecordLocation">
+      	<title>Physical Record Location</title>      	
+      	<properties>            
+            <property name="rma:storageLocation">
+               <title>Storage Location</title>
+               <type>d:text</type>
+               <mandatory>false</mandatory>
+               <index enabled="true">
+		          <atomic>true</atomic>
+		          <stored>false</stored>
+		          <tokenised>false</tokenised>
+		       </index>
+            </property>     
+                   
+            <property name="rma:shelf">
+               <title>Shelf</title>
+               <type>d:text</type>
+               <mandatory>false</mandatory>
+               <index enabled="true">
+		          <atomic>true</atomic>
+		          <stored>false</stored>
+		          <tokenised>false</tokenised>
+		       </index>
+            </property>
+            
+            <property name="rma:box">
+               <title>Box</title>
+               <type>d:text</type>
+               <mandatory>false</mandatory>
+               <index enabled="true">
+		          <atomic>true</atomic>
+		          <stored>false</stored>
+		          <tokenised>false</tokenised>
+		       </index>
+            </property>
+            
+            <property name="rma:file">
+               <title>File</title>
+               <type>d:text</type>
+               <mandatory>false</mandatory>
+               <index enabled="true">
+		          <atomic>true</atomic>
+		          <stored>false</stored>
+		          <tokenised>false</tokenised>
+		       </index>
+            </property>
+            
+        </properties>	
       </aspect>
 
       <!-- State management aspects -->

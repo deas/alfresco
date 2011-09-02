@@ -77,28 +77,7 @@
    cursor: pointer;
 }
 
-.metadata li.recordSeries
-{
-   background-image: url(../documentlibrary/images/record-series-32.png);
-   background-repeat: no-repeat;
-   background-position: 0.3em 0.3em;
-}
-
-.metadata li.recordCategory
-{
-   background-image: url(../documentlibrary/images/record-category-32.png);
-   background-repeat: no-repeat;
-   background-position: 0.3em 0.3em;
-}
-
-.metadata li.recordFolder
-{
-   background-image: url(../documentlibrary/images/record-folder-32.png);
-   background-repeat: no-repeat;
-   background-position: 0.3em 0.3em;
-}
-
-.metadata li.record
+.metadata li.customisable
 {
    background-image: url(../documentlibrary/images/record-32.png);
    background-repeat: no-repeat;
