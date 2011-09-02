@@ -560,8 +560,30 @@
             data,
             uniqueFileToken;
 
-         for (var i = 0; i < this.showConfig.files.length; i++)
+         // Recursively perform the upload.
+         this.recursiveUpload(0, this.showConfig.files.length, this);
+      },
+
+      /**
+       * A function that uploads a file, increments the file count and then recurses. Recursion is used instead of iteration
+       * because the progress events do not contain enough information to link them back to the file they relate. The alternative
+       * to recursion is to assign custom data to the XMLHttpRequest.upload object but the FireFox browser can randomly lose
+       * this data and stall the upload. Using recursion ensures that the "fileId" variable is set correctly as the event listener
+       * functions will only find the correct value in their immediate closure (using iteration it will always end up as the
+       * last value)
+       * 
+       * @method recursiveUpload
+       * @param i The index in the file to upload
+       * @param max The count of files to upload (recursion stops when i is no longer less than max)
+       * @param scope Should be set to the widget scope (i.e. this). 
+       */
+      recursiveUpload: function DNDUpload_recursiveUpload(i, max, scope)
+      {
+         var uniqueFileToken;
+         if (i < max)
          {
+            var fileId = "file" + i;
+            
             try
             {
                /**
@@ -575,15 +597,13 @@
                      try
                      {
                         var percentage = Math.round((e.loaded * 100) / e.total),
-                           fileId = e.target._fileData,
-                           fileInfo = _this.fileStore[fileId];
-
+                            fileInfo = scope.fileStore[fileId];
                         fileInfo.progressPercentage.innerHTML = percentage + "%";
 
                         // Set progress position
                         var left = (-400 + ((percentage/100) * 400));
                         Dom.setStyle(fileInfo.progress, "left", left + "px");
-                        _this._updateAggregateProgress(fileInfo, e.loaded);
+                        scope._updateAggregateProgress(fileInfo, e.loaded);
 
                         // Save value of how much has been loaded for the next iteration
                         fileInfo.lastProgress = e.loaded;
@@ -592,7 +612,6 @@
                      {
                         Alfresco.logger.error("The following error occurred processing an upload progress event: ", exception);
                      }
-
                  }
                  else
                  {
@@ -611,9 +630,7 @@
 
                     // The individual file has been transfered completely
                     // Now adjust the gui for the individual file row
-                    var fileId = e.target._fileData,
-                     fileInfo = _this.fileStore[fileId];
-
+                    var fileInfo = scope.fileStore[fileId];
                     if (fileInfo.request.readyState != 4)
                     {
                        // There is an occasional timing issue where the upload completion event fires before
@@ -624,7 +641,7 @@
                        {
                           if (fileInfo.request.readyState == 4)
                           {
-                             _this._processUploadCompletion(fileInfo);
+                             scope._processUploadCompletion(fileInfo);
                           }
                        }
                     }
@@ -632,7 +649,7 @@
                     {
                        // If the request correctly indicates that the response has returned then we can process
                        // it to ensure that files have been uploaded correctly.
-                       _this._processUploadCompletion(fileInfo);
+                       scope._processUploadCompletion(fileInfo);
                     }
                  }
                  catch(exception)
@@ -648,13 +665,12 @@
                {
                   try
                   {
-                     var fileId = e.target._fileData,
-                        fileInfo = _this.fileStore[fileId];
+                     var fileInfo = scope.fileStore[fileId];
 
                      // This sometimes gets called twice, make sure we only adjust the gui once
-                     if (fileInfo.state !== _this.STATE_FAILURE)
+                     if (fileInfo.state !== scope.STATE_FAILURE)
                      {
-                        _this._processUploadFailure(fileInfo, event.status);
+                        scope._processUploadFailure(fileInfo, event.status);
                      }
                   }
                   catch(exception)
@@ -663,62 +679,62 @@
                   }
                };
 
+               
+               
                // Check if the file has size...
                if (this.showConfig.files[i].size === 0)
                {
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: this.msg("message.zeroByteFileSelected", this.showConfig.files[i].fileName)
+                     text: scope.msg("message.zeroByteFileSelected", scope.showConfig.files[i].fileName)
                   });
                }
-               else if (!Alfresco.forms.validation.nodeName({ id: 'file', value: this.showConfig.files[i].fileName }, null, null, null, true))
+               else if (!Alfresco.forms.validation.nodeName({ id: 'file', value: scope.showConfig.files[i].fileName }, null, null, null, true))
                {
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: this.msg("message.illegalCharacters")
+                     text: scope.msg("message.illegalCharacters")
                   });
                }
                else
                {
                   // Add the event listener functions to the upload properties of the XMLHttpRequest object...
                   var request = new XMLHttpRequest();
-                  request.upload.addEventListener("progress", progressListener, false);
-                  request.upload.addEventListener("load", successListener, false);
-                  request.upload.addEventListener("error", failureListener, false);
-
-                  var fileId = "file" + i;
-
+                  
                   // Add the data to the upload property of XMLHttpRequest so that we can determine which file each
                   // progress update relates to (the event argument passed in the progress function does not contain
                   // file name details)...
                   request.upload._fileData = fileId;
-
+                  request.upload.addEventListener("progress", progressListener, false);
+                  request.upload.addEventListener("load", successListener, false);
+                  request.upload.addEventListener("error", failureListener, false);
+                  
                   // Construct the data that will be passed to the YUI DataTable to add a row...
-                  var fileName = this.showConfig.files[i].fileName;
+                  var fileName = scope.showConfig.files[i].fileName;
                   data = {
                       id: fileId,
                       name: fileName,
-                      size: this.showConfig.files[i].size
+                      size: scope.showConfig.files[i].size
                   };
 
                   // Construct an object containing the data required for file upload...
                   var uploadData =
                   {
-                     filedata: this.showConfig.files[i],
-                     filename: this.showConfig.files[i].fileName,
-                     destination: this.showConfig.destination,
-                     siteId: this.showConfig.siteId,
-                     containerId: this.showConfig.containerId,
-                     uploaddirectory: this.showConfig.uploadDirectory
+                     filedata: scope.showConfig.files[i],
+                     filename: scope.showConfig.files[i].fileName,
+                     destination: scope.showConfig.destination,
+                     siteId: scope.showConfig.siteId,
+                     containerId: scope.showConfig.containerId,
+                     uploaddirectory: scope.showConfig.uploadDirectory
                   };
 
                   // Add the upload data to the file store. It is important that we don't initiate the XMLHttpRequest
                   // send operation before the YUI DataTable has finished rendering because if the file being uploaded
                   // is small and the network is quick we could receive the progress/completion events before we're
                   // ready to handle them.
-                  this.fileStore[fileId] =
+                  scope.fileStore[fileId] =
                   {
-                     state: this.STATE_UPLOADING,
+                     state: scope.STATE_UPLOADING,
                      fileName: fileName,
                      nodeRef: null,
                      uploadData: uploadData,
@@ -726,26 +742,29 @@
                   };
 
                   // Add file to file table
-                  this.dataTable.addRow(data);
-                  this.addedFiles[uniqueFileToken] = this._getUniqueFileToken(data);
+                  scope.dataTable.addRow(data);
+                  scope.addedFiles[uniqueFileToken] = scope._getUniqueFileToken(data);
                   displayDialog = true;
                }
 
                if (displayDialog)
                {
                   // Enable the Esc key listener
-                  this.widgets.escapeListener.enable();
-                  this.panel.setFirstLastFocusable();
-                  this.panel.show();
+                  scope.widgets.escapeListener.enable();
+                  scope.panel.setFirstLastFocusable();
+                  scope.panel.show();
                }
             }
             catch(exception)
             {
                Alfresco.logger.error("DNDUpload_show: The following exception occurred processing a file to upload: ", exception);
             }
+            
+            // If we've not hit the max, recurse info the function...
+            scope.recursiveUpload(i+1, max, scope);
          }
       },
-
+      
       /**
        * Called from show when an upload complete event fires.
        *
