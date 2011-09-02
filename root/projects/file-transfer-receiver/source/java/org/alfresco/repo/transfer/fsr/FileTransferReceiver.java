@@ -96,7 +96,6 @@ public class FileTransferReceiver implements TransferReceiver
      */
     private long lockTimeOut = 3600000;
 
-    private TransferVersionChecker transferVersionChecker;
 
     private String rootStagingDirectory;
 
@@ -113,8 +112,6 @@ public class FileTransferReceiver implements TransferReceiver
     private String fileTransferRootNodeRef;
 
     private Set<String> setOfNodesBeforeSyncMode;
-
-
 
     public void cancel(String transferId) throws TransferException
     {
@@ -525,7 +522,6 @@ public class FileTransferReceiver implements TransferReceiver
     {
         log.debug("Start transfer");
 
-
         /**
          * Check that transfer is allowed to this repository
          */
@@ -536,7 +532,9 @@ public class FileTransferReceiver implements TransferReceiver
          */
         TransferVersion toVersion = getVersion();
 
-        if (!getTransferVersionChecker().checkTransferVersions(fromVersion, toVersion))
+        // just check the major version number are equal and if not null
+        if (fromVersion.getVersionMajor() == null || toVersion.getVersionMajor() == null
+                || !fromVersion.getVersionMajor().equals(toVersion.getVersionMajor()))
         {
             throw new TransferException("Transfer Incompatible versions", new Object[]
             { "None", fromVersion, toVersion });
@@ -599,7 +597,6 @@ public class FileTransferReceiver implements TransferReceiver
 
             manifestProcessorFactory.startTransfer(transferId, fromRepositoryId, fromVersion);
 
-
             return transferId;
 
         }
@@ -609,8 +606,6 @@ public class FileTransferReceiver implements TransferReceiver
             // lock is already taken.
             throw new TransferException("MSG_TRANSFER_LOCK_UNAVAILABLE");
         }
-
-
 
     }
 
@@ -1016,8 +1011,7 @@ public class FileTransferReceiver implements TransferReceiver
     }
 
     /*
-     * Reset the set of nodes that should be used when handling sync=true
-     * This is the initial set of nodes.
+     * Reset the set of nodes that should be used when handling sync=true This is the initial set of nodes.
      */
     public void resetListOfNodesBeforeSyncMode()
     {
@@ -1025,11 +1019,9 @@ public class FileTransferReceiver implements TransferReceiver
     }
 
     /*
-     * Build the list of nodes that should be considered when handling sync=true
-     * This set comes from the DB. The set of nodes that will be deleted
-     * in sync mode will be the set build when removing the received nodes
-     * from this set (the one that where in the DB before transfer).
-     * We create here the full set of nodes before transfer.
+     * Build the list of nodes that should be considered when handling sync=true This set comes from the DB. The set of
+     * nodes that will be deleted in sync mode will be the set build when removing the received nodes from this set (the
+     * one that where in the DB before transfer). We create here the full set of nodes before transfer.
      */
     public void updateListOfDescendantsForSyncMode(String nodeRef)
     {
@@ -1059,12 +1051,11 @@ public class FileTransferReceiver implements TransferReceiver
         final String localTransferId = transferId;
         final String localNewName = newName;
 
-
         txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
             {
                 public Void execute() throws Throwable
                 {
-                    fileTransferInfoDAO.createFileTransferNodeRenameEntity(localNodeRef,localTransferId,localNewName);
+                    fileTransferInfoDAO.createFileTransferNodeRenameEntity(localNodeRef, localTransferId, localNewName);
 
                     return null;
 
@@ -1100,7 +1091,8 @@ public class FileTransferReceiver implements TransferReceiver
                     {
                         public List<FileTransferNodeRenameEntity> execute() throws Throwable
                         {
-                            List<FileTransferNodeRenameEntity> fileTransferInfoEntityList = fileTransferInfoDAO.findFileTransferNodeRenameEntityByTransferId(localtransferId);
+                            List<FileTransferNodeRenameEntity> fileTransferInfoEntityList = fileTransferInfoDAO
+                                    .findFileTransferNodeRenameEntityByTransferId(localtransferId);
 
                             return fileTransferInfoEntityList;
 
@@ -1108,8 +1100,6 @@ public class FileTransferReceiver implements TransferReceiver
                     }, true, false);
         return fileTransferInfoEntityList;
     }
-
-
 
     public Set<String> getListOfDescendentsForSyncMode()
     {
@@ -1163,15 +1153,6 @@ public class FileTransferReceiver implements TransferReceiver
         this.lockTimeOut = lockTimeOut;
     }
 
-    public TransferVersionChecker getTransferVersionChecker()
-    {
-        return transferVersionChecker;
-    }
-
-    public void setTransferVersionChecker(TransferVersionChecker transferVersionChecker)
-    {
-        this.transferVersionChecker = transferVersionChecker;
-    }
 
     public void setTransactionService(TransactionService transactionService)
     {
@@ -1195,7 +1176,7 @@ public class FileTransferReceiver implements TransferReceiver
 
     public void setManifestProcessorFactory(ManifestProcessorFactory manifestProcessorFactory)
     {
-        this.manifestProcessorFactory = (FileTransferManifestProcessorFactory)manifestProcessorFactory;
+        this.manifestProcessorFactory = (FileTransferManifestProcessorFactory) manifestProcessorFactory;
     }
 
     public void setProgressMonitor(TransferProgressMonitor progressMonitor)

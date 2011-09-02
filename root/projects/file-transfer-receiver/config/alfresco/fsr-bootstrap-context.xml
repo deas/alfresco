@@ -152,8 +152,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
         <property name="defaultRetryWait"><value>20</value></property>
     </bean>
 
-    <bean id="transferVersionChecker" class="org.alfresco.repo.transfer.TransferVersionCheckerImpl">
-    </bean>
 
     <bean id="transferReceiver" class="org.alfresco.repo.transfer.fsr.FileTransferReceiver">
         <property name="transactionService" ref="transactionService" />
@@ -169,9 +167,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
         </property>
         <property name="lockTimeOut">
             <value>300000</value>
-        </property>
-        <property name="transferVersionChecker">
-            <ref bean="transferVersionChecker" />
         </property>
         <property name="rootStagingDirectory">
                 <value>${file.transfer.receiver.rootstagingdirectory}</value>
