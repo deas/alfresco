@@ -36,7 +36,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-codec-1.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
