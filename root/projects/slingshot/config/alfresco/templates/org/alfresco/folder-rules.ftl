@@ -50,8 +50,8 @@
          rules: <#if ruleset.rules??>[<#list ruleset.rules as rule>
             {
                id: "${rule.id}",
-               title: "${rule.title?html}",
-               description: "${rule.description?html}",
+               title: "${(rule.title!"")?html}",
+               description: "${(rule.description!"")?html}",
                url: "${rule.url}",
                disabled: ${rule.disabled?string},
                owningNode:
@@ -64,8 +64,8 @@
          inheritedRules: <#if ruleset.inheritedRules??>[<#list ruleset.inheritedRules as rule>
             {
                id: "${rule.id}",
-               title: "${rule.title?html}",
-               description: "${rule.description?html}",
+               title: "${(rule.title!"")?html}",
+               description: "${(rule.description!"")?html}",
                url: "${rule.url}",
                disabled: ${rule.disabled?string},
                owningNode:
