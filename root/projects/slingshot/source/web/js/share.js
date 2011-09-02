@@ -1219,7 +1219,7 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
        */
       _fadeOut: function DashletTitleBarActions__fadeOut(e, me)
       {
-         if (YAHOO.env.ua.ie > 0)
+         if (YAHOO.env.ua.ie > 0 && YAHOO.env.ua.ie < 9)
          {
             me.actionsNode.style.display = "none";
          }
@@ -1250,7 +1250,7 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
        */
       _fadeIn: function DashletTitleBarActions__fadeIn(e, me)
       {
-         if (YAHOO.env.ua.ie > 0)
+         if (YAHOO.env.ua.ie > 0 && YAHOO.env.ua.ie < 9)
          {
             me.actionsNode.style.display = "block";
          }

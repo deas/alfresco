@@ -3085,45 +3085,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
             if (e.keyCode == 13 && this.value.length > 0)
             {
                Event.stopEvent(e); // Prevent the surrounding form from being submitted
-               
-               var dataObj = { name : this.value },
-                   successCallback = 
-                   { 
-                      fn: function(response)
-                      {
-                         // The tag was successfully created, add it before the new tag entry field
-                         // and reset the entry field...
-                         _this._applyTag(this.value, response.json.nodeRef);
-                         if (YUIDom.isAncestor(_this.currentTags, this))
-                         {
-                            // We must have just finished editing a tag, therefore we need to move
-                            // the auto-complete box out of the current tags...
-                            YUIDom.insertAfter(this.parentNode, _this.currentTags);
-                         }
-                      },
-                      scope: this
-                   },
-                   failureCallback = 
-                   {
-                      fn: function(response)
-                      {
-                         // The tag was not created for some reason. There's no need to 
-                         // do any additional action because the validation balloon will 
-                         // still be shown.
-                      },
-                      scope: this
-                   };
-               
-               // Post a request to create a new tag. This will succeed even if the tag already
-               // exists, it will just give us a handy reference to the nodeRef for the tag
-               Alfresco.util.Ajax.jsonRequest(
-               {
-                  method: "POST",
-                  url: Alfresco.constants.PROXY_URI + "api/tag/workspace/SpacesStore",
-                  dataObj: dataObj,
-                  successCallback: successCallback,
-                  failureCallback: failureCallback
-               });
+               _this._createTag(this.value, false);
             }
          });
          
@@ -3192,7 +3154,16 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
 
          eSave.on("click", function(e)
          {
-            this.form._submitInvoked(e);
+            // Check to see if any characters need to be converted into a tag...
+            if (this.newTagInput.value.length > 0)
+            {
+               this._createTag(this.newTagInput.value, true, e);
+            }
+            else
+            {
+               this.form._submitInvoked(e);
+            }
+            
          }, this, true);
 
          eCancel.on("click", function(e)
@@ -3254,6 +3225,62 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          // Initialise the form
          this.form.init();
          this.markupGenerated = true;
+      },
+      
+      /**
+       * Creates and applies a tag. If the tag already exists then it will just be re-used.
+       * 
+       * @method _createTag
+       * @param value The value of the tag to create/apply
+       * @param submitOnSuccess Whether or not to submit the form on a success callback
+       * @param eventToStop An event to stop if necessary (this will be completed by the form submit action)
+       */
+      _createTag: function InsituEditor_tagEditor__createTag(value, submitOnSuccess, eventToStop)
+      {
+         var dataObj = { name : value },
+         successCallback = 
+         { 
+            fn: function(response)
+            {
+               // The tag was successfully created, add it before the new tag entry field
+               // and reset the entry field...
+               this._applyTag(value, response.json.nodeRef);
+               if (YUIDom.isAncestor(this.currentTags, this))
+               {
+                  // We must have just finished editing a tag, therefore we need to move
+                  // the auto-complete box out of the current tags...
+                  YUIDom.insertAfter(this.parentNode, this.currentTags);
+               }
+               
+               if (submitOnSuccess)
+               {
+                  this.form._submitInvoked(eventToStop);
+               }
+               
+            },
+            scope: this
+         },
+         failureCallback = 
+         {
+            fn: function(response)
+            {
+               // The tag was not created for some reason. There's no need to 
+               // do any additional action because the validation balloon will 
+               // still be shown.
+            },
+            scope: this
+         };
+     
+         // Post a request to create a new tag. This will succeed even if the tag already
+         // exists, it will just give us a handy reference to the nodeRef for the tag
+         Alfresco.util.Ajax.jsonRequest(
+         {
+            method: "POST",
+            url: Alfresco.constants.PROXY_URI + "api/tag/workspace/SpacesStore",
+            dataObj: dataObj,
+            successCallback: successCallback,
+            failureCallback: failureCallback
+         });
       }
    });
 })();
@@ -3567,9 +3594,9 @@ Alfresco.util.submitForm = function(form)
    
    if (form !== null)
    {
-      if (UA.ie) 
+      if (UA.ie < 9) 
       {
-         // IE
+         // IE up to v9
          submitTheForm = form.fireEvent("onsubmit");
       }
       else 
@@ -3586,7 +3613,7 @@ Alfresco.util.submitForm = function(form)
          // the form so we have to do it manually (if the 
          // submission was not cancelled)
          form.submit();
-      }
+      }      
    }
 };
 

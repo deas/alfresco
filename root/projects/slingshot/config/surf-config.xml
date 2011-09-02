@@ -36,5 +36,10 @@
          </bean>
       </property>
    </bean>
+   
+   <!--  Override the default JavaScript debugger to set the appropriate title -->
+   <bean id="scriptDebugger" class="org.springframework.extensions.webscripts.ScriptDebugger" init-method="start">
+      <property name="title" value="Alfresco Share JavaScript Debugger"/>
+   </bean>
 
 </beans>
