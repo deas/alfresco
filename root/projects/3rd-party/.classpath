@@ -37,8 +37,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-discovery-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-validator-1.4-SNAPSHOT-20110316.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.0-SNAPSHOT.jar" sourcepath="src/tika-core-1.0-SNAPSHOT.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.0-SNAPSHOT.jar" sourcepath="src/tika-parsers-1.0-SNAPSHOT.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.0-20110830.jar" sourcepath="src/tika-core-1.0-20110830.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.0-20110830.jar" sourcepath="src/tika-parsers-1.0-20110830.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-api-1.1.8.jar" sourcepath="src/myfaces-api-1.1.8-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-impl-1.1.8.jar" sourcepath="src/myfaces-impl-1.1.8-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/joda-time-1.2.1.jar"/>
@@ -103,9 +103,9 @@
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.4.jar"/>
 	<classpathentry kind="lib" path="lib/xml-resolver-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jaxws_2.1_spec-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-3.8-beta4-20110701.jar" sourcepath="src/poi-3.8-beta4-20110701.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.8-beta4-20110701.jar" sourcepath="src/poi-3.8-beta4-20110701.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.8-beta4-20110701.jar" sourcepath="src/poi-3.8-beta4-20110701.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.8-beta4-20110826.jar" sourcepath="src/poi-3.8-beta4-20110826.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.8-beta4-20110826.jar" sourcepath="src/poi-3.8-beta4-20110826.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.8-beta4-20110826.jar" sourcepath="src/poi-3.8-beta4-20110826.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.15.jar"/>
