@@ -28,6 +28,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.core.io.ClassPathResource;
@@ -51,7 +52,7 @@ public class RepoJettyStartTest extends TestCase
             System.out.println("["+new Date()+"] startJetty: starting embedded Jetty server ...");
             
             server = new Server(8080);
-            
+
             // note: .../web-client/build/dist must be on classpath (and "alfresco.war" pre-built)
             String warPath = new ClassPathResource("alfresco.war").getURI().toString();
             
@@ -59,6 +60,10 @@ public class RepoJettyStartTest extends TestCase
             
             WebAppContext webAppContext = new WebAppContext();
             webAppContext.setContextPath("/alfresco");
+            
+            // with a login-config in web.xml, jetty seems to require this in order to start successfully
+            webAppContext.getSecurityHandler().setLoginService(new HashLoginService());
+            
             webAppContext.setWar(warPath);
             
             server.setHandler(webAppContext);

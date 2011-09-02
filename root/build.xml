@@ -199,7 +199,6 @@
          <exclude name="**/MultiTDemoTest.java" /> <!-- Excluded due to ALF-10087: MultiTDemoTest fails during workflow initialization -->
 
          <!-- System Build Tests (runs using embedded Jetty) -->
-         <exclude name="**/org/alfresco/repo/RepoJetty*Test.java" />
          <exclude name="**/*SystemTest.java" />
 
          <exclude name="**/Base*Test.java" />
@@ -207,6 +206,8 @@
          <exclude name="**/RepositoryStartupTest.java" />
          <exclude name="**/WCMTestSuite.java" />
          <exclude name="**/org/alfresco/repo/web/scripts/publishing/PublishingRestApiTest.java" />
+
+         <include name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
 
          <!-- Exclude tests that require JodConverter/OpenOffice.org as these are hanging the build server -->
          <exclude name="**/*OOoTest.java" />
@@ -260,6 +261,11 @@
          <!-- Usage Tests -->
          <exclude name="**/org/alfresco/repo/usage/**/*Test.java" />
          <include name="**/org/alfresco/repo/usage/UsageTestSuite.java" />
+         <!-- System Build Tests (runs using embedded Jetty) -->
+         <exclude name="**/org/alfresco/repo/RepoJetty*Test.java" />
+         <!-- embeds: RepoBenchmark*SystemTest -->
+         <include name="**/org/alfresco/repo/bm/RepoBenchmarkSystemTestSuite.java" />
+         <!-- embeds: SiteActivitySystemTest,WebServiceSuiteSystemTest, ... -->
          <exclude name="**/org/alfresco/repo/transfer/fsr/**/*Test.java" />
          <!-- All other tests -->
          <include name="**/*Test.java" />
@@ -1053,8 +1059,8 @@
                     test-webframeworkcommons, 
                     test-webclient, 
                     test-webserviceclient,
-                    test-dod5015" />
-					<!-- test-system-build-test dropped:     ALF-10088: Build target 'test-system-build-test' fails with Jetty connectivity issues -->
+                    test-dod5015,
+                    test-system-build-test" />
 
    <target name="run-junit-test" 
            description="Runs a single JUnit test. Usage run-test -Dtestcase=[test] -Dprojectdir=[dir] [-Dstoponerror=[yes|no]]"
