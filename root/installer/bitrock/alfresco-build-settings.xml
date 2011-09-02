@@ -37,9 +37,9 @@
         <setInstallerVariable name="alfresco_wcmqs_config_source_file" value="${build_project_directory}/wcmquickstart" />
 
 
-        <!-- Only for Alfresco Team -->
+        <!-- Only for Alfresco Team 
         <setInstallerVariable name="alfresco_team_license" value="${build_project_directory}/alfresco-free-team.lic" />
-
+		-->
 
         <!-- BINARIES -->
         <setInstallerVariable name="binaries_folder" value="${build_project_directory}" />

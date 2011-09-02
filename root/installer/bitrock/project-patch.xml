@@ -147,6 +147,7 @@
 	<include file="alfresco-update-backup.xml" />
 
     	<include file="alfrescodm.xml" />
+    	<include file="alfresco-solr.xml" />
         <include file="alfresco-apply-amps.xml" />
 
 
