@@ -58,7 +58,7 @@ public class VmShutdownListener
                 }
             };  
         };
-        Thread shutdownThread = new Thread(shutdownRunnable);
+        Thread shutdownThread = new Thread(shutdownRunnable, "ShutdownListener-" + name);
         Runtime.getRuntime().addShutdownHook(shutdownThread);
     }
 

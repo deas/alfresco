@@ -98,6 +98,7 @@ public class RuntimeExecShutdownBean extends AbstractLifecycleBean
     {
         private ShutdownThread()
         {
+            super(RuntimeExecShutdownBean.class.getName());
             this.setDaemon(true);
         }
 

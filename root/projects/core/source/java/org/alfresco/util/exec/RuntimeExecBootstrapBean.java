@@ -202,6 +202,10 @@ public class RuntimeExecBootstrapBean extends AbstractLifecycleBean
      */
     private class KillProcessShutdownThread extends Thread
     {
+        public KillProcessShutdownThread()
+        {
+            super(RuntimeExecBootstrapBean.class.getName());
+        }
         @Override
         public void run()
         {
