@@ -42,6 +42,11 @@ public class SpringKeyResourceLoader implements KeyResourceLoader
     @Override
 	public InputStream getKeyStore(String keyStoreLocation)
 	{
+		if(keyStoreLocation == null)
+		{
+			return null;
+		}
+
     	try
     	{
     		File f = ResourceUtils.getFile(keyStoreLocation);
@@ -59,9 +64,14 @@ public class SpringKeyResourceLoader implements KeyResourceLoader
     @Override
 	public Properties loadKeyMetaData(String keyMetaDataFileLocation) throws IOException
 	{
+		if(keyMetaDataFileLocation == null)
+		{
+			return null;
+		}
+
     	try
     	{
-	    	Properties p = new Properties();
+        	Properties p = new Properties();
 	    	p.load(new BufferedInputStream(new FileInputStream(ResourceUtils.getFile(keyMetaDataFileLocation))));
 	    	return p;
     	}

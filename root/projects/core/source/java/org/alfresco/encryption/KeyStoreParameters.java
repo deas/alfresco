@@ -26,6 +26,7 @@ package org.alfresco.encryption;
  */
 public class KeyStoreParameters
 {
+	private String name;
 	private String type;
 	private String provider;
 	private String keyMetaDataFileLocation;
@@ -35,14 +36,20 @@ public class KeyStoreParameters
 	{
 	}
 
-	public KeyStoreParameters(String type, String keyStoreProvider,
+	public KeyStoreParameters(String name, String type, String keyStoreProvider,
 			String keyMetaDataFileLocation, String location)
 	{
 		super();
+		this.name = name;
 		this.type = type;
 		this.provider = keyStoreProvider;
 		this.keyMetaDataFileLocation = keyMetaDataFileLocation;
 		this.location = location;
+	}
+
+	public String getName()
+	{
+		return name;
 	}
 
 	public String getType()
@@ -63,6 +70,11 @@ public class KeyStoreParameters
 	public String getLocation()
 	{
 		return location;
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	public void setType(String type)

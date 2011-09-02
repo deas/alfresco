@@ -76,6 +76,15 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
      * {@inheritDoc}
      */
     @Override
+    public void refresh()
+    {
+    	keyStore.reload();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
 	public Key getKey(String keyAlias)
     {
     	return keyStore.getKey(keyAlias);

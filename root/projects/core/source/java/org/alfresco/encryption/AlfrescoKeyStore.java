@@ -18,7 +18,13 @@
  */
 package org.alfresco.encryption;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.Key;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Set;
 
 import javax.net.ssl.KeyManager;
@@ -34,14 +40,68 @@ public interface AlfrescoKeyStore
 {
     public static final String KEY_KEYSTORE_PASSWORD = "keystore.password";
 
+    public String getName();
+    
+    /**
+     * The underlying keystore location
+     * 
+     * @return
+     */
 	public String getLocation();
-	public KeyResourceLoader getKeyResourceLoader();
+	
+	/**
+	 * The key store parameters.
+	 * 
+	 * @return
+	 */
 	public KeyStoreParameters getkeyStoreParameters();
+	
+	/**
+	 * Does the underlying key store exist?
+	 * 
+	 * @return true if it exists, false otherwise
+	 */
     public boolean exists();
+    
+    /**
+     * Return the key with the given key alias.
+     * 
+     * @param keyAlias
+     * @return
+     */
     public Key getKey(String keyAlias);
+    
+    /**
+     * Return all key aliases in the key store.
+     * 
+     * @return
+     */
     public Set<String> getKeyAliases();
+    
+    /**
+     * Create an array of key managers from keys in the key store.
+     * 
+     * @return
+     */
 	public KeyManager[] createKeyManagers();
+	
+	/**
+	 * Create an array of trust managers from certificates in the key store.
+	 * 
+	 * @return
+	 */
 	public TrustManager[] createTrustManagers();
+	
+	/**
+	 * Create the key store if it doesn't exist.
+	 */
 	public void create();
-    public void reload();
+	
+	/**
+	 * Reload the keys from the key store.
+	 */
+    public int reload();
+    
+	public void importPrivateKey(String keyAlias, String keyPassword, InputStream keyFile, InputStream certFile)
+	throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, KeyStoreException;
 }

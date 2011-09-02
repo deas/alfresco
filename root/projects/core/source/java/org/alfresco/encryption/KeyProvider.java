@@ -45,4 +45,6 @@ public interface KeyProvider
      * @return                  the encryption key or <tt>null</tt> if there is no associated key
      */
     public Key getKey(String keyAlias);
+    
+    public void refresh();
 }

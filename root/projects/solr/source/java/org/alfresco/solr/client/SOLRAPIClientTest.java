@@ -166,7 +166,7 @@ public class SOLRAPIClientTest extends TestCase
         ClasspathKeyResourceLoader keyResourceLoader = new ClasspathKeyResourceLoader();
 
         // note small message timeout - 2s
-        KeyStoreParameters keyStoreParameters = new KeyStoreParameters("JCEKS", null,
+        KeyStoreParameters keyStoreParameters = new KeyStoreParameters("test", "JCEKS", null,
         		"keystore-passwords.properties", "org/alfresco/solr/client/.keystore");
         MD5EncryptionParameters encryptionParameters = new MD5EncryptionParameters("DESede/CBC/PKCS5Padding", Long.valueOf(2*1000), "HmacSHA1");
 

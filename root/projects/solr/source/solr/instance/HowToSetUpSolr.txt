@@ -130,8 +130,8 @@ If your version of Java does not have the fix (which my Mac version doesn't seem
 (i) Add -Dsun.security.ssl.allowUnsafeRenegotiation=true to JAVA_OPTS
 (ii) Add 'allowUnsafeLegacyRenegotiation="true"' to the Tomcat SSL connector
 
-End Solr Configuration
-~~~~~~~~~~~~~~~~~~~~~~
+End Solr SSL Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 Please delete the SOLR data dir everytime you update this distribution directory as it may invalidate the state of the index :-)

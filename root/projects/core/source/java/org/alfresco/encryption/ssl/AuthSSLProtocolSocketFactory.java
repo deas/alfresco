@@ -32,7 +32,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 
-import org.alfresco.encryption.AlfrescoKeyStoreImpl;
+import org.alfresco.encryption.AlfrescoKeyStore;
 import org.alfresco.encryption.KeyResourceLoader;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.httpclient.ConnectTimeoutException;
@@ -81,8 +81,8 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
 
 	private SSLContext sslcontext = null;
 
-	private AlfrescoKeyStoreImpl keyStore = null;
-	private AlfrescoKeyStoreImpl trustStore = null;
+	private AlfrescoKeyStore keyStore = null;
+	private AlfrescoKeyStore trustStore = null;
 
 	/**
 	 * Constructor for AuthSSLProtocolSocketFactory. Either a keystore or truststore file
@@ -91,11 +91,11 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
 	 * @param parameters SSL parameters to use.
 	 * @param keyResourceLoader loads key resources from an arbitrary source e.g. classpath
 	 */
-	public AuthSSLProtocolSocketFactory(SSLEncryptionParameters parameters, KeyResourceLoader keyResourceLoader)
+	public AuthSSLProtocolSocketFactory(AlfrescoKeyStore sslKeyStore, AlfrescoKeyStore sslTrustStore, KeyResourceLoader keyResourceLoader)
 	{
 		super();
-		this.keyStore = new AlfrescoKeyStoreImpl(parameters.getKeyStoreParameters(),  keyResourceLoader);
-		this.trustStore = new AlfrescoKeyStoreImpl(parameters.getTrustStoreParameters(), keyResourceLoader);
+		this.keyStore = sslKeyStore;
+		this.trustStore = sslTrustStore;
 	}
 
 	private SSLContext createSSLContext()

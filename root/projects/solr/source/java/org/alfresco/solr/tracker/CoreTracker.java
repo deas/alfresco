@@ -386,8 +386,9 @@ public class CoreTracker implements CloseHook
 
     protected AlfrescoHttpClient getRepoClient(SolrResourceLoader loader)
     {
-		KeyStoreParameters keyStoreParameters = new KeyStoreParameters(sslKeyStoreType, sslKeyStoreProvider, sslKeyStorePasswordFileLocation, sslKeyStoreLocation);
-		KeyStoreParameters trustStoreParameters = new KeyStoreParameters(sslTrustStoreType, sslTrustStoreProvider, sslTrustStorePasswordFileLocation, sslTrustStoreLocation);
+    	// TODO i18n
+		KeyStoreParameters keyStoreParameters = new KeyStoreParameters("SSL Key Store", sslKeyStoreType, sslKeyStoreProvider, sslKeyStorePasswordFileLocation, sslKeyStoreLocation);
+		KeyStoreParameters trustStoreParameters = new KeyStoreParameters("SSL Trust Store", sslTrustStoreType, sslTrustStoreProvider, sslTrustStorePasswordFileLocation, sslTrustStoreLocation);
 		SSLEncryptionParameters sslEncryptionParameters = new SSLEncryptionParameters(keyStoreParameters, trustStoreParameters);
         SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
 

@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.AlgorithmParameters;
 
+import org.alfresco.encryption.AlfrescoKeyStore;
+import org.alfresco.encryption.AlfrescoKeyStoreImpl;
 import org.alfresco.encryption.EncryptionUtils;
 import org.alfresco.encryption.Encryptor;
 import org.alfresco.encryption.KeyProvider;
@@ -87,6 +89,10 @@ public class HttpClientFactory
     private String host;
     private int port;
     private int sslPort;
+    
+    private AlfrescoKeyStore sslKeyStore;
+    private AlfrescoKeyStore sslTrustStore;
+    private ProtocolSocketFactory sslSocketFactory;
 
     public HttpClientFactory()
     {
@@ -103,6 +109,14 @@ public class HttpClientFactory
     	this.host = host;
     	this.port = port;
     	this.sslPort = sslPort;
+    	init();
+    }
+
+    public void init()
+    {
+		this.sslKeyStore = new AlfrescoKeyStoreImpl(sslEncryptionParameters.getKeyStoreParameters(),  keyResourceLoader);
+		this.sslTrustStore = new AlfrescoKeyStoreImpl(sslEncryptionParameters.getTrustStoreParameters(), keyResourceLoader);
+    	this.sslSocketFactory = new AuthSSLProtocolSocketFactory(sslKeyStore, sslTrustStore, keyResourceLoader);    	
     }
 
 	public void setHost(String host)
@@ -157,7 +171,7 @@ public class HttpClientFactory
 		this.keyResourceLoader = keyResourceLoader;
 	}
 	
-	protected HttpClient constructHttpClient(String host, int port)
+	protected HttpClient constructHttpClient()
 	{
         MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		HttpClient httpClient = new HttpClient(connectionManager);
@@ -170,17 +184,21 @@ public class HttpClientFactory
 	
 	protected HttpClient getHttpsClient()
 	{
-		HttpClient httpClient = constructHttpClient(host, sslPort);
-    	ProtocolSocketFactory socketFactory = new AuthSSLProtocolSocketFactory(sslEncryptionParameters, keyResourceLoader);
-        Protocol myhttps = new Protocol("https", socketFactory, sslPort);
-		Protocol.registerProtocol("https", myhttps);
+		// This seems to be the only way to configure SSL connections (other than using Protocol.registerProtocol
+		// which overrides the socket factory for _all_ users of http client). Unfortunately, this means
+		// that all connections go directly to the SSL port rather than being _redirected_ to the SSL port.
+		// It doesn't seem possible with commons http client to configure the host port as the standard
+		// (non-SSL) port and have it redirect to the SSL port.
+		HttpClient httpClient = constructHttpClient();
+        Protocol myhttps = new Protocol("https", sslSocketFactory, sslPort);
+		//Protocol.registerProtocol("https", myhttps);
         httpClient.getHostConfiguration().setHost(host, sslPort, myhttps);
         return httpClient;
 	}
-	
+
 	protected HttpClient getDefaultHttpClient()
 	{
-		HttpClient httpClient = constructHttpClient(host, port);
+		HttpClient httpClient = constructHttpClient();
         httpClient.getHostConfiguration().setHost(host, port);
         return httpClient;
 	}
@@ -199,7 +217,7 @@ public class HttpClientFactory
     
 	protected HttpClient getMD5HttpClient(String host, int port)
 	{
-		HttpClient httpClient = constructHttpClient(host, port);
+		HttpClient httpClient = constructHttpClient();
         httpClient.getHostConfiguration().setHost(host, port);
         return httpClient;
 	}
@@ -273,19 +291,12 @@ public class HttpClientFactory
 	 * @since 4.0
 	 *
 	 */
-	// TODO put ssl keystore inside jar file instead of on the filesystem?
 	class HttpsClient extends AbstractHttpClient
 	{
 	    public HttpsClient(HttpClient httpClient)
 	    {
 	    	super(httpClient);
 	    }
-
-	    protected HttpMethod createMethod(Request req) throws IOException
-	    {
-	    	HttpMethod method = super.createMethod(req);
-	    	return method;
-		}
 
 	    /**
 	     * Send Request to the repository
@@ -294,26 +305,6 @@ public class HttpClientFactory
 	    {
 	    	HttpMethod method = super.sendRemoteRequest(req);
 	    	return new HttpMethodResponse(method);
-	    }
-	    
-	    protected HttpMethod sendRemoteRequest(Request req) throws AuthenticationException, IOException
-	    {
-	    	return super.sendRemoteRequest(req);
-
-//	        Header locationHeader = method.getResponseHeader("location");
-//	        if (locationHeader != null)
-//	        {
-//	            String redirectLocation = locationHeader.getValue();
-//	            method.setURI(new URI(redirectLocation, true));
-//	            executeMethod(method);
-//	        }
-//	        else
-//	        {
-//	            // The response is invalid and did not provide the new location for
-//	            // the resource.  Report an error or possibly handle the response
-//	            // like a 404 Not Found error.
-////	        	throw new AlfrescoRuntimeException("");
-//	        }
 	    }
 	}
 	

@@ -65,6 +65,11 @@ public abstract class AbstractEncryptor implements Encryptor
         this.keyProvider = keyProvider;
     }
     
+    public KeyProvider getKeyProvider()
+    {
+        return keyProvider;
+    }
+    
     public void init()
     {
         PropertyCheck.mandatory(this, "keyProvider", keyProvider);

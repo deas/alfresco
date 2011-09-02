@@ -22,9 +22,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
@@ -81,6 +84,17 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
         // execute method
         executeMethod(method);
 
+        if(method.getStatusCode() == HttpStatus.SC_MOVED_PERMANENTLY || method.getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY)
+        {
+	        Header locationHeader = method.getResponseHeader("location");
+	        if (locationHeader != null)
+	        {
+	            String redirectLocation = locationHeader.getValue();
+	            method.setURI(new URI(redirectLocation, true));
+	            httpClient.executeMethod(method);
+	        }
+        }
+        
         // Deal with redirect e.g. for SSL
 /*        if(method.getStatusCode() == 301 || method.getStatusCode() == 302 || method.getStatusCode() == 303 || method.getStatusCode() == 307)
         {
@@ -146,7 +160,7 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
             httpMethod = post;
     		ByteArrayRequestEntity requestEntity = new ByteArrayRequestEntity(req.getBody(), req.getType());
 	        post.setRequestEntity(requestEntity);
-            // Note: not able to automatically follow redirects for POST
+            // Note: not able to automatically follow redirects for POST, this is handled by sendRemoteRequest
         }
         else if(method.equalsIgnoreCase("HEAD"))
         {
