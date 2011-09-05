@@ -253,7 +253,7 @@
             <property name="rma:physicalSize">
                <title>Document Physical Size</title>
                <type>d:text</type>
-               <mandatory>true</mandatory>
+               <mandatory>false</mandatory>
                <index enabled="true">
 		          <atomic>true</atomic>
 		          <stored>false</stored>
