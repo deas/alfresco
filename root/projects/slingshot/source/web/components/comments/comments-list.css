@@ -7,8 +7,6 @@
 {
    margin-top: 1em;
    margin-bottom: 1em;
-   font-size: 16px;
-   font-family: arial, helvetica, clean, sans-serif;
 }
 
 .comments-list .comments-list-actions .left
@@ -119,5 +117,4 @@
 .comments-list .comment-form .buttons
 {
    margin-top: 1em;
-   font-size: 13px;
 }

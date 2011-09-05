@@ -111,7 +111,7 @@
          var editFormWrapper = document.createElement("div");
          Dom.addClass(editFormWrapper, "comments-list");
          Dom.addClass(editFormWrapper, "hidden");
-         document.body.appendChild(editFormWrapper);
+         Dom.get(this.id + "-body").appendChild(editFormWrapper);
          this.widgets.editFormWrapper = editFormWrapper;
 
          YAHOO.util.Event.addListener(window, "resize", function ()
