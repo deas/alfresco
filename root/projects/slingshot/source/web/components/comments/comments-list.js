@@ -320,6 +320,8 @@
                // this.widgets.editor.disable();
                // Make sure the editors content is saved down to the form
                editor.save();
+               editor.getEditor().undoManager.clear();
+               editor.getEditor().nodeChanged();
             },
             scope: this
          };
