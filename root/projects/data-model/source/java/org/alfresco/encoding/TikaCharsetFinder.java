@@ -19,7 +19,10 @@
 package org.alfresco.encoding;
 
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tika.parser.txt.CharsetDetector;
 import org.apache.tika.parser.txt.CharsetMatch;
 
@@ -31,6 +34,8 @@ import org.apache.tika.parser.txt.CharsetMatch;
  */
 public class TikaCharsetFinder extends AbstractCharactersetFinder
 {
+    private static Log logger = LogFactory.getLog(TikaCharsetFinder.class);
+    
     private int threshold = 35;
     
     @Override
@@ -42,7 +47,14 @@ public class TikaCharsetFinder extends AbstractCharactersetFinder
 
         if(match != null && match.getConfidence() > threshold)
         {
-            return Charset.forName(match.getName());
+            try
+            {
+                return Charset.forName(match.getName());
+            }
+            catch(UnsupportedCharsetException e)
+            {
+                logger.info("Charset detected as " + match.getName() + " but the JVM does not support this, detection skipped");
+            }
         }
         return null;
     }
