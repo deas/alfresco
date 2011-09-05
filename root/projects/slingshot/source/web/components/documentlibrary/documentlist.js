@@ -2131,7 +2131,7 @@
 
             if (permissions)
             {
-               var userCanUpload = me.doclistMetadata.parent.permissions.user.create && YAHOO.env.ua.mobile === null;
+               var userCanUpload = me.doclistMetadata.parent.permissions.user.CreateChildren && YAHOO.env.ua.mobile === null;
 
                if (userCanUpload && me.dragAndDropEnabled)
                {
