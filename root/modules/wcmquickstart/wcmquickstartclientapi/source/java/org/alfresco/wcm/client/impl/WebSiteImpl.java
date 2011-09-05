@@ -124,7 +124,7 @@ public class WebSiteImpl implements WebSite
 	@Override
 	public Section getRootSection() 
 	{
-		return sectionFactory.getSection(rootSectionId);
+		return getSectionByPath("");
 	}
 	
 	/**

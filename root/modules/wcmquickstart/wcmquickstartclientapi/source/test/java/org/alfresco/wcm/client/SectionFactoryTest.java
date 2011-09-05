@@ -18,6 +18,17 @@
  */
 package org.alfresco.wcm.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import junit.framework.AssertionFailedError;
+
+import org.alfresco.wcm.client.impl.SectionFactoryCmisImpl;
+import org.alfresco.wcm.client.impl.SectionFactoryWebscriptImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -43,6 +54,106 @@ public class SectionFactoryTest extends BaseTest
         // assertNotNull(exists2.getCollectionFolderId());
 
         log.debug(section.getProperties());
+    }
+
+    public void testConcurrentGetSections()
+    {
+        final WebSite site = getWebSite();
+        final Map<String, List<String>> expectedSections = new TreeMap<String, List<String>>();
+
+        if (SectionFactoryCmisImpl.class.isAssignableFrom(sectionFactory.getClass()))
+        {
+            ((SectionFactoryCmisImpl) sectionFactory).setSectionsRefreshAfter(20);
+        }
+        else if (SectionFactoryWebscriptImpl.class.isAssignableFrom(sectionFactory.getClass()))
+        {
+            ((SectionFactoryWebscriptImpl) sectionFactory).setSectionsRefreshAfter(20);
+        }
+        expectedSections.put("", Arrays.asList(new String[] { "blog", "contact", "news", "publications" }));
+        expectedSections.put("/news", Arrays.asList(new String[] { "companies", "global", "markets" }));
+        expectedSections.put("/blog", Arrays.asList(new String[] {}));
+        expectedSections.put("/contact", Arrays.asList(new String[] {}));
+        expectedSections.put("/publications", Arrays.asList(new String[] { "research-reports", "white-papers" }));
+        expectedSections.put("/news/companies", Arrays.asList(new String[] {}));
+        expectedSections.put("/news/global", Arrays.asList(new String[] {}));
+        expectedSections.put("/news/markets", Arrays.asList(new String[] {}));
+        expectedSections.put("/publications/research-reports", Arrays.asList(new String[] {}));
+        expectedSections.put("/publications/white-papers", Arrays.asList(new String[] {}));
+
+        final List<Thread> threads = Collections.synchronizedList(new ArrayList<Thread>());
+        final List<Thread> errorThreads = Collections.synchronizedList(new ArrayList<Thread>());
+
+        Runnable treeWalker = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    //Run each thread for 5 mins
+                    long timeToStop = System.currentTimeMillis() + 300000L;
+                    while (timeToStop > System.currentTimeMillis())
+                    {
+                        Section section = site.getRootSection();
+                        checkSection("", section);
+                    }
+                }
+                catch(AssertionFailedError e)
+                {
+                    errorThreads.add(Thread.currentThread());
+                    throw e;
+                }
+                finally
+                {
+                    threads.remove(Thread.currentThread());
+                }
+            }
+
+            private void checkSection(String path, Section section)
+            {
+                List<Section> children = section.getSections();
+                List<String> childNames = new ArrayList<String>(children.size());
+                for (Section child : children)
+                {
+                    childNames.add(child.getName());
+                }
+                List<String> expectedChildren = expectedSections.get(path);
+                assertNotNull(path, expectedChildren);
+                assertEquals(path, expectedChildren.size(), childNames.size());
+                childNames.removeAll(expectedChildren);
+                assertEquals(path, 0, childNames.size());
+                for (Section child : children)
+                {
+                    checkSection(path + "/" + child.getName(), child);
+                }
+            }
+        };
+
+        for (int i = 0; i < 30; ++i)
+        {
+            Thread thread = new Thread(treeWalker);
+            threads.add(thread);
+            thread.start();
+        }
+
+        System.out.print("Working");
+        while (!threads.isEmpty())
+        {
+            if (!errorThreads.isEmpty())
+            {
+                fail("At least one thread has failed");
+            }
+            System.out.print(".");
+            try
+            {
+                Thread.sleep(5000L);
+            }
+            catch (InterruptedException e)
+            {
+            }
+        }
+        System.out.println();
+        System.out.println("Finished");
     }
 
 }

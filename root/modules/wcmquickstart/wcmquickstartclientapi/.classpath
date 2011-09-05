@@ -35,5 +35,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.expression-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.asm-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

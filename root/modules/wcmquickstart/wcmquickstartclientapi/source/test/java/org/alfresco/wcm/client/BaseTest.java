@@ -36,7 +36,7 @@ public abstract class BaseTest extends TestCase
     
     protected ApplicationContext appContext;    
     protected CmisSessionPool sessionPool;
-    protected Session session;
+    protected Session session = null;
 
     protected SectionFactory sectionFactory;
     protected AssetFactory assetFactory;
@@ -54,7 +54,25 @@ public abstract class BaseTest extends TestCase
         
         // Set the CMIS session up
         sessionPool = (CmisSessionPool)appContext.getBean("sessionPool");
-        session = sessionPool.getGuestSession();
+        for (int i = 0; i < 5; ++i)
+        {
+            try
+            {
+                session = sessionPool.getGuestSession();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            if (session == null)
+            {
+                Thread.sleep(1000L);
+            }
+            else
+            {
+                break;
+            }
+        }
         CmisSessionHelper.setSession(session);
         
         // Get beans
@@ -74,7 +92,7 @@ public abstract class BaseTest extends TestCase
     
     protected WebSite getWebSite()
     {
-        WebSite site = webSiteService.getWebSite(HOST, PORT);
+        WebSite site = webSiteService.getWebSite(HOST, PORT, "wcmqs");
         assertNotNull("Unable to find site for host " + HOST + " and port " + PORT, site);
         return site;
     }
