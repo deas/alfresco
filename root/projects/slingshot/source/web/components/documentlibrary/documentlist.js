@@ -701,11 +701,16 @@
     * Generate User Profile link
     *
     * @method generateUserLink
+    * @param scope {object} DocumentLibrary instance
     * @param oUser {object} Object literal container user data
     * @return {string} HTML mark-up for user profile link
     */
-   Alfresco.DocumentList.generateUserLink = function DL_generateUserLink(oUser)
+   Alfresco.DocumentList.generateUserLink = function DL_generateUserLink(scope, oUser)
    {
+      if (oUser.isDeleted === true)
+      {
+         return '<span>' + scope.msg("details.user.deleted", $html(oUser.userName)) + '</span>';
+      }
       return $userProfile(oUser.userName, YAHOO.lang.trim(oUser.firstName + " " + oUser.lastName));
    };
 
@@ -1550,7 +1555,7 @@
             if ($isValueSet(properties.lockOwner) || $isValueSet(properties.workingCopyOwner))
             {
                var bannerUser = properties.lockOwner || properties.workingCopyOwner,
-                  bannerLink = Alfresco.DocumentList.generateUserLink(bannerUser);
+                  bannerLink = Alfresco.DocumentList.generateUserLink(scope, bannerUser);
 
                /* Google Docs Integration */
                if ($isValueSet(record.workingCopy.googleDocUrl))
@@ -1781,7 +1786,7 @@
                dateI18N = "created";
             }
 
-            html = '<span class="item">' + label + this.msg("details." + dateI18N + "-by", $relTime(dateProperty), Alfresco.DocumentList.generateUserLink(properties.modifier)) + '</span>';
+            html = '<span class="item">' + label + this.msg("details." + dateI18N + "-by", $relTime(dateProperty), Alfresco.DocumentList.generateUserLink(this, properties.modifier)) + '</span>';
 
             return html;
          });

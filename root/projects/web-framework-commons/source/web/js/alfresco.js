@@ -3490,7 +3490,6 @@ Alfresco.util.message = function(p_messageId, p_messageScope)
    return msg;
 };
 
-Alfresco.util.calI18nParams = function(oCal) 
 /**
  * Helper method to set the required i18n properties on a YUI Calendar Widget
  * see: http://developer.yahoo.com/yui/docs/YAHOO.widget.Calendar.html#config_MY_LABEL_MONTH_POSITION
@@ -3499,34 +3498,38 @@ Alfresco.util.calI18nParams = function(oCal)
  * @method Alfresco.util.calI18nParams
  * @param oCal {object} a YAHOO.widget.Calendar object
  * @static
- * 
  */
+Alfresco.util.calI18nParams = function(oCal) 
 {
-   var setP = oCal.cfg.setProperty,
-      msg = Alfresco.util.message;
-   oCal.cfg.setProperty("MONTHS_SHORT", msg("months.short").split(","));
-   oCal.cfg.setProperty("MONTHS_LONG", msg("months.long").split(","));
-   oCal.cfg.setProperty("WEEKDAYS_1CHAR", msg("days.initial").split(","));
-   oCal.cfg.setProperty("WEEKDAYS_SHORT", msg("days.short").split(","));
-   oCal.cfg.setProperty("WEEKDAYS_MEDIUM", msg("days.medium").split(","));
-   oCal.cfg.setProperty("WEEKDAYS_LONG", msg("days.long").split(","));
-   var monthPos = msg("calendar.widget_config.my_label_month_position");
+   var $setP = oCal.cfg.setProperty,
+      $msg = Alfresco.util.message;
+
+   $setP("MONTHS_SHORT", $msg("months.short").split(","));
+   $setP("MONTHS_LONG", $msg("months.long").split(","));
+   $setP("WEEKDAYS_1CHAR", $msg("days.initial").split(","));
+   $setP("WEEKDAYS_SHORT", $msg("days.short").split(","));
+   $setP("WEEKDAYS_MEDIUM", $msg("days.medium").split(","));
+   $setP("WEEKDAYS_LONG", $msg("days.long").split(","));
+
+   var monthPos = $msg("calendar.widget_config.my_label_month_position");
    if (monthPos.length !== 0)
    {
-      oCal.cfg.setProperty("MY_LABEL_MONTH_POSITION", parseInt(monthPos));
+      $setP("MY_LABEL_MONTH_POSITION", parseInt(monthPos));
    }
-   var monthSuffix = msg("calendar.widget_config.my_label_month_suffix");
+
+   var monthSuffix = $msg("calendar.widget_config.my_label_month_suffix");
    if (monthSuffix.length !== 0)
    {
-      oCal.cfg.setProperty("MY_LABEL_MONTH_SUFFIX", monthSuffix);
+      $setP("MY_LABEL_MONTH_SUFFIX", monthSuffix);
    }
-   var yearPos = msg("calendar.widget_config.my_label_year_position");
+
+   var yearPos = $msg("calendar.widget_config.my_label_year_position");
    if (yearPos.length !== 0)
    {
-      oCal.cfg.setProperty("MY_LABEL_YEAR_POSITION", parseInt(yearPos));
+      $setP("MY_LABEL_YEAR_POSITION", parseInt(yearPos));
    }
-   oCal.cfg.setProperty("MY_LABEL_YEAR_SUFFIX", msg("calendar.widget_config.my_label_year_suffix"));
-   
+
+   $setP("MY_LABEL_YEAR_SUFFIX", $msg("calendar.widget_config.my_label_year_suffix"));
 };
 
 /**
