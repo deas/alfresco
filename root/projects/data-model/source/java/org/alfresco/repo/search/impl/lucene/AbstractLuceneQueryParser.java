@@ -52,6 +52,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.CachingDateFormat;
+import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
 import org.apache.commons.logging.Log;
@@ -464,6 +465,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Span is not supported for " + FIELD_FTSSTATUS);
         }
+        else if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Span is not supported for "+FIELD_TAG);
+        }
         else
         {
             // Default behaviour for the following fields
@@ -857,6 +862,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 return createAclTxCommitTimeQuery(queryText);
             }
+            else if (field.equals(FIELD_TAG))
+            {
+                return createTagQuery(queryText);
+            }
             else
             {
                 return getFieldQueryImpl(field, queryText, analysisMode, luceneFunction);
@@ -870,6 +879,17 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
 
     }
 
+    
+    /**
+     * @param tag (which will then be ISO9075 encoded)
+     * @return
+     * @throws ParseException
+     */
+    protected Query createTagQuery(String tag) throws ParseException
+    {
+        return getFieldQuery(FIELD_PATH, "/cm:taggable/cm:" + ISO9075.encode(tag.toLowerCase()) + "/member");
+    }
+    
     /**
      * @param queryText
      * @return
@@ -2195,6 +2215,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             return query;
         }
         // FIELD_FTSSTATUS uses the default
+        if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Range Queries are not support for "+FIELD_TAG);
+        }
         else
         {
             // None property - leave alone
@@ -3727,6 +3751,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Prefix Queries are not support for " + FIELD_FTSSTATUS);
         }
+        else if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_TAG);
+        }
         else
         {
             return super.getPrefixQuery(field, termStr);
@@ -3909,6 +3937,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Wildcard Queries are not support for " + FIELD_FTSSTATUS);
         }
+        else if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_TAG);
+        }
         else
         {
             return super.getWildcardQuery(field, termStr);
@@ -4081,6 +4113,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         {
             throw new UnsupportedOperationException("Fuzzy Queries are not support for " + FIELD_FTSSTATUS);
         }
+        else if (field.equals(FIELD_TAG))
+        {
+            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_TAG);
+        } 
         else
         {
             return super.getFuzzyQuery(field, termStr, minSimilarity);
