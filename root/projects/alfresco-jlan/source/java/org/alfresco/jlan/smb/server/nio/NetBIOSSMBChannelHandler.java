@@ -120,7 +120,7 @@ public class NetBIOSSMBChannelHandler extends ChannelPacketHandler {
 	
 			}
 		}
-		catch (IOException ex) {
+		catch (Throwable ex) {
 			
 			// Release the packet back to the pool
 			
@@ -128,7 +128,7 @@ public class NetBIOSSMBChannelHandler extends ChannelPacketHandler {
 			
 			// Rethrow the exception
 			
-			throw ex;
+			rethrowException(ex);
 		}
 
 		// Copy the NetBIOS header to the request buffer

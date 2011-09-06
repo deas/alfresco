@@ -287,7 +287,7 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler implements Asynch
 				rxlen = 0;
 			}
 		}
-		catch ( IOException ex) {
+		catch ( Throwable ex) {
 
 			// DEBUG
 			
@@ -304,7 +304,7 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler implements Asynch
 			
 			// Rethrow the exception
 			
-			throw ex;
+			rethrowException(ex);
 		}
 
 		// Set the received packet length

@@ -3,8 +3,17 @@
  */ 
 function main()
 {
+   var wel = true;
+   var withEmptyLists = args["withEmptyLists"];
    // Pass the information to the template
-   model.constraints = caveatConfig.allConstraints
+   if (withEmptyLists != null && withEmptyLists === 'false')
+   {		
+	  model.constraints = caveatConfig.constraintsWithoutEmptyList;
+   }
+   else
+   {
+	  model.constraints = caveatConfig.allConstraints;
+   }
 }
 
 main();

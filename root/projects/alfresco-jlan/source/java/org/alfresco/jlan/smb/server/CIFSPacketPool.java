@@ -18,6 +18,9 @@
  */
 package org.alfresco.jlan.smb.server;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.core.NoPooledMemoryException;
 import org.alfresco.jlan.server.memory.ByteBufferPool;
@@ -38,6 +41,9 @@ public class CIFSPacketPool {
 	// Main byte buffer pool
 	
 	private ByteBufferPool m_bufferPool;
+
+	// Debug tracking of what packets were borrowed by what stack traces
+	private Map<SMBSrvPacket, Throwable> m_borrowed = new LinkedHashMap<SMBSrvPacket, Throwable>();
 	
 	// Debug enable
 	
@@ -106,17 +112,39 @@ public class CIFSPacketPool {
 			
 			// DEBUG
 		
-			if ( Debug.EnableDbg && hasDebug())
+			if ( Debug.EnableDbg && hasDebug()) {
 				Debug.println("[SMB] CIFS Packet allocate failed, reqSiz=" + reqSiz);
+				if (!m_borrowed.isEmpty())
+				{
+	                Debug.println("[SMB] Oldest 10 allocations:");
+	                int i=0;
+	                for (Throwable t : m_borrowed.values())
+	                {
+	                    Debug.println(t);
+                        if (++i >= 10)
+                        {
+                            break;
+                        }
+	                }
+				}
+			}
 			
 			// Throw an exception, no memory available
 			
 			throw new NoPooledMemoryException( "Request size " + reqSiz);
 		}
-		
+				
 		// Create the CIFS packet
 		
-		return new SMBSrvPacket( buf);
+		SMBSrvPacket packet =  new SMBSrvPacket( buf);
+
+        // Record where the buffer was allocated
+
+        if (Debug.EnableDbg && hasDebug()) {
+            m_borrowed.put(packet, new Exception("Stack Trace"));
+        }
+        
+        return packet;
 	}
 	
 	/**
@@ -199,6 +227,13 @@ public class CIFSPacketPool {
 		else if ( Debug.EnableDbg && hasDebug())
 			Debug.println("[SMB] Over sized packet left for garbage collector");
 		
+
+        // Remove the record of where the buffer was allocated
+
+        if (Debug.EnableDbg && hasDebug()) {
+            m_borrowed.remove(smbPkt);
+        }
+		
 		// Check if the packet has an associated packet which also needs releasing
 		
 		if ( smbPkt.hasAssociatedPacket()) {
@@ -220,7 +255,13 @@ public class CIFSPacketPool {
 			else if ( Debug.EnableDbg && hasDebug())
 				Debug.println("[SMB] Over sized associated packet left for garbage collector");
 			
-			// Clear the associated packet
+	        // Remove the record of where the buffer was allocated
+
+	        if (Debug.EnableDbg && hasDebug()) {
+	            m_borrowed.remove(smbPkt.getAssociatedPacket());
+	        }
+
+	        // Clear the associated packet
 
 			smbPkt.getAssociatedPacket().setBuffer( null);
 			smbPkt.clearAssociatedPacket();

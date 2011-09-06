@@ -10,7 +10,7 @@
   </dl>
   ]]>
   </description>
-  <url>/api/rma/admin/rmconstraints</url>
+  <url>/api/rma/admin/rmconstraints?withEmptyLists={withEmptyLists?}</url>
   <format default="json">argument</format>
   <authentication>user</authentication>
   <transaction allow="readonly">required</transaction>

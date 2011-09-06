@@ -10,7 +10,7 @@ function main()
    var conn = remote.connect("alfresco");
    
    // retrieve the RM constraints - an array is returned
-   var res = conn.get("/api/rma/admin/rmconstraints");
+   var res = conn.get("/api/rma/admin/rmconstraints?withEmptyLists=false");
    if (res.status == 200)
    {
       constraints = eval('(' + res + ')').data;

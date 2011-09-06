@@ -83,8 +83,10 @@ function getRSSFeed(uri, limit)
 function prepareForE4X(xmlStr)
 {
    // NOTE: we use the Java regex features here - as the Rhino impl of regex is x100's slower!!
+   // NOTE: In Java RegExps the . (dot) does NOT include \r or \n characters by default,
+   // to turn that on we use the (?s) instruction at the beginning of the regexp.
    var str = new java.lang.String(xmlStr);
-   return new String(str.replaceAll("(<\\?.*?\\?>)|(<!--.*?-->)", "").replaceAll("^[^<]*", "").replaceAll("[^>]*$", ""));
+   return new String(str.replaceAll("(?s)(<\\?.*?\\?>)|(<!--.*?-->)", "").replaceAll("^[^<]*", "").replaceAll("[^>]*$", ""));
 }
 
 /**
@@ -134,9 +136,9 @@ function parseRssFeed(rss, rssStr, limit)
       {
          // We only look for the thumbnail as a direct child in RSS
          var thumbnail = item.media::thumbnail;
-         if (thumbnail && thumbnail.@url.toString())
+         if (thumbnail && thumbnail.@url.length() > 0)
          {
-            obj["image"] = stringUtils.stripUnsafeHTML(thumbnail.@url.toString());
+            obj["image"] = stringUtils.stripUnsafeHTML(thumbnail.@url[0].toString());
          }
 
          var attachment = item.media::content;
@@ -213,9 +215,9 @@ function parseAtomFeed(atom, atomStr, limit)
       {
          // In Atom, it could be a direct child
          var thumbnail = entry.media::thumbnail;
-         if (thumbnail && thumbnail.@url.toString())
+         if (thumbnail && thumbnail.@url.length() > 0)
          {
-            obj["image"] = stringUtils.stripUnsafeHTML(thumbnail.@url.toString());
+            obj["image"] = stringUtils.stripUnsafeHTML(thumbnail.@url[0].toString());
          }
          else 
          {

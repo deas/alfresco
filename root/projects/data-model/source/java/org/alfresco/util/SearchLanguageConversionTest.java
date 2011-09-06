@@ -119,4 +119,11 @@ public class SearchLanguageConversionTest extends TestCase
         assertEquals(regexp, converted);
     }
     
+    public void testLuceneToSql()
+    {
+        String lucene = "%_";
+        String sql = "\\%\\_";
+        String converted = SearchLanguageConversion.convert(SearchLanguageConversion.DEF_LUCENE, SearchLanguageConversion.DEF_SQL_LIKE, lucene);
+        assertEquals(sql, converted);
+    }
 }

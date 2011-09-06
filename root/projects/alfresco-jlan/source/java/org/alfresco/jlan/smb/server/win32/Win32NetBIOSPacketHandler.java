@@ -22,10 +22,8 @@ package org.alfresco.jlan.smb.server.win32;
 import java.io.IOException;
 
 import org.alfresco.jlan.debug.Debug;
-import org.alfresco.jlan.netbios.NetBIOSException;
 import org.alfresco.jlan.netbios.win32.NetBIOS;
 import org.alfresco.jlan.netbios.win32.Win32NetBIOS;
-import org.alfresco.jlan.server.core.NoPooledMemoryException;
 import org.alfresco.jlan.smb.server.CIFSPacketPool;
 import org.alfresco.jlan.smb.server.PacketHandler;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
@@ -115,118 +113,103 @@ public class Win32NetBIOSPacketHandler extends PacketHandler {
 		// As we cannot find the length of the incoming packet we must allocate a full length packet
 		
 		SMBSrvPacket pkt = getPacketPool().allocatePacket( getPacketPool().getLargestSize());
-		
-		// Wait for a packet on the Win32 NetBIOS session
-		//
-		// As Windows is handling the NetBIOS session layer we only receive the SMB packet. In order
-		// to be compatible with the other packet handlers we allow for the 4 byte header.
 
-		int pktLen = pkt.getBuffer().length;
-		if ( pktLen > NetBIOS.MaxReceiveSize)
-			pktLen = NetBIOS.MaxReceiveSize;
-
-		int rxLen = Win32NetBIOS.Receive(m_lana, m_lsn, pkt.getBuffer(), 4, pktLen - 4);
-
-		if ( (rxLen & ReceiveErrorMask) != 0) {
-
-			// Check for an incomplete message status code
-
-			int sts = (rxLen & ReceiveErrorMask) >> 24;
-
-			if ( sts == NetBIOS.NRC_Incomp) {
-
-				// DEBUG
-
-				if ( hasDebug())
-					Debug.println("Win32NetBIOSPacketHandle: readPacket() NRC_Incomp error");
-				
-				// Check if the packet buffer is already at the maximum size (we assume the maximum
-				// size is the maximum that RFC NetBIOS can send which is 17bits)
-
-				if ( pkt.getBuffer().length < getPacketPool().getMaximumOverSizedAllocation()) {
-
-					// Allocate a new buffer
-
-                    SMBSrvPacket pkt2 = null;
-                    
-                    try {
-                        
-                        // Allocate the maximum over sized packet available, usually 128K
-                        
-                        pkt2 = getPacketPool().allocatePacket( getPacketPool().getMaximumOverSizedAllocation());
-                    }
-                    catch ( NoPooledMemoryException ex) {
-                        
-                        // Release the original buffer back to the pool
+		try {
+    		// Wait for a packet on the Win32 NetBIOS session
+    		//
+    		// As Windows is handling the NetBIOS session layer we only receive the SMB packet. In order
+    		// to be compatible with the other packet handlers we allow for the 4 byte header.
+    
+    		int pktLen = pkt.getBuffer().length;
+    		if ( pktLen > NetBIOS.MaxReceiveSize)
+    			pktLen = NetBIOS.MaxReceiveSize;
+    
+    		int rxLen = Win32NetBIOS.Receive(m_lana, m_lsn, pkt.getBuffer(), 4, pktLen - 4);
+    
+    		if ( (rxLen & ReceiveErrorMask) != 0) {
+    
+    			// Check for an incomplete message status code
+    
+    			int sts = (rxLen & ReceiveErrorMask) >> 24;
+    
+    			if ( sts == NetBIOS.NRC_Incomp) {
+    
+    				// DEBUG
+    
+    				if ( hasDebug())
+    					Debug.println("Win32NetBIOSPacketHandle: readPacket() NRC_Incomp error");
+    				
+    				// Check if the packet buffer is already at the maximum size (we assume the maximum
+    				// size is the maximum that RFC NetBIOS can send which is 17bits)
+    
+    				if ( pkt.getBuffer().length < getPacketPool().getMaximumOverSizedAllocation()) {
+    
+    					// Allocate a new buffer
+    
+                        SMBSrvPacket pkt2 = getPacketPool().allocatePacket( getPacketPool().getMaximumOverSizedAllocation());
+    
+    					// Copy the first part of the received data to the new buffer
+    
+    					System.arraycopy(pkt.getBuffer(), 4, pkt2.getBuffer(), 4, pktLen - 4);
+    
+    					// Move the new buffer in as the main packet buffer, release the original buffer
                         
                         getPacketPool().releasePacket( pkt);
-                        
-                        // Rethrow the pooled memory exception
-                        
-                        throw ex;
-                    }
-
-					// Copy the first part of the received data to the new buffer
-
-					System.arraycopy(pkt.getBuffer(), 4, pkt2.getBuffer(), 4, pktLen - 4);
-
-					// Move the new buffer in as the main packet buffer, release the original buffer
-                    
-                    getPacketPool().releasePacket( pkt);
-                    pkt = pkt2;
-
-					// DEBUG
-
-                    if ( hasDebug())
-                    	Debug.println("readPacket() extended buffer to " + pkt.getBuffer().length);
-				}
-
-				// Set the original receive size
-
-				rxLen = (rxLen & ReceiveLengthMask);
-
-				// Receive the remaining data
-				//
-				// Note: If the second read request is issued with a size of 64K or 64K-4 it returns
-				// with another incomplete status and returns no data.
-
-				int rxLen2 = Win32NetBIOS.Receive(m_lana, m_lsn, pkt.getBuffer(), rxLen + 4, 32768);
-
-				if ( (rxLen2 & ReceiveErrorMask) != 0) {
-					sts = (rxLen2 & ReceiveErrorMask) >> 24;
-					throw new IOException("Win32 NetBIOS multi-part receive failed, sts=0x" + sts + ", err="
-							+ NetBIOS.getErrorString(sts));
-				}
-
-				// DEBUG
-
-				if ( hasDebug())
-					Debug.println("readPacket() rxlen2=" + rxLen2 + ", total read len = " + (rxLen + rxLen2));
-
-				// Set the total received data length
-
-				rxLen += rxLen2;
-			}
-			else {
-
-                // Release the packet buffer back to the pool
-                
-                getPacketPool().releasePacket( pkt);
-                
-				// Indicate that the session has closed
-
-                throw new IOException( NetBIOS.getErrorString( sts));
-			}
+                        pkt = pkt2;
+    
+    					// DEBUG
+    
+                        if ( hasDebug())
+                        	Debug.println("readPacket() extended buffer to " + pkt.getBuffer().length);
+    				}
+    
+    				// Set the original receive size
+    
+    				rxLen = (rxLen & ReceiveLengthMask);
+    
+    				// Receive the remaining data
+    				//
+    				// Note: If the second read request is issued with a size of 64K or 64K-4 it returns
+    				// with another incomplete status and returns no data.
+    
+    				int rxLen2 = Win32NetBIOS.Receive(m_lana, m_lsn, pkt.getBuffer(), rxLen + 4, 32768);
+    
+    				if ( (rxLen2 & ReceiveErrorMask) != 0) {
+    					sts = (rxLen2 & ReceiveErrorMask) >> 24;
+    					throw new IOException("Win32 NetBIOS multi-part receive failed, sts=0x" + sts + ", err="
+    							+ NetBIOS.getErrorString(sts));
+    				}
+    
+    				// DEBUG
+    
+    				if ( hasDebug())
+    					Debug.println("readPacket() rxlen2=" + rxLen2 + ", total read len = " + (rxLen + rxLen2));
+    
+    				// Set the total received data length
+    
+    				rxLen += rxLen2;
+    			}
+    			else {
+    
+    				// Indicate that the session has closed
+    
+                    throw new IOException( NetBIOS.getErrorString( sts));
+    			}
+    		}
+    		
+    		// Set the received packet length
+    		
+    		if ( pkt != null)
+    			pkt.setReceivedLength( rxLen);    		
 		}
-		
-		// Set the received packet length
-		
-		if ( pkt != null)
-			pkt.setReceivedLength( rxLen);
-		
-		// Return the received packet
-
-		return pkt;
+		catch (Throwable t)
+		{
+            getPacketPool().releasePacket( pkt);
+            rethrowException(t);
+		}
+        // Return the received packet
+	    
+        return pkt;
 	}
 
 	/**

@@ -190,6 +190,14 @@ public class NegTokenInit
       
       DEROid derOid = (DEROid) derObj;
       
+      // ALF-6284 fix, the blob is already kerberos5, no need to parse
+      if (derOid.getOid().equals(OID.ID_KERBEROS5))
+      {
+          m_mechTypes = new Oid[]{OID.KERBEROS5};
+          m_mechToken = buf;
+          return;
+      }
+      
       if ( derOid.getOid().equals( OID.ID_SPNEGO) == false)
         throw new IOException( "Not an SPNEGO blob");
       

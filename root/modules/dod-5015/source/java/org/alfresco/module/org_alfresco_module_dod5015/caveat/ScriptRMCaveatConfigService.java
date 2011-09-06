@@ -73,13 +73,33 @@ public class ScriptRMCaveatConfigService extends BaseScopableProcessorExtension
     
     public ScriptConstraint[] getAllConstraints()
     {
+    	return getConstraints(true);
+    }
+        
+    public ScriptConstraint[] getConstraintsWithoutEmptyList()
+    {
+    	return getConstraints(false);
+    }
+        
+    private ScriptConstraint[] getConstraints(boolean includeEmptyList)
+    {
         Set<RMConstraintInfo> values = caveatConfigService.getAllRMConstraints();
         
         List<ScriptConstraint> vals = new ArrayList<ScriptConstraint>(values.size());
         for(RMConstraintInfo value : values)
         {
             ScriptConstraint c = new ScriptConstraint(value, caveatConfigService, getAuthorityService());
-            vals.add(c);
+            if (includeEmptyList)
+            {
+            	vals.add(c);
+            }
+            else
+            {
+            	if (c.getValues().length > 0)
+            	{
+            		vals.add(c);
+            	}
+            }
         }
         
         return vals.toArray(new ScriptConstraint[vals.size()]);

@@ -115,9 +115,11 @@ public class KerberosSessionSetupPrivilegedAction implements PrivilegedAction<Pa
       //now create the spnego token to send to the endpoint:   
       GSSName gssServerName = gssManager.createName(endpointSPN, GSSName.NT_USER_NAME);   
         
-      Oid spnegoMechOid = new Oid("1.3.6.1.5.5.2");  
+      // ALF-6284 fix, IBM J9 VM doesn't allow initiate SPNEGO context using KERBEROS5 credential,
+      // so we should initiate KERBEROS5 context
+      Oid kerberosMechOid = OID.KERBEROS5;  
       //...and create a new context pretending to be the caller   
-      GSSContext clientContext = gssManager.createContext(gssServerName.canonicalize(spnegoMechOid), spnegoMechOid, clientCred, GSSContext.DEFAULT_LIFETIME);   
+      GSSContext clientContext = gssManager.createContext(gssServerName.canonicalize(kerberosMechOid), kerberosMechOid, clientCred, GSSContext.DEFAULT_LIFETIME);   
 
       // could be necessary
       clientContext.requestCredDeleg(true);   

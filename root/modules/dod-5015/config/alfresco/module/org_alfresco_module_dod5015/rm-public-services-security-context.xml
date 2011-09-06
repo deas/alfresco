@@ -579,10 +579,10 @@
                 <![CDATA[ 
                 org.alfresco.service.cmr.lock.LockService.lock=ACL_NODE.0.cm:lockable.Lock,RM_ABSTAIN 
                 org.alfresco.service.cmr.lock.LockService.unlock=ACL_NODE.0.cm:lockable.Unlock,RM_ABSTAIN 
-                org.alfresco.service.cmr.lock.LockService.getLockStatus=ACL_NODE.0.sys:base.ReadProperties,RM_ABSTAIN
-                org.alfresco.service.cmr.lock.LockService.getLockType=ACL_NODE.0.sys:base.ReadProperties,RM_ABSTAIN 
-                org.alfresco.service.cmr.lock.LockService.checkForLock=ACL_NODE.0.sys:base.ReadProperties,RM_ABSTAIN 
-                org.alfresco.service.cmr.lock.LockService.getLocks=ACL_NODE.0.sys:base.ReadProperties,RM_ABSTAIN
+                org.alfresco.service.cmr.lock.LockService.getLockStatus=ACL_NODE.0.sys:base.ReadProperties,RM.Read.0 
+                org.alfresco.service.cmr.lock.LockService.getLockType=ACL_NODE.0.sys:base.ReadProperties,RM.Read.0 
+                org.alfresco.service.cmr.lock.LockService.checkForLock=ACL_NODE.0.sys:base.ReadProperties,RM.Read.0 
+                org.alfresco.service.cmr.lock.LockService.getLocks=ACL_NODE.0.sys:base.ReadProperties,RM.Read.0 
                 org.alfresco.service.cmr.lock.LockService.*=ACL_DENY,RM_DENY 
                 ]]>
             </value>

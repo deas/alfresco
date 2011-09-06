@@ -111,6 +111,15 @@ public interface NodeService
     public NodeRef.Status getNodeStatus(NodeRef nodeRef);
     
     /**
+     * Get the node reference for a given node DB ID
+     * 
+     * @param nodeId            the node's DB ID
+     * @return                  the corresponding node reference or <tt>null</tt> if not found
+     */
+    @Auditable(parameters = {"nodeId"})
+    public NodeRef getNodeRef(Long nodeId);
+    
+    /**
      * @param storeRef a reference to an existing store
      * @return Returns a reference to the root node of the store
      * @throws InvalidStoreRefException if the store could not be found

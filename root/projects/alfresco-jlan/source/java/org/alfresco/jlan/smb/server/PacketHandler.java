@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2010 Alfresco Software Limited.
+ * Copyright (C) 2006-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -21,6 +21,8 @@ package org.alfresco.jlan.smb.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
+
+import org.alfresco.jlan.debug.Debug;
 
 /**
  * Protocol Packet Handler Class
@@ -238,6 +240,31 @@ public abstract class PacketHandler {
 	public void closeHandler() {
 	}
 
+	protected void rethrowException(Throwable t) throws IOException
+	{
+        if ( Debug.EnableDbg && hasDebug())
+            Debug.println(t);
+	    
+	    // Most method signatures allow IOExceptions so let these pass straight through
+	    if (t instanceof IOException)
+	    {
+	        throw (IOException)t;
+	    }
+	    // Allow unchecked exceptions straight through
+	    else if (t instanceof RuntimeException)
+	    {
+	        throw (RuntimeException)t;
+	    }
+	    else if (t instanceof Error)
+	    {
+	        throw (Error)t;
+	    }
+	    // We have to wrap any other exceptions as unchecked
+	    else
+	    {
+	        throw new RuntimeException(t);
+	    }
+	}
 	/**
 	 * Set the client name
 	 * 

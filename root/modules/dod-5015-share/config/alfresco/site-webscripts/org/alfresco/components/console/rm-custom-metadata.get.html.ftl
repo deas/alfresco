@@ -74,7 +74,7 @@
                <option value="d:date">${msg("label.datatype.date")}</option>
             </select>
          </div>
-         <div class="field-row">
+         <div class="field-row"  <#if (constraints?size == 0)>style="display:none;"</#if>>
             <input type="checkbox" id="${el}-create-use-list" /><label for="${el}-create-use-list">${msg("label.use-list")}:</label>
             <!-- generated list of values constraints drop-down-->
             <select id="${el}-create-list">
@@ -118,7 +118,7 @@
          <div class="label-row">
             <span>${msg("label.type")}:</span>&nbsp;<span id="${el}-edit-type"></span>
          </div>
-         <div class="field-row">
+         <div class="field-row" <#if (constraints?size == 0)>style="display:none;"</#if>>
             <input type="checkbox" id="${el}-edit-use-list" /><label for="${el}-edit-use-list">${msg("label.use-list")}:</label>
             <!-- generated list of values constraints drop-down -->
             <select id="${el}-edit-list">

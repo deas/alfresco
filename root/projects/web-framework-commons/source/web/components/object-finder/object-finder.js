@@ -952,10 +952,27 @@
             var obj = args[1];
             if (obj && obj.item)
             {
-               // Add the item to the selected list
-               this.widgets.dataTable.addRow(obj.item);
-               this.selectedItems[obj.item.nodeRef] = obj.item;
-               this.singleSelectedItem = obj.item;
+               // Add the item at the correct position (sorted by name) in the selected list (if it hadn't been added already)
+               var records = this.widgets.dataTable.getRecordSet().getRecords(),
+                  i = 0,
+                  il = records.length;
+               for (; i < il; i++)
+               {
+                  if (obj.item.nodeRef == records[i].getData().nodeRef)
+                  {
+                     break;
+                  }
+               }
+               if (i == il)
+               {
+                  this.widgets.dataTable.addRow(obj.item);
+                  this.selectedItems[obj.item.nodeRef] = obj.item;
+                  this.singleSelectedItem = obj.item;
+               }
+               else
+               {
+                  Alfresco.util.PopupManager.displayMessage({ text: this.msg("message.item-already-added", $html(obj.item.name)) });
+               }
             }
          }
       },

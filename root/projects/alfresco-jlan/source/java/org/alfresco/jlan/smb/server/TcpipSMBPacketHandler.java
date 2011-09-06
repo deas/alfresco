@@ -118,7 +118,7 @@ public class TcpipSMBPacketHandler extends SocketPacketHandler {
 	
 			}
 		}
-		catch (IOException ex) {
+		catch (Throwable ex) {
 			
 			// Release the packet back to the pool
 			
@@ -126,7 +126,7 @@ public class TcpipSMBPacketHandler extends SocketPacketHandler {
 			
 			// Rethrow the exception
 			
-			throw ex;
+			rethrowException(ex);
 		}
 
 		// Set the received request length

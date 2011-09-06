@@ -288,7 +288,7 @@
          });
 
          // Using Forms Service, so always create new instance
-         var editDetails = new Alfresco.module.SimpleDialog(this.id + "-editDetails");
+         var editDetails = new Alfresco.module.SimpleDialog(this.id + "-editDetails-" + Alfresco.util.generateDomId());
 
          editDetails.setOptions(
          {

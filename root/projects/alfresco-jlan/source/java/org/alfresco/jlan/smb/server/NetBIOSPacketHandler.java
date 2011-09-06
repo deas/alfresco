@@ -120,15 +120,14 @@ public class NetBIOSPacketHandler extends SocketPacketHandler {
 	
 			}
 		}
-		catch (IOException ex) {
+		catch (Throwable ex) {
 			
 			// Release the packet back to the pool
 			
 			getPacketPool().releasePacket( pkt);
 			
 			// Rethrow the exception
-			
-			throw ex;
+			rethrowException(ex);
 		}
 
 		// Copy the NetBIOS header to the request buffer
