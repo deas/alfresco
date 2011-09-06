@@ -184,14 +184,17 @@ public class HttpClientFactory
 	
 	protected HttpClient getHttpsClient()
 	{
-		// This seems to be the only way to configure SSL connections (other than using Protocol.registerProtocol
-		// which overrides the socket factory for _all_ users of http client). Unfortunately, this means
-		// that all connections go directly to the SSL port rather than being _redirected_ to the SSL port.
-		// It doesn't seem possible with commons http client to configure the host port as the standard
-		// (non-SSL) port and have it redirect to the SSL port.
+		// This seems to be the only way to configure SSL connections but has some drawbacks:
+		// 
+		//  - we need to call Protocol.registerProtocol (which unfortunately overrides the socket factory for _all_ users of http client)
+		//    so that absolute urls used by e.g. the CommonsHttpSolrServer in SOLRAdminClient call our socket factory.
+		//  - it doesn't seem possible with commons http client to configure the host port as the standard (non-SSL) port and have it
+		//    redirect to the SSL port.
+		//
+		// It may be advantageous to convert to use the newer Apache httpcomponents http client. 
 		HttpClient httpClient = constructHttpClient();
         Protocol myhttps = new Protocol("https", sslSocketFactory, sslPort);
-		//Protocol.registerProtocol("https", myhttps);
+        Protocol.registerProtocol("https", myhttps);
         httpClient.getHostConfiguration().setHost(host, sslPort, myhttps);
         return httpClient;
 	}
