@@ -191,9 +191,22 @@ public class QNameMap<K,V> implements Map, Cloneable, Serializable
      */
     public Object clone()
     {
-        QNameMap map = new QNameMap(provider);
+        QNameMap<K, V> map = new QNameMap<K, V>(provider);
         map.putAll(this);
         
         return map;
     }
+    
+    @SuppressWarnings("unchecked")
+    public Map<QName, V> getMapOfQNames()
+    {
+        HashMap<QName, V> map = new HashMap<QName, V>(contents.size());
+        for (Entry<String, Object> entry : contents.entrySet())
+        {
+            QName key = QName.createQName(entry.getKey());
+            map.put(key, (V)entry.getValue());
+        }
+        return map;
+    }
+
 }
