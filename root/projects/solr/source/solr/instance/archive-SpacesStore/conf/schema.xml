@@ -3,8 +3,18 @@
    <types>
       <fieldType name="alfrescoDataType" class="org.alfresco.solr.AlfrescoDataType">
          <analyzer>
-            <tokenizer class="org.apache.solr.analysis.WhitespaceTokenizerFactory"></tokenizer>
-            <filter class="org.apache.solr.analysis.LowerCaseFilterFactory"></filter>
+            <tokenizer class="org.apache.solr.analysis.WhitespaceTokenizerFactory" />
+            <filter class="org.apache.solr.analysis.WordDelimiterFilterFactory" 
+                    generateWordParts="1"
+                    generateNumberParts="1"
+                    catenateWords="1"
+                    catenateNumbers="1"
+                    catenateAll="1"
+                    splitOnCaseChange="1"
+                    splitOnNumerics="1"
+                    preserveOriginal="1"
+                    stemEnglishPossessive="1"/>
+            <filter class="org.apache.solr.analysis.LowerCaseFilterFactory" />
          </analyzer>
       </fieldType>
    </types>
