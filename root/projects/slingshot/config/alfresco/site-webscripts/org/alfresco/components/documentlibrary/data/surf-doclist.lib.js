@@ -63,7 +63,7 @@ var DocList =
          metadataTemplate, template,
          i, index,
          metadata = doclist.metadata,
-         jsonMetadata = jsonUtils.toJSONString(metadata),
+         metaJSON = jsonUtils.toJSONObject(doclist.metadata),
          workingCopyLabel = metadata.workingCopyLabel;
 
       /**
@@ -116,6 +116,8 @@ var DocList =
             }
          }
 
+         var itemJSON = jsonUtils.toJSONObject(item);
+
          /**
           * Actions
           */
@@ -160,7 +162,7 @@ var DocList =
                   for (index in action.evaluators)
                   {
                      evaluator = action.evaluators[index].evaluator;
-                     if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != action.evaluators[index].qualify)
+                     if (evaluator.evaluate(itemJSON, metaJSON, args) != action.evaluators[index].qualify)
                      {
                         // No need to run any more evaluators for this action
                         evaluatorQualified = false;
@@ -207,7 +209,7 @@ var DocList =
                   for (index in indicator.evaluators)
                   {
                      evaluator = indicator.evaluators[index].evaluator;
-                     if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != indicator.evaluators[index].qualify)
+                     if (evaluator.evaluate(itemJSON, metaJSON, args) != indicator.evaluators[index].qualify)
                      {
                         // No need to run any more evaluators for this indicator
                         evaluatorQualified = false;
@@ -255,7 +257,7 @@ var DocList =
                      for (index in template.evaluators)
                      {
                         evaluator = template.evaluators[index].evaluator;
-                        if (evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args) != template.evaluators[index].qualify)
+                        if (evaluator.evaluate(itemJSON, metaJSON, args) != template.evaluators[index].qualify)
                         {
                            // No need to run any more evaluators for this template
                            evaluatorQualified = false;
@@ -287,7 +289,7 @@ var DocList =
                   continue;
                }
 
-               if (!line.evaluator || line.evaluator.evaluate(jsonUtils.toJSONString(item), jsonMetadata, args))
+               if (!line.evaluator || line.evaluator.evaluate(itemJSON, metaJSON, args))
                {
                   // Add display line for this item
                   lines.push(

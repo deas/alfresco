@@ -82,7 +82,8 @@ public abstract class BaseEvaluator implements Evaluator
      * Main entry point from Rhino script. Converts JSON String to a JSONObject
      * and calls the overridable evaluate() method.
      *
-     * @param record JSON String as received from a Rhino script
+     * @param record JSON String or JSONObject as received from a Rhino script
+     * @param metadata JSON String or JSONObject as received from a Rhino script
      * @param args URL arguments passed to calling webscript
      * @return boolean indicating evaluator result
      */
@@ -94,8 +95,30 @@ public abstract class BaseEvaluator implements Evaluator
 
         try
         {
-            jsonObject = (JSONObject)JSONValue.parseWithException((String)record);
-            this.metadata = (JSONObject)JSONValue.parseWithException((String)metadata);
+            if (record instanceof JSONObject)
+            {
+                jsonObject = (JSONObject)record;
+            }
+            else if (record instanceof String)
+            {
+                jsonObject = (JSONObject)JSONValue.parseWithException((String)record);
+            }
+            else
+            {
+                throw new IllegalArgumentException("Expecting either JSONObject or JSON String for 'record'");
+            }
+            if (metadata instanceof JSONObject)
+            {
+                this.metadata = (JSONObject)metadata;
+            }
+            else if (metadata instanceof String)
+            {
+                this.metadata = (JSONObject)JSONValue.parseWithException((String)metadata);
+            }
+            else
+            {
+                throw new IllegalArgumentException("Expecting either JSONObject or JSON String for 'metadata'");
+            }
         }
         catch (ParseException perr)
         {
@@ -124,7 +147,7 @@ public abstract class BaseEvaluator implements Evaluator
     @SuppressWarnings({"UnusedDeclaration"})
     public final HashMap<String, String> getArgs()
     {
-        return args;
+        return this.args;
     }
 
     /**

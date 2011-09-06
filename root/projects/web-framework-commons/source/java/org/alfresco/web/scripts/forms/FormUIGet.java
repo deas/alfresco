@@ -525,7 +525,6 @@ public class FormUIGet extends DeclarativeWebScript
             // list the requested fields
             writer.startValue(MODEL_FIELDS);
             writer.startArray();
-            buf.write("\"");
 
             forcedFields = new ArrayList<String>(visibleFields.size());
             for (String fieldId : visibleFields)
@@ -549,7 +548,6 @@ public class FormUIGet extends DeclarativeWebScript
         {
             writer.startValue(MODEL_FORCE);
             writer.startArray();
-            buf.write("\"");
             
             for (String fieldId : forcedFields)
             {
