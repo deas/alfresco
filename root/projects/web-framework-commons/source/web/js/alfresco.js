@@ -1881,7 +1881,7 @@ Alfresco.util.createBalloon = function(p_context, p_params)
       wrapper.appendChild(arrow);
 
       balloon.setBody(wrapper);
-      balloon.render(document.body);
+      balloon.render(Dom.get("doc3"));
       
       this.balloon = balloon;
       this.content = content;
