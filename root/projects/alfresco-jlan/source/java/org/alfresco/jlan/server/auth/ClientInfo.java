@@ -33,10 +33,11 @@ public class ClientInfo {
   public final static int LogonGuest	= 1;
   public final static int LogonNull		= 2;
   public final static int LogonAdmin	= 3;
-	
+  public final static int LogonUnknown  = 4;
+  
   //	Logon type strings
   
-  private static final String[] _logonTypStr = { "Normal", "Guest", "Null", "Administrator" };
+  private static final String[] _logonTypStr = { "Normal", "Guest", "Null", "Administrator", "Unknown" };
   
 	//	Client information object factory
 	
@@ -53,7 +54,7 @@ public class ClientInfo {
 	
 	//	Logon type
 	
-	private int m_logonType;
+	private int m_logonType = LogonUnknown;
 	
   //  User's domain
 
@@ -368,10 +369,13 @@ public class ClientInfo {
 	 * 
 	 * @param guest boolean
 	 */
-	public final void setGuest(boolean guest) {
-	  setLogonType( guest == true ? LogonGuest : LogonNormal);
+  public final void setGuest(boolean guest) {
+	  if ( guest == true)
+		  setLogonType( LogonGuest);
+	  else if ( getLogonType() == LogonUnknown)
+		  setLogonType( LogonNormal);
 	}
-	
+
 	/**
 	 * Set the client network address
 	 * 
@@ -437,6 +441,9 @@ public class ClientInfo {
     	str.append(",");
     	str.append(getClientAddress());
     }
+    
+    str.append( ",");
+    str.append( getLogonTypeString());
     
     if ( isGuest())
     	str.append(",Guest");

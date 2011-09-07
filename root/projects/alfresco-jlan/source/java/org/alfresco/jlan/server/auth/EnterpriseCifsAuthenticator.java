@@ -2094,7 +2094,13 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 					Debug.println("[SMB] Logged on using Hashed/NTLMv2");
 			}
 		}
-
+		else {
+			
+			// Mark the session as a null logon
+			
+			client.setLogonType( ClientInfo.LogonNull);
+		}
+			
 		// Check if the user was logged on as guest
 
 		if ( client.isGuest()) {
@@ -2134,7 +2140,8 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 
 		// Set the guest flag for the client, indicate that the session is logged on
 
-		client.setGuest(isGuest);
+		if ( isGuest == true)
+			client.setLogonType( ClientInfo.LogonGuest);
 		sess.setLoggedOn(true);
 
 		// Build the session setup response SMB
