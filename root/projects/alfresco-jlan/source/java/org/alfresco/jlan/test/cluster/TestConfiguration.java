@@ -75,7 +75,10 @@ public class TestConfiguration {
 									   				{ "writeFileRandom", 	"org.alfresco.jlan.test.cluster.WriteRandomTest"},
 									   				{ "folderSearch", 		"org.alfresco.jlan.test.cluster.FolderSearchTest"},
 									   				{ "changeNotify", 		"org.alfresco.jlan.test.cluster.ChangeNotifyTest"},
-									   				{ "NTCreateFile",		"org.alfresco.jlan.test.cluster.NTCreateFileTest"}
+									   				{ "NTCreateFile",		"org.alfresco.jlan.test.cluster.NTCreateFileTest"},
+									   				{ "perfFilesPerFolder", "org.alfresco.jlan.test.cluster.PerfFilesPerFolderTest"},
+									   				{ "perfFolderTree",		"org.alfresco.jlan.test.cluster.PerfFolderTreeTest"},
+									   				{ "perfDataTransfer",	"org.alfresco.jlan.test.cluster.PerfDataTransferTest"}
 	};
 
 	// List of remote servers

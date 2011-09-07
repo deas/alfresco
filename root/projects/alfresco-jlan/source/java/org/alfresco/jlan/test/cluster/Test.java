@@ -169,6 +169,8 @@ public abstract class Test {
 		
 		if ( getPath() != null)
 			fName.append( getPath());
+		else
+			fName.append( FileName.DOS_SEPERATOR_STR);
 		
 		fName.append( getName());
 		fName.append( "_");
@@ -191,6 +193,8 @@ public abstract class Test {
 		
 		if ( getPath() != null)
 			fName.append( getPath());
+		else
+			fName.append( FileName.DOS_SEPERATOR_STR);
 		
 		fName.append( getName());
 		fName.append( "_");
@@ -215,6 +219,8 @@ public abstract class Test {
 		
 		if ( getPath() != null)
 			fName.append( getPath());
+		else
+			fName.append( FileName.DOS_SEPERATOR_STR);
 		
 		fName.append( getName());
 		fName.append( "_");
@@ -236,6 +242,8 @@ public abstract class Test {
 
 		if ( getPath() != null)
 			fName.append( getPath());
+		else
+			fName.append( FileName.DOS_SEPERATOR_STR);
 		
 		fName.append( getName());
 		fName.append( "_");
@@ -260,6 +268,8 @@ public abstract class Test {
 		
 		if ( getPath() != null)
 			fName.append( getPath());
+		else
+			fName.append( FileName.DOS_SEPERATOR_STR);
 		
 		fName.append( getName());
 		fName.append( "_");
@@ -287,6 +297,8 @@ public abstract class Test {
 		
 		if ( getPath() != null)
 			fName.append( getPath());
+		else
+			fName.append( FileName.DOS_SEPERATOR_STR);
 		
 		fName.append( getName());
 		fName.append( "_");

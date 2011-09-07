@@ -722,6 +722,9 @@ public final class SMBErrorText {
 			case SMBStatus.NTNoSuchDomain:
 				errtext = "No such domain";
 				break;
+			case SMBStatus.NTDirectoryNotEmpty:
+				errtext = "Directory not empty";
+				break;
 			case SMBStatus.NTNoMoreFiles:
 				errtext = "No more files";
 				break;

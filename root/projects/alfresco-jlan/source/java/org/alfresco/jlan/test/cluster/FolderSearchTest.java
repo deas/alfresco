@@ -406,7 +406,7 @@ public class FolderSearchTest extends Test {
 	public void cleanupTest( int threadId, int iter, DiskSession sess, StringWriter log)
 		throws Exception {
 
-		// Delete the test file
+		// Delete the test files/folders
 		
 		if ( threadId == 1) {
 			

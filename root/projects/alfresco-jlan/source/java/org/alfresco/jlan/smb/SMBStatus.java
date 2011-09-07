@@ -255,6 +255,7 @@ public final class SMBStatus {
 	public static final int NTRequestNotAccepted 	= 0xC00000D0;
 	public static final int NTPipeEmpty           	= 0xC00000D9;
 	public static final int NTNoSuchDomain 			= 0xC00000DF;
+	public static final int NTDirectoryNotEmpty		= 0xC0000101;
 	public static final int NTTooManyOpenFiles 		= 0xC000011F;
 	public static final int NTCancelled 			= 0xC0000120;
 	public static final int NTInvalidLevel 			= 0xC0000148;
