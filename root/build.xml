@@ -197,7 +197,6 @@
       </patternset>
       <patternset id="files.tests">
          <exclude name="**/MultiTDemoTest.java" /> <!-- Excluded due to ALF-10087: MultiTDemoTest fails during workflow initialization -->
-         <exclude name="**/ChannelServiceImplIntegratedTest.java" /> <!-- Excluded due to     ALF-10201: Test disabled: ChannelServiceImplIntegratedTest -->
 
          <!-- System Build Tests (runs using embedded Jetty) -->
          <exclude name="**/*SystemTest.java" />
