@@ -88,6 +88,7 @@ import org.alfresco.jlan.smb.PacketType;
 import org.alfresco.jlan.smb.SMBDate;
 import org.alfresco.jlan.smb.SMBException;
 import org.alfresco.jlan.smb.SMBStatus;
+import org.alfresco.jlan.smb.TreeConnectAndX;
 import org.alfresco.jlan.smb.WinNT;
 import org.alfresco.jlan.smb.nt.LoadException;
 import org.alfresco.jlan.smb.nt.NTIOCtl;
@@ -1123,7 +1124,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		// Debug
 
 		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TREE))
-			m_sess.debugPrintln("NT Tree Connect AndX - " + uncPath + ", " + service);
+			m_sess.debugPrintln("NT Tree Connect AndX - " + uncPath + ", " + service + ", flags=" + TreeConnectAndX.asStringRequest( flags) + "/0x" + Integer.toHexString( flags));
 
 		// Parse the requested share name
 
@@ -1259,15 +1260,40 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TREE))
 			m_sess.debugPrintln("Tree Connect AndX - Allocated Tree Id = " + treeId + ", Permission = "
-					+ FileAccess.asString(sharePerm));
+					+ FileAccess.asString(sharePerm) + ", extendedResponse=" + TreeConnectAndX.hasExtendedResponse( flags));
 
-		// Build the tree connect response
+		// Check if an extended format response is required, only return for filesystem shares
+		
+		if ( TreeConnectAndX.hasExtendedResponse( flags) && servType != ShareType.ADMINPIPE) {
 
-		smbPkt.setParameterCount(3);
-		smbPkt.setAndXCommand(0xFF); // no chained reply
-		smbPkt.setParameter(1, 0);
-		smbPkt.setParameter(2, 0);
-
+			// Build the extended tree connect response
+			
+			smbPkt.setParameterCount(7);
+			smbPkt.setAndXCommand(0xFF); // no chained reply
+			smbPkt.setParameter(1, 0);
+			smbPkt.setParameter(2, 0);	// response flags
+			
+			// Maximal user access rights
+			
+			if (sharePerm == FileAccess.Writeable)
+				smbPkt.setParameterLong(3, AccessMode.NTFileGenericAll);
+			else
+				smbPkt.setParameterLong(3, AccessMode.NTFileGenericRead);
+			
+			// Guest maximal access rights
+			
+			smbPkt.setParameterLong(5, 0);
+		}
+		else {
+			
+			// Build the standard tree connect response
+	
+			smbPkt.setParameterCount(3);
+			smbPkt.setAndXCommand(0xFF); // no chained reply
+			smbPkt.setParameter(1, 0);
+			smbPkt.setParameter(2, 0);	// response flags
+		}
+		
 		// Pack the service type
 
 		int pos = smbPkt.getByteOffset();
