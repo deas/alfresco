@@ -23,7 +23,7 @@ function setPermissions(documentDetails)
       {
          permParts = rawPerms[i].split(";");
          group = permParts[1];
-         permission = permParts[2]
+         permission = permParts[2];
          if (group.indexOf("_SiteManager") != -1)
          {
             model.managers = permission;
@@ -40,7 +40,7 @@ function setPermissions(documentDetails)
          {
             model.consumers = permission;
          }
-         else if (group.indexOf("GROUP_EVERYONE") == 0)
+         else if (group.indexOf("GROUP_EVERYONE") == 0 && permission !== "ReadPermissions")
          {
             model.everyone = permission;
          }
