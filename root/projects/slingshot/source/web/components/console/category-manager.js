@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -32,6 +32,7 @@
        Event = YAHOO.util.Event,
        Element = YAHOO.util.Element,
        KeyListener = YAHOO.util.KeyListener;
+    
     /**
      * Alfresco Slingshot aliases
      */
@@ -410,11 +411,11 @@
          var filenameId = textNode.labelElId;
          var fnInsituCallback = function insitu_callback(response, asset)
          {
-         asset.data.path = asset.data.path.replace(asset.label, response.json.name);
-         asset.setUpLabel(response.json.name);
-         asset.parent.toggle();
-         asset.refresh();
-         asset.parent.toggle();
+            asset.data.path = asset.data.path.replace(asset.label, response.json.name);
+            asset.setUpLabel(response.json.name);
+            asset.parent.toggle();
+            asset.refresh();
+            asset.parent.toggle();
             return true;
          };
          if (p_oData.nodeRef !== null)
@@ -425,11 +426,11 @@
                context: filenameId,
                params:
                {
-                 treeNode: textNode,
-                 component: this,
+                  treeNode: textNode,
+                  component: this,
                   type: "textBoxCategory",
                   nodeRef: p_oData.nodeRef,
-                  name: "name", //prop_cm_name
+                  name: "name",
                   value: p_oData.name,
                   validations: [
                   {
@@ -523,18 +524,18 @@
          Event.stopEvent(e);
       });
       
-      // Create editor icon instance
+      // Create Add icon instance
       this.addIcon = new Alfresco.widget.InsituEditorIconAdd(this, p_params);
       
-      //Don't delete or edit category root
+      // Create Edit and Delete icon for all except category root
       if (this.params.nodeRef !== "")
       {
-         this.editorIcon = new Alfresco.widget.InsituEditorIconRight(this, p_params);
+         this.editorIcon = new Alfresco.widget.InsituEditorIconEdit(this, p_params);
          this.deleteIcon = new Alfresco.widget.InsituEditorIconDelete(this, p_params);
       }
 
       this.params.context.parentNode.appendChild(this.editForm, this.params.context);
-   
+
       this.balloon = null;
       this.contextStyle = null;
       this.keyListener = null;
@@ -546,12 +547,6 @@
 
    /**
     * Alfresco.widget.InsituEditor.textBox
-    *
-    *  <form>
-    *     <input type="text" value="digital photograph record.jpg">
-    *     <a href="#" style="font-size: 13px; margin-left: 0.5em; padding-top: 0px; padding-right: 0.5em; padding-bottom: 0px; padding-left: 0.5em; ">Save</a>
-    *     <a href="#" style="font-size: 13px; padding-top: 0px; padding-right: 0.5em; padding-bottom: 0px; padding-left: 0.5em; ">Cancel</a>
-    *  </form>
     */
    YAHOO.extend(Alfresco.widget.InsituEditor.textBoxCategory, Alfresco.widget.InsituEditor.textBox,
    {
@@ -653,7 +648,7 @@
             correctScope: true
          });
          
-         // Key Listener for [ENTER] to cancel
+         // Key Listener for [ENTER] to accept
          this.enterKeyListener = new KeyListener(this.inputBox,
          {
             keys: [KeyListener.KEY.ENTER]
@@ -662,7 +657,8 @@
             fn: function(id, keyEvent)
             {
                Event.stopEvent(keyEvent[1]);
-               //this.form._submitInvoked(keyEvent[1]);
+               this.form._submitInvoked(keyEvent);
+               this.doHide(true);
             },
             scope: this,
             correctScope: true
@@ -703,16 +699,16 @@
       }
    });
 
-   Alfresco.widget.InsituEditorIconRight = function(p_editor, p_params)
+   Alfresco.widget.InsituEditorIconEdit = function(p_editor, p_params)
    {
       this.editor = p_editor;
       this.params = YAHOO.lang.merge({}, p_params);
       this.disabled = p_params.disabled;
-   
+      
       this.editIcon = document.createElement("span");
       this.editIcon.title = Alfresco.util.encodeHTML(p_params.title);
       Dom.addClass(this.editIcon, "insitu-edit-category");
-   
+      
       this.params.context.appendChild(this.editIcon, this.params.context);
       Event.on(this.params.context, "mouseover", this.onContextMouseOver, this);
       Event.on(this.params.context, "mouseout", this.onContextMouseOut, this);
@@ -720,25 +716,25 @@
       Event.on(this.editIcon, "mouseout", this.onContextMouseOut, this);
    };
    
-   YAHOO.extend(Alfresco.widget.InsituEditorIconRight, Alfresco.widget.InsituEditorIcon, {});
+   YAHOO.extend(Alfresco.widget.InsituEditorIconEdit, Alfresco.widget.InsituEditorIcon, {});
    
    Alfresco.widget.InsituEditorIconAdd = function(p_editor, p_params)
    {
       this.editor = p_editor;
       this.params = YAHOO.lang.merge({}, p_params);
       this.disabled = p_params.disabled;
-   
+      
       this.editIcon = document.createElement("span");
       this.editIcon.title = Alfresco.util.encodeHTML(p_params.titleAdd);
       if (p_editor.params.nodeRef === "")
       {
-        Dom.addClass(this.editIcon, "insitu-add-root-category");  
+         Dom.addClass(this.editIcon, "insitu-add-root-category");  
       }
       else
       {
          Dom.addClass(this.editIcon, "insitu-add-category");
       }
-   
+      
       this.params.context.appendChild(this.editIcon, this.params.context);
       Event.on(this.params.context, "mouseover", this.onContextMouseOver, this);
       Event.on(this.params.context, "mouseout", this.onContextMouseOut, this);
@@ -746,7 +742,7 @@
       Event.on(this.editIcon, "mouseout", this.onContextMouseOut, this);
    };
 
-   YAHOO.extend(Alfresco.widget.InsituEditorIconAdd, Alfresco.widget.InsituEditorIconRight,
+   YAHOO.extend(Alfresco.widget.InsituEditorIconAdd, Alfresco.widget.InsituEditorIconEdit,
    {
       /**
        * The default event handler fired when the user clicks the icon element.
@@ -763,8 +759,6 @@
          }
          Event.stopEvent(e);
 
-         obj.disabled = true;
-         
          if (Alfresco.logger.isDebugEnabled())
          {
             Alfresco.logger.debug("onIconClick", e);
@@ -772,14 +766,13 @@
          
          Alfresco.util.PopupManager.getUserInput(
          {
-             title: Alfresco.util.message("tool.category-manager.add-category"),
-             text: Alfresco.util.message("tool.category-manager.label.category-name"),
-             input: "text",
-             //value: $html(sitePageTitleInputEl.value),
-             callback:
-             {
-                fn: function promptCallback (newNodeName, obj)
-                {
+            title: Alfresco.util.message("tool.category-manager.add-category"),
+            text: Alfresco.util.message("tool.category-manager.label.category-name"),
+            input: "text",
+            callback:
+            {
+               fn: function promptCallback (newNodeName, obj)
+               {
                   url = this._buildAddNodeUrl(this.params.nodeRef);
                   
                   var config =
@@ -790,21 +783,17 @@
                      {
                         fn: function (response, obj)
                         {
-                           Alfresco.util.PopupManager.displayMessage(
-                           {
-                              text: Alfresco.util.message("tool.category-manager.add-category.success")
-                          });
                            var treeNode = this.params.treeNode;
                            this.params.component._sortNodeChildren(treeNode);
                            treeNode.toggle();
-                         treeNode.refresh();
+                           treeNode.refresh();
                            treeNode.toggle();
                         },
                         scope: this
                      },
                      failureCallback:
                      {
-                       fn: function (response, obj)
+                        fn: function (response, obj)
                         {
                            Alfresco.util.PopupManager.displayMessage(
                            {
@@ -818,13 +807,13 @@
                         name : newNodeName
                      }
                   };
-                                 
+                  
                   Alfresco.util.Ajax.jsonRequest(config);
                },
-                obj: {},
-                scope: obj
-             }
-          });
+               obj: {},
+               scope: obj
+            }
+         });
       },
       
       /**
@@ -836,7 +825,7 @@
        _buildAddNodeUrl: function _buildAddNodeUrl(nodeRef)
        {
           var nodeRef = new Alfresco.util.NodeRef(nodeRef),
-            uriTemplate ="api/category/" + encodeURI(nodeRef.uri);
+            uriTemplate = "api/category/" + encodeURI(nodeRef.uri);
 
           return  Alfresco.constants.PROXY_URI + uriTemplate;
        }
@@ -859,35 +848,8 @@
       Event.on(this.editIcon, "mouseout", this.onContextMouseOut, this);
    };
    
-   YAHOO.extend(Alfresco.widget.InsituEditorIconDelete, Alfresco.widget.InsituEditorIconRight,
+   YAHOO.extend(Alfresco.widget.InsituEditorIconDelete, Alfresco.widget.InsituEditorIconEdit,
    {
-      /**
-       * Fade the editor icon out
-       *
-       * @method _fadeOut
-       * @param p_element {HTMLElement} The icon element
-       * @protected
-       */
-      _fadeOut: function InsituEditorIcon__fadeOut(p_element)
-      {
-         var fade = new YAHOO.util.Anim(p_element,
-         {
-            opacity:
-            {
-               to: 0
-            }
-         }, 0.2);
-         
-         fade.onComplete.subscribe(function(e, data, obj)
-         {
-            Event.removeListener(obj.editIcon, "click", obj.onIconClick, obj);
-            Dom.setStyle(p_element, "visibility", "hidden");
-            Dom.setStyle(p_element, "opacity", 0);
-         }, this);
-
-         fade.animate();
-      },
-      
       /**
        * The default event handler fired when the user clicks the icon element.
        *
@@ -901,7 +863,6 @@
          {
             return;
          }
-         obj.disabled = true;
          Event.stopEvent(e);
 
          if (Alfresco.logger.isDebugEnabled())
@@ -909,44 +870,61 @@
             Alfresco.logger.debug("onIconClick", e);
          }
          
-         url = obj._buildDeleteNodeUrl(obj.params.nodeRef);
-         
-         var treeNode = obj.params.context;
-         
-            var config =
+         Alfresco.util.PopupManager.displayPrompt(
+         {
+            title: Alfresco.util.message("tool.category-manager.message.confirm.delete.title"),
+            text: Alfresco.util.message("tool.category-manager.message.confirm.delete", this, obj.params.treeNode.label),
+            buttons: [
             {
-               method: "DELETE",
-               url: url,
-               successCallback:
+               text: Alfresco.util.message("button.delete"),
+               handler: function dlA_onActionDelete_delete()
                {
-                  fn: function (response, obj)
+                  this.destroy();
+                  
+                  // perform the Delete REST operation
+                  url = obj._buildDeleteNodeUrl(obj.params.nodeRef);
+                  
+                  var config =
                   {
-                     Alfresco.util.PopupManager.displayMessage(
+                     method: "DELETE",
+                     url: url,
+                     successCallback:
                      {
-                        text: Alfresco.util.message("tool.category-manager.delete-category.success")
-                    });
-                     var treeNode = this.params.treeNode;
-                     var tree = treeNode.tree;
-                     var parent = treeNode.parent; 
-                     tree.removeNode(treeNode);
-                     parent.toggle();
-                     parent.toggle();
-                  },
-                  scope: obj
-               },
-               failureCallback:
-               {
-                 fn: function (response, obj)
-                  {
-                     Alfresco.util.PopupManager.displayMessage(
+                        fn: function (response, o)
+                        {
+                           var treeNode = obj.params.treeNode;
+                           var tree = treeNode.tree;
+                           var parent = treeNode.parent; 
+                           tree.removeNode(treeNode);
+                           parent.toggle();
+                           parent.toggle();
+                        },
+                        scope: obj
+                     },
+                     failureCallback:
                      {
-                        text: Alfresco.util.message("tool.category-manager.delete-category.failure")
-                    });
-                  },
-                  scope: obj
+                        fn: function (response, o)
+                        {
+                           Alfresco.util.PopupManager.displayMessage(
+                           {
+                              text: Alfresco.util.message("tool.category-manager.delete-category.failure")
+                           });
+                        },
+                        scope: obj
+                     }
+                  };
+                  Alfresco.util.Ajax.jsonRequest(config);
                }
-            };
-         Alfresco.util.Ajax.jsonRequest(config);            
+            },
+            {
+               text: Alfresco.util.message("button.cancel"),
+               handler: function dlA_onActionDelete_cancel()
+               {
+                  this.destroy();
+               },
+               isDefault: true
+            }]
+         });
       },
       
       /**

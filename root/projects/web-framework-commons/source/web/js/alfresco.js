@@ -2062,7 +2062,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          
          fade.onComplete.subscribe(function(e, data, obj)
          {
-            Event.removeListener(obj.editIcon, "click", obj.onIconClick, obj);
+            Event.removeListener(obj.editIcon, "click");
             Dom.setStyle(p_element, "visibility", "hidden");
             Dom.setStyle(p_element, "opacity", 0);
          }, this);
@@ -2090,6 +2090,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
          fade.onComplete.subscribe(function(e, data, obj)
          {
             Dom.setStyle(p_element, "opacity", 1);
+            Event.removeListener(obj.editIcon, "click");
             Event.on(obj.editIcon, "click", obj.onIconClick, obj);
          }, this);
 
@@ -4963,7 +4964,7 @@ Alfresco.util.PopupManager = function()
             scope: prompt,
             correctScope: true
          });
-         escapeListener.enable();         
+         escapeListener.enable();
          
          if (YUIDom.get(id))
          {
