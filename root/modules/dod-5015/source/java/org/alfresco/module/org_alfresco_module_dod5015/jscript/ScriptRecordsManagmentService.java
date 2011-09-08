@@ -18,18 +18,13 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.jscript;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementServiceRegistry;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
-import org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService;
+import org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationHelper;
 import org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService;
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.scripts.ScriptException;
-import org.alfresco.service.cmr.repository.NodeRef;
 
 /**
  * Records management service
@@ -39,12 +34,11 @@ import org.alfresco.service.cmr.repository.NodeRef;
 public class ScriptRecordsManagmentService extends BaseScopableProcessorExtension
                                            implements RecordsManagementModel 
 {
-    /** Notification values */
-    private String notificationRole;
-    private String notificationSubject;
-    
     /** Records management service registry */
     private RecordsManagementServiceRegistry rmServices;
+    
+    /** Records management notification helper */
+    private RecordsManagementNotificationHelper notificationHelper;
     
     /**
      * Set records management service registry 
@@ -57,23 +51,13 @@ public class ScriptRecordsManagmentService extends BaseScopableProcessorExtensio
     }
     
     /**
-     * Sets the notification role
+     * Sets the notification helper
      * 
-     * @param notificationRole  notification role
+     * @param notificationHelper    notification helper
      */
-    public void setNotificationRole(String notificationRole)
+    public void setNotificationHelper(RecordsManagementNotificationHelper notificationHelper)
     {
-        this.notificationRole = notificationRole;
-    }
-    
-    /**
-     * Sets the notification subject
-     * 
-     * @param notificationSubject   notification subject
-     */
-    public void setNotificationSubject(String notificationSubject)
-    {
-        this.notificationSubject = notificationSubject;
+        this.notificationHelper = notificationHelper;
     }
     
     /**
@@ -127,26 +111,12 @@ public class ScriptRecordsManagmentService extends BaseScopableProcessorExtensio
     }
     
     /**
-     * Sends an email notification to everyone in the notification role
+     * Send superseded notification
+     * 
+     * @param record    superseded record
      */
-    public void sendNotification(String notificationEvent, String notificationType, ScriptNode node)
+    public void sendSupersededNotification(ScriptNode record)
     {
-        // Create notification data
-        Map<String, Object> notificationData = new HashMap<String, Object>();
-        notificationData.put("record", node.getNodeRef());
-        notificationData.put("subject", notificationSubject);
-        
-        // Get records management root node
-        RecordsManagementService rmService = rmServices.getRecordsManagementService();
-        NodeRef rmRootNode = rmService.getRecordsManagementRoot(node.getNodeRef());
-        
-        // Send the notification
-        RecordsManagementNotificationService rmNotification = rmServices.getRecordsManagementNotificationService();
-        rmNotification.sendNotificationToRole(
-                notificationEvent, 
-                notificationType, 
-                rmRootNode, 
-                notificationRole, 
-                notificationData);
+        notificationHelper.recordSupersededEmailNotification(record.getNodeRef());
     }
 }

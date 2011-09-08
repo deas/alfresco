@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+	
+   <bean id="org_alfresco_module_dod5015_notificationTemplatePatch" 
+         parent="module.baseComponent"
+         class="org.alfresco.module.org_alfresco_module_dod5015.patch.NotificationTemplatePatch">
+       <property name="moduleId" value="org_alfresco_module_dod5015"/>
+       <property name="name" value="org_alfresco_module_dod5015_notificationTemplatePatch"/>
+       <property name="description" value="Patches new versions of the notification templates."/>
+       <property name="sinceVersion" value="2.0"/>
+       <property name="appliesFromVersion" value="2.0"/>	
+       <property name="nodeService" ref="NodeService"/>
+       <property name="notificationHelper" ref="recordsManagementNotificationHelper"/>
+       <property name="contentService" ref="ContentService"/>
+       <property name="versionService" ref="VersionService"/>
+   </bean>
+
+</beans>

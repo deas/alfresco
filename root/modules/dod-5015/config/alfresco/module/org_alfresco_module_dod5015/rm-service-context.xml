@@ -755,77 +755,24 @@
         </property>
     </bean>
     
-    <!--  RM Notification Service -->
+    <!--  RM Notification Helper -->
             
-    <bean id="recordsManagementNotificationService" class="org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationServiceImpl" >        
-        <property name="authorityService" ref="AuthorityService"/>
-        <property name="actionService" ref="ActionService"/>
-        <property name="searchService" ref="SearchService"/>
-        <property name="templateService" ref="TemplateService"/>
-        <property name="recordsManagementSecurityService" ref="RecordsManagementSecurityService"/>
-        <property name="personService" ref="PersonService"/>
-        <property name="nodeService" ref="NodeService"/>
-        <property name="emailFrom" value="${mail.from.default}"/>
-    </bean>
-    
-    <bean id="RecordsManagementNotificationService" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <value>org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService</value>
-        </property>
-        <property name="target">
-            <ref bean="recordsManagementNotificationService"/>
-        </property>
-        <property name="interceptorNames">
-            <list>
-                <idref local="RecordsManagementNotificationService_transaction"/>
-                <idref bean="exceptionTranslator"/>
-                <idref local="RecordsManagementNotificationService_security"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="RecordsManagementNotificationService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributes">
-            <props>
-                <prop key="*">${server.transaction.mode.default}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="RecordsManagementNotificationService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
-        <property name="authenticationManager">
-            <ref bean="authenticationManager"/>
-        </property>
-        <property name="accessDecisionManager">
-            <ref bean="accessDecisionManager"/>
-        </property>
-        <property name="afterInvocationManager">
-            <ref bean="afterInvocationManager"/>
-        </property>
-        <property name="objectDefinitionSource">
-            <value>
-                <![CDATA[  
-                org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.getNotificationEvents=RM_ALLOW
-				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.getNotificationTypes=RM_ALLOW
-				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.sendNotificationToUser=RM_ALLOW
-				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.sendNotificationToGroup=RM_ALLOW
-				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.sendNotificationToRole=RM_ALLOW    
-				org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService.*=RM_DENY
-                ]]>
-            </value>
-        </property>
-    </bean>
-    
+    <bean id="recordsManagementNotificationHelper" class="org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationHelper" >        
+        <property name="securityService" ref="RecordsManagementSecurityService"/>
+    	<property name="notificationService" ref="NotificationService"/>
+    	<property name="recordsManagementService" ref="RecordsManagementService"/>
+    	<property name="repositoryHelper" ref="repositoryHelper" />
+        <property name="namespaceService" ref="namespaceService"/>
+        <property name="searchService" ref="searchService"/>
+    	<property name="notificationRole" value="${rm.notification.role}"/>
+    </bean>    
     
     <!-- RM caveats -->
     
     <bean id="caveatConfigService" class="org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigServiceImpl">
         <property name="caveatConfigComponent" ref="caveatConfigComponent"/>
         <property name="dictionaryService" ref="dictionaryService"/>
-        <property name="namespaceService" ref="namespaceService"/>
+        <property name="namespaceService" ref="namespaceService" />
         <property name="recordsManagementAdminService" ref = "recordsManagementAdminService"/>
     </bean>
     

@@ -17,8 +17,8 @@
             <entry key="recordsManagementService">
             	<ref bean="recordsManagementService"/>
             </entry>
-            <entry key="recordsManagementNotificationService">
-            	<ref bean="recordsManagementNotificationService"/>
+            <entry key="recordsManagementNotificationHelper">
+            	<ref bean="recordsManagementNotificationHelper"/>
             </entry>
             <entry key="nodeService">
                <ref bean="nodeService" />
@@ -28,14 +28,6 @@
             </entry>
             <entry key="transactionService">
                <ref bean="transactionService" />
-            </entry>
-            <!--  Subject for email -->
-            <entry key="subject">
-               <value>${rm.notification.subject}</value>
-            </entry>
-            <!--  Role to notify -->
-            <entry key="role">
-            	<value>${rm.notification.role}</value>
             </entry>
          </map>
       </property>

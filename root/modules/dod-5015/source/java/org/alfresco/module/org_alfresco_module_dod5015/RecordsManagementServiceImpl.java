@@ -50,9 +50,6 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 import org.alfresco.util.Pair;
 import org.alfresco.util.ParameterCheck;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 /**
  * Records management service implementation.
@@ -61,11 +58,11 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class RecordsManagementServiceImpl implements RecordsManagementService,
                                                      RecordsManagementModel,
-                                                     ApplicationContextAware,
                                                      RecordsManagementPolicies.OnCreateReference,
                                                      RecordsManagementPolicies.OnRemoveReference
 {
     /** Store that the RM roots are contained within */
+    @SuppressWarnings("unused")
     @Deprecated
     private StoreRef defaultStoreRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
 
@@ -92,9 +89,6 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     
     /** List of available record meta-data aspects */
     private Set<QName> recordMetaDataAspects;
-    
-    /** Application context */
-    private ApplicationContext applicationContext;
     
     /** Java behaviour */
     private JavaBehaviour onChangeToDispositionActionDefinition;
@@ -1033,15 +1027,6 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         }
         return result;
     }      
-    
-    /**
-     * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-     */
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
-    {
-        this.applicationContext = applicationContext;
-    }
-
     
     /**
      * This method examines the old and new property sets and for those properties which

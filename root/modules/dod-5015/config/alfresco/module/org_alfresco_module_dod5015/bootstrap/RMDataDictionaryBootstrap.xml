@@ -134,6 +134,7 @@
                         <cm:titled></cm:titled>
                         <cm:author></cm:author>
                         <app:inlineeditable></app:inlineeditable>
+                        <cm:versionable></cm:versionable>
                     </view:aspects>
                     <view:properties>
                         <app:editInline>
@@ -144,12 +145,16 @@
                         <cm:title>notify-records-due-for-review-email.ftl</cm:title>
                         <cm:author></cm:author>
                         <cm:name>notify-records-due-for-review-email.ftl</cm:name>
+                        <cm:lastPatchUpdate>org_alfresco_module_dod5015_notificationTemplatePatch</cm:lastPatchUpdate>
                     </view:properties>
                     <view:associations></view:associations>
                   </cm:content>
                   <cm:content view:childName="cm:record-superseded-email.ftl">
 	                   <view:aspects>
 	                      <cm:titled></cm:titled>
+	                      <cm:author></cm:author>
+                          <app:inlineeditable></app:inlineeditable>
+                          <cm:versionable></cm:versionable>
 	                   </view:aspects>
 	                   <view:properties>
 	                      <sys:store-protocol>workspace</sys:store-protocol>
@@ -159,6 +164,7 @@
 	                      <cm:content>contentUrl=classpath:alfresco/module/org_alfresco_module_dod5015/bootstrap/content/record-superseded-email.ftl|mimetype=text/plain|encoding=UTF-8</cm:content>
 	                      <cm:title>record-superseded-email.ftl</cm:title>
 	                      <cm:name>record-superseded-email.ftl</cm:name>
+                          <cm:lastPatchUpdate>org_alfresco_module_dod5015_notificationTemplatePatch</cm:lastPatchUpdate>
 	                   </view:properties>
 	               </cm:content>
                </cm:contains>

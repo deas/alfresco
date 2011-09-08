@@ -19,13 +19,10 @@
 
 package org.alfresco.module.org_alfresco_module_dod5015.job;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementService;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
-import org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationService;
+import org.alfresco.module.org_alfresco_module_dod5015.notification.RecordsManagementNotificationHelper;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -57,13 +54,10 @@ public class NotifyOfRecordsDueForReviewJob implements Job
      */
     public void execute(JobExecutionContext context) throws JobExecutionException
     {
-        final RecordsManagementService rmService = (RecordsManagementService)context.getJobDetail().getJobDataMap().get("recordsManagementService");
-        final RecordsManagementNotificationService notificaitonService = (RecordsManagementNotificationService)context.getJobDetail().getJobDataMap().get("recordsManagementNotificationService");        
+        final RecordsManagementNotificationHelper notificationHelper = (RecordsManagementNotificationHelper)context.getJobDetail().getJobDataMap().get("recordsManagementNotificationHelper");
         final NodeService nodeService = (NodeService) context.getJobDetail().getJobDataMap().get("nodeService");
         final SearchService searchService = (SearchService) context.getJobDetail().getJobDataMap().get("searchService");
-        final TransactionService trxService = (TransactionService) context.getJobDetail().getJobDataMap().get("transactionService");       
-        final String subject = (String)context.getJobDetail().getJobDataMap().get("subject");
-        final String role = (String)context.getJobDetail().getJobDataMap().get("role");
+        final TransactionService trxService = (TransactionService) context.getJobDetail().getJobDataMap().get("transactionService");  
         
         if (logger.isDebugEnabled())
         {
@@ -105,20 +99,9 @@ public class NotifyOfRecordsDueForReviewJob implements Job
                         // Set the notification issued property.
                         public Boolean execute() throws Throwable
                         {
-                            // Find the root
-                            NodeRef root = rmService.getRecordsManagementRoot(resultNodes.get(0));
-                            
-                            // Send the notification to the role specified
-                            Map<String, Object> model = new HashMap<String, Object>(8, 1.0f);
-                            model.put("records", resultNodes);   
-                            model.put("subject", subject);
-                            notificaitonService.sendNotificationToRole(
-                                    RecordsManagementNotificationService.NE_DUE_FOR_REVIEW, 
-                                    RecordsManagementNotificationService.NT_EMAIL, 
-                                    root, 
-                                    role, 
-                                    model);   
-                            
+                            // Send notification
+                            notificationHelper.recordsDueForReviewEmailNotification(resultNodes);
+                                    
                             return null;
                         }
                     };

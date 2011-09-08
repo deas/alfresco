@@ -414,6 +414,7 @@
                 org.alfresco.service.cmr.model.FileFolderService.listFiles=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.ReadProperties,RM.Read.0,AFTER_RM.FilterNode
                 org.alfresco.service.cmr.model.FileFolderService.listFolders=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.ReadProperties,RM.Read.0,AFTER_RM.FilterNode
                 org.alfresco.service.cmr.model.FileFolderService.listDeepFolders=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.ReadProperties,RM.Read.0,AFTER_RM.FilterNode  
+                org.alfresco.service.cmr.model.FileFolderService.getLocalizedSibling=ACL_ALLOW,AFTER_ACL_NODE.sys:base.ReadProperties,RM_ALLOW
                 org.alfresco.service.cmr.model.FileFolderService.search=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.Read,RM.Read.0,AFTER_RM.FilterNode
                 org.alfresco.service.cmr.model.FileFolderService.searchSimple=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.Read,RM.Read.0,AFTER_RM.FilterNode 
                 org.alfresco.service.cmr.model.FileFolderService.rename=ACL_NODE.0.sys:base.WriteProperties,RM.Update.0

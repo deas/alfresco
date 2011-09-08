@@ -23,6 +23,15 @@
         </property>
     </bean>
     
+    <!--  Bootstap the message property files -->
+    <bean id="org_alfresco_module_dod5015_resourceBundles" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">
+        <property name="resourceBundles">
+            <list>
+                <value>alfresco.module.org_alfresco_module_dod5015.messages.notification-service</value>                
+            </list>
+        </property>
+   </bean>
+    
     <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-model-context.xml"/>
     
     <!--  Load audit config -->
@@ -75,6 +84,9 @@
     <!-- Import the RM action's -->
     <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-action-context.xml"/>
     
+    <!--  Import the RM module patches -->
+    <import resource="classpath:alfresco/module/org_alfresco_module_dod5015/rm-patch-context.xml"/>
+    
     <!-- RM Script API -->
     
     <bean id="scriptRecordsManagementService" parent="baseJavaScriptExtension" class="org.alfresco.module.org_alfresco_module_dod5015.jscript.ScriptRecordsManagmentService">
@@ -82,8 +94,7 @@
             <value>rmService</value>
         </property>
         <property name="recordsManagementServiceRegistry" ref="RecordsManagementServiceRegistry"/>
-        <property name="notificationRole" value="${rm.notification.role}"/>
-        <property name="notificationSubject" value="${rm.notification.subject}"/>
+        <property name="notificationHelper" ref="recordsManagementNotificationHelper"/>
     </bean>
     
     <!-- Event types -->

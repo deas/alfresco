@@ -20,6 +20,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEv
 import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
 import org.alfresco.module.org_alfresco_module_dod5015.model.RmSiteType;
 import org.alfresco.module.org_alfresco_module_dod5015.search.RecordsManagementSearchService;
+import org.alfresco.module.org_alfresco_module_dod5015.security.RecordsManagementSecurityService;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -84,6 +85,7 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
     protected RecordsManagementAdminService adminService;    
     protected RecordsManagementActionService actionService;
     protected RecordsManagementSearchService rmSearchService;
+    protected RecordsManagementSecurityService securityService;
     
     /** test data */
     protected StoreRef storeRef;
@@ -174,6 +176,22 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
         // Get the application context
         applicationContext = ApplicationContextHelper.getApplicationContext(CONFIG_LOCATIONS);
         
+        // Initialise the service beans
+        initServices();
+        
+        // Setup test data
+        setupTestData();
+        if (isMultiHierarchyTest() == true)
+        {
+            setupMultiHierarchyTestData();
+        }
+    }
+    
+    /**
+     * Initialise the service beans.
+     */
+    protected void initServices()
+    {
         // Get services
         nodeService = (NodeService)applicationContext.getBean("NodeService");
         contentService = (ContentService)applicationContext.getBean("ContentService");
@@ -191,13 +209,7 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
         adminService = (RecordsManagementAdminService)applicationContext.getBean("RecordsManagementAdminService");
         actionService = (RecordsManagementActionService)this.applicationContext.getBean("RecordsManagementActionService");
         rmSearchService = (RecordsManagementSearchService)this.applicationContext.getBean("RecordsManagementSearchService");
-        
-        // Setup test data
-        setupTestData();
-        if (isMultiHierarchyTest() == true)
-        {
-            setupMultiHierarchyTestData();
-        }
+        securityService = (RecordsManagementSecurityService)this.applicationContext.getBean("RecordsManagementSecurityService");
     }
     
     /**
@@ -214,15 +226,24 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
                 // As system user
                 AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getSystemUserName());
                 
-                // Delete the folder
-                nodeService.deleteNode(folder);
-                
-                // Delete the site
-                siteService.deleteSite(SITE_ID);
+                // Do the tear down 
+                tearDownImpl();
                 
                 return null;
             }
         });       
+    }
+    
+    /**
+     * Tear down implementation
+     */
+    protected void tearDownImpl() 
+    {
+        // Delete the folder
+        nodeService.deleteNode(folder);
+        
+        // Delete the site
+        siteService.deleteSite(SITE_ID);
     }
     
     /**
@@ -244,51 +265,53 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
             @Override
             public Object execute() throws Throwable
             {
-                // As system user
                 AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
-                
-                // Create store and get the root node reference
-                //storeRef = nodeService.createStore(StoreRef.PROTOCOL_WORKSPACE, "RM2_" + System.currentTimeMillis());
-                //assertNotNull("Store was not created", storeRef);
-                //rootNodeRef = nodeService.getRootNode(storeRef); 
-                //assertNotNull("Can not retrieve root node reference", rootNodeRef);
-                
-                storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
-                rootNodeRef = nodeService.getRootNode(storeRef);
-                
-                // Create folder
-                String containerName = "RM2_" + System.currentTimeMillis();
-                Map<QName, Serializable> containerProps = new HashMap<QName, Serializable>(1);
-                containerProps.put(ContentModel.PROP_NAME, containerName);
-                folder = nodeService.createNode(
-                      rootNodeRef, 
-                      ContentModel.ASSOC_CHILDREN, 
-                      QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, containerName), 
-                      ContentModel.TYPE_FOLDER,
-                      containerProps).getChildRef();
-                assertNotNull("Could not create base folder", folder);
-                
-                // Create the site
-                siteInfo = siteService.createSite("preset", SITE_ID, "title", "descrition", SiteVisibility.PUBLIC, RecordsManagementModel.TYPE_RM_SITE);
-                rmRootContainer = siteService.getContainer(SITE_ID, RmSiteType.COMPONENT_DOCUMENT_LIBRARY);
-                assertNotNull("Site document library container was not created successfully.", rmRootContainer);
-                                
-                // Create RM container
-                rmContainer = rmService.createRecordsManagementContainer(rmRootContainer, "rmContainer");
-                assertNotNull("Could not create rm container", rmContainer);
-                
-                // Create disposition schedule
-                dispositionSchedule = createBasicDispositionSchedule(rmContainer);
-                
-                // Create RM folder
-                rmFolder = rmService.createRecordFolder(rmContainer, "rmFolder");
-                assertNotNull("Could not create rm folder", rmFolder);
-                
+                setupTestDataImpl();
                 return null;
             }
         });
     }
     
+    /**
+     * Impl of test data setup
+     */
+    protected void setupTestDataImpl()
+    {
+        storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
+        rootNodeRef = nodeService.getRootNode(storeRef);
+        
+        // Create folder
+        String containerName = "RM2_" + System.currentTimeMillis();
+        Map<QName, Serializable> containerProps = new HashMap<QName, Serializable>(1);
+        containerProps.put(ContentModel.PROP_NAME, containerName);
+        folder = nodeService.createNode(
+              rootNodeRef, 
+              ContentModel.ASSOC_CHILDREN, 
+              QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, containerName), 
+              ContentModel.TYPE_FOLDER,
+              containerProps).getChildRef();
+        assertNotNull("Could not create base folder", folder);
+        
+        // Create the site
+        siteInfo = siteService.createSite("preset", SITE_ID, "title", "descrition", SiteVisibility.PUBLIC, RecordsManagementModel.TYPE_RM_SITE);
+        rmRootContainer = siteService.getContainer(SITE_ID, RmSiteType.COMPONENT_DOCUMENT_LIBRARY);
+        assertNotNull("Site document library container was not created successfully.", rmRootContainer);
+                        
+        // Create RM container
+        rmContainer = rmService.createRecordsManagementContainer(rmRootContainer, "rmContainer");
+        assertNotNull("Could not create rm container", rmContainer);
+        
+        // Create disposition schedule
+        dispositionSchedule = createBasicDispositionSchedule(rmContainer);
+        
+        // Create RM folder
+        rmFolder = rmService.createRecordFolder(rmContainer, "rmFolder");
+        assertNotNull("Could not create rm folder", rmFolder);
+    }
+    
+    /**
+     * Setup multi hierarchy test data
+     */
     protected void setupMultiHierarchyTestData()
     {
         retryingTransactionHelper.doInTransaction(new RetryingTransactionCallback<Object>()
@@ -299,40 +322,49 @@ public abstract class BaseRMTestCase extends RetryingTransactionHelperTestCase
                 // As system user
                 AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getSystemUserName());
                 
-                // Create root mh container
-                mhContainer = rmService.createRecordsManagementContainer(rmRootContainer, "mhContainer");                
-                
-                // Level 1
-                mhContainer11 = rmService.createRecordsManagementContainer(mhContainer, "mhContainer11");
-                mhDispositionSchedule11 = createBasicDispositionSchedule(mhContainer11, "ds11", DEFAULT_DISPOSITION_AUTHORITY, false, true);
-                mhContainer12 = rmService.createRecordsManagementContainer(mhContainer, "mhContainer12");
-                mhDispositionSchedule12 = createBasicDispositionSchedule(mhContainer12, "ds12", DEFAULT_DISPOSITION_AUTHORITY, false, true);
-                
-                // Level 2
-                mhContainer21 = rmService.createRecordsManagementContainer(mhContainer11, "mhContainer21");
-                mhContainer22 = rmService.createRecordsManagementContainer(mhContainer12, "mhContainer22");
-                mhContainer23 = rmService.createRecordsManagementContainer(mhContainer12, "mhContainer23");
-                mhDispositionSchedule23 = createBasicDispositionSchedule(mhContainer23, "ds23", DEFAULT_DISPOSITION_AUTHORITY, false, true);
-
-                // Level 3
-                mhContainer31 = rmService.createRecordsManagementContainer(mhContainer21, "mhContainer31");
-                mhContainer32 = rmService.createRecordsManagementContainer(mhContainer22, "mhContainer32");
-                mhContainer33 = rmService.createRecordsManagementContainer(mhContainer22, "mhContainer33");
-                mhDispositionSchedule33 = createBasicDispositionSchedule(mhContainer33, "ds33", DEFAULT_DISPOSITION_AUTHORITY, true, true);
-                mhContainer34 = rmService.createRecordsManagementContainer(mhContainer23, "mhContainer34");
-                mhContainer35 = rmService.createRecordsManagementContainer(mhContainer23, "mhContainer35");
-                mhDispositionSchedule35 = createBasicDispositionSchedule(mhContainer35, "ds35", DEFAULT_DISPOSITION_AUTHORITY, true, true);
-                
-                // Record folders
-                mhRecordFolder41 = rmService.createRecordFolder(mhContainer31, "mhFolder41");
-                mhRecordFolder42 = rmService.createRecordFolder(mhContainer32, "mhFolder42");
-                mhRecordFolder43 = rmService.createRecordFolder(mhContainer33, "mhFolder43");
-                mhRecordFolder44 = rmService.createRecordFolder(mhContainer34, "mhFolder44");
-                mhRecordFolder45 = rmService.createRecordFolder(mhContainer35, "mhFolder45");
+                // Do setup
+                setupMultiHierarchyTestDataImpl();
                 
                 return null;
             }
         });
+    }
+    
+    /**
+     * Impl of multi hierarchy test data
+     */
+    protected void setupMultiHierarchyTestDataImpl()
+    {
+        // Create root mh container
+        mhContainer = rmService.createRecordsManagementContainer(rmRootContainer, "mhContainer");                
+        
+        // Level 1
+        mhContainer11 = rmService.createRecordsManagementContainer(mhContainer, "mhContainer11");
+        mhDispositionSchedule11 = createBasicDispositionSchedule(mhContainer11, "ds11", DEFAULT_DISPOSITION_AUTHORITY, false, true);
+        mhContainer12 = rmService.createRecordsManagementContainer(mhContainer, "mhContainer12");
+        mhDispositionSchedule12 = createBasicDispositionSchedule(mhContainer12, "ds12", DEFAULT_DISPOSITION_AUTHORITY, false, true);
+        
+        // Level 2
+        mhContainer21 = rmService.createRecordsManagementContainer(mhContainer11, "mhContainer21");
+        mhContainer22 = rmService.createRecordsManagementContainer(mhContainer12, "mhContainer22");
+        mhContainer23 = rmService.createRecordsManagementContainer(mhContainer12, "mhContainer23");
+        mhDispositionSchedule23 = createBasicDispositionSchedule(mhContainer23, "ds23", DEFAULT_DISPOSITION_AUTHORITY, false, true);
+
+        // Level 3
+        mhContainer31 = rmService.createRecordsManagementContainer(mhContainer21, "mhContainer31");
+        mhContainer32 = rmService.createRecordsManagementContainer(mhContainer22, "mhContainer32");
+        mhContainer33 = rmService.createRecordsManagementContainer(mhContainer22, "mhContainer33");
+        mhDispositionSchedule33 = createBasicDispositionSchedule(mhContainer33, "ds33", DEFAULT_DISPOSITION_AUTHORITY, true, true);
+        mhContainer34 = rmService.createRecordsManagementContainer(mhContainer23, "mhContainer34");
+        mhContainer35 = rmService.createRecordsManagementContainer(mhContainer23, "mhContainer35");
+        mhDispositionSchedule35 = createBasicDispositionSchedule(mhContainer35, "ds35", DEFAULT_DISPOSITION_AUTHORITY, true, true);
+        
+        // Record folders
+        mhRecordFolder41 = rmService.createRecordFolder(mhContainer31, "mhFolder41");
+        mhRecordFolder42 = rmService.createRecordFolder(mhContainer32, "mhFolder42");
+        mhRecordFolder43 = rmService.createRecordFolder(mhContainer33, "mhFolder43");
+        mhRecordFolder44 = rmService.createRecordFolder(mhContainer34, "mhFolder44");
+        mhRecordFolder45 = rmService.createRecordFolder(mhContainer35, "mhFolder45");        
     }
     
     /**
