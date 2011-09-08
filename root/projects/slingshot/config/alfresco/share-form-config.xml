@@ -974,6 +974,7 @@
                <show id="NumberOfActivitiWorkflowDefinitionsDeployed" />
                <show id="NumberOfActivitiWorkflowInstances" />
                <show id="JBPMEngineEnabled" />
+               <show id="JBPMWorkflowDefinitionsVisible" />
                <show id="NumberOfJBPMTaskInstances" />
                <show id="NumberOfJBPMWorkflowDefinitionsDeployed" />
                <show id="NumberOfJBPMWorkflowInstances" />
@@ -988,6 +989,9 @@
                   <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>
                <field id="JBPMEngineEnabled" label-id="workflow.field.enabled.jbpm" set="jbpm">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="JBPMWorkflowDefinitionsVisible" label-id="workflow.field.jbpm.definitions" set="jbpm">
                   <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>
                <field id="NumberOfActivitiTaskInstances" label-id="workflow.field.number.tasks" set="activiti" />
