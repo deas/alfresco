@@ -23,8 +23,11 @@ import java.util.List;
 import java.util.Locale;
 
 import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.impl.parsers.FTSParser;
 import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.search.LimitBy;
 import org.alfresco.service.cmr.search.QueryParameterDefinition;
+import org.alfresco.service.cmr.search.SearchParameters;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -67,6 +70,31 @@ public class QueryOptions
 
     private String defaultFieldName = "TEXT";
 
+    public static QueryOptions create(SearchParameters searchParameters)
+    {
+        QueryOptions options = new QueryOptions(searchParameters.getQuery(), null);
+        options.setIncludeInTransactionData(!searchParameters.excludeDataInTheCurrentTransaction());
+        options.setDefaultFTSConnective(searchParameters.getDefaultOperator() == SearchParameters.Operator.OR ? Connective.OR : Connective.AND);
+        options.setDefaultFTSFieldConnective(searchParameters.getDefaultOperator() == SearchParameters.Operator.OR ? Connective.OR : Connective.AND);
+        options.setSkipCount(searchParameters.getSkipCount());
+        options.setMaxPermissionChecks(searchParameters.getMaxPermissionChecks());
+        options.setMaxPermissionCheckTimeMillis(searchParameters.getMaxPermissionCheckTimeMillis());
+        options.setDefaultFieldName(searchParameters.getDefaultFieldName());
+        if (searchParameters.getLimitBy() == LimitBy.FINAL_SIZE)
+        {
+            options.setMaxItems(searchParameters.getLimit());
+        }
+        else
+        {
+            options.setMaxItems(searchParameters.getMaxItems());
+        }
+        options.setMlAnalaysisMode(searchParameters.getMlAnalaysisMode());
+        options.setLocales(searchParameters.getLocales());
+        options.setStores(searchParameters.getStores());
+        options.setQueryParameterDefinitions(searchParameters.getQueryParameterDefinitions());
+        ///options.setQuery(query); Done on construction.
+        return options;
+    }
     /**
      * Create a CMISQueryOptions instance with the default options other than the query and store ref. The query will be
      * run using the locale returned by I18NUtil.getLocale()
