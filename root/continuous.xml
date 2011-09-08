@@ -813,7 +813,7 @@
    <target name="distribute-installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
         <parallel threadCount="2">
-            <!-- <antcall target="windows-32-bit-installer"/> -->
+            <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
             <antcall target="windows-deployment-installer"/>
             <antcall target="osx-installer"/>
