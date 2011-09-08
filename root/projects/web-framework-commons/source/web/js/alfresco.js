@@ -3598,7 +3598,7 @@ Alfresco.util.submitForm = function(form)
    
    if (form !== null)
    {
-      if (UA.ie < 9) 
+      if (UA.ie && (UA.ie < 9))
       {
          // IE up to v9
          submitTheForm = form.fireEvent("onsubmit");
@@ -3617,7 +3617,7 @@ Alfresco.util.submitForm = function(form)
          // the form so we have to do it manually (if the 
          // submission was not cancelled)
          form.submit();
-      }      
+      }
    }
 };
 
