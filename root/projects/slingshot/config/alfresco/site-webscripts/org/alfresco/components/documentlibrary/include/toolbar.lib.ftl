@@ -17,7 +17,7 @@
                   <div class="bd">
                      <ul>
                      <#list createContent as content>
-                        <#assign href>create-content?destination={nodeRef}&amp;itemId=${content.itemid}<#if (content.mimeType!"") != "">&amp;mimeType=${content.mimetype?html}</#if><#if (content.formid!"") != "">&amp;formId=${content.formid?html}</#if></#assign>
+                        <#assign href>create-content?destination={nodeRef}&amp;itemId=${content.itemid}<#if (content.mimetype!"") != "">&amp;mimeType=${content.mimetype?html}</#if><#if (content.formid!"") != "">&amp;formId=${content.formid?html}</#if></#assign>
                         <li><a href="${siteURL(href)}" rel="${content.permission!""}"><span style="background-image:url(${url.context}/res/components/images/filetypes/${content.icon}-file-16.png)" class="${content.icon}-file">${msg(content.label!"")}</span></a></li>
                      </#list>
                      </ul>
