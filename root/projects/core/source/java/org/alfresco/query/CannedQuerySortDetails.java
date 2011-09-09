@@ -73,6 +73,12 @@ public class CannedQuerySortDetails
         this.sortPairs = Collections.unmodifiableList(sortPairs);
     }
     
+    @Override
+    public String toString()
+    {
+        return "CannedQuerySortDetails [sortPairs=" + sortPairs + "]";
+    }
+
     /**
      * Get the sort definitions.  The instance will become unmodifiable after this has been called.
      */
