@@ -341,12 +341,12 @@
 
 .toolbar .documentDragOverArrow
 {
-   background: url(../images/move-arrow.png) no-repeat;
+   background: url(../images/vertical-green-arrow-small.png) no-repeat;
    z-index: 1;
    height: 25px;
    display: block;
    position: absolute;
    width: 25px;
    margin-top: -10px;
-   margin-left: 5px;
+   margin-left: 3px;
 }

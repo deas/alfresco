@@ -70,7 +70,7 @@
 
 .treeview .documentDragOverArrow
 {
-   background: url(../images/move-arrow.png) no-repeat;
+   background: url(../images/vertical-green-arrow-small.png) no-repeat;
    z-index: 1;
    height: 25px;
    display: block;
