@@ -64,22 +64,14 @@
       options:
       {
          /**
-          * Current nodeRef.
+          * Is the created type expected to be a container?
+          * The manager needs to know whether the following page is document-details or folder-details.
           * 
-          * @property nodeRef
-          * @type string
+          * @property isContainer
+          * @type boolean
+          * @default false
           */
-         nodeRef: null,
-
-         /**
-          * Current node type.
-          * The manager needs to know whether the following page is document-details or folder-details
-          * 
-          * @property nodeType
-          * @type string
-          * @default "document"
-          */
-         nodeType: "document",
+         isContainer: false,
          
          /**
           * Current siteId.
@@ -139,7 +131,10 @@
             nodeRef = new Alfresco.util.NodeRef(response.json.persistedObject);
             
             // Activity post
-            Alfresco.Share.postActivity(this.options.siteId, "org.alfresco.documentlibrary.file-created", "{cm:name}", "document-details?nodeRef=" + nodeRef.toString(),
+            var activityType = "org.alfresco.documentlibrary." + (this.options.isContainer ? "folder" : "file") + "-created",
+               pageUrl = (this.options.isContainer ? "folder" : "document") + "-details?nodeRef=" + nodeRef.toString();
+
+            Alfresco.Share.postActivity(this.options.siteId, activityType, "{cm:name}", pageUrl,
             {
                appTool: "documentlibrary",
                nodeRef: nodeRef.toString()
@@ -193,13 +188,20 @@
          /* Have we been given a nodeRef from the Forms Service? */
          if (YAHOO.lang.isObject(nodeRef))
          {
-            window.location.href = $siteURL("document-details?nodeRef=" + nodeRef.toString());
+            window.location.href = $siteURL((this.options.isContainer ? "folder" : "document") + "-details?nodeRef=" + nodeRef.toString());
          }
-         /* Did we come from the document library? If so, then direct the user back there */
-         else if (document.referrer.match(/documentlibrary([?]|$)/) || document.referrer.match(/repository([?]|$)/))
+         else if (document.referrer)
          {
-            // go back to the referrer page
-            history.go(-1);
+            /* Did we come from the document library? If so, then direct the user back there */
+            if (document.referrer.match(/documentlibrary([?]|$)/) || document.referrer.match(/repository([?]|$)/))
+            {
+               // go back to the referrer page
+               history.go(-1);
+            }
+            else
+            {
+               document.location.href = document.referrer;
+            }
          }
          else if (this.options.siteId && this.options.siteId !== "")
          {

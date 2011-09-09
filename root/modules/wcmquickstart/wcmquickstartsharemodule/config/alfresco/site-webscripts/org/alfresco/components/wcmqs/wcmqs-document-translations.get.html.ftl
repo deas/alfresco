@@ -1,101 +1,21 @@
 <#if translationData??>
    <#assign id = args.htmlid?html>
    <script type="text/javascript">
-      YAHOO.util.Event.addListener(window, "load", function()
-      {
-         Alfresco.component.ManageTranslations = new function()
-         {
-            var myColumnDefs = [
-               { key: "lang", label: "Language", sortable: true },
-               { key: "name", label: "Name", sortable: true },
-               { key: "action", label: "Action", sortable: false }
-            ];
-
-            this.myDataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("${id}-languages"),
-            {
-               responseType: YAHOO.util.DataSource.TYPE_HTMLTABLE,
-               responseSchema:
-               {
-                  fields: [
-                     { key: "lang" },
-                     { key: "name" },
-                     { key: "action" }
-                  ]
-               }
-            });
-
-            this.myDataTable = new YAHOO.widget.DataTable("${args.htmlid}-markup", myColumnDefs, this.myDataSource);
-          };
-      });
-
-      function nodeFormURL(nodeRef)
-      {
-         return Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.replace(":/", "") + "/formprocessor";
-      };
-
-      function markAsInitialTranslation(locale)
-      {
-         Alfresco.util.Ajax.jsonRequest(
-         {
-            method: "post",
-            url: nodeFormURL("${nodeRef}"),
-            dataObj:
-            {
-               "prop_ws_language": locale
-            },
-            successCallback:
-            {
-               fn: function()
-               {
-                  window.location.reload();
-               },
-               scope: this
-            }
-         });
-
-         return false;
-      };
+      new Alfresco.component.ManageTranslations("${args.htmlid?js_string}").setMessages(${messages});
+      fnMarkAsTranslation = Alfresco.component.ManageTranslations.markAsTranslation;
    </script>
-
-   <style type="text/css" media="screen">
-      .manage-translations h2
-      {
-         margin: 1em 0;
-      }
-
-      .manage-translations .status-banner
-      {
-         margin-top: 0.75em;
-         padding: 0.5em 1em;
-      }
-
-      .manage-translations .status-banner span
-      {
-         background-repeat: no-repeat;
-         line-height: 1.5em;
-         padding-left: 20px;
-      }
-
-      .manage-translations .status-banner .info
-      {
-         background-image: url(../documentlibrary/images/info-16.png);
-      }
-   </style>
 
    <div class="manage-translations">
 
    <#if !translationData.translationEnabled>
       <div class="status-banner theme-bg-color-2 theme-border-4">
-         <span>${msg("message.translations-not-enabled")}</span>
-      </div>
-
+         <span class="info">${msg("message.translations-not-enabled")}</span>
       <#if translationData.locale??>
-      <p>
-         <a href="#" onclick="return markAsInitialTranslation('${translationData.locale?js_string}')">
+         <span>&nbsp;<a href="#" onclick="return fnMarkAsTranslation('${nodeRef}', '${translationData.locale?js_string}')">
             ${msg("message.mark-translation", translationData.localeName?html)}
-         </a>
-      </p>
+         </a></span>
       </#if>
+      </div>
    </#if>
 
       <h2>${msg("header.translations")}</h2>
@@ -104,7 +24,7 @@
             <thead>
                <tr>
                   <th>${msg("label.language")}</th>
-                  <th>${msg("label.url")}</th>
+                  <th>${msg("label.name")}</th>
                   <th>${msg("label.action")}</th>
                </tr>
             </thead>
@@ -119,17 +39,17 @@
       <#else>
                   <td>${msg("label.not-applicable")}</td>
                   <td>
-         <#assign createContentURL>create-content?mimeType=text/html&name=${translationData.name?url}&translationOf=${nodeRef}&language=${locale.id?url}&itemKind=type&itemId=${translationData.type?url}</#assign>
+         <#assign createContentURL>create-content?mimeType=text/html&name=${translationData.name?url}&translationOf=${nodeRef}&language=${locale.id?url}&itemKind=type&itemId=${translationData.type?url}&isContainer=${translationData.isContainer?string}</#assign>
          <#if translationData.translationEnabled>
             <#if translationData.parents[locale.id]??>
                <#assign parent = translationData.parents[locale.id]>
-               <#assign orphan = !translationData.parent.allPresent>
-                     <a href="${createContentURL}&destination=${parent.nodeRef}&orphan=${orphan?string}">${msg("button.create")}</a>
+               <#assign orphan = !parent.allPresent>
+                     <a href='${createContentURL}&destination=${parent.nodeRef}&orphan=${orphan?string}'>${msg("button.create")}</a>
             <#else>
-                     <a href="${createContentURL}&destination=${translationData.parentNodeRef}">${msg("button.create")}</a>
+                     <a href='${createContentURL}&destination=${translationData.parentNodeRef}'>${msg("button.create")}</a>
             </#if>
          <#else>
-                     <a href="#" onclick="markAsInitialTranslation('${locale.id?js_string}')">${msg("message.mark-translation", locale.name?html)}</a>
+                     <a href="#" onclick='fnMarkAsTranslation("${nodeRef}", "${locale.id?js_string}")'>${msg("message.mark-translation", locale.name?html)}</a>
          </#if>
       </#if>
                   </td>

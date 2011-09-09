@@ -1,3 +1,3 @@
 <#include "../component.head.inc">
-<@script type="text/javascript" src="${page.url.context}/res/yui/datasource/datasource.js"></@script>
-<@script type="text/javascript" src="${page.url.context}/res/yui/datatable/datatable.js"></@script>
+<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/components/wcmqs/manage-translations.css" />
+<@script type="text/javascript" src="${page.url.context}/res/components/wcmqs/manage-translations.js"></@script>

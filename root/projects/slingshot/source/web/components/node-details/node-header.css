@@ -56,7 +56,7 @@
 {
    background-repeat: no-repeat;
    line-height: 1.5em;
-   padding-left: 20px;
+   padding: 1px 0 1px 20px;
 }
 
 .node-header .status-banner .editing

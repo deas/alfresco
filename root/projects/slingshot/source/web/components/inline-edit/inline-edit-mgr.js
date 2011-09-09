@@ -175,10 +175,27 @@
        */
       _navigateForward: function InlineEditMgr__navigateForward()
       {
-         /* Did we come from the document library? If so, then direct the user back there */
-         if (document.referrer.match(/documentlibrary([?]|$)/) || document.referrer.match(/repository([?]|$)/))
+         if (document.referrer)
          {
-            // go back to the referrer page
+            /* Did we come from the document library? If so, then direct the user back there */
+            if (document.referrer.match(/documentlibrary([?]|$)/) || document.referrer.match(/repository([?]|$)/))
+            {
+               // go back to the referrer page
+               history.go(-1);
+            }
+            else
+            {
+               document.location.href = document.referrer;
+            }
+         }
+         else if (history.length > 1)
+         {
+            /**
+             * The document.referrer wasn't available, either because there was no previous page (because the user
+             * navigated directly to the page) or because the referrer header has been blocked.
+             * So instead we'll use the browser history, unfortunately with increased chance of displaying stale data
+             * since the page most likely won't be refreshed.
+             */
             history.go(-1);
          }
          else

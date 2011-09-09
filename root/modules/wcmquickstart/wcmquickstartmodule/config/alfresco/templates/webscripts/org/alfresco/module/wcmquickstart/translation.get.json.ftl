@@ -12,6 +12,7 @@
 
       "name": "${nodeRef.name}",
       "type": "${nodeRef.typeShort}",
+      "isContainer": ${nodeRef.isContainer?string},
       "locale": <#if nodeLocale??>"${nodeLocale}"<#else>null</#if>,
       "localeName": <#if nodeLocale??>"${message('content_filter_lang.'+nodeLocale)}"<#else>null</#if>,
       "parentNodeRef": "${nodeRef.parent.nodeRef}",
