@@ -103,13 +103,41 @@ public class ISO8601DateFormat
     
     
     /**
-     * Parse date from ISO formatted string
+     * Parse date from ISO formatted string. 
+     * The ISO8601 date must include TimeZone offset information
      * 
      * @param isoDate  ISO string to parse
      * @return  the date
      * @throws AlfrescoRuntimeException         if the parse failed
      */
     public static Date parse(String isoDate)
+    {
+       return parseInternal(isoDate, null);
+    }
+
+    /**
+     * Parse date from ISO formatted string, with an
+     *  explicit timezone specified
+     * 
+     * @param isoDate  ISO string to parse
+     * @param timezone The TimeZone the date is in
+     * @return  the date
+     * @throws AlfrescoRuntimeException         if the parse failed
+     */
+    public static Date parse(String isoDate, TimeZone timezone)
+    {
+       return parseInternal(isoDate, timezone);
+    }
+    
+    /**
+     * Parse date from ISO formatted string, either in the specified
+     *  TimeZone, or with TimeZone information taken from the date
+     * 
+     * @param isoDate  ISO string to parse
+     * @return  the date
+     * @throws AlfrescoRuntimeException         if the parse failed
+     */
+    public static Date parseInternal(String isoDate, TimeZone timezone)
     {
         Date parsed = null;
         
@@ -151,44 +179,48 @@ public class ISO8601DateFormat
             }
             int seconds = Integer.parseInt(isoDate.substring(offset += 1 , offset += 2));
             int milliseconds = 0;
-            if (isoDate.charAt(offset) == '.')
+            if (isoDate.length() > offset && isoDate.charAt(offset) == '.')
             {
                 // ALF-3803 bug fix, milliseconds are optional
                 milliseconds = Integer.parseInt(isoDate.substring(offset += 1, offset += 3));
             }
             
-            // extract timezone
-            String timezoneId;
-            char timezoneIndicator = isoDate.charAt(offset);
-            if (timezoneIndicator == '+' || timezoneIndicator == '-')
+            // Do we need to extract the timezone, or was it given?
+            if(timezone == null)
             {
-                timezoneId = "GMT" + isoDate.substring(offset);
-            }
-            else if (timezoneIndicator == 'Z')
-            {
-                timezoneId = "GMT";
-            }
-            else
-            {
-                throw new IndexOutOfBoundsException("Invalid time zone indicator " + timezoneIndicator);
-            }
-            
-            // Get the timezone
-            Map<String, TimeZone> timezoneMap = timezones.get();
-            if (timezoneMap == null)
-            {
-                timezoneMap = new HashMap<String, TimeZone>(3);
-                timezones.set(timezoneMap);
-            }
-            TimeZone timezone = timezoneMap.get(timezoneId);
-            if (timezone == null)
-            {
-                timezone = TimeZone.getTimeZone(timezoneId);
-                timezoneMap.put(timezoneId, timezone);
-            }
-            if (!timezone.getID().equals(timezoneId))
-            {
-                throw new IndexOutOfBoundsException();
+               // Extract timezone
+               String timezoneId;
+               char timezoneIndicator = isoDate.charAt(offset);
+               if (timezoneIndicator == '+' || timezoneIndicator == '-')
+               {
+                   timezoneId = "GMT" + isoDate.substring(offset);
+               }
+               else if (timezoneIndicator == 'Z')
+               {
+                   timezoneId = "GMT";
+               }
+               else
+               {
+                   throw new IndexOutOfBoundsException("Invalid time zone indicator " + timezoneIndicator);
+               }
+               
+               // Get the timezone
+               Map<String, TimeZone> timezoneMap = timezones.get();
+               if (timezoneMap == null)
+               {
+                   timezoneMap = new HashMap<String, TimeZone>(3);
+                   timezones.set(timezoneMap);
+               }
+               timezone = timezoneMap.get(timezoneId);
+               if (timezone == null)
+               {
+                   timezone = TimeZone.getTimeZone(timezoneId);
+                   timezoneMap.put(timezoneId, timezone);
+               }
+               if (!timezone.getID().equals(timezoneId))
+               {
+                   throw new IndexOutOfBoundsException();
+               }
             }
 
             // initialize Calendar object#
