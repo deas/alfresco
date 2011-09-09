@@ -331,3 +331,22 @@
 {
    background-image: url(images/generic-16.png);
 }
+
+.toolbar .documentDragOverHighlight
+{
+   outline: 2px solid #4F94C9;
+   outline-offset: -2px;
+   background-color: #dceaf4;
+}
+
+.toolbar .documentDragOverArrow
+{
+   background: url(../images/move-arrow.png) no-repeat;
+   z-index: 1;
+   height: 25px;
+   display: block;
+   position: absolute;
+   width: 25px;
+   margin-top: -10px;
+   margin-left: 5px;
+}

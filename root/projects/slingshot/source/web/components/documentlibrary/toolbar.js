@@ -72,6 +72,8 @@
       YAHOO.Bubbling.on("doclistMetadata", this.onDoclistMetadata, this);
       YAHOO.Bubbling.on("showFileUploadDialog", this.onFileUpload, this);
       YAHOO.Bubbling.on("dropTargetOwnerRequest", this.onDropTargetOwnerRequest, this);
+      YAHOO.Bubbling.on("documentDragOver", this.onDocumentDragOver, this);
+      YAHOO.Bubbling.on("documentDragOut", this.onDocumentDragOut, this);
 
       return this;
    };
@@ -1224,7 +1226,7 @@
        * @property layer The name of the event
        * @property args The event payload
        */
-      onDropTargetOwnerRequest: function DLT_onDropTargetOwnerRequest(layer, args)
+      onDropTargetOwnerRequest: function DLTB_onDropTargetOwnerRequest(layer, args)
       {
          if (args && args[1] && args[1].elementId)
          {
@@ -1262,6 +1264,60 @@
          }
       },
    
+      /**
+       * Handles applying the styling and node creation required when a document is dragged
+       * over a tree node.
+       * 
+       * @method onDocumentDragOver
+       * @property layer The name of the event
+       * @property args The event payload
+       */
+      onDocumentDragOver: function DLTB_onDocumentDragOver(layer, args)
+      {
+         if (args && args[1] && args[1].elementId)
+         {
+            var crumb = Dom.get(args[1].elementId);
+            var trail = Dom.get(this.id + "-breadcrumb");
+            if (Dom.isAncestor(trail, crumb))
+            {
+               Dom.addClass(crumb, "documentDragOverHighlight");
+               var firstCrumbChild = Dom.getFirstChild(crumb);
+               if (firstCrumbChild != null && firstCrumbChild.tagName != "SPAN")
+               {
+                  var arrow = document.createElement("span");
+                  Dom.addClass(arrow, "documentDragOverArrow");
+                  Dom.insertBefore(arrow, firstCrumbChild);
+               }
+            }
+         }
+      },
+      
+      /**
+       * Handles applying the styling and node deletion required when a document is dragged
+       * out of a tree node.
+       *
+       * @method onDocumentDragOut
+       * @property layer The name of the event
+       * @property args The event payload
+       */
+      onDocumentDragOut: function DLTB_onDocumentDragOut(layer, args)
+      {
+         if (args && args[1] && args[1].elementId)
+         {
+            var crumb = Dom.get(args[1].elementId);
+            var trail = Dom.get(this.id + "-breadcrumb");
+            if (Dom.isAncestor(trail, crumb))
+            {
+               Dom.removeClass(crumb, "documentDragOverHighlight");
+               var firstCrumbChild = Dom.getFirstChild(crumb);
+               if (firstCrumbChild != null && firstCrumbChild.tagName == "SPAN")
+               {
+                  crumb.removeChild(firstCrumbChild);
+               }
+            }
+         }
+      },
+      
       /**
        * PRIVATE FUNCTIONS
        */
@@ -1319,6 +1375,7 @@
             newPath = paths.slice(0, i+1).join("/");
             eCrumb = new Element(document.createElement("div"));
             eCrumb.addClass("crumb");
+            eCrumb.addClass("documentDroppable");
             
             // First crumb doesn't get an icon
             if (i > 0)

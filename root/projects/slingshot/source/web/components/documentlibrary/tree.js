@@ -65,6 +65,8 @@
       YAHOO.Bubbling.on("folderRenamed", this.onFolderRenamed, this);
       YAHOO.Bubbling.on("filterChanged", this.onFilterChanged, this);
       YAHOO.Bubbling.on("dropTargetOwnerRequest", this.onDropTargetOwnerRequest, this);
+      YAHOO.Bubbling.on("documentDragOver", this.onDocumentDragOver, this);
+      YAHOO.Bubbling.on("documentDragOut", this.onDocumentDragOut, this);
 
       return this;
    };
@@ -323,9 +325,80 @@
             var node = this.widgets.treeview.getNodeByElement(Dom.get(args[1].elementId));
             if (node != null)
             {
+               // Perform the drag out to clear the highlight...
+               this.onDocumentDragOut(layer, args);
+               
                var nodeRef = node.data.nodeRef;
                var path = node.data.path;
                args[1].callback.call(args[1].scope, nodeRef, path);
+            }
+         }
+      },
+      
+      /**
+       * Handles applying the styling and node creation required when a document is dragged
+       * over a tree node.
+       * 
+       * @method onDocumentDragOver
+       * @property layer The name of the event
+       * @property args The event payload
+       */
+      onDocumentDragOver: function DLTB_onDocumentDragOver(layer, args)
+      {
+         if (args && args[1] && args[1].elementId)
+         {
+            var node = this.widgets.treeview.getNodeByElement(Dom.get(args[1].elementId));
+            if (node != null)
+            {
+               var dropTargetEl = Dom.get(args[1].elementId); 
+               var currEl = dropTargetEl;
+               while (currEl.tagName != "TABLE")
+               {
+                  currEl = currEl.parentNode;
+               }
+               Dom.addClass(currEl, "documentDragOverHighlight");
+               
+               var folderCell = dropTargetEl.parentNode.children[dropTargetEl.parentNode.children.length - 2];
+               while (folderCell.children.length == 1)
+               {
+                  var arrowContainer = document.createElement("span");
+                  Dom.addClass(arrowSpan, "documentDragOverArrowContainer");
+                  var arrowSpan = document.createElement("span");
+                  Dom.addClass(arrowSpan, "documentDragOverArrow");
+                  arrowContainer.appendChild(arrowSpan);
+                  folderCell.appendChild(arrowContainer);
+               }
+            }
+         }
+      },
+      
+      /**
+       * Handles applying the styling and node deletion required when a document is dragged
+       * out of a tree node.
+       *
+       * @method onDocumentDragOut
+       * @property layer The name of the event
+       * @property args The event payload
+       */
+      onDocumentDragOut: function DLTB_onDocumentDragOut(layer, args)
+      {
+         if (args && args[1] && args[1].elementId)
+         {
+            var node = this.widgets.treeview.getNodeByElement(Dom.get(args[1].elementId));
+            if (node != null)
+            {
+               var dropTargetEl = Dom.get(args[1].elementId); 
+               var currEl = dropTargetEl;
+               while (currEl.tagName != "TABLE")
+               {
+                  currEl = currEl.parentNode;
+               }
+               Dom.removeClass(currEl, "documentDragOverHighlight");
+               var folderCell = dropTargetEl.parentNode.children[dropTargetEl.parentNode.children.length - 2];
+               while (folderCell.children.length > 1)
+               {
+                  folderCell.removeChild(Dom.getLastChild(folderCell));
+               }
             }
          }
       },
@@ -396,6 +469,7 @@
             for (var i = 0, j = dndTargets.length; i < j; i++)
             {
                new YAHOO.util.DDTarget(dndTargets[i]);
+               Dom.addClass(dndTargets[i], "documentDroppable");
             }
          }
       },

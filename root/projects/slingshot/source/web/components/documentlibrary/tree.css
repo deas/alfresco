@@ -1,3 +1,8 @@
+.treeview
+{
+   margin-right: 5px;  
+}
+
 .treeview .tree
 {
    display: none;
@@ -48,4 +53,29 @@
 .treeview .selected
 {
    background-color: #dceaf4;
+}
+
+.treeview .documentDragOverHighlight
+{
+   outline: 2px solid #4F94C9;
+   outline-offset: -2px;
+   background-color: #dceaf4;
+   width: 100%;
+}
+
+.treeview .documentDragOverArrowContainer
+{
+   position: relative;
+}
+
+.treeview .documentDragOverArrow
+{
+   background: url(../images/move-arrow.png) no-repeat;
+   z-index: 1;
+   height: 25px;
+   display: block;
+   position: absolute;
+   width: 25px;
+   margin-top: -30px;
+   margin-left: 2px;
 }

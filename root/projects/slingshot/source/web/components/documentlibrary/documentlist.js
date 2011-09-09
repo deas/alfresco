@@ -395,6 +395,15 @@
              this.dragFolderHighlight = Dom.getAncestorByClassName(destEl, "folder");
              Dom.addClass(this.dragFolderHighlight, "dndFolderHighlight");
           }
+          else if (Dom.hasClass(destEl, "documentDroppable"))
+          {
+             // Fire an event indicating a document drag over
+             var payload = 
+             {
+                elementId: id,
+             }
+             YAHOO.Bubbling.fire("documentDragOver", payload);
+          }
       },
       
       /**
@@ -411,6 +420,15 @@
          {
             this.dragFolderHighlight = Dom.getAncestorByClassName(destEl, "folder");
             Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
+         }
+         else if (Dom.hasClass(destEl, "documentDroppable"))
+         {
+            // Fire an event indicating a document drag out
+            var payload = 
+            {
+               elementId: id,
+            }
+            YAHOO.Bubbling.fire("documentDragOut", payload);
          }
       }
    });
