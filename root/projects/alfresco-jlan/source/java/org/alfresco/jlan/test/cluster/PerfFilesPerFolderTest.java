@@ -11,9 +11,7 @@ import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.config.InvalidConfigurationException;
 import org.alfresco.jlan.server.filesys.FileName;
 import org.alfresco.jlan.smb.SMBException;
-import org.alfresco.jlan.smb.SMBStatus;
 import org.alfresco.jlan.util.MemorySize;
-import org.omg.CORBA._PolicyStub;
 import org.springframework.extensions.config.ConfigElement;
 
 /**
