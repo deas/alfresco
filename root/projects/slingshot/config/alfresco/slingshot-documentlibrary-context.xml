@@ -73,6 +73,9 @@
    <bean id="evaluator.doclib.action.sitePreset" class="org.alfresco.web.evaluator.SitePresetEvaluator" />
    <bean id="evaluator.doclib.action.siteBased" class="org.alfresco.web.evaluator.SiteBasedEvaluator" />
    <bean id="evaluator.doclib.action.containerType" class="org.alfresco.web.evaluator.ContainerTypeEvaluator" />
+   <bean id="evaluator.doclib.action.nodeType" class="org.alfresco.web.evaluator.NodeTypeEvaluator">
+      <property name="dictionary" ref="slingshot.scriptprocessor.dictionaryQuery" />
+   </bean>
    <bean id="evaluator.doclib.action.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
    <bean id="evaluator.doclib.action.metadataValue" class="org.alfresco.web.evaluator.MetadataValueEvaluator" />
    <bean id="evaluator.doclib.action.isBrowser" class="org.alfresco.web.evaluator.IsBrowserEvaluator" />

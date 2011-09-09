@@ -1,69 +1,73 @@
 (function()
 {
    /**
-    * Preview Web asset
+    * Preview Web Asset
     *
-    * @method onPreviewWebasset
-    * @param asset {object} Object literal representing one file or folder to be actioned
+    * @method onPreviewWebAsset
+    * @param record {object} Object literal representing one file or folder to be actioned
     */
-   Alfresco.doclib.Actions.prototype.onPreviewWebasset = function WCMQS_onPreviewWebasset(asset)
+   YAHOO.Bubbling.fire("registerAction",
    {
-      var nodeRef = new Alfresco.util.NodeRef(asset.nodeRef);
-      
-      this.modules.actions.genericAction(
+      actionName: "onActionPreviewWebAsset",
+      fn: function WCMQS_onActionPreviewWebAsset(record)
       {
-         success:
+         var nodeRef = new Alfresco.util.NodeRef(record.nodeRef);
+         
+         this.modules.actions.genericAction(
          {
-            callback:
+            success:
             {
-               fn: function WCMQS_onPreviewWebasset_success(data)
+               callback:
                {
-                  var url = data.json.url,
-                     win = window.open(url, "webpreview");
-                  if (!win)
+                  fn: function WCMQS_onPreviewWebAsset_success(data)
                   {
-                     // A popup blocker kicked-in. Offer a manual option.
-                     Alfresco.util.PopupManager.displayPrompt(
+                     var url = data.json.url,
+                        win = window.open(url, "webpreview");
+                     if (!win)
                      {
-                        title: this.msg("message.popup-blocked.title"),
-                        text: this.msg("message.popup-blocked.text"),
-                        buttons: [
+                        // A popup blocker kicked-in. Offer a manual option.
+                        Alfresco.util.PopupManager.displayPrompt(
                         {
-                           text: this.msg("button.ok"),
-                           handler: function WCMQS_onPreviewWebasset_success_ok()
+                           title: this.msg("message.popup-blocked.title"),
+                           text: this.msg("message.popup-blocked.text"),
+                           buttons: [
                            {
-                              window.open(url, "webpreview");
-                              this.destroy();
+                              text: this.msg("button.ok"),
+                              handler: function WCMQS_onPreviewWebAsset_success_ok()
+                              {
+                                 window.open(url, "webpreview");
+                                 this.destroy();
+                              },
+                              isDefault: true
                            },
-                           isDefault: true
-                        },
-                        {
-                           text: this.msg("button.cancel"),
-                           handler: function WCMQS_onPreviewWebasset_success_cancel()
                            {
-                              this.destroy();
-                           }
-                        }]
-                     });
-                  }
-               },
-               scope: this
-            }
-         },
-         failure:
-         {
-            message: "Unable to preview webasset"
-         },
-         webscript:
-         {
-            stem: Alfresco.constants.PROXY_URI,
-            name: "api/webassetpreviewer/{id}",
-            method: Alfresco.util.Ajax.GET,
-            params:
+                              text: this.msg("button.cancel"),
+                              handler: function WCMQS_onPreviewWebAsset_success_cancel()
+                              {
+                                 this.destroy();
+                              }
+                           }]
+                        });
+                     }
+                  },
+                  scope: this
+               }
+            },
+            failure:
             {
-               id: nodeRef.id
+               message: "Unable to preview web asset"
+            },
+            webscript:
+            {
+               stem: Alfresco.constants.PROXY_URI,
+               name: "api/webassetpreviewer/{id}",
+               method: Alfresco.util.Ajax.GET,
+               params:
+               {
+                  id: nodeRef.id
+               }
             }
-         }
-      });
-   };
+         });
+      }
+   });
 })();

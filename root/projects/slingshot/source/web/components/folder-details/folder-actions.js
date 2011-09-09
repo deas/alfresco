@@ -53,6 +53,7 @@
 
       // Decoupled event listeners
       YAHOO.Bubbling.on("filesPermissionsUpdated", this.doRefresh, this);
+      YAHOO.Bubbling.on("registerAction", this.onRegisterAction, this);
       
       return this;
    };

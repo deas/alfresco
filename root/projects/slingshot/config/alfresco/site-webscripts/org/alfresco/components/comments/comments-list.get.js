@@ -88,7 +88,7 @@ function main()
       }
    }
 
-   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site);
+   var documentDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
       var activityParameters = getActivityParameters(model.nodeRef, null);

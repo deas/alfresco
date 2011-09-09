@@ -5,7 +5,7 @@ function main()
    AlfrescoUtil.param('nodeRef');
    AlfrescoUtil.param('site', null);
    AlfrescoUtil.param('formId', null);
-   var documentDetails = AlfrescoUtil.getDocumentDetails(model.nodeRef, model.site);
+   var documentDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
       model.document = documentDetails;

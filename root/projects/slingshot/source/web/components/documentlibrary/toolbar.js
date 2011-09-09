@@ -74,6 +74,7 @@
       YAHOO.Bubbling.on("dropTargetOwnerRequest", this.onDropTargetOwnerRequest, this);
       YAHOO.Bubbling.on("documentDragOver", this.onDocumentDragOver, this);
       YAHOO.Bubbling.on("documentDragOut", this.onDocumentDragOut, this);
+      YAHOO.Bubbling.on("registerAction", this.onRegisterAction, this);
 
       return this;
    };

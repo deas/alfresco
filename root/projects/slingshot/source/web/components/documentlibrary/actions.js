@@ -30,7 +30,8 @@
     */
    var $html = Alfresco.util.encodeHTML,
       $combine = Alfresco.util.combinePaths,
-      $siteURL = Alfresco.util.siteURL;
+      $siteURL = Alfresco.util.siteURL,
+      $isValueSet = Alfresco.util.isValueSet;
 
    /**
     * Alfresco.doclib.Actions implementation
@@ -45,6 +46,44 @@
        * @type string
        */
       actionsView: null,
+
+      /**
+       * Register a Document Library action via Bubbling event
+       *
+       * @method onRegisterAction
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (actionName, fn)
+       */
+      onRegisterAction: function dlA_onRegisterAction(layer, args)
+      {
+         var obj = args[1];
+         if (obj && $isValueSet(obj.actionName) && $isValueSet(obj.fn))
+         {
+            this.registerAction(obj.actionName, obj.fn);
+         }
+         else
+         {
+            Alfresco.logger.error("DL_onRegisterAction: Custom action registion invalid: " + obj);
+         }
+      },
+
+      /**
+       * Register a Document Library action
+       *
+       * @method registerAction
+       * @param actionName {string} Action name
+       * @param fn {function} Handler function
+       * @return {boolean} Success status of registration
+       */
+      registerAction: function DL_registerAction(actionName, fn)
+      {
+         if ($isValueSet(actionName) && $isValueSet(fn))
+         {
+            this.constructor.prototype[actionName] = fn;
+            return true;
+         }
+         return false;
+      },
 
       /**
        * Renders a single action for a given record.
@@ -1055,16 +1094,16 @@
          var nodeRefs = "",
             destination = this.getParentNodeRef(record);
 
-         if (YAHOO.lang.isArray(asset))
+         if (YAHOO.lang.isArray(record))
          {
-            for (var i = 0, il = asset.length; i < il; i++)
+            for (var i = 0, il = record.length; i < il; i++)
             {
-               nodeRefs += (i === 0 ? "" : ",") + asset[i].nodeRef;
+               nodeRefs += (i === 0 ? "" : ",") + record[i].nodeRef;
             }
          }
          else
          {
-            nodeRefs = asset.nodeRef;
+            nodeRefs = record.nodeRef;
          }
          var postBody =
          {

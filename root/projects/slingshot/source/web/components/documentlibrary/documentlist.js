@@ -491,6 +491,7 @@
       YAHOO.Bubbling.on("folderRenamed", this.onFileRenamed, this);
       YAHOO.Bubbling.on("highlightFile", this.onHighlightFile, this);
       YAHOO.Bubbling.on("registerRenderer", this.onRegisterRenderer, this);
+      YAHOO.Bubbling.on("registerAction", this.onRegisterAction, this);
       // File actions which may be part of a multi-file action set
       YAHOO.Bubbling.on("fileCopied", this.onFileAction, this);
       YAHOO.Bubbling.on("fileDeleted", this.onFileAction, this);

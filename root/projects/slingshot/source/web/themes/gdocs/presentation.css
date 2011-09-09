@@ -9,10 +9,13 @@
 }
 
 .sticky-wrapper a,
-.yui-panel-container a,
 .sticky-wrapper a:visited,
-.yui-panel-container a:visited,
 .sticky-wrapper a:hover,
+.sticky-footer a,
+.sticky-footer a:visited,
+.sticky-footer a:hover,
+.yui-panel-container a,
+.yui-panel-container a:visited,
 .yui-panel-container a:hover
 {
    color: #333333;
@@ -20,6 +23,7 @@
 }
 
 .sticky-wrapper a:hover,
+.sticky-footer a:hover,
 .yui-panel-container a:hover
 {
    text-decoration: underline;

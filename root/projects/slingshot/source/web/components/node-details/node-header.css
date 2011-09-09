@@ -1,97 +1,102 @@
-.document-header h1
+.node-header h1
 {
    padding: 0.5em 0 0.2em;
 }
 
-.document-header h1 .document-version
+.node-header h1 .document-version
 {
    margin-left: 0.8em;
+   position: relative;
+   top: -2px;
 }
 
-.document-header .document-info
+.node-header .node-info
 {
    float: left;
    width: 78%;
 }
 
-.document-header h1 .document-version
-{
-   position: relative;
-   top: -2px;
-}
-
-.document-header .document-path
+.node-header .node-path
 {
    padding-bottom: 0.5em;
    padding-left: 0.35em;
    padding-top: 1em;
 }
 
-.document-header .document-path .folder-open
+.node-header .node-path .folder-link
 {
-   background-image: url(../documentlibrary/images/folder-open-16.png);
    background-position: left 50%;
    background-repeat: no-repeat;
    padding: 2px 0 2px 20px;
 }
 
-.document-header .document-path .separator
+.node-header .node-path .folder-open
+{
+   background-image: url(../documentlibrary/images/folder-open-16.png);
+}
+
+.node-header .node-path .folder-closed
+{
+   background-image: url(../documentlibrary/images/folder-closed-16.png);
+}
+
+.node-header .node-path .separator
 {
    border: medium none;
    padding: 0 0.5em;
 }
 
-.document-header .status-banner
+.node-header .status-banner
 {
    margin-top: 0.75em;
    padding: 0.5em 1em;
 }
 
-.document-header .status-banner span
+.node-header .status-banner span
 {
    background-repeat: no-repeat;
    line-height: 1.5em;
    padding-left: 20px;
 }
 
-.document-header .status-banner .editing
+.node-header .status-banner .editing
 {
    background-image: url(../documentlibrary/indicators/editing-16.png);
 }
-.document-header .status-banner .lock-owner
+.node-header .status-banner .lock-owner
 {
    background-image: url(../documentlibrary/indicators/lock-owner-16.png);
 }
 
-.document-header .status-banner .locked
+.node-header .status-banner .locked
 {
    background-image: url(../documentlibrary/indicators/locked-16.png);
 }
 
-.document-header .status-banner .google-docs-owner
+.node-header .status-banner .google-docs-owner
 {
    background-image: url(../documentlibrary/indicators/google-docs-editing-16.png);
 }
 
-.document-header .status-banner .google-docs-locked
+.node-header .status-banner .google-docs-locked
 {
    background-image: url(../documentlibrary/indicators/google-docs-locked-16.png);
 }
 
-.document-header .document-thumbnail
+.node-header .node-thumbnail
 {
    float: left;
    padding: 0.5em 0.5em 1em 0;
 }
 
-.document-header .document-action
+.node-header .node-action
 {
    float: right;
    width: 20%;
    text-align: right;
 }
 
-.document-header .document-action
+.node-header .node-action
 {
    float: right;
    width: 20%;
@@ -99,13 +104,13 @@
    padding-top: 4.5em;
 }
 
-.document-header .document-action .onDownloadDocumentClick a
+.node-header .node-action .onDownloadDocumentClick a
 {
    background: transparent url(../documentlibrary/actions/document-download-16.png) no-repeat scroll 12px 4px;
    padding-left: 32px;
 }
 
-.document-header span.item-social
+.node-header span.item-social
 {
    margin-left: 0.8em;
 }

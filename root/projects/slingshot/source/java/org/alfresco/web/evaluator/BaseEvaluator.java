@@ -204,6 +204,33 @@ public abstract class BaseEvaluator implements Evaluator
     }
 
     /**
+     * Retrieves the type for a node
+     *
+     * @param jsonObject JSONObject containing a "node" object as returned from the ApplicationScriptUtils class.
+     * @return String containing the node type
+     */
+    public final String getNodeType(JSONObject jsonObject)
+    {
+        String type = null;
+
+        try
+        {
+            JSONObject node = (JSONObject) jsonObject.get("node");
+
+            if (node != null)
+            {
+                type = (String) node.get("type");
+            }
+        }
+        catch (Exception err)
+        {
+            throw new AlfrescoRuntimeException("Exception whilst running UI evaluator: " + err.getMessage());
+        }
+
+        return type;
+    }
+
+    /**
      * Retrieve a JSONArray of aspects for a node
      *
      * @param jsonObject JSONObject containing a "node" object as returned from the ApplicationScriptUtils class.

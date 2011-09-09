@@ -13,8 +13,6 @@
    <!-- List panel -->
    <div id="${el}-list" class="">
       
-      
-		
       <div class="yui-g">
          <div class="yui-u first">
             <div class="title">${msg("channelAdmin.title")}</div>
@@ -26,27 +24,26 @@
                   <span class="first-child"><button>${msg("channelAdmin.button.new")}</button></span>
                </span>
             </div>
-				<div id="${el}-newChannel-menu" class="yuimenu menu-with-icons" style="visibility: hidden;">
-				   <div class="bd">
-				      <ul id="${el}-channelTypes" class="channelTypes">
-				         <#list channelTypes as channelType>
-							<li>
-				            <span>
-				               <a href="#" class="newChannelAction" rel="${channelType.id}" style="background-image:url('${url.context}/proxy/alfresco/${channelType.icon}/16');" >
-										${channelType.title}
-									</a>
-								</span>
-				         </li>
-				         </#list>
-				      </ul>
-				   </div>
-				</div>
-				
+            <div id="${el}-newChannel-menu" class="yuimenu menu-with-icons" style="visibility: hidden;">
+               <div class="bd">
+                  <ul id="${el}-channelTypes" class="channelTypes">
+                     <#list channelTypes as channelType>
+                     <li>
+                        <span>
+                           <a href="#" class="newChannelAction" rel="${channelType.id}" style="background-image:url('${url.context}/proxy/alfresco/${channelType.icon}/16');" >
+                              ${channelType.title}
+                           </a>
+                        </span>
+                     </li>
+                     </#list>
+                  </ul>
+               </div>
+            </div>
+            
          </div>
       </div>
    </div>
-	
-	
+   
    <div id="${el}-datatable" class="permissions-hide channellist"></div>
    <div id="${el}-managepermissions" class="permissions-show"></div>
 

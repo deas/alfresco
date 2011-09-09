@@ -1,1 +1,0 @@
-<#include "documentlist.get.html.ftl" />

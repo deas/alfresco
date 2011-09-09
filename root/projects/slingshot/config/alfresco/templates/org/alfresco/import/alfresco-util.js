@@ -124,7 +124,7 @@ var AlfrescoUtil =
       return rootNode;
    },
 
-   getDocumentDetails: function getDocumentDetails(nodeRef, site, options)
+   getNodeDetails: function getNodeDetails(nodeRef, site, options)
    {
       var url = '/slingshot/doclib2/node/' + nodeRef.replace('://', '/');
       if (!site)
@@ -579,5 +579,78 @@ var AlfrescoUtil =
          path = path.replace(/(.)\/$/g, "$1");
       }
       return path;
+   },
+   
+   /**
+    * Generate folder path to node suitable for UI rendering
+    *
+    * @method getPaths
+    * @param itemDetails {object} As returned from repository data webscript
+    * @param targetPage {string} Target page name for the destination URL
+    * @param targetPageLabel {string} Target page label
+    * @return {array} Array of paths to be rendered
+    */
+   getPaths: function getPaths(itemDetails, targetPage, targetPageLabel)
+   {
+      var item = itemDetails.item,
+         isContainer = item.node.isContainer,
+         path = item.location.path,
+         paths = [],
+         folders,
+         pathUrl = "",
+         x, y;
+
+      if (isContainer)
+      {
+         paths.push(
+         {
+            href: targetPage + (path == "/" && item.location.file.length > 0 ? "?file=" + encodeURIComponent(item.fileName) : ""),
+            label: msg.get(targetPageLabel),
+            cssClass: "folder-link"
+         });
+
+         path = AlfrescoUtil.combinePaths(path, item.location.file);
+         if (path.length > 1)
+         {
+            folders = path.substring(1, path.length).split("/");
+
+            for (x = 0, y = folders.length; x < y; x++)
+            {
+               pathUrl += "/" + folders[x];
+               paths.push(
+               {
+                  href: targetPage + (y - x == 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl),
+                  label: folders[x],
+                  cssClass: "folder-link " + (y - x == 1 ? "folder-closed" : "folder-open")
+               });
+            }
+         }
+      }
+      else
+      {
+         paths.push(
+         {
+            href: targetPage + (path.length < 2 ? "?file=" + encodeURIComponent(item.fileName) : ""),
+            label: msg.get(targetPageLabel),
+            cssClass: "folder-link"
+         });
+
+         if (path.length > 1)
+         {
+            folders = path.substring(1, path.length).split("/");
+
+            for (x = 0, y = folders.length; x < y; x++)
+            {
+               pathUrl += "/" + folders[x];
+               paths.push(
+               {
+                  href: targetPage + (y - x < 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl),
+                  label: folders[x],
+                  cssClass: "folder-link folder-open"
+               });
+            }
+         }
+      }
+      return paths;
    }
 };

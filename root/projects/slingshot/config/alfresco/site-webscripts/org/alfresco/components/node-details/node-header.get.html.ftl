@@ -1,10 +1,14 @@
-<#if document??>
+<#if item??>
    <#include "../../include/alfresco-macros.lib.ftl" />
-   <#assign el=args.htmlid?js_string>
-   <#assign fileExtIndex = document.fileName?last_index_of(".")>
-   <#assign fileExt = (fileExtIndex > -1)?string(document.fileName?substring(fileExtIndex + 1), "generic")>
+   <#assign id = args.htmlid?html>
+   <#if !isContainer>
+      <#assign fileExtIndex = item.fileName?last_index_of(".")>
+      <#assign fileExt = (fileExtIndex > -1)?string(item.fileName?substring(fileExtIndex + 1), "generic")>
+   </#if>
+   <#assign displayName = (item.displayName!item.fileName)?html>
+   <#assign itemType = isContainer?string("folder", "document")>
    <script type="text/javascript">//<![CDATA[
-      new Alfresco.component.DocumentHeader("${el}").setOptions(
+      new Alfresco.component.NodeHeader("${args.htmlid?js_string}").setOptions(
       {
          nodeRef: "${nodeRef?js_string}",
          siteId: <#if site??>"${site?js_string}"<#else>null</#if>,
@@ -13,25 +17,28 @@
          showFavourite: ${(showFavourite == "true")?string},
          showLikes: ${(showLikes == "true")?string},
          showComments: ${(showComments == "true")?string},
-         displayName: "${(document.displayName!document.fileName)?js_string}",
+         showDownload: ${(showDownload == "true")?string},
+         showPath: ${(showPath == "true")?string},
+         displayName: "${(item.displayName!item.fileName)?js_string}",
          likes:
          {
-            <#if document.likes??>
-            isLiked: ${(document.likes.isLiked!false)?string},
-            totalLikes: ${(document.likes.totalLikes!0)?c}
+            <#if item.likes??>
+            isLiked: ${(item.likes.isLiked!false)?string},
+            totalLikes: ${(item.likes.totalLikes!0)?c}
             </#if>
          },
-         isFavourite: ${(document.isFavourite!false)?string}
+         isFavourite: ${(item.isFavourite!false)?string},
+         isContainer: ${isContainer?string}
       }).setMessages(
          ${messages}
       );
    //]]></script>
 
-   <div class="document-header">
+   <div class="node-header">
 
       <!-- Message banner -->
-      <#if document.workingCopy??>
-         <#if document.workingCopy.isWorkingCopy??>
+      <#if item.workingCopy??>
+         <#if item.workingCopy.isWorkingCopy??>
             <#assign lockUser = node.properties["cm:workingCopyOwner"]>
          <#else>
             <#assign lockUser = node.properties["cm:lockOwner"]>
@@ -39,8 +46,8 @@
          <#if lockUser??>
             <div class="status-banner theme-bg-color-2 theme-border-4">
             <#assign lockedByLink = userProfileLink(lockUser.userName, lockUser.displayName, 'class="theme-color-1"') >
-            <#if (document.workingCopy.googleDocUrl!"")?length != 0 >
-               <#assign link><a href="${document.workingCopy.googleDocUrl}" target="_blank" class="theme-color-1">${msg("banner.google-docs.link")}</a></#assign>
+            <#if (item.workingCopy.googleDocUrl!"")?length != 0 >
+               <#assign link><a href="${item.workingCopy.googleDocUrl}" target="_blank" class="theme-color-1">${msg("banner.google-docs.link")}</a></#assign>
                <#if lockUser.userName == user.name>
                   <span class="google-docs-owner">${msg("banner.google-docs-owner", link)}</span>
                <#else>
@@ -58,21 +65,28 @@
          </#if>
       </#if>
 
-      <div class="document-info">
+      <div class="node-info">
 
+      <#if showPath == "true">
          <!-- Path-->
-         <div class="document-path">
+         <div class="node-path">
             <@renderPaths paths />
          </div>
+      </#if>
 
          <!-- Icon -->
+      <#if isContainer>
+         <img src="${url.context}/components/images/filetypes/generic-folder-48.png"
+              title="${displayName}" class="node-thumbnail" width="48" />
+      <#else>
          <img src="${url.context}/components/images/filetypes/${fileExt}-file-48.png"
               onerror="this.src='${url.context}/res/components/images/filetypes/generic-file-48.png'"
-              title="${(document.displayName!document.fileName)?html}" class="document-thumbnail" width="48" />
+              title="${displayName}" class="node-thumbnail" width="48" />
+      </#if>
 
          <!-- Title and Version -->
          <h1 class="thin dark">
-            ${(document.displayName!document.fileName)?html}<span class="document-version">${document.version}</span>
+            ${displayName}<#if !isContainer><span class="document-version">${item.version}</span></#if>
          </h1>
 
          <!-- Modified & Social -->
@@ -82,28 +96,30 @@
             <#assign modifierLink = userProfileLink(modifyUser.userName, modifyUser.displayName, 'class="theme-color-1"') >
             ${msg("label.modified-by-user-on-date", modifierLink, xmldate(modifyDate.iso8601)?string(msg("date-format.defaultFTL")))}
             <#if showFavourite == "true">
-            <span id="${el}-favourite" class="item item-separator"></span>
+            <span id="${id}-favourite" class="item item-separator"></span>
             </#if>
             <#if showLikes == "true">
-            <span id="${el}-like" class="item item-separator"></span>
+            <span id="${id}-like" class="item item-separator"></span>
             </#if>
             <#if showComments == "true">
             <span class="item item-separator item-social">
-               <a href="#" name="@commentNode" rel="${nodeRef?js_string}" class="theme-color-1 comment ${el}" title="${msg("comment.document.tip")}" tabindex="0">${msg("comment.document.label")}</a><#if commentCount??><span class="comment-count">${commentCount}</span></#if>
+               <a href="#" name="@commentNode" rel="${nodeRef?js_string}" class="theme-color-1 comment ${id}" title="${msg("comment.${itemType}.tip")}" tabindex="0">${msg("comment.${itemType}.label")}</a><#if commentCount??><span class="comment-count">${commentCount}</span></#if>
             </span>
             </#if>
          </div>
 
       </div>
 
-      <div class="document-action">
+      <div class="node-action">
 
+      <#if showDownload == "true">
          <!-- Download Button -->
          <span class="yui-button yui-link-button onDownloadDocumentClick">
             <span class="first-child">
                <a href="${url.context}/proxy/alfresco/${node.contentURL?js_string}?a=true" tabindex="0">${msg("button.download")}</a>
             </span>
          </span>
+      </#if>
 
       </div>
 
@@ -111,9 +127,9 @@
 
    </div>
 <#else>
-   <div class="document-header">
+   <div class="node-header">
       <div class="status-banner theme-bg-color-2 theme-border-4">
-      ${msg("banner.document-not-found")}
+      ${msg("banner.${itemType}-not-found")}
       </div>
    </div>
 </#if>

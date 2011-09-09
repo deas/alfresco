@@ -414,13 +414,15 @@ var DocList =
                actionId = actionConfig.getAttribute("id");
                if (actionId)
                {
-                  action =
+                  action = actions[actionId] ||
                   {
                      id: actionId,
-                     icon: actionConfig.getAttribute("icon") || actionId,
-                     type: actionConfig.getAttribute("type"),
-                     label: actionConfig.getAttribute("label")
+                     icon: actionId
                   };
+
+                  DocList.fnAddIfNotNull(action, actionConfig.getAttribute("icon"), "icon");
+                  DocList.fnAddIfNotNull(action, actionConfig.getAttribute("type"), "type");
+                  DocList.fnAddIfNotNull(action, actionConfig.getAttribute("label"), "label");
 
                   DocList.fnAddIfNotNull(action, DocList.getActionParamConfig(actionConfig), "params");
                   DocList.fnAddIfNotNull(action, DocList.getEvaluatorConfig(actionConfig), "evaluators");

@@ -1,1 +1,0 @@
-<#include "document-actions.get.head.ftl">

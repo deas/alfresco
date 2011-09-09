@@ -31,14 +31,7 @@
 
          <!-- Path-->
          <div class="folder-path">
-            <#list paths as path>
-               <#if path_index != 0>
-                  <span class="separator"> &gt; </span>
-               </#if>
-               <span class="folder-link<#if paths?size - path_index == 1> folder-closed<#elseif path_index != 0> folder-open</#if>">
-                  <a href="${siteURL(path.href)}">${path.label?html}</a>
-               </span>
-            </#list>
+            <@renderPaths paths />
          </div>
 
          <!-- Icon -->
