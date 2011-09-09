@@ -35,7 +35,7 @@
                            <#assign descArgs = "msg(column.description" />
                            <#if column.descriptionArgs??>
                               <#list column.descriptionArgs as x>
-                                 <#assign descArgs = descArgs + ",\"" + x?html + "\"">
+                                 <#assign descArgs = descArgs + ",\"" + x?rtf?html + "\"">
                               </#list>
                            </#if>
                            <#assign descArgs = descArgs + ")">
