@@ -22,6 +22,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.AlgorithmParameters;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.alfresco.encryption.AlfrescoKeyStore;
 import org.alfresco.encryption.AlfrescoKeyStoreImpl;
@@ -36,9 +38,12 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.util.Pair;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpHost;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
@@ -184,18 +189,11 @@ public class HttpClientFactory
 	
 	protected HttpClient getHttpsClient()
 	{
-		// This seems to be the only way to configure SSL connections but has some drawbacks:
-		// 
-		//  - we need to call Protocol.registerProtocol (which unfortunately overrides the socket factory for _all_ users of http client)
-		//    so that absolute urls used by e.g. the CommonsHttpSolrServer in SOLRAdminClient call our socket factory.
-		//  - it doesn't seem possible with commons http client to configure the host port as the standard (non-SSL) port and have it
-		//    redirect to the SSL port.
-		//
-		// It may be advantageous to convert to use the newer Apache httpcomponents http client. 
+		// Configure a custom SSL socket factory that will enforce mutual authentication
 		HttpClient httpClient = constructHttpClient();
-        Protocol myhttps = new Protocol("https", sslSocketFactory, sslPort);
-        Protocol.registerProtocol("https", myhttps);
-        httpClient.getHostConfiguration().setHost(host, sslPort, myhttps);
+        HttpHostFactory hostFactory = new HttpHostFactory(new Protocol("https", sslSocketFactory, sslPort));
+        httpClient.setHostConfiguration(new HostConfigurationWithHostFactory(hostFactory));
+        httpClient.getHostConfiguration().setHost(host, sslPort, "https");
         return httpClient;
 	}
 
@@ -343,8 +341,6 @@ public class HttpClientFactory
         private Encryptor encryptor;
         private EncryptionUtils encryptionUtils;
         private EncryptionService encryptionService;
-        private KeyStoreParameters keyStoreParameters;
-        private MD5EncryptionParameters encryptionParameters;
         
         /**
          * For testing purposes.
@@ -360,14 +356,12 @@ public class HttpClientFactory
             this.encryptionUtils = encryptionService.getEncryptionUtils();
             this.encryptor = encryptionService.getEncryptor();
             this.encryptionService = encryptionService;
-            this.encryptionParameters = encryptionService.getEncryptionParameters();
         }
         
         public SecureHttpClient(HttpClient httpClient, KeyResourceLoader keyResourceLoader, String host, int port,
         		KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters)
         {
         	super(httpClient);
-        	this.encryptionParameters = encryptionParameters;
             this.encryptionService = new EncryptionService(host, port, keyResourceLoader, keyStoreParameters, encryptionParameters);
             this.encryptionUtils = encryptionService.getEncryptionUtils();
             this.encryptor = encryptionService.getEncryptor();
@@ -460,4 +454,66 @@ public class HttpClientFactory
         	}
         }
     }
+
+    private static class HttpHostFactory
+    {
+    	private Map<String, Protocol> protocols;
+
+        public HttpHostFactory(Protocol httpsProtocol)
+        {
+        	protocols = new HashMap<String, Protocol>(2);
+        	protocols.put("https", httpsProtocol);
+        }
+ 
+        /** Get a host for the given parameters. This method need not be thread-safe. */
+        public HttpHost getHost(String host, int port, String scheme)
+        {
+        	if(scheme == null)
+        	{
+        		scheme = "http";
+        	}
+        	Protocol protocol = protocols.get(scheme);
+        	if(protocol == null)
+        	{
+        		protocol = Protocol.getProtocol("http");
+            	if(protocol == null)
+            	{
+            		throw new IllegalArgumentException("Unrecognised scheme parameter");
+            	}
+        	}
+
+            return new HttpHost(host, port, protocol);
+        }
+    }
+    
+    private static class HostConfigurationWithHostFactory extends HostConfiguration
+    {
+        private final HttpHostFactory factory;
+
+        public HostConfigurationWithHostFactory(HttpHostFactory factory)
+        {
+            this.factory = factory;
+        }
+
+        public synchronized void setHost(String host, int port, String scheme)
+        {
+            setHost(factory.getHost(host, port, scheme));
+        }
+
+        public synchronized void setHost(String host, int port)
+        {
+            setHost(factory.getHost(host, port, "http"));
+        }
+        
+        @SuppressWarnings("unused")
+		public synchronized void setHost(URI uri)
+        {
+            try {
+                setHost(uri.getHost(), uri.getPort(), uri.getScheme());
+            } catch(URIException e) {
+                throw new IllegalArgumentException(e.toString());
+            }
+        }
+    }
+
 }
