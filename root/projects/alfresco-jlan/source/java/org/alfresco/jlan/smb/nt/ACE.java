@@ -19,6 +19,7 @@
 
 package org.alfresco.jlan.smb.nt;
 
+import org.alfresco.jlan.util.DataBuffer;
 import org.alfresco.jlan.util.DataPacker;
 
 /**
@@ -232,6 +233,44 @@ public class ACE {
 	}
 
 	/**
+	 * Load the access control entry from the specified buffer
+	 * 
+	 * @param buf DataBuffer
+	 * @return int
+	 * @exception LoadException
+	 */
+	public final int loadACE( DataBuffer buf)
+		throws LoadException {
+		
+		//	Get the ACE type and flags
+		
+		m_type  = buf.getByte();
+		m_flags = buf.getByte();
+		
+		//	Get the ACE size (includes the type, flags and size)
+		
+		int siz = buf.getShort();
+		
+		//	Read the remaining part of the ACE, the format depends on the ACE type
+		
+		if ( getType() >= Allowed && getType() <= Alarm) {
+		
+			//	Get the access mask
+			
+			m_accessMask = buf.getInt();
+		
+			//	Create a security id and load from the buffer
+			
+			m_sid = new SID();
+			m_sid.loadSID( buf, false);
+		}
+		
+		//	Return the new offset at the end of this ACE
+		
+		return buf.getPosition();
+	}
+
+	/**
 	 * Save the access control entry to the specified buffer
 	 * 
 	 * @param buf byte[]
@@ -264,6 +303,46 @@ public class ACE {
 		//	Set the ACE size and return the end offset
 		
 		DataPacker.putIntelShort(endPos - off, buf, off + 2);
+		return endPos;
+	}
+
+	/**
+	 * Save the access control entry to the specified buffer
+	 * 
+	 * @param buf DataBuffer
+	 * @return int
+	 * @exception SaveException
+	 */
+	public final int saveACE( DataBuffer buf)
+		throws SaveException {
+			
+		//	Pack the ACE into the buffer
+
+		int startPos = buf.getPosition();
+		
+		buf.putByte( m_type);
+		buf.putByte( m_flags);
+		buf.putShort( 0);
+		
+		if ( getType() >= Allowed && getType() <= Alarm) {
+			
+			//	Pack the access mask
+		
+			buf.putInt( m_accessMask);
+			
+			//	Save the SID
+			
+			m_sid.saveSID( buf);
+		}
+		
+		//	Set the ACE size and return the end offset
+		
+		int endPos = buf.getPosition();
+		
+		buf.setPosition( startPos + 2);
+		buf.putShort( endPos - startPos);
+		buf.setPosition( endPos);
+
 		return endPos;
 	}
 

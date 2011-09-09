@@ -7249,6 +7249,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 		// Check if the disk interface implements the optional security descriptor interface
 
+		NTTransPacket respPkt = smbPkt;
+		
 		if ( disk instanceof SecurityDescriptorInterface) {
 
 			// Access the security descriptor interface
@@ -7271,12 +7273,12 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 				// Initialize the transaction reply
 
-				smbPkt.initTransactReply(paramblk, paramblk.length, null, 0);
+				respPkt.initTransactReply(paramblk, paramblk.length, null, 0);
 
 				// Set a warning status to indicate the supplied data buffer was too small to return
 				// the security descriptor
 
-				smbPkt.setLongErrorCode(SMBStatus.NTBufferTooSmall);
+				respPkt.setLongErrorCode(SMBStatus.NTBufferTooSmall);
 			}
 			else {
 
@@ -7286,30 +7288,47 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 				byte[] secBuf = null;
 				int secLen = 0;
+				byte[] paramblk = new byte[4];
 
 				if ( secDesc != null) {
 
 					// Pack the security descriptor
 
-					secBuf = new byte[4096];
+					DataBuffer buf = new DataBuffer( 4096);
 
 					try {
-						secLen = secDesc.saveDescriptor(secBuf, 0);
+						secLen = secDesc.saveDescriptor( buf);
+						secBuf = buf.getBuffer();
 					}
 					catch (SaveException ex) {
 						m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 						return;
 					}
+
+					// Calculate the available space for the security descriptor in the current packet
+					
+					respPkt.initTransactReply(paramblk, paramblk.length, null, 0);
+					int availLen = respPkt.getBufferLength() - respPkt.getLength();
+					
+					if ( availLen <= (secLen + 8)) {
+						
+						// Allocate a larger packet for the response
+						
+						SMBSrvPacket pkt = m_sess.getPacketPool().allocatePacket( respPkt.getLength() + secLen + 8, smbPkt);
+						
+						// Create a new NT transaction packet from the new buffer
+						
+						respPkt = new NTTransPacket( pkt.getBuffer());
+					}
 				}
 
 				// Return the security descriptor length in the parameter block
 
-				byte[] paramblk = new byte[4];
 				DataPacker.putIntelInt(secLen, paramblk, 0);
 
-				// Initialize the transaction reply. Return a null security descriptor
+				// Initialize the transaction reply.
 
-				smbPkt.initTransactReply(paramblk, paramblk.length, secBuf, secLen);
+				respPkt.initTransactReply(paramblk, paramblk.length, secBuf, secLen);
 			}
 		}
 		else {
@@ -7326,12 +7345,12 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 				// Initialize the transaction reply
 
-				smbPkt.initTransactReply(paramblk, paramblk.length, null, 0);
+				respPkt.initTransactReply(paramblk, paramblk.length, null, 0);
 
 				// Set a warning status to indicate the supplied data buffer was too small to return
 				// the security descriptor
 
-				smbPkt.setLongErrorCode(SMBStatus.NTBufferTooSmall);
+				respPkt.setLongErrorCode(SMBStatus.NTBufferTooSmall);
 			}
 			else {
 
@@ -7341,16 +7360,15 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				DataPacker.putIntelInt(_sdEveryOne.length, paramblk, 0);
 
 				// Initialize the transaction reply. Return the fixed security descriptor that
-				// allows anyone to access the
-				// file/directory
+				// allows anyone to access the file/directory
 
-				smbPkt.initTransactReply(paramblk, paramblk.length, _sdEveryOne, _sdEveryOne.length);
+				respPkt.initTransactReply(paramblk, paramblk.length, _sdEveryOne, _sdEveryOne.length);
 			}
 		}
 
 		// Send back the response
 
-		m_sess.sendResponseSMB(smbPkt);
+		m_sess.sendResponseSMB( respPkt);
 	}
 
 	/**

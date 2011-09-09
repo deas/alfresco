@@ -19,6 +19,7 @@
 
 package org.alfresco.jlan.smb.nt;
 
+import org.alfresco.jlan.util.DataBuffer;
 import org.alfresco.jlan.util.DataPacker;
 
 /**
@@ -354,28 +355,73 @@ public class SID {
 			
 		//	Unpack the subauthorities
 
-    //  Unpack the subauthorities
-    
-    boolean hasRID = false;
-    if (domain == false && m_subAuthCnt > 1) {
-        m_subAuthCnt--;
-        hasRID = true;
-    }
-    m_subAuth = new int[m_subAuthCnt];
-
-    for ( int i = 0; i < m_subAuthCnt; i++) {
-      m_subAuth[i] = DataPacker.getIntelInt(buf, off);
-      off += 4;
-    }
-
-    if (hasRID) {
-      m_rid = DataPacker.getIntelInt(buf, off);
-      off += 4;
-    }
+	    boolean hasRID = false;
+	    if (domain == false && m_subAuthCnt > 1) {
+	        m_subAuthCnt--;
+	        hasRID = true;
+	    }
+	    m_subAuth = new int[m_subAuthCnt];
+	
+	    for ( int i = 0; i < m_subAuthCnt; i++) {
+	      m_subAuth[i] = DataPacker.getIntelInt(buf, off);
+	      off += 4;
+	    }
+	
+	    if (hasRID) {
+	      m_rid = DataPacker.getIntelInt(buf, off);
+	      off += 4;
+	    }
     
 		//	Return the end of SID offset
 		
 		return off;
+	}
+
+	/**
+	 * Load the SID from the specified buffer
+	 * 
+	 * @param buf	DataBuffer
+	 * @param domain boolean
+	 * @return int
+	 * @exception LoadException
+	 */
+	public final int loadSID( DataBuffer buf, boolean domain)
+		throws LoadException {
+	
+		//	Check if the buffer is long enough to contain a valid SID
+
+		if ( buf.getAvailableLength() < MinimumBinarySize)
+			throw new LoadException("Buffer too short for SID");
+			
+		//	Unpack the SID
+		
+		m_revision = buf.getByte();
+		m_subAuthCnt = buf.getByte();
+		
+		if ( m_identAuth == null)
+			m_identAuth = new byte[6];
+			
+		for ( int i = 0; i < 6; i++)
+			m_identAuth[i] = (byte) ( buf.getByte() & 0xFF);
+			
+		//	Unpack the subauthorities
+
+	    boolean hasRID = false;
+	    if (domain == false && m_subAuthCnt > 1) {
+	        m_subAuthCnt--;
+	        hasRID = true;
+	    }
+	    m_subAuth = new int[m_subAuthCnt];
+	
+	    for ( int i = 0; i < m_subAuthCnt; i++)
+	    	m_subAuth[i] = buf.getInt();
+	
+	    if (hasRID)
+	      m_rid = buf.getInt();
+    
+		//	Return the end of SID offset
+		
+		return buf.getPosition();
 	}
 
 	/**
@@ -410,6 +456,35 @@ public class SID {
 		}
 		
 		return off;
+	}
+			
+	/**
+	 * Save the SID to the specified buffer
+	 * 
+	 * @param buf	DataBuffer
+	 * @return int
+	 * @exception SaveException
+	 */
+	public final int saveSID( DataBuffer buf)
+		throws SaveException {
+			
+		//	Pack the SID
+
+		buf.putByte( m_revision);
+		buf.putByte( m_rid != -1 ? m_subAuthCnt + 1 : m_subAuthCnt);
+
+		for ( int i = 0; i < 6; i++)
+			buf.putByte( m_identAuth[i]);
+		
+		if ( m_subAuth != null) {			
+			for ( int i = 0; i < m_subAuth.length; i++)
+				buf.putInt( m_subAuth[i]);
+		}
+
+		if ( m_rid != -1)
+			buf.putInt( m_rid);
+		
+		return buf.getPosition();
 	}
 			
 	/**

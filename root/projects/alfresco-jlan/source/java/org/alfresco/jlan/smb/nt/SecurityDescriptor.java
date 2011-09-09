@@ -19,6 +19,7 @@
 
 package org.alfresco.jlan.smb.nt;
 
+import org.alfresco.jlan.util.DataBuffer;
 import org.alfresco.jlan.util.DataPacker;
 
 /**
@@ -338,6 +339,100 @@ public class SecurityDescriptor {
 	}
 
 	/**
+	 * Load the security descriptor from the specified buffer
+	 * 
+	 * @param buf DataBuffer
+	 * @return int
+	 * @exception LoadException
+	 */
+	public final int loadDescriptor( DataBuffer buf)
+		throws LoadException {
+		
+		//	Get the revision and control flags
+		
+		int startPos = buf.getPosition();
+		
+		m_revision = buf.getByte();
+		buf.skipBytes( 1);
+		m_control  = buf.getShort();
+		
+		//	Make sure the security descriptor is self-raltive, if not then abort the load
+		
+		if ( isSelfRelative() == false)
+			throw new LoadException("Security descriptor not self-relative, cannot load");
+
+		//	Clear any current settings
+		
+		m_owner = null;
+		m_group = null;
+		m_dacl  = null;
+		m_sacl  = null;
+					
+		//	Get the offset to the owner SID, and load if available
+		
+		int pos = buf.getInt();
+		
+		if ( pos != 0) {
+			
+			//	Load the owner SID
+			
+			m_owner = new SID();
+			
+			buf.setPosition( startPos + pos);
+			m_owner.loadSID( buf, false);
+		}
+		
+		//	Get the offset to the group SID, and load if available
+
+		buf.setPosition( startPos + 8);
+		pos = buf.getInt();
+		
+		if ( pos != 0) {
+			
+			//	Load the group SID
+			
+			m_group = new SID();
+			
+			buf.setPosition( startPos + pos);
+			m_group.loadSID( buf, false);
+		}
+		
+		//	Get the offset to the system ACL, and load if available
+		
+		buf.setPosition( startPos + 12);
+		pos = buf.getInt();
+		
+		if ( pos != 0) {
+			
+			//	Load the system ACL
+			
+			m_sacl = new ACL();
+			
+			buf.setPosition( startPos + pos);
+			m_sacl.loadACL( buf);
+		}
+		
+		//	Get the offset to the discretionary ACL, and load if available
+		
+		buf.setPosition( startPos + 16);
+		pos = buf.getInt();
+		
+		if ( pos != 0) {
+			
+			//	Load the discretionary ACL
+			
+			m_dacl = new ACL();
+			
+			buf.setPosition( startPos + pos);
+			m_dacl.loadACL( buf);
+		}
+		
+		//	Return the end position of the security descriptor
+		
+		return buf.getPosition();
+	}
+
+	/**
 	 * Save the security descriptor to the specified buffer
 	 * 
 	 * @param buf byte[]
@@ -415,6 +510,106 @@ public class SecurityDescriptor {
 			
 			DataPacker.putIntelInt(pos-off, buf, off + 16);		//	offset to DACL
 			pos = getDACL().saveACL(buf,pos);
+		}
+		
+		//	Return the end offset
+		
+		return pos;
+	}
+
+	/**
+	 * Save the security descriptor to the specified buffer
+	 * 
+	 * @param buf DataBuffer
+	 * @return int
+	 * @exception SaveException
+	 */
+	public final int saveDescriptor( DataBuffer buf)
+		throws SaveException {
+
+		// Save the current buffer position
+			
+		int startPos = buf.getPosition();
+			
+		//	Pack the security descriptor
+
+		buf.putShort( m_revision);
+		
+		//	Make sure the self-relative flag is set
+		
+		if ( isSelfRelative() == false)
+			m_control += SelfRelative;
+
+		//	Check if the SACL flag is set, if present
+		
+		if ( hasSACL() && hasControlFlag(SACLPresent) == false)
+			m_control += SACLPresent;
+			
+		//	Check if the DACL flag is set, if present
+		
+		if ( hasDACL() && hasControlFlag(DACLPresent) == false)
+			m_control += DACLPresent;
+			
+		//	Pack the control flags
+
+		buf.putShort( m_control);
+
+		//	Clear the section offsets
+
+		buf.putZeros( 16);
+		
+		//	Pack the owner SID, if available
+		
+		int pos = startPos + 20;
+		
+		if ( hasOwner()) {
+
+			//	Pack the owner SID
+
+			buf.setPosition( startPos + 4);
+			buf.putInt( pos - startPos);
+			
+			buf.setPosition( pos);
+			pos = getOwner().saveSID( buf);
+		}
+			
+		//	Pack the group SID, if available
+		
+		if ( hasGroup()) {
+
+			//	Pack the group SID
+
+			buf.setPosition( startPos + 8);
+			buf.putInt( pos - startPos);
+			
+			buf.setPosition( pos);
+			pos = getGroup().saveSID( buf);
+		}
+
+		//	Pack the system ACL, if available
+		
+		if ( hasSACL()) {
+			
+			//	Pack the SACL
+			
+			buf.setPosition( startPos + 12);
+			buf.putInt( pos - startPos);
+			
+			buf.setPosition( pos);
+			pos = getSACL().saveACL( buf);
+		}
+						
+		//	Pack the discretionary ACL, if available
+		
+		if ( hasDACL()) {
+			
+			//	Pack the DACL
+			
+			buf.setPosition( startPos + 16);
+			buf.putInt( pos - startPos);
+			
+			buf.setPosition( pos);
+			pos = getDACL().saveACL( buf);
 		}
 		
 		//	Return the end offset

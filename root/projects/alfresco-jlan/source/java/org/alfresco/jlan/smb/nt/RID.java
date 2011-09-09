@@ -28,19 +28,19 @@ public class RID {
 
 	//	RID types
 	
-	public static final int TypeUser									= 1;
-	public static final int TypeDomainGroup						= 2;
-	public static final int TypeDomain								= 3;
-	public static final int TypeAlias									= 4;
-	public static final int TypeWellKnownGroup				= 5;
-	public static final int TypeDeleted    						= 6;
-	public static final int TypeInvalid    						= 7;
-	public static final int TypeUnknown								= 8;
+	public static final int TypeUser			= 1;
+	public static final int TypeDomainGroup		= 2;
+	public static final int TypeDomain			= 3;
+	public static final int TypeAlias			= 4;
+	public static final int TypeWellKnownGroup	= 5;
+	public static final int TypeDeleted    		= 6;
+	public static final int TypeInvalid    		= 7;
+	public static final int TypeUnknown			= 8;
 	
 	//	RID type strings
 	
 	private static final String[] _types = { "User", "DomainGroup", "Domain", "Alias", "WellKnownGroup",
-																					 "Deleted", "Invalid", "Unknown"
+											 "Deleted", "Invalid", "Unknown"
 	};
 	
 	//	Relative id

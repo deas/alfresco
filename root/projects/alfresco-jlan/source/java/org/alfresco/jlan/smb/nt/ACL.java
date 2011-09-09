@@ -21,6 +21,7 @@ package org.alfresco.jlan.smb.nt;
 
 import java.util.Vector;
 
+import org.alfresco.jlan.util.DataBuffer;
 import org.alfresco.jlan.util.DataPacker;
 
 /**
@@ -32,7 +33,7 @@ public class ACL {
 
 	//	List of access control entries
 	
-	private Vector m_aceList;
+	private Vector<ACE> m_aceList;
 	
 	//	Revision
 	
@@ -81,7 +82,7 @@ public class ACL {
 		//	Check if the list is allocated
 		
 		if ( m_aceList == null)
-			m_aceList = new Vector();
+			m_aceList = new Vector<ACE>();
 			
 		//	Add the ACE to the end of the list
 		
@@ -97,7 +98,7 @@ public class ACL {
 	public final ACE getACE(int idx) {
 		if ( m_aceList == null || idx >=m_aceList.size())
 			return null;
-		return (ACE) m_aceList.elementAt(idx);
+		return m_aceList.elementAt(idx);
 	}
 		
 	/**
@@ -160,7 +161,7 @@ public class ACL {
 		if ( m_aceList != null)
 			m_aceList.removeAllElements();
 		else
-			m_aceList = new Vector();
+			m_aceList = new Vector<ACE>();
 			
 		//	Load the ACE list
 		
@@ -181,6 +182,60 @@ public class ACL {
 		//	Return the new buffer position
 		
 		return acePos;
+	}
+
+	/**
+	 * Load the access control list from the specified buffer
+	 * 
+	 * @param buf DataBuffer
+	 * @return int
+	 * @exception LoadException
+	 */
+	public final int loadACL( DataBuffer buf)
+		throws LoadException {
+		
+		//	Get the ACL revision, ACL size (in bytes) and number of access control entries
+
+		int startPos = buf.getPosition();
+		
+		m_revision = buf.getShort();
+
+		int siz    = buf.getShort();
+		int aceCnt = buf.getShort();
+
+		//	Check if there are any access control entries
+		
+		if ( aceCnt == 0) {
+			m_aceList = null;
+			return startPos + siz;
+		}
+				
+		//	Clear the current ACE list
+		
+		if ( m_aceList != null)
+			m_aceList.removeAllElements();
+		else
+			m_aceList = new Vector<ACE>();
+			
+		//	Load the ACE list
+		
+		buf.setPosition( startPos + 8);
+		
+		for ( int i = 0; i < aceCnt; i++) {
+			
+			//	Create a new access control entry and load it
+			
+			ACE curAce = new ACE();
+			curAce.loadACE( buf);
+			
+			//	Add the entry to the ACLs list
+			
+			addACE(curAce);
+		}
+		
+		//	Return the new buffer position
+		
+		return buf.getPosition();
 	}
 
 	/**
@@ -221,6 +276,51 @@ public class ACL {
 		//	Set the ACL size and return the end offset
 		
 		DataPacker.putIntelShort(endPos - startPos, buf, off + 2);
+		return endPos;
+	}
+	
+	/**
+	 * Save the access control list to the specified buffer
+	 * 
+	 * @param buf DataBuffer
+	 * @param off int
+	 * @return int
+	 * @exception SaveException
+	 */
+	public final int saveACL( DataBuffer buf)
+		throws SaveException {
+
+		//	Pack the ACL
+
+		int startPos = buf.getPosition();
+
+		buf.putShort( m_revision);
+		buf.putShort( 0);
+		buf.putInt( m_aceList != null ? m_aceList.size() : 0);
+
+		//	Pack the access control entries, if any
+
+		if ( m_aceList != null && m_aceList.size() > 0) {
+				
+			//	Pack the ACE list
+			
+			for ( int i = 0; i < m_aceList.size(); i++) {
+				
+				//	Get the current ACE and pack into the buffer
+				
+				ACE curAce = getACE(i);
+				curAce.saveACE( buf);
+			}
+		}
+		
+		//	Set the ACL size and return the end offset
+
+		int endPos = buf.getPosition();
+		
+		buf.setPosition( startPos + 2);
+		buf.putShort( endPos - startPos);
+		buf.setPosition( endPos);
+
 		return endPos;
 	}
 	
