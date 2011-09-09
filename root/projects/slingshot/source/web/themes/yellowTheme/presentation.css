@@ -905,21 +905,42 @@ body.yui-skin-yellowTheme .yui-columnbrowser .yui-carousel-content li.yui-column
    color: #666666;
 }
 
-/* Calendar 
+/* Calendar */
 
-.yui-skin-yellowTheme #calendar .yui-calendar td.calcell.selected a
+/* Day/Week timed events */
+.fc-content .fc-event-skin
 {
-   background-color: #E9F1EA;
+   background-color: #f6931c;
+   border-color: #DC7A04;
+   color: #FFFFFF;
 }
 
-.yui-skin-yellowTheme .dayview h2, .weekview h2,
-.yui-skin-yellowTheme .calendar.weekview thead th,
-.yui-skin-yellowTheme .calendar.monthview thead th
+/* Month view timed events */
+.fc-content .fc-view-month .fc-event-skin
 {
-   color: #000;
+   background-color: transparent;
+   border-color: transparent;
+   color: #f6931c;
 }
 
-End Calendar */
+/* All day events */
+.fc-content .fc-event-allday .fc-event-skin,
+.fc-content a.fc-event.fc-event-allday
+{
+   background-color: #f6931c;
+   border-color: #f6931c;
+   color: #FFFFFF;
+}
+
+
+.fc-content a.fc-event-skin:hover
+{
+   color: #FFFFFF;
+}
+
+/* End Calendar */
+
+/* End Calendar */
 
 
 /* Document */

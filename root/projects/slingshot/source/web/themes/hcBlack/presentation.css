@@ -975,27 +975,40 @@ body.yui-skin-hcBlack .categoryview .selected div.ygtvchildren table .ygtvlabel:
    color: #000000;
 }
 
-/* calendar */
+/* Calendar */
 
-.yui-skin-hcBlack .dayview h2, .weekview h2,
-.yui-skin-hcBlack .calendar.weekview thead th,
-.yui-skin-hcBlack .calendar.monthview thead th
+/* Day/Week timed events */
+.fc-content .fc-event-skin
 {
-   color: #000;
+   background-color: #000000; /* Theme Colour 1 */
+   border-color: #FFFFFF;
+   color: #FFFFFF;
 }
 
-body.yui-skin-hcBlack .vcalendar table,
-body.yui-skin-hcBlack .vcalendar table th,
-body.yui-skin-hcBlack .vcalendar table td,
-body.yui-skin-hcBlack .vcalendar table .hourSegment,
-body.yui-skin-hcBlack .weekview div.day,
-body.yui-skin-hcBlack .dayview div.day,
-body.yui-skin-hcBlack .calendar.weekview tbody tr.alldayRow td,
-body.yui-skin-hcBlack tr#collapseTrigger td
+/* Month view timed events */
+.fc-content .fc-view-month .fc-event-skin
 {
-   border-color: #000;
+   background-color: transparent;
+   border-color: transparent;
+   color: #000000;
 }
 
+/* All day events */
+.fc-content .fc-event-allday .fc-event-skin,
+.fc-content a.fc-event.fc-event-allday
+{
+   background-color: #000000;
+   border-color: #000000;
+   color: #FFFFFF;
+}
+
+
+.fc-content a.fc-event-skin:hover
+{
+   color: #FFFFFF;
+}
+
+/* End Calendar */
 /* end calendar */
 
 
@@ -1198,3 +1211,4 @@ div.theme-bg-color-7
    margin-left: 2px;
    text-decoration: none;
 }
+

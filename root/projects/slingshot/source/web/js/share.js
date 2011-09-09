@@ -990,6 +990,19 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
             // 8px breathing space for resize gripper
             Dom.setStyle(this.options.divRight, "margin-left", 8 + width + "px");
          }
+
+         // Callback
+         this.onResizeNotification();
+      },
+
+      /**
+       * Fired after the onResize event
+       * This needs overriding at the component level.
+       *
+       * @method onResizeNotification
+       */
+      onResizeNotification: function Resizer_onResizeNotification()
+      {
       },
             
       /**

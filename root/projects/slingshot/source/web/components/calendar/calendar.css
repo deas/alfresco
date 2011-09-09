@@ -289,6 +289,10 @@ div.calendar-currentMonth
    text-align: right;
 }
 
+.agendaview thead {
+   display: none;
+}
+
 /* Override default textfield width for start and end time textfields */
 
 span.eventTime  input[type="text"]
@@ -1182,65 +1186,8 @@ div.agendaview ul li
    text-align: center;
    border-bottom: 1px solid #EAEAEA;
 }
-
-.weekview .theme-color-1,
-.weekview .theme-color-1:visited,
-.weekview .theme-color-1:hover,
-.dayview .theme-color-1,
-.dayview .theme-color-1:visited,
-.dayview .theme-color-1:hover,
-.dayview .allday .theme-color-1,
-.dayview .allday .theme-color-1:visited,
-.dayview .allday a.theme-color-1:hover,
-.weekview .allday .theme-color-1,
-.weekview .allday .theme-color-1:visited,
-.weekview .allday a.theme-color-1:hover,
-.monthview .allday .theme-color-1,
-.monthview .allday .theme-color-1:visited,
-.monthview .allday a.theme-color-1:hover
-{
-   color: #fff;
-}
-
-.monthview li.theme-bg-color-1,
-.monthview p.dates,
-.weekview p.dates,
-.dayview p.dates
-{
-   background-color: transparent;
-}
-
-/* multiple day proxy elements */
-
-.multipleAllDay
-{
-   height: 26px;
-}
-
-.continuedTo
-{
-   float: right;
-}
-
-div.day .continuedTo
-{
-   float: none;
-}
-
-.continuedFrom
-{
-   padding: 0 2px;
-}
-
-.continuedTo,
-.continuedFrom
-{
-   font-weight: bold;
-}
-
-#divCalendarContent thead
-{
-   display: none;
+tr.early {
+  /*display:none;*/
 }
 
 /* Agenda view styles */
@@ -1471,4 +1418,102 @@ div.filter.tags
 {
    max-height: 10em;
    overflow-y: auto;
+}
+
+/* FullCalendar Overrides */
+
+div.fullCalendar
+{
+   color:#333333;
+}
+
+div.fullCalendar .fc-content
+{
+   left: -9px;
+}
+
+div.fullCalendar .fc-header-title h2
+{
+   padding: 6px 0;
+   font-size:146%;
+   font-weight: normal;
+}
+
+div.fullCalendar th
+{
+   padding: 2px 0;
+}
+
+div.fullCalendar .fc-widget-header,
+div.fullCalendar .fc-widget-content
+{
+    border-color: #EAEAEA;
+}
+
+div.fullCalendar a.fc-event:hover
+{
+   text-decoration: none;
+   color:inherit;
+}
+
+/* Remove pseudo rounded corners */
+div.fullCalendar .fc-corner-right .fc-event-inner,
+div.fullCalendar .fc-corner-left .fc-event-inner
+{
+   border: none;
+   margin: 0;
+   line-height:1.8em;
+   font-size:110%;
+}
+
+div.fullCalendar .fc-event-time
+{
+   font-weight: bold;
+   padding: 0 0 0 5px;
+}
+
+div.fullCalendar .fc-view-month .fc-event-time
+{
+   padding: 0;
+}
+
+div.fullCalendar .fc-event-title
+{
+   padding: 0 0 0 5px;
+}
+
+div.fullCalendar .fc-agenda-days .fc-event-title
+{
+   padding-top:2px;
+}
+
+div.fullCalendar .fc-event-vert .fc-event-bg
+{
+   opacity: 0.2;
+}
+
+.fc-grid .fc-day-number
+{
+   cursor: pointer;
+   float: none;
+   margin: 0 4px 0 2px;
+   margin: 0 2px;
+   padding: 0;
+   width: auto;
+}
+
+.fc-grid .fc-widget-content:hover .fc-day-number
+{
+   background: url("images/add-event-16-2.png") no-repeat right 3px;
+}
+
+.fc-event-vert .ui-resizable-s
+{
+   text-indent: -9999px;
+}
+
+/* This is needed to place all YUI generated content above the events. */
+.yuimenu
+{
+   z-index:50 !important;
 }

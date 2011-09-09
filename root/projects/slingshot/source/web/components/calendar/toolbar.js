@@ -30,6 +30,8 @@
       /* Load YUI Components */
       Alfresco.util.YUILoaderHelper.require(["button", "container", "connection"], this.onComponentsLoaded, this);
 
+      Alfresco.util.ComponentManager.register(this);
+
       return this;
    };
 
@@ -88,18 +90,27 @@
          {
             type: "link"
          });
-      
          this.nextButton = Alfresco.util.createYUIButton(this, "next-button", this.onNextNav);
          this.prevButton = Alfresco.util.createYUIButton(this, "prev-button", this.onPrevNav);
          this.todayButton = Alfresco.util.createYUIButton(this, "today-button", this.onTodayNav);
 
+         this.workHoursButton = Alfresco.util.createYUIButton(this, "workHours-button", this.onToggleWorkHours,
+         {
+            type: "checkbox",
+            checked:true
+         });
+
          this.navButtonGroup = new YAHOO.widget.ButtonGroup(this.id + "-navigation");
          if (typeof(this.navButtonGroup) != "undefined" && this.navButtonGroup._buttons != null ) // Will be undefined / null if navigation is hidden serverside (e.g. only one view enabled)
          {
-            var view = Alfresco.util.getQueryStringParameter('view') || this.defaultView;
-            for (var i = 0; i < this.navButtonGroup._buttons.length; i++) 
-            { 
-               if (this.navButtonGroup._buttons[i]._button.id.match(view)) 
+
+            // The view will either be the booked marked value (from the hash with the "view=" stripped off), or on the query params, or the default.
+            var hash = window.location.hash,
+               view = hash.substring(hash.indexOf("view=") + 5).split("&")[0] || Alfresco.util.getQueryStringParameter('view') || this.defaultView;
+
+            for (var i = 0; i < this.navButtonGroup._buttons.length; i++)
+            {
+               if (this.navButtonGroup._buttons[i]._button.id.match(view))
                {
                   this.navButtonGroup.check(i);
                   this.disableButtons(i);
@@ -123,6 +134,11 @@
       onTodayNav: function(e)
       {
          this._fireEvent("todayNav");
+      },
+
+      onToggleWorkHours: function(e)
+      {
+         this._fireEvent("toggleWorkHours");
       },
 
       onNavigation: function(e)

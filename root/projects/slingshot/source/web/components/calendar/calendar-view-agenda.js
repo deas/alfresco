@@ -340,7 +340,6 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       // These two functions need to be called the first time this is run only.
       if (!this.eventsInitialised) 
       {
-         this.initCalendarEvents();
          this.initAgendaEvents();
          this.eventsInitialised = true;
       }
@@ -464,48 +463,6 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
     *  ACTION HANDLERS
     */
    
-   // Note: These are handled by the Interaction handler in calendar-view.
-   
-   /**
-    * Handler for eventEdited event. Updates event in DOM in response to updated event data.
-    * 
-    * @method  onEventEdited
-    * 
-    * @param e {object} event object
-    * @param o {object} new event data
-    */
-   onEventEdited : function CalendarAgendaView_onEventEdited(e,o) 
-   {
-      this.getEvents()
-      YAHOO.Bubbling.fire("eventEditedAfter");
-   },
-
-   /**
-    * Handler for when event is saved
-    * 
-    * @method onEventSaved
-    * 
-    * @param e {object} event object 
-    */
-   onEventSaved : function CalendarAgendaView_onEventSaved(e)
-   {
-      this.getEvents();
-      YAHOO.Bubbling.fire("eventSavedAfter");
-      this.displayMessage('message.created.success',this.name);             
-   },
-   
-   /**
-    * Handler for when an event is deleted
-    * 
-    * @method  onEventDeleted
-    */
-   onEventDeleted : function CalendarAgendaView_onEventDeleted()
-   {
-      this.getEvents();
-      YAHOO.Bubbling.fire("eventDeletedAfter");
-      this.msg('message.deleted.success',this.name);
-   },
-   
    /**
     * Triggered when the previous/next links are clicked.
     */
@@ -554,7 +511,51 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
    {
       return Dom.get(this.options.id);
    },
-   
+
+   /**
+    * Updates the Agenda title with the new date and tags (if any)
+    *
+    * @method updateTitle
+    */
+   updateTitle: function CalendarView_updateTitle()
+      {
+
+         var startDate = this.options.startDate,
+            endDate = this.options.endDate,
+            startDateString = "",
+            withYear = this.msg("date-format.longDate"),
+            noYear = this.msg("date-format.longDateNoYear"),
+            endDateString = dateFormat(endDate, withYear);
+
+         // convert date objects to strings
+         // only show year in start date if it differs to end date.
+         if (startDate.getFullYear() === endDate.getFullYear())
+         {
+            startDateString = dateFormat(startDate, noYear);
+         } else
+         {
+            startDateString = dateFormat(startDate, withYear)
+         }
+
+         this.titleEl.innerHTML = this.msg("title.agenda", startDateString, endDateString);
+
+         // add tag info to title,
+         tagTitleEl = Dom.getElementsByClassName('tagged', "span", this.titleEl);
+         if (tagTitleEl.length > 1)
+         {
+            this.titleEl.removeChild(tagTitleEl[0]);
+         }
+         if (this.options.tag)
+         {
+            tagTitleEl = Alfresco.CalendarHelper.renderTemplate('taggedTitle',
+            {
+               taggedWith: this.msg('label.tagged-with'),
+               tag: this.options.tag
+            });
+            this.titleEl.appendChild(tagTitleEl);
+         }
+      },
+
    /**
     * Truncates the text after a set number of characters and adds the show more link
     * 
@@ -610,5 +611,5 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       
       containerEl.innerHTML = $html(this.truncate(event));
    }
-});
+}, true);
 })();

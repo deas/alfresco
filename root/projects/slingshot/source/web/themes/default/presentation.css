@@ -951,16 +951,35 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 
 /* Calendar */
 
-.yui-skin-default #calendar .yui-calendar td.calcell.selected a
+/* Day/Week timed events */
+.fc-content .fc-event-skin
 {
-   background-color: #EBEFF1;
+   background-color: #6CA5CE; /* Theme Colour 1 */
+   border-color: #4C86AA;
+   color: #FFFFFF;
 }
 
-.yui-skin-default .dayview h2, .weekview h2,
-.yui-skin-default .calendar.weekview thead th,
-.yui-skin-default .calendar.monthview thead th
+/* Month view timed events */
+.fc-content .fc-view-month .fc-event-skin
 {
-   color: #000;
+   background-color: transparent;
+   border-color: transparent;
+   color: #6CA5CE;
+}
+
+/* All day events */
+.fc-content .fc-event-allday .fc-event-skin,
+.fc-content a.fc-event.fc-event-allday
+{
+   background-color: #6CA5CE;
+   border-color: #6CA5CE;
+   color: #FFFFFF;
+}
+
+
+.fc-content a.fc-event-skin:hover
+{
+   color: #FFFFFF;
 }
 
 /* End Calendar */

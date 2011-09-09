@@ -3502,35 +3502,34 @@ Alfresco.util.message = function(p_messageId, p_messageScope)
  */
 Alfresco.util.calI18nParams = function(oCal) 
 {
-   var $setP = oCal.cfg.setProperty,
-      $msg = Alfresco.util.message;
+   var $msg = Alfresco.util.message;
 
-   $setP("MONTHS_SHORT", $msg("months.short").split(","));
-   $setP("MONTHS_LONG", $msg("months.long").split(","));
-   $setP("WEEKDAYS_1CHAR", $msg("days.initial").split(","));
-   $setP("WEEKDAYS_SHORT", $msg("days.short").split(","));
-   $setP("WEEKDAYS_MEDIUM", $msg("days.medium").split(","));
-   $setP("WEEKDAYS_LONG", $msg("days.long").split(","));
+   oCal.cfg.setProperty("MONTHS_SHORT", $msg("months.short").split(","));
+   oCal.cfg.setProperty("MONTHS_LONG", $msg("months.long").split(","));
+   oCal.cfg.setProperty("WEEKDAYS_1CHAR", $msg("days.initial").split(","));
+   oCal.cfg.setProperty("WEEKDAYS_SHORT", $msg("days.short").split(","));
+   oCal.cfg.setProperty("WEEKDAYS_MEDIUM", $msg("days.medium").split(","));
+   oCal.cfg.setProperty("WEEKDAYS_LONG", $msg("days.long").split(","));
 
    var monthPos = $msg("calendar.widget_config.my_label_month_position");
    if (monthPos.length !== 0)
    {
-      $setP("MY_LABEL_MONTH_POSITION", parseInt(monthPos));
+      oCal.cfg.setProperty("MY_LABEL_MONTH_POSITION", parseInt(monthPos));
    }
 
    var monthSuffix = $msg("calendar.widget_config.my_label_month_suffix");
    if (monthSuffix.length !== 0)
    {
-      $setP("MY_LABEL_MONTH_SUFFIX", monthSuffix);
+      oCal.cfg.setProperty("MY_LABEL_MONTH_SUFFIX", monthSuffix);
    }
 
    var yearPos = $msg("calendar.widget_config.my_label_year_position");
    if (yearPos.length !== 0)
    {
-      $setP("MY_LABEL_YEAR_POSITION", parseInt(yearPos));
+      oCal.cfg.setProperty("MY_LABEL_YEAR_POSITION", parseInt(yearPos));
    }
 
-   $setP("MY_LABEL_YEAR_SUFFIX", $msg("calendar.widget_config.my_label_year_suffix"));
+   oCal.cfg.setProperty("MY_LABEL_YEAR_SUFFIX", $msg("calendar.widget_config.my_label_year_suffix"));
 };
 
 /**
@@ -4504,6 +4503,17 @@ Alfresco.util.ComponentManager = function()
       get: function CM_get(p_sId)
       {
          return (components[p_sId] || null);
+      },
+
+      /**
+       * List all registered components
+       *
+       * @method list
+       * @return {array} array of components
+       */
+      list: function CM_list()
+      {
+         return components;
       }
    });
 }();

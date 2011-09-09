@@ -2,19 +2,19 @@
 
 /**
  * Calendar template controller script
- * 
- * This script is utilised so that all page components can access the filtered 'view' parameter.
- * 
+ *
+ * Sets the filteredView context param so that all components can access it.
  */
 
-var filteredView = function()
+function getFilteredView()
 {
    var view = escape(page.url.args["view"]);
+   // Check that view is enabled. If not return default.
    if (typeof(model.enabledViews) != "undefined" && !model.enabledViews[view]) 
    {
-      return model.defaultView;
+      return model.defaultView
    }
    return view;
-}();
+};
 
-context.setValue("filteredView", filteredView);
+context.setValue("filteredView", getFilteredView());

@@ -5,7 +5,8 @@ http://developer.yahoo.net/yui/license.txt
 version: 2.6.0
 */
 
-.yui-skin-hcBlack .toolbar .yui-radio-button-checked, .toolbar .yui-checkbox-button-checked {
+.yui-skin-hcBlack .toolbar .yui-radio-button-checked,
+.yui-skin-hcBlack .toolbar .yui-checkbox-button-checked {
 background:transparent url(toolbar-checked-gradient.gif) repeat scroll 0 0;
 }
 

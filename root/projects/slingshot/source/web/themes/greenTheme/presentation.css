@@ -920,17 +920,40 @@ body.yui-skin-greenTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 
 /* Calendar */
 
-.yui-skin-greenTheme #calendar .yui-calendar td.calcell.selected a
+/* Calendar */
+
+/* Day/Week timed events */
+.fc-content .fc-event-skin
 {
-   background-color: #E9F1EA;
+   background-color: #00AE42; /* Theme Colour 1 */
+   border-color: #5FAC34;
+   color: #FFFFFF;
 }
 
-.yui-skin-greenTheme .dayview h2, .weekview h2,
-.yui-skin-greenTheme .calendar.weekview thead th,
-.yui-skin-greenTheme .calendar.monthview thead th
+/* Month view timed events */
+.fc-content .fc-view-month .fc-event-skin
 {
-   color: #000;
+   background-color: transparent;
+   border-color: transparent;
+   color: #00AE42;
 }
+
+/* All day events */
+.fc-content .fc-event-allday .fc-event-skin,
+.fc-content a.fc-event.fc-event-allday
+{
+   background-color: #00AE42;
+   border-color: #00AE42;
+   color: #FFFFFF;
+}
+
+
+.fc-content a.fc-event-skin:hover
+{
+   color: #FFFFFF;
+}
+
+/* End Calendar */
 
 /* End Calendar */
 

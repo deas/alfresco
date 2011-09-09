@@ -237,7 +237,7 @@
           this._hide();
          }
          this.eventDialog = Alfresco.util.DialogManager.registerDialog('CalendarView.editEvent');
-         this.eventDialog.id = this.id+ "-editEvent";
+         this.eventDialog.id = "eventEditPanel";
          this.eventDialog.siteId = this.options.siteId;
           this.eventDialog.event = this.event;
 
