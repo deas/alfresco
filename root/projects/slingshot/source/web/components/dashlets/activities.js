@@ -156,7 +156,7 @@
          this.widgets.range.value = "7";
          this.widgets.user.set("label", this.msg("filter.all"));
          this.widgets.user.value = "all";
-         this.widgets.activities.set("label", this.msg("activities.filter.all"));
+         this.widgets.activities.set("label", this.msg("filter.allItems"));
          this.widgets.activities.value = "";
 
          this.services.preferences.request(this.buildPreferences(),
