@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +78,12 @@ public class MACUtils
 
             threadMac.set(mac);
         }
-        mac.init(keyProvider.getKey(keyAlias));
+        Key key = keyProvider.getKey(keyAlias);
+        if(key == null)
+        {
+        	throw new AlfrescoRuntimeException("Unexpected null key for key alias " + keyAlias);
+        }
+        mac.init(key);
         return mac;
     }
 	

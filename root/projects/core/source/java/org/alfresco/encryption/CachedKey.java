@@ -21,28 +21,39 @@ package org.alfresco.encryption;
 import java.security.Key;
 
 /**
- * A key provider returns the secret keys for different use cases.
+ * 
+ * Represents a loaded, cached encryption key. The key can be <tt>null</tt>.
  * 
  * @since 4.0
+ *
  */
-public interface KeyProvider
+public class CachedKey
 {
-    // TODO: Allow the aliases to be configured i.e. include an alias mapper
-    /**
-     * Constant representing the keystore alias for keys to encrypt/decrypt node metadata
-     */
-    public static final String ALIAS_METADATA = "metadata";
+	public static CachedKey NULL = new CachedKey(null, null);
 
-    /**
-     * Constant representing the keystore alias for keys to encrypt/decrypt SOLR transfer data
-     */
-    public static final String ALIAS_SOLR = "solr";
-    
-    /**
-     * Get an encryption key if available.
-     * 
-     * @param keyAlias          the key alias
-     * @return                  the encryption key and a timestamp of when it was last changed
-     */
-	public Key getKey(String keyAlias);
+	private Key key;
+	private long timestamp;
+
+	CachedKey(Key key, Long timestamp)
+	{
+		this.key = key;
+		this.timestamp = (timestamp != null ? timestamp.longValue() : -1);
+	}
+
+	public CachedKey(Key key)
+	{
+		super();
+		this.key = key;
+		this.timestamp = System.currentTimeMillis();
+	}
+
+	public Key getKey()
+	{
+		return key;
+	}
+
+	public long getTimestamp()
+	{
+		return timestamp;
+	}
 }

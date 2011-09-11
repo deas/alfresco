@@ -23,12 +23,11 @@ package org.alfresco.encryption;
  * @since 4.0
  *
  */
-
-public class MissingKeyStoreException extends Exception
+public class InvalidKeystoreException extends Exception
 {
-	private static final long serialVersionUID = -6484290539637378020L;
+	private static final long serialVersionUID = -1324791685965572313L;
 
-	public MissingKeyStoreException(String message)
+	public InvalidKeystoreException(String message)
 	{
 		super(message);
 	}

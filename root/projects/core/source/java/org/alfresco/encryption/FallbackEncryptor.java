@@ -30,9 +30,9 @@ package org.alfresco.encryption;
 public interface FallbackEncryptor extends Encryptor
 {
 	/**
-	 * Is the backup keystore available in order to fall back to?
+	 * Is the backup key available in order to fall back to?
 	 * 
 	 * @return
 	 */
-//	public boolean isFallbackAvailable();
+    boolean backupKeyAvailable(String keyAlias);
 }

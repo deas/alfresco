@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.AlgorithmParameters;
+import java.security.InvalidKeyException;
 import java.security.Key;
 
 import javax.crypto.Cipher;
@@ -44,11 +45,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractEncryptor implements Encryptor
 {
-    private static final Log logger = LogFactory.getLog(Encryptor.class);
+    protected static final Log logger = LogFactory.getLog(Encryptor.class);
     protected String cipherAlgorithm;
     protected String cipherProvider;
 
-    private KeyProvider keyProvider;
+    protected KeyProvider keyProvider;
 
     /**
      * Constructs with defaults
@@ -74,33 +75,6 @@ public abstract class AbstractEncryptor implements Encryptor
     {
         PropertyCheck.mandatory(this, "keyProvider", keyProvider);
     }
-
-    public Cipher getCipher(String keyAlias, AlgorithmParameters params, int mode)
-    {
-        // Get the encryption key
-        Key key = keyProvider.getKey(keyAlias);
-        if (key == null)
-        {
-            // No encryption possible
-            return null;
-        }
-        try
-        {
-            Cipher cipher = getCipher(key, params, mode);
-            // Done
-            if (logger.isDebugEnabled())
-            {
-                logger.debug("Cipher constructed: alias=" + keyAlias + "; mode=" + mode + ": " + cipher);
-            }
-            return cipher;
-        }
-        catch (Exception e)
-        {
-            throw new AlfrescoRuntimeException(
-                    "Failed to construct cipher: alias=" + keyAlias + "; mode=" + mode,
-                    e);
-        }
-    }
     
     /**
      * Factory method to be written by implementations to construct <b>and initialize</b>
@@ -111,7 +85,7 @@ public abstract class AbstractEncryptor implements Encryptor
      * @param mode                  the cipher mode
      * @return
      */
-    protected abstract Cipher getCipher(Key key, AlgorithmParameters params, int mode) throws Exception;
+    protected abstract Cipher getCipher(String keyAlias, AlgorithmParameters params, int mode);
 
     /**
      * {@inheritDoc}
@@ -132,10 +106,16 @@ public abstract class AbstractEncryptor implements Encryptor
         }
         catch (Throwable e)
         {
+//        	cipher.init(Cipher.ENCRYPT_MODE, key, params);
             throw new AlfrescoRuntimeException("Decryption failed for key alias: " + keyAlias, e);
         }
     }
     
+    protected void resetCipher()
+    {
+    	
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -246,7 +226,7 @@ public abstract class AbstractEncryptor implements Encryptor
     }
 
     @Override
-    public Serializable unsealObject(String keyAlias, Serializable input)// throws InvalidKeyException
+    public Serializable unsealObject(String keyAlias, Serializable input) throws InvalidKeyException
     {
         if (input == null)
         {
@@ -271,6 +251,11 @@ public abstract class AbstractEncryptor implements Encryptor
             Serializable output = (Serializable) sealedInput.getObject(key);
             // Done
             return output;
+        }
+        catch(InvalidKeyException e)
+        {
+        	// let these through, can be useful to client code to know this is the cause
+        	throw e;
         }
         catch (Exception e)
         {
@@ -323,14 +308,5 @@ public abstract class AbstractEncryptor implements Encryptor
     	{
     		throw new AlfrescoRuntimeException("", e);
     	}
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean available(String keyAlias)
-    {
-    	return keyProvider.getKey(KeyProvider.ALIAS_METADATA) != null;
     }
 }

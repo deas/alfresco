@@ -18,13 +18,7 @@
  */
 package org.alfresco.encryption;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.Key;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Set;
 
 import javax.net.ssl.KeyManager;
@@ -40,29 +34,39 @@ public interface AlfrescoKeyStore
 {
     public static final String KEY_KEYSTORE_PASSWORD = "keystore.password";
 
-    public String getName();
-    
     /**
-     * The underlying keystore location
+     * The name of the keystore.
      * 
-     * @return
+     * @return the name of the keystore.
      */
-	public String getLocation();
+    public String getName();
 	
+    /**
+     * Backup the keystore to the backup location. Write the keys to the backup keystore.
+     */
+	public void backup();
+
 	/**
 	 * The key store parameters.
 	 * 
 	 * @return
 	 */
-	public KeyStoreParameters getkeyStoreParameters();
-	
+	public KeyStoreParameters getKeyStoreParameters();
+
+	/**
+	 * The backup key store parameters.
+	 * 
+	 * @return
+	 */
+	public KeyStoreParameters getBackupKeyStoreParameters();
+
 	/**
 	 * Does the underlying key store exist?
 	 * 
 	 * @return true if it exists, false otherwise
 	 */
     public boolean exists();
-    
+
     /**
      * Return the key with the given key alias.
      * 
@@ -70,6 +74,22 @@ public interface AlfrescoKeyStore
      * @return
      */
     public Key getKey(String keyAlias);
+
+    /**
+     * Return the timestamp (in ms) of when the key was last loaded from the keystore on disk.
+     * 
+     * @param keyAlias
+     * @return
+     */
+    public long getKeyTimestamp(String keyAlias);
+    
+    /**
+     * Return the backup key with the given key alias.
+     * 
+     * @param keyAlias
+     * @return
+     */
+    public Key getBackupKey(String keyAlias);
     
     /**
      * Return all key aliases in the key store.
@@ -94,14 +114,18 @@ public interface AlfrescoKeyStore
 	
 	/**
 	 * Create the key store if it doesn't exist.
+	 * A key for each key alias will be written to the keystore on disk, either from the cached keys or, if not present, a key will be generated.
 	 */
 	public void create();
 	
 	/**
 	 * Reload the keys from the key store.
 	 */
-    public int reload();
+    public void reload() throws InvalidKeystoreException, MissingKeyException;
     
-	public void importPrivateKey(String keyAlias, String keyPassword, InputStream keyFile, InputStream certFile)
-	throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, KeyStoreException;
+	/**
+	 * Check that the keys in the key store are valid i.e. that they match those registered.
+	 */
+	public void validateKeys() throws InvalidKeystoreException, MissingKeyException;
+	
 }

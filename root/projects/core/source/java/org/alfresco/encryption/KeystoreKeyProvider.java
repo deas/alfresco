@@ -36,6 +36,7 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     private static final Log logger = LogFactory.getLog(KeystoreKeyProvider.class);
 
     private AlfrescoKeyStore keyStore;
+    private boolean useBackupKeys = false;
 
     /**
      * Constructs the provider with required defaults
@@ -51,6 +52,11 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
     	init();
     }
     
+	public void setUseBackupKeys(boolean useBackupKeys)
+	{
+		this.useBackupKeys = useBackupKeys;
+	}
+
 	/**
      * 
      * @param encryptionParameters
@@ -76,17 +82,15 @@ public class KeystoreKeyProvider extends AbstractKeyProvider
      * {@inheritDoc}
      */
     @Override
-    public void refresh()
-    {
-    	keyStore.reload();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
 	public Key getKey(String keyAlias)
     {
-    	return keyStore.getKey(keyAlias);
+    	if(useBackupKeys)
+    	{
+        	return keyStore.getBackupKey(keyAlias);    		
+    	}
+    	else
+    	{
+        	return keyStore.getKey(keyAlias);
+    	}
     }
 }

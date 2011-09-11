@@ -35,7 +35,7 @@ import org.alfresco.util.Pair;
  * 
  * @since 4.0
  */
-public class DefaultFallbackEncryptor implements Encryptor
+public class DefaultFallbackEncryptor implements FallbackEncryptor
 {
 	private Encryptor fallback;
 	private Encryptor main;
@@ -214,9 +214,17 @@ public class DefaultFallbackEncryptor implements Encryptor
      * {@inheritDoc}
      */
     @Override
-    public boolean available(String keyAlias)
-	{
-		// always available
-		return true;
-	}
+    public boolean keyAvailable(String keyAlias)
+    {
+    	return main.keyAvailable(keyAlias);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean backupKeyAvailable(String keyAlias)
+    {
+    	return fallback.keyAvailable(keyAlias);
+    }
 }

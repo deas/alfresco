@@ -114,11 +114,5 @@ public interface Encryptor
      */
     AlgorithmParameters decodeAlgorithmParameters(byte[] encoded);
     
-    /**
-     * Is the given keyAlias available for encryption and decryption?
-     *  
-     * @param keyAlias
-     * @return true if the keyAlias is available, false otherwise
-     */
-    boolean available(String keyAlias);
+    boolean keyAvailable(String keyAlias);
 }

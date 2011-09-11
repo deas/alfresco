@@ -18,7 +18,12 @@
  */
 package org.alfresco.encryption;
 
+import java.security.Key;
+import java.util.List;
+import java.util.Set;
+
 /**
+ * Stores registered encryption keys.
  * 
  * @since 4.0
  *
@@ -29,9 +34,50 @@ public interface EncryptionKeysRegistry
     {
     	OK, CHANGED, MISSING;
     };
-    
-	public void registerKey(String keyAlias);
-	public KeysReport getKeysReport();
-	public KEY_STATUS checkKey(String keyAlias);
-	public void removeRegisteredKeys(final AlfrescoKeyStore keyStore);
+
+    /**
+     * Is the key with alias 'keyAlias' registered?
+     * @param keyAlias
+     * @return
+     */
+	public boolean isKeyRegistered(String keyAlias);
+	
+	/**
+	 * Register the key.
+	 * 
+	 * @param keyAlias
+	 * @param key
+	 */
+	public void registerKey(String keyAlias, Key key);
+	
+	/**
+	 * Unregister the key.
+	 * 
+	 * @param keyAlias
+	 */
+	public void unregisterKey(String keyAlias);
+	
+	/**
+	 * Check the validity of the key against the registry.
+	 * 
+	 * @param keyAlias
+	 * @param key
+	 * @return
+	 */
+	public KEY_STATUS checkKey(String keyAlias, Key key);
+	
+	/**
+	 * Remove the set of keys from the registry.
+	 * 
+	 * @param keys
+	 */
+	public void removeRegisteredKeys(Set<String> keys);
+	
+	/**
+	 * Return those keys in the set that have been registered.
+	 * 
+	 * @param keys
+	 * @return
+	 */
+	public List<String> getRegisteredKeys(Set<String> keys);
 }

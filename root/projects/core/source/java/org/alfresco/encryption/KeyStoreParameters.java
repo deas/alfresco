@@ -18,6 +18,8 @@
  */
 package org.alfresco.encryption;
 
+import org.alfresco.util.PropertyCheck;
+
 /**
  * Stores Java keystore initialisation parameters.
  * 
@@ -45,6 +47,26 @@ public class KeyStoreParameters
 		this.provider = keyStoreProvider;
 		this.keyMetaDataFileLocation = keyMetaDataFileLocation;
 		this.location = location;
+	}
+
+	public void init()
+	{
+        if (!PropertyCheck.isValidPropertyString(getLocation()))
+        {
+            setLocation(null);
+        }
+        if (!PropertyCheck.isValidPropertyString(getProvider()))
+        {
+        	setProvider(null);
+        }
+        if (!PropertyCheck.isValidPropertyString(getType()))
+        {
+        	setType(null);
+        }
+        if (!PropertyCheck.isValidPropertyString(getKeyMetaDataFileLocation()))
+        {
+        	setKeyMetaDataFileLocation(null);
+        }		
 	}
 
 	public String getName()
@@ -96,14 +118,4 @@ public class KeyStoreParameters
 	{
 		this.location = location;
 	}
-	
-//	protected boolean isSet(String property)
-//	{
-//		return (property != null && !property.equals(""));
-//	}
-//
-//	public boolean isDefined()
-//	{
-//		return(isSet(keyMetaDataFileLocation) && isSet(location) && isSet(type) && isSet(provider));
-//	}
 }

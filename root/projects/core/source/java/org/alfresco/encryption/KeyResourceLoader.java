@@ -41,7 +41,7 @@ public interface KeyResourceLoader
 	public InputStream getKeyStore(String keyStoreLocation) throws FileNotFoundException;
     
 	/**
-	 * Loads passwords from the configured passwords file location.
+	 * Loads key metadata from the configured passwords file location.
 	 * 
 	 * Note that the passwords are not cached locally.
 	 * If the file cannot be found this method returns null.

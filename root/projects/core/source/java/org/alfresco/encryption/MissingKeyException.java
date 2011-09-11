@@ -28,14 +28,26 @@ public class MissingKeyException extends Exception
 	private static final long serialVersionUID = -7843412242954504581L;
 
 	private String keyAlias;
+	private String keyStoreLocation;
 
-	public MissingKeyException(String keyAlias)
+	public MissingKeyException(String message)
 	{
-		this.keyAlias = keyAlias;
+		super(message);
+	}
+
+	public MissingKeyException(String keyAlias, String keyStoreLocation)
+	{
+		// TODO i18n
+		super("Key " + keyAlias + " is missing from keystore " + keyStoreLocation);
 	}
 	
 	public String getKeyAlias()
 	{
 		return keyAlias;
+	}
+
+	public String getKeyStoreLocation()
+	{
+		return keyStoreLocation;
 	}
 }
