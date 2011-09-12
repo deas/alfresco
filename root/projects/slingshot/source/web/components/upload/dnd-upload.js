@@ -1096,7 +1096,7 @@
          // Generate the title based on number of files and destination
          var title = "",
             i18n = this.showConfig.files.length == 1 ? "header.singleUpload" : "header.multiUpload",
-            location = this.showConfig.uploadDirectoryName == "/" ? this.msg("label.documents") : this.showConfig.uploadDirectoryName;
+            location = this.showConfig.uploadDirectoryName == "" ? this.msg("label.documents") : this.showConfig.uploadDirectoryName;
 
          this.titleText.innerHTML = this.msg(i18n, '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-open-16.png" class="title-folder" />' + $html(location));
 
