@@ -44,11 +44,31 @@
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="fd">${msg("label.startdate")}:</label></div>
-            <div class="yui-u overflow"><span id="${el}-startdate"><input id="fd" type="text" name="fromdate" readonly="readonly" tabindex="6" value="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" title="<#if event.from?exists>${event.from?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if>" /></span><span id="${el}-starttime" class="eventTime">&nbsp;<label for="${el}-start">${msg("label.at")}&nbsp;</label><input id="${el}-start" name="start" value="${event.start!"12:00"}" type="text" size="10" tabindex="7" /></span></div>
+            <div class="yui-u overflow">
+               <span id="${el}-startdate">
+                  <input id="fd" type="text" name="fromdate" readonly="readonly" tabindex="6"
+                         value="<#if event.from?exists>${event.startAt.iso8601}</#if>"
+                         title="<#if event.from?exists>${event.startAt.iso8601?date("yyyy-MM-dd")?string("yyyy-MM-dd")}</#if>" />
+               </span>
+               <span id="${el}-starttime" class="eventTime">
+                  <label for="${el}-start">${msg("label.at")}</label>
+                  <input id="${el}-start" name="start" value="${event.start!config.script.config.defaultStart}" type="text" size="10" tabindex="7" />
+               </span>
+            </div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="td">${msg("label.enddate")}:</label></div>
-            <div class="yui-u overflow"><span id="${el}-enddate"><input id="td" type="text" name="todate" readonly="readonly" tabindex="8" value="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("EEEE, MMMM dd yyyy")}</#if>" title="<#if event.to?exists>${event.to?date("MM/dd/yyy")?string("yyyy-MM-dd")}</#if>" /></span><span id="${el}-endtime" class="eventTime">&nbsp;<label for="${el}-end">${msg("label.at")}&nbsp;</label><input id="${el}-end" name="end" value="${event.end!"13:00"}" type="text" size="10" tabindex="9" /></span></div>
+            <div class="yui-u overflow">
+               <span id="${el}-enddate">
+                  <input id="td" type="text" name="todate" readonly="readonly" tabindex="8"
+                         value="<#if event.to?exists>${event.endAt.iso8601}</#if>"
+                         title="<#if event.to?exists>${event.endAt.iso8601?date("yyyy-MM-dd")?string("yyyy-MM-dd")}</#if>" />
+               </span>
+               <span id="${el}-endtime" class="eventTime">
+                  <label for="${el}-end">${msg("label.at")}</label>
+                  <input id="${el}-end" name="end" value="${event.end!config.script.config.defaultEnd}" type="text" size="10" tabindex="9" />
+               </span>
+            </div>
          </div>
          <!-- tags -->
          <div class="yui-gd">

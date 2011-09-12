@@ -306,6 +306,11 @@ span.eventTime  input[type="text"]
    filter: alpha(opacity=40);
 }
 
+span.eventTime label
+{
+   padding-right: 4px;
+}
+
 /* The top spacing should go on the table in order to prevent a large whitespace while content is loading. */
 
 #calendar

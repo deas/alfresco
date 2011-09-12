@@ -328,8 +328,8 @@
                      var editEvent = this.event;
                      var Dom = YAHOO.util.Dom;
                      
-                     var dts  = Alfresco.util.fromISO8601(editEvent.from);
-                     var dte  = Alfresco.util.fromISO8601(editEvent.to);
+                     var dts  = Alfresco.util.fromISO8601(editEvent.startAt.iso8601);
+                     var dte  = Alfresco.util.fromISO8601(editEvent.endAt.iso8601);
                      
                      // Pretty formatting
                      var dateStr = Alfresco.util.formatDate(dts, Alfresco.util.message("calendar.dateFormat.full"));
