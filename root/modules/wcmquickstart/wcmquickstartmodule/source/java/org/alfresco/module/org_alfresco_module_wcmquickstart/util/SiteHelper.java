@@ -21,10 +21,12 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
@@ -67,7 +69,8 @@ public class SiteHelper implements WebSiteModel
     private SearchService searchService;
     private NamespaceService namespaceService;
 
-    private Map<NodeRef,List<Locale>> websiteLocales = new HashMap<NodeRef, List<Locale>>();
+    private Map<NodeRef,List<Locale>> websiteLocales = new ConcurrentHashMap<NodeRef, List<Locale>>();
+    private Map<NodeRef,Date> websiteLocaleLoadTimes = new ConcurrentHashMap<NodeRef, Date>();
     private List<Locale> defaultWebsiteLocales = new ArrayList<Locale>();
     
     public void setDefaultWebsiteLocales(List<Locale> defaultWebsiteLocales)
@@ -199,8 +202,10 @@ public class SiteHelper implements WebSiteModel
         if (website != null && nodeService.exists(website) && 
                 dictionaryService.isSubClass(TYPE_WEB_SITE, nodeService.getType(website)))
         {
+            Date lastModifiedTime = (Date) nodeService.getProperty(website, ContentModel.PROP_MODIFIED);
+            Date lastLoadTime = websiteLocaleLoadTimes.get(website);
             locales = websiteLocales.get(website);
-            if (locales == null)
+            if (locales == null || lastModifiedTime.after(lastLoadTime))
             {
                 locales = loadWebSiteLocales(website);
             }
@@ -221,14 +226,8 @@ public class SiteHelper implements WebSiteModel
                 results.add(new Locale(locale));
             }
         }
-        //Protect against multiple concurrent writes
-        synchronized(websiteLocales)
-        {
-            Map<NodeRef,List<Locale>> newLocaleMap = new HashMap<NodeRef, List<Locale>>(websiteLocales);
-            newLocaleMap.put(website, results);
-            //Atomic replacement of old map with new one.
-            websiteLocales = newLocaleMap;
-        }
+        websiteLocales.put(website, results);
+        websiteLocaleLoadTimes.put(website, new Date());
         return results;
     }
 
