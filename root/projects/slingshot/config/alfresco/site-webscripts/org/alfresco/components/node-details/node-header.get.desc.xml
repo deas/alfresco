@@ -1,5 +1,5 @@
 <webscript>
   <shortname>node-header</shortname>
-  <description>Node header component - a combination of document-header and folder-header which can handle both types.</description>
+  <description>Node header component - a header component which can handle both folders and documents.</description>
   <url>/components/node-details/node-header</url>
 </webscript>

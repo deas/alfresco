@@ -193,7 +193,7 @@
             <!-- Records Management Document Header -->
             <component>
                <scope>template</scope>
-               <region-id>document-header</region-id>
+               <region-id>node-header</region-id>
                <source-id>document-details</source-id>
                <sub-components>
                   <sub-component id="default">
@@ -203,7 +203,7 @@
                            <evaluators>
                               <evaluator type="site.component.evaluator"/>
                            </evaluators>
-                           <url>/components/document-details/document-header</url>
+                           <url>/components/node-details/node-header</url>
                            <properties>
                               <nodeRef>{nodeRef}</nodeRef>
                               <rootPage>documentlibrary</rootPage>

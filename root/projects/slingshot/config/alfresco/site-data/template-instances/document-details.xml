@@ -53,7 +53,7 @@
 
       <!-- Document Header -->
       <component>
-         <region-id>document-header</region-id>
+         <region-id>node-header</region-id>
          <sub-components>
             <sub-component id="default">
                <evaluations>
@@ -62,7 +62,7 @@
                      <evaluators>
                         <evaluator type="site.component.evaluator"/>
                      </evaluators>
-                     <url>/components/document-details/document-header</url>
+                     <url>/components/node-details/node-header</url>
                      <properties>
                         <nodeRef>{nodeRef}</nodeRef>
                         <rootPage>documentlibrary</rootPage>
@@ -71,7 +71,7 @@
                   </evaluation>
                   <!-- otherwise: Repo header -->
                   <evaluation id="repo">
-                     <url>/components/document-details/document-header</url>
+                     <url>/components/node-details/node-header</url>
                      <properties>
                         <nodeRef>{nodeRef}</nodeRef>
                         <rootPage>repository</rootPage>

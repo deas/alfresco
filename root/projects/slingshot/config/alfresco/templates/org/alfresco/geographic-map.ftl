@@ -7,7 +7,7 @@
       <@region id="navigation" scope="template" protected=true />
    </div>
    <div id="bd">
-      <@region id="document-header" scope="template" protected=true />
+      <@region id="node-header" scope="template" protected=true />
       <@region id="map" scope="template" protected=true />
    </div>
 </@>

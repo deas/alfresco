@@ -14,7 +14,7 @@
    <div id="bd">
       <@region id="actions-common" scope="template"/>
       <@region id="actions" scope="template"/>
-      <@region id="folder-header" scope="template"/>
+      <@region id="node-header" scope="template"/>
       <div class="yui-gc">
          <div class="yui-u first">
             <@region id="comments" scope="template"/>

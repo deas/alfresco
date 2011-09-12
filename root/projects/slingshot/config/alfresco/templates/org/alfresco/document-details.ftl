@@ -14,7 +14,7 @@
    <div id="bd">
       <@region id="actions-common" scope="template"/>
       <@region id="actions" scope="template"/>
-      <@region id="document-header" scope="template"/>
+      <@region id="node-header" scope="template"/>
       <div class="yui-gc">
          <div class="yui-u first">
             <#if (config.scoped['DocumentDetails']['document-details'].getChildValue('display-web-preview') == "true")>
