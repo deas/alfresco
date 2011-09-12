@@ -16,7 +16,7 @@
             targetRef='reviewTask' />
 
         <userTask id="reviewTask" name="Review Task"
-            activiti:formKey="wswf:activitiReviewTask">
+            activiti:formKey="wf:activitiReviewTask">
            <extensionElements>
                <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
                   <activiti:field name="script">
@@ -29,7 +29,7 @@
                <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
                   <activiti:field name="script">
                      <activiti:string>
-                       	execution.setVariable('wswf_reviewOutcome', task.getVariable('wswf_reviewOutcome'));
+                       	execution.setVariable('wf_reviewOutcome', task.getVariable('wf_reviewOutcome'));
                      </activiti:string>
                   </activiti:field>
                </activiti:taskListener>
@@ -48,7 +48,7 @@
         <exclusiveGateway  id="reviewDecision" name="Review Decision" /> 
 
         <sequenceFlow id='flow3' sourceRef='reviewDecision' targetRef='approved' >
-            <conditionExpression xsi:type="tFormalExpression">${wswf_reviewOutcome == 'Approve'}</conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression">${wf_reviewOutcome == 'Approve'}</conditionExpression>
         </sequenceFlow>
 
         <sequenceFlow id='flow4' 

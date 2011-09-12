@@ -50,7 +50,7 @@
             </mandatory-aspects>
         </type>
 
-        <type name="wswf:readContactTask">
+        <type name="wswf:handleContactRequest">
             <parent>bpm:workflowTask</parent>
             <overrides>
                 <property name="bpm:packageItemActionGroup">

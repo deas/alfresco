@@ -83,6 +83,9 @@
    <config evaluator="string-compare" condition="Workflow">
       <hidden-workflows>
          <workflow name="jbpm$wswf:readContactProcess"/>
+         <workflow name="jbpm$wswf:reviewPublish"/>
+         <workflow name="jbpm$wswf:publishTree"/>
+         <workflow name="activiti$readContactProcess"/>
       </hidden-workflows>
    </config>
 
