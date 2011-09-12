@@ -8,12 +8,17 @@
 	<setInstallerVariable name="alfresco_license" value="0" persist="1" />
 	<setInstallerVariable name="alfresco_license" value="1" persist="1" >
 	    <ruleList>
-		<fileExists path="${installer_directory}/*.lic" />
+		<fileExists path="${installer_directory}/*-team.lic" />
 	    </ruleList>
 	</setInstallerVariable>
-	<logMessage text="License detected" >
+	<logMessage text="Team license detected." >
 	    <ruleList>
 		<isTrue value="${alfresco_license}" />
+	    </ruleList>
+	</logMessage>
+	<logMessage text="No Team license detected." >
+	    <ruleList>
+		<isFalse value="${alfresco_license}" />
 	    </ruleList>
 	</logMessage>
 	<actionGroup>
@@ -21,14 +26,9 @@
 		<setInstallerVariable name="component(alfrescocustomstacksettings).parameter(alfrescocustomstack_installation_type).ask" value="0" />
 		<setInstallerVariable name="component(alfrescocustomstacksettings).parameter(alfrescocustomstack_installation_type).value" value="easy" />
 		<setInstallerVariable name="project.allowComponentSelection" value="0" />
-
-		<setInstallerVariable name="component(tomcat).parameter(tomcat_show_ports).value" value="0" />
-		<setInstallerVariable name="component(openofficecomponent).parameter(openoffice_show_ports).value" value="0" />
-		<setInstallerVariable name="component(postgres).parameter(postgres_show_ports).value" value="0" />
-		<setInstallerVariable name="alfresco_show_ports" value="no" />
 	    </actionList>
 	    <ruleList>
-		<isFalse value="${alfresco_license}" />
+		<isTrue value="${alfresco_license}" />
 	    </ruleList>
 	</actionGroup>
     </initializationActionList>
