@@ -237,7 +237,7 @@
                   week: me.msg("fullCalendar.titleFormat.week"),
                   day: me.msg("fullCalendar.titleFormat.day")
                },
-               axisFormat: me.msg("fullcalendar.axisFormat"),
+               axisFormat: me.msg("fullCalendar.axisFormat"),
 
                // Remove header navigation and just show the title. Nav is handled by toolbar.js to remain consistent across views.
                header:
