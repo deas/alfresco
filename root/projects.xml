@@ -2092,6 +2092,15 @@
       <jar jarfile="${dir.module.dod5015.dist}/${file.name.jar.dod5015}" 
            basedir="${dir.module.dod5015.classes}" />
    </target>
+   
+   <target name="package-tamp"
+           depends="temp-dod5015, deploy-webclient-tomcat" />
+   
+   <target name="temp-dod5015"
+           depends="init">
+    <install-amp ampfile="C:\mywork\projects\v34BugFix\code\root\modules\dod-5015\build\dist\alfresco-community-dod5015-3.4..amp" 
+                   warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
+   </target>
 
    <target name="package-dod5015-war"
            depends="package-dod5015-extension">

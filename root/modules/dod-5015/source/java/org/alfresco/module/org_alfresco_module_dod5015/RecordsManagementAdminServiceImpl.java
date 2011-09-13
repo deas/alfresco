@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -80,6 +80,7 @@ import org.alfresco.service.namespace.RegexQNamePattern;
 import org.alfresco.util.GUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.extensions.surf.util.ParameterCheck;
 
 /**
@@ -95,6 +96,29 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
 {
     /** Logger */
     private static Log logger = LogFactory.getLog(RecordsManagementAdminServiceImpl.class);
+    
+    /** I18N messages*/
+    private static final String MSG_SERVICE_NOT_INIT = "rm.admin.service-not-init";
+    private static final String MSG_NOT_CUSTOMISABLE = "rm.admin.not-customisable";
+    private static final String MSG_INVALID_CUSTOM_ASPECT = "rm.admin.invalid-custom-aspect";
+    private static final String MSG_PROPERTY_ALREADY_EXISTS = "rm.admin.property-already-exists";
+    private static final String MSG_CANNOT_APPLY_CONSTRAINT = "rm.admin.cannot-apply-constraint";
+    private static final String MSG_PROP_EXIST = "rm.admin.prop-exist";
+    private static final String MSG_CUSTOM_PROP_EXIST = "rm.admin.custom-prop-exist";
+    private static final String MSG_UNKNOWN_ASPECT = "rm.admin.unknown-aspect";
+    private static final String MSG_REF_EXIST = "rm.admin.ref-exist";
+    private static final String MSG_REF_LABEL_IN_USE = "rm.admin.ref-label-in-use";
+    private static final String MSG_ASSOC_EXISTS = "rm.admin.assoc-exists";
+    private static final String MSG_CHILD_ASSOC_EXISTS = "rm.admin.child-assoc-exists";
+    private static final String MSG_CONNOT_FIND_ASSOC_DEF = "rm.admin.cannot-find-assoc-def";
+    private static final String MSG_CONSTRAINT_EXISTS = "rm.admin.constraint-exists";
+    private static final String MSG_CANNOT_FIND_CONSTRAINT = "rm.admin.contraint-cannot-find";
+    private static final String MSG_UNEXPECTED_TYPE_CONSTRAINT = "rm.admin.unexpected_type_constraint";
+    private static final String MSG_CUSTOM_MODEL_NOT_FOUND = "rm.admin.custom-model-not-found";
+    private static final String MSG_CUSTOM_MODEL_NO_CONTENT = "rm.admin.custom-model-no-content";
+    private static final String MSG_ERROR_WRITE_CUSTOM_MODEL = "rm.admin.error-write-custom-model";
+    private static final String MSG_ERROR_CLIENT_ID = "rm.admin.error-client-id";
+    private static final String MSG_ERROR_SPLIT_ID = "rm.admin.error-split-id";
     
     /** Constants */
     public static final String RMC_CUSTOM_ASSOCS = RecordsManagementCustomModel.RM_CUSTOM_PREFIX + ":customAssocs";    
@@ -466,7 +490,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     	
     	if (customisableTypes == null)
     	{
-    		throw new AlfrescoRuntimeException("Service not initialised.");
+    		throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_SERVICE_NOT_INIT));
     	}
     	
     	QName customAspect = getCustomAspect(type);
@@ -546,7 +570,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     {
     	if (isCustomisable(aspectName) == false)
     	{
-    		throw new AlfrescoRuntimeException("The type/aspect " + aspectName.toPrefixString(namespaceService) + " is not customisable.");
+    		throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_CUSTOMISABLE, aspectName.toPrefixString(namespaceService)));
     	}
     	
         // title parameter is currently ignored. Intentionally.
@@ -568,14 +592,14 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         if (customPropsAspect == null)
         {
-            throw new AlfrescoRuntimeException("Unknown custom aspect: " + customAspect + " for aspect " + aspectName.toPrefixString(namespaceService));
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_INVALID_CUSTOM_ASPECT, customAspect, aspectName.toPrefixString(namespaceService)));
         }
         
         String propIdAsString = propId.toPrefixString(namespaceService);
         M2Property customProp = customPropsAspect.getProperty(propIdAsString);
         if (customProp != null)
         {
-            throw new AlfrescoRuntimeException("Property already exists: " + propIdAsString);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_PROPERTY_ALREADY_EXISTS, propIdAsString));
         }
         
         M2Property newProp = customPropsAspect.createProperty(propIdAsString);
@@ -600,7 +624,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         {
             if (! dataType.equals(DataTypeDefinition.TEXT))
             {
-                throw new AlfrescoRuntimeException("Cannot apply constraint '"+lovConstraint+"' to property '"+propIdAsString+"' with datatype '"+dataType+"' (expected: dataType = TEXT)");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CANNOT_APPLY_CONSTRAINT, lovConstraint, propIdAsString, dataType));
             }
             
             String lovConstraintQNameAsString = lovConstraint.toPrefixString(namespaceService);
@@ -628,7 +652,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         PropertyDefinition propDefn = dictionaryService.getProperty(propQName);
         if (propDefn == null)
         {
-            throw new AlfrescoRuntimeException("DictionaryService does not contain property definition " + propQName);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_PROP_EXIST, propQName));
         }
         
         if (newLabel == null) return propQName;
@@ -660,7 +684,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         PropertyDefinition propDefn = dictionaryService.getProperty(propQName);
         if (propDefn == null)
         {
-            throw new AlfrescoRuntimeException("DictionaryService does not contain property definition " + propQName);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_PROP_EXIST, propQName));
         }
         
         NodeRef modelRef = getCustomModelRef(propQName.getNamespaceURI());
@@ -671,8 +695,8 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
 
         if (! dataType.equals(DataTypeDefinition.TEXT.toPrefixString(namespaceService)))
         {
-            throw new AlfrescoRuntimeException("Cannot apply constraint '"+newLovConstraint+
-                    "' to property '" + targetProp.getName() + "' with datatype '" + dataType + "' (expected: dataType = TEXT)");
+
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CANNOT_APPLY_CONSTRAINT, newLovConstraint, targetProp.getName(), dataType));
         }
         String lovConstraintQNameAsString = newLovConstraint.toPrefixString(namespaceService);
         
@@ -711,7 +735,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         PropertyDefinition propDefn = dictionaryService.getProperty(propQName);
         if (propDefn == null)
         {
-            throw new AlfrescoRuntimeException("DictionaryService does not contain property definition " + propQName);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_PROP_EXIST, propQName));
         }
         
         NodeRef modelRef = getCustomModelRef(propQName.getNamespaceURI());
@@ -755,7 +779,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
                 }
             }
         }
-        throw new AlfrescoRuntimeException("Custom model does not contain property definition " + propQName);
+        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CUSTOM_PROP_EXIST, propQName));
     }
 
     /**
@@ -783,7 +807,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             
             if (customPropsAspect == null)
             {
-                throw new AlfrescoRuntimeException("Unknown aspect: "+aspectName);
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNKNOWN_ASPECT, aspectName));
             }
             
             M2Property prop = customPropsAspect.getProperty(propQNameAsString);
@@ -805,7 +829,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         if (found == false)
         {
-            throw new AlfrescoRuntimeException("Could not find property to delete: "+propQNameAsString);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_PROP_EXIST, propQNameAsString));
         }
         
         writeCustomContentModel(modelRef, deserializedModel);
@@ -839,7 +863,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
 		AssociationDefinition assocDef = availableAssocs.get(refId);
 		if (assocDef == null)
 		{
-			throw new IllegalArgumentException("No such custom reference: " + refId);
+			throw new IllegalArgumentException(I18NUtil.getMessage(MSG_REF_EXIST, refId));
 		}
 
 		// Check if an instance of this reference type already exists in the same direction.
@@ -897,7 +921,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
 		AssociationDefinition assocDef = availableAssocs.get(assocId);
 		if (assocDef == null)
 		{
-			throw new IllegalArgumentException("No such custom reference: " + assocId);
+			throw new IllegalArgumentException(I18NUtil.getMessage(MSG_REF_EXIST, assocId));
 		}
 		
 		invokeBeforeRemoveReference(fromNode, toNode, assocId);
@@ -962,13 +986,13 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         if (customAssocsAspect == null)
         {
-            throw new AlfrescoRuntimeException("Unknown aspect: "+aspectName);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNKNOWN_ASPECT, aspectName));
         }
 
         // If this label is already taken...
         if (getQNameForClientId(label) != null)
         {
-            throw new IllegalArgumentException("Reference label already in use: " + label);
+            throw new IllegalArgumentException(I18NUtil.getMessage(MSG_REF_LABEL_IN_USE, label));
         }
         
         QName generatedQName = this.generateQNameFor(label);
@@ -977,7 +1001,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         M2ClassAssociation customAssoc = customAssocsAspect.getAssociation(generatedShortQName);
         if (customAssoc != null)
         {
-            throw new AlfrescoRuntimeException("Assoc already exists: "+generatedShortQName);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_ASSOC_EXISTS, generatedShortQName));
         }
         
         M2Association newAssoc = customAssocsAspect.createAssociation(generatedShortQName);
@@ -1019,19 +1043,19 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         
         if (customAssocsAspect == null)
         {
-            throw new AlfrescoRuntimeException("Unknown aspect: "+aspectName);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNKNOWN_ASPECT, aspectName));
         }
 
         String compoundID = this.getCompoundIdFor(source, target);
         if (getQNameForClientId(compoundID) != null)
         {
-            throw new IllegalArgumentException("Reference label already in use: " + compoundID);
+            throw new IllegalArgumentException(I18NUtil.getMessage(MSG_REF_LABEL_IN_USE, compoundID));
         }
         
         M2ClassAssociation customAssoc = customAssocsAspect.getAssociation(compoundID);
         if (customAssoc != null)
         {
-            throw new AlfrescoRuntimeException("ChildAssoc already exists: "+compoundID);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CHILD_ASSOC_EXISTS, compoundID));
         }
         QName generatedQName = this.generateQNameFor(compoundID);
         
@@ -1084,7 +1108,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         AssociationDefinition assocDefn = dictionaryService.getAssociation(refQName);
         if (assocDefn == null)
         {
-            throw new AlfrescoRuntimeException("DictionaryService does not contain association definition " + refQName);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CONNOT_FIND_ASSOC_DEF, refQName));
         }
         
         NodeRef modelRef = getCustomModelRef(""); // defaults to RM_CUSTOM_URI
@@ -1127,7 +1151,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         M2Constraint customConstraint = deserializedModel.getConstraint(constraintNameAsPrefixString);
         if (customConstraint != null)
         {
-            throw new AlfrescoRuntimeException("Constraint already exists: "+constraintNameAsPrefixString);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CONSTRAINT_EXISTS, constraintNameAsPrefixString));
         }
         
         M2Constraint newCon = deserializedModel.createConstraint(constraintNameAsPrefixString, CUSTOM_CONSTRAINT_TYPE);
@@ -1165,13 +1189,13 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         M2Constraint customConstraint = deserializedModel.getConstraint(constraintNameAsPrefixString);
         if (customConstraint == null)
         {
-            throw new AlfrescoRuntimeException("Unknown constraint: "+constraintNameAsPrefixString);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CANNOT_FIND_CONSTRAINT, constraintNameAsPrefixString));
         }
         
         String type = customConstraint.getType();
         if ((type == null) || (! type.equals(CUSTOM_CONSTRAINT_TYPE)))
         {
-            throw new AlfrescoRuntimeException("Unexpected type '"+type+"' for constraint: "+constraintNameAsPrefixString+" (expected '"+CUSTOM_CONSTRAINT_TYPE+"')");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNEXPECTED_TYPE_CONSTRAINT, type, constraintNameAsPrefixString, CUSTOM_CONSTRAINT_TYPE));
         }
         
         customConstraint.removeParameter(PARAM_ALLOWED_VALUES);
@@ -1198,13 +1222,14 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         M2Constraint customConstraint = deserializedModel.getConstraint(constraintNameAsPrefixString);
         if (customConstraint == null)
         {
-            throw new AlfrescoRuntimeException("Unknown constraint: "+constraintNameAsPrefixString);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CANNOT_FIND_CONSTRAINT, constraintNameAsPrefixString));
         }
         
         String type = customConstraint.getType();
         if ((type == null) || (! type.equals(CUSTOM_CONSTRAINT_TYPE)))
         {
-            throw new AlfrescoRuntimeException("Unexpected type '"+type+"' for constraint: "+constraintNameAsPrefixString+" (expected '"+CUSTOM_CONSTRAINT_TYPE+"')");
+
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNEXPECTED_TYPE_CONSTRAINT, type, constraintNameAsPrefixString, CUSTOM_CONSTRAINT_TYPE));
         }
         
         customConstraint.setTitle(title);
@@ -1245,7 +1270,8 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         M2Constraint customConstraint = deserializedModel.getConstraint(constraintNameAsPrefixString);
         if (customConstraint == null)
         {
-            throw new AlfrescoRuntimeException("Constraint does not exist: "+constraintNameAsPrefixString);
+
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CANNOT_FIND_CONSTRAINT, constraintNameAsPrefixString));
         }
         
         deserializedModel.removeConstraint(constraintNameAsPrefixString);
@@ -1290,7 +1316,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
                 }
             }
             
-            throw new AlfrescoRuntimeException("Model not found for uri: "+uri);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CUSTOM_MODEL_NOT_FOUND, uri));
         }
     }
     
@@ -1299,7 +1325,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         ContentReader reader = this.contentService.getReader(modelNodeRef,
                                                              ContentModel.TYPE_CONTENT);
         
-        if (reader.exists() == false) {throw new AlfrescoRuntimeException("RM CustomModel has no content.");}
+        if (reader.exists() == false) {throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CUSTOM_MODEL_NO_CONTENT, modelNodeRef.toString()));}
         
         InputStream contentIn = null;
         M2Model deserializedModel = null;
@@ -1340,7 +1366,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
             // so we don't have to.
         } catch (UnsupportedEncodingException uex)
         {
-            throw new AlfrescoRuntimeException("Exception when writing custom model xml.", uex);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_ERROR_WRITE_CUSTOM_MODEL, modelRef.toString()), uex);
         }
     }
 
@@ -1385,7 +1411,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         if (getQNameForClientId(clientId) != null)
         {
             // TODO log it's already taken. What to do?
-            throw new IllegalArgumentException("clientId already in use: " + clientId);
+            throw new IllegalArgumentException(I18NUtil.getMessage(MSG_ERROR_CLIENT_ID, clientId));
         }
         
         String newGUID = GUID.generate();
@@ -1398,7 +1424,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     {
         if (!sourceTargetId.contains(SOURCE_TARGET_ID_SEPARATOR))
         {
-            throw new IllegalArgumentException("Illegal sourceTargetId: " + sourceTargetId);
+            throw new IllegalArgumentException(I18NUtil.getMessage(MSG_ERROR_SPLIT_ID, sourceTargetId, SOURCE_TARGET_ID_SEPARATOR));
         }
         return sourceTargetId.split(SOURCE_TARGET_ID_SEPARATOR);
     }

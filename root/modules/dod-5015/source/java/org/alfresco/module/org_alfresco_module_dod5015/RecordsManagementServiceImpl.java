@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -50,6 +50,7 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 import org.alfresco.util.Pair;
 import org.alfresco.util.ParameterCheck;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Records management service implementation.
@@ -61,6 +62,24 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                                                      RecordsManagementPolicies.OnCreateReference,
                                                      RecordsManagementPolicies.OnRemoveReference
 {
+    /** I18N */
+    private final static String MSG_ERROR_ADD_CONTENT_CONTAINER = "rm.service.error-add-content-container";
+    private final static String MSG_UPDATE_DISP_ACT_DEF = "rm.service.update-disposition-action-def";
+    private final static String MSG_SET_ID = "rm.service.set-id";
+    private final static String MSG_PATH_NODE = "rm.service.path-node";
+    private final static String MSG_INVALID_RM_NODE = "rm.service.invalid-rm-node";
+    private final static String MSG_NO_ROOT = "rm.service.no-root";
+    private final static String MSG_DUP_ROOT = "rm.service.dup-root";
+    private final static String MSG_ROOT_TYPE = "rm.service.root-type";
+    private final static String MSG_CONTAINER_PARENT_TYPE= "rm.service.container-parent-type";
+    private final static String MSG_CONTAINER_TYPE = "rm.service.container-type";
+    private final static String MSG_CONTAINER_EXPECTED = "rm.service.container-expected";
+    private final static String MSG_RECORD_FOLDER_EXPECTED = "rm.service.record-folder-expected";
+    private final static String MSG_PARENT_RECORD_FOLDER_ROOT = "rm.service.parent-record-folder-root";
+    private final static String MSG_PARENT_RECORD_FOLDER_TYPE = "rm.service.parent-record-folder-type";
+    private final static String MSG_RECORD_FOLDER_TYPE = "rm.service.record-folder-type";
+    private final static String MSG_NOT_RECORD = "rm.service.not-record";
+    
     /** Store that the RM roots are contained within */
     @SuppressWarnings("unused")
     @Deprecated
@@ -232,7 +251,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
             
             if(childType.equals(ContentModel.TYPE_CONTENT))
             {
-                throw new AlfrescoRuntimeException("Can not add content nodes to a records management category or series, please add content to record folder.");   
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_ERROR_ADD_CONTENT_CONTAINER));   
             }
         }
     }
@@ -277,8 +296,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                     if ((Boolean)props.get(PROP_PUBLISH_IN_PROGRESS).equals(Boolean.TRUE) == true)
                     {
                         // Can not update the disposition schedule since there is an outstanding update being published
-                        throw new AlfrescoRuntimeException(
-                                "You can not update the disposition action defintion as a previous update is currently being published.");
+                        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UPDATE_DISP_ACT_DEF));
                     }
                     
                     // Update the update information                
@@ -322,9 +340,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
                String oldIdValue = (String)oldProps.get(PROP_IDENTIFIER);
                if (oldIdValue != null && oldIdValue.equals(newIdValue) == false)
                {
-                   throw new AlfrescoRuntimeException("The identifier property value of the object " + 
-                                                       node.toString() + 
-                                                       " can not be set, it is read only.");
+                   throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_SET_ID, node.toString()));
                }
            }
        }
@@ -487,10 +503,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         }
         catch (Throwable e)
         {
-            throw new AlfrescoRuntimeException(
-                    "Unable to get NodeRef path for node: \n" +
-                    "   Node: " + nodeRef,
-                    e);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_PATH_NODE, nodeRef), e);
         }
         return nodeRefPath;
     }
@@ -502,7 +515,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     {
         if (!nodeService.hasAspect(nodeRef, ASPECT_FILE_PLAN_COMPONENT))
         {
-            throw new AlfrescoRuntimeException("RM nodes must have aspect " + ASPECT_FILE_PLAN_COMPONENT);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_INVALID_RM_NODE, ASPECT_FILE_PLAN_COMPONENT.toString()));
         }
         // Prepend it to the path
         nodeRefPath.addFirst(nodeRef);
@@ -517,7 +530,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
             if (assocRef == null)
             {
                 // We hit the top of the store
-                throw new AlfrescoRuntimeException("Didn't find a RM root");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NO_ROOT));
             }
             // Recurse
             nodeRef = assocRef.getParentRef();
@@ -565,16 +578,14 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         // ie: you can't create a rm root in an existing rm hierarchy
         if (isRecordsManagmentComponent(parent) == true)
         {
-            throw new AlfrescoRuntimeException("You can not create a records management root in an existing records management hierarchy.");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_DUP_ROOT));
         }
                 
         // Check that the passed type is a sub-type of the RMRootContainer type
         if (TYPE_RECORDS_MANAGEMENT_ROOT_CONTAINER.equals(type) == false &&
             dictionaryService.isSubClass(type, TYPE_RECORDS_MANAGEMENT_ROOT_CONTAINER) == false)
         {
-            throw new AlfrescoRuntimeException("The records management root type(" + 
-                                               type.toString() + 
-                                               ") is not a sub-type of rm:recordsManagementRootContainer");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_ROOT_TYPE, type.toString()));
         }
         
         // Build map of properties
@@ -616,17 +627,14 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         if (TYPE_RECORDS_MANAGEMENT_CONTAINER.equals(parentType) == false &&
             dictionaryService.isSubClass(parentType, TYPE_RECORDS_MANAGEMENT_CONTAINER) == false)
         {
-            throw new AlfrescoRuntimeException("Can not create records management container, because parent was not subtype of" +
-                                               "rm:recordsManagement (parentType=" + parentType.toString() );
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CONTAINER_PARENT_TYPE, parentType.toString()));
         }
         
         // Check that the the provided type is a sub-type of rm:recordsManagementContainer
         if (TYPE_RECORDS_MANAGEMENT_CONTAINER.equals(type) == false &&
             dictionaryService.isSubClass(type, TYPE_RECORDS_MANAGEMENT_CONTAINER) == false)
         {
-            throw new AlfrescoRuntimeException("Can not create records management container, because provided type (" +
-                                                type.toString() +
-                                               ") is not a sub-type of rm:recordsManagementContainer");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CONTAINER_TYPE, type.toString()));
         }
         
         Map<QName, Serializable> props = new HashMap<QName, Serializable>(1);
@@ -684,7 +692,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         // Check we have a container in our hands
         if (isRecordsManagementContainer(container) == false)
         {
-            throw new AlfrescoRuntimeException("Node reference to a rm:recordsManagementContainer node expected.");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CONTAINER_EXPECTED));
         }
         
         List<NodeRef> result = new ArrayList<NodeRef>(1);
@@ -756,7 +764,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         // Check we have a record folder 
         if (isRecordFolder(recordFolder) == false)
         {
-            throw new AlfrescoRuntimeException("Expecting a record folder.  Node is not a record folder. (" + recordFolder.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_RECORD_FOLDER_EXPECTED));
         }
         
         boolean result = true;
@@ -809,7 +817,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         // Check that we are not trying to create a record folder in a root container
         if (isRecordsManagementRoot(rmContainer) == true)
         {
-            throw new AlfrescoRuntimeException("Can not create a record folder, because the parent is a records management root");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_PARENT_RECORD_FOLDER_ROOT));
         }
         
         // Check that the parent is a container
@@ -817,17 +825,14 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
         if (TYPE_RECORDS_MANAGEMENT_CONTAINER.equals(parentType) == false &&
             dictionaryService.isSubClass(parentType, TYPE_RECORDS_MANAGEMENT_CONTAINER) == false)
         {
-            throw new AlfrescoRuntimeException("Can not create record folder, because parent was not subtype of" +
-                                               "rm:recordsManagementContainer (parentType=" + parentType.toString() );
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_PARENT_RECORD_FOLDER_TYPE, parentType.toString()));
         }
         
         // Check that the the provided type is a sub-type of rm:recordFolder
         if (TYPE_RECORD_FOLDER.equals(type) == false &&
             dictionaryService.isSubClass(type, TYPE_RECORD_FOLDER) == false)
         {
-            throw new AlfrescoRuntimeException("Can not create record folder, because provided type (" +
-                                                type.toString() +
-                                               ") is not a sub-type of rm:recordFolder");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_RECORD_FOLDER_TYPE, type.toString()));
         }
         
         Map<QName, Serializable> props = new HashMap<QName, Serializable>(1);
@@ -904,7 +909,7 @@ public class RecordsManagementServiceImpl implements RecordsManagementService,
     {
         if (isRecord(record) == false)
         {
-            throw new AlfrescoRuntimeException("Expecting a record.  Node is not a record. (" + record.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_RECORD, record.toString()));
         }
         return (this.nodeService.hasAspect(record, ASPECT_DECLARED_RECORD));
     } 

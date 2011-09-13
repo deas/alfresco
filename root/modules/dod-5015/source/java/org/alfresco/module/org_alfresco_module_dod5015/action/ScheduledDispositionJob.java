@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -33,8 +33,16 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+/**
+ * Scheduled disposition job.
+ * 
+ * Automatically cuts off eligible nodes.
+ * 
+ * @author Roy Wetherall
+ */
 public class ScheduledDispositionJob implements Job
 {
+    /** Logger */
     private static Log logger = LogFactory.getLog(ScheduledDispositionJob.class);
 
     /**
@@ -59,12 +67,15 @@ public class ScheduledDispositionJob implements Job
     	final String currentDate = padString(year, 2) + "-" + padString(month, 2) +
     	    "-" + padString(dayOfMonth, 2) + "T00:00:00.00Z";
 		
-		StringBuilder msg = new StringBuilder();
-		msg.append("Executing ")
-		    .append(this.getClass().getSimpleName())
-		    .append(" with currentDate ")
-		    .append(currentDate);
-		System.out.println(msg.toString());
+    	if (logger.isDebugEnabled() == true)
+    	{
+    		StringBuilder msg = new StringBuilder();
+    		msg.append("Executing ")
+    		    .append(this.getClass().getSimpleName())
+    		    .append(" with currentDate ")
+    		    .append(currentDate);
+    		logger.debug(msg.toString());
+    	}
     	
     	//TODO Copied the 1970 start date from the old RM JavaScript impl.
     	String dateRange = "[\"1970-01-01T00:00:00.00Z\" TO \"" + currentDate + "\"]";
@@ -78,29 +89,29 @@ public class ScheduledDispositionJob implements Job
     	List<NodeRef> resultNodes = results.getNodeRefs();
     	results.close();
     	
-		msg = new StringBuilder();
-		msg.append("Found ")
-		    .append(resultNodes.size())
-		    .append(" records eligible for disposition.");
-		System.out.println(msg.toString());
-
+    	if (logger.isDebugEnabled() == true)
+    	{    	 
+    		StringBuilder msg = new StringBuilder();
+    		msg.append("Found ")
+    		    .append(resultNodes.size())
+    		    .append(" records eligible for disposition.");
+    		logger.debug(msg.toString());
+    	}
     	
     	for (NodeRef node : resultNodes	)
     	{
     		String dispActionName = (String)nodeService.getProperty(node, RecordsManagementModel.PROP_DISPOSITION_ACTION_NAME);
-    		
-    		// TODO Hackery for the demo.
-    		//
+
     		// Only automatically execute "cutoff" actions.
     		// destroy and transfer and anything else should be manual for now
     		if (dispActionName != null && dispActionName.equalsIgnoreCase("cutoff"))
     		{
     			rmActionService.executeRecordsManagementAction(node, dispActionName);
-    		}
-    		else
-    		{
-    			System.out.println("Request to automatically execute " + dispActionName
-    					+ " action ignored.");
+    			
+    			if (logger.isDebugEnabled() == true)
+    			{
+    			    logger.debug("Performing " + dispActionName + " dispoition action on disposable item " + node.toString());
+    			}
     		}
     	}
     }

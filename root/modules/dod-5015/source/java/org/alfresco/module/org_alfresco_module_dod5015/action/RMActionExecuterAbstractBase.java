@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -376,7 +376,7 @@ public abstract class RMActionExecuterAbstractBase  extends ActionExecuterAbstra
         // No parameters
     }
     
-    /* (non-Javadoc)
+    /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementAction#getProtectedProperties()
      */
     public Set<QName> getProtectedProperties()
@@ -385,8 +385,7 @@ public abstract class RMActionExecuterAbstractBase  extends ActionExecuterAbstra
     }
     
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementAction#getProtectedAspects()
      */
     public Set<QName> getProtectedAspects()
@@ -394,7 +393,7 @@ public abstract class RMActionExecuterAbstractBase  extends ActionExecuterAbstra
         return Collections.<QName>emptySet();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementAction#isExecutable(org.alfresco.service.cmr.repository.NodeRef, java.util.Map)
      */
     public boolean isExecutable(NodeRef filePlanComponent, Map<String, Serializable> parameters)

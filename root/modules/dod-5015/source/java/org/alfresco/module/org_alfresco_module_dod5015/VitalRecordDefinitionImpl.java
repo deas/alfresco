@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,6 +25,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementMo
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Period;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Vital record definition implementation class
@@ -33,6 +34,9 @@ import org.alfresco.service.cmr.repository.Period;
  */
 public class VitalRecordDefinitionImpl implements VitalRecordDefinition, RecordsManagementModel
 {
+    /** I18N */
+    private static final String MSG_VITAL_DEF_MISSING = "rm.service.vital-def-missing";
+    
     /** Service registry */
     private ServiceRegistry services;
     
@@ -53,7 +57,7 @@ public class VitalRecordDefinitionImpl implements VitalRecordDefinition, Records
         // Check that we have a node that has the vital record definition aspect attached
         if (this.services.getNodeService().hasAspect(nodeRef, ASPECT_VITAL_RECORD_DEFINITION) == false)
         {
-            throw new AlfrescoRuntimeException("Vital record definition aspect is not present on node. (" + nodeRef + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_VITAL_DEF_MISSING, nodeRef));
         }        
         this.nodeRef = nodeRef;
     }

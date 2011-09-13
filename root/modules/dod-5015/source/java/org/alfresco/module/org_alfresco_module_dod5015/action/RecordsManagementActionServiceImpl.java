@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -38,6 +38,7 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Records Management Action Service Implementation
@@ -46,6 +47,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class RecordsManagementActionServiceImpl implements RecordsManagementActionService
 {
+    /** I18N */
+    private static final String MSG_NOT_DEFINED = "rm.action.not-defined";
+    private static final String MSG_NO_IMPLICIT_NODEREF = "rm.action.no-implicit-noderef";
+    
     /** Logger */
     private static Log logger = LogFactory.getLog(RecordsManagementActionServiceImpl.class);
 
@@ -228,15 +233,12 @@ public class RecordsManagementActionServiceImpl implements RecordsManagementActi
         RecordsManagementAction rmAction = this.rmActions.get(name);
         if (rmAction == null)
         {
-            StringBuilder msg = new StringBuilder();
-            msg.append("The record management action '")
-                .append(name)
-                .append("' has not been defined");
+            String msg = I18NUtil.getMessage(MSG_NOT_DEFINED, name);
             if (logger.isWarnEnabled())
             {
-                logger.warn(msg.toString());
+                logger.warn(msg);
             }
-            throw new AlfrescoRuntimeException(msg.toString());
+            throw new AlfrescoRuntimeException(msg);
         }
         
         // Execute action
@@ -260,15 +262,12 @@ public class RecordsManagementActionServiceImpl implements RecordsManagementActi
         NodeRef implicitTargetNode = rmAction.getImplicitTargetNodeRef();
         if (implicitTargetNode == null)
         {
-            StringBuilder msg = new StringBuilder();
-            msg.append("Cannot execute rmAction ")
-                .append(name)
-                .append(" as the action implementation does not provide an implicit nodeRef.");
+            String msg = I18NUtil.getMessage(MSG_NO_IMPLICIT_NODEREF, name);
             if (logger.isWarnEnabled())
             {
-                logger.warn(msg.toString());
+                logger.warn(msg);
             }
-            throw new AlfrescoRuntimeException(msg.toString());
+            throw new AlfrescoRuntimeException(msg);
         }
         else
         {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -34,12 +34,24 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author Roy Wetherall
  */
 public abstract class RMDispositionActionExecuterAbstractBase extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_RECORD_NOT_DECLARED = "rm.action.record-not-declared";
+    private static final String MSG_EXPECTED_RECORD_LEVEL = "rm.action.expected-record-level";
+    private static final String MSG_NOT_ALL_RECORDS_DECLARED = "rm.action.not-all-records-declared";
+    private static final String MSG_NOT_ELIGIBLE = "rm.action.not-eligible";
+    private static final String MSG_NO_DISPOITION_INSTRUCTIONS = "rm.action.no-disposition-instructions";
+    private static final String MSG_NO_DIS_LIFECYCLE_SET = "rm.action.no-disposition-lisfecycle-set";
+    private static final String MSG_NEXT_DISP_NOT_SET = "rm.action.next-disp-not-set";
+    private static final String MSG_NOT_NEXT_DISP = "rm.action.not-next-disp";
+    private static final String MSG_NOT_RECORD_FOLDER = "rm.action.not-record-folder";
+    
     /** Indicates whether the eligibility of the record should be checked or not */
     // TODO add the capability to override this value using a property on the action
     protected boolean checkEligibility = true;
@@ -106,14 +118,12 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
                     }
                     else
                     {
-                        throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                                + getName() + ", because the record is not declared. (" + actionedUponNodeRef.toString() + ")");
+                        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_RECORD_NOT_DECLARED, getName(), actionedUponNodeRef.toString()));
                     }
                 }
                 else
                 {
-                    throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                            + getName() + ", because disposition is expected at the record level and this node is not a record. (" + actionedUponNodeRef.toString() + ")");
+                    throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EXPECTED_RECORD_LEVEL, getName(), actionedUponNodeRef.toString()));
                 }
             }
             else
@@ -139,15 +149,12 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
                     }
                     else
                     {
-                        throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                                + getName() + ", because not all the records in the record are declared. (" + actionedUponNodeRef.toString() + ")");
+                        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_ALL_RECORDS_DECLARED, getName(), actionedUponNodeRef.toString()));
                     }
                 }
                 else
                 {
-                    throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                            + getName() + ", because disposition is expected at the record folder level and this node is not a record folder. (" + actionedUponNodeRef.toString()
-                            + ")");
+                    throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EXPECTED_RECORD_LEVEL, getName(), actionedUponNodeRef.toString()));
                 }
 
             }
@@ -160,8 +167,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
         }
         else
         {
-            throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                    + getName() + ", because the next disposition action on the record or record folder is not eligiable. (" + actionedUponNodeRef.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_ELIGIBLE, getName(), actionedUponNodeRef.toString()));
         }
     }
 
@@ -198,8 +204,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
         {
             if (throwError)
             {
-                throw new AlfrescoRuntimeException("Unable to find disposition instructions for node.  Can not execute disposition action "
-                        + getName() + ". (" + nodeRef.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NO_DISPOITION_INSTRUCTIONS, getName(), nodeRef.toString()));
             }
             else
             {
@@ -212,8 +217,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
         {
             if (throwError)
             {
-                throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                        + getName() + ", because node does not have a disposition lifecycle set. (" + nodeRef.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NO_DIS_LIFECYCLE_SET, getName(), nodeRef.toString()));
             }
             else
             {
@@ -228,8 +232,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
         {
             if (throwError)
             {
-                throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                        + getName() + ", because the next disposition action is not set. (" + nodeRef.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NEXT_DISP_NOT_SET, getName(), nodeRef.toString()));
             }
             else
             {
@@ -241,8 +244,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
         {
             if (throwError)
             {
-                throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                        + getName() + ", because this is not the next disposition action for this record or record folder. (" + nodeRef.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_NEXT_DISP, getName(), nodeRef.toString()));
             }
             else
             {
@@ -321,8 +323,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
                     {
                         if (throwException)
                         {
-                            throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                                    + getName() + ", because the record is not declared. (" + filePlanComponent.toString() + ")");
+                            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_RECORD_NOT_DECLARED, getName(), filePlanComponent.toString()));
                         }
                         else
                         {
@@ -334,8 +335,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
                 {
                     if (throwException)
                     {
-                        throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                                + getName() + ", because disposition is expected at the record level and this node is not a record. (" + filePlanComponent.toString() + ")");
+                        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EXPECTED_RECORD_LEVEL, getName(), filePlanComponent.toString()));
                     }
                     else
                     {
@@ -355,8 +355,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
                     {
                         if (throwException)
                         {
-                            throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                                    + getName() + ", because not all the records in the record are declared. (" + filePlanComponent.toString() + ")");
+                            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_ALL_RECORDS_DECLARED, getName(), filePlanComponent.toString()));
                         }
                         else
                         {
@@ -368,9 +367,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
                 {
                     if (throwException)
                     {
-                        throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                                + getName() + ", because disposition is expected at the record folder level and this node is not a record folder. (" + filePlanComponent.toString()
-                                + ")");
+                        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_RECORD_FOLDER, getName(), filePlanComponent.toString()));
                     }
                     else
                     {
@@ -385,8 +382,7 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
         {
             if (throwException)
             {
-                throw new AlfrescoRuntimeException("Unable to execute disposition action "
-                        + getName() + ", because the next disposition action on the record or record folder is not eligiable. (" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_ELIGIBLE, getName(), filePlanComponent.toString()));
             }
             else
             {
@@ -394,6 +390,4 @@ public abstract class RMDispositionActionExecuterAbstractBase extends RMActionEx
             }
         }
     }
- 
-
 }

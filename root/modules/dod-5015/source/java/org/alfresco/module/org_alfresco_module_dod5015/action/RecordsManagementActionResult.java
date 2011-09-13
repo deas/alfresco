@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2010 Alfresco Software Limited.
+ * Copyright (C) 2009-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -20,17 +20,28 @@
 package org.alfresco.module.org_alfresco_module_dod5015.action;
 
 /**
+ * Records management action result.
+ * 
  * @author Roy Wetherall
  */
 public class RecordsManagementActionResult
 {
+    /** Result value */
     private Object value;
     
+    /**
+     * Constructor.
+     * 
+     * @param value result value
+     */
     public RecordsManagementActionResult(Object value)
     {
         this.value = value;
     }
     
+    /**
+     * @return  result value
+     */
     public Object getValue()
     {
         return this.value;
