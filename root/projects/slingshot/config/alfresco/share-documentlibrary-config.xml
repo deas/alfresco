@@ -89,6 +89,10 @@
 
          <type name="cm:folder">
          </type>
+
+         <type name="trx:transferTarget">
+               <subtype name="trx:fileTransferTarget" />
+         </type>
       </types>
 
       <!--

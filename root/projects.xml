@@ -2957,6 +2957,7 @@
             <include name="commons/commons-logging-1.1.1.jar" />
             <include name="optional/log4j-1.2.15.jar" />
             <include name="aopalliance.jar" />
+            <include name="json-simple-1.1.jar" />
          </fileset>
       </copy>
 

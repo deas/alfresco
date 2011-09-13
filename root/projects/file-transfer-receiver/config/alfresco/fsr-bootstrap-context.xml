@@ -4,8 +4,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.spri
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location">
-            <value>classpath:filetransferreceiver.properties</value>
+        <property name="locations">
+            <list>
+                <value>classpath:filetransferreceiver.properties</value>
+                <value>classpath:ftr-custom.properties</value>
+            </list>
         </property>
     </bean>
 
@@ -20,7 +23,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
             <property name="driverClassName"><value>org.apache.derby.jdbc.EmbeddedDriver</value></property>
-            <property name="url"><value>${file.transfer.receiver.jdbcurl}</value></property>
+            <property name="url"><value>${fileTransferReceiver.jdbcUrl}</value></property>
             <property name="poolPreparedStatements"><value>false</value></property>
             <property name="maxActive"><value>5</value></property>
             <property name="maxIdle"><value>5</value></property>
@@ -169,10 +172,10 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
             <value>300000</value>
         </property>
         <property name="rootStagingDirectory">
-                <value>${file.transfer.receiver.rootstagingdirectory}</value>
+                <value>${fileTransferReceiver.stagingDirectory}</value>
         </property>
         <property name="defaultReceivingroot">
-                <value>${file.transfer.receiver.defaultreceivingroot}</value>
+                <value>${fileTransferReceiver.rootDirectory}</value>
         </property>
         <property name="manifestProcessorFactory" ref="fTransferManifestProcessorFactory" />
         <property name="progressMonitor" ref="transferProgressMonitor" />
@@ -197,5 +200,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
     <bean id="fileTransferHook" class="org.alfresco.repo.transfer.fsr.FileTransferHookDummy">
     </bean>
+
+    <import resource="classpath*:ftr-custom-context.xml"/>
 
 </beans>

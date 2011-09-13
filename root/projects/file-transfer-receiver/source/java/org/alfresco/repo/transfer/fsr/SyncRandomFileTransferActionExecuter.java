@@ -95,8 +95,8 @@ public class SyncRandomFileTransferActionExecuter extends ActionExecuterAbstract
             NodeRef transferTargetNodeRef = transferService.getTransferTarget(TARGET_NAME).getNodeRef();
             //Get the primary parent of the node the action is execute up on
             NodeRef rooTarget = nodeService.getPrimaryParent(actionedUponNodeRef).getParentRef();
-            //Add the aspect "fileTransferTarget" to transferTargetNodeRef and associate it to the root
-            nodeService.addAspect(transferTargetNodeRef, TransferModel.ASPECT_FILE_TRANSFER_TARGET, null);
+            //Set the type to "fileTransferTarget" to transferTargetNodeRef and associate it to the root
+            nodeService.setType(transferTargetNodeRef, TransferModel.TYPE_FILE_TRANSFER_TARGET);
             //create the association
             nodeService.createAssociation(transferTargetNodeRef, rooTarget, TransferModel.ASSOC_ROOT_FILE_TRANSFER);
         }

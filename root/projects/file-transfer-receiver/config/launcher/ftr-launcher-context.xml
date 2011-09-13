@@ -5,7 +5,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location">
-            <value>classpath:file-transfer-receiver.properties</value>
+            <value>classpath:ftr-launcher.properties</value>
         </property>
     </bean>
 

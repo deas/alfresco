@@ -29,7 +29,7 @@ public class FileTransferMainEmbedded
      */
     public static void main(String[] args) throws Exception
     {
-        ApplicationContext appCtx = new ClassPathXmlApplicationContext("classpath*:file-transfer-receiver-context.xml");
+        ApplicationContext appCtx = new ClassPathXmlApplicationContext("classpath*:ftr-launcher-context.xml");
         Tomcat tomcat = (Tomcat) appCtx.getBean("embeddedTomcat");
         tomcat.addWebapp("/alfresco-ftr", "file-transfer-receiver.war");
         tomcat.start();

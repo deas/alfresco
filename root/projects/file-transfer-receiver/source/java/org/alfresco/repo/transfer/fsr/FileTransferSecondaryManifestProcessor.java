@@ -30,14 +30,12 @@ import org.alfresco.repo.transfer.TransferCommons;
 import org.alfresco.repo.transfer.TransferProcessingException;
 import org.alfresco.repo.transfer.manifest.TransferManifestDeletedNode;
 import org.alfresco.repo.transfer.manifest.TransferManifestNormalNode;
-import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.FileCopyUtils;
 
 public class FileTransferSecondaryManifestProcessor extends AbstractFileManifestProcessorBase
 {
@@ -97,7 +95,7 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             log.debug("End manifest!");
         }
         // delete TEMP_VIRT_ROOT is exist
-        File tvr = new File(fTReceiver.getDefaultReceivingroot() + "/" + TEMP_VIRT_ROOT);
+        File tvr = new File(fTReceiver.getDefaultReceivingroot() + getTemporaryFolderPath());
         if (tvr.exists())
         {
             tvr.delete();
@@ -212,6 +210,15 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
             log.debug("Starting processing node,name:" + (String) node.getProperties().get(ContentModel.PROP_NAME));
             log.debug("Starting processing node,content Url:" + this.getContentUrl(node));
             log.debug("Starting processing node,content properties:" + node.getProperties());
+        }
+
+        //Skip over any nodes that are not parented with a cm:contains association or 
+        //are not content or folders
+        if (!ContentModel.ASSOC_CONTAINS.equals(node.getPrimaryParentAssoc().getTypeQName()) ||
+                !(ContentModel.TYPE_FOLDER.equals(node.getType()) ||
+                        ContentModel.TYPE_CONTENT.equals(node.getType())))
+        {
+            return;
         }
 
         // In sync mode, convention is that if a node is not received then it is an implicit delete

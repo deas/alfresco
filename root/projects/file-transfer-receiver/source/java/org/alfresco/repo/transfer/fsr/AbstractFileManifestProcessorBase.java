@@ -41,7 +41,7 @@ import org.springframework.util.FileCopyUtils;
 public abstract class AbstractFileManifestProcessorBase extends org.alfresco.repo.transfer.AbstractManifestProcessorBase
 {
     private final static Log log = LogFactory.getLog(AbstractFileManifestProcessorBase.class);
-    protected String TEMP_VIRT_ROOT;
+    private String temporaryFolderPath;
     protected FileTransferReceiver fTReceiver;
     protected String fTransferId;
     protected boolean isSync;
@@ -53,10 +53,15 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
         this.fTReceiver = (FileTransferReceiver)receiver;
         this.fTransferId = transferId;
         NodeRef node = new NodeRef(transferId);
-        TEMP_VIRT_ROOT = node.getId();
+        temporaryFolderPath = "/.temp_" + node.getId() + "/";
 
     }
 
+    protected String getTemporaryFolderPath()
+    {
+        return temporaryFolderPath;
+    }
+    
     @Override
     protected void endManifest()
     {
@@ -95,12 +100,12 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
     {
         // do the file system clean up first
         // delete TEMP_VIRT_ROOT is exist
-        File tvr = new File(fTReceiver.getDefaultReceivingroot() + "/" + TEMP_VIRT_ROOT);
+        File tvr = new File(fTReceiver.getDefaultReceivingroot() + "/" + temporaryFolderPath);
         if (tvr.exists())
         {
             if (log.isDebugEnabled())
             {
-                log.debug("Purgin TEMP_VIRT_ROOT:" + fTReceiver.getDefaultReceivingroot() + "/" + TEMP_VIRT_ROOT);
+                log.debug("Purging TEMP_VIRT_ROOT:" + fTReceiver.getDefaultReceivingroot() + "/" + temporaryFolderPath);
             }
             tvr.delete();
         }
@@ -123,6 +128,10 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
 
     protected void moveFileOrFolderOnFileSytem(String oldPath, String oldName, String newPath, String newName)
     {
+        if (log.isDebugEnabled())
+        {
+            log.error("Moving " + oldPath + oldName + " to " + newPath + newName);
+        }
         // Method 1 using rename does not seem to work
         // move the node on the receiving file system
         // File (or directory) to be moved
@@ -144,6 +153,10 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
 
     protected void adjustPathInSubtreeInDB(FileTransferInfoEntity nodeToModify, String containingPath)
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug("Adjusting paths of children (" + nodeToModify.getNodeRef() + ", \"" + containingPath + "\")");
+        }
         // get all children of nodeToModify
         List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(nodeToModify
                 .getNodeRef());
@@ -152,6 +165,10 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
         for (FileTransferInfoEntity curChild : childrenList)
         {
             // adjust path
+            if (log.isDebugEnabled())
+            {
+                log.debug("Adjusting path of child " + curChild.getNodeRef());
+            }
             curChild.setPath(containingPath);
             fTReceiver.updateFileTransferInfoByNodeRef(curChild);
         }

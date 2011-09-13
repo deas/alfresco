@@ -64,7 +64,7 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
         purgeTemporaryVirtualRoot();
         // recreate temporary root on file system
         getOrCreateFolderIfNotExist(fTReceiver.getDefaultReceivingroot());
-        getOrCreateFolderIfNotExist(fTReceiver.getDefaultReceivingroot() + "/" + TEMP_VIRT_ROOT);
+        getOrCreateFolderIfNotExist(fTReceiver.getDefaultReceivingroot() + getTemporaryFolderPath());
 
         this.fTReceiver.resetListOfNodesBeforeSyncMode();
 
@@ -74,12 +74,12 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
     {
         // do the file system clean up first
         // delete TEMP_VIRT_ROOT is exist
-        File tvr = new File(fTReceiver.getDefaultReceivingroot() + "/" + TEMP_VIRT_ROOT);
+        File tvr = new File(fTReceiver.getDefaultReceivingroot() + getTemporaryFolderPath());
         if (tvr.exists())
         {
             if (log.isDebugEnabled())
             {
-                log.debug("Purgin TEMP_VIRT_ROOT:" + fTReceiver.getDefaultReceivingroot() + "/" + TEMP_VIRT_ROOT);
+                log.debug("Purging TEMP_VIRT_ROOT:" + fTReceiver.getDefaultReceivingroot() + getTemporaryFolderPath());
             }
             tvr.delete();
         }
@@ -104,17 +104,48 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
         // Example /A/A/A if reordered
         // this.fTransferId
 
+        if (log.isDebugEnabled())
+        {
+            log.debug("Processing received node: " + node.getNodeRef());
+        }
+        
+        //Skip over any nodes that are not parented with a cm:contains association or 
+        //are not content or folders
+        if (!ContentModel.ASSOC_CONTAINS.equals(node.getPrimaryParentAssoc().getTypeQName()) ||
+                !(ContentModel.TYPE_FOLDER.equals(node.getType()) ||
+                        ContentModel.TYPE_CONTENT.equals(node.getType())))
+        {
+            if (log.isInfoEnabled())
+            {
+                log.info("Skipping node due to either: not content; not folder; or not cm:contains");
+            }
+            return;
+        }
+        
+        
         // check if node is moved
         // Search the node to check if it exist already
         FileTransferInfoEntity nodeEntity = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef().toString());
         if (nodeEntity != null)
         {
+            if (log.isDebugEnabled())
+            {
+                log.debug("Found existing record for this node");
+            }
             // node is not new, exist in DB
             String parentOfNode = node.getPrimaryParentAssoc().getParentRef().toString();
             // if node moved or renamed
             String newName = (String) node.getProperties().get(ContentModel.PROP_NAME);
             if (!parentOfNode.equals(nodeEntity.getParent()) || !newName.equals(nodeEntity.getContentName()))
             {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Node appears to have been moved or renamed");
+                    log.debug("Previous parent == " + nodeEntity.getParent());
+                    log.debug("Previous name == " + nodeEntity.getContentName());
+                    log.debug("Reported parent == " + parentOfNode);
+                    log.debug("Reported name == " + newName);
+                }
                 // node is moved therefore there is risk of collision
                 // save the new name that will be given finally in FileTransferSecondaryManifestProcessor.endManifest()
                 String name = (String) node.getProperties().get(ContentModel.PROP_NAME);
@@ -123,6 +154,11 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
                 // adjust the path
                 String oldName = nodeEntity.getContentName();
                 String newTemporaryTechnicalName = "F" + this.renamingCounter + "-ren";
+
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Assigning temporary name of " + newTemporaryTechnicalName);
+                }
                 nodeEntity.setContentName(newTemporaryTechnicalName);
                 fTReceiver.updateFileTransferInfoByNodeRef(nodeEntity);
                 // update the name on file system using the old name
@@ -138,130 +174,133 @@ public class FileTransferPrimaryManifestProcessor extends AbstractFileManifestPr
 
             if (log.isDebugEnabled())
             {
-                log.debug("Node is new:" + node.toString());
+                log.debug("No existing record found.");
             }
             String parentOfNode = node.getPrimaryParentAssoc().getParentRef().toString();
 
+            boolean nodeIsRoot = node.getNodeRef().toString().equals(fTReceiver.getFileTransferRootNodeFileFileSystem());
             boolean isNodeUnderRoot = parentOfNode.equals(fTReceiver.getFileTransferRootNodeFileFileSystem());
             FileTransferInfoEntity parentFileTransferInfoEntity = null;
             String parentPath = "/";
+            if (log.isDebugEnabled())
+            {
+                log.debug("Parent node id == " + parentOfNode);
+            }
             if (!isNodeUnderRoot)
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Node is NOT under root:" + node.toString());
+                    log.debug("Node is NOT in root directory");
                 }
                 // try to get the ancestor of the node in the DB
                 parentFileTransferInfoEntity = fTReceiver.findFileTransferInfoByNodeRef(parentOfNode);
-
+                
                 if (parentFileTransferInfoEntity == null)
                 {
-                    parentPath = "/" + TEMP_VIRT_ROOT + "/";
                     if (log.isDebugEnabled())
                     {
-                        log.debug("Node is temporarilly adopted by TEMP_VIRT_ROOT:" + node.toString());
-                        log.debug("ParentPath is temporarilly adopted by TEMP_VIRT_ROOT:" + parentPath);
+                        log.debug("No existing record found for the parent node");
                     }
-
+                    parentPath = getTemporaryFolderPath();
                 }
                 else
                 {
-                    parentPath = parentFileTransferInfoEntity.getPath() + parentFileTransferInfoEntity.getContentName()
-                            + "/";
                     if (log.isDebugEnabled())
                     {
-                        log.debug("ParentPath exist:" + node.toString());
-                        log.debug("ParentPAth is:" + parentPath);
+                        log.debug("Found existing record for the parent node");
                     }
-
+                    parentPath = parentFileTransferInfoEntity.getPath() + parentFileTransferInfoEntity.getContentName()
+                            + "/";
                 }
-
             }
-            // node is new
-            String name = (String) node.getProperties().get(ContentModel.PROP_NAME);
-            String newTemporaryTechnicalName = "F" + this.renamingCounter + "-ren";
-            this.fTReceiver.createNodeRenameEntity(node.getNodeRef().toString(), this.fTransferId, name);
-            this.renamingCounter++;
-            // check if we receive a file or a folder
-            QName nodeType = node.getAncestorType();
-
-            Boolean isFolder = ContentModel.TYPE_FOLDER.equals(nodeType);
-            getOrCreateFolderIfNotExist(fTReceiver.getDefaultReceivingroot());
-            if (!isFolder)
+            if (!nodeIsRoot)
             {
-                if (log.isDebugEnabled())
+                // node is new
+                String name = (String) node.getProperties().get(ContentModel.PROP_NAME);
+                String newTemporaryTechnicalName = "F" + this.renamingCounter + "-ren";
+                this.fTReceiver.createNodeRenameEntity(node.getNodeRef().toString(), this.fTransferId, name);
+                this.renamingCounter++;
+                // check if we receive a file or a folder
+                QName nodeType = node.getAncestorType();
+    
+                boolean isFolder = ContentModel.TYPE_FOLDER.equals(nodeType);
+                getOrCreateFolderIfNotExist(fTReceiver.getDefaultReceivingroot());
+                if (!isFolder)
                 {
-                    log.debug("Tis is content:" + node.toString());
-                }
-                String contentKey = TransferCommons.URLToPartName(this.getContentUrl(node));
-                File receivedContent = fTReceiver.getContents().get(contentKey);
-
-                // this is content
-                // create the file with the name
-                File receivedFile = new File(fTReceiver.getDefaultReceivingroot() + parentPath
-                        + newTemporaryTechnicalName);
-                this.putFileContent(receivedFile, receivedContent);
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Content created:" + fTReceiver.getDefaultReceivingroot() + parentPath
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("This is content");
+                    }
+                    String contentKey = TransferCommons.URLToPartName(this.getContentUrl(node));
+                    File receivedContent = fTReceiver.getContents().get(contentKey);
+    
+                    // this is content
+                    // create the file with the name
+                    File receivedFile = new File(fTReceiver.getDefaultReceivingroot() + parentPath
                             + newTemporaryTechnicalName);
+                    this.putFileContent(receivedFile, receivedContent);
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Content created:" + fTReceiver.getDefaultReceivingroot() + parentPath
+                                + newTemporaryTechnicalName);
+                    }
                 }
+                else
+                {
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("This is a folder");
+                    }
+                    // we have received a folder, create it
+                    File receivedFolder = new File(fTReceiver.getDefaultReceivingroot() + parentPath
+                            + newTemporaryTechnicalName);
+                    receivedFolder.mkdir();
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Folder created:" + fTReceiver.getDefaultReceivingroot() + parentPath
+                                + newTemporaryTechnicalName);
+                    }
+                }
+                String contentUrl = this.getContentUrl(node);
+                // create the node in the DB here
+                fTReceiver.createNodeInDB(node.getNodeRef().toString(), parentOfNode, parentPath,
+                        newTemporaryTechnicalName, contentUrl);
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Node created in DB:" + node.getNodeRef().toString());
+                    log.debug("Child of:" + parentOfNode);
+                    log.debug("Parent path:" + parentPath);
+                    log.debug("Node name:" + newTemporaryTechnicalName);
+                    log.debug("Content URL:" + contentUrl);
+                }
+                
+                if (isFolder)
+                {
+                    // get the nodes for adoption and adopt here
+                    // get all children of nodeToModify
+                    List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(node
+                            .getNodeRef().toString());
+                    // iterate on children
+                    // move and adjust path in DB
+                    for (FileTransferInfoEntity curChild : childrenList)
+                    {
+                        // adjust location on file system for the direct child
+                        moveFileOrFolderOnFileSytem(curChild.getPath(), curChild.getContentName(), parentPath
+                                + newTemporaryTechnicalName + "/", curChild.getContentName());
+                    }
+                }
+                FileTransferInfoEntity newlyCreatednode = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef()
+                        .toString());
+                // adjust path in DB
+                adjustPathInSubtreeInDB(newlyCreatednode, parentPath + newTemporaryTechnicalName + "/");
             }
             else
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Tis is a folder:" + node.toString());
-                }
-                // we have received a folder, create it
-                File receivedFolder = new File(fTReceiver.getDefaultReceivingroot() + parentPath
-                        + newTemporaryTechnicalName);
-                receivedFolder.mkdir();
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Folder created:" + fTReceiver.getDefaultReceivingroot() + parentPath
-                            + newTemporaryTechnicalName);
+                    log.debug("This is the root node!");
                 }
             }
-            String contentUrl = this.getContentUrl(node);
-            // create the node in the DB here
-            fTReceiver.createNodeInDB(node.getNodeRef().toString(), parentOfNode, parentPath,
-                    newTemporaryTechnicalName, contentUrl);
-            if (log.isDebugEnabled())
-            {
-                log.debug("Node created in DB:" + node.getNodeRef().toString());
-                log.debug("Child of:" + parentOfNode);
-                log.debug("Parent path:" + parentPath);
-                log.debug("Node name:" + newTemporaryTechnicalName);
-                log.debug("Content URL:" + contentUrl);
-            }
-            // get the nodes for adoption and adopt here
-            // get all children of nodeToModify
-            List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(node
-                    .getNodeRef().toString());
-            // iterate on children
-            // move and adjust path in DB
-            for (FileTransferInfoEntity curChild : childrenList)
-            {
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Moving on filse system:" + curChild.getPath() + curChild.getContentName());
-                    log.debug("Moving to:" + parentPath + newTemporaryTechnicalName + "/" + curChild.getContentName());
-                }
-                // adjust location on file system for the direct child
-                moveFileOrFolderOnFileSytem(curChild.getPath(), curChild.getContentName(), parentPath
-                        + newTemporaryTechnicalName + "/", curChild.getContentName());
-            }
-            FileTransferInfoEntity newlyCreatednode = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef()
-                    .toString());
-            // adjust path in DB
-            adjustPathInSubtreeInDB(newlyCreatednode, parentPath + newTemporaryTechnicalName + "/");
-            if (log.isDebugEnabled())
-            {
-                log.debug("adjustPathInSubtreeInDB:" + newlyCreatednode);
-                log.debug("Move to:" + parentPath + newTemporaryTechnicalName + "/");
-            }
-
         }
 
         if (this.isSync)

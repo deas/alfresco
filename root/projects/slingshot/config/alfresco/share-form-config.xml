@@ -409,6 +409,38 @@
       </forms>
    </config>
    
+   <!-- trx:fileTransferTarget content type (editing) -->
+   <config evaluator="node-type" condition="trx:fileTransferTarget">
+      <forms>
+         <form>
+              <field-visibility>
+               <show id="cm:name" />
+               <show id="cm:title" force="true" />
+               <show id="cm:description" force="true" />
+               <show id="trx:endpointhost" />
+               <show id="trx:endpointport" />
+               <show id="trx:endpointpath" />
+               <show id="trx:endpointprotocol" />
+               <show id="trx:username" for-mode="edit"/>
+               <show id="trx:password" for-mode="edit"/>
+               <show id="trx:fileTransferRootNode" />
+               <show id="trx:enabled" force="true" />
+            </field-visibility>
+            <edit-form template="../documentlibrary/forms/doclib-simple-metadata.ftl" />
+            <appearance>
+               <field id="cm:title">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="trx:password">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                     <control-param name="password">true</control-param>
+                  </control>
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
    <!-- JMX Form Config -->
    
    <!-- Runtime -->

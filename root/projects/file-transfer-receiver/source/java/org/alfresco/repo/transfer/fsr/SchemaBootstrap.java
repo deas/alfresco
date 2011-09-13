@@ -54,7 +54,6 @@ public class SchemaBootstrap extends AbstractLifecycleBean
     protected void onBootstrap(ApplicationEvent arg0)
     {
         Connection con = null;
-        Statement s = null;
 
         // create DB if necessary this is done by the jDBC driver configured with option
         // create=true
@@ -178,6 +177,7 @@ public class SchemaBootstrap extends AbstractLifecycleBean
         {
             // run the creation script with autocommit true and stop on error.
             ScriptRunner runner = new ScriptRunner(dataSource.getConnection());
+            runner.setLogWriter(null);
             runner.setAutoCommit(true);
             runner.setStopOnError(true);
             reader = new BufferedReader(new InputStreamReader(resourceScript.getInputStream(), "UTF-8"));
