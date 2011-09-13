@@ -703,7 +703,7 @@
     -->
     <target name="windows-32-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-win.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}"'/>
+            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args}  "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.win}" binaries_folder="${installer.build.binaries.win32}"'/>
         </exec>
     </target>
     
