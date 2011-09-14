@@ -160,7 +160,7 @@
 		<extension>mpeg</extension>
 		<extension>mpe</extension>
 	</mimetype>
-	<mimetype mimetype="audio/x-mpeg" display="MPEG Audio">
+	<mimetype mimetype="audio/mpeg" display="MPEG Audio">
 		<extension default="true">mp3</extension>
 		<extension>mp2</extension>
 	</mimetype>
@@ -200,7 +200,7 @@
 	<mimetype mimetype="image/x-portable-pixmap" display="Pixmap Image">
 		<extension>ppm</extension>
 	</mimetype>
-	<mimetype mimetype="application/vnd.powerpoint" display="Microsoft PowerPoint">
+	<mimetype mimetype="application/vnd.ms-powerpoint" display="Microsoft PowerPoint">
 		<extension>ppt</extension>
 	</mimetype>
 	<mimetype mimetype="image/x-cmu-raster" display="Raster Image">
@@ -274,7 +274,7 @@
 	<mimetype mimetype="image/x-xbitmap" display="XBitmap Image">
 		<extension>xbm</extension>
 	</mimetype>
-	<mimetype mimetype="application/vnd.excel" display="Microsoft Excel">
+	<mimetype mimetype="application/vnd.ms-excel" display="Microsoft Excel">
 		<extension>xls</extension>
 	</mimetype>
 	<mimetype mimetype="image/x-xpixmap" display="XPixmap Image">
