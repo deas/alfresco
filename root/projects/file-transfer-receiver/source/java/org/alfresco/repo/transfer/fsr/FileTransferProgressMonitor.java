@@ -19,6 +19,8 @@
 package org.alfresco.repo.transfer.fsr;
 
 import java.io.InputStream;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import org.alfresco.repo.transfer.TransferProgressMonitor;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -29,7 +31,8 @@ import org.alfresco.service.cmr.transfer.TransferProgress.Status;
 
 public class FileTransferProgressMonitor implements TransferProgressMonitor
 {
-
+    private ConcurrentMap<String,TransferProgress> progressMap = new ConcurrentSkipListMap<String, TransferProgress>();
+    
     public InputStream getLogInputStream(String transferId) throws TransferException
     {
         // TODO Auto-generated method stub
@@ -38,13 +41,7 @@ public class FileTransferProgressMonitor implements TransferProgressMonitor
 
     public TransferProgress getProgress(String transferId) throws TransferException
     {
-
-        TransferProgress tpr = new TransferProgress();
-        tpr.setCurrentPosition(1);
-        tpr.setEndPosition(1);
-        tpr.setError(null);
-        tpr.setStatus(Status.COMPLETE);
-        return tpr;
+        return getOrCreateProgress(transferId);
 
     }
 
@@ -98,20 +95,35 @@ public class FileTransferProgressMonitor implements TransferProgressMonitor
 
     public void updateProgress(String transferId, int currPos) throws TransferException
     {
-        // TODO Auto-generated method stub
-
+        TransferProgress progress = getOrCreateProgress(transferId);
+        progress.setCurrentPosition(currPos);
     }
 
     public void updateProgress(String transferId, int currPos, int endPos) throws TransferException
     {
-        // TODO Auto-generated method stub
-
+        TransferProgress progress = getOrCreateProgress(transferId);
+        progress.setCurrentPosition(currPos);
+        progress.setEndPosition(endPos);
     }
 
     public void updateStatus(String transferId, Status status) throws TransferException
     {
-        // TODO Auto-generated method stub
+        TransferProgress progress = getOrCreateProgress(transferId);
+        progress.setStatus(status);
+    }
 
+    private TransferProgress getOrCreateProgress(String transferId)
+    {
+        TransferProgress existingProgress = progressMap.get(transferId);
+        if (existingProgress == null)
+        {
+            TransferProgress progress = new TransferProgress();
+            progress.setCurrentPosition(0);
+            progress.setEndPosition(1);
+            progress.setStatus(Status.PRE_COMMIT);
+            progressMap.putIfAbsent(transferId, progress);
+        }
+        return progressMap.get(transferId);
     }
 
 }

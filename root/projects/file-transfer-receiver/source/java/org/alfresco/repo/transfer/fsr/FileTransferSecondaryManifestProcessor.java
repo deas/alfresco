@@ -67,7 +67,7 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
     {
         if (log.isDebugEnabled())
         {
-            log.debug("Deliting parents in DB:" + parent);
+            log.debug("Deleting parents in DB:" + parent);
         }
         // get all children of nodeToModify
         List<FileTransferInfoEntity> childrenList = fTReceiver.findFileTransferInfoByParentNodeRef(parent);
@@ -218,23 +218,31 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
                 !(ContentModel.TYPE_FOLDER.equals(node.getType()) ||
                         ContentModel.TYPE_CONTENT.equals(node.getType())))
         {
+            if (log.isInfoEnabled())
+            {
+                log.info("Skipping node due to either: not content; not folder; or not cm:contains");
+            }
             return;
         }
 
+        String nodeRef = node.getNodeRef().toString();
         // In sync mode, convention is that if a node is not received then it is an implicit delete
         if (this.isSync)
         {
-            String nodeRef = node.getNodeRef().toString();
             receivedNodes.add(nodeRef);
         }
 
+        if (nodeRef.equals(fTReceiver.getFileTransferRootNodeFileFileSystem()))
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("Skipping over the root node");
+            }
+            return;
+        }
+        
         String name = (String) node.getProperties().get(ContentModel.PROP_NAME);
 
-        // this is not new node
-        if (log.isDebugEnabled())
-        {
-            log.debug("This node is NOT new:" + node.toString());
-        }
         // not a new node, it can be a move of a folder or a content
         // it can be a content modification or a rename of folder or content
         // check if we receive a file or a folder
@@ -245,10 +253,10 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
         {
             if (log.isDebugEnabled())
             {
-                log.debug("Tis is content:" + node.toString());
+                log.debug("This is a content node");
             }
             // check if content has changed
-            Boolean isContentModified = fTReceiver.isContentNewOrModified(node.getNodeRef().toString(), this
+            boolean isContentModified = fTReceiver.isContentNewOrModified(node.getNodeRef().toString(), this
                     .getContentUrl(node));
 
             if (isContentModified)

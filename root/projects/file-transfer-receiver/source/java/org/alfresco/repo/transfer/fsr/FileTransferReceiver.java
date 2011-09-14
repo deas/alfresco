@@ -36,10 +36,11 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.alfresco.repo.lock.JobLockService;
 import org.alfresco.repo.lock.LockAcquisitionException;
+import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.transfer.ManifestProcessorFactory;
 import org.alfresco.repo.transfer.TransferModel;
 import org.alfresco.repo.transfer.TransferProgressMonitor;
-import org.alfresco.repo.transfer.TransferVersionChecker;
 import org.alfresco.repo.transfer.TransferVersionImpl;
 import org.alfresco.repo.transfer.manifest.TransferManifestProcessor;
 import org.alfresco.repo.transfer.manifest.XMLTransferManifestReader;
@@ -51,11 +52,9 @@ import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.alfresco.service.cmr.transfer.TransferVersion;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
-import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
+import org.alfresco.util.GUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.alfresco.util.GUID;
 import org.springframework.util.FileCopyUtils;
 
 public class FileTransferReceiver implements TransferReceiver
@@ -187,6 +186,7 @@ public class FileTransferReceiver implements TransferReceiver
             Throwable error = progressMonitor.getProgress(transferId).getError();
             if (error != null)
             {
+                progressMonitor.updateStatus(transferId, TransferProgress.Status.ERROR);
                 if (TransferException.class.isAssignableFrom(error.getClass()))
                 {
                     throw (TransferException) error;
@@ -201,6 +201,7 @@ public class FileTransferReceiver implements TransferReceiver
             /**
              * Successfully committed
              */
+            progressMonitor.updateStatus(transferId, TransferProgress.Status.COMPLETE);
             if (log.isDebugEnabled())
             {
                 log.debug("Commit success transferId=" + transferId);
@@ -281,7 +282,7 @@ public class FileTransferReceiver implements TransferReceiver
 
     public void generateRequsite(String transferId, OutputStream requsiteStream) throws TransferException
     {
-        log.debug("Generate Requsite for transfer:" + transferId);
+        log.debug("Generate Requisite for transfer:" + transferId);
         try
         {
             File snapshotFile = getSnapshotFile(transferId);
@@ -310,7 +311,7 @@ public class FileTransferReceiver implements TransferReceiver
                 dest.flush();
 
             }
-            log.debug("Generate Requsite done transfer:" + transferId);
+            log.debug("Generate Requisite done transfer:" + transferId);
 
         }
         catch (Exception ex)
