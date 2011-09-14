@@ -294,8 +294,10 @@
          Custom Code dependencies.
 
          Note: files specified in the "src" attribute resolve relative to the /share/res/ servlet context.
-         <css src="my-custom-action.css" />
-         <js src="my-custom-action.js" />
+         <dependencies>
+            <css src="my-custom-action.css" />
+            <js src="my-custom-action.js" />
+         </dependencies>
       -->
       <dependencies />
    </config>
@@ -345,12 +347,13 @@
 
          <!-- Approve simple workflow -->
          <action id="document-approve" type="javascript" label="{jsNode.properties.app_approveStep}">
-            <param name="function">onSimpleRepoAction</param>
+            <param name="function">onActionSimpleRepoAction</param>
             <!-- Additional parameters for onRepoAction function  -->
             <param name="action">accept-simpleworkflow</param>
             <param name="successMessage">message.simple-workflow.approved</param>
             <param name="failureMessage">message.simple-workflow.failure</param>
-            <evaluator>evaluator.doclib.action.simpleApprove</evaluator> <!-- aspect check, property != null check, action name = property value -->
+            <!-- aspect check, property != null check, action name = property value -->
+            <evaluator>evaluator.doclib.action.simpleApprove</evaluator>
          </action>
 
          <!-- Reject simple workflow -->
@@ -360,7 +363,8 @@
             <param name="action">reject-simpleworkflow</param>
             <param name="successMessage">message.simple-workflow.rejected</param>
             <param name="failureMessage">message.simple-workflow.failure</param>
-            <evaluator>evaluator.doclib.action.simpleReject</evaluator> <!-- aspect check, property != null check, action name = property value -->
+            <!-- aspect check, property != null check, action name = property value -->
+            <evaluator>evaluator.doclib.action.simpleReject</evaluator>
          </action>
 
          <!-- Increment Counter -->
@@ -437,7 +441,8 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>evaluator.doclib.action.inlineEdit</evaluator> <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
+            <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
+            <evaluator>evaluator.doclib.action.inlineEdit</evaluator>
          </action>
 
          <!-- Edit online -->
@@ -446,7 +451,8 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>evaluator.doclib.action.onlineEdit</evaluator> <!-- vti module check, mimetype check, userAgent check -->
+            <!-- vti module check, mimetype check, userAgent check -->
+            <evaluator>evaluator.doclib.action.onlineEdit</evaluator>
          </action>
 
          <!-- Edit offline -->
@@ -523,13 +529,15 @@
          <!-- View original (of a Working Copy pair) -->
          <action id="document-view-original" type="pagelink" label="actions.document.view-original">
             <param name="page">document-details?nodeRef={workingCopy.sourceNodeRef}</param>
-            <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator> <!-- cm:workingcopy aspect -->
+            <!-- cm:workingcopy aspect -->
+            <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator>
          </action>
 
          <!-- View working copy (of a Working Copy pair) -->
          <action id="document-view-working-copy" type="pagelink" label="actions.document.view-working-copy">
             <param name="page">document-details?nodeRef={workingCopy.workingCopyNodeRef}</param>
-            <evaluator>evaluator.doclib.action.hasWorkingCopy</evaluator> <!-- cm:workingcopy aspect -->
+            <!-- cm:workingcopy aspect -->
+            <evaluator>evaluator.doclib.action.hasWorkingCopy</evaluator>
          </action>
 
          <!-- Cancel editing (cancel checkout) -->
@@ -553,7 +561,8 @@
          <action id="view-in-explorer" type="link" label="actions.folder.explorer-view">
             <param name="href">{explorerViewUrl}</param>
             <param name="target">_blank</param>
-            <evaluator>evaluator.doclib.action.viewInExplorer</evaluator> <!-- repository-url config set, not in portlet mode -->
+            <!-- repository-url config set, not in portlet mode -->
+            <evaluator>evaluator.doclib.action.viewInExplorer</evaluator>
          </action>
 
          <!-- Checkout to Google Docs -->
@@ -562,13 +571,15 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator>evaluator.doclib.action.googleDocsEditable</evaluator> <!-- gd:googleEditable -->
+            <!-- gd:googleEditable -->
+            <evaluator>evaluator.doclib.action.googleDocsEditable</evaluator>
          </action>
 
          <!-- Checkin from Google Docs -->
          <action id="document-checkin-from-googledocs" type="javascript" label="actions.document.checkin-google">
             <param name="function">onActionCheckinFromGoogleDocs</param>
-            <evaluator>evaluator.doclib.action.googleDocsCheckIn</evaluator> <!-- gd:googleResource, cm:workingCopyOwner = currentUser -->
+            <!-- gd:googleResource, cm:workingCopyOwner = currentUser -->
+            <evaluator>evaluator.doclib.action.googleDocsCheckIn</evaluator>
             <override>document-checkout-to-googledocs</override>
          </action>
 
@@ -576,20 +587,24 @@
          <action id="document-view-googledoc" type="link" icon="document-view-content" label="actions.document.view-google-doc">
             <param name="href">{workingCopy.googleDocUrl}</param>
             <param name="target">_blank</param>
-            <evaluator>evaluator.doclib.action.googleDocsView</evaluator> <!-- gd:googleResource -->
+            <!-- gd:googleResource -->
+            <evaluator>evaluator.doclib.action.googleDocsView</evaluator>
          </action>
 
          <!-- View on Google Maps -->
          <action id="document-view-googlemaps" type="pagelink" label="actions.document.view-google-map">
             <param name="page">geographic-map?nodeRef={node.nodeRef}</param>
-            <evaluator>evaluator.doclib.action.googleMaps</evaluator> <!-- aspect cm:geographic -->
+            <!-- aspect cm:geographic -->
+            <evaluator>evaluator.doclib.action.googleMaps</evaluator>
          </action>
 
          <!-- Transferred node: View in source repository -->
          <action id="document-view-in-source-repository" type="link" label="actions.document.view-source-repository">
-            <param name="href">{sourceRepositoryUrl}</param> <!-- calculated from siteId, item.location.repositoryId, replicationUrlMapping from share-config-custom.xml and node.type -->
+            <!-- calculated from siteId, item.location.repositoryId, replicationUrlMapping from share-config-custom.xml and node.type -->
+            <param name="href">{sourceRepositoryUrl}</param>
             <param name="target">_blank</param>
-            <evaluator>evaluator.doclib.action.transferred</evaluator> <!-- aspect trx:transferred, not portlet mode -->
+            <!-- aspect trx:transferred, not portlet mode -->
+            <evaluator>evaluator.doclib.action.transferred</evaluator>
          </action>
          
          <!-- Publish document -->

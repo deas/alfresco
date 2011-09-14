@@ -23,9 +23,8 @@
             <evaluator>wcmqs.evaluator.doclib.action.isTranslatable</evaluator>
          </action>
 
-         <!-- Publish document: Replace evaluator -->
+         <!-- Publish document: Disable for non-WCMQS sites -->
          <action id="document-publish">
-            <!-- <evaluator negate="true">wcmqs.evaluator.doclib.action.publish</evaluator> -->
             <evaluator negate="true">wcmqs.evaluator.doclib.action.isWebsiteContainerType</evaluator>
          </action>
       </actions>
