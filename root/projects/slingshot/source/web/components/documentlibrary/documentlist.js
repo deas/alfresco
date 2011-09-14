@@ -147,14 +147,10 @@
        */
       onDragDrop: function DL_DND_onDragDrop(e, id) 
       {
-          if (DDM.interactionInfo.drop.length === 1) 
+          var dropTarget = Dom.get(id);
+          if (DDM.interactionInfo.drop.length > 0) 
           {
-             // See if the element exists within the table, if not...
-             // Fire an event requesting ownership...
-             // If a response is forthcoming...
-             
-             var dropTarget = Dom.get(id);
-             
+             // See if the element exists within the table...
              if (Dom.isAncestor(this.docLib.widgets.dataTable.getContainerEl(), dropTarget))
              {
                 // If the drop target is contained within the data table then process "normally"...
@@ -182,9 +178,14 @@
                    this._performMove(nodeRef, targetNode.location.path + "/" + targetNode.location.file);
                 }
              }
-             else
+             else if (Dom.hasClass(dropTarget, "documentDroppable"))
              {
-                // Fire an event requesting the owner of the drop target...
+                // The "documentDroppable" class is not defined in any CSS files but is simply used as
+                // a marker to indicate that the element can be used as a document drop target. Only 
+                // documents are dragged and dropped onto these elements should result in the drop
+                // target request being fired (it's possible that an element could be specified as a
+                // YUI drag and drop target for the purposes of controlling drag events without actually
+                // allowing drops to occur
                 var payload = 
                 {
                    elementId: id,
@@ -395,12 +396,13 @@
              this.dragFolderHighlight = Dom.getAncestorByClassName(destEl, "folder");
              Dom.addClass(this.dragFolderHighlight, "dndFolderHighlight");
           }
-          else if (Dom.hasClass(destEl, "documentDroppable"))
+          else if (Dom.hasClass(destEl, "documentDroppableHighlights"))
           {
              // Fire an event indicating a document drag over
              var payload = 
              {
                 elementId: id,
+                event: e
              }
              YAHOO.Bubbling.fire("documentDragOver", payload);
           }
@@ -421,12 +423,13 @@
             this.dragFolderHighlight = Dom.getAncestorByClassName(destEl, "folder");
             Dom.removeClass(this.dragFolderHighlight, "dndFolderHighlight");
          }
-         else if (Dom.hasClass(destEl, "documentDroppable"))
+         else if (Dom.hasClass(destEl, "documentDroppableHighlights"))
          {
             // Fire an event indicating a document drag out
             var payload = 
             {
                elementId: id,
+               event: e
             }
             YAHOO.Bubbling.fire("documentDragOut", payload);
          }

@@ -354,12 +354,13 @@ body .doclist tr.yui-dt-highlighted
 
 .doclist .documents .folder-small span.droppable
 {
-   background: url(images/help-arrow-small.png) no-repeat;
+   background: url(../images/drop-arrow-left-small.png) no-repeat;
    display: none;
    height: 14px;
    position: absolute;
    width: 34px;
    z-index: 1;
+   margin-left: 20px;
 }
 
 .doclist .documents .thumbnail
@@ -384,12 +385,13 @@ body .doclist tr.yui-dt-highlighted
 
 .doclist .documents .folder span.droppable
 {
-   background: url(images/help-arrow.png) no-repeat;
+   background: url(../images/drop-arrow-left-large.png) no-repeat;
    display: none;
    height: 25px;
    position: absolute;
    width: 60px;
    z-index: 1;
+   margin-left: 40px;
 }
 
 .doclist .documents h3.filename

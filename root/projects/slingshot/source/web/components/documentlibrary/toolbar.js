@@ -1376,7 +1376,8 @@
             newPath = paths.slice(0, i+1).join("/");
             eCrumb = new Element(document.createElement("div"));
             eCrumb.addClass("crumb");
-            eCrumb.addClass("documentDroppable");
+            eCrumb.addClass("documentDroppable"); // This class allows documents to be dropped onto the element
+            eCrumb.addClass("documentDroppableHighlights"); // This class allows drag over/out events to be processed
             
             // First crumb doesn't get an icon
             if (i > 0)
