@@ -324,7 +324,7 @@
                {
                   fn: function DocumentActions_oAEO_success(data)
                   {
-                     this.recordData.nodeRef = data.json.results[0].nodeRef;
+                     this.recordData.jsNode.setNodeRef(data.json.results[0].nodeRef);
                      window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#editOffline";
                   },
                   scope: this
@@ -366,7 +366,7 @@
                {
                   fn: function DocumentActions_oACE_success(data)
                   {
-                     this.recordData.nodeRef = data.json.results[0].nodeRef;
+                     this.recordData.jsNode.setNodeRef(data.json.results[0].nodeRef);
                      window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#editCancelled";
                   },
                   scope: this
@@ -458,7 +458,7 @@
       {
          // Call the normal callback to post the activity data
          this.onNewVersionUploadComplete.call(this, complete);
-         this.recordData.nodeRef = complete.successful[0].nodeRef;
+         this.recordData.jsNode.setNodeRef(complete.successful[0].nodeRef);
          // Delay page reloading to allow time for async requests to be transmitted
          YAHOO.lang.later(0, this, function()
          {
@@ -495,7 +495,7 @@
                {
                   fn: function DocumentActions_oAEO_success(data)
                   {
-                     this.recordData.nodeRef = data.json.results[0].nodeRef;
+                     this.recordData.jsNode.setNodeRef(data.json.results[0].nodeRef);
                      window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#checkoutToGoogleDocs";
                   },
                   scope: this
@@ -570,7 +570,7 @@
                {
                   fn: function DocumentActions_oACE_success(data)
                   {
-                     this.recordData.nodeRef = data.json.results[0].nodeRef;
+                     this.recordData.jsNode.setNodeRef(data.json.results[0].nodeRef);
                      window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#checkinFromGoogleDocs";
                   },
                   scope: this

@@ -6266,6 +6266,12 @@ Alfresco.constants = YAHOO.lang.merge(Alfresco.constants || {},
             return YAHOO.lang.JSON.stringify(node);
          },
 
+         /* Set nodeRef - doesn't requery node properties. Used when generating new page urls */
+         setNodeRef: function(p_nodeRef)
+         {
+            this.nodeRef = new Alfresco.util.NodeRef(p_nodeRef);
+         },
+
          /* Core node properties */
          nodeRef: nodeRef,
          type: node.type,
