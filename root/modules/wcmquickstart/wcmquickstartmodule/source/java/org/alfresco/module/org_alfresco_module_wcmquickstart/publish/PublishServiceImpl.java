@@ -121,6 +121,26 @@ public class PublishServiceImpl implements PublishService
 
     public void enqueuePublishedNodes(final NodeRef... nodes)
     {
+        enqueueNodes(false, nodes);
+    }
+
+    public void enqueuePublishedNodes(Collection<NodeRef> nodes)
+    {
+        enqueuePublishedNodes(nodes.toArray(new NodeRef[nodes.size()]));
+    }
+
+    public void enqueueRemovedNodes(NodeRef... nodes)
+    {
+        enqueueNodes(true, nodes);
+    }
+
+    public void enqueueRemovedNodes(Collection<NodeRef> nodes)
+    {
+        enqueueRemovedNodes(nodes.toArray(new NodeRef[nodes.size()]));
+    }
+
+    public void enqueueNodes(boolean remove, final NodeRef... nodes)
+    {
         if ((nodes != null) && (nodes.length > 0))
         {
             if (log.isDebugEnabled())
@@ -137,30 +157,14 @@ public class PublishServiceImpl implements PublishService
                     props.put(ContentModel.PROP_NAME, name);
                     //Storing noderefs of deleted nodes doesn't work, so we'll store a text representation instead...
                     props.put(WebSiteModel.PROP_QUEUED_NODE, node.toString());
+                    props.put(WebSiteModel.PROP_QUEUED_NODE_FOR_REMOVAL, remove);
                     nodeService.createNode(publishingQueue, ContentModel.ASSOC_CONTAINS, QName.createQName(
                             WebSiteModel.NAMESPACE, name), WebSiteModel.TYPE_PUBLISH_QUEUE_ENTRY, props);
                 }
             }
         }
     }
-
-    public void enqueuePublishedNodes(Collection<NodeRef> nodes)
-    {
-        enqueuePublishedNodes(nodes.toArray(new NodeRef[nodes.size()]));
-    }
-
-    public void enqueueRemovedNodes(NodeRef... nodes)
-    {
-        // Currently handles in the same way as published nodes.
-        enqueuePublishedNodes(nodes);
-    }
-
-    public void enqueueRemovedNodes(Collection<NodeRef> nodes)
-    {
-        // Currently handles in the same way as published nodes.
-        enqueuePublishedNodes(nodes);
-    }
-
+    
     public void publishQueue(final NodeRef websiteId)
     {
         if (websiteId == null)
@@ -180,6 +184,7 @@ public class PublishServiceImpl implements PublishService
             pathMapper.addPathMapping(sourcePath, targetPath);
 
             Set<NodeRef> nodesToTransfer = new HashSet<NodeRef>(89);
+            Set<NodeRef> nodesToRemoveOnTransfer = new HashSet<NodeRef>(89);
             NodeRef queue = siteHelper.getWebSiteContainer(websiteId, PUBLISH_QUEUE_NAME);
             if (queue != null)
             {
@@ -189,7 +194,15 @@ public class PublishServiceImpl implements PublishService
                 {
                     NodeRef queueEntry = assoc.getChildRef();
                     NodeRef node = new NodeRef((String) nodeService.getProperty(queueEntry, WebSiteModel.PROP_QUEUED_NODE));
-                    nodesToTransfer.add(node);
+                    boolean remove = (Boolean) nodeService.getProperty(queueEntry, WebSiteModel.PROP_QUEUED_NODE_FOR_REMOVAL);
+                    if (remove)
+                    {
+                        nodesToRemoveOnTransfer.add(node);
+                    }
+                    else
+                    {
+                        nodesToTransfer.add(node);
+                    }
                 }
                 if (!nodesToTransfer.isEmpty())
                 {
@@ -198,6 +211,7 @@ public class PublishServiceImpl implements PublishService
                         log.debug("PublishService is about to crawl these nodes: " + nodesToTransfer);
                     }
                     //Given the nodes that have been supplied, find any others that we will want to transfer too
+                    // (note that we don't do any crawling of nodes that are to be removed)
                     NodeCrawler crawler = nodeCrawlerFactory.getNodeCrawler();
                     configureNodeCrawler(crawler);
                     nodesToTransfer = crawler.crawl(nodesToTransfer);
@@ -209,6 +223,7 @@ public class PublishServiceImpl implements PublishService
                     
                     TransferDefinition def = new TransferDefinition();
                     def.setNodes(nodesToTransfer);
+                    def.setNodesToRemove(nodesToRemoveOnTransfer);
                     Set<QName> aspectQNames = new HashSet<QName>();
                     for (String aspectToExclude : aspectsToExclude)
                     {

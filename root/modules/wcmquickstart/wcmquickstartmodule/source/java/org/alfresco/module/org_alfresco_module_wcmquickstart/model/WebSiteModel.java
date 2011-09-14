@@ -50,6 +50,7 @@ public interface WebSiteModel
     // ws:publishqueue type
     public static final QName TYPE_PUBLISH_QUEUE_ENTRY = QName.createQName(NAMESPACE, "publishqueueentry");
     public static final QName PROP_QUEUED_NODE = QName.createQName(NAMESPACE, "queuedNode");
+    public static final QName PROP_QUEUED_NODE_FOR_REMOVAL = QName.createQName(NAMESPACE, "queuedNodeForRemoval");
 
     // ws:section type
     public static final QName TYPE_SECTION = QName.createQName(NAMESPACE, "section");
@@ -128,7 +129,7 @@ public interface WebSiteModel
     public static final QName ASSOC_SECONDARY_IMAGE = QName.createQName(NAMESPACE, "secondaryImage");
 
     // Process details
-    public static final String PROCESS_READ_CONTACT = "jbpm$wswf:readContactProcess";
+    public static final String PROCESS_READ_CONTACT = "activiti$readContactProcess";
 
     public static final QName PROP_ORDER_INDEX = QName.createQName(NAMESPACE, "orderIndex");
     

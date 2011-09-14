@@ -92,13 +92,20 @@ public class WebPublishingManifestNodeFactory implements TransferManifestNodeFac
         this.nodeRefMapper = nodeRefMapper;
     }
 
+
+    @Override
     public TransferManifestNode createTransferManifestNode(NodeRef nodeRef, TransferDefinition definition)
+    {
+        return createTransferManifestNode(nodeRef, definition, false);
+    }
+
+    public TransferManifestNode createTransferManifestNode(NodeRef nodeRef, TransferDefinition definition, boolean forceDelete)
     {
         Date now = new Date();
         TransferManifestNode newNode = preProcess(nodeRef);
         if (newNode == null)
         {
-            newNode = realFactory.createTransferManifestNode(nodeRef, definition);
+            newNode = realFactory.createTransferManifestNode(nodeRef, definition, forceDelete);
         }
 
         long start = 0L;

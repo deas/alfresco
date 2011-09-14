@@ -159,6 +159,10 @@
                     <title>Node identifier</title>
                     <type>d:text</type>
                 </property>
+                <property name="ws:queuedNodeForRemoval">
+                    <title>To be removed</title>
+                    <type>d:boolean</type>
+                </property>
             </properties>
         </type>
 
