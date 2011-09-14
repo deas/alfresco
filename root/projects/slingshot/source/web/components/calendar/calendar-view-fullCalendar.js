@@ -344,14 +344,19 @@
       {
          // Map FullCalendar event object back to an Alfresco Event object:
          // For now this is in the same format as the EventInfo form submits - except it uses the ISO8601 datetime strings to help with timezone support.
-         // TODO: Update API to accept the same event objects they send out (with Event Dialogue refactor).
          var end = event.end || event.start, // event.end is null for all day events that only span a single day
             alfEvent =
             {
                desc: event.description,
                docfolder: event.docfolder || "",
-               startAt: event.start,
-               endAt: end,
+               startAt:
+               {
+                  iso8601: event.start
+               },
+               endAt:
+               {
+                  iso8601: end
+               },
                page: Alfresco.constants.PAGEID,
                site: Alfresco.constants.SITE,
                tags: (event.tags) ? event.tags.join( ) : "",
