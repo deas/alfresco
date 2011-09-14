@@ -129,7 +129,7 @@
 <#else>
    <div class="node-header">
       <div class="status-banner theme-bg-color-2 theme-border-4">
-      ${msg("banner.${itemType}-not-found")}
+      ${msg("banner.not-found")}
       </div>
    </div>
 </#if>
