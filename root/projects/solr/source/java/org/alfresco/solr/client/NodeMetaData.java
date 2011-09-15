@@ -47,6 +47,7 @@ public class NodeMetaData
     private List<Long> childIds;
     private String owner;
     private long txnId;
+    private Set<NodeRef> ancestors;
     
     public long getId()
     {
@@ -158,14 +159,23 @@ public class NodeMetaData
     {
         this.txnId = txnId;
     }
+    public Set<NodeRef> getAncestors()
+    {
+        return ancestors;
+    }
+    public void setAncestors(Set<NodeRef> ancestors)
+    {
+        this.ancestors = ancestors;
+    }
     @Override
     public String toString()
     {
         return "NodeMetaData [id="
                 + id + ", nodeRef=" + nodeRef + ", type=" + type + ", aclId=" + aclId + ", properties=" + properties + ", aspects=" + aspects + ", paths=" + paths
                 + ", parentAssocsCrc=" + parentAssocsCrc + ", parentAssocs=" + parentAssocs + ", childAssocs=" + childAssocs + ", childIds=" + childIds + ", owner=" + owner
-                + ", txnId=" + txnId + "]";
+                + ", txnId=" + txnId + ", ancestors=" + ancestors + "]";
     }
+  
   
    
 }

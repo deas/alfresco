@@ -24,6 +24,8 @@ import java.util.Set;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.AnalysisMode;
+import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.QueryModelException;
@@ -32,8 +34,12 @@ import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderCo
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * @author andyh
@@ -82,38 +88,17 @@ public class LuceneChild extends Child implements LuceneQueryBuilderComponent
         NodeRef nodeRef;
         if(NodeRef.isNodeRef(id))
         {
-            nodeRef = new NodeRef(id);
+            nodeRef= new NodeRef(id);
+            Query query = lqp.getFieldQuery("PARENT", nodeRef.toString());
+            return query;
+            
         }
+        
         else
         {
-            int lastIndex = id.lastIndexOf('/');
-            String versionLabel = id.substring(lastIndex+1);
-            String actualId = id.substring(0, lastIndex);
-            if(NodeRef.isNodeRef(actualId))
-            {
-                nodeRef = new NodeRef(actualId);
-                Serializable value = functionContext.getNodeService().getProperty(nodeRef, ContentModel.PROP_VERSION_LABEL);
-                if (value != null)
-                {
-                    String actualVersionLabel = DefaultTypeConverter.INSTANCE.convert(String.class, value);
-                    if(!actualVersionLabel.equals(versionLabel))
-                    {
-                        throw new QueryModelException("Object id does not refer to the current version"+id);
-                    }
-                }
-            }
-            else
-            {
-                throw new QueryModelException("Invalid Object Id "+id);
-            }
+            throw new QueryModelException("Invalid Object Id "+id);
         }
-        if(!functionContext.getNodeService().exists(nodeRef))
-        {
-            throw new QueryModelException("Object does not exist: "+id); 
-        }
-        Query query = lqp.getFieldQuery("PARENT", nodeRef.toString());
-        return query;
-
+       
     }
 
 }

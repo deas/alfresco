@@ -63,6 +63,7 @@ import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.namespace.QName;
@@ -1853,10 +1854,18 @@ public class CoreTracker implements CloseHook
                     aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
                     aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
                     aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+                    
                 }
             }
             aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
             aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
+        }
+        if(nodeMetaData.getAncestors() != null)
+        {
+            for(NodeRef ancestor : nodeMetaData.getAncestors())
+            {
+                aux.addField(AbstractLuceneQueryParser.FIELD_ANCESTOR, ancestor.toString());
+            }
         }
         return aux;
     }

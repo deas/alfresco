@@ -866,6 +866,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 return createTagQuery(queryText);
             }
+            else if (field.equals(FIELD_ANCESTOR))
+            {
+                return createAncestorQuery(queryText);
+            }
             else
             {
                 return getFieldQueryImpl(field, queryText, analysisMode, luceneFunction);
@@ -879,6 +883,11 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
 
     }
 
+    
+    protected Query createAncestorQuery(String queryText) throws ParseException
+    {
+        return createNodeRefQuery(FIELD_ANCESTOR, queryText);
+    }
     
     /**
      * @param tag (which will then be ISO9075 encoded)

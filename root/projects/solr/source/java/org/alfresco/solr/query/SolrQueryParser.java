@@ -170,6 +170,12 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         Query query = super.createPrimaryParentQuery(queryText);
         return new SolrCachingAuxDocQuery(query);
     }
+    
+    protected Query create(String queryText)
+    {
+        Query query = super.createPrimaryParentQuery(queryText);
+        return new SolrCachingAuxDocQuery(query);
+    }
 
     /**
      * @param arg0
@@ -517,6 +523,15 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
     protected boolean isLucene()
     {
         return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#createAncestorQuery(java.lang.String)
+     */
+    protected Query createAncestorQuery(String queryText) throws ParseException
+    {
+        Query query = super.createAncestorQuery(queryText);
+        return new SolrCachingAuxDocQuery(query);
     }
 
 }

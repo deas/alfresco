@@ -87,36 +87,27 @@ public class LuceneDescendant extends Descendant implements LuceneQueryBuilderCo
         }
         else
         {
-            int lastIndex = id.lastIndexOf('/');
-            String versionLabel = id.substring(lastIndex+1);
-            String actualId = id.substring(0, lastIndex);
-            if(NodeRef.isNodeRef(actualId))
-            {
-                nodeRef = new NodeRef(actualId);
-                Serializable value = functionContext.getNodeService().getProperty(nodeRef, ContentModel.PROP_VERSION_LABEL);
-                if (value != null)
-                {
-                    String actualVersionLabel = DefaultTypeConverter.INSTANCE.convert(String.class, value);
-                    if(!actualVersionLabel.equals(versionLabel))
-                    {
-                        throw new QueryModelException("Object id does not refer to the current version"+id);
-                    }
-                }
-            }
-            else
-            {
-                throw new QueryModelException("Invalid Object Id "+id);
-            }
+            throw new QueryModelException("Invalid Object Id "+id);
         }
-        if(!functionContext.getNodeService().exists(nodeRef))
+        // Lucene world 
+        if(functionContext.getNodeService() != null)
         {
-            throw new QueryModelException("Object does not exist: "+id); 
+            if(!functionContext.getNodeService().exists(nodeRef))
+            {
+                throw new QueryModelException("Object does not exist: "+id); 
+            }
+            Path path = functionContext.getNodeService().getPath(nodeRef);
+            StringBuilder builder = new StringBuilder(path.toPrefixString(luceneContext.getNamespacePrefixResolver()));
+            builder.append("//*");
+            Query query = lqp.getFieldQuery("PATH", builder.toString());
+            return query;
         }
-        Path path = functionContext.getNodeService().getPath(nodeRef);
-        StringBuilder builder = new StringBuilder(path.toPrefixString(luceneContext.getNamespacePrefixResolver()));
-        builder.append("//*");
-        Query query = lqp.getFieldQuery("PATH", builder.toString());
-        return query;
+        // SOLR
+        else
+        {
+            Query query = lqp.getFieldQuery("ANCESTOR", nodeRef.toString());
+            return query;
+        }
         
     }
     

@@ -768,6 +768,19 @@ public class SOLRAPIClient
                 }
                 metaData.setPaths(paths);
             }
+            
+            if(jsonNodeInfo.has("ancestors"))
+            {
+                JSONArray jsonAncestors = jsonNodeInfo.getJSONArray("ancestors");
+                HashSet<NodeRef> ancestors = new HashSet<NodeRef>(jsonAncestors.length());
+                for(int j = 0; j < jsonAncestors.length(); j++)
+                {
+                    String ancestorNodeRefString = jsonAncestors.getString(j);
+                    NodeRef ancestorNodeRef = new NodeRef(ancestorNodeRefString);
+                    ancestors.add(ancestorNodeRef);
+                }
+                metaData.setAncestors(ancestors);
+            }
 
             if(jsonNodeInfo.has("properties"))
             {
