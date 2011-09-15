@@ -196,9 +196,6 @@
          <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
       </patternset>
       <patternset id="files.tests">
-         <exclude name="**/RepoTransferReceiverImplTest.java" />    <!-- ALF-10329: Test disabled: RepoTransferReceiverImplTest  -->
-         <exclude name="**/TransferManifestTest.java" />            <!-- ALF-10328: Test disabled: TransferManifestTest -->
-
          <!-- System Build Tests (runs using embedded Jetty) -->
          <exclude name="**/*SystemTest.java" />
 
