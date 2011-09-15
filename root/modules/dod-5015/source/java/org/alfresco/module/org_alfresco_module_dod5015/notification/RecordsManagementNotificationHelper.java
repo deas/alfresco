@@ -35,6 +35,8 @@ import org.alfresco.service.cmr.notification.NotificationService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.cmr.site.SiteInfo;
+import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.util.ParameterCheck;
 import org.springframework.extensions.surf.util.I18NUtil;
@@ -50,6 +52,9 @@ public class RecordsManagementNotificationHelper
     /** I18n */
     private static final String MSG_SUBJECT_RECORDS_DUE_FOR_REVIEW = "notification.dueforreview.subject";
     private static final String MSG_SUBJECT_RECORD_SUPERCEDED = "notification.superseded.subject";
+    
+    /** Defaults */
+    private static final String DEFAULT_SITE = "rm";
 
     /** Services */
     private NotificationService notificationService;
@@ -58,6 +63,7 @@ public class RecordsManagementNotificationHelper
     private Repository repositoryHelper;
     private SearchService searchService;
     private NamespaceService namespaceService;
+    private SiteService siteService;
     
     /** Notification role */
     private String notificationRole;
@@ -124,6 +130,14 @@ public class RecordsManagementNotificationHelper
     }
     
     /**
+     * @param siteService   site service
+     */
+    public void setSiteService(SiteService siteService)
+    {
+        this.siteService = siteService;
+    }
+    
+    /**
      * @return  superseded email template
      */
     public NodeRef getSupersededTemplate()
@@ -153,15 +167,17 @@ public class RecordsManagementNotificationHelper
     }
     
     /**
+     * Sends records due for review email notification.
      * 
-     * @param records
-     * @param roleName
+     * @param records   records due for review
      */
     public void recordsDueForReviewEmailNotification(final List<NodeRef> records)
     {
         ParameterCheck.mandatory("records", records);
         if (records.isEmpty() == false)
         {
+            NodeRef root = getRMRoot(records.get(0));
+            
             NotificationContext notificationContext = new NotificationContext();
             notificationContext.setSubject(I18NUtil.getMessage(MSG_SUBJECT_RECORDS_DUE_FOR_REVIEW));
             notificationContext.setAsyncNotification(false);
@@ -170,9 +186,10 @@ public class RecordsManagementNotificationHelper
             notificationContext.setBodyTemplate(getDueForReviewTemplate());
             Map<String, Serializable> args = new HashMap<String, Serializable>(1, 1.0f);
             args.put("records", (Serializable)records); 
+            args.put("site", getSiteName(root));
             notificationContext.setTemplateArgs(args);
             
-            String groupName = getGroupName(records.get(0));
+            String groupName = getGroupName(root);
             notificationContext.addTo(groupName);        
             
             notificationService.sendNotification(EMailNotificationProvider.NAME, notificationContext);
@@ -180,12 +197,15 @@ public class RecordsManagementNotificationHelper
     }    
     
     /**
+     * Sends record superseded email notification.
      * 
-     * @param record
+     * @param record    superseded record
      */
     public void recordSupersededEmailNotification(final NodeRef record)
     {
-        ParameterCheck.mandatory("record", record);   
+        ParameterCheck.mandatory("record", record);  
+        
+        NodeRef root = getRMRoot(record);
         
         NotificationContext notificationContext = new NotificationContext();
         notificationContext.setSubject(I18NUtil.getMessage(MSG_SUBJECT_RECORD_SUPERCEDED));
@@ -194,21 +214,43 @@ public class RecordsManagementNotificationHelper
         
         notificationContext.setBodyTemplate(supersededTemplate);
         Map<String, Serializable> args = new HashMap<String, Serializable>(1, 1.0f);
-        args.put("record", record); 
+        args.put("record", record);  
+        args.put("site", getSiteName(root));
         notificationContext.setTemplateArgs(args);
         
-        String groupName = getGroupName(record);
+        String groupName = getGroupName(root);
         notificationContext.addTo(groupName);        
         
         notificationService.sendNotification(EMailNotificationProvider.NAME, notificationContext);
     }
     
     /**
+     * Gets the rm root given a context node.
      * 
-     * @param context
-     * @return
+     * @param context   context node reference
+     * @return {@link NodeRef}  rm root node reference
      */
-    private String getGroupName(final NodeRef context)
+    private NodeRef getRMRoot(final NodeRef context)
+    {
+        return AuthenticationUtil.runAs(new RunAsWork<NodeRef>()
+        {
+            @Override
+            public NodeRef doWork() throws Exception
+            {
+                return recordsManagementService.getRecordsManagementRoot(context);
+                
+            }
+        }, AuthenticationUtil.getSystemUserName());
+        
+    }
+    
+    /**
+     * Gets the group name for the notification role.
+     * 
+     * @param root  rm root node
+     * @return String   notification role's group name
+     */
+    private String getGroupName(final NodeRef root)
     {
         return AuthenticationUtil.runAs(new RunAsWork<String>()
         {
@@ -216,10 +258,36 @@ public class RecordsManagementNotificationHelper
             public String doWork() throws Exception
             {
                 // Find the authority for the given role
-                NodeRef root = recordsManagementService.getRecordsManagementRoot(context);
                 Role role = securityService.getRole(root, notificationRole);
                 return role.getRoleGroupName();
             }
         }, AuthenticationUtil.getSystemUserName());
+    }
+    
+    /**
+     * Get the site name, default if none/undetermined.
+     * 
+     * @param root  rm root
+     * @return String   site name
+     */
+    private String getSiteName(final NodeRef root)
+    {
+        return AuthenticationUtil.runAs(new RunAsWork<String>()
+        {
+            @Override
+            public String doWork() throws Exception
+            {
+                String result = DEFAULT_SITE;
+                
+                SiteInfo siteInfo = siteService.getSite(root);
+                if (siteInfo != null)
+                {
+                    result = siteInfo.getShortName();
+                }
+                
+                return result;
+            }
+        }, AuthenticationUtil.getSystemUserName());
+        
     }
 }

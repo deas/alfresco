@@ -365,8 +365,9 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     }
     
     /**
+     * Gets a map containing all the customisable types
      * 
-     * @return
+     * @return  map from the customisable type to its custom aspect
      */
     private Map<QName, QName> getCustomisableMap()
     {

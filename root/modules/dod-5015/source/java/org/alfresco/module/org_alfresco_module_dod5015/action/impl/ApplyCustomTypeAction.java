@@ -35,6 +35,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * This class applies the aspect specified in the spring bean property customTypeAspect.
@@ -44,6 +45,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ApplyCustomTypeAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_ACTIONED_UPON_NOT_RECORD = "rm.action.actioned-upon-not-record";    
+    private static final String MSG_CUSTOM_ASPECT_NOT_RECOGNISED = "rm.action.custom-aspect-not-recognised";
+    
     private static Log logger = LogFactory.getLog(ApplyCustomTypeAction.class);
     private QName customTypeAspect;
     private List<ParameterDefinition> parameterDefinitions;
@@ -116,7 +121,7 @@ public class ApplyCustomTypeAction extends RMActionExecuterAbstractBase
         {
             if (throwException)
             {
-                throw new AlfrescoRuntimeException("Can only execute this action [" + this.getClass().getSimpleName() + "] on a Record. (" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_ACTIONED_UPON_NOT_RECORD, this.getClass().getSimpleName(), filePlanComponent.toString()));
             }
             else
             {
@@ -134,7 +139,7 @@ public class ApplyCustomTypeAction extends RMActionExecuterAbstractBase
             AspectDefinition aspectDefinition = dictionaryService.getAspect(customTypeAspect);
             if (aspectDefinition == null)
             {
-                throw new AlfrescoRuntimeException("Unrecognised customTypeAspect: " + customTypeAspect);
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CUSTOM_ASPECT_NOT_RECOGNISED, customTypeAspect));
             }
             
             Map<QName, PropertyDefinition> props = aspectDefinition.getProperties();

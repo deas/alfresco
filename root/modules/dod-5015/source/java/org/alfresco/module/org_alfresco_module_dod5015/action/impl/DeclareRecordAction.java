@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -39,6 +39,7 @@ import org.alfresco.service.cmr.security.OwnableService;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Declare record action
@@ -47,6 +48,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DeclareRecordAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_UNDECLARED_ONLY_RECORDS = "rm.action.undeclared-only-records";
+    private static final String MSG_NO_DECLARE_MAND_PROP = "rm.action.no-declare-mand-prop";
+    
     /** Logger */
     private static Log logger = LogFactory.getLog(DeclareRecordAction.class);
 
@@ -82,14 +87,15 @@ public class DeclareRecordAction extends RMActionExecuterAbstractBase
         }
         else
         {
-            throw new AlfrescoRuntimeException("Can only undeclare a record. (" + actionedUponNodeRef.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNDECLARED_ONLY_RECORDS, actionedUponNodeRef.toString()));
         }
     }
     
     private String buildMissingPropertiesErrorString(List<String> missingProperties)
     {
         StringBuilder builder = new StringBuilder(255);
-        builder.append("Can not declare record as not all mandatory properties have been set.  ");
+        builder.append(I18NUtil.getMessage(MSG_NO_DECLARE_MAND_PROP));
+        builder.append("  ");
         for (String missingProperty : missingProperties)            
         {
             builder.append(missingProperty)
@@ -153,6 +159,12 @@ public class DeclareRecordAction extends RMActionExecuterAbstractBase
         return result;
     }
 
+    /**
+     * Log information about missing properties.
+     * 
+     * @param propDef               property definition
+     * @param missingProperties     missing properties
+     */
     private void logMissingProperty(PropertyDefinition propDef, List<String> missingProperties)
     {
         if (logger.isWarnEnabled())
@@ -164,6 +176,9 @@ public class DeclareRecordAction extends RMActionExecuterAbstractBase
         missingProperties.add(propDef.getName().toString());
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase#getProtectedAspects()
+     */
     @Override
     public Set<QName> getProtectedAspects()
     {
@@ -172,6 +187,9 @@ public class DeclareRecordAction extends RMActionExecuterAbstractBase
         return qnames;
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase#isExecutableImpl(org.alfresco.service.cmr.repository.NodeRef, java.util.Map, boolean)
+     */
     @Override
     protected boolean isExecutableImpl(NodeRef filePlanComponent, Map<String, Serializable> parameters, boolean throwException)
     {
@@ -206,7 +224,7 @@ public class DeclareRecordAction extends RMActionExecuterAbstractBase
         {
             if (throwException)
             {
-                throw new AlfrescoRuntimeException("Can only undeclare a record. (" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNDECLARED_ONLY_RECORDS, filePlanComponent.toString()));
             }
             else
             {

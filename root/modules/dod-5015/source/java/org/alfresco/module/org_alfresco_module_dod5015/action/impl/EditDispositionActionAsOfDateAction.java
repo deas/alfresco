@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -34,17 +34,24 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
- * Edit review as of date action
+ * Edit review as of date action.
  * 
  * @author Roy Wetherall
  */
 public class EditDispositionActionAsOfDateAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_VALID_DATE_DISP_ASOF = "rm.action.valid-date-disp-asof";
+    private static final String MSG_DISP_ASOF_LIFECYCLE_APPLIED = "rm.action.disp-asof-lifecycle-applied";
+    
+    /** Logger */
     @SuppressWarnings("unused")
     private static Log logger = LogFactory.getLog(EditDispositionActionAsOfDateAction.class);
     
+    /** Action parameters */
     public static final String PARAM_AS_OF_DATE = "asOfDate";
 
     /**
@@ -60,7 +67,7 @@ public class EditDispositionActionAsOfDateAction extends RMActionExecuterAbstrac
             Date asOfDate = (Date)action.getParameterValue(PARAM_AS_OF_DATE);
             if (asOfDate == null)
             {
-                throw new AlfrescoRuntimeException("Must specify a valid date when setting the disposition action as of date.");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_VALID_DATE_DISP_ASOF));
             }
             
             // Set the dispostion action as of date
@@ -73,7 +80,6 @@ public class EditDispositionActionAsOfDateAction extends RMActionExecuterAbstrac
     }
 
     /**
-     * 
      * @see org.alfresco.repo.action.ParameterizedItemAbstractBase#addParameterDefinitions(java.util.List)
      */
     @Override
@@ -82,6 +88,9 @@ public class EditDispositionActionAsOfDateAction extends RMActionExecuterAbstrac
         // Intentionally empty
     }
     
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase#getProtectedProperties()
+     */
     @Override
     public Set<QName> getProtectedProperties()
     {
@@ -90,6 +99,9 @@ public class EditDispositionActionAsOfDateAction extends RMActionExecuterAbstrac
         return qnames;
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase#isExecutableImpl(org.alfresco.service.cmr.repository.NodeRef, java.util.Map, boolean)
+     */
     @Override
     protected boolean isExecutableImpl(NodeRef filePlanComponent, Map<String, Serializable> parameters, boolean throwException)
     {
@@ -102,7 +114,7 @@ public class EditDispositionActionAsOfDateAction extends RMActionExecuterAbstrac
         {
             if (throwException == true)
             {
-                throw new AlfrescoRuntimeException("Can only edit the disposition as of date of a record or record folder with a lifecycle applied.");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_DISP_ASOF_LIFECYCLE_APPLIED));
             }
         }
         return result;

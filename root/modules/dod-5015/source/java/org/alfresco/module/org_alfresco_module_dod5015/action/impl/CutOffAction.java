@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -31,6 +31,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RMDispositionActio
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Cut off disposition action
@@ -39,6 +40,8 @@ import org.alfresco.service.namespace.QName;
  */
 public class CutOffAction extends RMDispositionActionExecuterAbstractBase
 {
+    private static final String MSG_ERR = "rm.action.close-record-folder-not-folder";
+    
     /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMDispositionActionExecuterAbstractBase#executeRecordFolderLevelDisposition(org.alfresco.service.cmr.action.Action, org.alfresco.service.cmr.repository.NodeRef)
      */
@@ -123,7 +126,7 @@ public class CutOffAction extends RMDispositionActionExecuterAbstractBase
         {
             if (throwException)
             {
-                throw new AlfrescoRuntimeException("Can not close a node unless it is a record folder. (" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_ERR, filePlanComponent.toString()));
             }
             else
             {

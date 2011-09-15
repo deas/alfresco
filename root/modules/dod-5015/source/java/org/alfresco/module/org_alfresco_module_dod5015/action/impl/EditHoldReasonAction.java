@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -28,6 +28,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAb
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Edit freeze reason Action
@@ -36,6 +37,9 @@ import org.alfresco.service.namespace.QName;
  */
 public class EditHoldReasonAction extends RMActionExecuterAbstractBase
 {
+    private static final String MSG_HOLD_EDIT_REASON_NONE = "rm.action.hold-edit-reason-none";
+    private static final String MSG_HOLD_EDIT_TYPE = "rm.action.hold-edit-type";
+    
     /** Parameter names */
     public static final String PARAM_REASON = "reason";
     
@@ -52,7 +56,7 @@ public class EditHoldReasonAction extends RMActionExecuterAbstractBase
             String reason = (String)action.getParameterValue(PARAM_REASON);
             if (reason == null || reason.length() == 0)
             {
-                throw new AlfrescoRuntimeException("Can not edit freeze reason since no reason has been given.");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_HOLD_EDIT_REASON_NONE));
             }
             
             // Set the hold reason
@@ -61,11 +65,13 @@ public class EditHoldReasonAction extends RMActionExecuterAbstractBase
         }
         else
         {
-            throw new AlfrescoRuntimeException("Can not edit a hold reason on a node that is not of type " + TYPE_HOLD.toString() + 
-                                               "(" + actionedUponNodeRef.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_HOLD_EDIT_TYPE, TYPE_HOLD.toString(), actionedUponNodeRef.toString()));
         }                
     }
     
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase#getProtectedAspects()
+     */
     @Override
     public Set<QName> getProtectedAspects()
     {
@@ -74,6 +80,9 @@ public class EditHoldReasonAction extends RMActionExecuterAbstractBase
         return qnames;
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase#getProtectedProperties()
+     */
     @Override
     public Set<QName> getProtectedProperties()
     {
@@ -82,6 +91,9 @@ public class EditHoldReasonAction extends RMActionExecuterAbstractBase
         return qnames;
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase#isExecutableImpl(org.alfresco.service.cmr.repository.NodeRef, java.util.Map, boolean)
+     */
     @Override
     protected boolean isExecutableImpl(NodeRef filePlanComponent, Map<String, Serializable> parameters, boolean throwException)
     {
@@ -94,8 +106,7 @@ public class EditHoldReasonAction extends RMActionExecuterAbstractBase
         {
             if(throwException)
             {
-                throw new AlfrescoRuntimeException("Can not edit hold reason on a node that is not of type " + TYPE_HOLD.toString() + 
-                    "(" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_HOLD_EDIT_TYPE, TYPE_HOLD.toString(), filePlanComponent.toString()));
             }
             else
             {

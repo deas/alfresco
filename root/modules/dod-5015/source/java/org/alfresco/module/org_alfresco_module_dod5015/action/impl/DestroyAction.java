@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -37,32 +37,49 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
- * Destroy action
+ * Destroy action.
  * 
  * @author Roy Wetherall
  */
-public class DestroyAction extends RMDispositionActionExecuterAbstractBase implements
-        ContentServicePolicies.OnContentUpdatePolicy, InitializingBean
+public class DestroyAction extends RMDispositionActionExecuterAbstractBase 
+                           implements ContentServicePolicies.OnContentUpdatePolicy, 
+                                      InitializingBean
 {
+    /** I18N */
+    private static final String MSG_GHOSTED_PROP_UPDATE = "rm.action.ghosted-prop-update";
+   
+    /** Policy component */
     private PolicyComponent policyComponent;
+    
+    /** Indicates if ghosting is enabled or not */
     private boolean ghostingEnabled = true;
 
+    /**
+     * @param policyComponent   policy component
+     */
     public void setPolicyComponent(PolicyComponent policyComponent)
     {
         this.policyComponent = policyComponent;
     }
 
+    /**
+     * @param ghostingEnabled   true if ghosting is enabled, false otherwise
+     */
     public void setGhostingEnabled(boolean ghostingEnabled)
     {
         this.ghostingEnabled = ghostingEnabled;
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMDispositionActionExecuterAbstractBase#executeRecordFolderLevelDisposition(org.alfresco.service.cmr.action.Action, org.alfresco.service.cmr.repository.NodeRef)
+     */
     @Override
     protected void executeRecordFolderLevelDisposition(Action action, NodeRef recordFolder)
     {
-        if (ghostingEnabled)
+        if (ghostingEnabled == true)
         {
             nodeService.addAspect(recordFolder, DOD5015Model.ASPECT_GHOSTED, Collections.<QName, Serializable> emptyMap());  
         }
@@ -78,6 +95,9 @@ public class DestroyAction extends RMDispositionActionExecuterAbstractBase imple
         }
     }
 
+    /**
+     * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMDispositionActionExecuterAbstractBase#executeRecordLevelDisposition(org.alfresco.service.cmr.action.Action, org.alfresco.service.cmr.repository.NodeRef)
+     */
     @SuppressWarnings("deprecation")
     @Override
     protected void executeRecordLevelDisposition(Action action, NodeRef record)
@@ -136,26 +156,24 @@ public class DestroyAction extends RMDispositionActionExecuterAbstractBase imple
         }
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see
-     * org.alfresco.repo.content.ContentServicePolicies.OnContentUpdatePolicy#onContentUpdate(org.alfresco.service.cmr
-     * .repository.NodeRef, boolean)
+     * org.alfresco.repo.content.ContentServicePolicies.OnContentUpdatePolicy#onContentUpdate(org.alfresco.service.cmr.repository.NodeRef, boolean)
      */
     public void onContentUpdate(NodeRef nodeRef, boolean newContent)
     {
-        throw new AlfrescoRuntimeException("Update of content properties not allowed when node has "
-                + DOD5015Model.ASPECT_GHOSTED + " aspect.");
+        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_GHOSTED_PROP_UPDATE));
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     public void afterPropertiesSet() throws Exception
     {
         // Register interest in the onContentUpdate policy
-        policyComponent.bindClassBehaviour(ContentServicePolicies.ON_CONTENT_UPDATE,
-                DOD5015Model.ASPECT_GHOSTED, new JavaBehaviour(this, "onContentUpdate"));
+        policyComponent.bindClassBehaviour(
+                ContentServicePolicies.OnContentUpdatePolicy.QNAME,
+                DOD5015Model.ASPECT_GHOSTED, 
+                new JavaBehaviour(this, "onContentUpdate"));
     }
 }

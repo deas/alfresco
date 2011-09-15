@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -30,6 +30,7 @@ import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Action to close the records folder
@@ -38,6 +39,9 @@ import org.alfresco.service.namespace.QName;
  */
 public class CloseRecordFolderAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_CLOSE_RECORD_FOLDER_NOT_FOLDER = "rm.action.close-record-folder-not-folder";
+    
     /**
      * @see org.alfresco.repo.action.executer.ActionExecuterAbstractBase#executeImpl(org.alfresco.service.cmr.action.Action, org.alfresco.service.cmr.repository.NodeRef)
      */
@@ -56,7 +60,7 @@ public class CloseRecordFolderAction extends RMActionExecuterAbstractBase
         }
         else
         {
-            throw new AlfrescoRuntimeException("Can not close a node unless it is a record folder. (" + actionedUponNodeRef.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CLOSE_RECORD_FOLDER_NOT_FOLDER, actionedUponNodeRef.toString()));
         }
     }
 
@@ -89,7 +93,7 @@ public class CloseRecordFolderAction extends RMActionExecuterAbstractBase
         {
             if (throwException)
             {
-                throw new AlfrescoRuntimeException("Can not close a node unless it is a record folder. (" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_CLOSE_RECORD_FOLDER_NOT_FOLDER, filePlanComponent.toString()));
             }
             else
             {

@@ -35,7 +35,7 @@
                                                 </td>
                                                 <td>
                                                    <div style="font-size: 22px; padding-bottom: 4px;">
-                                                      A record has been superseded.
+                                                      Superseded record.
                                                    </div>
                                                    <div style="font-size: 13px;">
                                                       ${date?datetime?string.full}
@@ -54,7 +54,7 @@
                                                       <table cellpadding="0" cellspacing="0" border="0">
                                                          <tr>
                                                             <td valign="top">
-                                                               <img src="${shareUrl}/res/components/documentlibrary/images/record-32.png" alt="" width="64" height="64" border="0" style="padding-right: 10px;" />
+                                                               <img src="${shareUrl}/res/components/documentlibrary/images/record-64.png" alt="" width="64" height="64" border="0" style="padding-right: 10px;" />
                                                             </td>
                                                             <td>
                                                                <table cellpadding="2" cellspacing="0" border="0">
@@ -66,8 +66,8 @@
                                                                   </tr>
                                                                   <tr>
                                                                      <td>
-                                                                        <a href="${shareUrl}/page/site/rm/document-details?nodeRef=${args.record.storeType}://${args.record.storeId}/${args.record.id}">
-                                                                        ${shareUrl}/page/site/rm/document-details?nodeRef=${args.record.storeType}://${args.record.storeId}/${args.record.id}</a>
+                                                                        <a href="${shareUrl}/page/site/${args.site}/document-details?nodeRef=${args.record.storeType}://${args.record.storeId}/${args.record.id}">
+                                                                        ${shareUrl}/page/site/${args.site}/document-details?nodeRef=${args.record.storeType}://${args.record.storeId}/${args.record.id}</a>
                                                                      </td>
                                                                   </tr>
                                                                </table>

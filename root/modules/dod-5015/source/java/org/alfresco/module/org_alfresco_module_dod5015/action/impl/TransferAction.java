@@ -168,7 +168,8 @@ public class TransferAction extends RMDispositionActionExecuterAbstractBase
        {
            ContentData contentData = (ContentData)nodeService.getProperty(dispositionLifeCycleNodeRef, ContentModel.PROP_CONTENT);
            if (contentData != null &&
-               (MimetypeMap.MIMETYPE_PDF.equals(contentData.getMimetype()) == true || nodeService.hasAspect(dispositionLifeCycleNodeRef, DOD5015Model.ASPECT_PDF_RECORD)))
+               (MimetypeMap.MIMETYPE_PDF.equals(contentData.getMimetype()) == true || 
+                nodeService.hasAspect(dispositionLifeCycleNodeRef, DOD5015Model.ASPECT_PDF_RECORD)))
            {
                // Set the property indicator
                nodeService.setProperty(transferNodeRef, PROP_TRANSFER_PDF_INDICATOR, true);
