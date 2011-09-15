@@ -111,7 +111,7 @@ var DocumentList =
                   sortOptions.push(
                   {
                      value: valueTokens[0],
-                     direction: valueTokens[1],
+                     direction: valueTokens[1] || null,
                      label: sortLabel
                   });
                }

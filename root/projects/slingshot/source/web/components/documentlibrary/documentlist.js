@@ -1660,36 +1660,36 @@
             desc += $html(record.displayName) + '</a></span>' + titleHTML + version + '</h3>';
 
             /**
-             *  Detailed View only: render using metadata template
+             *  Render using metadata template
              */
-            if (!scope.options.simpleView)
+            var metadataTemplate = record.metadataTemplate;
+            if (metadataTemplate && YAHOO.lang.isArray(metadataTemplate.lines))
             {
-               var metadataTemplate = record.metadataTemplate;
-
-               if (metadataTemplate && YAHOO.lang.isArray(metadataTemplate.lines))
+               var fnRenderTemplate = function fnRenderTemplate_substitute(p_key, p_value, p_meta)
                {
-                  var fnRenderTemplate = function fnRenderTemplate_substitute(p_key, p_value, p_meta)
+                  var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
+                     value = "";
+                      
+                  // render value from properties or custom renderer
+                  if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
                   {
-                     var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
-                        value = "";
-                        
-                     // render value from properties or custom renderer
-                     if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
-                     {
-                        value = scope.renderers[p_key].call(scope, record, label);
-                     }
-                     else
-                     {
-                        value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
-                     }
-
-                     return value;
-                  };
-
-                  var html;
-                  for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
+                     value = scope.renderers[p_key].call(scope, record, label);
+                  }
+                  else
                   {
-                     html = YAHOO.lang.substitute(metadataTemplate.lines[i].template, scope.renderers, fnRenderTemplate);
+                     value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
+                  }
+
+                  return value;
+               };
+
+               var html, line;
+               for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
+               {
+                  line = metadataTemplate.lines[i];
+                  if (!scope.options.simpleView || line.simpleView)
+                  {
+                     html = YAHOO.lang.substitute(line.template, scope.renderers, fnRenderTemplate);
                      if ($isValueSet(html))
                      {
                         desc += '<div class="detail">' + html + '</div>';
