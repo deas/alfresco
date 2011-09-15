@@ -69,7 +69,10 @@ div.separator
 .calendar-bar .yui-u.first {
   padding:0.5em 0 0.5em 0.5em;
 }
-.toolbar .yui-button {
+.toolbar .yui-button,
+div.toolbar .yui-radio-button-checked.yui-button-disabled,
+div.toolbar .yui-checkbox-button-checked.yui-button-disabled
+{
   background: url(images/toolbar-unchecked-gradient.gif) 0 0;
 }
 .toolbar .yui-button, .toolbar .yui-button .first-child {
@@ -79,10 +82,6 @@ div.separator
   background: url(images/toolbar-checked-gradient.gif) 0 0;
 }
 
-.toolbar .yui-radio-button-checked button, .toolbar .yui-checkbox-button-checked button{
-  color:#fff;
-}
-
 .toolbar .separator {
    float:left;
    margin-top: 12px;
@@ -90,9 +89,15 @@ div.separator
 
 .toolbar .prev-button
 {
-   margin-right:0;
+   margin-right:-4px;
 }
 .toolbar .next-button
 {
-   margin-left:0;
+   margin-left:-4px;
+}
+
+.toolbar .prev-button button,
+.toolbar .next-button button
+{
+   padding: 0 5px;
 }

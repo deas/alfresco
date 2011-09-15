@@ -155,10 +155,10 @@
       disableButtons : function(butIndex) 
       {
          var selectedButton = this.navButtonGroup.getButtons()[butIndex];
-         // disable buttons for agenda view only
          if (this.todayButton != null) // Note: Today button will be null if elements are hidden serverside
          {
-            if (selectedButton.get('label') === Alfresco.util.message('label.agenda', 'Alfresco.CalendarView')) 
+            // Disable Nav for Agenda view which uses a different navigation model
+            if (selectedButton.get('label') === Alfresco.util.message('label.agenda', 'Alfresco.CalendarView'))
             {
                this.todayButton.set('disabled', true);
                this.nextButton.set('disabled', true);
@@ -170,6 +170,17 @@
                this.nextButton.set('disabled', false);
                this.prevButton.set('disabled', false);
             }
+
+            // Work Hours button needs disabling in both month and agenda views.
+            if (selectedButton.get('label') === Alfresco.util.message('label.month', 'Alfresco.CalendarView') || selectedButton.get('label') === Alfresco.util.message('label.agenda', 'Alfresco.CalendarView'))
+            {
+               this.workHoursButton.set('disabled', true);
+            }
+            else
+            {
+               this.workHoursButton.set('disabled', false);
+            }
+
          }
       },
       _fireEvent: function(type)

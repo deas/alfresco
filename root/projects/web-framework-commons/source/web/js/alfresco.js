@@ -3510,6 +3510,7 @@ Alfresco.util.calI18nParams = function(oCal)
    oCal.cfg.setProperty("WEEKDAYS_SHORT", $msg("days.short").split(","));
    oCal.cfg.setProperty("WEEKDAYS_MEDIUM", $msg("days.medium").split(","));
    oCal.cfg.setProperty("WEEKDAYS_LONG", $msg("days.long").split(","));
+   oCal.cfg.setProperty("START_WEEKDAY", $msg("calendar.widget_config.start_weekday"))
 
    var monthPos = $msg("calendar.widget_config.my_label_month_position");
    if (monthPos.length !== 0)

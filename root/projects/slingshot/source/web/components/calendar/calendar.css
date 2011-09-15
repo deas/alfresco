@@ -175,8 +175,26 @@ div.boxOutline
    background-color: #999;
 }
 
-.yui-skin-default .yui-calendar td.calcell.today a {
-    background-color: #FFFFCC;
+.yui-skin-default .yui-calendar td.calcell.today a
+{
+   background-color: #FFFFCC;
+   color: #000000;
+}
+
+.yui-skin-default .yui-calendar td.calcell.today
+{
+   background-color: #FFFFFF;
+}
+
+
+.yui-skin-default .yui-calendar td.calcell.today.calcellhover
+{
+   background-color: #000000;
+}
+
+.yui-skin-default .yui-calendar td.calcell.today.calcellhover a
+{
+   color: #000000;
 }
 
 /* Day view styles */
