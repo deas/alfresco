@@ -23,11 +23,18 @@
 //]]></script>
 <div id="${el}-body" class="toolbar calendar-toolbar theme-bg-2">
    <div class="yui-ge calendar-bar">
-   	<div class="yui-u first theme-bg-1">
-   		<button id="${el}-today-button">${msg("button.today")}</button>
+      <#if role = "SiteCollaborator" || role = "SiteManager">
+         <div class="yui-u flat-button addEventContainer">
+            <div id="${el}-viewButtons" class="addEvent">
+               <button id="${el}-addEvent-button" name="addEvent">${msg("button.add-event")}</button>
+            </div>
+         </div>
          <span class="separator">&nbsp;</span>
+      </#if>
+      <div class="yui-u first theme-bg-1">
+   		<button id="${el}-today-button" class="today-button">${msg("button.today")}</button>
          <#if viewToolbarNav >
-            <button id="${el}-prev-button">${msg("button.previous")}</button>
+            <button id="${el}-prev-button" class="prev-button">${msg("button.previous")}</button>
 			</#if>
          <#if viewToolbarViewCount>
    			<div id="${el}-navigation" class="yui-buttongroup inline">
@@ -40,13 +47,6 @@
          </#if>
          <button id="${el}-workHours-button" name="workHours">${msg("button.work-hours")}</button>
 		</div>
-      <#if role = "SiteCollaborator" || role = "SiteManager">
-      <div class="yui-u flat-button addEventContainer">
-         <div id="${el}-viewButtons" class="addEvent">
-            <button id="${el}-addEvent-button" name="addEvent">${msg("button.add-event")}</button>
-         </div>
-      </div>
-      </#if>
       <div class="yui-u flat-button">
          <div class="ical-feed">
             <a id="${el}-publishEvents-button" href="${page.url.context}/proxy/alfresco-feed/calendar/eventList-${page.url.templateArgs["site"]}.ics?site=${page.url.templateArgs["site"]}&amp;format=calendar" rel="_blank">${msg("button.ical")}</a>

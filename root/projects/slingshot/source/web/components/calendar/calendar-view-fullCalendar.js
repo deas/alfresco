@@ -101,8 +101,6 @@
             Alfresco.logger.error("Alfresco.CalendarView: Couldn't initialize HistoryManager.", e);
          }
 
-
-
          // Prevent unnecessary DOM lookups and cache the jQuery object for the calendar container.
          $jCalendar = $('#' + this.options.id);
 
@@ -265,7 +263,11 @@
                      {
                         var parsedEvents = [];
                         if (data.events) {
-                           var filteredEvents = me.tagFilter(data.events)
+                           var filteredEvents = me.tagFilter(data.events);
+
+                           // trigger Mini Calendar's rendering:
+                           YAHOO.Bubbling.fire("eventDataLoad", filteredEvents);
+
                            $.each(filteredEvents, function(i, event)
                            {
                               // Map Alfresco Event object to FullCalendar Event Object (ensuring that existing properties are still present)
@@ -280,6 +282,7 @@
                               }, event));
                            });
                         }
+
                         return parsedEvents;
                      }
                   }

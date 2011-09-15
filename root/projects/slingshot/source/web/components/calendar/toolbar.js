@@ -91,7 +91,9 @@
             type: "link"
          });
          this.nextButton = Alfresco.util.createYUIButton(this, "next-button", this.onNextNav);
+         this.nextButton.addClass("next-button");
          this.prevButton = Alfresco.util.createYUIButton(this, "prev-button", this.onPrevNav);
+         this.prevButton.addClass("prev-button");
          this.todayButton = Alfresco.util.createYUIButton(this, "today-button", this.onTodayNav);
 
          this.workHoursButton = Alfresco.util.createYUIButton(this, "workHours-button", this.onToggleWorkHours,

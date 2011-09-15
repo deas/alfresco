@@ -175,6 +175,10 @@ div.boxOutline
    background-color: #999;
 }
 
+.yui-skin-default .yui-calendar td.calcell.today a {
+    background-color: #FFFFCC;
+}
+
 /* Day view styles */
 
 div.timeLabel
@@ -1462,8 +1466,7 @@ div.fullCalendar a.fc-event:hover
 }
 
 /* Remove pseudo rounded corners */
-div.fullCalendar .fc-corner-right .fc-event-inner,
-div.fullCalendar .fc-corner-left .fc-event-inner
+div.fullCalendar .fc-event-allday .fc-event-inner
 {
    border: none;
    margin: 0;
@@ -1505,6 +1508,11 @@ div.fullCalendar .fc-event-vert .fc-event-bg
    margin: 0 2px;
    padding: 0;
    width: auto;
+}
+
+.fc-grid .fc-other-month .fc-day-number {
+   color: #CACACA;
+   opacity: 1;
 }
 
 .fc-grid .fc-widget-content:hover .fc-day-number

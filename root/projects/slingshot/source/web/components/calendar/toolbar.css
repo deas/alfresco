@@ -17,7 +17,7 @@
 
 .toolbar .addEvent button
 {
-   background: transparent url(images/add-event-16-2.png) no-repeat 7px 5px;
+   background: transparent url(images/add-event-16-2.png) no-repeat 7px 6px;
    *background-position:7px 5px;
    padding-left:22px;
 }
@@ -84,8 +84,15 @@ div.separator
 }
 
 .toolbar .separator {
-   border-style: none solid none none;
-   position:relative;
-   top:-3px;
-   display:none;
+   float:left;
+   margin-top: 12px;
+}
+
+.toolbar .prev-button
+{
+   margin-right:0;
+}
+.toolbar .next-button
+{
+   margin-left:0;
 }

@@ -14,3 +14,10 @@
    overflow: hidden;
    padding: 4px 0 3px 20px;
 }
+
+.tags li:first-of-type
+{
+   border-bottom: 1px dashed #CACACA;
+   margin-bottom: 5px;
+   padding-bottom: 7px;
+}
