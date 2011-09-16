@@ -320,28 +320,7 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
         policyComponent.bindClassBehaviour(
                 NodeServicePolicies.OnCreateNodePolicy.QNAME, 
                 this, 
-                new JavaBehaviour(this, "onCreateNode", NotificationFrequency.FIRST_EVENT));
-        
-    	// Make sure each customisable type has a corresponding aspect 
-    	for (QName customisableType : pendingCustomisableTypes) 
-    	{
-    		QName customAspect = getCustomAspect(customisableType);
-    		if (dictionaryService.getAspect(customAspect) == null)
-    		{
-	    		NodeRef modelRef = getCustomModelRef(customAspect.getNamespaceURI());
-		        M2Model model = readCustomContentModel(modelRef);
-		        try
-		        {
-		        	// Create the new aspect to hold the custom properties
-		        	M2Aspect aspect = model.createAspect(customAspect.toPrefixString(namespaceService));
-		        	aspect.setDescription(customisableType.toPrefixString(namespaceService));
-		        }
-		        finally
-		        {
-		        	writeCustomContentModel(modelRef, model);
-		        }
-    		}
-		}
+                new JavaBehaviour(this, "onCreateNode", NotificationFrequency.FIRST_EVENT));       
     }
     
     /**
@@ -407,14 +386,45 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
 	    			{
 	    				type = QName.createQName(prefixString, namespaceService);
 	    			}
+	    			
+	    			// Add the customisable type to the map
 	    			customisableTypes.put(type, aspect);
+	    			
+	    			// Remove customisable type from the pending list
+	    			if (pendingCustomisableTypes != null && pendingCustomisableTypes.contains(type) == true)
+	    			{
+	    			    pendingCustomisableTypes.remove(type);
+	    			}
 	    		}
 			}
+	    	
+	    	// Deal with any pending types left over
+	    	if (pendingCustomisableTypes != null && pendingCustomisableTypes.size() != 0)
+	    	{
+	    	    NodeRef modelRef = getCustomModelRef(RecordsManagementModel.RM_CUSTOM_URI);
+                M2Model model = readCustomContentModel(modelRef);
+	    	    try
+	    	    {                
+        	    	for (QName customisableType : pendingCustomisableTypes) 
+        	        {
+        	            QName customAspect = getCustomAspectImpl(customisableType);
+    
+        	            // Create the new aspect to hold the custom properties
+        	            M2Aspect aspect = model.createAspect(customAspect.toPrefixString(namespaceService));
+        	            aspect.setDescription(customisableType.toPrefixString(namespaceService));
+        	            
+        	            // Make a record of the customisable type    
+                        customisableTypes.put(customisableType, customAspect);
+        	        }        	    	
+	    	    }
+	    	    finally
+	    	    {
+	    	        writeCustomContentModel(modelRef, model);
+	    	    }
+	    	}
     	}
     	return customisableTypes;    	
-    }
-    
-
+    }    
 
     /**
      * Gets the QName of the custom aspect given the customisable type QName
@@ -428,13 +438,23 @@ public class RecordsManagementAdminServiceImpl implements RecordsManagementAdmin
     	QName result = map.get(customisableType);
     	if (result == null)
     	{
-    		String localName = customisableType.toPrefixString(namespaceService).replace(":", "");
-    		localName = MessageFormat.format("{0}CustomProperties", localName);
-    	    result = QName.createQName(RM_CUSTOM_URI, localName);
+    	    result = getCustomAspectImpl(customisableType);
     	}
     	return result;
     }
     
+    /**
+     * Builds a custom aspect QName from a customisable type/aspect QName
+     * 
+     * @param customisableType
+     * @return
+     */
+    private QName getCustomAspectImpl(QName customisableType)
+    {
+        String localName = customisableType.toPrefixString(namespaceService).replace(":", "");
+        localName = MessageFormat.format("{0}CustomProperties", localName);
+        return QName.createQName(RM_CUSTOM_URI, localName);
+    }
     
     /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.RecordsManagementAdminService#isCustomisable(org.alfresco.service.namespace.QName)

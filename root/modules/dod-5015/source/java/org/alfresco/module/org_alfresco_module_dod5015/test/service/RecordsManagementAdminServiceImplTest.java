@@ -140,6 +140,7 @@ public class RecordsManagementAdminServiceImplTest extends    BaseRMTestCase
         			{
         				ASPECT_RECORD, 
         				TYPE_RECORD_FOLDER, 
+        				TYPE_NON_ELECTRONIC_DOCUMENT,
         				DOD5015Model.TYPE_RECORD_CATEGORY, 
         				DOD5015Model.TYPE_RECORD_SERIES
         			})));
