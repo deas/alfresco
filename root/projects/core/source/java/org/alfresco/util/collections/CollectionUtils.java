@@ -31,6 +31,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.alfresco.util.Pair;
+
 /**
  * @author Nick Smith
  * @since 4.0
@@ -226,6 +228,25 @@ public abstract class CollectionUtils
             if(filter.apply(key))
             {
                 results.put(key, entry.getValue());
+            }
+        }
+        return results;
+    }
+    
+    public static <FK, FV, TK, TV> Map<TK, TV> transform(Map<FK, FV> map,
+            Function<Entry<FK, FV>, Pair<TK, TV>> transformer )
+    {
+        Map<TK, TV> results = new HashMap<TK, TV>(map.size());
+        for (Entry<FK, FV> entry : map.entrySet())
+        {
+            Pair<TK, TV> pair = transformer.apply(entry);
+            if(pair!=null)
+            {
+                TK key = pair.getFirst();
+                if (key != null)
+                {
+                    results.put(key, pair.getSecond());
+                }
             }
         }
         return results;
