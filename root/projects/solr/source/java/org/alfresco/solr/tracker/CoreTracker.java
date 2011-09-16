@@ -43,6 +43,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import org.alfresco.encryption.KeyStoreParameters;
 import org.alfresco.encryption.ssl.SSLEncryptionParameters;
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -238,6 +240,8 @@ public class CoreTracker implements CloseHook
         this.adminHandler = adminHandler;
         this.core = core;
 
+        boolean storeAll = false;
+        
         try
         {
             List<String> lines = core.getResourceLoader().getLines("solrcore.properties");
@@ -283,6 +287,10 @@ public class CoreTracker implements CloseHook
                 else if (split[0].equals("alfresco.batch.count"))
                 {
                     batchCount = Long.parseLong(split[1]);
+                }
+                else if (split[0].equals("alfresco.storeAll"))
+                {
+                    storeAll = Boolean.parseBoolean(split[1]);
                 }
                 else if (split[0].equals("alfresco.encryption.cipherAlgorithm"))
                 {
@@ -358,6 +366,7 @@ public class CoreTracker implements CloseHook
         SolrResourceLoader loader = core.getSchema().getResourceLoader();
         id = loader.getInstanceDir();
         dataModel = AlfrescoSolrDataModel.getInstance(id);
+        dataModel.setStoreAll(storeAll);
 
         client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(), dataModel.getNamespaceDAO());
 

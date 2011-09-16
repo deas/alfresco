@@ -146,7 +146,7 @@ public class AlfrescoSolrDataModel
 
     private CMISStrictDictionaryService cmisDictionaryService;
 
-    private boolean testing = true;
+    private boolean storeAll = false;
 
     private AlfrescoDataType alfrescoDataType;
 
@@ -324,6 +324,16 @@ public class AlfrescoSolrDataModel
     {
         return namespaceDAO;
     }
+    
+    public boolean isStoreAll()
+    {
+        return storeAll;
+    }
+
+    public void setStoreAll(boolean storeAll)
+    {
+        this.storeAll = storeAll;
+    }
 
     /**
      * @return
@@ -410,7 +420,7 @@ public class AlfrescoSolrDataModel
      */
     public Store getFieldStore(SchemaField field)
     {
-        if (testing)
+        if (storeAll)
         {
             return Store.YES;
         }
