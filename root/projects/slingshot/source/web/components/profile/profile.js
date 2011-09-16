@@ -96,6 +96,7 @@
          {
             // Buttons
             this.widgets.upload = Alfresco.util.createYUIButton(this, "button-upload", this.onUpload);
+            this.widgets.clearphoto = Alfresco.util.createYUIButton(this, "button-clearphoto", this.onClearPhoto);
             this.widgets.edit = Alfresco.util.createYUIButton(this, "button-edit", this.onEditProfile);
             this.widgets.save = Alfresco.util.createYUIButton(this, "button-save", null,
                {
@@ -216,6 +217,36 @@
       },
       
       /**
+       * Clear photo button click handler
+       *
+       * @method onClearPhoto
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onClearPhoto: function UP_onClearPhoto(e, p_obj)
+      {
+         Alfresco.util.Ajax.request(
+         {
+            url: Alfresco.constants.PROXY_URI + "slingshot/profile/resetavatar/" + encodeURIComponent(this.options.userId),
+            method: Alfresco.util.Ajax.PUT,
+            requestContentType: Alfresco.util.Ajax.JSON,
+            successCallback:
+            {
+               fn: function(res)
+               {
+                  // replace all avatar image URLs with the updated one
+                  var photos = Dom.getElementsByClassName("photoimg", "img");
+                  for (i in photos)
+                  {
+                     photos[i].src = Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png";
+                  }
+               },
+               scope: this
+            }
+         });
+      },
+      
+      /**
        * File Upload complete event handler
        *
        * @method onFileUploadComplete
@@ -228,7 +259,7 @@
          {
             var noderef = complete.successful[0].nodeRef;
             
-            // replace avatar image URL with the updated one
+            // replace all avatar image URLs with the updated one
             var photos = Dom.getElementsByClassName("photoimg", "img");
             for (i in photos)
             {

@@ -143,12 +143,6 @@
             </span>
          </div>
          </#if>
-         <!--
-         <div class="row">
-            <span class="fieldlabelright">${msg("label.map")}:</span>
-            <span class="fieldvalue"></span>
-         </div>
-         -->
          <#if profile.companyTelephone?? && profile.companyTelephone?length!=0>
          <div class="row">
             <span class="fieldlabelright">${msg("label.telephone")}:</span>
@@ -208,7 +202,12 @@
             <img class="photoimg" src="${url.context}<#if profile.properties.avatar??>/proxy/alfresco/api/node/${profile.properties.avatar?replace('://','/')}/content/thumbnails/avatar?c=force<#else>/components/images/no-user-photo-64.png</#if>" alt="" />
          </div>
          <div class="photobtn">
-            <button id="${el}-button-upload" name="upload">${msg("button.upload")}</button>
+            <span class="yui-button yui-push-button" id="${el}-button-upload">
+               <span class="first-child"><button>${msg("button.upload")}</button></span>
+            </span>
+            <span class="yui-button yui-push-button" id="${el}-button-clearphoto">
+               <span class="first-child"><button>${msg("button.usedefault")}</button></span>
+            </span>
             <div class="phototxt">${msg("label.photoimagesize")}</div>
             <div class="phototxt">${msg("label.photonote")}</div>
          </div>
