@@ -338,11 +338,15 @@
     </finalPageActionList>
     
     <installationAbortedActionList>
-	<deleteFile path="${installdir}/tomcat" >
+        <actionGroup>
+            <actionList>
+  	        <deleteFile path="${installdir}/tomcat" />
+  	        <deleteFile path="${installdir}/properties.ini" />
+            </actionList>
             <ruleList>
                 <compareText text="${tomcat_execute_abort_action_list}" logic="equals" value="1" />
             </ruleList>
-        </deleteFile>
+        </actionGroup>
     </installationAbortedActionList>
 
     <preUninstallationActionList>
