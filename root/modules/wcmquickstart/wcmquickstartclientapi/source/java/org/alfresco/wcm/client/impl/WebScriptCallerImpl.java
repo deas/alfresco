@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,18 +79,13 @@ public class WebScriptCallerImpl implements WebScriptCaller
         this.httpClient = httpClient;
     }
 
-    public void setBaseUrl(URI serviceLocation)
+    public void setBaseUrl(String serviceLocation) throws URISyntaxException
     {
-        this.baseUrl = serviceLocation.toString();
+        this.baseUrl = serviceLocation;
         if (!baseUrl.endsWith("/"))
         {
             baseUrl += "/";
         }
-    }
-
-    public void setBaseUrl(String serviceLocation) throws URISyntaxException
-    {
-        setBaseUrl(new URI(serviceLocation));
     }
 
     public void setAuthScope(AuthScope authScope)

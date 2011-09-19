@@ -17,17 +17,17 @@
  */
 package org.alfresco.wcm.client.view;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.alfresco.wcm.client.impl.StreamUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.alfresco.wcm.client.Asset;
+import org.alfresco.wcm.client.ContentStream;
+import org.alfresco.wcm.client.Rendition;
+import org.alfresco.wcm.client.util.HeaderHelper;
+import org.alfresco.wcm.client.util.impl.SimpleCacheControlHeaderHelper;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 /**
@@ -38,24 +38,39 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
  */
 public class StreamedAssetView extends AbstractUrlBasedView
 {
-    private static final Log log = LogFactory.getLog(StreamedAssetView.class.getName());
-    private InputStream stream;
+    private static HeaderHelper headerHelper = new SimpleCacheControlHeaderHelper();
+    
+    private Asset asset;
+    private boolean attach;
+    private String renditionName; 
 
-    /**
-     * Construct the view with the image details
-     * 
-     * @param stream
-     *            the stream of data which represents the image
-     * @param mimeType
-     *            the mime type of the image
-     */
-    public StreamedAssetView(String url, InputStream stream, String mimeType)
+    public StreamedAssetView(Asset asset, String renditionName, boolean attach)
     {
-        super(url);
-        this.stream = stream;
-        setContentType(mimeType);
+        this.asset = asset;
+        this.attach = attach;
+        this.renditionName = renditionName;
     }
-
+    
+    public StreamedAssetView(Asset asset)
+    {
+        this(asset, null, false);
+    }
+    
+    public StreamedAssetView(Asset asset, String renditionName)
+    {
+        this(asset, renditionName, false);
+    }
+    
+    public StreamedAssetView(Asset asset, boolean attach)
+    {
+        this(asset, null, attach);
+    }
+    
+    public static void setHeaderHelper(HeaderHelper headerHelper)
+    {
+        StreamedAssetView.headerHelper = headerHelper;
+    }
+    
     /**
      * @see org.springframework.web.servlet.view.AbstractView#renderMergedOutputModel(java.util.Map,
      *      javax.servlet.http.HttpServletRequest,
@@ -65,28 +80,29 @@ public class StreamedAssetView extends AbstractUrlBasedView
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
             HttpServletResponse response) throws Exception
     {
+        boolean render = headerHelper.setHeaders(asset, attach, request, response);
+        
         ServletOutputStream out = null;
-
-        if (stream == null)
+        if (render)
         {
-            log.debug("Asset contents are not available!");
-            return;
-        }
-
-        try
-        {
-            // Write the InputStream to the servlet OutputStream
-            out = response.getOutputStream();
-            StreamUtils.output(stream, out);
-        }
-        catch (IOException ex)
-        {
-            log.error("Unable to stream asset data!", ex);
-        }
-        finally
-        {
-            if (out != null)
-                out = null;
+            ContentStream contentStream = null;
+            if (renditionName != null) 
+            {
+                Map<String,Rendition> renditions = asset.getRenditions();
+                contentStream = renditions.get(renditionName);
+            }
+            else
+            {
+                contentStream = asset.getContentAsInputStream();
+            }
+            if (contentStream != null) 
+            {
+                String mimeType = contentStream.getMimeType();
+                response.setContentType(mimeType == null ? "application/octet-stream" : mimeType);
+                response.setContentLength((int)contentStream.getLength());
+                out = response.getOutputStream();
+                contentStream.output(out);
+            }
         }
     }
 }

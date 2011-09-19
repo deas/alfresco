@@ -17,19 +17,14 @@
  */
 package org.alfresco.wcm.client.controller;
 
-import java.io.InputStream;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.AssetFactory;
-import org.alfresco.wcm.client.ContentStream;
-import org.alfresco.wcm.client.Rendition;
-import org.alfresco.wcm.client.util.HeaderHelper;
 import org.alfresco.wcm.client.util.UrlUtils;
 import org.alfresco.wcm.client.view.StreamedAssetView;
+import org.alfresco.wcm.client.viewresolver.DynamicPageViewResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -46,7 +41,6 @@ public class StreamedAssetController extends AbstractController
 {
     private UrlUtils urlUtils;
     private AssetFactory assetFactory;
-    private HeaderHelper headerHelper;
 
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
@@ -56,6 +50,7 @@ public class StreamedAssetController extends AbstractController
         String uri = request.getPathInfo();
         String objectId = urlUtils.getAssetIdFromShortUrl(uri);
         String renditionName = request.getParameter("rendition");
+        boolean attach = Boolean.parseBoolean(request.getParameter("attach"));
 
         // Fetch the asset from the repository
         Asset asset = assetFactory.getAssetById(objectId);
@@ -67,7 +62,8 @@ public class StreamedAssetController extends AbstractController
 
         // Decide if the request should redirect to the full url
         String template = asset.getTemplate();
-        if (template != null && renditionName == null)
+        if (template != null && renditionName == null && 
+                !DynamicPageViewResolver.RAW_TEMPLATE_NAME.equalsIgnoreCase(template))
         {
             String fullUri = urlUtils.getUrl(asset);
             RedirectView redirect = new RedirectView(fullUri, true, false);
@@ -75,45 +71,8 @@ public class StreamedAssetController extends AbstractController
             return new ModelAndView(redirect);
         }
 
-        // Set headers
-    	boolean render = headerHelper.setHeaders(asset, request, response);
-    	// If browser has an up-to-date copy of the asset then exit
-        if ( ! render) return null;
-        
-        InputStream stream = null;
-        String mimeType = null;
-        
-        // If a rendition is required then use the content stream of that
-        if (renditionName != null) 
-        {
-        	Map<String,Rendition> renditions = asset.getRenditions();
-        	Rendition rendition = renditions.get(renditionName);
-        	if (rendition != null)
-        	{
-        		stream = rendition.getStream();
-        		mimeType = rendition.getMimeType();
-        	}
-        }
-        
-        // Else get the asset's content stream
-        if (stream == null)
-        {
-        	ContentStream contentStream = asset.getContentAsInputStream();
-        	if (contentStream != null) 
-        	{
-        		stream = contentStream.getStream();
-        		mimeType = contentStream.getMimeType();
-        	}
-        }
-        
-        // Else no stream!
-        if (stream == null)
-        {
-            return null;
-        }
-        
         // Return a StreamedAssetView to render the stream
-        return new ModelAndView(new StreamedAssetView(objectId, stream, mimeType));
+        return new ModelAndView(new StreamedAssetView(asset, renditionName, attach));
     }
  
     public void setUrlUtils(UrlUtils urlUtils)
@@ -125,10 +84,4 @@ public class StreamedAssetController extends AbstractController
     {
         this.assetFactory = assetFactory;
     }
-
-    public void setHeaderHelper(HeaderHelper headerHelper)
-    {
-        this.headerHelper = headerHelper;
-    }
-
 }

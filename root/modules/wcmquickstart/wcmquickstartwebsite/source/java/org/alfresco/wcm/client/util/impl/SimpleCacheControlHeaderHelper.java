@@ -50,7 +50,7 @@ public class SimpleCacheControlHeaderHelper extends HeaderHelper
      * @throws ParseException
      */
     @Override
-    public boolean setHeaders(Asset asset, HttpServletRequest request, HttpServletResponse response)
+    public boolean setHeaders(Asset asset, boolean attach, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
@@ -58,6 +58,7 @@ public class SimpleCacheControlHeaderHelper extends HeaderHelper
             Date modifiedDate = ((Date) asset.getProperty(Resource.PROPERTY_MODIFIED_TIME));
             long modifiedTime = modifiedDate.getTime();
             modifiedTime = (modifiedTime / 1000) * 1000; // remove ms
+            
             response.addDateHeader("Last-Modified", modifiedTime);
             response.addDateHeader("Expires", new Date().getTime() + defaultExpiry);
             String etag = Long.toHexString(modifiedTime);
@@ -85,6 +86,19 @@ public class SimpleCacheControlHeaderHelper extends HeaderHelper
                         return false;
                     }
                 }
+            }
+            if (attach)
+            {
+                String headerValue = "attachment";
+                String attachFileName = asset.getName();
+                if (attachFileName != null && attachFileName.length() > 0)
+                {
+                    headerValue += "; filename=" + attachFileName;
+                }
+                
+                // set header based on filename - will force a Save As from the browse if it doesn't recognize it
+                // this is better than the default response of the browser trying to display the contents
+                response.setHeader("Content-Disposition", headerValue);
             }
             return true;
         }

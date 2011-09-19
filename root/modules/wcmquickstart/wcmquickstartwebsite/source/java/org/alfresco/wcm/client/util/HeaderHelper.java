@@ -49,11 +49,24 @@ public abstract class HeaderHelper
      * @throws IOException 
      * @throws ParseException 
      */
-	public boolean setHeaders(Asset asset, HttpServletRequest request, HttpServletResponse response) 
-	{
-	    return true;
-	}
-	
+    public boolean setHeaders(Asset asset, HttpServletRequest request, HttpServletResponse response) 
+    {
+        return setHeaders(asset, false, request, response);
+    }
+    
+    /**
+     * This base implementation simply returns true to indicate that the request should be re-rendered.
+     * Override in a subclass as necessary
+     * @param asset
+     * @param request
+     * @param response
+     * @return boolean true if browser has old copy and so content should be rendered
+     */
+    public boolean setHeaders(Asset asset, boolean attach, HttpServletRequest request, HttpServletResponse response) 
+    {
+        return true;
+    }
+    
     public final String getHttpDate(Date date)
     {
         return dateFormatter().format(date);

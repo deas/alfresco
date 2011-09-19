@@ -90,7 +90,6 @@
     <bean id="assetController" class="org.alfresco.wcm.client.controller.StreamedAssetController">
         <property name="urlUtils" ref="urlUtils"/>
         <property name="assetFactory" ref="assetFactory"/>
-        <property name="headerHelper" ref="cacheControlHeaderHelper" />
     </bean>
 
     <!-- Search form controller -->    

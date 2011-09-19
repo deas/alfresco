@@ -17,11 +17,9 @@
  */
 package org.alfresco.wcm.client.viewresolver;
 
-import java.io.InputStream;
 import java.util.Locale;
 
 import org.alfresco.wcm.client.Asset;
-import org.alfresco.wcm.client.ContentStream;
 import org.alfresco.wcm.client.exception.EditorialException;
 import org.alfresco.wcm.client.view.StreamedAssetView;
 import org.springframework.extensions.surf.RequestContext;
@@ -40,7 +38,7 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 public class DynamicPageViewResolver extends AbstractWebFrameworkViewResolver
 {
     public final static String RAW_TEMPLATE_NAME = "raw";
-    
+
     public DynamicPageViewResolver()
     {
         // The default caching provided by the AbstractCachingViewResolver class
@@ -67,7 +65,7 @@ public class DynamicPageViewResolver extends AbstractWebFrameworkViewResolver
      */
     protected AbstractUrlBasedView buildView(String viewName) throws Exception
     {
-        PageView view = null;
+        AbstractUrlBasedView view = null;
         RequestContext requestContext = ThreadLocalRequestContext.getRequestContext();
         Asset asset = (Asset) requestContext.getValue("asset");
 
@@ -77,43 +75,32 @@ public class DynamicPageViewResolver extends AbstractWebFrameworkViewResolver
         {
             // else ask the asset what its template should be
             template = asset.getTemplate();
-
-            //If the asset doesn't have any template specified or explicitly specifies the "raw" template
-            //then we will stream the asset content directly.
-            if (template == null || RAW_TEMPLATE_NAME.equalsIgnoreCase(template))
-            {
-                return createStreamView(asset);
-            }
         }
-
-        Page page = lookupPage(template);
-        if (page == null)
-            throw new EditorialException("Invalid template page \"" + template + "\" specified for "
-                    + asset.getContainingSection().getPath() + asset.getName(), "template.none", asset
-                    .getContainingSection().getPath()
-                    + asset.getName() + asset.getName());
-
-        view = new PageView(getServiceRegistry());
-        view.setUrl(template);
-        view.setPage(page);
+        
+        if (template == null || RAW_TEMPLATE_NAME.equalsIgnoreCase(template))
+        {
+            // If the asset doesn't have any template specified or explicitly
+            // specifies the "raw" template
+            // then we will stream the asset content directly.
+            boolean attach = Boolean.parseBoolean(requestContext.getParameter("attach"));
+            view = new StreamedAssetView(asset, attach);
+        }
+        else
+        {
+            Page page = lookupPage(template);
+            if (page == null)
+            {
+                throw new EditorialException("Invalid template page \"" + template + "\" specified for "
+                        + asset.getContainingSection().getPath() + asset.getName(), "template.none", asset
+                        .getContainingSection().getPath()
+                        + asset.getName() + asset.getName());
+            }
+            PageView pageView = new PageView(getServiceRegistry());
+            pageView.setUrl(template);
+            pageView.setPage(page);
+            view = pageView;
+        }
         return view;
     }
 
-    private AbstractUrlBasedView createStreamView(Asset asset)
-    {
-        InputStream stream = null;
-        String mimeType = null;
-        ContentStream contentStream = asset.getContentAsInputStream();
-        if (contentStream != null) 
-        {
-            stream = contentStream.getStream();
-            mimeType = contentStream.getMimeType();
-        }
-        if (stream == null)
-        {
-            throw new EditorialException("No template and no content for "+asset.getContainingSection().getPath()+asset.getName(), 
-                    "template.none",asset.getContainingSection().getPath()+asset.getName()+asset.getName());
-        }
-        return new StreamedAssetView(asset.getId(), stream, mimeType);
-    }
 }
