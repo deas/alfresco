@@ -11,12 +11,12 @@
         <typeAlias alias="Lock" type="org.alfresco.repo.domain.locks.LockEntity"/>
         <!-- FileTransferInfo -->
         <typeAlias alias="FileTransferInfo" type="org.alfresco.repo.transfer.fsr.FileTransferInfoEntity"/>
-        <!-- FileTransferInfo -->
         <typeAlias alias="FileTransferNodeRename" type="org.alfresco.repo.transfer.fsr.FileTransferNodeRenameEntity"/>
+        <typeAlias alias="TransferStatus" type="org.alfresco.repo.transfer.fsr.TransferStatusEntity"/>
     </typeAliases>
 
     <typeHandlers>
-        <typeHandler javaType="java.io.Serializable" jdbcType="BLOB" handler="org.alfresco.ibatis.SerializableTypeHandler"/>
+        <typeHandler javaType="java.io.Serializable" handler="org.alfresco.ibatis.SerializableTypeHandler"/>
     </typeHandlers>
 
     <mappers>
@@ -26,6 +26,7 @@
         <mapper resource="org/alfresco/repo/transfer/fsr/locks-insert-SqlMap.xml"/>
         <mapper resource="org/alfresco/repo/transfer/fsr/filetransferinfo-common-SqlMap.xml"/>
         <mapper resource="org/alfresco/repo/transfer/fsr/filetransfer-insert-SqlMap.xml"/>
+        <mapper resource="org/alfresco/repo/transfer/fsr/transferstatus-common-SqlMap.xml"/>
     </mappers>
 
 

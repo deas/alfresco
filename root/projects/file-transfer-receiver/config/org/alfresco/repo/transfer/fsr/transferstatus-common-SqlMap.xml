@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="alfresco.transferstatus">
+<!-- 
+  id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  transferId VARCHAR(80) NOT NULL,
+  currentPos BIGINT NOT NULL,
+  endPos BIGINT NOT NULL,
+  status VARCHAR(30) NOT NULL,
+  error BLOB (100K),
+ -->
+
+    <!--                -->
+    <!-- Result Maps    -->
+    <!--                -->
+
+    <resultMap id="result_TransferStatus" type="TransferStatus">
+        <result property="id" column="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result property="transferId" column="transferId" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result property="currentPos" column="currentPos" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result property="endPos" column="endPos" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result property="status" column="status" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result property="error" column="error" jdbcType="BLOB" javaType="java.io.Serializable"/>
+    </resultMap>
+
+
+    <!--                -->
+    <!-- Parameter Maps -->
+    <!--                -->
+
+    <parameterMap id="parameter_TransferStatus" type="TransferStatus">
+        <parameter property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+    </parameterMap>
+
+
+    <!--                -->
+    <!-- Statements     -->
+    <!--                -->
+
+    <insert id="insert_TransferStatus" parameterType="TransferStatus" useGeneratedKeys="true" keyProperty="id">
+        insert into alf_transfer_status (transferId, currentPos, endPos, status, error)
+        values (#{transferId}, #{currentPos}, #{endPos}, #{status},#{error})
+    </insert>
+
+
+    <select id="select_TransferStatusByTransferId" parameterType="java.lang.String" resultMap="result_TransferStatus">
+        select
+            *
+        from
+            alf_transfer_status
+        where
+            transferId = #{transferId}
+    </select>
+
+    <update id="update_TransferStatus" parameterType="TransferStatus">
+       update
+           alf_transfer_status
+       set
+           currentPos = #{currentPos},
+           endPos = #{endPos},
+           status = #{status},
+           error = #{error}
+       where
+           id = #{id}
+    </update>
+
+    <delete id="delete_TransferStatus" parameterType="TransferStatus">
+        delete
+        from
+            alf_transfer_status
+        where
+            id = #{id}
+    </delete>
+
+    <delete id="delete_TransferStatusByTransferId" parameterType="java.lang.String">
+        delete
+        from
+            alf_transfer_status
+        where
+            transferId = #{transferId}
+    </delete>
+</mapper>

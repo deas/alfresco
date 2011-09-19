@@ -130,7 +130,7 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
     {
         if (log.isDebugEnabled())
         {
-            log.error("Moving " + oldPath + oldName + " to " + newPath + newName);
+            log.debug("Moving " + oldPath + oldName + " to " + newPath + newName);
         }
         // Method 1 using rename does not seem to work
         // move the node on the receiving file system

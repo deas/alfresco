@@ -62,7 +62,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
             <value>true</value>
         </property>
         <property name="maxRetries">
-            <value>40</value>
+            <value>20</value>
         </property>
         <property name="minRetryWaitMs">
             <value>100</value>
@@ -126,6 +126,10 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
    </bean>
 
    <bean id="fileTransferInfoDAO" class="org.alfresco.repo.transfer.fsr.FileTransferInfoDAOImpl">
+      <property name="sqlSessionTemplate" ref="repoSqlSessionTemplate"/>
+   </bean>
+
+   <bean id="transferStatusDAO" class="org.alfresco.repo.transfer.fsr.TransferStatusDAOImpl">
       <property name="sqlSessionTemplate" ref="repoSqlSessionTemplate"/>
    </bean>
 
@@ -194,6 +198,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
         class="org.alfresco.repo.transfer.LoggingTransferProgressMonitorImpl">
         <property name="delegate">
             <bean class="org.alfresco.repo.transfer.fsr.FileTransferProgressMonitor">
+                <property name="transferStatusDao" ref="transferStatusDAO" />
+                <property name="transactionService" ref="transactionService" />
             </bean>
         </property>
     </bean>

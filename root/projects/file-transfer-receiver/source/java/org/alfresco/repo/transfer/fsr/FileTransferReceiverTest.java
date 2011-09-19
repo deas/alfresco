@@ -32,9 +32,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
+import org.alfresco.repo.transfer.manifest.TransferManifestHeader;
+import org.alfresco.repo.transfer.manifest.TransferManifestNode;
+import org.alfresco.repo.transfer.manifest.TransferManifestNormalNode;
+import org.alfresco.repo.transfer.manifest.XMLTransferManifestWriter;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -42,7 +48,6 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-
 import org.alfresco.util.GUID;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -51,16 +56,6 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import junit.framework.TestCase;
-import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
-
-import org.alfresco.repo.transfer.fsr.FileTransferReceiver;
-import org.alfresco.repo.transfer.manifest.TransferManifestHeader;
-import org.alfresco.repo.transfer.manifest.TransferManifestNode;
-import org.alfresco.repo.transfer.manifest.TransferManifestNormalNode;
-import org.alfresco.repo.transfer.manifest.XMLTransferManifestWriter;
-import org.alfresco.service.cmr.repository.Path;
 
 public class FileTransferReceiverTest extends TestCase
 {
@@ -85,7 +80,6 @@ public class FileTransferReceiverTest extends TestCase
     private boolean complete = false;
     /** Should we roll back by default? */
     private boolean defaultRollback = true;
-    private static int fileCount = 0;
     private NodeRef companytHome = null;
     String path = "/app:company_home/";
     private String dummyContent = "This is some dummy content.";
@@ -224,7 +218,7 @@ public class FileTransferReceiverTest extends TestCase
                 public Object execute() throws Throwable
                 {
 
-                    String transferId = ftTransferReceiver.start("1234", true, ftTransferReceiver.getVersion());
+                    ftTransferReceiver.start("1234", true, ftTransferReceiver.getVersion());
                     return null;
                 }
             };
@@ -296,6 +290,9 @@ public class FileTransferReceiverTest extends TestCase
                 snapshotFile = new File(stagingFolder, "snapshot.xml");
                 assertTrue(snapshotFile.exists());
                 assertEquals(snapshot.getBytes("UTF-8").length, snapshotFile.length());
+                
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ftTransferReceiver.generateRequsite(transferId, baos);
             }
             finally
             {
@@ -357,7 +354,7 @@ public class FileTransferReceiverTest extends TestCase
 
 
                 String snapshot = createSnapshot(staticNodes,false);
-                this.assertEquals(parentRef, this.companytHome);
+                assertEquals(parentRef, this.companytHome);
                 ftTransferReceiver.setFileTransferRootNodeFileFileSystem(parentRef.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.saveContent(transferId, node.getUuid(), new ByteArrayInputStream(dummyContentBytes));
@@ -389,7 +386,7 @@ public class FileTransferReceiverTest extends TestCase
 
         bs.write(byteArray,0,byteArray.length);
         String content = bs.toString();
-        this.assertEquals(content, dummyContent);
+        assertEquals(content, dummyContent);
 
 
     }
@@ -451,15 +448,14 @@ public class FileTransferReceiverTest extends TestCase
 
         bs.write(byteArray,0,byteArray.length);
         String content = bs.toString();
-        this.assertEquals(content, dummyContent);
+        assertEquals(content, dummyContent);
     }
 
 
     public void testCreateFoldersAndContentAndMove() throws Exception
     {
         startNewTransaction();
-        TransferManifestNormalNode node = null;
-
+        
         try
         {
             String transferId = ftTransferReceiver.start("1234", true, ftTransferReceiver.getVersion());
@@ -515,7 +511,6 @@ public class FileTransferReceiverTest extends TestCase
         //Create G1/G2
         //reverse it G2/G1
         startNewTransaction();
-        TransferManifestNormalNode node = null;
         ArrayList<TransferManifestNode> copy = new ArrayList<TransferManifestNode>();
 
         try
@@ -625,7 +620,6 @@ public class FileTransferReceiverTest extends TestCase
         //Create F1/F2/F3/F4/F5 ... F10
         //reverse it F10/F9/... F1
         startNewTransaction();
-        TransferManifestNormalNode node = null;
         ArrayList<TransferManifestNode> copy = new ArrayList<TransferManifestNode>();
 
         try
@@ -735,7 +729,6 @@ public class FileTransferReceiverTest extends TestCase
         //Create A/A/A/A/A ... 10 time
         //reverse
         startNewTransaction();
-        TransferManifestNormalNode node = null;
         ArrayList<TransferManifestNode> copy = new ArrayList<TransferManifestNode>();
 
         try
@@ -858,7 +851,6 @@ public class FileTransferReceiverTest extends TestCase
     public void testSyncMode() throws Exception
     {
         startNewTransaction();
-        TransferManifestNormalNode node = null;
 
         try
         {
@@ -1265,11 +1257,6 @@ public class FileTransferReceiverTest extends TestCase
     protected boolean isDefaultRollback()
     {
         return this.defaultRollback;
-    }
-
-    private String getNameSuffix()
-    {
-        return "" + fileCount++;
     }
 
 }

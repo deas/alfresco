@@ -62,3 +62,16 @@ CREATE TABLE alf_node_rename_info (
 
 CREATE INDEX idx_transfer_id ON alf_node_rename_info ( transferId );
 
+CREATE TABLE alf_transfer_status (
+  id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  transferId VARCHAR(80) NOT NULL,
+  currentPos INTEGER NOT NULL,
+  endPos INTEGER NOT NULL,
+  status VARCHAR(30) NOT NULL,
+  error BLOB,
+  CONSTRAINT uniq_transfer_status_transfer_id UNIQUE (transferId)
+);
+
+CREATE INDEX idx_transfer_status_transfer_id ON alf_transfer_status ( transferId );
+
+

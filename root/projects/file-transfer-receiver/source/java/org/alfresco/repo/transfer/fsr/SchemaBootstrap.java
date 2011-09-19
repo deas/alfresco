@@ -24,8 +24,10 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.ibatis.SerializableTypeHandler;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +50,7 @@ public class SchemaBootstrap extends AbstractLifecycleBean
     public void init()
     {
         // empty
+        SerializableTypeHandler.setSerializableType(Types.BLOB);
     }
 
     // @Override

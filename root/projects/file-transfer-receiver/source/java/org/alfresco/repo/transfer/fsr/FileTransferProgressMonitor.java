@@ -18,112 +18,117 @@
  */
 package org.alfresco.repo.transfer.fsr;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.io.Writer;
+import java.nio.channels.Channels;
 
-import org.alfresco.repo.transfer.TransferProgressMonitor;
+import org.alfresco.repo.transfer.AbstractTransferProgressMonitor;
+import org.alfresco.repo.transfer.TransferFatalException;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.Path;
 import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferProgress;
 import org.alfresco.service.cmr.transfer.TransferProgress.Status;
 
-public class FileTransferProgressMonitor implements TransferProgressMonitor
+public class FileTransferProgressMonitor extends AbstractTransferProgressMonitor
 {
-    private ConcurrentMap<String,TransferProgress> progressMap = new ConcurrentSkipListMap<String, TransferProgress>();
-    
+    private TransferStatusDAO transferStatusDao;
+    private File logDirectory;
+
+    public void setTransferStatusDao(TransferStatusDAO dao)
+    {
+        this.transferStatusDao = dao;
+    }
+
+    public void setLogDirectory(String logDirectoryPath)
+    {
+        logDirectory = new File(logDirectoryPath);
+    }
+
     public InputStream getLogInputStream(String transferId) throws TransferException
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public TransferProgress getProgress(String transferId) throws TransferException
-    {
-        return getOrCreateProgress(transferId);
-
-    }
-
-    public void logComment(String transferId, Object obj) throws TransferException
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void logCreated(
-            String transferId,
-            NodeRef sourceNode,
-            NodeRef destNode,
-            NodeRef newParent,
-            Path newPath,
-            boolean orphan)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void logDeleted(String transferId, NodeRef sourceNode, NodeRef destNode, Path parentPath)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void logException(String transferId, Object obj, Throwable ex) throws TransferException
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void logMoved(
-            String transferId,
-            NodeRef sourceNodeRef,
-            NodeRef destNodeRef,
-            Path oldPath,
-            NodeRef newParent,
-            Path newPath)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void logUpdated(String transferId, NodeRef sourceNode, NodeRef destNode, Path parentPath)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void updateProgress(String transferId, int currPos) throws TransferException
-    {
-        TransferProgress progress = getOrCreateProgress(transferId);
-        progress.setCurrentPosition(currPos);
-    }
-
-    public void updateProgress(String transferId, int currPos, int endPos) throws TransferException
-    {
-        TransferProgress progress = getOrCreateProgress(transferId);
-        progress.setCurrentPosition(currPos);
-        progress.setEndPosition(endPos);
-    }
-
-    public void updateStatus(String transferId, Status status) throws TransferException
-    {
-        TransferProgress progress = getOrCreateProgress(transferId);
-        progress.setStatus(status);
-    }
-
-    private TransferProgress getOrCreateProgress(String transferId)
-    {
-        TransferProgress existingProgress = progressMap.get(transferId);
-        if (existingProgress == null)
+        try
         {
-            TransferProgress progress = new TransferProgress();
-            progress.setCurrentPosition(0);
-            progress.setEndPosition(1);
-            progress.setStatus(Status.PRE_COMMIT);
-            progressMap.putIfAbsent(transferId, progress);
+            return new FileInputStream(getReportFile(transferId));
         }
-        return progressMap.get(transferId);
+        catch (FileNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public TransferProgress getProgressInternal(final String transferId) throws TransferException
+    {
+        TransferStatusEntity statusEntity = getTransferStatusEntity(transferId);
+        TransferProgress progress = new TransferProgress();
+        progress.setCurrentPosition(statusEntity.getCurrentPos());
+        progress.setEndPosition(statusEntity.getEndPos());
+        progress.setStatus(Status.valueOf(statusEntity.getStatus()));
+        progress.setError((Throwable) statusEntity.getError());
+        return progress;
+    }
+
+    public void updateProgressInternal(final String transferId, final int currPos) throws TransferException
+    {
+        TransferStatusEntity entity = getTransferStatusEntity(transferId);
+        entity.setCurrentPos(currPos);
+        transferStatusDao.update(entity);
+    }
+
+    public void updateProgressInternal(final String transferId, final int currPos, final int endPos) throws TransferException
+    {
+        TransferStatusEntity entity = getTransferStatusEntity(transferId);
+        entity.setCurrentPos(currPos);
+        entity.setEndPos(endPos);
+        transferStatusDao.update(entity);
+    }
+
+    protected void updateStatusInternal(final String transferId, final Status status) throws TransferException
+    {
+        TransferStatusEntity entity = getTransferStatusEntity(transferId);
+        entity.setStatus(status.name());
+        transferStatusDao.update(entity);
+    }
+
+    private TransferStatusEntity getTransferStatusEntity(String transferId)
+    {
+        TransferStatusEntity statusEntity = transferStatusDao.findByTransferId(transferId);
+        if (statusEntity == null)
+        {
+            statusEntity = transferStatusDao.createTransferStatus(transferId, 0, 1, Status.PRE_COMMIT.name(), null);
+        }
+        return statusEntity;
+    }
+
+    private File getReportFile(String transferId)
+    {
+        File logFile = new File(logDirectory, new NodeRef(transferId).getId() + "_report");
+        return logFile;
+    }
+
+    @Override
+    protected Writer createUnderlyingLogWriter(String transferId)
+    {
+        File logFile = getReportFile(transferId);
+        try
+        {
+            return Channels.newWriter(Channels.newChannel(new FileOutputStream(logFile)), "UTF-8");
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new TransferFatalException("error.unableToOpenTransferReport", e);
+        }
+    }
+
+    @Override
+    protected void storeError(final String transferId, final Throwable error)
+    {
+        TransferStatusEntity entity = getTransferStatusEntity(transferId);
+        entity.setError(error);
+        transferStatusDao.update(entity);
     }
 
 }
