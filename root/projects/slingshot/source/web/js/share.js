@@ -341,7 +341,8 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
    /**
     * YUI Library aliases
     */
-   var Dom = YAHOO.util.Dom;
+   var Dom = YAHOO.util.Dom,
+      Selector = YAHOO.util.Selector;
 
    /**
     * Alfresco Slingshot aliases
@@ -495,14 +496,20 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
          var html = "";
          if (this.isLiked)
          {
-            html = '<a name=".like" rel="false" class="like-action theme-color-1 enabled ' + this.id + '" title="' + this.msg("like." + this.options.type + ".remove.tip") + '" tabindex="0"></a>';
+            html = '<a href="#" class="like-action theme-color-1 enabled ' + (this.isLiked ? 'like-action-liked' : '') + '" title="' + this.msg("like." + this.options.type + ".remove.tip") + '"></a>';
          }
          else
          {
-            html = '<a name=".like" rel="true" class="like-action theme-color-1 ' + this.id + '" title="' + this.msg("like." + this.options.type + ".add.tip") + '" tabindex="0">' + this.msg("like." + this.options.type + ".add.label") + '</a>';
+            html = '<a href="#" class="like-action theme-color-1" title="' + this.msg("like." + this.options.type + ".add.tip") + '">' + this.msg("like." + this.options.type + ".add.label") + '</a>';
          }
          html += '<span class="likes-count">' + $html(this.totalLikes) + '</span>';
          this.widgets.spanEl.innerHTML = html;
+         Alfresco.util.useAsButton(Selector.query("a", this.widgets.spanEl, true), function(e)
+         {
+            var isLiked = Dom.hasClass(Selector.query("a", this.widgets.spanEl, true), "like-action-liked");
+            this.like(!isLiked);
+            YAHOO.util.Event.preventDefault(e);
+         }, null, this);
       },
 
       like: function(isLiked)
@@ -513,7 +520,7 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
             totalLikes: this.totalLikes
          };
 
-         this.isLiked = isLiked == 'true';
+         this.isLiked = isLiked == 'true' || (YAHOO.lang.isBoolean(isLiked) && isLiked);
          this.totalLikes = this.totalLikes + (this.isLiked ? 1 : -1);
 
          var responseConfig =
@@ -588,7 +595,8 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
    /**
     * YUI Library aliases
     */
-   var Dom = YAHOO.util.Dom;
+   var Dom = YAHOO.util.Dom,
+      Selector = YAHOO.util.Selector;
 
    /**
     * Alfresco Slingshot aliases
@@ -714,13 +722,20 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
          var html = "";
          if (this.isFavourite)
          {
-            html = '<a name=".favourite" rel="false" class="favourite-action theme-color-1 favourite-' + this.options.type + ' enabled ' + this.id + '" title="' + this.msg("favourite." + this.options.type + ".remove.tip") + '" tabindex="0"></a>';
+            html = '<a href="#" class="favourite-action theme-color-1 favourite-' + this.options.type + ' enabled favourite-action-favourite" title="' + this.msg("favourite." + this.options.type + ".remove.tip") + '"></a>';
          }
          else
          {
-            html = '<a name=".favourite" rel="true" class="favourite-action theme-color-1 favourite-' + this.options.type + ' ' + this.id + '" title="' + this.msg("favourite." + this.options.type + ".add.tip") + '" tabindex="0">' + this.msg("favourite." + this.options.type + ".add.label") + '</a>';
+            html = '<a href="#" class="favourite-action theme-color-1 favourite-' + this.options.type + '" title="' + this.msg("favourite." + this.options.type + ".add.tip") + '">' + this.msg("favourite." + this.options.type + ".add.label") + '</a>';
          }
          this.widgets.spanEl.innerHTML = html;
+         Alfresco.util.useAsButton(Selector.query("a", this.widgets.spanEl, true), function(e)
+         {
+            var isFavourite = Dom.hasClass(Selector.query("a", this.widgets.spanEl, true), "favourite-action-favourite");
+            this.favourite(!isFavourite);
+            YAHOO.util.Event.preventDefault(e);
+         }, null, this);
+
       },
 
       favourite: function(isFavourite)
@@ -730,7 +745,7 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
             isFavourite: this.isFavourite
          };
 
-         this.isFavourite = isFavourite == 'true';
+         this.isFavourite = isFavourite == 'true' || (YAHOO.lang.isBoolean(isFavourite) && isFavourite);
 
          var responseConfig =
          {
