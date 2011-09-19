@@ -944,7 +944,9 @@ body.yui-skin-greenTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 
 /* All day events */
 .fc-content .fc-event-allday .fc-event-skin,
-.fc-content a.fc-event.fc-event-allday
+.fc-content a.fc-event.fc-event-allday,
+.fc-view-month .fc-content .fc-event-multiday .fc-event-skin,
+.fc-view-month .fc-content a.fc-event.fc-event-multiday
 {
    background-color: #00AE42;
    border-color: #00AE42;

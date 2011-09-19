@@ -1484,7 +1484,8 @@ div.fullCalendar a.fc-event:hover
 }
 
 /* Remove pseudo rounded corners */
-div.fullCalendar .fc-event-allday .fc-event-inner
+div.fullCalendar .fc-event-allday .fc-event-inner,
+div.fullCalendar .fc-view-month .fc-event-multiday .fc-event-inner
 {
    border: none;
    margin: 0;
@@ -1501,6 +1502,11 @@ div.fullCalendar .fc-event-time
 div.fullCalendar .fc-view-month .fc-event-time
 {
    padding: 0;
+}
+
+div.fullCalendar .fc-view-month .fc-event-multiday .fc-event-time
+{
+   padding-left: 5px;
 }
 
 div.fullCalendar .fc-event-title

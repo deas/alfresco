@@ -4649,6 +4649,10 @@ function DayEventRenderer() {
 			if (event.allDay) {
 				classes.push('fc-event-allday');
 			}
+			if (formatDate(event.start, "yyyy-MM-dd") !== formatDate(event.end, "yyyy-MM-dd") && event.end !== null)
+			{
+				classes.push('fc-event-multiday');
+			}
 			url = event.url;
 			skinCss = getSkinCss(event, opt);
 			if (url) {

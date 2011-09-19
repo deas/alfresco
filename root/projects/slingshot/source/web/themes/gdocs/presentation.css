@@ -1199,7 +1199,9 @@ border-bottom-color: #c3d9ff;
 
 /* All day events */
 .fc-content .fc-event-allday .fc-event-skin,
-.fc-content a.fc-event.fc-event-allday
+.fc-content a.fc-event.fc-event-allday,
+.fc-content .fc-view-month .fc-event-multiday .fc-event-skin,
+.fc-content .fc-view-month a.fc-event.fc-event-multiday
 {
    background-color: #0600cc;
    border-color: #0600cc;

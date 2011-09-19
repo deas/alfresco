@@ -999,7 +999,9 @@ body.yui-skin-hcBlack .categoryview .selected div.ygtvchildren table .ygtvlabel:
 
 /* All day events */
 .fc-content .fc-event-allday .fc-event-skin,
-.fc-content a.fc-event.fc-event-allday
+.fc-content a.fc-event.fc-event-allday,
+.fc-view-month .fc-content .fc-event-multiday .fc-event-skin,
+.fc-view-month .fc-content a.fc-event.fc-event-multiday
 {
    background-color: #000000;
    border-color: #000000;
