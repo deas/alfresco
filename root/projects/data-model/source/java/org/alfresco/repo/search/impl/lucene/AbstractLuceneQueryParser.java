@@ -2139,7 +2139,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                                     end.setTime(new Date());
                                     endResolution = Calendar.MILLISECOND;
                                 }
-                                else if (part1.equalsIgnoreCase("today"))
+                                else if (part2.equalsIgnoreCase("today"))
                                 {
                                     end.setTime(new Date());
                                     end.set(Calendar.HOUR_OF_DAY, end.getMinimum(Calendar.HOUR_OF_DAY));
