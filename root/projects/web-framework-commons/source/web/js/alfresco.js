@@ -7529,7 +7529,10 @@ Alfresco.util.RENDERLOOPSIZE = 25;
        */
       refresh: function Base_refresh(webscript)
       {
-         var url = Alfresco.util.combinePaths(Alfresco.constants.URL_SERVICECONTEXT, YAHOO.lang.substitute(webscript, this.options));
+         var url = Alfresco.util.combinePaths(Alfresco.constants.URL_SERVICECONTEXT, YAHOO.lang.substitute(webscript, this.options, function(p_key, p_value, p_meta)
+         {
+            return typeof p_value === "boolean" ? p_value.toString() : p_value;
+         }));
          url += (url.indexOf("?") == -1 ? "?" : "&") + "htmlid=" + this.id;
          Alfresco.util.Ajax.request(
          {
