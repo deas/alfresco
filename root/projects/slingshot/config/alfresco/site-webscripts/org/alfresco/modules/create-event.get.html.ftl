@@ -47,12 +47,12 @@
             <div class="yui-u overflow">
                <span id="${el}-startdate">
                   <input id="fd" type="text" name="fromdate" readonly="readonly" tabindex="6"
-                         value="<#if event.from?exists>${event.startAt.iso8601}</#if>"
-                         title="<#if event.from?exists>${event.startAt.iso8601?date("yyyy-MM-dd")?string("yyyy-MM-dd")}</#if>" />
+                         value="<#if event.startAt??>${event.startAt.iso8601}</#if>"
+                         title="<#if event.startAt??>${xmldate(event.startAt.iso8601)?string("yyyy-MM-dd")}</#if>" />
                </span>
                <span id="${el}-starttime" class="eventTime">
                   <label for="${el}-start">${msg("label.at")}</label>
-                  <input id="${el}-start" name="start" value="${event.start!config.script.config.defaultStart}" type="text" size="10" tabindex="7" />
+                  <input id="${el}-start" name="start" value="<#if event.startAt??>${xmldate(event.startAt.iso8601)?string(msg("date-format.shortTime24FTL"))}<#else>${config.script.config.defaultStart}</#if>" type="text" size="10" tabindex="7" />
                </span>
             </div>
          </div>
@@ -61,12 +61,12 @@
             <div class="yui-u overflow">
                <span id="${el}-enddate">
                   <input id="td" type="text" name="todate" readonly="readonly" tabindex="8"
-                         value="<#if event.to?exists>${event.endAt.iso8601}</#if>"
-                         title="<#if event.to?exists>${event.endAt.iso8601?date("yyyy-MM-dd")?string("yyyy-MM-dd")}</#if>" />
+                         value="<#if event.endAt??>${event.endAt.iso8601}</#if>"
+                         title="<#if event.endAt??>${xmldate(event.endAt.iso8601)?string("yyyy-MM-dd")}</#if>" />
                </span>
                <span id="${el}-endtime" class="eventTime">
                   <label for="${el}-end">${msg("label.at")}</label>
-                  <input id="${el}-end" name="end" value="${event.end!config.script.config.defaultEnd}" type="text" size="10" tabindex="9" />
+                  <input id="${el}-end" name="end" value="<#if event.startAt??>${xmldate(event.endAt.iso8601)?string(msg("date-format.shortTime24FTL"))}<#else>${config.script.config.defaultEnd}</#if>" type="text" size="10" tabindex="9" />
                </span>
             </div>
          </div>
@@ -121,3 +121,11 @@
 
    </div>
 </div>
+<script type="text/javascript">//<![CDATA[
+   Alfresco.util.ComponentManager.findFirst("Alfresco.CalendarView").setOptions(
+   {
+      defaultStartTime: "${config.script.config.defaultStart}",
+      defaultEndTime: "${config.script.config.defaultEnd}"
+   }
+   )
+//]]></script>

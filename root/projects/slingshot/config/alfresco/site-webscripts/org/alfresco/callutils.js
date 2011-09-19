@@ -94,49 +94,41 @@ function applyDataToModel(data)
 /**
  * POST call
  */
-function doPostCall(theUrl, paramsJSON, suppressError)
+function doPostCall(theUrl, paramsJSON)
 {
    var connector = remote.connect("alfresco");
    var result = connector.post(theUrl, paramsJSON, "application/json");
-   if ((result.status != status.STATUS_OK) && !suppressError)
+   if (result.status == status.STATUS_OK)
    {
-      status.setCode(status.STATUS_INTERNAL_SERVER_ERROR, "Unable to do backend call. " +
-                     "status: " + result.status + ", response: " + result.response);
-      return null;
+      return eval('(' + result.response + ')');
    }
-   return eval('(' + result.response + ')');
 }
 
 
 /**
  * PUT call
  */
-function doPutCall(theUrl, paramsJSON, suppressError)
+function doPutCall(theUrl, paramsJSON)
 {
    var connector = remote.connect("alfresco");
    var result = connector.put(theUrl, paramsJSON, "application/json");
-   if ((result.status != status.STATUS_OK) && !suppressError)
+   if (result.status == status.STATUS_OK)
    {
-      status.setCode(status.STATUS_INTERNAL_SERVER_ERROR, "Error during remote call. " +
-                     "Status: " + result.status + ", Response: " + result.response);
-      return null;
+      return eval('(' + result.response + ')');
    }
-   return eval('(' + result.response + ')');
 }
 
 
 /**
  * GET call
  */
-function doGetCall(theUrl, suppressError)
+function doGetCall(theUrl)
 {
    var connector = remote.connect("alfresco");
    var result = connector.get(theUrl);
-   if ((result.status != status.STATUS_OK) && !suppressError)
+   if (result.status == status.STATUS_OK)
    {
-      status.setCode(status.STATUS_INTERNAL_SERVER_ERROR, "Error during remote call. " +
-                     "Status: " + result.status + ", Response: " + result.response);
-      return null;
+      return eval('(' + result.response + ')');
    }
-   return eval('(' + result.response + ')');
+
 }
