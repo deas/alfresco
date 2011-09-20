@@ -154,15 +154,12 @@
          </list>
       </property>
    </bean>
-
    <bean id="evaluator.doclib.action.simpleApproveProperty" parent="evaluator.doclib.action.propertyNotNull">
       <property name="property" value="app:approveStep"/>
    </bean>
-
    <bean id="evaluator.doclib.action.simpleRejectProperty" parent="evaluator.doclib.action.propertyNotNull">
       <property name="property" value="app:rejectStep"/>
    </bean>
-
    <bean id="evaluator.doclib.action.simpleApprove" parent="evaluator.doclib.action.chainedMatchAll">
       <property name="evaluators">
          <list>
@@ -171,7 +168,6 @@
          </list>
       </property>
    </bean>
-
    <bean id="evaluator.doclib.action.simpleReject" parent="evaluator.doclib.action.chainedMatchAll">
       <property name="evaluators">
          <list>

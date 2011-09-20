@@ -844,12 +844,14 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
       {
          if (form !== null)
          {
-            var formData = {};
-            var length = form.elements.length;
+            var formData = {},
+               length = form.elements.length;
+
             for (var i = 0; i < length; i++)
             {
-               var element = form.elements[i];
-               var name = element.name;
+               var element = form.elements[i],
+                  name = element.name;
+
                if (name == "-" || element.disabled || element.type === "button")
                {
                   continue;
@@ -858,7 +860,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                {
                   name = element.id;
                }
-               var value = YAHOO.lang.trim(element.value);
+               var value = (element.type === "textarea") ? element.value : YAHOO.lang.trim(element.value);
                if (name)
                {
                   // check whether the input element is an array value
@@ -1084,11 +1086,11 @@ Alfresco.forms.validation.length = function length(field, args, event, form, sil
       valid = false;
       if (myArgs.crop)
       {
-         if(myArgs.includeWhitespace)
+         if (myArgs.includeWhitespace)
          {
             field.value = YAHOO.lang.trim(field.value);
          }
-         if(field.value.length > myArgs.max)
+         if (field.value.length > myArgs.max)
          {
             field.value = field.value.substring(0, myArgs.max);
          }

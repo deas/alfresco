@@ -444,6 +444,7 @@
                <show id="cm:description" force="true" />
                <show id="cm:content" force="true" />
                <show id="ws:translationOf" force="true" />
+               <show id="mimetype" />
                <show id="ws:initiallyOrphaned" force="true" />
                <show id="ws:language" force="true" />
             </field-visibility>
@@ -465,6 +466,11 @@
                   <control>
                      <control-param name="editorAppearance">explorer</control-param>
                      <control-param name="forceEditor">true</control-param>
+                  </control>
+               </field>
+               <field id="mimetype">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">mimeType</control-param>
                   </control>
                </field>
                <field id="ws:translationOf">
@@ -658,9 +664,7 @@
             </field-visibility>
             <appearance>
                <field id="cm:name">
-                  <control template="/org/alfresco/components/form/controls/namefield.ftl">
-                     <control-param name="contextProperty">name</control-param>
-                  </control>
+                  <control template="/org/alfresco/components/form/controls/namefield.ftl" />
                </field>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
@@ -695,6 +699,7 @@
                <show id="cm:title" force="true" />
                <show id="cm:description" force="true" />
                <show id="cm:content" force="true" />
+               <show id="mimetype" />
                <show id="ws:translationOf" force="true" />
                <show id="ws:initiallyOrphaned" force="true" />
                <show id="ws:language" force="true" />
@@ -717,6 +722,11 @@
                   <control>
                      <control-param name="editorAppearance">explorer</control-param>
                      <control-param name="forceEditor">true</control-param>
+                  </control>
+               </field>
+               <field id="mimetype">
+                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                     <control-param name="contextProperty">mimeType</control-param>
                   </control>
                </field>
                <field id="ws:translationOf">
