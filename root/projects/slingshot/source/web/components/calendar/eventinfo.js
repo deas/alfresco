@@ -290,7 +290,7 @@
          {
             noEscape: true,
             title: this._msg("message.confirm.delete.title"),
-            text: this._msg("message.confirm.delete", this.event.name, displayDate),
+            text: this._msg("message.confirm.delete", this.event.title, displayDate),
             buttons: [
             {
                text: this._msg("button.delete"),
@@ -329,7 +329,7 @@
                fn: this.onDeleted,
                scope: this
             },
-            failureMessage: this._msg("message.delete.failure", this.event.name)
+            failureMessage: this._msg("message.delete.failure", this.event.title)
          });
       },
 
@@ -344,7 +344,7 @@
          this._hide();
          Alfresco.util.PopupManager.displayMessage(
          {
-            text: this._msg("message.delete.success", this.event.name)
+            text: this._msg("message.delete.success", this.event.title)
          });
          YAHOO.Bubbling.fire('eventDeleted',
          {

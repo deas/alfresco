@@ -343,6 +343,7 @@
 
          for (var i = 0; i < data.length; i++)
          {
+            // TODO: Make this format consistent across calendar views and API.
             var ev = data[i];
             var date = fromISO8601(ev.startAt.iso8601);
             var endDate = fromISO8601(ev.endAt.iso8601);
@@ -351,6 +352,7 @@
                var datum = {};
                datum.desc = ev.description || '';
                datum.name = ev.title;
+               datum.title = ev.title;
                datum.where = ev.where;
                datum.description = ev.description;
                datum.isoutlook = ev.isoutlook == "true" ? "isoutlook" : "";
