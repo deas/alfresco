@@ -9,13 +9,20 @@
 .profile .photo
 {
    float: left;
+   text-align: center;
+   width: 80px;
+}
+
+.profile .namelabel,
+.profile .titlelabel
+{
+   margin-left: 80px;
 }
 
 .profile .namelabel
 {
    font-size: 123.1%;
    line-height: 1.7em;
-   margin-left: 80px;
 }
 
 .profile .row
@@ -27,13 +34,13 @@
 
 .profile .fieldlabel
 {
-   float:left;
+   float: left;
    min-width: 32%;
    min-height: 1.5em;
 }
 .profile .fieldvalue
 {
-   float:left;
+   float: left;
    min-height: 1.5em;
-   min-width:66%;
+   min-width: 66%;
 }
