@@ -46,6 +46,7 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.util.GUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Site helper class.
@@ -61,7 +62,7 @@ public class SiteHelper implements WebSiteModel
     private static final QName TYPE_DATA_LIST = QName.createQName(NamespaceService.DATALIST_MODEL_1_0_URI, "dataList");
     private static final QName PROP_DATA_LIST_ITEM_TYPE = QName.createQName(NamespaceService.DATALIST_MODEL_1_0_URI, "dataListItemType");
     private static final String DATA_LISTS_FOLDER_NAME = "dataLists";
-    private static final String FEEDBACK_DATA_LIST_NAME_FORMAT = "Visitor Feedback ({0})";
+    private static final String FEEDBACK_DATA_LIST_NAME = "wcmqs.feedback.dataListNameFormat";
 
     private SiteService siteService;
     private NodeService nodeService;
@@ -291,7 +292,7 @@ public class SiteHelper implements WebSiteModel
             }
             dataListsFolder = siteService.createContainer(shareSiteName, DATA_LISTS_FOLDER_NAME, null, null);
         }
-        String listTitle = MessageFormat.format(FEEDBACK_DATA_LIST_NAME_FORMAT, new Object[] { websiteName });
+        String listTitle = I18NUtil.getMessage(FEEDBACK_DATA_LIST_NAME, new Object[] { websiteName });
 
         NodeRef visitorFeedbackList = null;
 
@@ -350,7 +351,7 @@ public class SiteHelper implements WebSiteModel
     {
         if (nodeService.getType(feedbackList).equals(TYPE_DATA_LIST))
         {
-            String listTitle = MessageFormat.format(FEEDBACK_DATA_LIST_NAME_FORMAT, new Object[] { newName });
+            String listTitle = I18NUtil.getMessage(FEEDBACK_DATA_LIST_NAME, new Object[] { newName });
             nodeService.setProperty(feedbackList, ContentModel.PROP_TITLE, listTitle);
         }
     }
