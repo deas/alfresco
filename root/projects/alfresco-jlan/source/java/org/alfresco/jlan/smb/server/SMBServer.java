@@ -565,7 +565,7 @@ public class SMBServer extends NetworkFileServer implements Runnable, Configurat
 				Debug.print("      Active sessions [");
 				while ( sessIds.hasMoreElements()) {
 					SMBSrvSession curSess = (SMBSrvSession) m_sessions.findSession( sessIds.nextElement());
-					Debug.print("" + curSess.getSessionId() + "=" + curSess.getRemoteAddress().getHostAddress() + ",");
+					Debug.print("" + curSess.getSessionId() + "=" + ( curSess.hasRemoteAddress() ? curSess.getRemoteAddress().getHostAddress() : "NoAddress") + ",");
 				}
 				Debug.println("]");
 			}
