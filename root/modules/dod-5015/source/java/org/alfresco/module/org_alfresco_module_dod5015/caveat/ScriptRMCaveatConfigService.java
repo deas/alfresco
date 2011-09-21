@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -20,7 +20,6 @@ package org.alfresco.module.org_alfresco_module_dod5015.caveat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
@@ -123,10 +122,7 @@ public class ScriptRMCaveatConfigService extends BaseScopableProcessorExtension
      * Update value
      */
     public void updateConstraintValues(String listName, String authorityName, String[]values)
-    {
-        //TODO Temporary conversion
-        String xxx = listName.replace("_", ":");
-        
+    {        
         List<String> vals = new ArrayList<String>();
         caveatConfigService.updateRMConstraintListAuthority(listName, authorityName, vals);
     }

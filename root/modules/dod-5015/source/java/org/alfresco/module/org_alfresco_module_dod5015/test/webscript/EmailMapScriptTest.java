@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -16,19 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.module.org_alfresco_module_dod5015.email;
+package org.alfresco.module.org_alfresco_module_dod5015.test.webscript;
 
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.web.scripts.BaseWebScriptTest;
 import org.alfresco.service.cmr.security.AuthenticationService;
-import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.TestWebScriptServer.DeleteRequest;
-import org.springframework.extensions.webscripts.TestWebScriptServer.GetRequest;
-import org.springframework.extensions.webscripts.TestWebScriptServer.PostRequest;
-import org.springframework.extensions.webscripts.TestWebScriptServer.PutRequest;
-import org.springframework.extensions.webscripts.TestWebScriptServer.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.extensions.webscripts.Status;
+import org.springframework.extensions.webscripts.TestWebScriptServer.GetRequest;
+import org.springframework.extensions.webscripts.TestWebScriptServer.PostRequest;
+import org.springframework.extensions.webscripts.TestWebScriptServer.Response;
 
 public class EmailMapScriptTest extends BaseWebScriptTest
 {
@@ -61,6 +59,7 @@ public class EmailMapScriptTest extends BaseWebScriptTest
         {
             Response response = sendRequest(new GetRequest(URL_RM_EMAILMAP), Status.STATUS_OK);    
     
+            @SuppressWarnings("unused")
             JSONObject top = new JSONObject(response.getContentAsString());
             System.out.println(response.getContentAsString());
             //JSONArray data = top.getJSONArray("data");

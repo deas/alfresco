@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -33,6 +33,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * 
@@ -42,6 +43,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class EditReviewAsOfDateAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_SPECIFY_VALID_DATE = "rm.action.specify-avlid-date";
+    private static final String MSG_REVIEW_DETAILS_ONLY = "rm.action.review-details-only";
+    
     @SuppressWarnings("unused")
     private static Log logger = LogFactory.getLog(EditReviewAsOfDateAction.class);
     
@@ -61,7 +66,7 @@ public class EditReviewAsOfDateAction extends RMActionExecuterAbstractBase
 	        Date reviewAsOf = (Date)action.getParameterValue(PARAM_AS_OF_DATE);
             if (reviewAsOf == null)
             {
-                throw new AlfrescoRuntimeException("Must specify a valid date when setting the review as of date.");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_SPECIFY_VALID_DATE));
             }
 	        
 	        // Set the as of date    
@@ -101,7 +106,7 @@ public class EditReviewAsOfDateAction extends RMActionExecuterAbstractBase
         {
             if (throwException == true)
             {
-                throw new AlfrescoRuntimeException("Can only edit the review details of vital records.");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_REVIEW_DETAILS_ONLY));
             }
         }
         return result;

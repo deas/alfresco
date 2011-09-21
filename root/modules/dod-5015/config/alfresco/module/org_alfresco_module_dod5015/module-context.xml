@@ -30,7 +30,8 @@
                 <value>alfresco.module.org_alfresco_module_dod5015.messages.notification-service</value>
                 <value>alfresco.module.org_alfresco_module_dod5015.messages.admin-service</value>  
                 <value>alfresco.module.org_alfresco_module_dod5015.messages.records-management-service</value>  
-                <value>alfresco.module.org_alfresco_module_dod5015.messages.action-service</value>                       
+                <value>alfresco.module.org_alfresco_module_dod5015.messages.action-service</value>
+                <value>alfresco.module.org_alfresco_module_dod5015.messages.audit-service</value>                         
             </list>
         </property>
    </bean>

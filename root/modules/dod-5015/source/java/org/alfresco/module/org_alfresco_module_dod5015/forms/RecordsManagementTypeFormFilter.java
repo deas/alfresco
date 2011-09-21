@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -75,25 +75,6 @@ public class RecordsManagementTypeFormFilter extends RecordsManagementFormFilter
                 Map<String, Object> context)
     {
         QName typeName = type.getName();
-
-        // add any custom properties for the type being created (we don't need
-        // to deal with the record type in here as records are typically uploaded 
-        // and then their metadata edited after the fact)
-//        if (TYPE_RECORD_SERIES.equals(typeName))
-//        {
-//            addCustomRMProperties(CustomisableRmElement.RECORD_SERIES, form);
-//            groupFields(form);
-//        }
-//        else if (TYPE_RECORD_CATEGORY.equals(typeName))
-//        {
-//            addCustomRMProperties(CustomisableRmElement.RECORD_CATEGORY, form);
-//            groupFields(form);
-//        }
-//        else if (TYPE_RECORD_FOLDER.equals(typeName))
-//        {
-//            addCustomRMProperties(CustomisableRmElement.RECORD_FOLDER, form);
-//            groupFields(form);
-//        }
         
         if (rmAdminService.isCustomisable(typeName) == true)
         {

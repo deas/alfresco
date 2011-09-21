@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -1110,6 +1110,7 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean, Appl
         }
     }
 
+    @SuppressWarnings("unchecked")
     public boolean supports(Class clazz)
     {
         return (MethodInvocation.class.isAssignableFrom(clazz));

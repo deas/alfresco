@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -37,6 +37,7 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Freeze Action
@@ -45,6 +46,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class FreezeAction extends RMActionExecuterAbstractBase
 {
+    private static final String MSG_FREEZE_NO_REASON = "rm.action.freeze-no-reason";
+    private static final String MSG_FREEZE_ONLY_RECORDS_FOLDERS = "rm.action.freeze-only-records-folders";
+    
     /** Logger */
     private static Log logger = LogFactory.getLog(FreezeAction.class);
 
@@ -69,7 +73,7 @@ public class FreezeAction extends RMActionExecuterAbstractBase
             String reason = (String)action.getParameterValue(PARAM_REASON);
             if (reason == null || reason.length() == 0)
             {
-                throw new AlfrescoRuntimeException("Can not freeze a record without a reason.");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_FREEZE_NO_REASON));
             }
             
             if (logger.isDebugEnabled())
@@ -159,9 +163,9 @@ public class FreezeAction extends RMActionExecuterAbstractBase
         }
         else
         {
-            throw new AlfrescoRuntimeException("Can only freeze records or record folders.");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_FREEZE_ONLY_RECORDS_FOLDERS));
         }        
-    }
+    }    
     
     @Override
     public Set<QName> getProtectedAspects()
@@ -194,7 +198,7 @@ public class FreezeAction extends RMActionExecuterAbstractBase
                 {
                     if(throwException)
                     {
-                        throw new AlfrescoRuntimeException("Can not freeze a record without a reason.");
+                        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_FREEZE_NO_REASON));
                     }
                     else
                     {
@@ -208,7 +212,7 @@ public class FreezeAction extends RMActionExecuterAbstractBase
         {
             if(throwException)
             {
-                throw new AlfrescoRuntimeException("Can only freeze records or record folders.");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_FREEZE_ONLY_RECORDS_FOLDERS));
             }
             else
             {

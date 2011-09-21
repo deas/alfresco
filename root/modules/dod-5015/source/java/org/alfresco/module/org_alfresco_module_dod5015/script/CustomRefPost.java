@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -48,6 +48,7 @@ public class CustomRefPost extends AbstractRmWebScript
     private static final String TO_NODE = "toNode";
     private static final String REF_ID = "refId";
 
+    @SuppressWarnings("unused")
     private static Log logger = LogFactory.getLog(CustomRefPost.class);
     
     private RecordsManagementAdminService rmAdminService;

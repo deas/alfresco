@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -27,6 +27,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAb
 import org.alfresco.module.org_alfresco_module_dod5015.disposition.DispositionAction;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * UnCutoff action implementation
@@ -35,6 +36,9 @@ import org.alfresco.service.cmr.repository.NodeRef;
  */
 public class UnCutoffAction extends RMActionExecuterAbstractBase
 {   
+    /** I18N */
+    private static final String MSG_UNDO_NOT_LAST = "rm.action.undo-not-last";
+    
     /**
      * @see org.alfresco.repo.action.executer.ActionExecuterAbstractBase#executeImpl(org.alfresco.service.cmr.action.Action, org.alfresco.service.cmr.repository.NodeRef)
      */
@@ -51,7 +55,7 @@ public class UnCutoffAction extends RMActionExecuterAbstractBase
             if (da == null || da.getName().equals("cutoff") == false)
             {
                 // Can not undo cut off since cut off was not the last thing done
-                throw new AlfrescoRuntimeException("Can not undo cut off since last disposition action was not cut off");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNDO_NOT_LAST));
             }
             
             // Delete the current disposition action
@@ -103,7 +107,7 @@ public class UnCutoffAction extends RMActionExecuterAbstractBase
                 if (throwException == true)
                 {
                     // Can not undo cut off since cut off was not the last thing done
-                    throw new AlfrescoRuntimeException("Can not undo cut off since last disposition action was not cut off");
+                    throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNDO_NOT_LAST));
                 }
                 result = false;
             }
@@ -112,7 +116,7 @@ public class UnCutoffAction extends RMActionExecuterAbstractBase
         {
             if (throwException == true)
             {
-                throw new AlfrescoRuntimeException("Can not undo cut off since the node has not been cut off");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_UNDO_NOT_LAST));
             }
             result = false;
         }

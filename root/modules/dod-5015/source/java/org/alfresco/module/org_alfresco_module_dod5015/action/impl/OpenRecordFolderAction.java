@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -30,6 +30,7 @@ import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Action to re-open the records folder
@@ -38,7 +39,8 @@ import org.alfresco.service.namespace.QName;
  */
 public class OpenRecordFolderAction extends RMActionExecuterAbstractBase
 {
-
+    private static final String MSG_NO_OPEN_RECORD_FOLDER = "rm.action.no-open-record-folder";
+    
     /**
      * @see org.alfresco.repo.action.executer.ActionExecuterAbstractBase#executeImpl(org.alfresco.service.cmr.action.Action,
      *      org.alfresco.service.cmr.repository.NodeRef)
@@ -58,7 +60,7 @@ public class OpenRecordFolderAction extends RMActionExecuterAbstractBase
         }
         else
         {
-            throw new AlfrescoRuntimeException("Can not perform the open record folder action on a node that is not a record folder. (" + actionedUponNodeRef.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NO_OPEN_RECORD_FOLDER, actionedUponNodeRef.toString()));
         }
     }
 
@@ -69,7 +71,6 @@ public class OpenRecordFolderAction extends RMActionExecuterAbstractBase
     protected void addParameterDefinitions(List<ParameterDefinition> paramList)
     {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -91,7 +92,7 @@ public class OpenRecordFolderAction extends RMActionExecuterAbstractBase
         {
             if (throwException)
             {
-                throw new AlfrescoRuntimeException("Can not perform the open record folder action on a node that is not a record folder. (" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NO_OPEN_RECORD_FOLDER, filePlanComponent.toString()));
             }
             else
             {

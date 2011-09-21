@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,14 +19,10 @@
 package org.alfresco.module.org_alfresco_module_dod5015.script;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.alfresco.module.org_alfresco_module_dod5015.caveat.RMCaveatConfigService;
-import org.alfresco.module.org_alfresco_module_dod5015.email.CustomEmailMappingService;
-import org.alfresco.module.org_alfresco_module_dod5015.email.CustomMapping;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;

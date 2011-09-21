@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -50,6 +50,7 @@ public class OnReferenceCreateEventType extends SimpleRecordsManagementEventType
                                                    OnCreateReference
 {
     /** Records management service */
+    @SuppressWarnings("unused")
     private RecordsManagementService recordsManagementService;
     
     /** Records management action service */

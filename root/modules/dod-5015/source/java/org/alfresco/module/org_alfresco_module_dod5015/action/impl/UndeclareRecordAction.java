@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -28,6 +28,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAb
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Undeclare record action
@@ -36,6 +37,9 @@ import org.alfresco.service.namespace.QName;
  */
 public class UndeclareRecordAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_RECORDS_ONLY_UNDECLARED = "rm.action.records_only_undeclared";
+    
     /**
      * @see org.alfresco.repo.action.executer.ActionExecuterAbstractBase#executeImpl(org.alfresco.service.cmr.action.Action, org.alfresco.service.cmr.repository.NodeRef)
      */
@@ -52,7 +56,7 @@ public class UndeclareRecordAction extends RMActionExecuterAbstractBase
         }
         else
         {
-            throw new AlfrescoRuntimeException("Can only undeclare a record. (" + actionedUponNodeRef.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_RECORDS_ONLY_UNDECLARED));
         }
     }
     
@@ -79,7 +83,7 @@ public class UndeclareRecordAction extends RMActionExecuterAbstractBase
         {
             if(throwException)
             {
-                throw new AlfrescoRuntimeException("Can only undeclare a record. (" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_RECORDS_ONLY_UNDECLARED));
             }
             else
             {

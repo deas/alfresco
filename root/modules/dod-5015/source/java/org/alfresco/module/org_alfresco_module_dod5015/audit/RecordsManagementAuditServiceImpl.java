@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -20,12 +20,11 @@ package org.alfresco.module.org_alfresco_module_dod5015.audit;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.Writer;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,7 +65,8 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
-import org.springframework.extensions.surf.util.AbstractLifecycleBean;
+import org.alfresco.util.Pair;
+import org.alfresco.util.PropertyCheck;
 import org.alfresco.util.PropertyMap;
 import org.alfresco.util.TempFileProvider;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -76,10 +76,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.extensions.surf.util.AbstractLifecycleBean;
+import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.extensions.surf.util.ISO8601DateFormat;
-import org.alfresco.util.Pair;
 import org.springframework.extensions.surf.util.ParameterCheck;
-import org.alfresco.util.PropertyCheck;
 
 /**
  * Records Management Audit Service Implementation.
@@ -94,6 +94,42 @@ public class RecordsManagementAuditServiceImpl
                    NodeServicePolicies.BeforeDeleteNodePolicy,
                    NodeServicePolicies.OnUpdatePropertiesPolicy
 {
+    /** I18N */
+    private static final String MSG_UPDATED_METADATA = "rm.audit.updated-metadata";
+    private static final String MSG_CREATED_OBJECT = "rm.audit.created-object";
+    private static final String MSG_DELETE_OBJECT = "rm.audit.delte-object";
+    private static final String MSG_LOGIN_SUCCEEDED = "rm.audit.login-succeeded";
+    private static final String MSG_LOGIN_FAILED = "rm.audit.login-failed";
+    private static final String MSG_FILED_RECORD = "rm.audit.filed-record";
+    private static final String MSG_REVIEWED = "rm.audit.reviewed";
+    private static final String MSG_CUT_OFF = "rm.audit.cut-off";
+    private static final String MSG_REVERSED_CUT_OFF = "rm.audit.reversed-cut-off";
+    private static final String MSG_DESTROYED_ITEM = "rm.audit.destroyed-item";
+    private static final String MSG_OPENED_RECORD_FOLDER = "rm.audit.opened-record-folder";
+    private static final String MSG_CLOSED_RECORD_FOLDER = "rm.audit.closed-record-folder";
+    private static final String MSG_SETUP_RECORD_FOLDER = "rm.audit.setup-recorder-folder";
+    private static final String MSG_DECLARED_RECORD = "rm.audit.declared-record";
+    private static final String MSG_UNDECLARED_RECORD = "rm.audit.undeclared-record";
+    private static final String MSG_FROZE_ITEM = "rm.audit.froze-item";
+    private static final String MSG_RELINQUISED_HOLD = "rm.audit.relinquised-hold";
+    private static final String MSG_UPDATED_HOLD_REASON = "rm.audit.updated-hold-reason";
+    private static final String MSG_UPDATED_REVIEW_AS_OF_DATE = "rm.audit.updated-review-as-of-date";
+    private static final String MSG_UPDATED_DISPOSITION_AS_OF_DATE = "rm.audit.updated-disposition-as-of-date";
+    private static final String MSG_UPDATED_VITAL_RECORD_DEFINITION = "rm.audit.updated-vital-record-definition";
+    private static final String MSG_UPDATED_DISPOSITOIN_ACTION_DEFINITION = "rm.audit.updated-disposition-action-definition";
+    private static final String MSG_COMPELTED_EVENT = "rm.audit.completed-event";
+    private static final String MSG_REVERSED_COMPLETE_EVENT = "rm.audit.revered-complete-event";
+    private static final String MSG_TRANSFERRED_ITEM = "rm.audit.transferred-item";
+    private static final String MSG_COMPLETED_TRANSFER = "rm.audit.completed-transfer";
+    private static final String MSG_ACCESSION = "rm.audit.accession";
+    private static final String MSG_COMPLETED_ACCESSION = "rm.audit.copmleted-accession";
+    private static final String MSG_SCANNED_RECORD = "rm.audit.scanned-record";
+    private static final String MSG_PDF_RECORD = "rm.audit.pdf-record";
+    private static final String MSG_PHOTO_RECORD = "rm.audit.photo-record";
+    private static final String MSG_WEB_RECORD = "rm.audit.web-record";
+    private static final String MSG_TRAIL_FILE_FAIL = "rm.audit.trail-file-fail";
+    private static final String MSG_AUDIT_REPORT = "rm.audit.audit-report";
+    
     /** Logger */
     private static Log logger = LogFactory.getLog(RecordsManagementAuditServiceImpl.class);
 
@@ -220,70 +256,70 @@ public class RecordsManagementAuditServiceImpl
         this.auditEvents = new HashMap<String, AuditEvent>(32);
         
         this.auditEvents.put(RM_AUDIT_EVENT_UPDATE_RM_OBJECT, 
-                    new AuditEvent(RM_AUDIT_EVENT_UPDATE_RM_OBJECT, "Updated Metadata"));
+                    new AuditEvent(RM_AUDIT_EVENT_UPDATE_RM_OBJECT, MSG_UPDATED_METADATA));
         this.auditEvents.put(RM_AUDIT_EVENT_CREATE_RM_OBJECT,
-                    new AuditEvent(RM_AUDIT_EVENT_CREATE_RM_OBJECT, "Created Object"));
+                    new AuditEvent(RM_AUDIT_EVENT_CREATE_RM_OBJECT, MSG_CREATED_OBJECT));
         this.auditEvents.put(RM_AUDIT_EVENT_DELETE_RM_OBJECT, 
-                    new AuditEvent(RM_AUDIT_EVENT_DELETE_RM_OBJECT, "Delete Object"));
+                    new AuditEvent(RM_AUDIT_EVENT_DELETE_RM_OBJECT, MSG_DELETE_OBJECT));
         this.auditEvents.put(RM_AUDIT_EVENT_LOGIN_SUCCESS,
-                    new AuditEvent(RM_AUDIT_EVENT_LOGIN_SUCCESS, "Login Succeeded"));
+                    new AuditEvent(RM_AUDIT_EVENT_LOGIN_SUCCESS, MSG_LOGIN_SUCCEEDED));
         this.auditEvents.put(RM_AUDIT_EVENT_LOGIN_FAILURE,
-                new AuditEvent(RM_AUDIT_EVENT_LOGIN_FAILURE, "Login Failed"));
+                new AuditEvent(RM_AUDIT_EVENT_LOGIN_FAILURE, MSG_LOGIN_FAILED));
         
         this.auditEvents.put("file", 
-                    new AuditEvent("file", "Filed Record"));
+                    new AuditEvent("file", MSG_FILED_RECORD));
         this.auditEvents.put("reviewed", 
-                    new AuditEvent("reviewed", "Reviewed"));
+                    new AuditEvent("reviewed", MSG_REVIEWED));
         this.auditEvents.put("cutoff", 
-                    new AuditEvent("cutoff", "Cut Off"));
+                    new AuditEvent("cutoff", MSG_CUT_OFF));
         this.auditEvents.put("unCutoff", 
-                    new AuditEvent("unCutoff", "Reversed Cut Off"));
+                    new AuditEvent("unCutoff", MSG_REVERSED_CUT_OFF));
         this.auditEvents.put("destroy", 
-                    new AuditEvent("destroy", "Destroyed Item"));
+                    new AuditEvent("destroy", MSG_DESTROYED_ITEM));
         this.auditEvents.put("openRecordFolder", 
-                    new AuditEvent("openRecordFolder", "Opened Record Folder"));
+                    new AuditEvent("openRecordFolder", MSG_OPENED_RECORD_FOLDER));
         this.auditEvents.put("closeRecordFolder", 
-                    new AuditEvent("closeRecordFolder", "Closed Record Folder"));
+                    new AuditEvent("closeRecordFolder", MSG_CLOSED_RECORD_FOLDER));
         this.auditEvents.put("setupRecordFolder", 
-                    new AuditEvent("setupRecordFolder", "Setup Recorder Folder"));
+                    new AuditEvent("setupRecordFolder", MSG_SETUP_RECORD_FOLDER));
         this.auditEvents.put("declareRecord", 
-                    new AuditEvent("declareRecord", "Declared Record"));
+                    new AuditEvent("declareRecord", MSG_DECLARED_RECORD));
         this.auditEvents.put("undeclareRecord", 
-                    new AuditEvent("undeclareRecord", "Undeclared Record"));
+                    new AuditEvent("undeclareRecord", MSG_UNDECLARED_RECORD));
         this.auditEvents.put("freeze", 
-                    new AuditEvent("freeze", "Froze Item"));
+                    new AuditEvent("freeze", MSG_FROZE_ITEM));
         this.auditEvents.put("relinquishHold", 
-                    new AuditEvent("relinquishHold", "Relinquished Hold"));
+                    new AuditEvent("relinquishHold", MSG_RELINQUISED_HOLD));
         this.auditEvents.put("editHoldReason", 
-                    new AuditEvent("editHoldReason", "Updated Hold Reason"));
+                    new AuditEvent("editHoldReason", MSG_UPDATED_HOLD_REASON));
         this.auditEvents.put("editReviewAsOfDate", 
-                    new AuditEvent("editReviewAsOfDate", "Updated Review As Of Date"));
+                    new AuditEvent("editReviewAsOfDate", MSG_UPDATED_REVIEW_AS_OF_DATE));
         this.auditEvents.put("editDispositionActionAsOfDate", 
-                    new AuditEvent("editDispositionActionAsOfDate", "Updated Disposition As Of Date"));
+                    new AuditEvent("editDispositionActionAsOfDate", MSG_UPDATED_DISPOSITION_AS_OF_DATE));
         this.auditEvents.put("broadcastVitalRecordDefinition", 
-                    new AuditEvent("broadcastVitalRecordDefinition", "Updated Vital Record Definition"));
+                    new AuditEvent("broadcastVitalRecordDefinition", MSG_UPDATED_VITAL_RECORD_DEFINITION));
         this.auditEvents.put("broadcastDispositionActionDefinitionUpdate", 
-                    new AuditEvent("broadcastDispositionActionDefinitionUpdate", "Updated Disposition Action Definition"));
+                    new AuditEvent("broadcastDispositionActionDefinitionUpdate", MSG_UPDATED_DISPOSITOIN_ACTION_DEFINITION));
         this.auditEvents.put("completeEvent", 
-                    new AuditEvent("completeEvent", "Completed Event"));
+                    new AuditEvent("completeEvent", MSG_COMPELTED_EVENT));
         this.auditEvents.put("undoEvent", 
-                    new AuditEvent("undoEvent", "Reversed Completed Event"));
+                    new AuditEvent("undoEvent", MSG_REVERSED_COMPLETE_EVENT));
         this.auditEvents.put("transfer", 
-                    new AuditEvent("transfer", "Transferred Item"));
+                    new AuditEvent("transfer", MSG_TRANSFERRED_ITEM));
         this.auditEvents.put("transferComplete", 
-                    new AuditEvent("transferComplete", "Completed Transfer"));
+                    new AuditEvent("transferComplete", MSG_COMPLETED_TRANSFER));
         this.auditEvents.put("accession", 
-                    new AuditEvent("accession", "Accession"));
+                    new AuditEvent("accession", MSG_ACCESSION));
         this.auditEvents.put("accessionComplete", 
-                    new AuditEvent("accessionComplete", "Completed Accession"));
+                    new AuditEvent("accessionComplete", MSG_COMPLETED_ACCESSION));
         this.auditEvents.put("applyScannedRecord", 
-                    new AuditEvent("applyScannedRecord", "Set Record As A Scanned Record"));
+                    new AuditEvent("applyScannedRecord", MSG_SCANNED_RECORD));
         this.auditEvents.put("applyPdfRecord", 
-                    new AuditEvent("applyPdfRecord", "Set Record As PDF A Record"));
+                    new AuditEvent("applyPdfRecord", MSG_PDF_RECORD));
         this.auditEvents.put("applyDigitalPhotographRecord", 
-                    new AuditEvent("applyDigitalPhotographRecord", "Set Record As A Digital Photographic Record"));
+                    new AuditEvent("applyDigitalPhotographRecord", MSG_PHOTO_RECORD));
         this.auditEvents.put("applyWebRecord", 
-                    new AuditEvent("applyWebRecord", "Set Record As A Web Record"));
+                    new AuditEvent("applyWebRecord", MSG_WEB_RECORD));
     }
     
     @Override
@@ -662,7 +698,7 @@ public class RecordsManagementAuditServiceImpl
         }
         catch (Throwable e)
         {
-            throw new AlfrescoRuntimeException("Failed to generate audit trail file", e);
+            throw new AlfrescoRuntimeException(MSG_TRAIL_FILE_FAIL, e);
         }
         finally
         {
@@ -691,7 +727,7 @@ public class RecordsManagementAuditServiceImpl
         catch (Throwable e)
         {
             // Should be
-            throw new AlfrescoRuntimeException("Failed to generate audit trail", e);
+            throw new AlfrescoRuntimeException(MSG_TRAIL_FILE_FAIL, e);
         }
     }
     
@@ -874,7 +910,7 @@ public class RecordsManagementAuditServiceImpl
                 }
                 catch (IOException ioe)
                 {
-                    throw new AlfrescoRuntimeException("Failed to generate audit trail file", ioe);
+                    throw new AlfrescoRuntimeException(MSG_TRAIL_FILE_FAIL, ioe);
                 }
             }
         };
@@ -1004,7 +1040,9 @@ public class RecordsManagementAuditServiceImpl
             // write header as HTML
             writer.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
             writer.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n");
-            writer.write("<title>Audit Report</title></head>\n");
+            writer.write("<title>");
+            writer.write(I18NUtil.getMessage(MSG_AUDIT_REPORT));
+            writer.write("</title></head>\n");
             writer.write("<style>\n");
             writer.write("body { font-family: arial,verdana; font-size: 81%; color: #333; }\n");
             writer.write(".label { margin-right: 5px; font-weight: bold; }\n");
@@ -1017,7 +1055,9 @@ public class RecordsManagementAuditServiceImpl
             writer.write(".changed-values-table th { text-align: left; background-color: #eee; padding: 4px; }\n");
             writer.write(".changed-values-table td { width: 33%; padding: 4px; border-top: 1px solid #eee; }\n");
             writer.write("</style>\n");
-            writer.write("<body>\n<h2>Audit Report</h2>\n");
+            writer.write("<body>\n<h2>");
+            writer.write(I18NUtil.getMessage(MSG_AUDIT_REPORT));
+            writer.write("</h2>\n");
             writer.write("<div class=\"audit-info\">\n");
             
             writer.write("<span class=\"label\">From:</span>");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -33,7 +33,6 @@ import javax.mail.Part;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
-import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -44,19 +43,16 @@ import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
-import org.alfresco.service.cmr.model.FileFolderService;
-import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.util.FileCopyUtils;
 
 /**
@@ -68,6 +64,12 @@ import org.springframework.util.FileCopyUtils;
  */
 public class SplitEmailAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_NO_READ_MIME_MESSAGE = "rm.action.no-read-mime-message";
+    private static final String MSG_EMAIL_DECLARED = "rm.action.email-declared";
+    private static final String MSG_EMAIL_NOT_RECORD = "rm.action.email-not-record";
+    private static final String MSG_EMAIL_CREATE_CHILD_ASSOC = "rm.action.email-create-child-assoc";
+    
     /** Logger */
     private static Log logger = LogFactory.getLog(SplitEmailAction.class);
 
@@ -78,8 +80,13 @@ public class SplitEmailAction extends RMActionExecuterAbstractBase
     @Override
     protected void executeImpl(Action action, NodeRef actionedUponNodeRef)
     {
+        // get node type
         nodeService.getType(actionedUponNodeRef);
-        logger.debug("split email:" + actionedUponNodeRef);
+        
+        if (logger.isDebugEnabled() == true)
+        {
+            logger.debug("split email:" + actionedUponNodeRef);
+        }
 
         if (recordsManagementService.isRecord(actionedUponNodeRef) == true)
         {
@@ -93,7 +100,10 @@ public class SplitEmailAction extends RMActionExecuterAbstractBase
                 List<AssociationRef> refs = nodeService.getTargetAssocs(actionedUponNodeRef, ImapModel.ASSOC_IMAP_ATTACHMENT);
                 if(refs.size() > 0)
                 {
-                    logger.debug("mail message has already been split - do nothing");
+                    if (logger.isDebugEnabled() == true)
+                    {
+                        logger.debug("mail message has already been split - do nothing");
+                    }
                     return;
                 }
                 
@@ -122,17 +132,17 @@ public class SplitEmailAction extends RMActionExecuterAbstractBase
                 } 
                 catch (Exception e)
                 {
-                    throw new AlfrescoRuntimeException("Unable to read mime message "+ e.toString(), e);
+                    throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NO_READ_MIME_MESSAGE, e.toString()), e);
                 }                
            }
             else
             {
-                throw new AlfrescoRuntimeException("Record has already been declared - can't split it. (" + actionedUponNodeRef.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EMAIL_DECLARED, actionedUponNodeRef.toString()));
             }
         }
         else
         {
-            throw new AlfrescoRuntimeException("Can only split a record. (" + actionedUponNodeRef.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EMAIL_NOT_RECORD, actionedUponNodeRef.toString()));
         }
     }
 
@@ -145,7 +155,7 @@ public class SplitEmailAction extends RMActionExecuterAbstractBase
             {
                 if (throwException)
                 {
-                    throw new AlfrescoRuntimeException("Can only split an undeclared record. (" + filePlanComponent.toString() + ")");
+                    throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EMAIL_DECLARED, filePlanComponent.toString()));
                 }     
                 else
                 {
@@ -157,7 +167,7 @@ public class SplitEmailAction extends RMActionExecuterAbstractBase
         {
             if (throwException)
             {
-                throw new AlfrescoRuntimeException("Can only split a record. (" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EMAIL_NOT_RECORD, filePlanComponent.toString()));
             }
             else
             {
@@ -310,7 +320,7 @@ public class SplitEmailAction extends RMActionExecuterAbstractBase
                     // we can do nothing with this rollback exception.
                 }
             }
-            throw new AlfrescoRuntimeException("Unable to create custom child association", e);
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EMAIL_CREATE_CHILD_ASSOC), e);
         }
     }
 }

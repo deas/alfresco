@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -38,6 +38,7 @@ import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Transfer action
@@ -48,6 +49,9 @@ public class TransferAction extends RMDispositionActionExecuterAbstractBase
 {    
     /** Transfer node reference key */
     public static final String KEY_TRANSFER_NODEREF = "transferNodeRef";
+    
+    /** I18N */
+    public static final String MSG_NODE_ALREADY_TRANSFER = "rm.action.node-already-transfer";
     
     /** Indicates whether the transfer is an accession or not */
     private boolean isAccession = false;
@@ -199,7 +203,7 @@ public class TransferAction extends RMDispositionActionExecuterAbstractBase
                 {
                     if (throwException)
                     {
-                        throw new AlfrescoRuntimeException("Already in transfer (" + filePlanComponent.toString() + ")");
+                        throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NODE_ALREADY_TRANSFER, filePlanComponent.toString()));
                     }
                     else
                     {

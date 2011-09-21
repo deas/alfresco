@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -32,6 +32,7 @@ import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Undo event action
@@ -40,6 +41,10 @@ import org.alfresco.service.namespace.QName;
  */
 public class UndoEventAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_EVENT_NOT_DONE = "rm.action.event-not-undone";
+    
+    /** Params */
     public static final String PARAM_EVENT_NAME = "eventName";
     
     /**
@@ -74,7 +79,7 @@ public class UndoEventAction extends RMActionExecuterAbstractBase
                 }
                 else
                 {
-                    throw new AlfrescoRuntimeException("The event " + eventName + " can not be undone, because it is not defined on the disposition lifecycle.");
+                    throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EVENT_NOT_DONE, eventName));
                 }
             }
         }
@@ -196,7 +201,7 @@ public class UndoEventAction extends RMActionExecuterAbstractBase
                     {
                         if(throwException)
                         {
-                            throw new AlfrescoRuntimeException("The event " + eventName + " can not be undone, because it is not defined on the disposition lifecycle.");
+                            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_EVENT_NOT_DONE, eventName));
                         }
                     }
                 }

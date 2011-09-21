@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -164,7 +164,7 @@ public class RMCaveatConfigComponentImpl implements ContentServicePolicies.OnCon
     {
         // Register interest in the onContentUpdate policy
         policyComponent.bindClassBehaviour(
-                ContentServicePolicies.ON_CONTENT_UPDATE,
+                ContentServicePolicies.OnContentUpdatePolicy.QNAME,
                 RecordsManagementModel.TYPE_CAVEAT_CONFIG,
                 new JavaBehaviour(this, "onContentUpdate"));
         

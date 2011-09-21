@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -34,6 +34,7 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Relinquish Hold Action
@@ -44,6 +45,9 @@ public class RelinquishHoldAction extends RMActionExecuterAbstractBase
 {
     /** Logger */
     private static Log logger = LogFactory.getLog(RelinquishHoldAction.class);
+    
+    /** I18N */
+    private static final String MSG_NOT_HOLD_TYPE = "rm.action.not-hold-type";
 
     /**
      * @see org.alfresco.repo.action.executer.ActionExecuterAbstractBase#executeImpl(org.alfresco.service.cmr.action.Action, org.alfresco.service.cmr.repository.NodeRef)
@@ -86,8 +90,7 @@ public class RelinquishHoldAction extends RMActionExecuterAbstractBase
         }
         else
         {
-            throw new AlfrescoRuntimeException("Can not relinquish a hold on a node that is not of type " + TYPE_HOLD.toString() + 
-                                               "(" + actionedUponNodeRef.toString() + ")");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_HOLD_TYPE, TYPE_HOLD.toString(), actionedUponNodeRef.toString()));
         }
     }
     
@@ -184,8 +187,7 @@ public class RelinquishHoldAction extends RMActionExecuterAbstractBase
         {
             if(throwException)
             {
-                throw new AlfrescoRuntimeException("Can not relinquish a hold on a node that is not of type " + TYPE_HOLD.toString() + 
-                    "(" + filePlanComponent.toString() + ")");
+                throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NOT_HOLD_TYPE, TYPE_HOLD.toString(), filePlanComponent.toString()));
             }
             else
             {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * Reviewed action.
  * 
  * @author Neil McErlean
  */
@@ -67,6 +68,12 @@ public class ReviewedAction extends RMActionExecuterAbstractBase
 	    }
 	}
 	
+	/**
+	 * Make record as reviewed.
+	 * 
+	 * @param nodeRef
+	 * @param vrDef
+	 */
 	private void reviewRecord(NodeRef nodeRef, VitalRecordDefinition vrDef)
 	{
         // Calculate the next review date
@@ -112,6 +119,4 @@ public class ReviewedAction extends RMActionExecuterAbstractBase
     {
         return true;
     }
-	
-	
 }

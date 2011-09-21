@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -33,6 +33,7 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Transfer complete action
@@ -41,6 +42,9 @@ import org.alfresco.service.namespace.RegexQNamePattern;
  */
 public class TransferCompleteAction extends RMActionExecuterAbstractBase
 {
+    /** I18N */
+    private static final String MSG_NODE_NOT_TRANSFER = "rm.action.node-not-transfer";
+    
     /**
      * @see org.alfresco.module.org_alfresco_module_dod5015.action.RMActionExecuterAbstractBase#isExecutableImpl(org.alfresco.service.cmr.repository.NodeRef,
      *      java.util.Map, boolean)
@@ -92,7 +96,7 @@ public class TransferCompleteAction extends RMActionExecuterAbstractBase
         }
         else
         {
-            throw new AlfrescoRuntimeException("Actioned upon node is not a valid transfer object.");
+            throw new AlfrescoRuntimeException(I18NUtil.getMessage(MSG_NODE_NOT_TRANSFER));
         }
     }
 

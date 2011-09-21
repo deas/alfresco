@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,35 +19,21 @@
 package org.alfresco.module.org_alfresco_module_dod5015.script;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementAction;
-import org.alfresco.module.org_alfresco_module_dod5015.action.RecordsManagementActionService;
 import org.alfresco.module.org_alfresco_module_dod5015.email.CustomEmailMappingService;
 import org.alfresco.module.org_alfresco_module_dod5015.email.CustomMapping;
-import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEvent;
-import org.alfresco.module.org_alfresco_module_dod5015.event.RecordsManagementEventService;
-import org.alfresco.module.org_alfresco_module_dod5015.model.RecordsManagementModel;
-import org.alfresco.service.cmr.dictionary.DictionaryService;
-import org.alfresco.service.cmr.dictionary.PropertyDefinition;
-import org.alfresco.service.cmr.repository.Period;
-import org.alfresco.service.cmr.repository.PeriodProvider;
-import org.alfresco.service.namespace.NamespaceService;
-import org.alfresco.service.namespace.QName;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.springframework.util.StringUtils;
 
 /**
  * Implementation for Java backed webscript to return 

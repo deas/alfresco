@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,6 +18,8 @@
  */
 package org.alfresco.module.org_alfresco_module_dod5015.audit;
 
+import org.springframework.extensions.surf.util.I18NUtil;
+
 /**
  * Class to represent an audit event
  *
@@ -32,11 +34,17 @@ public class AuditEvent
      * Constructor 
      * 
      * @param name The audit event name
-     * @param label The audit event label
+     * @param label The audit event label (or I18N lookup id)
      */
     public AuditEvent(String name, String label)
     {
         this.name = name;
+        
+        String lookup = I18NUtil.getMessage(label);
+        if (lookup != null)
+        {
+            label = lookup;
+        }
         this.label = label;
     }
 
