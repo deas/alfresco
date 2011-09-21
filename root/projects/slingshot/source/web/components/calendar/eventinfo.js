@@ -596,114 +596,130 @@
 
                   var browseButton = Alfresco.util.createYUIButton(EditDialog, "browse-button", function()
                   {
-                     if (!EditDialog.browsePanel)
+                     if (EditDialog.browsePanel)
                      {
-                        EditDialog.hide();
-                        Alfresco.util.Ajax.request(
+                        delete EditDialog.browsePanel;
+                     }
+                     EditDialog.hide();
+
+                     // Show site title, if possible:
+                     var titleModule = Alfresco.util.ComponentManager.findFirst("Alfresco.CollaborationTitle"),
+                        siteTitle = (titleModule && titleModule.options) ? titleModule.options.siteTitle : EditDialog.options.site ;
+
+                     Alfresco.util.Ajax.request(
+                     {
+                        url: Alfresco.constants.URL_SERVICECONTEXT + "components/calendar/browse-docfolder",
+                        dataObj: {
+                           site: siteTitle
+                        },
+                        successCallback:
                         {
-                           url: Alfresco.constants.URL_SERVICECONTEXT + "components/calendar/browse-docfolder",
-                           dataObj: {
-                              site: EditDialog.siteId
-                           },
-                           successCallback:
+                           fn: function(response)
                            {
-                              fn: function(response)
+
+                              var containerDiv = document.createElement("div");
+                              containerDiv.innerHTML = response.serverResponse.responseText;
+                              var panelDiv = Dom.getFirstChild(containerDiv);
+                              EditDialog.browsePanel = Alfresco.util.createYUIPanel(panelDiv);
+                              var selectedDocfolder = Dom.get(EditDialog.id + "-docfolder").value;
+
+                              Alfresco.util.createYUIButton(EditDialog.browsePanel, "ok", function()
                               {
-
-                                 var containerDiv = document.createElement("div");
-                                 containerDiv.innerHTML = response.serverResponse.responseText;
-                                 var panelDiv = Dom.getFirstChild(containerDiv);
-                                 EditDialog.browsePanel = Alfresco.util.createYUIPanel(panelDiv);
-                                 var selectedDocfolder = Dom.get(EditDialog.id + "-docfolder").value;
-
-                                 Alfresco.util.createYUIButton(EditDialog.browsePanel, "ok", function()
+                                 if (selectedDocfolder.charAt(selectedDocfolder.length - 1) == '/')
                                  {
-                                    if (selectedDocfolder.charAt(selectedDocfolder.length - 1) == '/')
+                                    selectedDocfolder = selectedDocfolder.substring(0, selectedDocfolder.length - 1);
+                                 }
+                                 Dom.get(EditDialog.id + "-docfolder").value = selectedDocfolder;
+                                 EditDialog.browsePanel.hide();
+                                 EditDialog.dialog.show();
+                              });
+
+                              Alfresco.util.createYUIButton(EditDialog.browsePanel, "cancel", function()
+                              {
+                                 EditDialog.browsePanel.hide();
+                                 EditDialog.dialog.show();
+                              });
+
+                              Alfresco.util.createTwister("twister");
+                              var tree = new YAHOO.widget.TreeView("treeview");
+                              tree.setDynamicLoad(function(node, fnLoadComplete)
+                              {
+                                 var nodePath = node.data.path;
+                                 var uri = Alfresco.constants.PROXY_URI + "slingshot/doclib/treenode/site/" + $combine(encodeURIComponent(CalendarView.options.siteId), encodeURIComponent("documentLibrary"), Alfresco.util.encodeURIPath(nodePath));
+                                 var callback =
+                                 {
+                                    success: function(oResponse)
                                     {
-                                       selectedDocfolder = selectedDocfolder.substring(0, selectedDocfolder.length - 1);
-                                    }
-                                    Dom.get(EditDialog.id + "-docfolder").value = selectedDocfolder;
-                                    EditDialog.browsePanel.hide();
-                                    EditDialog.dialog.show();
-                                 });
-
-                                 Alfresco.util.createYUIButton(EditDialog.browsePanel, "cancel", function()
-                                 {
-                                    EditDialog.browsePanel.hide();
-                                    EditDialog.dialog.show();
-                                 });
-
-                                 Alfresco.util.createTwister("twister");
-                                 var tree = new YAHOO.widget.TreeView("treeview");
-                                 tree.setDynamicLoad(function(node, fnLoadComplete)
-                                 {
-                                    var nodePath = node.data.path;
-                                    var uri = Alfresco.constants.PROXY_URI + "slingshot/doclib/treenode/site/" + $combine(encodeURIComponent(CalendarView.options.siteId), encodeURIComponent("documentLibrary"), Alfresco.util.encodeURIPath(nodePath));
-                                    var callback =
-                                    {
-                                       success: function(oResponse)
+                                       var results = YAHOO.lang.JSON.parse(oResponse.responseText), item, treeNode;
+                                       if (results.items)
                                        {
-                                          var results = YAHOO.lang.JSON.parse(oResponse.responseText), item, treeNode;
-                                          if (results.items)
+                                          for (var i = 0, j = results.items.length; i < j; i++)
                                           {
-                                             for (var i = 0, j = results.items.length; i < j; i++)
+                                             item = results.items[i];
+                                             item.path = $combine(nodePath, item.name);
+                                             treeNode = EventInfo._buildTreeNode(item, node, false);
+                                             if (!item.hasChildren)
                                              {
-                                                item = results.items[i];
-                                                item.path = $combine(nodePath, item.name);
-                                                treeNode = EventInfo._buildTreeNode(item, node, false);
-                                                if (!item.hasChildren)
-                                                {
-                                                   treeNode.isLeaf = true;
-                                                }
+                                                treeNode.isLeaf = true;
                                              }
                                           }
-                                          oResponse.argument.fnLoadComplete();
-                                       },
+                                       }
+                                       oResponse.argument.fnLoadComplete();
+                                    },
 
-                                       failure: function(oResponse)
-                                       {
-                                          Alfresco.logger.error("", oResponse);
-                                       },
+                                    failure: function(oResponse)
+                                    {
+                                       Alfresco.logger.error("", oResponse);
+                                    },
 
-                                       argument:
-                                       {
-                                          "node": node,
-                                          "fnLoadComplete": fnLoadComplete
-                                       },
+                                    argument:
+                                    {
+                                       "node": node,
+                                       "fnLoadComplete": fnLoadComplete
+                                    },
 
-                                       scope: EditDialog
-                                    };
+                                    scope: EditDialog
+                                 };
 
-                                    YAHOO.util.Connect.asyncRequest('GET', uri, callback);
-                                 });
+                                 YAHOO.util.Connect.asyncRequest('GET', uri, callback);
+                              });
 
-                                 tree.subscribe("clickEvent", function(args)
-                                 {
-                                    selectedDocfolder = "documentLibrary" + args.node.data.path;
-                                 });
+                              var selectDocfolder = function DocFolder_selectDocfolder(path)
+                              {
+                                 selectedDocfolder = "documentLibrary" + path;
+                              }
 
-                                 tree.subscribe("collapseComplete", function(node)
-                                 {
-                                    selectedDocfolder = "documentLibrary" + node.data.path;
-                                 });
+                              tree.subscribe("expand", function(node)
+                              {
+                                 selectDocfolder(node.data.path);
+                              })
+
+                              tree.subscribe("clickEvent", function(args)
+                              {
+                                 selectDocfolder(args.node.data.path);
+                              });
+
+                              tree.subscribe("collapseComplete", function(node)
+                              {
+                                 selectDocfolder(node.data.path);
+                              });
 
 
-                                 var tempNode = EventInfo._buildTreeNode(
-                                 {
-                                    name: "documentLibrary",
-                                    path: "/",
-                                    nodeRef: ""
-                                 }, tree.getRoot(), false);
+                              var tempNode = EventInfo._buildTreeNode(
+                              {
+                                 name: "documentLibrary",
+                                 path: "/",
+                                 nodeRef: ""
+                              }, tree.getRoot(), false);
 
-                                 tree.render();
-                                 EditDialog.browsePanel.setFirstLastFocusable();
-                                 EditDialog.browsePanel.show();
+                              tree.render();
+                              EditDialog.browsePanel.setFirstLastFocusable();
+                              EditDialog.browsePanel.show();
 
-                              },
-                              scope: EditDialog
-                           }
-                        });
-                     }
+                           },
+                           scope: EditDialog
+                        }
+                     });
                   });
 
                   /**
