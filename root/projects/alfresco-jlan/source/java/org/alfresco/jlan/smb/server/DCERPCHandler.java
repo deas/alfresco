@@ -580,7 +580,17 @@ public class DCERPCHandler {
 				// Switch to the response buffer
 				
 				buf = respPkt.getBuffer();
+
+				// Debug
+
+				if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
+					sess.debugPrintln("  Allocated larger reply packet, pktLen=" + respPkt.getBuffer().length);
 			}
+			
+			// Set the DCE response buffer flags and fragment length
+			
+			bufData.setHeaderValue( DCEBuffer.HDR_FLAGS, DCEBuffer.FLG_ONLYFRAG);
+			bufData.setHeaderValue( DCEBuffer.HDR_FRAGLEN, bufData.getLength());
 			
 			// Build the read response
 
