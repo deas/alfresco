@@ -6,7 +6,7 @@
    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
    expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://alfresco.org">
 
-    <process id="quickStartReviewPublish" name="WCM Quick Start Review Publish Process">
+    <process id="quickStartReviewPublish" name="Web Quick Start: Review &amp; Publish Web Assets">
 
         <startEvent id="start"
             activiti:formKey="wswf:submitReviewTask" />

@@ -214,7 +214,7 @@
          <workflow name="jbpm$wcmwf:*"/>
          <workflow name="jbpm$wf:articleapproval"/>
          <!-- Hide publishing workflows -->
-         <workflow name="activiti$activitiPublishWebContent"/>
+         <workflow name="activiti$publishWebContent"/>
          <workflow name="jbpm$publishWebContent"/>
          <!-- Hide invitation workflows -->
          <workflow name="jbpm$inwf:invitation-nominated"/>
