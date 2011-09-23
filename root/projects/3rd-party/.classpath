@@ -39,8 +39,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-validator-1.4-SNAPSHOT-20110316.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.0-20110921.jar" sourcepath="src/tika-core-1.0-20110921.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.0-20110921.jar" sourcepath="src/tika-parsers-1.0-20110921.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.1-SNAPSHOT.jar" />
-	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.1-SNAPSHOT.jar" />
+	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.1-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.1-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-api-1.1.8.jar" sourcepath="src/myfaces-api-1.1.8-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-impl-1.1.8.jar" sourcepath="src/myfaces-impl-1.1.8-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/joda-time-1.2.1.jar"/>
@@ -231,16 +231,17 @@
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.8.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.8.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-security-core-3.1.0.RC2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.5.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.5.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.5.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.5.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.5.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.5.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.5.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/chemistry-opencmis-test-browser-0.5.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.5.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT.jar" sourcepath="src/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT-src.zip"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-client-api-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-client-bindings-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-client-impl-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-server-bindings-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-server-bindings-war-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-server-support-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-test-browser-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/chemistry-opencmis-test-tck-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
