@@ -16,5 +16,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
