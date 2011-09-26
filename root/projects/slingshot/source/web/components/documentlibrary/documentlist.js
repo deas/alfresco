@@ -1687,7 +1687,7 @@
                for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
                {
                   line = metadataTemplate.lines[i];
-                  if (!scope.options.simpleView || line.simpleView)
+                  if (!$isValueSet(line.view) || line.view == (scope.options.simpleView ? "simple" : "detailed"))
                   {
                      html = YAHOO.lang.substitute(line.template, scope.renderers, fnRenderTemplate);
                      if ($isValueSet(html))

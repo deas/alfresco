@@ -296,7 +296,7 @@ var DocList =
                   {
                      index: line.index,
                      template: line.template,
-                     simpleView: line.simpleView
+                     view: line.view
                   });
                }
             }
@@ -701,7 +701,7 @@ var DocList =
    {
       var templateLines = {},
          lineConfig = templateConfig.childrenMap["line"],
-         line, id, index, evaluator, simpleView;
+         line, id, index, evaluator, view;
 
       if (!lineConfig)
       {
@@ -714,7 +714,7 @@ var DocList =
          id = line.getAttribute("id");
          index = line.getAttribute("index");
          evaluator = line.getAttribute("evaluator");
-         simpleView = line.getAttribute("simpleView");
+         view = line.getAttribute("view");
          if (id != null)
          {
             if (line.value == null)
@@ -727,7 +727,7 @@ var DocList =
                {
                   index: index || 0,
                   template: line.value,
-                  simpleView: simpleView || false
+                  view: view || ""
                };
                if (evaluator != null)
                {

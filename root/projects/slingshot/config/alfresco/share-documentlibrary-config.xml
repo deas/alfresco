@@ -235,22 +235,24 @@
 
       <!--
          Custom Metadata Templates for the Document Library Browse View
+
+         Use view="simple" or view="detailed" to limit the display to one particular view.
       -->
       <metadata-templates>
          <!-- Default (fallback) -->
          <template id="default">
-            <line index="10" id="date" simpleView="true">{date}{size}</line>
-            <line index="20" id="description">{description}</line>
-            <line index="30" id="tags">{tags}</line>
-            <line index="40" id="categories" evaluator="evaluator.doclib.metadata.hasCategories">{categories}</line>
-            <line index="50" id="social">{social}</line>
+            <line index="10" id="date">{date}{size}</line>
+            <line index="20" id="description" view="detailed">{description}</line>
+            <line index="30" id="tags" view="detailed">{tags}</line>
+            <line index="40" id="categories" view="detailed" evaluator="evaluator.doclib.metadata.hasCategories">{categories}</line>
+            <line index="50" id="social" view="detailed">{social}</line>
          </template>
 
          <!-- Working Copies -->
          <template id="isWorkingCopy">
             <evaluator>evaluator.doclib.metadata.isWorkingCopy</evaluator>
-            <line index="10" id="date" simpleView="true">{date}{size}</line>
-            <line index="20" id="description">{description}</line>
+            <line index="10" id="date">{date}{size}</line>
+            <line index="20" id="description" view="detailed">{description}</line>
          </template>
       </metadata-templates>
 
