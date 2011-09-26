@@ -87,6 +87,14 @@
           topN: 10
        },
 
+       /**
+        * Balloon UI instance used for error reporting
+        *
+        * @property balloon
+        * @type object
+        */
+       balloon: null,
+       
       /**
        * Object literal used to generate unique tag ids
        * 
@@ -116,6 +124,9 @@
          this.currentTags = tags;
          return this;
       },
+      
+      
+      formsRuntime: null,
       
       /**
        * Registers the tag library logic with the dom tree
@@ -171,7 +182,12 @@
          {
             fn: function TagLibrary_enterKeyListener(eventName, event, obj)
             {
-               me.onAddTagButtonClick();
+               var valid = this.formsRuntime._runValidations(true);
+               if (valid)
+               {
+                  me.onAddTagButtonClick();
+                  this.balloon.hide();
+               }
                Event.stopEvent(event[1]);
                return false;
             },
@@ -191,8 +207,23 @@
          // Add validators
          if (formsRuntime)
          {
+            var tagInput = Dom.get(this.id + "-tag-input-field");
+            
+            this.balloon = Alfresco.util.createBalloon(tagInput);
+            this.balloon.onClose.subscribe(function(e)
+            {
+               try
+               {
+                  tagInput.focus();
+               }
+               catch (e)
+               {
+               }
+            }, this, true);
+            
+            
             var tagFormsRuntime = new Alfresco.forms.Form(formsRuntime.formId);
-            tagFormsRuntime.setShowSubmitStateDynamically(true, false);
+            tagFormsRuntime.setShowSubmitStateDynamically(true, true);
             tagFormsRuntime.setSubmitElements(addTagButton);
             tagFormsRuntime.setAJAXSubmit(true);
             tagFormsRuntime.doBeforeAjaxRequest =
@@ -204,17 +235,24 @@
                obj: null,
                scope: this
             };
-            tagFormsRuntime.addValidation(this.id + "-tag-input-field", Alfresco.forms.validation.regexMatch,
-            {
-               pattern: /([\*\\\><\?\/\:\|]+)|([\.]?[\.]+$)/,
-               match: false
-            });
+            var msg = Alfresco.util.message("validation-hint.nodeName");
+            tagFormsRuntime.addValidation(this.id + "-tag-input-field", Alfresco.forms.validation.nodeName, null, "keyup", msg);
             tagFormsRuntime.addValidation(this.id + "-tag-input-field", Alfresco.forms.validation.mandatory);
             tagFormsRuntime.addValidation(this.id + "-tag-input-field", Alfresco.forms.validation.length,
             {
                max: 256,
                crop: true
             }, "keyup");
+            
+            var scope = this;
+            tagFormsRuntime.addError = function InsituEditor_textBox_addError(msg, field)
+            {
+               scope.balloon.html(msg);
+               scope.balloon.show();
+            };
+            
+            tagFormsRuntime.init();
+            this.formsRuntime = tagFormsRuntime;
          }
       },
       
