@@ -56,6 +56,14 @@ yui-panel-container,
    font-size: 81%;
 }
 
+/* Font fallback defaults */
+
+.dnd-dragged
+{
+   font-family: Arial, sans-serif;
+   font-size: 81%;
+}
+
 /* Site-wide Styles */
 
 #alfresco-yuiloader

@@ -1001,6 +1001,7 @@
             Dom.addClass(dragEl, className);
          }
          Dom.addClass(dragEl, "dnd-focused");
+         Dom.addClass(dragEl, "dnd-dragged");
 
          // Reset YUI default border style for dragged elements
          Dom.setStyle(dragEl, "border-style", "");

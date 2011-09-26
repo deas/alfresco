@@ -28,7 +28,7 @@
                         <writeFile>
                             <path>${postgres_root_directory}/bin/registerservice.bat</path>
                             <text>@echo off
-start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix} -w"</text>
+start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix}"</text>
                         </writeFile>
                         <runProgram>
                             <progressText>Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}</progressText>
@@ -80,6 +80,7 @@ start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register 
             </actionList>
             <ruleList>
                 <platformTest type="windows"/>
+		<compareText text="${postgres_installation_type}" logic="does_not_equal" value="existing"/>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
@@ -94,7 +95,7 @@ start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register 
         </runProgram>
     </preUninstallationActionList>
 
-    <installationAbortedActionList>
+    <!--installationAbortedActionList>
         <runProgram>
             <program>${postgres_root_directory}\scripts\serviceinstall.bat</program>
             <programArguments>REMOVE</programArguments>
@@ -103,7 +104,7 @@ start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register 
                 <isTrue value="${postgres_service_installed}"/>
             </ruleList>
         </runProgram>
-    </installationAbortedActionList>
+    </installationAbortedActionList-->
 
 
 </component>

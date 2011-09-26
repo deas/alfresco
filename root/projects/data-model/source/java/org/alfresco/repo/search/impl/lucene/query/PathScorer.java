@@ -51,6 +51,7 @@ public class PathScorer extends Scorer
     {
         Scorer selfScorer = null;
         HashMap<String, Counter> selfIds = null;
+        boolean followParentInLevel0 = true;
         
         StructuredFieldPosition last = null;
         if(pathQuery.getQNameStructuredFieldPositions().size() > 0)
@@ -134,17 +135,6 @@ public class PathScorer extends Scorer
 
         TermPositions level0 = null;
 
-        TermDocs nodeDocs;
-        if (reader instanceof CachingIndexReader)
-        {
-            CachingIndexReader cachingIndexReader = (CachingIndexReader) reader;
-            nodeDocs = cachingIndexReader.getNodeDocs();
-        }
-        else
-        {
-            nodeDocs = reader.termDocs(new Term("ISNODE", "T"));
-        }
-
         // StructuredFieldPosition[] test =
         // (StructuredFieldPosition[])structuredFieldPositions.toArray(new
         // StructuredFieldPosition[]{});
@@ -162,11 +152,11 @@ public class PathScorer extends Scorer
         if((cs == null) && 
                 (pathQuery.getQNameStructuredFieldPositions().get(pathQuery.getQNameStructuredFieldPositions().size()-1)).linkSelf())
         {
-            nodeDocs = reader.termDocs(new Term("ISROOT", "T"));
+            followParentInLevel0 = false;
         }
         
 
-        LeafScorer ls = new LeafScorer(weight, rootLeafPositions, level0, cs, (StructuredFieldPosition[]) pathQuery.getQNameStructuredFieldPositions().toArray(new StructuredFieldPosition[] {}), nodeDocs,
+        LeafScorer ls = new LeafScorer(weight, rootLeafPositions, level0, cs, (StructuredFieldPosition[]) pathQuery.getQNameStructuredFieldPositions().toArray(new StructuredFieldPosition[] {}), followParentInLevel0,
                 selfIds, reader, similarity, reader.norms(pathQuery.getQnameField()), dictionarySertvice, repeat);
 
         return new PathScorer(similarity, ls);

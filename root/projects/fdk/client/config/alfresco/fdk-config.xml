@@ -11,6 +11,15 @@
       </types>
    </config>
    
+   <!-- Share override config to add fdk:everything type to advanced search -->
+   <config evaluator="string-compare" condition="AdvancedSearch">
+      <advanced-search>
+         <forms>
+            <form label="Everything" description="Searches for all types of fdk:evertything">fdk:everything</form>
+         </forms>
+      </advanced-search>
+   </config>
+   
    <!-- FDK form configuration -->
    
    <config>
@@ -78,6 +87,21 @@
                   <control>
                      <control-param name="editorAppearance">explorer</control-param>
                   </control>
+               </field>
+            </appearance>
+         </form>
+         <form id="search">
+            <field-visibility>
+               <show id="cm:name" />
+               <show id="cm:title" force="true" />
+               <show id="cm:description" force="true" />
+               <show id="fdk:text" />
+               <show id="fdk:int" />
+               <show id="fdk:date" />
+            </field-visibility>
+            <appearance>
+               <field id="fdk:date">
+                  <control template="/org/alfresco/components/form/controls/daterange.ftl" />
                </field>
             </appearance>
          </form>

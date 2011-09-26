@@ -23,7 +23,7 @@
 <div class="form-field inlineable">
    <#if form.mode == "view">
       <div id="${controlId}" class="viewmode-field inlineable">
-         <#if field.mandatory!false && field.value == "">
+         <#if (field.mandatory!false) && (field.value == "")>
             <span class="incomplete-warning"><img src="${url.context}/res/components/form/images/warning-16.png" title="${msg("form.field.incomplete")}" /><span>
          </#if>
          <#if field.label != ""><span class="viewmode-label">${field.label?html}:</span></#if>

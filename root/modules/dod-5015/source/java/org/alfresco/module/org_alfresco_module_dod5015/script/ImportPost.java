@@ -46,6 +46,7 @@ import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.WrappingWebScriptRequest;
 import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
 import org.springframework.extensions.webscripts.servlet.FormData.FormField;
 import org.apache.commons.logging.Log;
@@ -124,9 +125,30 @@ public class ImportPost extends DeclarativeWebScript
     @Override
     protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache)
     {
+        // Unwrap to a WebScriptServletRequest if we have one
+        WebScriptServletRequest webScriptServletRequest = null;
+        WebScriptRequest current = req;
+        do
+        {
+            if (current instanceof WebScriptServletRequest)
+            {
+                webScriptServletRequest = (WebScriptServletRequest) current;
+                current = null;
+            }
+            else if (current instanceof WrappingWebScriptRequest)
+            {
+                current = ((WrappingWebScriptRequest) req).getNext();
+            }
+            else
+            {
+                current = null;
+            }
+        }
+        while (current != null);
+
         // get the content type of request and ensure it's multipart/form-data
         String contentType = req.getContentType();
-        if (MULTIPART_FORMDATA.equals(contentType) && req instanceof WebScriptServletRequest)
+        if (MULTIPART_FORMDATA.equals(contentType) && webScriptServletRequest != null)
         {
             String nodeRef = req.getParameter(PARAM_DESTINATION);
             
@@ -169,7 +191,7 @@ public class ImportPost extends DeclarativeWebScript
             try
             {
                 // create a temporary file representing uploaded ACP file 
-                FormField acpContent = ((WebScriptServletRequest)req).getFileField(PARAM_ARCHIVE);
+                FormField acpContent = webScriptServletRequest.getFileField(PARAM_ARCHIVE);
                 if (acpContent == null)
                 {
                     throw new WebScriptException(Status.STATUS_BAD_REQUEST, 

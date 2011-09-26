@@ -774,13 +774,14 @@ public class AVMHostConfig extends HostConfig
             // Only call a webapp our "parent" if we're shadowing it, **and**
             // it's in a different virtual store; otherwise, our parent is null.
             String parent_context_name = null;
+            String parent_store_name = null;
 
             if (indirection_path != null)
             {
                 int parent_index_store_tail = indirection_path.indexOf(':');
                 if ( parent_index_store_tail > 0 )
                 {
-                    String parent_store_name =
+                    parent_store_name =
                         indirection_path.substring(0,parent_index_store_tail);
 
                     if ( ! parent_store_name.equals( store_name ) )
@@ -794,6 +795,8 @@ public class AVMHostConfig extends HostConfig
                     }
                 }
             }
+
+            deployParentIfNeccessary(version, parent_context_name, parent_store_name + ':' + store_relpath);
 
             deployAVMWebapp(
                version,               // -1
@@ -840,6 +843,24 @@ public class AVMHostConfig extends HostConfig
         }
         
         return is_sucessful;
+    }
+
+    /**
+     * Deploys parent context if it wasn't previously deplyed.
+     * Fix for ALF-8941. If the parent context wasn't deployed, it is not possible to use its
+     * classloader. So when, for example, $-1$testproject--test1--preview$ROOT context is used in case
+     * of lazy deployment, and the parent context $-1$testproject--test1$ROOT is not loaded yet
+     * we can't delegate up to $-1$testproject--test1$ROOT and $-1$testproject$ROOT apps classloaders.
+     * 
+     * @param version
+     * @param contextName
+     * @param storePath
+     */
+    private void deployParentIfNeccessary(int version, String contextName, String storePath)
+    {
+        if (contextName == null || this.deployed.containsKey(contextName))
+            return;
+        updateAllVirtualWebapps(version, storePath, false);
     }
 
 

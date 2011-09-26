@@ -74,9 +74,9 @@ public class LeafScorer extends Scorer
 
     private int countInCounter;
 
-    int min = 0;
+    int min = -1;
 
-    int max = 0;
+    int max = -1;
 
     boolean more = true;
 
@@ -95,8 +95,8 @@ public class LeafScorer extends Scorer
     boolean hasSelfScorer;
 
     IndexReader reader;
-
-    private TermDocs allNodes;
+    
+    BitSet allNodesCandiates = new BitSet();
 
     TermPositions level0;
 
@@ -119,6 +119,8 @@ public class LeafScorer extends Scorer
     private int[] cats;
 
     private boolean matchAllLeaves;
+
+    private boolean followParentInLevel0;
     
     /**
      * Constructor - should use an arg object ...
@@ -137,14 +139,14 @@ public class LeafScorer extends Scorer
      * @param repeat
      * @param tp
      */
-    public LeafScorer(Weight weight, TermPositions root, TermPositions level0, ContainerScorer containerScorer, StructuredFieldPosition[] sfps, TermDocs allNodes,
+    public LeafScorer(Weight weight, TermPositions root, TermPositions level0, ContainerScorer containerScorer, StructuredFieldPosition[] sfps, boolean followParentInLevel0,
             HashMap<String, Counter> selfIds, IndexReader reader, Similarity similarity, byte[] norms, DictionaryService dictionaryService, boolean repeat)
     {
         super(similarity);
         this.root = root;
         this.containerScorer = containerScorer;
         this.sfps = sfps;
-        this.allNodes = allNodes;
+        //A this.allNodes = allNodes;
         // this.tp = tp;
         if (selfIds == null)
         {
@@ -160,6 +162,7 @@ public class LeafScorer extends Scorer
         this.level0 = level0;
         this.dictionaryService = dictionaryService;
         this.repeat = repeat;
+        this.followParentInLevel0 = followParentInLevel0;
         
         matchAllLeaves = allNodes();
         try
@@ -361,13 +364,16 @@ public class LeafScorer extends Scorer
                     }
                     counter.count++;
 
-                    counter = selfIds.get(id);
-                    if (counter == null)
+                    if (!hasSelfScorer)
                     {
-                        counter = new Counter();
-                        selfIds.put(id, counter);
+                        counter = selfIds.get(id);
+                        if (counter == null)
+                        {
+                            counter = new Counter();
+                            selfIds.put(id, counter);
+                        }
+                        counter.count++;
                     }
-                    counter.count++;
                 }
             }
             if (parentIds.size() > 1)
@@ -397,6 +403,11 @@ public class LeafScorer extends Scorer
                 TermPositions tp = reader.termPositions(new Term("PARENT", parent));
                 while (tp.next())
                 {
+                    if((level0 == null) || followParentInLevel0)
+                    {
+                        allNodesCandiates.set(tp.doc());
+                    }
+                    
                     for (int i = 0, l = tp.freq(); i < l; i++)
                     {
                         for (int j = 0; j < counter.count; j++)
@@ -425,12 +436,29 @@ public class LeafScorer extends Scorer
             ordered = new ArrayList<String>(selfIds.size());
             ordered.addAll(selfIds.keySet());
             Collections.sort(ordered);
+            reader.termDocs(new Term("ISNODE", "T"));
+            TermDocs leafTp = null;
             for (String id : ordered)
             {
                 // tp.seek(new Term("ID", id));
                 TermPositions tp = reader.termPositions(new Term("ID", id));
                 while (tp.next())
                 {
+                    int target = tp.doc();
+                    // should order and then check leafyness after
+                    if(leafTp == null)
+                    {
+                        leafTp = reader.termDocs(new Term("ISNODE", "T"));
+                    }
+                    else
+                    {
+                        leafTp.seek(new Term("ISNODE", "T"));
+                    }
+                    leafTp.skipTo(target);
+                    if((leafTp.doc() == target)||(level0 != null))
+                    {
+                        allNodesCandiates.set(tp.doc());
+                    }
                     Counter counter = selfIds.get(id);
                     for (int i = 0; i < counter.count; i++)
                     {
@@ -445,6 +473,10 @@ public class LeafScorer extends Scorer
                 }
                 tp.close();
 
+            }
+            if(leafTp != null)
+            {
+                leafTp.close();
             }
             old = self;
             self = new int[position];
@@ -471,6 +503,7 @@ public class LeafScorer extends Scorer
                                 TermPositions tp = reader.termPositions(new Term("@" + propDef.getName().toString(), catid));
                                 while (tp.next())
                                 {
+                                    allNodesCandiates.set(tp.doc());
                                     for (int i = 0, l = tp.freq(); i < l; i++)
                                     {
                                         cats[position++] = tp.doc();
@@ -493,6 +526,14 @@ public class LeafScorer extends Scorer
             cats = new int[position];
             System.arraycopy(old, 0, cats, 0, position);
             Arrays.sort(cats);
+            
+            // always consider the root node
+            TermPositions tp = reader.termPositions(new Term("ISROOT", "T"));
+            while (tp.next())
+            {
+                allNodesCandiates.set(tp.doc());
+            }
+            tp.close();
         }
     }
 
@@ -514,7 +555,8 @@ public class LeafScorer extends Scorer
         {
             while (more)
             {
-                if (allNodes.next())
+                max = allNodesCandiates.nextSetBit(max+1);
+                if (max != -1)
                 {
                     if (check())
                     {
@@ -536,7 +578,7 @@ public class LeafScorer extends Scorer
             return false;
         }
 
-        if (max == 0)
+        if (max == -1)
         {
             // We need to initialise
             // Just do a next on all terms and check if the first doc matches
@@ -563,10 +605,6 @@ public class LeafScorer extends Scorer
                 }
             }
          }
-        if(allNodes != null)
-        {
-            allNodes.close();
-        }
         if(level0 != null)
         {
             level0.close();
@@ -771,43 +809,43 @@ public class LeafScorer extends Scorer
 
             if (last.linkSelf())
             {
-                if ((self != null) && sfps[1].linkSelf() && ((position = Arrays.binarySearch(self, doc())) >= 0))
+                if ((self != null) && sfps[1].linkSelf() && ((position = Arrays.binarySearch(self, max)) >= 0))
                 {
-                    if (!selfDocs.get(doc()))
+                    if (!selfDocs.get(max))
                     {
-                        selfDocs.set(doc());
-                        while (position > -1 && self[position] == doc())
+                        selfDocs.set(max);
+                        while (position > -1 && self[position] == max)
                         {
                             position--;
                         }
-                        for (int i = position + 1, l = self.length; ((i < l) && (self[i] == doc())); i++)
+                        for (int i = position + 1, l = self.length; ((i < l) && (self[i] == max)); i++)
                         {
                             this.counter++;
                         }
                     }
                 }
             }
-            if (!selfDocs.get(doc()) && last.linkParent())
+            if (!selfDocs.get(max) && last.linkParent())
             {
-                if ((parents != null) && ((position = Arrays.binarySearch(parents, doc())) >= 0))
+                if ((parents != null) && ((position = Arrays.binarySearch(parents, max)) >= 0))
                 {
-                    while (position > -1 && parents[position] == doc())
+                    while (position > -1 && parents[position] == max)
                     {
                         position--;
                     }
-                    for (int i = position + 1, l = parents.length; ((i < l) && (parents[i] == doc())); i++)
+                    for (int i = position + 1, l = parents.length; ((i < l) && (parents[i] == max)); i++)
                     {
                         this.counter++;
                     }
                 }
 
-                if ((cats != null) && ((position = Arrays.binarySearch(cats, doc())) >= 0))
+                if ((cats != null) && ((position = Arrays.binarySearch(cats, max)) >= 0))
                 {
-                    while (position > -1 && cats[position] == doc())
+                    while (position > -1 && cats[position] == max)
                     {
                         position--;
                     }
-                    for (int i = position + 1, l = cats.length; ((i < l) && (cats[i] == doc())); i++)
+                    for (int i = position + 1, l = cats.length; ((i < l) && (cats[i] == max)); i++)
                     {
                         this.counter++;
                     }
@@ -1057,10 +1095,6 @@ public class LeafScorer extends Scorer
 
     public int doc()
     {
-        if (matchAllLeaves)
-        {
-            return allNodes.doc();
-        }
         return max;
     }
 
@@ -1077,26 +1111,36 @@ public class LeafScorer extends Scorer
 
         if (matchAllLeaves)
         {
-            allNodes.skipTo(target);
-            root.skipTo(allNodes.doc()); // must match
-            if (check())
+            max = allNodesCandiates.nextSetBit(target > max ? target : max+1);
+            if (max != -1)
             {
-                return true;
-            }
-            while (more)
-            {
-                if (allNodes.next())
+                root.skipTo(max); // must match
+                if (check())
                 {
-                    if (check())
+                    return true;
+                }
+                while (more)
+                {
+                    max = allNodesCandiates.nextSetBit(max+1);
+                    if (max != -1)
                     {
-                        return true;
+                        root.skipTo(max); // must match
+                        if (check())
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        more = false;
+                        return false;
                     }
                 }
-                else
-                {
-                    more = false;
-                    return false;
-                }
+            }
+            else
+            {
+                more = false;
+                return false;
             }
         }
 

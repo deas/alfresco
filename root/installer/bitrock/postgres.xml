@@ -470,7 +470,7 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
             <ruleList>
                 <compareText text="${postgres_installation_type}" logic="equals" value="bundled"/>
                 <compareText text="${postgres_execute_abort_action_list}" value="1" logic="equals"/>
-                <platformTest type="linux"/>
+                <platformTest type="unix"/>
             </ruleList>
         </actionGroup>
     </installationAbortedActionList>
