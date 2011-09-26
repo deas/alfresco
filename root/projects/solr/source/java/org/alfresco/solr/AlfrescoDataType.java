@@ -112,7 +112,11 @@ public class AlfrescoDataType extends FieldType
         // Hack to set the default loggin level down ...
         for(Enumeration<String> loggerNames = LogManager.getLogManager().getLoggerNames(); loggerNames.hasMoreElements(); /**/)
         {
-            LogManager.getLogManager().getLogger(loggerNames.nextElement()).setLevel(Level.WARNING);
+            java.util.logging.Logger logger = LogManager.getLogManager().getLogger(loggerNames.nextElement());
+            if (logger != null)
+            {
+               logger.setLevel(Level.WARNING);
+            }
         }
         
         HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
