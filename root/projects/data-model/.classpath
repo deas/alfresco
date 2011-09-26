@@ -41,5 +41,13 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-4.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-bindings-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-impl-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-server-bindings-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-server-bindings-war-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-server-support-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-test-browser-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-test-tck-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
