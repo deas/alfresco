@@ -1738,6 +1738,8 @@ public class CoreTracker implements CloseHook
                     doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
                     doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
 
+                    doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
+                    
                     leafDocCmd.solrDoc = doc;
                     leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
