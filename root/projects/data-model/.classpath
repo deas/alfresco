@@ -38,8 +38,8 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
-	<classpathentry kind="lib" path="F:/Workspace/projects/head/code/root/projects/3rd-party/lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="F:/Workspace/projects/head/code/root/projects/3rd-party/lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-4.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
