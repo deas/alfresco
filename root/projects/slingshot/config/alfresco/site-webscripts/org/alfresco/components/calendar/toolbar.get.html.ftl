@@ -45,8 +45,14 @@
          <#if viewToolbarNav >
    			<button id="${el}-next-button">${msg("button.next")}</button>
          </#if>
-         <button id="${el}-workHours-button" name="workHours">${msg("button.work-hours")}</button>
 		</div>
+      <div class="flat-button work-hours">
+         <span id="${el}-workHours-button" class="yui-button yui-checkbox-button">
+            <span class="first-child">
+               <button name="workHours"></button>
+            </span>
+         </span>
+      </div>
       <div class="yui-u flat-button">
          <div class="ical-feed">
             <a id="${el}-publishEvents-button" href="${page.url.context}/proxy/alfresco-feed/calendar/eventList-${page.url.templateArgs["site"]}.ics?site=${page.url.templateArgs["site"]}&amp;format=calendar" rel="_blank">${msg("button.ical")}</a>
@@ -59,5 +65,6 @@
 (function()
 {
    Alfresco.util.relToTarget("${el}-body");
+   Alfresco.util.addMessages(${messages}, "Alfresco.CalendarToolbar");
 })();
 //]]></script>

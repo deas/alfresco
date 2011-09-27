@@ -1554,3 +1554,31 @@ div.fullCalendar .fc-event-vert .fc-event-bg
 {
    z-index:50 !important;
 }
+
+/* Work hours button */
+.calendar-bar div.flat-button.work-hours
+{
+   padding: 0;
+   float:left;
+   margin-top: 8px;
+}
+
+.calendar-bar .work-hours .yui-button span.first-child
+{
+    background: url("images/work-hours-off-16.png") no-repeat 5px 5px;
+}
+
+.calendar-bar .work-hours .yui-button-checked span.first-child
+{
+    background: url("images/work-hours-on-16.png") no-repeat 5px 5px;
+}
+
+div.calendar-bar div.flat-button.work-hours span.yui-checkbox-button-checked
+{
+   background-color: transparent;
+}
+
+div.calendar-bar div.flat-button.work-hours span.yui-checkbox-button-disabled
+{
+   opacity: 0.3;
+}

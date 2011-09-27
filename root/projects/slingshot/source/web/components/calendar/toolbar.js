@@ -140,6 +140,8 @@
 
       onToggleWorkHours: function(e)
       {
+         // Note the title is reversed since it reflects what will happen if the user clicks the button.
+         this.workHoursButton.set("title", Alfresco.util.message(this.workHoursButton.get("checked") ? "button.work-hours.all" : "button.work-hours.working", 'Alfresco.CalendarToolbar'));
          this._fireEvent("toggleWorkHours");
       },
 

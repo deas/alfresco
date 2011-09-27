@@ -451,7 +451,7 @@
                   var editEvent = EventInfo.event,
                      startDate  = (editEvent)? Alfresco.util.fromISO8601(editEvent.startAt.iso8601) : this.options.displayDate,
                      endDate  = (editEvent)? Alfresco.util.fromISO8601(editEvent.endAt.iso8601) : this.options.displayDate;
-
+                  
                   // Pretty formatting
                   Alfresco.CalendarHelper.writeDateToField(startDate, Dom.get("fd"));
                   Alfresco.CalendarHelper.writeDateToField(endDate, Dom.get("td"));
