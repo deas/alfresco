@@ -23,7 +23,7 @@
 
 .document-versions h2 .edit
 {
-   background-image: url(../documentlibrary/actions/document-upload-new-version-16.png);
+   background-image: url(images/document-upload-new-version-16.png);
 }
 
 .document-versions .version-list h3
@@ -60,17 +60,17 @@
 
 .document-versions .actions a.download
 {
-   background-image: url(../documentlibrary/actions/document-download-16.png);
+   background-image: url(images/document-download-16.png);
 }
 
 .document-versions .actions a.historicProperties
 {
-   background-image: url(../documentlibrary/images/metadata-16.png);
+   background-image: url(images/document-view-metadata-16.png);
 }
 
 .document-versions .actions a.revert
 {
-   background-image: url(../images/revert-16.png);
+   background-image: url(images/revert-16.png);
 }
 
 .document-versions .version-details-left

@@ -43,7 +43,7 @@
     * please use Alfresco.module.getHistoricPropertiesViewerInstance() instead.
     *
     * @param {string} htmlId The HTML id of the parent element
-    * @return {Alfresco.module.RevertVersion} The new RevertVersion instance
+    * @return {Alfresco.module.HistoricPropertiesViewer} The new HistoricPropertiesViewer instance
     * @constructor
     * @private
     */
