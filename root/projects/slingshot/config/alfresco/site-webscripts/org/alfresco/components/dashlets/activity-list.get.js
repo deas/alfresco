@@ -91,6 +91,7 @@ function specialize(item, activity, summary)
          item.suppressSite = true;
          // Fall through....
       case "org.alfresco.site.user-role-changed":
+         item.userName = summary.memberUserName;
          item.fullName = trim(summary.memberFirstName + " " + summary.memberLastName);
          item.userProfile = userProfileUrl(summary.memberUserName);
          item.custom0 = msg.get("role." + summary.role);

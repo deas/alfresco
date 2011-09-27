@@ -64,6 +64,7 @@
             <div class="user-status">${(m.authority.userStatus!"")?html} <span class="time">(${(m.authority.userStatusRelativeTime!"")?html})</span></div>
    </#if>
          </div>
+         <div class="clear"></div>
       </div>
 </#list>
    </div>
