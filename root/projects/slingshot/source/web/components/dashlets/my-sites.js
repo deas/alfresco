@@ -122,7 +122,16 @@
           * @type boolean
           * @default false
           */
-         imapEnabled: false
+         imapEnabled: false,
+         
+         /**
+          * Result list size maximum
+          *
+          * @property listSize
+          * @type integer
+          * @default 100
+          */
+         listSize: 100
       },
 
       /**

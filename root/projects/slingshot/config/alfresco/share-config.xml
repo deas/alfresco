@@ -116,6 +116,14 @@
       </users>
    </config>
 
+   <config evaluator="string-compare" condition="Dashboard">
+      <dashboard>
+         <!-- The suggested maximum list size for summary dashlets on the dashboards.
+              If dashlets have been configured to use this value then they will restrict list sizes -->
+         <summary-list-size>100</summary-list-size>
+      </dashboard>
+   </config>
+
    
    <config evaluator="string-compare" condition="Console">
       <groups>

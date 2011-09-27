@@ -126,6 +126,14 @@ public interface NodeService
      */
     @Auditable(parameters = {"storeRef"})
     public NodeRef getRootNode(StoreRef storeRef) throws InvalidStoreRefException;
+    
+    /**
+     * @param storeRef a reference to an existing store
+     * @return Returns a set of references to all nodes in the store tagged with the root aspect
+     * @throws InvalidStoreRefException if the store could not be found
+     */
+    @Auditable(parameters = {"storeRef"})
+    public Set<NodeRef> getAllRootNodes(StoreRef storeRef);
 
     /**
      * @see #createNode(NodeRef, QName, QName, QName, Map)
@@ -532,6 +540,28 @@ public interface NodeService
             QNamePattern qnamePattern)
             throws InvalidNodeRefException;
     
+    /**
+     * Gets the first n child associations, optionally filtered by type qualified name and qualified name.
+     * 
+     * @param nodeRef the parent node - usually a <b>container</b>
+     * @param typeQName        the association type qname to filter on; <tt>null<tt> for no filtering
+     * @param qname            the association qname to filter on; <tt>null</tt> for no filtering
+     * @param maxResults       the maximum number of results to return. The query will be terminated efficiently
+     *                         after that number of results                             
+     * @param preload          should the child nodes be batch loaded?
+     * @return Returns a list of <code>ChildAssociationRef</code> instances.  If the
+     *      node is not a <b>container</b> then the result will be empty.
+     * @throws InvalidNodeRefException if the node could not be found
+     * 
+     */
+    @Auditable(parameters = {"nodeRef", "typeQName", "qname", "maxResults", "preload"})
+    public List<ChildAssociationRef> getChildAssocs(
+            NodeRef nodeRef,
+            final QName typeQName,
+            final QName qname,
+            final int maxResults,
+            final boolean preload)
+            throws InvalidNodeRefException;
     /**
      * Gets all child associations where the pattern of the association qualified
      * name is a match.  Using a {@link org.alfresco.service.namespace.RegexQNamePattern#MATCH_ALL wildcard}

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -509,6 +510,8 @@ public class RMCaveatConfigComponentImpl implements ContentServicePolicies.OnCon
         {
             if (! (AuthenticationUtil.isMtEnabled() && AuthenticationUtil.isRunAsUserTheSystemUser()))
             {
+                // note: userName and userGroupNames must not be null
+                Map<String, List<String>> caveatConstraintDef = caveatConfig.get(constraintName);                
                 Set<String> userGroupFullNames = authorityService.getAuthoritiesForUser(userName);
                 allowedValues = getRMAllowedValues(userName, userGroupFullNames, constraintName);
             }
@@ -582,8 +585,6 @@ public class RMCaveatConfigComponentImpl implements ContentServicePolicies.OnCon
             String userName = AuthenticationUtil.getRunAsUser();
             if (userName != null)
             {
-                Set<String> userGroupNames = authorityService.getAuthoritiesForUser(userName);
-                
                 // check all text properties
                 Map<QName, Serializable> props = nodeService.getProperties(nodeRef);
                 for (Map.Entry<QName, Serializable> entry : props.entrySet())
@@ -602,13 +603,14 @@ public class RMCaveatConfigComponentImpl implements ContentServicePolicies.OnCon
                                 RMListOfValuesConstraint rmCon = ((RMListOfValuesConstraint)con);
                                 String conName = rmCon.getShortName();
                                 MatchLogic matchLogic = rmCon.getMatchLogicEnum();
-                                
-                                if (! caveatConfig.containsKey(conName))
+                                Map<String, List<String>> caveatConstraintDef = caveatConfig.get(conName);                                                
+                                if (caveatConstraintDef == null)
                                 {
                                     continue;
                                 }
                                 else
                                 {
+                                    Set<String> userGroupNames = authorityService.getAuthoritiesForUser(userName);
                                     List<String> allowedValues = getRMAllowedValues(userName, userGroupNames, conName);
                                     
                                     List<String> propValues = null;

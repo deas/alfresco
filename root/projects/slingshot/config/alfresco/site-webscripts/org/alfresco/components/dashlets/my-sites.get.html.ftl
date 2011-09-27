@@ -1,11 +1,13 @@
 <#assign id = args.htmlid>
+<#assign dashboardconfig=config.scoped['Dashboard']['dashboard']>
 <#assign jsid = args.htmlid?js_string>
 <script type="text/javascript">//<![CDATA[
 (function()
 {
    new Alfresco.dashlet.MySites("${jsid}").setOptions(
    {
-      imapEnabled: ${imapServerEnabled?string}
+      imapEnabled: ${imapServerEnabled?string},
+      listSize: ${dashboardconfig.getChildValue('summary-list-size')!100}
    }).setMessages(${messages});
    new Alfresco.widget.DashletResizer("${jsid}", "${instance.object.id}");
    new Alfresco.widget.DashletTitleBarActions("${jsid}").setOptions(

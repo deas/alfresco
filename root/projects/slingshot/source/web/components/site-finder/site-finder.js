@@ -170,7 +170,7 @@
          var config =
          {
             method: "GET",
-            url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(this.options.currentUser) + "/sites",
+            url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(this.options.currentUser) + "/sites?roles=none",
             successCallback: 
             { 
                fn: this._processMembership, 
@@ -186,7 +186,7 @@
          Alfresco.util.Ajax.request(config);
          
          // DataSource definition
-         var uriSearchResults = Alfresco.constants.PROXY_URI + "api/sites?";
+         var uriSearchResults = Alfresco.constants.PROXY_URI + "api/sites?roles=user&";
          this.widgets.dataSource = new YAHOO.util.DataSource(uriSearchResults,
          {
             responseType: YAHOO.util.DataSource.TYPE_JSON,
@@ -199,7 +199,7 @@
          this.widgets.dataSource.doBeforeParseData = function SiteFinder_doBeforeParseData(oRequest , oFullResponse)
          {
             var updatedResponse = oFullResponse;
-               
+            
             if (oFullResponse)
             {
                var items = [];
@@ -235,16 +235,7 @@
                var siteManagers, i, j, k, l;
                for (i = 0, j = items.length; i < j; i++)
                {
-                  items[i].isSiteManager = false;
-                  siteManagers = items[i].siteManagers;
-                  for (k = 0, l = siteManagers.length; siteManagers && k < l; k++)
-                  {
-                     if (siteManagers[k] == Alfresco.constants.USERNAME)
-                     {
-                        items[i].isSiteManager = true;
-                        break;
-                     }
-                  }
+                  items[i].isSiteManager = (items[i].siteRole === "SiteManager");
                }
 
                // we need to wrap the array inside a JSON object so the DataTable is happy
@@ -288,6 +279,14 @@
          Dom.setStyle(this.id + "-body", "visibility", "visible");
       },
 
+      /**
+       * Process the user site membership response. Stores which sites the user is
+       * a member of - allowing the correct buttons for Join/Leave/Delete etc. to be
+       * shown once search results have been returned.
+       *
+       * @method _processMembership
+       * @private
+       */
       _processMembership: function SiteFinder__processMembership(response)
       {
          var i, j;
@@ -301,7 +300,7 @@
             this.memberOfSites[invite.siteId] = "PENDING";
          }
          
-         if (response.json.error === undefined)
+         if (response.serverResponse.status === 200)
          {
             var sites = response.json, site;
             for (i = 0, j = sites.length; i < j; i++)
@@ -402,7 +401,7 @@
                   isSiteManager = oRecord.getData("isSiteManager"),
                   title = $html(oRecord.getData("title"));
 
-               var hasDelete = (me.memberOfSites[shortName] == "MEMBER" && isSiteManager);
+               var hasDelete = (me.memberOfSites[shortName] === "MEMBER" && isSiteManager);
 
                // Create the mark-up for at least one button, adding delete if appropriate
                var action = '<span id="' + me.id + '-button-' + shortName + '"></span>';

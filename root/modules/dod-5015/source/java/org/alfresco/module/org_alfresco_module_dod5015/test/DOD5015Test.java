@@ -60,6 +60,7 @@ import org.alfresco.module.org_alfresco_module_dod5015.test.util.TestUtilities;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.node.integrity.IntegrityException;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.fts.FullTextSearchIndexer;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
@@ -128,6 +129,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
 	private RetryingTransactionHelper transactionHelper;
 
     private PublicServiceAccessService publicServiceAccessService;
+    private FullTextSearchIndexer luceneFTS;
 	
 	// example base test data for supplemental markings list (see also recordsModel.xml)
 	protected final static String NOFORN     = "NOFORN";     // Not Releasable to Foreign Nationals/Governments/Non-US Citizens
@@ -167,6 +169,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
 		this.publicServiceAccessService = (PublicServiceAccessService)this.applicationContext.getBean("PublicServiceAccessService");
 		this.transactionHelper = (RetryingTransactionHelper)this.applicationContext.getBean("retryingTransactionHelper");
 		this.dispositionService = (DispositionService)this.applicationContext.getBean("DispositionService");
+        this.luceneFTS = (FullTextSearchIndexer)this.applicationContext.getBean("LuceneFullTextSearchIndexer");
 		
 		// Set the current security context as admin
 		AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.getAdminUserName());
@@ -187,9 +190,29 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         newValues.add(FGI);
         
         rmAdminService.changeCustomConstraintValues(RecordsManagementCustomModel.CONSTRAINT_CUSTOM_SMLIST, newValues);
+        
+        // We pause FTS during this test, as it moves around records in intermediate places, and otherwise FTS may not
+        // finish clearing up its mess before each test finishes
+        this.luceneFTS.pause();        
 	}
+	
+	
 
-	/**
+	/* (non-Javadoc)
+     * @see org.springframework.test.AbstractTransactionalSpringContextTests#onTearDown()
+     */
+    @Override
+    protected void onTearDown() throws Exception
+    {
+        super.onTearDown();
+
+        // Let FTS catch up again.
+        this.luceneFTS.resume();
+    }
+
+
+
+    /**
 	 * Tests that the test data has been loaded correctly
 	 */
 	public void testTestData() throws Exception
@@ -3620,276 +3643,6 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
                                                            TYPE_RECORD_FOLDER).getChildRef();
         return recordFolder;
     }
-
-	/**
-	 * Vital Record Test
-	 * 
-	 * @throws Exception
-	 */
-    public void testVitalRecords() throws Exception
-    {
-        //
-        // Create a record folder under a "vital" category
-        //
-        
-        // TODO Don't think I need to do this. Can I reuse the existing January one?
-        
-        NodeRef vitalRecCategory =
-            TestUtilities.getRecordCategory(this.searchService, "Reports", "AIS Audit Records");    
-        
-        assertNotNull(vitalRecCategory);
-        assertEquals("AIS Audit Records",
-                this.nodeService.getProperty(vitalRecCategory, ContentModel.PROP_NAME));
-
-        NodeRef vitalRecFolder = this.nodeService.createNode(vitalRecCategory, 
-                                                    ContentModel.ASSOC_CONTAINS, 
-                                                    QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI,
-                                                            "March AIS Audit Records"), 
-                                                    TYPE_RECORD_FOLDER).getChildRef();
-        setComplete();
-        endTransaction();
-        UserTransaction txn1 = transactionService.getUserTransaction(false);
-        txn1.begin();
-        
-        // Check the Vital Record data
-        VitalRecordDefinition vitalRecCatDefinition = rmService.getVitalRecordDefinition(vitalRecCategory);
-        assertNotNull("This record category should have a VitalRecordDefinition", vitalRecCatDefinition);
-        assertTrue(vitalRecCatDefinition.isVitalRecord());
-        
-        VitalRecordDefinition vitalRecFolderDefinition = rmService.getVitalRecordDefinition(vitalRecFolder);
-        assertNotNull("This record folder should have a VitalRecordDefinition", vitalRecFolderDefinition);
-        assertTrue(vitalRecFolderDefinition.isVitalRecord());
-        
-        assertEquals("The Vital Record reviewPeriod in the folder did not match its parent category",
-        		vitalRecFolderDefinition.getReviewPeriod(),
-                vitalRecCatDefinition.getReviewPeriod());
-        
-        // check the search aspect for both the category and folder
-        checkSearchAspect(vitalRecFolder);
-        
-        // Create a vital record
-        NodeRef vitalRecord = this.nodeService.createNode(vitalRecFolder, 
-                                                        ContentModel.ASSOC_CONTAINS, 
-                                                        QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI,
-                                                                "MyVitalRecord" + System.currentTimeMillis() +".txt"), 
-                                                        ContentModel.TYPE_CONTENT).getChildRef();
-        
-        // Set the content
-        ContentWriter writer = this.contentService.getWriter(vitalRecord, ContentModel.PROP_CONTENT, true);
-        writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
-        writer.setEncoding("UTF-8");
-        writer.putContent("There is some content in this record");
-        
-        rmActionService.executeRecordsManagementAction(vitalRecord, "file");
-        
-        txn1.commit();
-        
-        UserTransaction txn2 = transactionService.getUserTransaction(false);
-        txn2.begin();
-        
-        // Check the review schedule
-        
-        assertTrue(this.nodeService.hasAspect(vitalRecord, ASPECT_VITAL_RECORD));
-        VitalRecordDefinition vitalRecDefinition = rmService.getVitalRecordDefinition(vitalRecord);
-        assertTrue(vitalRecDefinition.isVitalRecord());
-        Date vitalRecordAsOfDate = (Date)this.nodeService.getProperty(vitalRecord, PROP_REVIEW_AS_OF);
-        assertNotNull("vitalRecord should have a reviewAsOf date.", vitalRecordAsOfDate);
-        
-        // check the search aspect for the vital record
-        checkSearchAspect(vitalRecord);
-        
-        //
-        // Create a record folder under a "non-vital" category
-        //
-        NodeRef nonVitalRecordCategory = TestUtilities.getRecordCategory(this.searchService, "Reports", "Unit Manning Documents");    
-        assertNotNull(nonVitalRecordCategory);
-        assertEquals("Unit Manning Documents", this.nodeService.getProperty(nonVitalRecordCategory, ContentModel.PROP_NAME));
-
-        NodeRef nonVitalFolder = this.nodeService.createNode(nonVitalRecordCategory,
-                                                           ContentModel.ASSOC_CONTAINS, 
-                                                           QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "4th Quarter Unit Manning Documents"), 
-                                                           TYPE_RECORD_FOLDER).getChildRef();
-        txn2.commit();
-
-        UserTransaction txn3 = transactionService.getUserTransaction(false);
-        txn3.begin();
-        
-        // Check the Vital Record data
-        assertFalse(rmService.getVitalRecordDefinition(nonVitalRecordCategory).isVitalRecord());
-        assertFalse(rmService.getVitalRecordDefinition(nonVitalFolder).isVitalRecord());
-        assertEquals("The Vital Record reviewPeriod in the folder did not match its parent category",
-                rmService.getVitalRecordDefinition(nonVitalFolder).getReviewPeriod(),
-                rmService.getVitalRecordDefinition(nonVitalRecordCategory).getReviewPeriod());
-        
-        // Create a record
-        NodeRef nonVitalRecord = this.nodeService.createNode(nonVitalFolder, 
-                                                        ContentModel.ASSOC_CONTAINS, 
-                                                        QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "MyNonVitalRecord.txt"), 
-                                                        ContentModel.TYPE_CONTENT).getChildRef();
-        
-        // Set content
-        writer = this.contentService.getWriter(nonVitalRecord, ContentModel.PROP_CONTENT, true);
-        writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
-        writer.setEncoding("UTF-8");
-        writer.putContent("There is some content in this record");
-        
-        this.rmActionService.executeRecordsManagementAction(nonVitalRecord, "file");
-        
-        txn3.commit();
-        
-        UserTransaction txn4 = transactionService.getUserTransaction(false);
-        txn4.begin();
-        
-        // Check the review schedule
-        assertFalse(this.nodeService.hasAspect(nonVitalRecord, ASPECT_VITAL_RECORD));
-        assertFalse(rmService.getVitalRecordDefinition(nonVitalRecord).isVitalRecord());
-        assertEquals("The Vital Record reviewPeriod did not match its parent category",
-                rmService.getVitalRecordDefinition(nonVitalRecord).getReviewPeriod(),
-                rmService.getVitalRecordDefinition(nonVitalFolder).getReviewPeriod());
-
-        // Declare as a record
-        assertTrue(this.nodeService.hasAspect(nonVitalRecord, ASPECT_RECORD)); 
- 
-        assertTrue("Declared record already on prior to test", 
-        	this.nodeService.hasAspect(nonVitalRecord, ASPECT_DECLARED_RECORD) == false);  
-
-               
-        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_PUBLICATION_DATE, new Date());       
-        List<String> smList = new ArrayList<String>(2);
-        smList.add(FOUO);
-        smList.add(NOFORN);
-        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST, (Serializable)smList);        
-        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_MEDIA_TYPE, "mediaTypeValue"); 
-        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_FORMAT, "formatValue"); 
-        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_DATE_RECEIVED, new Date());
-        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_ORIGINATOR, "origValue");
-        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_ORIGINATING_ORGANIZATION, "origOrgValue");
-        this.nodeService.setProperty(nonVitalRecord, ContentModel.PROP_TITLE, "titleValue");
-
-        this.rmActionService.executeRecordsManagementAction(nonVitalRecord, "declareRecord");
-        assertTrue(this.nodeService.hasAspect(nonVitalRecord, ASPECT_RECORD));    
-        assertTrue("Declared aspect not set", this.nodeService.hasAspect(nonVitalRecord, ASPECT_DECLARED_RECORD));  
-        
-        //
-        // Now we will change the vital record indicator in the containers above these records
-        // and ensure that the change is reflected down to the record.
-        //
-        
-        // 1. Switch parent folder from non-vital to vital.
-        this.nodeService.setProperty(nonVitalFolder, PROP_VITAL_RECORD_INDICATOR, true);
-        this.nodeService.setProperty(nonVitalFolder, PROP_REVIEW_PERIOD, "week|1");
-        
-        txn4.commit();
-        
-        UserTransaction txn5 = transactionService.getUserTransaction(false);
-        txn5.begin();
-        
-        // check the folder search aspect
-        checkSearchAspect(nonVitalFolder);
-        
-        NodeRef formerlyNonVitalRecord = nonVitalRecord;
-
-        assertTrue("Expected VitalRecord aspect not present", nodeService.hasAspect(formerlyNonVitalRecord, ASPECT_VITAL_RECORD));
-        VitalRecordDefinition formerlyNonVitalRecordDefinition = rmService.getVitalRecordDefinition(formerlyNonVitalRecord);
-        assertNotNull(formerlyNonVitalRecordDefinition);
-        
-        assertEquals("The Vital Record reviewPeriod is wrong.", new Period("week|1"),
-                rmService.getVitalRecordDefinition(formerlyNonVitalRecord).getReviewPeriod());
-        assertNotNull("formerlyNonVitalRecord should now have a reviewAsOf date.",
-                      nodeService.getProperty(formerlyNonVitalRecord, PROP_REVIEW_AS_OF));
-
-        // check search aspect for the new vital record
-        checkSearchAspect(formerlyNonVitalRecord);
-
-        // 2. Switch parent folder from vital to non-vital.
-        this.nodeService.setProperty(vitalRecFolder, PROP_VITAL_RECORD_INDICATOR, false);
-        
-        txn5.commit();
-        
-        UserTransaction txn6 = transactionService.getUserTransaction(false);
-        txn6.begin();
-        
-        NodeRef formerlyVitalRecord = vitalRecord;
-
-        assertTrue("Unexpected VitalRecord aspect present",
-                nodeService.hasAspect(formerlyVitalRecord, ASPECT_VITAL_RECORD) == false);
-        VitalRecordDefinition formerlyVitalRecordDefinition = rmService.getVitalRecordDefinition(formerlyVitalRecord);
-        assertNotNull(formerlyVitalRecordDefinition);
-        assertNull("formerlyVitalRecord should now not have a reviewAsOf date.",
-                nodeService.getProperty(formerlyVitalRecord, PROP_REVIEW_AS_OF));
-        
-        // 3. override the VitalRecordDefinition between Category, Folder, Record and ensure
-        // the overrides work
-        
-        // First switch the non-vital record folder back to vital.
-        this.nodeService.setProperty(vitalRecFolder, PROP_VITAL_RECORD_INDICATOR, true);
-        
-        txn6.commit();
-        UserTransaction txn7 = transactionService.getUserTransaction(false);
-        txn7.begin();
-
-        assertTrue("Unexpected VitalRecord aspect present",
-                nodeService.hasAspect(vitalRecord, ASPECT_VITAL_RECORD));
-
-        // The reviewAsOf date should be changing as the parent review periods are updated.
-        Date initialReviewAsOfDate = (Date)nodeService.getProperty(vitalRecord, PROP_REVIEW_AS_OF);
-        assertNotNull("record should have a reviewAsOf date.",
-                initialReviewAsOfDate);
-
-        // Change some of the VitalRecordDefinition in Record Category
-        Map<QName, Serializable> recCatProps = this.nodeService.getProperties(vitalRecCategory);
-        
-        // Run this test twice (after a clean db) and it fails at the below line.
-        assertEquals(new Period("week|1"), recCatProps.get(PROP_REVIEW_PERIOD));
-        this.nodeService.setProperty(vitalRecCategory, PROP_REVIEW_PERIOD, new Period("day|1"));
-        
-        txn7.commit();
-        UserTransaction txn8 = transactionService.getUserTransaction(false);
-        txn8.begin();
-
-        assertEquals(new Period("day|1"), rmService.getVitalRecordDefinition(vitalRecCategory).getReviewPeriod());
-        assertEquals(new Period("day|1"), rmService.getVitalRecordDefinition(vitalRecFolder).getReviewPeriod());
-
-        // check the search aspect of the folder after period change
-        checkSearchAspect(vitalRecFolder);
-        
-        // Change some of the VitalRecordDefinition in Record Folder
-        Map<QName, Serializable> folderProps = this.nodeService.getProperties(vitalRecFolder);
-        assertEquals(new Period("day|1"), folderProps.get(PROP_REVIEW_PERIOD));
-        this.nodeService.setProperty(vitalRecFolder, PROP_REVIEW_PERIOD, new Period("month|1"));
-
-        txn8.commit();
-        UserTransaction txn9 = transactionService.getUserTransaction(false);
-        txn9.begin();
-
-        assertEquals(new Period("day|1"), rmService.getVitalRecordDefinition(vitalRecCategory).getReviewPeriod());
-        assertEquals(new Period("month|1"), rmService.getVitalRecordDefinition(vitalRecFolder).getReviewPeriod());
-
-        // check the search aspect of the folder after period change
-        checkSearchAspect(vitalRecFolder);
-        
-        // Need to commit the transaction to trigger the behaviour that handles changes to VitalRecord Definition.
-        txn9.commit();
-        UserTransaction txn10 = transactionService.getUserTransaction(false);
-        txn10.begin();
-        
-        Date newReviewAsOfDate = (Date)nodeService.getProperty(vitalRecord, PROP_REVIEW_AS_OF);
-        assertNotNull("record should have a reviewAsOf date.", initialReviewAsOfDate);
-        assertTrue("reviewAsOfDate should have changed.",
-                initialReviewAsOfDate.toString().equals(newReviewAsOfDate.toString()) == false);
-        
-        // check the search aspect of the record after period change
-        checkSearchAspect(vitalRecord);
-        
-        // Now clean up after this test.
-        nodeService.deleteNode(vitalRecord);
-        nodeService.deleteNode(vitalRecFolder);
-        nodeService.deleteNode(nonVitalRecord);
-        nodeService.deleteNode(nonVitalFolder);
-        nodeService.setProperty(vitalRecCategory, PROP_REVIEW_PERIOD, new Period("week|1"));
-        
-        txn10.commit();
-    }
     
     /**
      * Caveat Config
@@ -4516,6 +4269,7 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
     public void testETHREEOH3587()
     {
         NodeRef recordFolder = TestUtilities.getRecordFolder(searchService, "Reports", "AIS Audit Records", "January AIS Audit Records");
+        assertNotNull(recordFolder);
         
         // Create a record
         final NodeRef record = createRecord(recordFolder, GUID.generate());
@@ -4550,4 +4304,275 @@ public class DOD5015Test extends BaseSpringTest implements DOD5015Model
         
         // TODO set the identifier of the second record to be the same as the first ....
     }
+
+    /**
+     * Vital Record Test
+     * 
+     * @throws Exception
+     */
+    public void testVitalRecords() throws Exception
+    {
+        //
+        // Create a record folder under a "vital" category
+        //
+        
+        // TODO Don't think I need to do this. Can I reuse the existing January one?
+        
+        NodeRef vitalRecCategory =
+            TestUtilities.getRecordCategory(this.searchService, "Reports", "AIS Audit Records");    
+        
+        assertNotNull(vitalRecCategory);
+        assertEquals("AIS Audit Records",
+                this.nodeService.getProperty(vitalRecCategory, ContentModel.PROP_NAME));
+
+        NodeRef vitalRecFolder = this.nodeService.createNode(vitalRecCategory, 
+                                                    ContentModel.ASSOC_CONTAINS, 
+                                                    QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI,
+                                                            "March AIS Audit Records"), 
+                                                    TYPE_RECORD_FOLDER).getChildRef();
+        setComplete();
+        endTransaction();
+        UserTransaction txn1 = transactionService.getUserTransaction(false);
+        txn1.begin();
+        
+        // Check the Vital Record data
+        VitalRecordDefinition vitalRecCatDefinition = rmService.getVitalRecordDefinition(vitalRecCategory);
+        assertNotNull("This record category should have a VitalRecordDefinition", vitalRecCatDefinition);
+        assertTrue(vitalRecCatDefinition.isVitalRecord());
+        
+        VitalRecordDefinition vitalRecFolderDefinition = rmService.getVitalRecordDefinition(vitalRecFolder);
+        assertNotNull("This record folder should have a VitalRecordDefinition", vitalRecFolderDefinition);
+        assertTrue(vitalRecFolderDefinition.isVitalRecord());
+        
+        assertEquals("The Vital Record reviewPeriod in the folder did not match its parent category",
+                vitalRecFolderDefinition.getReviewPeriod(),
+                vitalRecCatDefinition.getReviewPeriod());
+        
+        // check the search aspect for both the category and folder
+        checkSearchAspect(vitalRecFolder);
+        
+        // Create a vital record
+        NodeRef vitalRecord = this.nodeService.createNode(vitalRecFolder, 
+                                                        ContentModel.ASSOC_CONTAINS, 
+                                                        QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI,
+                                                                "MyVitalRecord" + System.currentTimeMillis() +".txt"), 
+                                                        ContentModel.TYPE_CONTENT).getChildRef();
+        
+        // Set the content
+        ContentWriter writer = this.contentService.getWriter(vitalRecord, ContentModel.PROP_CONTENT, true);
+        writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
+        writer.setEncoding("UTF-8");
+        writer.putContent("There is some content in this record");
+        
+        rmActionService.executeRecordsManagementAction(vitalRecord, "file");
+        
+        txn1.commit();
+        
+        UserTransaction txn2 = transactionService.getUserTransaction(false);
+        txn2.begin();
+        
+        // Check the review schedule
+        
+        assertTrue(this.nodeService.hasAspect(vitalRecord, ASPECT_VITAL_RECORD));
+        VitalRecordDefinition vitalRecDefinition = rmService.getVitalRecordDefinition(vitalRecord);
+        assertTrue(vitalRecDefinition.isVitalRecord());
+        Date vitalRecordAsOfDate = (Date)this.nodeService.getProperty(vitalRecord, PROP_REVIEW_AS_OF);
+        assertNotNull("vitalRecord should have a reviewAsOf date.", vitalRecordAsOfDate);
+        
+        // check the search aspect for the vital record
+        checkSearchAspect(vitalRecord);
+        
+        //
+        // Create a record folder under a "non-vital" category
+        //
+        NodeRef nonVitalRecordCategory = TestUtilities.getRecordCategory(this.searchService, "Reports", "Unit Manning Documents");    
+        assertNotNull(nonVitalRecordCategory);
+        assertEquals("Unit Manning Documents", this.nodeService.getProperty(nonVitalRecordCategory, ContentModel.PROP_NAME));
+
+        NodeRef nonVitalFolder = this.nodeService.createNode(nonVitalRecordCategory,
+                                                           ContentModel.ASSOC_CONTAINS, 
+                                                           QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "4th Quarter Unit Manning Documents"), 
+                                                           TYPE_RECORD_FOLDER).getChildRef();
+        txn2.commit();
+
+        UserTransaction txn3 = transactionService.getUserTransaction(false);
+        txn3.begin();
+        
+        // Check the Vital Record data
+        assertFalse(rmService.getVitalRecordDefinition(nonVitalRecordCategory).isVitalRecord());
+        assertFalse(rmService.getVitalRecordDefinition(nonVitalFolder).isVitalRecord());
+        assertEquals("The Vital Record reviewPeriod in the folder did not match its parent category",
+                rmService.getVitalRecordDefinition(nonVitalFolder).getReviewPeriod(),
+                rmService.getVitalRecordDefinition(nonVitalRecordCategory).getReviewPeriod());
+        
+        // Create a record
+        NodeRef nonVitalRecord = this.nodeService.createNode(nonVitalFolder, 
+                                                        ContentModel.ASSOC_CONTAINS, 
+                                                        QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "MyNonVitalRecord.txt"), 
+                                                        ContentModel.TYPE_CONTENT).getChildRef();
+        
+        // Set content
+        writer = this.contentService.getWriter(nonVitalRecord, ContentModel.PROP_CONTENT, true);
+        writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
+        writer.setEncoding("UTF-8");
+        writer.putContent("There is some content in this record");
+        
+        this.rmActionService.executeRecordsManagementAction(nonVitalRecord, "file");
+        
+        txn3.commit();
+        
+        UserTransaction txn4 = transactionService.getUserTransaction(false);
+        txn4.begin();
+        
+        // Check the review schedule
+        assertFalse(this.nodeService.hasAspect(nonVitalRecord, ASPECT_VITAL_RECORD));
+        assertFalse(rmService.getVitalRecordDefinition(nonVitalRecord).isVitalRecord());
+        assertEquals("The Vital Record reviewPeriod did not match its parent category",
+                rmService.getVitalRecordDefinition(nonVitalRecord).getReviewPeriod(),
+                rmService.getVitalRecordDefinition(nonVitalFolder).getReviewPeriod());
+
+        // Declare as a record
+        assertTrue(this.nodeService.hasAspect(nonVitalRecord, ASPECT_RECORD)); 
+ 
+        assertTrue("Declared record already on prior to test", 
+            this.nodeService.hasAspect(nonVitalRecord, ASPECT_DECLARED_RECORD) == false);  
+
+               
+        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_PUBLICATION_DATE, new Date());       
+        List<String> smList = new ArrayList<String>(2);
+        smList.add(FOUO);
+        smList.add(NOFORN);
+        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_SUPPLEMENTAL_MARKING_LIST, (Serializable)smList);        
+        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_MEDIA_TYPE, "mediaTypeValue"); 
+        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_FORMAT, "formatValue"); 
+        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_DATE_RECEIVED, new Date());
+        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_ORIGINATOR, "origValue");
+        this.nodeService.setProperty(nonVitalRecord, RecordsManagementModel.PROP_ORIGINATING_ORGANIZATION, "origOrgValue");
+        this.nodeService.setProperty(nonVitalRecord, ContentModel.PROP_TITLE, "titleValue");
+
+        this.rmActionService.executeRecordsManagementAction(nonVitalRecord, "declareRecord");
+        assertTrue(this.nodeService.hasAspect(nonVitalRecord, ASPECT_RECORD));    
+        assertTrue("Declared aspect not set", this.nodeService.hasAspect(nonVitalRecord, ASPECT_DECLARED_RECORD));  
+        
+        //
+        // Now we will change the vital record indicator in the containers above these records
+        // and ensure that the change is reflected down to the record.
+        //
+        
+        // 1. Switch parent folder from non-vital to vital.
+        this.nodeService.setProperty(nonVitalFolder, PROP_VITAL_RECORD_INDICATOR, true);
+        this.nodeService.setProperty(nonVitalFolder, PROP_REVIEW_PERIOD, "week|1");
+        
+        txn4.commit();
+        
+        UserTransaction txn5 = transactionService.getUserTransaction(false);
+        txn5.begin();
+        
+        // check the folder search aspect
+        checkSearchAspect(nonVitalFolder);
+        
+        NodeRef formerlyNonVitalRecord = nonVitalRecord;
+
+        assertTrue("Expected VitalRecord aspect not present", nodeService.hasAspect(formerlyNonVitalRecord, ASPECT_VITAL_RECORD));
+        VitalRecordDefinition formerlyNonVitalRecordDefinition = rmService.getVitalRecordDefinition(formerlyNonVitalRecord);
+        assertNotNull(formerlyNonVitalRecordDefinition);
+        
+        assertEquals("The Vital Record reviewPeriod is wrong.", new Period("week|1"),
+                rmService.getVitalRecordDefinition(formerlyNonVitalRecord).getReviewPeriod());
+        assertNotNull("formerlyNonVitalRecord should now have a reviewAsOf date.",
+                      nodeService.getProperty(formerlyNonVitalRecord, PROP_REVIEW_AS_OF));
+
+        // check search aspect for the new vital record
+        checkSearchAspect(formerlyNonVitalRecord);
+
+        // 2. Switch parent folder from vital to non-vital.
+        this.nodeService.setProperty(vitalRecFolder, PROP_VITAL_RECORD_INDICATOR, false);
+        
+        txn5.commit();
+        
+        UserTransaction txn6 = transactionService.getUserTransaction(false);
+        txn6.begin();
+        
+        NodeRef formerlyVitalRecord = vitalRecord;
+
+        assertTrue("Unexpected VitalRecord aspect present",
+                nodeService.hasAspect(formerlyVitalRecord, ASPECT_VITAL_RECORD) == false);
+        VitalRecordDefinition formerlyVitalRecordDefinition = rmService.getVitalRecordDefinition(formerlyVitalRecord);
+        assertNotNull(formerlyVitalRecordDefinition);
+        assertNull("formerlyVitalRecord should now not have a reviewAsOf date.",
+                nodeService.getProperty(formerlyVitalRecord, PROP_REVIEW_AS_OF));
+        
+        // 3. override the VitalRecordDefinition between Category, Folder, Record and ensure
+        // the overrides work
+        
+        // First switch the non-vital record folder back to vital.
+        this.nodeService.setProperty(vitalRecFolder, PROP_VITAL_RECORD_INDICATOR, true);
+        
+        txn6.commit();
+        UserTransaction txn7 = transactionService.getUserTransaction(false);
+        txn7.begin();
+
+        assertTrue("Unexpected VitalRecord aspect present",
+                nodeService.hasAspect(vitalRecord, ASPECT_VITAL_RECORD));
+
+        // The reviewAsOf date should be changing as the parent review periods are updated.
+        Date initialReviewAsOfDate = (Date)nodeService.getProperty(vitalRecord, PROP_REVIEW_AS_OF);
+        assertNotNull("record should have a reviewAsOf date.",
+                initialReviewAsOfDate);
+
+        // Change some of the VitalRecordDefinition in Record Category
+        Map<QName, Serializable> recCatProps = this.nodeService.getProperties(vitalRecCategory);
+        
+        // Run this test twice (after a clean db) and it fails at the below line.
+        assertEquals(new Period("week|1"), recCatProps.get(PROP_REVIEW_PERIOD));
+        this.nodeService.setProperty(vitalRecCategory, PROP_REVIEW_PERIOD, new Period("day|1"));
+        
+        txn7.commit();
+        UserTransaction txn8 = transactionService.getUserTransaction(false);
+        txn8.begin();
+
+        assertEquals(new Period("day|1"), rmService.getVitalRecordDefinition(vitalRecCategory).getReviewPeriod());
+        assertEquals(new Period("day|1"), rmService.getVitalRecordDefinition(vitalRecFolder).getReviewPeriod());
+
+        // check the search aspect of the folder after period change
+        checkSearchAspect(vitalRecFolder);
+        
+        // Change some of the VitalRecordDefinition in Record Folder
+        Map<QName, Serializable> folderProps = this.nodeService.getProperties(vitalRecFolder);
+        assertEquals(new Period("day|1"), folderProps.get(PROP_REVIEW_PERIOD));
+        this.nodeService.setProperty(vitalRecFolder, PROP_REVIEW_PERIOD, new Period("month|1"));
+
+        txn8.commit();
+        UserTransaction txn9 = transactionService.getUserTransaction(false);
+        txn9.begin();
+
+        assertEquals(new Period("day|1"), rmService.getVitalRecordDefinition(vitalRecCategory).getReviewPeriod());
+        assertEquals(new Period("month|1"), rmService.getVitalRecordDefinition(vitalRecFolder).getReviewPeriod());
+
+        // check the search aspect of the folder after period change
+        checkSearchAspect(vitalRecFolder);
+        
+        // Need to commit the transaction to trigger the behaviour that handles changes to VitalRecord Definition.
+        txn9.commit();
+        UserTransaction txn10 = transactionService.getUserTransaction(false);
+        txn10.begin();
+        
+        Date newReviewAsOfDate = (Date)nodeService.getProperty(vitalRecord, PROP_REVIEW_AS_OF);
+        assertNotNull("record should have a reviewAsOf date.", initialReviewAsOfDate);
+        assertTrue("reviewAsOfDate should have changed.",
+                initialReviewAsOfDate.toString().equals(newReviewAsOfDate.toString()) == false);
+        
+        // check the search aspect of the record after period change
+        checkSearchAspect(vitalRecord);
+        
+        // Now clean up after this test.
+        nodeService.deleteNode(vitalRecord);
+        nodeService.deleteNode(vitalRecFolder);
+        nodeService.deleteNode(nonVitalRecord);
+        nodeService.deleteNode(nonVitalFolder);
+        nodeService.setProperty(vitalRecCategory, PROP_REVIEW_PERIOD, new Period("week|1"));
+        
+        txn10.commit();
+    }
+
 }

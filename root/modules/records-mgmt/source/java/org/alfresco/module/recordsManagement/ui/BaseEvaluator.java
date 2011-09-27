@@ -24,6 +24,7 @@ import javax.faces.context.FacesContext;
 
 import org.alfresco.module.recordsManagement.RecordsManagementModel;
 import org.alfresco.service.ServiceRegistry;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.web.action.evaluator.BaseActionEvaluator;
 import org.alfresco.web.bean.repository.Repository;
 
@@ -43,12 +44,12 @@ public abstract class BaseEvaluator extends BaseActionEvaluator
     {
         boolean result = false;
         String currentUser = getServiceRegistry().getAuthenticationService().getCurrentUserName();
-        Set<String> authorities = getServiceRegistry().getAuthorityService().getContainingAuthorities(null, currentUser, false);
-        if (getServiceRegistry().getAuthorityService().hasAdminAuthority() == true || 
-            authorities.contains(RecordsManagementModel.RM_GROUP) == true)
+        if (currentUser != null)
         {
-            result = true;
-        }        
+            Set<String> authorities = getServiceRegistry().getAuthorityService().getAuthoritiesForUser(currentUser);
+            result = authorities.contains(PermissionService.ADMINISTRATOR_AUTHORITY) ||
+                     authorities.contains(RecordsManagementModel.RM_GROUP);
+        }
         return result;
     }
 }
