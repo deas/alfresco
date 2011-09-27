@@ -23,6 +23,7 @@
 
 <div class="dashlet site-links">
    <div class="title">${msg("header.links")}</div>
+   <#if userIsNotSiteConsumer>
    <div class="toolbar flat-button">
       <div>
          <span class="align-right yui-button-align">
@@ -34,6 +35,7 @@
          </span>
       </div>
    </div>
+   </#if>
    <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
 <#if numLinks?? && numLinks!=0>
    <#list links as link>
