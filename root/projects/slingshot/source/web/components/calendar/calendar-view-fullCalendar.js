@@ -317,10 +317,7 @@
 
                dayClick: function CalendarFullCalendar_onDayClick(date, allDay, jsEvent, view)
                {
-                  if (view.name === me.options.fcOpts.monthView)
-                  {
-                     me.showAddDialog(date);
-                  }
+                  me.showAddDialog(date);
                }
 
             });
