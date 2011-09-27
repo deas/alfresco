@@ -846,7 +846,7 @@
          Event.stopEvent(e);
          var o = CalendarView,
             targetEl = Event.getTarget(e),
-            isStart = (targetEl.id === "calendarpicker-button") ? true : false;
+            isStart = (targetEl.id === "calendarpicker-button" || targetEl.id === "fd" ) ? true : false;
 
          o.oCalendarMenu = new YAHOO.widget.Overlay("calendarmenu",
          {
