@@ -34,7 +34,6 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.WCMQuickStartTest;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.AbstractContentTransformerTest;
-import org.alfresco.repo.publishing.PublishingModel;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ContentWriter;
@@ -402,16 +401,6 @@ public class WebRootModelTest extends WCMQuickStartTest implements WebSiteModel
         assertEquals(1, parentSections.size());
         assertEquals(section1, parentSections.get(0));
 
-        //Test Channel  on Webasset
-        NodeRef channel = (NodeRef)nodeService.getProperty(webassetOne, PublishingModel.PROP_CHANNEL);
-        assertNotNull(channel);
-        assertEquals(liveSite, channel);
-        
-        //Test Channel on Section
-        channel = (NodeRef)nodeService.getProperty(section1, PublishingModel.PROP_CHANNEL);
-        assertNotNull(channel);
-        assertEquals(liveSite, channel);
-        
         //Test that moving web assets causes the parent sections to be updated 
         fileFolderService.move(webassetOne, section2, null);
         fileFolderService.move(webassetTwo, section2, null);

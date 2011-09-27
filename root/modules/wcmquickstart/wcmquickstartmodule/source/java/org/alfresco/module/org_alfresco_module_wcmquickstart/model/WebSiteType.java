@@ -18,7 +18,6 @@
 package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
@@ -26,8 +25,6 @@ import org.alfresco.module.org_alfresco_module_wcmquickstart.util.SiteHelper;
 import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
-import org.alfresco.repo.publishing.PublishingModel;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.site.SiteInfo;
@@ -67,8 +64,6 @@ public class WebSiteType implements WebSiteModel
      */
     public void init()
     {
-        policyComponent.bindClassBehaviour(NodeServicePolicies.OnCreateNodePolicy.QNAME,
-                WebSiteModel.TYPE_WEB_SITE, new JavaBehaviour(this, "onCreateNode"));
         policyComponent.bindClassBehaviour(NodeServicePolicies.OnUpdatePropertiesPolicy.QNAME,
                 WebSiteModel.TYPE_WEB_SITE, new JavaBehaviour(this, "onUpdatePropertiesEveryEvent"));
     }
@@ -101,19 +96,5 @@ public class WebSiteType implements WebSiteModel
                 }
             }
         }
-    }
-    
-    /**
-     * On create node behaviour
-     * 
-     * @param childAssocRef
-     *            child association reference
-     */
-    public void onCreateNode(ChildAssociationRef childAssocRef)
-    {
-        NodeRef child = childAssocRef.getChildRef();
-        HashMap<QName, Serializable> props = new HashMap<QName, Serializable>();
-        props.put(PublishingModel.PROP_CHANNEL, child);
-        nodeService.setProperties(child, props);
     }
 }

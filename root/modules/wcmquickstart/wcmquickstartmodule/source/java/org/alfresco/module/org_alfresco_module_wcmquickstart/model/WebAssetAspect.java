@@ -17,9 +17,6 @@
  */
 package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 
-import static org.alfresco.repo.publishing.PublishingModel.PROP_CHANNEL;
-import static org.alfresco.repo.publishing.PublishingModel.PROP_CHANNEL_TYPE;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,13 +29,13 @@ import org.alfresco.repo.content.ContentServicePolicies;
 import org.alfresco.repo.copy.CopyBehaviourCallback;
 import org.alfresco.repo.copy.CopyDetails;
 import org.alfresco.repo.copy.CopyServicePolicies;
-import org.alfresco.repo.copy.CopyServicePolicies.OnCopyNodePolicy;
 import org.alfresco.repo.copy.DefaultCopyBehaviourCallback;
+import org.alfresco.repo.copy.CopyServicePolicies.OnCopyNodePolicy;
 import org.alfresco.repo.node.NodeServicePolicies;
-import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
 import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
+import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -195,8 +192,6 @@ public class WebAssetAspect implements WebSiteModel, CopyServicePolicies.OnCopyN
             // We don't want to copy across the original node's record of the
             // website sections it's in.
             // These properties will be calculated afresh on the copy
-            propertiesToCopy.remove(PROP_CHANNEL);
-            propertiesToCopy.remove(PROP_CHANNEL_TYPE);
             propertiesToCopy.remove(PROP_PARENT_SECTIONS);
             propertiesToCopy.remove(PROP_ANCESTOR_SECTIONS);
             return propertiesToCopy;
