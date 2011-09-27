@@ -4,10 +4,10 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.0.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

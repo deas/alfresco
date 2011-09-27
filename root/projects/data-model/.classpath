@@ -13,13 +13,13 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/saxpath.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/slf4j-api-1.5.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/slf4j-log4j12-1.5.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-1.0.0.CI-SNAPSHOT-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webeditor-1.0.0.CI-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT-tests.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-test-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-api-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.0.0.jar" sourcepath="/3rd Party/src/spring-surf-1.0.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-api-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webeditor-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webeditor-client-jsp-1.0.0.jar" sourcepath="/3rd Party/src/spring-webeditor-client-jsp-1.0.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0-tests.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-api-1.0.0.jar" sourcepath="/3rd Party/src/spring-webscripts-api-1.0.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/tika-core-1.0-20110921.jar" sourcepath="/3rd Party/src/tika-core-1.0-20110921.zip"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/tika-parsers-1.0-20110921.jar" sourcepath="/3rd Party/src/tika-parsers-1.0-20110921.zip"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/lucene-analyzers-2.4.1.jar"/>

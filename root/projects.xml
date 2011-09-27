@@ -1700,7 +1700,7 @@
          <zipfileset dir="${dir.project.3rdparty}/lib/optional" prefix="WEB-INF/lib" 
                      includes="log4j-1.2.15.jar" />
          <zipfileset dir="${dir.project.3rdparty}/lib/spring-surf" prefix="WEB-INF/lib"
-                     includes="spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT.jar" />
+                     includes="spring-webeditor-client-jsp-1.0.0.jar" />
          <zipfileset dir="${dir.project.3rdparty}/lib" prefix="WEB-INF/lib" includes="json.jar" />
       </war>
    </target>
@@ -2838,8 +2838,8 @@
 
       <patternset id="ftr.libs.thirdparty.buildtime">
          <include name="commons/commons-logging-1.1.1.jar" />
-         <include name="spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" />
-         <include name="spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" />
+         <include name="spring-surf/spring-webscripts-1.0.0.jar" />
+         <include name="spring-surf/spring-webscripts-api-1.0.0.jar" />
          <include name="org.springframework.aop-3.0.5.RELEASE.jar" />
          <include name="org.springframework.asm-3.0.5.RELEASE.jar" />
          <include name="org.springframework.beans-3.0.5.RELEASE.jar" />
@@ -2858,10 +2858,10 @@
          <include name="mybatis-3.0.4.jar" />
          <include name="mybatis-spring-1.0.1.jar" />
          <include name="commons/commons-io-1.4.jar" />
-         <include name="spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" />
-         <include name="spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar" />
-         <include name="spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" />
-         <include name="spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" />
+         <include name="spring-surf/spring-surf-1.0.0.jar" />
+         <include name="spring-surf/spring-surf-api-1.0.0.jar" />
+         <include name="spring-surf/spring-surf-core-1.0.0.jar" />
+         <include name="spring-surf/spring-surf-core-configservice-1.0.0.jar" />
          <include name="commons/commons-pool-1.5.5.jar" />
          <include name="aopalliance.jar" />
          <include name="hibernate-3.2.6-patched.jar" />
@@ -2873,8 +2873,8 @@
       <patternset id="ftr.libs.thirdparty.runtime">
          <include name="commons/commons-logging-1.1.1.jar" />
          <include name="commons/commons-fileupload-1.2.1.jar" />
-         <include name="spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" />
-         <include name="spring-surf/spring-webscripts-api-1.0.0.CI-SNAPSHOT.jar" />
+         <include name="spring-surf/spring-webscripts-1.0.0.jar" />
+         <include name="spring-surf/spring-webscripts-api-1.0.0.jar" />
          <include name="org.springframework.aop-3.0.5.RELEASE.jar" />
          <include name="org.springframework.asm-3.0.5.RELEASE.jar" />
          <include name="org.springframework.beans-3.0.5.RELEASE.jar" />
@@ -2893,10 +2893,10 @@
          <include name="mybatis-3.0.4.jar" />
          <include name="mybatis-spring-1.0.1.jar" />
          <include name="commons/commons-io-1.4.jar" />
-         <include name="spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" />
-         <include name="spring-surf/spring-surf-api-1.0.0.CI-SNAPSHOT.jar" />
-         <include name="spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar" />
-         <include name="spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar" />
+         <include name="spring-surf/spring-surf-1.0.0.jar" />
+         <include name="spring-surf/spring-surf-api-1.0.0.jar" />
+         <include name="spring-surf/spring-surf-core-1.0.0.jar" />
+         <include name="spring-surf/spring-surf-core-configservice-1.0.0.jar" />
          <include name="commons/commons-pool-1.5.5.jar" />
          <include name="aopalliance.jar" />
          <include name="hibernate-3.2.6-patched.jar" />

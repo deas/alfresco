@@ -882,7 +882,7 @@
                   includes="commons-httpclient-3.1.jar, commons-logging-1.1.1.jar, commons-codec-1.4.jar" />
          <fileset dir="${dir.project.3rdparty}/lib/optional" includes="log4j-1.2.15.jar" />
          <fileset dir="${dir.project.3rdparty}/lib/spring-surf" 
-                  includes="spring-webeditor-client-jsp-1.0.0.CI-SNAPSHOT.jar" />
+                  includes="spring-webeditor-client-jsp-1.0.0.jar" />
          <fileset dir="${dir.project.3rdparty}/lib" includes="json.jar" />
       </copy>
       <copy todir="${dir.deploy.tomcat.application.webeditor.sample.customersite}/WEB-INF/classes" verbose="${copy.verbose}">

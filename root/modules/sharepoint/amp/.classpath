@@ -9,7 +9,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Remote API"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Alfresco JLAN"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Web-Client"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jetty-6.1.26.jar"/>
 	<classpathentry kind="lib" path="lib/jetty-util-6.1.26.jar"/>
 	<classpathentry kind="output" path="build/classes"/>

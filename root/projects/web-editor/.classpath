@@ -4,10 +4,10 @@
 	<classpathentry kind="src" path="config"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-1.0.0.CI-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.CI-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0.CI-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.0.0.CI-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.0.0.CI-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.0.0.jar" sourcepath="/3rd Party/src/spring-surf-1.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.0.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
