@@ -251,7 +251,6 @@
                scope.balloon.show();
             };
             
-            tagFormsRuntime.init();
             this.formsRuntime = tagFormsRuntime;
          }
       },
