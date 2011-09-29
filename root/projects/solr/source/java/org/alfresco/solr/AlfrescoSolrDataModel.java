@@ -343,6 +343,36 @@ public class AlfrescoSolrDataModel
         return MLAnalysisMode.EXACT_LANGUAGE_AND_ALL;
     }
 
+    public boolean isIndexedOrStored(QName propertyQName)
+    {
+        String fieldName = AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString();
+
+        PropertyDefinition propertyDefinition = getPropertyDefinition(fieldName);
+        if (propertyDefinition != null)
+        {
+            if (propertyDefinition.isIndexed())
+            {
+                switch (propertyDefinition.getIndexTokenisationMode())
+                {
+                case TRUE:
+                case BOTH:
+                    return true;
+                }
+            }
+            if(propertyDefinition.isStoredInIndex())
+            {
+                return true;
+            }
+            return false;
+            
+        }
+        else
+        {
+            // by default we would index a residual property (if they have a known prefix/uri ....)
+            return true;
+        }
+    }
+    
     /**
      * @param field
      * @return

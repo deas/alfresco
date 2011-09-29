@@ -336,7 +336,7 @@ public class SOLRAPIClient
         return aclsReaders;
     }
     
-    public List<Transaction> getTransactions(Long fromCommitTime, Long minTxnId, int maxResults) throws AuthenticationException, IOException, JSONException
+    public Transactions getTransactions(Long fromCommitTime, Long minTxnId, int maxResults) throws AuthenticationException, IOException, JSONException
     {
         StringBuilder url = new StringBuilder(GET_TRANSACTIONS_URL);
         StringBuilder args = new StringBuilder();
@@ -394,9 +394,16 @@ public class SOLRAPIClient
             txn.setDeletes(solrTxn.getLong("deletes"));
             transactions.add(txn);
         }
+        
+        Long maxTxnCommitTime = null;
+        if(json.has("maxTxnCommitTime"))
+        {
+            maxTxnCommitTime = json.getLong("maxTxnCommitTime");
+        }
 
-        return transactions;
+        return new Transactions(transactions, maxTxnCommitTime);
     }
+  
     
     public List<Node> getNodes(GetNodesParameters parameters, int maxResults) throws AuthenticationException, IOException, JSONException
     {

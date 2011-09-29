@@ -92,6 +92,7 @@ import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.alfresco.solr.client.SolrKeyResourceLoader;
 import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
+import org.alfresco.solr.client.Transactions;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.alfresco.util.TempFileProvider;
@@ -147,6 +148,8 @@ public class CoreTracker implements CloseHook
     private SOLRAPIClient client;
 
     private volatile long lastIndexedCommitTime = 0;
+    
+    private volatile long lastTxOnServer = 0;
 
     private volatile long lastIndexedIdBeforeHoles = -1;
 
@@ -233,6 +236,21 @@ public class CoreTracker implements CloseHook
     private ConcurrentLinkedQueue<Long> aclsToIndex = new ConcurrentLinkedQueue<Long>();
 
     private ConcurrentLinkedQueue<Long> aclsToPurge = new ConcurrentLinkedQueue<Long>();
+    
+    public long getLastIndexedCommitTime()
+    {
+        return lastIndexedCommitTime;
+    }
+    
+    public boolean isRunning()
+    {
+        return running;
+    }
+    
+    public long getLastTxOnServer()
+    {
+        return lastTxOnServer;
+    }
 
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
@@ -820,10 +838,10 @@ public class CoreTracker implements CloseHook
                     // make sure it is cleaned out so we do not miss deletes
                     deleteByTransactionId(solrIndexSearcher, transactionId);
 
-                    List<Transaction> transactions = client.getTransactions(0L, transactionId, 0);
-                    if ((transactions.size() > 0) && (transactionId.equals(transactions.get(0).getId())))
+                    Transactions transactions = client.getTransactions(0L, transactionId, 0);
+                    if ((transactions.getTransactions().size() > 0) && (transactionId.equals(transactions.getTransactions().get(0).getId())))
                     {
-                        Transaction info = transactions.get(0);
+                        Transaction info = transactions.getTransactions().get(0);
 
                         GetNodesParameters gnp = new GetNodesParameters();
                         ArrayList<Long> txs = new ArrayList<Long>();
@@ -969,10 +987,10 @@ public class CoreTracker implements CloseHook
                 Long transactionId = transactionsToIndex.poll();
                 if (transactionId != null)
                 {
-                    List<Transaction> transactions = client.getTransactions(0L, transactionId, 0);
-                    if ((transactions.size() > 0) && (transactionId.equals(transactions.get(0).getId())))
+                    Transactions transactions = client.getTransactions(0L, transactionId, 0);
+                    if ((transactions.getTransactions().size() > 0) && (transactionId.equals(transactions.getTransactions().get(0).getId())))
                     {
-                        Transaction info = transactions.get(0);
+                        Transaction info = transactions.getTransactions().get(0);
 
                         GetNodesParameters gnp = new GetNodesParameters();
                         ArrayList<Long> txs = new ArrayList<Long>();
@@ -1220,7 +1238,7 @@ public class CoreTracker implements CloseHook
 
             boolean upToDate = false;
             ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
-            List<Transaction> transactions;
+            Transactions transactions;
             long loopStartingCommitTime;
             do
             {
@@ -1228,17 +1246,24 @@ public class CoreTracker implements CloseHook
 
                 loopStartingCommitTime = lastTxCommitTime;
                 transactions = client.getTransactions(lastTxCommitTime, null, 2000);
-                log.info("Scanning transactions ...");
-                if (transactions.size() > 0)
+                
+                Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
+                if(maxTxnCommitTime != null)
                 {
-                    log.info(".... from " + transactions.get(0));
-                    log.info(".... to " + transactions.get(transactions.size() - 1));
+                    lastTxOnServer = transactions.getMaxTxnCommitTime();
+                }
+                
+                log.info("Scanning transactions ...");
+                if (transactions.getTransactions().size() > 0)
+                {
+                    log.info(".... from " + transactions.getTransactions().get(0));
+                    log.info(".... to " + transactions.getTransactions().get(transactions.getTransactions().size() - 1));
                 }
                 else
                 {
                     log.info(".... non found after lastTxCommitTime " + lastTxCommitTime);
                 }
-                for (Transaction info : transactions)
+                for (Transaction info : transactions.getTransactions())
                 {
 
                     if (!indexing)
@@ -1315,7 +1340,7 @@ public class CoreTracker implements CloseHook
 
                 if (transactionsOrderedById.size() < 10000)
                 {
-                    transactionsOrderedById.addAll(transactions);
+                    transactionsOrderedById.addAll(transactions.getTransactions());
                     Collections.sort(transactionsOrderedById, new Comparator<Transaction>()
                     {
 
@@ -1327,7 +1352,7 @@ public class CoreTracker implements CloseHook
                     });
 
                     ArrayList<Transaction> newTransactionsOrderedById = new ArrayList<Transaction>(10000);
-                    for (Transaction info : transactions)
+                    for (Transaction info : transactions.getTransactions())
                     {
                         if (info.getCommitTimeMs() < timeBeforeWhichThereCanBeNoHoles)
                         {
@@ -1348,7 +1373,7 @@ public class CoreTracker implements CloseHook
                     transactionsOrderedById = newTransactionsOrderedById;
                 }
             }
-            while ((transactions.size() > 0) && (upToDate == false) && (loopStartingCommitTime < lastTxCommitTime));
+            while ((transactions.getTransactions().size() > 0) && (upToDate == false) && (loopStartingCommitTime < lastTxCommitTime));
         }
         finally
         {
@@ -1686,48 +1711,51 @@ public class CoreTracker implements CloseHook
 
                     for (QName propertyQname : properties.keySet())
                     {
-                        PropertyValue value = properties.get(propertyQname);
-                        if (value != null)
+                        if(dataModel.isIndexedOrStored(propertyQname))
                         {
-                            if (value instanceof ContentPropertyValue)
+                            PropertyValue value = properties.get(propertyQname);
+                            if (value != null)
                             {
-                                if (isContentIndexedForNode)
+                                if (value instanceof ContentPropertyValue)
                                 {
-                                    addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) value);
-                                }
-                            }
-                            else if (value instanceof MLTextPropertyValue)
-                            {
-                                addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value);
-                            }
-                            else if (value instanceof MultiPropertyValue)
-                            {
-                                MultiPropertyValue typedValue = (MultiPropertyValue) value;
-                                for (PropertyValue singleValue : typedValue.getValues())
-                                {
-                                    if (singleValue instanceof ContentPropertyValue)
+                                    if (isContentIndexedForNode)
                                     {
-                                        if (isContentIndexedForNode)
+                                        addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) value);
+                                    }
+                                }
+                                else if (value instanceof MLTextPropertyValue)
+                                {
+                                    addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value);
+                                }
+                                else if (value instanceof MultiPropertyValue)
+                                {
+                                    MultiPropertyValue typedValue = (MultiPropertyValue) value;
+                                    for (PropertyValue singleValue : typedValue.getValues())
+                                    {
+                                        if (singleValue instanceof ContentPropertyValue)
                                         {
-                                            addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) singleValue);
+                                            if (isContentIndexedForNode)
+                                            {
+                                                addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) singleValue);
+                                            }
+                                        }
+                                        else if (singleValue instanceof MLTextPropertyValue)
+                                        {
+                                            addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) singleValue);
+
+                                        }
+                                        else if (singleValue instanceof StringPropertyValue)
+                                        {
+                                            addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) singleValue, properties);
                                         }
                                     }
-                                    else if (singleValue instanceof MLTextPropertyValue)
-                                    {
-                                        addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) singleValue);
-
-                                    }
-                                    else if (singleValue instanceof StringPropertyValue)
-                                    {
-                                        addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) singleValue, properties);
-                                    }
                                 }
-                            }
-                            else if (value instanceof StringPropertyValue)
-                            {
-                                addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) value, properties);
-                            }
+                                else if (value instanceof StringPropertyValue)
+                                {
+                                    addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) value, properties);
+                                }
 
+                            }
                         }
                     }
                     doc.addField(AbstractLuceneQueryParser.FIELD_TYPE, nodeMetaData.getType().toString());
@@ -2101,12 +2129,12 @@ public class CoreTracker implements CloseHook
         long maxTxId = 0;
 
         long loopStartingCommitTime;
-        List<Transaction> transactions;
+        Transactions transactions;
         DO: do
         {
             loopStartingCommitTime = lastTxCommitTime;
             transactions = client.getTransactions(lastTxCommitTime, fromTx, 2000);
-            for (Transaction info : transactions)
+            for (Transaction info : transactions.getTransactions())
             {
                 // include
                 if (toTime != null)
@@ -2138,7 +2166,7 @@ public class CoreTracker implements CloseHook
                 txIdsInDb.set(info.getId());
             }
         }
-        while ((transactions.size() > 0) && (loopStartingCommitTime < lastTxCommitTime));
+        while ((transactions.getTransactions().size() > 0) && (loopStartingCommitTime < lastTxCommitTime));
 
         indexHealthReport.setDbTransactionCount(txIdsInDb.cardinality());
 

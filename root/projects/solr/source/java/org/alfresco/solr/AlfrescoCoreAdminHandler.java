@@ -27,6 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
+import org.alfresco.service.cmr.repository.Period;
+import org.alfresco.service.cmr.repository.datatype.Duration;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.tracker.CoreTracker;
 import org.alfresco.solr.tracker.CoreWatcherJob;
@@ -52,6 +54,8 @@ import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sun.misc.GC.LatencyRequest;
 
 /**
  * @author Andy
@@ -634,6 +638,73 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                             tracker.addAclChangeSetToReindex(current);
                         }
                     }
+                }
+                return false;
+            }
+            else if (a.equalsIgnoreCase("SUMMARY"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                   
+                    NamedList<Object> report = new SimpleOrderedMap<Object>();
+                    if (tracker != null)
+                    {
+                        NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
+                        long lastIndexCommitTime = tracker.getLastIndexedCommitTime();
+                        long lastTxOnServer = tracker.getLastTxOnServer();
+                        Date lastIndexCommitDate = new Date(lastIndexCommitTime);
+                        Date lastTxOnServerDate = new Date(lastTxOnServer);
+                        
+                        Duration lag = new Duration(lastIndexCommitDate, lastTxOnServerDate);
+                        coreSummary.add("Last Index Commit Time", lastIndexCommitTime);
+                        coreSummary.add("Last Index Commit Date", lastIndexCommitDate);
+                        coreSummary.add("Lag", (lastTxOnServer-lastIndexCommitTime)/1000 +" s");
+                        coreSummary.add("Duration", lag.toString());
+                        coreSummary.add("Active", tracker.isRunning());
+                        coreSummary.add("Timestamp for last TX on server", lastTxOnServer);
+                        coreSummary.add("Date for last TX on server", lastTxOnServerDate);
+                        
+                        report.add(cname, coreSummary);
+                    }
+                    else
+                    {
+                        report.add(cname, "Core unknown");
+                    }
+                    rsp.add("Summary", report);
+                   
+                }
+                else
+                {
+                    NamedList<Object> report = new SimpleOrderedMap<Object>();
+                    for (String coreName : trackers.keySet())
+                    {
+                        CoreTracker tracker = trackers.get(coreName);
+                        if (tracker != null)
+                        {
+                            NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
+                            long lastIndexCommitTime = tracker.getLastIndexedCommitTime();
+                            long lastTxOnServer = tracker.getLastTxOnServer();
+                            Date lastIndexCommitDate = new Date(lastIndexCommitTime);
+                            Date lastTxOnServerDate = new Date(lastTxOnServer);
+                            
+                            Duration lag = new Duration(lastIndexCommitDate, lastTxOnServerDate);
+                            coreSummary.add("Last Index Commit Time", lastIndexCommitTime);
+                            coreSummary.add("Last Index Commit Date", lastIndexCommitDate);
+                            coreSummary.add("Lag", (lastTxOnServer-lastIndexCommitTime)/1000 +" s");
+                            coreSummary.add("Duration", lag.toString());
+                            coreSummary.add("Active", tracker.isRunning());
+                            coreSummary.add("Timestamp for last TX on server", lastTxOnServer);
+                            coreSummary.add("Date for last TX on server", lastTxOnServerDate);
+                            
+                            report.add(coreName, coreSummary);
+                        }
+                        else
+                        {
+                            report.add(cname, "Core unknown");
+                        }
+                    }
+                    rsp.add("Summary", report);
                 }
                 return false;
             }

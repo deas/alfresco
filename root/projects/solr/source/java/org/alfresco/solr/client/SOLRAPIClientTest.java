@@ -301,12 +301,12 @@ public class SOLRAPIClientTest extends TestCase
     public void testGetTransactions() throws Exception
     {
         // get transactions starting from txn id 1298288417234l
-        List<Transaction> transactions = client.getTransactions(1298288417234l, null, 5);
+        Transactions transactions = client.getTransactions(1298288417234l, null, 5);
 
         // get transactions starting from transaction 426
         transactions = client.getTransactions(null, Long.valueOf(1), 5);
-        List<Long> transactionIds = new ArrayList<Long>(transactions.size());
-        for(Transaction info : transactions)
+        List<Long> transactionIds = new ArrayList<Long>(transactions.getTransactions().size());
+        for(Transaction info : transactions.getTransactions())
         {
             logger.debug(info);
             transactionIds.add(Long.valueOf(info.getId()));
@@ -446,7 +446,7 @@ public class SOLRAPIClientTest extends TestCase
     	// should fail with a 401
     	try
     	{
-    		List<Transaction> transactions = invalidKeyClient.getTransactions(1298288417234l, null, 5);
+    		Transactions transactions = invalidKeyClient.getTransactions(1298288417234l, null, 5);
     	}
     	catch(AuthenticationException e)
     	{
@@ -456,7 +456,7 @@ public class SOLRAPIClientTest extends TestCase
     	try
     	{
         	tamperWithEncryptionService.setOverrideTimestamp(true);
-        	List<Transaction> transactions = tamperWithClient.getTransactions(1298288417234l, null, 5);
+        	Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, 5);
     	}
     	catch(AuthenticationException e)
     	{
@@ -470,7 +470,7 @@ public class SOLRAPIClientTest extends TestCase
     	try
     	{
     		tamperWithEncryptionService.setOverrideMAC(true);
-    		List<Transaction> transactions = tamperWithClient.getTransactions(1298288417234l, null, 5);
+    		Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, 5);
     	}
     	catch(AuthenticationException e)
     	{
