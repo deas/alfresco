@@ -137,6 +137,7 @@
    <bean id="evaluator.doclib.action.onlineEdit" parent="evaluator.doclib.action.chainedMatchAll">
       <property name="evaluators">
          <list>
+            <ref bean="evaluator.doclib.action.siteBased" />
             <ref bean="evaluator.doclib.action.onlineEditVtiServer" />
             <ref bean="evaluator.doclib.action.onlineEditMimetype" />
             <ref bean="evaluator.doclib.action.onlineEditBrowser" />
