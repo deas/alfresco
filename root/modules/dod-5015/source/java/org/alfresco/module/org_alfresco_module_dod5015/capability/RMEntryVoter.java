@@ -117,6 +117,7 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AccessStatus;
+import org.alfresco.service.cmr.security.OwnableService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
@@ -160,6 +161,8 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean, Appl
     private DispositionService dispositionService;
     
     private SearchService searchService;
+    
+    private OwnableService ownableService;
 
     private static HashMap<String, Policy> policies = new HashMap<String, Policy>();
 
@@ -358,6 +361,15 @@ public class RMEntryVoter implements AccessDecisionVoter, InitializingBean, Appl
         }
         return searchService;
     }
+    
+    public OwnableService getOwnableService() 
+    {
+    	if (ownableService == null)
+        {
+    		ownableService = (OwnableService)applicationContext.getBean("ownableService");
+        }
+		return ownableService;
+	}
     
     /**
      * Set the name space prefix resolver

@@ -29,6 +29,8 @@ import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -103,33 +105,51 @@ public class FilePlanComponentAspect implements RecordsManagementModel,
      * @see org.alfresco.repo.node.NodeServicePolicies.OnAddAspectPolicy#onAddAspect(org.alfresco.service.cmr.repository.NodeRef, org.alfresco.service.namespace.QName)
      */
     @Override
-    public void onAddAspect(NodeRef nodeRef, QName aspectTypeQName)
+    public void onAddAspect(final NodeRef nodeRef, final QName aspectTypeQName)
     {
-        if (nodeService.exists(nodeRef) == true)
+        AuthenticationUtil.runAs(new RunAsWork<Void>()
         {
-            // Look up the root and set on the aspect if found
-            NodeRef root = recordsManagementService.getRecordsManagementRoot(nodeRef);
-            if (root != null)
+            @Override
+            public Void doWork() throws Exception
             {
-                nodeService.setProperty(nodeRef, PROP_ROOT_NODEREF, root);
+                if (nodeService.exists(nodeRef) == true)
+                {                   
+                    // Look up the root and set on the aspect if found
+                    NodeRef root = recordsManagementService.getRecordsManagementRoot(nodeRef);
+                    if (root != null)
+                    {
+                        nodeService.setProperty(nodeRef, PROP_ROOT_NODEREF, root);
+                    }
+                }
+                
+                return null;
             }
-        }
+        }, AuthenticationUtil.getSystemUserName());        
     }
 
     /**
      * @see org.alfresco.repo.node.NodeServicePolicies.OnMoveNodePolicy#onMoveNode(org.alfresco.service.cmr.repository.ChildAssociationRef, org.alfresco.service.cmr.repository.ChildAssociationRef)
      */
     @Override
-    public void onMoveNode(ChildAssociationRef oldChildAssocRef, ChildAssociationRef newChildAssocRef)
+    public void onMoveNode(final ChildAssociationRef oldChildAssocRef, final ChildAssociationRef newChildAssocRef)
     {
-        if (nodeService.exists(newChildAssocRef.getParentRef()) == true && 
-            nodeService.exists(newChildAssocRef.getChildRef()) == true)
+        AuthenticationUtil.runAs(new RunAsWork<Void>()
         {
-            // Look up the root and re-set the value currently stored on the aspect
-            NodeRef root = recordsManagementService.getRecordsManagementRoot(newChildAssocRef.getParentRef());
-            // NOTE: set the null value if no root found
-            nodeService.setProperty(newChildAssocRef.getChildRef(), PROP_ROOT_NODEREF, root);
-        }
+            @Override
+            public Void doWork() throws Exception
+            {
+                if (nodeService.exists(newChildAssocRef.getParentRef()) == true && 
+                    nodeService.exists(newChildAssocRef.getChildRef()) == true)
+                {
+                    // Look up the root and re-set the value currently stored on the aspect
+                    NodeRef root = recordsManagementService.getRecordsManagementRoot(newChildAssocRef.getParentRef());
+                    // NOTE: set the null value if no root found
+                    nodeService.setProperty(newChildAssocRef.getChildRef(), PROP_ROOT_NODEREF, root);
+                }
+                
+                return null;
+            }
+        }, AuthenticationUtil.getSystemUserName());        
     }
     
     /**

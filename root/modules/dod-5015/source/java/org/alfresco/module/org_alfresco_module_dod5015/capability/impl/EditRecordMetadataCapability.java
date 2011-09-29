@@ -21,6 +21,7 @@ package org.alfresco.module.org_alfresco_module_dod5015.capability.impl;
 import net.sf.acegisecurity.vote.AccessDecisionVoter;
 
 import org.alfresco.module.org_alfresco_module_dod5015.capability.RMPermissionModel;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AccessStatus;
 
@@ -50,8 +51,22 @@ public class EditRecordMetadataCapability extends AbstractCapability
                     {
                         return AccessDecisionVoter.ACCESS_GRANTED;
                     }
+                    
+                    // Since we know this is undeclared if you are the owner then you should be able to 
+                    // edit the records meta-data (otherwise how can it be declared by the user?)
+                    if (voter.getOwnableService().hasOwner(nodeRef) == true)
+                    {
+                    	String user = AuthenticationUtil.getFullyAuthenticatedUser();
+                    	if (user != null &&
+                    	    voter.getOwnableService().getOwner(nodeRef).equals(user) == true)
+                    	{
+                    		return AccessDecisionVoter.ACCESS_GRANTED;
+                    	}
+                    }
+                    
                 }
             }
+            
             return AccessDecisionVoter.ACCESS_DENIED;
         }
         else
