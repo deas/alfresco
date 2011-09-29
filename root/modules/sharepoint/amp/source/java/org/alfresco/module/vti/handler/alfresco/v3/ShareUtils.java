@@ -171,7 +171,7 @@ public class ShareUtils
      */
     private void createComponent(HttpClient httpClient, String siteName, SessionUser user, String componentName, String componentURL) throws UnsupportedEncodingException
     {
-        String url = getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/remotestore/create/alfresco/site-data/components/page." + componentName + ".site~" + siteName
+        String url = getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/remoteadm/create/alfresco/site-data/components/page." + componentName + ".site~" + siteName
                 + "~dashboard.xml?s=sitestore&alf_ticket=" + user.getTicket();
         
         String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -249,7 +249,8 @@ public class ShareUtils
             "</page>";
         }
 
-        PostMethod createSiteDashboardMethod = createPostMethod(getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/remotestore/create/alfresco/site-data/pages/site/" + siteName
+        PostMethod createSiteDashboardMethod = createPostMethod(
+              getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/remoteadm/create/alfresco/site-data/pages/site/" + siteName
                 + "/dashboard.xml?s=sitestore&alf_ticket=" + user.getTicket(), createSiteDashboardBody, "application/octet-stream");
         try
         {
@@ -439,7 +440,7 @@ public class ShareUtils
      */
     private void deleteSiteComponent(HttpClient httpClient, String siteName, SessionUser user, String componentName)
             {
-        DeleteMethod deleteTitleMethod = new DeleteMethod(getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/remotestore/delete/alfresco/site-data/components/page." + componentName
+        DeleteMethod deleteTitleMethod = new DeleteMethod(getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/remoteadm/delete/alfresco/site-data/components/page." + componentName
                 + ".site~" + siteName + "~dashboard.xml?s=sitestore&alf_ticket=" + user.getTicket());
         try
         {
@@ -473,7 +474,7 @@ public class ShareUtils
      */
     private void deleteSiteDashboard(HttpClient httpClient, String siteName, SessionUser user)
     {
-        DeleteMethod deleteDashboardMethod = new DeleteMethod(getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/remotestore/delete/alfresco/site-data/pages/site/" + siteName
+        DeleteMethod deleteDashboardMethod = new DeleteMethod(getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/remoteadm/delete/alfresco/site-data/pages/site/" + siteName
                 + "/dashboard.xml?s=sitestore&alf_ticket=" + user.getTicket());
         try
         {
