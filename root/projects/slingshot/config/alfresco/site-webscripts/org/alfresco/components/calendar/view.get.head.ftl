@@ -6,7 +6,7 @@
 <#if (view=='agenda')>
    <@script type="text/javascript" src="${page.url.context}/res/components/calendar/calendar-view-${context.properties.filteredView?js_string}.js"></@script>
 <#else>
-   <@script type="text/javascript" src="${page.url.context}/res/jquery/jquery-1.6.2.js"></@script>
+   <@script type="text/javascript" src="${page.url.context}/res/jquery/jquery-1.6.2.custom.js"></@script>
    <@script type="text/javascript" src="${page.url.context}/res/jquery/jquery-ui-1.8.11.custom.min.js"></@script>
    <@script type="text/javascript" src="${page.url.context}/res/jquery/fullcalendar/fullcalendar.js"></@script>
    <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/jquery/fullcalendar/fullcalendar.css" />
