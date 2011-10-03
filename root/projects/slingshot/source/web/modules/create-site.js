@@ -413,7 +413,13 @@
          this.widgets.cancelButton.set("disabled", false);
          this.widgets.panel.show();
          var text = Alfresco.util.message("message.failure", this.name);
-         if (response.json.message)
+         // Special case for (potential) private site name clash
+         if (response.serverResponse.status === 500)
+         {
+            // Workaround for ALF-1276 - we'll assume an HTTP 500 is "site already exists"
+            text = Alfresco.util.message("error.duplicateShortName", this.name);
+         }
+         else if (response.json.message)
          {
             var tmp = Alfresco.util.message(response.json.message, this.name);
             text = tmp ? tmp : text;
