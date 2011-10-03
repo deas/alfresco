@@ -334,12 +334,20 @@
          allowNavigationToContentChildren: false,
          
          /**
-          * The action for the select button that triggers the object finder dialog
+          * The label of the select button that triggers the object finder dialog
           *
           * @property selectActionLabel
           * @type string
           */
          selectActionLabel: null,
+         
+         /**
+          * The resource id for the label of the select button that triggers the object finder dialog
+          *
+          * @property selectActionLabelId
+          * @type string
+          */
+         selectActionLabelId: null,
          
          /**
           * Specifies the location the object finder should start, the following
@@ -483,9 +491,15 @@
                {
                   var addButtonEl = document.createElement("button");
                   itemGroupActionsContainerEl.appendChild(addButtonEl);
+                  
+                  var addButtonLabel = this.options.selectActionLabel;
+                  if (this.options.selectActionLabelId && this.options.selectActionLabelId.length !== "")
+                  {
+                     addButtonLabel = this.msg(this.options.selectActionLabelId);
+                  }
                   this.widgets.addButton = Alfresco.util.createYUIButton(this, null, this.onAddButtonClick,
                   {
-                     label: this.options.selectActionLabel,
+                     label: addButtonLabel,
                      disabled: true
                   }, addButtonEl);
                }
