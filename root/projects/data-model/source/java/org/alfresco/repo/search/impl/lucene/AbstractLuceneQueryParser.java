@@ -2349,7 +2349,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     // }
     // }
 
-    private Query buildDateTimeRange(String field, Calendar startIn, int startResolution, Calendar endIn, int endResolution, boolean includeLower, boolean includeUpper)
+    protected Query buildDateTimeRange(String field, Calendar startIn, int startResolution, Calendar endIn, int endResolution, boolean includeLower, boolean includeUpper)
             throws ParseException
     {
         int minResolution = (startResolution <= endResolution) ? startResolution : endResolution;
@@ -4795,25 +4795,20 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         Calendar end = Calendar.getInstance();
         SimpleDateFormat df = CachingDateFormat.getDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", false);
 
-        Date date = df.parse("2007-11-30T22:58:58.998");
+        Date date = df.parse("2011-09-31T00:00:00.000");
         System.out.println(date);
         start.setTime(date);
         System.out.println(start);
 
-        date = df.parse("2008-01-01T03:00:01.002");
+        date = df.parse("2011-10-28T00:00:00.000");
         System.out.println(date);
         end.setTime(date);
         System.out.println(end);
 
-        // start.set(Calendar.YEAR, start.getMinimum(Calendar.YEAR));
-        // start.set(Calendar.DAY_OF_YEAR, start.getMinimum(Calendar.DAY_OF_YEAR));
-        // start.set(Calendar.HOUR_OF_DAY, start.getMinimum(Calendar.HOUR_OF_DAY));
-        // start.set(Calendar.MINUTE, start.getMinimum(Calendar.MINUTE));
-        // start.set(Calendar.SECOND, start.getMinimum(Calendar.SECOND));
-        // start.set(Calendar.MILLISECOND, start.getMinimum(Calendar.MILLISECOND));
-        // LuceneQueryParser lqp = new LuceneQueryParser(null, null);
-        // query = lqp.buildDateTimeRange("TEST", start, end, false, false);
-        // System.out.println("Query is " + query);
+        
+        LuceneQueryParser lqp = new LuceneQueryParser(null, null);
+        Query query = lqp.buildDateTimeRange("WOOF", start, Calendar.DAY_OF_MONTH, end, Calendar.DAY_OF_MONTH, true, true);
+        System.out.println("Query is " + query);
     }
 
     @Override
