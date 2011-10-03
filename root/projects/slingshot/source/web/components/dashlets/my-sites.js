@@ -276,7 +276,7 @@
          // Load sites
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites",
+            url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites?roles=user&size=" + this.options.listSize,
             successCallback:
             {
                fn: this.onSitesLoaded,
@@ -337,21 +337,11 @@
 
          for (i = 0, j = p_items.length; i < j; i++)
          {
-            p_items[i].isSiteManager = false;
-            siteManagers = p_items[i].siteManagers;
-            for (k = 0, l = siteManagers.length; siteManagers && k < l; k++)
-            {
-               if (siteManagers[k] === Alfresco.constants.USERNAME)
-               {
-                  p_items[i].isSiteManager = true;
-                  break;
-               }
-            }
-
-            p_items[i].isFavourite = typeof(favSites[p_items[i].shortName]) === "undefined" ? false : favSites[p_items[i].shortName];
+            p_items[i].isSiteManager = p_items[i].siteRole === "SiteManager";
+            p_items[i].isFavourite = typeof(favSites[p_items[i].shortName]) == "undefined" ? false : favSites[p_items[i].shortName];
             if (imapfavSites)
             {
-               p_items[i].isIMAPFavourite = typeof(imapfavSites[p_items[i].shortName]) === "undefined" ? false : imapfavSites[p_items[i].shortName];
+               p_items[i].isIMAPFavourite = typeof(imapfavSites[p_items[i].shortName]) == "undefined" ? false : imapfavSites[p_items[i].shortName];
             }
          }
 
