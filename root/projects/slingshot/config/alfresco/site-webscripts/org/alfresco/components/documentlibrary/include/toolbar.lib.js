@@ -81,12 +81,30 @@ function getCreateContent()
    }
 
    // Google Docs enabled?
-   var googleDocsEnabled = false,
+   var googleDocsEnabledShare = false,
+      googleDocsEnabledRepo = false,
       googleDocsConfig = config.scoped["DocumentLibrary"]["google-docs"];
 
    if (googleDocsConfig !== null)
    {
-      googleDocsEnabled = (googleDocsConfig.getChildValue("enabled").toString() == "true");
+      googleDocsEnabledShare = (googleDocsConfig.getChildValue("enabled").toString() == "true");
+
+      if (googleDocsEnabledShare)
+      {
+         // Request the Google Docs status on the Repository
+         var result = remote.call("/api/googledocs/status");
+         if (result.status == 200 && result != "{}")
+         {
+            var obj = eval('(' + result + ')');
+            try
+            {
+               googleDocsEnabledRepo = obj.data.enabled;
+            }
+            catch (e)
+            {
+            }
+         }
+      }
       
       var configs = googleDocsConfig.getChildren("creatable-types"),
          creatableConfig,
@@ -129,7 +147,7 @@ function getCreateContent()
    var createContentByTemplateConfig = config.scoped["DocumentLibrary"]["create-content-by-template"];
    createContentByTemplateEnabled = createContentByTemplateConfig !== null ? createContentByTemplateConfig.value.toString() == "true" : false;
 
-   model.googleDocsEnabled = googleDocsEnabled;
+   model.googleDocsEnabled = googleDocsEnabledShare && googleDocsEnabledRepo;
    model.createContent = createContent;
    model.createContentByTemplateEnabled = createContentByTemplateEnabled;
 }
