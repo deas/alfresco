@@ -1490,7 +1490,6 @@ div.fullCalendar .fc-view-month .fc-event-multiday .fc-event-inner
    border: none;
    margin: 0;
    line-height:1.8em;
-   font-size:110%;
 }
 
 div.fullCalendar .fc-event-time
@@ -1549,6 +1548,11 @@ div.fullCalendar .fc-event-vert .fc-event-bg
    text-indent: -9999px;
 }
 
+.fc-content .fc-view-month .fc-event-skin
+{
+   font-size: 12px;
+}
+
 /* This is needed to place all YUI generated content above the events. */
 .yuimenu
 {
@@ -1581,4 +1585,11 @@ div.calendar-bar div.flat-button.work-hours span.yui-checkbox-button-checked
 div.calendar-bar div.flat-button.work-hours span.yui-checkbox-button-disabled
 {
    opacity: 0.3;
+}
+/* Remove Bold headings */
+.yui-skin-default .yui-calendar .calheader,
+.yui-skin-default .yui-calendar .calweekdaycell,
+div.fullCalendar th.fc-widget-header
+{
+   font-weight: normal;
 }
