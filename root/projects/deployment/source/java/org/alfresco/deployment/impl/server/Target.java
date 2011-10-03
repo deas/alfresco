@@ -93,7 +93,8 @@ public class Target implements Serializable
         if (!meta.exists())
         {
         	logger.info("Initialised empty metadata for target:" + fTargetName);
-        	meta.mkdir();
+            if (meta.mkdir() == false)
+                throw new DeploymentException("Could not create meta data directory: " + fMetaDataDirectory);
 
         } 
         File metaRoot = new File(fMetaDataDirectory + File.separatorChar + MD_NAME);

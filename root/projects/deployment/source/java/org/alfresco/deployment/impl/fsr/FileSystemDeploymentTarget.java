@@ -160,7 +160,8 @@ public class FileSystemDeploymentTarget implements Serializable, DeploymentTarge
         File rootFile = new File(fRootDirectory); 
         if(!rootFile.exists()){
         	logger.info("creating root data directory:" + rootFile.toString());
-        	rootFile.mkdirs(); 
+            if (rootFile.mkdirs() == false)
+                throw new DeploymentException("Could not create root data directory while initializing: " + fRootDirectory);
         }
         
 		// Create the various necessary directories if they don't already exits.
@@ -168,7 +169,8 @@ public class FileSystemDeploymentTarget implements Serializable, DeploymentTarge
 		if (!meta.exists())
 		{
 			logger.info("creating meta data directory:" + meta.toString());
-			meta.mkdirs();
+            if (meta.mkdirs() == false)
+                throw new DeploymentException("Could not create meta data directory while initializing: " + fMetaDataDirectory);
 		}
 		
 	    tempDirectory = fileSystemReceiverService.getDataDirectory() + File.separator + fTargetName;
@@ -177,7 +179,8 @@ public class FileSystemDeploymentTarget implements Serializable, DeploymentTarge
 	    if (!temp.exists())
 	    {
 	        logger.info("creating new temp location:" + temp.toString());
-	        temp.mkdirs();
+            if (temp.mkdirs() == false)
+                throw new DeploymentException("Could not create temp directory while initializing: " + tempDirectory);
 	    }
         
     	metaDataTarget = new Target(fTargetName, fMetaDataDirectory);
@@ -848,7 +851,7 @@ public class FileSystemDeploymentTarget implements Serializable, DeploymentTarge
 	            	} 
 	            	catch (Exception e) 
 	            	{
-	            		logger.debug("exception in committer thread", e);
+	            		logger.error("exception in committer thread", e);
 	            		setException(e);
 	            	}
 	            }

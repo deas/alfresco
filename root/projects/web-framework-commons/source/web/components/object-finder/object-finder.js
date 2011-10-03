@@ -982,6 +982,14 @@
                   this.widgets.dataTable.addRow(obj.item);
                   this.selectedItems[obj.item.nodeRef] = obj.item;
                   this.singleSelectedItem = obj.item;
+
+                  if (obj.highlight)
+                  {
+                     // Make sure we scroll to the bottom of the list and highlight the new item
+                     var dataTableEl = this.widgets.dataTable.get("element");
+                     dataTableEl.scrollTop = dataTableEl.scrollHeight;
+                     Alfresco.util.Anim.pulse(this.widgets.dataTable.getLastTrEl());
+               }
                }
                else
                {
@@ -2610,7 +2618,8 @@
                         YAHOO.Bubbling.fire("selectedItemAdded",
                         {
                            eventGroup: this,
-                           item: item
+                           item: item,
+                           highlight: true
                         });
                      }
                      elInput.value = "";
@@ -2800,7 +2809,8 @@
                   YAHOO.Bubbling.fire("selectedItemAdded",
                   {
                      eventGroup: me,
-                     item: record.getData()
+                     item: record.getData(),
+                     highlight: true
                   });
                }
             }

@@ -108,6 +108,10 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     
     private static final String MIME_HTML_TEXT = "text/html";
 
+    private static final String PAGE_SERVLET_PATH = "/page";
+    private static final String LOGIN_PATH_INFORMATION = "/dologin";
+    private static final String LOGIN_PARAMETER = "login";
+    
     private ConnectorService connectorService;
     private String endpoint;
     private ServletContext servletContext;
@@ -345,16 +349,20 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             return;
         }
         
-        // Login page requested directly
-        if ("login".equals(req.getParameter("pt")) && req.getRequestURI().endsWith("/page"))
+        // Login page or login submission
+        String pathInfo;
+        if (PAGE_SERVLET_PATH.equals(req.getServletPath())
+                && (LOGIN_PATH_INFORMATION.equals(pathInfo = req.getPathInfo()) || pathInfo == null
+                        && LOGIN_PARAMETER.equals(req.getParameter("pt"))))
         {
-            if (debug) logger.debug("Login page requested, chaining ...");
-            
+            if (debug)
+                logger.debug("Login page requested, chaining ...");
+
             // Chain to the next filter
             chain.doFilter(sreq, sresp);
             return;
         }
-        
+
         // Check if the browser is Opera, if so then display the login page as Opera does not
         // support NTLM and displays an error page if a request to use NTLM is sent to it
         String userAgent = req.getHeader("user-agent");

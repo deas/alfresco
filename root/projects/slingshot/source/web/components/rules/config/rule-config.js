@@ -1059,6 +1059,12 @@
             paramName;
          Dom.addClass(newParametersEl, "parameters");
          configEl.insertBefore(newParametersEl, Selector.query("div.parameters", configEl, true));
+         if (customisedMessage)
+         {
+            // Fix for ALF-8776 to simulate the usual Alfresco.util.message behaviour,
+            // where msg keys that gets input parameters/tokens must use double apostrophes.
+            customisedMessage = customisedMessage.replace(/''/g, "'");
+         }
          while (customisedMessage)
          {
             startIndex = customisedMessage.indexOf("{");
