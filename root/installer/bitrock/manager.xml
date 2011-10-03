@@ -1,20 +1,30 @@
 <component>
     <name>manager</name>
-    <description>Graphical Manager</description>
+    <description>//Graphical Manager</description>
     <detailedDescription></detailedDescription>
     <canBeEdited>0</canBeEdited>
     <selected>1</selected>
     <show>0</show>
     <folderList>
         <folder>
-            <description>Binary</description>
+            <description>//Binary</description>
             <destination>${manager_installation_directory}</destination>
             <name>binary</name>
+            <platforms>linux linux-x64 osx windows</platforms>
             <distributionFileList>
                 <distributionFile origin="${manager_distribution_folder}/manager-*" allowWildcards="1"/>
             </distributionFileList>
         </folder>
     </folderList>
+    <startMenuShortcutList>
+        <startMenuShortcut>
+            <comment>Manager tool</comment>
+            <name>Manager tool</name>
+	    <runAsAdmin>1</runAsAdmin>
+            <windowsExec>${installdir}/manager-windows.exe</windowsExec>
+            <windowsPath>${installdir}/</windowsPath>
+        </startMenuShortcut>
+    </startMenuShortcutList>
     <parameterList>
 	<directoryParameter>
 	    <name>manager_installation_directory</name>
@@ -36,9 +46,14 @@
     <postInstallationActionList>
 	<changePermissions>
 	    <permissions>700</permissions>
-	    <files>manager-${platform_name}.${platform_exec_suffix}</files>
+	    <files>${manager_installation_directory}/manager-${platform_name}.${platform_exec_suffix}</files>
 	    <ruleList>
 		<platformTest type="linux" />
+	    </ruleList>
+	</changePermissions>
+        <changePermissions permissions="700" files="${manager_installation_directory}/manager-osx.app/Contents/MacOS/osx-intel" >
+	    <ruleList>
+		<platformTest type="osx" />
 	    </ruleList>
 	</changePermissions>
     </postInstallationActionList>
