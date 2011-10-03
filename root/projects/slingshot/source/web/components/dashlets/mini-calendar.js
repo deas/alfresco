@@ -28,7 +28,11 @@
    /**
     * YUI Library aliases
     */
-   var Dom = YAHOO.util.Dom;
+   var Dom = YAHOO.util.Dom,
+      fromISO8601 = Alfresco.util.fromISO8601,
+      toISO8601 = Alfresco.util.toISO8601,
+      $msg = Alfresco.util.message,
+      formatDate = Alfresco.util.formatDate;
 
    /**
     * Alfresco Slingshot aliases
@@ -105,40 +109,34 @@
                   var nextEventDays = this.getNextEventStartDates(item, now);
                   if (nextEventDays.length > 0)
                   {
-                     var stringDate = Alfresco.util.formatDate(nextEventDays[0], "m/d/yyyy");
+                     var stringDate = toISO8601(nextEventDays[0]);
                   }
-                  item.from = stringDate;
-                  item.to = stringDate;
+                  item.startAt.iso8601 = item.endAt.iso8601 = stringDate;
                   resultEvents.push(item);
                }
                else
                {
-                  if (this.cloneDate(item.from) >= now || this.cloneDate(item.to) >= now)
+                  if (fromISO8601(item.startAt.iso8601) >= now || fromISO8601(item.endAt.iso8601) >= now)
                   {
                      resultEvents.push(item);
                   }
                }
             }
 
-            var map = new Object();
-            for (var i = 0; i < resultEvents.length; i++)
+            var map = {};
+            for (var j = 0; j < resultEvents.length; j++)
             {
-               var item = resultEvents[i];
-               if (map[item.from] == null)
-               {
-                  var list = [];
-                  list.push(item);
-                  map[item.from] = list; 
-               }
-               else
-               {
-                  map[item.from].push(item);
-               }
+               var renderItem = resultEvents[j],
+                  date = renderItem.startAt.iso8601.split("T")[0],
+                  list = map[date] || [];
+
+               list.push(renderItem);
+               map[date] = list;
             }
 
             for (var key in map)
             {
-               eventHTML += this.renderDay(this.cloneDate(key), map);
+               eventHTML += this.renderDay(key, map);
             }
          }
          catch (e)
@@ -153,50 +151,56 @@
        * Render an event
        * 
        * @method renderDay
-       * @param data {Date} Date to render
+       * @param date {String} ISO8601 Date to render
        * @param eventData {object} Event data
        */
       renderDay: function MiniCalendar_renderDay(date, eventData)
       {
-         var theStupidDate = Alfresco.util.formatDate(date, "m/d/yyyy");
-         var theDate = Alfresco.util.toISO8601(date,
-         {
-            selector: "date"
-         });
-         var events = eventData[theStupidDate];
+         var events = eventData[date];
          var html = "", item;
          if (events && events.length > 0)
          {
-            var title = Alfresco.util.formatDate(date, Alfresco.util.message("date-format.fullDate"));
-            var url = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/calendar?view=day&date=" + theDate;
+            var title = formatDate(fromISO8601(date), $msg("date-format.fullDate"));
+            var url = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/calendar?view=day&date=" + date;
             html += '<div class="detail-list-item">';
             html += '<div class="icon"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/calendar/images/calendar-16.png" alt="day" /></div>';
             html += '<div class="details2"><h4><a href="'+url+'" class="theme-color-1">' + title + '</a></h4>';
             for (var i = 0, ii = events.length; i < ii; i++)
             {
                item = events[i];
-               // if start and end match it is an allday or multiday event
+
+               var startTime = formatDate(fromISO8601(item.startAt.iso8601), $msg("date-format.shortTime")),
+                  endTime = formatDate(fromISO8601(item.endAt.iso8601), $msg("date-format.shortTime"));
                var itemName = $html(item.name);
+
+               // Display information about the event.
                if (item.recurrenceRule != null)
                {
                   itemName += " (Recurring)";
                }
-               if (item.start === item.end)
+               // if start and end datetimes match we don't need to display them (all day event).
+               if (item.startAt.iso8601 === item.endAt.iso8601)
                {
                   html += '<div><span><a href="' + url + '">' + itemName + '</a></span></div>';                  
                }
                else
                {
-                  var time = item.start,
-                     end = "";
-                  if (item.to !== item.from) 
+                  var displayStartTime = startTime,
+                     displayEndTime = endTime,
+                     endText = "";
+                  if (item.endAt.iso8601.split("T")[0] !== item.startAt.iso8601.split("T")[0])
                   {
-                     end = " (" + this.msg("label.until") + ": " + Alfresco.util.formatDate(item.to, Alfresco.util.message("date-format.fullDate")) + " " + item.end + ")";
+                     // Don't include start and end times on all day multi-day events. (but do on timed multi day events)
+                     if (formatDate(fromISO8601(item.startAt.iso8601), "HH:MM") === "00:00" && formatDate(fromISO8601(item.endAt.iso8601), "HH:MM") === "00:00")
+                     {
+                        displayStartTime = displayEndTime = "";
+                     }
+                     endText = " (" + this.msg("label.until") + ": " + formatDate(fromISO8601(item.endAt.iso8601), $msg("date-format.fullDate")) + " " + displayEndTime + ")";
                   } else 
                   {
-                     time += ' - ' + item.end;
+                     displayStartTime += ' - ' + displayEndTime;
                   }
-                  html += '<div><span>' + time + ' <a href="' + url + '">' + itemName + '</a>' + end + '</span></div>';                  
+                  html += '<div><span>' + displayStartTime + ' <a href="' + url + '">' + itemName + '</a>' + endText + '</span></div>';
                }
             }
             html += '</div></div>';
