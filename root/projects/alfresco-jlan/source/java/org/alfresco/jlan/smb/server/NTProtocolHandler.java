@@ -1439,7 +1439,26 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				// Close the file
 				
 				disk.closeFile(m_sess, conn, netFile);
+
+				// Release any byte range locks that are on the file
 				
+			    if ( netFile.hasLocks() && disk instanceof FileLockingInterface) {
+			          
+			    	//  Get the lock manager
+			          
+			        FileLockingInterface flIface = (FileLockingInterface) disk;
+			        LockManager lockMgr = flIface.getLockManager( m_sess, conn);
+			          
+			        //  DEBUG
+			          
+			        if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_LOCK))
+			        	Debug.println("Releasing locks for closed file, file=" + netFile.getFullName() + ", locks=" + netFile.numberOfLocks());
+			            
+			        //  Release all locks on the file owned by this session
+			          
+			        lockMgr.releaseLocksForFile( m_sess, conn, netFile);
+			    }
+			        
 				// Check if the file close has been delayed by the filesystem driver
 				
 				if ( netFile.hasDelayedClose()) {
@@ -2052,7 +2071,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					
 					// Return a not locked error
 					
-					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSNotLocked, SMBStatus.ErrDos);
+					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTRangeNotLocked, SMBStatus.DOSNotLocked, SMBStatus.ErrDos);
 					return;
 				}
 				
@@ -2173,7 +2192,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 	
 						// Return an error status
 	
-						m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSNotLocked, SMBStatus.ErrDos);
+						m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTRangeNotLocked, SMBStatus.DOSNotLocked, SMBStatus.ErrDos);
 						return;
 					}
 					catch (LockConflictException ex) {
@@ -2203,7 +2222,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 	
 					// Return an error status
 	
-					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSNotLocked, SMBStatus.ErrDos);
+					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTRangeNotLocked, SMBStatus.DOSNotLocked, SMBStatus.ErrDos);
 					return;
 				}
 			}
@@ -7773,9 +7792,19 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 						
 						// Check if the open is not accessing the file data, ie. accessing attributes only
 						
-						if (( params.getAccessMode() & (AccessMode.NTSynchronize + AccessMode.NTReadAttrib + AccessMode.NTWriteAttrib)) == 0)
+						if (( params.getAccessMode() & (AccessMode.NTSynchronize + AccessMode.NTReadAttrib + AccessMode.NTWriteAttrib)) == 0 &&
+								(params.getAccessMode() & (AccessMode.NTGenericRead + AccessMode.NTGenericWrite + AccessMode.NTGenericExecute)) == 0) {
+							
+							// DEBUG
+							
+							if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+								m_sess.debugPrintln("No oplock break, access attributes only, params=" + params + ", oplock=" + oplock);
+							
+							// Oplock break not required
+							
 							return;
-	
+						}
+					
 						// Check if the oplock has a failed break timeout, do not send another break request to the client, fail the open
 						// request with an access denied error
 						
