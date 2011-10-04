@@ -31,8 +31,8 @@ public class OpLock {
 	// Oplock types
 	
 	public static final int TypeNone 		= 0;
-	public static final int TypeBatch		= 1;
-	public static final int TypeExclusive	= 2;
+	public static final int TypeExclusive	= 1;
+	public static final int TypeBatch		= 2;
 	
 	/**
 	 * Return the oplock type as a string

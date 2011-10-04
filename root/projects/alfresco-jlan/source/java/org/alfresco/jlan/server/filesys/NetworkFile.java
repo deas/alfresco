@@ -954,7 +954,6 @@ public abstract class NetworkFile {
 	/**
 	 * Implementation of close
 	 */
-	// MER - should be protected not public.
 	public abstract void closeFile()
 		throws IOException;
 

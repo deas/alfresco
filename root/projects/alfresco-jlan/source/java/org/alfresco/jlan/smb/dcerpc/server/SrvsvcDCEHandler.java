@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Vector;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.auth.acl.AccessControlManager;
