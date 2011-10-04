@@ -476,6 +476,11 @@ input[type="text"].crud-input-quota
    width: 6em;
 }
 
+input[type="text"].time-entry
+{
+   width: 3em;
+}
+
 select.wide,
 input[type="text"].wide,
 input[type="password"].wide,
