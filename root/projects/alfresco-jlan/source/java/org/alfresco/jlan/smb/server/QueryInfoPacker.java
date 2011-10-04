@@ -391,9 +391,10 @@ public class QueryInfoPacker {
 		// LARGE_INTEGER Write date/time
 		// LARGE_INTEGER Change date/time
 		// UINT Attributes
-		// UINT Number of links
+		// UINT Reserved
 		// LARGE_INTEGER Allocation
 		// LARGE_INTEGER Size
+		// UINT NumberOfLinks
 		// BYTE Delete pending
 		// BYTE Directory flag
 		// 2 byte longword alignment
@@ -432,9 +433,9 @@ public class QueryInfoPacker {
 
 		buf.putInt(info.getFileAttributes());
 
-		// Number of links
+		// Reserved
 
-		buf.putInt(1);
+		buf.putInt( 0);
 
 		// Pack the allocation and used file sizes
 
@@ -445,20 +446,19 @@ public class QueryInfoPacker {
 
 		buf.putLong(info.getSize());
 
+		// Number of links
+		
+		buf.putInt( 1);
+		
 		// Pack the delete pending and directory flags
 
 		buf.putByte(0);
 		buf.putByte(info.isDirectory() ? 1 : 0);
 		buf.putShort(0); // Alignment
 
-		// EA list size, always 4 ?
+		// EA list size
 
-		// buf.putInt(4);
 		buf.putInt(0);
-
-		// Access mask
-
-		buf.putInt(0x00000003);
 
 		// File name length in bytes and file name, Unicode
 
