@@ -197,6 +197,28 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
     @Override
     protected void processNode(TransferManifestNormalNode node) throws TransferProcessingException
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug("Starting processing node" + node.toString());
+            log.debug("Starting processing node,nodeRef:" + node.getNodeRef());
+            log.debug("Starting processing node,name:" + (String) node.getProperties().get(ContentModel.PROP_NAME));
+            log.debug("Starting processing node,content Url:" + getContentUrl(node));
+            log.debug("Starting processing node,content properties:" + node.getProperties());
+        }
+
+        //Skip over any nodes that are not parented with a cm:contains association or 
+        //are not content or folders
+        if (!ContentModel.ASSOC_CONTAINS.equals(node.getPrimaryParentAssoc().getTypeQName()) ||
+                !(ContentModel.TYPE_FOLDER.equals(node.getType()) ||
+                        ContentModel.TYPE_CONTENT.equals(node.getType())))
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("Skipping node due to either: not content; not folder; or not cm:contains");
+            }
+            return;
+        }
+
         normalNodeProcessor.setNode(node);
         transactionService.getRetryingTransactionHelper().doInTransaction(normalNodeProcessor, false, true);
     }
@@ -276,28 +298,6 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
         @Override
         public Void execute() throws Throwable
         {
-            if (log.isDebugEnabled())
-            {
-                log.debug("Starting processing node" + node.toString());
-                log.debug("Starting processing node,nodeRef:" + node.getNodeRef());
-                log.debug("Starting processing node,name:" + (String) node.getProperties().get(ContentModel.PROP_NAME));
-                log.debug("Starting processing node,content Url:" + getContentUrl(node));
-                log.debug("Starting processing node,content properties:" + node.getProperties());
-            }
-
-            //Skip over any nodes that are not parented with a cm:contains association or 
-            //are not content or folders
-            if (!ContentModel.ASSOC_CONTAINS.equals(node.getPrimaryParentAssoc().getTypeQName()) ||
-                    !(ContentModel.TYPE_FOLDER.equals(node.getType()) ||
-                            ContentModel.TYPE_CONTENT.equals(node.getType())))
-            {
-                if (log.isInfoEnabled())
-                {
-                    log.info("Skipping node due to either: not content; not folder; or not cm:contains");
-                }
-                return null;
-            }
-
             String nodeRef = node.getNodeRef().toString();
             // In sync mode, convention is that if a node is not received then it is an implicit delete
             if (isSync)

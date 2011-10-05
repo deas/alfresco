@@ -24,10 +24,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,7 +92,7 @@ public class FileTransferReceiver implements TransferReceiver
     private Map<String, Lock> locks = new ConcurrentHashMap<String, Lock>();
 
     /**
-     * How many mS before refreshing the lock?
+     * How many ms before refreshing the lock?
      */
     private long lockRefreshTime = 60000;
 
@@ -111,7 +109,7 @@ public class FileTransferReceiver implements TransferReceiver
     /**
      * How long in mS to keep the lock before giving up and ending the transfer, possibly the client has terminated?
      */
-    private long lockTimeOut = 3600000;
+    private long lockTimeOut = 20L * 60L * 1000L;  //20 mins default
 
 
     private String rootStagingDirectory;
@@ -169,15 +167,7 @@ public class FileTransferReceiver implements TransferReceiver
                 for (TransferManifestProcessor processor : commitProcessors)
                 {
                     XMLTransferManifestReader reader = new XMLTransferManifestReader(processor);
-
-                    try
-                    {
-                        parser.parse(snapshotFile, reader);
-                    }
-                    finally
-                    {
-
-                    }
+                    parser.parse(snapshotFile, reader);
                     parser.reset();
                 }
             }
@@ -198,8 +188,7 @@ public class FileTransferReceiver implements TransferReceiver
                 }
                 else
                 {
-                    throw new TransferException("MSG_ERROR_WHILE_COMMITTING_TRANSFER", new Object[]
-                    { transferId }, error);
+                    throw new TransferException(MSG_ERROR_WHILE_COMMITTING_TRANSFER, new Object[] { transferId }, error);
                 }
             }
 
@@ -220,7 +209,7 @@ public class FileTransferReceiver implements TransferReceiver
             }
             else
             {
-                throw new TransferException("MSG_ERROR_WHILE_COMMITTING_TRANSFER", ex);
+                throw new TransferException(MSG_ERROR_WHILE_COMMITTING_TRANSFER, ex);
             }
         }
         finally
@@ -298,8 +287,7 @@ public class FileTransferReceiver implements TransferReceiver
         }
         catch (Exception ex)
         {
-            throw new TransferException("MSG_ERROR_WHILE_ENDING_TRANSFER", new Object[]
-            { transferId }, ex);
+            throw new TransferException(MSG_ERROR_WHILE_ENDING_TRANSFER, new Object[] { transferId }, ex);
         }
     }
 
@@ -345,7 +333,7 @@ public class FileTransferReceiver implements TransferReceiver
             }
             else
             {
-                throw new TransferException("MSG_ERROR_WHILE_GENERATING_REQUISITE", ex);
+                throw new TransferException(MSG_ERROR_WHILE_GENERATING_REQUISITE, ex);
             }
         }
 
@@ -364,7 +352,7 @@ public class FileTransferReceiver implements TransferReceiver
             if (!tempFolder.mkdirs())
             {
                 tempFolder = null;
-                throw new TransferException("MSG_FAILED_TO_CREATE_STAGING_FOLDER");
+                throw new TransferException(MSG_FAILED_TO_CREATE_STAGING_FOLDER);
             }
         }
         return tempFolder;

@@ -5,8 +5,7 @@
 
 <web-app>
    <display-name>Alfresco File Transfer Receiver</display-name>
-
-   <description>Alfresco Web Client</description>
+   <description>Alfresco File Transfer Receiver</description>
 
    <!-- Spring Application Context location -->
    <context-param>
@@ -33,9 +32,8 @@
       <servlet-name>apiServlet</servlet-name>
       <servlet-class>org.springframework.extensions.webscripts.servlet.WebScriptServlet</servlet-class>
       <init-param>
-         <!-- no authentication so far -->
          <param-name>authenticator</param-name>
-         <param-value></param-value>
+         <param-value>webscripts.authenticator.ftr</param-value>
       </init-param>
    </servlet>
 

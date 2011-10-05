@@ -12,6 +12,11 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
         </property>
     </bean>
 
+    <bean id="webscripts.authenticator.ftr" class="org.alfresco.repo.transfer.fsr.WebscriptAuthenticatorFactoryImpl">
+        <property name="permittedUsername" value="${fileTransferReceiver.username}" />
+        <property name="permittedPassword" value="${fileTransferReceiver.password}" />
+    </bean>
+
     <bean id="schemaBootstrap" class="org.alfresco.repo.transfer.fsr.SchemaBootstrap" init-method="init">
        <property name="dataSource">
           <ref bean="dataSource"/>
@@ -62,6 +67,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
             <value>true</value>
         </property>
         <property name="maxRetries">
+            <!-- This is deliberately zero and must remain zero in the File Transfer Receiver -->
             <value>0</value>
         </property>
         <property name="minRetryWaitMs">
