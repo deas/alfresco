@@ -21,6 +21,7 @@ package org.alfresco.repo.transfer.fsr;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.transfer.AbstractManifestProcessorBase;
 import org.alfresco.repo.transfer.TransferCommons;
 import org.alfresco.repo.transfer.manifest.TransferManifestDeletedNode;
@@ -61,7 +62,7 @@ public class FileTransferReceiverRequisiteManifestProcessor extends AbstractMani
 
     protected void endManifest()
     {
-        log.debug("End Requsite");
+        log.debug("End Requisite");
         out.endTransferRequsite();
     }
 
@@ -73,11 +74,15 @@ public class FileTransferReceiverRequisiteManifestProcessor extends AbstractMani
     protected void processNode(TransferManifestNormalNode node)
     {
 
-        log.debug("Node does not exist on destination nodeRef:" + node.getNodeRef());
+        //Skip over any nodes that are not parented with a cm:contains association or 
+        //are not content or folders (we don't need their content)
+        if (!ContentModel.ASSOC_CONTAINS.equals(node.getPrimaryParentAssoc().getTypeQName()) ||
+                !(ContentModel.TYPE_FOLDER.equals(node.getType()) ||
+                        ContentModel.TYPE_CONTENT.equals(node.getType())))
+        {
+            return;
+        }
 
-        /**
-         * there is no corresponding node so all content properties are "missing."
-         */
         for (Map.Entry<QName, Serializable> propEntry : node.getProperties().entrySet())
         {
             Serializable value = propEntry.getValue();
@@ -123,7 +128,7 @@ public class FileTransferReceiverRequisiteManifestProcessor extends AbstractMani
      */
     protected void startManifest()
     {
-        log.debug("Start Requsite");
+        log.debug("Start Requisite");
         out.startTransferRequsite();
     }
 

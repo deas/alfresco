@@ -1,10 +1,10 @@
 <webscript>
-  <shortname>Alfresco Transfer Service</shortname>
-  <description>Invoke commands on the Alfresco Transfer Service</description>
+  <shortname>Alfresco Transfer Receiver</shortname>
+  <description>Invoke commands on the Alfresco Transfer Receiver</description>
   <url>/api/transfer/{command}</url>
   <format default="json" />
   <authentication>admin</authentication>
-  <transaction>required</transaction>
+  <transaction>none</transaction>
   <lifecycle>internal</lifecycle>
   
   <!--  turn off the multipart formdata processing -->

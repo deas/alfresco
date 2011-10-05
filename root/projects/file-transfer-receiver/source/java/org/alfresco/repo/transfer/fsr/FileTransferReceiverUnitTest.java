@@ -26,7 +26,7 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
-import org.alfresco.service.cmr.transfer.TransferService;
+import org.alfresco.service.cmr.transfer.TransferService2;
 import org.alfresco.util.BaseAlfrescoSpringTest;
 
 public class FileTransferReceiverUnitTest extends BaseAlfrescoSpringTest
@@ -36,7 +36,7 @@ public class FileTransferReceiverUnitTest extends BaseAlfrescoSpringTest
     private final String ROOT_OF_TRANSFER = "ROOT_OF_TRANSFER";
     private final String ROOT_FOLDER_TO_TRANSFER = "ROOT_FOLDER_TO_TRANSFER";
 
-    private TransferService transferService;
+    private TransferService2 transferService;
     private NodeService nodeService;
     private FileFolderService fileFolderService;
 
@@ -54,7 +54,7 @@ public class FileTransferReceiverUnitTest extends BaseAlfrescoSpringTest
 
         super.onSetUp();
         // Get the required services
-        this.transferService = (TransferService)this.applicationContext.getBean("TransferService");
+        this.transferService = (TransferService2)this.applicationContext.getBean("TransferService2");
         this.nodeService = (NodeService) this.applicationContext.getBean("nodeService");
         this.fileFolderService = (FileFolderService)this.applicationContext.getBean("fileFolderService");
     }

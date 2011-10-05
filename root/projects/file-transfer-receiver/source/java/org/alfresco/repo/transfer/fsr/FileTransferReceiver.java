@@ -24,11 +24,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.SAXParser;
@@ -62,6 +63,23 @@ public class FileTransferReceiver implements TransferReceiver
     private final static Log log = LogFactory.getLog(FileTransferReceiver.class);
     private static final String SNAPSHOT_FILE_NAME = "snapshot.xml";
 
+    private static final String MSG_FAILED_TO_CREATE_STAGING_FOLDER = "transfer_service.receiver.failed_to_create_staging_folder";
+    private static final String MSG_ERROR_WHILE_STARTING = "transfer_service.receiver.error_start";
+    private static final String MSG_TRANSFER_TEMP_FOLDER_NOT_FOUND = "transfer_service.receiver.temp_folder_not_found";
+    private static final String MSG_TRANSFER_LOCK_UNAVAILABLE = "transfer_service.receiver.lock_unavailable";
+    private static final String MSG_INBOUND_TRANSFER_FOLDER_NOT_FOUND = "transfer_service.receiver.record_folder_not_found";
+
+    private static final String MSG_ERROR_WHILE_ENDING_TRANSFER = "transfer_service.receiver.error_ending_transfer";
+    private static final String MSG_ERROR_WHILE_STAGING_SNAPSHOT = "transfer_service.receiver.error_staging_snapshot";
+    private static final String MSG_ERROR_WHILE_STAGING_CONTENT = "transfer_service.receiver.error_staging_content";
+    private static final String MSG_NO_SNAPSHOT_RECEIVED = "transfer_service.receiver.no_snapshot_received";
+    private static final String MSG_ERROR_WHILE_COMMITTING_TRANSFER = "transfer_service.receiver.error_committing_transfer";
+    private static final String MSG_ERROR_WHILE_GENERATING_REQUISITE = "transfer_service.receiver.error_generating_requisite";
+    private static final String MSG_LOCK_TIMED_OUT = "transfer_service.receiver.lock_timed_out";
+    private static final String MSG_LOCK_NOT_FOUND = "transfer_service.receiver.lock_not_found";
+    private static final String MSG_TRANSFER_TO_SELF = "transfer_service.receiver.error.transfer_to_self";
+    private static final String MSG_INCOMPATIBLE_VERSIONS = "transfer_service.incompatible_versions";
+    
     private JobLockService jobLockService;
     /**
      * Reference to the TransactionService instance.
@@ -110,11 +128,10 @@ public class FileTransferReceiver implements TransferReceiver
 
     private String fileTransferRootNodeRef;
 
-    private Set<String> setOfNodesBeforeSyncMode;
+    private SortedSet<String> setOfNodesBeforeSyncMode;
 
     public void cancel(String transferId) throws TransferException
     {
-        // TODO Auto-generated method stub
     }
 
     public void commit(String transferId) throws TransferException
@@ -133,55 +150,43 @@ public class FileTransferReceiver implements TransferReceiver
 
         try
         {
-            /* lock is going to be released */checkLock(transferId);
             progressMonitor.updateStatus(transferId, TransferProgress.Status.COMMITTING);
 
-            RetryingTransactionHelper.RetryingTransactionCallback<Object> commitWork = new RetryingTransactionCallback<Object>()
+            List<TransferManifestProcessor> commitProcessors = manifestProcessorFactory
+                    .getCommitProcessors(FileTransferReceiver.this, fTransferId);
+
+            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+            SAXParser parser = saxParserFactory.newSAXParser();
+            File snapshotFile = getSnapshotFile(fTransferId);
+
+            if (snapshotFile.exists())
+            {
+                if (log.isDebugEnabled())
                 {
-                    public Object execute() throws Throwable
+                    log.debug("Processing manifest file:" + snapshotFile.getAbsolutePath());
+                }
+                // We parse the file as many times as we have processors
+                for (TransferManifestProcessor processor : commitProcessors)
+                {
+                    XMLTransferManifestReader reader = new XMLTransferManifestReader(processor);
+
+                    try
+                    {
+                        parser.parse(snapshotFile, reader);
+                    }
+                    finally
                     {
 
-                        List<TransferManifestProcessor> commitProcessors = manifestProcessorFactory
-                                .getCommitProcessors(FileTransferReceiver.this, fTransferId);
-
-                        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-                        SAXParser parser = saxParserFactory.newSAXParser();
-                        File snapshotFile = getSnapshotFile(fTransferId);
-
-                        if (snapshotFile.exists())
-                        {
-                            if (log.isDebugEnabled())
-                            {
-                                log.debug("Processing manifest file:" + snapshotFile.getAbsolutePath());
-                            }
-                            // We parse the file as many times as we have processors
-                            for (TransferManifestProcessor processor : commitProcessors)
-                            {
-                                XMLTransferManifestReader reader = new XMLTransferManifestReader(processor);
-
-                                try
-                                {
-                                    parser.parse(snapshotFile, reader);
-                                }
-                                finally
-                                {
-
-                                }
-                                parser.reset();
-                            }
-                        }
-                        else
-                        {
-                            progressMonitor.logException(fTransferId,
-                                    "Unable to start commit. No snapshot file received", new TransferException(
-                                            "MSG_NO_SNAPSHOT_RECEIVED", new Object[]
-                                            { fTransferId }));
-                        }
-                        return null;
                     }
-                };
-
-            transactionService.getRetryingTransactionHelper().doInTransaction(commitWork, false, true);
+                    parser.reset();
+                }
+            }
+            else
+            {
+                progressMonitor.logException(fTransferId,
+                        "Unable to start commit. No snapshot file received", new TransferException(
+                                MSG_NO_SNAPSHOT_RECEIVED, new Object[] { fTransferId }));
+            }
 
             Throwable error = progressMonitor.getProgress(transferId).getError();
             if (error != null)
@@ -220,7 +225,6 @@ public class FileTransferReceiver implements TransferReceiver
         }
         finally
         {
-
             /**
              * Clean up at the end of the transfer
              */
@@ -236,9 +240,28 @@ public class FileTransferReceiver implements TransferReceiver
 
     }
 
-    public void commitAsync(String transferId) throws TransferException
+    public void commitAsync(final String transferId) throws TransferException
     {
-        this.commit(transferId);
+        Lock lock = checkLock(transferId);
+        Thread commitThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                commit(transferId);
+            }
+        });
+        try
+        {
+            commitThread.setName("Transfer Commit Thread");
+            commitThread.setDaemon(true);
+            progressMonitor.updateStatus(transferId, TransferProgress.Status.COMMIT_REQUESTED);
+        }
+        finally
+        {
+            lock.enableLockTimeout();
+        }
+        commitThread.start();
     }
 
     /*
@@ -408,8 +431,6 @@ public class FileTransferReceiver implements TransferReceiver
 
     public void prepare(String transferId) throws TransferException
     {
-        // TODO Auto-generated method stub
-
     }
 
     public void saveContent(String transferId, String contentFileId, InputStream contentStream)
@@ -421,20 +442,20 @@ public class FileTransferReceiver implements TransferReceiver
             File stagedFile = new File(getStagingFolder(transferId), contentFileId);
             if (stagedFile.createNewFile())
             {
-                FileCopyUtils.copy(contentStream, new BufferedOutputStream(new FileOutputStream(stagedFile)));
+                int size = FileCopyUtils.copy(contentStream, new BufferedOutputStream(new FileOutputStream(stagedFile)));
+                contents.put(contentFileId, stagedFile);
+                progressMonitor.logComment(transferId, "Received content file: " + contentFileId + "; Size = " + size);
             }
-            contents.put(contentFileId, stagedFile);
         }
         catch (Exception ex)
         {
-            throw new TransferException("MSG_ERROR_WHILE_STAGING_CONTENT", new Object[]
-            { transferId, contentFileId }, ex);
+            throw new TransferException(MSG_ERROR_WHILE_STAGING_CONTENT, 
+                    new Object[] { transferId, contentFileId }, ex);
         }
         finally
         {
             lock.enableLockTimeout();
         }
-
     }
 
     /*
@@ -446,7 +467,7 @@ public class FileTransferReceiver implements TransferReceiver
     {
         if (transferId == null)
         {
-            throw new IllegalArgumentException("nudgeLock: transferId = null");
+            throw new IllegalArgumentException("checkLock: transferId = null");
         }
 
         Lock lock = locks.get(transferId);
@@ -459,19 +480,14 @@ public class FileTransferReceiver implements TransferReceiver
             }
             else
             {
-                // lock is no longer active
                 log.debug("lock not active");
-                throw new TransferException("MSG_LOCK_TIMED_OUT", new Object[]
-                { transferId });
-
+                throw new TransferException(MSG_LOCK_TIMED_OUT, new Object[] { transferId });
             }
         }
         else
         {
             log.debug("lock not found");
-            throw new TransferException("MSG_LOCK_NOT_FOUND", new Object[]
-            { transferId });
-            // lock not found
+            throw new TransferException(MSG_LOCK_NOT_FOUND, new Object[] { transferId });
         }
     }
 
@@ -496,16 +512,17 @@ public class FileTransferReceiver implements TransferReceiver
             {
                 if (snapshotFile.createNewFile())
                 {
-                    FileCopyUtils.copy(openStream, new BufferedOutputStream(new FileOutputStream(snapshotFile)));
-                }
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Saved snapshot for transferId =" + transferId);
+                    int size = FileCopyUtils.copy(openStream, new BufferedOutputStream(new FileOutputStream(snapshotFile)));
+                    progressMonitor.logComment(transferId, "Received manifest file. Size = " + size);
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Saved snapshot for transferId =" + transferId);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                throw new TransferException("MSG_ERROR_WHILE_STAGING_SNAPSHOT", ex);
+                throw new TransferException(MSG_ERROR_WHILE_STAGING_SNAPSHOT, ex);
             }
         }
         finally
@@ -564,26 +581,18 @@ public class FileTransferReceiver implements TransferReceiver
                 /**
                  * Now create a transfer record and use its NodeRef as the transfer id
                  */
-                RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-                transferId = txHelper.doInTransaction(
-                        new RetryingTransactionHelper.RetryingTransactionCallback<String>()
-                            {
-                                public String execute() throws Throwable
-                                {
-                                    final NodeRef relatedTransferRecord = createTransferRecord();
-                                    String transferId = relatedTransferRecord.toString();
-                                    getTempFolder(transferId);
-                                    getStagingFolder(transferId);
-
-                                    return transferId;
-                                }
-                            }, false, true);
+                final NodeRef relatedTransferRecord = createTransferRecord();
+                transferId = relatedTransferRecord.toString();
+                getTempFolder(transferId);
+                getStagingFolder(transferId);
             }
             catch (Exception e)
             {
-                log.debug("Exception while staring transfer", e);
-                log.debug("releasing lock - we never created the transfer id");
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Exception while starting transfer", e);
+                    log.debug("releasing lock - we never created the transfer id");
+                }
                 lock.releaseLock();
                 throw new TransferException("Error while starting!", e);
             }
@@ -593,19 +602,18 @@ public class FileTransferReceiver implements TransferReceiver
              */
             lock.transferId = transferId;
             locks.put(transferId, lock);
-            log.info("transfer started:" + transferId);
+            log.info("transfer started: " + transferId);
             lock.enableLockTimeout();
-
+            progressMonitor.logComment(transferId, "Started transfer");
             manifestProcessorFactory.startTransfer(transferId, fromRepositoryId, fromVersion);
 
             return transferId;
-
         }
         catch (LockAcquisitionException lae)
         {
             log.debug("transfer lock is already taken", lae);
             // lock is already taken.
-            throw new TransferException("MSG_TRANSFER_LOCK_UNAVAILABLE");
+            throw new TransferException(MSG_TRANSFER_LOCK_UNAVAILABLE);
         }
 
     }
@@ -663,142 +671,142 @@ public class FileTransferReceiver implements TransferReceiver
         /**
          * When did we last check whether the lock is active
          */
-        Date lastActive = new Date();
+        long lastActive = System.currentTimeMillis();
 
         public Lock(QName lockQName)
         {
             this.lockQName = lockQName;
         }
 
-        /**
-         * Called by Job Lock Service to determine whether the lock is still active
-         */
-        public boolean isActive()
-        {
-            Date now = new Date();
-
-            synchronized (this)
-            {
-                if (active)
-                {
-                    if (!processing)
-                    {
-                        if (now.getTime() > lastActive.getTime() + getLockTimeOut())
-                        {
-                            return false;
-                        }
-                    }
-                }
-
-                if (log.isDebugEnabled())
-                {
-                    log.debug("transfer service callback isActive: " + active);
-                }
-
-                return active;
-            }
-        }
 
         /**
          * Make the lock - called on main thread
          *
          * @throws LockAquisitionException
          */
-        public void makeLock()
+        public synchronized void makeLock()
         {
-            if (log.isDebugEnabled())
+            if(log.isDebugEnabled())
             {
                 log.debug("makeLock" + lockQName);
             }
 
-            lockToken = getJobLockService().getLock(lockQName, getLockRefreshTime(), getLockRetryWait(),
-                    getLockRetryCount());
+            lockToken = getJobLockService().getLock(lockQName, getLockRefreshTime(), getLockRetryWait(), getLockRetryCount());
 
-            synchronized (this)
-            {
-                active = true;
-            }
+            // Got the lock, so mark as active
+            active = true;
 
             if (log.isDebugEnabled())
             {
-                log.debug("lock taken: name" + lockQName + " token:" + lockToken);
+                log.debug("lock taken: name" + lockQName + " token:" +lockToken);
+                log.debug("register lock callback, target lock refresh time :" + getLockRefreshTime());
             }
-            log.debug("register lock callback, target lock refresh time :" + getLockRefreshTime());
             getJobLockService().refreshLock(lockToken, lockQName, getLockRefreshTime(), this);
-            log.debug("refreshLock callback registered");
+            if (log.isDebugEnabled())
+            {
+                log.debug("refreshLock callback registered");
+            }
         }
 
         /**
-         * Check that the lock is still active Called on main transfer thread as transfer proceeds.
+         * If the lock hasn't been released already then this method ensures it can't be.
+         * Call this method when processing is currently taking place. After this method is called, 
+         * {@link Lock#enableLockTimeout()} must be called once the current processing is complete  
          *
+         * Called on main transfer thread as transfer proceeds.
          * @throws TransferException (Lock timeout)
          */
-        public void suspendLockTimeout()
+        public synchronized void suspendLockTimeout()
         {
             log.debug("suspend lock called");
             if (active)
             {
                 processing = true;
+                long now = System.currentTimeMillis();
+                // Update lastActive to 1S boundary
+                if(now > (lastActive + 1000L))
+                {
+                    lastActive = now;
+                }
             }
             else
             {
                 // lock is no longer active
                 log.debug("lock not active, throw timed out exception");
-                throw new TransferException("lock not active, throw timed out exception");
+                throw new TransferException(MSG_LOCK_TIMED_OUT);
             }
         }
 
-        public void enableLockTimeout()
+        public synchronized void enableLockTimeout()
         {
-            Date now = new Date();
-
+            long now = System.currentTimeMillis();
             // Update lastActive to 1S boundary
-            if (now.getTime() > lastActive.getTime() + 1000)
+            if(now > (lastActive + 1000L))
             {
-                lastActive = new Date();
+                lastActive = now;
                 log.debug("start waiting : lastActive:" + lastActive);
             }
-
             processing = false;
         }
 
         /**
-         * Release the lock Called on main thread
+         * Release the lock
+         *
+         * Called on main thread
          */
-        public void releaseLock()
+        public synchronized void releaseLock()
         {
-            if (log.isDebugEnabled())
+            if(log.isDebugEnabled())
             {
                 log.debug("transfer service about to releaseLock : " + lockQName);
             }
 
-            synchronized (this)
+            if (active)
             {
-                if (active)
-                {
-                    getJobLockService().releaseLock(lockToken, lockQName);
-                }
                 active = false;
+                getJobLockService().releaseLock(lockToken, lockQName);
             }
+        }
+
+        /**
+         * Called by Job Lock Service to determine whether the lock is still active
+         */
+        @Override
+        public synchronized boolean isActive()
+        {
+            long now = System.currentTimeMillis();
+            if(active)
+            {
+                if(!processing)
+                {
+                    if(now > (lastActive + getLockTimeOut()))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if(log.isDebugEnabled())
+            {
+                log.debug("transfer service callback isActive: " + active);
+            }
+
+            return active;
         }
 
         /**
          * Called by Job Lock Service on release of the lock after time-out
          */
-        public void lockReleased()
+        @Override
+        public synchronized void lockReleased()
         {
-            synchronized (this)
+            if(active)
             {
-                if (active)
-                {
-                    log.info("transfer service: lock has timed out, timeout :" + lockQName);
-                    timeout(transferId);
-                }
-
                 active = false;
+                log.info("transfer service: lock has timed out, timeout :" + lockQName);
+                timeout(transferId);
             }
         }
-
     }
 
     /**
@@ -979,31 +987,49 @@ public class FileTransferReceiver implements TransferReceiver
             }, false, false);
     }
 
-    public boolean isContentNewOrModified(String nodeRef, String contentUrl)
+    public boolean isContentNewOrModified(final String nodeRef, final String contentUrl)
     {
         RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
 
-        final String localNodeRef = nodeRef;
-        final String localContentUrl = contentUrl;
-
-        Boolean isContentNewOrModified = txHelper.doInTransaction(
-                new RetryingTransactionHelper.RetryingTransactionCallback<Boolean>()
+        return txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Boolean>()
+        {
+            public Boolean execute() throws Throwable
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Checking content for node " + nodeRef);
+                    log.debug("Supplied content URL is " + contentUrl);
+                }
+                boolean result = false;
+                FileTransferInfoEntity fileTransferInfoEntity = fileTransferInfoDAO
+                        .findFileTransferInfoByNodeRef(nodeRef);
+                if (fileTransferInfoEntity == null)
+                {
+                    result = true;
+                    if (log.isDebugEnabled())
                     {
-                        public Boolean execute() throws Throwable
-                        {
-                            FileTransferInfoEntity fileTransferInfoEntity = fileTransferInfoDAO
-                                    .findFileTransferInfoByNodeRef(localNodeRef);
-                            if (fileTransferInfoEntity == null)
-                                return true;
-                            if (localContentUrl != null
-                                    && !fileTransferInfoEntity.getContentUrl().equals(localContentUrl))
-                                return true;
-
-                            return false;
-
-                        }
-                    }, true, false);
-        return isContentNewOrModified;
+                        log.debug("No record found for this node");
+                    }
+                }
+                else if (contentUrl != null && !contentUrl.equals(fileTransferInfoEntity.getContentUrl()))
+                {
+                    result = true;
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Supplied content URL is different to the one on record: " + 
+                                fileTransferInfoEntity.getContentUrl());
+                    }
+                }
+                else
+                {
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Content URL has not changed");
+                    }
+                }
+                return result;
+            }
+        }, true, false);
     }
 
     protected File getSnapshotFile(String transferId)
@@ -1016,7 +1042,7 @@ public class FileTransferReceiver implements TransferReceiver
      */
     public void resetListOfNodesBeforeSyncMode()
     {
-        this.setOfNodesBeforeSyncMode = new HashSet<String>(500);
+        this.setOfNodesBeforeSyncMode = new TreeSet<String>();
     }
 
     /*
@@ -1064,17 +1090,15 @@ public class FileTransferReceiver implements TransferReceiver
             }, false, false);
     }
 
-    public void deleteFileTransferNodeRenameByTransferId(String transferId)
+    public void deleteNodeRenameByTransferIdAndNodeRef(final String transferId, final String nodeRef)
     {
         RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        final String localTransferId = transferId;
 
         txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
             {
                 public Void execute() throws Throwable
                 {
-                    fileTransferInfoDAO.deleteFileTransferNodeRenameByTransferId(localTransferId);
+                    fileTransferInfoDAO.deleteNodeRenameByTransferIdAndNodeRef(transferId, nodeRef);
 
                     return null;
                 }
@@ -1102,7 +1126,7 @@ public class FileTransferReceiver implements TransferReceiver
         return fileTransferInfoEntityList;
     }
 
-    public Set<String> getListOfDescendentsForSyncMode()
+    public SortedSet<String> getListOfDescendentsForSyncMode()
     {
         return this.setOfNodesBeforeSyncMode;
     }
@@ -1200,12 +1224,12 @@ public class FileTransferReceiver implements TransferReceiver
         return contents;
     }
 
-    public void setFileTransferRootNodeFileFileSystem(String rootFileSystem)
+    public void setTransferRootNode(String rootFileSystem)
     {
         this.fileTransferRootNodeRef = rootFileSystem;
     }
 
-    public String getFileTransferRootNodeFileFileSystem()
+    public String getTransferRootNode()
     {
         return this.fileTransferRootNodeRef;
     }

@@ -43,7 +43,7 @@ public interface FileTransferInfoDAO
 
     public FileTransferNodeRenameEntity createFileTransferNodeRenameEntity(String noderef, String transferId, String newName);
 
-    public void deleteFileTransferNodeRenameByTransferId(String transferId);
+    public void deleteNodeRenameByTransferIdAndNodeRef(String transferId, String nodeRef);
 
     List<FileTransferNodeRenameEntity> findFileTransferNodeRenameEntityByTransferId(String transferId);
 

@@ -30,11 +30,13 @@ import org.alfresco.repo.transfer.manifest.TransferManifestProcessor;
 import org.alfresco.repo.transfer.requisite.TransferRequsiteWriter;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.alfresco.service.cmr.transfer.TransferVersion;
+import org.alfresco.service.transaction.TransactionService;
 
 public class FileTransferManifestProcessorFactory implements ManifestProcessorFactory
 {
-
     private FileTransferHookInterface hook;
+    private TransactionService transactionService;
+    
     public static  Map<String, InnerNotificationRecord> notificationRecords = Collections
             .synchronizedMap(new HashMap<String, InnerNotificationRecord>(1000));
 
@@ -75,12 +77,12 @@ public class FileTransferManifestProcessorFactory implements ManifestProcessorFa
         // register hook
         FileTransferTransactionListener fileTransferTransactionListener = new FileTransferTransactionListener(
                 innerNotificationRecord.fromRepositoryId, innerNotificationRecord.fromVersion, transferId, hook);
-        AlfrescoTransactionSupport.bindListener(fileTransferTransactionListener);
+//        AlfrescoTransactionSupport.bindListener(fileTransferTransactionListener);
         List<TransferManifestProcessor> processors = new ArrayList<TransferManifestProcessor>();
 
-        TransferManifestProcessor processor = new FileTransferPrimaryManifestProcessor(receiver, transferId);
+        TransferManifestProcessor processor = new FileTransferPrimaryManifestProcessor(receiver, transferId, transactionService);
         processors.add(processor);
-        processor = new FileTransferSecondaryManifestProcessor(receiver, transferId);
+        processor = new FileTransferSecondaryManifestProcessor(receiver, transferId, transactionService);
         processors.add(processor);
 
         return processors;
@@ -90,6 +92,13 @@ public class FileTransferManifestProcessorFactory implements ManifestProcessorFa
     {
         this.hook = hook;
     }
+
+    
+    public void setTransactionService(TransactionService transactionService)
+    {
+        this.transactionService = transactionService;
+    }
+
 
     private class InnerNotificationRecord
     {

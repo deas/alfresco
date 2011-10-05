@@ -99,10 +99,11 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
         return newNameEntity;
     }
 
-    public void deleteFileTransferNodeRenameByTransferId(String transferId)
+    public void deleteNodeRenameByTransferIdAndNodeRef(String transferId, String nodeRef)
     {
         Map<String, Object> params = new HashMap<String, Object>(5);
         params.put("transferId", transferId);
+        params.put("renamedNodeRef", nodeRef);
         template.delete(DELETE_FILE_TRANSFER_RENAME_BY_ID, params);
     }
 

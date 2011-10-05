@@ -65,8 +65,7 @@ public abstract class AbstractFileManifestProcessorBase extends org.alfresco.rep
     @Override
     protected void endManifest()
     {
-        // TODO Auto-generated method stub
-
+        
     }
 
     @Override

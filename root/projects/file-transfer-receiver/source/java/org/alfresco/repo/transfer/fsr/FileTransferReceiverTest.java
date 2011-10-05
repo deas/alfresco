@@ -111,8 +111,6 @@ public class FileTransferReceiverTest extends TestCase
     public void testStartAndEnd() throws Exception
     {
 
-        RetryingTransactionHelper trx = transactionService.getRetryingTransactionHelper();
-
         RetryingTransactionCallback<Object> cb = new RetryingTransactionCallback<Object>()
             {
 
@@ -188,9 +186,12 @@ public class FileTransferReceiverTest extends TestCase
 
             for (int i = 0; i < 5; i++)
             {
-
-                trx.doInTransaction(cb, false, true);
+                cb.execute();
             }
+        }
+        catch(Throwable t)
+        {
+            fail(t.getMessage());
         }
         finally
         {
@@ -206,8 +207,6 @@ public class FileTransferReceiverTest extends TestCase
      */
     public void testLockTimeout() throws Exception
     {
-
-        RetryingTransactionHelper trx = transactionService.getRetryingTransactionHelper();
 
         /**
          * Simulates a client starting a transfer and then "going away";
@@ -258,10 +257,15 @@ public class FileTransferReceiverTest extends TestCase
              */
             for (int i = 0; i < 3; i++)
             {
-                trx.doInTransaction(startWithoutAnythingElse, false, true);
+                startWithoutAnythingElse.execute();
                 Thread.sleep(1000);
             }
-            trx.doInTransaction(slowTransfer, false, true);
+            slowTransfer.execute();
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            fail();
         }
         finally
         {
@@ -272,7 +276,6 @@ public class FileTransferReceiverTest extends TestCase
 
     public void testSaveSnapshot() throws Exception
     {
-        startNewTransaction();
         try
         {
             String transferId = ftTransferReceiver.start("1234", true, ftTransferReceiver.getVersion());
@@ -305,13 +308,11 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
     }
 
     public void testSaveContent() throws Exception
     {
-        startNewTransaction();
         try
         {
             String transferId = ftTransferReceiver.start("1234", true, ftTransferReceiver.getVersion());
@@ -330,7 +331,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
     }
 
@@ -338,7 +338,6 @@ public class FileTransferReceiverTest extends TestCase
 
     public void testBasicCommitContent() throws Exception
     {
-        startNewTransaction();
         TransferManifestNormalNode node = null;
 
         try
@@ -355,7 +354,7 @@ public class FileTransferReceiverTest extends TestCase
 
                 String snapshot = createSnapshot(staticNodes,false);
                 assertEquals(parentRef, this.companytHome);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(parentRef.toString());
+                ftTransferReceiver.setTransferRootNode(parentRef.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.saveContent(transferId, node.getUuid(), new ByteArrayInputStream(dummyContentBytes));
                 ftTransferReceiver.commit(transferId);
@@ -369,7 +368,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
         // check that the temporary folder where orphan are put in do not exist anymore
         File tempFolder = new File(ftTransferReceiver.getDefaultReceivingroot() + "/" + "T_V_R_1234432123478");
@@ -387,13 +385,10 @@ public class FileTransferReceiverTest extends TestCase
         bs.write(byteArray,0,byteArray.length);
         String content = bs.toString();
         assertEquals(content, dummyContent);
-
-
     }
 
     public void testBasicRenameContentAndMove() throws Exception
     {
-        startNewTransaction();
         TransferManifestNormalNode node = null;
 
         try
@@ -418,7 +413,7 @@ public class FileTransferReceiverTest extends TestCase
                 //NodeRef parentRef = node.getPrimaryParentAssoc().getParentRef();
 
                 String snapshot = createSnapshot(staticNodes,false);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -431,7 +426,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
         // check that the temporary folder where orphan are put in do not exist anymore
         File tempFolder = new File(ftTransferReceiver.getDefaultReceivingroot() + "/" + "T_V_R_1234432123478");
@@ -454,16 +448,12 @@ public class FileTransferReceiverTest extends TestCase
 
     public void testCreateFoldersAndContentAndMove() throws Exception
     {
-        startNewTransaction();
-        
         try
         {
             String transferId = ftTransferReceiver.start("1234", true, ftTransferReceiver.getVersion());
 
             try
             {
-
-
                 //create a folder
                 TransferManifestNormalNode folderNode = this.createFolderNode(companytHome, "FOLDER_2");
                 //move all the nodes to that newly created folder
@@ -475,7 +465,7 @@ public class FileTransferReceiverTest extends TestCase
 
 
                 String snapshot = createSnapshot(staticNodes,false);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -488,7 +478,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
         // check that the temporary folder where orphan are put in do not exist anymore
         File tempFolder = new File(ftTransferReceiver.getDefaultReceivingroot() + "/" + "T_V_R_1234432123478");
@@ -510,7 +499,6 @@ public class FileTransferReceiverTest extends TestCase
     {
         //Create G1/G2
         //reverse it G2/G1
-        startNewTransaction();
         ArrayList<TransferManifestNode> copy = new ArrayList<TransferManifestNode>();
 
         try
@@ -534,7 +522,7 @@ public class FileTransferReceiverTest extends TestCase
                 Collections.shuffle(staticNodes);
 
                 String snapshot = createSnapshot(staticNodes,false);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -547,7 +535,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
         // check that the temporary folder where orphan are put in do not exist anymore
         File tempFolder = new File(ftTransferReceiver.getDefaultReceivingroot() + "/" + "T_V_R_1234432123478");
@@ -585,7 +572,7 @@ public class FileTransferReceiverTest extends TestCase
                 //Collections.shuffle(copy);
 
                 String snapshot = createSnapshot(copy,false);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -598,7 +585,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
 
         //check result on file system
@@ -619,7 +605,6 @@ public class FileTransferReceiverTest extends TestCase
     {
         //Create F1/F2/F3/F4/F5 ... F10
         //reverse it F10/F9/... F1
-        startNewTransaction();
         ArrayList<TransferManifestNode> copy = new ArrayList<TransferManifestNode>();
 
         try
@@ -643,7 +628,7 @@ public class FileTransferReceiverTest extends TestCase
                 Collections.shuffle(staticNodes);
 
                 String snapshot = createSnapshot(staticNodes,false);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -656,7 +641,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
         // check that the temporary folder where orphan are put in do not exist anymore
         File tempFolder = new File(ftTransferReceiver.getDefaultReceivingroot() + "/" + "T_V_R_1234432123478");
@@ -694,7 +678,7 @@ public class FileTransferReceiverTest extends TestCase
                 Collections.shuffle(copy);
 
                 String snapshot = createSnapshot(copy,false);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -707,7 +691,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
 
         //check result on file system
@@ -728,7 +711,6 @@ public class FileTransferReceiverTest extends TestCase
     {
         //Create A/A/A/A/A ... 10 time
         //reverse
-        startNewTransaction();
         ArrayList<TransferManifestNode> copy = new ArrayList<TransferManifestNode>();
 
         try
@@ -757,7 +739,7 @@ public class FileTransferReceiverTest extends TestCase
                 Collections.shuffle(copy);
 
                 String snapshot = createSnapshot(copy,false);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -770,7 +752,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
         // check that the temporary folder where orphan are put in do not exist anymore
         File tempFolder = new File(ftTransferReceiver.getDefaultReceivingroot() + "/" + "T_V_R_1234432123478");
@@ -814,7 +795,7 @@ public class FileTransferReceiverTest extends TestCase
                 Collections.shuffle(copy);
 
                 String snapshot = createSnapshot(copy,false);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -827,7 +808,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
 
         //check result on file system
@@ -850,8 +830,6 @@ public class FileTransferReceiverTest extends TestCase
      */
     public void testSyncMode() throws Exception
     {
-        startNewTransaction();
-
         try
         {
             String transferId = ftTransferReceiver.start("1234", true, ftTransferReceiver.getVersion());
@@ -881,7 +859,7 @@ public class FileTransferReceiverTest extends TestCase
 
                 //sync mode true
                 String snapshot = createSnapshot(staticNodes,true);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -894,7 +872,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
         // check that the temporary folder where orphan are put in do not exist anymore
         File tempFolder = new File(ftTransferReceiver.getDefaultReceivingroot() + "/" + "T_V_R_1234432123478");
@@ -940,7 +917,7 @@ public class FileTransferReceiverTest extends TestCase
 
                 //sync mode true
                 String snapshot = createSnapshot(staticNodes,true);
-                ftTransferReceiver.setFileTransferRootNodeFileFileSystem(this.companytHome.toString());
+                ftTransferReceiver.setTransferRootNode(this.companytHome.toString());
                 ftTransferReceiver.saveSnapshot(transferId, new ByteArrayInputStream(snapshot.getBytes("UTF-8")));
                 ftTransferReceiver.commit(transferId);
 
@@ -953,7 +930,6 @@ public class FileTransferReceiverTest extends TestCase
         }
         finally
         {
-            endTransaction();
         }
 
         transferedNode = new File(ftTransferReceiver.getDefaultReceivingroot() + "/" + "FOL_0" );
