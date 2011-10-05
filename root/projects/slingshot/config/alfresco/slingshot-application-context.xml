@@ -71,7 +71,6 @@
             <ref bean="requestContextInterceptor"/>
             <ref bean="userDashboardInterceptor"/>
             <ref bean="editionInterceptor"/>
-            <ref bean="themeInterceptor"/>
          </list>
       </property>
       <property name="mappings">
