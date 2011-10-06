@@ -638,16 +638,6 @@
                   includes="${file.name.war.slingshot}" />
       </copy>
 
-      <!-- make sure the context is set for no serialization -->
-      <copy todir="${dir.continuous.assemble.tomcat}/conf" 
-            file="${dir.project.3rdparty.distro}/context.xml"/>
-      <!-- make sure the server is set for UTF-8 -->
-      <copy todir="${dir.continuous.assemble.tomcat}/conf" 
-            file="${dir.project.3rdparty.distro}/server.xml"/>
-      <!-- make sure the server is set for shared loader -->
-      <copy todir="${dir.continuous.assemble.tomcat}/conf" 
-            file="${dir.project.3rdparty.distro}/catalina.properties"/>
-
       <!-- Copy any required common libs -->
       <copy todir="${dir.continuous.assemble.tomcat}/lib"
             file="${dir.project.3rdparty.lib}/devenv/${file.name.jar.postgres.connector}" />
