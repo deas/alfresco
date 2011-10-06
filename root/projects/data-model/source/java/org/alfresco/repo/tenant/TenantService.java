@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -135,4 +135,14 @@ public interface TenantService extends TenantUserService
     public String getUserDomain(String username);
 
     public Tenant getTenant(String tenantDomain);
+    
+    /**
+     * @return          the tenant-specific ID for specified identifier
+     */
+    public String getDomain(String name);
+    
+    /**
+     * @return          the tenant-specific ID for specified identifier
+     */
+    public String getDomain(String name, boolean checkCurrentDomain);
 }

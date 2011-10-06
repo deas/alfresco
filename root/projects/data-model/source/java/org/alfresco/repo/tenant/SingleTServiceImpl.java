@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -160,6 +160,11 @@ public class SingleTServiceImpl implements TenantService
     }
     
     public String getDomain(String name)
+    {
+        return DEFAULT_DOMAIN;
+    }
+    
+    public String getDomain(String name, boolean checkCurrentDomain)
     {
         return DEFAULT_DOMAIN;
     }

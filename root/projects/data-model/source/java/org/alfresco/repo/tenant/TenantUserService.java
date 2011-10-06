@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -41,16 +41,11 @@ public interface TenantUserService
      * @return          the tenant-specific ID for current user
      */
     public String getCurrentUserDomain();
-
+    
     /**
      * @return          the tenant-specific ID for specified username
      */
     public String getUserDomain(String username);
-    
-    /**
-     * @return          the tenant-specific ID for specified identifier
-     */
-    public String getDomain(String name);
     
     /**
      * @return          true if the system is configured to be MT-enabled
