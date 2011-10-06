@@ -112,11 +112,16 @@
          </mimetype>
          <mimetype mimetype="audio/ogg" display="Ogg Audio">
             <extension default="true">oga</extension>
-            <extension>ogg</extension>
             <extension>spx</extension>
+         </mimetype>
+         <mimetype mimetype="audio/vorbis" display="Ogg Vorbis Audio">
+            <extension default="true">ogg</extension>
          </mimetype>
          <mimetype mimetype="application/ogg" display="Ogg Multiplex">
             <extension default="true">ogx</extension>
+         </mimetype>
+         <mimetype mimetype="audio/x-flac" display="FLAC Audio">
+            <extension default="true">flac</extension>
          </mimetype>
          
          <mimetype mimetype="video/webm" display="WebM Video">

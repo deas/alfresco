@@ -52,6 +52,9 @@ import org.springframework.extensions.config.ConfigService;
  * the registered file extensions.  All mimetypes and extensions
  * are stored and handled as lowercase.
  * 
+ * TODO Switch from using the old style Tika ContainerAwareDetector to
+ *  the new model of DefaultDetector (with plugin service loading)
+ * 
  * @author Derek Hulley
  */
 public class MimetypeMap implements MimetypeService
@@ -150,6 +153,8 @@ public class MimetypeMap implements MimetypeService
     public static final String MIMETYPE_WORDPERFECT = "application/wordperfect";
     // Audio
     public static final String MIMETYPE_MP3 = "audio/mpeg";
+    public static final String MIMETYPE_VORBIS = "audio/vorbis";
+    public static final String MIMETYPE_FLAC = "audio/x-flac";
     // Alfresco
     public static final String MIMETYPE_ACP = "application/acp";
     

@@ -68,7 +68,13 @@ public interface NamespaceService extends NamespacePrefixResolver
 
     /** Application Model Prefix */
     static final String APP_MODEL_PREFIX = "app";
-
+    
+    /** Audio Model URI */
+    static final String AUDIO_MODEL_1_0_URI = "http://www.alfresco.org/model/audio/1.0";
+    
+    /** Audio Model Prefix */
+    static final String AUDIO_MODEL_PREFIX = "audio";
+    
     /** EXIF Model URI */
     static final String EXIF_MODEL_1_0_URI = "http://www.alfresco.org/model/exif/1.0";
 

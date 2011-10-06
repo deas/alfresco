@@ -30,6 +30,13 @@
          </list>
       </property>
    </bean>
+   <bean id="evaluator.doclib.indicator.audioMetadata" class="org.alfresco.web.evaluator.HasAspectEvaluator">
+      <property name="aspects">
+         <list>
+            <value>audio:audio</value>
+         </list>
+      </property>
+   </bean>
    <bean id="evaluator.doclib.indicator.transferredNode" class="org.alfresco.web.evaluator.doclib.indicator.TransferredNodeEvaluator" />
 
 

@@ -76,6 +76,19 @@
                <show id="exif:xResolution" />
                <show id="exif:yResolution" />
                <show id="exif:resolutionUnit" />
+
+               <!-- audio:audio aspect -->
+               <show id="audio:album" />
+               <show id="audio:artist" />
+               <show id="audio:composer" />
+               <show id="audio:engineer" />
+               <show id="audio:genre" />
+               <show id="audio:trackNumber" />
+               <show id="audio:releaseDate" />
+               <show id="audio:sampleRate" />
+               <show id="audio:sampleType" />
+               <show id="audio:channelType" />
+               <show id="audio:compressor" />
                
                <!-- cm:indexControl aspect -->
                <show id="cm:isIndexed" />
