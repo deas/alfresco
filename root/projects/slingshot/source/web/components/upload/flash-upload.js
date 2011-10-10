@@ -1247,7 +1247,7 @@
          var fileUpload = Alfresco.util.ComponentManager.findFirst("Alfresco.FileUpload");
          if (fileUpload)
          {
-            fileUpload.hasRequiredFlashPlayer = false;
+            fileUpload.options.adobeFlashEnabled = false;
          }
          return fileUpload;
       },

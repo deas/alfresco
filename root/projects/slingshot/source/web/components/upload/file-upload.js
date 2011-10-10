@@ -206,7 +206,8 @@
        */
       show: function FU_show(config)
       {
-         if (this.uploader === null)
+         // Only create a new instance the first time or if the user changed his mind using flash.
+         if (this.uploader === null || (this.uploader.name == this.options.flashUploader && !this.options.adobeFlashEnabled))
          {
             // Determine minimum required Flash capability
             this.hasRequiredFlashPlayer = this.options.adobeFlashEnabled && !Alfresco.util.getVar("noflash") && Alfresco.util.hasRequiredFlashPlayer(9, 0, 45);
