@@ -127,6 +127,7 @@ import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.CommitUpdateCommand;
 import org.apache.solr.update.DeleteUpdateCommand;
+import org.apache.solr.update.RollbackUpdateCommand;
 import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
 import org.quartz.CronTrigger;
@@ -1305,7 +1306,7 @@ public class CoreTracker implements CloseHook
                             gnp.setTransactionIds(txs);
                             gnp.setStoreProtocol(storeRef.getProtocol());
                             gnp.setStoreIdentifier(storeRef.getIdentifier());
-                            List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
+                            List<Node> nodes = client.getNodes(gnp, Integer.MAX_VALUE);
                             for (Node node : nodes)
                             {
                                 docCount++;
@@ -1374,6 +1375,10 @@ public class CoreTracker implements CloseHook
                 }
             }
             while ((transactions.getTransactions().size() > 0) && (upToDate == false) && (loopStartingCommitTime < lastTxCommitTime));
+        }
+        catch(Throwable t)
+        {
+            core.getUpdateHandler().rollback(new RollbackUpdateCommand());
         }
         finally
         {
@@ -1634,6 +1639,13 @@ public class CoreTracker implements CloseHook
 
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
+                    if(nodeMetaData.getTxnId() > node.getTxnId())
+                    {
+                        // the node has moved on to a later transaction
+                        // it will be indexed later
+                        continue;
+                    }
+                    
                     if (mayHaveChildren(nodeMetaData))
                     {
                         log.info(".. checking for path change");
