@@ -234,7 +234,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT.jar" sourcepath="src/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="F:/Workspace/projects/head/code/root/projects/3rd-party/lib/chemistry-opencmis-server-bindings-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.6.0-SNAPSHOT.jar"/>
