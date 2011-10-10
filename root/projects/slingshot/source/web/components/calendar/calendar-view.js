@@ -174,29 +174,6 @@
          }
       },
 
-      /**
-       * converts data object to template compatible
-       *
-       * @method convertDataToTemplateData
-       * @param data {object} data to convert
-       * @return {object} data object with template compatible variables
-       *
-       */
-      convertDataToTemplateData: function(data)
-      {
-         data.fromDate = data.dtstart;
-         data.toDate = data.dtend;
-         data.where = data.location;
-         data.desc = data.description;
-         data.name = data.summary;
-         data.duration = Alfresco.CalendarHelper.getDuration(Alfresco.util.fromISO8601(data.dtstart), Alfresco.util.fromISO8601(data.dtend));
-         data.start = data.dtstart.split('T')[1].substring(0, 5);
-         data.end = data.dtend.split('T')[1].substring(0, 5);
-         data.allday = ((data.allday === 'allday') | data.allday === 'true') ? data.allday : '';
-         data.tags = (YAHOO.lang.isArray(data.tags)) ? data.tags.join(' ') : data.tags;
-         return data;
-      },
-
       displayMessage: function CalendarView_displayMessage(message, name)
       {
          Alfresco.util.PopupManager.displayMessage(
@@ -265,7 +242,7 @@
                if (data[i].uri === "/calendar/event/" + element.href.split("/calendar/event/")[1]) // element.href needs hostname and port stripping.
                {
                   result = data[i];
-               } 
+               }
             }
          }
          return result;
@@ -350,11 +327,10 @@
             if (comparisonFn(date, endDate))
             {
                var datum = {};
+
+               // Legacy properties (to be factored out or rolled up over time)
                datum.desc = ev.description || '';
                datum.name = ev.title;
-               datum.title = ev.title;
-               datum.where = ev.where;
-               datum.description = ev.description;
                datum.isoutlook = ev.isoutlook == "true" ? "isoutlook" : "";
                datum.contEl = 'div';
                datum.from = ev.startAt.iso8601;
@@ -365,17 +341,12 @@
                datum.isMultiDay = (!Alfresco.CalendarHelper.isSameDay(date, endDate));
                datum.isAllDay = (ev.allday == "true") ? true : false;
                datum.el = 'div';
-               datum.duration = Alfresco.CalendarHelper.getDuration(date, endDate);
-               var days = datum.duration.match(/([0-9]+)D/);
-               if (days && days[1])
-               {
-                  datum.duration = datum.duration.replace(/([0-9]+)D/, ++days[1] + 'D');
-               }
 
                datum.key = datum.from.split(":")[0] + ':00';
-               datum.start = dateFormat(date, "HH:MM");
-               datum.end = dateFormat(endDate, "HH:MM");
-               datum.tags = ev.tags;
+
+               // Merge in standard event properties - allowing legacy values to override standards
+               datum = YAHOO.lang.merge(ev, datum)
+
                events.push(datum);
             }
          }
@@ -388,7 +359,7 @@
        *
        * @method add
        * @param {String} id Identifier of event
-       * @param {Object} Event Object
+       * @param {Object} o Event Object
        * @return {Boolean} Status of add operation
        */
       add: function CalendarView_add(id, o)
@@ -414,7 +385,7 @@
        * @method update
        *
        * @param {String} id Identifier of event
-       * @param {Object} Event Object
+       * @param {Object} o Event Object
        * @return {Boolean} Status of update operation
        */
       update: function CalendarView_update(id, o)
@@ -451,8 +422,7 @@
                   to = event.to.split("T"),
                   startDay = fromISO8601(from[0]),
                   endDay = fromISO8601(to[0]),
-                  //Pseudo code
-                  iterationDay = new Date(startDay + 86400000)
+                  iterationDay = new Date(startDay + 86400000);
                
                // if not all day event, end time on first day needs to be midnight.
                if (!event.isAllDay) 
@@ -482,9 +452,9 @@
                         delete clonedEvent.displayEnd;
                      }
                      
-                     // set the DisplayDates for the cloned object to the current day of the loop:
-                     clonedEvent.displayFrom = toISO8601(iterationDay);
                   }
+                  // set the DisplayDates for the cloned object to the current day of the loop:
+                  clonedEvent.displayFrom = toISO8601(iterationDay);
                   events.push(clonedEvent);
                } 
             }
@@ -525,113 +495,6 @@
             date =  fromISO8601(el.id.replace('cal-', ''));
          }
          return date;
-      },
-
-      /**
-       * Adjusts height of specified event depending on its duration
-       *
-       * @method _adjustHeightByHour
-       * @param el {object} Event element to adjust
-       */
-      _adjustHeightByHour: function(el)
-      {
-         //TODO - get this from css class;
-         var hourHeight = 4.75; //em
-         //adjust height dependent on durations
-         if (this.calendarView != Alfresco.CalendarView.VIEWTYPE_MONTH)
-         {
-            var start, end = null;
-			   // This needs to work for Week view too...
-            if (this.events[el.id])
-				{
-					var start = this.events[el.id].getData("dtstart");
-					var startTimes = start.split("T")[1].split(":");
-					var end = this.events[el.id].getData("dtend");
-					var endTimes = end.split("T")[1].split(":");
-				}
-
-            if (start && end) // don't do anything if we can't find the event details
-            {
-               var startHours = startTimes[0];
-               var endHours = endTimes[0];
-
-               var startMinutes = startTimes[1];
-               var endMinutes = endTimes[1];
-
-               var displayDate = this.options.startDate
-
-               if (this.calendarView === Alfresco.CalendarView.VIEWTYPE_WEEK)
-               {
-                  // get current column date.
-                  var parentTd = Dom.getAncestorByTagName(el, "td");
-                  displayDate = Alfresco.util.fromISO8601(parentTd.id.replace("cal-", ""));
-               }
-
-               // if all times are 00:00 then it's an all day event
-               var isAllDay = (parseInt(startHours + startMinutes + endHours + endMinutes, 10) == 0) ? true : false;
-
-               if (!Alfresco.CalendarHelper.isSameDay(start, displayDate) && !isAllDay)
-               {
-                  // Set the duration to assume a midnight start time (00:00)
-                  startHours = 0;
-                  startMinutes = 0;
-                  this._addContinuedFromIcon(el);
-               }
-
-               if (!Alfresco.CalendarHelper.isSameDay(end, displayDate) && !isAllDay)
-               {
-                  // Set the duration to assume a midnight end time (23:59)
-                  endHours = 23;
-                  endMinutes = 59;
-                  this._addContinuedToIcon(el);
-               }
-
-               var hours = endHours - startHours;
-               var minutes = endMinutes - startMinutes;
-
-               var height = (hourHeight * hours);
-
-               if (minutes !== 0)
-               {
-                  height += (hourHeight * (1 / (60 / minutes)));
-               }
-
-               if (el && height)
-               {
-                  Dom.setStyle(el, 'height', height + 'em');
-               }
-            }
-         }
-      },
-
-      /** Adds the symbol used to show that the event continues from a previous day
-       * @method _addContinuedFromIcon
-       * @param {Object} el
-       */
-      _addContinuedFromIcon: function CalendarView_addContinuedFlag(el)
-      {
-         var startEl = Dom.getElementsByClassName("dtstart", "span", el);
-         iconEl = document.createElement("span");
-         iconEl.innerHTML = "&lt;"
-         iconEl.className = "continuedFrom"
-         Dom.insertBefore(iconEl, startEl[0]);
-         Dom.setStyle(startEl[0], "display", "none")
-      },
-
-      /**
-       * Adds the symbol used to show that the event continues on the next day
-       *
-       * @method _addContinuedToIcon
-       * @param {Object} el
-       */
-      _addContinuedToIcon: function CalendarView_addContinuedFlag(el)
-      {
-         var endEl = Dom.getElementsByClassName("dtend", "span", el);
-         iconEl = document.createElement("span");
-         iconEl.innerHTML = "&gt;"
-         iconEl.className = "continuedTo"
-         Dom.insertBefore(iconEl, endEl[0]);
-         Dom.setStyle(endEl[0], "display", "none")
       },
 
       /**
