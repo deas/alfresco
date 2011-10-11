@@ -253,6 +253,8 @@ public final class NodeRef implements EntityRef, Serializable
         }
         /**
          * @return Returns the ID of the last transaction to change the node
+         * 
+         * @deprecated  This will be removed when we have switched to SOLR tracking only
          */
         public String getChangeTxnId()
         {
