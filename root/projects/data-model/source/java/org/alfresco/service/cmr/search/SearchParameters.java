@@ -157,6 +157,35 @@ public class SearchParameters
         super();
     }
 
+    public SearchParameters copy()
+    {
+        SearchParameters sp = new SearchParameters();
+        sp.allAttributes.addAll(this.allAttributes);
+        sp.defaultFieldName = this.defaultFieldName;
+        sp.defaultFTSFieldOperator = this.defaultFTSFieldOperator;
+        sp.defaultFTSOperator = this.defaultFTSOperator;
+        sp.excludeDataInTheCurrentTransaction = this.excludeDataInTheCurrentTransaction;
+        sp.fieldFacets.addAll(this.fieldFacets);
+        sp.language = this.language;
+        sp.limit = this.limit;
+        sp.limitBy = this.limitBy;
+        sp.locales.addAll(this.locales);
+        sp.maxItems = this.maxItems;
+        sp.maxPermissionChecks = this.maxPermissionChecks;
+        sp.maxPermissionCheckTimeMillis = this.maxPermissionCheckTimeMillis;
+        sp.mlAnalaysisMode = this.mlAnalaysisMode;
+        sp.namespace = this.namespace;
+        sp.permissionEvaluation = this.permissionEvaluation;
+        sp.query = this.query;
+        sp.queryParameterDefinitions.addAll(this.queryParameterDefinitions);
+        sp.queryTemplates.putAll(this.queryTemplates);
+        sp.skipCount = this.skipCount;
+        sp.sortDefinitions.addAll(this.sortDefinitions);
+        sp.stores.addAll(this.stores);
+        sp.textAttributes.addAll(this.textAttributes);
+        return sp;
+    }
+    
     /**
      * Construct from Query Options
      * 
