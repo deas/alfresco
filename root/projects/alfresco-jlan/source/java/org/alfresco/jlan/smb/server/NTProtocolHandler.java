@@ -5508,9 +5508,14 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
-			// Write to the file
-
-			wrtlen = disk.writeFile(m_sess, conn, netFile, buf, dataPos, dataLen, offset);
+			// Synchronize writes using the network file
+			
+			synchronized ( netFile) {
+				
+				// Write to the file
+	
+				wrtlen = disk.writeFile(m_sess, conn, netFile, buf, dataPos, dataLen, offset);
+			}
 		}
 		catch (InvalidDeviceInterfaceException ex) {
 
