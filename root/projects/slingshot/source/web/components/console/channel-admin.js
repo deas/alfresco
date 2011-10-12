@@ -365,11 +365,11 @@
 			// Build array of channel names.
 			for (var i = 0; i < elements.length; i++) 
 			{
-				channelNames.push(elements[i].innerHTML);
+				channelNames.push(elements[i].innerHTML.toLowerCase());
 			}
          
 			// Check the array against the current name, and increment until it doesn't exist.
-			while (Alfresco.util.arrayContains(channelNames, unique)) 
+			while (Alfresco.util.arrayContains(channelNames, unique.toLowerCase())) 
 			{
 				++increment;
 				unique = name + " " + increment; 
