@@ -68,10 +68,10 @@ public class LuceneConjunction extends BaseConjunction implements LuceneQueryBui
             {
                 LuceneQueryBuilderComponent luceneQueryBuilderComponent = (LuceneQueryBuilderComponent) constraint;
                 Query constraintQuery = luceneQueryBuilderComponent.addComponent(selectors, functionArgs, luceneContext, functionContext);
-                constraintQuery.setBoost(constraint.getBoost());
                 
                 if (constraintQuery != null)
                 {
+                    constraintQuery.setBoost(constraint.getBoost());
                     switch (constraint.getOccur())
                     {
                     case DEFAULT:
@@ -89,10 +89,6 @@ public class LuceneConjunction extends BaseConjunction implements LuceneQueryBui
                         break;
                     }
                     
-                }
-                else
-                {
-                    throw new UnsupportedOperationException();
                 }
             }
             else

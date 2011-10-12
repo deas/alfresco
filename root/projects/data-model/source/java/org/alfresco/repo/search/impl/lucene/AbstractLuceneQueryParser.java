@@ -3763,7 +3763,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         }
         else if (field.equals(FIELD_TAG))
         {
-            throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_TAG);
+            return null;
         }
         else
         {
@@ -3949,7 +3949,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         }
         else if (field.equals(FIELD_TAG))
         {
-            throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_TAG);
+            return null;
         }
         else
         {
