@@ -283,7 +283,7 @@
       {
          var channelType = event.target.rel, 
 			   newChannelURL = Alfresco.constants.PROXY_URI + "api/publishing/channels", 
-				channelName = this.newChannelName(channelType);
+				channelName = this.newChannelName(YAHOO.lang.trim(event.target.innerHTML));
             params = "?channelType=" + channelType + "&channelName=" + channelName;
          
          Alfresco.util.Ajax.request(
