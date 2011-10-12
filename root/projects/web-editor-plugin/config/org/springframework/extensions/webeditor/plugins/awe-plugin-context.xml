@@ -165,18 +165,6 @@
       <property name="description" value="Alfresco wrapped TinyMCE control" />
       <property name="path" value="/res/modules/editors/tiny_mce.js" />
       <property name="type" value="js" />
-      <property name="dependencies">
-         <list>
-            <ref bean="tinyMCE" />
-         </list>
-      </property>
-   </bean>
-   
-   <bean id="tinyMCE" class="org.springframework.extensions.webeditor.WEFResourceImpl">
-      <property name="name" value="com.moxiecode.tinymce" />
-      <property name="description" value="TinyMCE library" />
-      <property name="path" value="/res/modules/editors/tiny_mce/tiny_mce_src_patched.js" />
-      <property name="type" value="js" />
    </bean>
    
    <!-- *** Alfresco *** -->
