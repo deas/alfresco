@@ -582,8 +582,12 @@
                if (me.hasMoreResults)
                {
                   oResponse.results = oResponse.results.slice(0, me.options.maxSearchResults);
+                  me.resultsCount = me.options.maxSearchResults;
                }
-               me.resultsCount = oResponse.results.length;
+               else
+               {
+                  me.resultsCount = oResponse.results.length;
+               }
                
                if (me.resultsCount > me.options.pageSize)
                {
