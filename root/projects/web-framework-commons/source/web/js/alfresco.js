@@ -4412,6 +4412,18 @@ Alfresco.util.ComponentManager = function()
        */
       register: function CM_register(p_oComponent)
       {
+         if (p_oComponent.id !== "null" && components.hasOwnProperty(p_oComponent.id))
+         {
+            var purge = components[p_oComponent.id];
+            if (purge.name === p_oComponent.name)
+            {
+               if (typeof purge.destroy  === "function")
+               {
+                  purge.destroy();
+               }
+               this.unregister(components[p_oComponent.id]);
+            }
+         }
          components.push(p_oComponent);
          components[p_oComponent.id] = p_oComponent;
       },
@@ -7359,6 +7371,56 @@ Alfresco.util.RENDERLOOPSIZE = 25;
       },
 
       /**
+       * Destroy method - destroy widgets, dereference modules & services
+       *
+       * @method destroy
+       */
+      destroy: function Base_destroy()
+      {
+         var index, purge;
+
+         // Destroy widgets
+         for (index in this.widgets)
+         {
+            if (this.widgets.hasOwnProperty(index))
+            {
+               try
+               {
+                  purge = this.widgets[index];
+                  if (typeof purge.destroy == "function")
+                  {
+                     purge.destroy();
+                  }
+               }
+               catch (e)
+               {
+                  // Ignore
+               }
+               
+               delete this.widgets[index];
+            }
+         }
+         
+         // Modules
+         for (index in this.modules)
+         {
+            if (this.modules.hasOwnProperty(index))
+            {
+               delete this.modules[index];
+            }
+         }
+
+         // Services
+         for (index in this.services)
+         {
+            if (this.services.hasOwnProperty(index))
+            {
+               delete this.services[index];
+            }
+         }
+      },
+
+      /**
        * Calls the onReady method and adds default event handling to correctly marked-up anchor tags
        *
        * @method onReadyWrapper
@@ -7554,7 +7616,7 @@ Alfresco.util.RENDERLOOPSIZE = 25;
        * @method onComponentLoaded
        * @param response
        */
-      onComponentLoaded: function(response)
+      onComponentLoaded: function Base_onComponentLoaded(response)
       {
          // Clean new markup from scripts so it doesn't instantiate the new component instance yet
          var result = Alfresco.util.Ajax.sanitizeMarkup(response.serverResponse.responseText);
@@ -7566,7 +7628,6 @@ Alfresco.util.RENDERLOOPSIZE = 25;
          Alfresco.util.ComponentManager.unregister(this);
          window.setTimeout(result[1], 0);         
       }
-
    };
 })();
 

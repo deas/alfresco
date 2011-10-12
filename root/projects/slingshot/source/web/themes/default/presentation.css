@@ -702,7 +702,12 @@ body.yui-skin-default .yuimenu .bd
    border: 1px solid #6CA5CE;
 }
 
-/* YUI Menu roll over state*/
+/* YUI Menu roll over state */
+
+body.yui-skin-default .yuimenuitemlabel
+{
+   text-decoration: none;
+}
 
 body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected
 {
@@ -720,7 +725,8 @@ body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected div .yuimenuitemla
 body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel,
 body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel a,
 body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected div ul li.yuimenuitem-selected .yuimenuitemlabel,
-body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected div ul li.yuimenuitem-selected .yuimenuitemlabel a
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected div ul li.yuimenuitem-selected .yuimenuitemlabel a,
+body.yui-skin-default .yuimenu .bd ul li.yuimenuitem-selected span.description
 {
    color: #FFF;
 }
@@ -906,7 +912,7 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .yui-skin-default .nodeFooter .tag a,
 .yui-skin-default .yui-dt-highlighted .detail .tag a,
 .yui-skin-default .yui-dt-highlighted .detail .category a,
-.yui-skin-default .yui-dt-highlighted .detail-social .item a,
+.yui-skin-default .yui-dt-highlighted .detail .item-social a,
 .yui-skin-default a.wiki-tag-link,
 .yui-skin-default .node .userLink a,
 .yui-skin-default .site-members h3 a,
@@ -926,7 +932,7 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 
 .yui-skin-default .detail .tag a,
 .yui-skin-default .detail .category a,
-.yui-skin-default .detail-social .item a,
+.yui-skin-default .detail .item-social a,
 .yui-skin-default .document-tags .tag
 {
    color: #333;

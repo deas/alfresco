@@ -542,6 +542,34 @@
          
          this._loadSelectedItems();
       },
+
+      /**
+       * Destroy method - deregister Bubbling event handlers
+       *
+       * @method destroy
+       */
+      destroy: function ObjectFinder_destroy()
+      {
+         try
+         {
+            YAHOO.Bubbling.unsubscribe("renderCurrentValue", this.onRenderCurrentValue);
+            YAHOO.Bubbling.unsubscribe("selectedItemAdded", this.onSelectedItemAdded);
+            YAHOO.Bubbling.unsubscribe("selectedItemRemoved", this.onSelectedItemRemoved);
+            YAHOO.Bubbling.unsubscribe("parentChanged", this.onParentChanged);
+            YAHOO.Bubbling.unsubscribe("parentDetails", this.onParentDetails);
+            YAHOO.Bubbling.unsubscribe("formContainerDestroyed", this.onFormContainerDestroyed);
+            YAHOO.Bubbling.unsubscribe("removeListItem", this.onRemoveListItem);
+         }
+         catch (e)
+         {
+            // Ignore
+         }
+         if (this.options.objectRenderer)
+         {
+            this.options.objectRenderer.destroy();
+         }
+         Alfresco.ObjectFinder.superclass.destroy.call(this);
+      },
       
       /**
        * Add button click handler, shows picker
@@ -970,6 +998,7 @@
                var records = this.widgets.dataTable.getRecordSet().getRecords(),
                   i = 0,
                   il = records.length;
+               
                for (; i < il; i++)
                {
                   if (obj.item.nodeRef == records[i].getData().nodeRef)
@@ -989,11 +1018,14 @@
                      var dataTableEl = this.widgets.dataTable.get("element");
                      dataTableEl.scrollTop = dataTableEl.scrollHeight;
                      Alfresco.util.Anim.pulse(this.widgets.dataTable.getLastTrEl());
-               }
+                  }
                }
                else
                {
-                  Alfresco.util.PopupManager.displayMessage({ text: this.msg("message.item-already-added", $html(obj.item.name)) });
+                  Alfresco.util.PopupManager.displayMessage(
+                  {
+                     text: this.msg("message.item-already-added", $html(obj.item.name))
+                  });
                }
             }
          }
@@ -2225,6 +2257,27 @@
          this._createControls();
       },
 
+      /**
+       * Destroy method - deregister Bubbling event handlers
+       *
+       * @method destroy
+       */
+      destroy: function ObjectRenderer_destroy()
+      {
+         try
+         {
+            YAHOO.Bubbling.unsubscribe("refreshItemList", this.onRefreshItemList);
+            YAHOO.Bubbling.unsubscribe("parentChanged", this.onParentChanged);
+            YAHOO.Bubbling.unsubscribe("selectedItemAdded", this.onSelectedItemChanged);
+            YAHOO.Bubbling.unsubscribe("selectedItemRemoved", this.onSelectedItemChanged);
+         }
+         catch (e)
+         {
+            // Ignore
+         }
+         Alfresco.ObjectRenderer.superclass.destroy.call(this);
+      },
+
       
       /**
        * PUBLIC INTERFACE
@@ -2347,14 +2400,7 @@
                   if (this.addItemButtons.hasOwnProperty(id))
                   {
                      button = this.addItemButtons[id];
-                     if (typeof button == "string")
-                     {
-                        Dom.setStyle(button, "display", this.objectFinder.canItemBeSelected(id) ? "inline" : "none");
-                     }
-                     else
-                     {
-                        button.set("disabled", !this.objectFinder.canItemBeSelected(id));
-                     }
+                     Dom.setStyle(button, "display", this.objectFinder.canItemBeSelected(id) ? "inline" : "none");
                   }
                }
             }
@@ -2480,76 +2526,22 @@
             // Create New item cell type
             if (oRecord.getData("type") == IDENT_CREATE_NEW)
             {
-               if (scope.options.compactMode)
-               {
-                  elCell.innerHTML = '<a href="#" class="create-new-item create-new-item-' + scope.eventGroup + '" title="' + scope.msg("form.control.object-picker.create-new") + '" tabindex="0"><span class="createNewIcon">&nbsp;</span></a>';
-               }
-               else
-               {
-                  Dom.setStyle(elCell.parentNode, "text-align", "right");
-                  elCell.innerHTML = '<span id="' + containerId + '"></span>';
-                  button = new YAHOO.widget.Button(
-                  {
-                     label: scope.msg("button.create"),
-                     container: containerId,
-                     onclick:
-                     {
-                        fn: scope.onCreateNewItem,
-                        scope: scope
-                     }
-                  });
-               }
+               elCell.innerHTML = '<a href="#" class="create-new-item create-new-item-' + scope.eventGroup + '" title="' + scope.msg("form.control.object-picker.create-new") + '" tabindex="0"><span class="createNewIcon">&nbsp;</span></a>';
                return;
             } 
 
             if (oRecord.getData("selectable"))
             {
-               var nodeRef = oRecord.getData("nodeRef");
+               var nodeRef = oRecord.getData("nodeRef"),
+                  style = "";
 
-               if (scope.options.compactMode)
+               if (!scope.objectFinder.canItemBeSelected(nodeRef))
                {
-                  var style = "";
-                  if (!scope.objectFinder.canItemBeSelected(nodeRef))
-                  {
-                     style = 'style="display: none"';
-                  }
-                  elCell.innerHTML = '<a id="' + containerId + '" href="#" ' + style + ' class="add-item add-' + scope.eventGroup + '" title="' + scope.msg("form.control.object-picker.add-item") + '" tabindex="0"><span class="addIcon">&nbsp;</span></a>';
-                  scope.addItemButtons[nodeRef] = containerId;
+                  style = 'style="display: none"';
                }
-               else
-               {
-                  Dom.setStyle(elCell.parentNode, "text-align", "right");
-                  elCell.innerHTML = '<span id="' + containerId + '"></span>';
 
-                  var onItemAdded = function ObjectRenderer_renderCellAdd_onItemAdded(event, p_obj)
-                  {
-                     YAHOO.Bubbling.fire("selectedItemAdded",
-                     {
-                        eventGroup: scope,
-                        item: p_obj.getData()
-                     });
-                  };
-
-                  button = new YAHOO.widget.Button(
-                  {
-                     type: "button",
-                     label: (scope.objectFinder.options.multipleSelectMode ? scope.msg("button.add") : scope.msg("button.select")) + " >>",
-                     name: containerId + "-button",
-                     container: containerId,
-                     onclick:
-                     {
-                        fn: onItemAdded,
-                        obj: oRecord,
-                        scope: scope
-                     }
-                  });
-                  scope.addItemButtons[nodeRef] = button;
-
-                  if (!scope.objectFinder.canItemBeSelected(nodeRef))
-                  {
-                     button.set("disabled", true);
-                  }
-               }
+               elCell.innerHTML = '<a id="' + containerId + '" href="#" ' + style + ' class="add-item add-' + scope.eventGroup + '" title="' + scope.msg("form.control.object-picker.add-item") + '" tabindex="0"><span class="addIcon">&nbsp;</span></a>';
+               scope.addItemButtons[nodeRef] = containerId;
             }
          };
       },
@@ -2669,7 +2661,7 @@
                var items = oFullResponse.data.items;
 
                // Crop item list to max length if required
-               if (items.length > me.options.maxSearchResults)
+               if (me.options.maxSearchResults > -1 && items.length > me.options.maxSearchResults)
                {
                   items = items.slice(0, me.options.maxSearchResults-1);
                }
@@ -2719,7 +2711,7 @@
          [
             { key: "nodeRef", label: "Icon", sortable: false, formatter: this.fnRenderItemIcon(), width: this.options.compactMode ? 10 : 26 },
             { key: "name", label: "Item", sortable: false, formatter: this.fnRenderItemName() },
-            { key: "add", label: "Add", sortable: false, formatter: this.fnRenderCellAdd(), width: this.options.compactMode ? 16 : 85 }
+            { key: "add", label: "Add", sortable: false, formatter: this.fnRenderCellAdd(), width: 16 }
          ];
          
          var initialMessage = this.msg("form.control.object-picker.items-list.loading");
@@ -2730,7 +2722,7 @@
 
          this.widgets.dataTable = new YAHOO.widget.DataTable(this.id + "-results", columnDefinitions, this.widgets.dataSource,
          {
-            renderLoopSize: 32,
+            renderLoopSize: 100,
             initialLoad: false,
             MSG_EMPTY: initialMessage
          });

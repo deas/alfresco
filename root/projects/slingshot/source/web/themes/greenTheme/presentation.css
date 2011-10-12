@@ -693,7 +693,12 @@ body.yui-skin-greenTheme .yuimenu .bd
    border: 1px solid #008f22;
 }
 
-/* YUI Menu roll over state*/
+/* YUI Menu roll over state */
+
+body.yui-skin-greenTheme .yuimenuitemlabel
+{
+   text-decoration: none;
+}
 
 body.yui-skin-greenTheme .yuimenu .bd ul li.yuimenuitem-selected
 {
@@ -711,7 +716,8 @@ body.yui-skin-greenTheme .yuimenu .bd ul li.yuimenuitem-selected div .yuimenuite
 body.yui-skin-greenTheme .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel,
 body.yui-skin-greenTheme .yuimenu .bd ul li.yuimenuitem-selected .yuimenuitemlabel a,
 body.yui-skin-greenTheme .yuimenu .bd ul li.yuimenuitem-selected div ul li.yuimenuitem-selected .yuimenuitemlabel,
-body.yui-skin-greenTheme .yuimenu .bd ul li.yuimenuitem-selected div ul li.yuimenuitem-selected .yuimenuitemlabel a
+body.yui-skin-greenTheme .yuimenu .bd ul li.yuimenuitem-selected div ul li.yuimenuitem-selected .yuimenuitemlabel a,
+body.yui-skin-greenTheme .yuimenu .bd ul li.yuimenuitem-selected span.description
 {
    color: #FFF;
 }
@@ -875,7 +881,7 @@ body.yui-skin-greenTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 .yui-skin-greenTheme .nodeFooter .tag a,
 .yui-skin-greenTheme .yui-dt-highlighted .detail .tag a,
 .yui-skin-greenTheme .yui-dt-highlighted .detail .category a,
-.yui-skin-greenTheme .yui-dt-highlighted .detail-social .item a,
+.yui-skin-greenTheme .yui-dt-highlighted .detail .item-social a,
 .yui-skin-greenTheme a.wiki-tag-link,
 .yui-skin-greenTheme .node .userLink a,
 .yui-skin-greenTheme .site-members h3 a,
@@ -895,7 +901,7 @@ body.yui-skin-greenTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 
 .yui-skin-greenTheme .detail .tag a,
 .yui-skin-greenTheme .detail .category a,
-.yui-skin-greenTheme .detail-social .item a,
+.yui-skin-greenTheme .detail .item-social a,
 .yui-skin-greenTheme .document-tags .tag
 {
    color: #333;
