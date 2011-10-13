@@ -637,7 +637,7 @@
          var success = function SiteMembers_doRemove_success(response, user)
          {
             // hide the wait message
-            this.widgets.feedbackMessage.destroy();
+            this.widgets.feedbackMessage.hide();
              
             // show popup message to confirm
             Alfresco.util.PopupManager.displayMessage(
@@ -654,7 +654,7 @@
          var failure = function SiteMembers_doRemove_failure(response)
          {
             // remove the message
-            this.widgets.feedbackMessage.destroy();
+            this.widgets.feedbackMessage.hide();
          };
           
          // make ajax call to site service to remove user
@@ -705,7 +705,7 @@
             var success = function SiteMembers_onRoleSelect_success(response, userRole)
             {
                // hide the wait message
-               this.widgets.feedbackMessage.destroy();
+               this.widgets.feedbackMessage.hide();
 
                // show popup message to confirm
                Alfresco.util.PopupManager.displayMessage(
@@ -723,7 +723,7 @@
             var failure = function SiteMembers_onRoleSelect_failure(response)
             {
                // remove the message
-               this.widgets.feedbackMessage.destroy();
+               this.widgets.feedbackMessage.hide();
             };
 
             // make ajax call to site service to change role
