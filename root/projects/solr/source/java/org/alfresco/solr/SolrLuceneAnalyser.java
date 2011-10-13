@@ -37,8 +37,6 @@ import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.namespace.InvalidQNameException;
 import org.alfresco.service.namespace.QName;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.slf4j.Logger;
@@ -254,7 +252,13 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
             {
                 try
                 {
-                    QName testPropertyQName = QName.createQName(fieldName.substring(1, (fieldName.length() - contentEnding.length())));
+                    int  end = fieldName.length() - contentEnding.length();
+                    if(end <= 0)
+                    {
+                        // Skip for short field names
+                        continue;
+                    }
+                    QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
                     PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
                     if (propertyDef != null)
                     {
@@ -309,7 +313,13 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
             {
                 try
                 {
-                    QName testPropertyQName = QName.createQName(fieldName.substring(1, (fieldName.length() - textEnding.length())));
+                    int  end = fieldName.length() - textEnding.length();
+                    if(end <= 0)
+                    {
+                        // Skip for short field names
+                        continue;
+                    }
+                    QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
                     PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
                     if (propertyDef != null)
                     {
@@ -344,7 +354,13 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
             {
                 try
                 {
-                    QName testPropertyQName = QName.createQName(fieldName.substring(1, (fieldName.length() - mlTexttEnding.length())));
+                    int  end = fieldName.length() - mlTexttEnding.length();
+                    if(end <= 0)
+                    {
+                        // Skip for short field names
+                        continue;
+                    }
+                    QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
                     PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
                     if (propertyDef != null)
                     {
