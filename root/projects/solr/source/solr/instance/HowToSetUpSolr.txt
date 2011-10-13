@@ -107,7 +107,7 @@ Add dir.keystore=${dir.root}/keystore to your alfresco-global.properties file.
 
                
 
-Ensure that the repository property 'solr.port' in alfresco-global.properties is set to the Solr Tomcat SSL port (SSL redirects don't work yet).
+Ensure that the repository property 'solr.port.ssl' in alfresco-global.properties is set to the Solr Tomcat SSL port (SSL redirects don't work yet).
 Ensure that the Solr property 'alfresco.port.ssl' is set to the Repository Tomcat SSL port in the solrcore.properties for _each_ Solr core.
 
 Troubleshooting
