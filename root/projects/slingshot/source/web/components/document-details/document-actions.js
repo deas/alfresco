@@ -221,7 +221,14 @@
                if (typeof me[owner.title] === "function")
                {
                   args[1].stop = true;
-                  me[owner.title].call(me, me.recordData, owner);
+                  try
+                  {
+                     me[owner.title].call(me, me.recordData, owner);
+                  }
+                  catch (e)
+                  {
+                     Alfresco.logger.error("DocumentActions_fnActionHandler", owner.title, e);
+                  }
                }
             }
             return true;

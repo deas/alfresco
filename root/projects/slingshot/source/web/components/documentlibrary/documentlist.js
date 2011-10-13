@@ -1232,7 +1232,14 @@
                {
                   args[1].stop = true;
                   var record = me.widgets.dataTable.getRecord(args[1].target.offsetParent).getData();
-                  me[owner.title].call(me, record, owner);
+                  try
+                  {
+                     me[owner.title].call(me, record, owner);
+                  }
+                  catch (e)
+                  {
+                     Alfresco.logger.error("DL_fnActionHandler", owner.title, e);
+                  }
                }
             }
             return true;
