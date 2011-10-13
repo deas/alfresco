@@ -1013,6 +1013,7 @@
          Alfresco.util.PopupManager.displayPrompt(
          {
             text: mes,
+            title: this.msg("actions.link.delete"),
             buttons: [
             {
                text: this.msg("button.delete"),
