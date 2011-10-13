@@ -2335,7 +2335,7 @@
             // will be set if there are no documents or folders in the displayed location. If the HTML5
             // drag and drop instructions are shown then we want to attach events to the "upload" and
             // "share" images...
-            if (oArgs.html.indexOf("docListInstructions") !== -1)
+            if (oArgs.html && oArgs.html.indexOf("docListInstructions") !== -1)
             {
                var toolbar = Alfresco.util.ComponentManager.findFirst("Alfresco.DocListToolbar");
                if (toolbar !== null)
@@ -2377,16 +2377,19 @@
          // Override abstract function within DataTable to set custom error message
          this.widgets.dataTable.doBeforeLoadData = function DL_doBeforeLoadData(sRequest, oResponse, oPayload)
          {
+            // Clear any existing error
+            this.hideTableMessage();
+
             if (oResponse.error)
             {
                try
                {
                   var response = YAHOO.lang.JSON.parse(oResponse.responseText);
-                  me.widgets.dataTable.set("MSG_ERROR", response.message);
+                  this.set("MSG_ERROR", response.message);
                }
                catch(e)
                {
-                  me._setDefaultDataTableErrors(me.widgets.dataTable);
+                  me._setDefaultDataTableErrors(this);
                }
             }
             else if (oResponse.results.length === 0)
