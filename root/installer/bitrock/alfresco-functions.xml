@@ -211,10 +211,6 @@
                             <value>${application_server_domain}</value>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_SOLR_PORT@@</pattern>
-                            <value>8443</value>
-                        </substitution>
-                        <substitution>
                             <pattern>@@BITROCK_SHAREPOINT_PORT@@</pattern>
                             <value>${alfresco_sharepoint_port}</value>
                         </substitution>

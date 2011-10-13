@@ -51,7 +51,7 @@
 		</substitution>
 	        <substitution>
 		    <pattern>alfresco.port.ssl=8443</pattern>
-		    <value>alfresco.port.ssl=8443</value>
+		    <value>alfresco.port.ssl=${tomcat_server_ssl_port}</value>
 		</substitution>
 	    </substitutionList>
 	</substitute>		

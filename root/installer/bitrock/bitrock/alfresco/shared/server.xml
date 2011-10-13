@@ -68,7 +68,7 @@
     -->
     <Connector port="@@BITROCK_TOMCAT_PORT@@" URIEncoding="UTF-8" protocol="HTTP/1.1" 
                connectionTimeout="20000" 
-               redirectPort="8443" />
+               redirectPort="@@BITROCK_TOMCAT_SSL_PORT@@" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
@@ -87,9 +87,9 @@
     -->
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
-    <Connector port="@@BITROCK_TOMCAT_AJP_PORT@@" protocol="AJP/1.3" redirectPort="8443" />
+    <Connector port="@@BITROCK_TOMCAT_AJP_PORT@@" protocol="AJP/1.3" redirectPort="@@BITROCK_TOMCAT_SSL_PORT@@" />
 
-    <Connector port="@@BITROCK_SOLR_PORT@@" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
+    <Connector port="@@BITROCK_TOMCAT_SSL_PORT@@" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
                maxThreads="150" scheme="https" keystoreFile="@@ALFRESCO_DATA_DIR@@/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
  secure="true" connectionTimeout="240000" truststoreFile="@@ALFRESCO_DATA_DIR@@/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
                clientAuth="false" sslProtocol="TLS" allowUnsafeLegacyRenegotiation="true" />  
