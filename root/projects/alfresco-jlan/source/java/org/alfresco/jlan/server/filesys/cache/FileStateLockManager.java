@@ -425,16 +425,19 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 								
 								if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
 									sess.debugPrintln( "Oplock break timeout, oplock=" + opLock);
-								
-								// Release the packet back to the pool
-								
-								sess.getPacketPool().releasePacket( pkt);
 							}
 							else if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
 								sess.debugPrintln( "Failed to send open reject, oplock break timed out, oplock=" + opLock);
 						}
 						catch ( IOException ex) {
 							
+						}
+						finally {
+							
+							// Make sure the packet is released back to the memory pool
+							
+							if ( pkt != null)
+								sess.getPacketPool().releasePacket( pkt);
 						}
 						
 						// Remove the oplock break from the queue
