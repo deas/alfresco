@@ -171,6 +171,7 @@ public class MimetypeMap implements MimetypeService
     private ConfigService configService;
     private ContentCharsetFinder contentCharsetFinder;
     private TikaConfig tikaConfig;
+    private ContainerAwareDetector detector;
     
     private List<String> mimetypes;
     private Map<String, String> extensionsByMimetype;
@@ -229,6 +230,8 @@ public class MimetypeMap implements MimetypeService
     public void setTikaConfig(TikaConfig tikaConfig)
     {
         this.tikaConfig = tikaConfig;
+        // ALF-10813: MimetypeMap.guessMimetype consumes 30% of file upload time
+        detector = new ContainerAwareDetector(tikaConfig.getMimeRepository());
     }
 
     /**
@@ -243,7 +246,7 @@ public class MimetypeMap implements MimetypeService
         if(tikaConfig == null)
         {
             logger.warn("TikaConfig spring parameter not supplied, using default config");
-            tikaConfig = TikaConfig.getDefaultConfig();
+            setTikaConfig(TikaConfig.getDefaultConfig());
         }
         
         this.mimetypes = new ArrayList<String>(40);
@@ -441,7 +444,6 @@ public class MimetypeMap implements MimetypeService
        
        MediaType type;
        try {
-          ContainerAwareDetector detector = new ContainerAwareDetector(tikaConfig.getMimeRepository());
           type = detector.detect( inp, metadata );
           logger.debug(reader + " detected by Tika as being " + type.toString());
        } catch(Exception e) {
@@ -515,6 +517,18 @@ public class MimetypeMap implements MimetypeService
      */
     public String guessMimetype(String filename, ContentReader reader)
     {
+        // ALF-10813: MimetypeMap.guessMimetype consumes 30% of file upload time
+        // Let's only 'guess' if we need to
+        if (reader != null &&
+                reader.getMimetype() != null &&
+                !reader.getMimetype().equals(MimetypeMap.MIMETYPE_BINARY))
+        {
+            // It was set to something other than the default.
+            // Possibly someone used this method before (like the UI does) or they just
+            // know what their files are.
+            return reader.getMimetype();
+        }
+        
         MediaType type = detectType(filename, reader);
         String filenameGuess = guessMimetype(filename);
         
