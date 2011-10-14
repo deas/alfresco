@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.alfresco.repo.descriptor.DescriptorDAO;
 import org.alfresco.repo.lock.JobLockService;
 import org.alfresco.repo.lock.LockAcquisitionException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -49,6 +50,8 @@ import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferProgress;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.alfresco.service.cmr.transfer.TransferVersion;
+import org.alfresco.service.cmr.transfer.TransferProgress.Status;
+import org.alfresco.service.descriptor.Descriptor;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.GUID;
@@ -127,6 +130,8 @@ public class FileTransferReceiver implements TransferReceiver
     private String fileTransferRootNodeRef;
 
     private SortedSet<String> setOfNodesBeforeSyncMode;
+    
+    private DescriptorDAO descriptorDAO;
 
     public void cancel(String transferId) throws TransferException
     {
@@ -414,7 +419,14 @@ public class FileTransferReceiver implements TransferReceiver
 
     public TransferVersion getVersion()
     {
-        return new TransferVersionImpl("4", "0", "0", "Community");
+        Descriptor descriptor = descriptorDAO.getDescriptor();
+        TransferVersion version =  new TransferVersionImpl(descriptor.getVersionMajor(), descriptor.getVersionMinor(), 
+                descriptor.getVersionRevision(), descriptor.getEdition());
+        if (log.isDebugEnabled())
+        {
+            log.debug("Reporting version number: " + version.toString());
+        }
+        return version;
     }
 
     public void prepare(String transferId) throws TransferException
@@ -542,7 +554,7 @@ public class FileTransferReceiver implements TransferReceiver
         if (fromVersion.getVersionMajor() == null || toVersion.getVersionMajor() == null
                 || !fromVersion.getVersionMajor().equals(toVersion.getVersionMajor()))
         {
-            throw new TransferException("Transfer Incompatible versions", new Object[]
+            throw new TransferException(MSG_INCOMPATIBLE_VERSIONS, new Object[]
             { "None", fromVersion, toVersion });
         }
 
@@ -593,8 +605,7 @@ public class FileTransferReceiver implements TransferReceiver
             log.info("transfer started: " + transferId);
             lock.enableLockTimeout();
             progressMonitor.logComment(transferId, "Started transfer");
-            manifestProcessorFactory.startTransfer(transferId, fromRepositoryId, fromVersion);
-
+            progressMonitor.updateStatus(transferId, Status.PRE_COMMIT);
             return transferId;
         }
         catch (LockAcquisitionException lae)
@@ -1225,6 +1236,11 @@ public class FileTransferReceiver implements TransferReceiver
     public void setFileTransferInfoDAO(FileTransferInfoDAO fileTransferInfoDAO)
     {
         this.fileTransferInfoDAO = fileTransferInfoDAO;
+    }
+
+    public void setDescriptorDAO(DescriptorDAO descriptorDAO)
+    {
+        this.descriptorDAO = descriptorDAO;
     }
 
 }

@@ -1572,7 +1572,7 @@
       <!-- add all JAR to WEB-INF/lib -->
       <copy todir="${dir.project.webeditor.assemble.war}/WEB-INF/lib">
          <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="${includes.webscriptframework.libs}" />
+                  includes="${includes.webscriptframework.libs},${includes.webeditor.libs}" />
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
                   includes="${includes.webeditor.spring-surf}" />
          <fileset dir="${dir.project.3rdparty.lib}/optional" 
@@ -2943,7 +2943,13 @@
       </javac>
    </target>
 
-   <target name="package-file-transfer-receiver" depends="compile-file-transfer-receiver">
+   <target name="version-file-transfer-receiver">
+      <copy todir="${dir.project.file-transfer-receiver.assemble}">
+         <fileset dir="${dir.project.repository.config}/alfresco" includes="version.properties" />
+      </copy>
+   </target>
+
+   <target name="package-file-transfer-receiver" depends="compile-file-transfer-receiver, version-file-transfer-receiver">
       <copy todir="${dir.project.file-transfer-receiver.assemble}/lib" flatten="true">
          <fileset dir="${dir.project.file-transfer-receiver.lib}" includes="**/tomcat*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}">
@@ -3004,6 +3010,7 @@
             <exclude name="launcher/**" />
          </classes>
          <classes dir="${dir.project.file-transfer-receiver.classes}" />
+         <classes dir="${dir.project.file-transfer-receiver.assemble}" includes="version.properties" />
       </war>
       
       <zip destfile="${dir.project.file-transfer-receiver.dist}/${file.name.zip.file-transfer-receiver}"

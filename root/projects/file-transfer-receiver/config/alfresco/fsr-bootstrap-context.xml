@@ -189,28 +189,38 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
         </property>
         <property name="manifestProcessorFactory" ref="fTransferManifestProcessorFactory" />
         <property name="progressMonitor" ref="transferProgressMonitor" />
-        <property name="fileTransferInfoDAO">
-            <ref bean="fileTransferInfoDAO" />
-        </property>
+        <property name="fileTransferInfoDAO" ref="fileTransferInfoDAO" />
+        <property name="descriptorDAO" ref="serverDescriptorDAO" />
     </bean>
 
     <bean id="fTransferManifestProcessorFactory" class="org.alfresco.repo.transfer.fsr.FileTransferManifestProcessorFactory">
-        <property name="hook" ref="fileTransferHook" />
         <property name="transactionService" ref="transactionService" />
     </bean>
 
-    <bean id="transferProgressMonitor"
-        class="org.alfresco.repo.transfer.LoggingTransferProgressMonitorImpl">
-        <property name="delegate">
-            <bean class="org.alfresco.repo.transfer.fsr.FileTransferProgressMonitor">
-                <property name="transferStatusDao" ref="transferStatusDAO" />
-                <property name="transactionService" ref="transactionService" />
+    <bean id="transferProgressMonitor" class="org.alfresco.repo.transfer.fsr.HookableTransferMonitorImpl">
+        <property name="systemMonitor">
+            <bean class="org.alfresco.repo.transfer.LoggingTransferProgressMonitorImpl">
+                <property name="delegate">
+                    <bean class="org.alfresco.repo.transfer.fsr.FileTransferProgressMonitor">
+                        <property name="transferStatusDao" ref="transferStatusDAO" />
+                        <property name="transactionService" ref="transactionService" />
+                    </bean>
+                </property>
             </bean>
-        </property>
+         </property>
+         <property name="listeners" ref="fileTransferListeners" />
     </bean>
 
-    <bean id="fileTransferHook" class="org.alfresco.repo.transfer.fsr.FileTransferHookDummy">
+    <bean id="serverDescriptorDAO" class="org.alfresco.repo.descriptor.ServerDescriptorDAOImpl">
+       <property name="repositoryName">
+           <value>${fileTransferReceiver.repositoryName}</value>
+       </property>
+       <property name="resource">
+           <value>classpath:version.properties</value>
+       </property>
     </bean>
+
+    <bean id="fileTransferListeners" class="java.util.ArrayList" />
 
     <import resource="classpath*:ftr-custom-context.xml"/>
 

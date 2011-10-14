@@ -19,36 +19,18 @@
 package org.alfresco.repo.transfer.fsr;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.alfresco.repo.transaction.AlfrescoTransactionSupport;
 import org.alfresco.repo.transfer.ManifestProcessorFactory;
 import org.alfresco.repo.transfer.manifest.TransferManifestProcessor;
 import org.alfresco.repo.transfer.requisite.TransferRequsiteWriter;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
-import org.alfresco.service.cmr.transfer.TransferVersion;
 import org.alfresco.service.transaction.TransactionService;
 
 public class FileTransferManifestProcessorFactory implements ManifestProcessorFactory
 {
-    private FileTransferHookInterface hook;
     private TransactionService transactionService;
     
-    public static  Map<String, InnerNotificationRecord> notificationRecords = Collections
-            .synchronizedMap(new HashMap<String, InnerNotificationRecord>(1000));
-
-    public void startTransfer(String transferId, String fromRepositoryId, TransferVersion fromVersion)
-    {
-        InnerNotificationRecord innerNotificationRecord = new InnerNotificationRecord();
-        innerNotificationRecord.fromRepositoryId = fromRepositoryId;
-        innerNotificationRecord.fromVersion = fromVersion;
-        notificationRecords.put(transferId, innerNotificationRecord);
-
-    }
-
     /**
      * The requisite processor
      *
@@ -73,11 +55,6 @@ public class FileTransferManifestProcessorFactory implements ManifestProcessorFa
      */
     public List<TransferManifestProcessor> getCommitProcessors(TransferReceiver receiver, String transferId)
     {
-        InnerNotificationRecord innerNotificationRecord = notificationRecords.get(transferId);
-        // register hook
-        FileTransferTransactionListener fileTransferTransactionListener = new FileTransferTransactionListener(
-                innerNotificationRecord.fromRepositoryId, innerNotificationRecord.fromVersion, transferId, hook);
-//        AlfrescoTransactionSupport.bindListener(fileTransferTransactionListener);
         List<TransferManifestProcessor> processors = new ArrayList<TransferManifestProcessor>();
 
         TransferManifestProcessor processor = new FileTransferPrimaryManifestProcessor(receiver, transferId, transactionService);
@@ -88,22 +65,9 @@ public class FileTransferManifestProcessorFactory implements ManifestProcessorFa
         return processors;
     }
 
-    public void setHook(FileTransferHookInterface hook)
-    {
-        this.hook = hook;
-    }
-
-    
     public void setTransactionService(TransactionService transactionService)
     {
         this.transactionService = transactionService;
-    }
-
-
-    private class InnerNotificationRecord
-    {
-        public String fromRepositoryId;
-        public TransferVersion fromVersion;
     }
 
 }

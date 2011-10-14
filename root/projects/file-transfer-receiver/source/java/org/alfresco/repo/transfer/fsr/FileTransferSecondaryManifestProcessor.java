@@ -32,6 +32,7 @@ import org.alfresco.repo.transfer.TransferCommons;
 import org.alfresco.repo.transfer.TransferProcessingException;
 import org.alfresco.repo.transfer.manifest.TransferManifestDeletedNode;
 import org.alfresco.repo.transfer.manifest.TransferManifestNormalNode;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
 import org.alfresco.service.namespace.QName;
@@ -180,6 +181,8 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
 
                 try
                 {
+//                    fTReceiver.getProgressMonitor().logDeleted(fTransferId, nodeRef, nodeRef, 
+//                            pathFileOrFolderToBeDeleted);
                     fileOrFolderToBeDeleted.delete();
                     fTReceiver.deleteNodeByNodeRef(nodeRef);
                     nodesToDeleteInSyncMode.remove(nodeRef);
@@ -242,7 +245,8 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
         @Override
         public Void execute() throws Throwable
         {
-            FileTransferInfoEntity deletedNode = fTReceiver.findFileTransferInfoByNodeRef(node.getNodeRef().toString());
+            FileTransferInfoEntity deletedNode = fTReceiver.findFileTransferInfoByNodeRef(
+                    node.getNodeRef().toString());
 
             // If null just log and ignore
             // delete on FS
@@ -253,6 +257,9 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
 
             try
             {
+                NodeRef nodeRef = node.getNodeRef();
+                fTReceiver.getProgressMonitor().logDeleted(fTransferId, nodeRef, nodeRef, 
+                        pathFileOrFolderToBeDeleted);
                 if (fileOrFolderToBeDeleted.isDirectory())
                 {
                     FileUtils.deleteDirectory(fileOrFolderToBeDeleted);
@@ -262,7 +269,7 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
                 {
                     fileOrFolderToBeDeleted.delete();
                 }
-                recursiveDeleteInDB(node.getNodeRef().toString());
+                recursiveDeleteInDB(nodeRef.toString());
             }
             catch (Exception e)
             {
@@ -394,10 +401,6 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
                         // it could be a node directly under root
                         // should be moved under the root?
                         boolean isNodeUnderRoot = parentOfNode.equals(fTReceiver.getTransferRootNode());
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug("Node is moved, nodeFef:" + nodeToModify.getNodeRef());
-                        }
                         name = nodeToModify.getContentName();
                         if (isNodeUnderRoot)
                         {
@@ -408,7 +411,6 @@ public class FileTransferSecondaryManifestProcessor extends AbstractFileManifest
                             moveFileOrFolderOnFileSytem(oldPath, name, newPath, name);
                             // use the new name because maybe it was renamed just before
                             adjustPathInSubtreeInDB(nodeToModify, newPath + name + "/");
-                            fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
                         }
                     }
                     fTReceiver.updateFileTransferInfoByNodeRef(nodeToModify);
