@@ -51,13 +51,13 @@ function main()
          scriptName = scriptId.substring(scriptId.lastIndexOf("/") + 1, scriptId.lastIndexOf("."));
          shortNameId = "dashlet." + scriptName + ".shortName";
          descriptionId = "dashlet." + scriptName + ".description";
-         availableDashlets[i] =
-         {
-            url: uris[0],
-            // msg.get(key) returns key if no matching value
-            shortName: (msg.get(shortNameId) != shortNameId ? msg.get(shortNameId) : webscript.shortName),
-            description: (msg.get(descriptionId) != descriptionId ? msg.get(descriptionId) : webscript.description)
-         };
+         availableDashlets.push(
+            {
+               url: uris[0],
+               // msg.get(key) returns key if no matching value
+               shortName: (msg.get(shortNameId) != shortNameId ? msg.get(shortNameId) : webscript.shortName),
+               description: (msg.get(descriptionId) != descriptionId ? msg.get(descriptionId) : webscript.description)
+            });
       }
       // else skip this webscript since it lacks uri or shortName
    }
