@@ -494,14 +494,14 @@ public class AlfrescoKeyStoreImpl implements AlfrescoKeyStore
 	        else
 	        {
 	        	// this is ok, the keystore will contain no keys.
-	        	logger.warn("Keystore file doesn't exist: " + getKeyStoreParameters().getLocation());
+	        	logger.warn("Keystore file doesn't exist: " + keyStoreParameters.getLocation());
 	        }
 
 	        return ks;
     	}
 		catch(Throwable e)
 		{
-			throw new AlfrescoRuntimeException("Unable to load key store", e);
+			throw new AlfrescoRuntimeException("Unable to load key store: " + keyStoreParameters.getLocation(), e);
 		}
         finally
         {
