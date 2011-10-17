@@ -38,7 +38,8 @@ import org.alfresco.util.PropertyCheck;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tika.config.TikaConfig;
-import org.apache.tika.detect.ContainerAwareDetector;
+import org.apache.tika.detect.DefaultDetector;
+import org.apache.tika.detect.Detector;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
@@ -51,9 +52,6 @@ import org.springframework.extensions.config.ConfigService;
  * Provides a bidirectional mapping between well-known mimetypes and
  * the registered file extensions.  All mimetypes and extensions
  * are stored and handled as lowercase.
- * 
- * TODO Switch from using the old style Tika ContainerAwareDetector to
- *  the new model of DefaultDetector (with plugin service loading)
  * 
  * @author Derek Hulley
  */
@@ -171,7 +169,7 @@ public class MimetypeMap implements MimetypeService
     private ConfigService configService;
     private ContentCharsetFinder contentCharsetFinder;
     private TikaConfig tikaConfig;
-    private ContainerAwareDetector detector;
+    private Detector detector;
     
     private List<String> mimetypes;
     private Map<String, String> extensionsByMimetype;
@@ -230,8 +228,6 @@ public class MimetypeMap implements MimetypeService
     public void setTikaConfig(TikaConfig tikaConfig)
     {
         this.tikaConfig = tikaConfig;
-        // ALF-10813: MimetypeMap.guessMimetype consumes 30% of file upload time
-        detector = new ContainerAwareDetector(tikaConfig.getMimeRepository());
     }
 
     /**
@@ -248,7 +244,11 @@ public class MimetypeMap implements MimetypeService
             logger.warn("TikaConfig spring parameter not supplied, using default config");
             setTikaConfig(TikaConfig.getDefaultConfig());
         }
+        // Create our Tika mimetype detector up-front
+        // We can then be sure we only have the one, so it's quick (ALF-10813)
+        detector = new DefaultDetector(tikaConfig.getMimeRepository());
         
+        // Work out the mappings
         this.mimetypes = new ArrayList<String>(40);
         this.extensionsByMimetype = new HashMap<String, String>(59);
         this.mimetypesByExtension = new HashMap<String, String>(59);
