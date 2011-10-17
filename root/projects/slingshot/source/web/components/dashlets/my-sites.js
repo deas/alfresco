@@ -357,6 +357,13 @@
             }
          }
 
+         this.sites.sort(function(a, b)
+         {
+            var name1 = a.title ? a.title.toLowerCase() : a.shortName.toLowerCase(),
+                name2 = b.title ? b.title.toLowerCase() : b.shortName.toLowerCase();
+            return (name1 > name2) ? 1 : (name1 < name2) ? -1 : 0;
+         });
+
          var successHandler = function MySites_onSitesUpdate_success(sRequest, oResponse, oPayload)
          {
             oResponse.results=this.sites;
