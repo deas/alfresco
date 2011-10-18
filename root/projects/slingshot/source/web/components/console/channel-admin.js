@@ -38,7 +38,7 @@
     * ConsoleChannels constructor.
     *
     * @param {String} htmlId The HTML id of the parent element
-    * @return {Alfresco.ConsoleTrashcan} The new ConsoleTrashcan instance
+    * @return {Alfresco.ConsoleChannels} The new ConsoleChannels instance
     * @constructor
     */
    Alfresco.ConsoleChannels = function(htmlId)
