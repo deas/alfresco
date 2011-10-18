@@ -29,6 +29,7 @@ import org.alfresco.service.cmr.dictionary.InvalidAspectException;
 import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.QNamePattern;
+import org.alfresco.service.namespace.RegexQNamePattern;
 
 /**
  * Interface for public and internal <b>node</b> and <b>store</b> operations.
@@ -541,18 +542,18 @@ public interface NodeService
             throws InvalidNodeRefException;
     
     /**
-     * Gets the first n child associations, optionally filtered by type qualified name and qualified name.
+     * Gets all child associations where the pattern of the association qualified
+     * name is an exact match.
      * 
-     * @param nodeRef the parent node - usually a <b>container</b>
-     * @param typeQName        the association type qname to filter on; <tt>null<tt> for no filtering
-     * @param qname            the association qname to filter on; <tt>null</tt> for no filtering
-     * @param maxResults       the maximum number of results to return. The query will be terminated efficiently
-     *                         after that number of results                             
-     * @param preload          should the child nodes be batch loaded?
-     * @return Returns a list of <code>ChildAssociationRef</code> instances.  If the
-     *      node is not a <b>container</b> then the result will be empty.
+     * @param nodeRef           the parent node - usually a <b>container</b>
+     * @param typeQNamePattern  the qualified name of the association (<tt>null</tt> to ignore)
+     * @param qnamePattern      the path qualified name (<tt>null</tt> to ignore)
+     * @param maxResults        the number of results to get
+     * @param preload           <tt>true</tt> if the nodes must be preloaded into the cache
+     * @return                  Returns a list of <code>ChildAssociationRef</code> instances
      * @throws InvalidNodeRefException if the node could not be found
      * 
+     * @see QName
      */
     @Auditable(parameters = {"nodeRef", "typeQName", "qname", "maxResults", "preload"})
     public List<ChildAssociationRef> getChildAssocs(
@@ -562,23 +563,20 @@ public interface NodeService
             final int maxResults,
             final boolean preload)
             throws InvalidNodeRefException;
+    
     /**
      * Gets all child associations where the pattern of the association qualified
-     * name is a match.  Using a {@link org.alfresco.service.namespace.RegexQNamePattern#MATCH_ALL wildcard}
-     * for the type and a specific {@link QName qualified name} for the association is
-     * akin to using the XPath browse expression <b>./{url}localname</b> in the context of the
-     * parent node.
+     * names match the patterns provided.
      * 
-     * @param nodeRef the parent node - usually a <b>container</b>
-     * @param typeQNamePattern the pattern that the type qualified name of the association must match
-     * @param qnamePattern the pattern that the qnames of the assocs must match
-     * @param preload should the nodes be preloaded into the cache?
-     * @return Returns a list of <code>ChildAssociationRef</code> instances.  If the
-     *      node is not a <b>container</b> then the result will be empty.
+     * @param nodeRef           the parent node - usually a <b>container</b>
+     * @param typeQNamePattern  the qualified name pattern of the association
+     * @param qnamePattern      the path qualified name pattern
+     * @param preload           <tt>true</tt> if the nodes must be preloaded into the cache
+     * @return                  Returns a list of <code>ChildAssociationRef</code> instances
      * @throws InvalidNodeRefException if the node could not be found
      * 
+     * @see RegexQNamePattern#MATCH_ALL
      * @see QName
-     * @see org.alfresco.service.namespace.RegexQNamePattern#MATCH_ALL
      */
     @Auditable(parameters = {"nodeRef", "typeQNamePattern", "qnamePattern"})
     public List<ChildAssociationRef> getChildAssocs(
@@ -689,7 +687,8 @@ public interface NodeService
      * @return a set of child associations
      */
     @Auditable(parameters = {"parent", "assocTypeQName"})
-    public Collection<ChildAssociationRef> getChildAssocsWithoutParentAssocsOfType(final NodeRef parent,
+    public Collection<ChildAssociationRef> getChildAssocsWithoutParentAssocsOfType(
+            final NodeRef parent,
             final QName assocTypeQName);
 
     /**
