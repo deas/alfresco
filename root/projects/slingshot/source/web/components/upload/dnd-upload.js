@@ -560,6 +560,16 @@
             data,
             uniqueFileToken;
 
+         // Calculate the total expected upload size ahead of upload start to ensure
+         // that a steady progress indication is presented...
+         var _files = this.showConfig.files,
+             aggregateSize = 0;
+         for (var i=0; i<_files.length; i++)
+         {
+            aggregateSize += _files[i].size;
+         }
+         this.aggregateUploadTargetSize = aggregateSize;
+         
          // Recursively perform the upload.
          this.recursiveUpload(0, this.showConfig.files.length, this);
       },
@@ -679,17 +689,19 @@
                   }
                };
 
-               
+               // Get the name of the file (note that we use ".name" and NOT ".fileName" which is non-standard and it's use 
+               // will break FireFox 7)...
+               var fileName = scope.showConfig.files[i].name;
                
                // Check if the file has size...
                if (this.showConfig.files[i].size === 0)
                {
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: scope.msg("message.zeroByteFileSelected", scope.showConfig.files[i].fileName)
+                     text: scope.msg("message.zeroByteFileSelected", fileName)
                   });
                }
-               else if (!Alfresco.forms.validation.nodeName({ id: 'file', value: scope.showConfig.files[i].fileName }, null, null, null, true))
+               else if (!Alfresco.forms.validation.nodeName({ id: 'file', value: fileName }, null, null, null, true))
                {
                   Alfresco.util.PopupManager.displayMessage(
                   {
@@ -710,7 +722,6 @@
                   request.upload.addEventListener("error", failureListener, false);
                   
                   // Construct the data that will be passed to the YUI DataTable to add a row...
-                  var fileName = scope.showConfig.files[i].fileName;
                   data = {
                       id: fileId,
                       name: fileName,
@@ -721,7 +732,7 @@
                   var uploadData =
                   {
                      filedata: scope.showConfig.files[i],
-                     filename: scope.showConfig.files[i].fileName,
+                     filename: fileName,
                      destination: scope.showConfig.destination,
                      siteId: scope.showConfig.siteId,
                      containerId: scope.showConfig.containerId,
@@ -918,7 +929,6 @@
             var url = Alfresco.constants.PROXY_URI + "api/upload";
             var data = event.record.getData();
             var fileInfo = this.fileStore[data.id];
-            this.aggregateUploadTargetSize += fileInfo.uploadData.filedata.size;
 
             // Initialise the lastProgress attribute, this will be updated each time a progress
             // event is processed and will be used to calculate the overall progress of *all* uploads...
@@ -952,7 +962,7 @@
                // Add the file parameter...
                customFormData += rn + "Content-Disposition: form-data; name=\"filedata\"; filename=\"" + unescape(encodeURIComponent(fileInfo.uploadData.filename)) + "\"";
                customFormData += rn + "Content-Type: image/png";
-               customFormData += rn + rn + fileInfo.uploadData.filedata.getAsBinary() + rn + "--" + multipartBoundary;
+               customFormData += rn + rn + fileInfo.uploadData.filedata.getAsBinary() + rn + "--" + multipartBoundary; // Use of getAsBinary should be fine here - in-memory upload is only used pre FF4
 
                // Add the String parameters...
                customFormData += rn + "Content-Disposition: form-data; name=\"filename\"";
