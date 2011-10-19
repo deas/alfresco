@@ -1812,11 +1812,11 @@ public class CoreTracker implements CloseHook
             }
             catch (JSONException e)
             {
-                log.warn(e.getStackTrace().toString());
+                log.error(e.getStackTrace().toString());
             }
             catch (AuthenticationException e)
             {
-                log.warn(e.getStackTrace().toString());
+                log.error(e.getStackTrace().toString());
             }
         }
         
