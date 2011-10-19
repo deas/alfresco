@@ -108,6 +108,66 @@ diff mybatis-3.0.4-sources-patched/org/apache/ibatis/executor/Executor.java myba
 ---
 > }
 
-
+diff mybatis-3.0.4-sources-patched/org/apache/ibatis/ognl/Ognl.java mybatis-3.0.4-sources/org/apache/ibatis/ognl/Ognl.java 
+35,38d34
+< import java.util.concurrent.ConcurrentHashMap;
+< import java.util.concurrent.locks.ReentrantReadWriteLock;
+< import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+< import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+103,131d98
+<     // a cache of string expressions to parsed expressions
+<   private static final Map<String, Node> expressionCache = new ConcurrentHashMap<String, Node>();
+<   private static final ReadLock readLock;
+<   private static final WriteLock writeLock;
+< 
+<   static
+<   {
+<       ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+<       readLock = rwLock.readLock();
+<       writeLock = rwLock.writeLock();
+<   }
+< 
+<   private static Node cacheExpression(String expression) throws ParseException
+<   {
+<       try
+<       {
+<           Node node = new OgnlParser(new StringReader(expression)).topLevelExpression();
+< 
+<           writeLock.lock();
+<           expressionCache.put(expression, node);
+< 
+<           return node;
+<       }
+<       finally
+<       {
+<           writeLock.unlock();
+<       }
+<   }
+<   
+143,163c110,111
+<       Node node = null;
+< 
+<       try
+<       {
+<           readLock.lock();
+< 
+<           // look in the expression cache first
+<           node = expressionCache.get(expression);
+<       }
+<       finally
+<       {
+<           readLock.unlock();
+<       }
+< 
+<       if(node == null)
+<       {
+<           // nothing cached for this expression, parse the expression and cache it
+<           node = cacheExpression(expression);
+<       }
+< 
+<       return node;
+---
+>       OgnlParser parser = new OgnlParser(new StringReader(expression));
+>       return parser.topLevelExpression();
 
 
