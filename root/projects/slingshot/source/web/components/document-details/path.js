@@ -207,7 +207,7 @@
          var folderData = args[1].folderDetails,
             pathHtml = "",
             rootLink = this.options.rootPage,
-            pathUrl = "",
+            pathUrl = "/",
             folders = [],
             href;
          
