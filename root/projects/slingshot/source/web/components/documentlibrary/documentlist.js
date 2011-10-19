@@ -2804,7 +2804,9 @@
                      var oColumn = this.widgets.dataTable.getColumn(e.target),
                         record = oRecord.getData();
 
-                     if (oRecord && oColumn && e.target.tagName == "IMG" && record.node.isContainer && oColumn.getKey() == "thumbnail")
+                     if (oRecord && oColumn && 
+                         (e.target.tagName == "IMG" || (e.target.tagName == "SPAN" && Dom.hasClass(e.target, "droppable"))) && 
+                         record.node.isContainer && oColumn.getKey() == "thumbnail")
                      {
                         var location = record.location;
                         directoryName = location.file;
