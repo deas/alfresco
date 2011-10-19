@@ -101,19 +101,22 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          editor.isNotDirty = 1;
       },
       
-      addPageUnloadBehaviour: function RichEditorManage_tinyMCE_addUnloadBehaviour(message)
+      addPageUnloadBehaviour: function RichEditorManage_tinyMCE_addUnloadBehaviour(message, callback)
       {
          // Page unload / unsaved changes behaviour
          window.onbeforeunload = function(e)
          {
-            var e = e || window.event;
-            if (editor.isDirty())
+            if (callback())
             {
-               if (e)
+               var e = e || window.event;
+               if (editor.isDirty())
                {
-                  e.returnValue = message;
+                  if (e)
+                  {
+                     e.returnValue = message;
+                  }
+                  return message;
                }
-               return message;
             }
          };
       }

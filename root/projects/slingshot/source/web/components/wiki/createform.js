@@ -81,6 +81,18 @@
       },
 
       /**
+       * Indicates whether or not to display the page unload dialog when the onbeforeunload event is fired.
+       * This value is returned by an unload callback function which is called before the page is unloaded.
+       * The value only gets toggled to "false" when the page is saved as there is no point in warning the
+       * user when they're in the process of saving data. 
+       * 
+       * @property _showUnloadDialog
+       * @type boolean
+       * @default true
+       */
+      _showUnloadDialog: true,
+      
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Initialises components, including YUI widgets.
        *
@@ -114,7 +126,17 @@
             siteId: this.options.siteId,
             language: this.options.locale
          });
-         this.widgets.editor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.wiki"));
+         
+         // This callback method is passed through for handling onbeforeunload events to stop the dialog being
+         // shown when a page save is requested. This is because the dialog is only required if the user is 
+         // navigating away from the page *without* saving it. They shouldn't be warned when attempting to save.
+         var _this = this;
+         var unloadCallback = function() 
+         {
+            return _this._showUnloadDialog; // This value gets toggled when saving the page.
+         }
+         
+         this.widgets.editor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.wiki"), unloadCallback);
          this.widgets.editor.render();
 
          this.widgets.saveButton = new YAHOO.widget.Button(this.id + "-save-button",
@@ -245,6 +267,8 @@
             name = obj.name;
          }
       
+         this._showUnloadDialog = false; // Ensure that the dialog warning about leaving the page isn't shown on save requests.
+         
          // Redirect to the page that has just been created
          window.location =  Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/wiki-page?title=" + encodeURIComponent(name);
       },
