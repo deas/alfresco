@@ -93,14 +93,6 @@
       busy: null,
 
       /**
-       * Tells whether the user has permissions to create, edit and/or delete a comment.
-       *
-       * @property permissions
-       * @type Object
-       */
-      permissions: {},
-
-      /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
        *
@@ -192,9 +184,9 @@
 
       handlePermissions: function(oRequest, oFullResponse)
       {
-         // Here we get a chance of looking at the use's permissions
-         this.permissions = oFullResponse.nodePermissions || {};
-         if (this.permissions["create"])
+         // Examine the user permissions on the parent node
+         var permissions = oFullResponse.nodePermissions || {};
+         if (permissions["create"])
          {
             Dom.removeClass(this.id + "-actions", "hidden");
          }
@@ -376,7 +368,8 @@
          // todo: Move this to use js templating when we have it
          var data = oRecord.getData(),
             html = '',
-            rowId = this.id + '-' + oRecord.getId();
+            rowId = this.id + '-' + oRecord.getId(),
+            permissions = data.permissions;
 
          // Display comment
          html += '<div id="' + rowId + '-comment-container" class="comment-details">';
@@ -387,11 +380,11 @@
          html += Alfresco.util.relativeTime(Alfresco.util.fromISO8601(data.modifiedOnISO)) + '<br/>';
          html += '      </span>';
          html += '      <span class="comment-actions">';
-         if (this.permissions["edit"])
+         if (permissions["edit"])
          {
             html += '       <a href="#" name=".onEditCommentClick" rel="' + oRecord.getId() + '" title="' + this.msg("link.editComment") + '" class="' + this.id + ' edit-comment">&nbsp;</a>';
          }
-         if (this.permissions["delete"])
+         if (permissions["delete"])
          {
             html += '       <a href="#" name=".onConfirmDeleteCommentClick" rel="' + oRecord.getId() + '" title="' + this.msg("link.deleteComment") + '" class="' + this.id + ' delete-comment">&nbsp;</a>';
          }
