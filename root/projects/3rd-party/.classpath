@@ -237,6 +237,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
