@@ -51,6 +51,7 @@
 		<platformTest type="linux" />
 	    </ruleList>
 	</changePermissions>
+        <changePermissions permissions="700" files="${manager_installation_directory}/manager-osx.app/Contents/MacOS/installbuilder.sh" >
         <changePermissions permissions="700" files="${manager_installation_directory}/manager-osx.app/Contents/MacOS/osx-intel" >
 	    <ruleList>
 		<platformTest type="osx" />
