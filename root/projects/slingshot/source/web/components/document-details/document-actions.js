@@ -566,7 +566,7 @@
       {
          var displayName = asset.displayName,
             nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
-            originalNodeRef = new Alfresco.util.NodeRef(asset.custom.workingCopyOriginal),
+            originalNodeRef = new Alfresco.util.NodeRef(asset.workingCopy.sourceNodeRef),
             path = asset.location.path,
             fileName = asset.fileName;
 
