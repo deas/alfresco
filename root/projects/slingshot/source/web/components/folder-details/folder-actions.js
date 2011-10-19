@@ -260,7 +260,7 @@
       },
 
       /**
-       * Refresh component in response to metadataRefresh event
+       * Refresh component in response to filesPermissionsUpdated event
        *
        * @method doRefresh
        */

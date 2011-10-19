@@ -205,11 +205,16 @@
          </bean>
       </property>
    </bean>
-
-   <bean id="evaluator.doclib.action.hasLockableAspect" parent="evaluator.doclib.action.hasAspect">
-      <property name="aspects">
+   
+   <bean id="evaluator.doclib.action.isLocked" parent="evaluator.doclib.action.propertyNotNull">
+      <property name="property" value="cm:lockOwner"/>
+   </bean>
+   
+   <bean id="evaluator.doclib.action.notEditable" parent="evaluator.doclib.action.chainedMatchOne">
+      <property name="evaluators">
          <list>
-            <value>cm:lockable</value>
+            <ref bean="evaluator.doclib.action.isLocked" />
+            <ref bean="evaluator.doclib.action.isWorkingCopy" />
          </list>
       </property>
    </bean>

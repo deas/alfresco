@@ -464,13 +464,13 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator negate="true">evaluator.doclib.action.hasLockableAspect</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.notEditable</evaluator>
          </action>
 
          <!-- Copy to -->
          <action id="document-copy-to" type="javascript" label="actions.document.copy-to">
             <param name="function">onActionCopyTo</param>
-            <evaluator negate="true">evaluator.doclib.action.hasLockableAspect</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Move to -->
@@ -479,7 +479,7 @@
             <permissions>
                <permission allow="true">Delete</permission>
             </permissions>
-            <evaluator negate="true">evaluator.doclib.action.hasLockableAspect</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Delete -->
@@ -613,7 +613,7 @@
          <!-- Publish document -->
          <action id="document-publish" type="javascript" label="actions.document.publish">
             <param name="function">onActionPublish</param>
-            <evaluator negate="true">evaluator.doclib.action.hasLockableAspect</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
       </actions>
