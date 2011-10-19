@@ -93,9 +93,11 @@ public class FileInfo {
 
 	private long m_allocSize;
 
-	// File identifier and parent directory id
+	// File identifier 
 
 	private int m_fileId = -1;
+	
+	// parent directory id
 	private int m_dirId = -1;
 
 	// User/group id

@@ -29,17 +29,21 @@ package org.alfresco.jlan.server.filesys;
  */
 public final class AccessMode {
 
-	// Access mode constants
+	// JLAN Access mode constants
 
 	public static final int ReadOnly 			= 0x0000;
 	public static final int WriteOnly 			= 0x0001;
 	public static final int ReadWrite 			= 0x0002;
 	public static final int Execute 			= 0x0003;
+	
+	// Sharing mode constants
+	
 	public static final int Compatability 		= 0x0000;
 	public static final int Exclusive 			= 0x0010;
 	public static final int DenyWrite 			= 0x0020;
 	public static final int DenyRead 			= 0x0030;
 	public static final int DenyNone 			= 0x0040;
+	
 	public static final int NoCaching 			= 0x1000;
 	public static final int WriteThrough 		= 0x4000;
 	public static final int FCBOpen 			= 0x00FF;

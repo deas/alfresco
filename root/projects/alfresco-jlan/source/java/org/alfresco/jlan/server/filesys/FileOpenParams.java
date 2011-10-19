@@ -133,7 +133,7 @@ public class FileOpenParams {
 	 * 
 	 * @param path String
 	 * @param openAction int
-	 * @param accessMode int
+	 * @param accessMode int JLAN Access Mode
 	 * @param fileAttr int
 	 * @param pid int
 	 */
@@ -163,7 +163,7 @@ public class FileOpenParams {
 	 * 
 	 * @param path String
 	 * @param openAction int
-	 * @param accessMode int
+	 * @param accessMode int JLAN Access Mode
 	 * @param fileAttr int
 	 * @param gid int
 	 * @param uid int
@@ -200,7 +200,7 @@ public class FileOpenParams {
 	 * 
 	 * @param path String
 	 * @param openAction int
-	 * @param accessMode int
+	 * @param accessMode int JLAN Access Mode
 	 * @param searchAttr int
 	 * @param fileAttr int
 	 * @param allocSize int
@@ -237,7 +237,7 @@ public class FileOpenParams {
 	 * 	
 	 * @param path String
 	 * @param openAction int
-	 * @param accessMode int
+	 * @param accessMode int NT Access Mode
 	 * @param attr int
 	 * @param sharedAccess int
 	 * @param allocSize long
