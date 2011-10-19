@@ -187,11 +187,6 @@
 	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.3-complete.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4.jar" sourcepath="src/mybatis-3.0.4-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/mybatis-3.0.4-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7.jar" sourcepath="src/activiti-engine-5.7-sources.jar"/>
@@ -216,8 +211,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.expression-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.jdbc-3.0.5.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.springframework.orm-3.0.5.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.springframework.transaction-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.orm-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.orm-sources-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.transaction-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.transaction-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.web-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.test-sources-3.0.5.RELEASE.jar"/>
@@ -242,5 +237,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

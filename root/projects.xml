@@ -2855,7 +2855,7 @@
          <include name="junit-4.8.1.jar" />
          <include name="jta.jar" />
          <include name="commons/commons-dbcp-1.4-patched.jar" />
-         <include name="mybatis-3.0.4.jar" />
+         <include name="mybatis-3.0.4-patched.jar" />
          <include name="mybatis-spring-1.0.1.jar" />
          <include name="commons/commons-io-1.4.jar" />
          <include name="spring-surf/spring-surf-1.0.0.jar" />
@@ -2890,7 +2890,7 @@
          <include name="json.jar" />
          <include name="jta.jar" />
          <include name="commons/commons-dbcp-1.4-patched.jar" />
-         <include name="mybatis-3.0.4.jar" />
+         <include name="mybatis-3.0.4-patched.jar" />
          <include name="mybatis-spring-1.0.1.jar" />
          <include name="commons/commons-io-1.4.jar" />
          <include name="spring-surf/spring-surf-1.0.0.jar" />

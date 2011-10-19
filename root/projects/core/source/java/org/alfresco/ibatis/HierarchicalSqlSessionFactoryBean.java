@@ -118,8 +118,15 @@ public class HierarchicalSqlSessionFactoryBean extends SqlSessionFactoryBean
         private SqlSessionFactory sqlSessionFactory;
 
         private String environment = SqlSessionFactoryBean.class.getSimpleName();
+        
+        private boolean useLocalCaches = false;
+        
+        public void setUseLocalCaches(boolean useLocalCaches)
+		{
+			this.useLocalCaches = useLocalCaches;
+		}
 
-        /**
+		/**
          * Set the location of the MyBatis {@code SqlSessionFactory} config file. A typical value is
          * "WEB-INF/mybatis-configuration.xml".
          */
@@ -233,8 +240,9 @@ public class HierarchicalSqlSessionFactoryBean extends SqlSessionFactoryBean
                 try {
                     
                     // note: overridden here
-                    xmlConfigBuilder = new HierarchicalXMLConfigBuilder(resourceLoader, this.configLocation.getInputStream(), null, this.configurationProperties);
-                    
+                    xmlConfigBuilder = new HierarchicalXMLConfigBuilder(resourceLoader, this.configLocation.getInputStream(), null,
+                    		this.configurationProperties, this.useLocalCaches);
+
                     configuration = xmlConfigBuilder.parse();
                 } catch (Exception ex) {
                     throw new NestedIOException("Failed to parse config resource: "

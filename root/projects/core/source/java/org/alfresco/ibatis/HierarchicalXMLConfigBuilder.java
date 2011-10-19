@@ -82,7 +82,7 @@ public class HierarchicalXMLConfigBuilder extends BaseBuilder
 {
     final private HierarchicalResourceLoader resourceLoader;
     
-    public HierarchicalXMLConfigBuilder(HierarchicalResourceLoader resourceLoader, InputStream inputStream, String environment, Properties props)
+    public HierarchicalXMLConfigBuilder(HierarchicalResourceLoader resourceLoader, InputStream inputStream, String environment, Properties props, boolean useLocalCaches)
     {
         super(new Configuration());
         
@@ -93,12 +93,14 @@ public class HierarchicalXMLConfigBuilder extends BaseBuilder
         this.configuration.setVariables(props);
         this.parsed = false;
         this.environment = environment;
+        this.useLocalCaches = useLocalCaches;
         this.parser = new XPathParser(inputStream, true, props, new XMLMapperEntityResolver());
     }
 
     private boolean parsed;
     private XPathParser parser;
     private String environment;
+    private boolean useLocalCaches = false;
 
     public Configuration parse() {
       if (parsed) {
@@ -106,7 +108,7 @@ public class HierarchicalXMLConfigBuilder extends BaseBuilder
       }
       parsed = true;
       parseConfiguration(parser.evalNode("/configuration"));
-      return configuration;
+      return getConfiguration();
     }
 
     private void parseConfiguration(XNode root) {
@@ -120,6 +122,8 @@ public class HierarchicalXMLConfigBuilder extends BaseBuilder
         environmentsElement(root.evalNode("environments"));
         typeHandlerElement(root.evalNode("typeHandlers"));
         mapperElement(root.evalNode("mappers"));
+
+        configuration.setUseLocalCaches(useLocalCaches);
       } catch (Exception e) {
         throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
       }

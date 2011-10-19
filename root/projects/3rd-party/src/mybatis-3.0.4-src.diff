@@ -1,0 +1,113 @@
+diff mybatis-3.0.4-sources-patched/org/apache/ibatis/session/Configuration.java mybatis-3.0.4-sources/org/apache/ibatis/session/Configuration.java
+101,107d100
+<   protected boolean useLocalCaches = false;
+< 
+<   public void setUseLocalCaches(boolean useLocalCaches)
+<   {
+< 	this.useLocalCaches = useLocalCaches;
+<   }
+< 	
+297,298d289
+< 	executor.setUseLocalCache(useLocalCaches);
+< 
+
+diff mybatis-3.0.4-sources-patched/org/apache/ibatis/executor/BaseExecutor.java mybatis-3.0.4-sources/org/apache/ibatis/executor/BaseExecutor.java 
+29,30d28
+<   protected boolean useLocalCache = false;
+< 
+39,43c37,38
+<     if(useLocalCache)
+<     {
+< 	    this.localCache = new PerpetualCache("LocalCache");
+< 	    this.localOutputParameterCache = new PerpetualCache("LocalOutputParameterCache");
+<     }
+---
+>     this.localCache = new PerpetualCache("LocalCache");
+>     this.localOutputParameterCache = new PerpetualCache("LocalOutputParameterCache");
+47,55d41
+<   
+<   public void setUseLocalCache(boolean useLocalCache) {
+< 	this.useLocalCache = useLocalCache;
+<     if(useLocalCache)
+<     {
+< 	    this.localCache = new PerpetualCache("LocalCache");
+< 	    this.localOutputParameterCache = new PerpetualCache("LocalOutputParameterCache");
+<     }
+<   }
+74,78c60,61
+<       if(useLocalCache)
+<       {
+< 	      localCache = null;
+< 	      localOutputParameterCache = null;
+<       }
+---
+>       localCache = null;
+>       localOutputParameterCache = null;
+105,116c88,102
+<     if(useLocalCache) {
+<       try {
+<     	queryStack++;
+<     	CacheKey key = createCacheKey(ms, parameter, rowBounds);
+<     	list = (List) localCache.getObject(key);
+<     	if (list != null) {
+<     	  handleLocallyCachedOutputParameters(ms, key, parameter);
+<     	} else {
+<     	  list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key);
+<     	}
+<       } finally {
+<     	queryStack--;
+---
+>     try {
+>       queryStack++;
+>       CacheKey key = createCacheKey(ms, parameter, rowBounds);
+>       list = (List) localCache.getObject(key);
+>       if (list != null) {
+>         handleLocallyCachedOutputParameters(ms, key, parameter);
+>       } else {
+>         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key);
+>       }
+>     } finally {
+>       queryStack--;
+>     }
+>     if (queryStack == 0) {
+>       for (DeferredLoad deferredLoad : deferredLoads) {
+>         deferredLoad.load();
+118,125d103
+< 
+<       if (queryStack == 0) {
+<           for (DeferredLoad deferredLoad : deferredLoads) {
+<             deferredLoad.load();
+<           }
+<         }
+<     } else {
+<       list = doQuery(ms, parameter, rowBounds, resultHandler);
+127d104
+< 
+193c170
+<     if (!closed && useLocalCache) {
+---
+>     if (!closed) {
+219c196
+<     if (ms.getStatementType() == StatementType.CALLABLE && useLocalCache) {
+---
+>     if (ms.getStatementType() == StatementType.CALLABLE) {
+
+diff mybatis-3.0.4-sources-patched/org/apache/ibatis/executor/CachingExecutor.java mybatis-3.0.4-sources/org/apache/ibatis/executor/CachingExecutor.java 
+36,38d35
+<   public void setUseLocalCache(boolean useLocalCache) {
+< 	delegate.setUseLocalCache(useLocalCache);
+<   }
+
+
+diff mybatis-3.0.4-sources-patched/org/apache/ibatis/executor/Executor.java mybatis-3.0.4-sources/org/apache/ibatis/executor/Executor.java 31,32d30
+<   void setUseLocalCache(boolean useLocalCache);
+< 
+43c41
+< }
+\ No newline at end of file
+---
+> }
+
+
+
+
