@@ -17,17 +17,20 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * ConsoleTrashcan tool component.
+ * ConsoleChannels tool component.
  *
  * @namespace Alfresco
- * @class Alfresco.ConsoleTrashcan
+ * @class Alfresco.ConsoleChannels
  */
 (function()
 {
    /**
     * YUI Library aliases
     */
-   var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event, Element = YAHOO.util.Element;
+   var Dom = YAHOO.util.Dom,
+      Event = YAHOO.util.Event,
+      Element = YAHOO.util.Element,
+      KeyListener = YAHOO.util.KeyListener;
    
    /**
     * Alfresco Slingshot aliases
@@ -72,8 +75,7 @@
           */
          onLoad: function onLoad()
          {
-            // Buttons
-            //parent.widgets.emptyButton = Alfresco.util.createYUIButton(parent, "empty-button", parent.onEmptyClick);
+            
          }
       });
       new ListPanelHandler();
@@ -218,13 +220,14 @@
       renderChannel: function consoleChannels_renderChannel(oRecord)
       {
          var channel = oRecord.getData(), 
-			   rel = ' rel="' + channel.id + '"', 
-			   deleteLink = '<a href=# class="channelAction delete" ' + rel + ' title="' + this.msg("channelAdmin.delete.tooltip") + '">' + this.msg("channelAdmin.delete") + '</a>',
+			   rel = ' rel="' + channel.id + '"',
+            editNodeTooltip = $html(this.msg("channelAdmin.editNode.tooltip", channel.title)),
+			   deleteLink = '<a href="#" class="channelAction delete" ' + rel + ' title="' + this.msg("channelAdmin.delete.tooltip") + '">' + this.msg("channelAdmin.delete") + '</a>',
 			   permissionsLink= '<a href="#" class="channelAction permissions" ' + rel + ' title="' + this.msg("channelAdmin.permissions.tooltip") + '">' + this.msg("channelAdmin.permissions") + '</a>',
-				reauth = '<a href=# class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>',
+				reauth = '<a href="#" class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>',
             status = "authorised",
 				title = this.msg("channelAdmin.authorised.tooltip"),
-				image = '<img src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "/64" + '" title="' + $html(channel.channelType.title) + '"/>',
+				image = '<a href="#" class="channelAction editNode"' + rel + ' title="' + editNodeTooltip + '"><img class="editNode" src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "/64" + '" title="' + editNodeTooltip + '"/></a> ',
 				channelNameId = this.id + "-channelName-" + oRecord.getId(),
             html = "";
          
@@ -388,17 +391,21 @@
 		 */
       onChannelInteraction: function consoleChannels_onChannelInteraction(o, args)
 		{
-			if (YAHOO.util.Selector.test(o.event.target, 'a.delete'))
-			{
-				this.onDeleteChannel(o.event, args);
-			}
-         else if (YAHOO.util.Selector.test(o.event.target, 'a.reauth')) 
+         if (YAHOO.util.Selector.test(o.event.target, 'a.delete'))
+         {
+            this.onDeleteChannel(o.event, args);
+         }
+         else if (YAHOO.util.Selector.test(o.event.target, 'a.reauth'))
          {
             this.onReauthChannel(o.event, args);
          }
-         else if (YAHOO.util.Selector.test(o.event.target, 'a.permissions')) 
+         else if (YAHOO.util.Selector.test(o.event.target, 'a.permissions'))
          {
             this.onPermissionsClick(o.event, args);
+         }
+         else if (YAHOO.util.Selector.test(o.event.target, '.editNode'))
+         {
+            this.onEditNode(o.event, args);
          }
 		},
 
@@ -744,7 +751,98 @@
 			// reload channels
 			this.refresh();
       },
-		
+
+      /**
+       *
+       * Loads the form to edit a channel node
+       *
+       * @method onEditNode
+       */
+      onEditNode: function consoleChannels_onEditNode(event, o)
+      {
+         var nodeRef = Dom.getAttribute(event.target, "rel") || Dom.getAttribute(Dom.getAncestorByTagName(event.target, "a"), "rel")
+
+         if (nodeRef)
+         {
+            var elementId = this.id + "-editNode",
+               editNode = new Alfresco.module.SimpleDialog(elementId),
+               headerNode = document.createElement("div");
+
+            headerNode.innerHTML = '<h2>' + this.msg("channelAdmin.editNode.header") + '</h2>';
+            Dom.addClass(headerNode, "yui-g");
+
+            var doBeforeDialogShow = function consoleChannels_onEditNode_doBeforeDialogShow(p_form, p_dialog)
+               {
+                  Dom.get(elementId + "-form-container_h").innerHTML = this.msg("channelAdmin.editNode.title");
+                  Dom.insertBefore(headerNode, Dom.get(elementId + "-form-fields"));
+               };
+
+            editNode.setOptions(
+            {
+               width: "33em",
+               templateUrl: YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&mode={mode}&submitType={submitType}&showCancelButton=true",
+               {
+                  itemKind: "node",
+                  itemId: nodeRef,
+                  mode: "edit",
+                  submitType: "json"
+               }),
+               actionUrl: null,
+               destroyOnHide: true,
+               doBeforeDialogShow:
+               {
+                  fn: doBeforeDialogShow,
+                  scope: this
+               },
+               onSuccess:
+               {
+                  fn: function consoleChannels_onEditNode_success(response)
+                  {
+                     this.onEditNodeFinished();
+                     Alfresco.util.PopupManager.displayMessage(
+                     {
+                        text: this.msg("channelAdmin.editNode.success")
+                     });
+                  },
+                  scope: this
+               },
+               onFailure:
+               {
+                  fn: function consoleChannels_onEditNode_failure(response)
+                  {
+                     if (response)
+                     {
+                        Alfresco.util.PopupManager.displayMessage(
+                        {
+                           text: this.msg("channelAdmin.editNode.failure")
+                        });
+                     }
+                     else
+                     {
+                        Alfresco.util.PopupManager.displayMessage(
+                        {
+                           text: this.msg("message.failure")
+                        });
+                     }
+                  },
+                  scope: this
+               }
+            }).show();
+         }
+         event.preventDefault();
+      },
+
+      /**
+       *
+       * Editing the node has finished, reload the channels.
+       *
+       * @method onEditNodeFinished
+       */
+      onEditNodeFinished: function consoleChannels_onEditNodeFinished()
+      {
+         this.refresh();
+      },
+
 		/**
 		 * Refreshes the channels
 		 * 
@@ -756,7 +854,7 @@
 			// Reset the hash.
 			window.location.hash = "";
 			
-			// Remove the insitu editor referrences (these will be recreated when the table is rerendered)
+			// Remove the insitu editor references (these will be recreated when the table is rerendered)
 			this.insituEditors = [];
 			
 			// Reload the dataTable.

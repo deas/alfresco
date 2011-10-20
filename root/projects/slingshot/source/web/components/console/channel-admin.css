@@ -136,3 +136,8 @@ div.channels.managePermissions .permissions-show
 {
    display:block;
 }
+
+.form-container .form-fields
+{
+   padding: 1em 1em 0;
+}

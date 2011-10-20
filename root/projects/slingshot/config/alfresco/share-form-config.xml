@@ -478,6 +478,70 @@
          </form>
       </forms>
    </config>
+
+
+   <!-- Publishing Channels Form Config -->
+
+   <config evaluator="node-type" condition="flickr:DeliveryChannel">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+
+   <config evaluator="node-type" condition="youtube:DeliveryChannel">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+
+   <config evaluator="node-type" condition="slideshare:DeliveryChannel">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+
+   <config evaluator="node-type" condition="facebook:DeliveryChannel">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+
+   <config evaluator="node-type" condition="twitter:DeliveryChannel">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+
+   <config evaluator="node-type" condition="linkedin:DeliveryChannel">
+      <forms>
+         <form>
+            <field-visibility>
+               <show id="cm:name" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+
    
    <!-- JMX Form Config -->
    
