@@ -363,7 +363,7 @@
 	    <insertBefore>components</insertBefore>
 	    <optionList>
 		<option text="Easy - Installs servers with the default configuration" value="easy" />
-		<option text="Advanced - Configures server ports and service properties. Also choose optional components to install." value="advanced" />
+		<option text="Advanced - Configures server ports and service properties." description="Also choose optional components to install." value="advanced" />
 	    </optionList>
 	    <validationActionList>
                 <setInstallerVariable name="component(postgres).selected" value="1" />
