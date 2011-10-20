@@ -95,7 +95,7 @@
             url: Alfresco.constants.URL_SERVICECONTEXT + "components/form",
             dataObj:
             {
-               htmlid: this.id + "-DocumentMetadata-" + Alfresco.util.generateDomId(),
+               htmlid: this.id + "-formContainer",
                itemKind: "node",
                itemId: this.options.nodeRef,
                formId: this.options.formId,

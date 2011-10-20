@@ -39,7 +39,7 @@
     * @return {Alfresco.FormUI} The new FormUI instance
     * @constructor
     */
-   Alfresco.FormUI = function FormUI_consructor(htmlId, parentId)
+   Alfresco.FormUI = function FormUI_constructor(htmlId, parentId)
    {
       Alfresco.FormUI.superclass.constructor.call(this, "Alfresco.FormUI", htmlId, ["button", "menu", "container"]);
 
