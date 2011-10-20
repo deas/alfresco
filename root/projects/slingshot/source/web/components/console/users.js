@@ -1553,8 +1553,8 @@
          // Show uploader for single file select - override the upload URL to use appropriate upload service
          var uploadConfig =
          {
-            flashUploadURL: "/api/people/upload",
-            htmlUploadURL: "/api/people/upload.html",
+            flashUploadURL: "api/people/upload",
+            htmlUploadURL: "api/people/upload.html",
             mode: this.fileUpload.MODE_SINGLE_UPLOAD,
             onFileUploadComplete:
             {
