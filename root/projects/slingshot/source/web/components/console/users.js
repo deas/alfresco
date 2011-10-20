@@ -1545,16 +1545,18 @@
        */
       onUploadUsersClick: function ConsoleUsers_onUploadUsersClick(e, args)
       {
+         // Force the use of the HTML (rather than Flash) uploader because there are issues with the
+         // Flash uploader in these circumstances when Sharepoint is being used. The Flash uploader
+         // picks up the wrong JSESSIONID cookie which causes the upload to fail.
          if (!this.fileUpload)
          {
-            this.fileUpload = Alfresco.getFileUploadInstance();
+            this.fileUpload = Alfresco.util.ComponentManager.findFirst("Alfresco.HtmlUpload") 
          }
          
          // Show uploader for single file select - override the upload URL to use appropriate upload service
          var uploadConfig =
          {
-            flashUploadURL: "api/people/upload",
-            htmlUploadURL: "api/people/upload.html",
+            uploadURL: "api/people/upload.html",
             mode: this.fileUpload.MODE_SINGLE_UPLOAD,
             onFileUploadComplete:
             {
@@ -1562,7 +1564,12 @@
                scope: this
             }
          };
+         
          this.fileUpload.show(uploadConfig);
+         
+         // Make sure the "use Flash" tip is hidden just in case Flash is enabled...
+         var singleUploadTip = Dom.get(this.fileUpload.id + "-singleUploadTip-span");
+         Dom.addClass(singleUploadTip, "hidden");
          Event.preventDefault(e);
       },
       
