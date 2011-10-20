@@ -29,7 +29,7 @@
    <div id="${el}-item-template" class="item">
       <div class="thumbnail">
          <div class="action-overlay">
-            <a href="${url.context}/page/site/${page.url.templateArgs.site}/document-details?nodeRef={nodeRef}"><img title="${msg("label.viewdetails")}" src="${url.context}/res/components/documentlibrary/actions/document-details-16.png" width="16" height="16" /></a>
+            <a href="${url.context}/page/site/${page.url.templateArgs.site}/document-details?nodeRef={nodeRef}"><img title="${msg("label.viewdetails")}" src="${url.context}/res/components/documentlibrary/actions/document-view-details-16.png" width="16" height="16" /></a>
             <a href="${url.context}/proxy/alfresco/api/node/content/{nodeRefUrl}/{name}?a=true"><img title="${msg("label.download")}" src="${url.context}/res/components/documentlibrary/actions/document-download-16.png" width="16" height="16"/></a>
          </div>
          <a href="${url.context}/proxy/alfresco/api/node/content/{nodeRefUrl}/{name}" onclick="showLightbox(this);return false;" title="{title} - {modifier} {modified}"><img src="${url.context}/proxy/alfresco/api/node/{nodeRefUrl}/content/thumbnails/doclib?c=force"/></a>
