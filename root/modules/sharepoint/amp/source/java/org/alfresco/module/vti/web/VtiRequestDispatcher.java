@@ -311,6 +311,13 @@ public class VtiRequestDispatcher extends HttpServlet
                 }
             }
         }
+        else if (uri != null && pattern != null)
+        {
+            if(uri.equals(pattern))
+            {
+                result = true;
+            }
+        }
         return result;
     }
     

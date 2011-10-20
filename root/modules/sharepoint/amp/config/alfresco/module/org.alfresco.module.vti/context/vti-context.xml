@@ -88,6 +88,10 @@
                     <property name="action" ref="vtiSoapAction"/>
                 </bean>
                 <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="uriPattern" value="/"/>
+                    <property name="action" ref="vtiWelcomeInfoAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
                     <property name="customRules">
                         <map>
                             <entry key="Request-method"><value>PROPFIND</value></entry>
@@ -231,6 +235,11 @@
 
     <bean id="vtiBrowserAction" class="org.alfresco.module.vti.web.actions.VtiBrowserAction">
         <property name="handler" ref="dwsServiceHandler" />
+    </bean>
+
+    <bean id="vtiWelcomeInfoAction" class="org.alfresco.module.vti.web.actions.VtiWelcomeInfoAction">
+        <property name="sysAdminParams" ref="sysAdminParams" />
+        <property name="templateService" ref="TemplateService" />
     </bean>
 
     <bean id="vtiSoapAction" class="org.alfresco.module.vti.web.actions.VtiSoapAction">
