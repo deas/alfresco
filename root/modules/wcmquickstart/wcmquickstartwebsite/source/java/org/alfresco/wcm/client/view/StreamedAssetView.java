@@ -66,6 +66,12 @@ public class StreamedAssetView extends AbstractUrlBasedView
         this(asset, null, attach);
     }
     
+    @Override
+    protected boolean isUrlRequired()
+    {
+        return false;
+    }
+
     public static void setHeaderHelper(HeaderHelper headerHelper)
     {
         StreamedAssetView.headerHelper = headerHelper;
