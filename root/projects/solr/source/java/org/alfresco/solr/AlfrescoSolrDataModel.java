@@ -1022,6 +1022,7 @@ public class AlfrescoSolrDataModel
         // convert search parameters to cmis query options
         // TODO: how to handle store ref
         CMISQueryOptions options = new CMISQueryOptions(searchParameters.getQuery(), StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        options.setQueryMode(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS);
         options.setDefaultFieldName(searchParameters.getDefaultFieldName());
         // TODO: options.setDefaultFTSConnective()
         // TODO: options.setDefaultFTSFieldConnective()
