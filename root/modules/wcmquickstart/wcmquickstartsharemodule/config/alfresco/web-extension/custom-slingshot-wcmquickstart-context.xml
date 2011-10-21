@@ -9,6 +9,8 @@
          <list>
             <value>classpath:alfresco/wcmquickstart-form-config.xml</value>
             <value>classpath:alfresco/wcmquickstart-share-config.xml</value>
+            <value>classpath:alfresco/web-extension/wqs-config-custom.xml</value>
+            <value>jar:*!/META-INF/wqs-config-custom.xml</value>
          </list>
       </property>
    </bean>
