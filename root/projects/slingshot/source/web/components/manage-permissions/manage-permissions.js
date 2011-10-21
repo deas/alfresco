@@ -515,6 +515,38 @@
       },
 
       /**
+       * Converts a role name into a localised role name.
+       *
+       * @method _i18nRole
+       * @param untranslatedRole {string}
+       */
+      _i18nRole: function Permissions__i18nRole(untranslatedRole)
+      {
+         return this.msg("roles." + untranslatedRole.toLowerCase())
+      },
+
+      /**
+       * Returns custom datacell formatter that adds i18n support for role names.
+       *
+       * @method fnRenderCellRoleText
+       */
+      fnRenderCellRoleText: function Premissions_fnRenderCellRoleText(elCell, oRecord, oColumn, oData)
+      {
+         var scope = this;
+
+         /**
+          *
+          * custom datacell formatter that adds i18n support for role names.
+          *
+          */
+         return function Permissions_renderCellRoleText(elCell, oRecord, oColumn, oData)
+         {
+            arguments[3] = scope._i18nRole(arguments[3]);
+            scope.fnRenderCellText().apply(scope, arguments);
+         }
+      },
+
+      /**
        * Returns role custom datacell formatter
        *
        * @method fnRenderCellRole
@@ -555,7 +587,13 @@
                }
             }
             menuData = menuData.concat(scope.settableRolesMenuData);
-            
+
+            // Internationalise the roles strings displayed:
+            for (var j = 0, jj = menuData.length; j < jj; j++)
+            {
+               menuData[j].text = scope._i18nRole(menuData[j].text);
+            }
+
             elCell.innerHTML = '<span id="' + menuId + '"></span>';
 
             // Roles
@@ -572,12 +610,12 @@
                   var menuItem = p_aArgs[1];
                   if (menuItem)
                   {
-                     p_button.set("label", menuItem.cfg.getProperty("text"));
+                     p_button.set("label", scope._i18nRole(menuItem.value));
                      scope.onRoleChanged.call(scope, p_aArgs[1], p_index);
                   }
                }(rolesButton, index);
             });
-            rolesButton.set("label", $html(oRecord.getData("role")));
+            rolesButton.set("label", scope._i18nRole($html(oRecord.getData("role"))));
          };
       },
 
@@ -710,7 +748,7 @@
          [
             { key: "icon", label: "", sortable: false, formatter: this.fnRenderCellAuthorityIcon(), width: 32 },
             { key: "displayName", label: this.msg("column.authority"), sortable: false },
-            { key: "role", label: this.msg("column.role"), sortable: false, formatter: this.fnRenderCellText(), width: 240 }
+            { key: "role", label: this.msg("column.role"), sortable: false, formatter: this.fnRenderCellRoleText(), width: 240 }
          ];
          
          // DataTable definition - Inherited
