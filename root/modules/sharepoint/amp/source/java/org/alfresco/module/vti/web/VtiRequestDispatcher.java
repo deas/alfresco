@@ -237,6 +237,14 @@ public class VtiRequestDispatcher extends HttpServlet
             }
             targetAction.execute(httpRequest, httpResponse);
         }
+        else
+        {
+            if (logger.isInfoEnabled())
+            {
+                logger.info("Note - no handler was found for " + httpRequest.getMethod() +
+                		" to uri='" + uri + "'"); 
+            }
+        }
     }
 
     private boolean isRulesAccepted(HttpServletRequest request, ActionMapping actionMapping)

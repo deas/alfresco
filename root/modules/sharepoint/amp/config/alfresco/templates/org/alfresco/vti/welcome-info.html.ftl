@@ -6,9 +6,13 @@
 <body>
    <h1>This is the Alfresco SharePoint Module</h1>
 
-   <p>This URL is the URL that should be supplied to Microsoft Office so
-      that it can talk to Alfresco using the SharePoint Protocols. It is
-      not intended to be used in a web browser.</p>
+   <p>To make use of the Alfresco SharePoint Module with Microsoft
+      office, you should supply the URL
+      <b><a href="${vtiUrl}">${vtiUrl}</a></b><br />
+      That URL should be supplied to Microsoft Office so that it can talk 
+      to Alfresco using the SharePoint Protocols. This URL is not 
+      intended to be used in a web browser - it is only for use by
+      Microsoft Office.</p>
 
    <p>To access your Alfresco Repository in your browser, please visit:</p>
    <ul>

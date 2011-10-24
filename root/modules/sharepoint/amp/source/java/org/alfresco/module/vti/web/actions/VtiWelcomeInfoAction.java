@@ -82,6 +82,7 @@ public class VtiWelcomeInfoAction implements VtiAction
         Map<String,Object> model = new HashMap<String, Object>();
         model.put("alfrescoUrl", UrlUtil.getAlfrescoUrl(sysAdminParams));
         model.put("shareUrl", UrlUtil.getShareUrl(sysAdminParams));
+        model.put("vtiUrl", getVtiUrl(request));
         
         // Get the welcome template
         InputStream templateStream = getClass().getResourceAsStream(template);
@@ -130,5 +131,17 @@ public class VtiWelcomeInfoAction implements VtiAction
                 logger.debug("Action IO exception", e);
             }
         }
+    }
+    
+    private String getVtiUrl(HttpServletRequest request)
+    {
+       String url = request.getScheme() + "://" + request.getServerName();
+       if(request.getServerPort() != 80 && request.getServerPort() != 443)
+       {
+          url += ":" + request.getServerPort();
+       }
+       url += "/" + sysAdminParams.getAlfrescoContext() + "/";
+       
+       return url;
     }
 }
