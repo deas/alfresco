@@ -13,6 +13,19 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          config.mode = 'exact';
          config.relative_urls = false;
          config.elements = id;
+         
+         // Ensure that we use the <font> tag for font colour, size and type. Even though it is deprecated we
+         // need to use this as we will remove all style attributes from posted content to protect against 
+         // XSS vulnerabilities in IE6 & IE7 (this can be removed once those browsers are no longer supported)
+         if (config.formats == null)
+         {
+            config.formats = {};
+         }
+         config.formats.forecolor = {inline : 'font', attributes : {color : '%value'}};
+         config.formats.fontname = {inline : 'font', attributes : {face : '%value'}};
+         config.formats.fontsize = {inline : 'font', attributes : {size : '%value'}};
+         config.formats.fontsize_class = {inline : 'font', attributes : {'class' : '%value'}},
+         config.font_size_style_values = "1,2,3,4,5,6,7";
          config.plugins = (config.plugins && config.plugins != '') ? config.plugins + ', safari': 'safari';
          if (!config.init_instance_callback) 
          {
