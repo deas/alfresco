@@ -19,10 +19,6 @@
         <setInstallerVariable name="alfresco_readme_source_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock" />
         <setInstallerVariable name="alfresco_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock" />
 
-        <setInstallerVariable name="alfrescowcm_source_directory" value="${alfresco_svn_rootdir.unix}/build/assemble" />
-        <setInstallerVariable name="alfrescowcm_on_install_settings_directory" value="${alfresco_svn_rootdir.unix}/installer/bitrock/bitrock/alfrescowcm" />
-
-
         <setInstallerVariable name="alfresco_mmt_source_file" value="${alfresco_svn_rootdir.unix}/build/assemble/commands/bin/alfresco-mmt.jar" />
 
 

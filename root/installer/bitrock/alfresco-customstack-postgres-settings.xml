@@ -371,7 +371,7 @@
                 <setInstallerVariable name="component(postgresservice).selected" value="1" />
                 <setInstallerVariable name="component(alfrescopostgresdbcreation).selected" value="1" />
                 <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_waittostart).value" value="1" />
-                <componentSelection select="alfrescowcm,alfrescoquickr,alfrescorm,openofficecomponent,alfrescosharepoint,alfrescowmqs"/>
+                <componentSelection select="openofficecomponent,alfrescosharepoint,alfrescowmqs"/>
 
 		<actionGroup>
 		    <actionList>
@@ -390,7 +390,6 @@
 		</actionGroup>
 		<actionGroup>
 		    <actionList>
-                        <componentSelection deselect="alfrescowcm,alfrescoquickr,alfrescorm"/>
 			<setInstallerVariable name="component(tomcat).parameter(tomcat_show_ports).value" value="0" />
 			<setInstallerVariable name="component(openofficecomponent).parameter(openoffice_show_ports).value" value="0" />
 			<!--<setInstallerVariable name="component(mysql).parameter(mysql_information).parameter(mysql_server_port_show).value" value="0" />-->

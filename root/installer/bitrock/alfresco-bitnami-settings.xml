@@ -27,12 +27,10 @@
     </preInstallationActionList-->
     <readyToInstallActionList>
         <setInstallerVariable name="component(alfresco).parameter(alfresco_base_application_directory).value" value="${installdir}/apps/alfresco" />
-        <setInstallerVariable name="component(alfrescowcm).parameter(alfrescowcm_base_application_directory).value" value="${installdir}/apps/alfrescowcm" />
         <setInstallerVariable name="component(alfresco).parameter(alfresco_library_directory).value" value="${alfresco_base_application_directory}/lib" />
         <!--setInstallerVariable name="component(alfresco).parameter(alfresco_shared_directory).value" value="${alfresco_base_application_directory}/shared/classes" /-->
         <setInstallerVariable name="component(alfresco).parameter(alfresco_data_directory).value" value="${alfresco_base_application_directory}/data" />
         <setInstallerVariable name="component(alfresco).parameter(alfresco_commands_directory).value" value="${installdir}/apps/alfresco" />
-        <setInstallerVariable name="component(alfrescowcm).parameter(alfrescowcm_virtualtomcat_commands).value" value="${installdir}" />
         <setInstallerVariable name="component(alfrescoapplyamps).parameter(alfresco_amps_directory).value" value="${installdir}/apps/alfresco/amps" />
         <setInstallerVariable name="component(alfrescoapplyamps).parameter(alfresco_amps_share_directory).value" value="${installdir}/apps/alfresco/amps_share" />
     </readyToInstallActionList>

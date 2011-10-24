@@ -58,7 +58,6 @@
         <include file="alfresco-sharepoint.xml" />
         <include file="alfresco-records-management.xml" />
 	<include file="alfresco-wcmqs.xml" />
-	<include file="alfrescowcm.xml" />
         <include file="alfresco-quickr.xml" />
 	<include file="base-unix-service.xml" />
 

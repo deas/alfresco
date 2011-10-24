@@ -34,7 +34,6 @@
         <include file="base-adminaccount-registry.xml"/>
 	<include file="alfrescodm.xml"/>
         <include file="alfrescodm-database.xml"/>
-	<include file="alfrescowcm.xml"/>
 	<include file="alfresco-apply-amps.xml"/>
 	<include file="alfresco-module-settings.xml"/>
 	

@@ -78,7 +78,6 @@
     	<include file="alfrescodm.xml" />
     	<include file="alfrescodm-database.xml" />
         <include file="alfresco-mysql-question.xml" />
-    	<include file="alfrescowcm.xml" />
         <include file="alfresco-apply-amps.xml" />
 
         <include file="alfresco-bitnami-settings.xml" />

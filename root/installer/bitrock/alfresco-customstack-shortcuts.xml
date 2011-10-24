@@ -71,37 +71,6 @@
                 </startMenuShortcut>
             </startMenuShortcutList>
         </startMenuFolder>
-        <startMenuFolder>
-            <name>${product_fullname} Virtual Server</name>
-            <platforms>windows</platforms>
-            <startMenuShortcutList>
-                <startMenuShortcut>
-                    <comment>Start Virtual Server</comment>
-                    <name>Start Virtual Server</name>
-                    <windowsExec>${installdir}/bin/virtual_start.bat</windowsExec>
-                    <!--windowsExecArgs>start</windowsExecArgs-->
-                    <windowsIcon>${installdir}/alfresco.ico</windowsIcon>
-                    <windowsPath>${installdir}/</windowsPath>
-                    <ruleList>
-                        <componentTest logic="selected" name="alfrescowcm" />
-                    </ruleList>
-                </startMenuShortcut>
-                <startMenuShortcut>
-                    <comment>Stop Virtual Server</comment>
-                    <name>Stop Virtual Server</name>
-                    <windowsExec>${installdir}/bin/virtual_stop.bat</windowsExec>
-                    <!--windowsExecArgs>stop</windowsExecArgs-->
-                    <windowsIcon>${installdir}/alfresco.ico</windowsIcon>
-                    <windowsPath>${installdir}/</windowsPath>
-                    <ruleList>
-                        <componentTest logic="selected" name="alfrescowcm" />
-                    </ruleList>
-                </startMenuShortcut>
-            </startMenuShortcutList>
-            <!--ruleList>
-               <componentTest logic="selected" name="alfrescowcm" />
-            </ruleList-->
-        </startMenuFolder>
     </startMenuShortcutList>
     <folderList>
         <folder>
