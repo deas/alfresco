@@ -29,6 +29,16 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          // Need to set new size values to ensure that they work with the <font> tag
          config.font_size_style_values = "1,2,3,4,5,6,7";
          
+         // Remove the underline button if requested. This is done because of the previously mentioned prevention
+         // of XSS vulnerabilities through styles in IE6/7. TinyMCE should be able to support the deprecated 
+         // <u> tag but we have not been able to prevent it from being removed from the content. Therefore rather
+         // than providing a button that has no effect we will remove the button. This code can be removed once
+         // support for IE6/7 is removed and styles are re-introduced. 
+         var curr_buttons = config.theme_advanced_buttons1;
+         if (curr_buttons != null && curr_buttons.indexOf("underline") != -1)
+         {
+            config.theme_advanced_buttons1 = curr_buttons.replace("underline", "");
+         }
          
          config.plugins = (config.plugins && config.plugins != '') ? config.plugins + ', safari': 'safari';
          if (!config.init_instance_callback) 
