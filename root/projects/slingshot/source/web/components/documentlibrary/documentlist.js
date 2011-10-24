@@ -2040,6 +2040,7 @@
             // Register History Manager page update callback
             YAHOO.util.History.register("page", bookmarkedPage, function DL_onHistoryManagerPageChanged(newPage)
             {
+               newPage = parseInt(newPage, 10);
                Alfresco.logger.debug("HistoryManager: page changed:" + newPage);
                // Update the DocList
                if (this.currentPage !== newPage)
