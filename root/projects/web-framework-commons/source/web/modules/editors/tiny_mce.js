@@ -29,7 +29,6 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          // Need to set new size values to ensure that they work with the <font> tag
          config.font_size_style_values = "1,2,3,4,5,6,7";
          
-         config.theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,forecolor,|,undo,redo,removeformat"
          
          config.plugins = (config.plugins && config.plugins != '') ? config.plugins + ', safari': 'safari';
          if (!config.init_instance_callback) 
