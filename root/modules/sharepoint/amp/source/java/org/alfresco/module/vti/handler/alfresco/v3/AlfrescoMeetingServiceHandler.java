@@ -28,7 +28,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -45,8 +44,10 @@ import org.alfresco.module.vti.metadata.model.MwsTemplate;
 import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.calendar.CalendarModel;
+import org.alfresco.repo.calendar.CalendarServiceImpl;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
+import org.alfresco.service.cmr.calendar.CalendarEntry;
 import org.alfresco.service.cmr.calendar.CalendarService;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -68,9 +69,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
- * Alfresco implementation of MeetingServiceHandler
+ * Alfresco implementation of MeetingServiceHandler.
  * 
- * TODO Switch this to using the new {@link CalendarService}
+ * TODO Finish switching this to using the new {@link CalendarService}
  * 
  * @author PavelYur
  */
@@ -88,6 +89,8 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
     protected SiteService siteService;
 
+    protected CalendarService calendarService;
+    
     protected AuthenticationService authenticationService;
 
     protected TransactionService transactionService;
@@ -109,41 +112,13 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
      */
     public void addMeetingFromICal(String siteName, final MeetingBean meeting)
     {
-        NodeRef calendarContainer = null;
-        String dws = siteName;
-        if (siteService.hasContainer(dws, CALENDAR_CONTAINER_NAME))
-        {
-            calendarContainer = siteService.getContainer(dws, CALENDAR_CONTAINER_NAME);
-        }
-        else
-        {
-            calendarContainer = siteService.createContainer(dws, CALENDAR_CONTAINER_NAME, ContentModel.TYPE_FOLDER, null);
-        }
-
-        if (calendarContainer == null)
-        {
-            throw new VtiHandlerException(VtiHandlerException.LIST_NOT_FOUND);
-        }
-
         if (meeting.getSubject() == null)
         {
             throw new RuntimeException(getMessage("vti.meeting.error.no_subject"));
         }
 
-        final Map<QName, Serializable> props = fillMeetingProperties(meeting, true);
-        props.put(CalendarModel.PROP_IS_OUTLOOK, true);
-
-        final NodeRef finalcalendarContainer = calendarContainer;
-        transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<Object>()
-        {
-            public Object execute()
-            {
-                nodeService.createNode(finalcalendarContainer, ContentModel.ASSOC_CONTAINS, 
-                            QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, (String) props.get(ContentModel.PROP_NAME)), 
-                            CalendarModel.TYPE_EVENT, props);
-                return null;
-            }
-        });
+        adjustMeetingProperties(meeting);
+        calendarService.createCalendarEntry(siteName, meeting);
 
         if (logger.isDebugEnabled())
         {
@@ -250,15 +225,14 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         }
 
         NodeRef calendarNodeRef = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
-
         if (calendarNodeRef == null)
         {
             throw new RuntimeException(getMessage("vti.meeting.error.no_calendar"));
         }
 
-        final NodeRef meetingNodeRef = getEvent(calendarNodeRef, uid);
+        final CalendarEntry entry = getEvent(siteName, uid);
 
-        if (meetingNodeRef == null)
+        if (entry == null)
         {
             throw new RuntimeException(getMessage("vti.meeting.error.no_meeting"));
         }
@@ -269,7 +243,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
             {
                 if (recurrenceId == 0)
                 {
-                    nodeService.deleteNode(meetingNodeRef);
+                    calendarService.deleteCalendarEntry(entry);
                 }
                 else
                 {
@@ -282,7 +256,10 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
                     {
                         throw new RuntimeException(e);
                     }
-                    nodeService.createNode(meetingNodeRef, CalendarModel.ASSOC_IGNORE_EVENT_LIST, QName.createQName(NamespaceService.CONTENT_MODEL_PREFIX, "ignoreEvent_" + recurrenceId + "_"
+                    
+                    NodeRef meetingNodeRef = entry.getNodeRef();
+                    nodeService.createNode(meetingNodeRef, CalendarModel.ASSOC_IGNORE_EVENT_LIST, 
+                          QName.createQName(NamespaceService.CONTENT_MODEL_PREFIX, "ignoreEvent_" + recurrenceId + "_"
                             + GUID.generate()), CalendarModel.TYPE_IGNORE_EVENT, properties);
                 }
                 return null;
@@ -298,22 +275,36 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         NodeRef calendarContainer = null;
 
         calendarContainer = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
-
         if (calendarContainer == null)
         {
             throw new VtiHandlerException(getMessage("vti.meeting.error.no_site_update"));
         }
-
-        final NodeRef eventRef = getEvent(calendarContainer, meeting.getId());
-
-        if (eventRef == null)
+        
+        // Tweak things on the meeting bean as needed
+        adjustMeetingProperties(meeting);
+        
+        // Get the current event object to update
+        final CalendarEntry entry = getEvent(siteName, meeting.getId());
+        if (entry == null)
         {
             throw new VtiHandlerException(getMessage("vti.meeting.error.no_meeting_update"));
         }
+        
+        // Copy everything onto it
+        // TODO It would be better if the caller asked us for the
+        //  MeetingBean rather than creating a new one...
+        entry.setTitle(meeting.getTitle());
+        entry.setDescription(meeting.getDescription());
+        entry.setLocation(meeting.getLocation());
+        entry.setStart(meeting.getStart());
+        entry.setEnd(meeting.getEnd());
+        entry.setRecurrenceRule(meeting.getRecurrenceRule());
+        entry.setLastRecurrence(meeting.getLastRecurrence());
+        entry.setOutlookUID(meeting.getOutlookUID());
+        entry.setSharePointDocFolder(meeting.getSharePointDocFolder());
 
-        final Map<QName, Serializable> eventProps = nodeService.getProperties(eventRef);
-        eventProps.putAll(fillMeetingProperties(meeting, false));
-
+        // Do the attendees
+        // TODO Update this to be more efficient
         final List<String> usersToAdd = new ArrayList<String>();
         Set<NodeRef> peoples = personService.getAllPeople();
         final Set<String> siteMembers = siteService.listMembers(siteName, null, null, -1, true).keySet();
@@ -356,7 +347,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         {
             public Object execute()
             {
-                nodeService.setProperties(eventRef, eventProps);
+                calendarService.updateCalendarEntry(entry);
 
                 SiteInfo siteInfo = siteService.getSite(siteName);
                 String siteCreator = (String) nodeService.getProperty(siteInfo.getNodeRef(), ContentModel.PROP_CREATOR);
@@ -520,23 +511,8 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         return result;
     }
 
-    protected Map<QName, Serializable> fillMeetingProperties(MeetingBean meeting, boolean generateName)
+    protected void adjustMeetingProperties(MeetingBean meeting)
     {
-        Map<QName, Serializable> props = new HashMap<QName, Serializable>();
-        if (generateName)
-        {
-            String name = generateEventName();
-            props.put(ContentModel.PROP_NAME, name);
-        }
-        if (meeting.getSubject() != null)
-        {
-            props.put(CalendarModel.PROP_WHAT, meeting.getSubject());
-        }
-        if (meeting.getLocation() != null)
-        {
-            props.put(CalendarModel.PROP_WHERE, meeting.getLocation());
-        }
-        
         Calendar from = Calendar.getInstance();
         from.setTime(meeting.getStartDate());
         
@@ -550,41 +526,34 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
             // It is "All day" event
             // Alfresco uses PROP_TO_DATE_EVENT as last day of an event, so change last day in meeting
             to.roll(Calendar.DAY_OF_YEAR, false);
-            meeting.setEndDate(to.getTime());
+            meeting.setEnd(to.getTime());
         }
-        
-        props.put(CalendarModel.PROP_FROM_DATE, meeting.getStartDate());
-        props.put(CalendarModel.PROP_TO_DATE, meeting.getEndDate());
-        props.put(CalendarModel.PROP_DESCRIPTION, "");
-        props.put(CalendarModel.PROP_OUTLOOK_UID, meeting.getId());
-        props.put(CalendarModel.PROP_RECURRENCE_RULE, meeting.getReccurenceRule());
-        props.put(CalendarModel.PROP_RECURRENCE_LAST_MEETING, meeting.getLastMeetingDate()); 
-        return props;
     }
 
-    private String generateEventName()
+    private CalendarEntry getEvent(String siteName, String uid)
     {
-        long timestamp = new Date().getTime();
-        long random = Math.round(Math.random() * 10000);
+        CalendarEntry entry = calendarService.getCalendarEntry(siteName, uid+".ics");
 
-        return timestamp + "-" + random + ".ics";
-    }
-
-    private NodeRef getEvent(NodeRef calendarNodeRef, String uid)
-    {
-        NodeRef result = nodeService.getChildByName(calendarNodeRef, ContentModel.ASSOC_CONTAINS, uid + ".ics");
-
-        if (result == null)
+        if (entry == null)
         {
+            NodeRef calendarNodeRef = siteService.getContainer(siteName, CalendarServiceImpl.CALENDAR_COMPONENT);
+            if(calendarNodeRef == null)
+            {
+               return null;
+            }
+            
+            // Find by the UID property
             List<NodeRef> nodeRefs = searchService.selectNodes(calendarNodeRef, "*//.[@" + CalendarModel.PROP_OUTLOOK_UID.toPrefixString(namespaceService) + "='" + uid + "']", null,
                     namespaceService, false);
             if (nodeRefs != null && nodeRefs.size() == 1)
             {
-                result = nodeRefs.get(0);
+                NodeRef nodeRef = nodeRefs.get(0);
+                String eventName = (String)nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
+                entry = calendarService.getCalendarEntry(siteName, eventName);
             }
         }
 
-        return result;
+        return entry;
     }
 
     public void setSiteService(SiteService siteService)
@@ -595,6 +564,11 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     public void setShareUtils(ShareUtils shareUtils)
     {
         this.shareUtils = shareUtils;
+    }
+    
+    public void setCalendarService(CalendarService calendarService)
+    {
+        this.calendarService = calendarService;
     }
 
     public void setAuthenticationService(AuthenticationService authenticationService)

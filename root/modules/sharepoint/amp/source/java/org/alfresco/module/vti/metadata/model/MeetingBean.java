@@ -23,74 +23,49 @@ import java.util.Date;
 import java.util.List;
 
 import org.alfresco.service.cmr.calendar.CalendarEntry;
+import org.alfresco.service.cmr.calendar.CalendarEntryDTO;
 
 /**
- * The meeting bean
- * 
- * TODO Tie this in with the new {@link CalendarEntry} code
- * 
- * @author StasSo
+ * The meeting bean, which is an extension of the regular
+ *  {@link CalendarEntry} object with extra information on
+ *  the organiser and attendees
  */
-public class MeetingBean
+public class MeetingBean extends CalendarEntryDTO
 {
-    private String location;
-    private String subject;
-    private Date startDate;
-    private Date endDate;
-    private Date lastMeetingDate;
     private String organizer;
-    private String reccurenceRule;
     private List<String> attendees;
-    private String id;
-
-    public String getLocation()
+    
+    public MeetingBean()
     {
-        return location;
+        super();
+        
+        // We're always Outlook based
+        setOutlook(true);
     }
 
-    public void setLocation(String location)
-    {
-        this.location = location;
-    }
-
+    /**
+     * Returns the Subject (title)
+     */
     public String getSubject()
     {
-        return subject;
+        return getTitle();
     }
 
+    /**
+     * Sets the Subject (title)
+     */
     public void setSubject(String subject)
     {
-        this.subject = subject;
+        setTitle(subject);
     }
-
+    
     public Date getStartDate()
     {
-        return startDate;
+        return getStart(); 
     }
-
-    public void setStartDate(Date startDate)
-    {
-        this.startDate = startDate;
-    }
-
     public Date getEndDate()
     {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate)
-    {
-        this.endDate = endDate;
-    }
-
-    public Date getLastMeetingDate()
-    {
-        return lastMeetingDate;
-    }
-
-    public void setLastMeetingDate(Date lastMeetingDate)
-    {
-        this.lastMeetingDate = lastMeetingDate;
+        return getEnd();
     }
 
     public String getOrganizer()
@@ -101,16 +76,6 @@ public class MeetingBean
     public void setOrganizer(String organizer)
     {
         this.organizer = organizer;
-    }
-
-    public String getReccurenceRule()
-    {
-        return reccurenceRule;
-    }
-
-    public void setReccurenceRule(String reccurenceRule)
-    {
-        this.reccurenceRule = reccurenceRule;
     }
 
     public List<String> getAttendees()
@@ -125,11 +90,11 @@ public class MeetingBean
 
     public String getId()
     {
-        return id;
+        return getOutlookUID();
     }
 
     public void setId(String id)
     {
-        this.id = id;
+        setOutlookUID(id);
     }
 }

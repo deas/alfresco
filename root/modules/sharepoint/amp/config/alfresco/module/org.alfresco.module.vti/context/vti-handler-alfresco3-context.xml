@@ -61,6 +61,7 @@
     <bean id="meetingServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoMeetingServiceHandler">
         <property name="siteService" ref="SiteService" />
         <property name="shareUtils" ref="shareUtils" />
+        <property name="calendarService" ref="CalendarService" />
         <property name="authenticationService" ref="AuthenticationService"/>
         <property name="transactionService" ref="transactionService" />
         <property name="nodeService" ref="NodeService"/>

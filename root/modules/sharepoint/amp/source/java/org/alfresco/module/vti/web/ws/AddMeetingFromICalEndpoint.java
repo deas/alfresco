@@ -151,19 +151,19 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
     {
         MeetingBean meeting = new MeetingBean();
         meeting.setLocation(params.get("LOCATION"));
-        meeting.setSubject(params.get("SUMMARY"));
+        meeting.setTitle(params.get("SUMMARY"));
         meeting.setOrganizer(params.get("ORGANIZER"));
         meeting.setId(params.get("UID"));
-        meeting.setStartDate(parseDate(params.get("DTSTART")));
-        meeting.setEndDate(parseDate(params.get("DTEND")));
+        meeting.setStart(parseDate(params.get("DTSTART")));
+        meeting.setEnd(parseDate(params.get("DTEND")));
         if (params.get("RRULE") != null)
         {
-            meeting.setReccurenceRule(params.get("RRULE"));
-            meeting.setLastMeetingDate(getLastMeeting(meeting));
+            meeting.setRecurrenceRule(params.get("RRULE"));
+            meeting.setLastRecurrence(getLastMeeting(meeting));
             if (logger.isDebugEnabled())
             {
-                logger.debug("RRULE: " + meeting.getReccurenceRule());
-                logger.debug("Last meeting: " + meeting.getLastMeetingDate());
+                logger.debug("RRULE: " + meeting.getRecurrenceRule());
+                logger.debug("Last meeting: " + meeting.getLastRecurrence());
             }
         }
         List<String> attendees = new ArrayList<String>();
@@ -313,7 +313,7 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
      */
     private Date getLastMeeting(MeetingBean meeting)
     {
-        String[] ruleParams = meeting.getReccurenceRule().split(";");
+        String[] ruleParams = meeting.getRecurrenceRule().split(";");
 
         Map<String, String> eventParam = new HashMap<String, String>();
 
@@ -332,14 +332,14 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
         }
         else
         {
-            meeting.setReccurenceRule(meeting.getReccurenceRule() + ";INTERVAL=1");
+            meeting.setRecurrenceRule(meeting.getRecurrenceRule() + ";INTERVAL=1");
             reloadEventParam = true;
         }
 
         if (eventParam.get("FREQ").equals("YEARLY"))
         {
             // Yearly is the same as monthly, we just increase interval
-            String recRule = meeting.getReccurenceRule().replace("YEARLY", "MONTHLY");
+            String recRule = meeting.getRecurrenceRule().replace("YEARLY", "MONTHLY");
             interval *= 12;
             recRule = recRule.replace("INTERVAL=" + eventParam.get("INTERVAL"), "INTERVAL=" + interval);
 
@@ -349,21 +349,21 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
                 recRule = recRule + ";BYSETPOS=" + eventParam.get("BYMONTHDAY") + ";";
                 recRule = recRule + "BYDAY=SU,MO,TU,WE,TH,FR,SA;";
             }
-            meeting.setReccurenceRule(recRule);
+            meeting.setRecurrenceRule(recRule);
             reloadEventParam = true;
         }
 
         if (eventParam.get("FREQ").equals("DAILY") && eventParam.get("BYDAY") != null)
         {
-            String recRule = meeting.getReccurenceRule().replace("DAILY", "WEEKLY");
-            meeting.setReccurenceRule(recRule);
+            String recRule = meeting.getRecurrenceRule().replace("DAILY", "WEEKLY");
+            meeting.setRecurrenceRule(recRule);
             reloadEventParam = true;
         }
 
         if (reloadEventParam)
         {
             eventParam.clear();
-            ruleParams = meeting.getReccurenceRule().split(";");
+            ruleParams = meeting.getRecurrenceRule().split(";");
 
             for (int i = 0; i < ruleParams.length; i++)
             {
