@@ -142,6 +142,11 @@
    text-align: right;
 }
 
+.header .user-items .yuimenu
+{
+   visibility: hidden;
+}
+
 .header .user-items span.separator
 {
    border-left: 1px dotted #dfdfdf;
@@ -229,6 +234,7 @@
 .header .user-items a.avatar
 {
    display: inline-block;
+   left: 0;
    outline: medium none;
    padding: 0 10px 4px !important;
    position: absolute;

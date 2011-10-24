@@ -106,9 +106,9 @@
          {
             if (YAHOO.env.ua.webkit)
             {
-               Dom.setStyle(document.body, "-webkit-perspective", "800");
                this.widgets.panel.beforeShowEvent.subscribe(function()
                {
+                  Dom.setStyle(document.body, "-webkit-perspective", "800");
                   Dom.addClass(this.element, "appear");
                });
 
@@ -122,9 +122,9 @@
                         thisPanel.cfg.setProperty("visible", false);
                         Dom.removeClass(this, "appear");
                         Dom.removeClass(this, "spindrop");
+                        Dom.setStyle(document.body, "-webkit-perspective", null);
                      }
                   }, false);
-                  Dom.setStyle(document.body, "-webkit-perspective", null);
                   Dom.addClass(this.element, "spindrop");
                }
             }

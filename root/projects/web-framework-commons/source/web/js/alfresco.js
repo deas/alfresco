@@ -2112,7 +2112,6 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
             return;
          }
 
-         Alfresco.logger.debug("onContextMouseOver", e);
          // Stop the icon from being hidden (set on last mouseout)
          if (obj.hideProcId)
          {
@@ -2137,7 +2136,6 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
             return;
          }
 
-         Alfresco.logger.debug("onContextMouseOut", e);
          if (obj.showProcId)
          {
             clearTimeout(obj.showProcId);
