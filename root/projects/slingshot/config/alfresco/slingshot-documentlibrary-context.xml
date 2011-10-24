@@ -180,7 +180,7 @@
       <property name="evaluators">
          <list>
             <ref bean="evaluator.doclib.action.simpleWorkflowAspect" />
-            <ref bean="evaluator.doclib.action.simpleApproveProperty" />
+            <ref bean="evaluator.doclib.action.simpleRejectProperty" />
          </list>
       </property>
    </bean>
