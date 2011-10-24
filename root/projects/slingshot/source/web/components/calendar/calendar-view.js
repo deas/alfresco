@@ -542,13 +542,7 @@
             },
             onFailure:
             {
-               fn: function()
-               {
-                  Alfresco.util.PopupManager.displayMessage(
-                  {
-                     text: Alfresco.util.message('message.created.failure', this.name)
-                  });
-               },
+               fn: this.onEventSaveFailed,
                scope: this
             }
          });
@@ -646,73 +640,6 @@
                permitToEditEvents: this.options.permitToCreateEvents
             });
          }         
-      },
-      
-      /**
-       * Updates event to database
-       *
-       * @method updateEvent
-       * @param calEvent {object} The CalendarEvent object to update
-       */
-      updateEvent: function CalendarView_updateEvent(calEvent)
-      {
-         var eventUri = Dom.getElementsByClassName('summary', 'a', calEvent.getEl())[0].href;
-         var dts = fromISO8601(calEvent.getData('dtstart'));
-         var dte = fromISO8601(calEvent.getData('dtend', false));
-         // IE's slowness sometimes means that dtend is incorrectly parsed when an
-         // event is quickly resized.
-         // so we must add a recheck. Interim fix.
-         if (YAHOO.lang.isNull(dte))
-         {
-            var dtendData = YAHOO.util.Dom.getElementsByClassName('dtend', 'span', calEvent.getElement())[0];
-            var endTime = dtendData.innerHTML.split(':');
-            dte = new Date();
-            dte.setTime(dts.getTime());
-            dte.setHours(endTime[0]);
-            dte.setMinutes(endTime[1]);
-            calEvent.update(
-            {
-               dtend: toISO8601(dte)
-            });
-         }
-         var dataObj =
-         {
-            "site": this.options.siteId,
-            "page": "calendar",
-            "from": dateFormat(dts, 'yyyy/mm/dd'),
-            "to": dateFormat(dte, 'yyyy/mm/dd'),
-            "what": calEvent.getData('summary'),
-            "where": calEvent.getData('location'),
-            "desc": YAHOO.lang.isNull(calEvent.getData('description')) ? '' : calEvent.getData('description'),
-            "fromdate": dateFormat(dts, "dddd, d mmmm yyyy"),
-            "start": calEvent.getData('dtstart').split('T')[1].substring(0, 5),
-            "todate": dateFormat(dte, "dddd, d mmmm yyyy"),
-            "end": calEvent.getData('dtend').split('T')[1].substring(0, 5),
-            'tags': calEvent.getData('category'),
-            'docfolder': '*NOT_CHANGE*'
-         };
-
-         Alfresco.util.Ajax.request(
-         {
-            method: Alfresco.util.Ajax.PUT,
-            url: Alfresco.constants.PROXY_URI + 'calendar/' + eventUri.split('/calendar/')[1] + '&page=calendar',
-            dataObj: dataObj,
-            requestContentType: "application/json",
-            responseContentType: "application/json",
-            successCallback:
-            {
-               fn: function()
-               {
-                  Alfresco.util.PopupManager.displayMessage(
-                  {
-                     text: Alfresco.util.message('message.edited.success', this.name)
-                  });
-
-               },
-               scope: this
-            },
-            failureMessage: Alfresco.util.message('message.edited.failure', 'Alfresco.CalendarView')
-         });
       },
 
       /**
@@ -1048,13 +975,34 @@
        *
        * @method onEventSaved
        *
-       * @param e {object} event object
+       * @param o {object} response object
        */
-      onEventSaved : function CalendarView_onEventSaved(e)
+      onEventSaved : function CalendarView_onEventSaved(o)
       {
          this.getEvents();
-         YAHOO.Bubbling.fire("eventSavedAfter");
-         this.displayMessage('message.created.success',this.name);
+         var result = YAHOO.lang.JSON.parse(o.serverResponse.responseText);
+         if (!result.error)
+         {
+            YAHOO.Bubbling.fire("eventSavedAfter");
+            this.displayMessage('message.created.success',this.name);
+         }
+         else
+         {
+            this.onEventSaveFailed();
+         }
+      },
+
+      /**
+       * Triggered when an event can't be created
+       *
+       * @method: onEventSaveFailed
+       */
+      onEventSaveFailed: function CalendarView_onEventSaveFailed()
+      {
+         Alfresco.util.PopupManager.displayMessage(
+         {
+            text: Alfresco.util.message('message.created.failure', this.name)
+         });
       },
 
       /**

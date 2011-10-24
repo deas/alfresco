@@ -252,26 +252,51 @@
       },
 
       /**
-       * Called when an event is successfully edited.
+       * Called when an event edit API call returns successfully.
        *
        * @method onEdited
        * @param e {object} DomEvent
        */
       onEdited: function(o)
       {
-         YAHOO.Bubbling.fire('eventEdited',
+         // Check that there isn't an error in the response body
+         if (!o.json.error)
          {
-            id: this.options.event, // so we know which event we are dealing with
-            data: o.json.data
-         });
-         if (this.panel) 
+            YAHOO.Bubbling.fire('eventEdited',
+            {
+               id: this.options.event, // so we know which event we are dealing with
+               data: o.json.data
+            });
+         }
+         // if there is an error, it didn't work, despite the 200 response.
+         else
+         {
+            this.onEditFailed(o)
+         }
+
+         // Tidy up after ourselves.
+         if (this.panel)
          {
             this.panel.hide();
             this.panel.destroy();
          }
          this.eventDialog.dialog.destroy();
       },
-      
+
+      /**
+       * Called when an event could not be edited.
+       *
+       * @method onEditFailed
+       * @param o
+       */
+      onEditFailed: function(o)
+      {
+         Alfresco.util.PopupManager.displayMessage(
+         {
+            text: Alfresco.util.message('message.edited.failure','Alfresco.CalendarView')
+         });
+      },
+
       /**
        * Fired when the delete is clicked. Kicks off a DELETE request
        * to the Alfresco repo to remove an event.
@@ -784,14 +809,8 @@
                scope: EventInfo
             },
             onFailure: {
-               fn: function()
-               {
-                   Alfresco.util.PopupManager.displayMessage(
-                   {
-                      text: Alfresco.util.message('message.edited.failure','Alfresco.CalendarView')
-                  });
-              },
-              scope: CalendarView
+               fn: EventInfo.onEditFailed,
+              scope: EventInfo
            }
          });
 
