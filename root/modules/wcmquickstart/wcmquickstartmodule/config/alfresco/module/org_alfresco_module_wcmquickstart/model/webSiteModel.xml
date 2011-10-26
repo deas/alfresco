@@ -444,6 +444,11 @@
                 <property name="ws:publishedTime">
                     <title>Published Time</title>
                     <type>d:datetime</type>
+                    <index enabled="true">
+				        <atomic>true</atomic>
+				        <stored>false</stored> 
+                        <tokenised>both</tokenised>
+                    </index>
                 </property>
                 <property name="ws:availableFromDate">
                     <title>Available from</title>
