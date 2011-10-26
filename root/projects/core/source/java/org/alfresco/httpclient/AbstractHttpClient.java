@@ -37,35 +37,36 @@ import org.apache.commons.logging.LogFactory;
 
 public abstract class AbstractHttpClient implements AlfrescoHttpClient
 {
-    private static final Log logger = LogFactory.getLog(HttpsClient.class);
+    private static final Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
     
     // Remote Server access
     protected HttpClient httpClient = null;
-//    protected String alfrescoHost;
-//    protected int alfrescoPort;
 
-    public AbstractHttpClient(HttpClient httpClient/*, String alfrescoHost, int alfrescoPort*/)
+    public AbstractHttpClient(HttpClient httpClient)
     {
-//    	this.alfrescoHost = alfrescoHost;
-//    	this.alfrescoPort = alfrescoPort;
     	this.httpClient = httpClient;
     }
-
-//    public AbstractHttpClient(HttpClientFactory httpClientFactory, String alfrescoHost, int alfrescoPort)
-//    {
-//    	this.httpClientFactory = httpClientFactory;
-//    	this.alfrescoHost = alfrescoHost;
-//    	this.alfrescoPort = alfrescoPort;
-//    	this.httpClient = httpClientFactory.getHttpClient(alfrescoHost, alfrescoPort);
-//
-////        HttpClientParams params = httpClient.getParams();
-////        params.setBooleanParameter("http.tcp.nodelay", true);
-////        params.setBooleanParameter("http.connection.stalecheck", false);
-//    }
     
     protected HttpClient getHttpClient()
     {
         return httpClient;
+    }
+    
+    private boolean isRedirect(HttpMethod method)
+    {
+    	switch (method.getStatusCode()) {
+    	case HttpStatus.SC_MOVED_TEMPORARILY:
+    	case HttpStatus.SC_MOVED_PERMANENTLY:
+    	case HttpStatus.SC_SEE_OTHER:
+    	case HttpStatus.SC_TEMPORARY_REDIRECT:
+    		if (method.getFollowRedirects()) {
+    			return true;
+    		} else {
+    			return false;
+    		}
+    	default:
+    		return false;
+    	}
     }
     
     /**
@@ -84,7 +85,8 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
         // execute method
         executeMethod(method);
 
-        if(method.getStatusCode() == HttpStatus.SC_MOVED_PERMANENTLY || method.getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY)
+        // Deal with redirect
+        if(isRedirect(method))
         {
 	        Header locationHeader = method.getResponseHeader("location");
 	        if (locationHeader != null)
@@ -94,31 +96,6 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
 	            httpClient.executeMethod(method);
 	        }
         }
-        
-        // Deal with redirect e.g. for SSL
-/*        if(method.getStatusCode() == 301 || method.getStatusCode() == 302 || method.getStatusCode() == 303 || method.getStatusCode() == 307)
-        {
-	        Header locationHeader = method.getResponseHeader("location");
-	        if (locationHeader != null)
-	        {
-	            String redirectLocation = locationHeader.getValue();
-	            method.setURI(new URI(redirectLocation, true));
-	            executeMethod(method);
-	        }
-	        else
-	        {
-	            // The response is invalid and did not provide the new location for
-	            // the resource.  Report an error or possibly handle the response
-	            // like a 404 Not Found error.
-	        	throw new AlfrescoRuntimeException("Invalid location in HTTP redirect");
-	        }
-        }*/
-
-    	// check that the request returned with an ok status
-//    	if(method.getStatusCode() == HttpStatus.SC_UNAUTHORIZED)
-//    	{
-//    		throw new AuthenticationException(method);
-//    	}
 
         return method;
     }
@@ -138,10 +115,6 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
     protected HttpMethod createMethod(Request req) throws IOException
     {
     	StringBuilder url = new StringBuilder();
-//    	url.append("http://");
-//    	url.append(alfrescoHost);
-//    	url.append(":");
-//    	url.append(alfrescoPort);
     	url.append("/alfresco/service/");
     	url.append(req.getFullUri());
 
