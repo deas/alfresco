@@ -92,3 +92,8 @@
 {
    padding: 4px 0 10px;
 }
+
+div.revert-version.yui-panel div.hd
+{
+   padding-right: 32px;
+}
