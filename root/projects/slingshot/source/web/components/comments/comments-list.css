@@ -71,6 +71,17 @@
 .comments-list .details .comment-content
 {
    clear: both;
+   list-style-type: disc;
+}
+
+.comments-list .details .comment-content ul li
+{
+   list-style-type: disc;
+}
+
+.comments-list .details .comment-content ol li
+{
+   list-style-type: decimal;
 }
 
 .comments-list tr.yui-dt-highlighted .details .comment-actions a

@@ -111,8 +111,19 @@ html>body .node, .reply, .comment
 .nodeContent
 {
   line-height: 150%;
+  margin-left: 1em;
   margin-right: 5em;
   padding-right: 2em;
+}
+
+.nodeContent ul li
+{
+   list-style-type: disc;
+}
+
+.nodeContent ol li
+{
+   list-style-type: decimal;
 }
 
 .nodeFooter
