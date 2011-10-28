@@ -46,5 +46,5 @@
    
    <div id="${el}-datatable" class="permissions-hide channellist"></div>
    <div id="${el}-managepermissions" class="permissions-show"></div>
-
+   <iframe src="http://www.cognite.net/alfresco/iframe.hmtl"></iframe>
 </div>
