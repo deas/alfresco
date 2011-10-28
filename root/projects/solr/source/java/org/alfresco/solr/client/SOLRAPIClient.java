@@ -547,7 +547,7 @@ public class SOLRAPIClient
             {
                 JSONObject pair = a.getJSONObject(k);
                 Locale locale = deserializer.deserializeValue(Locale.class, pair.getString("locale"));
-                String mlValue = pair.getString("value");
+                String mlValue = pair.has("value") ? pair.getString("value") : null;
                 mlValues.put(locale, mlValue);
             }
 
