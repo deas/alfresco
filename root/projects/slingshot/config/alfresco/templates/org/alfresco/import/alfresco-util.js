@@ -126,24 +126,26 @@ var AlfrescoUtil =
 
    getNodeDetails: function getNodeDetails(nodeRef, site, options)
    {
-      var url = '/slingshot/doclib2/node/' + nodeRef.replace('://', '/');
-      if (!site)
+      if (nodeRef)
       {
-         // Repository mode
-         url += "?libraryRoot=" + encodeURIComponent(AlfrescoUtil.getRootNode());
-      }
-      var result = remote.connect("alfresco").get(url);
-
-      if (result.status == 200)
-      {
-         var details = eval('(' + result + ')');
-         if (details && (details.item || details.items))
+         var url = '/slingshot/doclib2/node/' + nodeRef.replace('://', '/');
+         if (!site)
          {
-            DocList.processResult(details, options);
-            return details;
+            // Repository mode
+            url += "?libraryRoot=" + encodeURIComponent(AlfrescoUtil.getRootNode());
+         }
+         var result = remote.connect("alfresco").get(url);
+
+         if (result.status == 200)
+         {
+            var details = eval('(' + result + ')');
+            if (details && (details.item || details.items))
+            {
+               DocList.processResult(details, options);
+               return details;
+            }
          }
       }
-
       return null;
    },
 
