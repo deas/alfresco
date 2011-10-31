@@ -67,16 +67,6 @@
    padding-bottom: 0px;
 }
 
-.treeview .ygtvdepthcell 
-{
-   width: 21px;  
-}
-
-.treeview .ygtvblankdepthcell  
-{
-   width: 22px;  
-}   
-
 .treeview .documentDragOverHighlight
 {
    border: 1px solid #4f94c9;
