@@ -173,7 +173,7 @@ Alfresco.util.appendArrayToObject = function(obj, arr, p_value)
 {
    var value = (p_value !== undefined ? p_value : true);
    
-   if (YAHOO.lang.isObjecT(obj) && YAHOO.lang.isArray(arr))
+   if (YAHOO.lang.isObject(obj) && YAHOO.lang.isArray(arr))
    {
       for (var i = 0, ii = arr.length; i < ii; i++)
       {

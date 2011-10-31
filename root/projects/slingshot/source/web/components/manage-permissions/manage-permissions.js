@@ -340,6 +340,7 @@
          this.settableRolesMenuData = [];
          for (var i = 0, ii = data.settable.length; i < ii; i++)
          {
+            this.settableRoles[data.settable[i]] = true;
             this.settableRolesMenuData.push(
             {
                text: data.settable[i],
@@ -572,50 +573,46 @@
             var role = oRecord.getData("role"),
                index = oRecord.getData("index"),
                menuId = "roles-" + oRecord.getId(),
-               menuData =
-               [
-                  { text: role, value: role }
-               ];
+               menuData = [];
 
-            // Ensure current role value is in settable array
-            for (var i = 0, ii = scope.settableRoles.length; i < ii; i++)
+            // Special case handling for non-settable roles
+            if (!scope.settableRoles.hasOwnProperty(role))
             {
-               if (scope.settableRoles[i] == role)
+               elCell.innerHTML = '<span>' + $html(scope._i18nRole(oRecord.getData("role"))) + '</span>';
+            }
+            else
+            {
+               menuData = meunData.concat(scope.settableRolesMenuData);
+
+               // Internationalise the roles strings displayed:
+               for (var j = 0, jj = menuData.length; j < jj; j++)
                {
-                  menuData = [];
-                  break;
+                  menuData[j].text = scope._i18nRole(menuData[j].text);
                }
-            }
-            menuData = menuData.concat(scope.settableRolesMenuData);
 
-            // Internationalise the roles strings displayed:
-            for (var j = 0, jj = menuData.length; j < jj; j++)
-            {
-               menuData[j].text = scope._i18nRole(menuData[j].text);
-            }
+               elCell.innerHTML = '<span id="' + menuId + '"></span>';
 
-            elCell.innerHTML = '<span id="' + menuId + '"></span>';
-
-            // Roles
-            var rolesButton = new YAHOO.widget.Button(
-            {
-               container: menuId,
-               type: "menu",
-               menu: menuData
-            });
-            rolesButton.getMenu().subscribe("click", function(p_sType, p_aArgs)
-            {
-               return function Permissions_rolesButtonClicked(p_button, p_index)
+               // Roles
+               var rolesButton = new YAHOO.widget.Button(
                {
-                  var menuItem = p_aArgs[1];
-                  if (menuItem)
+                  container: menuId,
+                  type: "menu",
+                  menu: menuData
+               });
+               rolesButton.getMenu().subscribe("click", function(p_sType, p_aArgs)
+               {
+                  return function Permissions_rolesButtonClicked(p_button, p_index)
                   {
-                     p_button.set("label", scope._i18nRole(menuItem.value));
-                     scope.onRoleChanged.call(scope, p_aArgs[1], p_index);
-                  }
-               }(rolesButton, index);
-            });
-            rolesButton.set("label", scope._i18nRole($html(oRecord.getData("role"))));
+                     var menuItem = p_aArgs[1];
+                     if (menuItem)
+                     {
+                        p_button.set("label", scope._i18nRole(menuItem.value));
+                        scope.onRoleChanged.call(scope, p_aArgs[1], p_index);
+                     }
+                  }(rolesButton, index);
+               });
+               rolesButton.set("label", $html(scope._i18nRole(oRecord.getData("role"))));
+            }
          };
       },
 
