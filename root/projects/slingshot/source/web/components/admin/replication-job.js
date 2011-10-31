@@ -324,7 +324,7 @@
          this.form.addValidation(this.id + "-prop_name", Alfresco.forms.validation.nodeName, null, "keyup");
          this.form.addValidation(this.id + "-prop_name", Alfresco.forms.validation.length,
          {
-            max: 255,
+            max: 100,
             crop: true
          }, "keyup");
 
@@ -343,7 +343,7 @@
          }, "keyup");
          this.form.addValidation(this.id + "-prop_intervalCount", function ReplicationJob_onFormControlsLoaded_fnValidateIntervalCount(field, args, event, form, silent, message)
          {
-            return !(scope.isScheduleEnabled() && isNaN(parseInt(field.value, 10)));
+            return !(scope.isScheduleEnabled() && isNaN(field.value));
          }, null, "blur");
 
          // Validator - Interval Period
