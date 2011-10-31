@@ -77,6 +77,7 @@
         <property name="lockService" ref="LockService" />
         <property name="transactionService" ref="transactionService" />
         <property name="nodeService" ref="NodeService"/>
+        <property name="versionService" ref="VersionService"/>
         <property name="authenticationService" ref="AuthenticationService" />
     </bean>    
 

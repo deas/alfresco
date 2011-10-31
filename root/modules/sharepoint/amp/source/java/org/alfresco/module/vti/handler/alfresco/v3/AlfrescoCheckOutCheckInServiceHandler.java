@@ -37,7 +37,9 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.version.Version;
+import org.alfresco.service.cmr.version.VersionService;
 import org.alfresco.service.cmr.version.VersionType;
+import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,6 +58,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
     private LockService lockService;
     private TransactionService transactionService;
     private NodeService nodeService;
+    private VersionService versionService;
     private AuthenticationService authenticationService;
 
     public void setPathHelper(VtiPathHelper pathHelper)
@@ -81,6 +84,11 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
     public void setNodeService(NodeService nodeService)
     {
         this.nodeService = nodeService;
+    }
+    
+    public void setVersionService(VersionService versionService)
+    {
+        this.versionService = versionService;
     }
 
     public void setAuthenticationService(AuthenticationService authenticationService)
@@ -159,16 +167,16 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
                         return null;
                     }
-
+                    
+                    // Set the properties on the new version
                     Map<String, Serializable> versionProperties = new HashMap<String, Serializable>(1, 1.0f);
                     versionProperties.put(Version.PROP_DESCRIPTION, comment);
                     versionProperties.put(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR);
 
+                    // Checkin the new version
                     NodeRef originalNode = checkOutCheckInService.checkin(workingCopy, versionProperties);
                     lockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
-
                     return originalNode;
-
                 }
                 catch (Exception e)
                 {
@@ -196,11 +204,16 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                 try
                 {
                     FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+                    
+                    // First up, ensure the document is versioned
+                    // (Many creation routes do lazy versioning)
+                    Map<QName, Serializable> initialVersionProps = new HashMap<QName, Serializable>(1, 1.0f);
+                    versionService.ensureVersioningEnabled(documentFileInfo.getNodeRef(), initialVersionProps);
+
+                    // Now, perform the checkout of the file
                     NodeRef workingCopy = checkOutCheckInService.checkout(documentFileInfo.getNodeRef());
                     lockService.lock(workingCopy, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
-
                     return workingCopy;
-
                 }
                 catch (Exception e)
                 {
@@ -215,5 +228,4 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
         return workingCopy;
     }
-
 }
