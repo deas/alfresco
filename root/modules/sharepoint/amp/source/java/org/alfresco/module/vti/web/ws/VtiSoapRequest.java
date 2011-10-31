@@ -35,8 +35,11 @@ import org.dom4j.io.SAXReader;
  */
 public class VtiSoapRequest extends HttpServletRequestWrapper
 {
-
+   public static String SOAP_11_ENVELOPE_NS = "http://schemas.xmlsoap.org/soap/envelope/";
+   public static String SOAP_12_ENVELOPE_NS = "http://www.w3.org/2003/05/soap-envelope"; 
+   
 	private Document document;
+	private String version;
     
 	 /**
      * Constructor
@@ -51,6 +54,16 @@ public class VtiSoapRequest extends HttpServletRequestWrapper
             SAXReader reader = new SAXReader();
             reader.setValidation(false);
             document = reader.read(request.getInputStream());
+            
+            String ns = document.getRootElement().getNamespaceURI(); 
+            if(SOAP_11_ENVELOPE_NS.equals(ns))
+            {
+               version = "1.1";
+            }
+            else if(SOAP_12_ENVELOPE_NS.equals(ns))
+            {
+               version = "1.2";
+            }
         }
         catch (Exception e)
         {
@@ -69,6 +82,14 @@ public class VtiSoapRequest extends HttpServletRequestWrapper
     }
     
     /**
+     * Get the SOAP version, either 1.1 or 1.2
+     */
+    public String getVersion()
+    {
+        return version;
+    }
+    
+    /**
      * Get alfresco context name
      *  
      * @return String alfresco context name
@@ -77,6 +98,4 @@ public class VtiSoapRequest extends HttpServletRequestWrapper
     {
         return (String) this.getAttribute(VtiRequestDispatcher.VTI_ALFRESCO_CONTEXT);
     }
-
-        
 }

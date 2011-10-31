@@ -21,6 +21,7 @@ package org.alfresco.module.vti.handler;
 import java.util.List;
 
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 
 /**
  * Interface for versions web service handler
@@ -35,7 +36,7 @@ public interface VersionsServiceHandler
      * @param fileName A string that contains the site-relative URL of the file in the form Folder_Name/File_Name
      * @return List<DocumentVersionBean> information about the versions of the specified file
      */
-    public List<DocumentVersionBean> getVersions(String fileName);
+    public List<DocumentVersionBean> getVersions(String fileName) throws FileNotFoundException;
 
     /**
      * Restores the specified file version

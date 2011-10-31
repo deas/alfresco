@@ -80,7 +80,7 @@ public class GetVersionsEndpoint extends AbstractEndpoint
         if (logger.isDebugEnabled())
             logger.debug("Getting versions for file '" + dws + "/" + fileName.getText() + "'.");
         
-        // getting all versions for given file
+        // Get all versions for the given file
         List<DocumentVersionBean> notSortedVersions = handler.getVersions(dws + "/" + fileName.getText());
         
         // creating soap response

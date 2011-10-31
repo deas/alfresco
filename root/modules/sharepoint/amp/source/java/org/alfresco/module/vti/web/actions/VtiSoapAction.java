@@ -31,6 +31,7 @@ import org.alfresco.module.vti.web.VtiAction;
 import org.alfresco.module.vti.web.ws.VtiEndpoint;
 import org.alfresco.module.vti.web.ws.VtiSoapRequest;
 import org.alfresco.module.vti.web.ws.VtiSoapResponse;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -77,7 +78,7 @@ public class VtiSoapAction implements VtiAction
             {
                 logger.debug(e.getMessage(), e);
                 soapResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                createFaultSOAPResponse(soapResponse.getDocument(), e, endpoint);
+                createFaultSOAPResponse(soapRequest, soapResponse.getDocument(), e, endpoint);
                 logger.warn("Failure executing Vti request", e);
             }
             try
@@ -111,8 +112,7 @@ public class VtiSoapAction implements VtiAction
     }
     
     /**
-     * Returns the SOAP Action that was requested, or NULL if the request
-     *  isn't a SOAP action.
+     * Returns the SOAP Action that was requested, or NULL if the request isn't a SOAP action.
      * This method handles any de-quoting that is required.
      */
     public static String getSOAPAction(HttpServletRequest request)
@@ -157,7 +157,7 @@ public class VtiSoapAction implements VtiAction
         return result;
     }
 
-    private void createFaultSOAPResponse(Element responsElement, Exception e, VtiEndpoint vtiEndpoint)
+    private void createFaultSOAPResponse(VtiSoapRequest request, Element responsElement, Exception e, VtiEndpoint vtiEndpoint)
     {
 
         if (e instanceof VtiHandlerException)
@@ -186,11 +186,38 @@ public class VtiSoapAction implements VtiAction
             {
                 errorMessage = "Unknown error";
             }
+            
+            // The specification defines the exact message that must be
+            //  returned in case of a file not being found
+            if (e instanceof FileNotFoundException)
+            {
+                errorMessage = "The system cannot find the file specified. (Exception from HRESULT: 0x80070002)";
+            }
+            
+            // Manually generate the Soap error response
             Element fault = responsElement.addElement(QName.get("Fault", "s", VtiSoapResponse.NAMESPACE));
-            Element faultCode = fault.addElement("faultcode");
-            faultCode.addText("s:Server");
-            Element faultString = fault.addElement("faultstring");
-            faultString.addText(e.getClass().toString());
+            
+            if("1.2".equals(request.getVersion()))
+            {
+               // SOAP 1.2 is Code + Reason
+               Element faultCode = fault.addElement(QName.get("Code", "s", VtiSoapResponse.NAMESPACE));
+               Element faultCodeText = faultCode.addElement(QName.get("Value", "s", VtiSoapResponse.NAMESPACE));
+               faultCodeText.addText("s:Server");
+               
+               Element faultReason = fault.addElement(QName.get("Reason", "s", VtiSoapResponse.NAMESPACE));
+               Element faultReasonText = faultReason.addElement(QName.get("Text", "s", VtiSoapResponse.NAMESPACE));
+               faultReasonText.addText("Exception of type '"+e.getClass().getName()+"' was thrown.");
+            }
+            else
+            {
+               // SOAP 1.1 is Code + String
+               Element faultCode = fault.addElement("faultcode");
+               faultCode.addText("s:Server");
+               Element faultString = fault.addElement("faultstring");
+               faultString.addText(e.getClass().getName());
+            }
+            
+            // Both versions get the detail
             Element detail = fault.addElement("detail");
             Element errorstring = detail.addElement(QName.get("errorstring", "", "http://schemas.microsoft.com/sharepoint/soap/"));
             errorstring.addText(errorMessage);

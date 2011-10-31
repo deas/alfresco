@@ -34,6 +34,7 @@ import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -116,18 +117,25 @@ public abstract class AbstractAlfrescoVersionsServiceHandler implements Versions
     /**
      * @see org.alfresco.module.vti.handler.VersionsServiceHandler#getVersions(java.lang.String)
      */
-    public List<DocumentVersionBean> getVersions(String fileName)
+    public List<DocumentVersionBean> getVersions(String fileName) throws FileNotFoundException
     {
         if (logger.isDebugEnabled())
             logger.debug("Method with name 'getVersions' is started.");
 
         FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+        
+        // Asking for a non existent file is valid for listing
+        if(documentFileInfo == null)
+        {
+           throw new FileNotFoundException(fileName);
+        }
 
+        // Ensure it's a valid thing to query versions for
         if (logger.isDebugEnabled())
             logger.debug("Asserting documentFileInfo for file '" + fileName + "'.");
-
         assertDocument(documentFileInfo);
 
+        // Fetch all the version details
         List<DocumentVersionBean> result = getVersions(documentFileInfo);
 
         if (logger.isDebugEnabled())
