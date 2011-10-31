@@ -71,7 +71,7 @@
          roles: null,
 
          /**
-          * Files to be included in workflow
+          * File(s) to apply permissions against
           *
           * @property: files
           * @type: array
@@ -440,7 +440,7 @@
                   role:permissions[2]
                });
             }
-          }
+         }
 
          // Register the ESC key to close the dialog
          var escapeListener = new YAHOO.util.KeyListener(document,

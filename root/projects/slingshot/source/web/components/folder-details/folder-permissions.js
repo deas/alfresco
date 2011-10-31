@@ -90,7 +90,7 @@
       },
 
       /**
-       * Called when the onManagePermissionsClick link has been lickced, will display the manage permissions dialog.
+       * Called when the onManagePermissionsClick link has been clicked, will display the manage permissions dialog.
        *
        * @method onManagePermissionsClick
        */
@@ -106,11 +106,14 @@
             siteId: this.options.siteId,
             files:
             {
-               nodeRef: this.options.nodeRef,
                displayName: this.options.displayName,
-               permissions:
+               node:
                {
-                  roles: this.options.roles
+                  nodeRef: this.options.nodeRef,
+                  permissions:
+                  {
+                     roles: this.options.roles
+                  }
                }
             }
          }).showDialog();
