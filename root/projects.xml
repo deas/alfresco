@@ -1832,7 +1832,7 @@
          <fileset dir="${dir.project.datamodel.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.repository.config}"
-                  excludes="**/extension/**" />
+                  excludes="**/extension/**,alfresco/module/test/**" />
          <fileset dir="${dir.project.remoteapi.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.webclient.config}"
