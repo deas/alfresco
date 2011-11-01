@@ -20,6 +20,7 @@ package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.VersionsServiceHandler;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -76,8 +77,20 @@ public class DeleteAllVersionsEndpoint extends AbstractEndpoint
 
         if (logger.isDebugEnabled())
             logger.debug("Deleting all versions for " + dws + "/" + fileName.getText() + ".");
-        // deleting all versions of given file
-        DocumentVersionBean current = handler.deleteAllVersions(dws + "/" + fileName.getText());
+        
+        // Delete all versions of given file
+        DocumentVersionBean current;
+        try {
+           current = handler.deleteAllVersions(dws + "/" + fileName.getText());
+        }
+        catch(FileNotFoundException e)
+        {
+           // The specification defines the exact code that must be
+           //  returned in case of a file not being found
+           long code = 0x81070906l;
+           String message = "File not found: " + e.getMessage();
+           throw new VtiSoapException(message, code, e);
+        }
         
         // creating soap response
         Element root = soapResponse.getDocument().addElement("DeleteAllVersionsResponse", namespace);

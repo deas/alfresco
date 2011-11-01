@@ -62,5 +62,5 @@ public interface VersionsServiceHandler
      * @param fileName
      * @return DocumentVersionBean current document
      */
-    public DocumentVersionBean deleteAllVersions(String fileName);
+    public DocumentVersionBean deleteAllVersions(String fileName) throws FileNotFoundException;
 }

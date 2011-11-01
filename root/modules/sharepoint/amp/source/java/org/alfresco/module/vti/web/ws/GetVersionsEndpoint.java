@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.alfresco.module.vti.handler.VersionsServiceHandler;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -81,7 +82,19 @@ public class GetVersionsEndpoint extends AbstractEndpoint
             logger.debug("Getting versions for file '" + dws + "/" + fileName.getText() + "'.");
         
         // Get all versions for the given file
-        List<DocumentVersionBean> notSortedVersions = handler.getVersions(dws + "/" + fileName.getText());
+        List<DocumentVersionBean> notSortedVersions;
+        try
+        {
+           notSortedVersions = handler.getVersions(dws + "/" + fileName.getText());
+        }
+        catch(FileNotFoundException e)
+        {
+           // The specification defines the exact message that must be
+           //  returned in case of a file not being found
+           long code = 0x80070002l;
+           String msg = "The system cannot find the file specified. (Exception from HRESULT: 0x80070002)";
+           throw new VtiSoapException(msg, code, e);
+        }
         
         // creating soap response
         Element root = soapResponse.getDocument().addElement("GetVersionsResponse", namespace);

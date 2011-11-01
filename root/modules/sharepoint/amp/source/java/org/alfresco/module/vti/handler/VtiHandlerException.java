@@ -96,7 +96,19 @@ public class VtiHandlerException extends RuntimeException
     }
 
     /**
-     * Create exception with specified message ant throwable object
+     * Create exception with specified message and throwable object
+     * 
+     * @param message the specified message
+     * @param throwable
+     */
+    public VtiHandlerException(String message, int code, Throwable throwable)
+    {
+        super(message, throwable);
+        this.errorCode = code;
+    }
+
+    /**
+     * Create exception with specified message and throwable object
      * 
      * @param message the specified message
      * @param throwable

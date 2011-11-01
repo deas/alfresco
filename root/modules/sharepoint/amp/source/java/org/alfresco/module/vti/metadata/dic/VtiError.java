@@ -55,7 +55,7 @@ public enum VtiError
     V_OWSSVR_ERRORSERVERINCAPABLE (0x001E0006, "The server does not support this capability. "),
     
     V_VERSION_NOT_FOUND (0x80131600 , "The version could not be found."),
-    
+
     V_UNDEFINED (0x0000000, "Undefined error");
 
     private final String message;

@@ -20,6 +20,8 @@ package org.alfresco.module.vti.handler.alfresco.v3;
 
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoVersionsServiceHandler;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
+import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 
 /**
  * Alfresco implementation of VersionsServiceHandler and AbstractAlfrescoVersionsServiceHandler
@@ -31,8 +33,23 @@ public class AlfrescoVersionsServiceHandler extends AbstractAlfrescoVersionsServ
     /**
      * @see org.alfresco.module.vti.handler.VersionsServiceHandler#deleteAllVersions(java.lang.String)
      */
-    public DocumentVersionBean deleteAllVersions(String fileName)
+    public DocumentVersionBean deleteAllVersions(String fileName) throws FileNotFoundException
     {
-        throw new RuntimeException("This method is never called by office clients.");
+       FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+       
+       // Asking for a non existent file is valid for listing
+       if(documentFileInfo == null)
+       {
+          throw new FileNotFoundException(fileName);
+       }
+
+       // Check it's a valid file
+       assertDocument(documentFileInfo);
+
+       // Zap the version history for the file
+       versionService.deleteVersionHistory(documentFileInfo.getNodeRef());
+
+       // Return the new details on the now-versionless file
+       return getDocumentVersionInfo(documentFileInfo);
     }
 }
