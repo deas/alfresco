@@ -202,12 +202,18 @@ public abstract class AbstractAlfrescoVersionsServiceHandler implements Versions
     /**
      * @see org.alfresco.module.vti.handler.VersionsServiceHandler#deleteVersion(java.lang.String, java.lang.String)
      */
-    public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion)
+    public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion) throws FileNotFoundException
     {
        if (logger.isDebugEnabled())
           logger.debug("Method with name 'deleteVersion' is started for " + fileVersion + " of " + fileName);
 
       FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+
+      // Asking for a non existent file is valid for delete
+      if(documentFileInfo == null)
+      {
+         throw new FileNotFoundException(fileName);
+      }
 
       assertDocument(documentFileInfo);
       UserTransaction tx = transactionService.getUserTransaction(false);

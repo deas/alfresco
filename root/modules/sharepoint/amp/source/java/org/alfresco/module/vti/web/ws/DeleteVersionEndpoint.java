@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.alfresco.module.vti.handler.VersionsServiceHandler;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -73,7 +74,7 @@ public class DeleteVersionEndpoint extends AbstractEndpoint
         // getting fileName parameter from request
         XPath fileNameXPath = new Dom4jXPath(buildXPath(prefix, "/DeleteVersion/fileName"));
         fileNameXPath.setNamespaceContext(nc);
-        Element fileName = (Element) fileNameXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        String fileName = getFileName(soapRequest, fileNameXPath);
 
         // getting fileVersion parameter from request
         XPath fileVersionXPath = new Dom4jXPath(buildXPath(prefix, "/DeleteVersion/fileVersion"));
@@ -81,7 +82,19 @@ public class DeleteVersionEndpoint extends AbstractEndpoint
         Element fileVersion = (Element) fileVersionXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
         
         // deleting given file version
-        List<DocumentVersionBean> versions = handler.deleteVersion(dws + "/" + fileName.getText(), fileVersion.getText());
+        List<DocumentVersionBean> versions;
+        try
+        {
+           versions = handler.deleteVersion(dws + "/" + fileName, fileVersion.getText());
+        }
+        catch(FileNotFoundException e)
+        {
+           // The specification defines the exact code that must be
+           //  returned in case of a file not being found
+           long code = 0x80131600l;
+           String message = "File not found: " + e.getMessage();
+           throw new VtiSoapException(message, code, e);
+        }
         
         // creating soap response
         Element root = soapResponse.getDocument().addElement("DeleteVersionResponse", namespace);
@@ -91,7 +104,7 @@ public class DeleteVersionEndpoint extends AbstractEndpoint
 
         results.addElement("list").addAttribute("id", "");
         results.addElement("versioning").addAttribute("enabled", "1");
-        results.addElement("settings").addAttribute("url", host + context + dws + "/documentDetails.vti?doc=" + dws + "/" + fileName.getText());
+        results.addElement("settings").addAttribute("url", host + context + dws + "/documentDetails.vti?doc=" + dws + "/" + fileName);
 
         boolean isCurrent = true;
         for (DocumentVersionBean version : versions)
@@ -101,7 +114,7 @@ public class DeleteVersionEndpoint extends AbstractEndpoint
             {
                 // prefix @ means that it is current working version, it couldn't be restored or deleted
                 result.addAttribute("version", "@" + version.getVersion());
-                String url = host + context + dws + "/" + fileName.getTextTrim();
+                String url = host + context + dws + "/" + fileName.trim();
                 result.addAttribute("url", url);
                 isCurrent = false;
             }

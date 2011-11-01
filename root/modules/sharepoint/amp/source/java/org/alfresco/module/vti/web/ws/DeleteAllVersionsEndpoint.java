@@ -73,15 +73,15 @@ public class DeleteAllVersionsEndpoint extends AbstractEndpoint
         // getting fileName parameter from request
         XPath fileNamePath = new Dom4jXPath(buildXPath(prefix, "/DeleteAllVersions/fileName"));
         fileNamePath.setNamespaceContext(nc);
-        Element fileName = (Element) fileNamePath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        String fileName = getFileName(soapRequest, fileNamePath);
 
         if (logger.isDebugEnabled())
-            logger.debug("Deleting all versions for " + dws + "/" + fileName.getText() + ".");
+            logger.debug("Deleting all versions for " + dws + "/" + fileName + ".");
         
         // Delete all versions of given file
         DocumentVersionBean current;
         try {
-           current = handler.deleteAllVersions(dws + "/" + fileName.getText());
+           current = handler.deleteAllVersions(dws + "/" + fileName);
         }
         catch(FileNotFoundException e)
         {
@@ -100,11 +100,11 @@ public class DeleteAllVersionsEndpoint extends AbstractEndpoint
 
         results.addElement("list").addAttribute("id", "");
         results.addElement("versioning").addAttribute("enabled", "1");
-        results.addElement("settings").addAttribute("url", host + context + dws + "/documentDetails.vti?doc=" + dws + "/" + fileName.getText());
+        results.addElement("settings").addAttribute("url", host + context + dws + "/documentDetails.vti?doc=" + dws + "/" + fileName);
 
         Element result = results.addElement("result");
         result.addAttribute("version", "@" + current.getVersion());
-        String url = host + context + dws + "/" + fileName.getTextTrim();
+        String url = host + context + dws + "/" + fileName.trim();
         result.addAttribute("url", url);
         result.addAttribute("created", current.getCreatedTime());
         result.addAttribute("createdBy", current.getCreatedBy());

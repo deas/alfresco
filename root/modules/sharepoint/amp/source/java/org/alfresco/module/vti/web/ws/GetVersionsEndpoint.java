@@ -77,24 +77,7 @@ public class GetVersionsEndpoint extends AbstractEndpoint
         // Getting fileName parameter from request
         XPath fileNamePath = new Dom4jXPath(buildXPath(prefix, "/GetVersions/fileName"));
         fileNamePath.setNamespaceContext(nc);
-        Element fileNameE = (Element) fileNamePath.selectSingleNode(soapRequest.getDocument().getRootElement());
-        String fileName = fileNameE.getText();
-        
-        // Is it relative or absolute?
-        if(fileName.startsWith(host))
-        {
-           String splitWith = context + dws;
-           int splitAt = fileName.indexOf(splitWith);
-           
-           if(splitAt == -1)
-           {
-              logger.warn("Unable to find " + splitWith + " in absolute path " + fileName);
-           }
-           else
-           {
-              fileName = fileName.substring(splitAt + splitWith.length() + 1);
-           }
-        }
+        String fileName = getFileName(soapRequest, fileNamePath);
         
         if (logger.isDebugEnabled())
             logger.debug("Getting versions for file '" + dws + "/" + fileName + "'.");

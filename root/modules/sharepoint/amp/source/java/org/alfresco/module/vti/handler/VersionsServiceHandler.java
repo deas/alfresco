@@ -54,7 +54,7 @@ public interface VersionsServiceHandler
      * @param fileVersion file version to restore
      * @return List<DocumentVersionBean> list of DocumentVersion beans
      */
-    public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion);
+    public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion) throws FileNotFoundException;
 
     /**
      * Deletes all versions of the specified file

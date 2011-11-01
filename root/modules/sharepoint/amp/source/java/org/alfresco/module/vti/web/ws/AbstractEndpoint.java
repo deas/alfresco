@@ -39,6 +39,10 @@ import org.alfresco.module.vti.metadata.model.SchemaFieldBean;
 import org.alfresco.module.vti.metadata.model.TaskBean;
 import org.alfresco.module.vti.metadata.model.UserBean;
 import org.alfresco.module.vti.web.VtiRequestDispatcher;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
+import org.jaxen.XPath;
 
 /**
  * Abstract base class for all the {@link VtiEndpoint} realizations.
@@ -48,6 +52,7 @@ import org.alfresco.module.vti.web.VtiRequestDispatcher;
  */
 public abstract class AbstractEndpoint implements VtiEndpoint
 {
+   private static Log logger = LogFactory.getLog(AbstractEndpoint.class);
 
     public static final String DWS = "VTI_DWS";
     private static final StringBuilder LBRACKET = new StringBuilder("<");
@@ -182,6 +187,39 @@ public abstract class AbstractEndpoint implements VtiEndpoint
             // ignore
         }
         return dws;
+    }
+    
+    /**
+     * Get the (relative) file name that was requested.
+     *  
+     */
+    public static String getFileName(VtiSoapRequest soapRequest, XPath fileNamePath) throws Exception
+    {
+       Element fileNameE = (Element) fileNamePath.selectSingleNode(soapRequest.getDocument().getRootElement());
+       String fileName = fileNameE.getText();
+       
+       // Is it relative or absolute?
+       String host = getHost(soapRequest);
+       if(fileName.startsWith(host))
+       {
+          String context = soapRequest.getAlfrescoContextName();
+          String dws = getDwsFromUri(soapRequest);
+          
+          String splitWith = context + dws;
+          int splitAt = fileName.indexOf(splitWith);
+          
+          if(splitAt == -1)
+          {
+             logger.warn("Unable to find " + splitWith + " in absolute path " + fileName);
+          }
+          else
+          {
+             fileName = fileName.substring(splitAt + splitWith.length() + 1);
+          }
+       }
+       
+       // All done
+       return fileName;
     }
     
     /**
