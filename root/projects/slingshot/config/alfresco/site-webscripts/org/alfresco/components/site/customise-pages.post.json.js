@@ -25,12 +25,7 @@ function main()
    p.properties.sitePages = newPagesString;
    
    // Theme override for the site
-   var themeId = clientJSON.themeId;
-   // Only persist if changing value or different to current theme
-   if (p.properties.theme != null || themeId != theme)
-   {
-      p.properties.theme = themeId;
-   }
+   p.properties.theme = clientJSON.themeId;
    
    // Save site object properties
    p.save();
