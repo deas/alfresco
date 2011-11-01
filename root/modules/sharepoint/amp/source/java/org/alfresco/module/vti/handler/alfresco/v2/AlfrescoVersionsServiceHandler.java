@@ -18,6 +18,9 @@
  */
 package org.alfresco.module.vti.handler.alfresco.v2;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoVersionsServiceHandler;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -32,7 +35,7 @@ public class AlfrescoVersionsServiceHandler extends AbstractAlfrescoVersionsServ
     /**
      * @see org.alfresco.module.vti.handler.VersionsServiceHandler#deleteAllVersions(java.lang.String)
      */
-    public DocumentVersionBean deleteAllVersions(String fileName)
+    public List<DocumentVersionBean> deleteAllVersions(String fileName)
     {
         FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
 
@@ -40,6 +43,7 @@ public class AlfrescoVersionsServiceHandler extends AbstractAlfrescoVersionsServ
 
         versionService.deleteVersionHistory(documentFileInfo.getNodeRef());
 
-        return getDocumentVersionInfo(documentFileInfo);
+        return Arrays.asList(new DocumentVersionBean[] {
+              getDocumentVersionInfo(documentFileInfo) });
     }
 }

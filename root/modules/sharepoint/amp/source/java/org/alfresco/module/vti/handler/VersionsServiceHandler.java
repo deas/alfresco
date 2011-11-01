@@ -57,10 +57,14 @@ public interface VersionsServiceHandler
     public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion) throws FileNotFoundException;
 
     /**
-     * Deletes all versions of the specified file
+     * Deletes "all versions" of the specified file.
+     * 
+     * This doesn't actually mean deleting the whole version history
+     * though, it means deleting all except the last "Published Version"
+     * (last major version), and the current version (if different).
      * 
      * @param fileName
      * @return DocumentVersionBean current document
      */
-    public DocumentVersionBean deleteAllVersions(String fileName) throws FileNotFoundException;
+    public List<DocumentVersionBean> deleteAllVersions(String fileName) throws FileNotFoundException;
 }

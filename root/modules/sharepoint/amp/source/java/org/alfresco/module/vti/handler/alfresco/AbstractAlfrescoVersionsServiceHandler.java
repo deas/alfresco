@@ -54,8 +54,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractAlfrescoVersionsServiceHandler implements VersionsServiceHandler
 {
-
-    private static Log logger = LogFactory.getLog(AbstractAlfrescoVersionsServiceHandler.class);
+    protected static Log logger = LogFactory.getLog(AbstractAlfrescoVersionsServiceHandler.class);
 
     protected NodeService nodeService;
     protected FileFolderService fileFolderService;

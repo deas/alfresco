@@ -18,10 +18,16 @@
  */
 package org.alfresco.module.vti.handler.alfresco.v3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoVersionsServiceHandler;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.version.Version;
+import org.alfresco.service.cmr.version.VersionHistory;
+import org.alfresco.service.cmr.version.VersionType;
 
 /**
  * Alfresco implementation of VersionsServiceHandler and AbstractAlfrescoVersionsServiceHandler
@@ -31,9 +37,11 @@ import org.alfresco.service.cmr.model.FileNotFoundException;
 public class AlfrescoVersionsServiceHandler extends AbstractAlfrescoVersionsServiceHandler
 {
     /**
+     * Do a "SharePoint Delete All Versions", which isn't the same
+     *  as a normal Alfresco delete version history
      * @see org.alfresco.module.vti.handler.VersionsServiceHandler#deleteAllVersions(java.lang.String)
      */
-    public DocumentVersionBean deleteAllVersions(String fileName) throws FileNotFoundException
+    public List<DocumentVersionBean> deleteAllVersions(String fileName) throws FileNotFoundException
     {
        FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
        
@@ -45,11 +53,45 @@ public class AlfrescoVersionsServiceHandler extends AbstractAlfrescoVersionsServ
 
        // Check it's a valid file
        assertDocument(documentFileInfo);
+       
+       // We need to identify the versions to keep
+       // The SharePoint spec requires us to keep:
+       //   * The current version
+       //   * The most recent major version ("published version")
+       // Depending on the state, this means keeping 1 or 2 versions
+       VersionHistory history = versionService.getVersionHistory(documentFileInfo.getNodeRef());
+       List<Version> toKeep = new ArrayList<Version>();
+       
+       Version current = history.getHeadVersion();
+       toKeep.add(current);
+       if (current.getVersionType() != VersionType.MAJOR)
+       {
+          // Find the last major version
+          // (Versions are returned most recent first)
+          for (Version v : history.getAllVersions())
+          {
+             if (v.getVersionType() == VersionType.MAJOR)
+             {
+                toKeep.add(v);
+                break;
+             }
+          }
+       }
+       
+       if (logger.isDebugEnabled())
+          logger.debug("Deleteing all versions except " + toKeep);
 
-       // Zap the version history for the file
-       versionService.deleteVersionHistory(documentFileInfo.getNodeRef());
+       // Zap all the versions except the 1 or 2 to keep
+       for (Version v : history.getAllVersions())
+       {
+          if (! toKeep.contains(v))
+          {
+             versionService.deleteVersion(documentFileInfo.getNodeRef(), v);
+          }
+       }
 
-       // Return the new details on the now-versionless file
-       return getDocumentVersionInfo(documentFileInfo);
+       // Return the new details on the file, which now has
+       //  a much much smaller version history
+       return getVersions(documentFileInfo);
     }
 }

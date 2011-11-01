@@ -24,64 +24,30 @@ import java.util.List;
 import org.alfresco.module.vti.handler.VersionsServiceHandler;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
 import org.alfresco.service.cmr.model.FileNotFoundException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
-import org.jaxen.SimpleNamespaceContext;
-import org.jaxen.XPath;
-import org.jaxen.dom4j.Dom4jXPath;
 
 /**
  * Class for handling GetVersions method from versions web service
  *
  * @author PavelYur
  */
-public class GetVersionsEndpoint extends AbstractEndpoint
+public class GetVersionsEndpoint extends AbstractVersionEndpoint
 {
-
-    // handler that provides methods for operating with documents and folders
-    private VersionsServiceHandler handler;
-
-    // xml namespace prefix
-    private static String prefix = "versions";
-
-    private static Log logger = LogFactory.getLog(GetVersionsEndpoint.class);
-    
     public GetVersionsEndpoint(VersionsServiceHandler handler)
     {
-        this.handler = handler;
+        super(handler);
+    }
+    
+    @Override
+    protected String getEndpointNamePrefix() 
+    {
+       return "GetVersions";
     }
 
-    /**
-     * Retrieves all versions of the specified document
-     * 
-     * @param soapRequest Vti soap request ({@link VtiSoapRequest})
-     * @param soapResponse Vti soap response ({@link VtiSoapResponse}) 
-     */
-    public void execute(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse) throws Exception
+    @Override
+    protected List<DocumentVersionBean> executeVersionAction(
+         VtiSoapRequest soapRequest, String dws, String fileName, Element fileVersion) throws Exception 
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Soap Method with name " + getName() + " is started.");
-        // mapping xml namespace to prefix
-        SimpleNamespaceContext nc = new SimpleNamespaceContext();
-        nc.addNamespace(prefix, namespace);
-        nc.addNamespace(soapUriPrefix, soapUri);
-
-        String host = getHost(soapRequest);
-        String context = soapRequest.getAlfrescoContextName();
-        String dws = getDwsFromUri(soapRequest);        
-        
-        if (logger.isDebugEnabled())
-            logger.debug("Getting fileName parameter from request.");
-        
-        // Getting fileName parameter from request
-        XPath fileNamePath = new Dom4jXPath(buildXPath(prefix, "/GetVersions/fileName"));
-        fileNamePath.setNamespaceContext(nc);
-        String fileName = getFileName(soapRequest, fileNamePath);
-        
-        if (logger.isDebugEnabled())
-            logger.debug("Getting versions for file '" + dws + "/" + fileName + "'.");
-        
         // Get all versions for the given file
         List<DocumentVersionBean> notSortedVersions;
         try
@@ -96,63 +62,13 @@ public class GetVersionsEndpoint extends AbstractEndpoint
            String msg = "The system cannot find the file specified. (Exception from HRESULT: 0x80070002)";
            throw new VtiSoapException(msg, code, e);
         }
-        
-        // creating soap response
-        Element root = soapResponse.getDocument().addElement("GetVersionsResponse", namespace);
-        Element getDwsMetaDataResult = root.addElement("GetVersionsResult");
-
-        Element results = getDwsMetaDataResult.addElement("results", namespace);
-
-        results.addElement("list").addAttribute("id", "");
-        results.addElement("versioning").addAttribute("enabled", "1");
-        results.addElement("settings").addAttribute("url", host + context + dws + "/documentDetails.vti?doc=" + notSortedVersions.get(0).getId());
-
+ 
+        // Do special sorting for this response
         List<DocumentVersionBean> versions = new ArrayList<DocumentVersionBean>();
-        
         versions.add(notSortedVersions.get(0));
         for (int i = notSortedVersions.size() - 1; i > 0; --i) {
             versions.add(notSortedVersions.get(i));
         }
-
-        boolean isCurrent = true;
-        for (DocumentVersionBean version : versions)
-        {
-            Element result = results.addElement("result");
-            if (isCurrent)
-            {
-                // prefix @ means that it is current working version, it couldn't be restored or deleted
-                result.addAttribute("version", "@" + version.getVersion());
-                String url = host + context + dws + "/" + fileName.trim();
-                result.addAttribute("url", url);
-                isCurrent = false;
-            }
-            else
-            {
-                result.addAttribute("version", version.getVersion());
-                String url = host + context + dws + version.getUrl();
-                result.addAttribute("url", url);
-            }            
-            
-            result.addAttribute("created", version.getCreatedTime());
-            result.addAttribute("createdBy", version.getCreatedBy());
-            result.addAttribute("size", String.valueOf(version.getSize()));
-            result.addAttribute("comments", version.getComments());
-        }
-        
-        if (logger.isDebugEnabled()) {
-            String versionsStr = "";
-            for (DocumentVersionBean version : versions)
-            {
-                versionsStr += version.getVersion() + " ";
-            }
-            logger.debug("The folloving versions [ "+ versionsStr + "] were retrieved");
-        }            
-        
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("Soap Method with name " + getName() + " is finished.");
-        }
-        
+        return versions;
     }
-
 }
