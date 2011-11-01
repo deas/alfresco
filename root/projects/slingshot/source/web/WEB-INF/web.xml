@@ -151,7 +151,7 @@
 
    <!-- welcome file list precedence order is index.jsp -->
    <welcome-file-list>
-      <welcome-file>/page</welcome-file>
+      <welcome-file>page</welcome-file>
    </welcome-file-list>
    
    <error-page> 
