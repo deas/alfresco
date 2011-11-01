@@ -72,20 +72,38 @@ public class GetVersionsEndpoint extends AbstractEndpoint
         String dws = getDwsFromUri(soapRequest);        
         
         if (logger.isDebugEnabled())
-            logger.debug("Getting fileName parameter from request.");        
-        // getting fileName parameter from request
+            logger.debug("Getting fileName parameter from request.");
+        
+        // Getting fileName parameter from request
         XPath fileNamePath = new Dom4jXPath(buildXPath(prefix, "/GetVersions/fileName"));
         fileNamePath.setNamespaceContext(nc);
-        Element fileName = (Element) fileNamePath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        Element fileNameE = (Element) fileNamePath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        String fileName = fileNameE.getText();
+        
+        // Is it relative or absolute?
+        if(fileName.startsWith(host))
+        {
+           String splitWith = context + dws;
+           int splitAt = fileName.indexOf(splitWith);
+           
+           if(splitAt == -1)
+           {
+              logger.warn("Unable to find " + splitWith + " in absolute path " + fileName);
+           }
+           else
+           {
+              fileName = fileName.substring(splitAt + splitWith.length() + 1);
+           }
+        }
         
         if (logger.isDebugEnabled())
-            logger.debug("Getting versions for file '" + dws + "/" + fileName.getText() + "'.");
+            logger.debug("Getting versions for file '" + dws + "/" + fileName + "'.");
         
         // Get all versions for the given file
         List<DocumentVersionBean> notSortedVersions;
         try
         {
-           notSortedVersions = handler.getVersions(dws + "/" + fileName.getText());
+           notSortedVersions = handler.getVersions(dws + "/" + fileName);
         }
         catch(FileNotFoundException e)
         {
@@ -121,7 +139,7 @@ public class GetVersionsEndpoint extends AbstractEndpoint
             {
                 // prefix @ means that it is current working version, it couldn't be restored or deleted
                 result.addAttribute("version", "@" + version.getVersion());
-                String url = host + context + dws + "/" + fileName.getTextTrim();
+                String url = host + context + dws + "/" + fileName.trim();
                 result.addAttribute("url", url);
                 isCurrent = false;
             }
