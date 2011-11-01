@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.version.VersionDoesNotExistException;
 
 /**
  * Interface for versions web service handler
@@ -54,7 +55,8 @@ public interface VersionsServiceHandler
      * @param fileVersion file version to restore
      * @return List<DocumentVersionBean> list of DocumentVersion beans
      */
-    public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion) throws FileNotFoundException;
+    public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion) 
+       throws FileNotFoundException, VersionDoesNotExistException;
 
     /**
      * Deletes "all versions" of the specified file.

@@ -31,6 +31,7 @@ import org.alfresco.module.vti.handler.VersionsServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -201,12 +202,13 @@ public abstract class AbstractAlfrescoVersionsServiceHandler implements Versions
     /**
      * @see org.alfresco.module.vti.handler.VersionsServiceHandler#deleteVersion(java.lang.String, java.lang.String)
      */
-    public List<DocumentVersionBean> deleteVersion(String fileName, String fileVersion) throws FileNotFoundException
+    public List<DocumentVersionBean> deleteVersion(final String fileName, final String fileVersion) 
+       throws FileNotFoundException, VersionDoesNotExistException
     {
        if (logger.isDebugEnabled())
           logger.debug("Method with name 'deleteVersion' is started for " + fileVersion + " of " + fileName);
 
-      FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+      final FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
 
       // Asking for a non existent file is valid for delete
       if(documentFileInfo == null)
@@ -215,44 +217,45 @@ public abstract class AbstractAlfrescoVersionsServiceHandler implements Versions
       }
 
       assertDocument(documentFileInfo);
-      UserTransaction tx = transactionService.getUserTransaction(false);
+
       try
       {
-          tx.begin();
-          
-          VersionHistory history = versionService.getVersionHistory(documentFileInfo.getNodeRef());
-          if(history == null)
-          {
-              // Versioning is disabled
-              throw new VtiHandlerException(VtiError.V_VERSION_NOT_FOUND);
-          }
-          
-          Version version = history.getVersion(fileVersion);
+         transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<Void>() {
+            @Override
+            public Void execute() throws Throwable {
+               // Grab the history, and check document is versioned
+               VersionHistory history = versionService.getVersionHistory(documentFileInfo.getNodeRef());
+               if(history == null)
+               {
+                   // Versioning is disabled
+                   throw new VtiHandlerException(VtiError.V_VERSION_NOT_FOUND);
+               }
+               
+               // Fetch the version, or fail trying
+               Version version = history.getVersion(fileVersion);
 
-          if(logger.isDebugEnabled())
-          {
-             logger.debug("Deleteing version " + version);
-          }
-          versionService.deleteVersion(documentFileInfo.getNodeRef(), version);
-
-          tx.commit();
+               // Delete that version
+               if(logger.isDebugEnabled())
+               {
+                  logger.debug("Deleteing version " + version);
+               }
+               versionService.deleteVersion(documentFileInfo.getNodeRef(), version);
+               return null;
+            }
+         }, false);
       }
-      catch (Exception e)
+      catch(Exception e)
       {
-          try
-          {
-              tx.rollback();
-          }
-          catch (Exception tex)
-          {
-          }
-          if (logger.isDebugEnabled())
-              logger.debug("Error: version was not deleted. ", e);
-          
           if(e instanceof VersionDoesNotExistException)
           {
-             throw new VtiHandlerException(VtiError.V_VERSION_NOT_FOUND); 
+             if (logger.isDebugEnabled())
+                logger.debug("Can't delete non-existant version " + fileVersion + " for " + fileName);
+             throw (VersionDoesNotExistException)e;
           }
+
+          // Report an unexpected error occuring
+          if (logger.isDebugEnabled())
+              logger.debug("Error: version was not deleted. ", e);
           if(e instanceof VtiHandlerException)
           {
              throw (VtiHandlerException)e;
@@ -310,7 +313,7 @@ public abstract class AbstractAlfrescoVersionsServiceHandler implements Versions
         if (currentVersion != null)
         {
             if (logger.isDebugEnabled())
-                logger.debug("Adding current version to result.");
+                logger.debug("Adding current version (" + currentVersion.getVersionLabel() + ") to result.");
 
             versions.add(getDocumentVersionInfo(currentVersion, id));
 
@@ -332,7 +335,7 @@ public abstract class AbstractAlfrescoVersionsServiceHandler implements Versions
         else
         {
             if (logger.isDebugEnabled())
-                logger.debug("Current version doesn't exist. Creating a new current version.");
+                logger.debug("Current version doesn't exist. Creating a new, default current version.");
             versions.add(getDocumentVersionInfo(documentFileInfo));
         }
 
