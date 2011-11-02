@@ -1507,6 +1507,14 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
       },
 
       /**
+       * Keeps track of iFrames that have been hidden during resize events so that they can be
+       * made visible once resizing is complete.
+       * 
+       * @property 
+       */
+      _hiddenOnResize: null,
+      
+      /**
        * Fired by resize event listener.
        *
        * @method onResize
@@ -1514,6 +1522,26 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
       onResize: function DashletResizer_onResize()
       {
          var height = parseInt(Dom.getStyle(this.dashlet, "height"), 10) - this.heightDelta;
+         
+         // Find all the iFrames in the body of the dashlet and hide any that are visible. This
+         // is done because an iFrame may contain Flash (or other objects that swallow mouseover
+         // events) which will make it impossible to make the dashlet smaller. By hiding the 
+         // events we make sure that the dashlet can be shrunk. However, we need to keep track
+         // of the iFrames that we hide so that we can restore them when the resize operation is
+         // completed.
+         this._hiddenOnResize = [];
+         var iFrames = this.dashletBody.getElementsByTagName("iframe");
+         for (var i = 0; i<iFrames.length; i++)
+         {
+            var currStyle = Dom.getStyle(iFrames[i], "visibility");
+            if (currStyle = "visible")
+            {
+               // Hide if visible and add to the list to make visible when resize is complete...
+               this._hiddenOnResize.push(iFrames[i]);
+               Dom.setStyle(iFrames[i], "visibility", "hidden");
+            }
+         }
+         
          Dom.setStyle(this.dashletBody, "height", height + "px");
          Dom.setStyle(this.dashletBody.getElementsByTagName("iframe"), "height", height + "px");
       },
@@ -1529,6 +1557,14 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
          // Clear the fixed-pixel width the dashlet has been given
          Dom.setStyle(this.dashlet, "width", "");
 
+         // Make any iFrames that were hidden at the start of the resize operation
+         // visible again.
+         for (var i = 0; i<this._hiddenOnResize.length; i++)
+         {
+            Dom.setStyle(this._hiddenOnResize[i], "visibility", "visible");
+         }
+         this._hiddenOnResize = {};
+         
          Alfresco.util.Ajax.jsonRequest(
          {
             method: "POST",
