@@ -777,9 +777,7 @@
             </field-visibility>
             <appearance>
                <set id="" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
-               <field id="VersionString" label-id="pdf2swf.field.VersionString">
-                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
-               </field>
+               <field id="VersionString" label-id="pdf2swf.field.VersionString" />
                <field id="Available" label-id="pdf2swf.field.Available"/>
             </appearance>
          </form>
