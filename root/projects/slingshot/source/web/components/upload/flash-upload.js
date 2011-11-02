@@ -1534,8 +1534,15 @@
             }
          }
          this.state = this.STATE_FINISHED;
-         this.widgets.cancelOkButton.set("label", this.msg("button.ok"));
-         this.widgets.cancelOkButton.focus();
+         if(!this.showConfig.suppressRefreshEvent)
+         {
+            this.widgets.cancelOkButton.set("label", this.msg("button.ok"));
+            this.widgets.cancelOkButton.focus();
+         }
+         else
+         {
+            this.widgets.cancelOkButton.set("disabled", true);
+         }
          this.widgets.uploadButton.set("disabled", true);
          Dom.addClass(this.id + "-upload-button", "hidden");
          

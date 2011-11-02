@@ -51,6 +51,9 @@ public interface ContentModel
     // tag for nodes being formed (CIFS)
     static final QName ASPECT_NO_CONTENT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "noContent");
     
+    // tag for nodes being formed (WebDAV)
+    static final QName ASPECT_WEBDAV_NO_CONTENT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "webdavNoContent");
+    
     // tag for localized nodes
     static final QName ASPECT_LOCALIZED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "localized");
     static final QName PROP_LOCALE = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "locale");
@@ -110,6 +113,7 @@ public interface ContentModel
     static final QName ASPECT_WORKING_COPY = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "workingcopy");
     static final QName PROP_WORKING_COPY_OWNER = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "workingCopyOwner");
     static final QName PROP_WORKING_COPY_MODE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "workingCopyMode");
+    static final QName PROP_WORKING_COPY_LABEL = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "workingCopyLabel");
     
     // content type and aspect constants
     static final QName TYPE_CONTENT = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "content");

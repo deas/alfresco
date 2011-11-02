@@ -26,6 +26,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 import org.alfresco.jlan.debug.Debug;
@@ -72,6 +73,10 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 	
 	private boolean m_shutdown;
 	
+	// Idle session reaper request flag
+	
+	private boolean m_runIdleReaper;
+	
 	/**
 	 * Class constructor
 	 * 
@@ -117,8 +122,12 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 		
 		int sessCnt = 0;
 	
-		if ( m_selector != null)
-			sessCnt = m_selector.keys().size();
+		if ( m_selector != null) {
+            Set<SelectionKey> keys = m_selector.keys();
+            synchronized (keys) {
+                sessCnt = keys.size();
+            }
+		}
 		
 		return sessCnt;
 	}
@@ -227,7 +236,15 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 
 			int sessCnt = 0;
 			
-			if ( m_selector.keys().size() == 0) {
+            Set<SelectionKey> keys = m_selector.keys();
+            try {
+                sessCnt = keys.size();
+            }
+            catch ( Throwable ex) {
+            	ex.printStackTrace();
+            }
+			
+			if ( sessCnt == 0) {
 
 				// Indicate that this request handler has no active sessions
 				
@@ -270,6 +287,9 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 						Debug.println( "[SMB] Request handler error waiting for events");
 						Debug.println(ex);
 					}
+				}
+				catch ( Throwable ex) {
+					ex.printStackTrace();
 				}
 			}
 			
@@ -425,6 +445,10 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 									
 									sessChannel.configureBlocking( false);
 									sessChannel.register( m_selector, SelectionKey.OP_READ, sess);
+									
+									// Update the last I/O time for the session
+									
+									sess.setLastIOTime( System.currentTimeMillis());
 								}
 								catch ( ClosedChannelException ex) {
 									
@@ -451,6 +475,20 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 					}
 				}
 			}
+			
+			// Check if the idle session reaper should be run to remove stale sessions
+			
+			if ( m_runIdleReaper == true) {
+				
+				// Run the idle session reaper
+				
+				int remCnt = runIdleSessionsReaper();
+				
+				// DEBUG
+				
+				if ( remCnt > 0 && Debug.EnableError && hasDebug())
+					Debug.println( "[SMB] Idle session reaper removed " + remCnt + " sessions");
+			}
 		}
 		
 		// Close all sessions
@@ -459,19 +497,26 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 			
 			// Enumerate the selector keys to get the session list
 			
-			Iterator<SelectionKey> selKeys = m_selector.keys().iterator();
-			
-			while ( selKeys.hasNext()) {
-				
-				// Get the current session via the selection key
-				
-				SelectionKey curKey = selKeys.next();
-				SMBSrvSession sess = (SMBSrvSession) curKey.attachment();
-				
-				// Close the session
-				
-				sess.closeSession();
-			}
+            Set<SelectionKey> keys = m_selector.keys();
+
+            try {
+    			Iterator<SelectionKey> selKeys = keys.iterator();
+    			
+    			while ( selKeys.hasNext()) {
+    				
+    				// Get the current session via the selection key
+    				
+    				SelectionKey curKey = selKeys.next();
+    				SMBSrvSession sess = (SMBSrvSession) curKey.attachment();
+    				
+    				// Close the session
+    				
+    				sess.closeSession();
+    			}
+            }
+            catch ( Throwable ex) {
+            	ex.printStackTrace();
+            }
 			
 			// Close the selector
 			
@@ -515,54 +560,89 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 	 */
 	protected final int checkForIdleSessions() {
 		
+		// Set the run idle session reaper flag and wakeup the main selector thread
+		
+		try {
+			if ( m_selector != null && m_selector.keys().size() > 0) {
+				m_runIdleReaper = true;
+				m_selector.wakeup();
+			}
+		}
+		catch (Throwable ex) {
+			ex.printStackTrace();
+		}
+		
+		// Indicate no sessions closed, not run yet
+		
+		return 0;
+	}
+	
+	/**
+	 * Run the idle session check
+	 * 
+	 * @return int
+	 */
+	protected final int runIdleSessionsReaper() {
+		
+		// Clear the idle session reaper run flag
+		
+		m_runIdleReaper = false;
+		
 		// Check if the request handler has any active sessions
 		
 		int idleCnt = 0;
 		
-		if ( m_selector != null && m_selector.keys().size() > 0) {
+        Set<SelectionKey> keys = m_selector.keys();
 
-			// Time to check
-			
-			long checkTime = System.currentTimeMillis() - (long) m_clientSocketTimeout;
-			
-			// Enumerate the selector keys to get the session list
-			
-			Iterator<SelectionKey> selKeys = m_selector.keys().iterator();
-			
-			while ( selKeys.hasNext()) {
+        try {
+			if ( m_selector != null && keys.size() > 0) {
+	
+				// Time to check
 				
-				// Get the current session via the selection key
+				long checkTime = System.currentTimeMillis() - (long) m_clientSocketTimeout;
 				
-				SelectionKey curKey = selKeys.next();
-				SMBSrvSession sess = (SMBSrvSession) curKey.attachment();
+				// Enumerate the selector keys to get the session list
 				
-				// Check the time of the last I/O request on this session
+				Iterator<SelectionKey> selKeys = keys.iterator();
 				
-				if ( sess != null && sess.getLastIOTime() < checkTime) {
+				while ( selKeys.hasNext()) {
 					
-					// DEBUG
+					// Get the current session via the selection key
 					
-					if ( Debug.EnableInfo && hasDebug())
-						Debug.println( "[SMB] Closing idle session, " + sess.getUniqueId() + ", addr=" + sess.getRemoteAddress().getHostAddress());
+					SelectionKey curKey = selKeys.next();
+					SMBSrvSession sess = (SMBSrvSession) curKey.attachment();
 					
-					// Close the session
+					// Check the time of the last I/O request on this session
 					
-					sess.closeSession();
-					sess.processPacket( null);
-					
-					// Update the idle session count
-					
-					idleCnt++;
+					if ( sess != null && sess.getLastIOTime() < checkTime) {
+						
+						// DEBUG
+						
+						if ( Debug.EnableInfo && hasDebug())
+							Debug.println( "[SMB] Closing idle session, " + sess.getUniqueId() + ", addr=" + sess.getRemoteAddress().getHostAddress());
+						
+						// Close the session
+						
+						sess.closeSession();
+						sess.processPacket( null);
+						
+						// Update the idle session count
+						
+						idleCnt++;
+					}
 				}
-			}
-			
-			// If any sessions were closed then wakeup the selector thread
-			
-			if ( idleCnt > 0)
-				m_selector.wakeup();
-		}
-		
-		// Return the count of idle sessions that were closed
+			}			
+        }
+        catch ( Throwable ex) {
+        	ex.printStackTrace();
+        }
+        
+        // If any sessions were closed then wakeup the selector thread
+        
+        if ( idleCnt > 0)
+            m_selector.wakeup();
+
+        // Return the count of idle sessions that were closed
 		
 		return idleCnt;
 	}

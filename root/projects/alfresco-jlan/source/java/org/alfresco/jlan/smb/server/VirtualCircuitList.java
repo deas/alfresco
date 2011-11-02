@@ -19,9 +19,10 @@
 
 package org.alfresco.jlan.smb.server;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.SrvSession;
 
 
@@ -46,7 +47,7 @@ public class VirtualCircuitList {
 
   // Active virtual circuits
   
-  private Hashtable<Integer, VirtualCircuit> m_vcircuits;
+  private Map<Integer, VirtualCircuit> m_vcircuits;
   private int m_UID = 1;
   
   /**
@@ -63,47 +64,43 @@ public class VirtualCircuitList {
    * @param vcircuit VirtualCircuit
    * @return int   Allocated UID.
    */
-  public int addCircuit( VirtualCircuit vcircuit) {
+  public synchronized int addCircuit( VirtualCircuit vcircuit) {
 
     //  Check if the circuit table has been allocated
 
     if (m_vcircuits == null)
-      m_vcircuits = new Hashtable<Integer, VirtualCircuit>(DefaultCircuits);
+      m_vcircuits = new HashMap<Integer, VirtualCircuit>(DefaultCircuits);
 
     //  Allocate an id for the tree connection
     
     int uid = 0;
     
-    synchronized ( m_vcircuits) {
+    //  Check if the virtual circuit table is full
     
-      //  Check if the virtual circuit table is full
-      
-      if ( m_vcircuits.size() == MaxCircuits)
-        return VirtualCircuit.InvalidUID;
+    if ( m_vcircuits.size() == MaxCircuits)
+      return VirtualCircuit.InvalidUID;
 
-      //  Find a free slot in the circuit table
-  
+    //  Find a free slot in the circuit table
+
+    uid = (m_UID++ & UIDMask);
+    
+    while (m_vcircuits.containsKey(uid)) {
+
+      //  Try another user id for the new virtual circuit
+      
       uid = (m_UID++ & UIDMask);
-      Integer key = new Integer( uid);
-      
-      while (m_vcircuits.contains(key)) {
-
-        //  Try another user id for the new virtual circuit
-        
-        uid = (m_UID++ & UIDMask);
-        key = new Integer( uid);
-      }
-
-      //  Store the new virtual circuit
-      
-      vcircuit.setUID( uid);
-      m_vcircuits.put(key, vcircuit);
     }
+
+    //  Store the new virtual circuit
+    
+    vcircuit.setUID( uid);
+    m_vcircuits.put(uid, vcircuit);
     
     //  Return the allocated UID
     
     return uid;
   }
+  
 
   /**
    * Return the virtual circuit details for the specified UID.
@@ -111,7 +108,7 @@ public class VirtualCircuitList {
    * @param uid int
    * @return VirtualCircuit
    */
-  public final VirtualCircuit findCircuit(int uid) {
+  public synchronized final VirtualCircuit findCircuit(int uid) {
 
     //  Check if the circuit table is valid
 
@@ -120,34 +117,7 @@ public class VirtualCircuitList {
 
     //  Get the required tree connection details
 
-    return m_vcircuits.get(new Integer(uid));
-  }
-
-  /**
-   * Return the virtual circuit details for the specified UID.
-   *
-   * @param uid Integer
-   * @return VirtualCircuit
-   */
-  public final VirtualCircuit findCircuit(Integer uid) {
-
-    //  Check if the circuit table is valid
-
-    if (m_vcircuits == null)
-      return null;
-
-    //  Get the required tree connection details
-
-    return (VirtualCircuit) m_vcircuits.get( uid);
-  }
-
-  /**
-   * Enumerate the virtual circiuts
-   * 
-   * @return Enumeration<Integer>
-   */
-  public final Enumeration<Integer> enumerateUIDs() {
-    return m_vcircuits.keys();
+    return m_vcircuits.get(uid);
   }
   
   /**
@@ -156,7 +126,7 @@ public class VirtualCircuitList {
    * @param uid int
    * @param sess SrvSession
    */
-  public void removeCircuit(int uid, SrvSession sess) {
+  public synchronized void removeCircuit(int uid, SrvSession sess) {
 
     //  Check if the circuit table is valid
 
@@ -165,25 +135,19 @@ public class VirtualCircuitList {
 
     //  Close the circuit and remove from the circuit table
     
-    synchronized ( m_vcircuits) {
-
-      //  Get the circuit
+    VirtualCircuit vc = m_vcircuits.get(uid);
       
-      Integer key = new Integer(uid);
-      VirtualCircuit vc = m_vcircuits.get(key);
-      
-      //  Close the virtual circuit, release resources
+    //  Close the virtual circuit, release resources
 
-      if ( vc != null) {
-        
-        //  Close the circuit
-        
-        vc.closeCircuit( sess);
-        
-        //  Remove the circuit from the circuit table
-    
-        m_vcircuits.remove(key);
-      }
+    if ( vc != null) {
+      
+      //  Close the circuit
+      
+      vc.closeCircuit( sess);
+      
+      //  Remove the circuit from the circuit table
+  
+      m_vcircuits.remove(uid);
     }
   }
   
@@ -192,15 +156,43 @@ public class VirtualCircuitList {
    * 
    * @return int
    */
-  public final int getCircuitCount() {
+  public synchronized final int getCircuitCount() {
     return m_vcircuits != null ? m_vcircuits.size() : 0;
   }
   
   /**
    * Clear the virtual circuit list
    */
-  public final void clearCircuitList() {
-    m_vcircuits.clear();
+  public synchronized final void clearCircuitList( SMBSrvSession sess) {
+    if (m_vcircuits != null) {
+  
+      // Enumerate the virtual circuits and close all circuits
+
+      for (VirtualCircuit vc : m_vcircuits.values()) {
+
+        if (!sess.isShutdown()) {
+
+          // Set the session client information from the virtual circuit
+    
+          sess.setClientInformation(vc.getClientInformation());
+                
+          // Setup any authentication context
+                
+          sess.getSMBServer().getCifsAuthenticator().setCurrentUser( vc.getClientInformation());
+        }
+
+        // DEBUG
+
+        if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_STATE))
+            sess.debugPrintln("  Cleanup vc=" + vc);
+
+        vc.closeCircuit(sess);
+      }
+
+      // Clear the virtual circuit list
+
+      m_vcircuits.clear();
+    }
   }
   
   /**

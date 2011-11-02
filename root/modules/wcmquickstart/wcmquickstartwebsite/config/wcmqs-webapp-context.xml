@@ -9,6 +9,9 @@
     <bean id="quickstartwebappPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:wcmqs.properties"/>
         <property name="placeholderPrefix" value="%{"/>
+        <property name="searchSystemEnvironment">
+            <value>false</value>
+        </property>
     </bean>	
     
 	<bean id="collectionService" parent="baseScriptExtension" class="org.alfresco.wcm.client.service.CollectionService">

@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.netbios.NetBIOSException;
@@ -159,7 +159,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	// asynchronous responses must be sent after any pending requests have been processed as the client may
 	// disconnect the session.
 
-	private Vector<SMBSrvPacket> m_asynchQueue;
+	private Queue<SMBSrvPacket> m_asynchQueue;
 
 	// Maximum client buffer size and multiplex count
 
@@ -326,36 +326,12 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 	        // Close the virtual circuits
 
-	        if ( m_vcircuits.getCircuitCount() > 0) {
-
-	            // Enumerate the virtual circuits and close all circuits
-
-	            Enumeration<Integer> uidEnum = m_vcircuits.enumerateUIDs();
-
-	            while (uidEnum.hasMoreElements()) {
-
-	                // Get the UID for the current circuit
-
-	                Integer uid = uidEnum.nextElement();
-
-	                // Close the virtual circuit
-
-	                VirtualCircuit vc = m_vcircuits.findCircuit(uid);
-	                if ( vc != null) {
-
-	                    // DEBUG
-
-	                    if ( Debug.EnableInfo && hasDebug(DBG_STATE))
-	                        debugPrintln("  Cleanup vc=" + vc);
-
-	                    vc.closeCircuit(this);
-	                }
-	            }
-
-	            // Clear the virtual circuit list
-
-	            m_vcircuits.clearCircuitList();
-	        }
+			// Enumerate the virtual circuits and close all circuits
+				// Get the UID for the current circuit
+				// Close the virtual circuit
+					// DEBUG
+			// Clear the virtual circuit list
+	  m_vcircuits.clearCircuitList(this);
 
 	        // Check if there are active change notification requests
 
@@ -1387,13 +1363,13 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 		if ( hasTransaction())
 			endTransaction();
 		
-		// Check if there are any pending asynchronous response packets
+        // Check if there are any pending asynchronous response packets
 
-		while (hasAsynchResponse()) {
+        SMBSrvPacket asynchPkt;
+		while ((asynchPkt = removeFirstAsynchResponse()) != null) {
 
 			// Remove the current asynchronous response SMB packet and send to the client
 
-			SMBSrvPacket asynchPkt = removeFirstAsynchResponse();
 			sendResponseSMB(asynchPkt, asynchPkt.getLength());
 
 			// DEBUG
@@ -1401,7 +1377,9 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			if ( Debug.EnableInfo && hasDebug(DBG_NOTIFY)) {
 				debugPrintln("Sent queued asynch response type=" + asynchPkt.getPacketTypeString() + ", mid="
 						+ asynchPkt.getMultiplexId() + ", pid=" + asynchPkt.getProcessId());
-				debugPrintln("  Async queue len=" + m_asynchQueue.size());
+				synchronized (this) {
+				    debugPrintln("  Async queue len=" + m_asynchQueue.size());
+				}
 			}
 		}
 	}
@@ -1904,26 +1882,12 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 			// Allocate the asynchronous response queue
 
-			m_asynchQueue = new Vector<SMBSrvPacket>();
+			m_asynchQueue = new LinkedList<SMBSrvPacket>();
 		}
 
 		// Add the SMB response packet to the queue
 
 		m_asynchQueue.add(pkt);
-	}
-
-	/**
-	 * Check if there are any asynchronous requests queued
-	 * 
-	 * @return boolean
-	 */
-	protected final synchronized boolean hasAsynchResponse() {
-
-		// Check if the queue is valid
-
-		if ( m_asynchQueue != null && m_asynchQueue.size() > 0)
-			return true;
-		return false;
 	}
 
 	/**
@@ -1940,8 +1904,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Return the SMB packet from the head of the queue
 
-		SMBSrvPacket pkt = (SMBSrvPacket) m_asynchQueue.elementAt(0);
-		m_asynchQueue.removeElementAt(0);
+		SMBSrvPacket pkt = (SMBSrvPacket) m_asynchQueue.poll();
 		return pkt;
 	}
 

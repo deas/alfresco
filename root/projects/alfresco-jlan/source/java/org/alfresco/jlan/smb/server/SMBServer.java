@@ -29,6 +29,7 @@ import java.util.Vector;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.ServerListener;
+import org.alfresco.jlan.server.SrvSession;
 import org.alfresco.jlan.server.SrvSessionList;
 import org.alfresco.jlan.server.Version;
 import org.alfresco.jlan.server.auth.ICifsAuthenticator;
@@ -37,7 +38,6 @@ import org.alfresco.jlan.server.config.ConfigurationListener;
 import org.alfresco.jlan.server.config.CoreServerConfigSection;
 import org.alfresco.jlan.server.config.InvalidConfigurationException;
 import org.alfresco.jlan.server.config.ServerConfiguration;
-import org.alfresco.jlan.server.core.DeviceContext;
 import org.alfresco.jlan.server.core.InvalidDeviceInterfaceException;
 import org.alfresco.jlan.server.core.ShareType;
 import org.alfresco.jlan.server.core.SharedDevice;
@@ -561,11 +561,12 @@ public class SMBServer extends NetworkFileServer implements Runnable, Configurat
 		if ( hasDebug()) {
 			Debug.println("[SMB] Closed session " + sess.getSessionId() + ", sessions=" + m_sessions.numberOfSessions());
 			if ( m_sessions.numberOfSessions() > 0 && m_sessions.numberOfSessions() <= 10) {
-				Enumeration<Integer> sessIds = m_sessions.enumerate();
+				Enumeration<SrvSession> sessions = m_sessions.enumerateSessions();
 				Debug.print("      Active sessions [");
-				while ( sessIds.hasMoreElements()) {
-					SMBSrvSession curSess = (SMBSrvSession) m_sessions.findSession( sessIds.nextElement());
-					Debug.print("" + curSess.getSessionId() + "=" + ( curSess.hasRemoteAddress() ? curSess.getRemoteAddress().getHostAddress() : "NoAddress") + ",");
+				while ( sessions.hasMoreElements()) {
+					SMBSrvSession curSess = (SMBSrvSession) sessions.nextElement();
+					    InetAddress addr = curSess.getRemoteAddress();
+					    Debug.print("" + curSess.getSessionId() + "=" + addr != null ? addr.getHostAddress() : "unknown" + ",");
 				}
 				Debug.println("]");
 			}
@@ -622,14 +623,13 @@ public class SMBServer extends NetworkFileServer implements Runnable, Configurat
 
 		// Close the active sessions
 
-		Enumeration<Integer> enm = m_sessions.enumerate();
+		Enumeration<SrvSession> enm = m_sessions.enumerateSessions();
 
 		while (enm.hasMoreElements()) {
 
 			// Get the session id and associated session
 
-			Integer sessId = enm.nextElement();
-			SMBSrvSession sess = (SMBSrvSession) m_sessions.findSession(sessId);
+			SMBSrvSession sess = (SMBSrvSession) enm.nextElement();
 
 			// Inform listeners that the session has been closed
 

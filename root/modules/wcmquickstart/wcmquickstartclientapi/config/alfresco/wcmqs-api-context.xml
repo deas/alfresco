@@ -18,6 +18,9 @@
             </list>
         </property>
         <property name="placeholderPrefix" value="%{" />
+        <property name="searchSystemEnvironment">
+            <value>false</value>
+        </property>
    </bean>
 
    <!-- CMIS Session factory for anonymous visitors to the website -->

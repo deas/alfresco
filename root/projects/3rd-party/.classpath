@@ -60,7 +60,6 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/jooconverter-2.1.0.jar" sourcepath="src/jooconverter-2.1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/hibernate-3.2.6-patched.jar" sourcepath="src/hibernate-3.2.6-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cglib-2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/truezip.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xalan-2.7.0/xalan.jar"/>
@@ -238,5 +237,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

@@ -99,9 +99,8 @@ margin: auto .25em;
 border-width: 0 1px;
 border-style: solid;
 border-color: #808080;
-margin: 0 -1px;*position:relative;*left:-1px;
+margin: 0 -1px;
 _margin: 0;
-_position: static;
 }
 .yui-skin-greenTheme .yui-button button,.yui-skin-greenTheme .yui-button a {
 padding: 0 10px;

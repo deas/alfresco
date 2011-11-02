@@ -483,6 +483,8 @@ public class ThreadRequestPool {
 			for (int i = 0; i < m_workers.length; i++)
 				m_workers[i].shutdownRequest();
 		}
+
+		m_timedProcessor.shutdownRequest();
 	}
 	
 	/**

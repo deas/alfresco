@@ -20,7 +20,8 @@
 package org.alfresco.jlan.server.thread;
 
 import java.util.LinkedList;
-import java.util.Vector;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Thread Request Queue Class
@@ -34,7 +35,7 @@ public class ThreadRequestQueue {
 
 	// List of requests
 
-	private LinkedList<ThreadRequest> m_queue;
+	private Queue<ThreadRequest> m_queue;
 
 	/**
 	 * Class constructor
@@ -48,9 +49,11 @@ public class ThreadRequestQueue {
 	 * 
 	 * @return int
 	 */
-	public final int numberOfRequests() {
-		return m_queue.size();
-	}
+    public final int numberOfRequests() {
+        synchronized (m_queue) {
+            return m_queue.size();
+        }
+    }
 
 	/**
 	 * Add a request to the queue
@@ -74,25 +77,16 @@ public class ThreadRequestQueue {
 	/**
 	 * Add requests to the queue
 	 * 
-	 * @param reqList Vector<ThreadRequest>
+	 * @param reqList List<ThreadRequest>
 	 */
-	public final void addRequests(Vector<ThreadRequest> reqList) {
+	public final void addRequests(List<ThreadRequest> reqList) {
 
-		synchronized ( m_queue) {
-
-			// Add the requests to the queue
-			
-			for ( int i = 0; i < reqList.size(); i++) {
-				
-				// Add the request to the queue
-		
-				m_queue.add(reqList.get( i));
-		
-				// Notify a worker that there is a request to process
-		
-				m_queue.notify();
-			}
-		}
+        synchronized ( m_queue) {
+    
+             // Add the requests to the queue
+             m_queue.addAll(reqList);
+             m_queue.notify();
+        }
 	}
 
 	/**

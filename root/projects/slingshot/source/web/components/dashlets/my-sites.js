@@ -323,6 +323,10 @@
          if (p_response.json.org)
          {
             favSites = p_response.json.org.alfresco.share.sites.favourites;
+            if (typeof(favSites) === "undefined")
+            {
+               favSites = {};
+            } 
             imapfavSites = p_response.json.org.alfresco.share.sites.imapFavourites;
          }
 
@@ -367,6 +371,7 @@
          var successHandler = function MySites_onSitesUpdate_success(sRequest, oResponse, oPayload)
          {
             oResponse.results=this.sites;
+            this.widgets.dataTable.set("MSG_EMPTY", "");
             this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
          };
 

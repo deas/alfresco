@@ -72,7 +72,7 @@ public class TreeConnection {
    * @param sess SrvSession
    * @return int
    */
-  public synchronized final int addFile(NetworkFile file, SrvSession sess)
+  public synchronized int addFile(NetworkFile file, SrvSession sess)
     throws TooManyFilesException {
 
     //  Check if the file array has been allocated
@@ -125,7 +125,7 @@ public class TreeConnection {
    *
    * @param sess SrvSession
    */
-  public final void closeConnection(SrvSession sess) {
+  public synchronized void closeConnection(SrvSession sess) {
 
     //  Make sure all files are closed
 
@@ -152,7 +152,7 @@ public class TreeConnection {
    *
    * @return NetworkFile
    */
-  public final NetworkFile findFile(int fid) {
+  public synchronized NetworkFile findFile(int fid) {
 
     //  Check if the file id and file array are valid
 
@@ -169,7 +169,7 @@ public class TreeConnection {
 	 * 
 	 * @return int
 	 */
-	public final int getFileTableLength() {
+	public synchronized int getFileTableLength() {
 		if ( m_files == null)
 			return 0;
 		return m_files.length;
@@ -271,14 +271,14 @@ public class TreeConnection {
    *
    * @return int
    */
-  public final int openFileCount() {
+  public synchronized int openFileCount() {
     return m_fileCount;
   }
 
   /**
    * Remove all files from the tree connection.
    */
-  public final void removeAllFiles() {
+  public synchronized final void removeAllFiles() {
 
     //  Check if the file array has been allocated
 
@@ -297,7 +297,7 @@ public class TreeConnection {
    * @param idx int
    * @param sess SrvSession
    */
-  public final void removeFile(int idx, SrvSession sess) {
+  public synchronized void removeFile(int idx, SrvSession sess) {
 
     //  Range check the file index
 
@@ -355,7 +355,7 @@ public class TreeConnection {
     str.append("[");
     str.append(m_shareDev.toString());
     str.append(",");
-    str.append(m_fileCount);
+    str.append(openFileCount());
     str.append(":");
     str.append(FileAccess.asString(m_permission));
     str.append("]");

@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="source/java"/>
 	<classpathentry exported="true" kind="lib" path="source/test-resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/quartz-1.8.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/dom4j-1.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/guessencoding-1.0.jar" sourcepath="/3rd Party/src/guessencoding-1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jta.jar"/>
@@ -38,5 +37,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/mybatis-3.0.4-patched.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

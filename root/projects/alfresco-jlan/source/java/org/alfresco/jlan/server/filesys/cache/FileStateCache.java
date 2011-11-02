@@ -26,7 +26,6 @@
 package org.alfresco.jlan.server.filesys.cache;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.locking.FileLock;
@@ -326,13 +325,6 @@ public abstract class FileStateCache {
      */
     public abstract FileState findFileState(String path, boolean create, int status);
     
-	/**
-	 * Enumerate the file state cache
-	 * 
-	 * @return Enumeration<String>
-	 */
-	public abstract Enumeration<String> enumerateCache();
-
 	/**
 	 * Remove the file state for the specified path
 	 * 

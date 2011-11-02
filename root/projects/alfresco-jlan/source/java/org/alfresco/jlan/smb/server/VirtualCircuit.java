@@ -19,16 +19,14 @@
 
 package org.alfresco.jlan.smb.server;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.SrvSession;
 import org.alfresco.jlan.server.auth.ClientInfo;
 import org.alfresco.jlan.server.core.DeviceInterface;
 import org.alfresco.jlan.server.core.SharedDevice;
-import org.alfresco.jlan.server.filesys.DiskInterface;
-import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.SearchContext;
 import org.alfresco.jlan.server.filesys.SearchContextAdapter;
 import org.alfresco.jlan.server.filesys.TooManyConnectionsException;
@@ -83,7 +81,7 @@ public class VirtualCircuit {
   
   // Active tree connections
   
-  private Hashtable<Integer, TreeConnection> m_connections;
+  private Map<Integer, TreeConnection> m_connections;
   private int m_treeId = 1;
   
   // List of active searches
@@ -146,43 +144,38 @@ public class VirtualCircuit {
    * @param shrDev SharedDevice
    * @return int   Allocated tree id (connection id).
    */
-  public int addConnection(SharedDevice shrDev)
+  public synchronized int addConnection(SharedDevice shrDev)
     throws TooManyConnectionsException {
 
     //  Check if the connection array has been allocated
 
     if (m_connections == null)
-      m_connections = new Hashtable<Integer, TreeConnection>(DefaultConnections);
+      m_connections = new HashMap<Integer, TreeConnection>(DefaultConnections);
 
     //  Allocate an id for the tree connection
     
     int treeId = 0;
     
-    synchronized ( m_connections) {
-    
-      //  Check if the tree connection table is full
-      
-      if ( m_connections.size() == MaxConnections)
-        throw new TooManyConnectionsException();
-
-      //  Find a free slot in the connection array
-  
-      treeId = (m_treeId++ & TreeIdMask);
-      Integer key = new Integer(treeId);
-      
-      while (m_connections.contains(key)) {
-
-        //  Try another tree id for the new connection
+    //  Check if the tree connection table is full
         
-        treeId = (m_treeId++ & TreeIdMask);
-        key = new Integer(treeId);
-      }
+    if ( m_connections.size() == MaxConnections)
+      throw new TooManyConnectionsException();
 
-      //  Store the new tree connection
-      
-      m_connections.put(key, new TreeConnection(shrDev));
-    }
+    //  Find a free slot in the connection array
     
+    treeId = (m_treeId++ & TreeIdMask);
+        
+    while (m_connections.containsKey(treeId)) {
+
+      //  Try another tree id for the new connection
+          
+      treeId = (m_treeId++ & TreeIdMask);
+    }
+
+    //  Store the new tree connection
+        
+    m_connections.put(treeId, new TreeConnection(shrDev));
+      
     //  Return the allocated tree id
     
     return treeId;
@@ -194,7 +187,7 @@ public class VirtualCircuit {
    * @return TreeConnection
    * @param treeId int
    */
-  public final TreeConnection findConnection(int treeId) {
+  public synchronized final TreeConnection findConnection(int treeId) {
 
     //  Check if the tree id and connection array are valid
 
@@ -203,7 +196,7 @@ public class VirtualCircuit {
 
     //  Get the required tree connection details
 
-    return m_connections.get(new Integer(treeId));
+    return m_connections.get(treeId);
   }
 
   /**
@@ -212,34 +205,26 @@ public class VirtualCircuit {
    * @param treeId int
    * @param sess SrvSession
    */
-  protected void removeConnection(int treeId, SrvSession sess) {
+  protected synchronized void removeConnection(int treeId, SrvSession sess) {
 
     //  Check if the tree id is valid
 
     if (m_connections == null)
       return;
 
-    //  Close the connection and remove from the connection list
+    TreeConnection tree = m_connections.get(treeId);
     
-    synchronized ( m_connections) {
+    //  Close the connection, release resources
 
-      //  Get the connection
+    if ( tree != null) {
       
-      Integer key = new Integer(treeId);
-      TreeConnection tree = m_connections.get(key);
+      //  Close the connection
       
-      //  Close the connection, release resources
-
-      if ( tree != null) {
-        
-        //  Close the connection
-        
-        tree.closeConnection(sess);
-        
-        //  Remove the connection from the connection list
-    
-        m_connections.remove(key);
-      }
+      tree.closeConnection(sess);
+      
+      //  Remove the connection from the connection list
+  
+      m_connections.remove(treeId);
     }
   }
   
@@ -248,7 +233,7 @@ public class VirtualCircuit {
    * 
    * @return int
    */
-  public final int getConnectionCount() {
+  public synchronized final int getConnectionCount() {
     return m_connections != null ? m_connections.size() : 0;
   }
   
@@ -257,7 +242,7 @@ public class VirtualCircuit {
    *
    * @return int  Search slot index, or -1 if there are no more search slots available.
    */
-  public final synchronized int allocateSearchSlot() {
+  public synchronized final int allocateSearchSlot() {
 
     //  Check if the search array has been allocated
 
@@ -299,7 +284,7 @@ public class VirtualCircuit {
    *
    * @param ctxId int
    */
-  public final void deallocateSearchSlot(int ctxId) {
+  public synchronized final void deallocateSearchSlot(int ctxId) {
 
     //  Check if the search array has been allocated and that the index is valid
 
@@ -323,7 +308,7 @@ public class VirtualCircuit {
    * @return SearchContext
    * @param srchId int
    */
-  public final SearchContext getSearchContext(int srchId) {
+  public synchronized final SearchContext getSearchContext(int srchId) {
 
     //  Check if the search array is valid and the search index is valid
 
@@ -341,7 +326,7 @@ public class VirtualCircuit {
    * @param slot Slot to store the search context.
    * @param srch SearchContext
    */
-  public final void setSearchContext(int slot, SearchContext srch) {
+  public synchronized final void setSearchContext(int slot, SearchContext srch) {
 
     //  Check if the search slot id is valid
 
@@ -358,7 +343,7 @@ public class VirtualCircuit {
    *
    * @return int
    */
-  public final int getSearchCount() {
+  private final int getSearchCount() {
     return m_searchCount;
   }
 
@@ -367,7 +352,7 @@ public class VirtualCircuit {
    * 
    * @return boolean
    */
-  public final boolean hasTransaction() {
+  public synchronized final boolean hasTransaction() {
     return m_transact != null ? true : false;
   }
   
@@ -376,7 +361,7 @@ public class VirtualCircuit {
    * 
    * @return TransactBuffer
    */
-  public final SrvTransactBuffer getTransaction() {
+  public synchronized final SrvTransactBuffer getTransaction() {
     return m_transact;
   }
   
@@ -385,7 +370,7 @@ public class VirtualCircuit {
    * 
    * @param buf TransactBuffer
    */
-  public final void setTransaction(SrvTransactBuffer buf) {
+  public synchronized final void setTransaction(SrvTransactBuffer buf) {
     m_transact = buf;
   }
   
@@ -403,7 +388,7 @@ public class VirtualCircuit {
    * 
    * @param sess SrvSession
    */
-  public final void closeCircuit( SrvSession sess) {
+  public synchronized final void closeCircuit( SrvSession sess) {
 
     //  Debug
 
@@ -434,62 +419,25 @@ public class VirtualCircuit {
       
     if (m_connections != null) {
 
-      synchronized ( m_connections) {
-
-        //  Close all active tree connections
-
-        Enumeration<TreeConnection> enm = m_connections.elements();
-            
-        while ( enm.hasMoreElements()) {
+      for (TreeConnection tree : m_connections.values()) {
               
-          //  Get the current tree connection
-              
-          TreeConnection tree = enm.nextElement();
-          DeviceInterface devIface = tree.getInterface();
-
-          //  Check if there are open files on the share
-              
-          if ( tree.openFileCount() > 0) {
-                
-            //  Close the open files, release locks
-                
-            for ( int i = 0; i < tree.getFileTableLength(); i++) {
-                  
-              //  Get an open file
-                  
-              NetworkFile curFile = tree.findFile(i);
-              if ( curFile != null && devIface instanceof DiskInterface) {
-                    
-                //  Access the disk share interface
-                    
-                DiskInterface diskIface = (DiskInterface) devIface;
-                    
-                try {
-                      
-                  //  Remove the file from the tree connection list
-                      
-                  tree.removeFile(i, sess);
-                      
-                  //  Close the file
-                      
-                  diskIface.closeFile( sess, tree, curFile);
-                }
-                catch (Exception ex) {
-                }
-              }
-            }
-          }
-
-          //  Inform the driver that the connection has been closed
-      
-          if ( devIface != null)
-            devIface.treeClosed( sess,tree);
-        }
+        //  Get the current tree connection
             
-        //  Clear the tree connection list
+        DeviceInterface devIface = tree.getInterface();
+
+        //  Check if there are open files on the share
             
-        m_connections.clear();
+            tree.closeConnection(sess);
+
+        //  Inform the driver that the connection has been closed
+    
+        if ( devIface != null)
+          devIface.treeClosed( sess,tree);
       }
+            
+      //  Clear the tree connection list
+          
+      m_connections.clear();
     }
   }
 
@@ -498,7 +446,7 @@ public class VirtualCircuit {
    * 
    * @return boolean
    */
-  public final boolean isLoggedOn() {
+  public synchronized final boolean isLoggedOn() {
 	  return m_loggedOn;
   }
   
@@ -507,7 +455,7 @@ public class VirtualCircuit {
    * 
    * @param loggedOn boolean
    */
-  public final void setLoggedOn(boolean loggedOn) {
+  public synchronized final void setLoggedOn(boolean loggedOn) {
 	  m_loggedOn = loggedOn;
   }
   

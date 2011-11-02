@@ -21,6 +21,9 @@
                 <value>classpath:alfresco/module/org.alfresco.module.quickr/context/lotus.properties</value>
             </list>
         </property>
+        <property name="searchSystemEnvironment">
+            <value>false</value>
+        </property>
     </bean>
     
     

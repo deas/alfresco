@@ -11,6 +11,9 @@
             <value>classpath:cmis.properties</value>
          </list>
       </property>
+        <property name="searchSystemEnvironment">
+            <value>false</value>
+        </property>
    </bean>
 
    <bean id="cmisTestsExecutor" class="org.alfresco.cmis.test.ws.CmisWebServiceTestSuite">

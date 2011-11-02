@@ -6,26 +6,26 @@
     <selected>1</selected>
     <show>1</show>
     <initializationActionList>
-        <setInstallerVariable name="component(alfresco).parameter(alfresco_ftp_port).value" value="2121" >
+        <setInstallerVariable name="component(alfresco).parameter(alfresco_ftp_port).value" value="2121">
             <ruleList>
-                <compareText logic="equals" text="${installer_root_install}" value="0" />
+                <compareText logic="equals" text="${installer_root_install}" value="0"/>
             </ruleList>
         </setInstallerVariable> 
     </initializationActionList>
     <installationAbortedActionList>
-            <deleteFile path="${installdir}/alf_data" >
+            <deleteFile path="${installdir}/alf_data">
             <ruleList>
-                <compareText text="${postgres_execute_abort_action_list}" logic="equals" value="1" />
+                <compareText text="${postgres_execute_abort_action_list}" logic="equals" value="1"/>
             </ruleList>
         </deleteFile>
     </installationAbortedActionList>
     <parameterList>
         
-        <directoryParameter name="alfresco_base_application_directory" value="${installdir}" ask="0" />
-        <directoryParameter name="alfresco_commands_directory" value="${installdir}/bin" ask="0" description="Use to configure the destination of the content in commands folder" />
-        <directoryParameter name="alfresco_library_directory" value="${tomcat_server_directory}/lib" ask="0" />
-        <directoryParameter name="alfresco_shared_directory" value="${tomcat_server_directory}/shared/classes" ask="0" />
-        <stringParameter name="alfresco_database_name" value="alfresco" ask="0" />
+        <directoryParameter name="alfresco_base_application_directory" value="${installdir}" ask="0"/>
+        <directoryParameter name="alfresco_commands_directory" value="${installdir}/bin" ask="0" description="Use to configure the destination of the content in commands folder"/>
+        <directoryParameter name="alfresco_library_directory" value="${tomcat_server_directory}/lib" ask="0"/>
+        <directoryParameter name="alfresco_shared_directory" value="${tomcat_server_directory}/shared/classes" ask="0"/>
+        <stringParameter name="alfresco_database_name" value="alfresco" ask="0"/>
 
         <!-- Ports: FTP, RMI -->
         <stringParameter>
@@ -88,7 +88,7 @@
             <width>32</width>
         </directoryParameter>
         <stringParameter name="alfresco_admin_username" ask="0" value="admin" />
-        <passwordParameter name="alfresco_admin_password" description="Admin Password:" descriptionRetype="Repeat Password:" allowEmptyValue="0" >
+        <passwordParameter name="alfresco_admin_password" description="Admin Password:" descriptionRetype="Repeat Password:" allowEmptyValue="0">
 		    <title>Admin Password</title>
             <explanation>Please give a password to use for the Alfresco administrator account.</explanation>
             <validationActionList>
@@ -103,26 +103,26 @@
 
     </parameterList>
     <readyToInstallActionList>
-        <md4 text="${alfresco_admin_password}" variable="alfresco_admin_password_md4" />
+        <md4 text="${alfresco_admin_password}" variable="alfresco_admin_password_md4"/>
         <setInstallerVariable name="installdiralfresco" value="${tomcat_server_directory}/webapps"/>
         <setInstallerVariable name="alfresco_database_user" value="${database_user}"/>
         <setInstallerVariable name="alfresco_database_password" value="${database_password}"/>
     </readyToInstallActionList>
     <folderList>
         <folder>
-            <description>War Files</description>
+            <description>//War Files</description>
             <name>warfiles</name>
             <destination>${installdiralfresco}</destination>
             <!-- Hack to remove old lib files before next folder -->
             <actionList>
-                <deleteFile path="${alfresco_library_directory}/mysql-connector-java-*.jar" />
+                <deleteFile path="${alfresco_library_directory}/mysql-connector-java-*.jar"/>
             </actionList>
             <distributionFileList>
-                <distributionFile origin="${alfresco_war_source_directory}/*.war" allowWildcards="1" />
+                <distributionFile origin="${alfresco_war_source_directory}/*.war" allowWildcards="1"/>
             </distributionFileList>
         </folder>
         <folder>
-            <description>Libraries Files</description>
+            <description>//Libraries Files</description>
             <destination>${alfresco_library_directory}</destination>
             <name>libfiles</name>
             <platforms>all</platforms>
@@ -131,30 +131,30 @@
             </distributionFileList>
         </folder>
         <folder>
-            <description>Extension Files</description>
+            <description>//Extension Files</description>
             <destination>${alfresco_shared_directory}</destination>
             <name>extensionfiles</name>
             <platforms>all</platforms>
             <distributionFileList>
-                <distributionDirectory origin="${alfresco_extensions_source_directory}/*" allowWildcards="1" />
+                <distributionDirectory origin="${alfresco_extensions_source_directory}/*" allowWildcards="1"/>
             </distributionFileList>
         </folder>
 	<folder>
-            <description>Endorsed Files</description>
+            <description>//Endorsed Files</description>
             <destination>${tomcat_server_directory}/endorsed</destination>
             <name>endorsedfiles</name>
             <platforms>all</platforms>
             <distributionFileList>
-		<distributionDirectory origin="${alfresco_endorsed_source_directory}/*" allowWildcards="1" />
+		<distributionDirectory origin="${alfresco_endorsed_source_directory}/*" allowWildcards="1"/>
 	    </distributionFileList>
 	</folder>
         <folder>
-            <description>Program Files</description>
+            <description>//Program Files</description>
             <destination>${alfresco_shared_directory}/alfresco/web-extension</destination>
             <name>alfrescocustomwebextension</name>
             <platforms>all</platforms>
             <actionList>
-                <alfrescoConfigure alfrescoFiles="*/*" />
+                <alfrescoConfigure alfrescoFiles="*/*"/>
             </actionList>
             <distributionFileList>
                 <distributionFile origin="${alfresco_on_install_settings_directory}/alfresco/shared/web-extension/*" allowWildcards="1"/>
@@ -162,7 +162,7 @@
         </folder>
 
         <folder>
-            <description>Program Files</description>
+            <description>//Program Files</description>
             <destination>${alfresco_shared_directory}</destination>
             <name>alfrescoproperties</name>
             <platforms>all</platforms>
@@ -213,20 +213,20 @@
 			<ruleGroup>
 			    <ruleEvaluationLogic>and</ruleEvaluationLogic>
 			    <ruleList>
-				<componentTest name="alfrescomysqlquestion" logic="exists" />
-				<isFalse value="${alfrescomysqlquestion_bundled}" />
+				<componentTest name="alfrescomysqlquestion" logic="exists"/>
+				<isFalse value="${alfrescomysqlquestion_bundled}"/>
 			    </ruleList>
 			</ruleGroup>
 			<ruleGroup>
 			    <ruleEvaluationLogic>and</ruleEvaluationLogic>
 			    <ruleList>
-				<componentTest name="postgres" logic="exists" />
-				<isFalse value="${component(postgres).selected}" />
+				<componentTest name="postgres" logic="exists"/>
+				<isFalse value="${component(postgres).selected}"/>
 			    </ruleList>
 			</ruleGroup>
                     </ruleList>
                 </actionGroup>
-                <alfrescoConfigure alfrescoFiles="*/alfresco-global.properties" />
+                <alfrescoConfigure alfrescoFiles="*/alfresco-global.properties"/>
             </actionList>
             <distributionFileList>
                 <distributionFile origin="${alfresco_on_install_settings_directory}/alfresco/shared/alfresco-global.properties"/>
@@ -234,9 +234,10 @@
         </folder>
 	<folder>
 	    <name>conf</name>
+            <description>//Configuration files</description>
 	    <destination>${alfresco_base_application_directory}</destination>
 	    <distributionFileList>
-		<distributionDirectory origin="alfresco/conf" />
+		<distributionDirectory origin="alfresco/conf"/>
 	    </distributionFileList>
 	    <actionList>
 		<substitute>
@@ -251,49 +252,49 @@
 		</substitute>		
 	    </actionList>
             <shouldPackRuleList>
-                <fileTest path="alfresco/conf" condition="exists" />
-		<componentTest name="alfrescomodule" logic="exists" />
+                <fileTest path="alfresco/conf" condition="exists"/>
+		<componentTest name="alfrescomodule" logic="exists"/>
             </shouldPackRuleList>
 	</folder>
         <folder>
             <name>licenses</name>
-            <description>Alfresco Licenses</description>
+            <description>//Alfresco Licenses</description>
             <destination>${alfresco_base_application_directory}</destination>
             <distributionFileList>
-                <distributionDirectory origin="${alfresco_licenses_directory}" />
+                <distributionDirectory origin="${alfresco_licenses_directory}"/>
             </distributionFileList>
             <shouldPackRuleList>
-                <fileTest path="${alfresco_licenses_directory}" condition="exists" />
+                <fileTest path="${alfresco_licenses_directory}" condition="exists"/>
             </shouldPackRuleList>
         </folder>
         <folder>
-            <description>Program Files</description>
+            <description>//Program Files</description>
             <destination>${alfresco_commands_directory}</destination>
             <name>commands</name>
             <platforms>all</platforms>
             <actionList>
-                <alfrescoConfigure alfrescoFiles="*;*.sh;*.bat" />
+                <alfrescoConfigure alfrescoFiles="*;*.sh;*.bat"/>
                 <actionGroup>
                     <actionList>
-                        <deleteFile path="${alfresco_commands_directory}/*.sh" />
+                        <deleteFile path="${alfresco_commands_directory}/*.sh"/>
                     </actionList>
                     <ruleList>
-                        <platformTest type="windows" />
+                        <platformTest type="windows"/>
                     </ruleList>
                 </actionGroup>
                 <actionGroup>
                     <actionList>
-                        <deleteFile path="${alfresco_commands_directory}/*.bat" />
-                        <deleteFile path="${alfresco_commands_directory}/*.dll" />
-                        <deleteFile path="${alfresco_commands_directory}/*.exe" />
+                        <deleteFile path="${alfresco_commands_directory}/*.bat"/>
+                        <deleteFile path="${alfresco_commands_directory}/*.dll"/>
+                        <deleteFile path="${alfresco_commands_directory}/*.exe"/>
                     </actionList>
                     <ruleList>
-                        <platformTest type="unix" />
+                        <platformTest type="unix"/>
                     </ruleList>
                 </actionGroup>
 	    </actionList>
             <distributionFileList>
-                <distributionFile origin="${alfresco_commands_source_directory}/*" allowWildcards="1" />
+                <distributionFile origin="${alfresco_commands_source_directory}/*" allowWildcards="1"/>
             </distributionFileList>
         </folder>
     </folderList>
@@ -304,11 +305,11 @@
                     <origin>${alfresco_commands_directory}/*.dll</origin>
                     <destination>${tomcat_server_directory}/bin</destination>
                 </copyFile>
-                <addFilesToUninstaller files="${tomcat_server_directory}/bin/*.dll" />
-                <deleteFile path="${alfresco_commands_directory}/*.dll" />
+                <addFilesToUninstaller files="${tomcat_server_directory}/bin/*.dll"/>
+                <deleteFile path="${alfresco_commands_directory}/*.dll"/>
             </actionList>
             <ruleList>
-                <platformTest type="windows" />
+                <platformTest type="windows"/>
             </ruleList>
         </actionGroup>
         <substitute>
@@ -321,15 +322,27 @@
                 </substitution>
             </substitutionList>
         </substitute>
+        <substitute>
+            <files>${application_server_conf_directory}/context.xml</files>
+            <type>exact</type>
+            <substitutionList>
+                <substitution>
+                    <pattern>&lt;Context&gt;</pattern>
+                    <value>&lt;Context&gt;
+&lt;Valve className="org.apache.catalina.authenticator.SSLAuthenticator" securePagesWithPragma="false" /&gt;
+</value>
+                </substitution>
+            </substitutionList>
+        </substitute>
     </postInstallationActionList>
     <postUninstallationActionList> 
         <actionGroup>
             <actionList>
-                <deleteFile path="${installdir}/alfresco.log" />
-                <deleteFile path="${alfresco_data_directory}" />
+                <deleteFile path="${installdir}/alfresco.log"/>
+                <deleteFile path="${alfresco_data_directory}"/>
             </actionList>
             <ruleList>
-                <compareText text="${deleteConfirm}" logic="equals" value="yes" />
+                <compareText text="${deleteConfirm}" logic="equals" value="yes"/>
             </ruleList>
         </actionGroup>
     </postUninstallationActionList>

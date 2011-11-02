@@ -230,11 +230,25 @@
          {
             text: function(configDef, ruleConfig, configEl)
             {
-               return this.customisations.Copy.text.call(this, configDef, ruleConfig, configEl);
+               // Display as path
+               this._getParamDef(configDef, "destination-folder")._type = "path";
+
+               return configDef;
             },
             edit: function(configDef, ruleConfig, configEl)
             {
-               configDef = this.customisations.Copy.edit.call(this, configDef, ruleConfig, configEl);
+               // Hide parameters since we are using a custom ui
+               this._hideParameters(configDef.parameterDefinitions);
+
+               // Make parameter renderer create a "Destination" button that displays an destination folder browser
+               configDef.parameterDefinitions.splice(0,0,
+               {
+                  type: "arca:destination-dialog-button",
+                  displayLabel: this.msg("label.to"),
+                  _buttonLabel: this.msg("button.select-folder"),
+                  _destinationParam: "destination-folder"
+               });
+
                return configDef;
             }
          },

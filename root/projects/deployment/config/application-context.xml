@@ -13,6 +13,9 @@
                 <value>classpath:deployment.properties</value>
             </list>
         </property>
+        <property name="searchSystemEnvironment">
+            <value>false</value>
+        </property>
     </bean>
     
     <import resource="classpath*:deployment/*-context.xml" />   

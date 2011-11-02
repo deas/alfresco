@@ -16,6 +16,9 @@
                 <value>file:${catalina.base}/conf/alfresco-virtserver.properties</value>
             </list>
         </property>
+        <property name="searchSystemEnvironment">
+            <value>false</value>
+        </property>
     </bean>
 
     <!-- Advice for automatic reauthentication.

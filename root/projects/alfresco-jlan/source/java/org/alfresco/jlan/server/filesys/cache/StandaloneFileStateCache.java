@@ -20,8 +20,9 @@
 package org.alfresco.jlan.server.filesys.cache;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.config.InvalidConfigurationException;
@@ -49,7 +50,7 @@ public class StandaloneFileStateCache extends FileStateCache {
 
 	// File state cache, keyed by file path
 
-	private Hashtable<String, FileState> m_stateCache;
+    private Map<String, FileState> m_stateCache;
 
 	/**
 	 * Class constructor
@@ -97,7 +98,7 @@ public class StandaloneFileStateCache extends FileStateCache {
 
 		// Allocate the state cache
 		
-		m_stateCache = new Hashtable<String, FileState>( initSize);
+		m_stateCache = new HashMap<String, FileState>( initSize);
 	}
 	
 	/**
@@ -106,7 +107,9 @@ public class StandaloneFileStateCache extends FileStateCache {
 	 * @return int
 	 */
 	public final int numberOfStates() {
-		return m_stateCache.size();
+	    synchronized (m_stateCache) {	    
+		    return m_stateCache.size();
+	    }
 	}
 
 	/**
@@ -204,15 +207,6 @@ public class StandaloneFileStateCache extends FileStateCache {
     }
 
 	/**
-	 * Enumerate the file state cache
-	 * 
-	 * @return Enumeration<String>
-	 */
-	public final Enumeration<String> enumerateCache() {
-		return m_stateCache.keys();
-	}
-
-	/**
 	 * Remove the file state for the specified path
 	 * 
 	 * @param path String
@@ -265,48 +259,42 @@ public class StandaloneFileStateCache extends FileStateCache {
 			state.setFileStatus(isDir ? FileStatus.DirectoryExists : FileStatus.FileExists);
 
 			m_stateCache.put(state.getPath(), state);
-		}
 
-		// If the path is to a folder we must change the file status of all file states that are
-		// using the old path
-
-		if ( isDir == true) {
-
-			// Get the old path and normalize
-
-			if ( oldPath.endsWith(FileName.DOS_SEPERATOR_STR) == false)
-				oldPath = oldPath + FileName.DOS_SEPERATOR_STR;
-			oldPath = oldPath.toUpperCase();
-
-			// Enumerate the file states
-
-			Enumeration<String> enm = enumerateCache();
-
-			while (enm.hasMoreElements()) {
-
-				// Get the current path from the state cache
-
-				String statePath = enm.nextElement();
-
-				// Check if the path is below the renamed path
-
-				if ( statePath.length() > oldPath.length() && statePath.startsWith(oldPath)) {
-
-					// Get the associated file state, update and put back into the cache
-
-					FileState renState = (FileState) m_stateCache.remove(statePath);
-
-					renState.setFileStatus(FileStatus.NotExist);
-					renState.setFileId(FileState.UnknownFileId);
-
-					m_stateCache.put(renState.getPath(), renState);
-
-					// DEBUG
-
-					if ( Debug.EnableInfo && hasDebug())
-						Debug.println("++ Rename update " + statePath);
-				}
-			}
+    		// If the path is to a folder we must change the file status of all file states that are
+    		// using the old path
+    
+    		if ( isDir == true) {
+    
+    			// Get the old path and normalize
+    
+    			if ( oldPath.endsWith(FileName.DOS_SEPERATOR_STR) == false)
+    				oldPath = oldPath + FileName.DOS_SEPERATOR_STR;
+    			oldPath = oldPath.toUpperCase();
+    
+    			// Enumerate the file states
+    
+                for (String statePath : m_stateCache.keySet()) {
+        
+    				// Check if the path is below the renamed path
+    
+    				if ( statePath.length() > oldPath.length() && statePath.startsWith(oldPath)) {
+    
+    					// Get the associated file state, update and put back into the cache
+    
+    					FileState renState = (FileState) m_stateCache.remove(statePath);
+    
+    					renState.setFileStatus(FileStatus.NotExist);
+    					renState.setFileId(FileState.UnknownFileId);
+    
+    					m_stateCache.put(renState.getPath(), renState);
+    
+    					// DEBUG
+    
+    					if ( Debug.EnableInfo && hasDebug())
+    						Debug.println("++ Rename update " + statePath);
+    				}
+    			}
+    		}
 		}
 	}
 
@@ -317,21 +305,20 @@ public class StandaloneFileStateCache extends FileStateCache {
 
 		// Check if there are any items in the cache
 
-		if ( m_stateCache == null || m_stateCache.size() == 0)
+		if ( m_stateCache == null)
 			return;
 
 		synchronized ( m_stateCache) {
 
-			// Enumerate the file state cache and remove expired file state objects
+	        // Check if there are any items in the cache
 
-			Enumeration<String> enm = m_stateCache.keys();
-	
-			while (enm.hasMoreElements()) {
-	
-				// Get the file state
-	
-				FileState state = m_stateCache.get(enm.nextElement());
-	
+	        if ( m_stateCache.isEmpty())
+	            return;
+
+	        // Enumerate the file state cache and remove expired file state objects
+
+	        for (FileState state : m_stateCache.values()) {
+		
 				// Check if there is a state listener
 	
 				if ( hasStateListener())
@@ -358,27 +345,33 @@ public class StandaloneFileStateCache extends FileStateCache {
 
 		// Check if there are any items in the cache
 
-		if ( m_stateCache == null || m_stateCache.size() == 0)
+		if ( m_stateCache == null)
 			return 0;
 
-		// Enumerate the file state cache and remove expired file state objects
+        synchronized ( m_stateCache) {
+            
+            // Check if there are any items in the cache
 
-		Enumeration<String> enm = m_stateCache.keys();
-		long curTime = System.currentTimeMillis();
+            if (m_stateCache.isEmpty())
+                return 0;
 
-		int expiredCnt = 0;
-		int openCnt = 0;
+            // Enumerate the file state cache and remove expired file state objects
 
-		while (enm.hasMoreElements()) {
-
-			// Get the file state
-
-			FileState state = m_stateCache.get(enm.nextElement());
-
- 			if ( state != null && state.isPermanentState() == false) {
-
-				synchronized (state) {
-
+            Iterator <Map.Entry<String, FileState>> enm = m_stateCache.entrySet().iterator();
+    		long curTime = System.currentTimeMillis();
+    
+    		int expiredCnt = 0;
+    		int openCnt = 0;
+    
+            while (enm.hasNext()) {
+    
+    			// Get the file state
+    
+                Map.Entry<String, FileState> entry = enm.next();
+                FileState state = entry.getValue();
+    
+     			if ( state != null && state.isPermanentState() == false) {
+    
 					// Check if the file state has expired and there are no open references to the
 					// file
 
@@ -390,7 +383,7 @@ public class StandaloneFileStateCache extends FileStateCache {
 
 							// Remove the expired file state
 
-							m_stateCache.remove(state.getPath());
+	                        enm.remove();
 
 							// DEBUG
 
@@ -406,18 +399,18 @@ public class StandaloneFileStateCache extends FileStateCache {
 						openCnt++;
 				}
 			}
-		}
-
-		// DEBUG
-
-		if ( hasDebugExpiredStates() && openCnt > 0) {
-			Debug.println("++ Open files " + openCnt);
-			dumpCache( false);
-		}
-
-		// Return the count of expired file states that were removed
-
-		return expiredCnt;
+    
+    		// DEBUG
+    
+    		if ( hasDebugExpiredStates() && openCnt > 0) {
+    			Debug.println("++ Open files " + openCnt);
+    			dumpCache( false);
+    		}
+    
+    		// Return the count of expired file states that were removed
+    
+    		return expiredCnt;
+        }
 	}
 
 	/**
@@ -427,25 +420,26 @@ public class StandaloneFileStateCache extends FileStateCache {
 	 */
 	public final void dumpCache(boolean dumpAttribs) {
 
-		// Dump the file state cache entries to the specified stream
+	    synchronized (m_stateCache) {
 
-		if ( m_stateCache.size() > 0)
-			Debug.println("++ FileStateCache Entries:");
-
-		Enumeration<String> enm = m_stateCache.keys();
-		long curTime = System.currentTimeMillis();
-
-		while (enm.hasMoreElements()) {
-			String fname = enm.nextElement();
-			FileState state = m_stateCache.get(fname);
-
-			Debug.println("++  " + fname + "(" + state.getSecondsToExpire(curTime) + ") : " + state.toString());
-
-			// Check if the state attributes should be output
-
-			if ( dumpAttribs == true)
-				state.DumpAttributes();
-		}
+	        // Dump the file state cache entries to the specified stream
+    
+    		if ( m_stateCache.size() > 0)
+    			Debug.println("++ FileStateCache Entries:");
+    
+    		long curTime = System.currentTimeMillis();
+    
+            for (Map.Entry<String, FileState> entry : m_stateCache.entrySet()) {
+    
+                FileState state = entry.getValue();
+    			Debug.println("++  " + entry.getKey() + "(" + state.getSecondsToExpire(curTime) + ") : " + state.toString());
+    
+    			// Check if the state attributes should be output
+    
+    			if ( dumpAttribs == true)
+    				state.DumpAttributes();
+    		}
+	    }
 	}
 	
 	/**

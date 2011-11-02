@@ -19,8 +19,10 @@
 
 package org.alfresco.jlan.server;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.LinkedList;
 
 /**
  * Server Session List Class
@@ -55,7 +57,7 @@ public class SrvSessionList {
 	 * @param sess SrvSession
 	 */
 	public final void addSession(SrvSession sess) {
-	  m_sessions.put(new Integer(sess.getSessionId()), sess);
+	  m_sessions.put(sess.getSessionId(), sess);
 	}
 	
 	/**
@@ -65,27 +67,7 @@ public class SrvSessionList {
 	 * @return SrvSession
 	 */
 	public final SrvSession findSession(int id) {
-	  return findSession(new Integer(id));
-	}
-	
-	/**
-	 * Find the session using the unique session id
-	 * 
-	 * @param id Integer
-	 * @return SrvSession
-	 */
-	public final SrvSession findSession(Integer id) {
 	  return m_sessions.get(id);
-	}
-	
-	/**
-	 * Remove a session from the list
-	 * 
-	 * @param id int
-	 * @return SrvSession
-	 */
-	public final SrvSession removeSession(int id) {
-	  return removeSession(new Integer(id));
 	}
 	
 	/**
@@ -104,24 +86,21 @@ public class SrvSessionList {
 	 * @param id Integer
 	 * @return SrvSession
 	 */
-	public final SrvSession removeSession(Integer id) {
-	  
-	  //	Find the required session
-	  
-	  SrvSession sess = findSession(id);
-	  
+	public final SrvSession removeSession(int id) {
 	  //	Remove the session and return the removed session
-	  
-	  m_sessions.remove(id);
-	  return sess;
+	  return m_sessions.remove(id);
 	}
 	
 	/**
-	 * Enumerate the session ids
+    * Enumerate the session objects
 	 * 
-	 * @return Enumeration<Integer>
+     * @return Enumeration<SrvSession>
 	 */
-	public final Enumeration<Integer> enumerate() {
-	  return m_sessions.keys();
+    public final Enumeration<SrvSession> enumerateSessions() {
+      // An atomic operation
+      synchronized (m_sessions)
+      {
+         return Collections.enumeration(new LinkedList<SrvSession>(m_sessions.values()));
+      }
 	}
 }

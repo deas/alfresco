@@ -114,18 +114,18 @@ public class CIFSPacketPool {
 		
 			if ( Debug.EnableDbg && hasDebug()) {
 				Debug.println("[SMB] CIFS Packet allocate failed, reqSiz=" + reqSiz);
-				if (!m_borrowed.isEmpty())
-				{
-	                Debug.println("[SMB] Oldest 10 allocations:");
-	                int i=0;
-	                for (Throwable t : m_borrowed.values())
-	                {
-	                    Debug.println(t);
-                        if (++i >= 10)
-                        {
-                            break;
-                        }
-	                }
+				synchronized (m_borrowed) {
+    				if (!m_borrowed.isEmpty()) {
+    	                Debug.println("[SMB] Oldest 10 allocations:");
+    	                int i=0;
+    	                for (Map.Entry<SMBSrvPacket, Throwable> entry : m_borrowed.entrySet()) {
+    	                    Debug.println(entry.getKey().toString());
+    	                    Debug.println(entry.getValue());
+                            if (++i >= 10) {
+                                break;
+                            }
+    	                }
+    				}
 				}
 			}
 			
@@ -141,7 +141,9 @@ public class CIFSPacketPool {
         // Record where the buffer was allocated
 
         if (Debug.EnableDbg && hasDebug()) {
-            m_borrowed.put(packet, new Exception("Stack Trace"));
+            synchronized (m_borrowed) {
+                m_borrowed.put(packet, new Exception("Stack Trace"));
+            }
         }
         
         return packet;
@@ -231,7 +233,9 @@ public class CIFSPacketPool {
         // Remove the record of where the buffer was allocated
 
         if (Debug.EnableDbg && hasDebug()) {
-            m_borrowed.remove(smbPkt);
+            synchronized (m_borrowed) {
+                m_borrowed.remove(smbPkt);
+            }
         }
 		
 		// Check if the packet has an associated packet which also needs releasing
@@ -258,7 +262,9 @@ public class CIFSPacketPool {
 	        // Remove the record of where the buffer was allocated
 
 	        if (Debug.EnableDbg && hasDebug()) {
-	            m_borrowed.remove(smbPkt.getAssociatedPacket());
+	            synchronized (m_borrowed) {
+	                m_borrowed.remove(smbPkt.getAssociatedPacket());
+	            }
 	        }
 
 	        // Clear the associated packet
