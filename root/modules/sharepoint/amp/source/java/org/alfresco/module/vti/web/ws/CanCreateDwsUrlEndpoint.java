@@ -80,21 +80,29 @@ public class CanCreateDwsUrlEndpoint extends AbstractEndpoint
         }
         
         String urlText = url.getTextTrim();
-        boolean canCreate = handler.canCreateDwsUrl(urlText);
-        if (!canCreate)
+        if (false == handler.canCreateDwsUrl(urlText))
         {
            throw new DwsException(DwsError.NO_ACCESS);
         }
         
         // creating soap response
-        Element root = soapResponse.getDocument().addElement("CanCreateDwsUrlResponse", namespace);
-        Element resultElement = root.addElement("CanCreateDwsUrlResult");
-        
+        Element resultElement = buildResultTag(soapResponse);
         resultElement.setText(processTag("Result", urlText).toString());
 
         if (logger.isDebugEnabled()) {
     		logger.debug("SOAP method with name " + getName() + " is finished.");
     	}        
+    }
+
+    /**
+     * @param soapResponse
+     * @return
+     */
+    private Element buildResultTag(VtiSoapResponse soapResponse)
+    {
+        Element root = soapResponse.getDocument().addElement(getResponseTagName(), namespace);
+        Element resultElement = root.addElement(getResultTagName());
+        return resultElement;
     }
 
 }

@@ -46,4 +46,7 @@ public interface VtiEndpoint
      */
     public String getNamespace();
     
+    public String getResponseTagName();
+
+    public String getResultTagName();
 }

@@ -366,11 +366,11 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             throw new VtiHandlerException(VtiError.ALREADY_EXISTS);
         }
         
-        if(stringExists(name))
+        if(false == stringExists(name))
         {
             name = title;
         }
-        if(stringExists(name))
+        if(false == stringExists(name))
         {
             // Both title and name empty so generate GUID.
             name = GUID.generate();

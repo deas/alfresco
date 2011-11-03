@@ -38,6 +38,7 @@ import org.alfresco.module.vti.metadata.model.SchemaBean;
 import org.alfresco.module.vti.metadata.model.SchemaFieldBean;
 import org.alfresco.module.vti.metadata.model.TaskBean;
 import org.alfresco.module.vti.metadata.model.UserBean;
+import org.alfresco.module.vti.web.VtiUtilBase;
 import org.alfresco.module.vti.web.VtiRequestDispatcher;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,16 +51,11 @@ import org.jaxen.XPath;
  * @author Stas Sokolovsky
  *
  */
-public abstract class AbstractEndpoint implements VtiEndpoint
+public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoint
 {
    private static Log logger = LogFactory.getLog(AbstractEndpoint.class);
 
     public static final String DWS = "VTI_DWS";
-    private static final StringBuilder LBRACKET = new StringBuilder("<");
-    private static final StringBuilder RBRACKET = new StringBuilder(">");
-    private static final StringBuilder LCLOSEBRACKET = new StringBuilder("</");
-    private static final StringBuilder RCLOSEBRACKET = new StringBuilder("/>");
-
     protected static String soapPart = "/s:Envelope/s:Body";
     protected static String soapUriPrefix = "s";
     protected static String soapUri = "http://schemas.xmlsoap.org/soap/envelope/";
@@ -106,17 +102,17 @@ public abstract class AbstractEndpoint implements VtiEndpoint
     /**
      * @return the response tag name
      */
-    public static String getResponseTagName(String name)
+    public String getResponseTagName()
     {
-        return name + "Response";
+        return getName() + "Response";
     }
     
     /**
      * @return the result tag name
      */
-    public static String getResultTagName(String name)
+    public String getResultTagName()
     {
-        return name + "Result";
+        return getName() + "Result";
     }
 
     /**
@@ -232,111 +228,6 @@ public abstract class AbstractEndpoint implements VtiEndpoint
         return "";
     }
     
-    /**
-     * Create xml tag presentation  
-     * 
-     * @param tagName name of tag      
-     */
-    protected StringBuilder startTag(String tagName)
-    {
-        StringBuilder result = new StringBuilder("");
-        return result.append(LBRACKET).append(tagName).append(RBRACKET);
-    }
-
-    /**
-     * Create xml tag presentation with attributes
-     * 
-     * @param tagName name of tag
-     * @param attributes map or the attributes for the tag     
-     */
-    protected StringBuilder startTag(String tagName, Map<String, Object> attributes)
-    {
-        StringBuilder result = new StringBuilder("");
-        result.append(LBRACKET).append(tagName).append(" ");
-        for (String key : attributes.keySet())
-        {
-            if (attributes.get(key) != null)
-            {
-                if (!attributes.get(key).equals(""))
-                {
-                    result.append(key).append("=\"").append(attributes.get(key)).append("\" ");
-                }
-            }
-        }
-        result.append(RBRACKET);
-        return result;
-    }
-
-    /**
-     * Creates xml closing tag presentation
-     * 
-     * @param tagName name of the closing tag    
-     */
-    protected StringBuilder endTag(String tagName)
-    {
-        StringBuilder result = new StringBuilder("");
-        return result.append(LCLOSEBRACKET).append(tagName).append(RBRACKET);
-    }
-
-    /**
-     * Creates xml tag presentation without body
-     * 
-     * @param tagName name of tag
-     */
-    protected StringBuilder singleTag(String tagName)
-    {
-        StringBuilder result = new StringBuilder("");
-        return result.append(LBRACKET).append(tagName).append(RCLOSEBRACKET);
-    }
-
-    /**
-     * Creates xml tag with attributes presentation without body
-     * 
-     * @param tagName name of tag
-     * @param attributes map of tag attributes
-     */
-    protected StringBuilder singleTag(String tagName, Map<String, Object> attributes)
-    {
-        StringBuilder result = new StringBuilder("");
-        result.append(LBRACKET).append(tagName).append(" ");
-        for (String key : attributes.keySet())
-        {
-            if (attributes.get(key) != null)
-            {
-                if (!attributes.get(key).equals(""))
-                {
-                    result.append(key).append("=\"").append(attributes.get(key)).append("\" ");
-                }
-            }
-        }
-        result.append(RCLOSEBRACKET);
-        return result;
-    }
-
-    /**
-     * Creates xml tag presentation with body that contain <code>value</code> parameter
-     * 
-     * @param tagName name of tag
-     * @param value that will be placed to the body of the tag
-     */
-    protected StringBuilder processTag(String tagName, Object value)
-    {
-        StringBuilder result = new StringBuilder("");
-
-        if (value == null)
-        {
-            return result;
-        }
-        else if (value.toString().equals(""))
-        {
-            return result.append(singleTag(tagName));
-        }
-        else
-        {
-            return result.append(startTag(tagName)).append(value).append(endTag(tagName));
-        }
-    }
-
     /**
      * Convert AssigneeBean type to the correct xml presentation
      * 

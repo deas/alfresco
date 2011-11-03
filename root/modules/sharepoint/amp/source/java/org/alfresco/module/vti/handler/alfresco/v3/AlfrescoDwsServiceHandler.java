@@ -451,6 +451,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doGetResultBean(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
+    @Override
     protected DwsBean doGetResultBean(String parentUrl, String dwsUrl, String host, String context)
     {
         DwsBean dwsBean = new DwsBean();

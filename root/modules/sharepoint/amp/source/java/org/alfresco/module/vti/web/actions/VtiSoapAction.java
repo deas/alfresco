@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.web.VtiAction;
+import org.alfresco.module.vti.web.VtiUtilBase;
 import org.alfresco.module.vti.web.ws.VtiEndpoint;
 import org.alfresco.module.vti.web.ws.VtiSoapException;
 import org.alfresco.module.vti.web.ws.VtiSoapRequest;
@@ -49,7 +50,7 @@ import org.dom4j.QName;
 * @author Stas Sokolovsky
 *
 */
-public class VtiSoapAction implements VtiAction
+public class VtiSoapAction extends VtiUtilBase implements VtiAction
 {
 
     private Map<String, VtiEndpoint> endpointsMapping; 
@@ -191,13 +192,13 @@ public class VtiSoapAction implements VtiAction
         {
            // <FooResponse><FooResult><Error>[ID]</Error></FooResult></FooResponse>
            DwsException handlerException = (DwsException)e;
-           Element endpointResponseE = responseElement.addElement(vtiEndpoint.getName() + "Response", vtiEndpoint.getNamespace());
-           Element endpointResultE = endpointResponseE.addElement(vtiEndpoint.getName() + "Result");
+           Element endpointResponseE = responseElement.addElement(vtiEndpoint.getResponseTagName(), vtiEndpoint.getNamespace());
+           Element endpointResultE = endpointResponseE.addElement(vtiEndpoint.getResultTagName());
            
            String errorCode = handlerException.getError().toCode();
 
            // Return it as an Coded ID based error, without the message
-           endpointResultE.addElement("Error").addText(errorCode);
+           endpointResultE.setText(processTag("Error", errorCode).toString());
         }
         else
         {

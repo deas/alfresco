@@ -37,13 +37,9 @@ public class DwsBean implements Serializable
     private String parentWeb;
     private List<String> failedUsers;
 
-    
-    /**
-     * 
-     */
     public DwsBean()
     {
-        
+        super();
     }
     
     /**
@@ -54,7 +50,6 @@ public class DwsBean implements Serializable
      */
     public DwsBean(String url, String doclibUrl, String parentWeb, List<String> failedUsers)
     {
-        super();
         this.url = url;
         this.doclibUrl = doclibUrl;
         this.parentWeb = parentWeb;

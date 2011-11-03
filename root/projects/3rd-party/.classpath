@@ -18,7 +18,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/jibx/jibx-run.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/acegi-security-0.8.2_patched.jar" sourcepath="src/acegi-security-0.8.2_patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/mail.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/dom4j-1.6.1.jar" sourcepath="C:/Users/nsmith/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcprov-jdk15-1.45.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcmail-jdk15-1.45.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jaxrpc.jar"/>
