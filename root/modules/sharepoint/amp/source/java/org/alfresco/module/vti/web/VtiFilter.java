@@ -158,6 +158,8 @@ public class VtiFilter implements Filter
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 httpResponse.getOutputStream().close();
             }
+            if (logger.isDebugEnabled())
+               logger.debug("No authentication details found, requesting they authenticate");
             return;
         }
         else

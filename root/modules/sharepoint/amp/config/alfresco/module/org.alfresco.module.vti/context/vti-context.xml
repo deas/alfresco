@@ -269,6 +269,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteVersion">
                     <ref bean="deleteVersionEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteList">
+                    <ref bean="deleteListEndpoint"/>
+                </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/GetDwsData">
                     <ref bean="getDwsDataEndpoint"/>
                 </entry>
@@ -515,6 +518,16 @@
         <constructor-arg ref="versionsServiceHandler" />
         <property name="name">
             <value>DeleteAllVersions</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="deleteListEndpoint" class="org.alfresco.module.vti.web.ws.DeleteListEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>DeleteList</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>
