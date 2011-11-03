@@ -29,14 +29,13 @@ import org.jaxen.XPath;
 import org.jaxen.dom4j.Dom4jXPath;
 
 /**
- * Class for handling the DeleteList soap method
+ * Class for handling the AddList soap method
  * 
  * @author Nick Burch
  */
-public class DeleteListEndpoint extends AbstractEndpoint
+public class AddListEndpoint extends AbstractEndpoint
 {
-	
-	private final static Log logger = LogFactory.getLog(DeleteListEndpoint.class);
+	private final static Log logger = LogFactory.getLog(AddListEndpoint.class);
 
     // handler that provides methods for operating with lists
     private ListServiceHandler handler;
@@ -49,7 +48,7 @@ public class DeleteListEndpoint extends AbstractEndpoint
      *
      * @param handler
      */
-    public DeleteListEndpoint(ListServiceHandler handler)
+    public AddListEndpoint(ListServiceHandler handler)
     {
         this.handler = handler;
     }
@@ -85,30 +84,9 @@ public class DeleteListEndpoint extends AbstractEndpoint
           listName = listNameE.getTextTrim();
        }
        
-       // Try to delete it
-       try
-       {
-          handler.deleteList(listName, dws);
-       }
-       catch(SiteDoesNotExistException se)
-       {
-          // The specification defines the exact code that must be
-          //  returned in case of a file not being found
-          long code = 0x82000006l;
-          String message = "Site not found: " + se.getMessage();
-          throw new VtiSoapException(message, code, se);
-       }
-       catch(FileNotFoundException fnfe)
-       {
-          // The specification defines the exact code that must be
-          //  returned in case of a file not being found
-          long code = 0x82000006l;
-          String message = "List found: " + fnfe.getMessage();
-          throw new VtiSoapException(message, code, fnfe);
-       }
-       
-       // If we managed to delete the list, we simply send an empty <DeleteListResponse />
-       Element root = soapResponse.getDocument().addElement("DeleteListResponse");
+       // TODO Try to get the rest
+       if(1==1)
+       throw new VtiSoapException("Not yet supported", 0x8107058al);
 
        if (logger.isDebugEnabled()) {
           logger.debug("SOAP method with name " + getName() + " is finished.");

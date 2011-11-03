@@ -26,9 +26,6 @@ import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
-import org.jaxen.SimpleNamespaceContext;
-import org.jaxen.XPath;
-import org.jaxen.dom4j.Dom4jXPath;
 
 /**
  * Class for handling RestoreVersion method from versions web service

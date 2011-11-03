@@ -30,8 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.Stack;
+import java.util.TimeZone;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.module.vti.handler.MeetingServiceHandler;

@@ -269,6 +269,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteVersion">
                     <ref bean="deleteVersionEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/AddList">
+                    <ref bean="addListEndpoint"/>
+                </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteList">
                     <ref bean="deleteListEndpoint"/>
                 </entry>
@@ -524,8 +527,18 @@
         </property>
     </bean>
 
+    <bean id="addListEndpoint" class="org.alfresco.module.vti.web.ws.AddListEndpoint">
+        <constructor-arg ref="listServiceHandler" />
+        <property name="name">
+            <value>AddList</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
     <bean id="deleteListEndpoint" class="org.alfresco.module.vti.web.ws.DeleteListEndpoint">
-        <constructor-arg ref="dwsServiceHandler" />
+        <constructor-arg ref="listServiceHandler" />
         <property name="name">
             <value>DeleteList</value>
         </property>
