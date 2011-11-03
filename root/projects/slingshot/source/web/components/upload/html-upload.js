@@ -154,7 +154,6 @@
       {
          var _this = this;
          
-         
          Dom.removeClass(this.id + "-dialog", "hidden");
 
          // Create the panel
@@ -186,8 +185,6 @@
                }
             }); 
          }
-         
-         
          
          this.widgets.filedata.contentEditable = false;
          this.widgets.siteId = Dom.get(this.id + "-siteId-hidden");
@@ -270,7 +267,8 @@
                {
                   text: Alfresco.util.message("message.uploading", this.name),
                   spanClass: "wait",
-                  displayTime: 0
+                  displayTime: 0,
+                  effect: null
                });
             },
             obj: null,
