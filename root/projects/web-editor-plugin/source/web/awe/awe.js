@@ -52,9 +52,9 @@
       {
          YAHOO.org.alfresco.awe.app.superclass.init.apply(this);
 
-         YAHOO.Bubbling.unsubscribe = function(layer, handler)
+         YAHOO.Bubbling.unsubscribe = function(layer, handler, scope)
          {
-            this.bubble[layer].unsubscribe(handler);
+            this.bubble[layer].unsubscribe(handler, scope);
          };
 
          // handle events

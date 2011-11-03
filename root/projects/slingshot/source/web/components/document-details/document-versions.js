@@ -368,7 +368,7 @@
        */
       doRefresh: function DocumentVersions_doRefresh()
       {
-         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh, this);
          this.refresh('components/document-details/document-versions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' :  ''));
       }
    });

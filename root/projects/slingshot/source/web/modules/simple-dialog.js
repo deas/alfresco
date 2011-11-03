@@ -445,7 +445,7 @@
          if (this.options.destroyOnHide)
          {
             YAHOO.Bubbling.fire("formContainerDestroyed");
-            YAHOO.Bubbling.unsubscribe("beforeFormRuntimeInit", this.onBeforeFormRuntimeInit);
+            YAHOO.Bubbling.unsubscribe("beforeFormRuntimeInit", this.onBeforeFormRuntimeInit, this);
             this.dialog.destroy();
             delete this.dialog;
             delete this.widgets;

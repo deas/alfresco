@@ -79,7 +79,7 @@
 
       doRefresh: function()
       {
-         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh, this);
          var url = 'components/document-details/dod5015/document-actions?nodeRef={nodeRef}&container={containerId}';
          url += this.options.siteId ? '&site={siteId}' :  '';
          this.refresh(url);

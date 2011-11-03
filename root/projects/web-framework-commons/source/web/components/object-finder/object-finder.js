@@ -47,7 +47,7 @@
     * @return {Alfresco.ObjectFinder} The new ObjectFinder instance
     * @constructor
     */
-   Alfresco.ObjectFinder = function(htmlId, currentValueHtmlId)
+   Alfresco.ObjectFinder = function Alfresco_ObjectFinder(htmlId, currentValueHtmlId)
    {
       Alfresco.ObjectFinder.superclass.constructor.call(this, "Alfresco.ObjectFinder", htmlId, ["button", "menu", "container", "resize", "datasource", "datatable"]);
       this.currentValueHtmlId = currentValueHtmlId;
@@ -552,21 +552,17 @@
       {
          try
          {
-            YAHOO.Bubbling.unsubscribe("renderCurrentValue", this.onRenderCurrentValue);
-            YAHOO.Bubbling.unsubscribe("selectedItemAdded", this.onSelectedItemAdded);
-            YAHOO.Bubbling.unsubscribe("selectedItemRemoved", this.onSelectedItemRemoved);
-            YAHOO.Bubbling.unsubscribe("parentChanged", this.onParentChanged);
-            YAHOO.Bubbling.unsubscribe("parentDetails", this.onParentDetails);
-            YAHOO.Bubbling.unsubscribe("formContainerDestroyed", this.onFormContainerDestroyed);
-            YAHOO.Bubbling.unsubscribe("removeListItem", this.onRemoveListItem);
+            YAHOO.Bubbling.unsubscribe("renderCurrentValue", this.onRenderCurrentValue, this);
+            YAHOO.Bubbling.unsubscribe("selectedItemAdded", this.onSelectedItemAdded, this);
+            YAHOO.Bubbling.unsubscribe("selectedItemRemoved", this.onSelectedItemRemoved, this);
+            YAHOO.Bubbling.unsubscribe("parentChanged", this.onParentChanged, this);
+            YAHOO.Bubbling.unsubscribe("parentDetails", this.onParentDetails, this);
+            YAHOO.Bubbling.unsubscribe("formContainerDestroyed", this.onFormContainerDestroyed, this);
+            YAHOO.Bubbling.unsubscribe("removeListItem", this.onRemoveListItem, this);
          }
          catch (e)
          {
             // Ignore
-         }
-         if (this.options.objectRenderer)
-         {
-            this.options.objectRenderer.destroy();
          }
          Alfresco.ObjectFinder.superclass.destroy.call(this);
       },
@@ -2266,10 +2262,10 @@
       {
          try
          {
-            YAHOO.Bubbling.unsubscribe("refreshItemList", this.onRefreshItemList);
-            YAHOO.Bubbling.unsubscribe("parentChanged", this.onParentChanged);
-            YAHOO.Bubbling.unsubscribe("selectedItemAdded", this.onSelectedItemChanged);
-            YAHOO.Bubbling.unsubscribe("selectedItemRemoved", this.onSelectedItemChanged);
+            YAHOO.Bubbling.unsubscribe("refreshItemList", this.onRefreshItemList, this);
+            YAHOO.Bubbling.unsubscribe("parentChanged", this.onParentChanged, this);
+            YAHOO.Bubbling.unsubscribe("selectedItemAdded", this.onSelectedItemChanged, this);
+            YAHOO.Bubbling.unsubscribe("selectedItemRemoved", this.onSelectedItemChanged, this);
          }
          catch (e)
          {

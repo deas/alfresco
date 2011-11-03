@@ -266,7 +266,7 @@
        */
       doRefresh: function FolderActions_doRefresh()
       {
-         YAHOO.Bubbling.unsubscribe("filesPermissionsUpdated", this.doRefresh);
+         YAHOO.Bubbling.unsubscribe("filesPermissionsUpdated", this.doRefresh, this);
          this.refresh('components/folder-details/folder-actions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' : ''));
       }
    }, true);

@@ -189,7 +189,7 @@
        */
       doRefresh: function NodeHeader_doRefresh()
       {
-         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh);
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh, this);
 
          var url = 'components/node-details/node-header?nodeRef={nodeRef}&rootPage={rootPage}' +
             '&rootLabelId={rootLabelId}&showFavourite={showFavourite}&showLikes={showLikes}' +

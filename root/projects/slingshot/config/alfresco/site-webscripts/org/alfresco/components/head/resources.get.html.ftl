@@ -58,9 +58,9 @@
    </#if>
    <@script type="text/javascript" src="${url.context}/res/js/bubbling.v2.1.js"></@script>
    <script type="text/javascript">//<![CDATA[
-      YAHOO.Bubbling.unsubscribe = function(layer, handler)
+      YAHOO.Bubbling.unsubscribe = function(layer, handler, scope)
       {
-         this.bubble[layer].unsubscribe(handler);
+         this.bubble[layer].unsubscribe(handler, scope);
       };
    //]]></script>
 </@>
