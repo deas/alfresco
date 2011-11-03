@@ -185,7 +185,15 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
                     // Checkin the new version
                     NodeRef originalNode = checkOutCheckInService.checkin(workingCopy, versionProperties);
-                    lockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
+                    if (originalNode != null)
+                    {
+                       lockService.unlock(originalNode);
+                    }
+                    else
+                    {
+                       if (logger.isDebugEnabled())
+                          logger.debug("CheckIn of " + workingCopy + " didn't work - is it really checked out?");
+                    }
                     return originalNode;
                 }
                 catch (Exception e)
