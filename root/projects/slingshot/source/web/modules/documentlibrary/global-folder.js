@@ -1112,7 +1112,7 @@
             catch(e)
             {
             }
-            containerPicker.innerHTML = '<span>You don\'t have permission to view this site</span>';   
+            containerPicker.innerHTML = '';
          };
          
          var config =
