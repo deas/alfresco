@@ -178,7 +178,7 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
             String errorCode;
             if(handlerException.getErrorCode() > -1)
             {
-               errorCode = Integer.toString(handlerException.getErrorCode());
+               errorCode = Long.toString(handlerException.getErrorCode());
             }
             else
             {

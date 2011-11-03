@@ -19,6 +19,7 @@
 package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.apache.commons.logging.Log;
@@ -94,7 +95,7 @@ public class DeleteListEndpoint extends AbstractEndpoint
        {
           // The specification defines the exact code that must be
           //  returned in case of a file not being found
-          long code = 0x82000006l;
+          long code = VtiError.V_LIST_NOT_FOUND.getErrorCode();
           String message = "Site not found: " + se.getMessage();
           throw new VtiSoapException(message, code, se);
        }
@@ -102,7 +103,7 @@ public class DeleteListEndpoint extends AbstractEndpoint
        {
           // The specification defines the exact code that must be
           //  returned in case of a file not being found
-          long code = 0x82000006l;
+          long code = VtiError.V_LIST_NOT_FOUND.getErrorCode();
           String message = "List not found: " + fnfe.getMessage();
           throw new VtiSoapException(message, code, fnfe);
        }

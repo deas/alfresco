@@ -35,7 +35,7 @@ public class VtiMethodException extends RuntimeException
     private static final long serialVersionUID = 6560087866101304630L;
 
     private VtiError error;
-    private int errorCode;
+    private long errorCode;
 
     public VtiMethodException(VtiError errorCode, Throwable e)
     {
@@ -77,7 +77,7 @@ public class VtiMethodException extends RuntimeException
         return error;
     }
     
-    public int getErrorCode()
+    public long getErrorCode()
     {
         return errorCode;
     }

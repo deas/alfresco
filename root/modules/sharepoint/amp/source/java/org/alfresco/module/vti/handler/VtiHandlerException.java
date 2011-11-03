@@ -61,7 +61,7 @@ public class VtiHandlerException extends RuntimeException
     /**
      * What SharePoint error code to return
      */
-    private int errorCode = -1;
+    private long errorCode = -1;
     
     /**
      * What Error this is, from the Enumeration List
@@ -139,7 +139,7 @@ public class VtiHandlerException extends RuntimeException
     /**
      * Return the error code, or -1 if not known
      */
-    public int getErrorCode()
+    public long getErrorCode()
     {
         return errorCode;
     }
