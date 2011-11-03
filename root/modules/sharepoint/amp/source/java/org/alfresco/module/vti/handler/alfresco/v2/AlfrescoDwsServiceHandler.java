@@ -28,7 +28,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.alfresco.module.vti.handler.Error;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler;
 import org.alfresco.module.vti.metadata.dic.Permission;
@@ -102,7 +101,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     /**
     * {@inheritDoc}
     */
-    public Error canCreateDwsUrl(String url)
+    public boolean canCreateDwsUrl(String url)
     {
         throw new UnsupportedOperationException();
     }

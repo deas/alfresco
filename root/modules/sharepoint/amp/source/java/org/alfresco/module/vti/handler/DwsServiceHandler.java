@@ -44,12 +44,12 @@ public interface DwsServiceHandler
 {
 
     /**
-     * Indicates whether the document workspace specified by te given url can be created.
+     * Indicates whether the document workspace specified by the given url can be created.
      * 
      * @param url Specifies the document workspace to be created.
      * @return
      */
-    public Error canCreateDwsUrl(String url);
+    public boolean canCreateDwsUrl(String url) throws DwsException;
 
     /**
      * Returns information about a document workspace site and the lists it contains

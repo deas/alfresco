@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.web.VtiAction;
 import org.alfresco.module.vti.web.ws.VtiEndpoint;
@@ -185,6 +186,18 @@ public class VtiSoapAction implements VtiAction
 
             // Return it as an ID based error, without the message
             endpointResultE.addElement("Error").addAttribute("ID", errorCode);
+        }
+        else if (e instanceof DwsException)
+        {
+           // <FooResponse><FooResult><Error>[ID]</Error></FooResult></FooResponse>
+           DwsException handlerException = (DwsException)e;
+           Element endpointResponseE = responseElement.addElement(vtiEndpoint.getName() + "Response", vtiEndpoint.getNamespace());
+           Element endpointResultE = endpointResponseE.addElement(vtiEndpoint.getName() + "Result");
+           
+           String errorCode = handlerException.getError().toCode();
+
+           // Return it as an Coded ID based error, without the message
+           endpointResultE.addElement("Error").addText(errorCode);
         }
         else
         {

@@ -56,7 +56,7 @@ public class VtiHandlerException extends RuntimeException
     public static final VtiError URL_DIR_NOT_FOUND = VtiError.V_URL_DIR_NOT_FOUND;
     public static final VtiError HAS_ILLEGAL_CHARACTERS = VtiError.V_HAS_ILLEGAL_CHARACTERS;
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 982741132391L;
     
     /**
      * What SharePoint error code to return

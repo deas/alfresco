@@ -18,8 +18,9 @@
  */
 package org.alfresco.module.vti.web.ws;
 
+import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.DwsServiceHandler;
-import org.alfresco.module.vti.handler.Error;
+import org.alfresco.module.vti.metadata.dic.DwsError;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -73,26 +74,24 @@ public class CanCreateDwsUrlEndpoint extends AbstractEndpoint
         XPath urlPath = new Dom4jXPath(buildXPath(prefix, "/CanCreateDwsUrl/url"));
         urlPath.setNamespaceContext(nc);
         Element url = (Element) urlPath.selectSingleNode(soapRequest.getDocument().getRootElement());
-        String urlText = "";
-        Error result = Error.FAILED;
-        if(url != null)
+        if (url == null)
         {
-            urlText = url.getTextTrim();
-            result = handler.canCreateDwsUrl(urlText);
+           throw new DwsException(DwsError.FAILED);
+        }
+        
+        String urlText = url.getTextTrim();
+        boolean canCreate = handler.canCreateDwsUrl(urlText);
+        if (!canCreate)
+        {
+           throw new DwsException(DwsError.NO_ACCESS);
         }
         
         // creating soap response
         Element root = soapResponse.getDocument().addElement("CanCreateDwsUrlResponse", namespace);
         Element resultElement = root.addElement("CanCreateDwsUrlResult");
         
-        if(Error.NO_ERROR.equals(result))
-        {
-            resultElement.setText(processTag("Result", urlText).toString());
-        }
-        else
-        {
-            resultElement.setText(generateXml(result));
-        }
+        resultElement.setText(processTag("Result", urlText).toString());
+
         if (logger.isDebugEnabled()) {
     		logger.debug("SOAP method with name " + getName() + " is finished.");
     	}        

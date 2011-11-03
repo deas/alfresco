@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.alfresco.module.vti.handler.Error;
 import org.alfresco.module.vti.metadata.dic.Permission;
 import org.alfresco.module.vti.metadata.model.AssigneeBean;
 import org.alfresco.module.vti.metadata.model.DocumentBean;
@@ -684,14 +683,4 @@ public abstract class AbstractEndpoint implements VtiEndpoint
                 .append(processTag("IsSiteAdmin", userBean.isSiteAdmin())).append(endTag("User"));
         return result.toString();
     }
-    
-    protected String generateXml(Error error)
-    {
-        return new StringBuilder()
-            .append(startTag("Error"))
-            .append(error.getId())
-            .append(endTag("Error"))
-            .toString();
-    }
-
 }

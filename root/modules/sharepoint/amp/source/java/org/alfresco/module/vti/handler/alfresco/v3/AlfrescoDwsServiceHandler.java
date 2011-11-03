@@ -32,13 +32,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-import org.alfresco.module.vti.handler.Error;
 import org.alfresco.model.ContentModel;
+import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiExceptionUtils;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
+import org.alfresco.module.vti.metadata.dic.DwsError;
 import org.alfresco.module.vti.metadata.dic.Permission;
 import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.dic.WorkspaceType;
@@ -65,7 +66,6 @@ import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.util.GUID;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -224,13 +224,13 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     * {@inheritDoc}
     */
     @Override
-    public Error canCreateDwsUrl(String url)
+    public boolean canCreateDwsUrl(String url)
     {
         if(siteService.hasCreateSitePermissions())
         {
-            return Error.NO_ERROR;
+            return true;
         }
-        return Error.NO_ACCESS;
+        throw new DwsException(DwsError.NO_ACCESS);
     }
     
     /**
