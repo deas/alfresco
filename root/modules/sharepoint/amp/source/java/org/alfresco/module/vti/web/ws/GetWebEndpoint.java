@@ -78,7 +78,11 @@ public class GetWebEndpoint extends AbstractEndpoint
         Element urlE = (Element) urlPath.selectSingleNode(soapRequest.getDocument().getRootElement());
 
         // Turn that into a URL in our required format
-        String url = URLDecoder.decode(urlE.getTextTrim(), "UTF-8"); 
+        String url = null;
+        if(urlE != null)
+        {
+           url = URLDecoder.decode(urlE.getTextTrim(), "UTF-8");
+        }
         
         // Fetch the details for the site
         DwsData dws;
@@ -98,7 +102,7 @@ public class GetWebEndpoint extends AbstractEndpoint
            // Something was wrong with the request given, likely
            //  the URL wasn't in a valid format
            long code = 0x82000001l;
-           String message = "Invalid request";
+           String message = "Invalid request - " + vti.getMessage();
            throw new VtiSoapException(message, code, vti);
         }
         

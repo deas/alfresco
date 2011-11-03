@@ -428,7 +428,12 @@ public class VtiPathHelper extends AbstractLifecycleBean
      * @return context
      */
     public String getContextFromDocumentName(String document)
-    {                
+    {      
+        if(document == null)
+        {
+           throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+        }
+        
         try
         {
             URL url = new URL(document);
