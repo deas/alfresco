@@ -781,6 +781,7 @@
             {
                Alfresco.logger.debug("HistoryManager: page changed:" + newPage);
                me.widgets.paginator.setPage(parseInt(newPage, 10));
+               this.currentPage = parseInt(newPage, 10);
             }, null, this);
 
             // YUI Paginator definition
@@ -948,7 +949,7 @@
                   me._setDefaultDataTableErrors(me.widgets.dataTable);
                }
             }
-            
+
             // We don't get an renderEvent for an empty recordSet, but we'd like one anyway
             if (oResponse.results.length === 0)
             {
@@ -957,7 +958,7 @@
                   type: "renderEvent"
                });
             }
-            
+
             // Must return true to have the "Loading..." message replaced by the error message
             return true;
          };
@@ -965,6 +966,11 @@
          // Override default function so the "Loading..." message is suppressed
          this.widgets.dataTable.doBeforeSortColumn = function DataGrid_doBeforeSortColumn(oColumn, sSortDir)
          {
+            me.currentSort =
+            {
+               oColumn: oColumn,
+               sSortDir: sSortDir
+            };
             return true;
          }
 
@@ -975,6 +981,32 @@
             this.selectedItems[id] = e.target.checked;
             Bubbling.fire("selectedItemsChanged");
          }, this, true);
+
+         // Before render event handler
+         this.widgets.dataTable.subscribe("beforeRenderEvent", function()
+         {
+            if (me.currentSort)
+            {
+                // Is there a custom sort handler function defined?
+               var oColumn = me.currentSort.oColumn,
+                  sSortDir = me.currentSort.sSortDir,
+                  sortFnc = (oColumn.sortOptions && YAHOO.lang.isFunction(oColumn.sortOptions.sortFunction)) ?
+                        // Custom sort function
+                        oColumn.sortOptions.sortFunction : null;
+                   
+               // Sort the Records
+               if (sSortDir || sortFnc)
+               {
+                  // Default sort function if necessary
+                  sortFnc = sortFnc || this.get("sortFunction");
+                  // Get the field to sort
+                  var sField = (oColumn.sortOptions && oColumn.sortOptions.field) ? oColumn.sortOptions.field : oColumn.field;
+
+                  // Sort the Records        
+                  this._oRecordSet.sortRecords(sortFnc, ((sSortDir == YAHOO.widget.DataTable.CLASS_DESC) ? true : false), sField);
+               }
+            }
+         }, this.widgets.dataTable, true);
 
          // Rendering complete event handler
          this.widgets.dataTable.subscribe("renderEvent", function()
@@ -1422,7 +1454,10 @@
        */
       onDataGridRefresh: function DataGrid_onDataGridRefresh(layer, args)
       {
-         this._updateDataGrid.call(this);
+         this._updateDataGrid.call(this,
+         {
+            page: this.currentPage
+         });
       },
 
       /**
@@ -1729,7 +1764,7 @@
             this.currentFilter = successFilter;
             this.currentPage = p_obj.page || 1;
             Bubbling.fire("filterChanged", successFilter);
-            this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
+            this.widgets.dataTable.onDataReturnReplaceRows.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
          };
          
          var failureHandler = function DataGrid__uDG_failureHandler(sRequest, oResponse)
