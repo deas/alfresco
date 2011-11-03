@@ -25,6 +25,7 @@ import org.alfresco.repo.webdav.auth.SharepointConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.jaxen.JaxenException;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.XPath;
 import org.jaxen.dom4j.Dom4jXPath;
@@ -71,13 +72,16 @@ public class CreateDwsEndpoint extends AbstractEndpoint
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
 
-        // getting title parameter from request
-        XPath titlePath = new Dom4jXPath(buildXPath(prefix, "/CreateDws/title"));
-        titlePath.setNamespaceContext(nc);
-        Element title = (Element) titlePath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        Element rootElement = soapRequest.getDocument().getRootElement();
 
+        // getting title parameter from request
+        String dwsName = getParameter(rootElement, "/CreateDws/name", nc);
+        
+        // getting title parameter from request
+        String title = getParameter(rootElement, "/CreateDws/title", nc);
+        
         String parentDws = getDwsForCreationFromUri(soapRequest);
-        DwsBean dws = handler.createDws(parentDws, null, null, title.getTextTrim(), null, getHost(soapRequest), getContext(soapRequest), (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));
+        DwsBean dws = handler.createDws(parentDws, dwsName, null, title, null, getHost(soapRequest), getContext(soapRequest), (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));
         
         // creating soap response
         Element root = soapResponse.getDocument().addElement("CreateDwsResponse", namespace);
@@ -88,5 +92,13 @@ public class CreateDwsEndpoint extends AbstractEndpoint
         if (logger.isDebugEnabled()) {
     		logger.debug("SOAP method with name " + getName() + " is finished.");
     	}        
-    }    
+    }
+
+    protected String getParameter(Element rootElement, String path, SimpleNamespaceContext nc) throws JaxenException
+    {
+        XPath xPath = new Dom4jXPath(buildXPath(prefix, path));
+        xPath.setNamespaceContext(nc);
+        Element titleEl = (Element) xPath.selectSingleNode(rootElement);
+        return titleEl.getTextTrim();
+    }
 }

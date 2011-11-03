@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.alfresco.module.vti.handler.Error;
 import org.alfresco.module.vti.metadata.dic.Permission;
 import org.alfresco.module.vti.metadata.model.AssigneeBean;
 import org.alfresco.module.vti.metadata.model.DocumentBean;
@@ -319,7 +320,7 @@ public abstract class AbstractEndpoint implements VtiEndpoint
      * @param tagName name of tag
      * @param value that will be placed to the body of the tag
      */
-    protected StringBuilder proccesTag(String tagName, Object value)
+    protected StringBuilder processTag(String tagName, Object value)
     {
         StringBuilder result = new StringBuilder("");
 
@@ -346,8 +347,8 @@ public abstract class AbstractEndpoint implements VtiEndpoint
     public String generateXml(AssigneeBean assigneeBean)
     {
         StringBuilder result = new StringBuilder("");
-        result.append(startTag("Member")).append(proccesTag("ID", assigneeBean.getId())).append(proccesTag("Name", assigneeBean.getName())).append(
-                proccesTag("LoginName", assigneeBean.getLoginName())).append(endTag("Member"));
+        result.append(startTag("Member")).append(processTag("ID", assigneeBean.getId())).append(processTag("Name", assigneeBean.getName())).append(
+                processTag("LoginName", assigneeBean.getLoginName())).append(endTag("Member"));
         return result.toString();
     }
 
@@ -384,8 +385,8 @@ public abstract class AbstractEndpoint implements VtiEndpoint
     public String generateXml(DwsBean dwsBean)
     {
         StringBuilder result = new StringBuilder("");
-        result.append(startTag("Results")).append(proccesTag("Url", dwsBean.getUrl())).append(proccesTag("DoclibUrl", dwsBean.getDoclibUrl())).append(
-                proccesTag("ParentWeb", dwsBean.getParentWeb())).append(startTag("FailedUsers"));
+        result.append(startTag("Results")).append(processTag("Url", dwsBean.getUrl())).append(processTag("DoclibUrl", dwsBean.getDoclibUrl())).append(
+                processTag("ParentWeb", dwsBean.getParentWeb())).append(startTag("FailedUsers"));
         if (dwsBean.getFailedUsers() != null)
         {
             for (String user : dwsBean.getFailedUsers())
@@ -410,7 +411,7 @@ public abstract class AbstractEndpoint implements VtiEndpoint
     public String generateXml(DwsData dwsData)
     {
         StringBuilder result = new StringBuilder("");
-        result.append(startTag("Results")).append(proccesTag("Title", dwsData.getTitle())).append(proccesTag("LastUpdate", dwsData.getLastUpdate())).append(
+        result.append(startTag("Results")).append(processTag("Title", dwsData.getTitle())).append(processTag("LastUpdate", dwsData.getLastUpdate())).append(
                 generateXml(dwsData.getUser()));
 
         result.append(startTag("Members"));
@@ -455,7 +456,7 @@ public abstract class AbstractEndpoint implements VtiEndpoint
                 }
                 else
                 {
-                    result.append(proccesTag("ID", ""));
+                    result.append(processTag("ID", ""));
                     for (DocumentBean document : dwsData.getDocumentsList())
                     {
                         result.append(generateXml(document));
@@ -469,7 +470,7 @@ public abstract class AbstractEndpoint implements VtiEndpoint
                 docAttr.clear();
                 docAttr.put("Name", "Links");
                 result.append(startTag("List", docAttr));
-                result.append(proccesTag("ID", ""));
+                result.append(processTag("ID", ""));
                 for (LinkBean link : dwsData.getLinksList())
                 {
                     result.append(generateXml(link));
@@ -492,9 +493,9 @@ public abstract class AbstractEndpoint implements VtiEndpoint
     public String generateXml(DwsMetadata dwsMetadata)
     {
         StringBuilder result = new StringBuilder("");
-        result.append(startTag("Results")).append(proccesTag("SubscribeUrl", dwsMetadata.getSubscribeUrl())).append(proccesTag("MtgInstance", dwsMetadata.getMtgInstance()))
-                .append(proccesTag("SettingUrl", dwsMetadata.getSettingsUrl())).append(proccesTag("PermsUrl", dwsMetadata.getPermsUrl())).append(
-                        proccesTag("UserInfoUrl", dwsMetadata.getUserInfoUrl())).append(startTag("Roles"));
+        result.append(startTag("Results")).append(processTag("SubscribeUrl", dwsMetadata.getSubscribeUrl())).append(processTag("MtgInstance", dwsMetadata.getMtgInstance()))
+                .append(processTag("SettingUrl", dwsMetadata.getSettingsUrl())).append(processTag("PermsUrl", dwsMetadata.getPermsUrl())).append(
+                        processTag("UserInfoUrl", dwsMetadata.getUserInfoUrl())).append(startTag("Roles"));
         for (String role : dwsMetadata.getRoles())
         {
             result.append("<Role Name=\"" + role + "\" Description=\"\" Type=\"" + role + "\" />");
@@ -516,9 +517,9 @@ public abstract class AbstractEndpoint implements VtiEndpoint
         {
             result.append(singleTag(permission.toString()));
         }
-        result.append(endTag("Permissions")).append(proccesTag("HasUniquePerm", dwsMetadata.isHasUniquePerm())).append(proccesTag("WorkspaceType", dwsMetadata.getWorkspaceType()))
-                .append(proccesTag("IsADMode", dwsMetadata.isADMode())).append(proccesTag("DocUrl", dwsMetadata.getDocUrl()))
-                .append(proccesTag("Minimal", dwsMetadata.isMinimal())).append(generateXml(dwsMetadata.getDwsData())).append(endTag("Results"));
+        result.append(endTag("Permissions")).append(processTag("HasUniquePerm", dwsMetadata.isHasUniquePerm())).append(processTag("WorkspaceType", dwsMetadata.getWorkspaceType()))
+                .append(processTag("IsADMode", dwsMetadata.isADMode())).append(processTag("DocUrl", dwsMetadata.getDocUrl()))
+                .append(processTag("Minimal", dwsMetadata.isMinimal())).append(generateXml(dwsMetadata.getDwsData())).append(endTag("Results"));
 
         return result.toString();
     }
@@ -560,7 +561,7 @@ public abstract class AbstractEndpoint implements VtiEndpoint
         attributes.put("Name", listInfoBean.getName());
 
         result.append(startTag("ListInfo", attributes));
-        result.append(proccesTag("Moderated", listInfoBean.isModerated()));
+        result.append(processTag("Moderated", listInfoBean.isModerated()));
         result.append(startTag("ListPermissions"));
         for (Permission permission : listInfoBean.getPermissionList())
         {
@@ -580,9 +581,9 @@ public abstract class AbstractEndpoint implements VtiEndpoint
     public String generateXml(MemberBean memberBean)
     {
         StringBuilder result = new StringBuilder("");
-        result.append(startTag("Member")).append(proccesTag("ID", memberBean.getId())).append(proccesTag("Name", memberBean.getName())).append(
-                proccesTag("LoginName", memberBean.getLoginName())).append(proccesTag("Email", memberBean.getEmail())).append(
-                proccesTag("IsDomainGroup", memberBean.isDomainGroup())).append(endTag("Member"));
+        result.append(startTag("Member")).append(processTag("ID", memberBean.getId())).append(processTag("Name", memberBean.getName())).append(
+                processTag("LoginName", memberBean.getLoginName())).append(processTag("Email", memberBean.getEmail())).append(
+                processTag("IsDomainGroup", memberBean.isDomainGroup())).append(endTag("Member"));
         return result.toString();
     }
 
@@ -628,7 +629,7 @@ public abstract class AbstractEndpoint implements VtiEndpoint
             result.append(startTag("Choices"));
             for (String choice : schemaFieldBean.getChoices())
             {
-                result.append(proccesTag("Choice", choice));
+                result.append(processTag("Choice", choice));
             }
             result.append(endTag("Choices"));
         }
@@ -678,9 +679,19 @@ public abstract class AbstractEndpoint implements VtiEndpoint
     public String generateXml(UserBean userBean)
     {
         StringBuilder result = new StringBuilder("");
-        result.append(startTag("User")).append(proccesTag("ID", userBean.getId())).append(proccesTag("Name", userBean.getName())).append(
-                proccesTag("LoginName", userBean.getLoginName())).append(proccesTag("Email", userBean.getEmail())).append(proccesTag("IsDomainGroup", userBean.isDomainGroup()))
-                .append(proccesTag("IsSiteAdmin", userBean.isSiteAdmin())).append(endTag("User"));
+        result.append(startTag("User")).append(processTag("ID", userBean.getId())).append(processTag("Name", userBean.getName())).append(
+                processTag("LoginName", userBean.getLoginName())).append(processTag("Email", userBean.getEmail())).append(processTag("IsDomainGroup", userBean.isDomainGroup()))
+                .append(processTag("IsSiteAdmin", userBean.isSiteAdmin())).append(endTag("User"));
         return result.toString();
     }
+    
+    protected String generateXml(Error error)
+    {
+        return new StringBuilder()
+            .append(startTag("Error"))
+            .append(error.getId())
+            .append(endTag("Error"))
+            .toString();
+    }
+
 }

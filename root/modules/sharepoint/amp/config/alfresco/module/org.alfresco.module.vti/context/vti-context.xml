@@ -275,6 +275,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/CreateDws">
                     <ref bean="createDwsEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/CanCreateDwsUrl">
+                    <ref bean="canCreateDwsUrlEndpoint"/>
+                </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteAllVersions">
                     <ref bean="deleteAllVersionsEndpoint"/>
                 </entry>
@@ -442,6 +445,16 @@
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>GetDwsData</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="canCreateDwsUrlEndpoint" class="org.alfresco.module.vti.web.ws.CanCreateDwsUrlEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>CanCreateDwsUrl</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>

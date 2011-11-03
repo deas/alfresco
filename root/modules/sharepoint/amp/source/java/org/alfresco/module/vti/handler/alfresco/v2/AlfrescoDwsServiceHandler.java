@@ -28,6 +28,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.alfresco.module.vti.handler.Error;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler;
 import org.alfresco.module.vti.metadata.dic.Permission;
@@ -98,6 +99,14 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
         resp.sendRedirect(redirectTo);
     }
 
+    /**
+    * {@inheritDoc}
+    */
+    public Error canCreateDwsUrl(String url)
+    {
+        throw new UnsupportedOperationException();
+    }
+    
     /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doRemoveDwsUser(org.alfresco.service.cmr.model.FileInfo, java.lang.String)
      */
@@ -273,11 +282,11 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     }
 
     /**
-     * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doCreateDws(org.alfresco.service.cmr.model.FileInfo, java.lang.String, org.alfresco.repo.SessionUser)
+     * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doCreateDws(String, java.lang.String, org.alfresco.repo.SessionUser)
      */
-    protected String doCreateDws(FileInfo parentFileInfo, String title, SessionUser user) throws HttpException, IOException
+    protected String doCreateDws(String dwsName, String title, SessionUser user) throws HttpException, IOException
     {
-        fileFolderService.create(parentFileInfo.getNodeRef(), title, ContentModel.TYPE_FOLDER);
+        fileFolderService.create(null, title, ContentModel.TYPE_FOLDER);
         return title;
     }
 
@@ -337,6 +346,15 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     
     public WorkspaceType getWorkspaceType(FileInfo dwsNode) {
         return WorkspaceType.DWS;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    protected boolean dwsExists(String name)
+    {
+        return false;
     }
 
 }

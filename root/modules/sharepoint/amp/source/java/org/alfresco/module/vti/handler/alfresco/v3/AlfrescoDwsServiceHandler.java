@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.alfresco.module.vti.handler.Error;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler;
@@ -64,6 +65,7 @@ import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.GUID;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -218,6 +220,19 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
         resp.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
     }
 
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public Error canCreateDwsUrl(String url)
+    {
+        if(siteService.hasCreateSitePermissions())
+        {
+            return Error.NO_ERROR;
+        }
+        return Error.NO_ACCESS;
+    }
+    
     /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doRemoveDwsUser(org.alfresco.service.cmr.model.FileInfo, java.lang.String)
      */
@@ -393,27 +408,32 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     }
 
     /**
-     * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doCreateDws(org.alfresco.service.cmr.model.FileInfo, org.alfresco.repo.SessionUser)
+     * {@inheritDoc}
      */
-    protected String doCreateDws(FileInfo parentFileInfo, String title, SessionUser user) throws HttpException, IOException
+    @Override
+    protected String doCreateDws(String dwsName, String title, SessionUser user) throws HttpException, IOException
     {
-        SiteInfo siteInfo = null;
-        String newTitle = null;
-        int i = 0;
-        do {
-            newTitle = title + (i == 0 ? "" : "_" + i);
-            siteInfo = siteService.getSite(newTitle);
-            i++;
-        } while (siteInfo != null);
-        
-        shareUtils.createSite(user, "document-workspace", newTitle, newTitle, "", true);
-        return newTitle;
+        shareUtils.createSite(user, "document-workspace", dwsName, title, "", true);
+        return dwsName;
     }
 
-
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    protected boolean dwsExists(String name)
+    {
+        if(name == null || name.isEmpty())
+        {
+            return false;
+        }
+        return siteService.getSite(name) != null;
+    }
+    
     /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doGetDwsCreationUrl(java.lang.String, java.lang.String)
      */
+    @Override
     protected String doGetDwsCreationUrl(String parentUrl, String title)
     {
         // ensure that new dws will be created in Sites space
@@ -443,6 +463,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doUpdateDwsDataDelete(org.alfresco.module.vti.metadata.model.LinkBean, java.lang.String)
      */
+    @Override
     protected void doUpdateDwsDataDelete(LinkBean linkBean, String dws)
     {        
         NodeRef linksContainer = null;        

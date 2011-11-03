@@ -58,6 +58,7 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
+import org.alfresco.util.GUID;
 import org.alfresco.util.Pair;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
@@ -359,31 +360,39 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
      */
     public DwsBean createDws(String parentDwsUrl, String name, List<UserBean> users, String title, List<DocumentBean> documents, String host, String context, SessionUser user)
     {
-        String dwsUrl = doGetDwsCreationUrl(parentDwsUrl, title);
-        String createdDwsUrl = "";
-
-        Pair<String, String> parentChildPaths = VtiPathHelper.splitPathParentChild(dwsUrl);
-
-        String parentPath = parentChildPaths.getFirst();
-        FileInfo parentFileInfo = pathHelper.resolvePathFileInfo(parentPath);
-        if (parentFileInfo == null)
+        if (dwsExists(name))
         {
-            throw new VtiHandlerException(VtiError.V_BAD_URL);
+            throw new VtiHandlerException(VtiError.ALREADY_EXISTS);
         }
-
-        String dwsName = parentChildPaths.getSecond();
-        if (dwsName.length() == 0)
+        
+        if(stringExists(name))
         {
-            throw new VtiHandlerException(VtiError.V_BAD_URL);
+            name = title;
         }
-
+        if(stringExists(name))
+        {
+            // Both title and name empty so generate GUID.
+            name = GUID.generate();
+            title = name;
+        }
+        else
+        {
+            int i = 1;
+            while(dwsExists(name))
+            {
+                name = name + "_" + i;
+                i++;
+            }
+            title = name;
+        }
         UserTransaction tx = transactionService.getUserTransaction(false);
+        String createdDwsUrl = null;
         try
         {
             tx.begin();
 
-            String createdDwsName = doCreateDws(parentFileInfo, dwsName, user);
-            createdDwsUrl = doGetDwsCreationUrl(parentDwsUrl, createdDwsName);
+            String createdDwsName = doCreateDws(name, title, user);
+            createdDwsUrl  = doGetDwsCreationUrl(parentDwsUrl, createdDwsName);
 
             tx.commit();
         }
@@ -413,6 +422,11 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         return doGetResultBean(parentDwsUrl, createdDwsUrl, host, context);
     }
 
+    private boolean stringExists(String s)
+    {
+        return false == (s == null | s.isEmpty());
+    }
+    
     /**
      * @see org.alfresco.module.vti.handler.DwsServiceHandler#deleteDws(java.lang.String, org.alfresco.repo.SessionUser)
      */
@@ -682,14 +696,20 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
     /**
      * Creates a document workspace site
-     * 
-     * @param parentFileInfo file info of the parent dws ({@link FileInfo})
+     * @param dwsName TODO
      * @param title the title of the new document workspace site
      * @param user current user
+     * 
      * @throws HttpException
      * @throws IOException
      */
-    protected abstract String doCreateDws(FileInfo parentFileInfo, String title, SessionUser user) throws HttpException, IOException;
+    protected abstract String doCreateDws(String dwsName, String title, SessionUser user) throws HttpException, IOException;
+
+    /**
+     * @param name
+     * @return Returns <code>true</code> if the specified DWS exists.
+     */
+    protected abstract boolean dwsExists(String name);
 
     /**
      * Get new document workspace site description
