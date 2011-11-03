@@ -47,6 +47,7 @@ import org.alfresco.module.vti.metadata.model.SchemaFieldBean;
 import org.alfresco.module.vti.metadata.model.UserBean;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.ContentService;
@@ -284,7 +285,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
     /**
      * @see org.alfresco.module.vti.handler.DwsServiceHandler#getDwsData(java.lang.String, java.lang.String)
      */
-    public DwsData getDwsData(String document, String lastUpdate) throws Exception
+    public DwsData getDwsData(String document, String lastUpdate) throws SiteDoesNotExistException
     {
         DwsData dwsData = new DwsData();
 
@@ -296,7 +297,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         if (dwsInfo == null)
         {
-            throw new VtiHandlerException(VtiError.V_URL_NOT_FOUND);
+            throw new SiteDoesNotExistException(dws);
         }
 
         // set the title of the currently opened document workspace site

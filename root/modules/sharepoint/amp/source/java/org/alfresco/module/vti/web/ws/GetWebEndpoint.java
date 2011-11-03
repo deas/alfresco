@@ -22,11 +22,8 @@ import java.net.URLDecoder;
 
 import org.alfresco.module.vti.handler.DwsServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
-import org.alfresco.module.vti.metadata.dic.VtiError;
-import org.alfresco.module.vti.metadata.model.DwsBean;
 import org.alfresco.module.vti.metadata.model.DwsData;
-import org.alfresco.repo.SessionUser;
-import org.alfresco.repo.webdav.auth.SharepointConstants;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -88,17 +85,21 @@ public class GetWebEndpoint extends AbstractEndpoint
         try {
            dws = handler.getDwsData(url, null);
         }
-        catch(VtiHandlerException e)
+        catch(SiteDoesNotExistException e)
         {
-           if(e.getError() == VtiError.V_URL_NOT_FOUND)
-           {
-              // The specification defines the exact code that must be
-              //  returned in case of a file not being found
-              long code = 0x82000001l;
-              String message = "No Site was found with the given URL";
-              throw new VtiSoapException(message, code, e);
-           }
-           throw e;
+           // The specification defines the exact code that must be
+           //  returned in case of a site not being found
+           long code = 0x82000001l;
+           String message = "No Site was found with the given URL";
+           throw new VtiSoapException(message, code, e);
+        }
+        catch(VtiHandlerException vti)
+        {
+           // Something was wrong with the request given, likely
+           //  the URL wasn't in a valid format
+           long code = 0x82000001l;
+           String message = "Invalid request";
+           throw new VtiSoapException(message, code, vti);
         }
         
         

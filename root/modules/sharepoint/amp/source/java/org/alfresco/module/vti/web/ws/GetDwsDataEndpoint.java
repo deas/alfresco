@@ -21,7 +21,10 @@ package org.alfresco.module.vti.web.ws;
 import java.net.URLDecoder;
 
 import org.alfresco.module.vti.handler.DwsServiceHandler;
+import org.alfresco.module.vti.handler.VtiHandlerException;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.DwsData;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -82,7 +85,15 @@ public class GetDwsDataEndpoint extends AbstractEndpoint
         lastUpdatePath.setNamespaceContext(nc);
         Element lastUpdate = (Element) lastUpdatePath.selectSingleNode(soapRequest.getDocument().getRootElement());                
        
-        DwsData	dwsData = handler.getDwsData(URLDecoder.decode(doc, "UTF-8"), lastUpdate.getTextTrim());
+        DwsData dwsData;
+        try
+        {
+           dwsData = handler.getDwsData(URLDecoder.decode(doc, "UTF-8"), lastUpdate.getTextTrim());
+        }
+        catch(SiteDoesNotExistException e)
+        {
+           throw new VtiHandlerException(VtiError.V_URL_NOT_FOUND);
+        }
         
         // creating soap response
         Element root = soapResponse.getDocument().addElement("GetDwsDataResponse", namespace);

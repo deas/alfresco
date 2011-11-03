@@ -32,6 +32,7 @@ import org.alfresco.module.vti.metadata.model.DwsMetadata;
 import org.alfresco.module.vti.metadata.model.LinkBean;
 import org.alfresco.module.vti.metadata.model.UserBean;
 import org.alfresco.repo.SessionUser;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.apache.commons.httpclient.HttpException;
 
 /**
@@ -67,7 +68,7 @@ public interface DwsServiceHandler
      * @param lastUpdate returned in the results of a previous call to the GetDwsData or GetDwsMetadata method
      * @return DwsData information about a document workspace site ({@link DwsData})
      */
-    public DwsData getDwsData(String documentURL, String lastUpdate) throws Exception;
+    public DwsData getDwsData(String documentURL, String lastUpdate) throws SiteDoesNotExistException;
 
     /**
      * Creates a document workspace site
