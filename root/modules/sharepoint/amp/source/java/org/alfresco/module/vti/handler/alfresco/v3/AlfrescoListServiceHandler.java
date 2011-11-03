@@ -125,6 +125,15 @@ public class AlfrescoListServiceHandler implements ListServiceHandler
     {
        this.listTypes = listTypes;
     }
+    
+    private static String dwsToSiteShortName(String dws)
+    {
+       if(dws.startsWith("/"))
+       {
+          return dws.substring(1);
+       }
+       return dws;
+    }
 
     @Override
     public void createList(String listName, String description, String dws, int templateId)
@@ -138,18 +147,19 @@ public class AlfrescoListServiceHandler implements ListServiceHandler
        }
        
        // Get the site
-       SiteInfo site = siteService.getSite(dws);
+       String siteName = dwsToSiteShortName(dws);
+       SiteInfo site = siteService.getSite(siteName);
        if(site == null)
        {
-          throw new SiteDoesNotExistException(dws);
+          throw new SiteDoesNotExistException(siteName);
        }
        
        // Have the component created if needed
-       if (!siteService.hasContainer(dws, DATALIST_CONTAINER))
+       if (!siteService.hasContainer(siteName, DATALIST_CONTAINER))
        {
-          siteService.createContainer(dws, DATALIST_CONTAINER, ContentModel.TYPE_CONTAINER, null);
+          siteService.createContainer(siteName, DATALIST_CONTAINER, ContentModel.TYPE_CONTAINER, null);
        }
-       NodeRef container = siteService.getContainer(dws, DATALIST_CONTAINER);
+       NodeRef container = siteService.getContainer(siteName, DATALIST_CONTAINER);
        
        // Check the name is free
        if (nodeService.getChildByName(container, ContentModel.ASSOC_CONTAINS, listName) != null)
@@ -164,8 +174,8 @@ public class AlfrescoListServiceHandler implements ListServiceHandler
        props.put(ContentModel.PROP_DESCRIPTION, description);
        
        nodeService.createNode(
-             container, ContentModel.ASSOC_CONTAINS, TYPE_DATALIST,
-             QName.createQName(listName), props
+             container, ContentModel.ASSOC_CONTAINS, QName.createQName(listName),
+             TYPE_DATALIST, props
        );
     }
 
@@ -173,14 +183,15 @@ public class AlfrescoListServiceHandler implements ListServiceHandler
     public void deleteList(String listName, String dws) 
           throws SiteDoesNotExistException, FileNotFoundException 
     {
-       SiteInfo site = siteService.getSite(dws);
+       String siteName = dwsToSiteShortName(dws);
+       SiteInfo site = siteService.getSite(siteName);
        if(site == null)
        {
-          throw new SiteDoesNotExistException(dws);
+          throw new SiteDoesNotExistException(siteName);
        }
        
        // Grab the component
-       NodeRef container = siteService.getContainer(dws, DATALIST_CONTAINER);
+       NodeRef container = siteService.getContainer(siteName, DATALIST_CONTAINER);
        if(container == null)
        {
           throw new FileNotFoundException("No DataList Container found in Site");
@@ -188,9 +199,9 @@ public class AlfrescoListServiceHandler implements ListServiceHandler
        
        // Grab the datalist
        NodeRef list = nodeService.getChildByName(container, ContentModel.ASSOC_CONTAINS, listName);
-       if(container == null)
+       if(list == null)
        {
-          throw new FileNotFoundException("Not List found with name '" + listName + "'");
+          throw new FileNotFoundException("No List found with name '" + listName + "'");
        }
        
        // Delete it

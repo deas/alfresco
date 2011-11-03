@@ -20,7 +20,8 @@ package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
 import org.alfresco.repo.site.SiteDoesNotExistException;
-import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.dictionary.InvalidTypeException;
+import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -73,20 +74,62 @@ public class AddListEndpoint extends AbstractEndpoint
        String context = soapRequest.getAlfrescoContextName();
        String dws = getDwsFromUri(soapRequest);        
 
-       // getting fileName parameter from request
-       XPath listNameXPath = new Dom4jXPath(buildXPath(prefix, "/DeleteList/listName"));
+       // Get the listName parameter from the request
+       XPath listNameXPath = new Dom4jXPath(buildXPath(prefix, "/AddList/listName"));
        listNameXPath.setNamespaceContext(nc);
        Element listNameE = (Element) listNameXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
-
        String listName = null;
        if (listNameE != null)
        {
           listName = listNameE.getTextTrim();
        }
        
-       // TODO Try to get the rest
-       if(1==1)
-       throw new VtiSoapException("Not yet supported", 0x8107058al);
+       // Get the description parameter from the request
+       XPath descriptionXPath = new Dom4jXPath(buildXPath(prefix, "/AddList/description"));
+       descriptionXPath.setNamespaceContext(nc);
+       Element descriptionE = (Element) descriptionXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
+       String description = null;
+       if (descriptionE != null)
+       {
+          description = descriptionE.getTextTrim();
+       }
+       
+       // Get the template ID parameter from the request
+       XPath templateXPath = new Dom4jXPath(buildXPath(prefix, "/AddList/templateID"));
+       templateXPath.setNamespaceContext(nc);
+       Element templateE = (Element) templateXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
+       int templateID = -1;
+       if (templateE != null)
+       {
+          templateID = Integer.parseInt( templateE.getTextTrim() );
+       }
+       if(templateID < 0)
+       {
+          throw new VtiSoapException("Invalid Template ID", -1);
+       }
+
+       
+       // Have the List Created
+       try
+       {
+          handler.createList(listName, description, dws, templateID);
+       }
+       catch(SiteDoesNotExistException se)
+       {
+          throw new VtiSoapException("No site found with name '" + dws + "'", 0x81020012l, se);
+       }
+       catch(DuplicateChildNodeNameException dcnne)
+       {
+          throw new VtiSoapException("List name already in use", 0x81020012l, dcnne);
+       }
+       catch(InvalidTypeException ite)
+       {
+          throw new VtiSoapException("Template ID not known", 0x8107058al, ite); 
+       }
+       
+       // TODO Return the valid response contents
+       Element root = soapResponse.getDocument().addElement("AddListResponse", namespace);
+       Element addListResult = root.addElement("AddListResult");
 
        if (logger.isDebugEnabled()) {
           logger.debug("SOAP method with name " + getName() + " is finished.");

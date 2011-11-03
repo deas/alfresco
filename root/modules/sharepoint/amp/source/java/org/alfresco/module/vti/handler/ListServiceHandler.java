@@ -21,6 +21,7 @@ package org.alfresco.module.vti.handler;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 
 /**
  * Site list service fundamental API.
@@ -31,9 +32,10 @@ public interface ListServiceHandler
 {
     /**
      * Creates a Data List of the given type
+     * TODO This should return details on the list, not void
      */
     public void createList(String listName, String description, String dws, int templateId)
-       throws SiteDoesNotExistException, InvalidTypeException;
+       throws SiteDoesNotExistException, DuplicateChildNodeNameException, InvalidTypeException;
 
     /**
      * Deletes a Data List

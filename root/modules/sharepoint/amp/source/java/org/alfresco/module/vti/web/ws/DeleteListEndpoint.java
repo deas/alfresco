@@ -74,7 +74,7 @@ public class DeleteListEndpoint extends AbstractEndpoint
        String context = soapRequest.getAlfrescoContextName();
        String dws = getDwsFromUri(soapRequest);        
 
-       // getting fileName parameter from request
+       // getting listName parameter from request
        XPath listNameXPath = new Dom4jXPath(buildXPath(prefix, "/DeleteList/listName"));
        listNameXPath.setNamespaceContext(nc);
        Element listNameE = (Element) listNameXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
@@ -103,7 +103,7 @@ public class DeleteListEndpoint extends AbstractEndpoint
           // The specification defines the exact code that must be
           //  returned in case of a file not being found
           long code = 0x82000006l;
-          String message = "List found: " + fnfe.getMessage();
+          String message = "List not found: " + fnfe.getMessage();
           throw new VtiSoapException(message, code, fnfe);
        }
        
