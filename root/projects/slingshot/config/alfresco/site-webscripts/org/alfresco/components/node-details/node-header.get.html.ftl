@@ -63,6 +63,18 @@
             </#if>
             </div>
          </#if>
+      <#elseif (node.isLocked && (node.properties["cm:lockType"]!"") == "WRITE_LOCK")>
+         <#assign lockUser = node.properties["cm:lockOwner"]>
+         <#if lockUser??>
+            <div class="status-banner theme-bg-color-2 theme-border-4">
+            <#assign lockedByLink = userProfileLink(lockUser.userName, lockUser.displayName, 'class="theme-color-1"') >
+            <#if lockUser.userName == user.name>
+               <span class="lock-owner">${msg("banner.lock-owner")}</span>
+            <#else>
+               <span class="locked">${msg("banner.locked", lockedByLink)}</span>
+            </#if>
+            </div>
+         </#if>
       </#if>
 
       <div class="node-info">

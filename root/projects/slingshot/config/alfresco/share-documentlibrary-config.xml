@@ -338,6 +338,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Edit properties page -->
@@ -346,6 +347,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Approve simple workflow -->
@@ -436,6 +438,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Inline edit -->
@@ -488,6 +491,7 @@
             <permissions>
                <permission allow="true">Delete</permission>
             </permissions>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Assign workflow -->
@@ -519,6 +523,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Change type -->
@@ -527,6 +532,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- View original (of a Working Copy pair) -->

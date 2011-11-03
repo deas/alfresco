@@ -1587,23 +1587,38 @@
                   bannerLink = Alfresco.DocumentList.generateUserLink(scope, bannerUser);
 
                /* Google Docs Integration */
-               if ($isValueSet(record.workingCopy.googleDocUrl))
+               if (record.workingCopy)
                {
-                  if (bannerUser.userName === Alfresco.constants.USERNAME)
+                  if ($isValueSet(record.workingCopy.googleDocUrl))
                   {
-                     desc += '<div class="info-banner">' + scope.msg("details.banner.google-docs-owner", '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + scope.msg("details.banner.google-docs.link") + '</a>') + '</div>';
+                     if (bannerUser.userName === Alfresco.constants.USERNAME)
+                     {
+                        desc += '<div class="info-banner">' + scope.msg("details.banner.google-docs-owner", '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + scope.msg("details.banner.google-docs.link") + '</a>') + '</div>';
+                     }
+                     else
+                     {
+                        desc += '<div class="info-banner">' + scope.msg("details.banner.google-docs-locked", bannerLink, '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + scope.msg("details.banner.google-docs.link") + '</a>') + '</div>';
+                     }
                   }
                   else
                   {
-                     desc += '<div class="info-banner">' + scope.msg("details.banner.google-docs-locked", bannerLink, '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + scope.msg("details.banner.google-docs.link") + '</a>') + '</div>';
+                     /* Regular Working Copy handling */
+                     if (bannerUser.userName === Alfresco.constants.USERNAME)
+                     {
+                        desc += '<div class="info-banner">' + scope.msg("details.banner." + (record.workingCopy.isWorkingCopy ? "editing" : "lock-owner")) + '</div>';
+                     }
+                     else
+                     {
+                        desc += '<div class="info-banner">' + scope.msg("details.banner.locked", bannerLink) + '</div>';
+                     }
                   }
                }
-               /* Regular Working Copy handling */
                else
                {
+                  /* Regular Locked handling */
                   if (bannerUser.userName === Alfresco.constants.USERNAME)
                   {
-                     desc += '<div class="info-banner">' + scope.msg("details.banner." + (record.workingCopy.isWorkingCopy ? "editing" : "lock-owner")) + '</div>';
+                     desc += '<div class="info-banner">' + scope.msg("details.banner.lock-owner") + '</div>';
                   }
                   else
                   {
@@ -4059,7 +4074,6 @@
 
          // Slow data webscript message
          this.loadingMessageShowing = false;
-         timerShowLoadingMessage = YAHOO.lang.later(this.options.loadingMessageDelay, this, fnShowLoadingMessage);
 
          var destroyLoaderMessage = function DL__uDL_destroyLoaderMessage()
          {
@@ -4085,6 +4099,9 @@
                }
             }
          };
+
+         destroyLoaderMessage();
+         timerShowLoadingMessage = YAHOO.lang.later(this.options.loadingMessageDelay, this, fnShowLoadingMessage);
 
          var successHandler = function DL__uDL_successHandler(sRequest, oResponse, oPayload)
          {
