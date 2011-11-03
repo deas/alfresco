@@ -106,11 +106,14 @@
             siteId: this.options.siteId,
             files:
             {
-               nodeRef: this.options.nodeRef,
                displayName: this.options.displayName,
-               permissions:
+               node:
                {
-                  roles: this.options.roles
+                  nodeRef: this.options.nodeRef,
+                  permissions:
+                  {
+                     roles: this.options.roles
+                  }
                }
             }
          }).showDialog();
@@ -124,7 +127,7 @@
        */
       doRefresh: function DocumentPermissions_doRefresh()
       {
-         YAHOO.Bubbling.unsubscribe("filesPermissionsUpdated", this.doRefresh);
+         YAHOO.Bubbling.unsubscribe("filesPermissionsUpdated", this.doRefresh, this);
          this.refresh('components/document-details/document-permissions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' :  ''));
       }
    });

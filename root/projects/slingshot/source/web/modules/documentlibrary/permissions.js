@@ -271,9 +271,9 @@
          // Success callback function
          var fnSuccess = function DLP__onOK_success(p_data)
          {
-            var result;
-            var successCount = p_data.json.successCount;
-            var failureCount = p_data.json.failureCount;
+            var result,
+              successCount = p_data.json.successCount,
+              failureCount = p_data.json.failureCount;
             
             this._hideDialog();
 

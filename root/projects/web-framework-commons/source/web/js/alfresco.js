@@ -7263,7 +7263,7 @@ Alfresco.util.RENDERLOOPSIZE = 25;
     * @return {object} The new instance
     * @constructor
     */
-   Alfresco.component.Base = function(name, id, components)
+   Alfresco.component.Base = function Alfresco_component_Base(name, id, components)
    {
       // Mandatory properties
       this.name = (typeof name == "undefined" || name === null) ? "Alfresco.component.Base" : name;
@@ -7509,13 +7509,16 @@ Alfresco.util.RENDERLOOPSIZE = 25;
             var anchor = args[1].anchor,
                name = anchor.getAttribute("name"),
                rel = anchor.getAttribute("rel");
+
             if (this.invokeAction(name, rel, anchor))
             {
                YUIEvent.preventDefault(args[1]);
             }
             return true;
          };
-         YAHOO.Bubbling.addDefaultAction(this.id, this.bind(fnActionHandler));
+
+         // Force the action to be applied (3rd parameter) to allow for component refresh use cases
+         YAHOO.Bubbling.addDefaultAction(this.id, this.bind(fnActionHandler), true);
       },
 
       /**
