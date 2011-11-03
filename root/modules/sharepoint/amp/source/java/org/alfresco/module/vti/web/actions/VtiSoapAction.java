@@ -94,7 +94,8 @@ public class VtiSoapAction implements VtiAction
         {
             if (logger.isDebugEnabled())
             {
-                logger.debug("Target endpoint wasn't found for SOAP Action '" + httpServletRequest.getHeader("SOAPAction") + "'");
+                String action = getSOAPAction(httpServletRequest);
+                logger.debug("Target endpoint wasn't found for SOAP Action '" + action + "'");
             }
         }
 

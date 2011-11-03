@@ -85,7 +85,7 @@ public abstract class AbstractVersionEndpoint extends AbstractEndpoint
         fileVersionXPath.setNamespaceContext(nc);
         Element fileVersion = (Element) fileVersionXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
         
-        // deleting given file version
+        // Action the given file version
         List<DocumentVersionBean> versions = executeVersionAction(soapRequest, dws, fileName, fileVersion);
         
         // creating soap response

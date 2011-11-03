@@ -50,7 +50,7 @@ public interface DwsServiceHandler
      * @param minimal determines whether the output includes information about the schemas, lists, documents, links, and tasks lists of a document workspace site
      * @return DwsMetadata information about a document workspace site and the lists it contains ({@link DwsMetadata})
      */
-    public DwsMetadata getDWSMetaData(String document, String id, boolean minimal) throws Exception;
+    public DwsMetadata getDWSMetaData(String documentURL, String id, boolean minimal) throws Exception;
 
     /**
      * Returns information about a document workspace site and the lists it contains
@@ -59,7 +59,7 @@ public interface DwsServiceHandler
      * @param lastUpdate returned in the results of a previous call to the GetDwsData or GetDwsMetadata method
      * @return DwsData information about a document workspace site ({@link DwsData})
      */
-    public DwsData getDwsData(String document, String lastUpdate) throws Exception;
+    public DwsData getDwsData(String documentURL, String lastUpdate) throws Exception;
 
     /**
      * Creates a document workspace site
