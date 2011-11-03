@@ -75,7 +75,7 @@ public class CheckOutFileEndpoint extends AbstractEndpoint
         String host = getHost(soapRequest);
         String context = soapRequest.getAlfrescoContextName();
 
-        // getting pageUrl parameter from request
+        // Get the pageUrl parameter from the request
         XPath xpath = new Dom4jXPath(buildXPath(prefix, "/CheckOutFile/pageUrl"));
         xpath.setNamespaceContext(nc);
         Element docE = (Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement());
@@ -85,10 +85,30 @@ public class CheckOutFileEndpoint extends AbstractEndpoint
         }
         String docPath = URLDecoder.decode(docE.getTextTrim(), "UTF-8");
         docPath = docPath.substring(host.length() + context.length());
+        
+        // Did they want to work on it locally?
+        xpath = new Dom4jXPath(buildXPath(prefix, "/CheckOutFile/checkoutToLocal"));
+        xpath.setNamespaceContext(nc);
+        Element localE = (Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        if (localE != null)
+        {
+           // If given, must be one of True or False
+           String local = localE.getTextTrim().toLowerCase();
+           if ("true".equals(local) || "false".equals(local))
+           {
+              // Good
+           }
+           else
+           {
+              throw new VtiSoapException("Invalid CheckOutToLocal Parameter", -1);
+           }
+        }
+        
 
+        // Report what we're about to do
         if (logger.isDebugEnabled())
         {
-            logger.debug("item parameter for this request: " + docPath);
+            logger.debug("About to check out " + docPath);
         }
 
         NodeRef workingCopy;
