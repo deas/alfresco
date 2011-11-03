@@ -40,9 +40,9 @@
 <#assign itemMenuId = id + "-${prefix}menu_" + item.generatedId>
 <#assign attrStyle><#if (item.icon?length > 0)>style="background-image: url(${url.context}/res/components/images/header/${item.icon});"</#if></#assign>
 <#assign attrTitle><#if (item.description?length > 0)>title="${msg(item.description)}"</#if></#assign>
-<#assign attrHref = "href=\"#\"">
+<#assign attrHref = "href=\"\"">
    <#if (item.value?starts_with("http"))><#assign attrHref>href="${item.value}"</#assign>
-   <#elseif (item.value?length > 0)><#assign attrHref>templateUri="${item.value}" href="#"</#assign>
+   <#elseif (item.value?length > 0)><#assign attrHref>templateUri="${item.value}" href=""</#assign>
    </#if>
 <#assign label = msg(item.label)><#if label?contains("{")><#assign label = msgArgs(item.label, labelTokens)?html></#if>
 <span id="${itemId}" class="yui-button">
@@ -97,10 +97,10 @@
 <#-- Attributes -->
 <#assign attrStyle><#if (item.icon?length > 0)>style="background-image: url(${url.context}/res/components/images/header/${item.icon});"</#if></#assign>
 <#assign attrTitle><#if (item.description?length > 0)>title="${msg(item.description)}"</#if></#assign>
-<#assign attrHref = "href=\"#\"">
+<#assign attrHref = "href=\"\"">
    <#if (item.type != "js")>
       <#if (item.value?starts_with("http"))><#assign attrHref>href="${item.value}"</#assign>
-      <#elseif (item.value?length > 0)><#assign attrHref>templateUri="${item.value}" href="#"</#assign>
+      <#elseif (item.value?length > 0)><#assign attrHref>templateUri="${item.value}" href=""</#assign>
       </#if>
    </#if>
 <#if item.type = "user">
@@ -120,7 +120,7 @@
 </li>   
 <#else>
    <#assign attrTarget><#if item.type = "external-link">target="_blank"</#if></#assign>
-<li><span ${attrStyle}><a ${attrTitle} ${attrHref} tabindex="0" ${attrTarget!""}>${msg(item.label!"")}</a></span>
+<li><a ${attrStyle} ${attrTitle} ${attrHref} tabindex="0" ${attrTarget!""}>${msg(item.label!"")}</a>
    <#if item.type = "container"><@subMenu item /></#if>
 </li>
 </#if>

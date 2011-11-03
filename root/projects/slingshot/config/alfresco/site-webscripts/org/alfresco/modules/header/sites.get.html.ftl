@@ -16,7 +16,7 @@
       <#if favouriteSites?size != 0>
          <#list favouriteSites as site>
          <li>
-            <span><a href="${url.context}/page/site/${site.shortName}/dashboard">${site.title?html}</a></span>
+            <a href="${url.context}/page/site/${site.shortName}/dashboard">${site.title?html}</a>
          </li>
          </#list>
       <#else><li></li></#if>
@@ -24,17 +24,17 @@
       <#assign addFavDisplay><#if (siteActive && !currentSiteIsFav)>block<#else>none</#if></#assign>
       <ul id="${id}-addFavourite" class="add-favourite-menuitem separator" style="display: ${addFavDisplay}">
          <li style="display: ${addFavDisplay}">
-            <span><a href="#" onclick='Alfresco.util.ComponentManager.get("${id_js}").addAsFavourite(); return false;'>${msg("label.add-favourite", siteTitle?html)}</a></span>
+            <a href="#" onclick='Alfresco.util.ComponentManager.get("${id_js}").addAsFavourite(); return false;'>${msg("label.add-favourite", siteTitle?html)}</a>
          </li>
       </ul>
       <ul class="site-finder-menuitem<#if !user.isGuest> separator</#if>">
          <li>
-            <span><a href="${url.context}/page/site-finder">${msg("label.find-sites")}</a></span>
+            <a href="${url.context}/page/site-finder">${msg("label.find-sites")}</a>
          </li>
       </ul>
       <ul class="create-site-menuitem">
          <li>
-            <span><a href="#" onclick='Alfresco.util.ComponentManager.get("${id_js}").showCreateSite(); return false;'>${msg("label.create-site")}</a></span>
+            <a href="#" onclick='Alfresco.util.ComponentManager.get("${id_js}").showCreateSite(); return false;'>${msg("label.create-site")}</a>
          </li>
       </ul>
    </div>

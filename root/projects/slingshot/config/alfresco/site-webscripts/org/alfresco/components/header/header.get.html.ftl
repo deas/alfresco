@@ -47,7 +47,7 @@
       <div id="${id}-searchmenu_more" class="yuimenu yui-overlay yui-overlay-hidden">
          <div class="bd">
             <ul class="first-of-type">
-               <li><span style="background-image: url(${url.context}/res/components/images/header/advanced-search.png)"><a title="${msg("header.advanced-search.description")}" href="${siteURL("advsearch")}">${msg("header.advanced-search.label")}</a></span></li>
+               <li><a style="background-image: url(${url.context}/res/components/images/header/advanced-search.png)" title="${msg("header.advanced-search.description")}" href="${siteURL("advsearch")}">${msg("header.advanced-search.label")}</a></li>
             </ul>
          </div>
       </div>

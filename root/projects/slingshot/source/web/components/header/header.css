@@ -23,12 +23,15 @@
 {
    color: #68A2D2;
    cursor: pointer;
+   display: block;
    padding: 4px 15px;
+   text-decoration: none;
 }
 
-.header .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel a
+.header .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel
 {
    display: block;
+   padding-left: 37px;
    text-decoration: none;
 }
 
@@ -123,7 +126,7 @@
 }
 
 
-.header .app-items div.yuimenu div.bd ul li.yuimenuitem span.yuimenuitemlabel
+.header .app-items div.yuimenu div.bd ul li.yuimenuitem .yuimenuitemlabel
 {
    background-position: 15px 50%;
    background-repeat: no-repeat;
@@ -169,7 +172,7 @@
    border-width: 0px;
 }
 
-.header .user-items div.yuimenu div.bd ul li.yuimenuitem span.yuimenuitemlabel
+.header .user-items div.yuimenu div.bd ul li.yuimenuitem .yuimenuitemlabel
 {
    background-position: 15px 50%;
    background-repeat: no-repeat;
@@ -177,7 +180,6 @@
 
 .header .user-items div.yuimenu div.bd ul li.yuimenuitem span.yuimenuitemlabel a
 {
-   padding-left: 20px;
 }
 
 .header .user-items div.search-box
