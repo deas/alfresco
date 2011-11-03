@@ -35,6 +35,8 @@ public class DwsData implements Serializable
 
     private String title;
     
+    private String description;
+    
     private String lastUpdate;
     
     private UserBean user;
@@ -107,7 +109,6 @@ public class DwsData implements Serializable
     }
 
     /**
-     * 
      * @return the title
      */
     public String getTitle()
@@ -123,6 +124,24 @@ public class DwsData implements Serializable
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription()
+    {
+        return description;
+    }
+
+    /**
+     * <p>Sets the dws description.</p>
+     * 
+     * @param description the description to set
+     */
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 
     /**

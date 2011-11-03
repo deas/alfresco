@@ -323,6 +323,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/DeleteWorkspace">
                     <ref bean="deleteWorkspaceEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetWeb">
+                    <ref bean="getWebEndpoint"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -452,6 +455,16 @@
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/dws/</value>
+        </property>
+    </bean>
+
+    <bean id="getWebEndpoint" class="org.alfresco.module.vti.web.ws.GetWebEndpoint">
+        <constructor-arg ref="dwsServiceHandler" />
+        <property name="name">
+            <value>GetWeb</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
         </property>
     </bean>
 

@@ -298,7 +298,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             throw new VtiHandlerException(VtiError.V_URL_NOT_FOUND);
         }
 
-        // set the title of currently opened document workspace site
+        // set the title of the currently opened document workspace site
         Serializable title = nodeService.getProperty(dwsInfo.getNodeRef(), ContentModel.PROP_TITLE);
 
         if (title == null)
@@ -309,6 +309,9 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         {
             dwsData.setTitle(title.toString());
         }
+        
+        // set the description of the currently opened document workspace site
+        dwsData.setDescription(nodeService.getProperty(dwsInfo.getNodeRef(), ContentModel.PROP_DESCRIPTION).toString());
 
         // setting the Documents list for current document workspace site
         List<DocumentBean> dwsContent = new ArrayList<DocumentBean>();
