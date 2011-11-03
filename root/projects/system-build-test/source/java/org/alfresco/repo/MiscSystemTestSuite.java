@@ -63,7 +63,7 @@ public class MiscSystemTestSuite extends TestSuite
         // web services
         suite.addTestSuite(AuthenticationServiceSystemTest.class);
         suite.addTestSuite(AuthoringServiceSystemTest.class);
-//        suite.addTestSuite(ClassificationServiceSystemTest.class);
+        suite.addTestSuite(ClassificationServiceSystemTest.class);
         suite.addTestSuite(ContentServiceSystemTest.class);
         suite.addTestSuite(RepositoryServiceSystemTest.class);
         suite.addTestSuite(ActionServiceSystemTest.class);
