@@ -2,7 +2,12 @@
 
 <#macro setPackageItemOptions field>
 
-   <#local documentLinkResolver>function(item){ return Alfresco.util.siteURL("document-details?nodeRef=" + item.nodeRef, { site: item.site }); }</#local>
+   <#local documentLinkResolver>
+function(item)
+{
+   return item.isContainer ? Alfresco.util.siteURL("folder-details?nodeRef=" + item.nodeRef, { site: item.site }) : Alfresco.util.siteURL("document-details?nodeRef=" + item.nodeRef, { site: item.site });
+}
+   </#local>
    <#local allowAddAction = false>
    <#local allowRemoveAllAction = false>
    <#local allowRemoveAction = false>
@@ -26,7 +31,6 @@
          <#local actions = actions + [viewMoreAction]>      
       </#if>
    </#if>
-
 
 
    <#-- Additional item actions -->
