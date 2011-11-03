@@ -1053,7 +1053,7 @@
          
          containerPicker.innerHTML = "";
          
-         var fnSuccess = function DLGF__pSP_fnSuccess(response, containerPicker)
+         var fnSuccess = function DLGF__pCP_fnSuccess(response, containerPicker)
          {
             var containers = response.json.containers, element, container, i, j;
             this.containers = {};
@@ -1094,6 +1094,26 @@
                scrollTo: true
             });
          };
+
+         var fnFailure = function DLGF_pCP_fnFailure(response)
+         {
+            try
+            {
+               // Show a message in place of the root node
+               var rootNode = this.widgets.treeview.getRoot(),
+                  docNode = rootNode.children[0];
+
+               docNode.isLoading = false;
+               docNode.isLeaf = true;
+               docNode.label = this.msg("message.error");
+               docNode.labelStyle = "ygtverror";
+               rootNode.refresh();
+            }
+            catch(e)
+            {
+            }
+            containerPicker.innerHTML = '<span>You don\'t have permission to view this site</span>';   
+         };
          
          var config =
          {
@@ -1105,7 +1125,11 @@
                scope: this,
                obj: containerPicker
             },
-            failureCallback: null
+            failureCallback:
+            {
+               fn: fnFailure,
+               scope: this
+            }
          };
          
          Alfresco.util.Ajax.request(config);
