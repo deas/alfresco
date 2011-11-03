@@ -1047,8 +1047,7 @@
                     test-catalinavirtual,
                     test-webframeworkcommons, 
                     test-webclient, 
-                    test-webserviceclient,
-                    test-system-build-test" />
+                    test-webserviceclient" />
 
    <target name="run-junit-test" 
            description="Runs a single JUnit test. Usage run-test -Dtestcase=[test] -Dprojectdir=[dir] [-Dstoponerror=[yes|no]]"
