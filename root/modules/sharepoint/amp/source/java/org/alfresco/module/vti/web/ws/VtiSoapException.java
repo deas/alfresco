@@ -21,8 +21,9 @@ package org.alfresco.module.vti.web.ws;
 import org.alfresco.module.vti.metadata.dic.VtiError;
 
 /**
- * Exception used for SOAP problems where a specific
- *  SOAP error code should be returned
+ * Exception used for SOAP problems where a specific SOAP FAULT error 
+ *  code should be returned, rather than using one of the Errors from
+ *  the {@link VtiError} enumeration.  
  * 
  * @author EugeneZh
  */

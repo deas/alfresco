@@ -18,7 +18,11 @@
  */
 package org.alfresco.module.vti.web.ws;
 
+import java.net.URLDecoder;
+
 import org.alfresco.module.vti.handler.DwsServiceHandler;
+import org.alfresco.module.vti.handler.VtiHandlerException;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.DwsBean;
 import org.alfresco.module.vti.metadata.model.DwsData;
 import org.alfresco.repo.SessionUser;
@@ -76,11 +80,26 @@ public class GetWebEndpoint extends AbstractEndpoint
         urlPath.setNamespaceContext(nc);
         Element urlE = (Element) urlPath.selectSingleNode(soapRequest.getDocument().getRootElement());
 
-        // Turn the url into a site name
-        String url = urlE.getTextTrim();
+        // Turn that into a URL in our required format
+        String url = URLDecoder.decode(urlE.getTextTrim(), "UTF-8"); 
         
         // Fetch the details for the site
-        DwsData dws = handler.getDwsData(url, null);
+        DwsData dws;
+        try {
+           dws = handler.getDwsData(url, null);
+        }
+        catch(VtiHandlerException e)
+        {
+           if(e.getError() == VtiError.V_URL_NOT_FOUND)
+           {
+              // The specification defines the exact code that must be
+              //  returned in case of a file not being found
+              long code = 0x82000001l;
+              String message = "No Site was found with the given URL";
+              throw new VtiSoapException(message, code, e);
+           }
+           throw e;
+        }
         
         
         // creating soap response

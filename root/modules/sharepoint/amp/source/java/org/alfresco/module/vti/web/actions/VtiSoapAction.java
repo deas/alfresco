@@ -158,13 +158,19 @@ public class VtiSoapAction implements VtiAction
         return result;
     }
 
+    /**
+     * Creates an appropriate SOAP Fault Response, in the appropriate
+     *  of the two different formats
+     */
     private void createFaultSOAPResponse(VtiSoapRequest request, Element responseElement, Exception e, VtiEndpoint vtiEndpoint)
     {
-
+        // Is it something like
+        //  <FooResponse><FooResult><Error ID="123"/></FooResult></FooResponse> ?
         if (e instanceof VtiHandlerException)
         {
             VtiHandlerException handlerException = (VtiHandlerException)e;
-            Element resultElement = responseElement.addElement(vtiEndpoint.getName() + "Response", vtiEndpoint.getNamespace()).addElement(vtiEndpoint.getName() + "Result");
+            Element endpointResponseE = responseElement.addElement(vtiEndpoint.getName() + "Response", vtiEndpoint.getNamespace());
+            Element endpointResultE = endpointResponseE.addElement(vtiEndpoint.getName() + "Result");
             
             String errorMessage = handlerException.getMessage();
             String errorCode;
@@ -176,12 +182,13 @@ public class VtiSoapAction implements VtiAction
             {
                 errorCode = "13";
             }
-            // TODO Is this correct? Should we really be returning a different
-            //  error code in this case to the other SOAP ones?
-            resultElement.addElement("Error").addAttribute("ID", errorCode);
+
+            // Return it as an ID based error, without the message
+            endpointResultE.addElement("Error").addAttribute("ID", errorCode);
         }
         else
         {
+            // We need to return a regular SOAP Fault
             String errorMessage = e.getMessage();
             if (errorMessage == null)
             {

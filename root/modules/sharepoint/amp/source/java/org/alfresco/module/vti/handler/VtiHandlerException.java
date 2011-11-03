@@ -19,9 +19,17 @@
 package org.alfresco.module.vti.handler;
 
 import org.alfresco.module.vti.metadata.dic.VtiError;
+import org.alfresco.module.vti.web.ws.VtiSoapException;
 
 /**
- * Exception for SOAP services and VTI methods
+ * Exception for SOAP services and VTI methods, which return
+ *  a their Error based on the Error Enumeration list.
+ * 
+ * This is used for cases when a regular response is sent,
+ *  with an Error ID included.
+ * 
+ * In addition, some Endpoints will instead generate a regular
+ *  SOAP Fault response, these use {@link VtiSoapException}
  * 
  * @author EugeneZh
  */
@@ -56,7 +64,7 @@ public class VtiHandlerException extends RuntimeException
     private int errorCode = -1;
     
     /**
-     * What Error this is
+     * What Error this is, from the Enumeration List
      */
     private VtiError error = VtiError.V_UNDEFINED;
 
