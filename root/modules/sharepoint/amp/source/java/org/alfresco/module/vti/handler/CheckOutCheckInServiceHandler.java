@@ -19,6 +19,7 @@
 
 package org.alfresco.module.vti.handler;
 
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
 
 /**
@@ -34,7 +35,7 @@ public interface CheckOutCheckInServiceHandler
      * @param fileName site relative url to the file
      * @return working copy or null if checkOut operation fails
      */
-    NodeRef checkOutDocument(String fileName);
+    NodeRef checkOutDocument(String fileName) throws FileNotFoundException;
 
     /**
      * Check in provided document and creates write lock on original document
@@ -43,7 +44,7 @@ public interface CheckOutCheckInServiceHandler
      * @param comment checkIn comment
      * @return original node or null if checkIn operation fails
      */
-    NodeRef checkInDocument(String fileName, String comment);
+    NodeRef checkInDocument(String fileName, String comment) throws FileNotFoundException;
 
     /**
      * Undo check out on provided document and creates write lock on original document
@@ -52,5 +53,5 @@ public interface CheckOutCheckInServiceHandler
      * @param lockAfterSucess true if original node must be locked after operation
      * @return original node or null if undo checkOut operation fails
      */
-    NodeRef undoCheckOutDocument(String fileName, boolean lockAfterSucess);
+    NodeRef undoCheckOutDocument(String fileName, boolean lockAfterSucess) throws FileNotFoundException;
 }

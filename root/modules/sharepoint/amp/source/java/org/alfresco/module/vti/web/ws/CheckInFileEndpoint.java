@@ -22,6 +22,7 @@ package org.alfresco.module.vti.web.ws;
 import java.net.URLDecoder;
 
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,21 +79,33 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         // getting pageUrl parameter from request
         XPath xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/pageUrl"));
         xpath.setNamespaceContext(nc);
-        String docPath = URLDecoder.decode(((Element) xpath.selectSingleNode(
-                    soapRequest.getDocument().getRootElement())).getTextTrim(), "UTF-8");
+        Element docE = (Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        if (docE == null || docE.getTextTrim().length() == 0)
+        {
+           throw new VtiSoapException("pageUrl must be supplied", 0x82000001l);
+        }
+        String docPath = URLDecoder.decode(docE.getTextTrim(), "UTF-8");
         docPath = docPath.substring(host.length() + context.length());
 
         xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/comment"));
         xpath.setNamespaceContext(nc);
         String comment = ((Element) xpath.selectSingleNode(
                     soapRequest.getDocument().getRootElement())).getTextTrim();
-
+        
         if (logger.isDebugEnabled())
         {
             logger.debug("item parameter for this request: " + docPath);
         }
 
-        NodeRef originalNode = handler.checkInDocument(docPath, comment);
+        NodeRef originalNode;
+        try
+        {
+           originalNode = handler.checkInDocument(docPath, comment);
+        }
+        catch(FileNotFoundException fnfe)
+        {
+           throw new VtiSoapException("File not found", -1, fnfe);
+        }
 
         // creating soap response
         Element responsElement = soapResponse.getDocument().addElement("CheckInFileResponse", namespace);

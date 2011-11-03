@@ -33,6 +33,7 @@ import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
@@ -99,16 +100,20 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
     /**
      * @see org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler#undoCheckOutDocument(java.lang.String)
      */
-    public NodeRef undoCheckOutDocument(final String fileName, final boolean lockAfterSucess)
+    public NodeRef undoCheckOutDocument(final String fileName, final boolean lockAfterSucess) throws FileNotFoundException
     {
+        final FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+        if(documentFileInfo == null)
+        {
+           throw new FileNotFoundException(fileName);
+        }
+        
         NodeRef originalNode = transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<NodeRef>()
         {
             public NodeRef execute()
             {
                 try
                 {
-
-                    FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
                     NodeRef workingCopy = checkOutCheckInService.getWorkingCopy(documentFileInfo.getNodeRef());
                     String workingCopyOwner = nodeService.getProperty(workingCopy, ContentModel.PROP_WORKING_COPY_OWNER).toString();
                     if (!workingCopyOwner.equals(authenticationService.getCurrentUserName()))
@@ -147,15 +152,20 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
     /**
      * @see org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler#checkInDocument(java.lang.String, java.lang.String)
      */
-    public NodeRef checkInDocument(final String fileName, final String comment)
+    public NodeRef checkInDocument(final String fileName, final String comment) throws FileNotFoundException
     {
+        final FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+        if(documentFileInfo == null)
+        {
+           throw new FileNotFoundException(fileName);
+        }
+        
         NodeRef originalNode = transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<NodeRef>()
         {
             public NodeRef execute()
             {
                 try
                 {
-                    FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
                     NodeRef workingCopy = checkOutCheckInService.getWorkingCopy(documentFileInfo.getNodeRef());
                     String workingCopyOwner = nodeService.getProperty(workingCopy, ContentModel.PROP_WORKING_COPY_OWNER).toString();
                     if (!workingCopyOwner.equals(authenticationService.getCurrentUserName()))
@@ -195,16 +205,20 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
     /**
      * @see org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler#checkOutDocument(java.lang.String)
      */
-    public NodeRef checkOutDocument(final String fileName)
+    public NodeRef checkOutDocument(final String fileName) throws FileNotFoundException
     {
+        final FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+        if(documentFileInfo == null)
+        {
+           throw new FileNotFoundException(fileName);
+        }
+        
         NodeRef workingCopy = transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<NodeRef>()
         {
             public NodeRef execute()
             {
                 try
                 {
-                    FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
-                    
                     // First up, ensure the document is versioned
                     // (Many creation routes do lazy versioning)
                     Map<QName, Serializable> initialVersionProps = new HashMap<QName, Serializable>(1, 1.0f);
