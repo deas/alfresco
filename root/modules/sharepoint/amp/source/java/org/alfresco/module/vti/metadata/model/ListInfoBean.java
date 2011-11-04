@@ -31,7 +31,6 @@ import org.alfresco.module.vti.metadata.dic.Permission;
  */
 public class ListInfoBean implements Serializable
 {
-
     private static final long serialVersionUID = 216886247863517038L;
     
     private String name;

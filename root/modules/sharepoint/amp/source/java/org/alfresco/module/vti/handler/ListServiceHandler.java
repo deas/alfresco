@@ -20,6 +20,7 @@ package org.alfresco.module.vti.handler;
 
 import java.util.List;
 
+import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.module.vti.metadata.model.ListTypeBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.dictionary.InvalidTypeException;
@@ -33,11 +34,16 @@ import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
  */
 public interface ListServiceHandler
 {
+   /**
+    * Fetches an existing Data List
+    */
+   public ListInfoBean getList(String listName, String dws)
+      throws SiteDoesNotExistException, FileNotFoundException;
+   
     /**
      * Creates a Data List of the given type
-     * TODO This should return details on the list, not void
      */
-    public void createList(String listName, String description, String dws, int templateId)
+    public ListInfoBean createList(String listName, String description, String dws, int templateId)
        throws SiteDoesNotExistException, DuplicateChildNodeNameException, InvalidTypeException;
 
     /**

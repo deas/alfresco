@@ -59,9 +59,10 @@ public class AddListEndpoint extends AbstractListEndpoint
        }
        
        // Have the List Created
+       ListInfoBean list;
        try
        {
-          handler.createList(listName, description, dws, templateID);
+          list = handler.createList(listName, description, dws, templateID);
        }
        catch(SiteDoesNotExistException se)
        {
@@ -77,8 +78,7 @@ public class AddListEndpoint extends AbstractListEndpoint
        }
 
        // Return the list details
-       // TODO
-       return null;
+       return list;
     }
 
 }

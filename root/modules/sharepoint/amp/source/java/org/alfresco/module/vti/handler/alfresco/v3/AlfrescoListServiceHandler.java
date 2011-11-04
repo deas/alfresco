@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.ListServiceHandler;
+import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.module.vti.metadata.model.ListTypeBean;
 import org.alfresco.repo.calendar.CalendarServiceImpl;
 import org.alfresco.repo.discussion.DiscussionServiceImpl;
@@ -152,9 +153,65 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        }
        return dws;
     }
+    
+    private NodeRef locateList(String listName, SiteInfo site) throws FileNotFoundException
+    {
+       // Is this a Container Based or DataList based one?
+       NodeRef dataListNodeRef = null;
+       NodeRef containerNodeRef = null;
+       String siteName = site.getShortName();
+       
+       // Check the DataList
+       NodeRef dataLists = siteService.getContainer(siteName, DATALIST_CONTAINER);
+       if(dataLists != null)
+       {
+          dataListNodeRef = nodeService.getChildByName(dataLists, ContentModel.ASSOC_CONTAINS, listName);
+       }
+       
+       // Check the Container
+       containerNodeRef = siteService.getContainer(siteName, listName);
+
+       
+       // Sanity check
+       if(dataListNodeRef == null && containerNodeRef == null)
+       {
+          throw new FileNotFoundException("No List found with name '" + listName + "'");
+       }
+       else if(dataListNodeRef != null && containerNodeRef != null)
+       {
+          throw new FileNotFoundException("Two different Lists found with name '" + listName + "' - can't distinguish");
+       }
+       else if(dataListNodeRef != null)
+       {
+          return dataListNodeRef;
+       }
+       else
+       {
+          return containerNodeRef;
+       }
+    }
 
     @Override
-    public void createList(String listName, String description, String dws, int templateId)
+    public ListInfoBean getList(String listName, String dws)
+         throws SiteDoesNotExistException, FileNotFoundException 
+    {
+        String siteName = dwsToSiteShortName(dws);
+        SiteInfo site = siteService.getSite(siteName);
+        if(site == null)
+        {
+           throw new SiteDoesNotExistException(siteName);
+        }
+
+        // Get the NodeRef
+        NodeRef listNodeRef = locateList(listName, site);
+        
+        // Use it
+        // TODO
+        return new ListInfoBean(listName, false, null);
+    }
+
+    @Override
+    public ListInfoBean createList(String listName, String description, String dws, int templateId)
           throws SiteDoesNotExistException, DuplicateChildNodeNameException, InvalidTypeException
     {
        // Check we can find the type
@@ -173,17 +230,23 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        }
        
        // Is it a Container or a DataList?
+       ListInfoBean list;
        if(type.isDataList())
        {
-          createDataList(site, listName, description, type);
+          list = createDataList(site, listName, description, type);
        }
        else
        {
-          createComponentList(site, listName, description, type);
+          list = createComponentList(site, listName, description, type);
        }
+       
+       // Attach additional information to it
+       
+       // All done
+       return list;
     }
     
-    private void createComponentList(SiteInfo site, String listName, String description, ListTypeBean type)
+    private ListInfoBean createComponentList(SiteInfo site, String listName, String description, ListTypeBean type)
     {
        // Get the matching builting
        VtiBuiltInListType builtin = null;
@@ -210,9 +273,12 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
        props.put(ContentModel.PROP_DESCRIPTION, description);
        siteService.createContainer(site.getShortName(), listName, ContentModel.TYPE_CONTAINER, props);
+       
+       // Return a wrapper around it
+       return new ListInfoBean(listName, false, null);
     }
     
-    private void createDataList(SiteInfo site, String listName, String description, ListTypeBean type)
+    private ListInfoBean createDataList(SiteInfo site, String listName, String description, ListTypeBean type)
     {
        String siteName = site.getShortName();
        String typeName = dataListTypes.get(type.getId());
@@ -240,6 +306,9 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
              container, ContentModel.ASSOC_CONTAINS, QName.createQName(listName),
              TYPE_DATALIST, props
        );
+       
+       // Return a wrapper around it
+       return new ListInfoBean(listName, false, null);
     }
 
     @Override
@@ -253,40 +322,11 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
           throw new SiteDoesNotExistException(siteName);
        }
        
-       // Is this a Container Based or DataList based one?
-       NodeRef dataListNodeRef = null;
-       NodeRef containerNodeRef = null;
-       
-       // Check the DataList
-       NodeRef dataLists = siteService.getContainer(siteName, DATALIST_CONTAINER);
-       if(dataLists != null)
-       {
-          dataListNodeRef = nodeService.getChildByName(dataLists, ContentModel.ASSOC_CONTAINS, listName);
-       }
-       
-       // Check the Container
-       containerNodeRef = siteService.getContainer(siteName, listName);
+       // Get the NodeRef
+       NodeRef listNodeRef = locateList(listName, site);
 
-       
-       // Sanity check
-       if(dataListNodeRef == null && containerNodeRef == null)
-       {
-          throw new FileNotFoundException("No List found with name '" + listName + "'");
-       }
-       else if(dataListNodeRef != null && containerNodeRef != null)
-       {
-          throw new FileNotFoundException("Two different Lists found with name '" + listName + "' - can't distinguish");
-       }
-       else if(dataListNodeRef != null)
-       {
-          // Delete it
-          nodeService.deleteNode(dataListNodeRef);
-       }
-       else
-       {
-          // Delete it
-          nodeService.deleteNode(containerNodeRef);
-       }
+       // Delete it
+       nodeService.deleteNode(listNodeRef);
     }
     
     @Override

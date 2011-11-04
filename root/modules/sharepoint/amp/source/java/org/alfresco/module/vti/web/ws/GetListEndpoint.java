@@ -22,6 +22,7 @@ import org.alfresco.module.vti.handler.ListServiceHandler;
 import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 
 /**
  * Class for handling the GetList soap method
@@ -48,7 +49,7 @@ public class GetListEndpoint extends AbstractListEndpoint
        ListInfoBean list = null;
        try
        {
-//          list = handler.getList(listName, dws);
+          list = handler.getList(listName, dws);
        }
        catch(SiteDoesNotExistException se)
        {
@@ -58,14 +59,14 @@ public class GetListEndpoint extends AbstractListEndpoint
           String message = "Site not found: " + se.getMessage();
           throw new VtiSoapException(message, code, se);
        }
-//       catch(FileNotFoundException fnfe)
-//       {
-//          // The specification defines the exact code that must be
-//          //  returned in case of a file not being found
-//          long code = VtiError.V_LIST_NOT_FOUND.getErrorCode();
-//          String message = "List not found: " + fnfe.getMessage();
-//          throw new VtiSoapException(message, code, fnfe);
-//       }
+       catch(FileNotFoundException fnfe)
+       {
+          // The specification defines the exact code that must be
+          //  returned in case of a file not being found
+          long code = VtiError.V_LIST_NOT_FOUND.getErrorCode();
+          String message = "List not found: " + fnfe.getMessage();
+          throw new VtiSoapException(message, code, fnfe);
+       }
 
        return list;
     }
