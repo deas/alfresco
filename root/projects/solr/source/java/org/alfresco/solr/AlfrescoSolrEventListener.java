@@ -2588,8 +2588,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
          */
         public String get(int owner)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return idToOwner.get(owner);
         }
 
         /**
