@@ -24,6 +24,7 @@ import java.net.URLDecoder;
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.version.VersionType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -92,11 +93,40 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         }
         docPath = docPath.substring(host.length() + context.length());
 
+        // Get the comment
         xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/comment"));
         xpath.setNamespaceContext(nc);
         String comment = ((Element) xpath.selectSingleNode(
                     soapRequest.getDocument().getRootElement())).getTextTrim();
         
+        // Get the checkin type
+        xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/CheckinType"));
+        xpath.setNamespaceContext(nc);
+        Element typeE = (Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        
+        VersionType type = VersionType.MAJOR;
+        if (typeE != null && typeE.getTextTrim().length() > 0)
+        {
+           String typeS = typeE.getTextTrim();
+           if ("0".equals(typeS))
+           {
+              type = VersionType.MINOR;
+           }
+           else if ("1".equals(typeS))
+           {
+              type = VersionType.MAJOR;
+           }
+           else if ("2".equals(typeS))
+           {
+              throw new VtiSoapException("OverwriteCheckIn is not supported", -1);
+           }
+           else
+           {
+              throw new VtiSoapException("Invalid Checkin Type '" + typeS + "' received", -1);
+           }
+        }
+        
+        // Good to go
         if (logger.isDebugEnabled())
         {
             logger.debug("item parameter for this request: " + docPath);
@@ -105,7 +135,7 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         NodeRef originalNode;
         try
         {
-           originalNode = handler.checkInDocument(docPath, comment);
+           originalNode = handler.checkInDocument(docPath, type, comment);
         }
         catch(FileNotFoundException fnfe)
         {

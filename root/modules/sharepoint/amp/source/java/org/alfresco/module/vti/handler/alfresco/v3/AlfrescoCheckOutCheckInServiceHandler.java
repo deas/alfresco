@@ -152,7 +152,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
     /**
      * @see org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler#checkInDocument(java.lang.String, java.lang.String)
      */
-    public NodeRef checkInDocument(final String fileName, final String comment) throws FileNotFoundException
+    public NodeRef checkInDocument(final String fileName, final VersionType type, final String comment) throws FileNotFoundException
     {
         final FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
         if(documentFileInfo == null)
@@ -181,7 +181,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     // Set the properties on the new version
                     Map<String, Serializable> versionProperties = new HashMap<String, Serializable>(1, 1.0f);
                     versionProperties.put(Version.PROP_DESCRIPTION, comment);
-                    versionProperties.put(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR);
+                    versionProperties.put(VersionModel.PROP_VERSION_TYPE, type);
 
                     // Checkin the new version
                     NodeRef originalNode = checkOutCheckInService.checkin(workingCopy, versionProperties);

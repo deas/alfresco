@@ -21,6 +21,7 @@ package org.alfresco.module.vti.handler;
 
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.version.VersionType;
 
 /**
  * Interface for checkOut web service handler
@@ -41,10 +42,11 @@ public interface CheckOutCheckInServiceHandler
      * Check in provided document and creates write lock on original document
      * 
      * @param fileName site relative url to the file
+     * @param type major or minor checkin
      * @param comment checkIn comment
      * @return original node or null if checkIn operation fails
      */
-    NodeRef checkInDocument(String fileName, String comment) throws FileNotFoundException;
+    NodeRef checkInDocument(String fileName, VersionType type, String comment) throws FileNotFoundException;
 
     /**
      * Undo check out on provided document and creates write lock on original document

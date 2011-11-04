@@ -63,7 +63,17 @@ public class UndoCheckOutFileEndpoint extends AbstractEndpoint
         // getting pageUrl parameter from request
         XPath xpath = new Dom4jXPath(buildXPath(prefix, "/UndoCheckOut/pageUrl"));
         xpath.setNamespaceContext(nc);
-        String docPath = URLDecoder.decode(((Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement())).getTextTrim(), "UTF-8");
+        Element docE = (Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        if (docE == null || docE.getTextTrim().length() == 0)
+        {
+           throw new VtiSoapException("pageUrl must be supplied", 0x82000001l);
+        }
+        
+        String docPath = URLDecoder.decode(docE.getTextTrim(), "UTF-8");
+        if(docPath.indexOf(host) == -1 || docPath.indexOf(context) == -1)
+        {
+           throw new VtiSoapException("Invalid URI: The format of the URI could not be determined", -1);
+        }
         docPath = docPath.substring(host.length() + context.length());
 
         if (logger.isDebugEnabled())
@@ -75,9 +85,12 @@ public class UndoCheckOutFileEndpoint extends AbstractEndpoint
         String officeVersion = soapRequest.getHeader(HEADER_X_OFFICE_VERSION);
 
         // Lock original node if we work with Office 2010 and greater
-        if (Integer.parseInt(officeVersion.split("\\.")[0]) >= 14)
+        if (officeVersion != null)
         {
-            lockAfterSucess = true;
+           if (Integer.parseInt(officeVersion.split("\\.")[0]) >= 14)
+           {
+               lockAfterSucess = true;
+           }
         }
 
         NodeRef originalNode = handler.undoCheckOutDocument(docPath, lockAfterSucess);
