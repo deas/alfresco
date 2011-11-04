@@ -38,12 +38,6 @@ public class DeleteAllVersionsEndpoint extends AbstractVersionEndpoint
     }
 
     @Override
-    protected String getEndpointNamePrefix() 
-    {
-       return "DeleteAllVersions";
-    }
-    
-    @Override
     protected List<DocumentVersionBean> executeVersionAction(
          VtiSoapRequest soapRequest, String dws, String fileName, Element fileVersion) throws Exception 
     {

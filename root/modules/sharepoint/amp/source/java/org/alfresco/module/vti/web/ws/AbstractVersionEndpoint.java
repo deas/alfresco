@@ -50,12 +50,6 @@ public abstract class AbstractVersionEndpoint extends AbstractEndpoint
     }
 
     /**
-     * Returns the response XML prefix, eg DeleteVersion for
-     *  when DeleteVersionResponse and DeleteVersionResult are needed
-     */
-    protected abstract String getEndpointNamePrefix();
-    
-    /**
      * Does the version work, and returns the new version info 
      */
     protected abstract List<DocumentVersionBean> executeVersionAction(
@@ -76,12 +70,12 @@ public abstract class AbstractVersionEndpoint extends AbstractEndpoint
         String dws = getDwsFromUri(soapRequest);        
 
         // getting fileName parameter from request
-        XPath fileNameXPath = new Dom4jXPath(buildXPath(prefix, "/"+getEndpointNamePrefix()+"/fileName"));
+        XPath fileNameXPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/fileName"));
         fileNameXPath.setNamespaceContext(nc);
         String fileName = getFileName(soapRequest, fileNameXPath);
 
         // getting fileVersion parameter from request
-        XPath fileVersionXPath = new Dom4jXPath(buildXPath(prefix, "/"+getEndpointNamePrefix()+"/fileVersion"));
+        XPath fileVersionXPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/fileVersion"));
         fileVersionXPath.setNamespaceContext(nc);
         Element fileVersion = (Element) fileVersionXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
         
@@ -89,8 +83,8 @@ public abstract class AbstractVersionEndpoint extends AbstractEndpoint
         List<DocumentVersionBean> versions = executeVersionAction(soapRequest, dws, fileName, fileVersion);
         
         // creating soap response
-        Element root = soapResponse.getDocument().addElement(getEndpointNamePrefix()+"Response", namespace);
-        Element deleteVersionResult = root.addElement(getEndpointNamePrefix()+"Result");
+        Element root = soapResponse.getDocument().addElement(getName()+"Response", namespace);
+        Element deleteVersionResult = root.addElement(getName()+"Result");
 
         Element results = deleteVersionResult.addElement("results", namespace);
 

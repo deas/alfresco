@@ -41,14 +41,7 @@ public class RestoreVersionEndpoint extends AbstractVersionEndpoint
         super(handler);
     }
     
-    
-    @Override
-    protected String getEndpointNamePrefix() 
-    {
-       return "RestoreVersion";
-    }
-
-    @Override
+   @Override
    protected List<DocumentVersionBean> executeVersionAction(
          VtiSoapRequest soapRequest, String dws, String fileName, Element fileVersion) throws Exception 
    {

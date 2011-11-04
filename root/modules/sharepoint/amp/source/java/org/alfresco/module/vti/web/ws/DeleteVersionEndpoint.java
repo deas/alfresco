@@ -38,12 +38,6 @@ public class DeleteVersionEndpoint extends AbstractVersionEndpoint
        super(handler);
     }
     
-    @Override
-    protected String getEndpointNamePrefix() 
-    {
-       return "DeleteVersion";
-    }
-
     /**
      * Deletes specified version of the document
      * 

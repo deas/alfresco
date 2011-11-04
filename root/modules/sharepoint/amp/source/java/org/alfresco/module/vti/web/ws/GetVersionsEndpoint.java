@@ -39,12 +39,6 @@ public class GetVersionsEndpoint extends AbstractVersionEndpoint
     }
     
     @Override
-    protected String getEndpointNamePrefix() 
-    {
-       return "GetVersions";
-    }
-
-    @Override
     protected List<DocumentVersionBean> executeVersionAction(
          VtiSoapRequest soapRequest, String dws, String fileName, Element fileVersion) throws Exception 
     {
