@@ -38,19 +38,24 @@ public class GenerateUnicodeRanges
             //if (Character.isSpaceChar(i))
             switch(Character.getType(i))
             {
-            case Character.LOWERCASE_LETTER:  // V1
-            case Character.MODIFIER_LETTER:   // V1
-            case Character.OTHER_LETTER:      // V1
-            case Character.TITLECASE_LETTER:  // V1
-            case Character.UPPERCASE_LETTER:  // V1
-            case Character.COMBINING_SPACING_MARK:
-            case Character.ENCLOSING_MARK:
-            case Character.NON_SPACING_MARK:
-            case Character.DECIMAL_DIGIT_NUMBER:  // V1
-            case Character.LETTER_NUMBER:
-            case Character.OTHER_NUMBER:
-            case Character.CURRENCY_SYMBOL:
-            case Character.OTHER_SYMBOL:
+            case Character.LOWERCASE_LETTER:  // V1 V2 V3-SW
+            case Character.MODIFIER_LETTER:   // V1 V2 V3-SW
+            case Character.OTHER_LETTER:      // V1 V2 V3-SW
+            case Character.TITLECASE_LETTER:  // V1 V2 V3-SW
+            case Character.UPPERCASE_LETTER:  // V1 V2 V3-SW
+            case Character.COMBINING_SPACING_MARK: // V2 V3-SW
+            case Character.ENCLOSING_MARK: // V2 V3-SW
+            case Character.NON_SPACING_MARK: // V2 V3-SW
+            case Character.DECIMAL_DIGIT_NUMBER:  // V1 V2 V3-SW
+            case Character.LETTER_NUMBER: // V2 V3-SW
+            case Character.OTHER_NUMBER: // V2 V3-SW
+            case Character.CURRENCY_SYMBOL: // V2 V3-SW
+            case Character.OTHER_SYMBOL: // V2 V3-SW
+                
+            case Character.CONNECTOR_PUNCTUATION: // V3-W
+            case Character.DASH_PUNCTUATION: // V3-W
+            case Character.OTHER_PUNCTUATION: // V3-W
+            case Character.MATH_SYMBOL: // V3-W
                 if (last == 0)
                 {
                     start = i;
@@ -77,19 +82,21 @@ public class GenerateUnicodeRanges
                     }
                 }
                 break;
-            case Character.CONTROL:
-            case Character.FORMAT:
-            case Character.PRIVATE_USE:
-            case Character.SURROGATE:
-            case Character.CONNECTOR_PUNCTUATION:
-            case Character.DASH_PUNCTUATION:
-            case Character.END_PUNCTUATION:
-            case Character.FINAL_QUOTE_PUNCTUATION:
-            case Character.INITIAL_QUOTE_PUNCTUATION:
-            case Character.OTHER_PUNCTUATION:
-            case Character.START_PUNCTUATION:
-            case Character.MODIFIER_SYMBOL:
-            case Character.MATH_SYMBOL:
+           
+                
+            case Character.CONTROL: // X
+            case Character.FORMAT:  // X
+            case Character.PRIVATE_USE: // X
+            case Character.SURROGATE: // X
+            //case Character.CONNECTOR_PUNCTUATION: // V3-W
+            //case Character.DASH_PUNCTUATION: // V3-W
+            case Character.END_PUNCTUATION: // X
+            case Character.FINAL_QUOTE_PUNCTUATION: //X
+            case Character.INITIAL_QUOTE_PUNCTUATION: // X
+            //case Character.OTHER_PUNCTUATION: // V3-W
+            case Character.START_PUNCTUATION: // X
+            case Character.MODIFIER_SYMBOL: // X
+            //case Character.MATH_SYMBOL: // V3-W
             case Character.LINE_SEPARATOR:
             case Character.PARAGRAPH_SEPARATOR:
             case Character.SPACE_SEPARATOR:

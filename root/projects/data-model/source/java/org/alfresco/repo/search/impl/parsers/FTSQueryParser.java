@@ -543,7 +543,7 @@ public class FTSQueryParser
         String functionName = FTSTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        LiteralArgument larg = factory.createLiteralArgument(FTSTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSTerm.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
         functionArguments.put(larg.getName(), larg);
@@ -570,7 +570,7 @@ public class FTSQueryParser
         String functionName = FTSTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        LiteralArgument larg = factory.createLiteralArgument(FTSTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSTerm.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
         functionArguments.put(larg.getName(), larg);
@@ -1022,7 +1022,22 @@ public class FTSQueryParser
         return factory.createPropertyArgument(argumentName, functionEvaluationContext.isQueryable(fieldName), functionEvaluationContext.isOrderable(fieldName), alias, fieldName);
     }
 
+    static private String getText(List<Tree> nodes)
+    {
+        StringBuilder builder = new StringBuilder();
+        for(Tree node : nodes)
+        {            
+            builder.append(getText(node, false));
+        }
+        return builder.toString();
+    }
+    
     static private String getText(Tree node)
+    {
+        return getText(node, true);
+    }
+    
+    static private String getText(Tree node, boolean returnTextFromUnknownNodes)
     {
         String text = node.getText();
         int index;
@@ -1059,8 +1074,18 @@ public class FTSQueryParser
             {
                 return ISO9075.decode(unescape(text));
             }
-        default:
+        case FTSParser.COMMA:
+        case FTSParser.DOT:
             return text;
+        default:
+            if(returnTextFromUnknownNodes)
+            {
+                return text;
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 

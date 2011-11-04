@@ -801,19 +801,21 @@ uri
 
 identifier
         :
-        ID
+        (ID DOT ID) => id1=ID DOT id2=ID
+                ->      {new CommonTree(new CommonToken(FTSLexer.ID, $id1.text+$DOT.text+$id2.text))}
+        | ID
                 ->
                         ID
-        | id1=ID DOT id2=ID
-                ->      {new CommonTree(new CommonToken(FTSLexer.ID, $id1.text+$DOT.text+$id2.text))}
-        ;
+        ; 
 
 ftsWord
         :
-        ID
-        | FTSWORD
-        | FTSPRE
-        | FTSWILD
+          (ID | FTSWORD) ((DOT | COMMA ) (ID|FTSWORD))*
+        | (DOT | COMMA) (ID|FTSWORD) ((DOT | COMMA) (ID|FTSWORD))*
+        //| FTSWORD ((DOT | COMMA) FTSWORD)*
+        //| (DOT| COMMA) FTSWORD ((DOT | COMMA) FTSWORD)*
+        | FTSPRE 
+        | FTSWILD 
         | NOT
         | TO
         | DECIMAL_INTEGER_LITERAL
@@ -1219,20 +1221,193 @@ DECIMAL_INTEGER_LITERAL
         DECIMAL_NUMERAL
         ;
 
+FLOATING_POINT_LITERAL
+        // Integer ranges
+        :
+        start=START_RANGE_I dotdot=DOTDOT end=START_RANGE_I {
+                        $start.setType(DECIMAL_INTEGER_LITERAL);
+                        emit($start);
+                        $dotdot.setType(DOTDOT);
+                        emit($dotdot);
+                        $end.setType(DECIMAL_INTEGER_LITERAL);
+                        emit($end);
+                }
+        // Float ranges
+        | start=START_RANGE_F dotdot=DOTDOT end=START_RANGE_F {
+                        $start.setType(FLOATING_POINT_LITERAL);
+                        emit($start);
+                        $dotdot.setType(DOTDOT);
+                        emit($dotdot);
+                        $end.setType(FLOATING_POINT_LITERAL);
+                        emit($end);
+                }
+        // Normal float rules
+        |
+        (
+                PLUS
+                | MINUS
+        )?
+        DIGIT+ DOT DIGIT* EXPONENT?
+        |
+        (
+                PLUS
+                | MINUS
+        )?
+        DOT DIGIT+ EXPONENT?
+        |
+        (
+                PLUS
+                | MINUS
+        )?
+        DIGIT+ EXPONENT
+        ;
+
+
+/*
+ * Range and floating point have to be conbined to avoid lexer issues.
+ * This requires multi-token emits and addition supporting java code - see above ...
+ *
+ * Special rules for the likes of
+ * 1..  integer ranges
+ * 1... float range with the float terminated by .
+ * If floats are 'full' e.g. 2.4.. then the parse matches the normal float tokem and a DOTDOT token
+ * Likewise .1...2 does not require any special support
+ *
+ * Float and integer are based on the Java language spec.
+ */
+
+
+
+
+fragment
+START_RANGE_I
+        :
+        (
+                PLUS
+                | MINUS
+        )?
+        DIGIT+
+        ;
+
+fragment
+START_RANGE_F
+        :
+        (
+                PLUS
+                | MINUS
+        )?
+        DIGIT+ DOT DIGIT* EXPONENT?
+        |
+        (
+                PLUS
+                | MINUS
+        )?
+        DOT DIGIT+ EXPONENT?
+        |
+        (
+                PLUS
+                | MINUS
+        )?
+        DIGIT+ EXPONENT
+        ;
+
+/**   
+ * Fragments for decimal
+ */
+fragment
+DECIMAL_NUMERAL
+        :
+        ZERO_DIGIT
+        | NON_ZERO_DIGIT DIGIT*
+        ;
+
+fragment
+DIGIT
+        :
+        ZERO_DIGIT
+        | NON_ZERO_DIGIT
+        ;
+
+fragment
+ZERO_DIGIT
+        :
+        '0'
+        ;
+
+fragment
+NON_ZERO_DIGIT
+        :
+        '1'..'9'
+        ;
+
+fragment
+E
+        :
+        (
+                'e'
+                | 'E'
+        )
+        ;
+
+fragment
+EXPONENT
+        :
+        E SIGNED_INTEGER
+        ;
+
+fragment
+SIGNED_INTEGER
+        :
+        (
+                PLUS
+                | MINUS
+        )?
+        DIGIT+
+        ;
+//
+//FTSRANGE
+//        :
+//        start=FTSRANGEPOINT dotdot=DOTDOT end=FTSRANGEPOINT {
+//                        $start.setType(FTSWORD);
+//                        emit($start);
+//                        $dotdot.setType(DOTDOT);
+//                        emit($dotdot);
+//                        $end.setType(FTSWORD);
+//                        emit($end);
+//                }
+//        ;
+//
+//fragment
+//FTSRANGEPOINT
+//        :
+//        (
+//                F_ESC
+//                | START_WORD
+//        )+
+//        ;
+
 FTSWORD
         :
         (
                 F_ESC
-                | INWORD
-        )+
+                | START_WORD
+        )
+        (
+                F_ESC
+                | IN_WORD
+        )*
         ;
 
 FTSPRE
         :
         (
                 F_ESC
-                | INWORD
-        )+
+                | START_WORD
+        )
+        (
+                F_ESC
+                | IN_WORD
+        )*
         STAR
         ;
 
@@ -1240,10 +1415,16 @@ FTSWILD
         :
         (
                 F_ESC
-                | INWORD
+                | START_WORD
                 | STAR
                 | QUESTION_MARK
-        )+
+        )
+        (
+                F_ESC
+                | IN_WORD
+                | STAR
+                | QUESTION_MARK
+        )*
         ;
 
 fragment
@@ -1267,7 +1448,7 @@ F_HEX
         ;
 
 fragment
-INWORD
+START_WORD
         :  // Generated from Java Character.isLetterOrDigit()
           '\u0024'
         | '\u0030'..'\u0039'
@@ -1678,130 +1859,419 @@ INWORD
         | '\uffe8'
         | '\uffed'..'\uffee'
         ;
-/*
- * Range and floating point have to be conbined to avoid lexer issues.
- * This requires multi-token emits and addition supporting java code - see above ...
- *
- * Special rules for the likes of
- * 1..  integer ranges
- * 1... float range with the float terminated by .
- * If floats are 'full' e.g. 2.4.. then the parse matches the normal float tokem and a DOTDOT token
- * Likewise .1...2 does not require any special support
- *
- * Float and integer are based on the Java language spec.
- */
-
-
-FLOATING_POINT_LITERAL
-        // Integer ranges
-        :
-        d=START_RANGE_I r=DOTDOT {
-      			$d.setType(DECIMAL_INTEGER_LITERAL);
-      			emit($d);
-      			$r.setType(DOTDOT);
-      			emit($r);
-    		}
-        // Float ranges
-        | d=START_RANGE_F r=DOTDOT {
-      			$d.setType(FLOATING_POINT_LITERAL);
-      			emit($d);
-      			$r.setType(DOTDOT);
-      			emit($r);
-    		}
-        // Normal float rules
-        |
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+ DOT DIGIT* EXPONENT?
-        |
-        (
-                PLUS
-                | MINUS
-        )?
-        DOT DIGIT+ EXPONENT?
-        |
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+ EXPONENT
-        ;
-
+       
+// exclude ? 003F - wildcard
+// exclude * 002A - wildcard
+// exclude \ 005C - escape
+// exclude : 003A - field indicator
+// exclude ~ 00&E - fuzzy queries
+// exclude > 003C - ranges
+// exclude < 003E - range
+// exclude . 002E
+// exclude , 002C 
+// exclude  
 fragment
-START_RANGE_I
+IN_WORD
         :
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+
+          '\u0021'..'\u0027'
+        | '\u002b'
+        | '\u002d'
+        | '\u002f'..'\u0039'
+        | '\u003b'
+        | '\u003d'
+        | '\u0040'..'\u005a'
+        | '\u005f'
+        | '\u0061'..'\u007a'
+        | '\u007c'
+        | '\u00a1'..'\u00a7'
+        | '\u00a9'..'\u00aa'
+        | '\u00ac'
+        | '\u00ae'
+        | '\u00b0'..'\u00b3'
+        | '\u00b5'..'\u00b7'
+        | '\u00b9'..'\u00ba'
+        | '\u00bc'..'\u0236'
+        | '\u0250'..'\u02c1'
+        | '\u02c6'..'\u02d1'
+        | '\u02e0'..'\u02e4'
+        | '\u02ee'
+        | '\u0300'..'\u0357'
+        | '\u035d'..'\u036f'
+        | '\u037a'..'\u037a'
+        | '\u037e'..'\u037e'
+        | '\u0386'..'\u038a'
+        | '\u038c'..'\u038c'
+        | '\u038e'..'\u03a1'
+        | '\u03a3'..'\u03ce'
+        | '\u03d0'..'\u03fb'
+        | '\u0400'..'\u0486'
+        | '\u0488'..'\u04ce'
+        | '\u04d0'..'\u04f5'
+        | '\u04f8'..'\u04f9'
+        | '\u0500'..'\u050f'
+        | '\u0531'..'\u0556'
+        | '\u0559'..'\u055f'
+        | '\u0561'..'\u0587'
+        | '\u0589'..'\u058a'
+        | '\u0591'..'\u05a1'
+        | '\u05a3'..'\u05b9'
+        | '\u05bb'..'\u05c4'
+        | '\u05d0'..'\u05ea'
+        | '\u05f0'..'\u05f4'
+        | '\u060c'..'\u0615'
+        | '\u061b'..'\u061b'
+        | '\u061f'..'\u061f'
+        | '\u0621'..'\u063a'
+        | '\u0640'..'\u0658'
+        | '\u0660'..'\u06dc'
+        | '\u06de'..'\u070d'
+        | '\u0710'..'\u074a'
+        | '\u074d'..'\u074f'
+        | '\u0780'..'\u07b1'
+        | '\u0901'..'\u0939'
+        | '\u093c'..'\u094d'
+        | '\u0950'..'\u0954'
+        | '\u0958'..'\u0970'
+        | '\u0981'..'\u0983'
+        | '\u0985'..'\u098c'
+        | '\u098f'..'\u0990'
+        | '\u0993'..'\u09a8'
+        | '\u09aa'..'\u09b0'
+        | '\u09b2'..'\u09b2'
+        | '\u09b6'..'\u09b9'
+        | '\u09bc'..'\u09c4'
+        | '\u09c7'..'\u09c8'
+        | '\u09cb'..'\u09cd'
+        | '\u09d7'..'\u09d7'
+        | '\u09dc'..'\u09dd'
+        | '\u09df'..'\u09e3'
+        | '\u09e6'..'\u09fa'
+        | '\u0a01'..'\u0a03'
+        | '\u0a05'..'\u0a0a'
+        | '\u0a0f'..'\u0a10'
+        | '\u0a13'..'\u0a28'
+        | '\u0a2a'..'\u0a30'
+        | '\u0a32'..'\u0a33'
+        | '\u0a35'..'\u0a36'
+        | '\u0a38'..'\u0a39'
+        | '\u0a3c'..'\u0a3c'
+        | '\u0a3e'..'\u0a42'
+        | '\u0a47'..'\u0a48'
+        | '\u0a4b'..'\u0a4d'
+        | '\u0a59'..'\u0a5c'
+        | '\u0a5e'..'\u0a5e'
+        | '\u0a66'..'\u0a74'
+        | '\u0a81'..'\u0a83'
+        | '\u0a85'..'\u0a8d'
+        | '\u0a8f'..'\u0a91'
+        | '\u0a93'..'\u0aa8'
+        | '\u0aaa'..'\u0ab0'
+        | '\u0ab2'..'\u0ab3'
+        | '\u0ab5'..'\u0ab9'
+        | '\u0abc'..'\u0ac5'
+        | '\u0ac7'..'\u0ac9'
+        | '\u0acb'..'\u0acd'
+        | '\u0ad0'..'\u0ad0'
+        | '\u0ae0'..'\u0ae3'
+        | '\u0ae6'..'\u0aef'
+        | '\u0af1'..'\u0af1'
+        | '\u0b01'..'\u0b03'
+        | '\u0b05'..'\u0b0c'
+        | '\u0b0f'..'\u0b10'
+        | '\u0b13'..'\u0b28'
+        | '\u0b2a'..'\u0b30'
+        | '\u0b32'..'\u0b33'
+        | '\u0b35'..'\u0b39'
+        | '\u0b3c'..'\u0b43'
+        | '\u0b47'..'\u0b48'
+        | '\u0b4b'..'\u0b4d'
+        | '\u0b56'..'\u0b57'
+        | '\u0b5c'..'\u0b5d'
+        | '\u0b5f'..'\u0b61'
+        | '\u0b66'..'\u0b71'
+        | '\u0b82'..'\u0b83'
+        | '\u0b85'..'\u0b8a'
+        | '\u0b8e'..'\u0b90'
+        | '\u0b92'..'\u0b95'
+        | '\u0b99'..'\u0b9a'
+        | '\u0b9c'..'\u0b9c'
+        | '\u0b9e'..'\u0b9f'
+        | '\u0ba3'..'\u0ba4'
+        | '\u0ba8'..'\u0baa'
+        | '\u0bae'..'\u0bb5'
+        | '\u0bb7'..'\u0bb9'
+        | '\u0bbe'..'\u0bc2'
+        | '\u0bc6'..'\u0bc8'
+        | '\u0bca'..'\u0bcd'
+        | '\u0bd7'..'\u0bd7'
+        | '\u0be7'..'\u0bfa'
+        | '\u0c01'..'\u0c03'
+        | '\u0c05'..'\u0c0c'
+        | '\u0c0e'..'\u0c10'
+        | '\u0c12'..'\u0c28'
+        | '\u0c2a'..'\u0c33'
+        | '\u0c35'..'\u0c39'
+        | '\u0c3e'..'\u0c44'
+        | '\u0c46'..'\u0c48'
+        | '\u0c4a'..'\u0c4d'
+        | '\u0c55'..'\u0c56'
+        | '\u0c60'..'\u0c61'
+        | '\u0c66'..'\u0c6f'
+        | '\u0c82'..'\u0c83'
+        | '\u0c85'..'\u0c8c'
+        | '\u0c8e'..'\u0c90'
+        | '\u0c92'..'\u0ca8'
+        | '\u0caa'..'\u0cb3'
+        | '\u0cb5'..'\u0cb9'
+        | '\u0cbc'..'\u0cc4'
+        | '\u0cc6'..'\u0cc8'
+        | '\u0cca'..'\u0ccd'
+        | '\u0cd5'..'\u0cd6'
+        | '\u0cde'..'\u0cde'
+        | '\u0ce0'..'\u0ce1'
+        | '\u0ce6'..'\u0cef'
+        | '\u0d02'..'\u0d03'
+        | '\u0d05'..'\u0d0c'
+        | '\u0d0e'..'\u0d10'
+        | '\u0d12'..'\u0d28'
+        | '\u0d2a'..'\u0d39'
+        | '\u0d3e'..'\u0d43'
+        | '\u0d46'..'\u0d48'
+        | '\u0d4a'..'\u0d4d'
+        | '\u0d57'..'\u0d57'
+        | '\u0d60'..'\u0d61'
+        | '\u0d66'..'\u0d6f'
+        | '\u0d82'..'\u0d83'
+        | '\u0d85'..'\u0d96'
+        | '\u0d9a'..'\u0db1'
+        | '\u0db3'..'\u0dbb'
+        | '\u0dbd'..'\u0dbd'
+        | '\u0dc0'..'\u0dc6'
+        | '\u0dca'..'\u0dca'
+        | '\u0dcf'..'\u0dd4'
+        | '\u0dd6'..'\u0dd6'
+        | '\u0dd8'..'\u0ddf'
+        | '\u0df2'..'\u0df4'
+        | '\u0e01'..'\u0e3a'
+        | '\u0e3f'..'\u0e5b'
+        | '\u0e81'..'\u0e82'
+        | '\u0e84'..'\u0e84'
+        | '\u0e87'..'\u0e88'
+        | '\u0e8a'..'\u0e8a'
+        | '\u0e8d'..'\u0e8d'
+        | '\u0e94'..'\u0e97'
+        | '\u0e99'..'\u0e9f'
+        | '\u0ea1'..'\u0ea3'
+        | '\u0ea5'..'\u0ea5'
+        | '\u0ea7'..'\u0ea7'
+        | '\u0eaa'..'\u0eab'
+        | '\u0ead'..'\u0eb9'
+        | '\u0ebb'..'\u0ebd'
+        | '\u0ec0'..'\u0ec4'
+        | '\u0ec6'..'\u0ec6'
+        | '\u0ec8'..'\u0ecd'
+        | '\u0ed0'..'\u0ed9'
+        | '\u0edc'..'\u0edd'
+        | '\u0f00'..'\u0f39'
+        | '\u0f3e'..'\u0f47'
+        | '\u0f49'..'\u0f6a'
+        | '\u0f71'..'\u0f8b'
+        | '\u0f90'..'\u0f97'
+        | '\u0f99'..'\u0fbc'
+        | '\u0fbe'..'\u0fcc'
+        | '\u0fcf'..'\u0fcf'
+        | '\u1000'..'\u1021'
+        | '\u1023'..'\u1027'
+        | '\u1029'..'\u102a'
+        | '\u102c'..'\u1032'
+        | '\u1036'..'\u1039'
+        | '\u1040'..'\u1059'
+        | '\u10a0'..'\u10c5'
+        | '\u10d0'..'\u10f8'
+        | '\u10fb'..'\u10fb'
+        | '\u1100'..'\u1159'
+        | '\u115f'..'\u11a2'
+        | '\u11a8'..'\u11f9'
+        | '\u1200'..'\u1206'
+        | '\u1208'..'\u1246'
+        | '\u1248'..'\u1248'
+        | '\u124a'..'\u124d'
+        | '\u1250'..'\u1256'
+        | '\u1258'..'\u1258'
+        | '\u125a'..'\u125d'
+        | '\u1260'..'\u1286'
+        | '\u1288'..'\u1288'
+        | '\u128a'..'\u128d'
+        | '\u1290'..'\u12ae'
+        | '\u12b0'..'\u12b0'
+        | '\u12b2'..'\u12b5'
+        | '\u12b8'..'\u12be'
+        | '\u12c0'..'\u12c0'
+        | '\u12c2'..'\u12c5'
+        | '\u12c8'..'\u12ce'
+        | '\u12d0'..'\u12d6'
+        | '\u12d8'..'\u12ee'
+        | '\u12f0'..'\u130e'
+        | '\u1310'..'\u1310'
+        | '\u1312'..'\u1315'
+        | '\u1318'..'\u131e'
+        | '\u1320'..'\u1346'
+        | '\u1348'..'\u135a'
+        | '\u1361'..'\u137c'
+        | '\u13a0'..'\u13f4'
+        | '\u1401'..'\u1676'
+        | '\u1681'..'\u169a'
+        | '\u16a0'..'\u16f0'
+        | '\u1700'..'\u170c'
+        | '\u170e'..'\u1714'
+        | '\u1720'..'\u1736'
+        | '\u1740'..'\u1753'
+        | '\u1760'..'\u176c'
+        | '\u176e'..'\u1770'
+        | '\u1772'..'\u1773'
+        | '\u1780'..'\u17b3'
+        | '\u17b6'..'\u17dd'
+        | '\u17e0'..'\u17e9'
+        | '\u17f0'..'\u17f9'
+        | '\u1800'..'\u180d'
+        | '\u1810'..'\u1819'
+        | '\u1820'..'\u1877'
+        | '\u1880'..'\u18a9'
+        | '\u1900'..'\u191c'
+        | '\u1920'..'\u192b'
+        | '\u1930'..'\u193b'
+        | '\u1940'..'\u1940'
+        | '\u1944'..'\u196d'
+        | '\u1970'..'\u1974'
+        | '\u19e0'..'\u19ff'
+        | '\u1d00'..'\u1d6b'
+        | '\u1e00'..'\u1e9b'
+        | '\u1ea0'..'\u1ef9'
+        | '\u1f00'..'\u1f15'
+        | '\u1f18'..'\u1f1d'
+        | '\u1f20'..'\u1f45'
+        | '\u1f48'..'\u1f4d'
+        | '\u1f50'..'\u1f57'
+        | '\u1f59'..'\u1f59'
+        | '\u1f5b'..'\u1f5b'
+        | '\u1f5d'..'\u1f5d'
+        | '\u1f5f'..'\u1f7d'
+        | '\u1f80'..'\u1fb4'
+        | '\u1fb6'..'\u1fbc'
+        | '\u1fbe'
+        | '\u1fc2'..'\u1fc4'
+        | '\u1fc6'..'\u1fcc'
+        | '\u1fd0'..'\u1fd3'
+        | '\u1fd6'..'\u1fdb'
+        | '\u1fe0'..'\u1fec'
+        | '\u1ff2'..'\u1ff4'
+        | '\u1ff6'..'\u1ffc'
+        | '\u2010'..'\u2017'
+        | '\u2020'..'\u2027'
+        | '\u2030'..'\u2038'
+        | '\u203b'..'\u2044'
+        | '\u2047'..'\u2054'
+        | '\u2057'..'\u2057'
+        | '\u2070'..'\u2071'
+        | '\u2074'..'\u207c'
+        | '\u207f'..'\u208c'
+        | '\u20a0'..'\u20b1'
+        | '\u20d0'..'\u20ea'
+        | '\u2100'..'\u213b'
+        | '\u213d'..'\u214b'
+        | '\u2153'..'\u2183'
+        | '\u2190'..'\u2328'
+        | '\u232b'..'\u23b3'
+        | '\u23b6'..'\u23d0'
+        | '\u2400'..'\u2426'
+        | '\u2440'..'\u244a'
+        | '\u2460'..'\u2617'
+        | '\u2619'..'\u267d'
+        | '\u2680'..'\u2691'
+        | '\u26a0'..'\u26a1'
+        | '\u2701'..'\u2704'
+        | '\u2706'..'\u2709'
+        | '\u270c'..'\u2727'
+        | '\u2729'..'\u274b'
+        | '\u274d'..'\u274d'
+        | '\u274f'..'\u2752'
+        | '\u2756'..'\u2756'
+        | '\u2758'..'\u275e'
+        | '\u2761'..'\u2767'
+        | '\u2776'..'\u2794'
+        | '\u2798'..'\u27af'
+        | '\u27b1'..'\u27be'
+        | '\u27d0'..'\u27e5'
+        | '\u27f0'..'\u2982'
+        | '\u2999'..'\u29d7'
+        | '\u29dc'..'\u29fb'
+        | '\u29fe'..'\u2b0d'
+        | '\u2e80'..'\u2e99'
+        | '\u2e9b'..'\u2ef3'
+        | '\u2f00'..'\u2fd5'
+        | '\u2ff0'..'\u2ffb'
+        | '\u3001'..'\u3007'
+        | '\u3012'..'\u3013'
+        | '\u301c'
+        | '\u3020'..'\u303f'
+        | '\u3041'..'\u3096'
+        | '\u3099'..'\u309a'
+        | '\u309d'..'\u30ff'
+        | '\u3105'..'\u312c'
+        | '\u3131'..'\u318e'
+        | '\u3190'..'\u31b7'
+        | '\u31f0'..'\u321e'
+        | '\u3220'..'\u3243'
+        | '\u3250'..'\u327d'
+        | '\u327f'..'\u32fe'
+        | '\u3300'..'\u4db5'
+        | '\u4dc0'..'\u9fa5'
+        | '\ua000'..'\ua48c'
+        | '\ua490'..'\ua4c6'
+        | '\uac00'..'\ud7a3'
+        | '\uf900'..'\ufa2d'
+        | '\ufa30'..'\ufa6a'
+        | '\ufb00'..'\ufb06'
+        | '\ufb13'..'\ufb17'
+        | '\ufb1d'..'\ufb36'
+        | '\ufb38'..'\ufb3c'
+        | '\ufb3e'..'\ufb3e'
+        | '\ufb40'..'\ufb41'
+        | '\ufb43'..'\ufb44'
+        | '\ufb46'..'\ufbb1'
+        | '\ufbd3'..'\ufd3d'
+        | '\ufd50'..'\ufd8f'
+        | '\ufd92'..'\ufdc7'
+        | '\ufdf0'..'\ufdfd'
+        | '\ufe00'..'\ufe0f'
+        | '\ufe20'..'\ufe23'
+        | '\ufe30'..'\ufe34'
+        | '\ufe45'..'\ufe46'
+        | '\ufe49'..'\ufe52'
+        | '\ufe54'..'\ufe58'
+        | '\ufe5f'..'\ufe66'
+        | '\ufe68'..'\ufe6b'
+        | '\ufe70'..'\ufe74'
+        | '\ufe76'..'\ufefc'
+        | '\uff01'..'\uff07'
+        | '\uff0a'..'\uff3a'
+        | '\uff3c'
+        | '\uff3f'
+        | '\uff41'..'\uff5a'
+        | '\uff5c'
+        | '\uff5e'
+        | '\uff61'
+        | '\uff64'..'\uffbe'
+        | '\uffc2'..'\uffc7'
+        | '\uffca'..'\uffcf'
+        | '\uffd2'..'\uffd7'
+        | '\uffda'..'\uffdc'
+        | '\uffe0'..'\uffe2'
+        | '\uffe4'..'\uffe6'
+        | '\uffe8'..'\uffee'
         ;
+        
 
-fragment
-START_RANGE_F
-        :
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+ DOT
-        ;
-
-/**   
- * Fragments for decimal
- */
-fragment
-DECIMAL_NUMERAL
-        :
-        ZERO_DIGIT
-        | NON_ZERO_DIGIT DIGIT*
-        ;
-
-fragment
-DIGIT
-        :
-        ZERO_DIGIT
-        | NON_ZERO_DIGIT
-        ;
-
-fragment
-ZERO_DIGIT
-        :
-        '0'
-        ;
-
-fragment
-NON_ZERO_DIGIT
-        :
-        '1'..'9'
-        ;
-
-fragment
-E
-        :
-        (
-                'e'
-                | 'E'
-        )
-        ;
-
-fragment
-EXPONENT
-        :
-        E SIGNED_INTEGER
-        ;
-
-fragment
-SIGNED_INTEGER
-        :
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+
-        ;
 /*
  * Standard white space
  * White space may be escaped by \ in some tokens 

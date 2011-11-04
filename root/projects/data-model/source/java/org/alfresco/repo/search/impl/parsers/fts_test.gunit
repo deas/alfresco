@@ -12,9 +12,20 @@ ftsQuery:
 "1..2" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (RANGE INCLUSIVE 1 2 INCLUSIVE))))"
 "test:flag:true AND %test:field" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM true (FIELD_REF flag (PREFIX test)))) (DEFAULT (TEMPLATE (FIELD_REF field (PREFIX test))))))"
 "test:flag:true AND %NEST" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM true (FIELD_REF flag (PREFIX test)))) (DEFAULT (TEMPLATE (FIELD_REF NEST)))))"
-"test:flag:true AND %(NEST,test:field, test_field1, {http://www.alfresco.org/model/content/1.0}name)" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM true (FIELD_REF flag (PREFIX test)))) (DEFAULT (TEMPLATE (FIELD_REF NEST) (FIELD_REF field (PREFIX test)) (FIELD_REF test_field1) (FIELD_REF name (NAME_SPACE {http://www.alfresco.org/model/content/1.0}))))))" 
+"test:flag:true AND %(NEST, test:field, test_field1, {http://www.alfresco.org/model/content/1.0}name)" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM true (FIELD_REF flag (PREFIX test)))) (DEFAULT (TEMPLATE (FIELD_REF NEST) (FIELD_REF field (PREFIX test)) (FIELD_REF test_field1) (FIELD_REF name (NAME_SPACE {http://www.alfresco.org/model/content/1.0}))))))" 
 "+PATH:\"/app:company_home/st:sites/cm:rmtestnew1/cm:documentLibrary//*\" +(ASPECT:\"{http://www.alfresco.org/model/recordsmanagement/1.0}record\") -TYPE:\"{http://www.alfresco.org/model/content/1.0}thumbnail\"" -> "(DISJUNCTION (CONJUNCTION (MANDATORY (PHRASE \"/app:company_home/st:sites/cm:rmtestnew1/cm:documentLibrary//*\" (FIELD_REF PATH))) (MANDATORY (DISJUNCTION (CONJUNCTION (DEFAULT (PHRASE \"{http://www.alfresco.org/model/recordsmanagement/1.0}record\" (FIELD_REF ASPECT)))))) (EXCLUDE (PHRASE \"{http://www.alfresco.org/model/content/1.0}thumbnail\" (FIELD_REF TYPE)))))"
 "TEXT:(\"lazy\")" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (FIELD_GROUP (FIELD_REF TEXT) (FIELD_DISJUNCTION (FIELD_CONJUNCTION (FIELD_DEFAULT (FG_PHRASE \"lazy\"))))))))"
+"test.txt" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM test . txt))))"
+"=test.txt" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (EXACT_TERM test . txt))))"
+"test.txt.woof" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM test . txt . woof))))"
+"test_txt_woof" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM test_txt_woof))))"
+"test,txt,woof" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM test , txt , woof))))"
+"test\:txt\:woof" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM test\\:txt\\:woof))))"
+"+\++" -> "(DISJUNCTION (CONJUNCTION (MANDATORY (TERM \\++))))"
+".txt" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM . txt))))"
+".txt.doc.banana" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM . txt . doc . banana))))"
+//"*.txt" -> ""
+//"doc.*" -> ""
 
 ftsDisjunction:
 "red" -> (DISJUNCTION (CONJUNCTION (DEFAULT (TERM red))))
@@ -226,7 +237,7 @@ uri:
 identifier:
 "banana"   OK
 "name"   OK
-"content.mimetypr" OK
+"content.mimetype" OK
 
 ftsWord:
 "OR"       FAIL
@@ -456,11 +467,13 @@ DECIMAL_INTEGER_LITERAL:
  
 FLOATING_POINT_LITERAL:
 "0" FAIL
-"1.." OK
+"1.." FAIL
 "1." OK
+"1.2..1.3" OK
 "1.0" OK
-"1..0" FAIL
-"1..." OK
+"1..0" OK
+"1..." FAIL
+"1...2." OK
 "1...." FAIL
 "1.0.." FAIL
 "-1.02" OK

@@ -70,9 +70,16 @@ public class FTSTest extends TestCase
 
     public void testLexerOutput() throws IOException, RecognitionException
     {
-        CharStream cs = new ANTLRStringStream("woof");
+        CharStream cs = new ANTLRStringStream(".txt");
         FTSLexer lexer = new FTSLexer(cs);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+        
+//        for(int i = 0; i < 10; i++)
+//        {
+//           System.out.println(tokens.LA(1));
+//           System.out.println(tokens.LT(1));
+//           tokens.consume();
+//        }
         FTSParser parser = new FTSParser(tokens);
         parser.setMode(FTSParser.Mode.DEFAULT_CONJUNCTION);
         parser.setDefaultFieldConjunction(true);
