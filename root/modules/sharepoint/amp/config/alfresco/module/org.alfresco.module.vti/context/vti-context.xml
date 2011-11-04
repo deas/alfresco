@@ -272,6 +272,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/AddList">
                     <ref bean="addListEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetList">
+                    <ref bean="getListEndpoint"/>
+                </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteList">
                     <ref bean="deleteListEndpoint"/>
                 </entry>
@@ -534,6 +537,16 @@
         <constructor-arg ref="listServiceHandler" />
         <property name="name">
             <value>AddList</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="getListEndpoint" class="org.alfresco.module.vti.web.ws.GetListEndpoint">
+        <constructor-arg ref="listServiceHandler" />
+        <property name="name">
+            <value>GetList</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>

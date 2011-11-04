@@ -19,66 +19,55 @@
 package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
-import org.alfresco.service.cmr.dictionary.InvalidTypeException;
-import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
- * Class for handling the AddList soap method
+ * Class for handling the GetList soap method
  * 
  * @author Nick Burch
  */
-public class AddListEndpoint extends AbstractListEndpoint
+public class GetListEndpoint extends AbstractListEndpoint
 {
-    private final static Log logger = LogFactory.getLog(AddListEndpoint.class);
-
     /**
      * constructor
      *
      * @param handler
      */
-    public AddListEndpoint(ListServiceHandler handler)
+    public GetListEndpoint(ListServiceHandler handler)
     {
         super(handler);
     }
 
-    /**
-     * Adds the new list
-     */
     @Override
     protected ListInfoBean executeListAction(VtiSoapRequest soapRequest,
          String dws, String listName, String description, int templateID) throws Exception 
     {
-       // We require a template ID parameter
-       if(templateID < 0)
-       {
-          throw new VtiSoapException("Invalid Template ID", -1);
-       }
-       
-       // Have the List Created
+       // Have the List Fetched
+       ListInfoBean list = null;
        try
        {
-          handler.createList(listName, description, dws, templateID);
+//          list = handler.getList(listName, dws);
        }
        catch(SiteDoesNotExistException se)
        {
-          throw new VtiSoapException("No site found with name '" + dws + "'", 0x81020012l, se);
+          // The specification defines the exact code that must be
+          //  returned in case of a file not being found
+          long code = VtiError.V_LIST_NOT_FOUND.getErrorCode();
+          String message = "Site not found: " + se.getMessage();
+          throw new VtiSoapException(message, code, se);
        }
-       catch(DuplicateChildNodeNameException dcnne)
-       {
-          throw new VtiSoapException("List name already in use", 0x81020012l, dcnne);
-       }
-       catch(InvalidTypeException ite)
-       {
-          throw new VtiSoapException("Template ID not known", 0x8107058al, ite); 
-       }
+//       catch(FileNotFoundException fnfe)
+//       {
+//          // The specification defines the exact code that must be
+//          //  returned in case of a file not being found
+//          long code = VtiError.V_LIST_NOT_FOUND.getErrorCode();
+//          String message = "List not found: " + fnfe.getMessage();
+//          throw new VtiSoapException(message, code, fnfe);
+//       }
 
-       // Return the list details
-       // TODO
-       return null;
+       return list;
     }
 
 }
